@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2. Identificação por Fabricante — WhatTheChip?</title>
+    <title>2.4 Elpida Memory — WhatTheChip?</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -81,16 +81,102 @@
       </nav>
       <!-- Main content -->
       <main id="content">
-        <h2 id="s4" class="section">3. Identificação por Fabricante</h2>
-        <p>
-          Para cada fabricante: tipos produzidos, prefixos por categoria,
-          decodificação do part number, exemplos reais e dicas de identificação.
-        </p>
+        <div class="fab-block" id="s4-elpida">
+          <div class="fab-header">
+            4.4 Elpida
+            <span
+              >🇯🇵 Japão · Fundada em 1999 · Adquirida pela Micron em 2013</span
+            >
+          </div>
+          <div class="fab-body">
+            <div class="fab-types">
+              <strong>Tipos produzidos:</strong> SDRAM · DDR1 a DDR3 · LPDDR1 a
+              3 · GDDR5
+            </div>
+            <p>
+              A Elpida foi uma gigante japonesa focada exclusivamente em
+              memórias RAM (DRAM), nascida da fusão das divisões da Hitachi e
+              NEC. Embora tenha sido adquirida pela Micron em 2013, ainda
+              processamos um grande volume de sucatas contendo esses componentes
+              originais.
+            </p>
 
-        <!-- Samsung -->
+            <div class="nota">
+              <strong>Regra de nomenclatura (módulo vs. chip):</strong><br />
+              O operador não deve se basear nas etiquetas de papel dos pentes de
+              memória. Códigos iniciados em <code>EB...</code> significam
+              <em>Elpida Board</em> (módulo). O alvo da nossa triagem física é a
+              gravação a laser no próprio encapsulamento preto, que
+              invariavelmente inicia com <code>ED...</code> (<em
+                >Elpida Device</em
+              >).
+            </div>
+
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Prefixo gravado no chip</th>
+                    <th>Observação para triagem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>SDRAM</td>
+                    <td><code>EDS...</code></td>
+                    <td>Obsoletos. Direcionar ao fluxo de refino.</td>
+                  </tr>
+                  <tr>
+                    <td>DDR1</td>
+                    <td><code>EDD...</code></td>
+                    <td>Obsoletos. Direcionar ao fluxo de refino.</td>
+                  </tr>
+                  <tr>
+                    <td>DDR2</td>
+                    <td><code>EDE...</code></td>
+                    <td>Baixíssima viabilidade.</td>
+                  </tr>
+                  <tr>
+                    <td>DDR3 e DDR3L</td>
+                    <td><code>EDJ...</code></td>
+                    <td>
+                      Componentes de 1.5V e 1.35V. Em packages muito pequenos, a
+                      Elpida suprimia o <code>ED</code>, deixando apenas códigos
+                      como <code>J4...</code> ou <code>J2...</code> estampados.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR2</td>
+                    <td><code>EDB...</code> / <code>EDA...</code></td>
+                    <td>
+                      Mobile RAM antiga. Em chips menores, pode aparecer
+                      abreviado como <code>B4...</code>.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR3</td>
+                    <td><code>EDF...</code></td>
+                    <td>Mobile RAM padrão de equipamentos mobile da época.</td>
+                  </tr>
+                  <tr>
+                    <td>GDDR5 (Vídeo)</td>
+                    <td><code>EDW...</code></td>
+                    <td>
+                      Memória de processamento gráfico. Muito extraída de placas
+                      de vídeo de gerações antigas.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Toshiba / Kioxia -->
         <div class="page-nav">
-<a class="page-nav-btn prev" href="tipos.html">← 1.5 Tipos de Chip</a>
-<a class="page-nav-btn next" href="fab-samsung.html">2.1 Samsung →</a>
+<a class="page-nav-btn prev" href="fab-micron.html">← 2.3 Micron</a>
+<a class="page-nav-btn next" href="fab-toshiba.html">2.5 Toshiba / Kioxia →</a>
 </div>
       </main>
     </div>
@@ -98,7 +184,7 @@
     <script>
       // Mark active page in sidebar
       (function() {
-        var pageId = 'fabricantes';
+        var pageId = 'fab-elpida';
         var links = document.querySelectorAll('#toc .toc-item');
         links.forEach(function(link) {
           var href = link.getAttribute('href');

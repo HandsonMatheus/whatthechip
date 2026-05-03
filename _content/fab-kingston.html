@@ -1,0 +1,167 @@
+<div class="fab-block" id="s4-kingston">
+          <div class="fab-header">
+            4.8 Kingston Technology
+            <span
+              >🇺🇸 EUA · Integradora e empacotadora (não fabrica o silício)</span
+            >
+          </div>
+          <div class="fab-body">
+            <div class="fab-types">
+              <strong>Tipos empacotados/remarcados:</strong> DDR1 a DDR5 (chips
+              remarcados) · LPDDR3 a LPDDR5 · ePoP · eMMC · eMCP
+            </div>
+
+            <div
+              class="img-wrap"
+              style="
+                float: left;
+                width: 180px;
+                margin: 5px 20px 15px 0;
+                text-align: center;
+              "
+            >
+              <img
+                src="kingston.png"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border: 1px solid #ddd;
+                  border-radius: 6px;
+                  padding: 5px;
+                  box-sizing: border-box;
+                  background-color: #fff;
+                "
+              />
+            </div>
+
+            <p>
+              A Kingston é, indiscutivelmente, uma das marcas mais tradicionais
+              e abundantes que o classificador encontrará na esteira de triagem.
+              Ela está presente em uma vastidão de equipamentos de consumo,
+              desde os clássicos pentes de memória RAM de computadores desktop e
+              notebooks até unidades de armazenamento em estado sólido (SSDs) e
+              dispositivos móveis. Devido à sua massiva penetração global no
+              mercado de varejo e montagem, o volume de componentes estampados
+              com a famosa marca da empresa é sempre muito expressivo no nosso
+              processamento diário. Identificar visualmente e resgatar essas
+              peças para o fluxo reacondicional é essencial, pois elas mantêm
+              excelente estabilidade e aplicabilidade para novos ciclos de uso.
+            </p>
+
+            <p>
+              Contudo, a Kingston exige uma abordagem técnica e um entendimento
+              levemente diferentes por parte do operador na bancada. Como regra
+              geral na arquitetura da indústria de semicondutores, a empresa não
+              atua como uma fundição primária — ou seja, ela não fabrica os
+              wafers de silício puros (o núcleo inteligente do chip). O seu
+              modelo de produção baseia-se em adquirir o silício bruto (os
+              "dies") diretamente das grandes fabricantes globais (como Micron,
+              Nanya, SK Hynix e Samsung) e, a partir desse ponto, realizar o
+              processo físico de empacotamento (package) e montagem final dos
+              componentes, carimbando no encapsulamento de resina o seu próprio
+              logotipo.
+            </p>
+
+            <p>
+              Para o técnico na triagem física, isso significa que, embora as
+              entranhas tecnológicas do chip possam variar dependendo do lote, a
+              identificação externa obedece a um rigoroso padrão da Kingston,
+              permitindo uma separação ágil e precisa. Os códigos de
+              identificação (Part Numbers) gravados no encapsulamento quase
+              sempre iniciam com a letra <code>K</code> (como no padrão
+              <code>KE...</code> encontrado em memórias eMMC, por exemplo). Ao
+              localizar esse padrão inicial associado ao logo da marca, o
+              classificador confirma imediatamente a origem da peça, garantindo
+              que o componente não se perca junto à sucata comum e seja
+              destinado de forma assertiva ao estoque de material
+              reacondicional.
+            </p>
+
+            <div class="nota">
+              <strong>Atenção (etiquetas vs. chips):</strong> A maior confusão
+              ocorre nos pentes de memória RAM. Códigos iniciados em
+              <code>KVR</code> (Kingston Value RAM), <code>KSM</code> (Server)
+              ou <code>KF</code> (Fury) são
+              <strong>códigos de etiqueta do módulo inteiro</strong>. Eles não
+              servem para identificar o chip individual na nossa extração. O
+              operador deve ignorar a etiqueta de papel e ler o que está gravado
+              a laser diretamente no epóxi preto do componente BGA.
+            </div>
+
+            <p>
+              Apesar de ser integradora, a Kingston remarca milhares de
+              componentes para o mercado de armazenamento embarcado (mobile,
+              smart TVs, TV boxes, IoT). O operador encontrará as seguintes
+              estruturas de Part Numbers gravadas na superfície da peça:
+            </p>
+
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Prefixo gravado no componente</th>
+                    <th>Observação para triagem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Módulo RAM (etiqueta)</td>
+                    <td>
+                      <code>KVR...</code> / <code>KSM...</code> /
+                      <code>KF...</code>
+                    </td>
+                    <td>
+                      <strong>Aviso visual:</strong> Impresso em papel/adesivo.
+                      Identifica a placa inteira. Remover e olhar o BGA soldado
+                      embaixo.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>RAM dedicada (rebrand)</td>
+                    <td><code>D25...</code> / <code>D51...</code></td>
+                    <td>
+                      Chips DRAM soltos que a Kingston comprou em wafer e
+                      empacotou. Muito comuns em SSDs e pentes proprietários.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR (standalone) e ePoP</td>
+                    <td>Códigos curtos ou logos + lote</td>
+                    <td>
+                      Chips muito finos (FBGA) usados em embarcados e wearables.
+                      Muitas vezes não possuem um Part Number longo padrão,
+                      trazendo apenas o logotipo do "Rei Vermelho" e um código
+                      de lote curto. Se for BGA fino com a marca, é LPDDR e
+                      possui viabilidade.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>eMMC</td>
+                    <td><code>EMMC...</code></td>
+                    <td>
+                      Armazenamento integrado (ex: <code>EMMC32G-M525</code> ou
+                      <code>EMMC64G-TX29</code>). Muito comuns em tablets, TV
+                      boxes e placas IoT. Formatos BGA 153 e 169. Altamente
+                      viáveis para o mercado reacondicional.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>eMCP</td>
+                    <td>
+                      <code>08EMCP...</code> / <code>EMCP...</code> /
+                      <code>04ENCP...</code>
+                    </td>
+                    <td>
+                      Híbridos de armazenamento e RAM. Identificados pelo
+                      prefixo direto. Frequentemente encontrados em smartphones
+                      de entrada e dispositivos móveis mais baratos.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rayson -->

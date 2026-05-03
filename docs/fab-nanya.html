@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2.7 Nanya Technology — WhatTheChip?</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="topbar">
+      <div id="topbar-inner">
+        <a id="brand" href="index.html">
+          <div class="logo">IC</div>
+          <span class="name">WhatTheChip?</span>
+        </a>
+        <nav id="topnav">
+          <a class="topnav-link" href="index.html">Início</a>
+          <a class="topnav-link" href="prefixos.html">Tabela Rápida</a>
+          <a class="topnav-link" href="mapa.html">Mapa do site</a>
+          <a class="topnav-link" href="contato.html">Contato</a>
+        </nav>
+        <select id="lang-select" title="Selecionar idioma (em breve)">
+          <option value="pt" selected>🇧🇷 Português</option>
+          <option value="en" disabled>🇺🇸 English (em breve)</option>
+          <option value="es" disabled>🇪🇸 Español (em breve)</option>
+          <option value="zh" disabled>🇨🇳 普通话 (em breve)</option>
+          <option value="yue" disabled>🇭🇰 廣東話 (em breve)</option>
+        </select>
+        <div id="top-search" role="search">
+          <input
+            id="top-search-input"
+            type="text"
+            placeholder="Buscar prefixo... ex: KLM, H26M, TYBE"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="kbd-hint">Ctrl+K</span>
+          <button id="top-search-btn">Buscar</button>
+          <div id="top-search-results">
+            <div id="top-search-empty">Nenhum prefixo encontrado.</div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="shell">
+      <nav id="sidebar" aria-label="Mapa do documento">
+        <div id="sidebar-title">Mapa do documento</div>
+        <div id="toc">
+          <a class="toc-item l1" href="index.html">Apresentação</a>
+          <div class="toc-sep"></div>
+          <div class="toc-label">1. Introdução</div>
+          <a class="toc-item l2" href="aprender.html">1.1 O que você vai aprender</a>
+          <a class="toc-item l2" href="o-que-e-chip.html">1.2 O que é um Chip</a>
+          <a class="toc-item l2" href="evolucao.html">1.3 Evolução: do pino à esfera</a>
+          <a class="toc-item l2" href="metodologia.html">1.4 Metodologia de Identificação</a>
+          <a class="toc-item l2" href="tipos.html">1.5 Tipos de Chip</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="fabricantes.html">2. Identificação por Fabricante</a>
+          <a class="toc-item l2" href="fab-samsung.html">2.1 Samsung</a>
+          <a class="toc-item l2" href="fab-hynix.html">2.2 SK Hynix</a>
+          <a class="toc-item l2" href="fab-micron.html">2.3 Micron</a>
+          <a class="toc-item l2" href="fab-elpida.html">2.4 Elpida Memory</a>
+          <a class="toc-item l2" href="fab-toshiba.html">2.5 Toshiba / Kioxia</a>
+          <a class="toc-item l2" href="fab-sandisk.html">2.6 SanDisk / WD</a>
+          <a class="toc-item l2" href="fab-nanya.html">2.7 Nanya Technology</a>
+          <a class="toc-item l2" href="fab-kingston.html">2.8 Kingston</a>
+          <a class="toc-item l2" href="fab-rayson.html">2.9 Rayson</a>
+          <a class="toc-item l2" href="fab-issi.html">2.10 ISSI</a>
+          <a class="toc-item l2" href="fab-gigadevice.html">2.11 GigaDevice</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="prefixos.html">3. Tabela Rápida de Prefixos</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="remarked.html">4. Chips Remarked / Counterfeit</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="viabilidade.html">5. Hierarquia de Viabilidade</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="soc.html">6. CPUs / SoCs</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="encerramento.html">7. Encerramento</a>
+        </div>
+      </nav>
+      <!-- Main content -->
+      <main id="content">
+        <div class="fab-block" id="s4-nanya">
+          <div class="fab-header">
+            4.7 Nanya Technology <span>🇹🇼 Taiwan · Fundada em 1995</span>
+          </div>
+          <div class="fab-body">
+            <div class="fab-types">
+              <strong>Tipos produzidos:</strong> SDRAM · DDR1 a DDR5 · LPDDR3 a
+              LPDDR5
+            </div>
+
+            <div
+              class="img-wrap"
+              style="
+                float: left;
+                width: 180px;
+                margin: 5px 20px 15px 0;
+                text-align: center;
+              "
+            >
+              <img
+                src="nanya_chip.png"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border: 1px solid #ddd;
+                  border-radius: 6px;
+                  padding: 5px;
+                  box-sizing: border-box;
+                  background-color: #fff;
+                "
+              />
+            </div>
+
+            <p>
+              A Nanya Technology é uma tradicional fabricante taiwanesa com uma
+              presença massiva no nosso volume diário de processamento físico.
+              Diferente de outras marcas mais focadas em smartphones, os
+              componentes da Nanya são os verdadeiros "cavalos de batalha" da
+              eletrônica de consumo e de infraestrutura de TI. Ao desmontar
+              equipamentos de rede (como roteadores, modems e switches),
+              televisores, set-top boxes e placas-mãe de notebooks variados, o
+              operador invariavelmente encontrará uma quantidade expressiva
+              desses chips. Essa onipresença na bancada exige que a equipe de
+              triagem esteja totalmente familiarizada com a sua assinatura
+              visual.
+            </p>
+
+            <p>
+              A estrutura de nomenclatura adotada por eles é excelente para a
+              memorização rápida e para a tomada de decisão instantânea. A regra
+              primária é bastante direta: o código impresso a laser inicia com
+              as letras <code>NT</code> (Nanya Technology). O grande trunfo para
+              quem opera a separação, no entanto, é focar no caractere
+              imediatamente após esse prefixo. O primeiro número (ou letra) que
+              segue o <code>NT</code> divide o portfólio de forma perfeitamente
+              lógica, indicando a geração exata da memória. Bater o olho nessa
+              pequena sequência inicial permite ao técnico classificar e separar
+              fisicamente a peça em frações de segundo, sem qualquer necessidade
+              de consulta a catálogos.
+            </p>
+            <div class="nota">
+              <strong>Regra de ouro da Nanya:</strong><br />
+              • <strong>NT5...</strong> = Memória RAM padrão dedicada (SDRAM e
+              linhas DDR de desktop/notebook).<br />
+              • <strong>NT6...</strong> = Memória RAM mobile / low power (linhas
+              LPDDR, focadas em dispositivos compactos).
+            </div>
+
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Prefixo gravado no chip</th>
+                    <th>Observação para triagem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>SDRAM</td>
+                    <td><code>NT5SV...</code> / <code>NT5S...</code></td>
+                    <td>
+                      Componentes obsoletos. Direcionar diretamente ao fluxo de
+                      refino.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>DDR1</td>
+                    <td><code>NT5DS...</code></td>
+                    <td>Obsoletos. Direcionar ao fluxo de refino.</td>
+                  </tr>
+                  <tr>
+                    <td>DDR2</td>
+                    <td><code>NT5TU...</code></td>
+                    <td>Baixíssima viabilidade.</td>
+                  </tr>
+                  <tr>
+                    <td>DDR3 e DDR3L</td>
+                    <td>
+                      <code>NT5C...</code> / <code>NT5CB...</code> /
+                      <code>NT5CC...</code>
+                    </td>
+                    <td>
+                      <code>NT5CB</code> (1.5V padrão) e
+                      <code>NT5CC</code> (1.35V Low Voltage). Muito frequentes
+                      em placas sucateadas de modems e roteadores.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>DDR4</td>
+                    <td><code>NT5AD...</code> / <code>NT5AN...</code></td>
+                    <td>
+                      RAM padrão de alta circulação e boa viabilidade para o
+                      mercado reacondicional.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>DDR5</td>
+                    <td><code>NT5W...</code></td>
+                    <td>Memória dedicada de nova geração.</td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR3</td>
+                    <td><code>NT6CL...</code> / <code>NT6TL...</code></td>
+                    <td>Mobile RAM de gerações mais antigas.</td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR4</td>
+                    <td><code>NT6AN...</code></td>
+                    <td>Mobile RAM padrão.</td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR4X</td>
+                    <td><code>NT6AH...</code> / <code>NT6AP...</code></td>
+                    <td>Mobile RAM com maior eficiência energética.</td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR5</td>
+                    <td><code>NT6AC...</code></td>
+                    <td>
+                      Mobile RAM de altíssima velocidade para aparelhos
+                      modernos.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kingston -->
+        <div class="page-nav">
+<a class="page-nav-btn prev" href="fab-sandisk.html">← 2.6 SanDisk / WD</a>
+<a class="page-nav-btn next" href="fab-kingston.html">2.8 Kingston →</a>
+</div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      // Mark active page in sidebar
+      (function() {
+        var pageId = 'fab-nanya';
+        var links = document.querySelectorAll('#toc .toc-item');
+        links.forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          var file = href.split('#')[0];
+          if (file === pageId + '.html' || (pageId === 'index' && file === 'index.html')) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2.3 Micron — WhatTheChip?</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="topbar">
+      <div id="topbar-inner">
+        <a id="brand" href="index.html">
+          <div class="logo">IC</div>
+          <span class="name">WhatTheChip?</span>
+        </a>
+        <nav id="topnav">
+          <a class="topnav-link" href="index.html">Início</a>
+          <a class="topnav-link" href="prefixos.html">Tabela Rápida</a>
+          <a class="topnav-link" href="mapa.html">Mapa do site</a>
+          <a class="topnav-link" href="contato.html">Contato</a>
+        </nav>
+        <select id="lang-select" title="Selecionar idioma (em breve)">
+          <option value="pt" selected>🇧🇷 Português</option>
+          <option value="en" disabled>🇺🇸 English (em breve)</option>
+          <option value="es" disabled>🇪🇸 Español (em breve)</option>
+          <option value="zh" disabled>🇨🇳 普通话 (em breve)</option>
+          <option value="yue" disabled>🇭🇰 廣東話 (em breve)</option>
+        </select>
+        <div id="top-search" role="search">
+          <input
+            id="top-search-input"
+            type="text"
+            placeholder="Buscar prefixo... ex: KLM, H26M, TYBE"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="kbd-hint">Ctrl+K</span>
+          <button id="top-search-btn">Buscar</button>
+          <div id="top-search-results">
+            <div id="top-search-empty">Nenhum prefixo encontrado.</div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="shell">
+      <nav id="sidebar" aria-label="Mapa do documento">
+        <div id="sidebar-title">Mapa do documento</div>
+        <div id="toc">
+          <a class="toc-item l1" href="index.html">Apresentação</a>
+          <div class="toc-sep"></div>
+          <div class="toc-label">1. Introdução</div>
+          <a class="toc-item l2" href="aprender.html">1.1 O que você vai aprender</a>
+          <a class="toc-item l2" href="o-que-e-chip.html">1.2 O que é um Chip</a>
+          <a class="toc-item l2" href="evolucao.html">1.3 Evolução: do pino à esfera</a>
+          <a class="toc-item l2" href="metodologia.html">1.4 Metodologia de Identificação</a>
+          <a class="toc-item l2" href="tipos.html">1.5 Tipos de Chip</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="fabricantes.html">2. Identificação por Fabricante</a>
+          <a class="toc-item l2" href="fab-samsung.html">2.1 Samsung</a>
+          <a class="toc-item l2" href="fab-hynix.html">2.2 SK Hynix</a>
+          <a class="toc-item l2" href="fab-micron.html">2.3 Micron</a>
+          <a class="toc-item l2" href="fab-elpida.html">2.4 Elpida Memory</a>
+          <a class="toc-item l2" href="fab-toshiba.html">2.5 Toshiba / Kioxia</a>
+          <a class="toc-item l2" href="fab-sandisk.html">2.6 SanDisk / WD</a>
+          <a class="toc-item l2" href="fab-nanya.html">2.7 Nanya Technology</a>
+          <a class="toc-item l2" href="fab-kingston.html">2.8 Kingston</a>
+          <a class="toc-item l2" href="fab-rayson.html">2.9 Rayson</a>
+          <a class="toc-item l2" href="fab-issi.html">2.10 ISSI</a>
+          <a class="toc-item l2" href="fab-gigadevice.html">2.11 GigaDevice</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="prefixos.html">3. Tabela Rápida de Prefixos</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="remarked.html">4. Chips Remarked / Counterfeit</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="viabilidade.html">5. Hierarquia de Viabilidade</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="soc.html">6. CPUs / SoCs</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="encerramento.html">7. Encerramento</a>
+        </div>
+      </nav>
+      <!-- Main content -->
+      <main id="content">
+        <div class="fab-block" id="s4-micron">
+          <div class="fab-header">
+            4.3 Micron <span>EUA · Fundada em 1978</span>
+          </div>
+          <div class="fab-body">
+            <div class="fab-types">
+              <strong>Tipos produzidos:</strong> SDRAM · DDR1 a DDR5 · LPDDR1 a
+              5X · eMMC · eMCP · uMCP · UFS · GDDR5 a 6X · NAND bruta · NOR
+              Flash
+            </div>
+
+            <div
+              class="img-wrap"
+              style="
+                float: left;
+                width: 180px;
+                margin: 5px 20px 15px 0;
+                text-align: center;
+              "
+            >
+              <img
+                src="micron_chip.png"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border: 1px solid #ddd;
+                  border-radius: 6px;
+                  padding: 5px;
+                  box-sizing: border-box;
+                  background-color: #fff;
+                "
+              />
+            </div>
+
+            <p>
+              A Micron se destaca no cenário global de semicondutores como a
+              única e principal grande fabricante ocidental (norte-americana) de
+              memórias. Ela é uma fornecedora de peso tanto para o mercado
+              corporativo (servidores e datacenters) quanto para dispositivos de
+              consumo de alta performance. Na esteira de triagem, os componentes
+              dessa marca representam uma fatia considerável e muito rentável do
+              volume processado. Identificar corretamente o material da Micron é
+              vital para a nossa operação, pois muitos desses chips possuem alta
+              demanda no mercado de eletrônicos reacondicionais. Direcioná-los
+              por engano para a via de destruição e refino de metais significa
+              um desperdício direto de valor agregado.
+            </p>
+
+            <p>
+              No entanto, a triagem física desta marca exige uma atenção
+              redobrada do operador devido a uma peculiaridade operacional: a
+              Micron utiliza um sistema duplo de marcação que varia de acordo
+              com o espaço disponível na carcaça do componente. Em chips com
+              área física generosa, como os encontrados em pentes de memória RAM
+              tradicionais ou módulos grandes de SSDs corporativos, a empresa
+              imprime a laser o Part Number completo e detalhado. Esses códigos
+              longos iniciam tradicionalmente com o prefixo
+              <code>MT</code> (Micron Technology), tornando a leitura visual
+              direta, previsível e muito rápida para quem está com a peça em
+              mãos.
+            </p>
+
+            <p>
+              O verdadeiro desafio para o classificador surge ao lidar com chips
+              menores, frequentemente extraídos de placas de smartphones e
+              dispositivos embarcados (como eMMC e eMCP). Nesses casos, por
+              absoluta falta de espaço físico no topo do encapsulamento, a
+              Micron omite o Part Number longo e imprime apenas um
+              <strong>Código FBGA de 5 caracteres alfanuméricos</strong> (como,
+              por exemplo, <code>JW464</code> ou <code>D9PXV</code>). Ao bater o
+              olho nessas cinco letras, não é possível deduzir a capacidade ou a
+              geração da memória instantaneamente. O operador precisa ter o faro
+              treinado para reconhecer a logomarca da empresa ou o formato
+              característico desse código curto, separando a peça para que a sua
+              real identidade seja revelada através de uma consulta no sistema
+              de decodificação da Micron.
+            </p>
+            <div class="nota">
+              <strong
+                >A regra do código FBGA (atenção redobrada na esteira):</strong
+              ><br />
+              Se o chip for Micron e apresentar apenas um código curto de 5
+              dígitos começando com <code>D9</code>, <code>NW</code>,
+              <code>NX</code>, <code>NY</code>, ou variantes com
+              <code>J</code> (como <code>JW</code>, <code>JQ</code>,
+              <code>JZ</code>), <em>este não é o Part Number real</em>. É um
+              código criptografado do fabricante.<br /><br />
+              <strong>Como o operador deve proceder:</strong><br />
+              Para decodificar e saber a geração e a capacidade, o operador deve
+              acessar a ferramenta oficial de decodificação da Micron pelo
+              navegador ou celular.<br />
+              <strong>URL para consulta obrigatória:</strong>
+              <code
+                >https://www.micron.com/support/tools-and-utilities/fbga</code
+              >
+            </div>
+
+            <p>
+              Abaixo estão os prefixos oficiais (Part Numbers reais) da Micron.
+              Quando o operador consultar o código FBGA no site, o sistema
+              retornará um destes prefixos:
+            </p>
+
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tecnologia / Tipo</th>
+                    <th>Prefixo real (pós-decodificação)</th>
+                    <th>Observação para triagem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>SDRAM e DDR1</td>
+                    <td><code>MT48LC...</code> / <code>MT46V...</code></td>
+                    <td>RAM dedicada obsoleta. Destinar ao fluxo de refino.</td>
+                  </tr>
+                  <tr>
+                    <td>DDR2</td>
+                    <td><code>MT47H...</code></td>
+                    <td>RAM dedicada antiga. Baixíssima viabilidade.</td>
+                  </tr>
+                  <tr>
+                    <td>DDR3 e DDR3L</td>
+                    <td><code>MT41J...</code> / <code>MT41K...</code></td>
+                    <td>
+                      <code>MT41J</code> (1.5V) e <code>MT41K</code> (1.35V).
+                      Viabilidade legada.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>DDR4 e DDR5</td>
+                    <td><code>MT40A...</code> / <code>MT60B...</code></td>
+                    <td>
+                      RAM dedicada atual. <code>MT40A</code> (DDR4) e
+                      <code>MT60B</code> (DDR5). Altamente viáveis.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR1 e LPDDR2</td>
+                    <td><code>MT46H...</code> / <code>MT42L...</code></td>
+                    <td>
+                      Mobile RAM legada. Encontrada em sucatas de embarcados
+                      muito antigos.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR3, 4 e 4X</td>
+                    <td>
+                      <code>MT52L...</code> / <code>MT53E...</code> /
+                      <code>MT53D...</code>
+                    </td>
+                    <td>
+                      Mobile RAM padrão. Frequentemente marcada com códigos
+                      <code>D9</code>.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR5 e 5X</td>
+                    <td><code>MT62F...</code></td>
+                    <td>
+                      Mobile RAM de altíssima velocidade para flagships
+                      modernos.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>GDDR (Vídeo)</td>
+                    <td><code>MT51...</code> / <code>MT61...</code></td>
+                    <td>
+                      A Micron fabrica as exclusivas GDDR6X
+                      (<code>MT61M</code>). Altíssima viabilidade em reparo de
+                      placas de vídeo.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>eMMC e UFS</td>
+                    <td><code>MTFC...</code></td>
+                    <td>
+                      Armazenamento integrado mobile. Geralmente marcado com
+                      códigos <code>NW</code> ou <code>NY</code> no topo.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>MCP clássico</td>
+                    <td><code>MT29C...</code> / <code>MT29K...</code></td>
+                    <td>
+                      Híbridos mais antigos (NAND SLC + RAM móvel). Bastante
+                      marcados com códigos <code>JW</code> ou <code>JQ</code>.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>eMCP e uMCP</td>
+                    <td><code>MT29T...</code> / <code>MT29V...</code></td>
+                    <td>
+                      Componentes híbridos mobile modernos (Armazenamento + RAM
+                      de alta velocidade).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>NAND bruta</td>
+                    <td><code>MT29F...</code> / <code>MT29E...</code></td>
+                    <td>
+                      Flash solta sem controlador. <code>MT29E</code> foca no
+                      mercado enterprise. Usada aos montes em SSDs e pendrives.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>NOR Flash SPI</td>
+                    <td><code>MT25Q...</code> / <code>MT25T...</code></td>
+                    <td>
+                      Chips pequenos para gravação de BIOS/Firmware.
+                      Substituíram a antiga série Numonyx/Micron
+                      <code>N25Q</code>.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>NOR Flash Parallel</td>
+                    <td><code>MT28F...</code> / <code>MT28W...</code></td>
+                    <td>
+                      NOR antiga, geralmente em chips BGA maiores ou TSOP.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>CPU / SoC</td>
+                    <td><strong>Não produz</strong></td>
+                    <td>
+                      A Micron não atua na fabricação de processadores lógicos
+                      principais.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              <strong
+                >Exemplos práticos de bancada (código impresso → identidade
+                real):</strong
+              >
+            </p>
+            <ul>
+              <li>
+                O operador lê <code>JW738</code> na esteira → O site revela que
+                é um <code>MT29C4G48MAAHBAAKS-5 WT</code> (MCP legado de 4Gb
+                NAND + 2Gb LPDDR).
+              </li>
+              <li>
+                O operador lê <code>D9WHV</code> na esteira → O site revela que
+                é um <code>MT40A1G8SA-062E</code> (Chip DDR4 de 8Gb).
+              </li>
+              <li>
+                O operador lê <code>NW813</code> na esteira → O site revela que
+                é um <code>MTFC32GAPALBH-IT</code> (Chip eMMC de 32GB).
+              </li>
+              <li>
+                O operador lê <code>D9SXC</code> na esteira → O site revela que
+                é um <code>MT51J256M32HF-80</code> (Chip GDDR5 de vídeo).
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Elpida -->
+        <div class="page-nav">
+<a class="page-nav-btn prev" href="fab-hynix.html">← 2.2 SK Hynix</a>
+<a class="page-nav-btn next" href="fab-elpida.html">2.4 Elpida Memory →</a>
+</div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      // Mark active page in sidebar
+      (function() {
+        var pageId = 'fab-micron';
+        var links = document.querySelectorAll('#toc .toc-item');
+        links.forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          var file = href.split('#')[0];
+          if (file === pageId + '.html' || (pageId === 'index' && file === 'index.html')) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

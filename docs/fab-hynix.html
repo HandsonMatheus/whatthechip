@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2.2 SK Hynix — WhatTheChip?</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="topbar">
+      <div id="topbar-inner">
+        <a id="brand" href="index.html">
+          <div class="logo">IC</div>
+          <span class="name">WhatTheChip?</span>
+        </a>
+        <nav id="topnav">
+          <a class="topnav-link" href="index.html">Início</a>
+          <a class="topnav-link" href="prefixos.html">Tabela Rápida</a>
+          <a class="topnav-link" href="mapa.html">Mapa do site</a>
+          <a class="topnav-link" href="contato.html">Contato</a>
+        </nav>
+        <select id="lang-select" title="Selecionar idioma (em breve)">
+          <option value="pt" selected>🇧🇷 Português</option>
+          <option value="en" disabled>🇺🇸 English (em breve)</option>
+          <option value="es" disabled>🇪🇸 Español (em breve)</option>
+          <option value="zh" disabled>🇨🇳 普通话 (em breve)</option>
+          <option value="yue" disabled>🇭🇰 廣東話 (em breve)</option>
+        </select>
+        <div id="top-search" role="search">
+          <input
+            id="top-search-input"
+            type="text"
+            placeholder="Buscar prefixo... ex: KLM, H26M, TYBE"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="kbd-hint">Ctrl+K</span>
+          <button id="top-search-btn">Buscar</button>
+          <div id="top-search-results">
+            <div id="top-search-empty">Nenhum prefixo encontrado.</div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="shell">
+      <nav id="sidebar" aria-label="Mapa do documento">
+        <div id="sidebar-title">Mapa do documento</div>
+        <div id="toc">
+          <a class="toc-item l1" href="index.html">Apresentação</a>
+          <div class="toc-sep"></div>
+          <div class="toc-label">1. Introdução</div>
+          <a class="toc-item l2" href="aprender.html">1.1 O que você vai aprender</a>
+          <a class="toc-item l2" href="o-que-e-chip.html">1.2 O que é um Chip</a>
+          <a class="toc-item l2" href="evolucao.html">1.3 Evolução: do pino à esfera</a>
+          <a class="toc-item l2" href="metodologia.html">1.4 Metodologia de Identificação</a>
+          <a class="toc-item l2" href="tipos.html">1.5 Tipos de Chip</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="fabricantes.html">2. Identificação por Fabricante</a>
+          <a class="toc-item l2" href="fab-samsung.html">2.1 Samsung</a>
+          <a class="toc-item l2" href="fab-hynix.html">2.2 SK Hynix</a>
+          <a class="toc-item l2" href="fab-micron.html">2.3 Micron</a>
+          <a class="toc-item l2" href="fab-elpida.html">2.4 Elpida Memory</a>
+          <a class="toc-item l2" href="fab-toshiba.html">2.5 Toshiba / Kioxia</a>
+          <a class="toc-item l2" href="fab-sandisk.html">2.6 SanDisk / WD</a>
+          <a class="toc-item l2" href="fab-nanya.html">2.7 Nanya Technology</a>
+          <a class="toc-item l2" href="fab-kingston.html">2.8 Kingston</a>
+          <a class="toc-item l2" href="fab-rayson.html">2.9 Rayson</a>
+          <a class="toc-item l2" href="fab-issi.html">2.10 ISSI</a>
+          <a class="toc-item l2" href="fab-gigadevice.html">2.11 GigaDevice</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="prefixos.html">3. Tabela Rápida de Prefixos</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="remarked.html">4. Chips Remarked / Counterfeit</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="viabilidade.html">5. Hierarquia de Viabilidade</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="soc.html">6. CPUs / SoCs</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="encerramento.html">7. Encerramento</a>
+        </div>
+      </nav>
+      <!-- Main content -->
+      <main id="content">
+        <div class="fab-block" id="s4-hynix">
+          <div class="fab-header">
+            4.2 SK Hynix
+            <span
+              >🇰🇷 Coreia do Sul · Fundada em 1983 (era Hyundai
+              Electronics)</span
+            >
+          </div>
+          <div class="fab-body">
+            <div class="fab-types">
+              <strong>Tipos produzidos:</strong> SDRAM · DDR1 a DDR5 · LPDDR1 a
+              5X · eMMC · eMCP · uMCP · UFS 2.0 a 4.0 · GDDR · NAND bruta · Sensores CMOS
+            </div>
+
+            <div
+              class="img-wrap"
+              style="
+                float: left;
+                width: 180px;
+                margin: 5px 20px 15px 0;
+                text-align: center;
+              "
+            >
+              <img
+                src="sk_chip.png"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border: 1px solid #ddd;
+                  border-radius: 6px;
+                  padding: 5px;
+                  box-sizing: border-box;
+                  background-color: #fff;
+                "
+              />
+            </div>
+
+            <p>
+              A SK Hynix consolidou-se como a segunda maior força global na
+              fabricação de semicondutores de memória. Na nossa operação de
+              triagem, os componentes dessa marca surgem com extrema frequência,
+              equipando desde módulos de RAM de notebooks e servidores até o
+              armazenamento interno de smartphones de alto desempenho. Para o
+              operador, dominar a identificação visual dessa fabricante é um
+              passo crucial para manter o ritmo ágil de separação e garantir que
+              lotes valiosos sejam direcionados corretamente para o fluxo de
+              mercado <strong>reacondicional</strong>, em vez de serem triturados como
+              <strong>residuo</strong> comum.
+            </p>
+
+            <p>
+              A nomenclatura da empresa possui um marco histórico importante que
+              o classificador certamente encontrará na prática ao lidar com
+              sucatas de diferentes gerações. Na era antiga, quando a divisão
+              ainda operava sob a marca Hyundai Electronics, os prefixos
+              gravados no encapsulamento iniciavam claramente com as letras
+              <code>HY</code> (muito comum em chips legados de SDRAM e DDR1).
+              Após a reestruturação e mudança definitiva para SK Hynix, o padrão
+              visual foi enxugado. Hoje, a vasta maioria dos componentes
+              modernos migrou para uma identificação que começa apenas com a
+              letra <code>H</code> seguida de um dígito (como
+              <code>H5</code> para memórias voláteis ou <code>H9</code> para
+              chips de armazenamento). Bater o olho nessa transição ajuda o
+              técnico não apenas a identificar o fabricante, mas a estimar
+              instantaneamente a idade tecnológica da placa.
+            </p>
+
+            <div class="nota">
+              <strong>Regra de ouro na esteira:</strong> A SK Hynix atual divide
+              seus componentes em três grandes famílias visuais:<br />
+              • <strong>H2...</strong> = Armazenamento Flash (NAND, eMMC,
+              UFS).<br />
+              • <strong>H5...</strong> = Memória RAM dedicada/standalone (DDR,
+              GDDR).<br />
+              • <strong>H9...</strong> = Componentes Mobile e Híbridos (LPDDR,
+              eMCP, uMCP).
+            </div>
+
+            <!-- TABELA MESTRA DE VISÃO GERAL -->
+            <h4 id="hynix-master">Tabela Mestra de Decodificação — Prefixos Globais SK Hynix &nbsp;<small style="font-weight:normal;color:#666">(Leitura Rápida na Esteira)</small></h4>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Prefixo gravado no chip</th>
+                    <th>Tecnologia / Categoria</th>
+                    <th>Observação e Fluxo de Destino</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>HY57...</code></td>
+                    <td>SDRAM (PC-100/133)</td>
+                    <td>Era Hyundai. Componentes obsoletos. <strong>Fluxo de residuo.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>HY5D... / HY5DU...</code></td>
+                    <td>DDR1</td>
+                    <td>Era Hyundai. Obsoletos. <strong>Fluxo de residuo.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H5PS... / H5DS...</code></td>
+                    <td>DDR2</td>
+                    <td>RAM dedicada antiga. Viabilidade baixa. <strong>Reacondicional (Legado).</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H5TQ... / H5TC...</code></td>
+                    <td>DDR3 e DDR3L</td>
+                    <td><code>H5TQ</code> (1.5V) e <code>H5TC</code> (1.35V). <strong>Bancada Reacondicional.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H5AN... / HMA...</code></td>
+                    <td>DDR4</td>
+                    <td>RAM dedicada padrão atual (<code>HMA</code> é o módulo inteiro). <strong>Bancada Reacondicional.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H5CG... / HMCG...</code></td>
+                    <td>DDR5</td>
+                    <td>RAM de nova geração. Altíssima demanda. <strong>Bancada Reacondicional.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H9CC...</code></td>
+                    <td>LPDDR3</td>
+                    <td>Mobile RAM antiga. <strong>Bancada Reacondicional Mobile.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H9HC... / H9HK... / H58G...</code></td>
+                    <td>LPDDR4 / LPDDR4X</td>
+                    <td>Mobile RAM padrão. Muitas vezes em arquitetura PoP. <strong>Bancada Reacondicional Mobile.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H9HQ... / H9HB... / H55G... / H54G...</code></td>
+                    <td>LPDDR5 / LPDDR5X</td>
+                    <td>Mobile RAM de altíssima velocidade. <strong>Bancada Reacondicional Mobile.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H26M...</code></td>
+                    <td>eMMC</td>
+                    <td>Armazenamento integrado. BGA 153/169. <strong>Bancada Reacondicional Flash.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H28U... / H28S... / H28G... / H28Y...</code></td>
+                    <td>UFS (2.x a 4.0)</td>
+                    <td>Armazenamento serial de alta velocidade. <strong>Bancada Reacondicional Flash.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H9TQ... / H9TP... / H8L...</code></td>
+                    <td>eMCP</td>
+                    <td>Híbrido (eMMC + RAM). Retangular (BGA 221, etc). <strong>Caixa Reacondicional eMCP.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H9HQ-U... / H9HP...</code></td>
+                    <td>uMCP</td>
+                    <td>Híbrido moderno (UFS + RAM). <strong>Caixa Reacondicional uMCP.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H5GQ... / H5GC...</code></td>
+                    <td>GDDR5</td>
+                    <td>Memória de vídeo dedicada. <strong>Bancada Reacondicional GPU.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H56G... / H56C...</code></td>
+                    <td>GDDR6</td>
+                    <td>Memória de vídeo moderna. <strong>Bancada Reacondicional GPU.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H27... / H2P...</code></td>
+                    <td>NAND Bruta / SSD BGA</td>
+                    <td>Armazenamento sem controladora (H27) ou SSD custom (H2P). <strong>Bancada Reacondicional Flash.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>H5V...</code></td>
+                    <td>HBM (HBM2, HBM3)</td>
+                    <td>Memória empilhada para IA/Servidores. Fragilidade extrema. <strong>Bancada Reacondicional Especial.</strong></td>
+                  </tr>
+                  <tr>
+                    <td><code>HI...</code></td>
+                    <td>Sensores CMOS</td>
+                    <td>Módulos e sensores de imagem para câmeras. <strong>Fluxo de Sensores (se aplicável) ou Residuo.</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+<!-- ========================================== -->
+<!-- TECNOLOGIA: SDRAM (ERA HYUNDAI)            -->
+<!-- ========================================== -->
+<h4 id="hynix-sdram">Memória SDRAM — Prefixo <code>HY57...</code> &nbsp;<small style="font-weight: normal; color: #666">(Obsoleta / Era Hyundai)</small></h4>
+
+<p style="font-family: sans-serif; font-size: 15px; color: #333; line-height: 1.6; margin-bottom: 20px;">
+  <strong>O que é e como classificar:</strong> A SDRAM é a tecnologia precursora de todas as memórias da família DDR, amplamente utilizada em eletrônicos do final dos anos 90 e início dos anos 2000 (como modems antigos, painéis de controle e PCs antigos). Visualmente, esses chips são fáceis de identificar: a esmagadora maioria possui encapsulamento TSOP II, um retângulo de plástico comprido e fino com "perninhas" (pinos de metal) aparentes nas duas bordas laterais maiores. Como não possuem aplicação prática em reparos de eletrônicos modernos, a regra operacional é absoluta: ao ler o prefixo <code>HY57</code>, envie o componente ou a placa inteira diretamente para a caixa de <strong>residuo</strong> (fluxo de refino/moagem de metais). Não perca tempo de bancada avaliando o estado ou alinhamento dos pinos.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table style="text-align: center; width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
+        <th style="padding: 8px; text-align: center;">HY</th>
+        <th style="padding: 8px; text-align: center;">57</th>
+        <th style="padding: 8px; text-align: center;">V</th>
+        <th style="padding: 8px; text-align: center;">64</th>
+        <th style="padding: 8px; text-align: center;">16</th>
+        <th style="padding: 8px; text-align: center;">20</th>
+        <th style="padding: 8px; text-align: center;">F</th>
+        <th style="padding: 8px; text-align: center;">T</th>
+        <th style="padding: 8px; text-align: center;">-</th>
+        <th style="padding: 8px; text-align: center;">H</th>
+      </tr>
+    </thead>
+    <tbody style="font-family: sans-serif;">
+      <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
+        <td style="padding: 6px;">FAB</td>
+        <td style="padding: 6px;">TIPO</td>
+        <td style="padding: 6px;">TENSÃO</td>
+        <td style="padding: 6px;">DENSIDADE</td>
+        <td style="padding: 6px;">ORG</td>
+        <td style="padding: 6px;">BANC</td>
+        <td style="padding: 6px;">REV</td>
+        <td style="padding: 6px;">ENC</td>
+        <td style="padding: 6px;">-</td>
+        <td style="padding: 6px;">VEL</td>
+      </tr>
+      <tr style="font-size: 0.85em; color: #333;">
+        <td style="padding: 6px;">Hyundai</td>
+        <td style="padding: 6px;">57=SDRAM</td>
+        <td style="padding: 6px;">V=3.3V (W=2.5V)</td>
+        <td style="padding: 6px;">64=64Mb</td>
+        <td style="padding: 6px;">16=x16</td>
+        <td style="padding: 6px;">20=4 Bancos</td>
+        <td style="padding: 6px;">F=Sexta Rev.</td>
+        <td style="padding: 6px;">T=TSOP</td>
+        <td style="padding: 6px;">-</td>
+        <td style="padding: 6px;">H=133MHz</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr style="font-family: sans-serif;">
+        <th>Prefixo (Base)</th>
+        <th>Capacidade / Organização</th>
+        <th>Exemplos Extraídos / Padrões</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>HY57V...</code></td>
+        <td style="font-family: sans-serif;">SDRAM Padrão (3.3V) - Densidade comum de 16Mb a 256Mb</td>
+        <td><code>HY57V641620FTP-H</code>, <code>HY57V281620HCT-H</code></td>
+      </tr>
+      <tr>
+        <td><code>HY57W...</code></td>
+        <td style="font-family: sans-serif;">SDRAM Low Voltage (2.5V) - Menor dissipação térmica</td>
+        <td><code>HY57W641620...</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="nota" style="font-family: sans-serif;">
+  <strong>Diretriz Operacional de Triagem:</strong> As memórias SDRAM foram descontinuadas da indústria principal há décadas. O maior risco operacional na esteira é o classificador confundir a carcaça TSOP (com pinos laterais) da SDRAM com a carcaça TSOP de memórias Flash NAND antigas. O treinamento visual resolve isso rápido: se o código começar com <code>HY57</code>, é RAM obsoleta (caixa de <strong>residuo</strong> imediatamente). Se começar com <code>HY27</code>, trata-se de NAND Flash, o que exige um tratamento de extração completamente diferente.
+</div>
+        <div class="page-nav">
+<a class="page-nav-btn prev" href="fab-samsung.html">← 2.1 Samsung</a>
+<a class="page-nav-btn next" href="fab-micron.html">2.3 Micron →</a>
+</div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      // Mark active page in sidebar
+      (function() {
+        var pageId = 'fab-hynix';
+        var links = document.querySelectorAll('#toc .toc-item');
+        links.forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          var file = href.split('#')[0];
+          if (file === pageId + '.html' || (pageId === 'index' && file === 'index.html')) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2. Identificação por Fabricante — WhatTheChip?</title>
+    <title>1.4 Metodologia de Identificação — WhatTheChip?</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -81,16 +81,46 @@
       </nav>
       <!-- Main content -->
       <main id="content">
-        <h2 id="s4" class="section">3. Identificação por Fabricante</h2>
-        <p>
-          Para cada fabricante: tipos produzidos, prefixos por categoria,
-          decodificação do part number, exemplos reais e dicas de identificação.
-        </p>
-
-        <!-- Samsung -->
+        <h3 id="s1-1" class="section">1.1 Metodologia de identificação</h3>
+        <ol class="steps">
+          <li>
+            <strong>Leia o Part Number (PN).</strong> Todo chip tem seu código
+            gravado a laser ou silk-screen na superfície superior. Este é o
+            ponto de partida absoluto para qualquer triagem na esteira.
+          </li>
+          <li>
+            <strong>Identifique o prefixo.</strong> Os primeiros caracteres
+            (geralmente de 2 a 5 letras) determinam o fabricante e a família
+            principal do componente. A agilidade visual do operador depende de
+            memorizar os prefixos listados nesta documentação.
+          </li>
+          <li>
+            <strong>Decodifique por posição.</strong> Cada segmento ou caractere
+            subsequente do código carrega um dado técnico exato: capacidade de
+            armazenamento, geração da tecnologia, velocidade (speed grade),
+            tolerância de temperatura e o formato do encapsulamento.
+          </li>
+          <li>
+            <strong>Confirme pelo package físico ("teste da barriga").</strong>
+            A análise visual e o padrão das conexões validam a leitura do
+            código. A contagem e o desenho das esferas BGA são provas físicas
+            reais. Exemplo: matrizes com 153 ou 169 esferas são características
+            clássicas de eMMC; padrões menores ou designs retangulares finos
+            (FBGA) geralmente indicam chips dedicados de LPDDR ou UFS.
+          </li>
+          <li>
+            <strong>Utilize hardware de leitura como último recurso.</strong> Se
+            o PN estiver raspado, apagado por atrito térmico ou ilegível devido
+            a resíduos, o componente não deve ser descartado de imediato. A peça
+            deve ser separada para leitura direta via programadores de bancada
+            (como RT809H, TNM5000, EasyJTAG ou UFI). Nesse processo, o próprio
+            controlador interno do chip reporta sua identidade real (dados de
+            CID/CSD).
+          </li>
+        </ol>
         <div class="page-nav">
-<a class="page-nav-btn prev" href="tipos.html">← 1.5 Tipos de Chip</a>
-<a class="page-nav-btn next" href="fab-samsung.html">2.1 Samsung →</a>
+<a class="page-nav-btn prev" href="evolucao.html">← 1.3 Evolução: do pino à esfera</a>
+<a class="page-nav-btn next" href="tipos.html">1.5 Tipos de Chip →</a>
 </div>
       </main>
     </div>
@@ -98,7 +128,7 @@
     <script>
       // Mark active page in sidebar
       (function() {
-        var pageId = 'fabricantes';
+        var pageId = 'metodologia';
         var links = document.querySelectorAll('#toc .toc-item');
         links.forEach(function(link) {
           var href = link.getAttribute('href');

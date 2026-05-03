@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2. Identificação por Fabricante — WhatTheChip?</title>
+    <title>1.2 O que é um Chip — WhatTheChip?</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -81,16 +81,88 @@
       </nav>
       <!-- Main content -->
       <main id="content">
-        <h2 id="s4" class="section">3. Identificação por Fabricante</h2>
+        <h2 id="intro" class="section">
+          O que é um chip: visão aplicada à triagem
+        </h2>
+
+        <!-- IMAGEM FLUTUANTE À DIREITA (Colocada antes do texto para o texto contornar) -->
+        <div
+          class="img-wrap"
+          style="
+            float: right;
+            width: 380px;
+            margin: 5px 0 15px 20px;
+            text-align: center;
+          "
+        >
+          <img
+            src="figura1.png"
+            alt="Visão de um chip BGA mostrando o topo com a gravação a laser e a parte inferior com a matriz de esferas"
+            style="
+              max-width: 100%;
+              height: auto;
+              border: 1px solid #ddd;
+              border-radius: 6px;
+              padding: 5px;
+              box-sizing: border-box;
+            "
+          />
+          <p
+            style="
+              font-size: 0.8em;
+              color: #666;
+              margin-top: 8px;
+              line-height: 1.3;
+            "
+          >
+            <strong>Figura 1:</strong> Anatomia de um BGA: Topo (Part Number) e
+            Barriga (Matriz de contatos).
+          </p>
+        </div>
+
         <p>
-          Para cada fabricante: tipos produzidos, prefixos por categoria,
-          decodificação do part number, exemplos reais e dicas de identificação.
+          Um chip (circuito integrado ou CI) é o "cérebro" e a "memória" da
+          sucata eletrônica que processamos. Tecnicamente, é um componente
+          semicondutor que encapsula milhões (ou até bilhões) de transistores
+          miniaturizados em um único <strong>package</strong> (encapsulamento).
         </p>
 
-        <!-- Samsung -->
+        <p>
+          No nosso contexto de operação, focamos no
+          <strong>potencial de reacondicionamento</strong>. O profissional lida
+          majoritariamente com duas famílias críticas para o nosso fluxo de
+          triagem: <strong>armazenamento/memória</strong> (eMMC, uMCP, eMCP,
+          NAND, RAM DDR/LPDDR) e <strong>processamento</strong> (CPUs, GPUs,
+          SoCs).
+        </p>
+
+        <p>
+          Para dominar a triagem física, o operador deve focar em três pontos
+          cruciais:
+        </p>
+        <ul style="margin-bottom: 20px">
+          <li>
+            <strong>O topo (encapsulamento):</strong> Onde o fabricante grava o
+            <strong>Part Number (PN)</strong>. Um único caractere lido
+            incorretamente pode rebaixar um componente viável para o status de
+            sucata básica.
+          </li>
+          <li>
+            <strong>A "barriga" (substrato e esferas):</strong> Responsável pela
+            conexão <strong>BGA (Ball Grid Array)</strong>. O estado físico
+            dessa malha de contatos (o "teste da barriga") define se o chip está
+            apto para seguir na esteira.
+          </li>
+          <li>
+            <strong>O miolo (die):</strong> A pastilha de silício protegida
+            hermeticamente, onde reside a inteligência do componente.
+          </li>
+        </ul>
+
+        <!-- SEÇÃO: INTRODUÇÃO E METODOLOGIA -->
         <div class="page-nav">
-<a class="page-nav-btn prev" href="tipos.html">← 1.5 Tipos de Chip</a>
-<a class="page-nav-btn next" href="fab-samsung.html">2.1 Samsung →</a>
+<a class="page-nav-btn prev" href="aprender.html">← 1.1 O que você vai aprender</a>
+<a class="page-nav-btn next" href="evolucao.html">1.3 Evolução: do pino à esfera →</a>
 </div>
       </main>
     </div>
@@ -98,7 +170,7 @@
     <script>
       // Mark active page in sidebar
       (function() {
-        var pageId = 'fabricantes';
+        var pageId = 'o-que-e-chip';
         var links = document.querySelectorAll('#toc .toc-item');
         links.forEach(function(link) {
           var href = link.getAttribute('href');

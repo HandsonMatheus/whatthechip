@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2. Identificação por Fabricante — WhatTheChip?</title>
+    <title>2.11 GigaDevice — WhatTheChip?</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -81,16 +81,108 @@
       </nav>
       <!-- Main content -->
       <main id="content">
-        <h2 id="s4" class="section">3. Identificação por Fabricante</h2>
-        <p>
-          Para cada fabricante: tipos produzidos, prefixos por categoria,
-          decodificação do part number, exemplos reais e dicas de identificação.
-        </p>
+        <div class="fab-block" id="s4-gigadevice">
+          <div class="fab-header">
+            4.11 GigaDevice <span>🇨🇳 China · Fundada em 2005</span>
+          </div>
+          <div class="fab-body">
+            <div class="fab-types">
+              <strong>Tipos produzidos:</strong> DDR3 · DDR4 · LPDDR4/4X · NAND
+              · NOR Flash · CPU/MCU
+            </div>
+            <p>
+              A GigaDevice é uma gigante chinesa e a maior fornecedora mundial
+              de memórias NOR Flash SPI. O operador de triagem vai cruzar com os
+              chips desta marca todos os dias ao processar sucatas de
+              roteadores, câmeras IP, placas-mãe de computadores e equipamentos
+              de IoT. Além do armazenamento flash, a marca vem ganhando forte
+              espaço nas categorias de memória RAM e microcontroladores (SoCs
+              básicos).
+            </p>
 
-        <!-- Samsung -->
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Prefixo gravado no chip</th>
+                    <th>Observação para triagem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>DDR3 e DDR4</td>
+                    <td><code>GDQ...</code></td>
+                    <td>
+                      RAM dedicada (ex: <code>GDQ2BFAA</code>). Expansão recente
+                      da marca. Viabilidade focada no mercado reacondicional
+                      secundário de equipamentos básicos.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR4 / 4X</td>
+                    <td><code>GDB...</code></td>
+                    <td>
+                      Mobile RAM (ex: <code>GDB4CBQN</code>). Padrão FBGA fino,
+                      comumente extraído de tablets e módulos de rede mais
+                      novos.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>NOR Flash SPI</td>
+                    <td><code>GD25...</code></td>
+                    <td>
+                      <strong>A mais comum da marca.</strong> Chips pequenos
+                      (pacotes SOP8, WSON8) usados para gravar BIOS de
+                      placas-mãe de PC, roteadores e firmwares. Altíssima
+                      circulação em bancadas de reparo.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>SPI NAND</td>
+                    <td><code>GD5F...</code></td>
+                    <td>
+                      Flash de baixa capacidade com barramento serial.
+                      Onipresente em modems e roteadores de fibra óptica (ONTs).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Parallel NAND</td>
+                    <td><code>GD9...</code></td>
+                    <td>
+                      NAND flash solta padrão, geralmente encontrada em
+                      encapsulamento TSOP48.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>CPU / MCU (SoC)</td>
+                    <td><code>GD32...</code></td>
+                    <td>
+                      Microcontroladores baseados em ARM Cortex ou RISC-V. São o
+                      "cérebro" de incontáveis placas de controle industrial,
+                      eletrodomésticos e automação (são alternativas diretas aos
+                      famosos chips STM32 da STMicroelectronics).
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="nota">
+              <strong>Atenção na esteira (Chips de 8 pernas):</strong> Ao
+              desmontar sucata de informática ou rede, qualquer chip BGA ou SMD
+              pequeno (SOP8) marcado com <code>GD25</code> é um chip de
+              BIOS/Firmware válido. Eles devem ser separados dos demais
+              componentes genéricos de placas, pois possuem uma rota específica
+              de reaproveitamento.
+            </div>
+          </div>
+        </div>
+
+        <!-- TABELA RÁPIDA -->
         <div class="page-nav">
-<a class="page-nav-btn prev" href="tipos.html">← 1.5 Tipos de Chip</a>
-<a class="page-nav-btn next" href="fab-samsung.html">2.1 Samsung →</a>
+<a class="page-nav-btn prev" href="fab-issi.html">← 2.10 ISSI</a>
+<a class="page-nav-btn next" href="prefixos.html">3. Tabela Rápida de Prefixos →</a>
 </div>
       </main>
     </div>
@@ -98,7 +190,7 @@
     <script>
       // Mark active page in sidebar
       (function() {
-        var pageId = 'fabricantes';
+        var pageId = 'fab-gigadevice';
         var links = document.querySelectorAll('#toc .toc-item');
         links.forEach(function(link) {
           var href = link.getAttribute('href');

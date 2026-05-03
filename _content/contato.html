@@ -1,0 +1,107 @@
+<h2 class="section">Contato</h2>
+<p>Dúvidas, sugestões ou correções sobre a documentação? Envie uma mensagem.</p>
+
+<form
+  action="https://formspree.io/f/SUBSTITUA_PELO_SEU_ID"
+  method="POST"
+  style="margin-top: 24px; max-width: 520px; display: flex; flex-direction: column; gap: 14px;"
+>
+  <div style="display: flex; flex-direction: column; gap: 4px;">
+    <label for="nome" style="font-size: 11.5px; font-weight: 600; color: var(--ink);">Nome</label>
+    <input
+      id="nome"
+      type="text"
+      name="nome"
+      required
+      style="
+        padding: 7px 10px;
+        font-family: var(--font);
+        font-size: 12px;
+        border: 1px solid var(--rule);
+        background: #fff;
+        color: var(--ink);
+        box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 var(--bevel-dk) inset;
+        outline: none;
+      "
+    />
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 4px;">
+    <label for="email" style="font-size: 11.5px; font-weight: 600; color: var(--ink);">E-mail</label>
+    <input
+      id="email"
+      type="email"
+      name="email"
+      required
+      style="
+        padding: 7px 10px;
+        font-family: var(--font);
+        font-size: 12px;
+        border: 1px solid var(--rule);
+        background: #fff;
+        color: var(--ink);
+        box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 var(--bevel-dk) inset;
+        outline: none;
+      "
+    />
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 4px;">
+    <label for="mensagem" style="font-size: 11.5px; font-weight: 600; color: var(--ink);">Mensagem</label>
+    <textarea
+      id="mensagem"
+      name="mensagem"
+      rows="5"
+      required
+      style="
+        padding: 7px 10px;
+        font-family: var(--font);
+        font-size: 12px;
+        border: 1px solid var(--rule);
+        background: #fff;
+        color: var(--ink);
+        box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 var(--bevel-dk) inset;
+        outline: none;
+        resize: vertical;
+      "
+    ></textarea>
+  </div>
+
+  <!-- Campo oculto para redirecionar depois do envio -->
+  <input type="hidden" name="_next" value="index.html" />
+
+  <div>
+    <button
+      type="submit"
+      style="
+        padding: 8px 20px;
+        background: linear-gradient(to bottom, var(--beige-1), var(--beige-3));
+        border: 1px solid var(--rule);
+        box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 var(--bevel-dk) inset;
+        font-family: var(--font);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--hi-1);
+        cursor: pointer;
+      "
+    >
+      Enviar mensagem
+    </button>
+  </div>
+</form>
+
+<p style="margin-top: 20px; font-size: 11px; color: var(--ink-mute);">
+  Ou envie diretamente para
+  <a href="mailto:handson@eminer.com.py" style="color: var(--hi-1);">handson@eminer.com.py</a>
+</p>
+
+<!-- ──────────────────────────────────────────────────────────────────────
+     INSTRUÇÃO DE SETUP (remova este comentário após configurar):
+
+     Este formulário usa Formspree (formspree.io) para enviar emails.
+     Para ativar:
+       1. Crie uma conta gratuita em https://formspree.io
+       2. Crie um novo formulário e copie o ID (ex: xpwzkabn)
+       3. Substitua SUBSTITUA_PELO_SEU_ID no atributo action acima
+     Pronto — os envios chegam em handson@eminer.com.py.
+──────────────────────────────────────────────────────────────────────── -->

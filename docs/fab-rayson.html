@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2. Identificação por Fabricante — WhatTheChip?</title>
+    <title>2.9 Rayson — WhatTheChip?</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -81,16 +81,95 @@
       </nav>
       <!-- Main content -->
       <main id="content">
-        <h2 id="s4" class="section">3. Identificação por Fabricante</h2>
-        <p>
-          Para cada fabricante: tipos produzidos, prefixos por categoria,
-          decodificação do part number, exemplos reais e dicas de identificação.
-        </p>
+        <div class="fab-block" id="s4-rayson">
+          <div class="fab-header">
+            4.9 Rayson
+            <span>🇨🇳 China · Fabricante de baixo custo (budget)</span>
+          </div>
+          <div class="fab-body">
+            <div class="fab-types">
+              <strong>Tipos produzidos:</strong> DDR3 · DDR4 · LPDDR3 · LPDDR4 ·
+              eMMC
+            </div>
+            <p>
+              A Rayson é uma fabricante chinesa focada em componentes de baixo
+              custo. Na esteira de triagem, o operador encontrará esses chips
+              massivamente ao processar eletrônicos genéricos, como TV boxes,
+              centrais multimídia automotivas, roteadores de entrada e tablets
+              asiáticos. A lógica de nomenclatura é literal, combinando o
+              prefixo <code>RS</code> com a capacidade e a geração da
+              tecnologia.
+            </p>
 
-        <!-- Samsung -->
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Prefixo gravado no chip</th>
+                    <th>Observação para triagem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>DDR3</td>
+                    <td>
+                      <code>RS512MD3...</code> / <code>RS1GD3...</code> /
+                      <code>RS2GD3...</code>
+                    </td>
+                    <td>
+                      RAM dedicada de categoria básica. O sufixo
+                      <code>D3</code> indica a geração.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>DDR4</td>
+                    <td><code>RS1GD4...</code> / <code>RS2GD4...</code></td>
+                    <td>
+                      RAM dedicada de categoria básica. O sufixo
+                      <code>D4</code> indica a geração.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR3 e LPDDR4</td>
+                    <td>
+                      <code>RSLPD3...</code> / <code>RSLPD4...</code> /
+                      <code>RS...</code>
+                    </td>
+                    <td>
+                      Mobile RAM de baixo consumo. Frequentemente extraídos de
+                      centrais multimídia e tablets genéricos. Possuem formato
+                      FBGA fino.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>eMMC</td>
+                    <td><code>RSEMC...</code> / <code>RS...</code></td>
+                    <td>
+                      Armazenamento integrado de baixo custo. Muito comum em
+                      formato BGA 153 em sucatas de set-top boxes genéricos.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="nota">
+              <strong>Atenção na esteira:</strong> Chips da Rayson possuem
+              viabilidade de reacondicionamento extremamente restrita devido aos
+              padrões exigidos pelo mercado secundário. O objetivo principal
+              aqui é a <strong>segregação</strong>: o operador não deve, sob
+              hipótese alguma, misturar esses componentes nos mesmos lotes de
+              marcas premium (como Samsung, SK Hynix ou Micron) de mesma
+              geração. Eles devem seguir um fluxo de separação isolado.
+            </div>
+          </div>
+        </div>
+
+        <!-- ISSI -->
         <div class="page-nav">
-<a class="page-nav-btn prev" href="tipos.html">← 1.5 Tipos de Chip</a>
-<a class="page-nav-btn next" href="fab-samsung.html">2.1 Samsung →</a>
+<a class="page-nav-btn prev" href="fab-kingston.html">← 2.8 Kingston</a>
+<a class="page-nav-btn next" href="fab-issi.html">2.10 ISSI →</a>
 </div>
       </main>
     </div>
@@ -98,7 +177,7 @@
     <script>
       // Mark active page in sidebar
       (function() {
-        var pageId = 'fabricantes';
+        var pageId = 'fab-rayson';
         var links = document.querySelectorAll('#toc .toc-item');
         links.forEach(function(link) {
           var href = link.getAttribute('href');

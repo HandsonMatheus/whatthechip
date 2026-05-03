@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2.8 Kingston — WhatTheChip?</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="topbar">
+      <div id="topbar-inner">
+        <a id="brand" href="index.html">
+          <div class="logo">IC</div>
+          <span class="name">WhatTheChip?</span>
+        </a>
+        <nav id="topnav">
+          <a class="topnav-link" href="index.html">Início</a>
+          <a class="topnav-link" href="prefixos.html">Tabela Rápida</a>
+          <a class="topnav-link" href="mapa.html">Mapa do site</a>
+          <a class="topnav-link" href="contato.html">Contato</a>
+        </nav>
+        <select id="lang-select" title="Selecionar idioma (em breve)">
+          <option value="pt" selected>🇧🇷 Português</option>
+          <option value="en" disabled>🇺🇸 English (em breve)</option>
+          <option value="es" disabled>🇪🇸 Español (em breve)</option>
+          <option value="zh" disabled>🇨🇳 普通话 (em breve)</option>
+          <option value="yue" disabled>🇭🇰 廣東話 (em breve)</option>
+        </select>
+        <div id="top-search" role="search">
+          <input
+            id="top-search-input"
+            type="text"
+            placeholder="Buscar prefixo... ex: KLM, H26M, TYBE"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="kbd-hint">Ctrl+K</span>
+          <button id="top-search-btn">Buscar</button>
+          <div id="top-search-results">
+            <div id="top-search-empty">Nenhum prefixo encontrado.</div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="shell">
+      <nav id="sidebar" aria-label="Mapa do documento">
+        <div id="sidebar-title">Mapa do documento</div>
+        <div id="toc">
+          <a class="toc-item l1" href="index.html">Apresentação</a>
+          <div class="toc-sep"></div>
+          <div class="toc-label">1. Introdução</div>
+          <a class="toc-item l2" href="aprender.html">1.1 O que você vai aprender</a>
+          <a class="toc-item l2" href="o-que-e-chip.html">1.2 O que é um Chip</a>
+          <a class="toc-item l2" href="evolucao.html">1.3 Evolução: do pino à esfera</a>
+          <a class="toc-item l2" href="metodologia.html">1.4 Metodologia de Identificação</a>
+          <a class="toc-item l2" href="tipos.html">1.5 Tipos de Chip</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="fabricantes.html">2. Identificação por Fabricante</a>
+          <a class="toc-item l2" href="fab-samsung.html">2.1 Samsung</a>
+          <a class="toc-item l2" href="fab-hynix.html">2.2 SK Hynix</a>
+          <a class="toc-item l2" href="fab-micron.html">2.3 Micron</a>
+          <a class="toc-item l2" href="fab-elpida.html">2.4 Elpida Memory</a>
+          <a class="toc-item l2" href="fab-toshiba.html">2.5 Toshiba / Kioxia</a>
+          <a class="toc-item l2" href="fab-sandisk.html">2.6 SanDisk / WD</a>
+          <a class="toc-item l2" href="fab-nanya.html">2.7 Nanya Technology</a>
+          <a class="toc-item l2" href="fab-kingston.html">2.8 Kingston</a>
+          <a class="toc-item l2" href="fab-rayson.html">2.9 Rayson</a>
+          <a class="toc-item l2" href="fab-issi.html">2.10 ISSI</a>
+          <a class="toc-item l2" href="fab-gigadevice.html">2.11 GigaDevice</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="prefixos.html">3. Tabela Rápida de Prefixos</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="remarked.html">4. Chips Remarked / Counterfeit</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="viabilidade.html">5. Hierarquia de Viabilidade</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="soc.html">6. CPUs / SoCs</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="encerramento.html">7. Encerramento</a>
+        </div>
+      </nav>
+      <!-- Main content -->
+      <main id="content">
+        <div class="fab-block" id="s4-kingston">
+          <div class="fab-header">
+            4.8 Kingston Technology
+            <span
+              >🇺🇸 EUA · Integradora e empacotadora (não fabrica o silício)</span
+            >
+          </div>
+          <div class="fab-body">
+            <div class="fab-types">
+              <strong>Tipos empacotados/remarcados:</strong> DDR1 a DDR5 (chips
+              remarcados) · LPDDR3 a LPDDR5 · ePoP · eMMC · eMCP
+            </div>
+
+            <div
+              class="img-wrap"
+              style="
+                float: left;
+                width: 180px;
+                margin: 5px 20px 15px 0;
+                text-align: center;
+              "
+            >
+              <img
+                src="kingston.png"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border: 1px solid #ddd;
+                  border-radius: 6px;
+                  padding: 5px;
+                  box-sizing: border-box;
+                  background-color: #fff;
+                "
+              />
+            </div>
+
+            <p>
+              A Kingston é, indiscutivelmente, uma das marcas mais tradicionais
+              e abundantes que o classificador encontrará na esteira de triagem.
+              Ela está presente em uma vastidão de equipamentos de consumo,
+              desde os clássicos pentes de memória RAM de computadores desktop e
+              notebooks até unidades de armazenamento em estado sólido (SSDs) e
+              dispositivos móveis. Devido à sua massiva penetração global no
+              mercado de varejo e montagem, o volume de componentes estampados
+              com a famosa marca da empresa é sempre muito expressivo no nosso
+              processamento diário. Identificar visualmente e resgatar essas
+              peças para o fluxo reacondicional é essencial, pois elas mantêm
+              excelente estabilidade e aplicabilidade para novos ciclos de uso.
+            </p>
+
+            <p>
+              Contudo, a Kingston exige uma abordagem técnica e um entendimento
+              levemente diferentes por parte do operador na bancada. Como regra
+              geral na arquitetura da indústria de semicondutores, a empresa não
+              atua como uma fundição primária — ou seja, ela não fabrica os
+              wafers de silício puros (o núcleo inteligente do chip). O seu
+              modelo de produção baseia-se em adquirir o silício bruto (os
+              "dies") diretamente das grandes fabricantes globais (como Micron,
+              Nanya, SK Hynix e Samsung) e, a partir desse ponto, realizar o
+              processo físico de empacotamento (package) e montagem final dos
+              componentes, carimbando no encapsulamento de resina o seu próprio
+              logotipo.
+            </p>
+
+            <p>
+              Para o técnico na triagem física, isso significa que, embora as
+              entranhas tecnológicas do chip possam variar dependendo do lote, a
+              identificação externa obedece a um rigoroso padrão da Kingston,
+              permitindo uma separação ágil e precisa. Os códigos de
+              identificação (Part Numbers) gravados no encapsulamento quase
+              sempre iniciam com a letra <code>K</code> (como no padrão
+              <code>KE...</code> encontrado em memórias eMMC, por exemplo). Ao
+              localizar esse padrão inicial associado ao logo da marca, o
+              classificador confirma imediatamente a origem da peça, garantindo
+              que o componente não se perca junto à sucata comum e seja
+              destinado de forma assertiva ao estoque de material
+              reacondicional.
+            </p>
+
+            <div class="nota">
+              <strong>Atenção (etiquetas vs. chips):</strong> A maior confusão
+              ocorre nos pentes de memória RAM. Códigos iniciados em
+              <code>KVR</code> (Kingston Value RAM), <code>KSM</code> (Server)
+              ou <code>KF</code> (Fury) são
+              <strong>códigos de etiqueta do módulo inteiro</strong>. Eles não
+              servem para identificar o chip individual na nossa extração. O
+              operador deve ignorar a etiqueta de papel e ler o que está gravado
+              a laser diretamente no epóxi preto do componente BGA.
+            </div>
+
+            <p>
+              Apesar de ser integradora, a Kingston remarca milhares de
+              componentes para o mercado de armazenamento embarcado (mobile,
+              smart TVs, TV boxes, IoT). O operador encontrará as seguintes
+              estruturas de Part Numbers gravadas na superfície da peça:
+            </p>
+
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Prefixo gravado no componente</th>
+                    <th>Observação para triagem</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Módulo RAM (etiqueta)</td>
+                    <td>
+                      <code>KVR...</code> / <code>KSM...</code> /
+                      <code>KF...</code>
+                    </td>
+                    <td>
+                      <strong>Aviso visual:</strong> Impresso em papel/adesivo.
+                      Identifica a placa inteira. Remover e olhar o BGA soldado
+                      embaixo.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>RAM dedicada (rebrand)</td>
+                    <td><code>D25...</code> / <code>D51...</code></td>
+                    <td>
+                      Chips DRAM soltos que a Kingston comprou em wafer e
+                      empacotou. Muito comuns em SSDs e pentes proprietários.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>LPDDR (standalone) e ePoP</td>
+                    <td>Códigos curtos ou logos + lote</td>
+                    <td>
+                      Chips muito finos (FBGA) usados em embarcados e wearables.
+                      Muitas vezes não possuem um Part Number longo padrão,
+                      trazendo apenas o logotipo do "Rei Vermelho" e um código
+                      de lote curto. Se for BGA fino com a marca, é LPDDR e
+                      possui viabilidade.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>eMMC</td>
+                    <td><code>EMMC...</code></td>
+                    <td>
+                      Armazenamento integrado (ex: <code>EMMC32G-M525</code> ou
+                      <code>EMMC64G-TX29</code>). Muito comuns em tablets, TV
+                      boxes e placas IoT. Formatos BGA 153 e 169. Altamente
+                      viáveis para o mercado reacondicional.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>eMCP</td>
+                    <td>
+                      <code>08EMCP...</code> / <code>EMCP...</code> /
+                      <code>04ENCP...</code>
+                    </td>
+                    <td>
+                      Híbridos de armazenamento e RAM. Identificados pelo
+                      prefixo direto. Frequentemente encontrados em smartphones
+                      de entrada e dispositivos móveis mais baratos.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rayson -->
+        <div class="page-nav">
+<a class="page-nav-btn prev" href="fab-nanya.html">← 2.7 Nanya Technology</a>
+<a class="page-nav-btn next" href="fab-rayson.html">2.9 Rayson →</a>
+</div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      // Mark active page in sidebar
+      (function() {
+        var pageId = 'fab-kingston';
+        var links = document.querySelectorAll('#toc .toc-item');
+        links.forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          var file = href.split('#')[0];
+          if (file === pageId + '.html' || (pageId === 'index' && file === 'index.html')) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

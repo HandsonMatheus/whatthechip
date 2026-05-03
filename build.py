@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ChipDocs — Build Script
+WhatTheChip? — Build Script
 =======================
 Gera o site multi-página a partir dos arquivos de conteúdo e do template.
 
@@ -25,6 +25,7 @@ Estrutura:
 
 import os
 import re
+import json
 import shutil
 
 # ── Configuração ───────────────────────────────────────────────────────────────
@@ -36,18 +37,55 @@ OUTPUT_DIR  = os.path.join(BASE_DIR, 'docs')
 
 # Ordem das páginas (define prev/next)
 PAGES = [
-    {'file': 'index',        'title': 'Início — ChipDocs'},
-    {'file': 'evolucao',     'title': 'Evolução: do pino à esfera — ChipDocs'},
-    {'file': 'tipos',        'title': 'Tipos de Chip — ChipDocs'},
-    {'file': 'fabricantes',  'title': 'Identificação por Fabricante — ChipDocs'},
-    {'file': 'prefixos',     'title': 'Tabela Rápida de Prefixos — ChipDocs'},
-    {'file': 'remarked',     'title': 'Chips Remarked / Counterfeit — ChipDocs'},
-    {'file': 'viabilidade',  'title': 'Hierarquia de Viabilidade — ChipDocs'},
-    {'file': 'soc',          'title': 'CPUs / SoCs — ChipDocs'},
-    {'file': 'encerramento', 'title': 'Encerramento — ChipDocs'},
+    {'file': 'index',        'title': 'Apresentação — WhatTheChip?'},
+    {'file': 'aprender',     'title': '1.1 O que você vai aprender — WhatTheChip?'},
+    {'file': 'o-que-e-chip', 'title': '1.2 O que é um Chip — WhatTheChip?'},
+    {'file': 'evolucao',     'title': '1.3 Evolução: do pino à esfera — WhatTheChip?'},
+    {'file': 'metodologia',  'title': '1.4 Metodologia de Identificação — WhatTheChip?'},
+    {'file': 'tipos',        'title': '1.5 Tipos de Chip — WhatTheChip?'},
+    {'file': 'fabricantes',  'title': '2. Identificação por Fabricante — WhatTheChip?'},
+    {'file': 'fab-samsung',    'title': '2.1 Samsung — WhatTheChip?'},
+    {'file': 'fab-hynix',      'title': '2.2 SK Hynix — WhatTheChip?'},
+    {'file': 'fab-micron',     'title': '2.3 Micron — WhatTheChip?'},
+    {'file': 'fab-elpida',     'title': '2.4 Elpida Memory — WhatTheChip?'},
+    {'file': 'fab-toshiba',    'title': '2.5 Toshiba / Kioxia — WhatTheChip?'},
+    {'file': 'fab-sandisk',    'title': '2.6 SanDisk / WD — WhatTheChip?'},
+    {'file': 'fab-nanya',      'title': '2.7 Nanya Technology — WhatTheChip?'},
+    {'file': 'fab-kingston',   'title': '2.8 Kingston — WhatTheChip?'},
+    {'file': 'fab-rayson',     'title': '2.9 Rayson — WhatTheChip?'},
+    {'file': 'fab-issi',       'title': '2.10 ISSI — WhatTheChip?'},
+    {'file': 'fab-gigadevice', 'title': '2.11 GigaDevice — WhatTheChip?'},
+    {'file': 'prefixos',     'title': '3. Tabela Rápida de Prefixos — WhatTheChip?'},
+    {'file': 'remarked',     'title': '4. Chips Remarked / Counterfeit — WhatTheChip?'},
+    {'file': 'viabilidade',  'title': '5. Hierarquia de Viabilidade — WhatTheChip?'},
+    {'file': 'soc',          'title': '6. CPUs / SoCs — WhatTheChip?'},
+    {'file': 'encerramento', 'title': 'Encerramento — WhatTheChip?'},
+    {'file': 'mapa',         'title': 'Mapa do Site — WhatTheChip?'},
+    {'file': 'contato',      'title': 'Contato — WhatTheChip?'},
 ]
 
 # ── Funções ────────────────────────────────────────────────────────────────────
+
+def extract_prefix_data():
+    """Lê _content/prefixos.html e extrai os dados da tabela como JSON.
+    Chamado a cada build — garante que o buscador da página inicial
+    sempre reflita os prefixos mais recentes da tabela."""
+    path = os.path.join(CONTENT_DIR, 'prefixos.html')
+    with open(path, 'r', encoding='utf-8') as f:
+        html = f.read()
+    rows = re.findall(
+        r'<tr>\s*<td><code>(.*?)</code></td>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*</tr>',
+        html, re.DOTALL
+    )
+    data = []
+    for prefix, fab, tipo in rows:
+        data.append({
+            'prefix': re.sub(r'<[^>]+>', '', prefix).strip(),
+            'fab':    re.sub(r'<[^>]+>', '', fab).strip(),
+            'tipo':   re.sub(r'<[^>]+>', '', tipo).strip(),
+        })
+    return json.dumps(data, ensure_ascii=False)
+
 
 def make_pagination(index):
     """Gera bloco de navegação anterior / próxima página."""
@@ -100,6 +138,10 @@ def build():
     with open(TEMPLATE, 'r', encoding='utf-8') as f:
         template = f.read()
 
+    # Extrai dados de prefixos para o buscador da página inicial
+    prefix_data = extract_prefix_data()
+    print(f'  Prefixos indexados: {prefix_data.count("prefix")} entradas')
+
     for i, page in enumerate(PAGES):
         page_file = page['file']
         content_path = os.path.join(CONTENT_DIR, f'{page_file}.html')
@@ -113,6 +155,10 @@ def build():
 
         # Remove a linha de comentário com TITLE se existir
         raw_content = re.sub(r'^<!-- TITLE:.*?-->\n?', '', raw_content, flags=re.MULTILINE)
+
+        # Injeta dados de prefixos no buscador (apenas na index)
+        raw_content = raw_content.replace('{{PREFIX_DATA}}', prefix_data)
+        raw_content = raw_content.replace('{{PREFIX_COUNT}}', str(prefix_data.count('"prefix"')))
 
         # Monta o HTML final
         pagination = make_pagination(i)

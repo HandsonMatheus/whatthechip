@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2. Identificação por Fabricante — WhatTheChip?</title>
+    <title>2.5 Toshiba / Kioxia — WhatTheChip?</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -81,16 +81,110 @@
       </nav>
       <!-- Main content -->
       <main id="content">
-        <h2 id="s4" class="section">3. Identificação por Fabricante</h2>
-        <p>
-          Para cada fabricante: tipos produzidos, prefixos por categoria,
-          decodificação do part number, exemplos reais e dicas de identificação.
-        </p>
+        <div class="fab-block" id="s4-toshiba">
+          <div class="fab-header">
+            4.5 Toshiba / Kioxia
+            <span
+              >🇯🇵 Japão · Toshiba Memory renomeada para Kioxia em
+              2019/2020</span
+            >
+          </div>
+          <div class="fab-body">
+            <div class="fab-types">
+              <strong>Tipos produzidos:</strong> eMMC · eMCP · uMCP · UFS · NAND
+              bruta
+            </div>
+            <p>
+              A divisão de memória da Toshiba foi reestruturada e renomeada para
+              Kioxia. A fabricante é pioneira na tecnologia flash. Os chips
+              fabricados antes da mudança carregam o prefixo <code>TH</code> ou
+              <code>TC</code>, e a Kioxia manteve essencialmente o mesmo padrão
+              de nomenclatura. A série <code>TY</code> identifica fisicamente os
+              componentes eMCP (armazenamento + RAM híbridos), onde a letra após
+              a raiz indica a geração da memória volátil integrada.
+            </p>
 
-        <!-- Samsung -->
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Prefixo gravado no chip</th>
+                    <th>Observação para triagem / RAM integrada</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>eMMC</td>
+                    <td>
+                      <code>THGBM...</code> / <code>THGBF...</code> /
+                      <code>THGBJG...</code>
+                    </td>
+                    <td>
+                      Armazenamento mobile. Padrões clássicos BGA 153 e 169.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>eMCP</td>
+                    <td><code>TYBB...</code> / <code>TYBC...</code></td>
+                    <td>
+                      Com LPDDR2 (baixa viabilidade para mercado
+                      reacondicional).
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>eMCP</td>
+                    <td><code>TYBD...</code> / <code>TYBE...</code></td>
+                    <td>Com LPDDR3.</td>
+                  </tr>
+                  <tr>
+                    <td>eMCP</td>
+                    <td><code>TYBF...</code></td>
+                    <td>Com LPDDR4.</td>
+                  </tr>
+                  <tr>
+                    <td>eMCP</td>
+                    <td><code>TYCO...</code></td>
+                    <td>Com LPDDR4X.</td>
+                  </tr>
+                  <tr>
+                    <td>eMCP / uMCP</td>
+                    <td><code>TYDO...</code></td>
+                    <td>Com LPDDR5.</td>
+                  </tr>
+                  <tr>
+                    <td>UFS</td>
+                    <td><code>THGJF...</code> / <code>THGUF...</code></td>
+                    <td>Armazenamento serial de alta velocidade.</td>
+                  </tr>
+                  <tr>
+                    <td>NAND bruta</td>
+                    <td><code>TH58...</code> / <code>TC58...</code></td>
+                    <td>
+                      <code>TC58</code> é extremamente comum em sucatas mais
+                      antigas. <code>TH58</code> é geralmente usado para die com
+                      densidades maiores.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="nota">
+              <strong>Dica de esteira:</strong> A sequência <code>TY</code> para
+              componentes híbridos é progressiva e cronológica. Memorize o
+              padrão visual: <code>BB</code>/<code>BC</code> (LPDDR2) →
+              <code>BD</code>/<code>BE</code> (LPDDR3) →
+              <code>BF</code> (LPDDR4) → <code>CO</code> (LPDDR4X) →
+              <code>DO</code> (LPDDR5).
+            </div>
+          </div>
+        </div>
+
+        <!-- SanDisk / Western Digital -->
         <div class="page-nav">
-<a class="page-nav-btn prev" href="tipos.html">← 1.5 Tipos de Chip</a>
-<a class="page-nav-btn next" href="fab-samsung.html">2.1 Samsung →</a>
+<a class="page-nav-btn prev" href="fab-elpida.html">← 2.4 Elpida Memory</a>
+<a class="page-nav-btn next" href="fab-sandisk.html">2.6 SanDisk / WD →</a>
 </div>
       </main>
     </div>
@@ -98,7 +192,7 @@
     <script>
       // Mark active page in sidebar
       (function() {
-        var pageId = 'fabricantes';
+        var pageId = 'fab-toshiba';
         var links = document.querySelectorAll('#toc .toc-item');
         links.forEach(function(link) {
           var href = link.getAttribute('href');

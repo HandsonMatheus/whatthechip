@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1.1 O que você vai aprender — WhatTheChip?</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="topbar">
+      <div id="topbar-inner">
+        <a id="brand" href="index.html">
+          <div class="logo">IC</div>
+          <span class="name">WhatTheChip?</span>
+        </a>
+        <nav id="topnav">
+          <a class="topnav-link" href="index.html">Início</a>
+          <a class="topnav-link" href="prefixos.html">Tabela Rápida</a>
+          <a class="topnav-link" href="mapa.html">Mapa do site</a>
+          <a class="topnav-link" href="contato.html">Contato</a>
+        </nav>
+        <select id="lang-select" title="Selecionar idioma (em breve)">
+          <option value="pt" selected>🇧🇷 Português</option>
+          <option value="en" disabled>🇺🇸 English (em breve)</option>
+          <option value="es" disabled>🇪🇸 Español (em breve)</option>
+          <option value="zh" disabled>🇨🇳 普通话 (em breve)</option>
+          <option value="yue" disabled>🇭🇰 廣東話 (em breve)</option>
+        </select>
+        <div id="top-search" role="search">
+          <input
+            id="top-search-input"
+            type="text"
+            placeholder="Buscar prefixo... ex: KLM, H26M, TYBE"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="kbd-hint">Ctrl+K</span>
+          <button id="top-search-btn">Buscar</button>
+          <div id="top-search-results">
+            <div id="top-search-empty">Nenhum prefixo encontrado.</div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="shell">
+      <nav id="sidebar" aria-label="Mapa do documento">
+        <div id="sidebar-title">Mapa do documento</div>
+        <div id="toc">
+          <a class="toc-item l1" href="index.html">Apresentação</a>
+          <div class="toc-sep"></div>
+          <div class="toc-label">1. Introdução</div>
+          <a class="toc-item l2" href="aprender.html">1.1 O que você vai aprender</a>
+          <a class="toc-item l2" href="o-que-e-chip.html">1.2 O que é um Chip</a>
+          <a class="toc-item l2" href="evolucao.html">1.3 Evolução: do pino à esfera</a>
+          <a class="toc-item l2" href="metodologia.html">1.4 Metodologia de Identificação</a>
+          <a class="toc-item l2" href="tipos.html">1.5 Tipos de Chip</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="fabricantes.html">2. Identificação por Fabricante</a>
+          <a class="toc-item l2" href="fab-samsung.html">2.1 Samsung</a>
+          <a class="toc-item l2" href="fab-hynix.html">2.2 SK Hynix</a>
+          <a class="toc-item l2" href="fab-micron.html">2.3 Micron</a>
+          <a class="toc-item l2" href="fab-elpida.html">2.4 Elpida Memory</a>
+          <a class="toc-item l2" href="fab-toshiba.html">2.5 Toshiba / Kioxia</a>
+          <a class="toc-item l2" href="fab-sandisk.html">2.6 SanDisk / WD</a>
+          <a class="toc-item l2" href="fab-nanya.html">2.7 Nanya Technology</a>
+          <a class="toc-item l2" href="fab-kingston.html">2.8 Kingston</a>
+          <a class="toc-item l2" href="fab-rayson.html">2.9 Rayson</a>
+          <a class="toc-item l2" href="fab-issi.html">2.10 ISSI</a>
+          <a class="toc-item l2" href="fab-gigadevice.html">2.11 GigaDevice</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="prefixos.html">3. Tabela Rápida de Prefixos</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="remarked.html">4. Chips Remarked / Counterfeit</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="viabilidade.html">5. Hierarquia de Viabilidade</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="soc.html">6. CPUs / SoCs</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="encerramento.html">7. Encerramento</a>
+        </div>
+      </nav>
+      <!-- Main content -->
+      <main id="content">
+        <h2 id="aprender" class="section">1.1 O que você vai aprender</h2>
+
+<p>
+  Esta documentação foi construída para operadores e analistas do mercado de
+  <strong>refurbishing e reciclagem de eletrônicos</strong> que precisam tomar
+  decisões rápidas e corretas sobre chips IC na esteira de triagem. Ao final,
+  você será capaz de identificar, classificar e avaliar qualquer chip de memória
+  ou processamento sem depender de equipamentos especializados na maior parte
+  dos casos.
+</p>
+
+<h3 class="section" style="margin-top:28px;">Identificar chips pelo Part Number</h3>
+<p>
+  Todo chip IC saído de fábrica carrega um <strong>Part Number (PN)</strong>
+  gravado a laser ou impresso em silk-screen na sua face superior. Esse código
+  é o "CPF" do componente: revela o fabricante, a geração tecnológica, a
+  capacidade, a velocidade e o formato de encapsulamento — tudo em uma única
+  sequência de letras e números.
+</p>
+<p>
+  Você vai aprender a localizar o PN mesmo em chips com impressão desbotada,
+  a distinguir o código principal das marcações auxiliares de lote e rastreio,
+  e a usar o sistema de busca por prefixo desta documentação para obter o
+  resultado em segundos.
+</p>
+
+<h3 class="section" style="margin-top:28px;">Distinguir as categorias de chip</h3>
+<p>
+  O mercado de reciclagem lida com dezenas de categorias distintas. Confundi-las
+  gera erros de precificação que comprometem margens. Esta documentação cobre:
+</p>
+<table class="chip-table" style="width:100%; border-collapse:collapse; margin:16px 0; font-size:12.5px;">
+  <thead>
+    <tr style="background:var(--beige-2);">
+      <th style="padding:7px 10px; border:1px solid var(--rule); text-align:left;">Categoria</th>
+      <th style="padding:7px 10px; border:1px solid var(--rule); text-align:left;">Uso típico</th>
+      <th style="padding:7px 10px; border:1px solid var(--rule); text-align:left;">Exemplo de PN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding:6px 10px; border:1px solid var(--rule);"><strong>eMMC</strong></td>
+      <td style="padding:6px 10px; border:1px solid var(--rule);">Armazenamento em smartphones e tablets de entrada</td>
+      <td style="padding:6px 10px; border:1px solid var(--rule); font-family:var(--font-mono);">KLMBG2JETD-B041</td>
+    </tr>
+    <tr style="background:var(--beige-1);">
+      <td style="padding:6px 10px; border:1px solid var(--rule);"><strong>eMCP</strong></td>
+      <td style="padding:6px 10px; border:1px solid var(--rule);">eMMC + LPDDR integrados em um único package</td>
+      <td style="padding:6px 10px; border:1px solid var(--rule); font-family:var(--font-mono);">KMVYL000LM-B503</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px; border:1px solid var(--rule);"><strong>uMCP</strong></td>
+      <td style="padding:6px 10px; border:1px solid var(--rule);">UFS + LPDDR5 integrados, geração atual</td>
+      <td style="padding:6px 10px; border:1px solid var(--rule); font-family:var(--font-mono);">KLUBG4G1CE-B0B1</td>
+    </tr>
+    <tr style="background:var(--beige-1);">
+      <td style="padding:6px 10px; border:1px solid var(--rule);"><strong>UFS</strong></td>
+      <td style="padding:6px 10px; border:1px solid var(--rule);">Armazenamento de alta velocidade (mid/high-end)</td>
+      <td style="padding:6px 10px; border:1px solid var(--rule); font-family:var(--font-mono);">KLUEG8UHDB-B0B1</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px; border:1px solid var(--rule);"><strong>LPDDR4 / LPDDR5</strong></td>
+      <td style="padding:6px 10px; border:1px solid var(--rule);">RAM dedicada de smartphones e tablets</td>
+      <td style="padding:6px 10px; border:1px solid var(--rule); font-family:var(--font-mono);">K3LKB KB0M-MGCP</td>
+    </tr>
+    <tr style="background:var(--beige-1);">
+      <td style="padding:6px 10px; border:1px solid var(--rule);"><strong>DDR3 / DDR4</strong></td>
+      <td style="padding:6px 10px; border:1px solid var(--rule);">RAM de notebooks e desktops</td>
+      <td style="padding:6px 10px; border:1px solid var(--rule); font-family:var(--font-mono);">H5AN8G8NAFR-UHC</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px; border:1px solid var(--rule);"><strong>NAND Flash</strong></td>
+      <td style="padding:6px 10px; border:1px solid var(--rule);">Armazenamento bruto em SSDs e pendrives</td>
+      <td style="padding:6px 10px; border:1px solid var(--rule); font-family:var(--font-mono);">TH58TEG9DDJTA20</td>
+    </tr>
+    <tr style="background:var(--beige-1);">
+      <td style="padding:6px 10px; border:1px solid var(--rule);"><strong>NOR Flash</strong></td>
+      <td style="padding:6px 10px; border:1px solid var(--rule);">Firmware de roteadores, TVs e STBs</td>
+      <td style="padding:6px 10px; border:1px solid var(--rule); font-family:var(--font-mono);">GD25Q128CSIG</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px; border:1px solid var(--rule);"><strong>GDDR5 / GDDR6</strong></td>
+      <td style="padding:6px 10px; border:1px solid var(--rule);">RAM dedicada de GPUs</td>
+      <td style="padding:6px 10px; border:1px solid var(--rule); font-family:var(--font-mono);">H5GC8H24MJR-R0C</td>
+    </tr>
+    <tr style="background:var(--beige-1);">
+      <td style="padding:6px 10px; border:1px solid var(--rule);"><strong>CPU / SoC</strong></td>
+      <td style="padding:6px 10px; border:1px solid var(--rule);">Processadores de smartphones, TVs e embarcados</td>
+      <td style="padding:6px 10px; border:1px solid var(--rule); font-family:var(--font-mono);">MT6765V/CB</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="section" style="margin-top:28px;">Reconhecer prefixos de 12 fabricantes</h3>
+<p>
+  A maior parte do tempo de triagem é gasta tentando determinar <em>quem fabricou</em>
+  o chip. Esta documentação mapeia os prefixos de Part Number de
+  <strong>11 fabricantes ativos + 1 histórico (Elpida)</strong>, cobrindo da
+  geração DDR1/eMMC 4.4 até UFS 4.0 e LPDDR5X. Com a prática, o reconhecimento
+  do prefixo se torna reflexo visual — o mesmo mecanismo com que lemos placas de
+  trânsito.
+</p>
+<p>
+  Fabricantes cobertos: <strong>Samsung · SK Hynix · Micron · Elpida · Toshiba/Kioxia ·
+  SanDisk/WD · Nanya · Kingston · Rayson · ISSI · GigaDevice</strong> e os principais
+  fabricantes de SoC (MediaTek, Qualcomm, Spreadtrum/UNISOC).
+</p>
+
+<h3 class="section" style="margin-top:28px;">Decodificar cada posição do Part Number</h3>
+<p>
+  Um PN como <code>KLMBG2JETD-B041</code> não é uma sequência aleatória — cada
+  segmento carrega um dado técnico preciso:
+</p>
+<ul style="margin: 10px 0 10px 18px; line-height: 2;">
+  <li><strong>KLM</strong> → Samsung, família eMMC</li>
+  <li><strong>B</strong> → 16 GB de capacidade</li>
+  <li><strong>G2</strong> → Interface eMMC 5.1</li>
+  <li><strong>JE</strong> → Especificação de temperatura e speed grade</li>
+  <li><strong>TD</strong> → Package (BGA 153)</li>
+  <li><strong>B041</strong> → Revisão de silício</li>
+</ul>
+<p>
+  Você vai aprender essa lógica para cada fabricante, com tabelas de decodificação
+  posição a posição. Após esta documentação, você não precisará memorizar todos os
+  códigos — mas saberá <em>exatamente onde olhar</em> para extrair o dado que
+  importa para a triagem.
+</p>
+
+<h3 class="section" style="margin-top:28px;">Detectar chips remarked e counterfeit</h3>
+<p>
+  O mercado de refurbishing é alvo frequente de chips adulterados: componentes
+  com o PN raspado e reimpresso para simular capacidade ou geração superior à real.
+  Esta documentação apresenta uma metodologia de detecção baseada em:
+</p>
+<ul style="margin: 10px 0 10px 18px; line-height: 2;">
+  <li>Inconsistências visuais entre o PN impresso e o package físico</li>
+  <li>Comparação do padrão de esferas BGA com a especificação do fabricante</li>
+  <li>Leitura via programador (CID/CSD report) como confirmação definitiva</li>
+  <li>Sinais de raspagem ou reimpressão a laser sob luz oblíqua</li>
+</ul>
+
+<h3 class="section" style="margin-top:28px;">Avaliar viabilidade e precificar</h3>
+<p>
+  Identificar o chip é metade do trabalho. A outra metade é saber se ele tem
+  valor de revenda, onde ele se encaixa na hierarquia de viabilidade e como
+  precificá-lo corretamente — desde chips legados (DDR1, eMMC 4.4) até os
+  componentes de geração atual (UFS 4.0, LPDDR5X, DDR5).
+</p>
+<p>
+  A seção <a href="viabilidade.html">Hierarquia de Viabilidade</a> desta
+  documentação apresenta um modelo de classificação em camadas — do chip de
+  maior valor de mercado ao que deve ir para a sucata metálica — com critérios
+  objetivos para cada nível.
+</p>
+
+        <div class="page-nav">
+<a class="page-nav-btn prev" href="index.html">← Apresentação</a>
+<a class="page-nav-btn next" href="o-que-e-chip.html">1.2 O que é um Chip →</a>
+</div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      // Mark active page in sidebar
+      (function() {
+        var pageId = 'aprender';
+        var links = document.querySelectorAll('#toc .toc-item');
+        links.forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          var file = href.split('#')[0];
+          if (file === pageId + '.html' || (pageId === 'index' && file === 'index.html')) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
