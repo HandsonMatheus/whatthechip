@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tabela Rápida de Prefixos — ChipDocs</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="topbar">
+      <div id="topbar-inner">
+        <a id="brand" href="index.html">
+          <div class="logo">IC</div>
+          <span class="name">ChipDocs</span>
+        </a>
+        <nav id="topnav">
+          <a class="topnav-link" href="index.html">Início</a>
+          <a class="topnav-link" href="prefixos.html">Tabela Rápida</a>
+          <a class="topnav-link" href="encerramento.html">Contato</a>
+          <a class="topnav-link" href="encerramento.html">Autor</a>
+        </nav>
+        <select id="lang-select" title="Selecionar idioma (em breve)">
+          <option value="pt" selected>🇧🇷 Português</option>
+          <option value="en" disabled>🇺🇸 English (em breve)</option>
+          <option value="es" disabled>🇪🇸 Español (em breve)</option>
+          <option value="zh" disabled>🇨🇳 普通话 (em breve)</option>
+          <option value="yue" disabled>🇭🇰 廣東話 (em breve)</option>
+        </select>
+        <div id="top-search" role="search">
+          <input
+            id="top-search-input"
+            type="text"
+            placeholder="Buscar prefixo... ex: KLM, H26M, TYBE"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="kbd-hint">Ctrl+K</span>
+          <button id="top-search-btn">Buscar</button>
+          <div id="top-search-results">
+            <div id="top-search-empty">Nenhum prefixo encontrado.</div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="shell">
+      <nav id="sidebar" aria-label="Mapa do documento">
+        <div id="sidebar-title">Mapa do documento</div>
+        <div id="toc">
+          <a class="toc-item l1" href="index.html">O que é um Chip</a>
+          <a class="toc-item l2" href="index.html#s1">1. Introdução e Metodologia</a>
+          <a class="toc-item l3" href="index.html#s1-1">1.1 Metodologia de Identificação</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="evolucao.html">2. Evolução: do pino à esfera</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="tipos.html">3. Tipos de Chip — Visão Geral</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="fabricantes.html">4. Identificação por Fabricante</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-samsung">4.1 Samsung</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-hynix">4.2 SK Hynix</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-micron">4.3 Micron</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-elpida">4.4 Elpida Memory</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-toshiba">4.5 Toshiba / Kioxia</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-sandisk">4.6 SanDisk / WD</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-nanya">4.7 Nanya Technology</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-kingston">4.8 Kingston</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-rayson">4.9 Rayson</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-issi">4.10 ISSI</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-gigadevice">4.11 GigaDevice</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="prefixos.html">5. Tabela Rápida de Prefixos</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="remarked.html">6. Chips Remarked / Counterfeit</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="viabilidade.html">7. Hierarquia de Viabilidade</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="soc.html">8. CPUs / SoCs</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="encerramento.html">9. Encerramento</a>
+        </div>
+      </nav>
+      <!-- Main content -->
+      <main id="content">
+        <h2 id="s5" class="section">
+          4. Tabela rápida de prefixos (referência de bancada)
+        </h2>
+        <p>
+          Consulte esta matriz para triagem visual direta do silício.
+          <strong>Atenção:</strong> Leia sempre o código gravado a laser no
+          epóxi preto do chip (Die), ignorando adesivos ou etiquetas de papel
+          presentes nas placas.
+        </p>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Prefixo gravado no chip</th>
+                <th>Fabricante</th>
+                <th>Tecnologia / Tipo</th>
+              </tr>
+            </thead>
+            <tbody>
+    <!-- SAMSUNG -->
+              <tr>
+                <td><code>KLM...</code></td>
+                <td>Samsung</td>
+                <td>eMMC (Armazenamento Flash)</td>
+              </tr>
+              <tr>
+                <td><code>KMF / KMN / KMQ / KMR / KMS...</code></td>
+                <td>Samsung</td>
+                <td>eMCP (eMMC + LPDDR3/4/4X)</td>
+              </tr>
+              <tr>
+                <td><code>KMD / KME / KMG / KML / KMV / KMW...</code></td>
+                <td>Samsung</td>
+                <td>uMCP (UFS + LPDDR4/4X/5/5X)</td>
+              </tr>
+              <tr>
+                <td><code>KLU...</code></td>
+                <td>Samsung</td>
+                <td>UFS (Armazenamento Avançado 2.0 a 4.0)</td>
+              </tr>
+              <tr>
+                <td><code>KUS...</code></td>
+                <td>Samsung</td>
+                <td>BGA NVMe SSD (Armazenamento Premium)</td>
+              </tr>
+              <tr>
+                <td><code>K3KL / K3LK...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR5 / LPDDR5X (Mobile)</td>
+              </tr>
+              <tr>
+                <td><code>K4F / K4U / K3U...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR4 / LPDDR4X (Mobile)</td>
+              </tr>
+              <tr>
+                <td><code>K3Q...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR3 (Mobile)</td>
+              </tr>
+              <tr>
+                <td><code>K4P...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR2 (Mobile)</td>
+              </tr>
+              <tr>
+                <td><code>K4M / K4X...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR1 / Mobile SDR</td>
+              </tr>
+              <tr>
+                <td><code>K4R...</code></td>
+                <td>Samsung</td>
+                <td>DDR5 (RAM dedicada)</td>
+              </tr>
+              <tr>
+                <td><code>K4A...</code></td>
+                <td>Samsung</td>
+                <td>DDR4 (RAM dedicada)</td>
+              </tr>
+              <tr>
+                <td><code>K4B...</code></td>
+                <td>Samsung</td>
+                <td>DDR3 / DDR3L (RAM dedicada)</td>
+              </tr>
+              <tr>
+                <td><code>K4T...</code></td>
+                <td>Samsung</td>
+                <td>DDR2 (RAM dedicada)</td>
+              </tr>
+              <tr>
+                <td><code>K4H...</code></td>
+                <td>Samsung</td>
+                <td>DDR1 (RAM dedicada)</td>
+              </tr>
+              <tr>
+                <td><code>K4Z...</code></td>
+                <td>Samsung</td>
+                <td>GDDR6 / GDDR6X (Vídeo / GPU)</td>
+              </tr>
+              <tr>
+                <td><code>K4G...</code></td>
+                <td>Samsung</td>
+                <td>GDDR5 / GDDR5X (Vídeo / GPU)</td>
+              </tr>
+              <tr>
+                <td><code>K4N / K4J / K4U...</code></td>
+                <td>Samsung</td>
+                <td>GDDR2 / GDDR3 / GDDR4 (Vídeo / GPU)</td>
+              </tr>
+              <tr>
+                <td><code>K9...</code></td>
+                <td>Samsung</td>
+                <td>NAND Flash bruta</td>
+              </tr>
+              <tr>
+                <td><code>K5 / K8...</code></td>
+                <td>Samsung</td>
+                <td>NOR Flash / Mask ROM</td>
+              </tr>
+              <tr>
+                <td><code>KAT...</code></td>
+                <td>Samsung</td>
+                <td>ePoP (Ciclo Reacondicional - Atenção Extrema)</td>
+              </tr>
+              <tr>
+                <td><code>S5E...</code></td>
+                <td>Samsung</td>
+                <td>Exynos SoC (Processador)</td>
+              </tr>
+              <tr>
+                <td><code>S5K...</code></td>
+                <td>Samsung</td>
+                <td>ISOCELL (Módulos de Câmera)</td>
+              </tr>
+              <tr>
+                <td><code>S2M / S2A / S2D...</code></td>
+                <td>Samsung</td>
+                <td>PMIC (Gerenciamento de Energia)</td>
+              </tr>
+              <tr>
+                <td><code>K4S...</code></td>
+                <td>Samsung</td>
+                <td>SDRAM (Fluxo de residuo)</td>
+              </tr>
+
+              <!-- MICRON -->
+              <tr>
+                <td><code>MTFC...</code> / Códigos <code>NW...</code></td>
+                <td>Micron</td>
+                <td>eMMC</td>
+              </tr>
+              <tr>
+                <td><code>MT29T / MT29V...</code></td>
+                <td>Micron</td>
+                <td>eMCP / uMCP</td>
+              </tr>
+              <tr>
+                <td><code>MT62F...</code></td>
+                <td>Micron</td>
+                <td>LPDDR5 / 5X</td>
+              </tr>
+              <tr>
+                <td><code>MT53E / MT53D...</code></td>
+                <td>Micron</td>
+                <td>LPDDR4 / 4X</td>
+              </tr>
+              <tr>
+                <td><code>MT52L...</code></td>
+                <td>Micron</td>
+                <td>LPDDR3</td>
+              </tr>
+              <tr>
+                <td><code>MT60B...</code></td>
+                <td>Micron</td>
+                <td>DDR5 (RAM dedicada)</td>
+              </tr>
+              <tr>
+                <td><code>MT40A...</code> / Códigos <code>D9...</code></td>
+                <td>Micron</td>
+                <td>DDR4 (RAM dedicada)</td>
+              </tr>
+              <tr>
+                <td><code>MT41J / MT41K...</code></td>
+                <td>Micron</td>
+                <td>DDR3 / DDR3L</td>
+              </tr>
+              <tr>
+                <td><code>MT47H...</code></td>
+                <td>Micron</td>
+                <td>DDR2</td>
+              </tr>
+              <tr>
+                <td><code>MT46V...</code></td>
+                <td>Micron</td>
+                <td>DDR1 (Fluxo de refino)</td>
+              </tr>
+              <tr>
+                <td><code>MT48LC...</code></td>
+                <td>Micron</td>
+                <td>SDRAM (Fluxo de refino)</td>
+              </tr>
+              <tr>
+                <td><code>MT51 / MT61...</code></td>
+                <td>Micron</td>
+                <td>GDDR5 a GDDR6X (Vídeo)</td>
+              </tr>
+              <tr>
+                <td><code>MT29F...</code></td>
+                <td>Micron</td>
+                <td>NAND bruta</td>
+              </tr>
+
+              <!-- ELPIDA -->
+              <tr>
+                <td><code>EDF...</code></td>
+                <td>Elpida</td>
+                <td>LPDDR3</td>
+              </tr>
+              <tr>
+                <td><code>EDB / EDA...</code> (Abrev: <code>B4</code>)</td>
+                <td>Elpida</td>
+                <td>LPDDR2</td>
+              </tr>
+              <tr>
+                <td><code>EDJ...</code> (Abrev: <code>J4</code>)</td>
+                <td>Elpida</td>
+                <td>DDR3 / DDR3L</td>
+              </tr>
+              <tr>
+                <td><code>EDE...</code></td>
+                <td>Elpida</td>
+                <td>DDR2</td>
+              </tr>
+              <tr>
+                <td><code>EDD...</code></td>
+                <td>Elpida</td>
+                <td>DDR1 (Fluxo de refino)</td>
+              </tr>
+              <tr>
+                <td><code>EDS...</code></td>
+                <td>Elpida</td>
+                <td>SDRAM (Fluxo de refino)</td>
+              </tr>
+              <tr>
+                <td><code>EDW...</code></td>
+                <td>Elpida</td>
+                <td>GDDR5 (Vídeo)</td>
+              </tr>
+
+              <!-- TOSHIBA / KIOXIA -->
+              <tr>
+                <td><code>THGBM / THGBF / THGBJG...</code></td>
+                <td>Toshiba / Kioxia</td>
+                <td>eMMC</td>
+              </tr>
+              <tr>
+                <td><code>TYBB / TYBC...</code></td>
+                <td>Toshiba / Kioxia</td>
+                <td>eMCP (com LPDDR2)</td>
+              </tr>
+              <tr>
+                <td><code>TYBD / TYBE...</code></td>
+                <td>Toshiba / Kioxia</td>
+                <td>eMCP (com LPDDR3)</td>
+              </tr>
+              <tr>
+                <td><code>TYBF...</code></td>
+                <td>Toshiba / Kioxia</td>
+                <td>eMCP (com LPDDR4)</td>
+              </tr>
+              <tr>
+                <td><code>TYCO...</code></td>
+                <td>Toshiba / Kioxia</td>
+                <td>eMCP (com LPDDR4X)</td>
+              </tr>
+              <tr>
+                <td><code>TYDO...</code></td>
+                <td>Toshiba / Kioxia</td>
+                <td>uMCP (com LPDDR5)</td>
+              </tr>
+              <tr>
+                <td><code>THGJF / THGUF...</code></td>
+                <td>Toshiba / Kioxia</td>
+                <td>UFS</td>
+              </tr>
+              <tr>
+                <td><code>TH58 / TC58...</code></td>
+                <td>Toshiba / Kioxia</td>
+                <td>NAND bruta</td>
+              </tr>
+
+              <!-- SANDISK / WD -->
+              <tr>
+                <td><code>SDIN / SDMAG...</code></td>
+                <td>SanDisk / WD</td>
+                <td>eMMC (iNAND)</td>
+              </tr>
+              <tr>
+                <td><code>SDEM / SDAD / SD7D...</code></td>
+                <td>SanDisk / WD</td>
+                <td>eMCP</td>
+              </tr>
+              <tr>
+                <td><code>SDHQB / SDIND...</code></td>
+                <td>SanDisk / WD</td>
+                <td>UFS</td>
+              </tr>
+              <tr>
+                <td><code>SDT / SDZ...</code></td>
+                <td>SanDisk / WD</td>
+                <td>NAND bruta</td>
+              </tr>
+
+              <!-- NANYA -->
+              <tr>
+                <td><code>NT5W...</code></td>
+                <td>Nanya</td>
+                <td>DDR5 (RAM dedicada)</td>
+              </tr>
+              <tr>
+                <td><code>NT5AD / NT5AN...</code></td>
+                <td>Nanya</td>
+                <td>DDR4 (RAM dedicada)</td>
+              </tr>
+              <tr>
+                <td><code>NT5C / NT5CB / NT5CC...</code></td>
+                <td>Nanya</td>
+                <td>DDR3 / DDR3L</td>
+              </tr>
+              <tr>
+                <td><code>NT5TU...</code></td>
+                <td>Nanya</td>
+                <td>DDR2</td>
+              </tr>
+              <tr>
+                <td><code>NT5DS...</code></td>
+                <td>Nanya</td>
+                <td>DDR1 (Fluxo de refino)</td>
+              </tr>
+              <tr>
+                <td><code>NT5SV / NT5S...</code></td>
+                <td>Nanya</td>
+                <td>SDRAM (Fluxo de refino)</td>
+              </tr>
+              <tr>
+                <td><code>NT6AC...</code></td>
+                <td>Nanya</td>
+                <td>LPDDR5</td>
+              </tr>
+              <tr>
+                <td><code>NT6AN / NT6AH / NT6AP...</code></td>
+                <td>Nanya</td>
+                <td>LPDDR4 / LPDDR4X</td>
+              </tr>
+              <tr>
+                <td><code>NT6CL / NT6TL...</code></td>
+                <td>Nanya</td>
+                <td>LPDDR3</td>
+              </tr>
+
+              <!-- KINGSTON -->
+              <tr>
+                <td><code>EMMC...</code></td>
+                <td>Kingston</td>
+                <td>eMMC (Remarcado)</td>
+              </tr>
+              <tr>
+                <td><code>EMCP / 08EMCP...</code></td>
+                <td>Kingston</td>
+                <td>eMCP (Remarcado)</td>
+              </tr>
+              <tr>
+                <td><code>D25 / D51...</code></td>
+                <td>Kingston</td>
+                <td>DDR dedicada (Remarcado)</td>
+              </tr>
+              <tr>
+                <td><code>KVR / KSM / KF...</code></td>
+                <td>Kingston</td>
+                <td>
+                  <strong>ATENÇÃO:</strong> Etiqueta de módulo. Ler o BGA.
+                </td>
+              </tr>
+
+              <!-- RAYSON -->
+              <tr>
+                <td><code>RS1GD4 / RS2GD4...</code></td>
+                <td>Rayson</td>
+                <td>DDR4 (Baixa viabilidade)</td>
+              </tr>
+              <tr>
+                <td><code>RS1GD3 / RS2GD3...</code></td>
+                <td>Rayson</td>
+                <td>DDR3 (Baixa viabilidade)</td>
+              </tr>
+              <tr>
+                <td><code>RSLPD3 / RSLPD4...</code></td>
+                <td>Rayson</td>
+                <td>LPDDR3 / 4 (Baixa viabilidade)</td>
+              </tr>
+              <tr>
+                <td><code>RSEMC...</code></td>
+                <td>Rayson</td>
+                <td>eMMC (Baixa viabilidade)</td>
+              </tr>
+
+              <!-- ISSI -->
+              <tr>
+                <td><code>IS43 / IS46...</code></td>
+                <td>ISSI</td>
+                <td>DDR1 a DDR4 (Industrial/Automotivo)</td>
+              </tr>
+              <tr>
+                <td><code>IS43LD / IS46LQ...</code></td>
+                <td>ISSI</td>
+                <td>LPDDR2 a LPDDR4</td>
+              </tr>
+              <tr>
+                <td><code>IS51 / IS52...</code></td>
+                <td>ISSI</td>
+                <td>eMMC (Alta durabilidade)</td>
+              </tr>
+              <tr>
+                <td><code>IS34 / IS35...</code></td>
+                <td>ISSI</td>
+                <td>NAND bruta</td>
+              </tr>
+              <tr>
+                <td><code>IS25 / IS29...</code></td>
+                <td>ISSI</td>
+                <td>NOR Flash (SPI)</td>
+              </tr>
+              <tr>
+                <td><code>IS61 / IS62...</code></td>
+                <td>ISSI</td>
+                <td>SRAM</td>
+              </tr>
+
+              <!-- GIGADEVICE -->
+              <tr>
+                <td><code>GD25...</code></td>
+                <td>GigaDevice</td>
+                <td>NOR Flash SPI</td>
+              </tr>
+              <tr>
+                <td><code>GD5F...</code></td>
+                <td>GigaDevice</td>
+                <td>SPI NAND</td>
+              </tr>
+              <tr>
+                <td><code>GD9...</code></td>
+                <td>GigaDevice</td>
+                <td>Parallel NAND</td>
+              </tr>
+              <tr>
+                <td><code>GDQ...</code></td>
+                <td>GigaDevice</td>
+                <td>DDR3 / DDR4</td>
+              </tr>
+              <tr>
+                <td><code>GDB...</code></td>
+                <td>GigaDevice</td>
+                <td>LPDDR4 / 4X</td>
+              </tr>
+              <tr>
+                <td><code>GD32...</code></td>
+                <td>GigaDevice</td>
+                <td>MCU (Microcontrolador ARM/RISC-V)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- SEÇÃO: CHIPS REMARKED E FALSIFICADOS -->
+        
+        <div class="page-nav">
+<a class="page-nav-btn prev" href="fabricantes.html">← Identificação por Fabricante</a>
+<a class="page-nav-btn next" href="remarked.html">Chips Remarked / Counterfeit →</a>
+</div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      // Mark active page in sidebar
+      (function() {
+        var pageId = 'prefixos';
+        var links = document.querySelectorAll('#toc .toc-item');
+        links.forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          var file = href.split('#')[0];
+          if (file === pageId + '.html' || (pageId === 'index' && file === 'index.html')) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

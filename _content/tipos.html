@@ -1,0 +1,202 @@
+<!-- TITLE: Tipos de Chip — ChipDocs -->
+<h2 id="s2" class="section">2. Tipos de chip — visão geral</h2>
+        <p>
+          Antes da marca, o classificador deve identificar a
+          <strong>CATEGORIA</strong> funcional do chip. Cada categoria possui
+          características físicas, interfaces elétricas e fluxos de viabilidade
+          para o mercado reacondicional completamente distintos.
+        </p>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Categoria</th>
+                <th>Descrição e características</th>
+                <th>Prefixos comuns</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong>eMMC</strong><br /><small
+                    >Embedded MultiMediaCard</small
+                  >
+                </td>
+                <td>
+                  Flash NAND com controlador integrado. Interface paralela
+                  (HS200, HS400). Padrão em smartphones de entrada/médio
+                  antigos, tablets e TVs. Gerações 4.41 a 5.1.
+                  <strong>Identidade física:</strong> Majoritariamente BGA 153 e
+                  BGA 169.
+                </td>
+                <td>
+                  <span class="tag">KLM</span> <span class="tag">H26M</span>
+                  <span class="tag">MTFC</span> <span class="tag">THGBM</span>
+                  <span class="tag">SDIN</span> <span class="tag">SDMAG</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>eMCP</strong><br /><small
+                    >Embedded Multi Chip Package</small
+                  >
+                </td>
+                <td>
+                  eMMC (armazenamento) + LPDDR (RAM) em um único encapsulamento.
+                  Muito comum em placas mobile de médio porte (2013–2021).
+                  <strong>Identidade física:</strong> Package retangular,
+                  visivelmente maior que o eMMC puro. Padrões clássicos: BGA
+                  162, 186 e 221.
+                </td>
+                <td>
+                  <span class="tag">KMQ</span> <span class="tag">KMR</span>
+                  <span class="tag">H9TQ</span> <span class="tag">H9HP</span>
+                  <span class="tag">SDEM</span> <span class="tag">SDAD</span>
+                  <span class="tag">TYBE</span> <span class="tag">TYBF</span>
+                  <span class="tag">TYCO</span> <span class="tag">TYDO</span>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>uMCP</strong><br /><small>Universal MCP</small></td>
+                <td>
+                  UFS (armazenamento de alta velocidade) + LPDDR (RAM).
+                  Substituto direto do eMCP, entregando maior performance via
+                  interface serial. Crescente nos aparelhos modernos.
+                  <strong>Identidade física:</strong> Majoritariamente
+                  estabelecido no padrão BGA 254.
+                </td>
+                <td>
+                  <span class="tag">KMDH</span> <span class="tag">H9HQ-U</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>LPDDR</strong><br /><small>Low Power DDR</small>
+                </td>
+                <td>
+                  RAM de baixo consumo dedicada (standalone). Gerações LPDDR1 a
+                  LPDDR5X. Frequentemente montada diretamente sobre o
+                  processador na arquitetura
+                  <strong>PoP (Package-on-Package)</strong>.
+                  <strong>Identidade física:</strong> Padrão FBGA com matrizes
+                  finas ou retangulares (ex: BGA 200).
+                </td>
+                <td>
+                  <span class="tag">K3</span> <span class="tag">K4E</span>
+                  <span class="tag">K4F</span> <span class="tag">K3P</span>
+                  <span class="tag">K3L</span> <span class="tag">H9HC</span>
+                  <span class="tag">H58G</span> <span class="tag">MT52</span>
+                  <span class="tag">NT6CL</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>DDR</strong><br /><small
+                    >Double Data Rate SDRAM</small
+                  >
+                </td>
+                <td>
+                  Memória volátil padrão para desktops, notebooks e servidores.
+                  DDR1 a DDR5. Cada geração dobra a banda e reduz a voltagem.
+                  <strong>Identidade física:</strong> Chips retangulares
+                  normalmente extraídos de pentes de memória (DIMM/SO-DIMM).
+                  Padrões de contatos espalhados, como BGA 78 e 96.
+                </td>
+                <td>
+                  <span class="tag">K4H</span> <span class="tag">K4T</span>
+                  <span class="tag">K4B</span> <span class="tag">K4A</span>
+                  <span class="tag">HY5D</span> <span class="tag">H5PS</span>
+                  <span class="tag">HMT</span> <span class="tag">HMA</span>
+                  <span class="tag">MT46V</span> <span class="tag">MT47H</span>
+                  <span class="tag">MT8ATF</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>UFS</strong><br /><small
+                    >Universal Flash Storage</small
+                  >
+                </td>
+                <td>
+                  Armazenamento serial (MIPI M-PHY) de altíssima velocidade.
+                  Substituto do eMMC puro em hardwares premium. UFS 2.0 a 4.0.
+                  <strong>Identidade física:</strong> Padrões BGA 95 ou 153.
+                  Exige atenção na esteira para não confundir BGA 153 UFS com
+                  BGA 153 eMMC, pois o protocolo é diferente.
+                </td>
+                <td>
+                  <span class="tag">KLUC</span> <span class="tag">KLUE</span>
+                  <span class="tag">KLUF</span> <span class="tag">KLUG</span>
+                  <span class="tag">KLUJ</span> <span class="tag">H28U</span>
+                  <span class="tag">THGJF</span> <span class="tag">SDHQB</span>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>GDDR</strong><br /><small>Graphics DDR</small></td>
+                <td>
+                  RAM dedicada para processamento de vídeo (GPUs e consoles).
+                  GDDR5 a GDDR6X. Alta demanda para reacondicionamento de placas
+                  de vídeo. <strong>Identidade física:</strong> BGA de alta
+                  densidade (ex: BGA 170, 190), extraídos do entorno do
+                  processador gráfico.
+                </td>
+                <td>
+                  <span class="tag">K4G</span> <span class="tag">K4ZAF</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>NAND Flash</strong><br /><small>Raw NAND</small>
+                </td>
+                <td>
+                  Armazenamento "bruto" sem controlador interno (exige um FTL
+                  externo). Arquiteturas SLC, MLC, TLC, QLC. Presente em SSDs.
+                  <strong>Identidade física:</strong> Packages como TSOP48 (com
+                  pinos laterais) e BGAs clássicos maiores (BGA 132, 152 e 272).
+                </td>
+                <td>
+                  <span class="tag">K9F</span> <span class="tag">K9G</span>
+                  <span class="tag">K9LCG</span> <span class="tag">MT29F</span>
+                  <span class="tag">TH58</span>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>NOR Flash</strong></td>
+                <td>
+                  Armazenamento de baixa capacidade e altíssima confiabilidade
+                  para código executável. Contém o BIOS ou firmware básico das
+                  placas. <strong>Identidade física:</strong> Frequentemente com
+                  terminais visíveis (SOP8) ou pads inferiores sem esferas
+                  (WSON8/USON8).
+                </td>
+                <td>
+                  <span class="tag">K5L</span> <span class="tag">K5Q</span>
+                  <span class="tag">GD25</span> <span class="tag">W25Q</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>CPU / SoC</strong><br /><small
+                    >System on a Chip</small
+                  >
+                </td>
+                <td>
+                  Processador principal. Não possui um padrão de Part Number
+                  decodificável unificado.
+                  <strong>Atenção na triagem:</strong> Muitos SoCs mobile
+                  utilizam a arquitetura PoP (Package-on-Package). O operador
+                  deve identificar essa estrutura dupla e separar fisicamente o
+                  chip de memória RAM (soldado no topo) do processador (na base)
+                  para que cada componente siga seu fluxo correto.
+                </td>
+                <td>
+                  <span class="tag">APL</span> <span class="tag">SDM</span>
+                  <span class="tag">SM</span> <span class="tag">MT67xx</span>
+                  <span class="tag">S5E</span> <span class="tag">Hi</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        

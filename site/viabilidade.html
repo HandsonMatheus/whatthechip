@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hierarquia de Viabilidade — ChipDocs</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="topbar">
+      <div id="topbar-inner">
+        <a id="brand" href="index.html">
+          <div class="logo">IC</div>
+          <span class="name">ChipDocs</span>
+        </a>
+        <nav id="topnav">
+          <a class="topnav-link" href="index.html">Início</a>
+          <a class="topnav-link" href="prefixos.html">Tabela Rápida</a>
+          <a class="topnav-link" href="encerramento.html">Contato</a>
+          <a class="topnav-link" href="encerramento.html">Autor</a>
+        </nav>
+        <select id="lang-select" title="Selecionar idioma (em breve)">
+          <option value="pt" selected>🇧🇷 Português</option>
+          <option value="en" disabled>🇺🇸 English (em breve)</option>
+          <option value="es" disabled>🇪🇸 Español (em breve)</option>
+          <option value="zh" disabled>🇨🇳 普通话 (em breve)</option>
+          <option value="yue" disabled>🇭🇰 廣東話 (em breve)</option>
+        </select>
+        <div id="top-search" role="search">
+          <input
+            id="top-search-input"
+            type="text"
+            placeholder="Buscar prefixo... ex: KLM, H26M, TYBE"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="kbd-hint">Ctrl+K</span>
+          <button id="top-search-btn">Buscar</button>
+          <div id="top-search-results">
+            <div id="top-search-empty">Nenhum prefixo encontrado.</div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div id="shell">
+      <nav id="sidebar" aria-label="Mapa do documento">
+        <div id="sidebar-title">Mapa do documento</div>
+        <div id="toc">
+          <a class="toc-item l1" href="index.html">O que é um Chip</a>
+          <a class="toc-item l2" href="index.html#s1">1. Introdução e Metodologia</a>
+          <a class="toc-item l3" href="index.html#s1-1">1.1 Metodologia de Identificação</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="evolucao.html">2. Evolução: do pino à esfera</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="tipos.html">3. Tipos de Chip — Visão Geral</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="fabricantes.html">4. Identificação por Fabricante</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-samsung">4.1 Samsung</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-hynix">4.2 SK Hynix</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-micron">4.3 Micron</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-elpida">4.4 Elpida Memory</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-toshiba">4.5 Toshiba / Kioxia</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-sandisk">4.6 SanDisk / WD</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-nanya">4.7 Nanya Technology</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-kingston">4.8 Kingston</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-rayson">4.9 Rayson</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-issi">4.10 ISSI</a>
+          <a class="toc-item l2" href="fabricantes.html#s4-gigadevice">4.11 GigaDevice</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="prefixos.html">5. Tabela Rápida de Prefixos</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="remarked.html">6. Chips Remarked / Counterfeit</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="viabilidade.html">7. Hierarquia de Viabilidade</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="soc.html">8. CPUs / SoCs</a>
+          <div class="toc-sep"></div>
+          <a class="toc-item l1" href="encerramento.html">9. Encerramento</a>
+        </div>
+      </nav>
+      <!-- Main content -->
+      <main id="content">
+        <h2 id="s7" class="section">
+          5. Hierarquia de viabilidade e liquidez por geração
+        </h2>
+        <p>
+          Este é um guia orientativo de prioridade na esteira de triagem. O
+          índice de viabilidade varia conforme a demanda técnica do mercado de
+          componentes reacondicionais. Fabricantes premium (Samsung, SK Hynix,
+          Micron, Kioxia) possuem sempre maior liquidez de saída e prioridade de
+          separação do que os equivalentes de fabricantes de entrada (budget) da
+          mesma geração.
+        </p>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tecnologia / Geração</th>
+                <th>Fabricantes e prefixos de referência (Dies)</th>
+                <th>Índice de liquidez</th>
+                <th>Direcionamento na esteira</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- ALTA VIABILIDADE (NÍVEL 5) -->
+              <tr>
+                <td><strong>UFS 4.0 e 3.1</strong></td>
+                <td>
+                  Samsung <code>KLUJ</code> / <code>KLUGG</code> | Hynix
+                  <code>H28Y</code> | Kioxia <code>THGJF</code>
+                </td>
+                <td>●●●●●</td>
+                <td>Armazenamento premium recente. Prioridade máxima.</td>
+              </tr>
+              <tr>
+                <td><strong>uMCP (UFS + LPDDR5/4X)</strong></td>
+                <td>
+                  Samsung <code>KMDH</code> / <code>KMDJ</code> | Hynix
+                  <code>H9HQ-U</code>
+                </td>
+                <td>●●●●●</td>
+                <td>Híbridos de nova geração. Extração crítica.</td>
+              </tr>
+              <tr>
+                <td><strong>LPDDR5 / 5X</strong></td>
+                <td>
+                  Samsung <code>K3P</code> / <code>K3L</code> | Hynix
+                  <code>H9HQ</code> / <code>H54G</code> | Micron
+                  <code>MT62F</code>
+                </td>
+                <td>●●●●●</td>
+                <td>RAM mobile atual. Muito utilizadas em arquitetura PoP.</td>
+              </tr>
+              <tr>
+                <td><strong>DDR5 (Dedicada)</strong></td>
+                <td>
+                  Samsung <code>K4R</code> | Hynix <code>H5CG</code> | Micron
+                  <code>MT60B</code>
+                </td>
+                <td>●●●●●</td>
+                <td>RAM dedicada de última geração. Altíssima demanda.</td>
+              </tr>
+              <tr>
+                <td><strong>GDDR6 / GDDR6X</strong></td>
+                <td>
+                  Samsung <code>K4Z</code> | Micron <code>MT61</code> | Hynix
+                  <code>H56G</code>
+                </td>
+                <td>●●●●●</td>
+                <td>Memória de vídeo. Foco absoluto em placas de vídeo.</td>
+              </tr>
+
+              <!-- VIABILIDADE SÓLIDA (NÍVEL 4) -->
+              <tr>
+                <td><strong>eMCP LPDDR4 / 4X</strong></td>
+                <td>
+                  Toshiba <code>TYCO</code> / <code>TYBF</code> | Samsung
+                  <code>KMV</code> / <code>KMR</code> | Hynix <code>H9HP</code>
+                </td>
+                <td>●●●●</td>
+                <td>Mercado intermediário e de reposição muito ativo.</td>
+              </tr>
+              <tr>
+                <td><strong>eMMC 5.1 (Alta densidade)</strong></td>
+                <td>
+                  Samsung <code>KLM</code> | Hynix <code>H26M</code> | SanDisk
+                  <code>SDIN</code>
+                </td>
+                <td>●●●●</td>
+                <td>Componentes de 64GB a 256GB. Excelente liquidez.</td>
+              </tr>
+              <tr>
+                <td><strong>UFS 2.0 / 2.1</strong></td>
+                <td>
+                  Samsung <code>KLUC</code> / <code>KLUE</code> | Hynix
+                  <code>H28U</code>
+                </td>
+                <td>●●●●</td>
+                <td>Padrão em placas mobile de médio porte.</td>
+              </tr>
+              <tr>
+                <td><strong>DDR4 (Dedicada)</strong></td>
+                <td>
+                  Samsung <code>K4A</code> | Hynix <code>H5AN</code> | Micron
+                  <code>MT40A</code>
+                </td>
+                <td>●●●●</td>
+                <td>Maior volume de sucata de notebooks recentes.</td>
+              </tr>
+              <tr>
+                <td><strong>LPDDR4 / 4X standalone</strong></td>
+                <td>
+                  Samsung <code>K4E</code> / <code>K4F</code> | Hynix
+                  <code>H9HC</code> | Micron <code>MT53E</code>
+                </td>
+                <td>●●●●</td>
+                <td>Alta circulação e fácil escoamento.</td>
+              </tr>
+              <tr>
+                <td><strong>GDDR5</strong></td>
+                <td>
+                  Samsung <code>K4G</code> | Hynix <code>H5GQ</code> | Elpida
+                  <code>EDW</code>
+                </td>
+                <td>●●●●</td>
+                <td>
+                  Alta circulação em placas de vídeo e consoles de geração
+                  anterior.
+                </td>
+              </tr>
+
+              <!-- VIABILIDADE MODERADA (NÍVEL 3) -->
+              <tr>
+                <td><strong>eMMC 5.0 e < 5.1 (Baixa densidade)</strong></td>
+                <td>
+                  Samsung <code>KLM</code> | Hynix <code>H26M</code> (Até 32GB)
+                </td>
+                <td>●●●</td>
+                <td>
+                  Volume alto, liquidez moderada. Dispositivos de entrada.
+                </td>
+              </tr>
+              <tr>
+                <td><strong>DDR3 / DDR3L</strong></td>
+                <td>
+                  Samsung <code>K4B</code> | Hynix <code>H5TQ</code> /
+                  <code>H5TC</code> | Micron <code>MT41K</code>
+                </td>
+                <td>●●●</td>
+                <td>Demanda de reposição legada constante.</td>
+              </tr>
+              <tr>
+                <td><strong>eMCP LPDDR3</strong></td>
+                <td>
+                  Toshiba <code>TYBE</code> | Samsung <code>KMQ</code> | Hynix
+                  <code>H9TQ</code>
+                </td>
+                <td>●●●</td>
+                <td>Equipamentos mobile antigos (2014-2018).</td>
+              </tr>
+              <tr>
+                <td><strong>LPDDR3 standalone</strong></td>
+                <td>
+                  Samsung <code>K3QF</code> | Hynix <code>H9CC</code> | Micron
+                  <code>MT52L</code>
+                </td>
+                <td>●●●</td>
+                <td>Mercado de reposição em declínio.</td>
+              </tr>
+
+              <!-- BAIXA VIABILIDADE E REFINO (NÍVEIS 2 A 0) -->
+              <tr>
+                <td><strong>eMCP LPDDR2</strong></td>
+                <td>
+                  Toshiba <code>TYBB</code> / <code>TYBC</code> | Elpida
+                  <code>EDB</code>
+                </td>
+                <td>●●</td>
+                <td>Demanda quase extinta. Avaliar direcionamento.</td>
+              </tr>
+              <tr>
+                <td><strong>DDR4 / DDR3 (Marcas budget)</strong></td>
+                <td>Rayson <code>RS1GD4</code> / <code>RS1GD3</code></td>
+                <td>●●</td>
+                <td>
+                  Viabilidade muito restrita. Não misturar com marcas premium.
+                </td>
+              </tr>
+              <tr>
+                <td><strong>DDR2</strong></td>
+                <td>
+                  Samsung <code>K4T</code> | Hynix <code>H5PS</code> | Micron
+                  <code>MT47H</code>
+                </td>
+                <td>●</td>
+                <td>Liquidez mínima. Maioria segue para refino ou moagem.</td>
+              </tr>
+              <tr>
+                <td><strong>DDR1</strong></td>
+                <td>
+                  Samsung <code>K4H</code> | Hynix <code>HY5D</code> | Micron
+                  <code>MT46V</code>
+                </td>
+                <td>—</td>
+                <td>
+                  Sem viabilidade comercial para reacondicionamento. Fluxo de
+                  refino.
+                </td>
+              </tr>
+              <tr>
+                <td><strong>SDRAM (PC-100/133)</strong></td>
+                <td>
+                  Samsung <code>K4S</code> | Hynix <code>HY57</code> | Micron
+                  <code>MT48LC</code>
+                </td>
+                <td>—</td>
+                <td>Tecnologia obsoleta. Destino direto: refino de metais.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- PROCESSADORES / SOCS -->
+        
+        <div class="page-nav">
+<a class="page-nav-btn prev" href="remarked.html">← Chips Remarked / Counterfeit</a>
+<a class="page-nav-btn next" href="soc.html">CPUs / SoCs →</a>
+</div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      // Mark active page in sidebar
+      (function() {
+        var pageId = 'viabilidade';
+        var links = document.querySelectorAll('#toc .toc-item');
+        links.forEach(function(link) {
+          var href = link.getAttribute('href');
+          if (!href) return;
+          var file = href.split('#')[0];
+          if (file === pageId + '.html' || (pageId === 'index' && file === 'index.html')) {
+            link.classList.add('active');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
