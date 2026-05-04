@@ -449,7 +449,61 @@ table td {
 table tr:nth-child(even) td { background: #F8F9F2; }
 table tr:hover td { background: #FFFFCC; }
 
-/* ── Anatomy decode tables (chip part-number gabarito) ── */
+/* ── Anatomy decode tables (chip part-number gabarito) ──────
+   Uso: <table class="anatomy-table"> … </table>
+   thead > tr > th  → linha de gabarito (caracteres do part number)
+   tbody > tr:1st   → linha de labels   (FAB, TIPO, DENS…)
+   tbody > tr:rest  → linhas de exemplo (Samsung, DDR1…)
+   ─────────────────────────────────────────────────────────── */
+.anatomy-table {
+  text-align: center;
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+  background: transparent;
+  font-size: inherit;
+}
+
+/* Gabarito: os caracteres individuais do part number */
+.anatomy-table thead th {
+  font-family: var(--font-mono);
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #003366;
+  background: linear-gradient(to bottom, var(--tab-blue-1) 0%, var(--tab-blue-2) 100%);
+  border: 1px solid var(--rule);
+  border-bottom: 2px solid #adb5bd;
+  text-align: center;
+  padding: 8px 10px;
+}
+
+/* Linha de labels: FAB · TIPO · FAM · DENS … */
+.anatomy-table tbody tr:first-child td {
+  background: #DDE5F5;
+  font-weight: bold;
+  font-size: 0.82em;
+  color: #003366;
+  text-align: center;
+  padding: 6px 8px;
+  border: 1px solid #C2CEE8;
+}
+
+/* Linhas de exemplo: Samsung · DRAM · DDR1 … */
+.anatomy-table tbody tr:not(:first-child) td {
+  font-size: 0.82em;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 6px 8px;
+  border: 1px solid var(--rule-soft);
+  background: transparent;
+}
+
+/* Cancela o hover amarelo genérico dentro da anatomy-table */
+.anatomy-table tr:hover td { background: inherit; }
+.anatomy-table tbody tr:first-child:hover td     { background: #DDE5F5; }
+.anatomy-table tbody tr:not(:first-child):hover td { background: var(--hi-5); }
+
+/* Compatibilidade retroativa — classes de linha explícitas (legado) */
 tr.decode-gabarito th {
   font-family: var(--font-mono);
   font-size: 1.1em;
@@ -1313,6 +1367,25 @@ ol.steps li::before {
 [data-theme="dark"] table th { color: #1B3A8C; }
 
 /* ── Anatomy decode tables no modo escuro ── */
+[data-theme="dark"] .anatomy-table thead th {
+  background: linear-gradient(to bottom, #1A2440, #141C38);
+  color: #A8D0FF;
+  border-color: #2A3860;
+  border-bottom-color: #2A3860;
+}
+[data-theme="dark"] .anatomy-table tbody tr:first-child td {
+  background: #1C2848;
+  color: #88B8FF;
+  border-color: #2A3860;
+}
+[data-theme="dark"] .anatomy-table tbody tr:not(:first-child) td {
+  color: var(--ink);
+  border-color: var(--rule);
+}
+[data-theme="dark"] .anatomy-table tbody tr:first-child:hover td     { background: #1C2848; }
+[data-theme="dark"] .anatomy-table tbody tr:not(:first-child):hover td { background: var(--hi-5); }
+
+/* Legado: tr.decode-* no modo escuro */
 [data-theme="dark"] tr.decode-gabarito th {
   background: #1A2440 !important;
   color: #A8D0FF !important;
