@@ -1,176 +1,221 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Apresentação — WhatTheChip?</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <header id="topbar">
-      <div id="topbar-inner">
-        <a id="brand" href="index.html">
-          <div class="logo">IC</div>
-          <span class="name">WhatTheChip?</span>
-        </a>
-        <nav id="topnav">
-          <a class="topnav-link" href="index.html">Início</a>
-          <a class="topnav-link" href="prefixos.html">Tabela Rápida</a>
-          <a class="topnav-link" href="mapa.html">Mapa do site</a>
-          <a class="topnav-link" href="contato.html">Contato</a>
-        </nav>
-        <select id="lang-select" title="Selecionar idioma (em breve)">
-          <option value="pt" selected>🇧🇷 Português</option>
-          <option value="en" disabled>🇺🇸 English (em breve)</option>
-          <option value="es" disabled>🇪🇸 Español (em breve)</option>
-          <option value="zh" disabled>🇨🇳 普通话 (em breve)</option>
-          <option value="yue" disabled>🇭🇰 廣東話 (em breve)</option>
-        </select>
-        <div id="top-search" role="search">
-          <input
-            id="top-search-input"
-            type="text"
-            placeholder="Buscar prefixo... ex: KLM, H26M, TYBE"
-            autocomplete="off"
-            spellcheck="false"
-          />
-          <span class="kbd-hint">Ctrl+K</span>
-          <button id="top-search-btn">Buscar</button>
-          <div id="top-search-results">
-            <div id="top-search-empty">Nenhum prefixo encontrado.</div>
-          </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apresentação — WhatTheChip?</title>
+  <!-- Anti-flash: aplica tema antes do CSS carregar -->
+  <script>
+    (function() {
+      if (localStorage.getItem('wtc_theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ── TOPBAR ──────────────────────────────────────────────── -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">
+      <div class="logo">IC</div>
+      <div class="name">WhatTheChip<span class="alt">?</span></div>
+    </a>
+    <nav class="topnav">
+      <a href="index.html">Início</a>
+      <a href="prefixos.html">Tabela Rápida</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <div class="lang-wrap">
+      <button class="lang" type="button" title="Idioma" id="lang-btn">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Português</span>
+        <span class="lang-arrow">▼</span>
+      </button>
+      <div class="lang-menu" id="lang-menu">
+        <div class="lang-item lang-active">
+          <span class="lang-check">✓</span> Português
+        </div>
+        <div class="lang-item lang-disabled">
+          <span class="lang-check"></span> English
+          <span class="lang-soon">em breve</span>
         </div>
       </div>
-    </header>
-    <div id="shell">
-      <nav id="sidebar" aria-label="Mapa do documento">
-        <div id="sidebar-title">Mapa do documento</div>
-        <div id="toc">
-          <a class="toc-item l1" href="index.html">Apresentação</a>
-          <div class="toc-sep"></div>
-          <div class="toc-label">1. Introdução</div>
-          <a class="toc-item l2" href="aprender.html">1.1 O que você vai aprender</a>
-          <a class="toc-item l2" href="o-que-e-chip.html">1.2 O que é um Chip</a>
-          <a class="toc-item l2" href="evolucao.html">1.3 Evolução: do pino à esfera</a>
-          <a class="toc-item l2" href="metodologia.html">1.4 Metodologia de Identificação</a>
-          <a class="toc-item l2" href="tipos.html">1.5 Tipos de Chip</a>
-          <div class="toc-sep"></div>
-          <a class="toc-item l1" href="fabricantes.html">2. Identificação por Fabricante</a>
-          <a class="toc-item l2" href="fab-samsung.html">2.1 Samsung</a>
-          <a class="toc-item l2" href="fab-hynix.html">2.2 SK Hynix</a>
-          <a class="toc-item l2" href="fab-micron.html">2.3 Micron</a>
-          <a class="toc-item l2" href="fab-elpida.html">2.4 Elpida Memory</a>
-          <a class="toc-item l2" href="fab-toshiba.html">2.5 Toshiba / Kioxia</a>
-          <a class="toc-item l2" href="fab-sandisk.html">2.6 SanDisk / WD</a>
-          <a class="toc-item l2" href="fab-nanya.html">2.7 Nanya Technology</a>
-          <a class="toc-item l2" href="fab-kingston.html">2.8 Kingston</a>
-          <a class="toc-item l2" href="fab-rayson.html">2.9 Rayson</a>
-          <a class="toc-item l2" href="fab-issi.html">2.10 ISSI</a>
-          <a class="toc-item l2" href="fab-gigadevice.html">2.11 GigaDevice</a>
-          <div class="toc-sep"></div>
-          <a class="toc-item l1" href="prefixos.html">3. Tabela Rápida de Prefixos</a>
-          <div class="toc-sep"></div>
-          <a class="toc-item l1" href="remarked.html">4. Chips Remarked / Counterfeit</a>
-          <div class="toc-sep"></div>
-          <a class="toc-item l1" href="viabilidade.html">5. Hierarquia de Viabilidade</a>
-          <div class="toc-sep"></div>
-          <a class="toc-item l1" href="soc.html">6. CPUs / SoCs</a>
-          <div class="toc-sep"></div>
-          <a class="toc-item l1" href="encerramento.html">7. Encerramento</a>
-        </div>
-      </nav>
-      <!-- Main content -->
-      <main id="content">
-        <!-- HERO -->
-<div class="wtc-search-hero">
-  <div class="wtc-hero-phrase">Guia de Identificação de Chips IC para o mercado de refurbishing</div>
-  <div class="wtc-search-tagline">Identifique qualquer chip pelo prefixo gravado no encapsulamento</div>
-
-  <div id="prefix-search-box">
-    <span id="prefix-search-icon">&#8981;</span>
-    <input
-      id="prefix-input"
-      type="text"
-      placeholder="Digite o prefixo... ex: KLM, H26M, TYBE, K3LK"
-      autocomplete="off"
-      spellcheck="false"
-    />
+    </div>
+    <button class="theme-btn" id="theme-btn" type="button" title="Alternar modo">
+      <!-- Ícone lua (modo claro → clicar para escuro) -->
+      <svg class="icon-moon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <!-- Ícone sol (modo escuro → clicar para claro) -->
+      <svg class="icon-sun" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <span class="theme-label" id="theme-label">Modo escuro</span>
+    </button>
+    <div class="top-search" role="search">
+      <input
+        id="top-search-input"
+        type="text"
+        placeholder="Buscar prefixo… ex: KLM, H26N, TYBE"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <span class="kbd-hint">Ctrl + K</span>
+      <button id="top-search-btn">Buscar</button>
+      <div id="top-search-results">
+        <div id="top-search-empty">Nenhum prefixo encontrado.</div>
+      </div>
+    </div>
   </div>
-  <div id="prefix-results"></div>
-  <div id="prefix-hint">84 prefixos catalogados &nbsp;&middot;&nbsp; Samsung &middot; SK Hynix &middot; Micron &middot; Elpida &middot; Toshiba &middot; SanDisk &middot; Nanya &middot; Kingston &middot; Rayson &middot; ISSI &middot; GigaDevice</div>
+</header>
+
+<!-- ── LAYOUT ───────────────────────────────────────────────── -->
+<div class="layout">
+
+  <!-- SIDENAV -->
+  <aside class="sidenav" aria-label="Mapa do documento">
+    <div class="sidenav-header">
+      <span>Mapa do documento</span>
+      <span>»</span>
+    </div>
+
+    <h4>Apresentação</h4>
+    <ul>
+      <li><a href="index.html">Início</a></li>
+    </ul>
+
+    <h4>1. Introdução</h4>
+    <ul>
+      <li class="sub"><a href="aprender.html">1.1 O que você vai aprender</a></li>
+      <li class="sub"><a href="o-que-e-chip.html">1.2 O que é um Chip</a></li>
+      <li class="sub"><a href="evolucao.html">1.3 Evolução: do pino à esfera</a></li>
+      <li class="sub"><a href="metodologia.html">1.4 Metodologia de Identificação</a></li>
+      <li class="sub"><a href="tipos.html">1.5 Tipos de Chip</a></li>
+    </ul>
+
+    <h4>Conteúdo</h4>
+    <ul>
+      <li class="section-title"><a href="fabricantes.html">2. Identificação por Fabricante</a></li>
+      <li class="sub"><a href="fab-samsung.html">2.1 Samsung</a></li>
+      <li class="sub"><a href="fab-hynix.html">2.2 SK Hynix</a></li>
+      <li class="sub"><a href="fab-micron.html">2.3 Micron</a></li>
+      <li class="sub"><a href="fab-elpida.html">2.4 Elpida Memory</a></li>
+      <li class="sub"><a href="fab-toshiba.html">2.5 Toshiba / Kioxia</a></li>
+      <li class="sub"><a href="fab-sandisk.html">2.6 SanDisk / WD</a></li>
+      <li class="sub"><a href="fab-nanya.html">2.7 Nanya Technology</a></li>
+      <li class="sub"><a href="fab-kingston.html">2.8 Kingston</a></li>
+      <li class="sub"><a href="fab-rayson.html">2.9 Rayson</a></li>
+      <li class="sub"><a href="fab-issi.html">2.10 ISSI</a></li>
+      <li class="sub"><a href="fab-gigadevice.html">2.11 GigaDevice</a></li>
+      <li class="section-title"><a href="prefixos.html">3. Tabela Rápida de Prefixos</a></li>
+      <li class="section-title"><a href="remarked.html">4. Chips Remarked / Counterfeit</a></li>
+      <li class="section-title"><a href="viabilidade.html">5. Hierarquia de Viabilidade</a></li>
+      <li class="section-title"><a href="soc.html">6. CPUs / SoCs</a></li>
+      <li class="section-title"><a href="encerramento.html">7. Encerramento</a></li>
+    </ul>
+
+    <div class="sidenav-foot">Revisão 4.2 · maio 2026</div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="article" id="content">
+    <!-- HERO -->
+<div class="hero">
+  <h1>Guia de Identificação de Chips IC<br>para o mercado de refurbishing</h1>
+  <p class="lede">Identifique qualquer chip pelo prefixo gravado no encapsulamento</p>
+
+  <form class="big-search" role="search" onsubmit="event.preventDefault();">
+    <span class="icon" aria-hidden="true">⌕</span>
+    <input id="big-search-input" type="text"
+      placeholder="Digite o prefixo… ex: KLM, H26M, TYBE, K3LK"
+      autocomplete="off" spellcheck="false" />
+    <div id="big-search-results"></div>
+  </form>
+
+  <p class="quicklinks">
+    <span class="count">84 prefixos catalogados</span>
+  </p>
 </div>
 
-<!-- GRID PRINCIPAL -->
-<div class="wtc-index-grid">
+<!-- 3-CARD GRID -->
+<section class="cards">
 
-  <!-- SOBRE -->
-  <div class="wtc-panel wtc-panel-sobre">
-    <div class="wtc-panel-title">Sobre esta documentação</div>
-    <div class="wtc-panel-body">
+  <article class="card">
+    <h3>Sobre esta documentação</h3>
+    <div class="card-body">
       <p>
         Guia prático para identificar, classificar e avaliar chips de memória e
         processamento vindos de placas descartadas — de <strong>DDR1</strong> até
-        <strong>UFS 4.0 e LPDDR5X</strong>. Construído para operadores de triagem,
-        analistas e compradores do mercado de refurbishing e reciclagem eletrônica.
+        <strong>UFS 4.0</strong> e <strong>LPDDR5X</strong>. Construído para
+        operadores de triagem, analistas e compradores do mercado de refurbishing
+        e reciclagem eletrônica.
       </p>
       <p>
         Cobre Part Numbers de <strong>11 fabricantes ativos</strong> e 1 histórico
-        (Elpida), com tabelas de decodificação, metodologia de detecção de chips
-        remarked e hierarquia de viabilidade comercial.
+        (Elpida, absorvida pela Micron), com tabelas de decodificação, metodologia
+        de detecção de chips remarked e hierarquia de viabilidade comercial.
       </p>
-      <a href="aprender.html" class="wtc-start-btn">O que você vai aprender &#8594;</a>
-      <div class="wtc-last-update">Última atualização: maio de 2026</div>
+      <a class="cta" href="aprender.html">O que você vai aprender →</a>
+      <div class="updated">Última atualização: maio de 2026</div>
     </div>
-  </div>
+  </article>
 
-  <!-- FABRICANTES -->
-  <div class="wtc-panel">
-    <div class="wtc-panel-title">Fabricantes cobertos</div>
-    <div class="wtc-panel-body">
-      <ul class="wtc-fab-list">
-        <li><a href="fab-samsung.html"><strong>Samsung</strong></a> — eMMC, eMCP, uMCP, UFS, LPDDR, DDR</li>
-        <li><a href="fab-hynix.html"><strong>SK Hynix</strong></a> — eMMC, eMCP, UFS, LPDDR, DDR, GDDR</li>
-        <li><a href="fab-micron.html"><strong>Micron</strong></a> — LPDDR, DDR, NAND, GDDR</li>
-        <li><a href="fab-elpida.html"><strong>Elpida</strong></a> — DDR2/DDR3 (legado, absorvida pela Micron)</li>
-        <li><a href="fab-toshiba.html"><strong>Toshiba / Kioxia</strong></a> — eMMC, UFS, NAND</li>
-        <li><a href="fab-sandisk.html"><strong>SanDisk / WD</strong></a> — eMMC, UFS, NAND</li>
-        <li><a href="fab-nanya.html"><strong>Nanya Technology</strong></a> — DDR2/DDR3/DDR4</li>
-        <li><a href="fab-kingston.html"><strong>Kingston</strong></a> — DDR, módulos de memória</li>
-        <li><a href="fab-rayson.html"><strong>Rayson</strong></a> — NOR Flash, eMMC de baixo custo</li>
-        <li><a href="fab-issi.html"><strong>ISSI</strong></a> — SRAM, NOR Flash, DRAM</li>
-        <li><a href="fab-gigadevice.html"><strong>GigaDevice</strong></a> — NOR Flash, eMMC</li>
-      </ul>
+  <article class="card">
+    <h3>Fabricantes cobertos</h3>
+    <div class="card-body">
+      <div class="row-list">
+        <div class="row"><a class="key" href="fab-samsung.html">Samsung</a><span class="em-dash">—</span><span class="desc">eMMC, eMCP, uMCP, UFS, LPDDR, DDR</span></div>
+        <div class="row"><a class="key" href="fab-hynix.html">SK Hynix</a><span class="em-dash">—</span><span class="desc">eMMC, eMCP, UFS, LPDDR, DDR, GDDR</span></div>
+        <div class="row"><a class="key" href="fab-micron.html">Micron</a><span class="em-dash">—</span><span class="desc">LPDDR, DDR, NAND, GDDR</span></div>
+        <div class="row"><a class="key" href="fab-elpida.html">Elpida</a><span class="em-dash">—</span><span class="desc">DDR2/DDR3 (legado, absorvida pela Micron)</span></div>
+        <div class="row"><a class="key" href="fab-toshiba.html">Toshiba / Kioxia</a><span class="em-dash">—</span><span class="desc">eMMC, UFS, NAND</span></div>
+        <div class="row"><a class="key" href="fab-sandisk.html">SanDisk / WD</a><span class="em-dash">—</span><span class="desc">eMMC, UFS, NAND</span></div>
+        <div class="row"><a class="key" href="fab-nanya.html">Nanya Technology</a><span class="em-dash">—</span><span class="desc">DDR2/DDR3/DDR4</span></div>
+        <div class="row"><a class="key" href="fab-kingston.html">Kingston</a><span class="em-dash">—</span><span class="desc">DDR, módulos de memória</span></div>
+        <div class="row"><a class="key" href="fab-rayson.html">Rayson</a><span class="em-dash">—</span><span class="desc">NOR Flash, eMMC de baixo custo</span></div>
+        <div class="row"><a class="key" href="fab-issi.html">ISSI</a><span class="em-dash">—</span><span class="desc">SRAM, NOR Flash, DRAM</span></div>
+        <div class="row"><a class="key" href="fab-gigadevice.html">GigaDevice</a><span class="em-dash">—</span><span class="desc">NOR Flash, eMMC</span></div>
+      </div>
     </div>
-  </div>
+  </article>
 
-  <!-- TIPOS DE CHIP -->
-  <div class="wtc-panel">
-    <div class="wtc-panel-title">Tipos de chip cobertos</div>
-    <div class="wtc-panel-body">
-      <ul class="wtc-fab-list">
-        <li><strong>eMMC</strong> — Armazenamento NAND gerenciado (4.4 → 5.1)</li>
-        <li><strong>eMCP</strong> — eMMC + LPDDR em package único</li>
-        <li><strong>uMCP</strong> — UFS + LPDDR5 em package único</li>
-        <li><strong>UFS 2.x / 3.x / 4.0</strong> — Armazenamento de alta velocidade</li>
-        <li><strong>LPDDR3 / LPDDR4(X) / LPDDR5(X)</strong> — RAM de mobile</li>
-        <li><strong>DDR3 / DDR4 / DDR5</strong> — RAM de notebook e desktop</li>
-        <li><strong>GDDR5 / GDDR6</strong> — RAM de GPU</li>
-        <li><strong>NAND Flash (raw)</strong> — Armazenamento bruto (SSD, pendrive)</li>
-        <li><strong>NOR Flash</strong> — Firmware de roteadores, TVs, STBs</li>
-        <li><strong>SRAM</strong> — Cache em equipamentos industriais</li>
-        <li><strong>CPU / SoC</strong> — MediaTek, Qualcomm, UNISOC, Allwinner</li>
-      </ul>
+  <article class="card">
+    <h3>Tipos de chip cobertos</h3>
+    <div class="card-body">
+      <div class="row-list">
+        <div class="row"><span class="key">eMMC</span><span class="em-dash">—</span><span class="desc">Armazenamento NAND gerenciado (4.4 → 5.1)</span></div>
+        <div class="row"><span class="key">eMCP</span><span class="em-dash">—</span><span class="desc">eMMC + LPDDR em package único</span></div>
+        <div class="row"><span class="key">uMCP</span><span class="em-dash">—</span><span class="desc">UFS + LPDDR5 em package único</span></div>
+        <div class="row"><span class="key">UFS 2.x / 3.x / 4.0</span><span class="em-dash">—</span><span class="desc">Armazenamento de alta velocidade</span></div>
+        <div class="row"><span class="key">LPDDR3 / LPDDR4(X) / LPDDR5(X)</span><span class="em-dash">—</span><span class="desc">RAM de mobile</span></div>
+        <div class="row"><span class="key">DDR3 / DDR4 / DDR5</span><span class="em-dash">—</span><span class="desc">RAM de notebook e desktop</span></div>
+        <div class="row"><span class="key">GDDR5 / GDDR6</span><span class="em-dash">—</span><span class="desc">RAM de GPU</span></div>
+        <div class="row"><span class="key">NAND Flash (raw)</span><span class="em-dash">—</span><span class="desc">Armazenamento bruto (SSD, pendrive)</span></div>
+        <div class="row"><span class="key">NOR Flash</span><span class="em-dash">—</span><span class="desc">Firmware de roteadores, TVs, STBs</span></div>
+        <div class="row"><span class="key">SRAM</span><span class="em-dash">—</span><span class="desc">Cache em equipamentos industriais</span></div>
+        <div class="row"><span class="key">CPU / SoC</span><span class="em-dash">—</span><span class="desc">MediaTek, Qualcomm, UNISOC, Allwinner</span></div>
+      </div>
     </div>
-  </div>
+  </article>
 
-</div>
+</section>
 
 <script>
 (function() {
   var DATA = [{"prefix": "KLM...", "fab": "Samsung", "tipo": "eMMC (Armazenamento Flash)"}, {"prefix": "KMF / KMN / KMQ / KMR / KMS...", "fab": "Samsung", "tipo": "eMCP (eMMC + LPDDR3/4/4X)"}, {"prefix": "KMD / KME / KMG / KML / KMV / KMW...", "fab": "Samsung", "tipo": "uMCP (UFS + LPDDR4/4X/5/5X)"}, {"prefix": "KLU...", "fab": "Samsung", "tipo": "UFS (Armazenamento Avançado 2.0 a 4.0)"}, {"prefix": "KUS...", "fab": "Samsung", "tipo": "BGA NVMe SSD (Armazenamento Premium)"}, {"prefix": "K3KL / K3LK...", "fab": "Samsung", "tipo": "LPDDR5 / LPDDR5X (Mobile)"}, {"prefix": "K4F / K4U / K3U...", "fab": "Samsung", "tipo": "LPDDR4 / LPDDR4X (Mobile)"}, {"prefix": "K3Q...", "fab": "Samsung", "tipo": "LPDDR3 (Mobile)"}, {"prefix": "K4P...", "fab": "Samsung", "tipo": "LPDDR2 (Mobile)"}, {"prefix": "K4M / K4X...", "fab": "Samsung", "tipo": "LPDDR1 / Mobile SDR"}, {"prefix": "K4R...", "fab": "Samsung", "tipo": "DDR5 (RAM dedicada)"}, {"prefix": "K4A...", "fab": "Samsung", "tipo": "DDR4 (RAM dedicada)"}, {"prefix": "K4B...", "fab": "Samsung", "tipo": "DDR3 / DDR3L (RAM dedicada)"}, {"prefix": "K4T...", "fab": "Samsung", "tipo": "DDR2 (RAM dedicada)"}, {"prefix": "K4H...", "fab": "Samsung", "tipo": "DDR1 (RAM dedicada)"}, {"prefix": "K4Z...", "fab": "Samsung", "tipo": "GDDR6 / GDDR6X (Vídeo / GPU)"}, {"prefix": "K4G...", "fab": "Samsung", "tipo": "GDDR5 / GDDR5X (Vídeo / GPU)"}, {"prefix": "K4N / K4J / K4U...", "fab": "Samsung", "tipo": "GDDR2 / GDDR3 / GDDR4 (Vídeo / GPU)"}, {"prefix": "K9...", "fab": "Samsung", "tipo": "NAND Flash bruta"}, {"prefix": "K5 / K8...", "fab": "Samsung", "tipo": "NOR Flash / Mask ROM"}, {"prefix": "KAT...", "fab": "Samsung", "tipo": "ePoP (Ciclo Reacondicional - Atenção Extrema)"}, {"prefix": "S5E...", "fab": "Samsung", "tipo": "Exynos SoC (Processador)"}, {"prefix": "S5K...", "fab": "Samsung", "tipo": "ISOCELL (Módulos de Câmera)"}, {"prefix": "S2M / S2A / S2D...", "fab": "Samsung", "tipo": "PMIC (Gerenciamento de Energia)"}, {"prefix": "K4S...", "fab": "Samsung", "tipo": "SDRAM (Fluxo de residuo)"}, {"prefix": "MTFC... / Códigos NW...", "fab": "Micron", "tipo": "eMMC"}, {"prefix": "MT29T / MT29V...", "fab": "Micron", "tipo": "eMCP / uMCP"}, {"prefix": "MT62F...", "fab": "Micron", "tipo": "LPDDR5 / 5X"}, {"prefix": "MT53E / MT53D...", "fab": "Micron", "tipo": "LPDDR4 / 4X"}, {"prefix": "MT52L...", "fab": "Micron", "tipo": "LPDDR3"}, {"prefix": "MT60B...", "fab": "Micron", "tipo": "DDR5 (RAM dedicada)"}, {"prefix": "MT40A... / Códigos D9...", "fab": "Micron", "tipo": "DDR4 (RAM dedicada)"}, {"prefix": "MT41J / MT41K...", "fab": "Micron", "tipo": "DDR3 / DDR3L"}, {"prefix": "MT47H...", "fab": "Micron", "tipo": "DDR2"}, {"prefix": "MT46V...", "fab": "Micron", "tipo": "DDR1 (Fluxo de refino)"}, {"prefix": "MT48LC...", "fab": "Micron", "tipo": "SDRAM (Fluxo de refino)"}, {"prefix": "MT51 / MT61...", "fab": "Micron", "tipo": "GDDR5 a GDDR6X (Vídeo)"}, {"prefix": "MT29F...", "fab": "Micron", "tipo": "NAND bruta"}, {"prefix": "EDF...", "fab": "Elpida", "tipo": "LPDDR3"}, {"prefix": "EDB / EDA... (Abrev: B4)\n                Elpida\n                LPDDR2\n              \n              \n                EDJ... (Abrev: J4)\n                Elpida\n                DDR3 / DDR3L\n              \n              \n                EDE...", "fab": "Elpida", "tipo": "DDR2"}, {"prefix": "EDD...", "fab": "Elpida", "tipo": "DDR1 (Fluxo de refino)"}, {"prefix": "EDS...", "fab": "Elpida", "tipo": "SDRAM (Fluxo de refino)"}, {"prefix": "EDW...", "fab": "Elpida", "tipo": "GDDR5 (Vídeo)"}, {"prefix": "THGBM / THGBF / THGBJG...", "fab": "Toshiba / Kioxia", "tipo": "eMMC"}, {"prefix": "TYBB / TYBC...", "fab": "Toshiba / Kioxia", "tipo": "eMCP (com LPDDR2)"}, {"prefix": "TYBD / TYBE...", "fab": "Toshiba / Kioxia", "tipo": "eMCP (com LPDDR3)"}, {"prefix": "TYBF...", "fab": "Toshiba / Kioxia", "tipo": "eMCP (com LPDDR4)"}, {"prefix": "TYCO...", "fab": "Toshiba / Kioxia", "tipo": "eMCP (com LPDDR4X)"}, {"prefix": "TYDO...", "fab": "Toshiba / Kioxia", "tipo": "uMCP (com LPDDR5)"}, {"prefix": "THGJF / THGUF...", "fab": "Toshiba / Kioxia", "tipo": "UFS"}, {"prefix": "TH58 / TC58...", "fab": "Toshiba / Kioxia", "tipo": "NAND bruta"}, {"prefix": "SDIN / SDMAG...", "fab": "SanDisk / WD", "tipo": "eMMC (iNAND)"}, {"prefix": "SDEM / SDAD / SD7D...", "fab": "SanDisk / WD", "tipo": "eMCP"}, {"prefix": "SDHQB / SDIND...", "fab": "SanDisk / WD", "tipo": "UFS"}, {"prefix": "SDT / SDZ...", "fab": "SanDisk / WD", "tipo": "NAND bruta"}, {"prefix": "NT5W...", "fab": "Nanya", "tipo": "DDR5 (RAM dedicada)"}, {"prefix": "NT5AD / NT5AN...", "fab": "Nanya", "tipo": "DDR4 (RAM dedicada)"}, {"prefix": "NT5C / NT5CB / NT5CC...", "fab": "Nanya", "tipo": "DDR3 / DDR3L"}, {"prefix": "NT5TU...", "fab": "Nanya", "tipo": "DDR2"}, {"prefix": "NT5DS...", "fab": "Nanya", "tipo": "DDR1 (Fluxo de refino)"}, {"prefix": "NT5SV / NT5S...", "fab": "Nanya", "tipo": "SDRAM (Fluxo de refino)"}, {"prefix": "NT6AC...", "fab": "Nanya", "tipo": "LPDDR5"}, {"prefix": "NT6AN / NT6AH / NT6AP...", "fab": "Nanya", "tipo": "LPDDR4 / LPDDR4X"}, {"prefix": "NT6CL / NT6TL...", "fab": "Nanya", "tipo": "LPDDR3"}, {"prefix": "EMMC...", "fab": "Kingston", "tipo": "eMMC (Remarcado)"}, {"prefix": "EMCP / 08EMCP...", "fab": "Kingston", "tipo": "eMCP (Remarcado)"}, {"prefix": "D25 / D51...", "fab": "Kingston", "tipo": "DDR dedicada (Remarcado)"}, {"prefix": "KVR / KSM / KF...", "fab": "Kingston", "tipo": "ATENÇÃO: Etiqueta de módulo. Ler o BGA."}, {"prefix": "RS1GD4 / RS2GD4...", "fab": "Rayson", "tipo": "DDR4 (Baixa viabilidade)"}, {"prefix": "RS1GD3 / RS2GD3...", "fab": "Rayson", "tipo": "DDR3 (Baixa viabilidade)"}, {"prefix": "RSLPD3 / RSLPD4...", "fab": "Rayson", "tipo": "LPDDR3 / 4 (Baixa viabilidade)"}, {"prefix": "RSEMC...", "fab": "Rayson", "tipo": "eMMC (Baixa viabilidade)"}, {"prefix": "IS43 / IS46...", "fab": "ISSI", "tipo": "DDR1 a DDR4 (Industrial/Automotivo)"}, {"prefix": "IS43LD / IS46LQ...", "fab": "ISSI", "tipo": "LPDDR2 a LPDDR4"}, {"prefix": "IS51 / IS52...", "fab": "ISSI", "tipo": "eMMC (Alta durabilidade)"}, {"prefix": "IS34 / IS35...", "fab": "ISSI", "tipo": "NAND bruta"}, {"prefix": "IS25 / IS29...", "fab": "ISSI", "tipo": "NOR Flash (SPI)"}, {"prefix": "IS61 / IS62...", "fab": "ISSI", "tipo": "SRAM"}, {"prefix": "GD25...", "fab": "GigaDevice", "tipo": "NOR Flash SPI"}, {"prefix": "GD5F...", "fab": "GigaDevice", "tipo": "SPI NAND"}, {"prefix": "GD9...", "fab": "GigaDevice", "tipo": "Parallel NAND"}, {"prefix": "GDQ...", "fab": "GigaDevice", "tipo": "DDR3 / DDR4"}, {"prefix": "GDB...", "fab": "GigaDevice", "tipo": "LPDDR4 / 4X"}, {"prefix": "GD32...", "fab": "GigaDevice", "tipo": "MCU (Microcontrolador ARM/RISC-V)"}];
-  var input   = document.getElementById('prefix-input');
-  var results = document.getElementById('prefix-results');
-  var hint    = document.getElementById('prefix-hint');
+  var input   = document.getElementById('big-search-input');
+  var results = document.getElementById('big-search-results');
 
   function normalize(s) { return s.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
 
@@ -188,54 +233,124 @@
     if (norm.length < 2) {
       results.innerHTML = '';
       results.style.display = 'none';
-      hint.style.display = 'block';
       return;
     }
     var hits = DATA.filter(function(r) { return match(r, norm); });
-    hint.style.display = 'none';
     if (hits.length === 0) {
-      results.innerHTML = '<div class="pr-empty">Nenhum prefixo encontrado. <a href="prefixos.html">Ver tabela completa</a></div>';
-      results.style.display = 'block';
-      return;
+      results.innerHTML = '<div class="pr-empty">Nenhum prefixo encontrado para "<strong>' + q + '</strong>". <a href="prefixos.html">Ver tabela completa →</a></div>';
+    } else {
+      var MAX = 14;
+      var header = '<div class="pr-header"><span>Prefixo</span><span>Fabricante</span><span>Tipo / Categoria</span></div>';
+      var rows = hits.slice(0, MAX).map(function(r) {
+        return '<div class="pr-row">'
+          + '<span class="pr-prefix">' + r.prefix + '</span>'
+          + '<span class="pr-fab">' + r.fab + '</span>'
+          + '<span class="pr-tipo">' + r.tipo + '</span>'
+          + '</div>';
+      }).join('');
+      var more = hits.length > MAX
+        ? hits.length - MAX + ' ocultos · '
+        : '';
+      var footer = '<div class="pr-footer">' + more + '<a href="prefixos.html">Ver tabela completa de prefixos →</a></div>';
+      results.innerHTML = header + rows + footer;
     }
-    results.innerHTML = hits.map(function(r) {
-      return '<div class="pr-row">'
-        + '<span class="pr-prefix">' + r.prefix + '</span>'
-        + '<span class="pr-fab">' + r.fab + '</span>'
-        + '<span class="pr-tipo">' + r.tipo + '</span>'
-        + '</div>';
-    }).join('');
     results.style.display = 'block';
   }
 
-  input.addEventListener('input', function() { render(this.value); });
-  input.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') { this.value = ''; render(''); }
-  });
+  if (input) {
+    input.addEventListener('input', function() { render(this.value); });
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { this.value = ''; render(''); this.blur(); }
+    });
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.big-search')) {
+        results.style.display = 'none';
+      }
+    });
+  }
 })();
 </script>
 
-        <div class="page-nav">
+    <div class="page-nav">
 <span></span>
 <a class="page-nav-btn next" href="aprender.html">1.1 O que você vai aprender →</a>
 </div>
-      </main>
-    </div>
-    <script src="script.js"></script>
-    <script>
-      // Mark active page in sidebar
-      (function() {
-        var pageId = 'index';
-        var links = document.querySelectorAll('#toc .toc-item');
-        links.forEach(function(link) {
-          var href = link.getAttribute('href');
-          if (!href) return;
-          var file = href.split('#')[0];
-          if (file === pageId + '.html' || (pageId === 'index' && file === 'index.html')) {
-            link.classList.add('active');
-          }
-        });
-      })();
-    </script>
-  </body>
+  </div>
+
+</div>
+
+<!-- ── FOOTER ───────────────────────────────────────────────── -->
+<footer class="page-foot">
+  <div class="page-foot-inner">
+    WhatTheChip · Revisão 4.2 · Última atualização maio de 2026
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+(function() {
+  var pageId = 'index';
+
+  // Mark active sidebar link
+  document.querySelectorAll('.sidenav a').forEach(function(link) {
+    var href = link.getAttribute('href');
+    if (!href) return;
+    var file = href.split('#')[0];
+    if (file === pageId + '.html' || (pageId === 'index' && file === 'index.html')) {
+      link.classList.add('active');
+    }
+  });
+
+  // Ctrl+K focuses topbar search
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      var t = document.getElementById('top-search-input');
+      if (t) { t.focus(); t.select(); }
+    }
+  });
+
+  // Language selector dropdown
+  var langBtn  = document.getElementById('lang-btn');
+  var langMenu = document.getElementById('lang-menu');
+  if (langBtn && langMenu) {
+    langBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var open = langMenu.style.display === 'block';
+      langMenu.style.display = open ? 'none' : 'block';
+      langBtn.classList.toggle('lang-open', !open);
+    });
+    document.addEventListener('click', function() {
+      langMenu.style.display = 'none';
+      langBtn.classList.remove('lang-open');
+    });
+  }
+
+  // Dark mode toggle
+  var themeBtn   = document.getElementById('theme-btn');
+  var themeLabel = document.getElementById('theme-label');
+
+  function applyTheme(dark, save) {
+    if (dark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      if (themeLabel) themeLabel.textContent = 'Modo claro';
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      if (themeLabel) themeLabel.textContent = 'Modo escuro';
+    }
+    if (save) localStorage.setItem('wtc_theme', dark ? 'dark' : 'light');
+  }
+
+  // Sync label with current state on load (theme already applied by <head> script)
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark', false);
+
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function() {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
+    });
+  }
+})();
+</script>
+
+</body>
 </html>

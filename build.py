@@ -60,7 +60,6 @@ PAGES = [
     {'file': 'viabilidade',  'title': '5. Hierarquia de Viabilidade — WhatTheChip?'},
     {'file': 'soc',          'title': '6. CPUs / SoCs — WhatTheChip?'},
     {'file': 'encerramento', 'title': 'Encerramento — WhatTheChip?'},
-    {'file': 'mapa',         'title': 'Mapa do Site — WhatTheChip?'},
     {'file': 'contato',      'title': 'Contato — WhatTheChip?'},
 ]
 

@@ -14,12 +14,10 @@
 
             <div
               class="img-wrap"
-              style="
-                float: left;
+              style="float: left;
                 width: 180px;
                 margin: 5px 20px 15px 0;
-                text-align: center;
-              "
+                text-align: center"
             >
               <img
                 src="sk_chip.png"
@@ -30,7 +28,7 @@
                   border-radius: 6px;
                   padding: 5px;
                   box-sizing: border-box;
-                  background-color: #fff;
+                  background-color: var(--paper);
                 "
               />
             </div>
@@ -187,8 +185,91 @@
 <!-- ========================================== -->
 <h4 id="hynix-sdram">Memória SDRAM — Prefixo <code>HY57...</code> &nbsp;<small style="font-weight: normal; color: #666">(Obsoleta / Era Hyundai)</small></h4>
 
-<p style="font-family: sans-serif; font-size: 15px; color: #333; line-height: 1.6; margin-bottom: 20px;">
+<p>
   <strong>O que é e como classificar:</strong> A SDRAM é a tecnologia precursora de todas as memórias da família DDR, amplamente utilizada em eletrônicos do final dos anos 90 e início dos anos 2000 (como modems antigos, painéis de controle e PCs antigos). Visualmente, esses chips são fáceis de identificar: a esmagadora maioria possui encapsulamento TSOP II, um retângulo de plástico comprido e fino com "perninhas" (pinos de metal) aparentes nas duas bordas laterais maiores. Como não possuem aplicação prática em reparos de eletrônicos modernos, a regra operacional é absoluta: ao ler o prefixo <code>HY57</code>, envie o componente ou a placa inteira diretamente para a caixa de <strong>residuo</strong> (fluxo de refino/moagem de metais). Não perca tempo de bancada avaliando o estado ou alinhamento dos pinos.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr class="decode-gabarito">
+        <th>HY</th>
+        <th>57</th>
+        <th>V</th>
+        <th>64</th>
+        <th>16</th>
+        <th>20</th>
+        <th>F</th>
+        <th>T</th>
+        <th>-</th>
+        <th>H</th>
+      </tr>
+    </thead>
+    <tbody >
+      <tr class="decode-labels">
+        <td>FAB</td>
+        <td>TIPO</td>
+        <td>TENSÃO</td>
+        <td>DENSIDADE</td>
+        <td>ORG</td>
+        <td>BANC</td>
+        <td>REV</td>
+        <td>ENC</td>
+        <td>-</td>
+        <td>VEL</td>
+      </tr>
+      <tr class="decode-example">
+        <td>Hyundai</td>
+        <td>57=SDRAM</td>
+        <td>V=3.3V (W=2.5V)</td>
+        <td>64=64Mb</td>
+        <td>16=x16</td>
+        <td>20=4 Bancos</td>
+        <td>F=Sexta Rev.</td>
+        <td>T=TSOP</td>
+        <td>-</td>
+        <td>H=133MHz</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr >
+        <th>Prefixo (Base)</th>
+        <th>Capacidade / Organização</th>
+        <th>Exemplos Extraídos / Padrões</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>HY57V...</code></td>
+        <td >SDRAM Padrão (3.3V) - Densidade comum de 16Mb a 256Mb</td>
+        <td><code>HY57V641620FTP-H</code>, <code>HY57V281620HCT-H</code></td>
+      </tr>
+      <tr>
+        <td><code>HY57W...</code></td>
+        <td >SDRAM Low Voltage (2.5V) - Menor dissipação térmica</td>
+        <td><code>HY57W641620...</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="nota" >
+  <strong>Diretriz Operacional de Triagem:</strong> As memórias SDRAM foram descontinuadas da indústria principal há décadas. O maior risco operacional na esteira é o classificador confundir a carcaça TSOP (com pinos laterais) da SDRAM com a carcaça TSOP de memórias Flash NAND antigas. O treinamento visual resolve isso rápido: se o código começar com <code>HY57</code>, é RAM obsoleta (caixa de <strong>residuo</strong> imediatamente). Se começar com <code>HY27</code>, trata-se de NAND Flash, o que exige um tratamento de extração completamente diferente.
+</div>
+
+<!-- ========================================== -->
+<!-- TECNOLOGIA: DRAM LEGACY (DDR1)             -->
+<!-- ========================================== -->
+<h4 id="hynix-ddr1">Memória DDR1 — Prefixo <code>HY5D...</code> &nbsp;<small style="font-weight: normal; color: #666">(Obsoleta / Era Hyundai)</small></h4>
+
+<p style="font-family: sans-serif; font-size: 15px; color: #333; line-height: 1.6; margin-bottom: 20px;">
+  <strong>O que é e como classificar:</strong> A DDR1 (Double Data Rate de primeira geração) é a sucessora direta da SDRAM, dominando o mercado de computadores e equipamentos de rede no início dos anos 2000. Diferente da SDRAM, ela transfere dados duas vezes por ciclo de clock. Fisicamente, a grande maioria dos chips dessa família ainda apresenta o formato retangular TSOP II (com pinos metálicos nas bordas), embora os de maior densidade já começassem a usar pacotes BGA grosseiros. Como a banda de transferência e a capacidade são extremamente baixas para os padrões atuais, essa tecnologia não possui qualquer aplicação no mercado <strong>reacondicional</strong>. Ao identificar os prefixos iniciando em <code>HY5D</code>, o operador deve destinar o componente sem hesitação para a caixa de <strong>residuo</strong> (fluxo de refino de metais preciosos).
 </p>
 
 <!-- TABELA DE ANATOMIA -->
@@ -197,15 +278,16 @@
     <thead>
       <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
         <th style="padding: 8px; text-align: center;">HY</th>
-        <th style="padding: 8px; text-align: center;">57</th>
-        <th style="padding: 8px; text-align: center;">V</th>
-        <th style="padding: 8px; text-align: center;">64</th>
+        <th style="padding: 8px; text-align: center;">5D</th>
+        <th style="padding: 8px; text-align: center;">U</th>
+        <th style="padding: 8px; text-align: center;">28</th>
         <th style="padding: 8px; text-align: center;">16</th>
-        <th style="padding: 8px; text-align: center;">20</th>
-        <th style="padding: 8px; text-align: center;">F</th>
+        <th style="padding: 8px; text-align: center;">22</th>
+        <th style="padding: 8px; text-align: center;">C</th>
         <th style="padding: 8px; text-align: center;">T</th>
+        <th style="padding: 8px; text-align: center;">P</th>
         <th style="padding: 8px; text-align: center;">-</th>
-        <th style="padding: 8px; text-align: center;">H</th>
+        <th style="padding: 8px; text-align: center;">D43</th>
       </tr>
     </thead>
     <tbody style="font-family: sans-serif;">
@@ -213,25 +295,27 @@
         <td style="padding: 6px;">FAB</td>
         <td style="padding: 6px;">TIPO</td>
         <td style="padding: 6px;">TENSÃO</td>
-        <td style="padding: 6px;">DENSIDADE</td>
-        <td style="padding: 6px;">ORG</td>
+        <td style="padding: 6px;">DENS.</td>
+        <td style="padding: 6px;">ORG.</td>
         <td style="padding: 6px;">BANC</td>
         <td style="padding: 6px;">REV</td>
         <td style="padding: 6px;">ENC</td>
+        <td style="padding: 6px;">LIGA</td>
         <td style="padding: 6px;">-</td>
         <td style="padding: 6px;">VEL</td>
       </tr>
       <tr style="font-size: 0.85em; color: #333;">
-        <td style="padding: 6px;">Hyundai</td>
-        <td style="padding: 6px;">57=SDRAM</td>
-        <td style="padding: 6px;">V=3.3V (W=2.5V)</td>
-        <td style="padding: 6px;">64=64Mb</td>
+        <td style="padding: 6px;">Hynix</td>
+        <td style="padding: 6px;">DDR1</td>
+        <td style="padding: 6px;">U=2.5V</td>
+        <td style="padding: 6px;">28=128Mb</td>
         <td style="padding: 6px;">16=x16</td>
-        <td style="padding: 6px;">20=4 Bancos</td>
-        <td style="padding: 6px;">F=Sexta Rev.</td>
+        <td style="padding: 6px;">4 Bancos</td>
+        <td style="padding: 6px;">C</td>
         <td style="padding: 6px;">T=TSOP</td>
+        <td style="padding: 6px;">P=Pb-Free</td>
         <td style="padding: 6px;">-</td>
-        <td style="padding: 6px;">H=133MHz</td>
+        <td style="padding: 6px;">DDR400</td>
       </tr>
     </tbody>
   </table>
@@ -249,18 +333,470 @@
     </thead>
     <tbody>
       <tr>
-        <td><code>HY57V...</code></td>
-        <td style="font-family: sans-serif;">SDRAM Padrão (3.3V) - Densidade comum de 16Mb a 256Mb</td>
-        <td><code>HY57V641620FTP-H</code>, <code>HY57V281620HCT-H</code></td>
+        <td><code>HY5DU28...</code></td>
+        <td style="font-family: sans-serif;">128Mb (Baixa Densidade)</td>
+        <td><code>HY5DU281622ETP</code>, <code>HY5DU283222AF</code></td>
       </tr>
       <tr>
-        <td><code>HY57W...</code></td>
-        <td style="font-family: sans-serif;">SDRAM Low Voltage (2.5V) - Menor dissipação térmica</td>
-        <td><code>HY57W641620...</code></td>
+        <td><code>HY5DU56...</code></td>
+        <td style="font-family: sans-serif;">256Mb</td>
+        <td><code>HY5DU561622CT</code>, <code>HY5DUS561622DTP</code></td>
+      </tr>
+      <tr>
+        <td><code>HY5DU12...</code></td>
+        <td style="font-family: sans-serif;">512Mb (Alta Densidade p/ DDR1)</td>
+        <td><code>HY5DU121622CTP</code>, <code>HY5DU12822AT</code></td>
       </tr>
     </tbody>
   </table>
 </div>
 <div class="nota" style="font-family: sans-serif;">
-  <strong>Diretriz Operacional de Triagem:</strong> As memórias SDRAM foram descontinuadas da indústria principal há décadas. O maior risco operacional na esteira é o classificador confundir a carcaça TSOP (com pinos laterais) da SDRAM com a carcaça TSOP de memórias Flash NAND antigas. O treinamento visual resolve isso rápido: se o código começar com <code>HY57</code>, é RAM obsoleta (caixa de <strong>residuo</strong> imediatamente). Se começar com <code>HY27</code>, trata-se de NAND Flash, o que exige um tratamento de extração completamente diferente.
+  <strong>Diretriz Operacional de Triagem:</strong> O ponto focal para o operador é o "D" logo após o 5 (<code>HY5D</code>). A Hynix usou uma lógica não convencional para a capacidade nesta época: <strong>28</strong> significa 128Mb, <strong>56</strong> significa 256Mb e <strong>12</strong> significa 512Mb (referindo-se a 1/2 Gigabit). Qualquer chip encontrado com essa raiz não deve ocupar espaço nas bancadas de triagem fina. Remeta-o estritamente para o <strong>residuo</strong>.
+</div>
+
+<!-- ========================================== -->
+<!-- TECNOLOGIA: LPDDR1 (MOBILE DDR)            -->
+<!-- ========================================== -->
+<h4 id="hynix-lpddr1">Memória LPDDR1 (Mobile DDR) — Prefixo <code>H5M... / HY5M...</code> &nbsp;<small style="font-weight: normal; color: #666">(Obsoleta)</small></h4>
+
+<p style="font-family: sans-serif; font-size: 15px; color: #333; line-height: 1.6; margin-bottom: 20px;">
+  <strong>O que é e como classificar:</strong> A LPDDR1 (Low Power DDR), ou Mobile DDR (mDDR), foi a primeira adaptação da tecnologia DDR para dispositivos móveis, operando com tensão reduzida (geralmente 1.8V contra os 2.5V da DDR1 padrão) para economizar bateria. É encontrada em smartphones muito antigos (primeiras gerações), PDAs e dispositivos embarcados (SBCs) antigos. Fisicamente, já utilizavam o formato BGA, mas com capacidades muito pequenas (em Megabits). Assim como a DDR1, a LPDDR1 está completamente obsoleta para reuso comercial. Direcionamento: <strong>residuo</strong>.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table style="text-align: center; width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
+        <th style="padding: 8px; text-align: center;">H</th>
+        <th style="padding: 8px; text-align: center;">5</th>
+        <th style="padding: 8px; text-align: center;">M</th>
+        <th style="padding: 8px; text-align: center;">S</th>
+        <th style="padding: 8px; text-align: center;">51</th>
+        <th style="padding: 8px; text-align: center;">22</th>
+        <th style="padding: 8px; text-align: center;">D</th>
+        <th style="padding: 8px; text-align: center;">F</th>
+        <th style="padding: 8px; text-align: center;">R</th>
+        <th style="padding: 8px; text-align: center;">-</th>
+        <th style="padding: 8px; text-align: center;">J3</th>
+      </tr>
+    </thead>
+    <tbody style="font-family: sans-serif;">
+      <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
+        <td style="padding: 6px;">FAB</td>
+        <td style="padding: 6px;">TIPO</td>
+        <td style="padding: 6px;">FAM</td>
+        <td style="padding: 6px;">TENSÃO</td>
+        <td style="padding: 6px;">DENS.</td>
+        <td style="padding: 6px;">ORG.</td>
+        <td style="padding: 6px;">REV</td>
+        <td style="padding: 6px;">ENC</td>
+        <td style="padding: 6px;">LIGA</td>
+        <td style="padding: 6px;">-</td>
+        <td style="padding: 6px;">VEL</td>
+      </tr>
+      <tr style="font-size: 0.85em; color: #333;">
+        <td style="padding: 6px;">Hynix</td>
+        <td style="padding: 6px;">DRAM</td>
+        <td style="padding: 6px;">M=Mobile</td>
+        <td style="padding: 6px;">S=1.8V</td>
+        <td style="padding: 6px;">51=512Mb</td>
+        <td style="padding: 6px;">22=x32</td>
+        <td style="padding: 6px;">D</td>
+        <td style="padding: 6px;">F=FBGA</td>
+        <td style="padding: 6px;">R=Pb/Hal-Free</td>
+        <td style="padding: 6px;">-</td>
+        <td style="padding: 6px;">166MHz</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr style="font-family: sans-serif;">
+        <th>Prefixo (Base)</th>
+        <th>Capacidade / Organização</th>
+        <th>Exemplos Extraídos / Padrões</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>H5MS25... / HY5MS25...</code></td>
+        <td style="font-family: sans-serif;">256Mb (Mobile DDR)</td>
+        <td><code>H5MS2522DFR</code></td>
+      </tr>
+      <tr>
+        <td><code>H5MS51... / HY5MS51...</code></td>
+        <td style="font-family: sans-serif;">512Mb (Mobile DDR)</td>
+        <td><code>H5MS5122DFR-J3</code></td>
+      </tr>
+      <tr>
+        <td><code>H5MS1G...</code></td>
+        <td style="font-family: sans-serif;">1Gb (Mobile DDR)</td>
+        <td><code>H5MS1G22MFP</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="nota" style="font-family: sans-serif;">
+  <strong>Diretriz Operacional de Triagem:</strong> Durante a vida útil da LPDDR1, a Hynix começou a transição da nomenclatura <code>HY</code> para apenas <code>H</code>, por isso é possível encontrar ambos. O identificador chave aqui é a letra <strong>M</strong> após o 5 (<code>H5M</code> ou <code>HY5M</code>), que indica *Mobile*. Assim como a DDR1 de desktop, não perca tempo separando esses BGAs para teste. O destino é a caixa de <strong>residuo</strong>.
+</div>
+
+<!-- ========================================== -->
+<!-- TECNOLOGIA: DRAM LEGADA (DDR2)             -->
+<!-- ========================================== -->
+<h4 id="hynix-ddr2">Memória DDR2 — Prefixos <code>H5PS...</code>, <code>H5DS...</code> &nbsp;<small>(DDR2-400 a DDR2-1066, ~2004–2010)</small></h4>
+
+<p>
+  <strong>O que é e como classificar:</strong> A DDR2 marcou a transição definitiva das memórias RAM para o encapsulamento BGA (pequenos retângulos ou quadrados pretos com matrizes de esferas de solda), abandonando os pinos laterais da DDR1 na maioria das aplicações de alta densidade. São extraídos em massa de pentes de memória de desktops e notebooks antigos. Na operação diária atual, a viabilidade da DDR2 é baixíssima. Ao identificar as raízes <code>H5PS</code> ou <code>H5DS</code>, o componente deve ser direcionado para a caixa de RAM <strong>reacondicional</strong> apenas se houver uma demanda específica para legados. Caso contrário, a diretriz padrão é encaminhar diretamente para o <strong>residuo</strong>.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>H</th>
+        <th>5</th>
+        <th>P</th>
+        <th>S</th>
+        <th>1G</th>
+        <th>8</th>
+        <th>3</th>
+        <th>E</th>
+        <th>F</th>
+        <th>-</th>
+        <th>S6</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>FAB</td>
+        <td>TIPO</td>
+        <td>GERAÇÃO</td>
+        <td>TENSÃO</td>
+        <td>DENS.</td>
+        <td>ORG.</td>
+        <td>BANC</td>
+        <td>REV</td>
+        <td>ENC</td>
+        <td>-</td>
+        <td>VEL</td>
+      </tr>
+      <tr>
+        <td>SK Hynix</td>
+        <td>DRAM</td>
+        <td>P=DDR2</td>
+        <td>S=1.8V</td>
+        <td>1G=1Gb</td>
+        <td>8=x8</td>
+        <td>3=8 Bancos</td>
+        <td>E</td>
+        <td>F=FBGA</td>
+        <td>-</td>
+        <td>800MHz</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo (Base)</th>
+        <th>Capacidade / Organização</th>
+        <th>Exemplos Extraídos / Padrões</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>H5PS51...</code></td>
+        <td>512Mb (DDR2 Base)</td>
+        <td><code>H5PS5162FFR-Y5C</code></td>
+      </tr>
+      <tr>
+        <td><code>H5PS1G...</code></td>
+        <td>1Gb (DDR2 Alta Densidade)</td>
+        <td><code>H5PS1G83EFR-S6C</code></td>
+      </tr>
+      <tr>
+        <td><code>H5PS2G...</code></td>
+        <td>2Gb (DDR2 Max Densidade)</td>
+        <td><code>H5PS2G83AFR-S6C</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> O segredo da velocidade aqui é observar o terceiro caractere: <strong>P</strong> (de <code>H5PS</code>). Se viu o "P", o chip é um DDR2 de 1.8V. A capacidade está logo após o "S" da tensão (51 = 512Mb, 1G = 1Gb). Devido à idade da tecnologia, não há necessidade de o operador inspecionar esferas ou perder tempo; separe rapidamente de acordo com a ordem do dia (legado ou <strong>residuo</strong>).
+</div>
+
+<!-- ========================================== -->
+<!-- TECNOLOGIA: LPDDR2 (MOBILE RAM)            -->
+<!-- ========================================== -->
+<h4 id="hynix-lpddr2">Memória LPDDR2 (Mobile RAM) — Prefixos <code>H9D...</code> &nbsp;<small>(Smartphones e Tablets Antigos)</small></h4>
+
+<p>
+  <strong>O que é e como classificar:</strong> A LPDDR2 é a memória RAM de baixo consumo que impulsionou a popularização dos primeiros smartphones modernos e tablets (operando de 2010 a 2013). Ao contrário da DDR2 de desktop, esses chips são fisicamente muito mais finos e geralmente quadrados, muitas vezes projetados para a arquitetura PoP (Package-on-Package), sendo soldados diretamente em cima da CPU. O volume de LPDDR2 avulsa na esteira é pequeno, pois nesta geração era muito comum a RAM vir embutida junto com o armazenamento dentro de um eMCP. Para chips avulsos com a raiz <code>H9D</code>, direcione para a caixa de Mobile RAM (fluxo <strong>reacondicional</strong>).
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>H</th>
+        <th>9</th>
+        <th>D</th>
+        <th>A</th>
+        <th>1G</th>
+        <th>H</th>
+        <th>25</th>
+        <th>H</th>
+        <th>A</th>
+        <th>M</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>FAB</td>
+        <td>CAT</td>
+        <td>GERAÇÃO</td>
+        <td>TIPO</td>
+        <td>DENS.</td>
+        <td>ORG.</td>
+        <td>BANC/VDD</td>
+        <td>REV</td>
+        <td>ENC</td>
+        <td>TEMP</td>
+      </tr>
+      <tr>
+        <td>SK Hynix</td>
+        <td>9=Mobile</td>
+        <td>D=LPDDR2</td>
+        <td>A=Standalone</td>
+        <td>1G=1Gb</td>
+        <td>H=x32</td>
+        <td>1.2V</td>
+        <td>H</td>
+        <td>A=FBGA</td>
+        <td>Normal</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo (Base)</th>
+        <th>Capacidade / Organização</th>
+        <th>Exemplos Extraídos / Padrões</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>H9DA... / H9DK...</code></td>
+        <td>LPDDR2 Standalone (RAM Pura)</td>
+        <td><code>H9DA1GH25HAM</code>, <code>H9DKNNN51JMRJR</code></td>
+      </tr>
+      <tr>
+        <td><code>H9DC...</code></td>
+        <td>LPDDR2 (Variações de Densidade)</td>
+        <td><code>H9DCNNN51JMMMR</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> Ao analisar chips mobile da SK Hynix (série <code>H9</code>), a terceira letra é o seu guia definitivo: <strong>D</strong> = LPDDR2, <strong>C</strong> = LPDDR3, <strong>H</strong> = LPDDR4, <strong>B</strong> = LPDDR5. É fundamental que o operador se lembre de que grande parte da RAM LPDDR2 existente na sucata está "escondida" dentro de chips eMCP (código <code>H9TP...</code>). Se o prefixo lido for estritamente <code>H9D...</code>, é uma RAM pura; garanta o destino na caixa de RAM Mobile (<strong>reacondicional</strong>).
+</div>
+
+<!-- ========================================== -->
+<!-- TECNOLOGIA: DRAM MODERNA (DDR3 / DDR3L)    -->
+<!-- ========================================== -->
+<h4 id="hynix-ddr3">Memória DDR3 e DDR3L — Prefixos <code>H5TQ...</code>, <code>H5TC...</code> &nbsp;<small>(DDR3-1066 a DDR3-1866, ~2007–2016)</small></h4>
+
+<p>
+  <strong>O que é e como classificar:</strong> A família DDR3 representa o início das memórias de alta viabilidade para a nossa esteira de triagem, sendo ainda muito procurada no mercado para reparos de notebooks, desktops e equipamentos de rede (como roteadores e modems). É dividida em duas categorias críticas: a DDR3 padrão de 1.5V e a DDR3L de baixa tensão (1.35V). Visualmente são chips BGA retangulares. Ao bater o olho na raiz <code>H5T</code>, o componente possui giro rápido e deve ser enviado sem hesitação para as caixas de RAM <strong>reacondicional</strong>.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>H</th>
+        <th>5</th>
+        <th>T</th>
+        <th>C</th>
+        <th>4G</th>
+        <th>6</th>
+        <th>3</th>
+        <th>C</th>
+        <th>F</th>
+        <th>-</th>
+        <th>PB</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>FAB</td>
+        <td>TIPO</td>
+        <td>GERAÇÃO</td>
+        <td>TENSÃO</td>
+        <td>DENS.</td>
+        <td>ORG.</td>
+        <td>BANC</td>
+        <td>REV</td>
+        <td>ENC</td>
+        <td>-</td>
+        <td>VEL</td>
+      </tr>
+      <tr>
+        <td>SK Hynix</td>
+        <td>DRAM</td>
+        <td>T=DDR3</td>
+        <td>C=1.35V (Q=1.5V)</td>
+        <td>4G=4Gb</td>
+        <td>6=x16 (8=x8)</td>
+        <td>3=8 Bancos</td>
+        <td>C</td>
+        <td>F=FBGA</td>
+        <td>-</td>
+        <td>PB=1600MHz</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo (Base)</th>
+        <th>Capacidade / Organização</th>
+        <th>Exemplos Extraídos / Padrões</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>H5TQ1G... / H5TC1G...</code></td>
+        <td>1Gb (DDR3 / DDR3L)</td>
+        <td><code>H5TQ1G83EFR-PBC</code>, <code>H5TC1G63EFR-PBA</code></td>
+      </tr>
+      <tr>
+        <td><code>H5TQ2G... / H5TC2G...</code></td>
+        <td>2Gb (DDR3 / DDR3L)</td>
+        <td><code>H5TC2G83FFR-PBA</code>, <code>H5TQ2G63DFR-PBC</code></td>
+      </tr>
+      <tr>
+        <td><code>H5TQ4G... / H5TC4G...</code></td>
+        <td>4Gb (DDR3 / DDR3L)</td>
+        <td><code>H5TC4G63CFR-PBA</code>, <code>H5TQ4G83AFR-RDC</code></td>
+      </tr>
+      <tr>
+        <td><code>H5TQ8G... / H5TC8G...</code></td>
+        <td>8Gb (DDR3 / DDR3L - Alta Densidade)</td>
+        <td><code>H5TC8G63AMR-PBA</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> Foque rigidamente na 4ª letra! <strong>Q</strong> (<code>H5TQ</code>) significa 1.5V (Padrão) e <strong>C</strong> (<code>H5TC</code>) significa 1.35V (Low Voltage / DDR3L). É obrigatório que o operador separe esses dois tipos em caixas distintas na bancada <strong>reacondicional</strong>, pois misturá-los causará falhas severas de teste e incompatibilidade nas placas de destino. A capacidade é lida nos dois caracteres centrais (1G, 2G, 4G, 8G).
+</div>
+
+<!-- ========================================== -->
+<!-- TECNOLOGIA: LPDDR3 (MOBILE RAM)            -->
+<!-- ========================================== -->
+<h4 id="hynix-lpddr3">Memória LPDDR3 (Mobile RAM) — Prefixo <code>H9C...</code> &nbsp;<small>(Smartphones e Laptops Ultrafinos)</small></h4>
+
+<p>
+  <strong>O que é e como classificar:</strong> A LPDDR3 é a memória mobile de terceira geração, largamente utilizada em smartphones do meio da década passada e em notebooks ultrafinos (como MacBooks legados, onde os chips de RAM vinham soldados diretamente na placa-mãe). Seus encapsulamentos são extremamente compactos e finos. Toda RAM pura identificada com a raiz <code>H9C</code> deve ser extraída com cuidado térmico e remetida à caixa de RAM Mobile (fluxo <strong>reacondicional</strong>).
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>H</th>
+        <th>9</th>
+        <th>C</th>
+        <th>C</th>
+        <th>N</th>
+        <th>N</th>
+        <th>N</th>
+        <th>8</th>
+        <th>J</th>
+        <th>T</th>
+        <th>A</th>
+        <th>L</th>
+        <th>A</th>
+        <th>R</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>FAB</td>
+        <td>CAT</td>
+        <td>GERAÇÃO</td>
+        <td>TIPO</td>
+        <td colspan="3">CONFIG. (Canais/Densidade)</td>
+        <td>ORG.</td>
+        <td>BANC</td>
+        <td>TENSÃO</td>
+        <td>REV</td>
+        <td>ENC</td>
+        <td>TEMP</td>
+        <td>LIGA</td>
+      </tr>
+      <tr>
+        <td>SK Hynix</td>
+        <td>9=Mobile</td>
+        <td>C=LPDDR3</td>
+        <td>C=Standalone</td>
+        <td colspan="3">NNN (Variável)</td>
+        <td>8=x64</td>
+        <td>J=8 Bancos</td>
+        <td>T=1.2V/1.8V</td>
+        <td>A</td>
+        <td>L=FBGA</td>
+        <td>A=Normal</td>
+        <td>R=Pb-Free</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo (Base)</th>
+        <th>Capacidade / Organização</th>
+        <th>Exemplos Extraídos / Padrões</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>H9CC...</code></td>
+        <td>LPDDR3 Standalone (RAM Pura)</td>
+        <td><code>H9CCNNN8JTALAR</code>, <code>H9CCNNNBLTALAR</code>, <code>H9CCNNNBPTMLBR</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> Nos chips da divisão Mobile da SK Hynix (iniciados em <code>H9</code>), a terceira letra dita a regra. <strong>C</strong> (<code>H9C...</code>) garante que o chip é LPDDR3 puro. O operador precisa ter muita atenção para não confundir com o eMCP <code>H9TQ</code> (que contém a LPDDR3 empilhada junto com o armazenamento eMMC no mesmo encapsulamento). Se for <code>H9C</code>, é apenas RAM volátil; direcione imediatamente para a triagem de RAM Mobile <strong>reacondicional</strong>.
 </div>

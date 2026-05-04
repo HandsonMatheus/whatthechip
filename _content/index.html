@@ -1,93 +1,89 @@
 <!-- HERO -->
-<div class="wtc-search-hero">
-  <div class="wtc-hero-phrase">Guia de Identificação de Chips IC para o mercado de refurbishing</div>
-  <div class="wtc-search-tagline">Identifique qualquer chip pelo prefixo gravado no encapsulamento</div>
+<div class="hero">
+  <h1>Guia de Identificação de Chips IC<br>para o mercado de refurbishing</h1>
+  <p class="lede">Identifique qualquer chip pelo prefixo gravado no encapsulamento</p>
 
-  <div id="prefix-search-box">
-    <span id="prefix-search-icon">&#8981;</span>
-    <input
-      id="prefix-input"
-      type="text"
-      placeholder="Digite o prefixo... ex: KLM, H26M, TYBE, K3LK"
-      autocomplete="off"
-      spellcheck="false"
-    />
-  </div>
-  <div id="prefix-results"></div>
-  <div id="prefix-hint">{{PREFIX_COUNT}} prefixos catalogados &nbsp;&middot;&nbsp; Samsung &middot; SK Hynix &middot; Micron &middot; Elpida &middot; Toshiba &middot; SanDisk &middot; Nanya &middot; Kingston &middot; Rayson &middot; ISSI &middot; GigaDevice</div>
+  <form class="big-search" role="search" onsubmit="event.preventDefault();">
+    <span class="icon" aria-hidden="true">⌕</span>
+    <input id="big-search-input" type="text"
+      placeholder="Digite o prefixo… ex: KLM, H26M, TYBE, K3LK"
+      autocomplete="off" spellcheck="false" />
+    <div id="big-search-results"></div>
+  </form>
+
+  <p class="quicklinks">
+    <span class="count">{{PREFIX_COUNT}} prefixos catalogados</span>
+  </p>
 </div>
 
-<!-- GRID PRINCIPAL -->
-<div class="wtc-index-grid">
+<!-- 3-CARD GRID -->
+<section class="cards">
 
-  <!-- SOBRE -->
-  <div class="wtc-panel wtc-panel-sobre">
-    <div class="wtc-panel-title">Sobre esta documentação</div>
-    <div class="wtc-panel-body">
+  <article class="card">
+    <h3>Sobre esta documentação</h3>
+    <div class="card-body">
       <p>
         Guia prático para identificar, classificar e avaliar chips de memória e
         processamento vindos de placas descartadas — de <strong>DDR1</strong> até
-        <strong>UFS 4.0 e LPDDR5X</strong>. Construído para operadores de triagem,
-        analistas e compradores do mercado de refurbishing e reciclagem eletrônica.
+        <strong>UFS 4.0</strong> e <strong>LPDDR5X</strong>. Construído para
+        operadores de triagem, analistas e compradores do mercado de refurbishing
+        e reciclagem eletrônica.
       </p>
       <p>
         Cobre Part Numbers de <strong>11 fabricantes ativos</strong> e 1 histórico
-        (Elpida), com tabelas de decodificação, metodologia de detecção de chips
-        remarked e hierarquia de viabilidade comercial.
+        (Elpida, absorvida pela Micron), com tabelas de decodificação, metodologia
+        de detecção de chips remarked e hierarquia de viabilidade comercial.
       </p>
-      <a href="aprender.html" class="wtc-start-btn">O que você vai aprender &#8594;</a>
-      <div class="wtc-last-update">Última atualização: maio de 2026</div>
+      <a class="cta" href="aprender.html">O que você vai aprender →</a>
+      <div class="updated">Última atualização: maio de 2026</div>
     </div>
-  </div>
+  </article>
 
-  <!-- FABRICANTES -->
-  <div class="wtc-panel">
-    <div class="wtc-panel-title">Fabricantes cobertos</div>
-    <div class="wtc-panel-body">
-      <ul class="wtc-fab-list">
-        <li><a href="fab-samsung.html"><strong>Samsung</strong></a> — eMMC, eMCP, uMCP, UFS, LPDDR, DDR</li>
-        <li><a href="fab-hynix.html"><strong>SK Hynix</strong></a> — eMMC, eMCP, UFS, LPDDR, DDR, GDDR</li>
-        <li><a href="fab-micron.html"><strong>Micron</strong></a> — LPDDR, DDR, NAND, GDDR</li>
-        <li><a href="fab-elpida.html"><strong>Elpida</strong></a> — DDR2/DDR3 (legado, absorvida pela Micron)</li>
-        <li><a href="fab-toshiba.html"><strong>Toshiba / Kioxia</strong></a> — eMMC, UFS, NAND</li>
-        <li><a href="fab-sandisk.html"><strong>SanDisk / WD</strong></a> — eMMC, UFS, NAND</li>
-        <li><a href="fab-nanya.html"><strong>Nanya Technology</strong></a> — DDR2/DDR3/DDR4</li>
-        <li><a href="fab-kingston.html"><strong>Kingston</strong></a> — DDR, módulos de memória</li>
-        <li><a href="fab-rayson.html"><strong>Rayson</strong></a> — NOR Flash, eMMC de baixo custo</li>
-        <li><a href="fab-issi.html"><strong>ISSI</strong></a> — SRAM, NOR Flash, DRAM</li>
-        <li><a href="fab-gigadevice.html"><strong>GigaDevice</strong></a> — NOR Flash, eMMC</li>
-      </ul>
+  <article class="card">
+    <h3>Fabricantes cobertos</h3>
+    <div class="card-body">
+      <div class="row-list">
+        <div class="row"><a class="key" href="fab-samsung.html">Samsung</a><span class="em-dash">—</span><span class="desc">eMMC, eMCP, uMCP, UFS, LPDDR, DDR</span></div>
+        <div class="row"><a class="key" href="fab-hynix.html">SK Hynix</a><span class="em-dash">—</span><span class="desc">eMMC, eMCP, UFS, LPDDR, DDR, GDDR</span></div>
+        <div class="row"><a class="key" href="fab-micron.html">Micron</a><span class="em-dash">—</span><span class="desc">LPDDR, DDR, NAND, GDDR</span></div>
+        <div class="row"><a class="key" href="fab-elpida.html">Elpida</a><span class="em-dash">—</span><span class="desc">DDR2/DDR3 (legado, absorvida pela Micron)</span></div>
+        <div class="row"><a class="key" href="fab-toshiba.html">Toshiba / Kioxia</a><span class="em-dash">—</span><span class="desc">eMMC, UFS, NAND</span></div>
+        <div class="row"><a class="key" href="fab-sandisk.html">SanDisk / WD</a><span class="em-dash">—</span><span class="desc">eMMC, UFS, NAND</span></div>
+        <div class="row"><a class="key" href="fab-nanya.html">Nanya Technology</a><span class="em-dash">—</span><span class="desc">DDR2/DDR3/DDR4</span></div>
+        <div class="row"><a class="key" href="fab-kingston.html">Kingston</a><span class="em-dash">—</span><span class="desc">DDR, módulos de memória</span></div>
+        <div class="row"><a class="key" href="fab-rayson.html">Rayson</a><span class="em-dash">—</span><span class="desc">NOR Flash, eMMC de baixo custo</span></div>
+        <div class="row"><a class="key" href="fab-issi.html">ISSI</a><span class="em-dash">—</span><span class="desc">SRAM, NOR Flash, DRAM</span></div>
+        <div class="row"><a class="key" href="fab-gigadevice.html">GigaDevice</a><span class="em-dash">—</span><span class="desc">NOR Flash, eMMC</span></div>
+      </div>
     </div>
-  </div>
+  </article>
 
-  <!-- TIPOS DE CHIP -->
-  <div class="wtc-panel">
-    <div class="wtc-panel-title">Tipos de chip cobertos</div>
-    <div class="wtc-panel-body">
-      <ul class="wtc-fab-list">
-        <li><strong>eMMC</strong> — Armazenamento NAND gerenciado (4.4 → 5.1)</li>
-        <li><strong>eMCP</strong> — eMMC + LPDDR em package único</li>
-        <li><strong>uMCP</strong> — UFS + LPDDR5 em package único</li>
-        <li><strong>UFS 2.x / 3.x / 4.0</strong> — Armazenamento de alta velocidade</li>
-        <li><strong>LPDDR3 / LPDDR4(X) / LPDDR5(X)</strong> — RAM de mobile</li>
-        <li><strong>DDR3 / DDR4 / DDR5</strong> — RAM de notebook e desktop</li>
-        <li><strong>GDDR5 / GDDR6</strong> — RAM de GPU</li>
-        <li><strong>NAND Flash (raw)</strong> — Armazenamento bruto (SSD, pendrive)</li>
-        <li><strong>NOR Flash</strong> — Firmware de roteadores, TVs, STBs</li>
-        <li><strong>SRAM</strong> — Cache em equipamentos industriais</li>
-        <li><strong>CPU / SoC</strong> — MediaTek, Qualcomm, UNISOC, Allwinner</li>
-      </ul>
+  <article class="card">
+    <h3>Tipos de chip cobertos</h3>
+    <div class="card-body">
+      <div class="row-list">
+        <div class="row"><span class="key">eMMC</span><span class="em-dash">—</span><span class="desc">Armazenamento NAND gerenciado (4.4 → 5.1)</span></div>
+        <div class="row"><span class="key">eMCP</span><span class="em-dash">—</span><span class="desc">eMMC + LPDDR em package único</span></div>
+        <div class="row"><span class="key">uMCP</span><span class="em-dash">—</span><span class="desc">UFS + LPDDR5 em package único</span></div>
+        <div class="row"><span class="key">UFS 2.x / 3.x / 4.0</span><span class="em-dash">—</span><span class="desc">Armazenamento de alta velocidade</span></div>
+        <div class="row"><span class="key">LPDDR3 / LPDDR4(X) / LPDDR5(X)</span><span class="em-dash">—</span><span class="desc">RAM de mobile</span></div>
+        <div class="row"><span class="key">DDR3 / DDR4 / DDR5</span><span class="em-dash">—</span><span class="desc">RAM de notebook e desktop</span></div>
+        <div class="row"><span class="key">GDDR5 / GDDR6</span><span class="em-dash">—</span><span class="desc">RAM de GPU</span></div>
+        <div class="row"><span class="key">NAND Flash (raw)</span><span class="em-dash">—</span><span class="desc">Armazenamento bruto (SSD, pendrive)</span></div>
+        <div class="row"><span class="key">NOR Flash</span><span class="em-dash">—</span><span class="desc">Firmware de roteadores, TVs, STBs</span></div>
+        <div class="row"><span class="key">SRAM</span><span class="em-dash">—</span><span class="desc">Cache em equipamentos industriais</span></div>
+        <div class="row"><span class="key">CPU / SoC</span><span class="em-dash">—</span><span class="desc">MediaTek, Qualcomm, UNISOC, Allwinner</span></div>
+      </div>
     </div>
-  </div>
+  </article>
 
-</div>
+</section>
 
 <script>
 (function() {
   var DATA = {{PREFIX_DATA}};
-  var input   = document.getElementById('prefix-input');
-  var results = document.getElementById('prefix-results');
-  var hint    = document.getElementById('prefix-hint');
+  var input   = document.getElementById('big-search-input');
+  var results = document.getElementById('big-search-results');
 
   function normalize(s) { return s.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
 
@@ -105,29 +101,40 @@
     if (norm.length < 2) {
       results.innerHTML = '';
       results.style.display = 'none';
-      hint.style.display = 'block';
       return;
     }
     var hits = DATA.filter(function(r) { return match(r, norm); });
-    hint.style.display = 'none';
     if (hits.length === 0) {
-      results.innerHTML = '<div class="pr-empty">Nenhum prefixo encontrado. <a href="prefixos.html">Ver tabela completa</a></div>';
-      results.style.display = 'block';
-      return;
+      results.innerHTML = '<div class="pr-empty">Nenhum prefixo encontrado para "<strong>' + q + '</strong>". <a href="prefixos.html">Ver tabela completa →</a></div>';
+    } else {
+      var MAX = 14;
+      var header = '<div class="pr-header"><span>Prefixo</span><span>Fabricante</span><span>Tipo / Categoria</span></div>';
+      var rows = hits.slice(0, MAX).map(function(r) {
+        return '<div class="pr-row">'
+          + '<span class="pr-prefix">' + r.prefix + '</span>'
+          + '<span class="pr-fab">' + r.fab + '</span>'
+          + '<span class="pr-tipo">' + r.tipo + '</span>'
+          + '</div>';
+      }).join('');
+      var more = hits.length > MAX
+        ? hits.length - MAX + ' ocultos · '
+        : '';
+      var footer = '<div class="pr-footer">' + more + '<a href="prefixos.html">Ver tabela completa de prefixos →</a></div>';
+      results.innerHTML = header + rows + footer;
     }
-    results.innerHTML = hits.map(function(r) {
-      return '<div class="pr-row">'
-        + '<span class="pr-prefix">' + r.prefix + '</span>'
-        + '<span class="pr-fab">' + r.fab + '</span>'
-        + '<span class="pr-tipo">' + r.tipo + '</span>'
-        + '</div>';
-    }).join('');
     results.style.display = 'block';
   }
 
-  input.addEventListener('input', function() { render(this.value); });
-  input.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') { this.value = ''; render(''); }
-  });
+  if (input) {
+    input.addEventListener('input', function() { render(this.value); });
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { this.value = ''; render(''); this.blur(); }
+    });
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.big-search')) {
+        results.style.display = 'none';
+      }
+    });
+  }
 })();
 </script>
