@@ -1,167 +1,795 @@
-<div class="fab-block" id="s4-kingston">
-          <div class="fab-header">
-            4.8 Kingston Technology
-            <span
-              >🇺🇸 EUA · Integradora e empacotadora (não fabrica o silício)</span
-            >
-          </div>
-          <div class="fab-body">
-            <div class="fab-types">
-              <strong>Tipos empacotados/remarcados:</strong> DDR1 a DDR5 (chips
-              remarcados) · LPDDR3 a LPDDR5 · ePoP · eMMC · eMCP
-            </div>
+<div class="fab-block" id="k5-kingston">
+  <div class="fab-header">
+    5.1 Kingston <span>🇺🇸 EUA · Fundada 1987</span>
+  </div>
+  <div class="fab-body">
+    <div class="fab-types">
+      <strong>Tipos produzidos:</strong> eMMC · NAND Flash (Raw) · RAM Base (DDR3/DDR4) · eMCP · Controladores Remarcados
+    </div>
 
-            <div
-              class="img-wrap"
-              style="
-                float: left;
-                width: 180px;
-                margin: 5px 20px 15px 0;
-                text-align: center;
-              "
-            >
-              <img
-                src="kingston.png"
-                style="
-                  max-width: 100%;
-                  height: auto;
-                  border: 1px solid #ddd;
-                  border-radius: 6px;
-                  padding: 5px;
-                  box-sizing: border-box;
-                  background-color: #fff;
-                "
-              />
-            </div>
+    <!-- BLOCO DE IMAGEM FLUTUANTE À ESQUERDA -->
+    <div
+      class="img-wrap"
+      style="
+        float: left;
+        width: 180px;
+        margin: 5px 20px 15px 0;
+        text-align: center;
+      "
+    >
+      <img
+        src="kingston_chip.png"
+        style="
+          max-width: 100%;
+          height: auto;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          padding: 5px;
+          box-sizing: border-box;
+          background-color: #fff;
+        "
+      />
+    </div>
 
-            <p>
-              A Kingston é, indiscutivelmente, uma das marcas mais tradicionais
-              e abundantes que o classificador encontrará na esteira de triagem.
-              Ela está presente em uma vastidão de equipamentos de consumo,
-              desde os clássicos pentes de memória RAM de computadores desktop e
-              notebooks até unidades de armazenamento em estado sólido (SSDs) e
-              dispositivos móveis. Devido à sua massiva penetração global no
-              mercado de varejo e montagem, o volume de componentes estampados
-              com a famosa marca da empresa é sempre muito expressivo no nosso
-              processamento diário. Identificar visualmente e resgatar essas
-              peças para o fluxo reacondicional é essencial, pois elas mantêm
-              excelente estabilidade e aplicabilidade para novos ciclos de uso.
-            </p>
+    <p style="font-family: sans-serif; font-size: 15px; color: #333; line-height: 1.6; margin-bottom: 20px;">
+      A Kingston é, em sua essência, uma <strong>integradora e empacotadora</strong>. Diferente de fabricantes que produzem os próprios wafers de silício, ela adquire matrizes de memória de parceiros estratégicos (como Micron, Kioxia e Nanya) e as empacota sob seu próprio logotipo. Isso torna a leitura dos seus Part Numbers extremamente <strong>literal e previsível</strong> na operação de esteira.
+    </p>
 
-            <p>
-              Contudo, a Kingston exige uma abordagem técnica e um entendimento
-              levemente diferentes por parte do operador na bancada. Como regra
-              geral na arquitetura da indústria de semicondutores, a empresa não
-              atua como uma fundição primária — ou seja, ela não fabrica os
-              wafers de silício puros (o núcleo inteligente do chip). O seu
-              modelo de produção baseia-se em adquirir o silício bruto (os
-              "dies") diretamente das grandes fabricantes globais (como Micron,
-              Nanya, SK Hynix e Samsung) e, a partir desse ponto, realizar o
-              processo físico de empacotamento (package) e montagem final dos
-              componentes, carimbando no encapsulamento de resina o seu próprio
-              logotipo.
-            </p>
+    <p style="font-family: sans-serif; font-size: 15px; color: #333; line-height: 1.6; margin-bottom: 20px;">
+      Para o operador de triagem, essa literalidade é uma vantagem tática: um chip eMMC geralmente tem a sigla <code>EMMC</code> grafada explicitamente, e um combo inseparável vai exibir <code>EMCP</code> ou <code>EM</code> bem no meio do código. O reconhecimento instantâneo desses padrões assegura o fluxo físico correto entre o material <strong>reacondicional</strong> e o <strong>resíduo</strong> destinado ao refino químico.
+    </p>
 
-            <p>
-              Para o técnico na triagem física, isso significa que, embora as
-              entranhas tecnológicas do chip possam variar dependendo do lote, a
-              identificação externa obedece a um rigoroso padrão da Kingston,
-              permitindo uma separação ágil e precisa. Os códigos de
-              identificação (Part Numbers) gravados no encapsulamento quase
-              sempre iniciam com a letra <code>K</code> (como no padrão
-              <code>KE...</code> encontrado em memórias eMMC, por exemplo). Ao
-              localizar esse padrão inicial associado ao logo da marca, o
-              classificador confirma imediatamente a origem da peça, garantindo
-              que o componente não se perca junto à sucata comum e seja
-              destinado de forma assertiva ao estoque de material
-              reacondicional.
-            </p>
+<h4 id="kingston-master">Tabela Mestra de Decodificação — Prefixos Globais Kingston</h4>
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo</th>
+        <th>Categoria Principal</th>
+        <th>Tecnologia / Geração</th>
+        <th>Direcionamento (Fluxo)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- MEMÓRIA RAM (DESKTOP / SERVER / LAPTOP / MOBILE) -->
+      <tr>
+        <td><code>D</code> <small>(Encapsulamento TSOP-II)</small></td>
+        <td>Memória RAM (Obsoleta)</td>
+        <td>DDR1 / LPDDR1</td>
+        <td>Fluxo de Resíduo</td>
+      </tr>
+      <tr>
+        <td><code>D</code> <small>(Ex: D6416, D1288)</small></td>
+        <td>Memória RAM / Mobile</td>
+        <td>DDR2 / LPDDR2</td>
+        <td>Bancada Reacondicional RAM</td>
+      </tr>
+      <tr>
+        <td><code>D...E / D...C</code> <small>(Ex: D2516E)</small></td>
+        <td>Memória RAM</td>
+        <td>DDR3 / DDR3L</td>
+        <td>Bancada Reacondicional RAM</td>
+      </tr>
+      <tr>
+        <td><code>D...A</code> <small>(Ex: D1G8A)</small></td>
+        <td>Memória RAM</td>
+        <td>DDR4</td>
+        <td>Bancada Reacondicional RAM</td>
+      </tr>
+      <tr>
+        <td><code>D...B</code> <small>(Ex: D2G8B)</small></td>
+        <td>Memória RAM Premium</td>
+        <td>DDR5</td>
+        <td>Bancada Reacondicional RAM</td>
+      </tr>
 
-            <div class="nota">
-              <strong>Atenção (etiquetas vs. chips):</strong> A maior confusão
-              ocorre nos pentes de memória RAM. Códigos iniciados em
-              <code>KVR</code> (Kingston Value RAM), <code>KSM</code> (Server)
-              ou <code>KF</code> (Fury) são
-              <strong>códigos de etiqueta do módulo inteiro</strong>. Eles não
-              servem para identificar o chip individual na nossa extração. O
-              operador deve ignorar a etiqueta de papel e ler o que está gravado
-              a laser diretamente no epóxi preto do componente BGA.
-            </div>
+      <!-- ARMAZENAMENTO FLASH GERENCIADO (eMMC) -->
+      <tr>
+        <td><code>EMMC</code> <small>(Ex: EMMC64G)</small></td>
+        <td>Armazenamento Flash</td>
+        <td>eMMC (4.5 a 5.1)</td>
+        <td>Bancada Reacondicional Flash</td>
+      </tr>
+      <tr>
+        <td><code>KE4</code></td>
+        <td>Armazenamento Obsoleto</td>
+        <td>eMMC Legacy (4GB/8GB)</td>
+        <td>Fluxo de Resíduo</td>
+      </tr>
 
-            <p>
-              Apesar de ser integradora, a Kingston remarca milhares de
-              componentes para o mercado de armazenamento embarcado (mobile,
-              smart TVs, TV boxes, IoT). O operador encontrará as seguintes
-              estruturas de Part Numbers gravadas na superfície da peça:
-            </p>
+      <!-- MEMÓRIA FLASH BASE (NAND RAW DE SSDs) -->
+      <tr>
+        <td><code>F / FA / FB</code></td>
+        <td>Flash Base (NAND)</td>
+        <td>NAND Raw (Entrada/Média Densidade)</td>
+        <td>Bancada Reacondicional Flash</td>
+      </tr>
+      <tr>
+        <td><code>FH / FP / FT</code></td>
+        <td>Flash Base (NAND)</td>
+        <td>NAND Raw (Alta Densidade)</td>
+        <td>Bancada Reacondicional Flash</td>
+      </tr>
+      <tr>
+        <td><code>FD / FC</code></td>
+        <td>Flash Base (NAND)</td>
+        <td>NAND Raw (SATA Antigos)</td>
+        <td>Bancada Reacondicional Flash</td>
+      </tr>
 
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Tipo</th>
-                    <th>Prefixo gravado no componente</th>
-                    <th>Observação para triagem</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Módulo RAM (etiqueta)</td>
-                    <td>
-                      <code>KVR...</code> / <code>KSM...</code> /
-                      <code>KF...</code>
-                    </td>
-                    <td>
-                      <strong>Aviso visual:</strong> Impresso em papel/adesivo.
-                      Identifica a placa inteira. Remover e olhar o BGA soldado
-                      embaixo.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>RAM dedicada (rebrand)</td>
-                    <td><code>D25...</code> / <code>D51...</code></td>
-                    <td>
-                      Chips DRAM soltos que a Kingston comprou em wafer e
-                      empacotou. Muito comuns em SSDs e pentes proprietários.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>LPDDR (standalone) e ePoP</td>
-                    <td>Códigos curtos ou logos + lote</td>
-                    <td>
-                      Chips muito finos (FBGA) usados em embarcados e wearables.
-                      Muitas vezes não possuem um Part Number longo padrão,
-                      trazendo apenas o logotipo do "Rei Vermelho" e um código
-                      de lote curto. Se for BGA fino com a marca, é LPDDR e
-                      possui viabilidade.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>eMMC</td>
-                    <td><code>EMMC...</code></td>
-                    <td>
-                      Armazenamento integrado (ex: <code>EMMC32G-M525</code> ou
-                      <code>EMMC64G-TX29</code>). Muito comuns em tablets, TV
-                      boxes e placas IoT. Formatos BGA 153 e 169. Altamente
-                      viáveis para o mercado reacondicional.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>eMCP</td>
-                    <td>
-                      <code>08EMCP...</code> / <code>EMCP...</code> /
-                      <code>04ENCP...</code>
-                    </td>
-                    <td>
-                      Híbridos de armazenamento e RAM. Identificados pelo
-                      prefixo direto. Frequentemente encontrados em smartphones
-                      de entrada e dispositivos móveis mais baratos.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+      <!-- MULTI-CHIP PACKAGE (COMBOS) -->
+      <tr>
+        <td><code>EMCP</code> <small>(Ex: 16EMCP16)</small></td>
+        <td>Multi-Chip Package</td>
+        <td>eMCP (NAND + RAM)</td>
+        <td>Fluxo de Resíduo (Regra de Corte)</td>
+      </tr>
+      <tr>
+        <td><code>EM</code> <small>(Ex: 32EM32)</small></td>
+        <td>Multi-Chip Package</td>
+        <td>eMCP / uMCP (Nova Nomenclatura)</td>
+        <td>Fluxo de Resíduo (Regra de Corte)</td>
+      </tr>
 
-        <!-- Rayson -->
+      <!-- CONTROLADORES (LÓGICA) -->
+      <tr>
+        <td><code>CP / CS</code></td>
+        <td>Lógica e Controle</td>
+        <td>Controladores Remarcados</td>
+        <td>Fluxo de Resíduo</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> O foco principal na Kingston é a literalidade. Rastreie a diferença clara entre <code>EMMC</code> (silício puro de armazenamento ➔ bancada) e o <code>EMCP / EM</code> (combo inseparável ➔ moagem/refino químico). Para memórias iniciadas em <code>D</code>, qualquer chip com bolinhas de solda embaixo (BGA) é <strong>reacondicional</strong>; se tiver pinos metálicos nas laterais (TSOP), é obsoleto e vira <strong>resíduo</strong>. Na dúvida com as memórias de computador iniciando em <code>D</code> (BGA) ou matrizes NAND iniciadas em <code>F</code>, trate-as incondicionalmente como <strong>reacondicional</strong> até a validação fina.
+</div>
+
+<h4 id="kingston-emmc">Armazenamento eMMC — Prefixos <code>EMMC</code> e <code>KE4</code> &nbsp;<small>(NAND Gerenciado)</small></h4>
+
+<p>
+  <strong>O que é e como classificar:</strong> Os eMMCs da Kingston são altamente transparentes em suas linhas modernas. A marca grava a sigla <code>EMMC</code> seguida diretamente da capacidade em Gigabytes (ex: <code>EMMC128G</code>). Por serem módulos de armazenamento puro, possuem alto valor de mercado. Ao identificar este prefixo de forma clara na resina, o operador deve destinar a peça imediatamente à caixa do fluxo <strong>reacondicional</strong> Flash. Para placas muito antigas (como tablets de primeira geração), a Kingston utilizava o prefixo <code>KE4</code>; devido à baixíssima densidade e velocidade, estas peças antigas caem na nossa regra de corte para descarte.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table style="text-align: center; width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
+        <th style="padding: 8px; text-align: center;">E</th>
+        <th style="padding: 8px; text-align: center;">M</th>
+        <th style="padding: 8px; text-align: center;">M</th>
+        <th style="padding: 8px; text-align: center;">C</th>
+        <th style="padding: 8px; text-align: center;">6</th>
+        <th style="padding: 8px; text-align: center;">4</th>
+        <th style="padding: 8px; text-align: center;">G</th>
+        <th style="padding: 8px; text-align: center;">-</th>
+        <th style="padding: 8px; text-align: center;">T</th>
+        <th style="padding: 8px; text-align: center;">X</th>
+        <th style="padding: 8px; text-align: center;">2</th>
+        <th style="padding: 8px; text-align: center;">9</th>
+        <th style="padding: 8px; text-align: center;">-</th>
+        <th style="padding: 8px; text-align: center;">8</th>
+        <th style="padding: 8px; text-align: center;">A</th>
+        <th style="padding: 8px; text-align: center;">D</th>
+        <th style="padding: 8px; text-align: center;">0</th>
+        <th style="padding: 8px; text-align: center;">1</th>
+      </tr>
+    </thead>
+    <tbody style="font-family: sans-serif;">
+      <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
+        <td style="padding: 6px;" colspan="4">FAMÍLIA</td>
+        <td style="padding: 6px;" colspan="3">CAPACIDADE</td>
+        <td style="padding: 6px;" colspan="1">SEP</td>
+        <td style="padding: 6px;" colspan="4">PACKAGE</td>
+        <td style="padding: 6px;" colspan="1">SEP</td>
+        <td style="padding: 6px;" colspan="3">NAND DIE</td>
+        <td style="padding: 6px;" colspan="2">FIRMWARE</td>
+      </tr>
+      <tr style="font-size: 0.85em; color: #333;">
+        <td style="padding: 6px;" colspan="4">eMMC</td>
+        <td style="padding: 6px;" colspan="3">64GB</td>
+        <td style="padding: 6px;" colspan="1">Traço</td>
+        <td style="padding: 6px;" colspan="4">153-FBGA (TX29)</td>
+        <td style="padding: 6px;" colspan="1">Traço</td>
+        <td style="padding: 6px;" colspan="3">TLC</td>
+        <td style="padding: 6px;" colspan="2">Versão 01</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo (Base)</th>
+        <th>Capacidade (Decodificação)</th>
+        <th>Exemplos Extraídos do Lote</th>
+        <th>Destino Físico</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>KE4...</code></td>
+        <td>Legado (4GB / 8GB)</td>
+        <td><code>KE4CN2H5A</code>, <code>KE4CN3K6A</code></td>
+        <td><strong>Resíduo</strong></td>
+      </tr>
+      <tr>
+        <td><code>EMMC04G</code></td>
+        <td>4GB</td>
+        <td><code>EMMC04G-M627</code>, <code>EMMC04G-W627</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>EMMC08G</code></td>
+        <td>8GB</td>
+        <td><code>EMMC08G-M325</code>, <code>EMMC08G-W325</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>EMMC16G</code></td>
+        <td>16GB</td>
+        <td><code>EMMC16G-M525</code>, <code>EMMC16G-TB29</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>EMMC32G</code></td>
+        <td>32GB</td>
+        <td><code>EMMC32G-S100</code>, <code>EMMC32G-IX29</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>EMMC64G</code></td>
+        <td>64GB</td>
+        <td><code>EMMC64G-E100</code>, <code>EMMC64G-TX29</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>EMMC128G</code></td>
+        <td>128GB</td>
+        <td><code>EMMC128G-M525</code>, <code>EMMC128G-TX29</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>EMMC256G</code></td>
+        <td>256GB</td>
+        <td><code>EMMC256G-M525</code>, <code>EMMC256G-TX29</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> A Kingston facilita o processo. O operador não precisa de decodificação hexadecimal como na Samsung (KLMA = 16GB, KLMB = 32GB); basta ler os números logo após a palavra <code>EMMC</code> para atestar a capacidade visualmente (04, 08, 16, 32, 64, 128, 256). Tudo que tiver <code>EMMC</code> segue para a bancada <strong>reacondicional Flash</strong>. Atenção máxima apenas aos modelos muito antigos iniciados em <code>KE4</code>, que devem ser desviados imediatamente para o <strong>resíduo</strong>.
+</div>
+
+<h4 id="kingston-nand">NAND Flash Raw — Prefixos <code>F / FA / FB / FH / FP / FT</code> &nbsp;<small>(SSDs e Pendrives)</small></h4>
+
+<p style="font-family: sans-serif; font-size: 15px; color: #333; line-height: 1.6; margin-bottom: 20px;">
+  <strong>O que é e como classificar:</strong> Estes são os chips de armazenamento extraídos das placas de SSDs desativados (SATA e NVMe) e pendrives corporativos. A Kingston não fabrica esses cristais de silício; ela compra grandes lotes da Micron, Kioxia (Toshiba) ou YMTC, testa e empacota com sua própria marca, geralmente iniciando o código com a letra <code>F</code> (de Flash). <br><br>
+  <strong>[Atenção à Regra de Densidade]:</strong> Aqui, o número no Part Number representa <strong>Gigabits (Gb)</strong> e não Gigabytes (GB). A regra de conversão na esteira é dividir por 8. Um chip <code>FB256...</code> possui 256 Gigabits, o que equivale a <strong>32GB</strong> de armazenamento real. Um chip <code>FT01T...</code> possui 1 Terabit, o que equivale a <strong>128GB</strong>. Por serem matrizes puras de alta demanda, todos os chips desta categoria que estiverem fisicamente íntegros pertencem à caixa do fluxo <strong>reacondicional</strong> Flash.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table style="text-align: center; width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
+        <th style="padding: 8px; text-align: center;">F</th>
+        <th style="padding: 8px; text-align: center;">H</th>
+        <th style="padding: 8px; text-align: center;">2</th>
+        <th style="padding: 8px; text-align: center;">5</th>
+        <th style="padding: 8px; text-align: center;">6</th>
+        <th style="padding: 8px; text-align: center;">0</th>
+        <th style="padding: 8px; text-align: center;">8</th>
+        <th style="padding: 8px; text-align: center;">U</th>
+        <th style="padding: 8px; text-align: center;">C</th>
+        <th style="padding: 8px; text-align: center;">J</th>
+        <th style="padding: 8px; text-align: center;">1</th>
+        <th style="padding: 8px; text-align: center;">-</th>
+        <th style="padding: 8px; text-align: center;">4</th>
+        <th style="padding: 8px; text-align: center;">D</th>
+      </tr>
+    </thead>
+    <tbody style="font-family: sans-serif;">
+      <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="1">TIPO</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="1">SÉRIE</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="3">DENSIDADE (Gb)</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="2">LARGURA</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="1">VCC</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="1">ENC</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="2">SILÍCIO BASE</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="1">SEP</td>
+        <td style="padding: 6px;" colspan="2">QTD DIES</td>
+      </tr>
+      <tr style="font-size: 0.85em; color: #333;">
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="1">Flash</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="1">H</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="3">256Gb (=32GB)</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="2">x8 Bits</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="1">3.3V</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="1">BGA</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="2">Micron/Toshiba</td>
+        <td style="padding: 6px; border-right: 1px solid #dee2e6;" colspan="1">Traço</td>
+        <td style="padding: 6px;" colspan="2">4-Die (Quad)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo (Base)</th>
+        <th>Capacidade Leitura ➔ Conversão Fina</th>
+        <th>Exemplos Extraídos do Lote</th>
+        <th>Destino Físico</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>FA... / FB...</code></td>
+        <td><code>128</code> = 16GB / <code>256</code> = 32GB</td>
+        <td><code>FB12808UCM1-4D</code>, <code>FA25608U...</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>FH... / FP...</code></td>
+        <td><code>256</code> = 32GB / <code>512</code> = 64GB</td>
+        <td><code>FH25608UCM1-4D</code>, <code>FP51208UCT1-...</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>FT...</code></td>
+        <td><code>01T</code> = 128GB / <code>02T</code> = 256GB</td>
+        <td><code>FT01T08UCT1-8D</code>, <code>FT02T08U...</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>FD... / FC...</code></td>
+        <td>Variável (Linhas mais antigas SATA)</td>
+        <td><code>FD32G08U...</code>, <code>FC64G08U...</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> Operador, o seu maior risco de erro nesta linha é a leitura da capacidade. Se o número central for <strong>128, 256 ou 512</strong>, estamos falando de Gigabits. Lembre-se mentalmente: 256Gb = 32GB! Se o número central tiver a letra "T" (ex: <code>01T</code> ou <code>02T</code>), significa Terabit (1024 Gigabits), que equivale a 128GB ou 256GB. Você não precisa classificar a capacidade exata na esteira rápida, basta atestar que inicia com a letra <code>F</code> e direcionar de imediato para a bancada <strong>Reacondicional Flash</strong>. Jamais jogue um <code>FT01T</code> no <strong>resíduo</strong> achando que é componente de controle.
+</div>
+
+<h4 id="kingston-ddr1">DDR1 e LPDDR1 (Mobile) — Prefixos <code>D</code> (Legado) &nbsp;<small>(TSOP-II e BGA Antigos)</small></h4>
+
+<p>
+  <strong>O que é e como classificar:</strong> Aqui entramos na zona de obsolescência total da marca. Os chips de memória DDR1 para desktops/laptops clássicos e LPDDR1 para os primeiros dispositivos móveis são tecnologias de mais de duas décadas (operações em 2.5V e 1.8V). A Kingston gravava o prefixo <code>D</code> seguido da densidade, mas a grande dica visual para o operador da esteira nem é o código: é o encapsulamento. A maioria do DDR1 vem em formato <strong>TSOP-II</strong> (retangular com pinos de metal nas laterais), diferente dos BGAs modernos (esferas de solda embaixo). Por serem tecnologias de baixíssima densidade (frequentemente 256Mb ou 512Mb) e sem qualquer demanda no mercado asiático atual, a nossa regra de corte é implacável. Qualquer chip DDR1 ou LPDDR1 deve ser direcionado imediatamente ao fluxo de <strong>resíduo</strong> (moagem/refino químico).
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table class="anatomy-table">
+    <tbody>
+      <tr class="anat-chars">
+        <td>D</td><td>3</td><td>2</td><td>1</td><td>6</td><td>A</td><td>T</td><td>E</td><td>-</td><td>6</td><td>0</td>
+      </tr>
+      <tr class="anat-labels">
+        <td>FAM</td><td colspan="2">DENSIDADE</td><td colspan="2">LARGURA</td><td>REV</td><td>ENC</td><td>GEN</td><td>SEP</td><td colspan="2">VELOCIDADE</td>
+      </tr>
+      <tr class="anat-desc">
+        <td>DRAM</td><td colspan="2">32M</td><td colspan="2">x16 (512Mb)</td><td>A</td><td>TSOP</td><td>DDR1</td><td>Traço</td><td colspan="2">6.0ns (DDR333)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo (Base)</th>
+        <th>Capacidade (Decodificação)</th>
+        <th>Formato / Tecnologia</th>
+        <th>Destino Físico</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>D1616...</code></td>
+        <td>16M x 16 = 256Mb</td>
+        <td>TSOP-II / DDR1</td>
+        <td><strong>Resíduo</strong></td>
+      </tr>
+      <tr>
+        <td><code>D3208...</code></td>
+        <td>32M x 8 = 256Mb</td>
+        <td>TSOP-II / DDR1</td>
+        <td><strong>Resíduo</strong></td>
+      </tr>
+      <tr>
+        <td><code>D3216...</code></td>
+        <td>32M x 16 = 512Mb</td>
+        <td>TSOP-II / DDR1</td>
+        <td><strong>Resíduo</strong></td>
+      </tr>
+      <tr>
+        <td><code>D6408...</code></td>
+        <td>64M x 8 = 512Mb</td>
+        <td>TSOP-II / DDR1</td>
+        <td><strong>Resíduo</strong></td>
+      </tr>
+      <tr>
+        <td><code>D...</code> <small>(Com logo antigo)</small></td>
+        <td>Geralmente &lt; 1Gb</td>
+        <td>LPDDR1 (Mobile BGA)</td>
+        <td><strong>Resíduo</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> Operador, o ganho de eficiência aqui é estritamente visual e tátil. Bateu o olho em um chip da Kingston retangular, com <strong>pinos metálicos expostos nas laterais (TSOP)</strong>? É DDR1 (ou até mais antigo, como SDRAM). Não perca tempo decodificando o Part Number para saber se é 256Mb ou 512Mb. A ausência do formato BGA (bolinhas de solda por baixo) na linha de RAM Kingston condena a peça instantaneamente ao <strong>fluxo de resíduo</strong>. Em casos raros de LPDDR1 em BGA de celulares muito antigos, a capacidade ínfima também inviabiliza as bancadas <strong>reacondicionais</strong>.
+</div>
+
+<h4 id="kingston-ddr2">DDR2 e LPDDR2 (Mobile) — Prefixo <code>D</code> &nbsp;<small>(BGA de Transição, Roteadores e IoT)</small></h4>
+
+<p>
+  <strong>O que é e como classificar:</strong> Com o advento do DDR2, a indústria de memórias abandonou os pinos laterais e migrou em massa para o formato BGA (esferas de solda na base). A Kingston seguiu o mesmo padrão, utilizando matrizes (<em>dies</em>) de parceiros e gravando sua própria identidade visual a laser. O prefixo continua sendo a letra <code>D</code> (DRAM), mas agora em um encapsulamento quadrado ou retangular limpo. Embora o DDR2 seja antigo para computadores modernos, ele ainda possui uma forte demanda no mercado de manutenção de equipamentos embarcados, roteadores industriais e dispositivos IoT (no caso do LPDDR2). Portanto, os chips BGA DDR2 e LPDDR2 da Kingston em perfeito estado físico devem seguir para as caixas do fluxo <strong>reacondicional</strong>.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table class="anatomy-table">
+    <tbody>
+      <tr class="anat-chars">
+        <td>D</td><td>1</td><td>2</td><td>8</td><td>8</td><td>C</td><td>E</td><td>B</td><td>G</td><td>-</td><td>8</td><td>U</td>
+      </tr>
+      <tr class="anat-labels">
+        <td>FAM</td><td colspan="3">DENSIDADE</td><td>ORG</td><td>GEN</td><td>REV</td><td>ENC</td><td>VEL</td><td>SEP</td><td colspan="2">FREQ / TEMP</td>
+      </tr>
+      <tr class="anat-desc">
+        <td>DRAM</td><td colspan="3">128M</td><td>x8 Bits</td><td>DDR2</td><td>C</td><td>BGA</td><td>Base</td><td>Traço</td><td colspan="2">800MHz / Normal</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo (Base)</th>
+        <th>Capacidade (Decodificação)</th>
+        <th>Exemplos / Tecnologia</th>
+        <th>Destino Físico</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>D6416...</code></td>
+        <td>64M x 16 = 1Gb</td>
+        <td><code>D6416CEBG-8U</code> (DDR2)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>D1288...</code></td>
+        <td>128M x 8 = 1Gb</td>
+        <td><code>D1288CEBG-8U</code> (DDR2)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>D12816...</code></td>
+        <td>128M x 16 = 2Gb</td>
+        <td><code>D12816CEBG-6U</code> (DDR2)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>D2568...</code></td>
+        <td>256M x 8 = 2Gb</td>
+        <td><code>D2568CEBG-8U</code> (DDR2)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>D...</code> <small>(Corpo ultra-compacto)</small></td>
+        <td>Variável (ex: 2Gb / 4Gb)</td>
+        <td>LPDDR2 (Extraído de Mobile/IoT)</td>
+        <td><strong>Reacondicional Mobile</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> Operador, a regra aqui é a evolução física. Se a peça tem o logo da Kingston, começa com <code>D</code> e <strong>possui bolinhas de solda embaixo (BGA)</strong>, mas os números indicam capacidades antigas (1Gb, 2Gb), trata-se de DDR2 ou LPDDR2. Não confunda com o DDR1 (que tem "perninhas" de metal). Por ter formato BGA, esta peça entra no nosso circuito de triagem avançada e não pode ser destruída. Direcione com cuidado para a caixa <strong>reacondicional</strong>.
+</div>
+
+<h4 id="kingston-ddr3">DDR3 e DDR3L — Prefixo <code>D</code> &nbsp;<small>(Desktops, Laptops e LPDDR3 Mobile)</small></h4>
+
+<p style="line-height: 1.6; margin-bottom: 20px;">
+  <strong>O que é e como classificar:</strong> A família DDR3 e sua variante de baixa tensão (DDR3L) compõem o maior volume de extração em placas de informática da última década. A Kingston mantém o prefixo <code>D</code> (DRAM) nestes chips BGA soltos. <br><br>
+  <strong>O Segredo do Silício:</strong> Como a Kingston é empacotadora, ela insere uma letra específica no código para identificar qual gigante fabricou o cristal interno. As mais comuns são <strong>M</strong> (Micron), <strong>N</strong> (Nanya) e <strong>H</strong> (SK Hynix). Para a nossa operação, isso atesta a procedência da peça. Por possuírem altíssima liquidez no mercado global de recondicionamento, todos os chips DDR3/DDR3L íntegros devem ir imediatamente para as caixas da bancada <strong>reacondicional RAM</strong>.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table class="anatomy-table">
+    <tbody>
+      <tr class="anat-chars">
+        <td>D</td><td>2</td><td>5</td><td>1</td><td>6</td><td>E</td><td>C</td><td>M</td><td>D</td><td>X</td><td>G</td><td>J</td><td>D</td>
+      </tr>
+      <tr class="anat-labels">
+        <td>FAM</td><td colspan="2">DENSIDADE</td><td colspan="2">LARGURA</td><td>GEN</td><td>VOLT</td><td>DIE (FAB)</td><td>REV</td><td>ENC</td><td colspan="3">VEL / TEMP</td>
+      </tr>
+      <tr class="anat-desc">
+        <td>DRAM</td><td colspan="2">256M</td><td colspan="2">x16 (4Gb)</td><td>DDR3</td><td>1.35V</td><td>Micron</td><td>D</td><td>BGA</td><td colspan="3">1600 Mbps</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table style="text-align: left; width: 100%; border-collapse: collapse;">
+    <thead>
+      <tr style="border-bottom: 2px solid;">
+        <th style="padding: 10px;">Prefixo (Base)</th>
+        <th style="padding: 10px;">Capacidade (Decodificação)</th>
+        <th style="padding: 10px;">Exemplos Extraídos do Lote</th>
+        <th style="padding: 10px;">Destino Físico</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid;">
+        <td style="padding: 10px;"><code>D1216...</code></td>
+        <td style="padding: 10px;">128M x 16 = 2Gb (256MB)</td>
+        <td style="padding: 10px;"><code>D1216ECMDXGJD</code> (Micron)</td>
+        <td style="padding: 10px;"><strong>Reacondicional</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid;">
+        <td style="padding: 10px;"><code>D258...</code></td>
+        <td style="padding: 10px;">256M x 8 = 2Gb (256MB)</td>
+        <td style="padding: 10px;"><code>D258ENND...</code> (Nanya)</td>
+        <td style="padding: 10px;"><strong>Reacondicional</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid;">
+        <td style="padding: 10px;"><code>D2516...</code></td>
+        <td style="padding: 10px;">256M x 16 = 4Gb (512MB)</td>
+        <td style="padding: 10px;"><code>D2516ECMDXGJD</code>, <code>D2516ECND...</code></td>
+        <td style="padding: 10px;"><strong>Reacondicional</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid;">
+        <td style="padding: 10px;"><code>D5128...</code></td>
+        <td style="padding: 10px;">512M x 8 = 4Gb (512MB)</td>
+        <td style="padding: 10px;"><code>D5128E...</code></td>
+        <td style="padding: 10px;"><strong>Reacondicional</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid;">
+        <td style="padding: 10px;"><code>D51216...</code></td>
+        <td style="padding: 10px;">512M x 16 = 8Gb (1GB)</td>
+        <td style="padding: 10px;"><code>D51216E...</code> (Comuns em DIMMs 8GB)</td>
+        <td style="padding: 10px;"><strong>Reacondicional</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> <br>
+  <strong>1. Tensão (DDR3 vs DDR3L):</strong> Fique muito atento à 7ª letra do código. Se for <code>E</code> (ex: D2516E<strong>E</strong>...), é DDR3 padrão (1.5V). Se for <code>C</code> ou <code>K</code> (ex: D2516E<strong>C</strong>...), é DDR3L de baixa tensão (1.35V). Eles não devem ser misturados no mesmo lote de teste para evitar falsos negativos na máquina. <br><br>
+  <strong>2. E o LPDDR3 (Mobile)?</strong> É raríssimo encontrar um chip LPDDR3 puro da Kingston solto em placas de celular. Em 95% dos casos, a Kingston embutiu o LPDDR3 junto com o armazenamento dentro dos combos <code>EMCP</code>. Como já sabemos, se ler <code>EMCP</code> ou <code>EM</code>, a ordem é jogar direto no <strong>resíduo</strong> para refino químico, ignorando a RAM que está dentro.
+</div>
+
+<h4 id="kingston-ddr4">DDR4 e LPDDR4 — Prefixo <code>D</code> &nbsp;<small>(Desktops, Laptops e Combos Mobile)</small></h4>
+
+<p>
+  <strong>O que é e como classificar:</strong> O DDR4 representa a base da nossa receita com memórias voláteis no ciclo atual. A Kingston mantém sua nomenclatura clássica iniciando com o prefixo <code>D</code> (DRAM). A principal diferença visual aqui é a mudança da letra identificadora de geração e tensão: no DDR3 víamos muito o "E" (1.5V) ou "C" (1.35V), enquanto no DDR4 o padrão absoluto é a letra <strong>A</strong> (1.2V). Estes chips possuem altíssimo valor agregado, exigem tolerância zero para lascas no corpo de resina ou falhas no BGA, e devem ser enviados com prioridade para a bancada <strong>reacondicional RAM</strong>.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table class="anatomy-table">
+    <tbody>
+      <tr class="anat-chars">
+        <td>D</td><td>1</td><td>G</td><td>8</td><td>A</td><td>N</td><td>9</td><td>E</td><td>-</td><td>X</td><td>G</td><td>J</td><td>D</td>
+      </tr>
+      <tr class="anat-labels">
+        <td>FAM</td><td colspan="3">DENSIDADE / ORG</td><td>GEN/VCC</td><td>DIE (FAB)</td><td>REV</td><td>ENC</td><td>SEP</td><td colspan="4">VELOCIDADE</td>
+      </tr>
+      <tr class="anat-desc">
+        <td>DRAM</td><td colspan="3">1G x 8 (8Gb)</td><td>DDR4 (1.2V)</td><td>Nanya</td><td>9</td><td>BGA</td><td>Traço</td><td colspan="4">3200 Mbps</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo (Base)</th>
+        <th>Capacidade (Decodificação)</th>
+        <th>Exemplos Extraídos do Lote</th>
+        <th>Destino Físico</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>D51216...</code></td>
+        <td>512M x 16 = 8Gb (1GB)</td>
+        <td><code>D51216A...</code> (Comum em Laptops)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>D1G8...</code></td>
+        <td>1G x 8 = 8Gb (1GB)</td>
+        <td><code>D1G8AN9E...</code>, <code>D1G8AM9E...</code></td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>D1G16...</code></td>
+        <td>1G x 16 = 16Gb (2GB)</td>
+        <td><code>D1G16A...</code> (Alta Densidade)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>D2G8...</code></td>
+        <td>2G x 8 = 16Gb (2GB)</td>
+        <td><code>D2G8A...</code> (DIMMs de 16GB/32GB)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> <br>
+  <strong>1. Rastreamento do Silício:</strong> Assim como no DDR3, a Kingston continua carimbando a fábrica do <em>Die</em> interno logo após a letra "A" (geração). Identificadores como <code>M</code> (Micron), <code>N</code> (Nanya) e <code>H</code> (SK Hynix) no meio do Part Number são a prova técnica de que você tem um DDR4 original em mãos.<br><br>
+  <strong>2. Onde está o LPDDR4?</strong> A Kingston quase não fornece LPDDR4 em chips individuais (soltos) no mercado aberto. Toda a produção mobile de LPDDR4 e LPDDR4X é empacotada junto com o armazenamento flash nos Multi-Chip Packages. Portanto, se a placa de sucata for de um smartphone e você ler <code>EMCP</code> ou <code>EM</code> no chip da Kingston, aplique a Regra de Corte incondicional: como é impossível extrair a RAM isolada, a peça não tem valor de revenda de silício puro. Destine o combo imediatamente para a caixa de <strong>resíduo</strong> (moagem/refino químico).
+</div>
+
+<h4 id="kingston-ddr5">DDR5 e LPDDR5 — Prefixo <code>D</code> &nbsp;<small>(Desktops, Laptops e Servidores Atuais)</small></h4>
+
+<p>
+  <strong>O que é e como classificar:</strong> O DDR5 é o ativo mais premium de RAM na triagem moderna. Fisicamente, os chips BGA são muito parecidos com os do DDR4, o que exige a leitura precisa do código a laser. A Kingston mantém o prefixo <code>D</code>, mas as capacidades base saltam para 16Gb (Gigabits) ou mais, e a letra de geração (que no DDR4 era "A") evolui para indicar o novo padrão de tensão de 1.1V (frequentemente a letra <strong>B</strong> ou variações específicas do encapsulamento). Por ser tecnologia de ponta, 100% dos chips DDR5 íntegros extraídos devem ser priorizados e canalizados com cuidado máximo para a bancada <strong>reacondicional RAM</strong>.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table class="anatomy-table">
+    <tbody>
+      <tr class="anat-chars">
+        <td>D</td><td>2</td><td>G</td><td>8</td><td>B</td><td>M</td><td>H</td><td>B</td><td>-</td><td>C</td><td>W</td><td>E</td>
+      </tr>
+      <tr class="anat-labels">
+        <td>FAM</td><td colspan="3">DENSIDADE / ORG</td><td>GEN/VCC</td><td>DIE (FAB)</td><td>REV</td><td>ENC</td><td>SEP</td><td colspan="3">VELOCIDADE</td>
+      </tr>
+      <tr class="anat-desc">
+        <td>DRAM</td><td colspan="3">2G x 8 (16Gb)</td><td>DDR5 (1.1V)</td><td>Micron</td><td>H</td><td>BGA</td><td>Traço</td><td colspan="3">4800/5200 Mbps</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo (Base)</th>
+        <th>Capacidade (Decodificação)</th>
+        <th>Exemplos Extraídos do Lote</th>
+        <th>Destino Físico</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>D2G8...</code></td>
+        <td>2G x 8 = 16Gb (2GB)</td>
+        <td><code>D2G8BMHB-CWE</code> (Micron Die)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>D2G16...</code></td>
+        <td>2G x 16 = 32Gb (4GB)</td>
+        <td><code>D2G16B...</code> (Alta Densidade)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>D3G8...</code></td>
+        <td>3G x 8 = 24Gb (3GB)</td>
+        <td><code>D3G8BH...</code> (Densidade Não-Binária SK Hynix)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+      <tr>
+        <td><code>D4G8...</code></td>
+        <td>4G x 8 = 32Gb (4GB)</td>
+        <td><code>D4G8B...</code> (Servidores / DIMMs 32GB+)</td>
+        <td><strong>Reacondicional</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> <br>
+  <strong>1. Cuidado com Componentes Extras:</strong> Diferente do DDR4, os pentes inteiros de memória DDR5 trazem o PMIC (Gerenciador de Energia) soldado diretamente na placa do pente, e não na placa-mãe. O PMIC <strong>não é</strong> um chip de memória. Treine o operador para focar apenas nos blocos retangulares maiores (que iniciam com <code>D</code>). Os chips menores e metálicos no centro do pente de memória vão para a caixa de refino de metais/resíduos lógicos. <br><br>
+  <strong>2. LPDDR5 (Mobile):</strong> A regra de ouro da Kingston se mantém. Se extraído de um smartphone/tablet, a Kingston terá integrado esse LPDDR5 veloz com um armazenamento UFS em um combo (<strong>uMCP</strong>). Portanto, se ler <code>EMCP</code>, <code>EM</code> ou prefixos similares de combo integrados, aplique a Regra de Corte: é impossível separar na nossa infraestrutura, devendo ir diretamente ao <strong>resíduo</strong>.
+</div>
+
+<h4 id="kingston-emcp">eMCP (Combos Mobile) — Prefixos <code>EMCP</code> e <code>EM</code> &nbsp;<small>(NAND + LPDDR Integrados)</small></h4>
+
+<p>
+  <strong>O que é e como classificar:</strong> Os eMCPs da Kingston combinam memória de armazenamento flash e memória RAM em um único encapsulamento BGA, projetados para economizar espaço em placas de celulares e tablets. A Kingston costuma ser extremamente literal em sua taxonomia: a sigla <code>EMCP</code> ou o bloco reduzido <code>EM</code> aparecem claramente intercalados entre dois números. Como o nosso modelo de negócio exige chips de armazenamento puros ou RAMs puras, e é fisicamente impossível separar as matrizes internas (dies), este componente <strong>não possui viabilidade</strong> para a bancada. Pela nossa regra de corte operacional, todos os chips desta família são classificados sumariamente como <strong>resíduo</strong> e devem ser descartados na caixa destinada à moagem e refino químico.
+</p>
+
+<!-- TABELA DE ANATOMIA -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table class="anatomy-table">
+    <tbody>
+      <tr class="anat-chars">
+        <td>1</td><td>6</td><td>E</td><td>M</td><td>C</td><td>P</td><td>1</td><td>6</td><td>-</td><td>E</td><td>L</td><td>3</td><td>A</td><td>S</td><td>1</td><td>0</td><td>0</td>
+      </tr>
+      <tr class="anat-labels">
+        <td colspan="2">CAP NAND</td><td colspan="4">FAMÍLIA</td><td colspan="2">CAP RAM</td><td>SEP</td><td>REV</td><td colspan="2">GEN RAM</td><td colspan="5">DIE / PACKAGE</td>
+      </tr>
+      <tr class="anat-desc">
+        <td colspan="2">16GB</td><td colspan="4">eMCP (Combo)</td><td colspan="2">16Gb</td><td>Traço</td><td>E</td><td colspan="2">LPDDR3</td><td colspan="5">Padrão BGA 221/254</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TABELA DE PREFIXOS -->
+<div class="tbl-wrap" style="margin-bottom: 20px;">
+  <table>
+    <thead>
+      <tr>
+        <th>Estrutura Mestra</th>
+        <th>Leitura Visual (Capacidades)</th>
+        <th>Exemplos Extraídos do Lote</th>
+        <th>Destino Físico</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>04EMCP...</code></td>
+        <td>4GB Flash + 4Gb RAM</td>
+        <td><code>04EMCP04-AL...</code></td>
+        <td><strong>Resíduo</strong></td>
+      </tr>
+      <tr>
+        <td><code>08EMCP...</code></td>
+        <td>8GB Flash + 8Gb/16Gb RAM</td>
+        <td><code>08EMCP08-EL...</code>, <code>08EMCP16...</code></td>
+        <td><strong>Resíduo</strong></td>
+      </tr>
+      <tr>
+        <td><code>16EMCP...</code></td>
+        <td>16GB Flash + 16Gb/24Gb RAM</td>
+        <td><code>16EMCP16-EL...</code></td>
+        <td><strong>Resíduo</strong></td>
+      </tr>
+      <tr>
+        <td><code>...EM...</code> <small>(Série Nova)</small></td>
+        <td>Nomenclatura Curta (NAND+RAM)</td>
+        <td><code>16EM16-M4CTB29</code>, <code>32EM32-M4...</code></td>
+        <td><strong>Resíduo</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="nota">
+  <strong>Diretriz Operacional de Triagem:</strong> Operador, leitura ultrarrápida: bateu o olho no chip e viu as letras <code>EMCP</code> ou <code>EM</code> ensanduichadas entre dois blocos de números? O chip é um combo inseparável. <strong>Não perca tempo lendo o resto da numeração, procurando a capacidade ou tentando adivinhar a geração da RAM.</strong> Segregue a peça de imediato para o <strong>fluxo de resíduo</strong>. Garantir agilidade neste descarte evita que a esteira pare por causa de componentes que não geram receita <strong>reacondicional</strong>.
+</div>
