@@ -40,6 +40,24 @@
   --font:       Tahoma, "MS Sans Serif", Geneva, Verdana, sans-serif;
   --font-serif: Georgia, "Times New Roman", serif;
   --font-mono:  "Courier New", Courier, monospace;
+
+  /* ── Button token system ─────────────────────────────────
+     Para mudar o visual de TODOS os botões do site, edite
+     apenas estas variáveis. */
+  --btn-bg:            linear-gradient(to bottom, #F4F3EE, #DDD9C3);
+  --btn-border:        #ACA899;
+  --btn-shadow:        1px 1px 0 #fff inset, -1px -1px 0 #716F64 inset;
+  --btn-color:         #000;
+  --btn-hover-bg:      linear-gradient(to bottom, #FFE8AA, #FFCB66);
+  --btn-hover-border:  #C7A24A;
+  --btn-hover-shadow:  1px 1px 0 #fff inset, -1px -1px 0 #8B6E2A inset;
+  --btn-active-bg:     linear-gradient(to bottom, #FFCB66, #FFE8AA);
+  --btn-active-shadow: 1px 1px 0 #8B6E2A inset;
+  /* Tamanho e forma dos botões de corpo de página */
+  --btn-radius:        4px;
+  --btn-pad:           6px 16px;
+  --btn-font-size:     12px;
+  --btn-font-weight:   600;
 }
 
 * { box-sizing: border-box; }
@@ -128,11 +146,12 @@ a:hover { color: var(--link-hover); border-bottom-color: var(--link-hover); back
 .lang-wrap { position: relative; }
 .lang {
   display: flex; align-items: center; gap: 6px;
-  background: linear-gradient(to bottom, var(--beige-1), var(--beige-3));
-  border: 1px solid var(--rule);
-  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 var(--bevel-dk) inset;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--btn-radius);
+  box-shadow: var(--btn-shadow);
   padding: 3px 8px;
-  color: #000;
+  color: var(--btn-color);
   font-size: 11px;
   text-shadow: none;
   cursor: pointer;
@@ -140,13 +159,13 @@ a:hover { color: var(--link-hover); border-bottom-color: var(--link-hover); back
   font-family: var(--font);
 }
 .lang:hover {
-  background: linear-gradient(to bottom, #FFE8AA, #FFCB66);
-  border-color: #C7A24A;
-  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 #8B6E2A inset;
+  background: var(--btn-hover-bg);
+  border-color: var(--btn-hover-border);
+  box-shadow: var(--btn-hover-shadow);
 }
 .lang:active {
-  background: linear-gradient(to bottom, #FFCB66, #FFE8AA);
-  box-shadow: 1px 1px 0 #8B6E2A inset;
+  background: var(--btn-active-bg);
+  box-shadow: var(--btn-active-shadow);
 }
 .lang .dot {
   width: 10px; height: 10px;
@@ -221,20 +240,21 @@ a:hover { color: var(--link-hover); border-bottom-color: var(--link-hover); back
 }
 .top-search button {
   height: 24px; padding: 0 12px; margin: 1px;
-  background: linear-gradient(to bottom, var(--beige-1), var(--beige-3));
-  border: 1px solid var(--rule);
-  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 var(--bevel-dk) inset;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--btn-radius);
+  box-shadow: var(--btn-shadow);
   font-family: var(--font); font-size: 11px;
-  color: #000; cursor: pointer; font-weight: 600;
+  color: var(--btn-color); cursor: pointer; font-weight: 600;
 }
 .top-search button:hover {
-  background: linear-gradient(to bottom, #FFE8AA, #FFCB66);
-  border-color: #C7A24A;
-  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 #8B6E2A inset;
+  background: var(--btn-hover-bg);
+  border-color: var(--btn-hover-border);
+  box-shadow: var(--btn-hover-shadow);
 }
 .top-search button:active {
-  background: linear-gradient(to bottom, #FFCB66, #FFE8AA);
-  box-shadow: 1px 1px 0 #8B6E2A inset;
+  background: var(--btn-active-bg);
+  box-shadow: var(--btn-active-shadow);
 }
 /* Topbar search dropdown */
 #top-search-results {
@@ -453,6 +473,45 @@ tr.decode-example td {
   text-align: center;
   padding: 6px;
 }
+
+/* ── PRINT BUTTON ────────────────────────────────────────── */
+.print-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 10px 0;
+}
+.btn-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--btn-pad);
+  font-family: var(--font);
+  font-size: var(--btn-font-size);
+  font-weight: var(--btn-font-weight);
+  color: var(--btn-color);
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--btn-radius);
+  box-shadow: var(--btn-shadow);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-print:hover {
+  background: var(--btn-hover-bg);
+  border-color: var(--btn-hover-border);
+  box-shadow: var(--btn-hover-shadow);
+}
+.btn-print:active {
+  background: var(--btn-active-bg);
+  box-shadow: var(--btn-active-shadow);
+}
+.print-hint {
+  font-size: 11px;
+  color: var(--ink-mute);
+}
+/* .btn-print herda --btn-* vars — sem override necessário */
+[data-theme="dark"] .print-hint { color: var(--ink-mute); }
 
 /* ── CALLOUTS / NOTA ─────────────────────────────────────── */
 .nota, .callout {
@@ -731,23 +790,29 @@ ol.steps li::before {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: linear-gradient(to bottom, var(--beige-1) 0%, var(--beige-3) 100%);
-  border: 1px solid var(--rule);
-  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 var(--bevel-dk) inset;
-  padding: 6px 14px;
-  color: #000;
-  font-weight: bold;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--btn-radius);
+  box-shadow: var(--btn-shadow);
+  padding: var(--btn-pad);
+  color: var(--btn-color);
+  font-weight: var(--btn-font-weight);
   font-family: var(--font);
-  font-size: 12px;
+  font-size: var(--btn-font-size);
+  line-height: 1;
   text-decoration: none;
-  border-bottom: 1px solid var(--rule);
   margin-top: 4px;
 }
+.cta:visited { color: var(--btn-color); }
 .cta:hover {
-  background: linear-gradient(to bottom, #FFE8AA, #FFCB66);
-  border-color: #C7A24A;
-  color: #000;
-  border-bottom-color: #C7A24A;
+  background: var(--btn-hover-bg);
+  border-color: var(--btn-hover-border);
+  box-shadow: var(--btn-hover-shadow);
+  color: var(--btn-color);
+}
+.cta:active {
+  background: var(--btn-active-bg);
+  box-shadow: var(--btn-active-shadow);
 }
 .updated {
   margin-top: 12px;
@@ -769,22 +834,27 @@ ol.steps li::before {
 .page-nav-btn {
   display: inline-flex;
   align-items: center;
-  padding: 7px 14px;
-  background: linear-gradient(to bottom, var(--beige-1), var(--beige-3));
-  border: 1px solid var(--rule);
-  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 var(--bevel-dk) inset;
+  padding: var(--btn-pad);
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--btn-radius);
+  box-shadow: var(--btn-shadow);
   font-family: var(--font);
-  font-size: 11px;
-  font-weight: bold;
-  color: var(--hi-1);
-  border-bottom: 1px solid var(--rule);
+  font-size: var(--btn-font-size);
+  font-weight: var(--btn-font-weight);
+  color: var(--btn-color);
   text-decoration: none;
 }
+.page-nav-btn:visited { color: var(--btn-color); }
 .page-nav-btn:hover {
-  background: linear-gradient(to bottom, #FFE8AA, #FFCB66);
-  border-color: #C7A24A;
-  color: #000;
-  border-bottom-color: #C7A24A;
+  background: var(--btn-hover-bg);
+  border-color: var(--btn-hover-border);
+  box-shadow: var(--btn-hover-shadow);
+  color: var(--btn-color);
+}
+.page-nav-btn:active {
+  background: var(--btn-active-bg);
+  box-shadow: var(--btn-active-shadow);
 }
 .page-nav-btn.next { margin-left: auto; }
 
@@ -876,25 +946,26 @@ ol.steps li::before {
 .theme-btn {
   display: flex; align-items: center; gap: 5px;
   padding: 3px 10px;
-  background: linear-gradient(to bottom, var(--beige-1), var(--beige-3));
-  border: 1px solid var(--rule);
-  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 var(--bevel-dk) inset;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--btn-radius);
+  box-shadow: var(--btn-shadow);
   cursor: pointer;
   font-family: var(--font);
   font-size: 11px;
   font-weight: 600;
-  color: #000;
+  color: var(--btn-color);
   white-space: nowrap;
   flex-shrink: 0;
 }
 .theme-btn:hover {
-  background: linear-gradient(to bottom, #FFE8AA, #FFCB66);
-  border-color: #C7A24A;
-  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 #8B6E2A inset;
+  background: var(--btn-hover-bg);
+  border-color: var(--btn-hover-border);
+  box-shadow: var(--btn-hover-shadow);
 }
 .theme-btn:active {
-  background: linear-gradient(to bottom, #FFCB66, #FFE8AA);
-  box-shadow: 1px 1px 0 #8B6E2A inset;
+  background: var(--btn-active-bg);
+  box-shadow: var(--btn-active-shadow);
 }
 /* Ícones do botão de tema */
 .icon-sun  { display: none; }
@@ -1083,6 +1154,7 @@ ol.steps li::before {
 }
 [data-theme="dark"] .top-search input { color: var(--ink); background: transparent; }
 [data-theme="dark"] .top-search .kbd-hint { color: var(--ink-mute); border-color: var(--rule); }
+/* Botão de busca: base escuro no dark mode para combinar com o campo; hover usa vars */
 [data-theme="dark"] .top-search button {
   background: linear-gradient(to bottom, #282E4A, #1E2440);
   border-color: #333A60;
@@ -1090,10 +1162,10 @@ ol.steps li::before {
   box-shadow: none;
 }
 [data-theme="dark"] .top-search button:hover {
-  background: linear-gradient(to bottom, #FFE8AA, #FFCB66);
-  border-color: #C7A24A;
-  color: #000;
-  box-shadow: 1px 1px 0 #fff inset;
+  background: var(--btn-hover-bg);
+  border-color: var(--btn-hover-border);
+  color: var(--btn-color);
+  box-shadow: var(--btn-hover-shadow);
 }
 [data-theme="dark"] #top-search-results { background: var(--paper); border-color: var(--hi-2); }
 [data-theme="dark"] .pr-row:hover { background: var(--hi-5); }
@@ -1119,21 +1191,7 @@ ol.steps li::before {
 [data-theme="dark"] .topnav a:visited { color: #fff; border-bottom: 0; }
 [data-theme="dark"] .topnav a:hover   { color: #fff; border-bottom: 0; text-decoration: underline; }
 
-/* Botões da topbar (lang, theme) ficam beige — usam --beige-* que virou escuro */
-[data-theme="dark"] .lang,
-[data-theme="dark"] .theme-btn {
-  background: linear-gradient(to bottom, #F4F3EE, #DDD9C3);
-  border-color: #ACA899;
-  color: #000;
-  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 #716F64 inset;
-}
-[data-theme="dark"] .lang:hover,
-[data-theme="dark"] .theme-btn:hover {
-  background: linear-gradient(to bottom, #FFE8AA, #FFCB66);
-  border-color: #C7A24A;
-  color: #000;
-  box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 #8B6E2A inset;
-}
+/* Botões da topbar: herdam --btn-* vars automaticamente — sem override necessário */
 /* Dropdown do lang no modo escuro */
 [data-theme="dark"] .lang-menu { background: #1C1F2E; border-color: #2A3058; }
 [data-theme="dark"] .lang-item { color: var(--ink); border-color: var(--rule); }
@@ -1150,6 +1208,106 @@ ol.steps li::before {
 /* ── Scrollbar ── */
 [data-theme="dark"] *::-webkit-scrollbar-thumb { background: var(--rule); }
 [data-theme="dark"] *::-webkit-scrollbar-thumb:hover { background: var(--hi-3); }
+
+/* ══════════════════════════════════════════════════════════
+   PRINT — renderiza somente a tabela de prefixos
+   ══════════════════════════════════════════════════════════ */
+@media print {
+  /* ── Tamanho e margens da página ── */
+  @page {
+    size: A4 portrait;
+    margin: 12mm 10mm;
+  }
+
+  /* ── Oculta toda a UI de navegação ── */
+  .topbar, .sidenav, .page-foot, .page-nav,
+  .print-bar, .hero, .cards, .big-search,
+  h2.section, h2.section + p,
+  .nota, .callout { display: none !important; }
+
+  /* ── Remove layout de duas colunas ── */
+  .layout { display: block !important; }
+
+  /* ── Conteúdo ocupa a página inteira ── */
+  .article {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    min-height: unset !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* ── Fundo branco / tinta preta ── */
+  body, .article, table, table td {
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Tabela compacta ── */
+  table {
+    font-size: 7.5pt !important;
+    line-height: 1.3 !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  table th {
+    background: #003399 !important;
+    color: #fff !important;
+    padding: 4px 6px !important;
+    font-size: 8pt !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  table td {
+    padding: 3px 6px !important;
+    border: 1px solid #BEBAA8 !important;
+  }
+
+  /* ── Linhas alternadas leves ── */
+  table tr:nth-child(even) td {
+    background: #F0F4FF !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Sem quebra de linha no meio de uma célula ── */
+  table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* ── Cabeçalho da tabela repete em cada página ── */
+  thead { display: table-header-group; }
+
+  /* ── Wrap da tabela sem scroll horizontal ── */
+  .tbl-wrap { overflow: visible !important; }
+
+  /* ── code tags: sem fundo colorido ── */
+  code {
+    background: none !important;
+    border: none !important;
+    color: #000 !important;
+    font-weight: bold;
+    font-size: inherit !important;
+  }
+
+  /* ── Título impresso no topo ── */
+  .article::before {
+    content: "WhatTheChip? — Tabela Rápida de Prefixos";
+    display: block;
+    font-family: serif;
+    font-size: 13pt;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 8pt;
+    color: #003399;
+    border-bottom: 2px solid #003399;
+    padding-bottom: 4pt;
+  }
+}
 
 /* ── Table th: texto azul escuro fixo sobre fundo azul claro (igual ao sidenav h4) ── */
 [data-theme="dark"] table th { color: #1B3A8C; }

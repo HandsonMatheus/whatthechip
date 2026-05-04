@@ -28,22 +28,6 @@
       <a href="prefixos.html">Tabela Rápida</a>
       <a href="contato.html">Contato</a>
     </nav>
-    <div class="lang-wrap">
-      <button class="lang" type="button" title="Idioma" id="lang-btn">
-        <span class="dot" aria-hidden="true"></span>
-        <span>Português</span>
-        <span class="lang-arrow">▼</span>
-      </button>
-      <div class="lang-menu" id="lang-menu">
-        <div class="lang-item lang-active">
-          <span class="lang-check">✓</span> Português
-        </div>
-        <div class="lang-item lang-disabled">
-          <span class="lang-check"></span> English
-          <span class="lang-soon">em breve</span>
-        </div>
-      </div>
-    </div>
     <button class="theme-btn" id="theme-btn" type="button" title="Alternar modo">
       <!-- Ícone lua (modo claro → clicar para escuro) -->
       <svg class="icon-moon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -335,22 +319,6 @@
       if (t) { t.focus(); t.select(); }
     }
   });
-
-  // Language selector dropdown
-  var langBtn  = document.getElementById('lang-btn');
-  var langMenu = document.getElementById('lang-menu');
-  if (langBtn && langMenu) {
-    langBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      var open = langMenu.style.display === 'block';
-      langMenu.style.display = open ? 'none' : 'block';
-      langBtn.classList.toggle('lang-open', !open);
-    });
-    document.addEventListener('click', function() {
-      langMenu.style.display = 'none';
-      langBtn.classList.remove('lang-open');
-    });
-  }
 
   // Dark mode toggle
   var themeBtn   = document.getElementById('theme-btn');
