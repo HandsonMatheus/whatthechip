@@ -20,7 +20,7 @@ import re
 import urllib.request
 import urllib.error
 
-from .models import Brand, ChipFamily, DecodeMap, KnownPart, SearchLog, UnknownChip
+from .models import Brand, ChipFamily, DecodeMap, KnownPart, SearchLog, Source, UnknownChip
 
 
 # ── Fuzzy matching ─────────────────────────────────────────────────────────────
