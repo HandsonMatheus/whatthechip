@@ -334,3 +334,15 @@
     typesEl.parentNode.insertBefore(badges, typesEl);
     typesEl.style.display = 'none';
   })();
+
+  // ── CHIP TYPE BLOCK — toggle colapsável ─────────────────
+  function wtcToggle(id) {
+    var el   = document.getElementById(id);
+    var c    = el.querySelector('.chip-block-content');
+    var p    = el.querySelector('.chip-block-preview');
+    var btn  = el.querySelector('.btn-print');
+    var open = c.style.display !== 'none';
+    c.style.display = open ? 'none'  : 'block';
+    p.style.display = open ? ''      : 'none';
+    btn.textContent = open ? '▼ Aprender mais' : '▲ Recolher';
+  }

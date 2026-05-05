@@ -476,12 +476,11 @@ table tr:hover td { background: #FFFFCC; }
 /* ── Anatomy decode tables (chip part-number gabarito) ── */
 tr.decode-gabarito th {
   font-family: var(--font-mono);
-  font-size: 1.1em;
-  color: #003366;
-  background: #EEF2FA;
-  border-bottom: 2px solid #adb5bd;
+  font-size: 1.2em;
   text-align: center;
   padding: 8px;
+  border-bottom: 2px solid #adb5bd;
+  /* herda background e color de table th — gradiente azul padrão */
 }
 tr.decode-labels td {
   background: #DDE5F5;
@@ -1292,6 +1291,67 @@ a.pr-row:visited { color: inherit; }
 [data-theme="dark"] *::-webkit-scrollbar-thumb { background: var(--rule); }
 [data-theme="dark"] *::-webkit-scrollbar-thumb:hover { background: var(--hi-3); }
 
+/* ── CHIP TYPE BLOCK (colapsável) ───────────────────────── */
+.chip-block {
+  border: 1px solid var(--rule);
+  margin: 0 0 18px 0;
+  background: var(--paper);
+  box-shadow: 1px 1px 0 #fff inset;
+}
+.chip-block-header {
+  background: linear-gradient(to bottom, var(--tab-blue-1), var(--tab-blue-2));
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 12px;
+}
+.chip-block-header strong {
+  font-size: 13px;
+  color: var(--hi-1);
+  display: block;
+}
+.chip-block-subtitle {
+  font-weight: normal;
+  color: var(--ink-mute);
+  font-size: 11px;
+}
+.chip-block-prefixes {
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 3px;
+}
+.chip-block-preview {
+  position: relative;
+  padding: 10px 12px 0;
+  overflow: hidden;
+  max-height: 5em; /* ← controla quantas linhas aparecem no preview (1 linha ≈ 1.7em) */
+}
+.chip-block-preview p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.chip-block-preview-fade {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2.5em;
+  background: linear-gradient(transparent, var(--paper));
+}
+.chip-block-toggle {
+  padding: 7px 12px;
+}
+.chip-block-content {
+  display: none;
+  padding: 10px 14px 16px;
+  border-top: 1px solid var(--rule-soft);
+}
+[data-theme="dark"] .chip-block {
+  background: var(--paper);
+  border-color: var(--rule);
+  box-shadow: none;
+}
+[data-theme="dark"] .chip-block-preview-fade {
+  background: linear-gradient(transparent, var(--paper));
+}
+
 /* ══════════════════════════════════════════════════════════
    PRINT — renderiza somente a tabela de prefixos
    ══════════════════════════════════════════════════════════ */
@@ -1397,8 +1457,7 @@ a.pr-row:visited { color: inherit; }
 
 /* ── Anatomy decode tables no modo escuro ── */
 [data-theme="dark"] tr.decode-gabarito th {
-  background: #1A2440 !important;
-  color: #A8D0FF !important;
+  /* herda background de table th no dark mode — sem override necessário */
   border-bottom-color: #2A3860 !important;
 }
 [data-theme="dark"] tr.decode-labels td {

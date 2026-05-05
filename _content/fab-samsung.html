@@ -113,1691 +113,1803 @@
       </table></div>
       
       <div class="nota"><strong>Diretriz Operacional de Triagem:</strong> Esta tabela é a ferramenta definitiva de decisão na esteira para garantir máxima agilidade na leitura visual. Note a segregação estrita entre <strong>eMCP</strong>, <strong>uMCP</strong> e os <strong>BGA NVMe SSDs (KUS)</strong> nas caixas correspondentes, pois possuem pinagens incompatíveis na validação. O prefixo <code>K4U</code> exige atenção redobrada: se for um chip soldado em placa de vídeo, é GDDR4 (<strong>Reacondicional GPU</strong>); se for compacto de smartphone, é LPDDR4X (<strong>Reacondicional Mobile</strong>). Ao identificar os códigos a laser mapeados (exceto o SDRAM), o componente deve ser IMEDIATAMENTE segregado e destinado ao respectivo fluxo <strong>reacondicional</strong>. Em caso de dúvidas sobre quebras, o operador NÃO deve classificar o item como <strong>residuo</strong> até a validação técnica final.</div>
-      <h4 id="sam-sdram">
-              SDRAM — Prefixo <code>K4S</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(PC-66/PC-100/PC-133, ~1998–2004)</small
-              >
-            </h4>
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Prefixo (Base)</th>
-                    <th>Densidade / Organização</th>
-                    <th>Velocidade (Speed Grade)</th>
-                    <th>Exemplo Completo de PN</th>
-                    <th>Período</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K4S641632</code></td>
-                    <td>64Mb (4M x 16)</td>
-                    <td>PC-100 (10ns / <code>-TC1H</code>)</td>
-                    <td><code>K4S641632H-TC1H</code></td>
-                    <td>1998–2002</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4S643232</code></td>
-                    <td>64Mb (2M x 32)</td>
-                    <td>PC-133 (7.0ns / <code>-TC70</code>)</td>
-                    <td><code>K4S643232F-TC70</code></td>
-                    <td>1999–2003</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4S280832</code></td>
-                    <td>128Mb (16M x 8)</td>
-                    <td>PC-133 (7.5ns / <code>-TL75</code>)</td>
-                    <td><code>K4S280832F-TL75</code></td>
-                    <td>1999–2003</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4S281632</code></td>
-                    <td>128Mb (8M x 16)</td>
-                    <td>PC-100 (10ns / <code>-TC1L</code>)</td>
-                    <td><code>K4S281632I-TC1L</code></td>
-                    <td>1999–2003</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4S560832</code></td>
-                    <td>256Mb (32M x 8)</td>
-                    <td>PC-133 (7.5ns / <code>-TC75</code>)</td>
-                    <td><code>K4S560832H-TC75</code></td>
-                    <td>2000–2004</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4S561632</code></td>
-                    <td>256Mb (16M x 16)</td>
-                    <td>PC-133 (7.5ns / <code>-UC75</code>)</td>
-                    <td><code>K4S561632H-UC75</code></td>
-                    <td>2001–2004</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4S511632</code></td>
-                    <td>512Mb (32M x 16)</td>
-                    <td>PC-133 (7.5ns / <code>-TC75</code>)</td>
-                    <td><code>K4S511632F-TC75</code></td>
-                    <td>2001–2004</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota">
-              <strong>Dica de esteira:</strong> O prefixo <code>K4S</code> indica Samsung SDRAM (<em>S</em> de Synchronous). A decodificação da capacidade ocorre nos dois dígitos após o "S" (ex: 64 = 64Mb, 28 = 128Mb, 56 = 256Mb, 51 = 512Mb) e a largura de barramento (organização) nos dois dígitos seguintes (ex: 08 = x8, 16 = x16). Estes chips são obsoletos para o mercado atual. Para agilizar o volume de processamento, ao bater o olho neste prefixo, o operador deve direcionar o componente imediatamente para o fluxo de <strong>residuo</strong> (moagem/refino base), uma vez que não possuem utilidade técnica para o ciclo <strong>reacondicional</strong>.
-            </div>
+<div id="sam-sdram" class="chip-block">
 
-<h4 id="sam-ddr1">
-              DDR1 — Prefixo <code>K4H</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(DDR266/333/400, ~2001–2007)</small
-              >
-            </h4>
-            
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px;">K</th>
-                    <th style="padding: 8px;">4</th>
-                    <th style="padding: 8px;">H</th>
-                    <th style="padding: 8px;">51</th>
-                    <th style="padding: 8px;">16</th>
-                    <th style="padding: 8px;">3</th>
-                    <th style="padding: 8px;">8</th>
-                    <th style="padding: 8px;">C</th>
-                    <th style="padding: 8px;">-</th>
-                    <th style="padding: 8px;">T</th>
-                    <th style="padding: 8px;">C</th>
-                    <th style="padding: 8px;">CC</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">LARG</td>
-                    <td style="padding: 6px;">BANC</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">REV</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">DRAM</td>
-                    <td style="padding: 6px;">DDR1</td>
-                    <td style="padding: 6px;">512Mb</td>
-                    <td style="padding: 6px;">x16</td>
-                    <td style="padding: 6px;">4 Bancos</td>
-                    <td style="padding: 6px;">2.5V</td>
-                    <td style="padding: 6px;">Rev. C</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">TSOP II</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">DDR400</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  <div class="chip-block-header">
+    <strong>SDRAM <span class="chip-block-subtitle">(PC-66/PC-100/PC-133, ~1998–2004)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K4S</code>
+    </div>
+  </div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Capacidade / Organização</th>
-                    <th>Velocidade (Speed Grade)</th>
-                    <th>Exemplo Completo de PN</th>
-                    <th>Período</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K4H280438</code></td>
-                    <td style="font-family: sans-serif;">128Mb (32M x 4)</td>
-                    <td style="font-family: sans-serif;">DDR266 (<code>-TB0</code> / <code>-TA2</code>)</td>
-                    <td><code>K4H280438E-TCB0</code></td>
-                    <td style="font-family: sans-serif;">2001–2004</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4H280838</code></td>
-                    <td style="font-family: sans-serif;">128Mb (16M x 8)</td>
-                    <td style="font-family: sans-serif;">DDR333 (<code>-TB3</code>)</td>
-                    <td><code>K4H280838E-TCB3</code></td>
-                    <td style="font-family: sans-serif;">2001–2004</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4H560838</code></td>
-                    <td style="font-family: sans-serif;">256Mb (32M x 8)</td>
-                    <td style="font-family: sans-serif;">DDR333 (<code>-TB3</code>)</td>
-                    <td><code>K4H560838D-TCB3</code></td>
-                    <td style="font-family: sans-serif;">2002–2005</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4H510438</code></td>
-                    <td style="font-family: sans-serif;">512Mb (128M x 4)</td>
-                    <td style="font-family: sans-serif;">DDR333 (<code>-TB3</code>)</td>
-                    <td><code>K4H510438D-UCB3</code></td>
-                    <td style="font-family: sans-serif;">2002–2005</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4H511638</code></td>
-                    <td style="font-family: sans-serif;">512Mb (32M x 16)</td>
-                    <td style="font-family: sans-serif;">DDR400 (<code>-TCC</code>)</td>
-                    <td><code>K4H511638C-TCCC</code></td>
-                    <td style="font-family: sans-serif;">2003–2006</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4H1G0838</code></td>
-                    <td style="font-family: sans-serif;">1Gb (128M x 8)</td>
-                    <td style="font-family: sans-serif;">DDR400 (<code>-TCC</code>)</td>
-                    <td><code>K4H1G0838E-TCCC</code></td>
-                    <td style="font-family: sans-serif;">2004–2007</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4H1G1638</code></td>
-                    <td style="font-family: sans-serif;">1Gb (64M x 16)</td>
-                    <td style="font-family: sans-serif;">DDR400 (<code>-TCC</code>)</td>
-                    <td><code>K4H1G1638M-UCCC</code></td>
-                    <td style="font-family: sans-serif;">2004–2007</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Dica de esteira:</strong> O prefixo <code>K4H</code> indica a família Samsung DDR1. A capacidade é identificada pelo 4º e 5º caracteres (28 = 128Mb, 56 = 256Mb, 51 = 512Mb, 1G = 1Gb), seguidos da largura de barramento (04, 08 ou 16). Por serem componentes obsoletos e de baixíssima capacidade, o destino direto é o <strong>fluxo de residuo</strong> (moagem/refino). Não devem ser enviados para a bancada <strong>reacondicional</strong>, servindo apenas para treinamento de leitura visual.
-            </div>
+  <div class="chip-block-preview">
+    <p>O prefixo <code>K4S</code> indica Samsung SDRAM (<em>S</em> de Synchronous).</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
 
-<h4 id="sam-ddr2">
-              DDR2 — Prefixo <code>K4T</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(DDR2-400 a DDR2-1066, ~2004–2010)</small
-              >
-            </h4>
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-sdram')">▼ Aprender mais</button>
+  </div>
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">4</th>
-                    <th style="padding: 8px; text-align: center;">T</th>
-                    <th style="padding: 8px; text-align: center;">1G</th>
-                    <th style="padding: 8px; text-align: center;">16</th>
-                    <th style="padding: 8px; text-align: center;">4</th>
-                    <th style="padding: 8px; text-align: center;">Q</th>
-                    <th style="padding: 8px; text-align: center;">F</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">Z</th>
-                    <th style="padding: 8px; text-align: center;">C</th>
-                    <th style="padding: 8px; text-align: center;">E6</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">LARG</td>
-                    <td style="padding: 6px;">BANC</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">REV</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">DRAM</td>
-                    <td style="padding: 6px;">DDR2</td>
-                    <td style="padding: 6px;">1Gb</td>
-                    <td style="padding: 6px;">x16</td>
-                    <td style="padding: 6px;">8 Bancos</td>
-                    <td style="padding: 6px;">1.8V</td>
-                    <td style="padding: 6px;">Rev. F</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">FBGA</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">DDR2-800</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  <div class="chip-block-content">
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Capacidade / Organização</th>
-                    <th>Velocidade (Speed Grade)</th>
-                    <th>Exemplo Completo de PN</th>
-                    <th>Período</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K4T51083Q</code></td>
-                    <td style="font-family: sans-serif;">512Mb (64M x 8)</td>
-                    <td style="font-family: sans-serif;">DDR2-533 (<code>-CD5</code>)</td>
-                    <td><code>K4T51083QC-ZCD5</code></td>
-                    <td style="font-family: sans-serif;">2004–2008</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4T51163Q</code></td>
-                    <td style="font-family: sans-serif;">512Mb (32M x 16)</td>
-                    <td style="font-family: sans-serif;">DDR2-800 (<code>-CE6</code>)</td>
-                    <td><code>K4T51163QJ-ZCE6</code></td>
-                    <td style="font-family: sans-serif;">2005–2008</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4T1G084Q</code></td>
-                    <td style="font-family: sans-serif;">1Gb (128M x 8)</td>
-                    <td style="font-family: sans-serif;">DDR2-800 (<code>-CF7</code>)</td>
-                    <td><code>K4T1G084QF-ZCF7</code></td>
-                    <td style="font-family: sans-serif;">2006–2009</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4T1G164Q</code></td>
-                    <td style="font-family: sans-serif;">1Gb (64M x 16)</td>
-                    <td style="font-family: sans-serif;">DDR2-800 (<code>-CE6</code> / <code>-CF7</code>)</td>
-                    <td><code>K4T1G164QF-ZCE6</code></td>
-                    <td style="font-family: sans-serif;">2006–2009</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4T2G084Q</code></td>
-                    <td style="font-family: sans-serif;">2Gb (256M x 8)</td>
-                    <td style="font-family: sans-serif;">DDR2-800 (<code>-CF7</code>)</td>
-                    <td><code>K4T2G084QM-ZCF7</code></td>
-                    <td style="font-family: sans-serif;">2007–2011</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4T2G164Q</code></td>
-                    <td style="font-family: sans-serif;">2Gb (128M x 16)</td>
-                    <td style="font-family: sans-serif;">DDR2-800 (<code>-CF7</code>)</td>
-                    <td><code>K4T2G164QE-ZCF7</code></td>
-                    <td style="font-family: sans-serif;">2007–2011</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Dica de esteira:</strong> O prefixo <code>K4T</code> identifica de forma absoluta a família Samsung DDR2. A capacidade do chip é lida no 4º e 5º dígitos (ex: 51 = 512Mb, 1G = 1Gb, 2G = 2Gb). Segregue-os visualmente o mais rápido possível e envie-os para a <strong>Bancada Reacondicional</strong>. Fique atento ao 6º e 7º caracteres para identificar a largura de barramento (08 para x8, comum em DIMMs; 16 para x16, comum em dispositivos embarcados).
-            </div>
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Densidade / Organização</th>
+            <th>Velocidade (Speed Grade)</th>
+            <th>Exemplo Completo de PN</th>
+            <th>Período</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K4S641632</code></td>
+            <td>64Mb (4M x 16)</td>
+            <td>PC-100 (10ns / <code>-TC1H</code>)</td>
+            <td><code>K4S641632H-TC1H</code></td>
+            <td>1998–2002</td>
+          </tr>
+          <tr>
+            <td><code>K4S643232</code></td>
+            <td>64Mb (2M x 32)</td>
+            <td>PC-133 (7.0ns / <code>-TC70</code>)</td>
+            <td><code>K4S643232F-TC70</code></td>
+            <td>1999–2003</td>
+          </tr>
+          <tr>
+            <td><code>K4S280832</code></td>
+            <td>128Mb (16M x 8)</td>
+            <td>PC-133 (7.5ns / <code>-TL75</code>)</td>
+            <td><code>K4S280832F-TL75</code></td>
+            <td>1999–2003</td>
+          </tr>
+          <tr>
+            <td><code>K4S281632</code></td>
+            <td>128Mb (8M x 16)</td>
+            <td>PC-100 (10ns / <code>-TC1L</code>)</td>
+            <td><code>K4S281632I-TC1L</code></td>
+            <td>1999–2003</td>
+          </tr>
+          <tr>
+            <td><code>K4S560832</code></td>
+            <td>256Mb (32M x 8)</td>
+            <td>PC-133 (7.5ns / <code>-TC75</code>)</td>
+            <td><code>K4S560832H-TC75</code></td>
+            <td>2000–2004</td>
+          </tr>
+          <tr>
+            <td><code>K4S561632</code></td>
+            <td>256Mb (16M x 16)</td>
+            <td>PC-133 (7.5ns / <code>-UC75</code>)</td>
+            <td><code>K4S561632H-UC75</code></td>
+            <td>2001–2004</td>
+          </tr>
+          <tr>
+            <td><code>K4S511632</code></td>
+            <td>512Mb (32M x 16)</td>
+            <td>PC-133 (7.5ns / <code>-TC75</code>)</td>
+            <td><code>K4S511632F-TC75</code></td>
+            <td>2001–2004</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-<h4 id="sam-ddr3">
-              DDR3 e DDR3L — Prefixo <code>K4B</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(DDR3-1066 a DDR3-1866, ~2007–2016)</small
-              >
-            </h4>
+    <!-- Nota operacional -->
+    <div class="nota">
+      <strong>Dica de esteira:</strong> O prefixo <code>K4S</code> indica Samsung SDRAM (<em>S</em> de Synchronous). A decodificação da capacidade ocorre nos dois dígitos após o "S" (ex: 64 = 64Mb, 28 = 128Mb, 56 = 256Mb, 51 = 512Mb) e a largura de barramento (organização) nos dois dígitos seguintes (ex: 08 = x8, 16 = x16). Estes chips são obsoletos para o mercado atual. Para agilizar o volume de processamento, ao bater o olho neste prefixo, o operador deve direcionar o componente imediatamente para o fluxo de <strong>resíduo</strong> (moagem/refino base), uma vez que não possuem utilidade técnica para o ciclo <strong>reacondicional</strong>.
+    </div>
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">4</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">4G</th>
-                    <th style="padding: 8px; text-align: center;">16</th>
-                    <th style="padding: 8px; text-align: center;">4</th>
-                    <th style="padding: 8px; text-align: center;">6</th>
-                    <th style="padding: 8px; text-align: center;">E</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">Y</th>
-                    <th style="padding: 8px; text-align: center;">K0</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">LARG</td>
-                    <td style="padding: 6px;">BANC</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">REV</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">TENS/TEMP</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">DRAM</td>
-                    <td style="padding: 6px;">DDR3</td>
-                    <td style="padding: 6px;">4Gb</td>
-                    <td style="padding: 6px;">x16</td>
-                    <td style="padding: 6px;">8 Bancos</td>
-                    <td style="padding: 6px;">SSTL_15</td>
-                    <td style="padding: 6px;">Rev. E</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">FBGA</td>
-                    <td style="padding: 6px;">1.35V (Low)</td>
-                    <td style="padding: 6px;">DDR3-1600</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  </div>
+</div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Capacidade / Organização</th>
-                    <th>Tensão / Velocidade</th>
-                    <th>Exemplo Completo de PN</th>
-                    <th>Período</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K4B1G0846I</code></td>
-                    <td style="font-family: sans-serif;">1Gb (128M x 8)</td>
-                    <td style="font-family: sans-serif;">1.5V / DDR3-1600 (<code>-BCK0</code>)</td>
-                    <td><code>K4B1G0846I-BCK0</code></td>
-                    <td style="font-family: sans-serif;">2008–2012</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4B2G0846F</code></td>
-                    <td style="font-family: sans-serif;">2Gb (256M x 8)</td>
-                    <td style="font-family: sans-serif;">1.5V / DDR3-1333 (<code>-BCH9</code>)</td>
-                    <td><code>K4B2G0846F-BCH9</code></td>
-                    <td style="font-family: sans-serif;">2009–2014</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4B2G1646E</code></td>
-                    <td style="font-family: sans-serif;">2Gb (128M x 16)</td>
-                    <td style="font-family: sans-serif;">1.5V / DDR3-1600 (<code>-BCK0</code>)</td>
-                    <td><code>K4B2G1646E-BCK0</code></td>
-                    <td style="font-family: sans-serif;">2010–2015</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4B4G0846D</code></td>
-                    <td style="font-family: sans-serif;">4Gb (512M x 8)</td>
-                    <td style="font-family: sans-serif;">1.5V / DDR3-1600 (<code>-BCK0</code>)</td>
-                    <td><code>K4B4G0846D-BCK0</code></td>
-                    <td style="font-family: sans-serif;">2011–2016</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4B4G1646D</code></td>
-                    <td style="font-family: sans-serif;">4Gb (256M x 16)</td>
-                    <td style="font-family: sans-serif;">1.5V / DDR3-1600 (<code>-BCK0</code>)</td>
-                    <td><code>K4B4G1646D-BCK0</code></td>
-                    <td style="font-family: sans-serif;">2011–2016</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4B4G1646E</code></td>
-                    <td style="font-family: sans-serif;">4Gb (256M x 16)</td>
-                    <td style="font-family: sans-serif;">1.35V / DDR3L-1600 (<code>-BYK0</code>)</td>
-                    <td><code>K4B4G1646E-BYK0</code></td>
-                    <td style="font-family: sans-serif;">2012–2016</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4B8G1646D</code></td>
-                    <td style="font-family: sans-serif;">8Gb (512M x 16)</td>
-                    <td style="font-family: sans-serif;">1.5V / DDR3-1866 (<code>-BCMA</code>)</td>
-                    <td><code>K4B8G1646D-BCMA</code></td>
-                    <td style="font-family: sans-serif;">2014–2017</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Dica de esteira:</strong> O prefixo <code>K4B</code> identifica <strong>invariavelmente</strong> a família DDR3. Todos os chips desta categoria devem ser direcionados para o <strong>fluxo reacondicional</strong>. Para evitar misturas críticas na bancada, instrua o operador a olhar a penúltima letra do PN (sufixo): se for <strong>C</strong> (ex: <code>-BCK0</code>), trata-se de DDR3 padrão (1.5V). Se for <strong>Y</strong> (ex: <code>-BYK0</code>), trata-se de <strong>DDR3L</strong> (Low Voltage, 1.35V). A capacidade está nos caracteres centrais (1G, 2G, 4G, 8G).
-            </div>
+<div id="sam-ddr1" class="chip-block">
 
-<h4 id="sam-ddr4">
-              DDR4 — Prefixo <code>K4A</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(DDR4-2133 a DDR4-3200, ~2014–Presente)</small
-              >
-            </h4>
+  <div class="chip-block-header">
+    <strong>DDR1 <span class="chip-block-subtitle">(DDR266/333/400, ~2001–2007)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K4H</code>
+    </div>
+  </div>
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">4</th>
-                    <th style="padding: 8px; text-align: center;">A</th>
-                    <th style="padding: 8px; text-align: center;">4G</th>
-                    <th style="padding: 8px; text-align: center;">04</th>
-                    <th style="padding: 8px; text-align: center;">5</th>
-                    <th style="padding: 8px; text-align: center;">W</th>
-                    <th style="padding: 8px; text-align: center;">E</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">C</th>
-                    <th style="padding: 8px; text-align: center;">PB</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">LARG</td>
-                    <td style="padding: 6px;">BANC</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">REV</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">DRAM</td>
-                    <td style="padding: 6px;">DDR4</td>
-                    <td style="padding: 6px;">4Gb</td>
-                    <td style="padding: 6px;">x4</td>
-                    <td style="padding: 6px;">16 Bancos</td>
-                    <td style="padding: 6px;">1.2V</td>
-                    <td style="padding: 6px;">Rev. E</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">FBGA</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">DDR4-2133</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  <div class="chip-block-preview">
+    <p>O prefixo <code>K4H</code> indica a família Samsung DDR1.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Capacidade / Organização</th>
-                    <th>Tensão / Velocidade</th>
-                    <th>Exemplo Completo de PN</th>
-                    <th>Período</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K4A4G045W</code></td>
-                    <td style="font-family: sans-serif;">4Gb (1G x 4)</td>
-                    <td style="font-family: sans-serif;">1.2V / DDR4-2133 (<code>-BCPB</code>)</td>
-                    <td><code>K4A4G045WE-BCPB</code>[cite: 2]</td>
-                    <td style="font-family: sans-serif;">2014–Presente</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4A4G165W</code></td>
-                    <td style="font-family: sans-serif;">4Gb (256M x 16)</td>
-                    <td style="font-family: sans-serif;">1.2V / DDR4-2400 (<code>-BCRC</code>)</td>
-                    <td><code>K4A4G165WE-BCRC</code></td>
-                    <td style="font-family: sans-serif;">2015–Presente</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4A8G085W</code></td>
-                    <td style="font-family: sans-serif;">8Gb (1G x 8)</td>
-                    <td style="font-family: sans-serif;">1.2V / DDR4-2666 (<code>-BCTD</code>)</td>
-                    <td><code>K4A8G085WC-BCTD</code></td>
-                    <td style="font-family: sans-serif;">2016–Presente</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4A8G165W</code></td>
-                    <td style="font-family: sans-serif;">8Gb (512M x 16)</td>
-                    <td style="font-family: sans-serif;">1.2V / DDR4-3200 (<code>-BCWE</code>)</td>
-                    <td><code>K4A8G165WC-BCWE</code></td>
-                    <td style="font-family: sans-serif;">2018–Presente</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4AAG165W</code></td>
-                    <td style="font-family: sans-serif;">16Gb (1G x 16)</td>
-                    <td style="font-family: sans-serif;">1.2V / DDR4-3200 (<code>-BCWE</code>)</td>
-                    <td><code>K4AAG165WA-BCWE</code></td>
-                    <td style="font-family: sans-serif;">2019–Presente</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Dica de esteira:</strong> O prefixo <code>K4A</code> garante que o componente é <strong>DDR4</strong>. É uma das memórias de maior volume na triagem de desktops e laptops modernos. Capacidades são lidas nos 4º e 5º caracteres (4G = 4Gb, 8G = 8Gb, AG = 16Gb). O destino incondicional é o <strong>fluxo reacondicional</strong>. Garanta a agilidade da leitura para não criar gargalos na esteira.
-            </div>
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-ddr1')">▼ Aprender mais</button>
+  </div>
 
-<h4 id="sam-ddr5">
-              DDR5 — Prefixo <code>K4R</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(DDR5-4800+, ~2021–Presente)</small
-              >
-            </h4>
+  <div class="chip-block-content">
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">4</th>
-                    <th style="padding: 8px; text-align: center;">R</th>
-                    <th style="padding: 8px; text-align: center;">AH</th>
-                    <th style="padding: 8px; text-align: center;">16</th>
-                    <th style="padding: 8px; text-align: center;">5</th>
-                    <th style="padding: 8px; text-align: center;">V</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">C</th>
-                    <th style="padding: 8px; text-align: center;">QK</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">LARG</td>
-                    <td style="padding: 6px;">BANC</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">REV</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">DRAM</td>
-                    <td style="padding: 6px;">DDR5</td>
-                    <td style="padding: 6px;">16Gb</td>
-                    <td style="padding: 6px;">x16</td>
-                    <td style="padding: 6px;">16 Bancos</td>
-                    <td style="padding: 6px;">1.1V</td>
-                    <td style="padding: 6px;">Rev. B</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">FBGA</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">4800 MT/s</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th>
+            <th>4</th>
+            <th>H</th>
+            <th>51</th>
+            <th>16</th>
+            <th>3</th>
+            <th>8</th>
+            <th>C</th>
+            <th>-</th>
+            <th>T</th>
+            <th>C</th>
+            <th>CC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td>
+            <td>TIPO</td>
+            <td>FAM</td>
+            <td>DENS</td>
+            <td>LARG</td>
+            <td>BANC</td>
+            <td>TENSÃO</td>
+            <td>REV</td>
+            <td>-</td>
+            <td>ENC</td>
+            <td>TEMP</td>
+            <td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td>
+            <td>DRAM</td>
+            <td>DDR1</td>
+            <td>512Mb</td>
+            <td>x16</td>
+            <td>4 Bancos</td>
+            <td>2.5V</td>
+            <td>Rev. C</td>
+            <td>-</td>
+            <td>TSOP II</td>
+            <td>Normal</td>
+            <td>DDR400</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Capacidade / Organização</th>
-                    <th>Tensão / Velocidade</th>
-                    <th>Exemplo Completo de PN</th>
-                    <th>Período</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K4RAH086V</code></td>
-                    <td style="font-family: sans-serif;">16Gb (2G x 8)</td>
-                    <td style="font-family: sans-serif;">1.1V / DDR5-4800 (<code>-BCQK</code>)</td>
-                    <td><code>K4RAH086VB-BCQK</code>[cite: 2]</td>
-                    <td style="font-family: sans-serif;">2021–Presente</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4RAH165V</code></td>
-                    <td style="font-family: sans-serif;">16Gb (1G x 16)</td>
-                    <td style="font-family: sans-serif;">1.1V / DDR5-4800 (<code>-BCQK</code>)</td>
-                    <td><code>K4RAH165VB-BCQK</code>[cite: 2]</td>
-                    <td style="font-family: sans-serif;">2021–Presente</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>K4R</code> é exclusivo da mais recente arquitetura <strong>DDR5</strong> (1.1V). Estes componentes não devem, sob nenhuma hipótese, ser alocados na mesma caixa de testes dos chips DDR4, para prevenir falhas no <strong>ciclo reacondicional</strong>. A leitura atenta do 'R' na 3ª posição é mandatória para manter a redução de erros na bancada. Capacidade AH = 16Gb.
-            </div>
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Capacidade / Organização</th>
+            <th>Velocidade (Speed Grade)</th>
+            <th>Exemplo Completo de PN</th>
+            <th>Período</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K4H280438</code></td>
+            <td>128Mb (32M x 4)</td>
+            <td>DDR266 (<code>-TB0</code> / <code>-TA2</code>)</td>
+            <td><code>K4H280438E-TCB0</code></td>
+            <td>2001–2004</td>
+          </tr>
+          <tr>
+            <td><code>K4H280838</code></td>
+            <td>128Mb (16M x 8)</td>
+            <td>DDR333 (<code>-TB3</code>)</td>
+            <td><code>K4H280838E-TCB3</code></td>
+            <td>2001–2004</td>
+          </tr>
+          <tr>
+            <td><code>K4H560838</code></td>
+            <td>256Mb (32M x 8)</td>
+            <td>DDR333 (<code>-TB3</code>)</td>
+            <td><code>K4H560838D-TCB3</code></td>
+            <td>2002–2005</td>
+          </tr>
+          <tr>
+            <td><code>K4H510438</code></td>
+            <td>512Mb (128M x 4)</td>
+            <td>DDR333 (<code>-TB3</code>)</td>
+            <td><code>K4H510438D-UCB3</code></td>
+            <td>2002–2005</td>
+          </tr>
+          <tr>
+            <td><code>K4H511638</code></td>
+            <td>512Mb (32M x 16)</td>
+            <td>DDR400 (<code>-TCC</code>)</td>
+            <td><code>K4H511638C-TCCC</code></td>
+            <td>2003–2006</td>
+          </tr>
+          <tr>
+            <td><code>K4H1G0838</code></td>
+            <td>1Gb (128M x 8)</td>
+            <td>DDR400 (<code>-TCC</code>)</td>
+            <td><code>K4H1G0838E-TCCC</code></td>
+            <td>2004–2007</td>
+          </tr>
+          <tr>
+            <td><code>K4H1G1638</code></td>
+            <td>1Gb (64M x 16)</td>
+            <td>DDR400 (<code>-TCC</code>)</td>
+            <td><code>K4H1G1638M-UCCC</code></td>
+            <td>2004–2007</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Nota operacional -->
+    <div class="nota">
+      <strong>Dica de esteira:</strong> O prefixo <code>K4H</code> indica a família Samsung DDR1. A capacidade é identificada pelo 4º e 5º caracteres (28 = 128Mb, 56 = 256Mb, 51 = 512Mb, 1G = 1Gb), seguidos da largura de barramento (04, 08 ou 16). Por serem componentes obsoletos e de baixíssima capacidade, o destino direto é o <strong>fluxo de residuo</strong> (moagem/refino). Não devem ser enviados para a bancada <strong>reacondicional</strong>, servindo apenas para treinamento de leitura visual.
+    </div>
 
-<h4 id="sam-lpddr-legacy">
-              LPDDR1 / LPDDR2 / LPDDR3 — Prefixos <code>K4M / K4P / K3Q</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(~2009–2015)</small
-              >
-            </h4>
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Categoria</th>
-                    <th>Tecnologia</th>
-                    <th>Direcionamento</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K4M</code> / <code>K4X</code></td>
-                    <td style="font-family: sans-serif;">Memória Mobile</td>
-                    <td style="font-family: sans-serif;">LPDDR1 / Mobile DDR</td>
-                    <td style="font-family: sans-serif;">Fluxo de Residuo (Obsoleto)</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4P</code></td>
-                    <td style="font-family: sans-serif;">Memória Mobile</td>
-                    <td style="font-family: sans-serif;">LPDDR2</td>
-                    <td style="font-family: sans-serif;">Bancada Reacondicional Mobile</td>
-                  </tr>
-                  <tr>
-                    <td><code>K3Q</code></td>
-                    <td style="font-family: sans-serif;">Memória Mobile</td>
-                    <td style="font-family: sans-serif;">LPDDR3</td>
-                    <td style="font-family: sans-serif;">Bancada Reacondicional Mobile</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Dica de esteira:</strong> Estes prefixos identificam gerações mais antigas de RAM para smartphones. <code>K4M</code> e <code>K4X</code> são muito defasados e podem ir para o <strong>residuo</strong>. <code>K4P</code> (LPDDR2) e <code>K3Q</code> (LPDDR3) ainda possuem demanda em IoT e embarcados, portanto devem seguir para o <strong>ciclo reacondicional</strong>.
-            </div>
+  </div>
+</div>
 
-<h4 id="sam-lpddr4">
-              LPDDR4 e LPDDR4X — Prefixos <code>K4F / K4U / K3U</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(~2015–Presente)</small
-              >
-            </h4>
+<div id="sam-ddr2" class="chip-block">
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">4</th>
-                    <th style="padding: 8px; text-align: center;">F</th>
-                    <th style="padding: 8px; text-align: center;">6E</th>
-                    <th style="padding: 8px; text-align: center;">3S</th>
-                    <th style="padding: 8px; text-align: center;">4</th>
-                    <th style="padding: 8px; text-align: center;">H</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">F</th>
-                    <th style="padding: 8px; text-align: center;">CL</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">ORG</td>
-                    <td style="padding: 6px;">BANC</td>
-                    <td style="padding: 6px;">GERAÇÃO</td>
-                    <td style="padding: 6px;">REV</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">DRAM</td>
-                    <td style="padding: 6px;">LPDDR4</td>
-                    <td style="padding: 6px;">16Gb</td>
-                    <td style="padding: 6px;">x32</td>
-                    <td style="padding: 6px;">8 Bancos</td>
-                    <td style="padding: 6px;">1ª Gen</td>
-                    <td style="padding: 6px;">Rev. B</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">FBGA</td>
-                    <td style="padding: 6px;">1.1V</td>
-                    <td style="padding: 6px;">4266 Mbps</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  <div class="chip-block-header">
+    <strong>DDR2 <span class="chip-block-subtitle">(DDR2-400 a DDR2-1066, ~2004–2010)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K4T</code>
+    </div>
+  </div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Tecnologia</th>
-                    <th>Exemplos Extraídos do Lote</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K4F4E... / K4F6E... / K4F8E...</code></td>
-                    <td style="font-family: sans-serif;">LPDDR4 (Padrão)</td>
-                    <td><code>K4F4E164HF-KFCL</code>, <code>K4F6E3S4HB-KFCL</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>K4FBE... / K4FHE...</code></td>
-                    <td style="font-family: sans-serif;">LPDDR4 (Alta Densidade)</td>
-                    <td><code>K4FBE3D4HB-KUCL</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>K4U2E... / K4U6E... / K4U8E...</code></td>
-                    <td style="font-family: sans-serif;">LPDDR4X (Tensão Otimizada)</td>
-                    <td><code>K4U2E3S4AA-TFCL</code>, <code>K4U6E3S4AB-KUCL</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>K4UBE... / K4UCE...</code></td>
-                    <td style="font-family: sans-serif;">LPDDR4X (Alta Densidade)</td>
-                    <td><code>K4UBE3D4AB-MGCL</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>K4UHE... / K4UJE...</code></td>
-                    <td style="font-family: sans-serif;">LPDDR4X (Ultra Densidade)</td>
-                    <td><code>K4UHE3D4AA-TUCL</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>K3UH...</code></td>
-                    <td style="font-family: sans-serif;">LPDDR4X (Multi-Channel/MCP Base)</td>
-                    <td><code>K3UH6H60AM-TFCL</code></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> As memórias <code>K4F</code> (LPDDR4) e <code>K4U</code>/<code>K3U</code> (LPDDR4X) compõem o maior volume nas esteiras mobile. O operador deve garantir que todas vão para as caixas de <strong>Bancada Reacondicional Mobile</strong>. O "X" na versão LPDDR4X reduz a tensão I/O de 1.1V para 0.6V, o que significa que o <em>socket</em> de teste na bancada é rigorosamente diferente. 
-            </div>
+  <div class="chip-block-preview">
+    <p>O prefixo <code>K4T</code> identifica de forma absoluta a família Samsung DDR2.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
 
-            <h4 id="sam-lpddr5">
-              LPDDR5 e LPDDR5X — Prefixos <code>K3KL / K3LK</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(~2020–Presente)</small
-              >
-            </h4>
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-ddr2')">▼ Aprender mais</button>
+  </div>
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">3</th>
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">L</th>
-                    <th style="padding: 8px; text-align: center;">2L</th>
-                    <th style="padding: 8px; text-align: center;">20</th>
-                    <th style="padding: 8px; text-align: center;">D</th>
-                    <th style="padding: 8px; text-align: center;">M</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">J</th>
-                    <th style="padding: 8px; text-align: center;">G</th>
-                    <th style="padding: 8px; text-align: center;">CT</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">GERAÇÃO</td>
-                    <td style="padding: 6px;">DENSIDADE</td>
-                    <td style="padding: 6px;">ORG</td>
-                    <td style="padding: 6px;">REV</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">MCP/DRAM</td>
-                    <td style="padding: 6px;">LPDDR</td>
-                    <td style="padding: 6px;">LPDDR5</td>
-                    <td style="padding: 6px;">12Gb/16Gb</td>
-                    <td style="padding: 6px;">x64</td>
-                    <td style="padding: 6px;">Rev. D</td>
-                    <td style="padding: 6px;">FBGA</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">1.05V</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">6400 Mbps</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  <div class="chip-block-content">
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Tecnologia</th>
-                    <th>Exemplos Extraídos do Lote</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K3KL...</code></td>
-                    <td style="font-family: sans-serif;">LPDDR5</td>
-                    <td><code>K3KL2L20DM-JGCT</code>, <code>K3KL4L40DM-BGCT</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>K3LK...</code></td>
-                    <td style="font-family: sans-serif;">LPDDR5X (Otimizado p/ IA/5G)</td>
-                    <td><code>K3LK4K40CM-BGCP</code>, <code>K3LK7K70BM-JGCP</code></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Dica de esteira:</strong> A regra visual de separação para o operador é crucial aqui: <code>K3KL</code> é LPDDR5, enquanto a inversão para <code>K3LK</code> sinaliza o LPDDR5X. Ambos são os chips mobile mais avançados da triagem e representam o topo do <strong>fluxo reacondicional</strong>. Tolerância zero para erros de leitura ou envio para o fluxo de refino/moagem. 
-            </div>
-<h4 id="sam-emmc">
-              Armazenamento eMMC — Prefixo <code>KLM</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(eMMC 4.5 a 5.1, BGA 153/169)</small
-              >
-            </h4>
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th>
+            <th>4</th>
+            <th>T</th>
+            <th>1G</th>
+            <th>16</th>
+            <th>4</th>
+            <th>Q</th>
+            <th>F</th>
+            <th>-</th>
+            <th>Z</th>
+            <th>C</th>
+            <th>E6</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td>
+            <td>TIPO</td>
+            <td>FAM</td>
+            <td>DENS</td>
+            <td>LARG</td>
+            <td>BANC</td>
+            <td>TENSÃO</td>
+            <td>REV</td>
+            <td>-</td>
+            <td>ENC</td>
+            <td>TEMP</td>
+            <td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td>
+            <td>DRAM</td>
+            <td>DDR2</td>
+            <td>1Gb</td>
+            <td>x16</td>
+            <td>8 Bancos</td>
+            <td>1.8V</td>
+            <td>Rev. F</td>
+            <td>-</td>
+            <td>FBGA</td>
+            <td>Normal</td>
+            <td>DDR2-800</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">L</th>
-                    <th style="padding: 8px; text-align: center;">M</th>
-                    <th style="padding: 8px; text-align: center;">CG</th>
-                    <th style="padding: 8px; text-align: center;">4</th>
-                    <th style="padding: 8px; text-align: center;">J</th>
-                    <th style="padding: 8px; text-align: center;">EN</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">041</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">NAND</td>
-                    <td style="padding: 6px;">GERAÇÃO</td>
-                    <td style="padding: 6px;">CTRL</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">FW/VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">Flash</td>
-                    <td style="padding: 6px;">eMMC</td>
-                    <td style="padding: 6px;">64GB</td>
-                    <td style="padding: 6px;">TLC/MLC</td>
-                    <td style="padding: 6px;">eMMC 5.1</td>
-                    <td style="padding: 6px;">Revisão</td>
-                    <td style="padding: 6px;">153 FBGA</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">Seq/Rev</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Capacidade / Organização</th>
+            <th>Velocidade (Speed Grade)</th>
+            <th>Exemplo Completo de PN</th>
+            <th>Período</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K4T51083Q</code></td>
+            <td>512Mb (64M x 8)</td>
+            <td>DDR2-533 (<code>-CD5</code>)</td>
+            <td><code>K4T51083QC-ZCD5</code></td>
+            <td>2004–2008</td>
+          </tr>
+          <tr>
+            <td><code>K4T51163Q</code></td>
+            <td>512Mb (32M x 16)</td>
+            <td>DDR2-800 (<code>-CE6</code>)</td>
+            <td><code>K4T51163QJ-ZCE6</code></td>
+            <td>2005–2008</td>
+          </tr>
+          <tr>
+            <td><code>K4T1G084Q</code></td>
+            <td>1Gb (128M x 8)</td>
+            <td>DDR2-800 (<code>-CF7</code>)</td>
+            <td><code>K4T1G084QF-ZCF7</code></td>
+            <td>2006–2009</td>
+          </tr>
+          <tr>
+            <td><code>K4T1G164Q</code></td>
+            <td>1Gb (64M x 16)</td>
+            <td>DDR2-800 (<code>-CE6</code> / <code>-CF7</code>)</td>
+            <td><code>K4T1G164QF-ZCE6</code></td>
+            <td>2006–2009</td>
+          </tr>
+          <tr>
+            <td><code>K4T2G084Q</code></td>
+            <td>2Gb (256M x 8)</td>
+            <td>DDR2-800 (<code>-CF7</code>)</td>
+            <td><code>K4T2G084QM-ZCF7</code></td>
+            <td>2007–2011</td>
+          </tr>
+          <tr>
+            <td><code>K4T2G164Q</code></td>
+            <td>2Gb (128M x 16)</td>
+            <td>DDR2-800 (<code>-CF7</code>)</td>
+            <td><code>K4T2G164QE-ZCF7</code></td>
+            <td>2007–2011</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Capacidade (Decodificação)</th>
-                    <th>Exemplos Extraídos do Lote</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>KLM4G...</code></td>
-                    <td style="font-family: sans-serif;">4GB</td>
-                    <td><code>KLM4G1FE3A</code>, <code>KLM4G1FETE</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLM8G...</code></td>
-                    <td style="font-family: sans-serif;">8GB</td>
-                    <td><code>KLM8G1GETF</code>, <code>KLM8G2FEJA</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLMAG...</code></td>
-                    <td style="font-family: sans-serif;">16GB (A = 10 em Hex)</td>
-                    <td><code>KLMAG2GE2A</code>, <code>KLMAG4FEJA</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLMBG...</code></td>
-                    <td style="font-family: sans-serif;">32GB (B = 20/32)</td>
-                    <td><code>KLMBG4GEND</code>, <code>KLMBG2JETD</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLMCG...</code></td>
-                    <td style="font-family: sans-serif;">64GB (C = 40/64)</td>
-                    <td><code>KLMCG4JENB</code>, <code>KLMCG8GEAC</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLMDG...</code></td>
-                    <td style="font-family: sans-serif;">128GB (D = 80/128)</td>
-                    <td><code>KLMDG8JENB</code>, <code>KLMDG4UCTA</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLMEG...</code></td>
-                    <td style="font-family: sans-serif;">256GB (E = 100/256)</td>
-                    <td><code>KLMEG8UCTA</code>, <code>KLMEG8UERM</code></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>KLM</code> determina que o componente é um armazenamento <strong>eMMC</strong> (sem RAM embutida). O operador deve focar na 4ª e 5ª letras para identificar a capacidade rapidamente, seguindo a lógica alfanumérica (A=16, B=32, C=64, D=128, E=256). Todos os chips <code>KLM</code> em bom estado físico pertencem à caixa do <strong>fluxo reacondicional Flash</strong>. Verifique visualmente o <em>grid</em> de solda inferior, que costuma ser BGA 153 ou BGA 169.
-            </div>
+    <!-- Nota operacional -->
+    <div class="nota">
+      <strong>Dica de esteira:</strong> O prefixo <code>K4T</code> identifica de forma absoluta a família Samsung DDR2. A capacidade do chip é lida no 4º e 5º dígitos (ex: 51 = 512Mb, 1G = 1Gb, 2G = 2Gb). Segregue-os visualmente o mais rápido possível e envie-os para a <strong>Bancada Reacondicional</strong>. Fique atento ao 6º e 7º caracteres para identificar a largura de barramento (08 para x8, comum em DIMMs; 16 para x16, comum em dispositivos embarcados).
+    </div>
 
-<h4 id="sam-emcp">
-              eMCP (eMMC + LPDDR) — Prefixos <code>KMF / KMK / KMN / KMQ / KMR / KMS</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(Armazenamento + RAM Integrados)</small>
-            </h4>
+  </div>
+</div>
 
-            <p>
-              <strong>O que é e como classificar:</strong> O eMCP é um pacote que junta um chip de armazenamento (eMMC) e a memória RAM (LPDDR) na mesma pastilha. Na Samsung, TODO eMCP começa obrigatoriamente com as letras <code>KM</code>. O operador deve isolar essas peças e enviá-las para a <strong>Caixa: Reacondicional eMCP</strong>. 
-              <br><br>
-              <strong>Atenção Extrema:</strong> Códigos parecidos como <code>KNN</code> ou <code>KSW</code> <strong>NÃO SÃO</strong> eMCPs modernos. São combos antigos de baixíssima capacidade (Feature Phones) e devem ir direto para o fluxo de <strong>resíduo</strong>.
-            </p>
+<div id="sam-ddr3" class="chip-block">
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">M</th>
-                    <th style="padding: 8px; text-align: center; color: #d9534f;">R</th>
-                    <th style="padding: 8px; text-align: center; color: #5cb85c;">X1</th>
-                    <th style="padding: 8px; text-align: center;">00</th>
-                    <th style="padding: 8px; text-align: center;">0</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">M</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">614</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">FAMÍLIA</td>
-                    <td style="padding: 6px; color: #d9534f;">GERAÇÃO (RAM)</td>
-                    <td style="padding: 6px; color: #5cb85c;">CAPACIDADE</td>
-                    <td style="padding: 6px;">ORG</td>
-                    <td style="padding: 6px;">CTRL</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">PACKAGE</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">REV</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">eMCP (Combo)</td>
-                    <td style="padding: 6px;">LPDDR4 / 4X</td>
-                    <td style="padding: 6px;">64GB + 4GB</td>
-                    <td style="padding: 6px;">Padrão</td>
-                    <td style="padding: 6px;">Padrão</td>
-                    <td style="padding: 6px;">1.8V/1.1V</td>
-                    <td style="padding: 6px;">BGA</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">Varia</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  <div class="chip-block-header">
+    <strong>DDR3 e DDR3L <span class="chip-block-subtitle">(DDR3-1066 a DDR3-1866, ~2007–2016)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K4B</code>
+    </div>
+  </div>
 
-            <!-- GABARITO DA 3ª LETRA E CAPACIDADE -->
-            <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-              
-              <!-- Tabela: 3ª Letra -->
-              <div class="tbl-wrap" style="flex: 1;">
-                <h5 style="margin-top: 0; color: #003366; font-family: sans-serif;">Gabarito da 3ª Letra (Geração)</h5>
-                <table>
-                  <thead>
-                    <tr style="font-family: sans-serif;">
-                      <th>3ª Letra</th>
-                      <th>Arquitetura Interna</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td><code>K</code></td><td style="font-family: sans-serif;">eMMC + <strong>LPDDR2</strong> (Antigo)</td></tr>
-                    <tr><td><code>F</code> ou <code>N</code></td><td style="font-family: sans-serif;">eMMC + <strong>LPDDR3</strong></td></tr>
-                    <tr><td><code>Q</code></td><td style="font-family: sans-serif;">eMMC 5.1 + <strong>LPDDR3</strong> (Otimizado)</td></tr>
-                    <tr><td><code>R</code></td><td style="font-family: sans-serif;">eMMC 5.1 + <strong>LPDDR4 / 4X</strong></td></tr>
-                    <tr><td><code>S</code></td><td style="font-family: sans-serif;">eMMC 5.1 + <strong>LPDDR4X</strong></td></tr>
-                  </tbody>
-                </table>
-              </div>
+  <div class="chip-block-preview">
+    <p>O prefixo <code>K4B</code> identifica <strong>invariavelmente</strong> a família DDR3.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
 
-              <!-- Tabela: 4º e 5º Caracteres -->
-              <div class="tbl-wrap" style="flex: 1;">
-                <h5 style="margin-top: 0; color: #003366; font-family: sans-serif;">Gabarito de Capacidade (4º e 5º)</h5>
-                <table>
-                  <thead>
-                    <tr style="font-family: sans-serif;">
-                      <th>Par (Exemplos)</th>
-                      <th>Armazenamento + RAM</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr><td><code>5X</code></td><td style="font-family: sans-serif;">8GB eMMC + 1GB RAM</td></tr>
-                    <tr><td><code>BT</code></td><td style="font-family: sans-serif;">16GB eMMC + 2GB RAM</td></tr>
-                    <tr><td><code>GD</code></td><td style="font-family: sans-serif;">32GB eMMC + 3GB RAM</td></tr>
-                    <tr><td><code>X1</code> ou <code>H9</code></td><td style="font-family: sans-serif;">64GB eMMC + 4GB RAM</td></tr>
-                    <tr><td><code>J2</code></td><td style="font-family: sans-serif;">128GB eMMC + 6GB RAM</td></tr>
-                  </tbody>
-                </table>
-              </div>
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-ddr3')">▼ Aprender mais</button>
+  </div>
 
-            </div>
+  <div class="chip-block-content">
 
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> A segregação visual começa nas três primeiras letras. Ao identificar um chip da família <strong>eMCP</strong> (<code>KMF</code>, <code>KMN</code>, <code>KMQ</code>, <code>KMR</code>, <code>KMS</code>, <code>KMK</code>), a peça deve ser direcionada imediatamente para a <strong>Caixa: Reacondicional eMCP</strong>. Se o chip começar com <code>KMD</code>, <code>KMG</code> ou <code>KMV</code>, trata-se de um <strong>uMCP (UFS)</strong> e deve ir para uma caixa separada. Códigos híbridos fora do padrão <code>KM</code> ou <code>KL</code> (como <code>KNN</code> e <code>KSW</code>) são incompatíveis com as bancadas modernas e devem ser enviados ao <strong>residuo</strong>.
-            </div>
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th>
+            <th>4</th>
+            <th>B</th>
+            <th>4G</th>
+            <th>16</th>
+            <th>4</th>
+            <th>6</th>
+            <th>E</th>
+            <th>-</th>
+            <th>B</th>
+            <th>Y</th>
+            <th>K0</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td>
+            <td>TIPO</td>
+            <td>FAM</td>
+            <td>DENS</td>
+            <td>LARG</td>
+            <td>BANC</td>
+            <td>TENSÃO</td>
+            <td>REV</td>
+            <td>-</td>
+            <td>ENC</td>
+            <td>TENS/TEMP</td>
+            <td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td>
+            <td>DRAM</td>
+            <td>DDR3</td>
+            <td>4Gb</td>
+            <td>x16</td>
+            <td>8 Bancos</td>
+            <td>SSTL_15</td>
+            <td>Rev. E</td>
+            <td>-</td>
+            <td>FBGA</td>
+            <td>1.35V (Low)</td>
+            <td>DDR3-1600</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-<h4 id="sam-umcp">
-              uMCP (UFS + LPDDR) — Prefixos <code>KMD / KMG / KML / KMV</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(Armazenamento UFS + RAM, ~2018–Presente)</small
-              >
-            </h4>
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Capacidade / Organização</th>
+            <th>Tensão / Velocidade</th>
+            <th>Exemplo Completo de PN</th>
+            <th>Período</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K4B1G0846I</code></td>
+            <td>1Gb (128M x 8)</td>
+            <td>1.5V / DDR3-1600 (<code>-BCK0</code>)</td>
+            <td><code>K4B1G0846I-BCK0</code></td>
+            <td>2008–2012</td>
+          </tr>
+          <tr>
+            <td><code>K4B2G0846F</code></td>
+            <td>2Gb (256M x 8)</td>
+            <td>1.5V / DDR3-1333 (<code>-BCH9</code>)</td>
+            <td><code>K4B2G0846F-BCH9</code></td>
+            <td>2009–2014</td>
+          </tr>
+          <tr>
+            <td><code>K4B2G1646E</code></td>
+            <td>2Gb (128M x 16)</td>
+            <td>1.5V / DDR3-1600 (<code>-BCK0</code>)</td>
+            <td><code>K4B2G1646E-BCK0</code></td>
+            <td>2010–2015</td>
+          </tr>
+          <tr>
+            <td><code>K4B4G0846D</code></td>
+            <td>4Gb (512M x 8)</td>
+            <td>1.5V / DDR3-1600 (<code>-BCK0</code>)</td>
+            <td><code>K4B4G0846D-BCK0</code></td>
+            <td>2011–2016</td>
+          </tr>
+          <tr>
+            <td><code>K4B4G1646D</code></td>
+            <td>4Gb (256M x 16)</td>
+            <td>1.5V / DDR3-1600 (<code>-BCK0</code>)</td>
+            <td><code>K4B4G1646D-BCK0</code></td>
+            <td>2011–2016</td>
+          </tr>
+          <tr>
+            <td><code>K4B4G1646E</code></td>
+            <td>4Gb (256M x 16)</td>
+            <td>1.35V / DDR3L-1600 (<code>-BYK0</code>)</td>
+            <td><code>K4B4G1646E-BYK0</code></td>
+            <td>2012–2016</td>
+          </tr>
+          <tr>
+            <td><code>K4B8G1646D</code></td>
+            <td>8Gb (512M x 16)</td>
+            <td>1.5V / DDR3-1866 (<code>-BCMA</code>)</td>
+            <td><code>K4B8G1646D-BCMA</code></td>
+            <td>2014–2017</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">M</th>
-                    <th style="padding: 8px; text-align: center;">D</th>
-                    <th style="padding: 8px; text-align: center;">H6</th>
-                    <th style="padding: 8px; text-align: center;">00</th>
-                    <th style="padding: 8px; text-align: center;">1</th>
-                    <th style="padding: 8px; text-align: center;">D</th>
-                    <th style="padding: 8px; text-align: center;">A</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">422</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">COMBO</td>
-                    <td style="padding: 6px;">DENSIDADE</td>
-                    <td style="padding: 6px;">ORG</td>
-                    <td style="padding: 6px;">CTRL</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">FW/VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">MCP</td>
-                    <td style="padding: 6px;">UFS+LPDDR4X</td>
-                    <td style="padding: 6px;">64GB + 32Gb</td>
-                    <td style="padding: 6px;">x16 / x32</td>
-                    <td style="padding: 6px;">Padrão</td>
-                    <td style="padding: 6px;">1.8V/1.1V</td>
-                    <td style="padding: 6px;">254 FBGA</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">Seq/Rev</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+    <!-- Nota operacional -->
+    <div class="nota">
+      <strong>Dica de esteira:</strong> O prefixo <code>K4B</code> identifica <strong>invariavelmente</strong> a família DDR3. Todos os chips desta categoria devem ser direcionados para o <strong>fluxo reacondicional</strong>. Para evitar misturas críticas na bancada, instrua o operador a olhar a penúltima letra do PN (sufixo): se for <strong>C</strong> (ex: <code>-BCK0</code>), trata-se de DDR3 padrão (1.5V). Se for <strong>Y</strong> (ex: <code>-BYK0</code>), trata-se de <strong>DDR3L</strong> (Low Voltage, 1.35V). A capacidade está nos caracteres centrais (1G, 2G, 4G, 8G).
+    </div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Tecnologia Integrada</th>
-                    <th>Exemplos Extraídos do Lote</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>KMD...</code></td>
-                    <td style="font-family: sans-serif;">UFS 2.1 + LPDDR4 / LPDDR4X</td>
-                    <td><code>KMDH6001DA</code>, <code>KMDV6001DA</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KMG...</code></td>
-                    <td style="font-family: sans-serif;">UFS 3.1 + LPDDR4X</td>
-                    <td><code>KMGD6001BM</code>, <code>KMGP6001BA</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KML...</code></td>
-                    <td style="font-family: sans-serif;">UFS 3.1 + LPDDR5</td>
-                    <td><code>KML5U000HM</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KMV...</code></td>
-                    <td style="font-family: sans-serif;">UFS 3.1 / UFS 4.0 + LPDDR5 / LPDDR5X</td>
-                    <td><code>KMV2W000LM</code>, <code>KMV3W000LM</code></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> As memórias <strong>uMCP</strong> são os cérebros da maioria dos smartphones intermediários-premium e flagships modernos. Ao ler a raiz <code>KM</code>, o operador deve focar na 3ª letra. Sendo <strong>D, G, L ou V</strong>, o chip é de altíssima velocidade (baseado em UFS) e deve ir imediatamente e de forma isolada para a caixa de <strong>Bancada Reacondicional uMCP</strong>. Jamais junte estes componentes com os eMCP (base eMMC), pois a inversão nos sockets de validação causará queima instantânea.
-            </div>
+  </div>
+</div>
 
-<h4 id="sam-ufs">
-              Armazenamento UFS — Prefixo <code>KLU</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(UFS 2.0 a 4.0, BGA 153/254)</small
-              >
-            </h4>
+<div id="sam-ddr4" class="chip-block">
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">L</th>
-                    <th style="padding: 8px; text-align: center;">U</th>
-                    <th style="padding: 8px; text-align: center;">D</th>
-                    <th style="padding: 8px; text-align: center;">G</th>
-                    <th style="padding: 8px; text-align: center;">8</th>
-                    <th style="padding: 8px; text-align: center;">V</th>
-                    <th style="padding: 8px; text-align: center;">1</th>
-                    <th style="padding: 8px; text-align: center;">E</th>
-                    <th style="padding: 8px; text-align: center;">E</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">0C1</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">NAND</td>
-                    <td style="padding: 6px;">PISTAS</td>
-                    <td style="padding: 6px;">CTRL/GER</td>
-                    <td style="padding: 6px;">MATRIZ</td>
-                    <td style="padding: 6px;">REV</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">Flash</td>
-                    <td style="padding: 6px;">UFS</td>
-                    <td style="padding: 6px;">128GB</td>
-                    <td style="padding: 6px;">TLC</td>
-                    <td style="padding: 6px;">x2 Lane</td>
-                    <td style="padding: 6px;">UFS 3.1</td>
-                    <td style="padding: 6px;">1st Die</td>
-                    <td style="padding: 6px;">Rev. E</td>
-                    <td style="padding: 6px;">153 FBGA</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">Padrão</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  <div class="chip-block-header">
+    <strong>DDR4 <span class="chip-block-subtitle">(DDR4-2133 a DDR4-3200, ~2014–Presente)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K4A</code>
+    </div>
+  </div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Capacidade (Decodificação)</th>
-                    <th>Exemplos Extraídos do Lote</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>KLUB...</code></td>
-                    <td style="font-family: sans-serif;">32GB (B = 20/32)</td>
-                    <td><code>KLUBG4G1CE</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLUC...</code></td>
-                    <td style="font-family: sans-serif;">64GB (C = 40/64)</td>
-                    <td><code>KLUCG4J1BB</code>, <code>KLUCG4J1EB</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLUD...</code></td>
-                    <td style="font-family: sans-serif;">128GB (D = 80/128)</td>
-                    <td><code>KLUDG4UHDB</code>, <code>KLUDG8V1EE</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLUE...</code></td>
-                    <td style="font-family: sans-serif;">256GB (E = 100/256)</td>
-                    <td><code>KLUEG8U1EM</code>, <code>KLUEG8UHGC</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLUF...</code></td>
-                    <td style="font-family: sans-serif;">512GB (F = 200/512)</td>
-                    <td style="font-family: sans-serif;"><em>(Transição p/ Alta Densidade - Não presente no lote atual)</em></td>
-                  </tr>
-                  <tr>
-                    <td><code>KLUG...</code></td>
-                    <td style="font-family: sans-serif;">1TB (G = 400/1TB)</td>
-                    <td style="font-family: sans-serif;"><em>(UFS 3.1/4.0 Alta Densidade - Não presente no lote atual)</em></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>KLU</code> determina a tecnologia <strong>Universal Flash Storage (UFS)</strong>, muito superior ao eMMC. A leitura de capacidade segue a mesma regra base da Samsung (B=32, C=64, D=128, E=256, F=512, G=1TB). Todos estes componentes de alto desempenho devem ser remetidos à caixa do <strong>fluxo reacondicional Flash</strong>. Atenção máxima: fisicamente, eles utilizam os mesmos encapsulamentos BGA 153 do eMMC, portanto, a identificação a laser na carcaça é a única forma de evitar misturas indevidas.
-            </div>
+  <div class="chip-block-preview">
+    <p>O prefixo <code>K4A</code> garante que o componente é <strong>DDR4</strong>.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
 
-<h4 id="sam-gddr">
-              Memória Gráfica (GDDR) — Prefixos <code>K4N / K4J / K4U / K4G / K4Z</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(GDDR2 a GDDR6X, ~2004–Presente)</small
-              >
-            </h4>
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-ddr4')">▼ Aprender mais</button>
+  </div>
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">4</th>
-                    <th style="padding: 8px; text-align: center;">Z</th>
-                    <th style="padding: 8px; text-align: center;">AF</th>
-                    <th style="padding: 8px; text-align: center;">32</th>
-                    <th style="padding: 8px; text-align: center;">5</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">C</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">S</th>
-                    <th style="padding: 8px; text-align: center;">C</th>
-                    <th style="padding: 8px; text-align: center;">14</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">LARG</td>
-                    <td style="padding: 6px;">BANC</td>
-                    <td style="padding: 6px;">REV</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">DRAM</td>
-                    <td style="padding: 6px;">GDDR6</td>
-                    <td style="padding: 6px;">16Gb</td>
-                    <td style="padding: 6px;">x32</td>
-                    <td style="padding: 6px;">16 Bancos</td>
-                    <td style="padding: 6px;">Rev. B</td>
-                    <td style="padding: 6px;">1.35V</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">FBGA</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">14 Gbps</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  <div class="chip-block-content">
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Capacidade (Decodificação)</th>
-                    <th>Tecnologia / Direcionamento</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K4N...</code></td>
-                    <td style="font-family: sans-serif;">Varia (Normalmente 256Mb)</td>
-                    <td style="font-family: sans-serif;">GDDR2 (Obsoleto) ➔ <strong>Fluxo de Residuo</strong></td>
-                  </tr>
-                  <tr>
-                    <td><code>K4J...</code></td>
-                    <td style="font-family: sans-serif;">Varia (ex: 52 = 512Mb)</td>
-                    <td style="font-family: sans-serif;">GDDR3 ➔ Bancada Reacondicional GPU</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4U...</code> <small>(Gráfico)</small></td>
-                    <td style="font-family: sans-serif;">Varia (ex: 52 = 512Mb)</td>
-                    <td style="font-family: sans-serif;">GDDR4 (Obsoleto) ➔ <strong>Fluxo de Residuo</strong></td>
-                  </tr>
-                  <tr>
-                    <td><code>K4G...</code></td>
-                    <td style="font-family: sans-serif;">41 = 4Gb / 80 = 8Gb</td>
-                    <td style="font-family: sans-serif;">GDDR5 / GDDR5X ➔ Bancada Reacondicional GPU</td>
-                  </tr>
-                  <tr>
-                    <td><code>K4Z...</code></td>
-                    <td style="font-family: sans-serif;">80 = 8Gb / AF = 16Gb</td>
-                    <td style="font-family: sans-serif;">GDDR6 / GDDR6X ➔ Bancada Reacondicional GPU</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> As memórias gráficas possuem uma organização de dados muito larga (geralmente x32) para altíssima largura de banda. O operador deve prestar <strong>Atenção Extrema</strong> ao prefixo <code>K4U</code>. Se o <code>K4U</code> for extraído de uma placa de vídeo dedicada (geralmente componentes fisicamente grandes e antigos), trata-se de um <strong>GDDR4</strong> obsoleto e deve ir para <strong>residuo</strong>. Se o <code>K4U</code> for extraído de smartphones ou tablets (formato compacto), trata-se de um <strong>LPDDR4X</strong> moderno e deve ir para a bancada <strong>reacondicional Mobile</strong>. Os prefixos <code>K4G</code> (GDDR5) e <code>K4Z</code> (GDDR6) são ativos de alto volume e devem ser isolados na caixa GPU.
-            </div>
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th>
+            <th>4</th>
+            <th>A</th>
+            <th>4G</th>
+            <th>04</th>
+            <th>5</th>
+            <th>W</th>
+            <th>E</th>
+            <th>-</th>
+            <th>B</th>
+            <th>C</th>
+            <th>PB</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td>
+            <td>TIPO</td>
+            <td>FAM</td>
+            <td>DENS</td>
+            <td>LARG</td>
+            <td>BANC</td>
+            <td>TENSÃO</td>
+            <td>REV</td>
+            <td>-</td>
+            <td>ENC</td>
+            <td>TEMP</td>
+            <td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td>
+            <td>DRAM</td>
+            <td>DDR4</td>
+            <td>4Gb</td>
+            <td>x4</td>
+            <td>16 Bancos</td>
+            <td>1.2V</td>
+            <td>Rev. E</td>
+            <td>-</td>
+            <td>FBGA</td>
+            <td>Normal</td>
+            <td>DDR4-2133</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-<h4 id="sam-epop">
-              ePoP (Wearables e IoT) — Prefixo <code>KAT</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(Armazenamento + RAM Empilhados, BGA Ultrafino)</small
-              >
-            </h4>
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Capacidade / Organização</th>
+            <th>Tensão / Velocidade</th>
+            <th>Exemplo Completo de PN</th>
+            <th>Período</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K4A4G045W</code></td>
+            <td>4Gb (1G x 4)</td>
+            <td>1.2V / DDR4-2133 (<code>-BCPB</code>)</td>
+            <td><code>K4A4G045WE-BCPB</code></td>
+            <td>2014–Presente</td>
+          </tr>
+          <tr>
+            <td><code>K4A4G165W</code></td>
+            <td>4Gb (256M x 16)</td>
+            <td>1.2V / DDR4-2400 (<code>-BCRC</code>)</td>
+            <td><code>K4A4G165WE-BCRC</code></td>
+            <td>2015–Presente</td>
+          </tr>
+          <tr>
+            <td><code>K4A8G085W</code></td>
+            <td>8Gb (1G x 8)</td>
+            <td>1.2V / DDR4-2666 (<code>-BCTD</code>)</td>
+            <td><code>K4A8G085WC-BCTD</code></td>
+            <td>2016–Presente</td>
+          </tr>
+          <tr>
+            <td><code>K4A8G165W</code></td>
+            <td>8Gb (512M x 16)</td>
+            <td>1.2V / DDR4-3200 (<code>-BCWE</code>)</td>
+            <td><code>K4A8G165WC-BCWE</code></td>
+            <td>2018–Presente</td>
+          </tr>
+          <tr>
+            <td><code>K4AAG165W</code></td>
+            <td>16Gb (1G x 16)</td>
+            <td>1.2V / DDR4-3200 (<code>-BCWE</code>)</td>
+            <td><code>K4AAG165WA-BCWE</code></td>
+            <td>2019–Presente</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-            <p>
-              <strong>O que é o ePoP?</strong> A sigla significa <em>embedded Package-on-Package</em>. Diferente dos eMCPs/uMCPs que ocupam seu próprio espaço na placa, o ePoP combina memória RAM (LPDDR) e armazenamento (eMMC) em um encapsulamento projetado para ser soldado <strong>diretamente sobre o processador (SoC)</strong>. Essa tecnologia economiza até 40% de espaço físico na PCB, sendo o padrão absoluto na engenharia de smartwatches, dispositivos IoT compactos e óculos de realidade virtual. Devido às suas dimensões reduzidas e espessura ultrafina, exige atenção máxima para não ser classificado erroneamente na esteira.
-            </p>
+    <!-- Nota operacional -->
+    <div class="nota">
+      <strong>Dica de esteira:</strong> O prefixo <code>K4A</code> garante que o componente é <strong>DDR4</strong>. É uma das memórias de maior volume na triagem de desktops e laptops modernos. Capacidades são lidas nos 4º e 5º caracteres (4G = 4Gb, 8G = 8Gb, AG = 16Gb). O destino incondicional é o <strong>fluxo reacondicional</strong>. Garanta a agilidade da leitura para não criar gargalos na esteira.
+    </div>
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">A</th>
-                    <th style="padding: 8px; text-align: center;">T</th>
-                    <th style="padding: 8px; text-align: center;">00</th>
-                    <th style="padding: 8px; text-align: center;">F</th>
-                    <th style="padding: 8px; text-align: center;">00</th>
-                    <th style="padding: 8px; text-align: center;">N</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">A</th>
-                    <th style="padding: 8px; text-align: center;">E</th>
-                    <th style="padding: 8px; text-align: center;">TT</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">LARG</td>
-                    <td style="padding: 6px;">CTRL</td>
-                    <td style="padding: 6px;">REV</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">App</td>
-                    <td style="padding: 6px;">ePoP</td>
-                    <td style="padding: 6px;">Custom</td>
-                    <td style="padding: 6px;">x32</td>
-                    <td style="padding: 6px;">Padrão</td>
-                    <td style="padding: 6px;">Rev. N</td>
-                    <td style="padding: 6px;">FBGA</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">Low/Custom</td>
-                    <td style="padding: 6px;">Otimizado</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  </div>
+</div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Tecnologia Integrada</th>
-                    <th>Exemplos Clássicos</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>KAT...</code></td>
-                    <td style="font-family: sans-serif;">ePoP (eMMC + LPDDR Customizado)</td>
-                    <td><code>KAT00F00NB-AETT</code></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> Chips com o prefixo <code>KAT</code> <strong>são ativos válidos</strong> e críticos para a operação de dispositivos compactos (smartwatches, IoT). Sob nenhuma hipótese devem ser enviados ao fluxo de <strong>residuo</strong>. Ao identificar este código a laser na face superior, direcione imediatamente a peça ao ciclo <strong>reacondicional</strong>. Na bancada final, esses chips exigirão validação por <em>sockets</em> especiais devido à sua pinagem desenhada para montagem sobre o SoC.
-            </div>
+<div id="sam-ddr5" class="chip-block">
 
-<h4 id="sam-nand">
-              NAND Flash e NOR Flash — Prefixos <code>K9 / K5 / K8</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(Armazenamento Base, SLC/MLC/TLC)</small
-              >
-            </h4>
+  <div class="chip-block-header">
+    <strong>DDR5 — DRAM Desktop/Servidor <span class="chip-block-subtitle">(DDR5-4800+ · ~2021–Presente)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K4R</code>
+    </div>
+  </div>
 
-            <!-- ANATOMIA DO PART NUMBER (NAND RAW) -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">9</th>
-                    <th style="padding: 8px; text-align: center;">G</th>
-                    <th style="padding: 8px; text-align: center;">AG</th>
-                    <th style="padding: 8px; text-align: center;">08</th>
-                    <th style="padding: 8px; text-align: center;">U</th>
-                    <th style="padding: 8px; text-align: center;">0</th>
-                    <th style="padding: 8px; text-align: center;">M</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">P</th>
-                    <th style="padding: 8px; text-align: center;">C</th>
-                    <th style="padding: 8px; text-align: center;">B0</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">ORG</td>
-                    <td style="padding: 6px;">VCC</td>
-                    <td style="padding: 6px;">MODO</td>
-                    <td style="padding: 6px;">ENC</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">BAD CH</td>
-                    <td style="padding: 6px;">VEL</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">NAND</td>
-                    <td style="padding: 6px;">MLC</td>
-                    <td style="padding: 6px;">16Gb</td>
-                    <td style="padding: 6px;">x8</td>
-                    <td style="padding: 6px;">2.7V~3.6V</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">TSOP1</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">Comercial</td>
-                    <td style="padding: 6px;">Padrão</td>
-                    <td style="padding: 6px;">Seq</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+  <div class="chip-block-preview">
+    <p>O prefixo <code>K4R</code> é exclusivo da arquitetura <strong>DDR5</strong> (1.1V). Estes componentes não devem ser alocados na mesma caixa de testes dos chips DDR4 — a leitura do <code>R</code> na 3ª posição é mandatória para evitar erros na bancada.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Tecnologia / Categoria</th>
-                    <th>Aplicações Típicas</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>K9F...</code></td>
-                    <td style="font-family: sans-serif;">NAND Flash (SLC)</td>
-                    <td style="font-family: sans-serif;">Dispositivos Industriais / Firmwares Críticos</td>
-                  </tr>
-                  <tr>
-                    <td><code>K9G... / K9L...</code></td>
-                    <td style="font-family: sans-serif;">NAND Flash (MLC / TLC)</td>
-                    <td style="font-family: sans-serif;">SSDs, Pendrives e Cartões SD</td>
-                  </tr>
-                  <tr>
-                    <td><code>K5... / K8...</code></td>
-                    <td style="font-family: sans-serif;">NOR Flash / Mask ROM</td>
-                    <td style="font-family: sans-serif;">BIOS de PC e Firmware de Eletroeletrônicos</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> Chips <code>K9</code> são o "petróleo" do armazenamento; se estiverem em bom estado, seguem para a bancada <strong>reacondicional Flash</strong> para reuso em montagem de SSDs ou Pendrives. Já os chips <code>K5</code> (NOR) são geralmente de baixa densidade; embora funcionais, devem ser avaliados conforme a demanda da semana. O 4º e 5º caracteres da linha <code>K9</code> indicam densidade em Bits (ex: AG = 16Gb, BG = 32Gb).
-            </div>
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-ddr5')">▼ Aprender mais</button>
+  </div>
 
-            <h4 id="sam-kus">
-              BGA NVMe SSDs — Prefixo <code>KUS</code> &nbsp;<small
-                style="font-weight: normal; color: #666"
-                >(SSD Completo em Chip Único, ~2017–Presente)</small
-              >
-            </h4>
+  <div class="chip-block-content">
 
-            <!-- ANATOMIA DO PART NUMBER -->
-            <div class="tbl-wrap" style="margin-bottom: 20px;">
-              <table style="text-align: center; width: 100%; border-collapse: collapse;">
-                <thead>
-                  <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
-                    <th style="padding: 8px; text-align: center;">K</th>
-                    <th style="padding: 8px; text-align: center;">U</th>
-                    <th style="padding: 8px; text-align: center;">S</th>
-                    <th style="padding: 8px; text-align: center;">03</th>
-                    <th style="padding: 8px; text-align: center;">02</th>
-                    <th style="padding: 8px; text-align: center;">02</th>
-                    <th style="padding: 8px; text-align: center;">M</th>
-                    <th style="padding: 8px; text-align: center;">-</th>
-                    <th style="padding: 8px; text-align: center;">B</th>
-                    <th style="padding: 8px; text-align: center;">000</th>
-                  </tr>
-                </thead>
-                <tbody style="font-family: sans-serif;">
-                  <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
-                    <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">TIPO</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">DENS</td>
-                    <td style="padding: 6px;">INTF</td>
-                    <td style="padding: 6px;">CTRL</td>
-                    <td style="padding: 6px;">NAND</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">FW/REV</td>
-                  </tr>
-                  <tr style="font-size: 0.85em; color: #333;">
-                    <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">Solid State</td>
-                    <td style="padding: 6px;">BGA NVMe</td>
-                    <td style="padding: 6px;">256GB</td>
-                    <td style="padding: 6px;">PCIe Gen3 x2</td>
-                    <td style="padding: 6px;">Padrão</td>
-                    <td style="padding: 6px;">TLC (3-bit)</td>
-                    <td style="padding: 6px;">-</td>
-                    <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">Original</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th><th>4</th><th>R</th><th>AH</th><th>16</th><th>5</th>
+            <th>V</th><th>B</th><th>-</th><th>B</th><th>C</th><th>QK</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td><td>TIPO</td><td>FAM</td><td>DENS</td><td>LARG</td><td>BANC</td>
+            <td>TENSÃO</td><td>REV</td><td>-</td><td>ENC</td><td>TEMP</td><td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td><td>DRAM</td><td>DDR5</td><td>16Gb</td><td>x16</td><td>16 Bancos</td>
+            <td>1.1V</td><td>Rev. B</td><td>-</td><td>FBGA</td><td>Normal</td><td>4800 MT/s</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Capacidade (Decodificação)</th>
-                    <th>Aplicações Típicas (Origem)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>KUS02...</code></td>
-                    <td style="font-family: sans-serif;">128GB</td>
-                    <td style="font-family: sans-serif;">Ultrabooks, Tablets Premium, Placas Embarcadas</td>
-                  </tr>
-                  <tr>
-                    <td><code>KUS03...</code></td>
-                    <td style="font-family: sans-serif;">256GB</td>
-                    <td style="font-family: sans-serif;">Ultrabooks, Consoles Portáteis (ex: Steam Deck)</td>
-                  </tr>
-                  <tr>
-                    <td><code>KUS04...</code></td>
-                    <td style="font-family: sans-serif;">512GB</td>
-                    <td style="font-family: sans-serif;">Ultrabooks, Consoles Portáteis, Dispositivos Industriais</td>
-                  </tr>
-                  <tr>
-                    <td><code>KUS05...</code></td>
-                    <td style="font-family: sans-serif;">1TB</td>
-                    <td style="font-family: sans-serif;">Laptops Flagship, Mini PCs Avançados</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>KUS</code> exige segregação imediata e isolada. Este componente é um SSD NVMe completo encapsulado em um único chip BGA. Ele NUNCA deve ser misturado nas caixas de eMMC (<code>KLM</code>) ou UFS (<code>KLU</code>). O 4º e o 5º caracteres indicam a capacidade de forma sequencial (02 = 128GB, 03 = 256GB, 04 = 512GB). Todos os chips <code>KUS</code> íntegros vão para a caixa <strong>Reacondicional BGA SSD (Premium)</strong>. Qualquer erro aqui compromete a integridade do equipamento de teste na bancada final.
-            </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Capacidade / Organização</th>
+            <th>Tensão / Velocidade</th>
+            <th>Exemplo Completo de PN</th>
+            <th>Período</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K4RAH086V</code></td>
+            <td>16Gb (2G x 8)</td>
+            <td>1.1V / DDR5-4800 (<code>-BCQK</code>)</td>
+            <td><code>K4RAH086VB-BCQK</code></td>
+            <td>2021–Presente</td>
+          </tr>
+          <tr>
+            <td><code>K4RAH165V</code></td>
+            <td>16Gb (1G x 16)</td>
+            <td>1.1V / DDR5-4800 (<code>-BCQK</code>)</td>
+            <td><code>K4RAH165VB-BCQK</code></td>
+            <td>2021–Presente</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-<!-- SK Hynix -->
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>K4R</code> é exclusivo da mais recente arquitetura <strong>DDR5</strong> (1.1V). Estes componentes não devem, sob nenhuma hipótese, ser alocados na mesma caixa de testes dos chips DDR4, para prevenir falhas no <strong>ciclo reacondicional</strong>. A leitura atenta do <code>R</code> na 3ª posição é mandatória para manter a redução de erros na bancada. Capacidade AH = 16Gb.
+    </div>
+
+  </div>
+</div>
+
+
+<div id="sam-lpddr-legacy" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>LPDDR1 / LPDDR2 / LPDDR3 — RAM Mobile Legado <span class="chip-block-subtitle">(~2009–2015)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K4M</code> <code>K4P</code> <code>K3Q</code>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p>Gerações antigas de RAM mobile. <code>K4M</code> e <code>K4X</code> são obsoletos e vão para <strong>resíduo</strong>. <code>K4P</code> (LPDDR2) e <code>K3Q</code> (LPDDR3) ainda têm demanda em IoT e embarcados — seguem para o <strong>ciclo reacondicional</strong>.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-lpddr-legacy')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Categoria</th>
+            <th>Tecnologia</th>
+            <th>Direcionamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K4M</code> / <code>K4X</code></td>
+            <td>Memória Mobile</td>
+            <td>LPDDR1 / Mobile DDR</td>
+            <td>Fluxo de Resíduo (Obsoleto)</td>
+          </tr>
+          <tr>
+            <td><code>K4P</code></td>
+            <td>Memória Mobile</td>
+            <td>LPDDR2</td>
+            <td>Bancada Reacondicional Mobile</td>
+          </tr>
+          <tr>
+            <td><code>K3Q</code></td>
+            <td>Memória Mobile</td>
+            <td>LPDDR3</td>
+            <td>Bancada Reacondicional Mobile</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nota">
+      <strong>Dica de esteira:</strong> Estes prefixos identificam gerações mais antigas de RAM para smartphones. <code>K4M</code> e <code>K4X</code> são muito defasados e podem ir para o <strong>resíduo</strong>. <code>K4P</code> (LPDDR2) e <code>K3Q</code> (LPDDR3) ainda possuem demanda em IoT e embarcados, portanto devem seguir para o <strong>ciclo reacondicional</strong>.
+    </div>
+
+  </div>
+</div>
+
+
+
+<div id="sam-lpddr4" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>LPDDR4 e LPDDR4X — RAM Mobile <span class="chip-block-subtitle">(~2015–Presente)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K4F</code> <code>K4U</code> <code>K3U</code>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p>As memórias <code>K4F</code> (LPDDR4) e <code>K4U</code>/<code>K3U</code> (LPDDR4X) compõem o maior volume nas esteiras mobile — todas direcionadas para <strong>Bancada Reacondicional Mobile</strong>.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-lpddr4')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th><th>4</th><th>F</th><th>6E</th><th>3S</th><th>4</th>
+            <th>H</th><th>B</th><th>-</th><th>K</th><th>F</th><th>CL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td><td>TIPO</td><td>FAM</td><td>DENS</td><td>ORG</td><td>BANC</td>
+            <td>GERAÇÃO</td><td>REV</td><td>-</td><td>ENC</td><td>TENSÃO</td><td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td><td>DRAM</td><td>LPDDR4</td><td>16Gb</td><td>x32</td><td>8 Bancos</td>
+            <td>1ª Gen</td><td>Rev. B</td><td>-</td><td>FBGA</td><td>1.1V</td><td>4266 Mbps</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Tecnologia</th>
+            <th>Exemplos Extraídos do Lote</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K4F4E...</code> / <code>K4F6E...</code> / <code>K4F8E...</code></td>
+            <td>LPDDR4 (Padrão)</td>
+            <td><code>K4F4E164HF-KFCL</code>, <code>K4F6E3S4HB-KFCL</code></td>
+          </tr>
+          <tr>
+            <td><code>K4FBE...</code> / <code>K4FHE...</code></td>
+            <td>LPDDR4 (Alta Densidade)</td>
+            <td><code>K4FBE3D4HB-KUCL</code></td>
+          </tr>
+          <tr>
+            <td><code>K4U2E...</code> / <code>K4U6E...</code> / <code>K4U8E...</code></td>
+            <td>LPDDR4X (Tensão Otimizada)</td>
+            <td><code>K4U2E3S4AA-TFCL</code>, <code>K4U6E3S4AB-KUCL</code></td>
+          </tr>
+          <tr>
+            <td><code>K4UBE...</code> / <code>K4UCE...</code></td>
+            <td>LPDDR4X (Alta Densidade)</td>
+            <td><code>K4UBE3D4AB-MGCL</code></td>
+          </tr>
+          <tr>
+            <td><code>K4UHE...</code> / <code>K4UJE...</code></td>
+            <td>LPDDR4X (Ultra Densidade)</td>
+            <td><code>K4UHE3D4AA-TUCL</code></td>
+          </tr>
+          <tr>
+            <td><code>K3UH...</code></td>
+            <td>LPDDR4X (Multi-Channel/MCP Base)</td>
+            <td><code>K3UH6H60AM-TFCL</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> As memórias <code>K4F</code> (LPDDR4) e <code>K4U</code>/<code>K3U</code> (LPDDR4X) compõem o maior volume nas esteiras mobile. O operador deve garantir que todas vão para as caixas de <strong>Bancada Reacondicional Mobile</strong>. O "X" na versão LPDDR4X reduz a tensão I/O de 1.1V para 0.6V, o que significa que o <em>socket</em> de teste na bancada é rigorosamente diferente.
+    </div>
+
+  </div>
+</div>
+
+
+
+<div id="sam-lpddr5" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>LPDDR5 e LPDDR5X — RAM de Alta Velocidade <span class="chip-block-subtitle">(~2020–Presente)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K3KL</code> <code>K3LK</code>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p>Geração atual de RAM em flagships. Os prefixos <code>K3KL</code> e <code>K3LK</code> identificam chips LPDDR5 e LPDDR5X com velocidades a partir de 6400 Mbps — direcionamento para <strong>Bancada Reacondicional DRAM</strong>.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-lpddr5')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th><th>3</th><th>K</th><th>L</th><th>2L</th><th>20</th>
+            <th>D</th><th>M</th><th>-</th><th>J</th><th>G</th><th>CT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td><td>TIPO</td><td>FAM</td><td>GERAÇÃO</td><td>DENSIDADE</td><td>ORG</td>
+            <td>REV</td><td>ENC</td><td>-</td><td>TENSÃO</td><td>TEMP</td><td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td><td>MCP/DRAM</td><td>LPDDR</td><td>LPDDR5</td><td>12Gb/16Gb</td><td>x64</td>
+            <td>Rev. D</td><td>FBGA</td><td>-</td><td>1.05V</td><td>Normal</td><td>6400 Mbps</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Tecnologia</th>
+            <th>Exemplos Extraídos do Lote</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K3KL...</code></td>
+            <td>LPDDR5</td>
+            <td><code>K3KL2L20DM-JGCT</code>, <code>K3KL4L40DM-BGCT</code></td>
+          </tr>
+          <tr>
+            <td><code>K3LK...</code></td>
+            <td>LPDDR5X (Otimizado p/ IA/5G)</td>
+            <td><code>K3LK4K40CM-BGCP</code>, <code>K3LK7K70BM-JGCP</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nota">
+      <strong>Dica de esteira:</strong> A regra visual de separação para o operador é crucial aqui: <code>K3KL</code> é LPDDR5, enquanto a inversão para <code>K3LK</code> sinaliza o LPDDR5X. Ambos são os chips mobile mais avançados da triagem e representam o topo do <strong>fluxo reacondicional</strong>. Tolerância zero para erros de leitura ou envio para o fluxo de refino/moagem.
+    </div>
+
+  </div>
+</div>
+
+
+
+
+<div id="sam-emmc" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>eMMC — Armazenamento Flash <span class="chip-block-subtitle">(eMMC 4.5 a 5.1 · BGA 153/169)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>KLM</code>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p>O prefixo <code>KLM</code> determina que o componente é um armazenamento <strong>eMMC</strong> puro — sem RAM embutida. O operador deve focar na 4ª e 5ª letras para identificar a capacidade rapidamente, seguindo a lógica alfanumérica (A=16, B=32, C=64, D=128, E=256).</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-emmc')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <!-- ANATOMIA DO PART NUMBER -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th><th>L</th><th>M</th><th>CG</th><th>4</th>
+            <th>J</th><th>EN</th><th>B</th><th>-</th><th>B</th><th>041</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td><td>TIPO</td><td>FAM</td><td>DENS</td><td>NAND</td>
+            <td>GERAÇÃO</td><td>CTRL</td><td>ENC</td><td>-</td><td>TEMP</td><td>FW/VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td><td>Flash</td><td>eMMC</td><td>64GB</td><td>TLC/MLC</td>
+            <td>eMMC 5.1</td><td>Revisão</td><td>153 FBGA</td><td>-</td><td>Normal</td><td>Seq/Rev</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Capacidade (Decodificação)</th>
+            <th>Exemplos Extraídos do Lote</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>KLM4G...</code></td><td>4GB</td><td><code>KLM4G1FE3A</code>, <code>KLM4G1FETE</code></td></tr>
+          <tr><td><code>KLM8G...</code></td><td>8GB</td><td><code>KLM8G1GETF</code>, <code>KLM8G2FEJA</code></td></tr>
+          <tr><td><code>KLMAG...</code></td><td>16GB (A = 10 em Hex)</td><td><code>KLMAG2GE2A</code>, <code>KLMAG4FEJA</code></td></tr>
+          <tr><td><code>KLMBG...</code></td><td>32GB (B = 20/32)</td><td><code>KLMBG4GEND</code>, <code>KLMBG2JETD</code></td></tr>
+          <tr><td><code>KLMCG...</code></td><td>64GB (C = 40/64)</td><td><code>KLMCG4JENB</code>, <code>KLMCG8GEAC</code></td></tr>
+          <tr><td><code>KLMDG...</code></td><td>128GB (D = 80/128)</td><td><code>KLMDG8JENB</code>, <code>KLMDG4UCTA</code></td></tr>
+          <tr><td><code>KLMEG...</code></td><td>256GB (E = 100/256)</td><td><code>KLMEG8UCTA</code>, <code>KLMEG8UERM</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>KLM</code> determina que o componente é um armazenamento <strong>eMMC</strong> (sem RAM embutida). O operador deve focar na 4ª e 5ª letras para identificar a capacidade rapidamente, seguindo a lógica alfanumérica (A=16, B=32, C=64, D=128, E=256). Todos os chips <code>KLM</code> em bom estado físico pertencem à caixa do <strong>fluxo reacondicional Flash</strong>. Verifique visualmente o <em>grid</em> de solda inferior, que costuma ser BGA 153 ou BGA 169.
+    </div>
+
+  </div>
+</div>
+
+<div id="sam-emcp" style="border: 1px solid var(--rule); margin: 0 0 18px 0; background: var(--paper); box-shadow: 1px 1px 0 #fff inset;">
+
+  <!-- Cabeçalho (sempre visível) -->
+  <div style="background: linear-gradient(to bottom, var(--tab-blue-1), var(--tab-blue-2)); border-bottom: 1px solid var(--rule); padding: 7px 12px;">
+    <div style="font-family: var(--font); font-size: 13px; font-weight: bold; color: var(--hi-1);">
+      eMCP — Embedded Multi-Chip Package
+      <span style="font-weight: normal; color: var(--ink-mute); font-size: 11px;">(eMMC + LPDDR)</span>
+    </div>
+    <div style="font-size: 11px; color: var(--ink-soft); margin-top: 3px;">
+      <code>KMF</code> <code>KMK</code> <code>KMN</code> <code>KMQ</code> <code>KMR</code> <code>KMS</code>
+    </div>
+  </div>
+
+  <!-- Preview com gradiente -->
+  <div id="sam-emcp-preview" style="position: relative; padding: 10px 12px 0; overflow: hidden; max-height: 3.4em;">
+    <p style="margin: 0; font-size: 13px; line-height: 1.7;">
+      <strong>O que é e como classificar:</strong> O eMCP é um pacote que junta um chip de armazenamento (eMMC) e a memória RAM (LPDDR) na mesma pastilha. Na Samsung, TODO eMCP começa obrigatoriamente com as letras <code>KM</code>. O operador deve isolar essas peças e enviá-las para a <strong>Caixa: Reacondicional eMCP</strong>.
+    </p>
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 2.5em; background: linear-gradient(transparent, var(--paper));"></div>
+  </div>
+
+  <!-- Botão -->
+  <div style="padding: 7px 12px;">
+    <button class="btn-print" id="sam-emcp-btn"
+      onclick="
+        var c = document.getElementById('sam-emcp-content');
+        var p = document.getElementById('sam-emcp-preview');
+        var b = document.getElementById('sam-emcp-btn');
+        var open = c.style.display !== 'none';
+        c.style.display = open ? 'none' : 'block';
+        p.style.display = open ? '' : 'none';
+        b.textContent = open ? '▼ Aprender mais' : '▲ Recolher';
+      ">
+      ▼ Aprender mais
+    </button>
+  </div>
+
+  <!-- Conteúdo expandido -->
+  <div id="sam-emcp-content" style="display: none; padding: 10px 14px 16px; border-top: 1px solid var(--rule-soft);">
+
+    <p style="font-size: 13px; line-height: 1.7;">
+      <strong>O que é e como classificar:</strong> O eMCP é um pacote que junta um chip de armazenamento (eMMC) e a memória RAM (LPDDR) na mesma pastilha. Na Samsung, TODO eMCP começa obrigatoriamente com as letras <code>KM</code>. O operador deve isolar essas peças e enviá-las para a <strong>Caixa: Reacondicional eMCP</strong>.
+      <br><br>
+      <strong>Atenção Extrema:</strong> Códigos parecidos como <code>KNN</code> ou <code>KSW</code> <strong>NÃO SÃO</strong> eMCPs modernos. São combos antigos de baixíssima capacidade (Feature Phones) e devem ir direto para o fluxo de <strong>resíduo</strong>.
+    </p>
+
+    <!-- ANATOMIA DO PART NUMBER -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th><th>M</th>
+            <th style="color: #d9534f;">R</th>
+            <th style="color: #5cb85c;">X1</th>
+            <th>00</th><th>0</th><th>B</th><th>M</th><th>-</th><th>B</th><th>614</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td><td>FAMÍLIA</td>
+            <td style="color: #d9534f;">GERAÇÃO (RAM)</td>
+            <td style="color: #5cb85c;">CAPACIDADE</td>
+            <td>ORG</td><td>CTRL</td><td>TENSÃO</td><td>PACKAGE</td><td>-</td><td>TEMP</td><td>REV</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td><td>eMCP (Combo)</td><td>LPDDR4 / 4X</td><td>64GB + 4GB</td>
+            <td>Padrão</td><td>Padrão</td><td>1.8V/1.1V</td><td>BGA</td><td>-</td><td>Normal</td><td>Varia</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- GABARITOS LADO A LADO -->
+    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+
+      <div class="tbl-wrap" style="flex: 1;">
+        <h5 style="margin-top: 0; color: var(--hi-1);">Gabarito da 3ª Letra (Geração)</h5>
+        <table>
+          <thead><tr><th>3ª Letra</th><th>Arquitetura Interna</th></tr></thead>
+          <tbody>
+            <tr><td><code>K</code></td><td>eMMC + <strong>LPDDR2</strong> (Antigo)</td></tr>
+            <tr><td><code>F</code> ou <code>N</code></td><td>eMMC + <strong>LPDDR3</strong></td></tr>
+            <tr><td><code>Q</code></td><td>eMMC 5.1 + <strong>LPDDR3</strong> (Otimizado)</td></tr>
+            <tr><td><code>R</code></td><td>eMMC 5.1 + <strong>LPDDR4 / 4X</strong></td></tr>
+            <tr><td><code>S</code></td><td>eMMC 5.1 + <strong>LPDDR4X</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tbl-wrap" style="flex: 1;">
+        <h5 style="margin-top: 0; color: var(--hi-1);">Gabarito de Capacidade (4º e 5º)</h5>
+        <table>
+          <thead><tr><th>Par (Exemplos)</th><th>Armazenamento + RAM</th></tr></thead>
+          <tbody>
+            <tr><td><code>5X</code></td><td>8GB eMMC + 1GB RAM</td></tr>
+            <tr><td><code>BT</code></td><td>16GB eMMC + 2GB RAM</td></tr>
+            <tr><td><code>GD</code></td><td>32GB eMMC + 3GB RAM</td></tr>
+            <tr><td><code>X1</code> ou <code>H9</code></td><td>64GB eMMC + 4GB RAM</td></tr>
+            <tr><td><code>J2</code></td><td>128GB eMMC + 6GB RAM</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> A segregação visual começa nas três primeiras letras. Ao identificar um chip da família <strong>eMCP</strong> (<code>KMF</code>, <code>KMN</code>, <code>KMQ</code>, <code>KMR</code>, <code>KMS</code>, <code>KMK</code>), a peça deve ser direcionada imediatamente para a <strong>Caixa: Reacondicional eMCP</strong>. Se o chip começar com <code>KMD</code>, <code>KMG</code> ou <code>KMV</code>, trata-se de um <strong>uMCP (UFS)</strong> e deve ir para uma caixa separada. Códigos híbridos fora do padrão <code>KM</code> ou <code>KL</code> (como <code>KNN</code> e <code>KSW</code>) são incompatíveis com as bancadas modernas e devem ser enviados ao <strong>resíduo</strong>.
+    </div>
+
+  </div>
+</div>
+
+<div id="sam-umcp" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>uMCP — UFS Multi-Chip Package <span class="chip-block-subtitle">(UFS + LPDDR · ~2018–Presente)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>KMD</code> <code>KMG</code> <code>KML</code> <code>KMV</code>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p>As memórias <strong>uMCP</strong> são os cérebros da maioria dos smartphones intermediários-premium e flagships modernos. Ao ler a raiz <code>KM</code>, o operador deve focar na 3ª letra — sendo <strong>D, G, L ou V</strong>, o chip é de altíssima velocidade (baseado em UFS).</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-umcp')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <!-- ANATOMIA DO PART NUMBER -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th><th>M</th><th>D</th><th>H6</th><th>00</th>
+            <th>1</th><th>D</th><th>A</th><th>-</th><th>B</th><th>422</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td><td>FAM</td><td>COMBO</td><td>DENSIDADE</td><td>ORG</td>
+            <td>CTRL</td><td>TENSÃO</td><td>ENC</td><td>-</td><td>TEMP</td><td>FW/VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td><td>MCP</td><td>UFS+LPDDR4X</td><td>64GB + 32Gb</td><td>x16 / x32</td>
+            <td>Padrão</td><td>1.8V/1.1V</td><td>254 FBGA</td><td>-</td><td>Normal</td><td>Seq/Rev</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Tecnologia Integrada</th>
+            <th>Exemplos Extraídos do Lote</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>KMD...</code></td>
+            <td>UFS 2.1 + LPDDR4 / LPDDR4X</td>
+            <td><code>KMDH6001DA</code>, <code>KMDV6001DA</code></td>
+          </tr>
+          <tr>
+            <td><code>KMG...</code></td>
+            <td>UFS 3.1 + LPDDR4X</td>
+            <td><code>KMGD6001BM</code>, <code>KMGP6001BA</code></td>
+          </tr>
+          <tr>
+            <td><code>KML...</code></td>
+            <td>UFS 3.1 + LPDDR5</td>
+            <td><code>KML5U000HM</code></td>
+          </tr>
+          <tr>
+            <td><code>KMV...</code></td>
+            <td>UFS 3.1 / UFS 4.0 + LPDDR5 / LPDDR5X</td>
+            <td><code>KMV2W000LM</code>, <code>KMV3W000LM</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> As memórias <strong>uMCP</strong> são os cérebros da maioria dos smartphones intermediários-premium e flagships modernos. Ao ler a raiz <code>KM</code>, o operador deve focar na 3ª letra. Sendo <strong>D, G, L ou V</strong>, o chip é de altíssima velocidade (baseado em UFS) e deve ir imediatamente e de forma isolada para a caixa de <strong>Bancada Reacondicional uMCP</strong>. Jamais junte estes componentes com os eMCP (base eMMC), pois a inversão nos sockets de validação causará queima instantânea.
+    </div>
+
+  </div>
+</div>
+
+<div id="sam-ufs" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>Armazenamento UFS <span class="chip-block-subtitle">(UFS 2.0 a 4.0, BGA 153/254)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>KLU</code>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p>O prefixo <code>KLU</code> determina a tecnologia <strong>Universal Flash Storage (UFS)</strong>, muito superior ao eMMC.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-ufs')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th>
+            <th>L</th>
+            <th>U</th>
+            <th>D</th>
+            <th>G</th>
+            <th>8</th>
+            <th>V</th>
+            <th>1</th>
+            <th>E</th>
+            <th>E</th>
+            <th>-</th>
+            <th>B</th>
+            <th>0C1</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td>
+            <td>TIPO</td>
+            <td>FAM</td>
+            <td>DENS</td>
+            <td>NAND</td>
+            <td>PISTAS</td>
+            <td>CTRL/GER</td>
+            <td>MATRIZ</td>
+            <td>REV</td>
+            <td>ENC</td>
+            <td>-</td>
+            <td>TEMP</td>
+            <td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td>
+            <td>Flash</td>
+            <td>UFS</td>
+            <td>128GB</td>
+            <td>TLC</td>
+            <td>x2 Lane</td>
+            <td>UFS 3.1</td>
+            <td>1st Die</td>
+            <td>Rev. E</td>
+            <td>153 FBGA</td>
+            <td>-</td>
+            <td>Normal</td>
+            <td>Padrão</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Capacidade (Decodificação)</th>
+            <th>Exemplos Extraídos do Lote</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>KLUB...</code></td>
+            <td>32GB (B = 20/32)</td>
+            <td><code>KLUBG4G1CE</code></td>
+          </tr>
+          <tr>
+            <td><code>KLUC...</code></td>
+            <td>64GB (C = 40/64)</td>
+            <td><code>KLUCG4J1BB</code>, <code>KLUCG4J1EB</code></td>
+          </tr>
+          <tr>
+            <td><code>KLUD...</code></td>
+            <td>128GB (D = 80/128)</td>
+            <td><code>KLUDG4UHDB</code>, <code>KLUDG8V1EE</code></td>
+          </tr>
+          <tr>
+            <td><code>KLUE...</code></td>
+            <td>256GB (E = 100/256)</td>
+            <td><code>KLUEG8U1EM</code>, <code>KLUEG8UHGC</code></td>
+          </tr>
+          <tr>
+            <td><code>KLUF...</code></td>
+            <td>512GB (F = 200/512)</td>
+            <td><em>(Transição p/ Alta Densidade - Não presente no lote atual)</em></td>
+          </tr>
+          <tr>
+            <td><code>KLUG...</code></td>
+            <td>1TB (G = 400/1TB)</td>
+            <td><em>(UFS 3.1/4.0 Alta Densidade - Não presente no lote atual)</em></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Nota operacional -->
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>KLU</code> determina a tecnologia <strong>Universal Flash Storage (UFS)</strong>, muito superior ao eMMC. A leitura de capacidade segue a mesma regra base da Samsung (B=32, C=64, D=128, E=256, F=512, G=1TB). Todos estes componentes de alto desempenho devem ser remetidos à caixa do <strong>fluxo reacondicional Flash</strong>. Atenção máxima: fisicamente, eles utilizam os mesmos encapsulamentos BGA 153 do eMMC, portanto, a identificação a laser na carcaça é a única forma de evitar misturas indevidas.
+    </div>
+
+  </div>
+</div>
+
+<div id="sam-gddr" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>Memória Gráfica (GDDR) <span class="chip-block-subtitle">(GDDR2 a GDDR6X, ~2004–Presente)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K4N</code> <code>K4J</code> <code>K4U</code> <code>K4G</code> <code>K4Z</code>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p>As memórias gráficas possuem uma organização de dados muito larga (geralmente x32) para altíssima largura de banda.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-gddr')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th>
+            <th>4</th>
+            <th>Z</th>
+            <th>AF</th>
+            <th>32</th>
+            <th>5</th>
+            <th>B</th>
+            <th>C</th>
+            <th>-</th>
+            <th>S</th>
+            <th>C</th>
+            <th>14</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td>
+            <td>TIPO</td>
+            <td>FAM</td>
+            <td>DENS</td>
+            <td>LARG</td>
+            <td>BANC</td>
+            <td>REV</td>
+            <td>TENSÃO</td>
+            <td>-</td>
+            <td>ENC</td>
+            <td>TEMP</td>
+            <td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td>
+            <td>DRAM</td>
+            <td>GDDR6</td>
+            <td>16Gb</td>
+            <td>x32</td>
+            <td>16 Bancos</td>
+            <td>Rev. B</td>
+            <td>1.35V</td>
+            <td>-</td>
+            <td>FBGA</td>
+            <td>Normal</td>
+            <td>14 Gbps</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Capacidade (Decodificação)</th>
+            <th>Tecnologia / Direcionamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K4N...</code></td>
+            <td>Varia (Normalmente 256Mb)</td>
+            <td>GDDR2 (Obsoleto) ➔ <strong>Fluxo de Residuo</strong></td>
+          </tr>
+          <tr>
+            <td><code>K4J...</code></td>
+            <td>Varia (ex: 52 = 512Mb)</td>
+            <td>GDDR3 ➔ Bancada Reacondicional GPU</td>
+          </tr>
+          <tr>
+            <td><code>K4U...</code> <small>(Gráfico)</small></td>
+            <td>Varia (ex: 52 = 512Mb)</td>
+            <td>GDDR4 (Obsoleto) ➔ <strong>Fluxo de Residuo</strong></td>
+          </tr>
+          <tr>
+            <td><code>K4G...</code></td>
+            <td>41 = 4Gb / 80 = 8Gb</td>
+            <td>GDDR5 / GDDR5X ➔ Bancada Reacondicional GPU</td>
+          </tr>
+          <tr>
+            <td><code>K4Z...</code></td>
+            <td>80 = 8Gb / AF = 16Gb</td>
+            <td>GDDR6 / GDDR6X ➔ Bancada Reacondicional GPU</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Nota operacional -->
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> As memórias gráficas possuem uma organização de dados muito larga (geralmente x32) para altíssima largura de banda. O operador deve prestar <strong>Atenção Extrema</strong> ao prefixo <code>K4U</code>. Se o <code>K4U</code> for extraído de uma placa de vídeo dedicada (geralmente componentes fisicamente grandes e antigos), trata-se de um <strong>GDDR4</strong> obsoleto e deve ir para <strong>residuo</strong>. Se o <code>K4U</code> for extraído de smartphones ou tablets (formato compacto), trata-se de um <strong>LPDDR4X</strong> moderno e deve ir para a bancada <strong>reacondicional Mobile</strong>. Os prefixos <code>K4G</code> (GDDR5) e <code>K4Z</code> (GDDR6) são ativos de alto volume e devem ser isolados na caixa GPU.
+    </div>
+
+  </div>
+</div>
+
+<div id="sam-epop" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>ePoP (Wearables e IoT) <span class="chip-block-subtitle">(Armazenamento + RAM Empilhados, BGA Ultrafino)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>KAT</code>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p><strong>O que é o ePoP?</strong> A sigla significa <em>embedded Package-on-Package</em>. Diferente dos eMCPs/uMCPs que ocupam seu próprio espaço na placa, o ePoP combina memória RAM (LPDDR) e armazenamento (eMMC) em um encapsulamento projetado para ser soldado <strong>diretamente sobre o processador (SoC)</strong>. Essa tecnologia economiza até 40% de espaço físico na PCB, sendo o padrão absoluto na engenharia de smartwatches, dispositivos IoT compactos e óculos de realidade virtual. Devido às suas dimensões reduzidas e espessura ultrafina, exige atenção máxima para não ser classificado erroneamente na esteira.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-epop')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th>
+            <th>A</th>
+            <th>T</th>
+            <th>00</th>
+            <th>F</th>
+            <th>00</th>
+            <th>N</th>
+            <th>B</th>
+            <th>-</th>
+            <th>A</th>
+            <th>E</th>
+            <th>TT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td>
+            <td>FAM</td>
+            <td>TIPO</td>
+            <td>DENS</td>
+            <td>LARG</td>
+            <td>CTRL</td>
+            <td>REV</td>
+            <td>ENC</td>
+            <td>-</td>
+            <td>TEMP</td>
+            <td>TENSÃO</td>
+            <td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td>
+            <td>App</td>
+            <td>ePoP</td>
+            <td>Custom</td>
+            <td>x32</td>
+            <td>Padrão</td>
+            <td>Rev. N</td>
+            <td>FBGA</td>
+            <td>-</td>
+            <td>Normal</td>
+            <td>Low/Custom</td>
+            <td>Otimizado</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Tecnologia Integrada</th>
+            <th>Exemplos Clássicos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>KAT...</code></td>
+            <td>ePoP (eMMC + LPDDR Customizado)</td>
+            <td><code>KAT00F00NB-AETT</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Nota operacional -->
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> Chips com o prefixo <code>KAT</code> <strong>são ativos válidos</strong> e críticos para a operação de dispositivos compactos (smartwatches, IoT). Sob nenhuma hipótese devem ser enviados ao fluxo de <strong>resíduo</strong>. Ao identificar este código a laser na face superior, direcione imediatamente a peça ao ciclo <strong>reacondicional</strong>. Na bancada final, esses chips exigirão validação por <em>sockets</em> especiais devido à sua pinagem desenhada para montagem sobre o SoC.
+    </div>
+
+  </div>
+</div>
+
+<div id="sam-nand" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>NAND Flash e NOR Flash <span class="chip-block-subtitle">(Armazenamento Base, SLC/MLC/TLC)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K9</code> <code>K5</code> <code>K8</code>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p>Chips <code>K9</code> são o "petróleo" do armazenamento; se estiverem em bom estado, seguem para a bancada <strong>reacondicional Flash</strong> para reuso em montagem de SSDs ou Pendrives.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-nand')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th>
+            <th>9</th>
+            <th>G</th>
+            <th>AG</th>
+            <th>08</th>
+            <th>U</th>
+            <th>0</th>
+            <th>M</th>
+            <th>-</th>
+            <th>P</th>
+            <th>C</th>
+            <th>B0</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td>
+            <td>FAM</td>
+            <td>TIPO</td>
+            <td>DENS</td>
+            <td>ORG</td>
+            <td>VCC</td>
+            <td>MODO</td>
+            <td>ENC</td>
+            <td>-</td>
+            <td>TEMP</td>
+            <td>BAD CH</td>
+            <td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td>
+            <td>NAND</td>
+            <td>MLC</td>
+            <td>16Gb</td>
+            <td>x8</td>
+            <td>2.7V~3.6V</td>
+            <td>Normal</td>
+            <td>TSOP1</td>
+            <td>-</td>
+            <td>Comercial</td>
+            <td>Padrão</td>
+            <td>Seq</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Tecnologia / Categoria</th>
+            <th>Aplicações Típicas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K9F...</code></td>
+            <td>NAND Flash (SLC)</td>
+            <td>Dispositivos Industriais / Firmwares Críticos</td>
+          </tr>
+          <tr>
+            <td><code>K9G... / K9L...</code></td>
+            <td>NAND Flash (MLC / TLC)</td>
+            <td>SSDs, Pendrives e Cartões SD</td>
+          </tr>
+          <tr>
+            <td><code>K5... / K8...</code></td>
+            <td>NOR Flash / Mask ROM</td>
+            <td>BIOS de PC e Firmware de Eletroeletrônicos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Nota operacional -->
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> Chips <code>K9</code> são o "petróleo" do armazenamento; se estiverem em bom estado, seguem para a bancada <strong>reacondicional Flash</strong> para reuso em montagem de SSDs ou Pendrives. Já os chips <code>K5</code> (NOR) são geralmente de baixa densidade; embora funcionais, devem ser avaliados conforme a demanda da semana. O 4º e 5º caracteres da linha <code>K9</code> indicam densidade em Bits (ex: AG = 16Gb, BG = 32Gb).
+    </div>
+
+  </div>
+</div>
+
+<div id="sam-kus" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>BGA NVMe SSDs <span class="chip-block-subtitle">(SSD Completo em Chip Único, ~2017–Presente)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>KUS</code>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p>O prefixo <code>KUS</code> exige segregação imediata e isolada.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-kus')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th>
+            <th>U</th>
+            <th>S</th>
+            <th>03</th>
+            <th>02</th>
+            <th>02</th>
+            <th>M</th>
+            <th>-</th>
+            <th>B</th>
+            <th>000</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td>
+            <td>TIPO</td>
+            <td>FAM</td>
+            <td>DENS</td>
+            <td>INTF</td>
+            <td>CTRL</td>
+            <td>NAND</td>
+            <td>-</td>
+            <td>TEMP</td>
+            <td>FW/REV</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td>
+            <td>Solid State</td>
+            <td>BGA NVMe</td>
+            <td>256GB</td>
+            <td>PCIe Gen3 x2</td>
+            <td>Padrão</td>
+            <td>TLC (3-bit)</td>
+            <td>-</td>
+            <td>Normal</td>
+            <td>Original</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Capacidade (Decodificação)</th>
+            <th>Aplicações Típicas (Origem)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>KUS02...</code></td>
+            <td>128GB</td>
+            <td>Ultrabooks, Tablets Premium, Placas Embarcadas</td>
+          </tr>
+          <tr>
+            <td><code>KUS03...</code></td>
+            <td>256GB</td>
+            <td>Ultrabooks, Consoles Portáteis (ex: Steam Deck)</td>
+          </tr>
+          <tr>
+            <td><code>KUS04...</code></td>
+            <td>512GB</td>
+            <td>Ultrabooks, Consoles Portáteis, Dispositivos Industriais</td>
+          </tr>
+          <tr>
+            <td><code>KUS05...</code></td>
+            <td>1TB</td>
+            <td>Laptops Flagship, Mini PCs Avançados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Nota operacional -->
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>KUS</code> exige segregação imediata e isolada. Este componente é um SSD NVMe completo encapsulado em um único chip BGA. Ele NUNCA deve ser misturado nas caixas de eMMC (<code>KLM</code>) ou UFS (<code>KLU</code>). O 4º e o 5º caracteres indicam a capacidade de forma sequencial (02 = 128GB, 03 = 256GB, 04 = 512GB). Todos os chips <code>KUS</code> íntegros vão para a caixa <strong>Reacondicional BGA SSD (Premium)</strong>. Qualquer erro aqui compromete a integridade do equipamento de teste na bancada final.
+    </div>
+
+  </div>
+</div>
