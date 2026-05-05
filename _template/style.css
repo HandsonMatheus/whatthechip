@@ -1458,3 +1458,141 @@ a.pr-row:visited { color: inherit; }
 [data-theme="dark"] tr.decode-example td {
   color: var(--ink) !important;
 }
+
+/* ══════════════════════════════════════════════════════════
+   Decode Card — resultado de classificação full-PN (chips API)
+   ══════════════════════════════════════════════════════════ */
+
+/* Card principal */
+.dc-card {
+  background: var(--hi-5, #f0f4ff);
+  border: 1.5px solid var(--link, #2457be);
+  border-radius: 8px;
+  padding: 12px 14px 10px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.dc-card.dc-remarked {
+  border-color: #c0392b;
+  background: #fff5f5;
+}
+
+.dc-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.dc-brand {
+  background: var(--link, #2457be);
+  color: #fff;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+
+.dc-alert {
+  background: #fff0ef;
+  border: 1px solid #e74c3c;
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #c0392b;
+  margin-bottom: 8px;
+}
+
+/* Campos dl */
+.dc-fields {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 12px;
+  margin: 0 0 8px;
+}
+
+.dc-fields dt {
+  color: var(--ink-mute, #666);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  padding-top: 1px;
+}
+
+.dc-fields dd {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink, #1a1a1a);
+  font-weight: 500;
+}
+
+/* Rodapé do card */
+.dc-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: center;
+  font-size: 11px;
+  color: var(--ink-mute, #666);
+  border-top: 1px solid var(--rule, #dde3f0);
+  padding-top: 7px;
+  margin-top: 4px;
+}
+
+.dc-conf   { font-weight: 500; }
+.dc-queue  { color: #e67e22; font-style: italic; }
+
+.dc-doclink,
+.dc-srclink {
+  color: var(--link, #2457be);
+  text-decoration: none;
+}
+.dc-doclink:hover,
+.dc-srclink:hover { text-decoration: underline; }
+
+/* Não encontrado */
+.dc-not-found {
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--ink-mute, #666);
+  font-style: italic;
+}
+
+/* Loading enquanto API responde */
+.dc-loading {
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--ink-mute, #666);
+  animation: dc-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes dc-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .45; }
+}
+
+/* Sugestões fuzzy */
+.dc-fuzzy { margin-top: 4px; }
+.dc-fuzzy-item { cursor: pointer !important; }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .dc-card {
+  background: #151d35;
+  border-color: #4a7fd4;
+}
+[data-theme="dark"] .dc-card.dc-remarked {
+  background: #2a1010;
+  border-color: #e74c3c;
+}
+[data-theme="dark"] .dc-fields dd { color: var(--ink); }
+[data-theme="dark"] .dc-alert {
+  background: #2a1010;
+  border-color: #c0392b;
+  color: #ff8a80;
+}
+[data-theme="dark"] .dc-footer { border-top-color: var(--rule); }

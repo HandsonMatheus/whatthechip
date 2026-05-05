@@ -1,8 +1,18 @@
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'wtc-dev-secret-key-troque-em-producao'
+# Carrega variáveis do .env se existir
+try:
+    from dotenv import load_dotenv
+    _env_path = BASE_DIR / ".env"
+    if _env_path.exists():
+        load_dotenv(_env_path)
+except ImportError:
+    pass
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'wtc-dev-secret-key-troque-em-producao')
 
 DEBUG = True
 
@@ -17,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ckeditor',
     'pages',
+    'chips',
 ]
 
 MIDDLEWARE = [
@@ -73,6 +84,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ── Gemini API ─────────────────────────────────────────────────────────────────
+# Defina GEMINI_API_KEY no arquivo .env (nunca commitar a chave)
+# Exemplo em .env:  GEMINI_API_KEY=AIzaSy...
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
 # ── CKEditor ──────────────────────────────────────────────────────────────────
 CKEDITOR_UPLOAD_PATH = 'uploads/'

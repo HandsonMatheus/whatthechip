@@ -1,4 +1,16 @@
+# Core Django
 Django>=4.2
 django-ckeditor>=6.7
 Pillow>=10.0
 psycopg2-binary>=2.9
+
+# Variáveis de ambiente
+python-dotenv>=1.0
+
+# Scraping — coleta de Part Numbers
+curl_cffi>=0.7          # TLS fingerprint impersonation (bypass bot detection)
+playwright>=1.40        # Browser real para Cloudflare JS challenge
+                        # Após instalar: playwright install chromium
+
+# Utilitários dos scripts
+tqdm>=4.0               # Barra de progresso no enrich_gemini.py

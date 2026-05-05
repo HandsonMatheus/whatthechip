@@ -6,9 +6,12 @@
   <form class="big-search" role="search" onsubmit="event.preventDefault();">
     <span class="icon" aria-hidden="true">⌕</span>
     <input id="big-search-input" type="text"
-      placeholder="Digite o prefixo… ex: KLM, H26M, TYBE, K3LK"
+      placeholder="Digite o PN completo ou prefixo… ex: K4B4G16E, KLM, H26M"
       autocomplete="off" spellcheck="false" />
-    <div id="big-search-results"></div>
+    <div id="big-search-results">
+      <div id="dc-result"></div>
+      <div id="prefix-results"></div>
+    </div>
   </form>
 
   <p class="quicklinks">
@@ -43,13 +46,45 @@
 
 <script>
 (function() {
-  var DATA = {{PREFIX_DATA}};
-  var input   = document.getElementById('big-search-input');
-  var results = document.getElementById('big-search-results');
+  var DATA        = {{PREFIX_DATA}};
+  var input       = document.getElementById('big-search-input');
+  var container   = document.getElementById('big-search-results');
+  var dcResult    = document.getElementById('dc-result');
+  var prefixDiv   = document.getElementById('prefix-results');
 
+  // ── Utilitários ─────────────────────────────────────────────────────────────
   function normalize(s) { return s.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
 
-  function match(row, q) {
+  function escHtml(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function fabToPage(fab) {
+    var map = {
+      'Samsung':           'fab-samsung',
+      'SK Hynix':          'fab-hynix',
+      'Micron':            'fab-micron',
+      'Elpida':            'fab-elpida',
+      'Toshiba / Kioxia':  'fab-toshiba',
+      'SanDisk / WD':      'fab-sandisk',
+      'Nanya':             'fab-nanya',
+      'Kingston':          'fab-kingston',
+      'Kingston (HyperX)': 'fab-kingston',
+      'Rayson':            'fab-rayson',
+      'ISSI':              'fab-issi',
+      'GigaDevice':        'fab-gigadevice',
+    };
+    return map[fab] || 'prefixos';
+  }
+
+  var isDjango = !window.location.pathname.endsWith('.html') && window.location.port !== '';
+
+  function pageUrl(slug) {
+    return isDjango ? '/' + slug + '/' : slug + '.html';
+  }
+
+  // ── Camada 1: busca de prefixos (client-side, instantânea) ──────────────────
+  function matchPrefix(row, q) {
     var parts = row.prefix.split('/').map(function(p) {
       return normalize(p.replace(/\.\.\.$/, '').trim());
     });
@@ -58,69 +93,97 @@
         || normalize(row.tipo).includes(q);
   }
 
-  function fabToPage(fab) {
-    var map = {
-      'Samsung':          'fab-samsung',
-      'SK Hynix':         'fab-hynix',
-      'Micron':           'fab-micron',
-      'Elpida':           'fab-elpida',
-      'Toshiba / Kioxia': 'fab-toshiba',
-      'SanDisk / WD':     'fab-sandisk',
-      'Nanya':            'fab-nanya',
-      'Kingston':         'fab-kingston',
-      'Kingston (HyperX)':'fab-kingston',
-      'Rayson':           'fab-rayson',
-      'ISSI':             'fab-issi',
-      'GigaDevice':       'fab-gigadevice',
-    };
-    return map[fab] || 'prefixos';
+  function renderPrefixRows(hits, q) {
+    var MAX = 14;
+    var header = '<div class="pr-header"><span>Prefixo</span><span>Fabricante</span><span>Tipo / Categoria</span></div>';
+    var rows = hits.slice(0, MAX).map(function(r) {
+      var cleanPrefix = r.prefix.replace(/\.+$/, '').replace(/[^A-Za-z0-9]/g, '');
+      var page = fabToPage(r.fab);
+      return '<a class="pr-row" href="/' + page + '/#highlight-' + cleanPrefix + '">'
+        + '<span class="pr-prefix">' + r.prefix + '</span>'
+        + '<span class="pr-fab">'    + r.fab    + '</span>'
+        + '<span class="pr-tipo">'   + r.tipo   + '</span>'
+        + '</a>';
+    }).join('');
+    var more   = hits.length > MAX ? (hits.length - MAX) + ' ocultos · ' : '';
+    var footer = '<div class="pr-footer">' + more + '<a href="' + pageUrl('prefixos') + '">Ver tabela completa →</a></div>';
+    return header + rows + footer;
   }
 
-  // Detecta formato de URL: Django usa /slug/, site estático usa slug.html
-  var isDjango = !window.location.pathname.endsWith('.html') && window.location.port !== '';
-  function pageUrl(slug) {
-    return isDjango ? '/' + slug + '/' : slug + '.html';
+  // ── Camada 2: decode completo via HTMX (server-rendered) ────────────────────
+  var _apiTimer  = null;
+  var _lastApiPn = '';
+
+  function callApi(pn) {
+    if (!isDjango) return;               // site estático não tem API
+    if (pn === _lastApiPn) return;
+    _lastApiPn = pn;
+
+    // Mostra indicador de carregamento enquanto aguarda resposta
+    if (dcResult) dcResult.innerHTML = '<div class="dc-loading">🔍 Consultando base de dados…</div>';
+
+    // HTMX faz a requisição e injeta a resposta em #dc-result
+    htmx.ajax('GET', '/chips/decode/?pn=' + encodeURIComponent(pn), {
+      target:  '#dc-result',
+      swap:    'innerHTML'
+    });
   }
 
+  // ── Render principal ─────────────────────────────────────────────────────────
   function render(q) {
     var norm = normalize(q);
+
     if (norm.length < 2) {
-      results.innerHTML = '';
-      results.style.display = 'none';
+      container.style.display = 'none';
+      prefixDiv.innerHTML = '';
+      if (dcResult) dcResult.innerHTML = '';
+      _lastApiPn = '';
+      clearTimeout(_apiTimer);
       return;
     }
-    var hits = DATA.filter(function(r) { return match(r, norm); });
+
+    // Camada 1: prefixos (instantâneo)
+    var hits = DATA.filter(function(r) { return matchPrefix(r, norm); });
     if (hits.length === 0) {
-      results.innerHTML = '<div class="pr-empty">Nenhum prefixo encontrado para "<strong>' + q + '</strong>". <a href="' + pageUrl('prefixos') + '">Ver tabela completa →</a></div>';
+      prefixDiv.innerHTML = '<div class="pr-empty">Nenhum prefixo encontrado para "<strong>'
+        + escHtml(q) + '</strong>". <a href="' + pageUrl('prefixos') + '">Ver tabela completa →</a></div>';
     } else {
-      var MAX = 14;
-      var header = '<div class="pr-header"><span>Prefixo</span><span>Fabricante</span><span>Tipo / Categoria</span></div>';
-      var rows = hits.slice(0, MAX).map(function(r) {
-        var cleanPrefix = r.prefix.replace(/\.+$/, '').replace(/[^A-Za-z0-9]/g, '');
-        var page = fabToPage(r.fab);
-        return '<a class="pr-row" href="/' + page + '/#highlight-' + cleanPrefix + '">'
-          + '<span class="pr-prefix">' + r.prefix + '</span>'
-          + '<span class="pr-fab">' + r.fab + '</span>'
-          + '<span class="pr-tipo">' + r.tipo + '</span>'
-          + '</a>';
-      }).join('');
-      var more = hits.length > MAX
-        ? hits.length - MAX + ' ocultos · '
-        : '';
-      var footer = '<div class="pr-footer">' + more + '<a href="' + pageUrl('prefixos') + '">Ver tabela completa de prefixos →</a></div>';
-      results.innerHTML = header + rows + footer;
+      prefixDiv.innerHTML = renderPrefixRows(hits, norm);
     }
-    results.style.display = 'block';
+    container.style.display = 'block';
+
+    // Camada 2: decode card via HTMX (debounce 350 ms, apenas 6+ chars)
+    if (norm.length >= 6 && isDjango) {
+      clearTimeout(_apiTimer);
+      _apiTimer = setTimeout(function() { callApi(norm); }, 350);
+    } else {
+      // PN curto demais para decode — limpa o card
+      if (dcResult) dcResult.innerHTML = '';
+      _lastApiPn = '';
+      clearTimeout(_apiTimer);
+    }
   }
+
+  // Exposto globalmente para o onclick das sugestões fuzzy (renderizadas pelo servidor)
+  window.triggerSearch = function(pn) {
+    var norm = normalize(pn);
+    input.value = pn;
+    render(pn);
+    if (isDjango && norm.length >= 6) callApi(norm);
+  };
 
   if (input) {
     input.addEventListener('input', function() { render(this.value); });
     input.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') { this.value = ''; render(''); this.blur(); }
+      if (e.key === 'Escape') {
+        this.value = '';
+        render('');
+        this.blur();
+      }
     });
     document.addEventListener('click', function(e) {
       if (!e.target.closest('.big-search')) {
-        results.style.display = 'none';
+        container.style.display = 'none';
       }
     });
   }

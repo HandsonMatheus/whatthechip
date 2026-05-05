@@ -1,0 +1,66 @@
+{% if result.known %}
+<div class="dc-card{% if result.remarked_flag %} dc-remarked{% endif %}">
+
+  <div class="dc-head">
+    {% if result.brand %}<span class="dc-brand">{{ result.brand }}</span>{% endif %}
+    <strong>
+      {{ result.chip_type }}{% if result.subtype %} <small>{{ result.subtype }}</small>{% endif %}
+    </strong>
+  </div>
+
+  {% if result.remarked_flag %}
+  <div class="dc-alert">
+    ⚠️ {{ result.remarked_note|default:"Possível chip remarked — verificar na bancada" }}
+  </div>
+  {% endif %}
+
+  <dl class="dc-fields">
+    {% if result.dram_density %}<dt>Densidade</dt><dd>{{ result.dram_density }}</dd>{% endif %}
+    {% if result.capacity    %}<dt>Capacidade</dt><dd>{{ result.capacity }}</dd>{% endif %}
+    {% if result.interface   %}<dt>Interface</dt><dd>{{ result.interface }}</dd>{% endif %}
+    {% if result.is_emcp %}
+      {% if result.emcp_nand   %}<dt>NAND</dt><dd>{{ result.emcp_nand }}</dd>{% endif %}
+      {% if result.emcp_ram    %}<dt>RAM</dt><dd>{{ result.emcp_ram }}</dd>{% endif %}
+      {% if result.emcp_device %}<dt>Dispositivo</dt><dd>{{ result.emcp_device }}</dd>{% endif %}
+    {% else %}
+      {% if result.device      %}<dt>Dispositivo</dt><dd>{{ result.device }}</dd>{% endif %}
+    {% endif %}
+    {% if result.suffix_note %}<dt>Sufixo</dt><dd>{{ result.suffix_note }}</dd>{% endif %}
+  </dl>
+
+  <div class="dc-footer">
+    <span class="dc-conf">{{ confidence_label }}</span>
+    {% if result.doc_url %}
+      &nbsp;·&nbsp;<a class="dc-doclink" href="{{ result.doc_url }}">Ver documentação →</a>
+    {% endif %}
+    {% if show_source %}
+      &nbsp;·&nbsp;<a class="dc-srclink" href="{{ result.source_url }}" target="_blank" rel="noopener">Fonte ↗</a>
+    {% endif %}
+    {% if result.raw_in_db %}
+      &nbsp;·&nbsp;<span class="dc-queue">⏳ Na fila de enriquecimento</span>
+    {% endif %}
+  </div>
+
+</div>
+
+{% elif result.gemini_searched and not result.gemini_found %}
+
+<div class="dc-not-found">
+  Chip não identificado por nenhuma fonte{% if not result.fuzzy_suggestions %} — verifique o PN na placa{% endif %}
+</div>
+
+{% if result.fuzzy_suggestions %}
+<div class="dc-fuzzy">
+  <div class="pr-header"><span>Sugestões</span><span></span><span></span></div>
+  {% for pn in result.fuzzy_suggestions %}
+  <a class="pr-row dc-fuzzy-item" href="#"
+     onclick="document.getElementById('big-search-input').value='{{ pn|escapejs }}';triggerSearch('{{ pn|escapejs }}');return false;">
+    <span class="pr-prefix">{{ pn }}</span>
+    <span class="pr-fab">Você quis dizer?</span>
+    <span class="pr-tipo"></span>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% endif %}

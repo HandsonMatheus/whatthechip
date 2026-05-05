@@ -1,0 +1,436 @@
+"""
+Management command: add_chip_families
+======================================
+Popula ChipFamily para SK Hynix, Micron, KIOXIA/Toshiba, Nanya e Kingston.
+
+As famílias Samsung são importadas via import_chipid (vêm do chipid_project).
+Este comando cobre as demais marcas com os prefixos mais comuns no mercado
+de refurbishing e reciclagem eletrônica.
+
+Nota sobre decode rules:
+    Os campos decode_cap_pos / decode_cap_map ficam vazios por enquanto.
+    Sem essas regras, o engine passa para Gemini usando chip_type + subtype
+    como contexto — muito melhor que uma busca Gemini sem hint nenhum.
+    As regras de decodificação podem ser adicionadas incrementalmente pelo
+    admin (/admin/chips/chipfamily/) conforme a documentação for crescendo.
+
+Uso:
+    python manage.py add_chip_families
+    python manage.py add_chip_families --dry-run
+    python manage.py add_chip_families --overwrite   # atualiza registros existentes
+"""
+
+from django.core.management.base import BaseCommand
+from chips.models import Brand, ChipFamily
+
+
+# ── Dados das famílias ────────────────────────────────────────────────────────
+#
+# Campos obrigatórios: brand_name, prefix, chip_type
+# Campos opcionais:    subtype, interface, is_emcp, tip, priority
+#
+# priority: menor número = maior prioridade no match de prefixo mais longo.
+# Use 50 para famílias bem definidas, 100 (default) para genéricas.
+
+FAMILIES = [
+
+    # ── SK Hynix ──────────────────────────────────────────────────────────────
+
+    {
+        'brand_name': 'SK Hynix',
+        'prefix':     'H9TQ',
+        'chip_type':  'eMCP',
+        'subtype':    'LPDDR3 + eMMC',
+        'interface':  'eMMC 4.5 / 5.0',
+        'is_emcp':    True,
+        'priority':   50,
+        'tip': (
+            'eMCP SK Hynix com LPDDR3 (RAM) + eMMC (NAND). '
+            'Muito comum em smartphones Samsung de entrada e médio (2015–2020). '
+            'Ex: H9TQ64A8MDAC-RD = 64Gb NAND + 8Gb RAM.'
+        ),
+    },
+    {
+        'brand_name': 'SK Hynix',
+        'prefix':     'H9TP',
+        'chip_type':  'eMCP',
+        'subtype':    'LPDDR4 + eMMC',
+        'interface':  'eMMC 5.1',
+        'is_emcp':    True,
+        'priority':   50,
+        'tip': (
+            'eMCP SK Hynix com LPDDR4 (RAM) + eMMC 5.1 (NAND). '
+            'Geração mais recente que H9TQ. Ex: H9TP65A8JDAC.'
+        ),
+    },
+    {
+        'brand_name': 'SK Hynix',
+        'prefix':     'H5AN',
+        'chip_type':  'RAM',
+        'subtype':    'DDR4 SDRAM',
+        'interface':  'DDR4',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'DDR4 SDRAM SK Hynix para desktops e notebooks. '
+            'H5 = SK Hynix DRAM, AN = DDR4. Ex: H5AN8G6NAFR-UHC = 8Gb DDR4.'
+        ),
+    },
+    {
+        'brand_name': 'SK Hynix',
+        'prefix':     'H5TC',
+        'chip_type':  'RAM',
+        'subtype':    'DDR3L SDRAM',
+        'interface':  'DDR3L',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'DDR3L SDRAM SK Hynix. Comum em notebooks e chromebooks.',
+    },
+    {
+        'brand_name': 'SK Hynix',
+        'prefix':     'H54G',
+        'chip_type':  'RAM',
+        'subtype':    'LPDDR4 SDRAM',
+        'interface':  'LPDDR4',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'LPDDR4 mobile SK Hynix. Encontrado em smartphones e tablets mid-range.',
+    },
+    {
+        'brand_name': 'SK Hynix',
+        'prefix':     'H26M',
+        'chip_type':  'eMMC',
+        'subtype':    'eMMC standalone',
+        'interface':  'eMMC 5.1',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'eMMC standalone SK Hynix. Encontrado em tablets, TVs e dispositivos IoT.',
+    },
+    {
+        'brand_name': 'SK Hynix',
+        'prefix':     'HKMAG',
+        'chip_type':  'UFS',
+        'subtype':    'UFS 2.1',
+        'interface':  'UFS 2.1',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'UFS 2.1 SK Hynix. Encontrado em smartphones premium a partir de 2018.',
+    },
+    {
+        'brand_name': 'SK Hynix',
+        'prefix':     'H9HCN',
+        'chip_type':  'UFS',
+        'subtype':    'UFS 2.1 / 3.1',
+        'interface':  'UFS',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'UFS SK Hynix. Prefixo alternativo — verificar geração pelo sufixo.',
+    },
+
+    # ── Micron ────────────────────────────────────────────────────────────────
+
+    {
+        'brand_name': 'Micron',
+        'prefix':     'MTFC',
+        'chip_type':  'eMMC',
+        'subtype':    'eMMC standalone',
+        'interface':  'eMMC 5.1',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'eMMC standalone Micron. '
+            'MT = Micron Technology, FC = Flash Controller. '
+            'Ex: MTFC4GACAAAM-1M = 4GB eMMC.'
+        ),
+    },
+    {
+        'brand_name': 'Micron',
+        'prefix':     'MT40A',
+        'chip_type':  'RAM',
+        'subtype':    'DDR4 SDRAM',
+        'interface':  'DDR4',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'DDR4 SDRAM Micron para desktops/servidores. '
+            'Ex: MT40A512M16TB-062E = 512M×16bit = 8Gb.'
+        ),
+    },
+    {
+        'brand_name': 'Micron',
+        'prefix':     'MT41K',
+        'chip_type':  'RAM',
+        'subtype':    'DDR3L SDRAM',
+        'interface':  'DDR3L',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'DDR3L SDRAM Micron. Geração anterior ao MT40A.',
+    },
+    {
+        'brand_name': 'Micron',
+        'prefix':     'MT52L',
+        'chip_type':  'RAM',
+        'subtype':    'LPDDR4 SDRAM',
+        'interface':  'LPDDR4',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'LPDDR4 mobile Micron. '
+            'Ex: MT52L512M32D2PF-107 = 512M×32bit × 2 dies = 4GB.'
+        ),
+    },
+    {
+        'brand_name': 'Micron',
+        'prefix':     'MT29F',
+        'chip_type':  'NAND',
+        'subtype':    'Raw NAND Flash',
+        'interface':  'Async/ONFI',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'NAND Flash raw Micron. '
+            'Encontrado em SSDs, cartões de memória e equipamentos industriais.'
+        ),
+    },
+
+    # ── KIOXIA / Toshiba ──────────────────────────────────────────────────────
+
+    {
+        'brand_name': 'KIOXIA',
+        'prefix':     'THGBMHG',
+        'chip_type':  'eMMC',
+        'subtype':    'eMMC (Toshiba)',
+        'interface':  'eMMC 5.1',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'eMMC Toshiba (marca atual: KIOXIA). '
+            'THG = Toshiba NAND Group. '
+            'Ex: THGBMHG8C4LBAIR = 32GB eMMC 5.1.'
+        ),
+    },
+    {
+        'brand_name': 'KIOXIA',
+        'prefix':     'THGJFBT',
+        'chip_type':  'eMMC',
+        'subtype':    'eMMC (Toshiba)',
+        'interface':  'eMMC 5.1',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'eMMC Toshiba — geração BG NAND. Encontrado em tablets e smartphones mid-range.',
+    },
+    {
+        'brand_name': 'KIOXIA',
+        'prefix':     'KMEYH',
+        'chip_type':  'eMMC',
+        'subtype':    'eMMC (KIOXIA)',
+        'interface':  'eMMC 5.1',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'eMMC com branding KIOXIA (pós-2019). Substitui a linha THGB em produtos mais recentes.',
+    },
+    {
+        'brand_name': 'KIOXIA',
+        'prefix':     'KLUDG',
+        'chip_type':  'UFS',
+        'subtype':    'UFS 2.1',
+        'interface':  'UFS 2.1',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'UFS 2.1 KIOXIA. Encontrado em smartphones Android de médio/alto padrão.',
+    },
+    {
+        'brand_name': 'KIOXIA',
+        'prefix':     'TH58',
+        'chip_type':  'NAND',
+        'subtype':    'Raw NAND Flash (Toshiba)',
+        'interface':  'Async/ONFI',
+        'is_emcp':    False,
+        'priority':   80,
+        'tip': 'NAND Flash raw Toshiba. Prefixo TH58 cobre várias gerações (SLC, MLC, TLC).',
+    },
+
+    # ── Nanya ─────────────────────────────────────────────────────────────────
+
+    {
+        'brand_name': 'Nanya',
+        'prefix':     'NT5CC',
+        'chip_type':  'RAM',
+        'subtype':    'DDR3 SDRAM',
+        'interface':  'DDR3',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'DDR3 SDRAM Nanya. '
+            'NT5CC = Nanya DDR3. '
+            'Ex: NT5CC256M16DP-DI = 256M×16bit = 4Gb DDR3.'
+        ),
+    },
+    {
+        'brand_name': 'Nanya',
+        'prefix':     'NT5AD',
+        'chip_type':  'RAM',
+        'subtype':    'DDR4 SDRAM',
+        'interface':  'DDR4',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'DDR4 SDRAM Nanya. Geração posterior ao NT5CC.',
+    },
+    {
+        'brand_name': 'Nanya',
+        'prefix':     'NT5PA',
+        'chip_type':  'RAM',
+        'subtype':    'DDR3L SDRAM',
+        'interface':  'DDR3L',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'DDR3L Nanya, variante low-voltage do NT5CC. Comum em notebooks.',
+    },
+
+    # ── Kingston ──────────────────────────────────────────────────────────────
+    # Kingston comercializa módulos (não chips bare), então os PNs são de módulos.
+    # As famílias abaixo cobrem os códigos de produto Kingston mais comuns
+    # que chegam ao mercado de refurbishing em forma de módulos desmontados.
+
+    {
+        'brand_name': 'Kingston',
+        'prefix':     'KVR',
+        'chip_type':  'RAM',
+        'subtype':    'DDR — módulo ValueRAM',
+        'interface':  'DDR / DDR2 / DDR3 / DDR4',
+        'is_emcp':    False,
+        'priority':   80,
+        'tip': (
+            'Módulo ValueRAM Kingston. '
+            'KVR[velocidade][latência][largura]x[capacidade]. '
+            'Ex: KVR32N22S8/8 = DDR4-3200, CL22, SO-DIMM, 8GB.'
+        ),
+    },
+    {
+        'brand_name': 'Kingston',
+        'prefix':     'KF',
+        'chip_type':  'RAM',
+        'subtype':    'DDR — módulo Kingston Fury',
+        'interface':  'DDR4 / DDR5',
+        'is_emcp':    False,
+        'priority':   80,
+        'tip': (
+            'Módulo Kingston Fury (linha gaming). '
+            'KF = Kingston Fury. '
+            'Ex: KF436C16BB/8 = Fury Black DDR4-3600, CL16, 8GB.'
+        ),
+    },
+    {
+        'brand_name': 'Kingston',
+        'prefix':     'ACR',
+        'chip_type':  'RAM',
+        'subtype':    'DDR — módulo Kingston Action Series',
+        'interface':  'DDR3 / DDR4',
+        'is_emcp':    False,
+        'priority':   80,
+        'tip': 'Módulo RAM Kingston série Action (mercado OEM/notebook). Prefixo ACR.',
+    },
+]
+
+
+class Command(BaseCommand):
+    help = 'Adiciona ChipFamilies básicas para SK Hynix, Micron, KIOXIA, Nanya e Kingston'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--dry-run', action='store_true', default=False,
+            help='Mostra o que seria criado/atualizado sem salvar'
+        )
+        parser.add_argument(
+            '--overwrite', action='store_true', default=False,
+            help='Atualiza registros existentes (por padrão, pula se já existir)'
+        )
+
+    def handle(self, *args, **options):
+        dry_run  = options['dry_run']
+        overwrite = options['overwrite']
+
+        if dry_run:
+            self.stdout.write(self.style.WARNING('⚠ DRY RUN — nada será salvo\n'))
+
+        # Pré-carrega brands
+        brands = {b.name.lower(): b for b in Brand.objects.all()}
+
+        created = updated = skipped = missing_brand = 0
+
+        for fam in FAMILIES:
+            brand_key  = fam['brand_name'].lower()
+            brand      = brands.get(brand_key)
+
+            if not brand:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"  ⚠ Marca '{fam['brand_name']}' não encontrada no banco "
+                        f"(família {fam['prefix']}) — crie via admin ou import_chipid"
+                    )
+                )
+                missing_brand += 1
+                continue
+
+            exists = ChipFamily.objects.filter(
+                brand=brand, prefix=fam['prefix']
+            ).first()
+
+            if exists and not overwrite:
+                skipped += 1
+                continue
+
+            self.stdout.write(
+                f"  {'ATUALIZA' if exists else 'CRIA    '} "
+                f"{fam['prefix']:14s} ({fam['brand_name']}) — {fam['chip_type']}"
+                + (f" / {fam['subtype']}" if fam.get('subtype') else '')
+            )
+
+            if not dry_run:
+                defaults = {
+                    'chip_type':   fam.get('chip_type', ''),
+                    'subtype':     fam.get('subtype', ''),
+                    'interface':   fam.get('interface', ''),
+                    'is_emcp':     fam.get('is_emcp', False),
+                    'tip':         fam.get('tip', ''),
+                    'priority':    fam.get('priority', 100),
+                    'active':      True,
+                }
+                if exists:
+                    for k, v in defaults.items():
+                        setattr(exists, k, v)
+                    exists.save()
+                    updated += 1
+                else:
+                    ChipFamily.objects.create(brand=brand, prefix=fam['prefix'], **defaults)
+                    created += 1
+            else:
+                if exists:
+                    updated += 1
+                else:
+                    created += 1
+
+        self.stdout.write('')
+        if created:
+            self.stdout.write(self.style.SUCCESS(
+                f"{'Seriam criadas' if dry_run else 'Criadas'}: {created} famílias"
+            ))
+        if updated:
+            self.stdout.write(self.style.SUCCESS(
+                f"{'Seriam atualizadas' if dry_run else 'Atualizadas'}: {updated} famílias"
+            ))
+        if skipped:
+            self.stdout.write(f"Já existiam (puladas): {skipped}")
+        if missing_brand:
+            self.stdout.write(self.style.WARNING(
+                f"Marcas não encontradas: {missing_brand} — rode import_chipid antes"
+            ))
+
+        if not dry_run and (created + updated) > 0:
+            self.stdout.write(self.style.SUCCESS(
+                '\n✅ Famílias adicionadas. '
+                'O engine agora reconhece esses prefixos e usa Gemini para decodificar '
+                'os detalhes quando não estiverem no banco.\n'
+                'Dica: adicione as regras de decode (decode_cap_pos/map) pelo admin '
+                'para reduzir chamadas ao Gemini.'
+            ))

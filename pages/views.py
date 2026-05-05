@@ -1,7 +1,13 @@
 import re
 import json
+from pathlib import Path
 from django.shortcuts import render, get_object_or_404
+from django.conf import settings
 from .models import Page
+
+# _content/index.html — fonte de verdade para a homepage.
+# Lido direto do disco; sem necessidade de sync para o banco.
+_INDEX_CONTENT_PATH = Path(settings.BASE_DIR) / "_content" / "index.html"
 
 
 def _nav_pages():
@@ -37,19 +43,22 @@ def _prefix_data_from_db():
 
 
 def home(request):
-    page = get_object_or_404(Page, slug='index')
     pages = _nav_pages()
-    next_page = None  # homepage não navega para próxima
 
-    # Substitui placeholders do build.py pelo conteúdo real do banco
-    prefix_data = _prefix_data_from_db()
+    # Lê _content/index.html direto do disco — sem passar pelo banco.
+    content = _INDEX_CONTENT_PATH.read_text(encoding="utf-8")
+
+    prefix_data  = _prefix_data_from_db()
     prefix_count = len(prefix_data)
-    content = page.content
     content = content.replace('{{PREFIX_COUNT}}', str(prefix_count))
     content = content.replace('{{PREFIX_DATA}}', json.dumps(prefix_data, ensure_ascii=False))
     content = _fix_html_links(content)
 
-    # Cria uma cópia da página com conteúdo resolvido (sem alterar o banco)
+    # Objeto simples para manter compatibilidade com o template pages/page.html
+    class _IndexPage:
+        title   = 'Início'
+        content = ''
+    page = _IndexPage()
     page.content = content
 
     return render(request, 'pages/page.html', {
@@ -57,7 +66,7 @@ def home(request):
         'pages': pages,
         'current_slug': 'index',
         'prev_page': None,
-        'next_page': next_page,
+        'next_page': None,
     })
 
 
