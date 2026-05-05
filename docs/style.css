@@ -528,6 +528,25 @@ tr.decode-example td {
   padding: 6px;
 }
 
+/* ── ROW HIGHLIGHT (busca → navegação) ──────────────────── */
+/* Ativado por JS ao chegar numa página via #highlight-PREFIX */
+@keyframes row-flash {
+  0%   { background-color: #FFE066; }
+  55%  { background-color: #FFE066; }
+  100% { background-color: transparent; }
+}
+tr.row-highlight td {
+  animation: row-flash 2s ease-out forwards !important;
+}
+[data-theme="dark"] tr.row-highlight td {
+  animation: row-flash-dark 2s ease-out forwards !important;
+}
+@keyframes row-flash-dark {
+  0%   { background-color: #6B5A00; }
+  55%  { background-color: #6B5A00; }
+  100% { background-color: transparent; }
+}
+
 /* ── PRINT BUTTON ────────────────────────────────────────── */
 .print-bar {
   display: flex;
@@ -651,6 +670,9 @@ ol.steps li::before {
 }
 .pr-row:last-child { border-bottom: 0; }
 .pr-row:hover { background: var(--hi-5); }
+/* reset link styles when pr-row is an <a> tag */
+a.pr-row { text-decoration: none; color: inherit; cursor: pointer; display: grid; }
+a.pr-row:visited { color: inherit; }
 .pr-prefix { font-family: var(--font-mono); font-weight: bold; color: var(--hi-1); }
 .pr-fab { color: var(--ink-mute); }
 .pr-tipo { color: var(--ink); }
@@ -961,17 +983,55 @@ ol.steps li::before {
   padding: 18px 20px 20px 20px;
 }
 .fab-body::after { content: ""; display: table; clear: both; }
-.fab-types {
-  background: var(--beige-1);
-  border: 1px solid var(--beige-3);
-  border-left: 4px solid var(--hi-2);
-  padding: 8px 14px;
-  font-size: 12px;
-  margin-bottom: 16px;
-  color: var(--ink-soft);
-  line-height: 1.6;
+/* subtítulo das páginas de fabricante (país · fundação) */
+.fab-subtitle {
+  font-size: 13px;
+  color: var(--ink-mute);
+  margin: -10px 0 18px 0;
+  font-style: italic;
 }
-.fab-types strong { color: var(--hi-1); }
+
+/* grades de badges de tipo de chip */
+.chip-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.chip-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  font-family: var(--font-mono);
+  border: 1px solid;
+  white-space: nowrap;
+}
+.chip-badge.on {
+  background: var(--hi-5);
+  border-color: var(--hi-2);
+  color: var(--hi-1);
+}
+.chip-badge.off {
+  background: #f4f4f4;
+  border-color: #ddd;
+  color: #bbb;
+}
+[data-theme="dark"] .chip-badge.on {
+  background: rgba(90,126,218,0.15);
+  border-color: var(--hi-2);
+  color: var(--hi-3);
+}
+[data-theme="dark"] .chip-badge.off {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--rule);
+  color: #555;
+}
+
+.fab-types {
+  display: none; /* substituído pelos chip-badges via JS */
+}
 
 /* ── IMG & FIGURES ───────────────────────────────────────── */
 .img-wrap img {

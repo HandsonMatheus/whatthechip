@@ -76,7 +76,7 @@
       {% endif %}
       <ul>
         {% for p in section.list %}
-          <li class="{% if p.slug == current_slug %}active{% endif %}">
+          <li class="{{ p.nav_class }}{% if p.slug == current_slug %} active{% endif %}">
             <a href="{% url 'page' p.slug %}"
                {% if p.slug == current_slug %}class="active"{% endif %}>
               {{ p.nav_title|default:p.title }}

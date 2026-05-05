@@ -1,4 +1,65 @@
 
+      // ── Mapa fab → slug da página ──────────────────────────────
+      function fabToPage(fab) {
+        var map = {
+          'Samsung':              'fab-samsung',
+          'SK Hynix':             'fab-hynix',
+          'Hynix (era Hyundai)':  'fab-hynix',
+          'Hyundai / Hynix':      'fab-hynix',
+          'Micron':               'fab-micron',
+          'Elpida':               'fab-elpida',
+          'Toshiba / Kioxia':     'fab-toshiba',
+          'SanDisk / WD':         'fab-sandisk',
+          'Nanya':                'fab-nanya',
+          'Kingston':             'fab-kingston',
+          'Kingston (HyperX)':    'fab-kingston',
+          'Rayson':               'fab-rayson',
+          'ISSI':                 'fab-issi',
+          'GigaDevice':           'fab-gigadevice',
+        };
+        return map[fab] || 'prefixos';
+      }
+
+      // ── Highlight de linha ao chegar via busca ─────────────────
+      // Detecta #highlight-K4H na URL, acha o <code> com aquele texto,
+      // rola até a linha e pisca ela com animação CSS.
+      (function () {
+        var hash = window.location.hash;
+        if (!hash.startsWith('#highlight-')) return;
+
+        var target = hash.replace('#highlight-', '').toLowerCase();
+
+        function tryHighlight() {
+          var codes = document.querySelectorAll('table code');
+          for (var i = 0; i < codes.length; i++) {
+            var code = codes[i];
+            var text = code.textContent.trim().replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+            // Aceita prefixo exato ou prefixo que começa com o target (e vice-versa)
+            if (text.startsWith(target) || target.startsWith(text)) {
+              var row = code.closest('tr');
+              if (!row) continue;
+              // Remove o hash da URL sem recarregar (fica mais limpo)
+              history.replaceState(null, '', window.location.pathname);
+              // Rola até a linha e pisca
+              setTimeout(function(r) {
+                return function() {
+                  r.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  r.classList.add('row-highlight');
+                  setTimeout(function() { r.classList.remove('row-highlight'); }, 2400);
+                };
+              }(row), 320);
+              return true;
+            }
+          }
+          return false;
+        }
+
+        // Tenta imediatamente; se o DOM ainda não carregou, tenta no DOMContentLoaded
+        if (!tryHighlight()) {
+          document.addEventListener('DOMContentLoaded', tryHighlight);
+        }
+      })();
+
       // TOC scroll spy
       const tocLinks = document.querySelectorAll("#toc a");
       const observer = new IntersectionObserver(
@@ -213,13 +274,15 @@
         matches.slice(0, 12).forEach((d) => {
           const div = document.createElement("div");
           div.className = "sr-item";
+          div.style.cursor = "pointer";
           div.innerHTML = `<span class="sr-prefix">${d.prefix}</span><span class="sr-fab">${d.fab}</span><span class="sr-type">${d.type}</span>`;
           div.addEventListener("click", () => {
-            searchInput.value = d.prefix.replace("...", "");
             searchResults.style.display = "none";
-            document
-              .getElementById("s5")
-              ?.scrollIntoView({ behavior: "smooth" });
+            // Limpa o prefixo: remove "...", espaços e caracteres especiais
+            const cleanPrefix = d.prefix.replace(/\.+$/, "").replace(/[^A-Za-z0-9]/g, "");
+            // Deriva a página do fabricante a partir do campo fab
+            const page = fabToPage(d.fab);
+            window.location.href = page + ".html#highlight-" + cleanPrefix;
           });
           searchResults.insertBefore(div, searchEmpty);
         });
@@ -237,4 +300,50 @@
           searchInput.blur();
         }
       });
+
+
+  // ── Chip-type badges por fabricante ──────────────────────────
+  (function() {
+    var ALL_TYPES = [
+      'eMMC', 'eMCP', 'uMCP', 'UFS', 'LPDDR', 'DDR', 'GDDR',
+      'NAND Flash', 'NOR Flash', 'SRAM', 'CPU / SoC'
+    ];
+
+    var FAB_TYPES = {
+      'fab-samsung':    ['eMMC', 'eMCP', 'uMCP', 'UFS', 'LPDDR', 'DDR', 'GDDR', 'NAND Flash', 'NOR Flash'],
+      'fab-hynix':      ['eMMC', 'eMCP', 'uMCP', 'UFS', 'LPDDR', 'DDR', 'GDDR', 'NAND Flash'],
+      'fab-micron':     ['LPDDR', 'DDR', 'GDDR', 'NAND Flash'],
+      'fab-elpida':     ['LPDDR', 'DDR', 'GDDR'],
+      'fab-toshiba':    ['eMMC', 'UFS', 'NAND Flash'],
+      'fab-sandisk':    ['eMMC', 'UFS', 'NAND Flash'],
+      'fab-nanya':      ['DDR'],
+      'fab-kingston':   ['DDR'],
+      'fab-rayson':     ['eMMC', 'NOR Flash'],
+      'fab-issi':       ['SRAM', 'NOR Flash', 'DDR'],
+      'fab-gigadevice': ['eMMC', 'NOR Flash'],
+    };
+
+    // Detecta slug (funciona em /fab-samsung/ e /fab-samsung.html)
+    var slug = window.location.pathname
+      .replace(/^\/|\/$/g, '')
+      .replace(/\.html$/, '') || 'index';
+
+    var produced = FAB_TYPES[slug];
+    if (!produced) return;
+
+    var typesEl = document.querySelector('.fab-types');
+    if (!typesEl) return;
+
+    var badges = document.createElement('div');
+    badges.className = 'chip-badges';
+    ALL_TYPES.forEach(function(t) {
+      var span = document.createElement('span');
+      span.className = 'chip-badge ' + (produced.indexOf(t) >= 0 ? 'on' : 'off');
+      span.textContent = t;
+      badges.appendChild(span);
+    });
+
+    typesEl.parentNode.insertBefore(badges, typesEl);
+    typesEl.style.display = 'none';
+  })();
     

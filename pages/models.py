@@ -1,3 +1,4 @@
+import re
 from django.db import models
 from ckeditor.fields import RichTextField
 
@@ -26,6 +27,28 @@ class Page(models.Model):
 
     def __str__(self):
         return f"{self.order:02d}. {self.title}"
+
+    @property
+    def nav_class(self):
+        """Classe CSS para a sidebar: 'sub', 'section-title', ou '' (vazio).
+
+        Regras (baseadas no nav_title):
+          - '1.1 …', '2.1 …' → sub           (subitens: dígito.dígito)
+          - '2. …', '3. …'   → section-title  (seções principais numeradas)
+          - slugs de seção conhecidos sem prefixo numérico → section-title
+          - outros            → '' (item simples, ex: Início)
+        """
+        # Slugs que são sempre itens de seção, mesmo sem número no nav_title
+        SECTION_SLUGS = {'encerramento'}
+
+        label = (self.nav_title or self.title or '').strip()
+        if re.match(r'^\d+\.\d+', label):
+            return 'sub'
+        if re.match(r'^\d+\.', label):
+            return 'section-title'
+        if self.slug in SECTION_SLUGS:
+            return 'section-title'
+        return ''
 
     def get_absolute_url(self):
         from django.urls import reverse

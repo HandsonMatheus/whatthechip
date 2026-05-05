@@ -76,11 +76,6 @@
 
     <h4>Apresentação</h4>
     <ul>
-      <li><a href="index.html">Início</a></li>
-    </ul>
-
-    <h4>1. Introdução</h4>
-    <ul>
       <li class="sub"><a href="aprender.html">1.1 O que você vai aprender</a></li>
       <li class="sub"><a href="o-que-e-chip.html">1.2 O que é um Chip</a></li>
       <li class="sub"><a href="evolucao.html">1.3 Evolução: do pino à esfera</a></li>
@@ -114,12 +109,10 @@
 
   <!-- CONTENT -->
   <div class="article" id="content">
-    <div class="fab-block" id="s4-samsung">
-          <div class="fab-header">
-            4.1 Samsung <span>🇰🇷 Coreia do Sul · Fundada 1969</span>
-          </div>
-          <div class="fab-body">
-            <div class="fab-types">
+    <h2 class="section">4.1 Samsung</h2>
+<p class="fab-subtitle">🇰🇷 Coreia do Sul · Fundada 1969</p>
+
+<div class="fab-types">
               <strong>Tipos produzidos:</strong> SDRAM · DDR1 a DDR5 · LPDDR1 a
               5X · eMMC · eMCP · uMCP · UFS 2.0 a 4.0 · GDDR5/6 · NAND · NOR ·
               ePoP
@@ -1234,11 +1227,16 @@
             </div>
 
 <h4 id="sam-emcp">
-              eMCP (eMMC + LPDDR) — Prefixos <code>KMF / KMN / KMQ / KMR / KMS</code> &nbsp;<small
+              eMCP (eMMC + LPDDR) — Prefixos <code>KMF / KMK / KMN / KMQ / KMR / KMS</code> &nbsp;<small
                 style="font-weight: normal; color: #666"
-                >(Armazenamento Básico + RAM, BGA 221/254)</small
-              >
+                >(Armazenamento + RAM Integrados)</small>
             </h4>
+
+            <p>
+              <strong>O que é e como classificar:</strong> O eMCP é um pacote que junta um chip de armazenamento (eMMC) e a memória RAM (LPDDR) na mesma pastilha. Na Samsung, TODO eMCP começa obrigatoriamente com as letras <code>KM</code>. O operador deve isolar essas peças e enviá-las para a <strong>Caixa: Reacondicional eMCP</strong>. 
+              <br><br>
+              <strong>Atenção Extrema:</strong> Códigos parecidos como <code>KNN</code> ou <code>KSW</code> <strong>NÃO SÃO</strong> eMCPs modernos. São combos antigos de baixíssima capacidade (Feature Phones) e devem ir direto para o fluxo de <strong>resíduo</strong>.
+            </p>
 
             <!-- ANATOMIA DO PART NUMBER -->
             <div class="tbl-wrap" style="margin-bottom: 20px;">
@@ -1247,8 +1245,8 @@
                   <tr style="font-family: monospace; font-size: 1.2em; color: #003366; background-color: #f8f9fa; border-bottom: 2px solid #adb5bd;">
                     <th style="padding: 8px; text-align: center;">K</th>
                     <th style="padding: 8px; text-align: center;">M</th>
-                    <th style="padding: 8px; text-align: center;">R</th>
-                    <th style="padding: 8px; text-align: center;">X1</th>
+                    <th style="padding: 8px; text-align: center; color: #d9534f;">R</th>
+                    <th style="padding: 8px; text-align: center; color: #5cb85c;">X1</th>
                     <th style="padding: 8px; text-align: center;">00</th>
                     <th style="padding: 8px; text-align: center;">0</th>
                     <th style="padding: 8px; text-align: center;">B</th>
@@ -1261,75 +1259,81 @@
                 <tbody style="font-family: sans-serif;">
                   <tr style="background-color: #e9ecef; font-weight: bold; font-size: 0.85em; color: #003366;">
                     <td style="padding: 6px;">FAB</td>
-                    <td style="padding: 6px;">FAM</td>
-                    <td style="padding: 6px;">COMBO</td>
-                    <td style="padding: 6px;">DENSIDADE</td>
+                    <td style="padding: 6px;">FAMÍLIA</td>
+                    <td style="padding: 6px; color: #d9534f;">GERAÇÃO (RAM)</td>
+                    <td style="padding: 6px; color: #5cb85c;">CAPACIDADE</td>
                     <td style="padding: 6px;">ORG</td>
                     <td style="padding: 6px;">CTRL</td>
                     <td style="padding: 6px;">TENSÃO</td>
-                    <td style="padding: 6px;">ENC</td>
+                    <td style="padding: 6px;">PACKAGE</td>
                     <td style="padding: 6px;">-</td>
                     <td style="padding: 6px;">TEMP</td>
-                    <td style="padding: 6px;">FW/VEL</td>
+                    <td style="padding: 6px;">REV</td>
                   </tr>
                   <tr style="font-size: 0.85em; color: #333;">
                     <td style="padding: 6px;">Samsung</td>
-                    <td style="padding: 6px;">MCP</td>
-                    <td style="padding: 6px;">eMMC+LPDDR4</td>
-                    <td style="padding: 6px;">64GB + 32Gb</td>
-                    <td style="padding: 6px;">x8 / x32</td>
+                    <td style="padding: 6px;">eMCP (Combo)</td>
+                    <td style="padding: 6px;">LPDDR4 / 4X</td>
+                    <td style="padding: 6px;">64GB + 4GB</td>
+                    <td style="padding: 6px;">Padrão</td>
                     <td style="padding: 6px;">Padrão</td>
                     <td style="padding: 6px;">1.8V/1.1V</td>
-                    <td style="padding: 6px;">254 FBGA</td>
+                    <td style="padding: 6px;">BGA</td>
                     <td style="padding: 6px;">-</td>
                     <td style="padding: 6px;">Normal</td>
-                    <td style="padding: 6px;">Seq/Rev</td>
+                    <td style="padding: 6px;">Varia</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <!-- TABELA DE PREFIXOS E VARIAÇÕES -->
-            <div class="tbl-wrap">
-              <table>
-                <thead>
-                  <tr style="font-family: sans-serif;">
-                    <th>Prefixo (Base)</th>
-                    <th>Tecnologia Integrada</th>
-                    <th>Exemplos Extraídos do Lote</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>KMF...</code></td>
-                    <td style="font-family: sans-serif;">eMMC + LPDDR3 (Padrão)</td>
-                    <td><code>KMF720012M</code>, <code>KMFE10012M</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KMN...</code></td>
-                    <td style="font-family: sans-serif;">eMMC + LPDDR3 (Otimizado)</td>
-                    <td><code>KMN5U000ZM</code>, <code>KMN9X000RM</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KMQ...</code></td>
-                    <td style="font-family: sans-serif;">eMMC 5.1 + LPDDR3 (Alta Densidade)</td>
-                    <td><code>KMQE10013M</code>, <code>KMQ820013M</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KMR...</code></td>
-                    <td style="font-family: sans-serif;">eMMC 5.1 + LPDDR4 / LPDDR4X</td>
-                    <td><code>KMRX1000BM</code>, <code>KMR21000BM</code></td>
-                  </tr>
-                  <tr>
-                    <td><code>KMS...</code></td>
-                    <td style="font-family: sans-serif;">eMMC 5.1 + LPDDR4X (Tensão Reduzida)</td>
-                    <td><code>KMS5U000KM</code>, <code>KMS5X000KM</code></td>
-                  </tr>
-                </tbody>
-              </table>
+            <!-- GABARITO DA 3ª LETRA E CAPACIDADE -->
+            <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+              
+              <!-- Tabela: 3ª Letra -->
+              <div class="tbl-wrap" style="flex: 1;">
+                <h5 style="margin-top: 0; color: #003366; font-family: sans-serif;">Gabarito da 3ª Letra (Geração)</h5>
+                <table>
+                  <thead>
+                    <tr style="font-family: sans-serif;">
+                      <th>3ª Letra</th>
+                      <th>Arquitetura Interna</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>K</code></td><td style="font-family: sans-serif;">eMMC + <strong>LPDDR2</strong> (Antigo)</td></tr>
+                    <tr><td><code>F</code> ou <code>N</code></td><td style="font-family: sans-serif;">eMMC + <strong>LPDDR3</strong></td></tr>
+                    <tr><td><code>Q</code></td><td style="font-family: sans-serif;">eMMC 5.1 + <strong>LPDDR3</strong> (Otimizado)</td></tr>
+                    <tr><td><code>R</code></td><td style="font-family: sans-serif;">eMMC 5.1 + <strong>LPDDR4 / 4X</strong></td></tr>
+                    <tr><td><code>S</code></td><td style="font-family: sans-serif;">eMMC 5.1 + <strong>LPDDR4X</strong></td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Tabela: 4º e 5º Caracteres -->
+              <div class="tbl-wrap" style="flex: 1;">
+                <h5 style="margin-top: 0; color: #003366; font-family: sans-serif;">Gabarito de Capacidade (4º e 5º)</h5>
+                <table>
+                  <thead>
+                    <tr style="font-family: sans-serif;">
+                      <th>Par (Exemplos)</th>
+                      <th>Armazenamento + RAM</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>5X</code></td><td style="font-family: sans-serif;">8GB eMMC + 1GB RAM</td></tr>
+                    <tr><td><code>BT</code></td><td style="font-family: sans-serif;">16GB eMMC + 2GB RAM</td></tr>
+                    <tr><td><code>GD</code></td><td style="font-family: sans-serif;">32GB eMMC + 3GB RAM</td></tr>
+                    <tr><td><code>X1</code> ou <code>H9</code></td><td style="font-family: sans-serif;">64GB eMMC + 4GB RAM</td></tr>
+                    <tr><td><code>J2</code></td><td style="font-family: sans-serif;">128GB eMMC + 6GB RAM</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
             </div>
+
             <div class="nota" style="font-family: sans-serif;">
-              <strong>Diretriz Operacional de Triagem:</strong> A raiz <code>KM</code> indica sempre um Multi-Chip Package (Flash + RAM). Para a linha <strong>eMCP</strong> (que utiliza base eMMC), o operador deve buscar pela 3ª letra sendo <strong>F, N, Q, R ou S</strong>. Estes chips possuem formato retangular e são fisicamente maiores que um eMMC puro. Todos são ativos alvo e devem ser direcionados imediatamente para a caixa <strong>Reacondicional eMCP</strong>, evitando que componentes úteis sejam perdidos para o fluxo de <strong>residuo</strong>.
+              <strong>Diretriz Operacional de Triagem:</strong> A segregação visual começa nas três primeiras letras. Ao identificar um chip da família <strong>eMCP</strong> (<code>KMF</code>, <code>KMN</code>, <code>KMQ</code>, <code>KMR</code>, <code>KMS</code>, <code>KMK</code>), a peça deve ser direcionada imediatamente para a <strong>Caixa: Reacondicional eMCP</strong>. Se o chip começar com <code>KMD</code>, <code>KMG</code> ou <code>KMV</code>, trata-se de um <strong>uMCP (UFS)</strong> e deve ir para uma caixa separada. Códigos híbridos fora do padrão <code>KM</code> ou <code>KL</code> (como <code>KNN</code> e <code>KSW</code>) são incompatíveis com as bancadas modernas e devem ser enviados ao <strong>residuo</strong>.
             </div>
 
 <h4 id="sam-umcp">
