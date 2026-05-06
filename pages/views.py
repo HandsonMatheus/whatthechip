@@ -5,9 +5,12 @@ from django.shortcuts import render, get_object_or_404
 from django.conf import settings
 from .models import Page
 
-# _content/index.html — fonte de verdade para a homepage.
-# Lido direto do disco; sem necessidade de sync para o banco.
-_INDEX_CONTENT_PATH = Path(settings.BASE_DIR) / "_content" / "index.html"
+# _content/ — fonte de verdade para todo o conteúdo editorial.
+# index.html e todas as páginas são lidas direto do disco quando o arquivo
+# existir em _content/{slug}.html, sem passar pelo banco (CKEditor).
+# O banco ainda é usado para metadados: title, order, prev/next.
+_CONTENT_DIR = Path(settings.BASE_DIR) / "_content"
+_INDEX_CONTENT_PATH = _CONTENT_DIR / "index.html"
 
 
 def _nav_pages():
@@ -85,7 +88,18 @@ def page_detail(request, slug):
     in_nav = pages.filter(slug=slug).exists()
     prev_page = pages.filter(order__lt=page.order).last() if in_nav else None
     next_page = pages.filter(order__gt=page.order).first() if in_nav else None
-    page.content = _fix_html_links(page.content or '')
+
+    # Lê conteúdo direto de _content/{slug}.html quando o arquivo existir.
+    # Isso faz de _content/ a fonte de verdade para todo conteúdo editorial,
+    # igual ao que já é feito com a homepage. Editar o arquivo → mudança
+    # imediata no site, sem precisar sincronizar com o banco.
+    # Se o arquivo não existir (página criada só no admin), usa o banco.
+    content_file = _CONTENT_DIR / f"{slug}.html"
+    if content_file.exists():
+        page.content = _fix_html_links(content_file.read_text(encoding="utf-8"))
+    else:
+        page.content = _fix_html_links(page.content or '')
+
     return render(request, 'pages/page.html', {
         'page': page,
         'pages': pages,

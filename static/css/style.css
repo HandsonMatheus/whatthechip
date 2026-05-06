@@ -1547,6 +1547,32 @@ a.pr-row:visited { color: inherit; }
   line-height: 1.4;
 }
 
+/* Dica operacional da família — exibida abaixo dos campos, acima do rodapé */
+.dc-tip {
+  margin: 0 0 9px 0;
+  padding: 5px 10px 5px 26px;
+  background: #fffbe6;
+  border: 1px solid #e8d44d;
+  border-radius: 2px;
+  font-size: 11px;
+  color: #5c4a00;
+  line-height: 1.55;
+  position: relative;
+}
+.dc-tip::before {
+  content: "⚑";
+  position: absolute;
+  left: 9px;
+  top: 5px;
+  font-size: 11px;
+  color: #b89000;
+}
+[data-theme="dark"] .dc-tip {
+  background: rgba(180,140,0,0.12);
+  border-color: rgba(180,140,0,0.35);
+  color: #e8cc6a;
+}
+
 /* Rodapé: confiança, links */
 /* Os separadores · já vêm do template (  ·  ) — não adicionar via CSS */
 .dc-footer {

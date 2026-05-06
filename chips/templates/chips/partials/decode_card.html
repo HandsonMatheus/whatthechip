@@ -28,6 +28,10 @@
     {% if result.suffix_note %}<dt>Sufixo</dt><dd>{{ result.suffix_note }}</dd>{% endif %}
   </dl>
 
+  {% if result.tip %}
+  <div class="dc-tip">⚑ {{ result.tip }}</div>
+  {% endif %}
+
   <div class="dc-footer">
     <span class="dc-conf">{{ confidence_label }}</span>
     {% if result.classification_source %}

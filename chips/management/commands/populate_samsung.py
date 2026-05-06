@@ -70,31 +70,54 @@ class Command(BaseCommand):
 
         # ── DecodeMap: capacidade eMCP (2 chars, pos 3-4) ─────────────────────
         # val_primary = cap NAND (eMMC)  |  val_secondary = cap RAM (LPDDR)
+        #
+        # Samsung usa dois padrões distintos de codificação:
+        #   Matriz direta (legado): dois dígitos numéricos que cruzam densidade
+        #     NAND × RAM de forma literal (ex: "31" = 3ª col × 1ª linha da matriz)
+        #   Alfanumérico (moderno): pares mistos como "5X", "BT", "GD"
+        #
+        # O mapa anterior tinha apenas 8 entradas; isso causava fallback ao Gemini
+        # para a maioria dos PNs reais (ex: KMQ310006A → chave "31" não existia).
         emcp_cap = [
-            ("5X", "8GB",   "1GB"),
-            ("BT", "16GB",  "2GB"),
-            ("GD", "32GB",  "3GB"),
-            ("X1", "64GB",  "4GB"),
-            ("H9", "64GB",  "4GB"),   # alias do X1
-            ("J2", "128GB", "6GB"),
-            ("M4", "128GB", "8GB"),   # variante alta densidade
-            ("P5", "256GB", "8GB"),   # variante premium
+            # ── Matriz direta (legado) ────────────────────────────────────────
+            ("11", "4GB",   "512MB"),  # 4GB NAND + 512MB RAM
+            ("72", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM
+            ("82", "16GB",  "1GB"),    # 16GB NAND + 1GB RAM
+            ("31", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM  ← estava faltando
+            ("21", "32GB",  "2GB"),    # 32GB NAND + 2GB RAM  ← estava faltando
+            ("41", "32GB",  "4GB"),    # 32GB NAND + 4GB RAM  ← estava faltando
+            # ── Alfanumérico (moderno) ────────────────────────────────────────
+            ("5X", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM
+            ("BT", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM
+            ("V7", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM  ← alias do BT/31
+            ("GD", "32GB",  "3GB"),    # 32GB NAND + 3GB RAM
+            ("W7", "32GB",  "3GB"),    # 32GB NAND + 3GB RAM  ← alias do GD
+            ("W8", "32GB",  "4GB"),    # 32GB NAND + 4GB RAM  ← alias do 41
+            ("X1", "64GB",  "4GB"),    # 64GB NAND + 4GB RAM
+            ("H9", "64GB",  "4GB"),    # 64GB NAND + 4GB RAM  ← alias do X1
+            ("M4", "128GB", "4GB"),    # 128GB NAND + 4GB RAM (era 8GB — corrigido)
+            ("J2", "128GB", "6GB"),    # 128GB NAND + 6GB RAM
+            ("P5", "256GB", "8GB"),    # 256GB NAND + 8GB RAM
         ]
         self._bulk_map("SAM_EMCP_CAP", emcp_cap, samsung, dry)
 
         # ── DecodeMap: geração RAM eMCP (pos 2, 1 char) ───────────────────────
+        # Correção: R = LPDDR3, não LPDDR4/4X (erro histórico no gabarito).
+        # A família KMR usa LPDDR3 — confusão vinha do nome do prefixo.
+        # Adicionado: E = LPDDR4/4X (presente em algumas famílias uMCP).
         emcp_gen = [
-            ("K", "LPDDR2",     ""),
-            ("F", "LPDDR3",     ""),
-            ("N", "LPDDR3",     ""),
-            ("Q", "LPDDR3",     ""),
-            ("R", "LPDDR4/4X",  ""),
-            ("S", "LPDDR4X",    ""),
+            ("K", "LPDDR2",    ""),
+            ("F", "LPDDR3",    ""),
+            ("N", "LPDDR3",    ""),
+            ("Q", "LPDDR3",    ""),
+            ("R", "LPDDR3",    ""),   # corrigido: era "LPDDR4/4X"
+            ("S", "LPDDR4X",   ""),
             # uMCP
-            ("D", "LPDDR4X",    ""),
-            ("G", "LPDDR4X",    ""),
-            ("L", "LPDDR5",     ""),
-            ("V", "LPDDR5/5X",  ""),
+            ("D", "LPDDR4X",   ""),
+            ("E", "LPDDR4/4X", ""),   # adicionado
+            ("G", "LPDDR4X",   ""),
+            ("L", "LPDDR5",    ""),
+            ("V", "LPDDR5/5X", ""),
         ]
         self._bulk_map("SAM_EMCP_GEN", emcp_gen, samsung, dry)
 
@@ -312,12 +335,12 @@ class Command(BaseCommand):
                 tip="eMCP Samsung LPDDR3 + eMMC 5.1. Destino: reacondicional eMCP.",
             ),
             dict(
-                prefix="KMR", chip_type="eMCP", subtype="LPDDR4/4X + eMMC 5.1",
+                prefix="KMR", chip_type="eMCP", subtype="LPDDR3 + eMMC",
                 interface="eMMC 5.1", pn_length=12,
                 is_emcp=True, active=True, priority=40,
                 decode_gen_pos=2, decode_gen_map="SAM_EMCP_GEN",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
-                tip="eMCP Samsung LPDDR4/4X + eMMC 5.1. Destino: reacondicional eMCP.",
+                tip="eMCP Samsung LPDDR3 + eMMC. Subtype corrigido: R=LPDDR3. Destino: Caixa Vermelha (Resíduo).",
             ),
             dict(
                 prefix="KMS", chip_type="eMCP", subtype="LPDDR4X + eMMC 5.1",
@@ -329,34 +352,42 @@ class Command(BaseCommand):
             ),
 
             # ═══ uMCP: UFS + LPDDR ═══════════════════════════════════════════
+            # decode_cap_map adicionado: uMCPs usam a mesma estrutura de
+            # codificação de capacidade que os eMCPs (pos 3-4, 2 chars,
+            # SAM_EMCP_CAP). Antes ficavam sem decode de capacidade e caíam
+            # sempre no Gemini para completar RAM+NAND.
             dict(
                 prefix="KMD", chip_type="uMCP", subtype="UFS 2.1 + LPDDR4/4X",
                 interface="UFS 2.1", pn_length=10,
                 is_emcp=True, active=True, priority=40,
                 decode_gen_pos=2, decode_gen_map="SAM_EMCP_GEN",
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
                 tip="uMCP Samsung UFS 2.1 + LPDDR4/4X. "
-                    "JAMAIS misturar com eMCP — sockets incompatíveis.",
+                    "JAMAIS misturar com eMCP — sockets incompatíveis. Destino: Caixa Vermelha (Resíduo).",
             ),
             dict(
                 prefix="KMG", chip_type="uMCP", subtype="UFS 3.1 + LPDDR4X",
                 interface="UFS 3.1", pn_length=10,
                 is_emcp=True, active=True, priority=40,
                 decode_gen_pos=2, decode_gen_map="SAM_EMCP_GEN",
-                tip="uMCP Samsung UFS 3.1 + LPDDR4X. Destino: reacondicional uMCP.",
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
+                tip="uMCP Samsung UFS 3.1 + LPDDR4X. Destino: Caixa Vermelha (Resíduo).",
             ),
             dict(
                 prefix="KML", chip_type="uMCP", subtype="UFS 3.1 + LPDDR5",
                 interface="UFS 3.1", pn_length=10,
                 is_emcp=True, active=True, priority=40,
                 decode_gen_pos=2, decode_gen_map="SAM_EMCP_GEN",
-                tip="uMCP Samsung UFS 3.1 + LPDDR5. Destino: reacondicional uMCP.",
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
+                tip="uMCP Samsung UFS 3.1 + LPDDR5. Destino: Caixa Vermelha (Resíduo).",
             ),
             dict(
                 prefix="KMV", chip_type="uMCP", subtype="UFS 4.0 + LPDDR5/5X",
                 interface="UFS 4.0", pn_length=10,
                 is_emcp=True, active=True, priority=40,
                 decode_gen_pos=2, decode_gen_map="SAM_EMCP_GEN",
-                tip="uMCP Samsung UFS 4.0 + LPDDR5/5X. Flagships. Destino: reacondicional uMCP.",
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
+                tip="uMCP Samsung UFS 4.0 + LPDDR5/5X. Flagships. Destino: Caixa Vermelha (Resíduo).",
             ),
 
             # ═══ GDDR (MEMÓRIA GRÁFICA) ═══════════════════════════════════════

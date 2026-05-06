@@ -1167,7 +1167,7 @@
   <!-- Preview com gradiente -->
   <div id="sam-emcp-preview" style="position: relative; padding: 10px 12px 0; overflow: hidden; max-height: 3.4em;">
     <p style="margin: 0; font-size: 13px; line-height: 1.7;">
-      <strong>O que é e como classificar:</strong> O eMCP é um pacote que junta um chip de armazenamento (eMMC) e a memória RAM (LPDDR) na mesma pastilha. Na Samsung, TODO eMCP começa obrigatoriamente com as letras <code>KM</code>. O operador deve isolar essas peças e enviá-las para a <strong>Caixa: Reacondicional eMCP</strong>.
+      <strong>O que é e como classificar:</strong> O eMCP é o clássico "sanduíche" que junta armazenamento (eMMC) e memória RAM (LPDDR) na mesma pastilha. Na Samsung, TODO eMCP começa com as letras <code>KM</code>. Como a pinagem misturada é incompatível com os projetos puros de placas de TV Box, o operador deve enviar essas peças direto para a <strong>Caixa Vermelha (Resíduo)</strong>.
     </p>
     <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 2.5em; background: linear-gradient(transparent, var(--paper));"></div>
   </div>
@@ -1192,9 +1192,9 @@
   <div id="sam-emcp-content" style="display: none; padding: 10px 14px 16px; border-top: 1px solid var(--rule-soft);">
 
     <p style="font-size: 13px; line-height: 1.7;">
-      <strong>O que é e como classificar:</strong> O eMCP é um pacote que junta um chip de armazenamento (eMMC) e a memória RAM (LPDDR) na mesma pastilha. Na Samsung, TODO eMCP começa obrigatoriamente com as letras <code>KM</code>. O operador deve isolar essas peças e enviá-las para a <strong>Caixa: Reacondicional eMCP</strong>.
+      <strong>O que é e como classificar:</strong> O eMCP é o clássico "sanduíche" que junta armazenamento (eMMC) e memória RAM (LPDDR) na mesma pastilha. Na Samsung, TODO eMCP começa com as letras <code>KM</code>. Como a pinagem misturada é incompatível com os projetos puros de placas de TV Box, o operador deve enviar essas peças direto para a <strong>Caixa Vermelha (Resíduo)</strong>.
       <br><br>
-      <strong>Atenção Extrema:</strong> Códigos parecidos como <code>KNN</code> ou <code>KSW</code> <strong>NÃO SÃO</strong> eMCPs modernos. São combos antigos de baixíssima capacidade (Feature Phones) e devem ir direto para o fluxo de <strong>resíduo</strong>.
+      <strong>Atenção Extrema:</strong> Códigos como <code>KNN</code> ou <code>KSW</code> <strong>NÃO SÃO</strong> eMCPs modernos. São combos muito antigos de baixíssima capacidade e também devem ir direto para o fluxo de <strong>resíduo</strong>.
     </p>
 
     <!-- ANATOMIA DO PART NUMBER -->
@@ -1204,8 +1204,8 @@
           <tr class="decode-gabarito">
             <th>K</th><th>M</th>
             <th style="color: #d9534f;">R</th>
-            <th style="color: #5cb85c;">X1</th>
-            <th>00</th><th>0</th><th>B</th><th>M</th><th>-</th><th>B</th><th>614</th>
+            <th style="color: #5cb85c;">31</th>
+            <th>00</th><th>0</th><th>1</th><th>M</th><th>-</th><th>B</th><th>614</th>
           </tr>
         </thead>
         <tbody>
@@ -1216,7 +1216,7 @@
             <td>ORG</td><td>CTRL</td><td>TENSÃO</td><td>PACKAGE</td><td>-</td><td>TEMP</td><td>REV</td>
           </tr>
           <tr class="decode-example">
-            <td>Samsung</td><td>eMCP (Combo)</td><td>LPDDR4 / 4X</td><td>64GB + 4GB</td>
+            <td>Samsung</td><td>eMCP (Combo)</td><td>LPDDR3</td><td>16GB + 2GB</td>
             <td>Padrão</td><td>Padrão</td><td>1.8V/1.1V</td><td>BGA</td><td>-</td><td>Normal</td><td>Varia</td>
           </tr>
         </tbody>
@@ -1224,32 +1224,37 @@
     </div>
 
     <!-- GABARITOS LADO A LADO -->
-    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+    <div style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
 
-      <div class="tbl-wrap" style="flex: 1;">
+      <div class="tbl-wrap" style="flex: 1; min-width: 250px;">
         <h5 style="margin-top: 0; color: var(--hi-1);">Gabarito da 3ª Letra (Geração)</h5>
         <table>
           <thead><tr><th>3ª Letra</th><th>Arquitetura Interna</th></tr></thead>
           <tbody>
             <tr><td><code>K</code></td><td>eMMC + <strong>LPDDR2</strong> (Antigo)</td></tr>
-            <tr><td><code>F</code> ou <code>N</code></td><td>eMMC + <strong>LPDDR3</strong></td></tr>
-            <tr><td><code>Q</code></td><td>eMMC 5.1 + <strong>LPDDR3</strong> (Otimizado)</td></tr>
-            <tr><td><code>R</code></td><td>eMMC 5.1 + <strong>LPDDR4 / 4X</strong></td></tr>
+            <tr><td><code>F</code>, <code>N</code>, <code>Q</code> ou <code>R</code></td><td>eMMC 5.x + <strong>LPDDR3</strong></td></tr>
             <tr><td><code>S</code></td><td>eMMC 5.1 + <strong>LPDDR4X</strong></td></tr>
+            <tr><td><code>D</code>, <code>E</code>, <code>G</code> ou <code>V</code></td><td>eMMC / UFS + <strong>LPDDR4 / 4X</strong> (Geralmente uMCP)</td></tr>
           </tbody>
         </table>
       </div>
 
-      <div class="tbl-wrap" style="flex: 1;">
+      <div class="tbl-wrap" style="flex: 1; min-width: 320px;">
         <h5 style="margin-top: 0; color: var(--hi-1);">Gabarito de Capacidade (4º e 5º)</h5>
         <table>
-          <thead><tr><th>Par (Exemplos)</th><th>Armazenamento + RAM</th></tr></thead>
+          <thead><tr><th>Par (Matriz / Alfanumérico)</th><th>Armazenamento + RAM</th></tr></thead>
           <tbody>
-            <tr><td><code>5X</code></td><td>8GB eMMC + 1GB RAM</td></tr>
-            <tr><td><code>BT</code></td><td>16GB eMMC + 2GB RAM</td></tr>
-            <tr><td><code>GD</code></td><td>32GB eMMC + 3GB RAM</td></tr>
+            <tr><td><code>11</code></td><td>4GB eMMC + 512MB RAM</td></tr>
+            <tr><td><code>72</code> ou <code>5X</code></td><td>8GB eMMC + 1GB RAM</td></tr>
+            <tr><td><code>82</code></td><td>16GB eMMC + 1GB RAM</td></tr>
+            <tr><td><code>31</code>, <code>BT</code> ou <code>V7</code></td><td>16GB eMMC + 2GB RAM</td></tr>
+            <tr><td><code>21</code></td><td>32GB eMMC + 2GB RAM</td></tr>
+            <tr><td><code>GD</code> ou <code>W7</code></td><td>32GB eMMC + 3GB RAM</td></tr>
+            <tr><td><code>41</code> ou <code>W8</code></td><td>32GB eMMC + 4GB RAM</td></tr>
             <tr><td><code>X1</code> ou <code>H9</code></td><td>64GB eMMC + 4GB RAM</td></tr>
+            <tr><td><code>M4</code></td><td>128GB eMMC + 4GB RAM</td></tr>
             <tr><td><code>J2</code></td><td>128GB eMMC + 6GB RAM</td></tr>
+            <tr><td><code>P5</code></td><td>256GB eMMC + 8GB RAM</td></tr>
           </tbody>
         </table>
       </div>
@@ -1257,7 +1262,7 @@
     </div>
 
     <div class="nota">
-      <strong>Diretriz Operacional de Triagem:</strong> A segregação visual começa nas três primeiras letras. Ao identificar um chip da família <strong>eMCP</strong> (<code>KMF</code>, <code>KMN</code>, <code>KMQ</code>, <code>KMR</code>, <code>KMS</code>, <code>KMK</code>), a peça deve ser direcionada imediatamente para a <strong>Caixa: Reacondicional eMCP</strong>. Se o chip começar com <code>KMD</code>, <code>KMG</code> ou <code>KMV</code>, trata-se de um <strong>uMCP (UFS)</strong> e deve ir para uma caixa separada. Códigos híbridos fora do padrão <code>KM</code> ou <code>KL</code> (como <code>KNN</code> e <code>KSW</code>) são incompatíveis com as bancadas modernas e devem ser enviados ao <strong>resíduo</strong>.
+      <strong>Diretriz Operacional de Triagem:</strong> A segregação visual começa nas três primeiras letras. Ao identificar um chip da família <strong>eMCP</strong> (<code>KMF</code>, <code>KMN</code>, <code>KMQ</code>, <code>KMR</code>, <code>KMS</code>, <code>KMK</code>) ou <strong>uMCP</strong> (<code>KMD</code>, <code>KMG</code>, <code>KMV</code>, <code>KAT</code>), o operador deve isolar a peça e enviá-la para a <strong>Caixa Vermelha (Resíduo)</strong>. Apesar da alta tecnologia interna, componentes do tipo "sanduíche" não possuem liquidez no ciclo reacondicional focado em TV Boxes.
     </div>
 
   </div>

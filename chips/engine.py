@@ -23,6 +23,8 @@ import urllib.error
 
 logger = logging.getLogger(__name__)
 
+from django.db.models.functions import Length
+
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, SearchLog, Source, UnknownChip
 
 
@@ -72,8 +74,18 @@ def _load_decode_map(map_name: str) -> dict:
 # ── Match de família ──────────────────────────────────────────────────────────
 
 def _match_family(pn: str):
-    """Retorna ChipFamily com o prefixo mais longo que bater no PN."""
-    families = ChipFamily.objects.filter(active=True).order_by("priority", "-prefix")
+    """Retorna ChipFamily com o prefixo mais longo que bater no PN.
+
+    Ordenação: priority ASC (menor = mais importante) e depois comprimento de
+    prefixo DESC (mais longo primeiro). Antes usava -prefix (alfabético reverso)
+    como proxy de comprimento — correto na maioria dos casos mas não garantido.
+    """
+    families = (
+        ChipFamily.objects
+        .filter(active=True)
+        .annotate(prefix_len=Length("prefix"))
+        .order_by("priority", "-prefix_len")
+    )
     for fam in families:
         if pn.startswith(fam.prefix):
             return fam
@@ -104,21 +116,22 @@ def _doc_url(family) -> str | None:
 EMCP_RAM_TYPES = {
     # LPDDR / LPDDR2 (legado)
     "J": "LPDDR (legado)",
-    "S": "LPDDR (legado)",
     "Z": "LPDDR2 / LPDDR (?)",
-    "V": "LPDDR2",
     "K": "LPDDR2 (legado)",
     "Y": "LPDDR2",
-    # LPDDR3
+    # LPDDR3 — R corrigido: era LPDDR4/4X (erro histórico no gabarito)
     "Q": "LPDDR3",
     "F": "LPDDR3",
     "N": "LPDDR3",
+    "R": "LPDDR3",
     "G": "LPDDR3",
     # LPDDR4 / LPDDR4X
-    "R": "LPDDR4/4X",
+    "S": "LPDDR4X",
     "D": "LPDDR4X",
+    "E": "LPDDR4/4X",
     # LPDDR5
     "L": "LPDDR5",
+    "V": "LPDDR5/5X",
 }
 
 
@@ -331,8 +344,13 @@ def _check_remarked(grammar_result: dict, db_result: dict) -> bool:
     """
     Retorna True se gramática e banco divergem em capacidade — sinal de possível remarked.
     Só compara campos preenchidos em ambos.
+
+    Compara tanto campos de chip standalone (capacity, dram_density) quanto
+    campos de eMCP/uMCP (emcp_nand, emcp_ram) — anteriormente eMCPs eram
+    invisíveis para esta função, o que desativava o alerta de remarked para
+    a maioria dos chips Samsung no mercado de reciclagem.
     """
-    for field in ("capacity", "dram_density"):
+    for field in ("capacity", "dram_density", "emcp_nand", "emcp_ram"):
         g_val = grammar_result.get(field)
         d_val = db_result.get(field)
         if not g_val or not d_val:
@@ -596,8 +614,11 @@ def _save_gemini_to_db(pn: str, specs: dict):
                 "code": brand_name.upper()[:10].replace(" ", ""),
             }
         )
+        # Uma única Source compartilhada para todos os resultados Gemini.
+        # Antes criava um registro por PN (url=f"gemini:{pn}"), gerando
+        # milhares de entradas "Gemini Live Search" idênticas no banco.
         source, _ = Source.objects.get_or_create(
-            url=f"gemini:{pn}",
+            url="gemini:live-search",
             defaults={"name": "Gemini Live Search", "src_type": "ai"}
         )
         family = _match_family(pn)
