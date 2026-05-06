@@ -1,0 +1,157 @@
+2026-05-05 14:51:47,662 [ERROR] ❌ /Users/raphaelsilvabastos/Documents/WhatTheChip/chipdocs/scripts/state/Samsung_pns.json não encontrado.
+2026-05-05 14:51:47,662 [ERROR]    Execute primeiro: python scripts/collect_pns.py --brand Samsung
+2026-05-05 15:04:15,949 [INFO] ============================================================
+2026-05-05 15:04:15,949 [INFO] enrich_gemini.py — Samsung
+2026-05-05 15:04:15,949 [INFO] Modelos: ['gemini-2.5-pro', 'gemini-2.5-flash']
+2026-05-05 15:04:15,949 [INFO] PNs coletados: 1443 | Workers: 1 | Delay: 2.0s | Limite: 50
+2026-05-05 15:04:15,949 [INFO] ============================================================
+2026-05-05 15:04:16,819 [INFO] PNs a processar nesta rodada: 50 (limite: 50)
+2026-05-05 15:04:16,820 [INFO] [1/50] KMVUS000LA
+2026-05-05 15:04:54,311 [INFO]   → nenhum modelo retornou resposta válida para KMVUS000LA
+2026-05-05 15:04:56,314 [INFO] [2/50] KMS5X000KA
+2026-05-05 15:05:25,965 [INFO]   → nenhum modelo retornou resposta válida para KMS5X000KA
+2026-05-05 15:05:27,966 [INFO] [3/50] KMR4Z0001A
+2026-05-05 15:05:59,331 [INFO]   → nenhum modelo retornou resposta válida para KMR4Z0001A
+2026-05-05 15:06:01,334 [INFO] [4/50] KMQ5X000SA
+2026-05-05 15:06:20,916 [INFO]   → nenhum modelo retornou resposta válida para KMQ5X000SA
+2026-05-05 15:06:22,921 [INFO] [5/50] KMQ31000SM
+2026-05-05 15:06:51,626 [INFO]   ✓ gemini-2.5-flash [grounded]: eMCP | conf=high
+2026-05-05 15:06:51,656 [INFO]   🔄 KMQ31000SM: eMCP | LPDDR3 8GB | conf=high
+2026-05-05 15:06:53,661 [INFO] [6/50] KMK5X000VH
+2026-05-05 15:07:32,541 [WARNING]   ⏳ 503 [gemini-2.5-flash] sobrecarga — aguardando 5s (tentativa 1/3)
+2026-05-05 15:07:47,506 [INFO]   → nenhum modelo retornou resposta válida para KMK5X000VH
+2026-05-05 15:07:49,511 [INFO] [7/50] KLMCG2UCTB
+2026-05-05 15:07:49,520 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:07:49,530 [INFO]   ⏭ KLMCG2UCTB: eMMC | 64GB | conf=distributor
+2026-05-05 15:07:51,532 [INFO] [8/50] KLMDG4UCTB
+2026-05-05 15:07:51,537 [INFO]   ⚡ decode local: eMMC | 128GB | conf=distributor
+2026-05-05 15:07:51,545 [INFO]   ⏭ KLMDG4UCTB: eMMC | 128GB | conf=distributor
+2026-05-05 15:07:53,550 [INFO] [9/50] KLMAG2GEUFB04P
+2026-05-05 15:07:53,555 [INFO]   ⚡ decode local: eMMC | 16GB | conf=distributor
+2026-05-05 15:07:53,566 [INFO]   ⏭ KLMAG2GEUFB04P: eMMC | 16GB | conf=distributor
+2026-05-05 15:07:55,571 [INFO] [10/50] KLMCG2KCTA
+2026-05-05 15:07:55,577 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:07:55,586 [INFO]   ⏭ KLMCG2KCTA: eMMC | 64GB | conf=distributor
+2026-05-05 15:07:57,589 [INFO] [11/50] KLMCG2UCTA
+2026-05-05 15:07:57,595 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:07:57,603 [INFO]   ⏭ KLMCG2UCTA: eMMC | 64GB | conf=distributor
+2026-05-05 15:07:59,608 [INFO] [12/50] KLM8G1GEME
+2026-05-05 15:07:59,612 [INFO]   ⚡ decode local: eMMC | 8GB | conf=distributor
+2026-05-05 15:07:59,620 [INFO]   ⏭ KLM8G1GEME: eMMC | 8GB | conf=distributor
+2026-05-05 15:08:01,623 [INFO] [13/50] KLM8G1GEND
+2026-05-05 15:08:01,628 [INFO]   ⚡ decode local: eMMC | 8GB | conf=distributor
+2026-05-05 15:08:01,635 [INFO]   ⏭ KLM8G1GEND: eMMC | 8GB | conf=distributor
+2026-05-05 15:08:03,640 [INFO] [14/50] KLM8G1GESDB04P
+2026-05-05 15:08:03,648 [INFO]   ⚡ decode local: eMMC | 8GB | conf=distributor
+2026-05-05 15:08:03,658 [INFO]   ⏭ KLM8G1GESDB04P: eMMC | 8GB | conf=distributor
+2026-05-05 15:08:05,660 [INFO] [15/50] KLM8G1GESDB04Q
+2026-05-05 15:08:05,665 [INFO]   ⚡ decode local: eMMC | 8GB | conf=distributor
+2026-05-05 15:08:05,672 [INFO]   ⏭ KLM8G1GESDB04Q: eMMC | 8GB | conf=distributor
+2026-05-05 15:08:07,677 [INFO] [16/50] KLM8G1WEPD
+2026-05-05 15:08:07,682 [INFO]   ⚡ decode local: eMMC | 8GB | conf=distributor
+2026-05-05 15:08:07,692 [INFO]   ⏭ KLM8G1WEPD: eMMC | 8GB | conf=distributor
+2026-05-05 15:08:09,697 [INFO] [17/50] KLMAG1JENB
+2026-05-05 15:08:09,704 [INFO]   ⚡ decode local: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:09,710 [INFO]   ⏭ KLMAG1JENB: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:11,716 [INFO] [18/50] KLMAG2GEND
+2026-05-05 15:08:11,722 [INFO]   ⚡ decode local: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:11,729 [INFO]   ⏭ KLMAG2GEND: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:13,732 [INFO] [19/50] KLMAG2GESDB03P
+2026-05-05 15:08:13,736 [INFO]   ⚡ decode local: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:13,742 [INFO]   ⏭ KLMAG2GESDB03P: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:15,747 [INFO] [20/50] KLMAG2GESDB04P
+2026-05-05 15:08:15,757 [INFO]   ⚡ decode local: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:15,767 [INFO]   ⏭ KLMAG2GESDB04P: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:17,771 [INFO] [21/50] KLMAG2GESDB04Q
+2026-05-05 15:08:17,776 [INFO]   ⚡ decode local: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:17,785 [INFO]   ⏭ KLMAG2GESDB04Q: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:19,790 [INFO] [22/50] KLMAG2WEPD
+2026-05-05 15:08:19,795 [INFO]   ⚡ decode local: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:19,803 [INFO]   ⏭ KLMAG2WEPD: eMMC | 16GB | conf=distributor
+2026-05-05 15:08:21,807 [INFO] [23/50] KLMBG2JENB
+2026-05-05 15:08:21,814 [INFO]   ⚡ decode local: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:21,820 [INFO]   ⏭ KLMBG2JENB: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:23,823 [INFO] [24/50] KLMBG2JETD
+2026-05-05 15:08:23,829 [INFO]   ⚡ decode local: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:23,836 [INFO]   ⏭ KLMBG2JETD: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:25,839 [INFO] [25/50] KLMBG4GEND
+2026-05-05 15:08:25,845 [INFO]   ⚡ decode local: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:25,855 [INFO]   ⏭ KLMBG4GEND: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:27,860 [INFO] [26/50] KLMBG4GESDB03P
+2026-05-05 15:08:27,868 [INFO]   ⚡ decode local: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:27,874 [INFO]   ⏭ KLMBG4GESDB03P: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:29,879 [INFO] [27/50] KLMBG4GESDB03Q
+2026-05-05 15:08:29,884 [INFO]   ⚡ decode local: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:29,889 [INFO]   ⏭ KLMBG4GESDB03Q: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:31,894 [INFO] [28/50] KLMBG4GESDB04P
+2026-05-05 15:08:31,900 [INFO]   ⚡ decode local: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:31,906 [INFO]   ⏭ KLMBG4GESDB04P: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:33,909 [INFO] [29/50] KLMBG4GESDB04Q
+2026-05-05 15:08:33,916 [INFO]   ⚡ decode local: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:33,924 [INFO]   ⏭ KLMBG4GESDB04Q: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:35,925 [INFO] [30/50] KLMBG4WERD
+2026-05-05 15:08:35,931 [INFO]   ⚡ decode local: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:35,942 [INFO]   🔄 KLMBG4WERD: eMMC | 32GB | conf=distributor
+2026-05-05 15:08:37,949 [INFO] [31/50] KLMCG4JENB
+2026-05-05 15:08:37,955 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:37,963 [INFO]   ⏭ KLMCG4JENB: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:39,968 [INFO] [32/50] KLMCG4JETD
+2026-05-05 15:08:39,974 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:39,981 [INFO]   ⏭ KLMCG4JETD: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:41,985 [INFO] [33/50] KLMCG4JEUDB04P
+2026-05-05 15:08:41,992 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:41,999 [INFO]   ⏭ KLMCG4JEUDB04P: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:44,005 [INFO] [34/50] KLMCG4JEUDB04Q
+2026-05-05 15:08:44,014 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:44,021 [INFO]   ⏭ KLMCG4JEUDB04Q: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:46,024 [INFO] [35/50] KLMCG4VERF
+2026-05-05 15:08:46,029 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:46,036 [INFO]   ⏭ KLMCG4VERF: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:48,038 [INFO] [36/50] KLMCG8GEND
+2026-05-05 15:08:48,044 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:48,049 [INFO]   ⏭ KLMCG8GEND: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:50,053 [INFO] [37/50] KLMCG8GESDB03P
+2026-05-05 15:08:50,058 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:50,064 [INFO]   ⏭ KLMCG8GESDB03P: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:52,069 [INFO] [38/50] KLMCG8GESDB04Q
+2026-05-05 15:08:52,075 [INFO]   ⚡ decode local: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:52,081 [INFO]   ⏭ KLMCG8GESDB04Q: eMMC | 64GB | conf=distributor
+2026-05-05 15:08:54,086 [INFO] [39/50] KLMDG4UERM
+2026-05-05 15:08:54,091 [INFO]   ⚡ decode local: eMMC | 128GB | conf=distributor
+2026-05-05 15:08:54,098 [INFO]   ⏭ KLMDG4UERM: eMMC | 128GB | conf=distributor
+2026-05-05 15:08:56,102 [INFO] [40/50] KLMDG8JENB
+2026-05-05 15:08:56,109 [INFO]   ⚡ decode local: eMMC | 128GB | conf=distributor
+2026-05-05 15:08:56,116 [INFO]   ⏭ KLMDG8JENB: eMMC | 128GB | conf=distributor
+2026-05-05 15:08:58,121 [INFO] [41/50] KLMDG8JEUDB04P
+2026-05-05 15:08:58,126 [INFO]   ⚡ decode local: eMMC | 128GB | conf=distributor
+2026-05-05 15:08:58,134 [INFO]   ⏭ KLMDG8JEUDB04P: eMMC | 128GB | conf=distributor
+2026-05-05 15:09:00,139 [INFO] [42/50] KLMDG8JEUDB04Q
+2026-05-05 15:09:00,143 [INFO]   ⚡ decode local: eMMC | 128GB | conf=distributor
+2026-05-05 15:09:00,151 [INFO]   ⏭ KLMDG8JEUDB04Q: eMMC | 128GB | conf=distributor
+2026-05-05 15:09:02,155 [INFO] [43/50] KLMDG8VERF
+2026-05-05 15:09:02,163 [INFO]   ⚡ decode local: eMMC | 128GB | conf=distributor
+2026-05-05 15:09:02,171 [INFO]   ⏭ KLMDG8VERF: eMMC | 128GB | conf=distributor
+2026-05-05 15:09:04,174 [INFO] [44/50] KLMDGAWEBD
+2026-05-05 15:09:04,179 [INFO]   ⚡ decode local: eMMC | 128GB | conf=distributor
+2026-05-05 15:09:04,187 [INFO]   ⏭ KLMDGAWEBD: eMMC | 128GB | conf=distributor
+2026-05-05 15:09:06,191 [INFO] [45/50] KLMEG8UERM
+2026-05-05 15:09:06,196 [INFO]   ⚡ decode local: eMMC | 256GB | conf=distributor
+2026-05-05 15:09:06,206 [INFO]   ⏭ KLMEG8UERM: eMMC | 256GB | conf=distributor
+2026-05-05 15:09:08,211 [INFO] [46/50] KUMPULAN
+2026-05-05 15:09:47,995 [INFO]   → nenhum modelo retornou resposta válida para KUMPULAN
+2026-05-05 15:09:49,996 [INFO] [47/50] KMF310002M
+2026-05-05 15:09:58,951 [WARNING]   ⏳ 503 [gemini-2.5-pro] sobrecarga — aguardando 5s (tentativa 1/3)
+2026-05-05 15:10:11,199 [WARNING]   ⏳ 503 [gemini-2.5-pro] sobrecarga — aguardando 15s (tentativa 2/3)
+2026-05-05 15:10:38,151 [WARNING] 
+Interrompido — salvando estado...
+2026-05-05 16:12:09,276 [INFO] ============================================================
+2026-05-05 16:12:09,277 [INFO] enrich_gemini.py — Samsung
+2026-05-05 16:12:09,277 [INFO] Modelos: ['gemini-2.5-pro', 'gemini-2.5-flash']
+2026-05-05 16:12:09,277 [INFO] PNs coletados: 1443 | Workers: 1 | Delay: 2.0s | Limite: 100
+2026-05-05 16:12:09,277 [INFO] ============================================================
+2026-05-05 16:12:09,926 [INFO] PNs a processar nesta rodada: 100 (limite: 100)
+2026-05-05 16:12:09,926 [INFO]   ↺ 6 são retentativas de falhas anteriores
+2026-05-05 16:12:09,926 [INFO] [1/100] KMVUS000LA
+2026-05-05 16:12:11,968 [WARNING]   ⏳ 503 [gemini-2.5-pro] sobrecarga — aguardando 5s (tentativa 1/3)
+2026-05-05 16:12:31,753 [WARNING] 
+Interrompido — salvando estado...

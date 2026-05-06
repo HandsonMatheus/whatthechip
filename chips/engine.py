@@ -15,10 +15,13 @@ Double-check:
 """
 
 import json
+import logging
 import os
 import re
 import urllib.request
 import urllib.error
+
+logger = logging.getLogger(__name__)
 
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, SearchLog, Source, UnknownChip
 
@@ -89,23 +92,38 @@ def _doc_url(family) -> str | None:
     return None
 
 
-# ── eMCP: tipo RAM pela 3ª letra ───────────────────────────────────────────────
+# ── eMCP: tipo RAM pela 3ª letra (fallback quando não há decode_gen_map) ────────
+#
+# Baseado no gabarito Samsung KMx (3ª letra do PN):
+#   K=LPDDR2  F=LPDDR3   N=LPDDR3   Q=LPDDR3
+#   R=LPDDR4/4X  S=LPDDR4X  D=LPDDR4X  L=LPDDR5
+#
+# ATENÇÃO: Este mapa é Samsung-centric. Para outras marcas, configure
+# decode_gen_pos + decode_gen_map na família em vez de depender deste fallback.
 
 EMCP_RAM_TYPES = {
-    "V": "LPDDR2",
-    "K": "LPDDR2 (legado)",
+    # LPDDR / LPDDR2 (legado)
     "J": "LPDDR (legado)",
     "S": "LPDDR (legado)",
     "Z": "LPDDR2 / LPDDR (?)",
+    "V": "LPDDR2",
+    "K": "LPDDR2 (legado)",
     "Y": "LPDDR2",
+    # LPDDR3
     "Q": "LPDDR3",
-    "R": "LPDDR3",
+    "F": "LPDDR3",
+    "N": "LPDDR3",
     "G": "LPDDR3",
-    "F": "LPDDR4 / LPDDR4X",
-    "N": "LPDDR4X",
+    # LPDDR4 / LPDDR4X
+    "R": "LPDDR4/4X",
     "D": "LPDDR4X",
+    # LPDDR5
     "L": "LPDDR5",
 }
+
+
+# ── Regex de capacidade (usada em múltiplos lugares) ──────────────────────────
+_CAP_RE = re.compile(r"(\d+)\s*([GMK])B", re.I)
 
 
 # ── Resultado base da família ──────────────────────────────────────────────────
@@ -138,25 +156,74 @@ def _result_from_family(pn: str, fam) -> dict:
         "suffix_note":   None,
         "remarked_flag": False,
         "fuzzy_suggestions": [],
+        "classification_source": "gramática",
     }
 
-    # ── Capacidade eMMC / UFS ────────────────────────────────────────────────
-    if fam.decode_cap_pos is not None and fam.decode_cap_map and not fam.is_emcp:
-        cap_map = _load_decode_map(fam.decode_cap_map)
-        pos = fam.decode_cap_pos
-        if len(pn) > pos:
-            entry = cap_map.get(pn[pos])
-            if entry:
-                r["capacity"] = entry[0]
-
-    # ── Geração eMMC ─────────────────────────────────────────────────────────
+    # ── Geração / tipo RAM (decode_gen_map) ──────────────────────────────────
+    # Funciona tanto para eMMC (geração: "eMMC 5.1") quanto para eMCP (tipo RAM: "LPDDR4/4X").
+    _decoded_gen = None
     if fam.decode_gen_pos is not None and fam.decode_gen_map:
         gen_map = _load_decode_map(fam.decode_gen_map)
         pos = fam.decode_gen_pos
         if len(pn) > pos:
             entry = gen_map.get(pn[pos])
             if entry:
-                r["interface"] = entry[0]
+                _decoded_gen = entry[0]  # ex: "LPDDR4/4X" ou "eMMC 5.1"
+                if not fam.is_emcp:
+                    r["interface"] = _decoded_gen  # eMMC/UFS: seta interface direto
+
+    # ── Capacidade eMMC / UFS / NAND (não-eMCP) ──────────────────────────────
+    if fam.decode_cap_pos is not None and fam.decode_cap_map and not fam.is_emcp:
+        cap_map = _load_decode_map(fam.decode_cap_map)
+        pos = fam.decode_cap_pos
+        cap_len = fam.decode_cap_len if fam.decode_cap_len and fam.decode_cap_len > 1 else 1
+        if len(pn) >= pos + cap_len:
+            key = pn[pos:pos + cap_len]
+            entry = cap_map.get(key)
+            if entry:
+                r["capacity"] = entry[0]
+
+    # ── eMCP / uMCP: capacidade dual via mapa ─────────────────────────────────
+    # Se a família tem decode_cap_map configurado, usamos para decodificar
+    # simultaneamente a capacidade NAND (val_primary) e RAM (val_secondary).
+    # Caso contrário, caímos no fallback de EMCP_RAM_TYPES pela 3ª letra.
+    if fam.is_emcp:
+        _nand_cap = None
+        _ram_cap  = None
+
+        if fam.decode_cap_pos is not None and fam.decode_cap_map:
+            cap_map = _load_decode_map(fam.decode_cap_map)
+            pos = fam.decode_cap_pos
+            cap_len = fam.decode_cap_len if fam.decode_cap_len and fam.decode_cap_len > 1 else 1
+            if len(pn) >= pos + cap_len:
+                key = pn[pos:pos + cap_len]
+                entry = cap_map.get(key)
+                if entry:
+                    _nand_cap = entry[0] or None   # ex: "64GB"
+                    _ram_cap  = entry[1] or None   # ex: "4GB"
+
+        # Tipo RAM: decode_gen_map tem prioridade; fallback: EMCP_RAM_TYPES
+        if _decoded_gen:
+            ram_type = _decoded_gen                # ex: "LPDDR4/4X" via mapa
+        else:
+            ram_char = pn[2] if len(pn) > 2 else "?"
+            ram_type = EMCP_RAM_TYPES.get(ram_char, f"tipo '{ram_char}' — consultar datasheet")
+
+        # Versão NAND eMMC: usa fam.interface se preenchido (ex: "eMMC 5.1")
+        nand_version = fam.interface or "eMMC"
+
+        # Monta strings finais
+        if _nand_cap:
+            r["emcp_nand"] = f"{nand_version} {_nand_cap}".strip()
+        else:
+            r["emcp_nand"] = nand_version  # parcial, Gemini vai completar
+
+        if _ram_cap:
+            r["emcp_ram"] = f"{ram_type} {_ram_cap}".strip()
+        else:
+            r["emcp_ram"] = ram_type       # parcial, Gemini vai completar
+
+        r["emcp_source"] = "gramática" if (_nand_cap and _ram_cap) else "parcial (gramática)"
 
     # ── Densidade DRAM ───────────────────────────────────────────────────────
     if fam.decode_density_type and not fam.is_emcp:
@@ -179,13 +246,6 @@ def _result_from_family(pn: str, fam) -> dict:
             else:
                 r["dram_density"] = f"Código '{code}' não mapeado — consultar datasheet"
 
-    # ── eMCP: tipo RAM pela 3ª letra ─────────────────────────────────────────
-    if fam.is_emcp:
-        ram_char = pn[2] if len(pn) > 2 else "?"
-        r["emcp_ram"]  = EMCP_RAM_TYPES.get(ram_char, f"tipo '{ram_char}' — consultar datasheet")
-        r["emcp_nand"] = "eMMC"
-        r["emcp_source"] = "parcial (gramática)"
-
     # ── Sufixo ───────────────────────────────────────────────────────────────
     if fam.suffix_rules:
         sfx = json.loads(fam.suffix_rules)
@@ -200,33 +260,57 @@ def _result_from_family(pn: str, fam) -> dict:
 
 
 def _result_from_known(pn: str, known, fam) -> dict:
-    """Sobrepõe resultado da família com dados confirmados do KnownPart."""
+    """
+    Sobrepõe resultado da família com dados do KnownPart.
+
+    Prioridade:
+      - confirmed / manual / distributor → DB sempre vence (verificado por humano)
+      - ai_* / estimated + gramática completa → gramática vence
+        (corrigir o gabarito corrige o resultado imediatamente, sem re-enriquecer)
+      - gramática incompleta → DB complementa
+    """
     r = _result_from_family(pn, fam)
 
+    # Verifica se a gramática produziu resultado completo (sem precisar de Gemini)
+    grammar_emcp_ok = fam.is_emcp and bool(
+        _CAP_RE.search(str(r.get("emcp_ram")  or "")) and
+        _CAP_RE.search(str(r.get("emcp_nand") or ""))
+    )
+    grammar_cap_ok = (not fam.is_emcp) and bool(
+        _CAP_RE.search(str(r.get("capacity") or r.get("dram_density") or ""))
+    )
+    grammar_complete = grammar_emcp_ok or grammar_cap_ok
+
+    # Entradas verificadas por humano sempre vencem a gramática
+    human_verified = known.confidence in ("confirmed", "manual", "distributor")
+
+    # Gramática vence DB para campos técnicos quando: resultado completo + não verificado
+    grammar_wins = grammar_complete and not human_verified
+
     if fam.is_emcp:
-        r["emcp_ram"]    = known.emcp_ram  or r["emcp_ram"]
-        r["emcp_nand"]   = known.emcp_nand or r["emcp_nand"]
-        r["emcp_device"] = known.device    or None
-        r["emcp_source"] = known.confidence
+        if not grammar_wins:
+            r["emcp_ram"]  = known.emcp_ram  or r["emcp_ram"]
+            r["emcp_nand"] = known.emcp_nand or r["emcp_nand"]
+        r["emcp_device"] = known.device or None
+        r["emcp_source"] = r.get("emcp_source", "gramática") if grammar_wins else known.confidence
         r["source_url"]  = known.source_url
     else:
-        if known.capacity:
-            r["capacity"] = known.capacity
-        if known.density_gbit:
-            r["dram_density"] = f"{known.density_gbit} = {known.density_gb} por die [✓]"
+        if not grammar_wins:
+            if known.capacity:
+                r["capacity"] = known.capacity
+            if known.density_gbit:
+                r["dram_density"] = f"{known.density_gbit} = {known.density_gb} por die [✓]"
         if known.device:
             r["device"] = known.device
 
     r["confidence"]  = known.confidence
     r["source_url"]  = known.source_url or r["source_url"]
     r["known_exact"] = True
+    r["classification_source"] = "gramática" if grammar_wins else "banco de dados"
     return r
 
 
 # ── Double-check: detecta possível remarked ───────────────────────────────────
-
-_CAP_RE = re.compile(r"(\d+)\s*([GMK])B", re.I)
-
 
 def _extract_gib(text: str) -> float | None:
     """Extrai capacidade em GB a partir de string como '4GB', '512MB'."""
@@ -557,6 +641,7 @@ def _save_gemini_to_db(pn: str, specs: dict):
                 part.save()
         return part
     except Exception:
+        logger.exception("Erro ao salvar resultado do Gemini no banco para PN=%s", pn)
         return None
 
 
@@ -593,6 +678,7 @@ def _build_result_from_gemini(pn: str, specs: dict, part) -> dict:
         "suffix_note":   None,
         "remarked_flag": False,
         "fuzzy_suggestions": [],
+        "classification_source": "Gemini",
     }
 
 
@@ -602,14 +688,14 @@ def _log_search(pn: str, found: bool, source_used: str = ""):
     try:
         SearchLog.objects.create(part_number=pn, found=found, source_used=source_used)
     except Exception:
-        pass
+        logger.exception("Erro ao gravar SearchLog para PN=%s", pn)
 
 
 def _log_unknown(pn: str):
     try:
         UnknownChip.objects.get_or_create(part_number=pn)
     except Exception:
-        pass
+        logger.exception("Erro ao gravar UnknownChip para PN=%s", pn)
 
 
 # ── Ponto de entrada público ───────────────────────────────────────────────────
@@ -635,7 +721,9 @@ def classify(pn_raw: str) -> dict:
         known = KnownPart.objects.select_related("family", "brand", "family__doc_page").get(
             part_number=pn, status="enriched"
         )
-        fam = known.family or _match_family(pn)
+        # Preferir ChipFamily pelo prefixo — mais confiável que o chip_type
+        # salvo pelo Gemini (que pode ter classificado errado, ex: uMCP como eMCP).
+        fam = _match_family(pn) or known.family
         if fam:
             result = _result_from_known(pn, known, fam)
         else:
@@ -685,6 +773,8 @@ def classify(pn_raw: str) -> dict:
             str(grammar_result.get("capacity", "") or grammar_result.get("dram_density", "") or "")
         )
 
+        _gemini_saved_now = False  # inicializa antes do bloco condicional
+
         if missing_emcp or missing_cap:
             hint = f"{fam.chip_type} {fam.subtype or ''} da família '{fam.prefix}'"
             specs = _gemini_lookup(pn, family_hint=hint)
@@ -707,8 +797,12 @@ def classify(pn_raw: str) -> dict:
                                 if followup.get(key) and not specs.get(key):
                                     specs[key] = followup[key]
 
-                if _specs_are_complete(specs):
-                    _save_gemini_to_db(pn, specs)
+                # Salva no banco sempre que temos ao menos chip_type.
+                # Antes era limitado a _specs_are_complete, mas isso causava
+                # re-consulta ao Gemini em toda busca quando a resposta era parcial.
+                # Agora salvamos sempre — resultado incompleto é melhor que zero cache.
+                if specs.get("chip_type"):
+                    _gemini_saved_now = _save_gemini_to_db(pn, specs) is not None
 
                 # Mescla dados Gemini
                 if specs.get("capacity"):
@@ -729,25 +823,30 @@ def classify(pn_raw: str) -> dict:
 
                 grammar_result["gemini_found"]  = True
                 grammar_result["known_exact"]   = True
+                grammar_result["classification_source"] = "Gramática + Gemini"
             else:
                 grammar_result["gemini_searched"] = True
                 grammar_result["gemini_found"]    = False
 
-        # Double-check: compara gramática com banco se PN existir enriquecido
-        # (pode ter sido salvo pelo Gemini acima — rever)
-        try:
-            db_part = KnownPart.objects.get(part_number=pn, status="enriched")
-            if db_part.family:
-                db_result = _result_from_known(pn, db_part, db_part.family)
-                if _check_remarked(grammar_result, db_result):
-                    grammar_result["remarked_flag"] = True
-                    grammar_result["remarked_note"] = (
-                        f"⚠️ Atenção: gramática indica {grammar_result.get('capacity') or grammar_result.get('dram_density')}, "
-                        f"banco confirma {db_result.get('capacity') or db_result.get('dram_density')}. "
-                        f"Verificar possível chip remarked."
-                    )
-        except KnownPart.DoesNotExist:
-            pass
+        # Double-check: compara gramática com banco se PN já existia como enriched
+        # ANTES desta execução. Se o Gemini acabou de criar o registro agora
+        # (_gemini_saved_now=True), não comparamos — os dados são os mesmos.
+        if not _gemini_saved_now:
+            try:
+                db_part = KnownPart.objects.get(part_number=pn, status="enriched")
+                if db_part.family:
+                    db_result = _result_from_known(pn, db_part, db_part.family)
+                    if _check_remarked(grammar_result, db_result):
+                        grammar_result["remarked_flag"] = True
+                        grammar_result["remarked_note"] = (
+                            f"⚠️ Atenção: gramática indica "
+                            f"{grammar_result.get('capacity') or grammar_result.get('dram_density')}, "
+                            f"banco confirma "
+                            f"{db_result.get('capacity') or db_result.get('dram_density')}. "
+                            f"Verificar possível chip remarked."
+                        )
+            except KnownPart.DoesNotExist:
+                pass
 
         _log_search(pn, found=True, source_used="grammar")
         return grammar_result
@@ -770,7 +869,7 @@ def classify(pn_raw: str) -> dict:
                         if followup.get(key) and not specs.get(key):
                             specs[key] = followup[key]
 
-        part = _save_gemini_to_db(pn, specs) if _specs_are_complete(specs) else None
+        part = _save_gemini_to_db(pn, specs) if specs.get("chip_type") else None
         result = _build_result_from_gemini(pn, specs, part)
         _log_search(pn, found=True, source_used="gemini")
         return result

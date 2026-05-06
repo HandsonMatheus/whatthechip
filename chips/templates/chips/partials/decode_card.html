@@ -30,6 +30,9 @@
 
   <div class="dc-footer">
     <span class="dc-conf">{{ confidence_label }}</span>
+    {% if result.classification_source %}
+      &nbsp;·&nbsp;<span class="dc-source-tag">via {{ result.classification_source }}</span>
+    {% endif %}
     {% if result.doc_url %}
       &nbsp;·&nbsp;<a class="dc-doclink" href="{{ result.doc_url }}">Ver documentação →</a>
     {% endif %}
@@ -39,6 +42,14 @@
     {% if result.raw_in_db %}
       &nbsp;·&nbsp;<span class="dc-queue">⏳ Na fila de enriquecimento</span>
     {% endif %}
+    &nbsp;·&nbsp;<span id="dc-report-{{ result.pn }}">
+      <button class="dc-report-btn"
+        hx-post="/chips/report/"
+        hx-target="#dc-report-{{ result.pn }}"
+        hx-swap="innerHTML"
+        hx-vals='{"pn": "{{ result.pn|escapejs }}", "chip_type": "{{ result.chip_type|escapejs }}", "capacity": "{{ result.capacity|default:result.emcp_nand|default:''|escapejs }}"}'
+        type="button">Reportar erro</button>
+    </span>
   </div>
 
 </div>

@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ckeditor',
     'pages',
     'chips',
 ]
@@ -90,31 +89,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Exemplo em .env:  GEMINI_API_KEY=AIzaSy...
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
-# ── CKEditor ──────────────────────────────────────────────────────────────────
-CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_IMAGE_BACKEND = 'pillow'
-
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'height': 600,
-        'width': '100%',
-        'allowedContent': True,          # Permite HTML livre (inclui anatomy tables)
-        'extraPlugins': 'codesnippet,templates',
-        # Arquivo com os templates de anatomy table (relativo a STATIC_URL)
-        'templates_files': ['/static/js/ckeditor_templates.js'],
-        'templates_replaceContent': False,   # insere no cursor, não substitui tudo
-        'toolbar_Full': [
-            ['Templates'],               # ← botão de templates (anatomy tables etc.)
-            ['Styles', 'Format', 'Font', 'FontSize'],
-            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
-            ['TextColor', 'BGColor'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'],
-            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink', 'Anchor'],
-            ['Image', 'Table', 'HorizontalRule', 'SpecialChar'],
-            ['Source'],   # Modo HTML direto — essencial para anatomy tables
-            ['Maximize'],
-        ],
-    },
-}
+# CKEditor removido — pages/admin.py usa Textarea monospace simples.

@@ -41,10 +41,11 @@ import urllib.request
 import urllib.error
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-BASE_DIR  = Path(__file__).resolve().parent.parent   # chipdocs/
+BASE_DIR    = Path(__file__).resolve().parent.parent          # chipdocs/
 SCRIPTS_DIR = Path(__file__).resolve().parent
-STATE_DIR = SCRIPTS_DIR / "state"
-LOGS_DIR  = SCRIPTS_DIR / "logs"
+STATE_DIR   = SCRIPTS_DIR / "state"                           # _enriched.json (progresso)
+PNS_DIR     = BASE_DIR.parent / "chipid_data" / "state"      # _pns.json (fonte de PNs)
+LOGS_DIR    = SCRIPTS_DIR / "logs"
 STATE_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
 
@@ -1263,9 +1264,14 @@ def main():
         sys.exit(1)
 
     # ── Lê PNs coletados ───────────────────────────────────────────────────────
-    pns_state_path = STATE_DIR / f"{brand}_pns.json"
+    # Busca em PNS_DIR (chipid_data/state/) — fonte original dos PNs coletados.
+    # Fallback para STATE_DIR (scripts/state/) para compatibilidade com setups antigos.
+    pns_state_path = PNS_DIR / f"{brand}_pns.json"
     if not pns_state_path.exists():
-        logger.error(f"❌ {pns_state_path} não encontrado.")
+        pns_state_path = STATE_DIR / f"{brand}_pns.json"
+    if not pns_state_path.exists():
+        logger.error(f"❌ {brand}_pns.json não encontrado.")
+        logger.error(f"   Procurado em: {PNS_DIR} e {STATE_DIR}")
         logger.error(f"   Execute primeiro: python scripts/collect_pns.py --brand {brand}")
         sys.exit(1)
 

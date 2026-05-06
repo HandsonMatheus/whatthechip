@@ -1,16 +1,19 @@
 """
 WhatTheChip — Chips API views
-GET /chips/search/?pn=XXXX   →  JSON com resultado de classificação
-GET /chips/decode/?pn=XXXX   →  HTML parcial (HTMX) com decode card
+GET  /chips/search/?pn=XXXX   →  JSON com resultado de classificação
+GET  /chips/decode/?pn=XXXX   →  HTML parcial (HTMX) com decode card
+POST /chips/report/            →  Registra solicitação de correção
 """
 import json
+import re
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_page
 
 from .engine import classify
-from .models import KnownPart, SearchLog, UnknownChip
+from .models import KnownPart, SearchLog, UnknownChip, CorrectionRequest
 
 
 _CONF_LABEL = {
@@ -93,6 +96,39 @@ def decode_html(request):
     }
 
     return render(request, "chips/partials/decode_card.html", context)
+
+
+@csrf_exempt
+@require_POST
+def report_error(request):
+    """
+    Registra uma solicitação de correção enviada pelo usuário.
+
+    Body (form ou JSON):
+        pn              — Part Number com erro (obrigatório)
+        chip_type       — Tipo exibido no momento do reporte
+        capacity        — Capacidade exibida no momento do reporte
+
+    Resposta:
+        HTML parcial com mensagem de confirmação (inserido via HTMX).
+    """
+    pn        = (request.POST.get("pn") or "").strip().upper()
+    pn        = re.sub(r"[^A-Z0-9]", "", pn)
+    chip_type = (request.POST.get("chip_type") or "").strip()[:100]
+    capacity  = (request.POST.get("capacity")  or "").strip()[:100]
+
+    if not pn or len(pn) < 4:
+        return HttpResponse('<span class="dc-report-err">PN inválido.</span>')
+
+    CorrectionRequest.objects.create(
+        part_number         = pn,
+        reported_chip_type  = chip_type,
+        reported_capacity   = capacity,
+    )
+
+    return HttpResponse(
+        '<span class="dc-report-ok">✓ Reporte recebido — obrigado!</span>'
+    )
 
 
 @require_GET

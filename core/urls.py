@@ -6,7 +6,6 @@ from pages import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('chips/', include('chips.urls', namespace='chips')),
     path('', views.home, name='home'),
     path('<slug:slug>/', views.page_detail, name='page'),

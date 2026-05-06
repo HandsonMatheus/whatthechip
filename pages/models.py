@@ -1,6 +1,5 @@
 import re
 from django.db import models
-from ckeditor.fields import RichTextField
 
 
 class Page(models.Model):
@@ -16,8 +15,8 @@ class Page(models.Model):
                                               help_text="Ordem de exibição na sidebar")
     section     = models.CharField(max_length=100, blank=True,
                                    help_text="Seção da sidebar, ex: '2. Fabricantes'")
-    content     = RichTextField(config_name='default',
-                                help_text="Conteúdo HTML da página (edite com CKEditor)")
+    content     = models.TextField(blank=True, default="",
+                                   help_text="Conteúdo HTML da página")
     updated_at  = models.DateTimeField(auto_now=True)
 
     class Meta:

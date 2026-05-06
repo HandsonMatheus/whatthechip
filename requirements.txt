@@ -1,6 +1,5 @@
 # Core Django
 Django>=4.2
-django-ckeditor>=6.7
 Pillow>=10.0
 psycopg2-binary>=2.9
 

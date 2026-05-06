@@ -3,15 +3,29 @@
   <h1>Guia de Identificação de Chips IC<br>para o mercado de refurbishing</h1>
   <p class="lede">Identifique qualquer chip pelo prefixo gravado no encapsulamento</p>
 
-  <form class="big-search" role="search" onsubmit="event.preventDefault();">
-    <span class="icon" aria-hidden="true">⌕</span>
-    <input id="big-search-input" type="text"
-      placeholder="Digite o PN completo ou prefixo… ex: K4B4G16E, KLM, H26M"
-      autocomplete="off" spellcheck="false" />
+  <form class="pin-search" id="pin-search" role="search" onsubmit="event.preventDefault();" autocomplete="off">
+
+    <!-- Label da família detectada -->
+    <div class="pin-family-hint" id="pin-family-hint"></div>
+
+    <!-- Caixas de caracteres -->
+    <div class="pin-row" id="pin-row">
+      <span class="pin-icon" aria-hidden="true">⌕</span>
+      <div class="pin-boxes" id="pin-boxes"></div>
+      <!-- Input real oculto — captura teclado, paste, mobile keyboard -->
+      <input type="text" id="big-search-input"
+             class="pin-real-input"
+             autocomplete="off" autocapitalize="characters"
+             autocorrect="off" spellcheck="false"
+             aria-label="Digite o Part Number do chip" />
+    </div>
+
+    <!-- Resultados: decode card + lista de prefixos -->
     <div id="big-search-results">
       <div id="dc-result"></div>
       <div id="prefix-results"></div>
     </div>
+
   </form>
 
   <p class="quicklinks">
@@ -19,36 +33,16 @@
   </p>
 </div>
 
-<!-- 3-CARD GRID -->
-<section class="cards">
-
-  <article class="card">
-    <h3>Sobre esta documentação</h3>
-    <div class="card-body">
-      <p>
-        Guia prático para identificar, classificar e avaliar chips de memória e
-        processamento vindos de placas descartadas — de <strong>DDR1</strong> até
-        <strong>UFS 4.0</strong> e <strong>LPDDR5X</strong>. Construído para
-        operadores de triagem, analistas e compradores do mercado de refurbishing
-        e reciclagem eletrônica.
-      </p>
-      <p>
-        Cobre Part Numbers de <strong>11 fabricantes ativos</strong> e 1 histórico
-        (Elpida, absorvida pela Micron), com tabelas de decodificação, metodologia
-        de detecção de chips remarked e hierarquia de viabilidade comercial.
-      </p>
-      <a class="cta" href="aprender.html">Começar agora →</a>
-      <div class="updated">Última atualização: maio de 2026</div>
-    </div>
-  </article>
-
-</section>
-
 <script>
 (function() {
+  'use strict';
+
   var DATA        = {{PREFIX_DATA}};
   var input       = document.getElementById('big-search-input');
-  var container   = document.getElementById('big-search-results');
+  var pinRow      = document.getElementById('pin-row');
+  var pinBoxes    = document.getElementById('pin-boxes');
+  var familyHint  = document.getElementById('pin-family-hint');
+  var results     = document.getElementById('big-search-results');
   var dcResult    = document.getElementById('dc-result');
   var prefixDiv   = document.getElementById('prefix-results');
 
@@ -83,6 +77,55 @@
     return isDjango ? '/' + slug + '/' : slug + '.html';
   }
 
+  // ── Estado do PIN ────────────────────────────────────────────────────────────
+  var PIN_DEFAULT   = 8;   // caixas mostradas antes de identificar família
+  var PIN_MAX       = 18;  // teto absoluto
+  var _currentLen   = PIN_DEFAULT;
+  var _detectedFam  = null;
+  var _debounceTimer = null;
+  var _lastApiPn    = '';
+
+  // ── Renderiza as caixas ──────────────────────────────────────────────────────
+  function renderBoxes(value, targetLen) {
+    var len = Math.max(targetLen, value.length + (targetLen > value.length ? 0 : 2));
+    len = Math.min(len, PIN_MAX);
+
+    // Só reconstrói o DOM se a quantidade mudou
+    if (pinBoxes.children.length !== len) {
+      pinBoxes.innerHTML = '';
+      for (var i = 0; i < len; i++) {
+        var box = document.createElement('span');
+        box.className = 'pin-box';
+        pinBoxes.appendChild(box);
+      }
+      _currentLen = len;
+    }
+
+    var boxes = pinBoxes.querySelectorAll('.pin-box');
+    var prefixLen = _detectedFam ? normalize(_detectedFam.prefix).length : 0;
+
+    for (var j = 0; j < boxes.length; j++) {
+      var ch = value[j] || '';
+      boxes[j].textContent = ch;
+      boxes[j].className = 'pin-box'
+        + (ch ? ' pin-filled' : '')
+        + (j === value.length ? ' pin-cursor' : '')
+        + (j < prefixLen && ch ? ' pin-prefix' : '');
+    }
+  }
+
+  // ── Atualiza hint da família ─────────────────────────────────────────────────
+  function updateHint(fam) {
+    if (!fam) {
+      familyHint.textContent = '';
+      familyHint.className = 'pin-family-hint';
+      return;
+    }
+    familyHint.textContent = fam.fab + ' · ' + fam.tipo
+      + (fam.pn_length ? '  (' + fam.pn_length + ' chars)' : '');
+    familyHint.className = 'pin-family-hint pin-family-hint--active';
+  }
+
   // ── Camada 1: busca de prefixos (client-side, instantânea) ──────────────────
   function matchPrefix(row, q) {
     var parts = row.prefix.split('/').map(function(p) {
@@ -91,6 +134,22 @@
     return parts.some(function(p) { return p.startsWith(q); })
         || normalize(row.fab).includes(q)
         || normalize(row.tipo).includes(q);
+  }
+
+  function bestMatch(q) {
+    // Retorna a família com prefixo mais longo que ainda faça startsWith no q
+    var best = null;
+    DATA.forEach(function(row) {
+      var parts = row.prefix.split('/').map(function(p) {
+        return normalize(p.replace(/\.\.\.$/, '').trim());
+      });
+      parts.forEach(function(p) {
+        if (q.startsWith(p) && (!best || p.length > normalize(best.prefix).length)) {
+          best = row;
+        }
+      });
+    });
+    return best;
   }
 
   function renderPrefixRows(hits, q) {
@@ -110,82 +169,126 @@
     return header + rows + footer;
   }
 
-  // ── Camada 2: decode completo via HTMX (server-rendered) ────────────────────
-  var _apiTimer  = null;
-  var _lastApiPn = '';
-
+  // ── Camada 2: decode via HTMX ────────────────────────────────────────────────
   function callApi(pn) {
-    if (!isDjango) return;               // site estático não tem API
+    if (!isDjango) return;
     if (pn === _lastApiPn) return;
     _lastApiPn = pn;
-
-    // Mostra indicador de carregamento enquanto aguarda resposta
-    if (dcResult) dcResult.innerHTML = '<div class="dc-loading">🔍 Consultando base de dados…</div>';
-
-    // HTMX faz a requisição e injeta a resposta em #dc-result
+    if (dcResult) dcResult.innerHTML = '<div class="dc-loading">Consultando base de dados<span class="dc-ellipsis"></span></div>';
     htmx.ajax('GET', '/chips/decode/?pn=' + encodeURIComponent(pn), {
-      target:  '#dc-result',
-      swap:    'innerHTML'
+      target: '#dc-result',
+      swap:   'innerHTML'
     });
   }
 
   // ── Render principal ─────────────────────────────────────────────────────────
-  function render(q) {
-    var norm = normalize(q);
+  function render(raw) {
+    var q = normalize(raw);
 
-    if (norm.length < 2) {
-      container.style.display = 'none';
+    if (q.length === 0) {
+      renderBoxes('', PIN_DEFAULT);
+      updateHint(null);
+      _detectedFam = null;
+      results.style.display = 'none';
       prefixDiv.innerHTML = '';
       if (dcResult) dcResult.innerHTML = '';
       _lastApiPn = '';
-      clearTimeout(_apiTimer);
+      clearTimeout(_debounceTimer);
       return;
     }
 
-    // Camada 1: prefixos (instantâneo)
-    var hits = DATA.filter(function(r) { return matchPrefix(r, norm); });
-    if (hits.length === 0) {
-      prefixDiv.innerHTML = '<div class="pr-empty">Nenhum prefixo encontrado para "<strong>'
-        + escHtml(q) + '</strong>". <a href="' + pageUrl('prefixos') + '">Ver tabela completa →</a></div>';
-    } else {
-      prefixDiv.innerHTML = renderPrefixRows(hits, norm);
-    }
-    container.style.display = 'block';
-
-    // Camada 2: decode card via HTMX (debounce 350 ms, apenas 6+ chars)
-    if (norm.length >= 6 && isDjango) {
-      clearTimeout(_apiTimer);
-      _apiTimer = setTimeout(function() { callApi(norm); }, 350);
-    } else {
-      // PN curto demais para decode — limpa o card
+    // ── Detecta família ──────────────────────────────────────────────────────
+    var fam = bestMatch(q);
+    if (fam !== _detectedFam) {
+      _detectedFam = fam;
+      updateHint(fam);
+      // Reset do decode se mudou de família
       if (dcResult) dcResult.innerHTML = '';
       _lastApiPn = '';
-      clearTimeout(_apiTimer);
+    }
+
+    // ── Calcula quantas caixas mostrar ───────────────────────────────────────
+    var targetLen = PIN_DEFAULT;
+    if (fam && fam.pn_length) {
+      targetLen = fam.pn_length;
+    } else if (q.length >= PIN_DEFAULT) {
+      // Sem pn_length definido: expande conforme o usuário digita
+      targetLen = q.length + 2;
+    }
+    renderBoxes(q, targetLen);
+
+    // ── Camada 1: prefixos (instantâneo) ────────────────────────────────────
+    var hits = DATA.filter(function(r) { return matchPrefix(r, q); });
+    if (hits.length === 0) {
+      prefixDiv.innerHTML = '<div class="pr-empty">Nenhum prefixo encontrado para "<strong>'
+        + escHtml(raw) + '</strong>". <a href="' + pageUrl('prefixos') + '">Ver tabela completa →</a></div>';
+    } else {
+      prefixDiv.innerHTML = renderPrefixRows(hits, q);
+    }
+    results.style.display = 'block';
+
+    // ── Camada 2: trigger do decode ──────────────────────────────────────────
+    clearTimeout(_debounceTimer);
+
+    if (fam && fam.pn_length && q.length >= fam.pn_length) {
+      // PN completo para família conhecida → dispara imediatamente
+      callApi(q);
+    } else if (q.length >= 4) {
+      // Família sem pn_length definido → debounce de 500ms
+      _debounceTimer = setTimeout(function() { callApi(q); }, 500);
     }
   }
 
-  // Exposto globalmente para o onclick das sugestões fuzzy (renderizadas pelo servidor)
-  window.triggerSearch = function(pn) {
-    var norm = normalize(pn);
-    input.value = pn;
-    render(pn);
-    if (isDjango && norm.length >= 6) callApi(norm);
-  };
+  // ── Inicialização: caixas vazias ─────────────────────────────────────────────
+  renderBoxes('', PIN_DEFAULT);
 
+  // ── Foco: clicar em qualquer lugar do pin-row foca o input ──────────────────
+  if (pinRow) {
+    pinRow.addEventListener('click', function() { input && input.focus(); });
+  }
+
+  // ── Eventos do input ─────────────────────────────────────────────────────────
   if (input) {
-    input.addEventListener('input', function() { render(this.value); });
+    input.addEventListener('input', function() {
+      // Força maiúsculo e limpa caracteres inválidos direto no input
+      var clean = normalize(this.value);
+      if (this.value !== clean) this.value = clean;
+      render(clean);
+    });
+
     input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(_debounceTimer);
+        var q = normalize(this.value);
+        if (isDjango && q.length >= 4) callApi(q);
+      }
       if (e.key === 'Escape') {
         this.value = '';
         render('');
         this.blur();
       }
     });
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.big-search')) {
-        container.style.display = 'none';
-      }
-    });
+
+    // Foca o input ao carregar a página
+    setTimeout(function() { input.focus(); }, 100);
   }
+
+  // ── Fecha resultados ao clicar fora ─────────────────────────────────────────
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#pin-search')) {
+      results.style.display = 'none';
+    }
+  });
+
+  // ── API global para sugestões fuzzy ─────────────────────────────────────────
+  window.triggerSearch = function(pn) {
+    if (!input) return;
+    var clean = normalize(pn);
+    input.value = clean;
+    render(clean);
+    if (isDjango && clean.length >= 4) callApi(clean);
+  };
+
 })();
 </script>

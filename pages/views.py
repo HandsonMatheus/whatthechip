@@ -22,24 +22,32 @@ def _fix_html_links(content):
 
 
 def _prefix_data_from_db():
-    """Extrai prefixos da página 'prefixos' no banco — mesmo algoritmo do build.py."""
-    try:
-        prefixos = Page.objects.get(slug='prefixos')
-        rows = re.findall(
-            r'<tr>\s*<td><code>(.*?)</code></td>\s*<td>(.*?)</td>\s*<td>(.*?)</td>\s*</tr>',
-            prefixos.content, re.DOTALL
-        )
-        data = [
-            {
-                'prefix': re.sub(r'<[^>]+>', '', p).strip(),
-                'fab':    re.sub(r'<[^>]+>', '', f).strip(),
-                'tipo':   re.sub(r'<[^>]+>', '', t).strip(),
-            }
-            for p, f, t in rows
-        ]
-        return data
-    except Page.DoesNotExist:
-        return []
+    """
+    Gera lista de prefixos diretamente da tabela ChipFamily.
+
+    Substituiu o parser de regex que lia o HTML da página 'prefixos' — que era
+    frágil (quebrava silenciosamente se o CKEditor reformatasse o HTML) e mantinha
+    duas fontes de verdade separadas. Agora há uma única fonte: ChipFamily.
+
+    A página 'prefixos' continua existindo como documento editorial para o usuário
+    ler, mas não é mais usada como fonte de dados para a busca.
+    """
+    from chips.models import ChipFamily
+    families = (
+        ChipFamily.objects
+        .filter(active=True)
+        .select_related('brand')
+        .order_by('brand__name', 'prefix')
+    )
+    return [
+        {
+            'prefix':    f.prefix,
+            'fab':       f.brand.name,
+            'tipo':      f"{f.chip_type}{' ' + f.subtype if f.subtype else ''}".strip(),
+            'pn_length': f.pn_length,   # None → UI usa debounce fallback
+        }
+        for f in families
+    ]
 
 
 def home(request):

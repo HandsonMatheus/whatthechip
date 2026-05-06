@@ -73,11 +73,28 @@ class ChipFamily(models.Model):
     chip_type           = models.TextField(help_text="Ex: eMMC, RAM, eMCP, UFS")
     subtype             = models.TextField(blank=True, default="", help_text="Ex: DDR3 SDRAM, LPDDR4X")
     interface           = models.TextField(blank=True, default="")
-    decode_cap_pos      = models.IntegerField(null=True, blank=True, help_text="Posição no PN que indica a capacidade")
-    decode_cap_map      = models.TextField(blank=True, default="", help_text="Nome do DecodeMap para capacidade")
-    decode_gen_pos      = models.IntegerField(null=True, blank=True)
-    decode_gen_map      = models.TextField(blank=True, default="", help_text="Nome do DecodeMap para geração")
-    decode_density_type = models.TextField(blank=True, default="", help_text="'pc' ou 'mobile' para chips DRAM")
+    decode_cap_pos      = models.IntegerField(null=True, blank=True,
+                              help_text="Índice (0-based) do 1º char que codifica a capacidade. "
+                                        "Ex: KLM[C]G0016A → pos=3")
+    decode_cap_len      = models.IntegerField(default=1,
+                              help_text="Nº de chars da chave de capacidade (padrão=1). "
+                                        "Use 2 para eMCP com pares como 'X1', 'BT', 'GD'")
+    decode_cap_map      = models.TextField(blank=True, default="",
+                              help_text="Nome do DecodeMap para capacidade. "
+                                        "Para eMCP: val_primary=cap NAND, val_secondary=cap RAM")
+    decode_gen_pos      = models.IntegerField(null=True, blank=True,
+                              help_text="Índice (0-based) do char que codifica a geração/tipo RAM. "
+                                        "Ex: KMR[R]x1000B → pos=2 → 'R'=LPDDR4/4X")
+    decode_gen_map      = models.TextField(blank=True, default="",
+                              help_text="Nome do DecodeMap para geração/tipo RAM. "
+                                        "val_primary=geração (ex: 'LPDDR4/4X', 'eMMC 5.1')")
+    decode_density_type = models.TextField(blank=True, default="",
+                              help_text="'pc' ou 'mobile' — ativa decode de densidade DRAM")
+    pn_length           = models.IntegerField(null=True, blank=True,
+                              help_text="Comprimento canônico do PN (sem sufixo opcional após hífen). "
+                                        "Ex: KLM8G1GETF = 10. Usado pela UI de PIN para detectar "
+                                        "conclusão da entrada e disparar o decode automaticamente. "
+                                        "Deixar em branco se o comprimento for variável.")
     is_emcp             = models.BooleanField(default=False)
     suffix_rules        = models.TextField(blank=True, default="", help_text="JSON com regras de sufixo")
     tip                 = models.TextField(blank=True, default="", help_text="Dica exibida para o operador")
@@ -232,3 +249,39 @@ class UnknownChip(models.Model):
 
     def __str__(self):
         return self.part_number
+
+
+class CorrectionRequest(models.Model):
+    """
+    Solicitação de correção enviada por usuário ao clicar em 'Reportar erro'.
+
+    Fluxo de triagem:
+        pending  → operador analisa no admin
+        fixed    → gabarito ou KnownPart corrigido
+        rejected → falso positivo (classificação estava certa)
+    """
+    STATUS_CHOICES = [
+        ("pending",  "⏳ Pendente"),
+        ("fixed",    "✅ Corrigido"),
+        ("rejected", "✗ Rejeitado"),
+    ]
+
+    part_number    = models.TextField(db_index=True)
+    reported_chip_type  = models.TextField(blank=True, default="",
+                              help_text="Tipo exibido no momento do reporte (pode estar errado)")
+    reported_capacity   = models.TextField(blank=True, default="",
+                              help_text="Capacidade exibida no momento do reporte")
+    notes          = models.TextField(blank=True, default="",
+                              help_text="Observação livre (preenchida pelo operador no admin)")
+    status         = models.CharField(max_length=20, choices=STATUS_CHOICES,
+                              default="pending", db_index=True)
+    reported_at    = models.DateTimeField(auto_now_add=True)
+    resolved_at    = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Solicitação de Correção"
+        verbose_name_plural = "Solicitações de Correção"
+        ordering = ["-reported_at"]
+
+    def __str__(self):
+        return f"{self.part_number} ({self.get_status_display()})"

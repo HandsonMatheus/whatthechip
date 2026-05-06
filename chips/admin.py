@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django.utils import timezone
 from django.utils.html import format_html
-from .models import Brand, Source, ChipFamily, DecodeMap, KnownPart, SearchLog, UnknownChip
+from .models import Brand, Source, ChipFamily, DecodeMap, KnownPart, SearchLog, UnknownChip, CorrectionRequest
 
 
 @admin.register(Brand)
@@ -28,7 +29,7 @@ class SourceAdmin(admin.ModelAdmin):
 class ChipFamilyAdmin(admin.ModelAdmin):
     list_display  = (
         "prefix", "brand", "chip_type", "subtype", "is_emcp",
-        "decode_cap_map", "decode_density_type", "active", "priority", "doc_page"
+        "decode_summary", "active", "priority", "doc_link",
     )
     list_filter   = ("brand", "chip_type", "is_emcp", "active")
     search_fields = ("prefix", "chip_type", "subtype")
@@ -36,22 +37,60 @@ class ChipFamilyAdmin(admin.ModelAdmin):
     autocomplete_fields = ("doc_page",)
     fieldsets = (
         ("Identificação", {
-            "fields": ("brand", "prefix", "chip_type", "subtype", "interface", "is_emcp", "active", "priority")
+            "fields": ("brand", "prefix", "chip_type", "subtype", "interface", "is_emcp", "active", "priority"),
+            "description": (
+                "<strong>interface</strong>: versão do padrão de armazenamento da família — "
+                "ex: 'eMMC 5.1', 'UFS 3.1'. "
+                "Para eMCP, é a versão do NAND interno (ex: 'eMMC 5.1'). "
+                "Deixe em branco se desconhecido."
+            ),
         }),
-        ("Decodificação", {
+        ("Decodificação do Part Number", {
             "fields": (
-                "decode_cap_pos", "decode_cap_map",
+                "decode_cap_pos", "decode_cap_len", "decode_cap_map",
                 "decode_gen_pos", "decode_gen_map",
                 "decode_density_type",
                 "suffix_rules",
             ),
             "classes": ("collapse",),
+            "description": (
+                "Campos de anatomia do PN. "
+                "<b>cap_pos + cap_len + cap_map</b>: decodifica capacidade (eMMC/NAND) ou par NAND+RAM (eMCP). "
+                "<b>gen_pos + gen_map</b>: decodifica geração ou tipo RAM. "
+                "Todos os índices são 0-based (K=0, M=1, R=2, …)."
+            ),
         }),
         ("Documentação e Contexto", {
             "fields": ("doc_page", "tip", "reasoning"),
             "classes": ("collapse",),
+            "description": (
+                "Vincule a <b>doc_page</b> à página de anatomia correspondente no WhatTheChip. "
+                "O resultado de busca exibirá um link '📄 Ver anatomia'."
+            ),
         }),
     )
+
+    def decode_summary(self, obj):
+        parts = []
+        if obj.decode_cap_map:
+            cap_len = obj.decode_cap_len or 1
+            parts.append(f"cap@{obj.decode_cap_pos}[{cap_len}]={obj.decode_cap_map}")
+        if obj.decode_gen_map:
+            parts.append(f"gen@{obj.decode_gen_pos}={obj.decode_gen_map}")
+        if obj.decode_density_type:
+            parts.append(f"dens={obj.decode_density_type}")
+        return " | ".join(parts) if parts else "—"
+    decode_summary.short_description = "Decode rules"
+
+    def doc_link(self, obj):
+        if obj.doc_page_id:
+            try:
+                url = obj.doc_page.get_absolute_url()
+                return format_html('<a href="{}" target="_blank">📄 {}</a>', url, obj.doc_page.slug)
+            except Exception:
+                return "📄 (erro)"
+        return "—"
+    doc_link.short_description = "Doc"
 
 
 @admin.register(DecodeMap)
@@ -124,3 +163,47 @@ class UnknownChipAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(CorrectionRequest)
+class CorrectionRequestAdmin(admin.ModelAdmin):
+    list_display   = ("part_number", "reported_chip_type", "reported_capacity",
+                      "status_badge", "reported_at", "knownpart_link")
+    list_filter    = ("status",)
+    search_fields  = ("part_number",)
+    readonly_fields = ("part_number", "reported_chip_type", "reported_capacity", "reported_at")
+    fields         = ("part_number", "reported_chip_type", "reported_capacity",
+                      "reported_at", "status", "notes")
+    actions        = ["mark_fixed", "mark_rejected"]
+
+    def has_add_permission(self, request):
+        return False
+
+    def status_badge(self, obj):
+        colors = {"pending": "#B45309", "fixed": "#166534", "rejected": "#6B7280"}
+        return format_html(
+            '<span style="color:{};font-weight:bold">{}</span>',
+            colors.get(obj.status, "#000"),
+            obj.get_status_display(),
+        )
+    status_badge.short_description = "Status"
+
+    def knownpart_link(self, obj):
+        from .models import KnownPart
+        try:
+            kp = KnownPart.objects.get(part_number=obj.part_number)
+            url = f"/admin/chips/knownpart/{kp.pk}/change/"
+            return format_html('<a href="{}">📦 Ver no banco</a>', url)
+        except KnownPart.DoesNotExist:
+            return "—"
+    knownpart_link.short_description = "KnownPart"
+
+    @admin.action(description="✅ Marcar como corrigido")
+    def mark_fixed(self, request, queryset):
+        queryset.update(status="fixed", resolved_at=timezone.now())
+        self.message_user(request, f"{queryset.count()} solicitação(ões) marcada(s) como corrigida(s).")
+
+    @admin.action(description="✗ Marcar como rejeitado")
+    def mark_rejected(self, request, queryset):
+        queryset.update(status="rejected", resolved_at=timezone.now())
+        self.message_user(request, f"{queryset.count()} solicitação(ões) rejeitada(s).")

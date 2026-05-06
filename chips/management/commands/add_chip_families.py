@@ -330,6 +330,112 @@ FAMILIES = [
         'priority':   80,
         'tip': 'Módulo RAM Kingston série Action (mercado OEM/notebook). Prefixo ACR.',
     },
+
+    # ── Samsung NAND Flash (K9x) ───────────────────────────────────────────────
+    # Chips muito comuns em TVs, eletrodomésticos, impressoras e dispositivos IoT.
+    # A anatomia Samsung NAND segue: K9[tipo][densidade][barramento][geração][sufixo]
+    # Pos 2 = tipo (F=SLC, G=MLC, H=MLC high-density, K=SLC large, L=MLC large, W=SLC 3V)
+    # Pos 3 = densidade: 8→1Gb, G→2Gb, H→4Gb, J→8Gb, K→16Gb, L→32Gb, M→64Gb, N→128Gb
+    # Pos 4 = largura do barramento: 0=x8 (1 die), 1=x16 (2 die)
+    # Ex: K9F2G08U0C = SLC, 2Gb=256MB, x8, 3.3V, geração C
+
+    {
+        'brand_name': 'Samsung',
+        'prefix':     'K9F',
+        'chip_type':  'NAND Flash',
+        'subtype':    'SLC NAND',
+        'interface':  'NAND (x8/x16)',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'NAND Flash Samsung SLC (Single-Level Cell). '
+            'Alta durabilidade, comum em TVs, impressoras e equipamentos industriais. '
+            'Pos 3 = densidade: 8=1Gb, G=2Gb, H=4Gb, J=8Gb, K=16Gb. '
+            'Ex: K9F2G08U0C = 2Gb/256MB SLC x8.'
+        ),
+    },
+    {
+        'brand_name': 'Samsung',
+        'prefix':     'K9G',
+        'chip_type':  'NAND Flash',
+        'subtype':    'MLC NAND',
+        'interface':  'NAND (x8/x16)',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'NAND Flash Samsung MLC (Multi-Level Cell). '
+            'Maior densidade que SLC, comum em TVs e set-top boxes. '
+            'Ex: K9GAG08U0M = 16Gb/2GB MLC x8.'
+        ),
+    },
+    {
+        'brand_name': 'Samsung',
+        'prefix':     'K9K',
+        'chip_type':  'NAND Flash',
+        'subtype':    'SLC NAND (alta densidade)',
+        'interface':  'NAND (x8)',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'NAND Flash Samsung SLC de alta densidade. '
+            'Usado em equipamentos com requisito alto de endurance. '
+            'Ex: K9K8G08U0M = 8Gb/1GB SLC.'
+        ),
+    },
+    {
+        'brand_name': 'Samsung',
+        'prefix':     'K9L',
+        'chip_type':  'NAND Flash',
+        'subtype':    'MLC NAND (alta densidade)',
+        'interface':  'NAND (x8)',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'NAND Flash Samsung MLC de alta densidade (série L). Ex: K9LBG08U0M = 32Gb/4GB.',
+    },
+    {
+        'brand_name': 'Samsung',
+        'prefix':     'K9W',
+        'chip_type':  'NAND Flash',
+        'subtype':    'SLC NAND (3.3V)',
+        'interface':  'NAND (x8)',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'NAND Flash Samsung SLC série W, tensão 3.3V. Comum em equipamentos legados.',
+    },
+    {
+        'brand_name': 'Samsung',
+        'prefix':     'K9C',
+        'chip_type':  'NAND Flash',
+        'subtype':    'SLC NAND (1.8V)',
+        'interface':  'NAND (x8/x16)',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'NAND Flash Samsung SLC série C, tensão 1.8V. Usado em câmeras e PDAs.',
+    },
+    {
+        'brand_name': 'Samsung',
+        'prefix':     'K9HDG',
+        'chip_type':  'NAND Flash',
+        'subtype':    'MLC NAND (série HD)',
+        'interface':  'NAND (x8)',
+        'is_emcp':    False,
+        'priority':   40,   # prefixo mais longo → maior prioridade
+        'tip': (
+            'NAND Flash Samsung série HD (alta densidade, MLC). '
+            'Ex: K9HDG08U5M-LCB0 = 16GB MLC NAND, pacote LGA. '
+            'Usado em TVs Samsung e monitores.'
+        ),
+    },
+    {
+        'brand_name': 'Samsung',
+        'prefix':     'K9H',
+        'chip_type':  'NAND Flash',
+        'subtype':    'MLC NAND (série H)',
+        'interface':  'NAND (x8)',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': 'NAND Flash Samsung MLC série H. Comum em TVs e monitores Samsung.',
+    },
 ]
 
 

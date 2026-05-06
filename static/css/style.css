@@ -651,15 +651,14 @@ a.pr-row:visited { color: inherit; }
 #big-search-results {
   display: none;
   position: absolute;
-  top: 100%;
-  left: -2px; right: -2px;
+  top: calc(100% + 8px);   /* gap entre pin boxes e dropdown */
+  left: 0; right: 0;
   background: #fff;
   border: 2px solid var(--hi-1);
-  border-top: 0;
-  max-height: 420px;
+  max-height: 460px;
   overflow-y: auto;
   z-index: 100;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.14);
+  box-shadow: 0 4px 0 0 var(--hi-3), 0 8px 20px rgba(0,0,0,0.15);
 }
 #big-search-results .pr-header {
   display: grid;
@@ -753,28 +752,95 @@ a.pr-row:visited { color: inherit; }
 }
 
 /* Big search (home page) */
-.big-search {
+/* ── PIN SEARCH ──────────────────────────────────────────────────────────── */
+.pin-search {
+  max-width: 760px;
+  margin: 0 auto 10px auto;
+  position: relative;  /* âncora o dropdown #big-search-results */
+}
+
+/* Hint da família detectada */
+.pin-family-hint {
+  font-size: 12px;
+  font-weight: 600;
+  color: transparent;
+  text-align: center;
+  letter-spacing: .03em;
+  margin-bottom: 8px;
+  height: 18px;
+  transition: color .15s;
+}
+.pin-family-hint--active {
+  color: var(--hi-1);
+}
+
+/* Linha com ícone + caixas */
+.pin-row {
   display: flex;
   align-items: center;
-  background: #fff;
-  border: 2px solid var(--hi-1);
-  box-shadow: 0 0 0 3px var(--hi-5), 1px 1px 0 #fff inset;
-  height: 38px;
-  max-width: 640px;
-  margin: 0 auto 10px auto;
-  position: relative;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  cursor: text;
 }
-.big-search .icon { padding: 0 10px 0 14px; color: var(--ink-mute); font-size: 16px; }
-.big-search input {
-  border: 0; flex: 1; height: 100%;
-  padding: 0 8px;
-  font-family: var(--font);
-  font-size: 13px;
-  background: transparent;
-  outline: none;
+.pin-icon {
+  color: var(--ink-mute);
+  font-size: 20px;
+  line-height: 1;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* Container das caixas */
+.pin-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+}
+
+/* Cada caixa de caractere */
+.pin-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 44px;
+  border: 2px solid #d0d5dd;
+  border-radius: 6px;
+  font-family: 'Fira Code', 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 17px;
+  font-weight: 700;
   color: var(--ink);
+  background: #fff;
+  transition: border-color .12s, background .12s, box-shadow .12s;
+  user-select: none;
 }
-.big-search input::placeholder { color: var(--ink-mute); }
+.pin-box.pin-filled {
+  border-color: #9aa5b1;
+  background: #f8f9fa;
+}
+.pin-box.pin-cursor {
+  border-color: var(--hi-1);
+  box-shadow: 0 0 0 3px var(--hi-5);
+  background: #fff;
+}
+/* Caixas do prefixo identificado ficam com fundo colorido */
+.pin-box.pin-prefix {
+  background: var(--hi-5);
+  border-color: var(--hi-2);
+}
+
+/* Input real — invisível, captura teclado */
+.pin-real-input {
+  position: fixed;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  left: -9999px;
+  top: -9999px;
+}
 
 .quicklinks {
   text-align: center;
@@ -1206,13 +1272,24 @@ a.pr-row:visited { color: inherit; }
 [data-theme="dark"] .hero .lede { color: var(--ink-soft); }
 [data-theme="dark"] .quicklinks { color: var(--ink-mute); }
 [data-theme="dark"] .quicklinks .count { color: var(--hi-1); font-weight: bold; }
-[data-theme="dark"] .big-search {
+[data-theme="dark"] .pin-box {
   background: var(--paper);
-  border-color: var(--hi-2);
-  box-shadow: 0 0 0 3px var(--hi-5), 1px 1px 0 rgba(255,255,255,0.04) inset;
+  border-color: #3a3f4b;
+  color: var(--ink);
 }
-[data-theme="dark"] .big-search input { color: var(--ink); }
-[data-theme="dark"] .big-search input::placeholder { color: var(--ink-mute); }
+[data-theme="dark"] .pin-box.pin-filled {
+  background: #1e2230;
+  border-color: #4a5060;
+}
+[data-theme="dark"] .pin-box.pin-cursor {
+  border-color: var(--hi-1);
+  box-shadow: 0 0 0 3px var(--hi-5);
+  background: var(--paper);
+}
+[data-theme="dark"] .pin-box.pin-prefix {
+  background: var(--hi-5);
+  border-color: var(--hi-2);
+}
 [data-theme="dark"] #big-search-results {
   background: var(--paper);
   border-color: var(--hi-2);
@@ -1353,6 +1430,253 @@ a.pr-row:visited { color: inherit; }
 }
 
 /* ══════════════════════════════════════════════════════════
+   DECODE CARD — resultado de classificação de chip
+   Aparece dentro de #dc-result (dentro de #big-search-results)
+   ══════════════════════════════════════════════════════════ */
+
+/* Wrapper do resultado — separa visualmente do bloco de prefixos abaixo */
+#dc-result:not(:empty) {
+  border-bottom: 2px solid var(--hi-2);
+}
+
+/* Quando o decode card encontrou um chip (.dc-card presente), suprimir
+   a mensagem "Nenhum prefixo encontrado" na camada 1 — o chip foi
+   identificado pela camada 2 (gramática/Gemini) mesmo sem prefixo
+   registrado em ChipFamily. */
+#dc-result:has(.dc-card) + #prefix-results .pr-empty {
+  display: none;
+}
+
+/* Card principal */
+.dc-card {
+  padding: 14px 18px 12px 18px;
+  background: var(--ok-bg);
+  border-left: 4px solid var(--ok-bd);
+  text-align: left;
+}
+.dc-card.dc-remarked {
+  background: var(--warn-bg);
+  border-left-color: var(--warn-bd);
+}
+/* Linha fina separando o card dos prefixos abaixo */
+.dc-card + * { border-top: 1px solid var(--rule-soft); }
+
+/* Cabeçalho: marca + tipo */
+.dc-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 9px;
+  text-align: left;
+}
+.dc-brand {
+  font-size: 10px;
+  font-weight: bold;
+  font-family: var(--font-mono);
+  color: var(--hi-2);
+  background: var(--hi-5);
+  border: 1px solid var(--hi-3);
+  border-radius: 2px;
+  padding: 1px 6px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.dc-head strong {
+  color: var(--hi-1);
+  font-size: 16px;
+  font-family: var(--font);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.dc-head small {
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-weight: normal;
+  font-family: var(--font);
+}
+
+/* Tabela de campos: grade dt/dd alinhada */
+/* (text-align já resolvido pelo .dc-card pai) */
+
+/* Alerta de remarked */
+.dc-alert {
+  margin: 0 0 9px 0;
+  padding: 6px 10px 6px 30px;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-bd);
+  border-radius: 2px;
+  font-size: 11px;
+  color: #7B3A20;
+  line-height: 1.55;
+  position: relative;
+}
+.dc-alert::before {
+  content: "⚠";
+  position: absolute;
+  left: 9px;
+  top: 6px;
+  font-size: 12px;
+}
+
+/* Tabela de campos: grade dt/dd alinhada */
+.dc-fields {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 3px 14px;
+  margin: 0 0 9px 0;
+  align-items: baseline;
+}
+.dc-fields dt {
+  color: var(--ink-mute);
+  font-size: 9px;
+  font-weight: bold;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+  padding: 3px 0;
+}
+.dc-fields dd {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font);   /* regular — apenas labels ficam mono */
+  font-size: 13px;
+  padding: 3px 0;
+  line-height: 1.4;
+}
+
+/* Rodapé: confiança, links */
+/* Os separadores · já vêm do template (  ·  ) — não adicionar via CSS */
+.dc-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,0.07);
+  font-size: 11px;
+  color: var(--ink-mute);
+  text-align: left;
+}
+.dc-conf {
+  color: var(--ink-mute);
+  font-size: 11px;
+}
+.dc-doclink,
+.dc-srclink {
+  color: var(--link);
+  border-bottom: 1px solid rgba(0,51,204,0.2);
+  font-size: 11px;
+  text-decoration: none;
+}
+.dc-doclink:hover,
+.dc-srclink:hover {
+  color: var(--link-hover);
+  border-bottom-color: var(--link-hover);
+}
+.dc-queue {
+  color: var(--ink-mute);
+  font-size: 11px;
+  font-style: italic;
+}
+.dc-source-tag {
+  color: var(--ink-mute);
+  font-size: 11px;
+}
+.dc-report-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 11px;
+  color: var(--ink-mute);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+.dc-report-btn:hover { color: var(--warn-bd); }
+.dc-report-ok  { font-size: 11px; color: var(--ok-bd);   font-style: italic; }
+.dc-report-err { font-size: 11px; color: var(--warn-bd); font-style: italic; }
+
+/* Estado de carregamento — dots retrô */
+.dc-loading {
+  padding: 13px 18px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--ink-mute);
+  text-align: center;
+  letter-spacing: .03em;
+}
+.dc-ellipsis::after {
+  content: '';
+  display: inline-block;
+  width: 2ch;          /* reserva espaço fixo para não flutuar o texto */
+  text-align: left;
+  animation: dc-dots 1.2s steps(4, end) infinite;
+}
+@keyframes dc-dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+}
+
+/* PN não encontrado */
+.dc-not-found {
+  padding: 12px 18px;
+  font-size: 12px;
+  color: var(--ink-mute);
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+/* Sugestões fuzzy (typo) */
+.dc-fuzzy { border-bottom: 1px solid var(--rule-soft); }
+a.dc-fuzzy-item { cursor: pointer; }
+a.dc-fuzzy-item:hover { background: var(--hi-5); }
+
+/* ── Dark mode: decode card ── */
+[data-theme="dark"] .dc-card {
+  background: var(--ok-bg);
+  border-left-color: var(--ok-bd);
+}
+[data-theme="dark"] .dc-card.dc-remarked {
+  background: var(--warn-bg);
+  border-left-color: var(--warn-bd);
+}
+[data-theme="dark"] .dc-brand {
+  background: rgba(90,126,218,0.15);
+  border-color: var(--hi-3);
+  color: var(--hi-3);
+}
+[data-theme="dark"] .dc-head strong { color: var(--hi-1); }
+[data-theme="dark"] .dc-head small  { color: var(--ink-mute); }
+[data-theme="dark"] .dc-alert {
+  background: var(--warn-bg);
+  border-color: var(--warn-bd);
+  color: #E8A080;
+}
+[data-theme="dark"] .dc-fields dt { color: var(--ink-mute); }
+[data-theme="dark"] .dc-fields dd { color: var(--ink); }
+[data-theme="dark"] .dc-footer {
+  border-top-color: var(--rule-soft);
+  color: var(--ink-mute);
+}
+[data-theme="dark"] .dc-conf  { color: var(--ink-mute); }
+[data-theme="dark"] .dc-queue { color: var(--ink-mute); }
+[data-theme="dark"] .dc-doclink,
+[data-theme="dark"] .dc-srclink {
+  color: var(--link);
+  border-bottom-color: rgba(120,180,255,0.25);
+}
+[data-theme="dark"] .dc-doclink:hover,
+[data-theme="dark"] .dc-srclink:hover { color: var(--link-hover); border-bottom-color: var(--link-hover); }
+[data-theme="dark"] .dc-not-found { color: var(--ink-mute); border-color: var(--rule-soft); }
+[data-theme="dark"] a.dc-fuzzy-item:hover { background: var(--hi-5); }
+
+/* ══════════════════════════════════════════════════════════
    PRINT — renderiza somente a tabela de prefixos
    ══════════════════════════════════════════════════════════ */
 @media print {
@@ -1364,7 +1688,7 @@ a.pr-row:visited { color: inherit; }
 
   /* ── Oculta toda a UI de navegação ── */
   .topbar, .sidenav, .page-foot, .page-nav,
-  .print-bar, .hero, .cards, .big-search,
+  .print-bar, .hero, .cards, .pin-search,
   h2.section, h2.section + p,
   .nota, .callout { display: none !important; }
 
