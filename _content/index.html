@@ -71,7 +71,11 @@
     return map[fab] || 'prefixos';
   }
 
-  var isDjango = !window.location.pathname.endsWith('.html') && window.location.port !== '';
+  // isDjango: verdadeiro quando servido por Django (qualquer porta HTTP/HTTPS),
+  // falso apenas quando aberto como arquivo local (file://) ou com extensão .html.
+  // A checagem anterior usava window.location.port !== '' — quebrava em porta 80/443
+  // (Nginx, proxy, domínio sem porta explícita).
+  var isDjango = window.location.protocol !== 'file:' && !window.location.pathname.endsWith('.html');
 
   function pageUrl(slug) {
     return isDjango ? '/' + slug + '/' : slug + '.html';
@@ -289,6 +293,149 @@
     render(clean);
     if (isDjango && clean.length >= 4) callApi(clean);
   };
+
+  // ── Clipboard helper: tenta navigator.clipboard, cai em execCommand ─────────
+  // navigator.clipboard.writeText exige contexto seguro (HTTPS ou localhost).
+  // execCommand('copy') é deprecated mas funciona em HTTP para compatibilidade.
+  function _copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function(resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('execCommand retornou false'));
+      } catch (err) {
+        document.body.removeChild(ta);
+        reject(err);
+      }
+    });
+  }
+
+  // ── Botão de debug: copia diagnóstico completo para o clipboard ──────────────
+  // Lê os dados do atributo data-debug embedado no card pelo servidor.
+  // NÃO usa fetch — assim o clipboard API é chamado dentro do mesmo gesto do
+  // usuário (user activation), resolvendo a falha silenciosa que acontecia quando
+  // o fetch demorava (ex: Gemini em background) e expirava a janela de permissão.
+  if (dcResult) {
+    dcResult.addEventListener('click', function(e) {
+      var btn = e.target.closest('.dc-copy-btn');
+      if (!btn) return;
+      var card = btn.closest('[data-pn]');
+      var pn   = card ? card.getAttribute('data-pn') : '';
+      if (!pn) return;
+
+      // Lê JSON embedado no card (injetado pelo decode_html view via data-debug)
+      var raw = card ? card.getAttribute('data-debug') : null;
+      var d;
+      try { d = raw ? JSON.parse(raw) : null; } catch (_) { d = null; }
+
+      function buildDebugText(d) {
+        var lines = [];
+        var now   = new Date().toLocaleString('pt-BR');
+        var sep   = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
+
+        lines.push('=== WhatTheChip Debug ===');
+        lines.push('PN:      ' + (d.pn || pn));
+        lines.push('Horário: ' + now);
+
+        lines.push('');
+        lines.push(sep + ' RESULTADO VISÍVEL');
+        lines.push('Tipo:        ' + (d.chip_type    || '—'));
+        lines.push('Subtipo:     ' + (d.subtype       || '—'));
+        lines.push('Marca:       ' + (d.brand         || '—'));
+        if (d.is_emcp) {
+          lines.push('NAND:        ' + (d.emcp_nand   || '—'));
+          lines.push('RAM:         ' + (d.emcp_ram    || '—'));
+          lines.push('Dispositivo: ' + (d.emcp_device || '—'));
+        } else {
+          lines.push('Capacidade:  ' + (d.capacity     || '—'));
+          lines.push('DRAM:        ' + (d.dram_density  || '—'));
+          lines.push('Interface:   ' + (d.interface     || '—'));
+          lines.push('Dispositivo: ' + (d.device        || '—'));
+        }
+        lines.push('Sufixo:      ' + (d.suffix_note   || '—'));
+        lines.push('Confiança:   ' + (d.confidence     || '—'));
+        lines.push('Tip:         ' + (d.tip            || '—'));
+
+        lines.push('');
+        lines.push(sep + ' MOTOR DE CLASSIFICAÇÃO');
+        lines.push('Fonte:         ' + (d.classification_source || '—'));
+        lines.push('Família:       ' + (d.family_prefix          || '—'));
+        lines.push('known_exact:   ' + !!d.known_exact);
+        lines.push('is_emcp:       ' + !!d.is_emcp);
+        if (d.is_emcp) {
+          lines.push('emcp_source:   ' + (d.emcp_source || '—'));
+        }
+        lines.push('from_web:      ' + !!d.from_web);
+        lines.push('raw_in_db:     ' + !!d.raw_in_db);
+        lines.push('remarked_flag: ' + !!d.remarked_flag);
+        if (d.remarked_note) {
+          lines.push('remarked_note: ' + d.remarked_note);
+        }
+        var geminiStatus = d.gemini_searched
+          ? (d.gemini_found ? 'encontrado' : 'não encontrado')
+          : 'não executado';
+        lines.push('Gemini:        ' + geminiStatus);
+        lines.push('doc_url:       ' + (d.doc_url    || '—'));
+        lines.push('source_url:    ' + (d.source_url || '—'));
+
+        if (d.fuzzy_suggestions && d.fuzzy_suggestions.length) {
+          lines.push('fuzzy_sugest.: ' + d.fuzzy_suggestions.join(', '));
+        }
+
+        lines.push('');
+        lines.push(sep + ' JSON COMPLETO');
+        lines.push(JSON.stringify(d, null, 2));
+
+        return lines.join('\n');
+      }
+
+      function restoreBtn() {
+        btn.textContent = '📋 Debug';
+        btn.disabled    = false;
+      }
+
+      if (d) {
+        // Caminho rápido: dados já no DOM → copia dentro do gesto do usuário
+        btn.disabled    = true;
+        btn.textContent = '…';
+        _copyText(buildDebugText(d))
+          .then(function() {
+            btn.textContent = '✓ Copiado!';
+            setTimeout(restoreBtn, 2000);
+          })
+          .catch(function(err) {
+            console.error('[WTC debug copy]', err);
+            btn.textContent = 'Erro';
+            setTimeout(restoreBtn, 2000);
+          });
+      } else if (isDjango) {
+        // Fallback: card sem data-debug (renderizado antes da atualização) → fetch
+        btn.disabled    = true;
+        btn.textContent = '…';
+        fetch('/chips/search/?pn=' + encodeURIComponent(pn))
+          .then(function(r) { return r.json(); })
+          .then(function(data) { return _copyText(buildDebugText(data)); })
+          .then(function() {
+            btn.textContent = '✓ Copiado!';
+            setTimeout(restoreBtn, 2000);
+          })
+          .catch(function(err) {
+            console.error('[WTC debug copy]', err);
+            btn.textContent = 'Erro';
+            setTimeout(restoreBtn, 2000);
+          });
+      }
+    });
+  }
 
 })();
 </script>

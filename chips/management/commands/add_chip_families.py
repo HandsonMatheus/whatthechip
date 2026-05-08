@@ -229,16 +229,9 @@ FAMILIES = [
         'priority':   50,
         'tip': 'eMMC com branding KIOXIA (pós-2019). Substitui a linha THGB em produtos mais recentes.',
     },
-    {
-        'brand_name': 'KIOXIA',
-        'prefix':     'KLUDG',
-        'chip_type':  'UFS',
-        'subtype':    'UFS 2.1',
-        'interface':  'UFS 2.1',
-        'is_emcp':    False,
-        'priority':   50,
-        'tip': 'UFS 2.1 KIOXIA. Encontrado em smartphones Android de médio/alto padrão.',
-    },
+    # KLUDG removido: KLU é Samsung (não Kioxia).
+    # K=Samsung, L=NAND standalone, U=UFS — Samsung produz a linha KLU.
+    # KLUDG agora gerenciado por populate_samsung.py com brand=Samsung.
     {
         'brand_name': 'KIOXIA',
         'prefix':     'TH58',

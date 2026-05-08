@@ -1,5 +1,5 @@
 {% if result.known %}
-<div class="dc-card{% if result.remarked_flag %} dc-remarked{% endif %}">
+<div class="dc-card{% if result.remarked_flag %} dc-remarked{% endif %}" data-pn="{{ result.pn }}" data-debug="{{ result_json }}">
 
   <div class="dc-head">
     {% if result.brand %}<span class="dc-brand">{{ result.brand }}</span>{% endif %}
@@ -7,6 +7,13 @@
       {{ result.chip_type }}{% if result.subtype %} <small>{{ result.subtype }}</small>{% endif %}
     </strong>
   </div>
+
+  {% if result.pn_incomplete %}
+  <div class="dc-incomplete">
+    ⌛ PN incompleto — continue digitando
+    {% if result.pn_length_expected %}(esperado: {{ result.pn_length_expected }} caracteres){% endif %}
+  </div>
+  {% endif %}
 
   {% if result.remarked_flag %}
   <div class="dc-alert">
@@ -54,6 +61,7 @@
         hx-vals='{"pn": "{{ result.pn|escapejs }}", "chip_type": "{{ result.chip_type|escapejs }}", "capacity": "{{ result.capacity|default:result.emcp_nand|default:''|escapejs }}"}'
         type="button">Reportar erro</button>
     </span>
+    &nbsp;·&nbsp;<button class="dc-copy-btn" type="button" title="Copia diagnóstico completo (visível + interno) para o clipboard">📋 Debug</button>
   </div>
 
 </div>
@@ -61,7 +69,33 @@
 {% elif result.gemini_searched and not result.gemini_found %}
 
 <div class="dc-not-found">
-  Chip não identificado por nenhuma fonte{% if not result.fuzzy_suggestions %} — verifique o PN na placa{% endif %}
+  <div class="dc-not-found-title">
+    ⚠ Chip não reconhecido{% if result.fuzzy_suggestions %} — veja sugestões abaixo{% else %} — verifique se o PN foi lido corretamente{% endif %}
+  </div>
+
+  {% with pn=result.pn %}
+  {% if pn|slice:":2" == "KA" and pn|slice:":3" != "KAT" %}
+  <div class="dc-not-found-hint">
+    <strong>Prefixo KA· não catalogado.</strong>
+    O prefixo <code>KAT</code> (ePoP Samsung) é suportado, mas outros <code>KA·</code> são geralmente
+    chips customizados Samsung (ASIC sob encomenda, pinout proprietário) sem mercado B2B padrão.
+    <div class="dc-not-found-warn">⚑ Verificar demanda antes de reacondicionar — sem datasheet disponível.</div>
+  </div>
+  {% elif pn|slice:":1" == "K" %}
+  <div class="dc-not-found-hint">
+    <strong>PN começa com K — espaço Samsung / SK Hynix.</strong>
+    Prefixos Samsung suportados:<br>
+    <span class="dc-prefix-list">KM· eMCP/uMCP · KL· UFS/eMMC · K3·/K4· DRAM · K5· NOR · K9· NAND · KAT ePoP · KUS SSD BGA</span><br>
+    Se o prefixo não consta acima, pode ser chip de linha especial ou leitura incorreta do PN na placa.
+  </div>
+  {% else %}
+  <div class="dc-not-found-hint">
+    Chip fora das famílias catalogadas ou PN possivelmente mal lido (OCR/scanner).
+    Confira o PN diretamente no encapsulamento do chip e tente novamente.
+    Se o prefixo for desconhecido, o chip pode ser de fabricante não catalogado ou linha proprietária.
+  </div>
+  {% endif %}
+  {% endwith %}
 </div>
 
 {% if result.fuzzy_suggestions %}

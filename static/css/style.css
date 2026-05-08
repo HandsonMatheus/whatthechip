@@ -782,6 +782,7 @@ a.pr-row:visited { color: inherit; }
   gap: 8px;
   flex-wrap: wrap;
   cursor: text;
+  overflow-x: auto;
 }
 .pin-icon {
   color: var(--ink-mute);
@@ -791,12 +792,17 @@ a.pr-row:visited { color: inherit; }
   flex-shrink: 0;
 }
 
-/* Container das caixas */
+/* Container das caixas — retângulo único com divisórias internas */
 .pin-boxes {
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+  flex-wrap: nowrap;
+  gap: 0;
   justify-content: center;
+  border: 2px solid #d0d5dd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  max-width: 100%;
 }
 
 /* Cada caixa de caractere */
@@ -804,31 +810,36 @@ a.pr-row:visited { color: inherit; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 44px;
-  border: 2px solid #d0d5dd;
-  border-radius: 6px;
+  width: 38px;
+  height: 50px;
+  flex-shrink: 0;
+  border: none;
+  border-right: 1px solid #e4e7ec;
   font-family: 'Fira Code', 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--ink);
-  background: #fff;
-  transition: border-color .12s, background .12s, box-shadow .12s;
+  background: transparent;
+  transition: background .1s, box-shadow .1s;
   user-select: none;
 }
-.pin-box.pin-filled {
-  border-color: #9aa5b1;
-  background: #f8f9fa;
+.pin-box:last-child {
+  border-right: none;
 }
+.pin-box.pin-filled {
+  background: #f4f5f7;
+}
+/* Cursor: acento inferior colorido no slot ativo */
 .pin-box.pin-cursor {
-  border-color: var(--hi-1);
-  box-shadow: 0 0 0 3px var(--hi-5);
   background: #fff;
+  box-shadow: inset 0 -3px 0 var(--hi-1);
 }
 /* Caixas do prefixo identificado ficam com fundo colorido */
 .pin-box.pin-prefix {
   background: var(--hi-5);
-  border-color: var(--hi-2);
+}
+.pin-box.pin-prefix.pin-cursor {
+  box-shadow: inset 0 -3px 0 var(--hi-1);
 }
 
 /* Input real — invisível, captura teclado */
@@ -1272,23 +1283,27 @@ a.pr-row:visited { color: inherit; }
 [data-theme="dark"] .hero .lede { color: var(--ink-soft); }
 [data-theme="dark"] .quicklinks { color: var(--ink-mute); }
 [data-theme="dark"] .quicklinks .count { color: var(--hi-1); font-weight: bold; }
-[data-theme="dark"] .pin-box {
-  background: var(--paper);
+[data-theme="dark"] .pin-boxes {
   border-color: #3a3f4b;
+  background: var(--paper);
+}
+[data-theme="dark"] .pin-box {
+  border-right-color: #3a3f4b;
+  background: transparent;
   color: var(--ink);
 }
 [data-theme="dark"] .pin-box.pin-filled {
   background: #1e2230;
-  border-color: #4a5060;
 }
 [data-theme="dark"] .pin-box.pin-cursor {
-  border-color: var(--hi-1);
-  box-shadow: 0 0 0 3px var(--hi-5);
   background: var(--paper);
+  box-shadow: inset 0 -3px 0 var(--hi-1);
 }
 [data-theme="dark"] .pin-box.pin-prefix {
   background: var(--hi-5);
-  border-color: var(--hi-2);
+}
+[data-theme="dark"] .pin-box.pin-prefix.pin-cursor {
+  box-shadow: inset 0 -3px 0 var(--hi-1);
 }
 [data-theme="dark"] #big-search-results {
   background: var(--paper);
@@ -1520,6 +1535,23 @@ a.pr-row:visited { color: inherit; }
   font-size: 12px;
 }
 
+/* Aviso de PN incompleto — o operador ainda está digitando */
+.dc-incomplete {
+  margin: 0 0 9px 0;
+  padding: 5px 10px;
+  background: #FFF8E1;
+  border: 1px solid #F9A825;
+  border-radius: 2px;
+  font-size: 11px;
+  color: #6D4C00;
+  line-height: 1.5;
+}
+[data-theme="dark"] .dc-incomplete {
+  background: rgba(249, 168, 37, 0.12);
+  border-color: rgba(249, 168, 37, 0.4);
+  color: #FFD54F;
+}
+
 /* Tabela de campos: grade dt/dd alinhada */
 .dc-fields {
   display: grid;
@@ -1627,6 +1659,22 @@ a.pr-row:visited { color: inherit; }
 .dc-report-ok  { font-size: 11px; color: var(--ok-bd);   font-style: italic; }
 .dc-report-err { font-size: 11px; color: var(--warn-bd); font-style: italic; }
 
+/* Botão de debug — copia diagnóstico completo para o clipboard */
+.dc-copy-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 11px;
+  color: var(--ink-mute);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.dc-copy-btn:hover   { opacity: 1; color: var(--hi-2); }
+.dc-copy-btn:disabled { opacity: 0.4; cursor: default; }
+[data-theme="dark"] .dc-copy-btn:hover { color: var(--hi-3); }
+
 /* Estado de carregamento — dots retrô */
 .dc-loading {
   padding: 13px 18px;
@@ -1652,10 +1700,38 @@ a.pr-row:visited { color: inherit; }
 
 /* PN não encontrado */
 .dc-not-found {
-  padding: 12px 18px;
+  padding: 14px 18px;
   font-size: 12px;
   color: var(--ink-mute);
   border-bottom: 1px solid var(--rule-soft);
+}
+.dc-not-found-title {
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+.dc-not-found-hint {
+  line-height: 1.6;
+  font-size: 11.5px;
+}
+.dc-not-found-hint strong {
+  color: var(--ink-soft);
+}
+.dc-prefix-list {
+  display: inline-block;
+  font-family: 'Fira Code', 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  background: var(--hi-5);
+  color: var(--hi-1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 2px 0;
+  letter-spacing: .02em;
+}
+.dc-not-found-warn {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #b45309;
 }
 
 /* Sugestões fuzzy (typo) */

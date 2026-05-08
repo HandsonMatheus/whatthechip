@@ -84,8 +84,8 @@
           <tr><td><code>KUS</code></td><td>Armazenamento Premium</td><td>BGA NVMe SSD (PCIe)</td><td>Caixa: Reacondicional BGA SSD</td></tr>
           
           <!-- MULTI-CHIP PACKAGE (SEPARADOS) -->
-          <tr><td><code>KM</code> <small>(Ex: KMF, KMN, KMQ, KMR, KMS)</small></td><td>Multi-Chip Package</td><td>eMCP (Flash eMMC + RAM)</td><td>Caixa: Reacondicional eMCP</td></tr>
-          <tr><td><code>KM</code> <small>(Ex: KMD, KME, KMG, KML, KMV, KMW)</small></td><td>Multi-Chip Package</td><td>uMCP (Flash UFS + RAM)</td><td>Caixa: Reacondicional uMCP</td></tr>
+          <tr><td><code>KM</code> <small>(Ex: KMD, KMF, KMN, KMQ, KMR, KMS)</small></td><td>Multi-Chip Package</td><td>eMCP (Flash eMMC + RAM)</td><td>Caixa: Reacondicional eMCP</td></tr>
+          <tr><td><code>KM</code> <small>(Ex: KMG, KML, KMV2, KMV3)</small></td><td>Multi-Chip Package</td><td>uMCP (Flash UFS + RAM)</td><td>Caixa: Reacondicional uMCP (Premium)</td></tr>
           
           <!-- MEMÓRIA GRÁFICA (GDDR) -->
           <tr><td><code>K4N</code></td><td>Memória Gráfica</td><td>GDDR2</td><td>Bancada Reacondicional GPU</td></tr>
@@ -132,6 +132,58 @@
   </div>
 
   <div class="chip-block-content">
+
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th>
+            <th>4</th>
+            <th>S</th>
+            <th>51</th>
+            <th>16</th>
+            <th>3</th>
+            <th>2</th>
+            <th>F</th>
+            <th>-</th>
+            <th>T</th>
+            <th>C</th>
+            <th>75</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td>
+            <td>TIPO</td>
+            <td>FAM</td>
+            <td>DENS</td>
+            <td>LARG</td>
+            <td>BANC</td>
+            <td>TENSÃO</td>
+            <td>REV</td>
+            <td>-</td>
+            <td>ENC</td>
+            <td>TEMP</td>
+            <td>VEL</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td>
+            <td>DRAM</td>
+            <td>SDRAM</td>
+            <td>512Mb</td>
+            <td>x16</td>
+            <td>4 Bancos</td>
+            <td>3.3V</td>
+            <td>Rev. F</td>
+            <td>-</td>
+            <td>TSOP II</td>
+            <td>Normal</td>
+            <td>PC-133 (7.5ns)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- Tabela de prefixos -->
     <div class="tbl-wrap">
@@ -347,7 +399,7 @@
     
     <!-- Nota operacional -->
     <div class="nota">
-      <strong>Dica de esteira:</strong> O prefixo <code>K4H</code> indica a família Samsung DDR1. A capacidade é identificada pelo 4º e 5º caracteres (28 = 128Mb, 56 = 256Mb, 51 = 512Mb, 1G = 1Gb), seguidos da largura de barramento (04, 08 ou 16). Por serem componentes obsoletos e de baixíssima capacidade, o destino direto é o <strong>fluxo de residuo</strong> (moagem/refino). Não devem ser enviados para a bancada <strong>reacondicional</strong>, servindo apenas para treinamento de leitura visual.
+      <strong>Dica de esteira:</strong> O prefixo <code>K4H</code> indica a família Samsung DDR1. A capacidade é identificada pelo 4º e 5º caracteres (28 = 128Mb, 56 = 256Mb, 51 = 512Mb, 1G = 1Gb), seguidos da largura de barramento (04, 08 ou 16). Por serem componentes obsoletos e de baixíssima capacidade, o destino direto é o <strong>fluxo de resíduo</strong> (moagem/refino). Não devem ser enviados para a bancada <strong>reacondicional</strong>, servindo apenas para treinamento de leitura visual.
     </div>
 
   </div>
@@ -486,7 +538,7 @@
 
     <!-- Nota operacional -->
     <div class="nota">
-      <strong>Dica de esteira:</strong> O prefixo <code>K4T</code> identifica de forma absoluta a família Samsung DDR2. A capacidade do chip é lida no 4º e 5º dígitos (ex: 51 = 512Mb, 1G = 1Gb, 2G = 2Gb). Segregue-os visualmente o mais rápido possível e envie-os para a <strong>Bancada Reacondicional</strong>. Fique atento ao 6º e 7º caracteres para identificar a largura de barramento (08 para x8, comum em DIMMs; 16 para x16, comum em dispositivos embarcados).
+      <strong>Dica de esteira:</strong> O prefixo <code>K4T</code> identifica de forma absoluta a família Samsung DDR2. A capacidade do chip é lida no 4º e 5º dígitos (ex: 51 = 512Mb, 1G = 1Gb, 2G = 2Gb). O 6º e 7º caracteres indicam a largura de barramento (08 = x8, comum em DIMMs; 16 = x16, comum em dispositivos embarcados). DDR2 é considerado <strong>obsoleto</strong> para o mercado de reuso atual — destino direto: <strong>fluxo de resíduo</strong> (moagem/refino). NÃO enviar para bancada reacondicional.
     </div>
 
   </div>
@@ -775,12 +827,12 @@
   <div class="chip-block-header">
     <strong>DDR5 — DRAM Desktop/Servidor <span class="chip-block-subtitle">(DDR5-4800+ · ~2021–Presente)</span></strong>
     <div class="chip-block-prefixes">
-      <code>K4R</code>
+      <code>K4RA</code>
     </div>
   </div>
 
   <div class="chip-block-preview">
-    <p>O prefixo <code>K4R</code> é exclusivo da arquitetura <strong>DDR5</strong> (1.1V). Estes componentes não devem ser alocados na mesma caixa de testes dos chips DDR4 — a leitura do <code>R</code> na 3ª posição é mandatória para evitar erros na bancada.</p>
+    <p>O prefixo efetivo para DDR5 Samsung é <code>K4RA</code> — atenção: o <code>K4R</code> genérico identifica RDRAM Rambus (1999–2003). A distinção é feita pelo <strong>4º caractere</strong>: letra = DDR5 · número = RDRAM (ver bloco abaixo).</p>
     <div class="chip-block-preview-fade"></div>
   </div>
 
@@ -842,7 +894,92 @@
     </div>
 
     <div class="nota">
-      <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>K4R</code> é exclusivo da mais recente arquitetura <strong>DDR5</strong> (1.1V). Estes componentes não devem, sob nenhuma hipótese, ser alocados na mesma caixa de testes dos chips DDR4, para prevenir falhas no <strong>ciclo reacondicional</strong>. A leitura atenta do <code>R</code> na 3ª posição é mandatória para manter a redução de erros na bancada. Capacidade AH = 16Gb.
+      <strong>Diretriz Operacional de Triagem:</strong> Ao ver <code>K4R</code>, leia imediatamente o <strong>4º caractere</strong>: se for uma <strong>letra</strong> (ex: <code>A</code> em <code>K4RA</code>), é DDR5 — destino <strong>reacondicional</strong>. Se for um <strong>número</strong> (ex: <code>8</code> em <code>K4R88</code>), é RDRAM Rambus obsoleto — destino <strong>resíduo</strong>. DDR5 nunca deve ser alocado na mesma caixa de DDR4 — slot, tensão (1.1V) e protocolo são incompatíveis. Densidade DDR5: chars 4-5 do PN (AH = 16Gb).
+    </div>
+
+  </div>
+</div>
+
+
+<div id="sam-rdram" class="chip-block">
+
+  <div class="chip-block-header">
+    <strong>RDRAM — Rambus DRAM <span class="chip-block-subtitle">(PC600/PC800/PC1066 · ~1999–2003)</span></strong>
+    <div class="chip-block-prefixes">
+      <code>K4R</code> <span style="font-size:0.8em; color:var(--muted);">(+ dígito)</span>
+    </div>
+  </div>
+
+  <div class="chip-block-preview">
+    <p><code>K4R</code> + <strong>número</strong> no 4º caractere = RDRAM Rambus. Presente no PlayStation 2 e nos primeiros Pentium 4. Completamente obsoleto — destino: <strong>resíduo</strong>.</p>
+    <div class="chip-block-preview-fade"></div>
+  </div>
+
+  <div class="chip-block-toggle">
+    <button class="btn-print" onclick="wtcToggle('sam-rdram')">▼ Aprender mais</button>
+  </div>
+
+  <div class="chip-block-content">
+
+    <!-- Anatomy table -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th><th>4</th><th>R</th><th>88</th><th>18</th><th>69</th><th>E</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td><td>TIPO</td><td>FAM</td><td>DENS</td><td>LARG</td><td>FREQ</td><td>REV</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td><td>DRAM</td><td>RDRAM</td><td>288Mb</td><td>x18</td><td>PC800</td><td>Rev. E</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabela de prefixos -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Prefixo (Base)</th>
+            <th>Densidade</th>
+            <th>Organização</th>
+            <th>Exemplo de PN</th>
+            <th>Aplicação típica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>K4R44...</code></td>
+            <td>144Mb</td>
+            <td>16Mx9 (18-bit)</td>
+            <td><code>K4R441669E-YC40</code></td>
+            <td>PC100/PC133 RDIMM</td>
+          </tr>
+          <tr>
+            <td><code>K4R88...</code></td>
+            <td>288Mb</td>
+            <td>32Mx9 (18-bit)</td>
+            <td><code>K4R881869E-YC40</code></td>
+            <td>PlayStation 2, Pentium 4 (PC800)</td>
+          </tr>
+          <tr>
+            <td><code>K4R76...</code></td>
+            <td>576Mb</td>
+            <td>64Mx9 (18-bit)</td>
+            <td><code>K4R760869E-YC40</code></td>
+            <td>Pentium 4 high-end (PC1066)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="nota">
+      <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>K4R</code> seguido de <strong>número</strong> (ex: <code>K4R88</code>, <code>K4R76</code>) é RDRAM Rambus — tecnologia proprietária da Rambus Inc., descontinuada em 2003. O barramento é de <strong>18 bits</strong> (16 dados + 2 ECC), resultando em densidades "quebradas" (144Mb, 288Mb, 576Mb) em vez das potências de 2 convencionais. Fisicamente incompatível com qualquer padrão DRAM moderno. Destino incondicional: <strong>fluxo de resíduo</strong> (moagem/refino). <strong>Atenção:</strong> não confundir com <code>K4RA...</code> (DDR5 moderno, 2021+).
     </div>
 
   </div>
@@ -854,7 +991,7 @@
   <div class="chip-block-header">
     <strong>LPDDR1 / LPDDR2 / LPDDR3 — RAM Mobile Legado <span class="chip-block-subtitle">(~2009–2015)</span></strong>
     <div class="chip-block-prefixes">
-      <code>K4M</code> <code>K4P</code> <code>K3Q</code>
+      <code>K4M</code> <code>K4X</code> <code>K4P</code> <code>K3Q</code>
     </div>
   </div>
 
@@ -869,33 +1006,78 @@
 
   <div class="chip-block-content">
 
+    <!-- Anatomy table: K4P (LPDDR2) -->
+    <p style="margin: 0 0 6px 0; font-weight: bold; font-size: 0.85em; color: var(--muted);">LPDDR2 — K4P</p>
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th><th>4</th><th>P</th><th>4G</th><th>30</th><th>4</th><th>E</th><th>B</th><th>-</th><th>A</th><th>G</th><th>CG</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td><td>TIPO</td><td>FAM</td><td>DENS</td><td>ORG</td><td>BANCOS</td><td>GEN</td><td>REV</td><td>-</td><td>ENC</td><td>TEMP</td><td>FREQ</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td><td>DRAM</td><td>LPDDR2</td><td>4Gb</td><td>x32</td><td>8</td><td>LPDDR2</td><td>Rev. B</td><td>-</td><td>FBGA</td><td>Normal</td><td>800MT/s</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Anatomy table: K3Q (LPDDR3) -->
+    <p style="margin: 0 0 6px 0; font-weight: bold; font-size: 0.85em; color: var(--muted);">LPDDR3 — K3Q</p>
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr class="decode-gabarito">
+            <th>K</th><th>3</th><th>Q</th><th>4G</th><th>40</th><th>Q</th><th>M</th><th>-</th><th>B</th><th>G</th><th>CP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="decode-labels">
+            <td>FAB</td><td>TIPO</td><td>FAM</td><td>DENS</td><td>ORG</td><td>VEL</td><td>REV</td><td>-</td><td>ENC</td><td>TEMP</td><td>FREQ</td>
+          </tr>
+          <tr class="decode-example">
+            <td>Samsung</td><td>DRAM</td><td>LPDDR3</td><td>4Gb</td><td>x64</td><td>1600+</td><td>Rev. M</td><td>-</td><td>FBGA</td><td>Normal</td><td>1600MT/s</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabela de prefixos -->
     <div class="tbl-wrap">
       <table>
         <thead>
           <tr>
-            <th>Prefixo (Base)</th>
-            <th>Categoria</th>
+            <th>Prefixo</th>
             <th>Tecnologia</th>
+            <th>Exemplo de PN</th>
+            <th>Densidade (pn[3])</th>
             <th>Direcionamento</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><code>K4M</code> / <code>K4X</code></td>
-            <td>Memória Mobile</td>
             <td>LPDDR1 / Mobile DDR</td>
+            <td><code>K4M511633A-EE1H</code></td>
+            <td>—</td>
             <td>Fluxo de Resíduo (Obsoleto)</td>
           </tr>
           <tr>
             <td><code>K4P</code></td>
-            <td>Memória Mobile</td>
             <td>LPDDR2</td>
+            <td><code>K4P4G304EB-AGCG</code></td>
+            <td>pn[3]: 2=2Gb · 4=4Gb · 8=8Gb</td>
             <td>Bancada Reacondicional Mobile</td>
           </tr>
           <tr>
             <td><code>K3Q</code></td>
-            <td>Memória Mobile</td>
             <td>LPDDR3</td>
+            <td><code>K3Q4G40QM-BGCP</code></td>
+            <td>pn[3]: 2=2Gb · 4=4Gb · 8=8Gb</td>
             <td>Bancada Reacondicional Mobile</td>
           </tr>
         </tbody>
@@ -903,7 +1085,7 @@
     </div>
 
     <div class="nota">
-      <strong>Dica de esteira:</strong> Estes prefixos identificam gerações mais antigas de RAM para smartphones. <code>K4M</code> e <code>K4X</code> são muito defasados e podem ir para o <strong>resíduo</strong>. <code>K4P</code> (LPDDR2) e <code>K3Q</code> (LPDDR3) ainda possuem demanda em IoT e embarcados, portanto devem seguir para o <strong>ciclo reacondicional</strong>.
+      <strong>Dica de esteira:</strong> Ao identificar <code>K4M</code> ou <code>K4X</code>, encaminhe imediatamente para o <strong>fluxo de resíduo</strong> — são LPDDR1 completamente obsoletos. Para <code>K4P</code> (LPDDR2) e <code>K3Q</code> (LPDDR3), a densidade está em <strong>pn[3]</strong> — o 4º caractere do PN: <code>2</code>=2Gb, <code>4</code>=4Gb, <code>8</code>=8Gb. Ambos possuem demanda ativa em IoT e placas embarcadas — destino: <strong>bancada reacondicional mobile</strong>. Não confunda a letra inicial (<code>K4</code> vs <code>K3</code>): o algarismo após o K indica a família de tensão (4=1.2/1.8V legado · 3=multi-channel).
     </div>
 
   </div>
@@ -935,17 +1117,17 @@
       <table>
         <thead>
           <tr class="decode-gabarito">
-            <th>K</th><th>4</th><th>F</th><th>6E</th><th>3S</th><th>4</th>
+            <th>K</th><th>4</th><th>F</th><th>6</th><th>E</th><th>3S</th><th>4</th>
             <th>H</th><th>B</th><th>-</th><th>K</th><th>F</th><th>CL</th>
           </tr>
         </thead>
         <tbody>
           <tr class="decode-labels">
-            <td>FAB</td><td>TIPO</td><td>FAM</td><td>DENS</td><td>ORG</td><td>BANC</td>
+            <td>FAB</td><td>TIPO</td><td>FAM</td><td>DENS</td><td>SER.</td><td>ORG</td><td>BANC</td>
             <td>GERAÇÃO</td><td>REV</td><td>-</td><td>ENC</td><td>TENSÃO</td><td>VEL</td>
           </tr>
           <tr class="decode-example">
-            <td>Samsung</td><td>DRAM</td><td>LPDDR4</td><td>16Gb</td><td>x32</td><td>8 Bancos</td>
+            <td>Samsung</td><td>DRAM</td><td>LPDDR4</td><td>6Gb</td><td>–</td><td>x32</td><td>8 Bancos</td>
             <td>1ª Gen</td><td>Rev. B</td><td>-</td><td>FBGA</td><td>1.1V</td><td>4266 Mbps</td>
           </tr>
         </tbody>
@@ -983,8 +1165,8 @@
             <td><code>K4UBE3D4AB-MGCL</code></td>
           </tr>
           <tr>
-            <td><code>K4UHE...</code> / <code>K4UJE...</code></td>
-            <td>LPDDR4X (Ultra Densidade)</td>
+            <td><code>K4UHE...</code></td>
+            <td>LPDDR4X (Ultra Densidade — 32Gb)</td>
             <td><code>K4UHE3D4AA-TUCL</code></td>
           </tr>
           <tr>
@@ -997,7 +1179,7 @@
     </div>
 
     <div class="nota">
-      <strong>Diretriz Operacional de Triagem:</strong> As memórias <code>K4F</code> (LPDDR4) e <code>K4U</code>/<code>K3U</code> (LPDDR4X) compõem o maior volume nas esteiras mobile. O operador deve garantir que todas vão para as caixas de <strong>Bancada Reacondicional Mobile</strong>. O "X" na versão LPDDR4X reduz a tensão I/O de 1.1V para 0.6V, o que significa que o <em>socket</em> de teste na bancada é rigorosamente diferente.
+      <strong>Diretriz Operacional de Triagem:</strong> As memórias <code>K4F</code> (LPDDR4) e <code>K4U</code>/<code>K3U</code> (LPDDR4X) compõem o maior volume nas esteiras mobile — todas para <strong>Bancada Reacondicional Mobile</strong>. O "X" na versão LPDDR4X reduz a tensão I/O de <strong>1.1V → 0.6V</strong>, o que significa socket de teste rigorosamente diferente na bancada. Atenção ao <code>K4U</code>: se o chip for de <strong>placa de vídeo</strong>, trata-se de GDDR4 (<strong>resíduo</strong>), não LPDDR4X. O código de densidade está sempre na <strong>4ª posição</strong> do PN: 4=4Gb, 6=6Gb, 8=8Gb, B=12Gb, G=16Gb, H=32Gb.
     </div>
 
   </div>
@@ -1025,12 +1207,13 @@
 
   <div class="chip-block-content">
 
+    <!-- ANATOMIA DO PART NUMBER — exemplo real: K3LK4K40CM-BGCP (Galaxy S20 Ultra, 12GB) -->
     <div class="tbl-wrap" style="margin-bottom: 20px;">
       <table>
         <thead>
           <tr class="decode-gabarito">
-            <th>K</th><th>3</th><th>K</th><th>L</th><th>2L</th><th>20</th>
-            <th>D</th><th>M</th><th>-</th><th>J</th><th>G</th><th>CT</th>
+            <th>K</th><th>3</th><th>L</th><th>K</th><th>4K</th><th>40</th>
+            <th>C</th><th>M</th><th>-</th><th>B</th><th>G</th><th>CP</th>
           </tr>
         </thead>
         <tbody>
@@ -1039,39 +1222,78 @@
             <td>REV</td><td>ENC</td><td>-</td><td>TENSÃO</td><td>TEMP</td><td>VEL</td>
           </tr>
           <tr class="decode-example">
-            <td>Samsung</td><td>MCP/DRAM</td><td>LPDDR</td><td>LPDDR5</td><td>12Gb/16Gb</td><td>x64</td>
-            <td>Rev. D</td><td>FBGA</td><td>-</td><td>1.05V</td><td>Normal</td><td>6400 Mbps</td>
+            <td>Samsung</td><td>DRAM</td><td>LPDDR</td><td>LPDDR5X</td><td>96Gb (12GB)</td><td>x64</td>
+            <td>Rev. C</td><td>FBGA</td><td>-</td><td>0.5V</td><td>Normal</td><td>8533 Mbps</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="tbl-wrap">
+    <!-- TABELA DE PREFIXOS E DENSIDADES MAPEADAS -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
       <table>
         <thead>
           <tr>
-            <th>Prefixo (Base)</th>
+            <th>Prefixo</th>
             <th>Tecnologia</th>
-            <th>Exemplos Extraídos do Lote</th>
+            <th>Exemplos (com densidade)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><code>K3KL...</code></td>
-            <td>LPDDR5</td>
-            <td><code>K3KL2L20DM-JGCT</code>, <code>K3KL4L40DM-BGCT</code></td>
+            <td>LPDDR5 — VDDQ 0.9V</td>
+            <td><code>K3KL5L50DM-BGCT</code> (16GB), <code>K3KL2L20DM-JGCT</code> (desconhecido)</td>
           </tr>
           <tr>
             <td><code>K3LK...</code></td>
-            <td>LPDDR5X (Otimizado p/ IA/5G)</td>
-            <td><code>K3LK4K40CM-BGCP</code>, <code>K3LK7K70BM-JGCP</code></td>
+            <td>LPDDR5X — VDDQ <strong>0.5V</strong></td>
+            <td><code>K3LK4K40CM-BGCP</code> (12GB · S20 Ultra), <code>K3LK7K70BM-JGCP</code> (8GB)</td>
           </tr>
         </tbody>
       </table>
     </div>
 
+    <!-- MAPA DE DENSIDADE pn[4:6] -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Código (pos. 5–6)</th>
+            <th>Densidade</th>
+            <th>RAM Total</th>
+            <th>Referência</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>7K</code> / <code>CK</code></td><td>64Gb</td><td>8GB</td><td>K3LK7K70BM (Galaxy S22)</td></tr>
+          <tr><td><code>4K</code></td><td>96Gb</td><td>12GB</td><td>K3LK4K40CM (Galaxy S20 Ultra)</td></tr>
+          <tr><td><code>5L</code></td><td>128Gb</td><td>16GB</td><td>K3KL5L50DM (flagships)</td></tr>
+          <tr><td><em>outros</em></td><td>—</td><td>—</td><td><em>Desconhecido — Ler Datasheet</em></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SUFIXOS DE VELOCIDADE -->
+    <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Sufixo</th>
+            <th>Velocidade</th>
+            <th>Uso Típico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>CN</code></td><td>5500 Mbps</td><td>LPDDR5 entrada</td></tr>
+          <tr><td><code>CT</code></td><td>6400 Mbps</td><td>LPDDR5 padrão</td></tr>
+          <tr><td><code>CP</code></td><td>8533 Mbps</td><td>LPDDR5X (alta velocidade)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="nota">
-      <strong>Dica de esteira:</strong> A regra visual de separação para o operador é crucial aqui: <code>K3KL</code> é LPDDR5, enquanto a inversão para <code>K3LK</code> sinaliza o LPDDR5X. Ambos são os chips mobile mais avançados da triagem e representam o topo do <strong>fluxo reacondicional</strong>. Tolerância zero para erros de leitura ou envio para o fluxo de refino/moagem.
+      <strong>Dica de esteira:</strong> Mnemônico: <code>K3<strong>KL</strong></code> = LPDDR5 (VDDQ 0.9V), <code>K3<strong>LK</strong></code> = LPDDR5X (VDDQ <strong>0.5V</strong>). <strong>⚠ Risco de queima:</strong> testar LPDDR5X no socket de LPDDR5 gera falha ou superaquecimento — os sockets são incompatíveis. A densidade está nos 2 chars após o prefixo (pn[4:6]): use a tabela acima; códigos não listados requerem datasheet. Destino: <strong>Bancada Reacondicional Mobile</strong> — BGA mobile, socket diferente do DDR5 desktop. Tolerância zero para envio a resíduo ou fluxo errado.
     </div>
 
   </div>
@@ -1105,17 +1327,17 @@
       <table>
         <thead>
           <tr class="decode-gabarito">
-            <th>K</th><th>L</th><th>M</th><th>CG</th><th>4</th>
+            <th>K</th><th>L</th><th>M</th><th>C</th><th>G</th><th>4</th>
             <th>J</th><th>EN</th><th>B</th><th>-</th><th>B</th><th>041</th>
           </tr>
         </thead>
         <tbody>
           <tr class="decode-labels">
-            <td>FAB</td><td>TIPO</td><td>FAM</td><td>DENS</td><td>NAND</td>
+            <td>FAB</td><td>TIPO</td><td>FAM</td><td>DENS</td><td>PROD.</td><td>NAND</td>
             <td>GERAÇÃO</td><td>CTRL</td><td>ENC</td><td>-</td><td>TEMP</td><td>FW/VEL</td>
           </tr>
           <tr class="decode-example">
-            <td>Samsung</td><td>Flash</td><td>eMMC</td><td>64GB</td><td>TLC/MLC</td>
+            <td>Samsung</td><td>Flash</td><td>eMMC</td><td>64GB</td><td>–</td><td>TLC</td>
             <td>eMMC 5.1</td><td>Revisão</td><td>153 FBGA</td><td>-</td><td>Normal</td><td>Seq/Rev</td>
           </tr>
         </tbody>
@@ -1135,17 +1357,17 @@
         <tbody>
           <tr><td><code>KLM4G...</code></td><td>4GB</td><td><code>KLM4G1FE3A</code>, <code>KLM4G1FETE</code></td></tr>
           <tr><td><code>KLM8G...</code></td><td>8GB</td><td><code>KLM8G1GETF</code>, <code>KLM8G2FEJA</code></td></tr>
-          <tr><td><code>KLMAG...</code></td><td>16GB (A = 10 em Hex)</td><td><code>KLMAG2GE2A</code>, <code>KLMAG4FEJA</code></td></tr>
-          <tr><td><code>KLMBG...</code></td><td>32GB (B = 20/32)</td><td><code>KLMBG4GEND</code>, <code>KLMBG2JETD</code></td></tr>
-          <tr><td><code>KLMCG...</code></td><td>64GB (C = 40/64)</td><td><code>KLMCG4JENB</code>, <code>KLMCG8GEAC</code></td></tr>
-          <tr><td><code>KLMDG...</code></td><td>128GB (D = 80/128)</td><td><code>KLMDG8JENB</code>, <code>KLMDG4UCTA</code></td></tr>
-          <tr><td><code>KLMEG...</code></td><td>256GB (E = 100/256)</td><td><code>KLMEG8UCTA</code>, <code>KLMEG8UERM</code></td></tr>
+          <tr><td><code>KLMAG...</code></td><td>16GB</td><td><code>KLMAG2GE2A</code>, <code>KLMAG4FEJA</code></td></tr>
+          <tr><td><code>KLMBG...</code></td><td>32GB</td><td><code>KLMBG4GEND</code>, <code>KLMBG2JETD</code></td></tr>
+          <tr><td><code>KLMCG...</code></td><td>64GB</td><td><code>KLMCG4JENB</code>, <code>KLMCG8GEAC</code></td></tr>
+          <tr><td><code>KLMDG...</code></td><td>128GB</td><td><code>KLMDG8JENB</code>, <code>KLMDG4UCTA</code></td></tr>
+          <tr><td><code>KLMEG...</code></td><td>256GB</td><td><code>KLMEG8UCTA</code>, <code>KLMEG8UERM</code></td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="nota">
-      <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>KLM</code> determina que o componente é um armazenamento <strong>eMMC</strong> (sem RAM embutida). O operador deve focar na 4ª e 5ª letras para identificar a capacidade rapidamente, seguindo a lógica alfanumérica (A=16, B=32, C=64, D=128, E=256). Todos os chips <code>KLM</code> em bom estado físico pertencem à caixa do <strong>fluxo reacondicional Flash</strong>. Verifique visualmente o <em>grid</em> de solda inferior, que costuma ser BGA 153 ou BGA 169.
+      <strong>Diretriz Operacional de Triagem:</strong> O prefixo <code>KLM</code> identifica <strong>eMMC puro</strong> — armazenamento sem RAM. A escadinha de capacidade é simples: <strong>A=16GB · B=32GB · C=64GB · D=128GB · E=256GB</strong>. Memorize a sequência, não a lógica por trás dela. Todos os <code>KLM</code> em bom estado vão para o <strong>fluxo reacondicional Flash eMMC</strong>. Verifique o grid de solda inferior: BGA 153 ou BGA 169. <strong>⚠ Atenção:</strong> não confundir com <code>KLU</code> (UFS) — fisicamente idênticos (mesmo BGA 153), mas protocolo completamente diferente e incompatível. A única distinção é a leitura do prefixo a laser.
     </div>
 
   </div>
@@ -1160,14 +1382,15 @@
       <span style="font-weight: normal; color: var(--ink-mute); font-size: 11px;">(eMMC + LPDDR)</span>
     </div>
     <div style="font-size: 11px; color: var(--ink-soft); margin-top: 3px;">
-      <code>KMF</code> <code>KMK</code> <code>KMN</code> <code>KMQ</code> <code>KMR</code> <code>KMS</code>
+      <code>KMD</code> <code>KMF</code> <code>KMK</code> <code>KMN</code> <code>KMQ</code> <code>KMR</code> <code>KMS</code>
+      <code>KMV</code> <span style="color: var(--ink-mute); font-style: italic;">(legado)</span>
     </div>
   </div>
 
   <!-- Preview com gradiente -->
   <div id="sam-emcp-preview" style="position: relative; padding: 10px 12px 0; overflow: hidden; max-height: 3.4em;">
     <p style="margin: 0; font-size: 13px; line-height: 1.7;">
-      <strong>O que é e como classificar:</strong> O eMCP é o clássico "sanduíche" que junta armazenamento (eMMC) e memória RAM (LPDDR) na mesma pastilha. Na Samsung, TODO eMCP começa com as letras <code>KM</code>. Como a pinagem misturada é incompatível com os projetos puros de placas de TV Box, o operador deve enviar essas peças direto para a <strong>Caixa Vermelha (Resíduo)</strong>.
+      <strong>O que é e como classificar:</strong> O eMCP é o "sanduíche" que une armazenamento eMMC e memória RAM LPDDR numa única pastilha BGA. Na Samsung, todo eMCP começa com <code>KM</code> e a 3ª letra revela o tipo de RAM. Chips em bom estado físico vão direto para a <strong>Caixa: Reacondicional eMCP</strong>.
     </p>
     <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 2.5em; background: linear-gradient(transparent, var(--paper));"></div>
   </div>
@@ -1192,20 +1415,19 @@
   <div id="sam-emcp-content" style="display: none; padding: 10px 14px 16px; border-top: 1px solid var(--rule-soft);">
 
     <p style="font-size: 13px; line-height: 1.7;">
-      <strong>O que é e como classificar:</strong> O eMCP é o clássico "sanduíche" que junta armazenamento (eMMC) e memória RAM (LPDDR) na mesma pastilha. Na Samsung, TODO eMCP começa com as letras <code>KM</code>. Como a pinagem misturada é incompatível com os projetos puros de placas de TV Box, o operador deve enviar essas peças direto para a <strong>Caixa Vermelha (Resíduo)</strong>.
-      <br><br>
-      <strong>Atenção Extrema:</strong> Códigos como <code>KNN</code> ou <code>KSW</code> <strong>NÃO SÃO</strong> eMCPs modernos. São combos muito antigos de baixíssima capacidade e também devem ir direto para o fluxo de <strong>resíduo</strong>.
+      O eMCP integra num único package BGA: uma flash eMMC (armazenamento) + um die LPDDR (RAM). É a solução "tudo num chip só" usada massivamente em smartphones e tablets de entrada e mid-range da Samsung de 2012 até ~2022. A 3ª letra do part number é a chave principal de classificação: ela revela o tipo de RAM e, portanto, a geração do chip.
     </p>
 
     <!-- ANATOMIA DO PART NUMBER -->
     <div class="tbl-wrap" style="margin-bottom: 20px;">
+      <div style="font-size: 11px; color: var(--ink-mute); margin-bottom: 4px;">Exemplo real: <code>KMRH60014A-B614</code> — Galaxy A7 (2017), 64GB + 4GB LPDDR4X</div>
       <table>
         <thead>
           <tr class="decode-gabarito">
             <th>K</th><th>M</th>
             <th style="color: #d9534f;">R</th>
-            <th style="color: #5cb85c;">31</th>
-            <th>00</th><th>0</th><th>1</th><th>M</th><th>-</th><th>B</th><th>614</th>
+            <th style="color: #5cb85c;">H6</th>
+            <th>001</th><th>4</th><th>A</th><th>-</th><th>B</th><th>614</th>
           </tr>
         </thead>
         <tbody>
@@ -1213,11 +1435,12 @@
             <td>FAB</td><td>FAMÍLIA</td>
             <td style="color: #d9534f;">GERAÇÃO (RAM)</td>
             <td style="color: #5cb85c;">CAPACIDADE</td>
-            <td>ORG</td><td>CTRL</td><td>TENSÃO</td><td>PACKAGE</td><td>-</td><td>TEMP</td><td>REV</td>
+            <td>ORG</td><td>CTRL</td><td>PACKAGE</td><td>-</td><td>TEMP</td><td>REV</td>
           </tr>
           <tr class="decode-example">
-            <td>Samsung</td><td>eMCP (Combo)</td><td>LPDDR3</td><td>16GB + 2GB</td>
-            <td>Padrão</td><td>Padrão</td><td>1.8V/1.1V</td><td>BGA</td><td>-</td><td>Normal</td><td>Varia</td>
+            <td>Samsung</td><td>eMCP</td>
+            <td>LPDDR4/4X</td><td>64GB + 4GB</td>
+            <td>Padrão</td><td>Padrão</td><td>BGA</td><td>-</td><td>Normal</td><td>Varia</td>
           </tr>
         </tbody>
       </table>
@@ -1226,43 +1449,95 @@
     <!-- GABARITOS LADO A LADO -->
     <div style="display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
 
-      <div class="tbl-wrap" style="flex: 1; min-width: 250px;">
-        <h5 style="margin-top: 0; color: var(--hi-1);">Gabarito da 3ª Letra (Geração)</h5>
+      <!-- 3ª LETRA -->
+      <div class="tbl-wrap" style="flex: 1; min-width: 260px;">
+        <h5 style="margin-top: 0; color: var(--hi-1);">3ª Letra — Geração / Tipo de RAM</h5>
         <table>
-          <thead><tr><th>3ª Letra</th><th>Arquitetura Interna</th></tr></thead>
+          <thead><tr><th>3ª Letra</th><th>Tipo de RAM</th><th>Família / Época</th></tr></thead>
           <tbody>
-            <tr><td><code>K</code></td><td>eMMC + <strong>LPDDR2</strong> (Antigo)</td></tr>
-            <tr><td><code>F</code>, <code>N</code>, <code>Q</code> ou <code>R</code></td><td>eMMC 5.x + <strong>LPDDR3</strong></td></tr>
-            <tr><td><code>S</code></td><td>eMMC 5.1 + <strong>LPDDR4X</strong></td></tr>
-            <tr><td><code>D</code>, <code>E</code>, <code>G</code> ou <code>V</code></td><td>eMMC / UFS + <strong>LPDDR4 / 4X</strong> (Geralmente uMCP)</td></tr>
+            <tr>
+              <td><code>K</code> <code>V</code></td>
+              <td><strong>LPDDR2</strong></td>
+              <td>KMK / KMV · Legado ~2010-2013<br><small style="color:var(--ink-mute)">KMV seguido de <em>letra</em> = eMCP legado</small></td>
+            </tr>
+            <tr>
+              <td><code>F</code> <code>N</code> <code>Q</code></td>
+              <td><strong>LPDDR3</strong></td>
+              <td>KMF / KMN / KMQ · 2013-2018</td>
+            </tr>
+            <tr>
+              <td><code>R</code></td>
+              <td><strong>LPDDR4 / 4X</strong></td>
+              <td>KMR · 2016-2019</td>
+            </tr>
+            <tr>
+              <td><code>S</code></td>
+              <td><strong>LPDDR4X</strong></td>
+              <td>KMS · 2018-2021</td>
+            </tr>
+            <tr>
+              <td><code>D</code></td>
+              <td><strong>LPDDR4X</strong> <span style="font-size:10px; color:var(--ink-mute)">(eMMC 5.1)</span></td>
+              <td>KMD · 2020-2022 — <em>eMCP</em>, não uMCP</td>
+            </tr>
+            <tr style="border-top: 2px solid var(--rule-soft);">
+              <td><code>G</code> <code>L</code></td>
+              <td style="color: var(--ink-mute);"><em>LPDDR4X / 5</em></td>
+              <td style="color: var(--ink-mute);">→ uMCP (UFS) — ver seção abaixo</td>
+            </tr>
           </tbody>
         </table>
       </div>
 
-      <div class="tbl-wrap" style="flex: 1; min-width: 320px;">
-        <h5 style="margin-top: 0; color: var(--hi-1);">Gabarito de Capacidade (4º e 5º)</h5>
+      <!-- CAPACIDADE -->
+      <div class="tbl-wrap" style="flex: 1.4; min-width: 320px;">
+        <h5 style="margin-top: 0; color: var(--hi-1);">4ª + 5ª Posição — Código de Capacidade</h5>
         <table>
-          <thead><tr><th>Par (Matriz / Alfanumérico)</th><th>Armazenamento + RAM</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Código</th><th>eMMC + LPDDR</th><th>Geração</th>
+            </tr>
+          </thead>
           <tbody>
-            <tr><td><code>11</code></td><td>4GB eMMC + 512MB RAM</td></tr>
-            <tr><td><code>72</code> ou <code>5X</code></td><td>8GB eMMC + 1GB RAM</td></tr>
-            <tr><td><code>82</code></td><td>16GB eMMC + 1GB RAM</td></tr>
-            <tr><td><code>31</code>, <code>BT</code> ou <code>V7</code></td><td>16GB eMMC + 2GB RAM</td></tr>
-            <tr><td><code>21</code></td><td>32GB eMMC + 2GB RAM</td></tr>
-            <tr><td><code>GD</code> ou <code>W7</code></td><td>32GB eMMC + 3GB RAM</td></tr>
-            <tr><td><code>41</code> ou <code>W8</code></td><td>32GB eMMC + 4GB RAM</td></tr>
-            <tr><td><code>X1</code> ou <code>H9</code></td><td>64GB eMMC + 4GB RAM</td></tr>
-            <tr><td><code>M4</code></td><td>128GB eMMC + 4GB RAM</td></tr>
-            <tr><td><code>J2</code></td><td>128GB eMMC + 6GB RAM</td></tr>
-            <tr><td><code>P5</code></td><td>256GB eMMC + 8GB RAM</td></tr>
+            <tr style="background: var(--row-alt, #f9f9f9);"><td colspan="3" style="font-size:10px; font-weight:bold; color:var(--ink-mute); text-transform:uppercase; letter-spacing:.05em; padding: 4px 8px;">Legado (numeração simples)</td></tr>
+            <tr><td><code>11</code></td><td>4 GB + 512 MB</td><td>Legado</td></tr>
+            <tr><td><code>72</code></td><td>8 GB + 1 GB</td><td>Legado</td></tr>
+            <tr><td><code>82</code></td><td>16 GB + 1 GB</td><td>Legado</td></tr>
+            <tr><td><code>31</code></td><td>16 GB + 2 GB</td><td>Legado</td></tr>
+            <tr><td><code>21</code></td><td>32 GB + 2 GB</td><td>Legado</td></tr>
+            <tr><td><code>41</code></td><td>32 GB + 4 GB</td><td>Legado</td></tr>
+
+            <tr style="background: var(--row-alt, #f9f9f9);"><td colspan="3" style="font-size:10px; font-weight:bold; color:var(--ink-mute); text-transform:uppercase; letter-spacing:.05em; padding: 4px 8px;">Gen 1 (alfanumérico)</td></tr>
+            <tr><td><code>5X</code></td><td>8 GB + 1 GB</td><td>Gen 1</td></tr>
+            <tr><td><code>BT</code> <code>V7</code></td><td>16 GB + 2 GB</td><td>Gen 1</td></tr>
+            <tr><td><code>GD</code> <code>W7</code></td><td>32 GB + 3 GB</td><td>Gen 1</td></tr>
+            <tr><td><code>W8</code></td><td>32 GB + 4 GB</td><td>Gen 1</td></tr>
+            <tr><td><code>X1</code> <code>H9</code></td><td>64 GB + 4 GB</td><td>Gen 1</td></tr>
+            <tr><td><code>M4</code></td><td>128 GB + 4 GB</td><td>Gen 1</td></tr>
+            <tr><td><code>J2</code></td><td>128 GB + 6 GB</td><td>Gen 1</td></tr>
+            <tr><td><code>P5</code></td><td>256 GB + 8 GB</td><td>Gen 1</td></tr>
+
+            <tr style="background: var(--row-alt, #f9f9f9);"><td colspan="3" style="font-size:10px; font-weight:bold; color:var(--ink-mute); text-transform:uppercase; letter-spacing:.05em; padding: 4px 8px;">Gen 2 (sufixo "6")</td></tr>
+            <tr><td><code>D6</code> <code>E6</code> <code>V6</code></td><td>32 GB + 3 GB</td><td>Gen 2</td></tr>
+            <tr><td><code>U6</code> <code>X6</code></td><td>64 GB + 3 GB</td><td>Gen 2</td></tr>
+            <tr><td><code>T6</code> <code>H6</code></td><td>64 GB + 4 GB</td><td>Gen 2</td></tr>
+            <tr><td><code>Y6</code></td><td>128 GB + 4 GB</td><td>Gen 2</td></tr>
+            <tr><td><code>K6</code></td><td>128 GB + 8 GB</td><td>Gen 2 / uMCP</td></tr>
+            <tr><td><code>L6</code></td><td>256 GB + 8 GB</td><td>Gen 2</td></tr>
           </tbody>
         </table>
+        <div style="font-size: 10px; color: var(--ink-mute); margin-top: 4px;">Padrão Gen 2: segundo caractere sempre <code>6</code>. Capacidades não mapeadas → sistema usa Gemini como fallback.</div>
       </div>
 
     </div>
 
     <div class="nota">
-      <strong>Diretriz Operacional de Triagem:</strong> A segregação visual começa nas três primeiras letras. Ao identificar um chip da família <strong>eMCP</strong> (<code>KMF</code>, <code>KMN</code>, <code>KMQ</code>, <code>KMR</code>, <code>KMS</code>, <code>KMK</code>) ou <strong>uMCP</strong> (<code>KMD</code>, <code>KMG</code>, <code>KMV</code>, <code>KAT</code>), o operador deve isolar a peça e enviá-la para a <strong>Caixa Vermelha (Resíduo)</strong>. Apesar da alta tecnologia interna, componentes do tipo "sanduíche" não possuem liquidez no ciclo reacondicional focado em TV Boxes.
+      <strong>Diretriz Operacional de Triagem — eMCP Samsung:</strong>
+      Chips <strong>eMCP</strong> (<code>KMD</code>, <code>KMF</code>, <code>KMK</code>, <code>KMN</code>, <code>KMQ</code>, <code>KMR</code>, <code>KMS</code>, <code>KMV</code> legado) em bom estado físico vão para a <strong>Caixa: Reacondicional eMCP</strong>.
+      <strong>KMD</strong> (<em>Galaxy A12, A22, A32</em>) é eMCP — eMMC 5.1 + LPDDR4X — <strong>não confundir com uMCP</strong>.
+      O <code>KMV</code> legado (3ª letra = letra, ex: <code>KMVY…</code>) é eMCP LPDDR2; já <code>KMV2…</code> e <code>KMV3…</code> são uMCP flagship — famílias totalmente distintas.
+      Chips uMCP (<code>KMG</code>, <code>KML</code>, <code>KMV2</code>, <code>KMV3</code>) têm armazenamento UFS e vão para a <strong>Caixa: Reacondicional uMCP (Premium)</strong> — ver seção uMCP abaixo.
+      <strong>Nunca misture eMCP com uMCP</strong> — sockets incompatíveis causam dano imediato na bancada.
     </div>
 
   </div>
@@ -1273,12 +1548,12 @@
   <div class="chip-block-header">
     <strong>uMCP — UFS Multi-Chip Package <span class="chip-block-subtitle">(UFS + LPDDR · ~2018–Presente)</span></strong>
     <div class="chip-block-prefixes">
-      <code>KMD</code> <code>KMG</code> <code>KML</code> <code>KMV</code>
+      <code>KMG</code> <code>KML</code> <code>KMV2</code> <code>KMV3</code>
     </div>
   </div>
 
   <div class="chip-block-preview">
-    <p>As memórias <strong>uMCP</strong> são os cérebros da maioria dos smartphones intermediários-premium e flagships modernos. Ao ler a raiz <code>KM</code>, o operador deve focar na 3ª letra — sendo <strong>D, G, L ou V</strong>, o chip é de altíssima velocidade (baseado em UFS).</p>
+    <p>As memórias <strong>uMCP</strong> são os cérebros dos smartphones intermediários-premium e flagships modernos. Ao ler a raiz <code>KM</code>, o operador deve focar na 3ª letra — sendo <strong>G ou L</strong> (ou 4ª letra numérica em <code>KMV2</code>/<code>KMV3</code>), o chip usa armazenamento UFS de alta velocidade.</p>
     <div class="chip-block-preview-fade"></div>
   </div>
 
@@ -1293,18 +1568,21 @@
       <table>
         <thead>
           <tr class="decode-gabarito">
-            <th>K</th><th>M</th><th>D</th><th>H6</th><th>00</th>
-            <th>1</th><th>D</th><th>A</th><th>-</th><th>B</th><th>422</th>
+            <th>K</th><th>M</th><th>G</th><th>D6</th><th>001</th>
+            <th>B</th><th>M</th><th>-</th><th>B</th><th>422</th>
           </tr>
         </thead>
         <tbody>
           <tr class="decode-labels">
-            <td>FAB</td><td>FAM</td><td>COMBO</td><td>DENSIDADE</td><td>ORG</td>
-            <td>CTRL</td><td>TENSÃO</td><td>ENC</td><td>-</td><td>TEMP</td><td>FW/VEL</td>
+            <td>FAB</td><td>FAM</td>
+            <td style="color:#d9534f;">GERAÇÃO (RAM)</td>
+            <td style="color:#5cb85c;">CAPACIDADE</td>
+            <td>ORG</td><td>CTRL</td><td>PACKAGE</td><td>-</td><td>TEMP</td><td>REV</td>
           </tr>
           <tr class="decode-example">
-            <td>Samsung</td><td>MCP</td><td>UFS+LPDDR4X</td><td>64GB + 32Gb</td><td>x16 / x32</td>
-            <td>Padrão</td><td>1.8V/1.1V</td><td>254 FBGA</td><td>-</td><td>Normal</td><td>Seq/Rev</td>
+            <td>Samsung</td><td>uMCP</td>
+            <td>UFS 3.1 + LPDDR4X</td><td>32GB + 3GB</td>
+            <td>Padrão</td><td>Padrão</td><td>BGA</td><td>-</td><td>Normal</td><td>Varia</td>
           </tr>
         </tbody>
       </table>
@@ -1322,11 +1600,6 @@
         </thead>
         <tbody>
           <tr>
-            <td><code>KMD...</code></td>
-            <td>UFS 2.1 + LPDDR4 / LPDDR4X</td>
-            <td><code>KMDH6001DA</code>, <code>KMDV6001DA</code></td>
-          </tr>
-          <tr>
             <td><code>KMG...</code></td>
             <td>UFS 3.1 + LPDDR4X</td>
             <td><code>KMGD6001BM</code>, <code>KMGP6001BA</code></td>
@@ -1337,8 +1610,8 @@
             <td><code>KML5U000HM</code></td>
           </tr>
           <tr>
-            <td><code>KMV...</code></td>
-            <td>UFS 3.1 / UFS 4.0 + LPDDR5 / LPDDR5X</td>
+            <td><code>KMV2...</code> / <code>KMV3...</code></td>
+            <td>UFS 4.0 + LPDDR5X (Flagships)</td>
             <td><code>KMV2W000LM</code>, <code>KMV3W000LM</code></td>
           </tr>
         </tbody>
@@ -1346,7 +1619,7 @@
     </div>
 
     <div class="nota">
-      <strong>Diretriz Operacional de Triagem:</strong> As memórias <strong>uMCP</strong> são os cérebros da maioria dos smartphones intermediários-premium e flagships modernos. Ao ler a raiz <code>KM</code>, o operador deve focar na 3ª letra. Sendo <strong>D, G, L ou V</strong>, o chip é de altíssima velocidade (baseado em UFS) e deve ir imediatamente e de forma isolada para a caixa de <strong>Bancada Reacondicional uMCP</strong>. Jamais junte estes componentes com os eMCP (base eMMC), pois a inversão nos sockets de validação causará queima instantânea.
+      <strong>Diretriz Operacional de Triagem — uMCP Samsung:</strong> Ao ler a raiz <code>KM</code>, o operador deve focar na 3ª letra. Sendo <strong>G ou L</strong>, o chip usa armazenamento UFS (uMCP). Se ler <code>KMV</code> seguido de dígito numérico (<code>KMV2...</code>, <code>KMV3...</code>), também é uMCP flagship. O chip vai isolado para a <strong>Caixa: Reacondicional uMCP (Premium)</strong>. <strong>Atenção:</strong> <code>KMD</code> é <em>eMCP</em> (eMMC + LPDDR4X) — vai para a caixa eMCP, <strong>não</strong> aqui. <code>KMV</code> seguido de letra (ex: <code>KMVY...</code>) é eMCP legado LPDDR2 — também não é uMCP. Jamais junte uMCPs com eMCPs — sockets incompatíveis causam dano imediato na bancada.
     </div>
 
   </div>
@@ -1440,33 +1713,33 @@
         <tbody>
           <tr>
             <td><code>KLUB...</code></td>
-            <td>32GB (B = 20/32)</td>
+            <td>32GB</td>
             <td><code>KLUBG4G1CE</code></td>
           </tr>
           <tr>
             <td><code>KLUC...</code></td>
-            <td>64GB (C = 40/64)</td>
+            <td>64GB</td>
             <td><code>KLUCG4J1BB</code>, <code>KLUCG4J1EB</code></td>
           </tr>
           <tr>
             <td><code>KLUD...</code></td>
-            <td>128GB (D = 80/128)</td>
+            <td>128GB</td>
             <td><code>KLUDG4UHDB</code>, <code>KLUDG8V1EE</code></td>
           </tr>
           <tr>
             <td><code>KLUE...</code></td>
-            <td>256GB (E = 100/256)</td>
+            <td>256GB</td>
             <td><code>KLUEG8U1EM</code>, <code>KLUEG8UHGC</code></td>
           </tr>
           <tr>
             <td><code>KLUF...</code></td>
-            <td>512GB (F = 200/512)</td>
-            <td><em>(Transição p/ Alta Densidade - Não presente no lote atual)</em></td>
+            <td>512GB</td>
+            <td><em>(Alta densidade — não presente no lote atual)</em></td>
           </tr>
           <tr>
             <td><code>KLUG...</code></td>
-            <td>1TB (G = 400/1TB)</td>
-            <td><em>(UFS 3.1/4.0 Alta Densidade - Não presente no lote atual)</em></td>
+            <td>1TB</td>
+            <td><em>(UFS 3.1/4.0 — não presente no lote atual)</em></td>
           </tr>
         </tbody>
       </table>

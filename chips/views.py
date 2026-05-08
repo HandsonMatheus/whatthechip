@@ -86,6 +86,7 @@ def decode_html(request):
 
     context = {
         "result": result,
+        "result_json": json.dumps(result, ensure_ascii=False),
         "confidence_label": _CONF_LABEL.get(
             result.get("confidence", ""), result.get("confidence", "")
         ),

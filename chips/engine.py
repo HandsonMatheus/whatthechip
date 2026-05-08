@@ -20,6 +20,7 @@ import os
 import re
 import urllib.request
 import urllib.error
+from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
@@ -65,31 +66,48 @@ def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
 
 
 # ── Mapa de decodificação ──────────────────────────────────────────────────────
+#
+# lru_cache: os mapas de decodificação (SAM_EMCP_CAP, SAM_EMCP_GEN, etc.) mudam
+# só quando populate_samsung é executado. Cache em memória elimina um SELECT por
+# mapa por classificação. Limpar com _load_decode_map.cache_clear() após populate.
 
+@lru_cache(maxsize=None)
 def _load_decode_map(map_name: str) -> dict:
     rows = DecodeMap.objects.filter(map_name=map_name).values("char_key", "val_primary", "val_secondary")
     return {r["char_key"]: (r["val_primary"], r["val_secondary"]) for r in rows}
 
 
 # ── Match de família ──────────────────────────────────────────────────────────
+#
+# lru_cache: ChipFamily muda só em operações administrativas (populate_samsung,
+# admin). Cache elimina SELECT + iteração Python em todo classify(). A lista é
+# carregada uma vez e reutilizada enquanto o processo estiver ativo.
+# Limpar com _get_all_families.cache_clear() após alterações no banco.
 
-def _match_family(pn: str):
-    """Retorna ChipFamily com o prefixo mais longo que bater no PN.
-
-    Ordenação: priority ASC (menor = mais importante) e depois comprimento de
-    prefixo DESC (mais longo primeiro). Antes usava -prefix (alfabético reverso)
-    como proxy de comprimento — correto na maioria dos casos mas não garantido.
-    """
-    families = (
+@lru_cache(maxsize=1)
+def _get_all_families() -> list:
+    """Carrega todas as famílias ativas, ordenadas por prioridade e comprimento."""
+    return list(
         ChipFamily.objects
         .filter(active=True)
         .annotate(prefix_len=Length("prefix"))
         .order_by("priority", "-prefix_len")
+        .select_related("doc_page")
     )
-    for fam in families:
+
+
+def _match_family(pn: str):
+    """Retorna ChipFamily com o prefixo mais longo que bater no PN."""
+    for fam in _get_all_families():
         if pn.startswith(fam.prefix):
             return fam
     return None
+
+
+def clear_engine_cache():
+    """Invalida os caches em memória do engine. Chamar após populate_samsung."""
+    _load_decode_map.cache_clear()
+    _get_all_families.cache_clear()
 
 
 # ── URL da documentação ────────────────────────────────────────────────────────
@@ -106,9 +124,11 @@ def _doc_url(family) -> str | None:
 
 # ── eMCP: tipo RAM pela 3ª letra (fallback quando não há decode_gen_map) ────────
 #
-# Baseado no gabarito Samsung KMx (3ª letra do PN):
-#   K=LPDDR2  F=LPDDR3   N=LPDDR3   Q=LPDDR3
-#   R=LPDDR4/4X  S=LPDDR4X  D=LPDDR4X  L=LPDDR5
+# Este mapa é usado APENAS quando a família não tem decode_gen_map configurado.
+# Famílias modernas (KMG, KML, KMD…) têm decode_gen_map="SAM_EMCP_GEN" que
+# define seus próprios valores — inclusive V=LPDDR5/5X para uMCPs modernos.
+# Aqui V=LPDDR2 porque o único prefixo legacy sem decode_gen_map que usa V é o
+# KMV (Samsung eMCP 2010-2013, LPDDR2).
 #
 # ATENÇÃO: Este mapa é Samsung-centric. Para outras marcas, configure
 # decode_gen_pos + decode_gen_map na família em vez de depender deste fallback.
@@ -119,24 +139,37 @@ EMCP_RAM_TYPES = {
     "Z": "LPDDR2 / LPDDR (?)",
     "K": "LPDDR2 (legado)",
     "Y": "LPDDR2",
-    # LPDDR3 — R corrigido: era LPDDR4/4X (erro histórico no gabarito)
+    "V": "LPDDR2 (legado)",   # KMV antigo (2010-2013) — NÃO confundir com uMCP moderno
+    # LPDDR3
     "Q": "LPDDR3",
     "F": "LPDDR3",
     "N": "LPDDR3",
-    "R": "LPDDR3",
     "G": "LPDDR3",
     # LPDDR4 / LPDDR4X
+    # R = assinatura oficial Samsung para LPDDR4/LPDDR4X (série KMR, Galaxy A 2016-2019).
+    # Confirmado via datasheets: KMRH60014A-B614 (A7 2017) = LPDDR4; KMRY60014A = LPDDR4.
+    # A confusão anterior vinha do prefixo KMRP (KMRP6001AM, S5 Mini) que é LPDDR3 —
+    # mas KMRP é uma sub-série legada; na codificação padrão KMR a 3ª letra R = LPDDR4.
+    "R": "LPDDR4/4X",
     "S": "LPDDR4X",
     "D": "LPDDR4X",
     "E": "LPDDR4/4X",
     # LPDDR5
     "L": "LPDDR5",
-    "V": "LPDDR5/5X",
 }
 
 
 # ── Regex de capacidade (usada em múltiplos lugares) ──────────────────────────
 _CAP_RE = re.compile(r"(\d+)\s*([GMK])B", re.I)
+
+
+def _clean(s: str) -> str:
+    """Normaliza espaços internos e trim.
+
+    Garante que strings vindas do banco (às vezes com espaços duplos,
+    ex: 'eMMC   8GB', 'LPDDR2  1GB') fiquem legíveis na UI.
+    """
+    return " ".join(str(s or "").split())
 
 
 # ── Resultado base da família ──────────────────────────────────────────────────
@@ -220,7 +253,14 @@ def _result_from_family(pn: str, fam) -> dict:
             ram_type = _decoded_gen                # ex: "LPDDR4/4X" via mapa
         else:
             ram_char = pn[2] if len(pn) > 2 else "?"
-            ram_type = EMCP_RAM_TYPES.get(ram_char, f"tipo '{ram_char}' — consultar datasheet")
+            if ram_char.isdigit():
+                # Família numérica (KM4, KM8, KM5, KM2, KM1): decode_gen_pos=None por design.
+                # O dígito na 3ª posição é parte do prefixo, não letra de geração RAM.
+                # Extraímos o tipo RAM do subtype da família (ex: "LPDDR4 + eMMC 5.1" → "LPDDR4").
+                m = re.search(r'LPDDR[\dX/]+', fam.subtype or '')
+                ram_type = m.group(0) if m else "LPDDR"
+            else:
+                ram_type = EMCP_RAM_TYPES.get(ram_char, f"tipo '{ram_char}' — consultar datasheet")
 
         # Versão NAND eMMC: usa fam.interface se preenchido (ex: "eMMC 5.1")
         nand_version = fam.interface or "eMMC"
@@ -237,6 +277,10 @@ def _result_from_family(pn: str, fam) -> dict:
             r["emcp_ram"] = ram_type       # parcial, Gemini vai completar
 
         r["emcp_source"] = "gramática" if (_nand_cap and _ram_cap) else "parcial (gramática)"
+
+        # interface já está codificada em emcp_nand (ex: "eMMC 5.1 64GB").
+        # Exibi-la separadamente causaria redundância/confusão na UI ("Interface: LPDDR+eMMC").
+        r["interface"] = ""
 
     # ── Densidade DRAM ───────────────────────────────────────────────────────
     if fam.decode_density_type and not fam.is_emcp:
@@ -294,23 +338,77 @@ def _result_from_known(pn: str, known, fam) -> dict:
     )
     grammar_complete = grammar_emcp_ok or grammar_cap_ok
 
-    # Entradas verificadas por humano sempre vencem a gramática
-    human_verified = known.confidence in ("confirmed", "manual", "distributor")
+    # Entradas verificadas por humano sempre vencem a gramática.
+    # ATENÇÃO: "distributor" foi removido daqui intencionalmente.
+    # Dados de distribuidor (wolfchip, censtry, aliexpress, etc.) são raspados
+    # por robôs e frequentemente contêm erros de capacidade RAM. A gramática
+    # interna (baseada na codificação oficial Samsung) é mais confiável que
+    # qualquer catálogo de atacadista. Distribuidor só complementa quando a
+    # gramática está incompleta (cap_key ausente do mapa).
+    human_verified = known.confidence in ("confirmed", "manual")
 
     # Gramática vence DB para campos técnicos quando: resultado completo + não verificado
     grammar_wins = grammar_complete and not human_verified
 
     if fam.is_emcp:
-        if not grammar_wins:
-            r["emcp_ram"]  = known.emcp_ram  or r["emcp_ram"]
-            r["emcp_nand"] = known.emcp_nand or r["emcp_nand"]
+        if grammar_wins:
+            # Gramática completa: usa resultado integral (RAM type + capacidade).
+            r["emcp_source"] = r.get("emcp_source", "gramática")
+        else:
+            # Gramática incompleta: DB complementa campos faltantes.
+            # EXCEÇÃO DE TIPO RAM: quando a família tem decode_gen_map configurado,
+            # o tipo RAM decodificado pela gramática (ex: "LPDDR4/4X" para KMR) é
+            # SEMPRE preferido sobre o valor armazenado no DB — mesmo que o DB tenha
+            # a capacidade correta. Isso evita que valores de AI desatualizados
+            # (ex: "LPDDR3" salvo antes de corrigirmos o bug do R=LPDDR4/4X) sobrevivam
+            # indefinidamente no banco sem re-enriquecimento manual.
+            grammar_ram = r.get("emcp_ram") or ""
+            if fam.decode_gen_map and grammar_ram and not _CAP_RE.search(grammar_ram):
+                # Gramática tem o TIPO mas não a capacidade (cap_key ausente do mapa).
+                # Complementa com a capacidade que o DB já tem.
+                db_ram = _clean(known.emcp_ram) or ""
+                cap_match = _CAP_RE.search(db_ram)
+                if cap_match:
+                    r["emcp_ram"]    = f"{grammar_ram} {cap_match.group(0)}"
+                    r["emcp_source"] = "gramática+db"
+                else:
+                    # DB também não tem capacidade — deixa o tipo parcial
+                    r["emcp_source"] = "gramática (cap. não mapeada)"
+            else:
+                # DB vence na capacidade. Mas o TIPO RAM (LPDDR4X, LPDDR5…) é
+                # definido pela família — não por catálogo de distribuidor.
+                # Se decode_gen_map está configurado, o tipo da gramática sempre
+                # prevalece; apenas a capacidade numérica vem do DB.
+                db_ram = _clean(known.emcp_ram) or ""
+                if fam.decode_gen_map and grammar_ram:
+                    grammar_type = grammar_ram.split()[0]   # ex: "LPDDR4X"
+                    cap_match    = _CAP_RE.search(db_ram)
+                    if cap_match and grammar_type:
+                        r["emcp_ram"] = f"{grammar_type} {cap_match.group(0)}"
+                    else:
+                        r["emcp_ram"] = db_ram or r["emcp_ram"]
+                else:
+                    r["emcp_ram"] = db_ram or r["emcp_ram"]
+                r["emcp_source"] = known.confidence
+
+            # NAND: a interface física (UFS vs eMMC) é definida pela família,
+            # não pelo banco de dados. Distribuidores frequentemente preenchem
+            # "eMMC" para chips uMCP UFS por copy-paste de catálogo genérico.
+            db_nand = _clean(known.emcp_nand) or ""
+            if db_nand:
+                if fam.interface and "UFS" in fam.interface and "eMMC" in db_nand:
+                    # Família é UFS mas DB diz "eMMC" → corrige o rótulo,
+                    # preserva a capacidade numérica.
+                    r["emcp_nand"] = db_nand.replace("eMMC", fam.interface.split()[0])
+                else:
+                    r["emcp_nand"] = db_nand
+            # (se db_nand vazio, mantém o valor da gramática)
         r["emcp_device"] = known.device or None
-        r["emcp_source"] = r.get("emcp_source", "gramática") if grammar_wins else known.confidence
         r["source_url"]  = known.source_url
     else:
         if not grammar_wins:
             if known.capacity:
-                r["capacity"] = known.capacity
+                r["capacity"] = _clean(known.capacity)
             if known.density_gbit:
                 r["dram_density"] = f"{known.density_gbit} = {known.density_gb} por die [✓]"
         if known.device:
@@ -319,7 +417,13 @@ def _result_from_known(pn: str, known, fam) -> dict:
     r["confidence"]  = known.confidence
     r["source_url"]  = known.source_url or r["source_url"]
     r["known_exact"] = True
-    r["classification_source"] = "gramática" if grammar_wins else "banco de dados"
+    # classification_source reflete qual camada dominou o resultado.
+    if grammar_wins:
+        r["classification_source"] = "gramática"
+    elif r.get("emcp_source") == "gramática+db":
+        r["classification_source"] = "gramática+db"
+    else:
+        r["classification_source"] = "banco de dados"
     return r
 
 
@@ -607,13 +711,14 @@ def _save_gemini_to_db(pn: str, specs: dict):
         conf_map   = {"high": "ai_high", "medium": "ai_medium", "low": "ai_low"}
         confidence = conf_map.get(conf_raw, "ai_low")
 
-        brand, _ = Brand.objects.get_or_create(
-            name__iexact=brand_name,
-            defaults={
-                "name": brand_name,
-                "code": brand_name.upper()[:10].replace(" ", ""),
-            }
-        )
+        # get_or_create não aceita lookups (name__iexact) como campo de criação.
+        # Usamos filter().first() + create() para evitar FieldError em marcas novas.
+        brand = Brand.objects.filter(name__iexact=brand_name).first()
+        if not brand:
+            brand = Brand.objects.create(
+                name=brand_name,
+                code=brand_name.upper()[:10].replace(" ", ""),
+            )
         # Uma única Source compartilhada para todos os resultados Gemini.
         # Antes criava um registro por PN (url=f"gemini:{pn}"), gerando
         # milhares de entradas "Gemini Live Search" idênticas no banco.
@@ -737,62 +842,93 @@ def classify(pn_raw: str) -> dict:
     if not pn:
         return {"pn": pn_raw, "known": False, "error": "PN inválido"}
 
+    # ── Detecta PN potencialmente truncado ──────────────────────────────────
+    # Se a família tem pn_length definido e o PN digitado é mais curto, tratamos
+    # como "possivelmente truncado" e pulamos o lookup no DB por segurança.
+    # Isso evita que registros acidentais (ex: "KMDC" alucinado pelo Gemini com
+    # 64GB+4GB) sejam retornados enquanto o operador ainda está digitando.
+    # Nota: pn_short != pn_incomplete. Um PN pode ser curto mas a gramática já
+    # retornar resultado completo (ex: KLMCGUCTA/9 chars: capacidade em pn[3]).
+    # O aviso visual só aparece quando o resultado da gramática também for parcial.
+    fam_early = _match_family(pn)
+    pn_short = bool(
+        fam_early and fam_early.pn_length and len(pn) < fam_early.pn_length
+    )
+
     # ── 1. Busca exata no banco ──────────────────────────────────────────────
-    try:
-        known = KnownPart.objects.select_related("family", "brand", "family__doc_page").get(
-            part_number=pn, status="enriched"
-        )
-        # Preferir ChipFamily pelo prefixo — mais confiável que o chip_type
-        # salvo pelo Gemini (que pode ter classificado errado, ex: uMCP como eMCP).
-        fam = _match_family(pn) or known.family
-        if fam:
-            result = _result_from_known(pn, known, fam)
-        else:
-            result = {
-                "pn":           pn,
-                "known":        True,
-                "known_exact":  True,
-                "chip_type":    known.chip_type,
-                "subtype":      known.subtype,
-                "brand":        known.brand.name,
-                "capacity":     known.capacity,
-                "emcp_ram":     known.emcp_ram,
-                "emcp_nand":    known.emcp_nand,
-                "device":       known.device,
-                "confidence":   known.confidence,
-                "source_url":   known.source_url,
-                "is_emcp":      bool(known.emcp_ram),
-                "tip":          known.notes or "",
-                "reasoning":    [],
-                "from_web":     False,
-                "doc_url":      None,
-                "remarked_flag": False,
-                "fuzzy_suggestions": [],
-                "interface":    known.interface,
-                "family_prefix": "",
-            }
-        _log_search(pn, found=True, source_used="db_exact")
-        return result
-    except KnownPart.DoesNotExist:
-        pass
+    # Pulado quando PN está visivelmente curto — evita acerto acidental em
+    # registros criados para PNs truncados (OCR parcial, digitação incompleta).
+    if not pn_short:
+        try:
+            known = KnownPart.objects.select_related("family", "brand", "family__doc_page").get(
+                part_number=pn, status="enriched"
+            )
+            # Preferir ChipFamily pelo prefixo — mais confiável que o chip_type
+            # salvo pelo Gemini (que pode ter classificado errado, ex: uMCP como eMCP).
+            fam = _match_family(pn) or known.family
+            if fam:
+                result = _result_from_known(pn, known, fam)
+            else:
+                result = {
+                    "pn":           pn,
+                    "known":        True,
+                    "known_exact":  True,
+                    "chip_type":    known.chip_type,
+                    "subtype":      known.subtype,
+                    "brand":        known.brand.name,
+                    "capacity":     _clean(known.capacity),
+                    "emcp_ram":     _clean(known.emcp_ram),
+                    "emcp_nand":    _clean(known.emcp_nand),
+                    "device":       known.device,
+                    "confidence":   known.confidence,
+                    "source_url":   known.source_url,
+                    "is_emcp":      bool(known.emcp_ram),
+                    "tip":          known.notes or "",
+                    "reasoning":    [],
+                    "from_web":     False,
+                    "doc_url":      None,
+                    "remarked_flag": False,
+                    "fuzzy_suggestions": [],
+                    "interface":    known.interface,
+                    "family_prefix": "",
+                }
+            _log_search(pn, found=True, source_used="db_exact")
+            return result
+        except KnownPart.DoesNotExist:
+            pass
 
     # ── 2. Gramática da família ──────────────────────────────────────────────
-    fam = _match_family(pn)
+    fam = fam_early  # já resolvido acima, reutiliza sem novo SELECT
     if fam:
         grammar_result = _result_from_family(pn, fam)
+
+        # Calcula completude real da gramática (independente de pn_short)
+        _grammar_emcp_ok = fam.is_emcp and bool(
+            _CAP_RE.search(str(grammar_result.get("emcp_ram")  or "")) and
+            _CAP_RE.search(str(grammar_result.get("emcp_nand") or ""))
+        )
+        _grammar_cap_ok = (not fam.is_emcp) and bool(
+            _CAP_RE.search(str(grammar_result.get("capacity") or grammar_result.get("dram_density") or ""))
+        )
+        grammar_complete = _grammar_emcp_ok or _grammar_cap_ok
+
+        # pn_incomplete = PN está curto E gramática não conseguiu decodificar a
+        # capacidade. Se a gramática retornou resultado completo mesmo com PN curto
+        # (ex: KLM com capacidade em pn[3]), não há motivo para avisar o operador.
+        pn_incomplete = pn_short and not grammar_complete
+        if pn_incomplete:
+            grammar_result["pn_incomplete"]       = True
+            grammar_result["pn_length_expected"]  = fam.pn_length
 
         # Verifica se PN existe como raw (coletado mas não enriquecido)
         is_raw_in_db = KnownPart.objects.filter(part_number=pn, status="raw").exists()
         grammar_result["raw_in_db"] = is_raw_in_db
 
         # Decide se precisa do Gemini para completar
-        missing_emcp = grammar_result.get("is_emcp") and not (
-            _CAP_RE.search(str(grammar_result.get("emcp_ram", ""))) and
-            _CAP_RE.search(str(grammar_result.get("emcp_nand", "")))
-        )
-        missing_cap = not grammar_result.get("is_emcp") and not _CAP_RE.search(
-            str(grammar_result.get("capacity", "") or grammar_result.get("dram_density", "") or "")
-        )
+        # PN com resultado incompleto e ainda curto nunca vai ao Gemini —
+        # não faz sentido enriquecer algo que o operador ainda está digitando.
+        missing_emcp = (not pn_incomplete) and not grammar_complete and fam.is_emcp
+        missing_cap  = (not pn_incomplete) and not grammar_complete and not fam.is_emcp
 
         _gemini_saved_now = False  # inicializa antes do bloco condicional
 
@@ -848,6 +984,25 @@ def classify(pn_raw: str) -> dict:
             else:
                 grammar_result["gemini_searched"] = True
                 grammar_result["gemini_found"]    = False
+                # Gemini não encontrou e o resultado ainda está incompleto:
+                # enfileira como KnownPart status="raw" para revisão manual.
+                # O card mostra "⏳ Na fila de enriquecimento" ao operador.
+                try:
+                    _, created = KnownPart.objects.get_or_create(
+                        part_number=pn,
+                        defaults={
+                            "status": "raw",
+                            "notes": (
+                                f"Parcial: família={fam.prefix}, "
+                                f"chip_type={fam.chip_type}, "
+                                f"emcp_source={grammar_result.get('emcp_source') or 'n/a'}"
+                            ),
+                        },
+                    )
+                    if created:
+                        grammar_result["raw_in_db"] = True
+                except Exception:
+                    logger.exception("Erro ao enfileirar chip parcial PN=%s", pn)
 
         # Double-check: compara gramática com banco se PN já existia como enriched
         # ANTES desta execução. Se o Gemini acabou de criar o registro agora
