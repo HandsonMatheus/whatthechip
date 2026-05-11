@@ -108,11 +108,19 @@ class Command(BaseCommand):
             ("4Z", "32GB",  "2GB"),    # 32GB NAND + 2GB RAM   (KMQ4Z0013MB) — confirmado Gemini
             ("41", "32GB",  "4GB"),    # 32GB NAND + 4GB RAM
             # ── Alfanumérico geração 1 (2017-2019) ───────────────────────────
-            ("5X", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMQ5X·)
-            ("8X", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMR8X0001M) — entrada, resíduo
-            ("NW", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMRNW0001M) — entrada, resíduo
-            ("N6", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMFN60012MB214) — Octopart: 8Gb LPDDR3
-            ("NX", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMFNX0012M) — confirmado IA externa (Win Source/Arrow)
+            # 5X: BLOQUEADO 2026-05-09. Sem PN físico confirmado ("KMQ5X·" é wildcard especulativo).
+            #     Vai para Gemini até chip real passar pela esteira.
+            # ("5X", "8GB",   "1GB"),
+            ("8X", "16GB",  "1GB"),    # 16GB NAND + 1GB RAM   — CORRIGIDO 2026-05-09 (era 8GB)
+            #                          # KMQ8X000SA-B414: 16GB eMMC 5.1 + 8Gb (1GB) LPDDR3 ✓
+            #                          # KMR8X0001M-B608: 16GB eMMC + 16Gb (2GB) LPDDR3 (variante RAM)
+            #                          # NAND=16GB confirmado em ambos. RAM=1GB (KMQ-base).
+            #                          # KMR8X variante (2GB) tratada em fix_known_parts.py.
+            ("NW", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMQNW000SM-B316) — confirmado ✓
+            ("N6", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMFN60012MB214) — Octopart: 8Gb LPDDR3 ✓
+            # NX: BLOQUEADO 2026-05-09. Fonte única = IA externa (Win Source/Arrow) = distribuidor.
+            #     Regra de ouro: não mapear sem PN físico em Octopart ou datasheet.
+            #     ("NX", "8GB", "1GB"),  # (KMFNX0012M) — pendente chip físico
             ("E1", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM   (KMQE10013M) — Galaxy J5/J7, Moto G
             ("BT", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM   (KMQBT·)
             ("V7", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM   alias BT
@@ -132,18 +140,26 @@ class Command(BaseCommand):
             # Sufixo "6" identifica a geração de empacotamento (eMMC 5.1 rev B)
             # Fonte: teardowns Galaxy A21s/A31/A41/A51/A72 + KMD/KML uMCP
             ("D6", "32GB",  "3GB"),    # 32GB NAND + 3GB RAM   (KMQD6·, KMRD6·)
-            ("E6", "32GB",  "3GB"),    # 32GB NAND + 3GB RAM   alias D6 (lote alt.)
-            ("G6", "32GB",  "3GB"),    # 32GB NAND + 3GB RAM   (KMDG6001BM) — confirmado Gemini
-            ("V6", "32GB",  "3GB"),    # 32GB NAND + 3GB RAM   alias D6 (rev)
-            ("U6", "64GB",  "3GB"),    # 64GB NAND + 3GB RAM   (KMQU6·)
+            ("E6", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM   KMQE60013M-B318 (Octopart) ✓
+            #                          # ⚠ CORRIGIDO 2026-05-09: era alias de D6 (32GB+3GB) — ERRADO.
+            #                          # KMQE60013M-B318 = 16GB eMMC 5.1 + 16Gb LPDDR3 → 16Gb÷8=2GB.
+            # ("G6", ...),             # BLOQUEADO 2026-05-09: zero PNs confirmados em Octopart/datasheet.
+            #                          # Gemini alucinava KMDG6001BM com confiança — rejeitado (fonte AI sem evidência física).
+            ("V6", "128GB", "4GB"),    # 128GB NAND + 4GB RAM  KMDV6001DA-B620 (Octopart) ✓
+            #                          # ⚠ CORRIGIDO 2026-05-09: era alias de D6 (32GB+3GB) — ERRADO.
+            #                          # KMDV6001DA-B620 = 64GB×2 dies UFS + 32Gb LPDDR4X → 32Gb÷8=4GB.
+            # ("U6", ...),             # BLOQUEADO 2026-05-09: zero PNs confirmados. Fonte era Gemini-only.
             ("X6", "32GB",  "2GB"),    # 32GB NAND + 2GB RAM   (KM4X6001KM) — confirmado Octopart; era alias especulativo U6
-            ("T6", "64GB",  "4GB"),    # 64GB NAND + 4GB RAM   (KMQT6·)
-            ("Y6", "128GB", "4GB"),    # 128GB NAND + 4GB RAM  (KMQY6·)
+            # ("T6", ...),             # BLOQUEADO 2026-05-09: zero PNs confirmados. Fonte era catálogo asiático não verificado.
+            # ("Y6", ...),             # BLOQUEADO 2026-05-09: zero PNs confirmados. Fonte era Gemini-only.
             ("H6", "64GB",  "4GB"),    # KMRH60014A (A7 2017): H=64GB, consistente com H9
-            ("P6", "64GB",  "4GB"),    # KMDP6001DA: 64GB eMMC + 32Gb (4GB) LPDDR4X
-            #                          # "P" não é capacidade Flash — é código de densidade RAM.
-            #                          # Confirmado: 32Gb ÷ 8 = 4GB. device "Galaxy MX6432"
-            #                          # é código interno Samsung (64=eMMC, 32=Gb RAM), não celular.
+            ("P6", "64GB",  "4GB"),    # KMDP6001DA-B425: 64GB eMMC 5.1 + 32Gb LPDDR4X → 32Gb÷8=4GB ✓
+            #                          # ⚠ REVERTIDO 2026-05-09: sessão anterior havia mudado para 3GB priorizando
+            #                          # KMGP6001BM (KMG/LPDDR3, 24Gb=3GB). Confirmação agora: KMDP6001DA-B425
+            #                          # (família primária KMD) = 4GB — 4GB é o valor correto para o mapa base.
+            #                          # Chips KMG com P6 (LPDDR3, 3GB) são exceção rara; Gemini corrige ao entrar no banco.
+            ("P8", "64GB",  "4GB"),    # KM5P8001DM-B424: 64GB UFS2.1 + 32Gb LPDDR4X-4266 → 32Gb÷8=4GB
+            #                          # semiconductor.samsung.com/us/mcp/model/lpddr5-umcp/km5p8001dm-b424/ ✓
             ("P9", "64GB",  "4GB"),    # KM5P9001DMB424: 64GB UFS 2.1 + 32Gb LPDDR4X-4266 (Octopart)
             #                          # 32Gb ÷ 8 = 4GB. uMCP linha numérica KM5 (mid-premium 2021+).
             # Z6: evidência insuficiente — omitido intencionalmente (vai para Gemini)
@@ -154,7 +170,11 @@ class Command(BaseCommand):
             ("K6", "128GB", "8GB"),    # 128GB NAND + 8GB RAM  (KML·, S21 Exynos / A73 5G)
             # ── uMCP linha numérica KM5/KM8/KM2 (confirmados pelo fabricante) ──────
             ("C7", "64GB",  "4GB"),    # KM5C7001DM-B622: 64GB UFS2.1 + 32Gb÷8=4GB LPDDR4X ✓
-            ("L9", "128GB", "6GB"),    # KM2L9001CM-B518: 128GB UFS2.2 + 48Gb÷8=6GB LPDDR4X ✓
+            ("L9", "128GB", "8GB"),    # KM8L9001JM-B624: 128GB UFS2.2 + 64Gb÷8=8GB LPDDR4X (Samsung Electronics ✓)
+            #                          # ⚠ CORRIGIDO 2026-05-09: era 6GB (fonte: KM2L9001CM-B518, "Fabricante ✓" não verificado).
+            #                          # Confirmação definitiva: Samsung Electronics KM8L9001JM-B624 = 64Gb LPDDR4X-4266 → 8GB.
+            #                          # KM2L9001CM-B518 (config char C, 48Gb = 6GB) é variant minoritário da mesma cap key.
+            #                          # Se entrar no banco via Gemini, fix_known_parts corrige pontualmente.
             ("F9", "256GB", "8GB"),    # KM8F9001JM-B813: 256GB UFS2.2 + 64Gb÷8=8GB LPDDR4X ✓
             ("F8", "256GB", "12GB"),   # KM8F8001MM-B813: 256GB UFS2.1 + 96Gb÷8=12GB LPDDR4X ✓
             # Gaps ainda não mapeados (vai para Gemini):
@@ -175,14 +195,34 @@ class Command(BaseCommand):
             ("Q", "LPDDR3",    ""),
             ("R", "LPDDR4/4X", ""),   # confirmado: KMR = LPDDR4/4X (não LPDDR3)
             ("S", "LPDDR4X",   ""),
-            # uMCP
-            ("D", "LPDDR4X",   ""),
-            ("E", "LPDDR4/4X", ""),
-            ("G", "LPDDR4X",   ""),
+            # uMCP / geração alta
+            ("D", "LPDDR4X",   ""),   # KMD: eMCP LPDDR4X + eMMC 5.1 (confirmado)
+            # ("E", ...),              # BLOQUEADO 2026-05-09: nenhuma família ativa com pn[2]='E'
+            #                          # usa SAM_EMCP_GEN. Zero PNs confirmados para KME. Regra de ouro.
+            ("G", "LPDDR3",    ""),   # KMG: entrada morta (decode_gen_pos=None → engine nunca lê aqui).
+            #                          # ⚠ CORRIGIDO 2026-05-09: era LPDDR4X (errado). KMG=LPDDR3 confirmado
+            #                          # via datasheet KMGP6001BM. Sem impacto funcional — KMG usa EMCP_RAM_TYPES.
             ("L", "LPDDR5",    ""),
             ("V", "LPDDR5/5X", ""),
         ]
         self._bulk_map("SAM_EMCP_GEN", emcp_gen, samsung, dry, overwrite)
+
+        # ── DecodeMap: geração eMMC Samsung (pos 6, 1 char) ──────────────────
+        # Usado pela família KLM (eMMC standalone) para decodificar a versão
+        # do protocolo embutido no chip.
+        # Posição pn[6] (7º caractere): letra que identifica a revisão eMMC.
+        # Fonte: catálogo oficial Samsung + esquemáticos validados.
+        # Impacto comercial: compradores B2B pagam diferente por versão —
+        #   eMMC 5.1 (J): Command Queuing + HS400 — alta liquidez
+        #   eMMC 5.0 (E): barramento HS200 sem CQ — liquidez média
+        #   eMMC 4.5 (F): HS200 sem CQ — desconto forçado vs 5.1
+        # O engine usa decode_gen para is_emcp=False → r["interface"] direto.
+        emmc_gen = [
+            ("F", "eMMC 4.5", ""),  # legado 2012+: HS200, sem Command Queuing
+            ("E", "eMMC 5.0", ""),  # transição 2014: HS200, parcialmente melhorado
+            ("J", "eMMC 5.1", ""),  # padrão atual 2015+: HS400 + Command Queuing
+        ]
+        self._bulk_map("SAM_EMMC_GEN", emmc_gen, samsung, dry, overwrite)
 
         # ── DecodeMap: RDRAM / Rambus (pos 3-4, 2 chars) ─────────────────────
         # K4R + NÚMERO (pn[3] dígito) = RDRAM Rambus (1999-2003).
@@ -190,6 +230,10 @@ class Command(BaseCommand):
         # Fonte: Samsung RDRAM datasheets / análise de PNs reais do lote.
         # "27" omitido — evidência insuficiente, vai para Gemini.
         rdram_cap = [
+            ("27", "128Mb", "8Mx16 (x16 org)"),  # K4R271669D-TCS8 / K4R271669F — Samsung datasheet ✓
+            #                                       # 256K × 16bit × 32 banks = 128Mbit. Org x16 (sem paridade).
+            #                                       # PN confirma: "16" em "1669" vs "18" em "1869" (x18 das outras).
+            #                                       # Auditoria havia omitido por "falta de evidência" — datasheet Samsung confirma.
             ("44", "144Mb", "16Mx9 por canal"),   # ex: K4R441669E
             ("88", "288Mb", "32Mx9 por canal"),   # ex: K4R881869E (PS2, PC800)
             ("76", "576Mb", "64Mx9 por canal"),   # ex: K4R760869E
@@ -198,12 +242,17 @@ class Command(BaseCommand):
 
         # ── DecodeMap: BGA NVMe SSD (pos 3-4, 2 chars) ───────────────────────
         # Fonte: seção sam-kus do fab-samsung.html
-        # KUS0X... → capacidade sequencial: 02=128GB, 03=256GB, 04=512GB, 05=1TB
+        # Samsung PM971 BGA NVMe — série completa confirmada pelo datasheet oficial:
+        # KUS020203M-B000 (128GB), KUS030202M-B000 (256GB), KUS040202M-B000 (512GB).
+        # Ref: PM971-NVMe-BGA-SSD-Datasheet_for-Microsoft_v1.011.pdf (samsung.com) ✓
+        # Teto da série: 512GB (04). Para 1TB+, Samsung usou outras nomenclaturas (PM991).
         kus_cap = [
-            ("02", "128GB", ""),
-            ("03", "256GB", ""),
-            ("04", "512GB", ""),
-            ("05", "1TB",   ""),
+            ("02", "128GB", ""),   # KUS020203M-B000 (PM971, Surface/ultrafinos) ✓
+            ("03", "256GB", ""),   # KUS030202M-B000 (PM971) ✓
+            ("04", "512GB", ""),   # KUS040202M-B000 (PM971, Surface Laptop original) ✓
+            # ("05", "1TB", ""),   # BLOQUEADO 2026-05-09: zero PNs KUS05 em circulação.
+            #                      # PM971 encerrou em 512GB. Presumido por simetria — rejeitado pela regra de ouro.
+            #                      # Se aparecer chip físico com KUS05, acrescentar com Octopart.
         ]
         self._bulk_map("KUS_CAP", kus_cap, samsung, dry, overwrite)
 
@@ -218,22 +267,34 @@ class Command(BaseCommand):
             ("4G",  "4Gb",   "512MB"),
             ("8G",  "8Gb",   "1GB"),
             ("AG",  "16Gb",  "2GB"),
-            ("AH",  "16Gb",  "2GB"),   # DDR5
+            ("AH",  "16Gb",  "2GB"),   # DDR5: K4RAH086VB-BCQK (16Gb x8) ✓
+            ("BH",  "32Gb",  "4GB"),   # DDR5: K4RBH046VM-BCCP (32Gb) — Samsung semiconductor.com ✓
+            #                           # ⚠ 2026-05-09: "BG" e "CG" propostos por IA externa SEM PN confirmado.
+            #                           # Padrão A→B hexadecimal é plausível mas regra de ouro impede mapear sem evidência.
+            #                           # Adicionar BG/CG apenas quando chip físico com PN K4RBG.../K4RCG... aparecer.
         ]
         self._bulk_map("DRAM_PC", dram_pc, None, dry, overwrite)
 
         # ── DecodeMap: capacidade K3QF (LPDDR3 alta-densidade, pos 4, 1 char) ──────
         # Usado pela sub-família K3QF (chips K3QFxFx0...).
-        # pn[4] = contador de dies empilhados (n × 8Gb por die).
+        # pn[4] = código opaco de capacidade (NÃO é simplesmente "N × 8Gb por die").
+        # Algumas variantes usam dies de 6Gb (ex: K3QF7 = 4× 6Gb = 24Gb).
         # val_primary = GB total (operador), val_secondary = Gb total (referência).
-        # Apenas entradas confirmadas por Octopart / datasheet:
-        #   "1" → K3QF1F10DMAGCE000 (Octopart: 128Mx32+128Mx32 = 8Gb = 1GB) ✓
-        #   "2" → K3QF2F20EM (confirmado em sessão anterior: 16Gb = 2GB) ✓
-        # ⚠ F3, F4 não confirmados — K3QF3F30BM citado como "16Gb" mas isso era
-        #   resultado do bug pn[3]='F' → 16Gb, NÃO de datasheet. Não mapear ainda.
+        # Fontes confirmadas:
+        #   "1" → K3QF1F10DMAGCE000 (Octopart: 8Gb = 1GB) ✓
+        #   "2" → K3QF2F20EM (sessão anterior: 16Gb = 2GB) ✓
+        #   "3" → K3QF3F30BM-AGCG (semiconductor.samsung.com: 16Gb = 2GB) ✓ 2026-05-09
+        #   "7" → K3QF7F70DM-QGCE (distribuidores: 24Gx64 = 24Gb = 3GB;
+        #          Samsung press release "3GB LPDDR3" confirm produção; Galaxy Note 3) ✓ 2026-05-09
+        # Bloqueadas por falta de evidência de fabricante:
+        #   "4" → K3QF4F40BM-FGCF citado como 32Gb (4GB) apenas por distribuidores.
+        #         Aguarda página semiconductor.samsung.com ou Octopart.
         k3qf_cap = [
             ("1", "1GB", "8Gb — 1× 8Gb die. Ex: K3QF1F10DMAGCE000 (Octopart). Resíduo."),
             ("2", "2GB", "16Gb — 2× 8Gb die. Ex: K3QF2F20EM. Reacondicional seletivo."),
+            ("3", "2GB", "16Gb — revisão de die (NÃO é 3GB). Ex: K3QF3F30BM-AGCG (Samsung.com ✓). Reacondicional seletivo."),
+            ("7", "3GB", "24Gb — 4× 6Gb die. Ex: K3QF7F70DM-QGCE (Note 3, Samsung PR 3GB LPDDR3 ✓). Reacondicional seletivo."),
+            ("4", "4GB", "32Gb — Ex: K3QF4F40BM-FGCF (Octopart: LPDDR3-1866 32G ✓). Reacondicional seletivo."),
         ]
         self._bulk_map("K3QF_CAP", k3qf_cap, samsung, dry, overwrite)
 
@@ -292,15 +353,44 @@ class Command(BaseCommand):
         # Códigos não mapeados → sistema retorna None ("Desconhecido — Ler Datasheet").
         lpddr5_cap = [
             # val_primary = GB (operador), val_secondary = Gb (referência técnica) — mesma convenção LPDDR4_CAP
-            ("9L", "2GB",  "16Gb — ex: K3KL9L90DMMGCU (Octopart: 512MX32)"),
-            ("BK", "4GB",  "32Gb — ex: K3LKBKB0BMMGCP (Octopart: 1GX32)"),
-            ("8L", "4GB",  "32Gb — ex: K3KL8L80EMMGCU (Octopart: 1GX32)"),
-            ("7K", "8GB",  "64Gb — ex: K3LK7K70BM (Galaxy S22)"),
-            ("CK", "8GB",  "64Gb — variante de empilhamento alternativo"),
-            ("4K", "12GB", "96Gb — ex: K3LK4K40CM (Galaxy S20 Ultra)"),
-            ("5L", "16GB", "128Gb — ex: K3KL5L50DM (flagships)"),
+            # Confirmados por Octopart ou Samsung.com:
+            ("9L", "2GB",  "16Gb — ex: K3KL9L90DMMGCU (Octopart: 512MX32 ✓)"),
+            ("BK", "4GB",  "32Gb — ex: K3LKBKB0BMMGCP (Octopart: 1GX32 ✓)"),
+            ("8L", "4GB",  "32Gb — ex: K3KL8L80EMMGCU (Octopart: 1GX32 ✓)"),
+            ("7K", "8GB",  "64Gb — ex: K3LK7K70BM-BGCP (Galaxy S22; Octopart: 64Gb ✓)"),
+            ("CK", "8GB",  "64Gb — variante de empilhamento alternativo (sem PN Octopart)"),
+            ("4K", "12GB", "96Gb — ex: K3LK4K40CM (Galaxy S20 Ultra; Octopart: 12GB ✓)"),
+            ("5L", "16GB", "128Gb — ex: K3KL5L50DM (Octopart: 128Gb = 16GB ✓)"),
+            # Adicionados 2026-05-09 — fonte: distribuidores (⚠ sem Octopart/Samsung.com individual):
+            ("2K", "6GB",  "48Gb — ex: K3LK2K20CM-JFCP (distribuidor). Confirmar Octopart ao encontrar."),
+            ("3L", "8GB",  "64Gb — ex: K3KL3L30CM-BGCT (distribuidor). Confirmar Octopart ao encontrar."),
+            ("1L", "8GB",  "64Gb — ex: K3KL1L10GM-JGCT (distribuidor). Confirmar Octopart ao encontrar."),
+            ("6K", "16GB", "128Gb — ex: K3LK6K60BM-JHCP (distribuidor). Confirmar Octopart ao encontrar."),
+            ("4L", "16GB", "128Gb — ex: K3KL4L40DM-BGCU (distribuidor). Confirmar Octopart ao encontrar."),
         ]
         self._bulk_map("LPDDR5_CAP", lpddr5_cap, samsung, dry, overwrite)
+
+        # ── DecodeMap: NAND Flash K9 (pos 3-4, 2 chars) ──────────────────────
+        # Usado pelas 8 famílias K9 (K9F, K9G, K9H, K9K, K9L, K9W, K9X, K9Z).
+        # val_primary = densidade em Gb (referência técnica)
+        # val_secondary = equivalente em bytes (legível pelo operador)
+        # Confirmados por datasheets Samsung:
+        #   1G–8G: datasheets K9F1G/2G/4G/8G amplamente publicados ✓
+        #   AG: K9GAG08U0E = 16Gb (datasheet Samsung ✓)
+        #   BG: K9GBG08U0A = 32Gb (Samsung datasheet Rev.1.0, May 2010 ✓)
+        #   CG: K9LCG08U1A = 64Gb (Samsung datasheet Rev.1.0, May 2010 ✓)
+        #   DG: K9HDG08U5A = 128Gb (Samsung datasheet Rev.1.0, May 2010 ✓)
+        nand_flash_cap = [
+            ("1G", "1Gb",   "128MB"),   # K9F1G08U0E — SLC, embedded industrial
+            ("2G", "2Gb",   "256MB"),   # K9F2G08U0B — SLC, roteadores/gateways
+            ("4G", "4Gb",   "512MB"),   # K9F4G08U0D — SLC
+            ("8G", "8Gb",   "1GB"),     # K9K8G08U0A — SLC/MLC
+            ("AG", "16Gb",  "2GB"),     # K9GAG08U0E — MLC (Samsung datasheet ✓)
+            ("BG", "32Gb",  "4GB"),     # K9GBG08U0A — MLC (Samsung datasheet ✓)
+            ("CG", "64Gb",  "8GB"),     # K9LCG08U1A — MLC (Samsung datasheet ✓)
+            ("DG", "128Gb", "16GB"),    # K9HDG08U5A — MLC (Samsung datasheet ✓)
+        ]
+        self._bulk_map("NAND_FLASH_CAP", nand_flash_cap, samsung, dry, overwrite)
 
         # ── ChipFamilies ──────────────────────────────────────────────────────
         # Lookup por prefix apenas (sem brand) para corrigir entradas com
@@ -428,62 +518,100 @@ class Command(BaseCommand):
                 ),
             ),
             # K4B = Samsung DDR3/DDR3L. Posições 3-4 = densidade (chaves DRAM_PC).
-            # Distinção DDR3 vs DDR3L: sufixo -BC=DDR3 1.5V | -BY=DDR3L 1.35V.
-            # Ainda tem demanda no mercado de reuso — fluxo reacondicional.
+            # Distinção DDR3 vs DDR3L: sufixo BC=DDR3 1.5V | BY=DDR3L 1.35V.
+            # interface="DDR3": corrigido em 2026-05-08 — era "" (Octopart: "DDR3 SDRAM").
+            # suffix_rules="": limpa stale data do DB — versão anterior usava pn.endswith('16')
+            #   para detectar largura x16, o que é incorreto (engine faz endswith, '16' é pn[5:6]).
+            # Destino por densidade: 1Gb(128MB)=resíduo · ≥2Gb(256MB)=checar demanda.
+            #   Confirmado via K4B1G1646GBCK0 (Octopart: "1G-Bit 64Mx16 1.5V 96-Pin FBGA").
             dict(
                 prefix="K4B", chip_type="DDR", subtype="DDR3/DDR3L",
-                interface="", decode_density_type="pc",
+                interface="DDR3", decode_density_type="pc",
+                suffix_rules="",
+                reasoning='["K → Samsung Memory", "4 → 4th-gen DRAM", '
+                          '"B → DDR3 (inclui DDR3L — distinção pela tensão do sufixo)", '
+                          '"Densidade: pn[3:5] via DRAM_PC — 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB)", '
+                          '"Largura: pn[5:7] — 08=x8 (DIMMs/SO-DIMM) · 16=x16 (embarcados)", '
+                          '"Tensão: sufixo BC=DDR3 1.5V | BY=DDR3L 1.35V — NÃO misturar na bancada"]',
                 is_emcp=False, active=True, priority=100,
                 tip=(
                     "DDR3/DDR3L Samsung (2007–2016). "
-                    "B = DDR3. "
-                    "Densidade: chars 4-5 do PN (1G=1Gb, 2G=2Gb, 4G=4Gb, 8G=8Gb). "
-                    "Largura: chars 6-7 (08=x8, 16=x16). "
-                    "Tensão pelo sufixo: -BC=DDR3 padrão (1.5V) · -BY=DDR3L baixa tensão (1.35V). "
-                    "NÃO misturar DDR3 com DDR3L na bancada de testes. "
-                    "Destino: bancada reacondicional."
+                    "B = DDR3. Densidade: pn[3:5] → 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB). "
+                    "Largura: pn[5:7] → 08=x8 · 16=x16. "
+                    "Tensão: sufixo BC=DDR3 1.5V · BY=DDR3L 1.35V. "
+                    "⚠ NÃO misturar DDR3 com DDR3L na bancada. "
+                    "Destino por densidade: "
+                    "1Gb (128MB) → resíduo (moagem/refino — sem liquidez B2B em 2026); "
+                    "≥2Gb (256MB+) → checar demanda antes de reacondicionar."
                 ),
             ),
             # K4A = Samsung DDR4. Posições 3-4 = densidade (chaves DRAM_PC).
             # A = DDR4 (1.2V). Alto volume na triagem de desktops/laptops modernos.
             # Velocidade no sufixo: -BCPB=DDR4-2133, -BCRC=DDR4-2400,
             #   -BCTD=DDR4-2666, -BCWE=DDR4-3200.
+            # interface="DDR4": corrigido em 2026-05-08 — era "" (Octopart: "DDR4 DRAM").
+            # Confirmado via K4A8G165WC-BCRC (Octopart: "DDR4 DRAM, 512MX16, PBGA96").
+            # capacity=null intencional: decode_cap_map="DRAM_PC" colocaria "8Gb" (entry[0])
+            #   em capacity — Gigabits, não GB. dram_density já exibe "8Gb = 1GB por die [✓]".
             dict(
                 prefix="K4A", chip_type="DDR4", subtype="DDR4",
-                interface="", decode_density_type="pc",
+                interface="DDR4", decode_density_type="pc",
+                reasoning='["K → Samsung Memory", "4 → 4th-gen DRAM", "A → DDR4 (1.2V)", '
+                          '"Densidade: pn[3:5] via DRAM_PC — 4G=4Gb(512MB) · 8G=8Gb(1GB) · AG/AH=16Gb(2GB)", '
+                          '"Largura: pn[5:7] — 04=x4 · 08=x8 · 16=x16", '
+                          '"Velocidade: sufixo BCPB=DDR4-2133 · BCRC=DDR4-2400 · BCTD=DDR4-2666 · BCWE=DDR4-3200"]',
                 is_emcp=False, active=True, priority=100,
                 tip=(
                     "DDR4 Samsung (2014–presente). "
-                    "A = DDR4 (1.2V). "
-                    "Densidade: chars 4-5 do PN (4G=4Gb, 8G=8Gb, AG=16Gb). "
-                    "Largura: chars 6-7 (04=x4, 08=x8, 16=x16). "
-                    "Velocidade no sufixo: -BCPB=DDR4-2133, -BCRC=DDR4-2400, "
-                    "-BCTD=DDR4-2666, -BCWE=DDR4-3200. "
-                    "Alto volume na esteira. Destino: bancada reacondicional."
+                    "A = DDR4 (1.2V). Densidade: pn[3:5] → 4G=4Gb(512MB) · 8G=8Gb(1GB) · AG/AH=16Gb(2GB). "
+                    "Largura: pn[5:7] → 04=x4 · 08=x8 · 16=x16. "
+                    "Velocidade: sufixo BCPB=DDR4-2133 · BCRC=DDR4-2400 · BCTD=DDR4-2666 · BCWE=DDR4-3200. "
+                    "Destino: bancada reacondicional — alta liquidez B2B para upgrades corporativos e notebooks. "
+                    "Prioridade crescente por densidade: 512MB < 1GB < 2GB por die."
                 ),
             ),
             # ── K4R: PREFIXO COMPARTILHADO — bifurcação obrigatória ──────────
             # Samsung reutilizou K4R em duas eras completamente diferentes:
-            #   K4R + LETRA (pn[3] = letra) → DDR5 (2021+)   → prefixo K4RA (priority=80)
-            #   K4R + NÚMERO (pn[3] = dígito) → RDRAM Rambus (1999-2003) → K4R fallback (priority=100)
-            # O prefixo mais longo K4RA é testado primeiro pelo engine (priority menor).
+            #   K4R + LETRA (pn[3] = letra) → DDR5 (2021+)   → K4RA (16Gb) | K4RB (32Gb) — priority=80
+            #   K4R + NÚMERO (pn[3] = dígito) → RDRAM Rambus (1999-2003) → K4R fallback — priority=100
+            # Prefixos de 4 chars (K4RA, K4RB) testados ANTES do K4R genérico.
             # PNs reais RDRAM: K4R881869E (288Mb, PS2/P4), K4R760869E (576Mb), K4R441669E (144Mb).
-            # PNs reais DDR5: K4RAH086VB-BCQK (16Gb x8), K4RAH165VB-BCQK (16Gb x16).
+            # PNs reais DDR5 16Gb: K4RAH086VB-BCQK (x8), K4RAH165VB-BCQK (x16).
+            # PNs reais DDR5 32Gb: K4RBH046VM-BCCP, K4RBH046VM-BCWM (Samsung semiconductor.com ✓).
 
-            # DDR5 — prefixo de 4 chars, vence o K4R genérico
+            # DDR5 — prefixos de 4 chars, vencem o K4R genérico (RDRAM, priority=100)
+            # K4RA = 16Gb DDR5 (PNs: K4RAH086VB-BCQK, K4RAH165VB-BCQK — Samsung ✓)
+            # K4RB = 32Gb DDR5 (PNs: K4RBH046VM-BCCP, K4RBH046VM-BCWM — Samsung ✓)
+            # ⚠ BUG CORRIGIDO 2026-05-09: K4RA não tinha decode_cap_pos/map → capacidade ficava nula.
+            #   K4RBH... cairia no K4R RDRAM (priority=100) — classificação totalmente errada.
             dict(
                 prefix="K4RA", chip_type="DDR5", subtype="DDR5",
-                interface="", decode_density_type="pc",
+                interface="DDR5", decode_density_type="pc",
                 is_emcp=False, active=True, priority=80,
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="DRAM_PC",
                 tip=(
-                    "DDR5 Samsung (2021–presente). "
-                    "K4RA = DDR5 (1.1V). "
-                    "Densidade: chars 4-5 do PN (AH=16Gb). "
-                    "Largura: chars 6-7 (08=x8, 16=x16). "
+                    "DDR5 Samsung 16Gb (2021–presente). "
+                    "K4RA: pn[3:5]=AH → 16Gb (2GB por die). "
+                    "Largura: pn[5:7] (08=x8, 16=x16, 46=x4). "
                     "Velocidade no sufixo: -BCQK=DDR5-4800 MT/s. "
+                    "PNs confirmados: K4RAH086VB-BCQK (x8), K4RAH165VB-BCQK (x16). "
                     "⚠ INCOMPATÍVEL com DDR4 — slot, tensão e protocolo diferentes. "
                     "NÃO misturar com K4A na bancada. "
                     "Destino: bancada reacondicional DDR5 (caixa separada)."
+                ),
+            ),
+            dict(
+                prefix="K4RB", chip_type="DDR5", subtype="DDR5",
+                interface="DDR5", decode_density_type="pc",
+                is_emcp=False, active=True, priority=80,
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="DRAM_PC",
+                tip=(
+                    "DDR5 Samsung 32Gb (2023+). "
+                    "K4RB: pn[3:5]=BH → 32Gb (4GB por die). "
+                    "PNs confirmados: K4RBH046VM-BCCP, K4RBH046VM-BCWM (Samsung semiconductor.com ✓). "
+                    "⚠ INCOMPATÍVEL com DDR4 — slot, tensão e protocolo diferentes. "
+                    "NÃO misturar com K4A ou K4RA na bancada. "
+                    "Destino: bancada reacondicional DDR5 (caixa separada — alta densidade)."
                 ),
             ),
 
@@ -497,7 +625,7 @@ class Command(BaseCommand):
                     "RDRAM Samsung / Rambus DRAM (1999–2003). "
                     "⚠ NÃO confundir com DDR5 (K4RA): K4R + NÚMERO = RDRAM, K4R + LETRA = DDR5. "
                     "Barramento Rambus 18-bit (16-bit dados + 2-bit ECC). "
-                    "Densidade: chars 4-5 do PN (44=144Mb, 88=288Mb, 76=576Mb). "
+                    "Densidade: chars 4-5 do PN (27=128Mb, 44=144Mb, 88=288Mb, 76=576Mb). "
                     "Presente em: PlayStation 2, Pentium 4 primeiros (RDRIMM). "
                     "OBSOLETO — destino: fluxo de resíduo (moagem/refino)."
                 ),
@@ -575,7 +703,7 @@ class Command(BaseCommand):
             ),
             # K3QF = sub-família de K3Q para chips do tipo K3QFxFx0...
             # pn[3]='F' significa ~8Gb por die; pn[4] = número de dies.
-            # Decodificação: pn[4] → K3QF_CAP (1=1GB, 2=2GB).
+            # Decodificação: pn[4] → K3QF_CAP (código opaco, não é "N×8Gb").
             # Prefixo 4 chars → vence K3Q (3 chars) ao mesmo priority=40.
             # ⚠ decode_density_type="" para suprimir DRAM_MOBILE em pn[3]='F'
             #   (que erroneamente retorna 16Gb=2GB para TODOS os K3QF).
@@ -586,10 +714,12 @@ class Command(BaseCommand):
                 is_emcp=False, active=True, priority=40,
                 tip=(
                     "LPDDR3 Samsung alta-densidade (K3QF). "
-                    "pn[4] = número de dies de 8Gb empilhados: 1=1GB · 2=2GB. "
-                    "Padrão de PN: K3QFxFx0... (x repete). "
-                    "⚠ 1GB (K3QF1...): LPDDR3 de baixo valor — sem liquidez B2B atual. Destino: resíduo (moagem/refino). "
-                    "2GB (K3QF2...): reacondicional seletivo — checar demanda B2B antes. "
+                    "pn[4] = código de capacidade: 1=1GB · 2=2GB · 3=2GB (revisão die) · 7=3GB · 4=4GB. "
+                    "⚠ chave '3' ≠ 3GB — é 16Gb/2GB como a chave '2' (mudança de revisão interna, não densidade). "
+                    "⚠ 1GB (K3QF1...): sem liquidez B2B atual. Destino: resíduo. "
+                    "2GB (K3QF2/K3QF3...): reacondicional seletivo. "
+                    "3GB (K3QF7..., Galaxy Note 3): reacondicional seletivo — checar demanda. "
+                    "4GB (K3QF4..., Octopart ✓): reacondicional seletivo. "
                     "Para K3QFx com x não mapeado: consultar Octopart/datasheet."
                 ),
             ),
@@ -708,20 +838,25 @@ class Command(BaseCommand):
             ),
 
             # ═══ FLASH: eMMC ═════════════════════════════════════════════════
+            # decode_gen_pos=6: engine lê pn[6] → SAM_EMMC_GEN → r["interface"].
+            # interface="eMMC" é fallback para PNs curtos / letras não mapeadas.
+            # Chips com pn[6] reconhecido exibem "eMMC 4.5", "eMMC 5.0" ou "eMMC 5.1"
+            # automaticamente — impacto direto no preço B2B (5.1 > 5.0 > 4.5).
             dict(
                 prefix="KLM", chip_type="eMMC", subtype="eMMC Samsung",
-                interface="eMMC 5.1", pn_length=10,
+                interface="eMMC", pn_length=10,
+                decode_gen_pos=6, decode_gen_map="SAM_EMMC_GEN",
                 decode_cap_pos=3, decode_cap_len=1, decode_cap_map="SAM_FLASH_CAP",
                 is_emcp=False, active=True, priority=50,
                 tip=(
                     "eMMC Samsung — armazenamento Flash puro, sem RAM embutida. "
-                    "Interface: eMMC 4.5 / 5.1. "
-                    "Capacidade: pn[3] → 4=4GB, 8=8GB, A=16GB, B=32GB, C=64GB, "
-                    "D=128GB, E=256GB, F=512GB, G=1TB. "
-                    "Tipo NAND: pn[5] → 4=MLC, 8=TLC (TLC = maioria dos volumes modernos). "
-                    "Geração eMMC: pn[6] → J=eMMC 5.1, F=eMMC 4.5. "
+                    "Geração automática: pn[6] → F=eMMC 4.5 | E=eMMC 5.0 | J=eMMC 5.1. "
+                    "⚠ Separe por geração na bancada: 5.1 (J) vale ~15-25% a mais que 4.5 (F). "
+                    "Capacidade: pn[3] → 4=4GB · 8=8GB · A=16GB · B=32GB · C=64GB · "
+                    "D=128GB · E=256GB · F=512GB · G=1TB. "
+                    "Tipo NAND: pn[5] → 4=MLC · 8=TLC (TLC = maioria dos volumes modernos). "
                     "Pacote: BGA153 ou BGA169 — verificar grid inferior. "
-                    "Destino: bancada reacondicional Flash eMMC."
+                    "Destino: bancada reacondicional Flash eMMC (separar por geração)."
                 ),
             ),
 
@@ -933,18 +1068,24 @@ class Command(BaseCommand):
             #
             # Destino correto: bancada reacondicional uMCP — NÃO resíduo.
             # uMCPs são chips modernos com alta demanda no mercado de reparos.
+            # ═══ KMG — eMCP LPDDR3 + eMMC 5.1 (CORRIGIDO 2026-05-09) ═════════════
+            # ATENÇÃO: KMG NÃO é uMCP. Classificação anterior estava ERRADA.
+            # Datasheet KMGP6001BM confirma: KMG = eMCP eMMC 5.1 + LPDDR3 (~2016-2019).
+            # A letra G em EMCP_RAM_TYPES (engine.py) = "LPDDR3" — correto para este fallback.
+            # decode_gen_pos=None obrigatório: usar SAM_EMCP_GEN daria G=LPDDR4X — ERRADO.
+            # O fix_known_parts.py corrigiu KMGD6001BM de volta para eMCP+LPDDR3.
             dict(
-                prefix="KMG", chip_type="uMCP", subtype="UFS 3.1 + LPDDR4X",
-                interface="UFS 3.1", pn_length=10,
+                prefix="KMG", chip_type="eMCP", subtype="LPDDR3 + eMMC 5.1",
+                interface="eMMC 5.1", pn_length=10,
                 is_emcp=True, active=True, priority=40,
-                decode_gen_pos=2, decode_gen_map="SAM_EMCP_GEN",
+                decode_gen_pos=None,  # G = LPDDR3 via EMCP_RAM_TYPES fallback (NÃO usar SAM_EMCP_GEN)
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
                 tip=(
-                    "uMCP Samsung UFS 3.1 (~1200 MB/s) + LPDDR4X (0.6V) — mid-range 5G, 2020-2022. "
-                    "G = LPDDR4X confirmado. Dispositivos: Galaxy A32/A52/A72 5G. "
-                    "Capacidade: pn[3:5] → mapa SAM_EMCP_CAP (ex: D6=32GB+3GB, T6=64GB+4GB). "
-                    "Socket UFS — incompatível com eMMC KLM/KLU. "
-                    "Destino: bancada reacondicional uMCP."
+                    "eMCP Samsung LPDDR3 + eMMC 5.1 — linha legacy, ~2016-2019. "
+                    "G = LPDDR3 (via EMCP_RAM_TYPES fallback — decode_gen_pos=None por design). "
+                    "Capacidade: pn[3:5] → SAM_EMCP_CAP (ex: D6=32GB+3GB, P6=64GB+3GB). "
+                    "Interface eMMC 5.1 — NÃO confundir com uMCP KML/KM5 que usam UFS. "
+                    "Destino: bancada reacondicional eMCP."
                 ),
             ),
             dict(
@@ -1112,6 +1253,30 @@ class Command(BaseCommand):
                 interface="", is_emcp=False, active=True, priority=100,
                 tip="GDDR3. Destino: bancada reacondicional GPU.",
             ),
+            # ── K4W = gDDR3 (Graphics DDR3) ──────────────────────────────────
+            # NÃO é DDR3L ultrabook (erro da auditoria anterior).
+            # gDDR3 é DDR3 com timing/empacotamento otimizado para VRAM dedicada
+            # em GPUs de entrada e notebooks com vídeo discreto soldado.
+            # PNs confirmados por esquemáticos e Octopart (2026-05-09):
+            #   K4W1G1646D-EC12: 1Gb (128MB), 64Mx16 — ATI Radeon HD 4550
+            #   K4W2G1646C-HC11: 2Gb (256MB) — Dell N4110 VRAM (+1.5V_GFX)
+            #   K4W4G1646:       4Gb (512MB) — mercado secundário VRAM GPU
+            # Decode: pn[3:5] via DRAM_PC (1G=1Gb · 2G=2Gb · 4G=4Gb) ✓
+            dict(
+                prefix="K4W", chip_type="GDDR3", subtype="gDDR3 (Graphics DDR3)",
+                interface="gDDR3", decode_density_type="pc",
+                is_emcp=False, active=True, priority=100,
+                tip=(
+                    "gDDR3 Samsung (Graphics DDR3) — VRAM dedicada em GPUs de entrada "
+                    "e notebooks com vídeo discreto soldado (~2008-2013). "
+                    "W = gDDR3; NÃO confundir com K4B (DDR3 de sistema). "
+                    "Densidade: pn[3:5] → DRAM_PC: 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB). "
+                    "Chips confirmados: K4W1G1646D-EC12 (ATI Radeon HD 4550), "
+                    "K4W2G1646C-HC11 (Dell N4110 VRAM). "
+                    "Tensão diferente do DDR3 sistema — NÃO misturar na bancada. "
+                    "Destino: bancada reacondicional GPU (junto com K4J/K4G)."
+                ),
+            ),
             dict(
                 prefix="K4G", chip_type="GDDR5", subtype="GDDR5/GDDR5X",
                 interface="", is_emcp=False, active=True, priority=100,
@@ -1139,51 +1304,65 @@ class Command(BaseCommand):
             dict(
                 prefix="K9F", chip_type="NAND Flash", subtype="Samsung SLC NAND",
                 interface="", is_emcp=False, active=True, priority=80,
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="NAND_FLASH_CAP",
                 tip="K9F = Samsung NAND Flash SLC. Alta durabilidade (~100K ciclos P/E). "
-                    "Capacidade: 4ª+5ª letra (ex: 1G=1Gbit=128MB, 2G=2Gbit=256MB). "
+                    "Densidade: pn[3:5] → 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB). "
                     "Destino: bancada reacondicional Flash.",
             ),
             dict(
                 prefix="K9G", chip_type="NAND Flash", subtype="Samsung MLC NAND",
                 interface="", is_emcp=False, active=True, priority=80,
-                tip="K9G = Samsung NAND Flash MLC. Uso geral. "
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="NAND_FLASH_CAP",
+                tip="K9G = Samsung NAND Flash MLC. "
+                    "Densidade: pn[3:5] → AG=16Gb(2GB) · BG=32Gb(4GB). "
                     "Destino: bancada reacondicional Flash.",
             ),
             dict(
                 prefix="K9H", chip_type="NAND Flash", subtype="Samsung MLC NAND (Large Page)",
                 interface="", is_emcp=False, active=True, priority=80,
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="NAND_FLASH_CAP",
                 tip="K9H = Samsung NAND Flash MLC Large Page. "
+                    "Densidade: pn[3:5] → DG=128Gb(16GB) e anteriores via NAND_FLASH_CAP. "
                     "Destino: bancada reacondicional Flash.",
             ),
             dict(
                 prefix="K9K", chip_type="NAND Flash", subtype="Samsung SLC/MLC NAND",
                 interface="", is_emcp=False, active=True, priority=80,
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="NAND_FLASH_CAP",
                 tip="K9K = Samsung NAND Flash (SLC/MLC misto). "
+                    "Densidade: pn[3:5] → 8G=8Gb(1GB) e outras via NAND_FLASH_CAP. "
                     "Destino: bancada reacondicional Flash.",
             ),
             dict(
                 prefix="K9L", chip_type="NAND Flash", subtype="Samsung MLC/TLC NAND",
                 interface="", is_emcp=False, active=True, priority=80,
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="NAND_FLASH_CAP",
                 tip="K9L = Samsung NAND Flash MLC/TLC. Custo reduzido. "
+                    "Densidade: pn[3:5] → CG=64Gb(8GB) e outras via NAND_FLASH_CAP. "
                     "Destino: bancada reacondicional Flash.",
             ),
             dict(
                 prefix="K9W", chip_type="NAND Flash", subtype="Samsung SLC NAND (Industrial)",
                 interface="", is_emcp=False, active=True, priority=80,
-                tip="K9W = Samsung NAND Flash SLC (variante industrial/white label). "
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="NAND_FLASH_CAP",
+                tip="K9W = Samsung NAND Flash SLC industrial/white label. "
+                    "Densidade: pn[3:5] → NAND_FLASH_CAP (1G=128MB · 2G=256MB · 4G=512MB · 8G=1GB). "
                     "Destino: bancada reacondicional Flash.",
             ),
             dict(
                 prefix="K9X", chip_type="NAND Flash", subtype="Samsung MLC NAND (Expandido)",
                 interface="", is_emcp=False, active=True, priority=80,
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="NAND_FLASH_CAP",
                 tip="K9X = Samsung NAND Flash MLC expandido. "
+                    "Densidade: pn[3:5] → NAND_FLASH_CAP. "
                     "Destino: bancada reacondicional Flash.",
             ),
             dict(
                 prefix="K9Z", chip_type="NAND Flash", subtype="Samsung MLC/TLC NAND (Especial)",
                 interface="", is_emcp=False, active=True, priority=80,
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="NAND_FLASH_CAP",
                 tip="K9Z = Samsung NAND Flash MLC/TLC variante especial. "
-                    "Verificar datasheet para densidade. "
+                    "Densidade: pn[3:5] → NAND_FLASH_CAP. "
                     "Destino: bancada reacondicional Flash.",
             ),
 
@@ -1237,7 +1416,9 @@ class Command(BaseCommand):
                 interface="PCIe Gen3",
                 is_emcp=False, active=True, priority=50,
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="KUS_CAP",
-                tip="BGA NVMe SSD completo. JAMAIS misturar com eMMC ou UFS. "
+                tip="BGA NVMe SSD Samsung PM971 — capacidades: 02=128GB, 03=256GB, 04=512GB. "
+                    "Série encerra em 512GB (PM971). 1TB+ usa outras famílias (PM991). "
+                    "JAMAIS misturar com eMMC ou UFS. "
                     "Destino: reacondicional BGA SSD (Premium).",
             ),
 

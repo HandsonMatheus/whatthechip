@@ -1,0 +1,24 @@
+# ── Core Django ────────────────────────────────────────────────────────────────
+Django>=4.2
+Pillow>=10.0
+
+# ── Banco de dados ──────────────────────────────────────────────────────────────
+psycopg2-binary>=2.9
+dj-database-url>=2.1        # Lê DATABASE_URL do Render automaticamente
+
+# ── Servidor de produção ────────────────────────────────────────────────────────
+gunicorn>=21.0
+whitenoise>=6.5             # Serve arquivos estáticos sem nginx
+
+# ── Variáveis de ambiente ───────────────────────────────────────────────────────
+python-dotenv>=1.0
+
+# ── Google Gemini ───────────────────────────────────────────────────────────────
+google-generativeai>=0.5
+
+# ── Utilitários ─────────────────────────────────────────────────────────────────
+tqdm>=4.0
+
+# ── NÃO incluídos (não rodam no Render free) ────────────────────────────────────
+# curl_cffi    ← scraping local apenas
+# playwright   ← scraping local apenas

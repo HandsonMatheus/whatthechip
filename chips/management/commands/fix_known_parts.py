@@ -154,23 +154,89 @@ CORRECTIONS = [
     },
 
     # ── KMGD6001BM ───────────────────────────────────────────────────────────
-    # Problema: banco continha dados do distribuidor Jotrin, marcados como
-    # "confirmed" (alguém validou sem checar a semântica dos campos).
-    #   emcp_nand = "eMMC 32GB" → ERRADO. KMG é uMCP UFS 3.1, não eMMC.
-    #   emcp_ram  = "LPDDR3 3GB" → ERRADO. G = LPDDR4X (SAM_EMCP_GEN).
-    # O engine agora corrige o TIPO via gramática mesmo quando DB vence na
-    # capacidade. Esta entrada limpa o registro histórico para consistência.
+    # ⚠ REVERSAL 2026-05-09: a correção anterior estava ERRADA.
+    #
+    # Histórico:
+    #   Distribuidor Jotrin tinha: emcp_nand="eMMC 32GB", emcp_ram="LPDDR3 3GB"
+    #   Fix anterior "corrigiu" para: emcp_nand="UFS 3.1 32GB", emcp_ram="LPDDR4X 3GB"
+    #   Razão do fix anterior: acreditava-se que KMG = uMCP UFS 3.1 + LPDDR4X.
+    #
+    # O que a evidência mostra agora:
+    #   Datasheet KMGP6001BM confirma: KMG = eMCP eMMC 5.1 + LPDDR3.
+    #   O distribuidor Jotrin estava CERTO no tipo (eMMC + LPDDR3).
+    #   Família KMG corrigida em populate_samsung.py: chip_type=eMCP, decode_gen_pos=None.
+    #   G em EMCP_RAM_TYPES = "LPDDR3" — confirma a família corretamente.
+    #
+    # D6 no SAM_EMCP_CAP = 32GB + 3GB (confirmado). Valores corretos abaixo.
     {
         "pn": "KMGD6001BM",
         "fields": {
-            "emcp_nand": "UFS 3.1 32GB",
-            "emcp_ram":  "LPDDR4X 3GB",
+            "emcp_nand": "eMMC 5.1 32GB",
+            "emcp_ram":  "LPDDR3 3GB",
             "device":    "",
         },
         "reason": (
-            "NAND corrigido: KMG = uMCP UFS 3.1, não eMMC (era 'eMMC 32GB' do Jotrin). "
-            "RAM corrigida: G = LPDDR4X, não LPDDR3 (SAM_EMCP_GEN). "
-            "Device apagado: 'Galaxy A (MV3224)' é código interno Samsung."
+            "REVERSAL: fix anterior estava errado — KMG é eMCP eMMC 5.1 + LPDDR3, não uMCP UFS 3.1. "
+            "Datasheet KMGP6001BM (2026-05-09) confirma a família. "
+            "D6 = 32GB eMMC + 3GB LPDDR3 (SAM_EMCP_CAP, sem controvérsia). "
+            "Device apagado: 'Galaxy A (MV3224)' é código interno Samsung — mantido."
+        ),
+    },
+
+    # ── KMR8X0001M ───────────────────────────────────────────────────────────
+    # Problema: SAM_EMCP_CAP tinha 8X = "8GB NAND + 1GB RAM" (ERRADO).
+    # Confirmado 2026-05-09: KMR8X0001M-B608 = 16GB eMMC + 16Gb (2GB) LPDDR3.
+    # Correção do mapa: 8X NAND corrigida de 8GB → 16GB.
+    # RAM do mapa: 1GB (base KMQ8X). KMR8X tem 2GB — conflito de shared map.
+    # Este fix corrige o registro histórico no banco para o valor real do KMR8X.
+    {
+        "pn": "KMR8X0001M",
+        "fields": {
+            "emcp_nand": "eMMC 5.1 16GB",
+            "emcp_ram":  "LPDDR4/4X 2GB",
+        },
+        "reason": (
+            "NAND corrigida: 8X era 8GB no mapa (ERRADO). KMR8X0001M-B608 = 16GB eMMC. "
+            "RAM corrigida: 16Gb ÷ 8 = 2GB (mapa usa 1GB como base KMQ8X — divergência de família). "
+            "8X no SAM_EMCP_CAP corrigido para 16GB NAND. "
+            "KMQ8X000SA-B414 (1GB) e KMR8X0001M (2GB) confirmados em B2B (SBiT)."
+        ),
+    },
+
+    # ── KMGP6001BM ───────────────────────────────────────────────────────────
+    # Problema: SAM_EMCP_CAP["P6"] = 4GB (base KMDP6001DA-B425, família KMD/LPDDR4X).
+    # KMG é família LPDDR3 — para KMG, P6 = 64GB eMMC + 24Gb LPDDR3 → 24Gb÷8 = 3GB.
+    # Mesma divergência de shared cap_key que KMRX60014M (X6 base KM4=2GB vs KMR=4GB).
+    # Datasheet KMGP6001BM confirma KMG = eMCP eMMC 5.1 + LPDDR3 ✓
+    {
+        "pn": "KMGP6001BM",
+        "fields": {
+            "emcp_nand": "eMMC 5.1 64GB",
+            "emcp_ram":  "LPDDR3 3GB",
+        },
+        "reason": (
+            "P6 no SAM_EMCP_CAP = 4GB (base KMDP6001DA-B425, família KMD/LPDDR4X). "
+            "KMG é LPDDR3: P6 para KMG = 64GB eMMC + 24Gb LPDDR3 → 24Gb÷8=3GB. "
+            "Divergência de cap_key compartilhado — override necessário para família KMG."
+        ),
+    },
+
+    # ── KMRX60014M ───────────────────────────────────────────────────────────
+    # Problema: SAM_EMCP_CAP mapeia X6 = "32GB NAND + 2GB RAM" (base KM4X6001KM).
+    # KMRX60014M-B614 = 32GB eMMC 5.1 + 32Gb LPDDR4/4X → 32Gb ÷ 8 = 4GB.
+    # Conflito de shared map: X6 base é 2GB (KM4X série), KMRX6 é 4GB (KMR série).
+    # Este fix corrige o registro KMRX60014M para o valor real da família KMR.
+    {
+        "pn": "KMRX60014M",
+        "fields": {
+            "emcp_nand": "eMMC 5.1 32GB",
+            "emcp_ram":  "LPDDR4/4X 4GB",
+        },
+        "reason": (
+            "X6 base mapeado como 2GB (KM4X6001KM, Octopart). "
+            "KMRX60014M-B614 = 32GB eMMC 5.1 + 32Gb LPDDR4/4X → 32Gb÷8=4GB. "
+            "Divergência de família no shared cap_key X6: KM4X6→2GB, KMRX6→4GB. "
+            "Override necessário para corrigir registro no banco."
         ),
     },
 

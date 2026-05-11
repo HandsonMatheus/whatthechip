@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}WhatTheChip?{% endblock %}</title>
+  <!-- Aplica tema antes do paint para evitar flash -->
   <script>
     (function() {
       if (localStorage.getItem('wtc_theme') === 'dark') {
@@ -12,149 +13,133 @@
       }
     })();
   </script>
+  <!-- IBM Plex Mono para código -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
   {% block extra_head %}{% endblock %}
 </head>
 <body>
 
-<!-- ── TOPBAR ──────────────────────────────────────────────── -->
-<header class="topbar">
-  <div class="topbar-inner">
-    <a class="brand" href="{% url 'home' %}">
-      <div class="logo">IC</div>
-      <div class="name">WhatTheChip<span class="alt">?</span></div>
-    </a>
-    <nav class="topnav">
-      <a href="{% url 'home' %}">Início</a>
-      <a href="{% url 'page' 'prefixos' %}">Tabela Rápida</a>
-      <a href="{% url 'page' 'contato' %}">Contato</a>
-    </nav>
-    <button class="theme-btn" id="theme-btn" type="button" title="Alternar modo">
-      <svg class="icon-moon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-      <svg class="icon-sun" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3"/>
-        <line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/>
-        <line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-      <span class="theme-label" id="theme-label">Modo escuro</span>
-    </button>
-    <div class="top-search" role="search">
-      <input id="top-search-input" type="text"
-             placeholder="Buscar prefixo… ex: KLM, H26N, TYBE"
-             autocomplete="off" spellcheck="false" />
-      <span class="kbd-hint">Ctrl + K</span>
-      <button id="top-search-btn">Buscar</button>
-      <div id="top-search-results">
-        <div id="top-search-empty">Nenhum prefixo encontrado.</div>
+<!-- ════════════════════════════════════════════════════════
+     HEADER
+     ════════════════════════════════════════════════════════ -->
+<header class="wtc-header">
+  <div class="wtc-header-inner">
+
+    <!-- Navegação principal (sem brand — logo está no hero) -->
+    <nav class="wtc-nav" aria-label="Navegação principal">
+
+      <a href="{% url 'home' %}"
+         class="wtc-nav-link{% if current_slug == 'index' %} wtc-nav-link--active{% endif %}">
+        Início
+      </a>
+
+      <!-- Dropdown Fabricantes -->
+      <div class="wtc-nav-item wtc-nav-item--dropdown">
+        <span class="wtc-nav-link wtc-nav-link--btn{% if current_slug == 'fab-samsung' or current_slug == 'fab-hynix' %} wtc-nav-link--active{% endif %}">
+          Fabricantes <span class="wtc-nav-arrow">▾</span>
+        </span>
+        <div class="wtc-dropdown">
+          <a class="wtc-dropdown-item" href="{% url 'page' 'fab-samsung' %}">
+            Samsung
+            <span class="wtc-dropdown-badge wtc-dropdown-badge--live">● Ativo</span>
+          </a>
+          <div class="wtc-dropdown-item wtc-dropdown-item--dev">
+            SK Hynix
+            <span class="wtc-dropdown-badge">◌ Em breve</span>
+          </div>
+        </div>
       </div>
+
+      <a href="{% url 'page' 'prefixos' %}"
+         class="wtc-nav-link{% if current_slug == 'prefixos' %} wtc-nav-link--active{% endif %}">
+        Tabela Rápida
+      </a>
+
+      <a href="{% url 'page' 'contato' %}"
+         class="wtc-nav-link{% if current_slug == 'contato' %} wtc-nav-link--active{% endif %}">
+        Contato
+      </a>
+
+    </nav>
+
+    <!-- Ações do header -->
+    <div class="wtc-header-actions">
+
+      <!-- Seletor de idioma -->
+      <div class="wtc-nav-item wtc-nav-item--dropdown">
+        <button class="wtc-lang-btn" type="button" aria-label="Idioma">
+          🌐 PT <span class="wtc-nav-arrow">▾</span>
+        </button>
+        <div class="wtc-dropdown wtc-dropdown--right">
+          <div class="wtc-dropdown-item wtc-dropdown-item--active">
+            🇧🇷 Português
+          </div>
+          <div class="wtc-dropdown-item wtc-dropdown-item--dev">
+            🇺🇸 English
+            <span class="wtc-dropdown-badge">Em breve</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tema claro/escuro -->
+      <button class="wtc-theme-btn" id="theme-btn" type="button" aria-label="Alternar modo escuro/claro">
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1"  x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22"   x2="5.64"  y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1"  y1="12" x2="3"  y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+          <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+
     </div>
+
   </div>
 </header>
 
-<!-- ── LAYOUT ───────────────────────────────────────────────── -->
-<div class="layout">
+<!-- ════════════════════════════════════════════════════════
+     CONTEÚDO PRINCIPAL
+     ════════════════════════════════════════════════════════ -->
+<main class="wtc-main" id="content">
+  {% block content %}{% endblock %}
+</main>
 
-  <!-- SIDENAV — gerada dinamicamente a partir do banco -->
-  <aside class="sidenav" aria-label="Mapa do documento">
-    <div class="sidenav-header">
-      <span>Mapa do documento</span>
-      <span>»</span>
-    </div>
-
-    {% regroup pages by section as sections %}
-    {% for section in sections %}
-      {% if section.grouper %}
-        <h4>{{ section.grouper }}</h4>
-      {% endif %}
-      <ul>
-        {% for p in section.list %}
-          <li class="{{ p.nav_class }}{% if p.slug == current_slug %} active{% endif %}">
-            <a href="{% url 'page' p.slug %}"
-               {% if p.slug == current_slug %}class="active"{% endif %}>
-              {{ p.nav_title|default:p.title }}
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% endfor %}
-
-    <div class="sidenav-foot">Revisão 5.0 · maio 2026</div>
-  </aside>
-
-  <!-- CONTENT -->
-  <div class="article" id="content">
-    {% block content %}{% endblock %}
-
-    <!-- Navegação prev/next -->
-    <div class="page-nav">
-      {% if prev_page %}
-        <a class="page-nav-btn prev" href="{% url 'page' prev_page.slug %}">
-          ← {{ prev_page.nav_title|default:prev_page.title }}
-        </a>
-      {% else %}
-        <span></span>
-      {% endif %}
-      {% if next_page %}
-        <a class="page-nav-btn next" href="{% url 'page' next_page.slug %}">
-          {{ next_page.nav_title|default:next_page.title }} →
-        </a>
-      {% else %}
-        <span></span>
-      {% endif %}
-    </div>
-  </div>
-
-</div>
-
-<!-- ── FOOTER ───────────────────────────────────────────────── -->
-<footer class="page-foot">
-  <div class="page-foot-inner">
-    WhatTheChip · Revisão 5.0 · Última atualização maio de 2026
+<!-- ════════════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════════════ -->
+<footer class="wtc-footer">
+  <div class="wtc-footer-inner">
+    <span>WhatTheChip? · Revisão 5.0 · maio 2026</span>
   </div>
 </footer>
 
 <script src="{% static 'js/script.js' %}"></script>
 <script>
-(function() {
-  var pageId = '{{ current_slug }}';
+(function () {
+  'use strict';
 
-  // Mark active sidebar link
-  document.querySelectorAll('.sidenav a').forEach(function(link) {
-    var href = link.getAttribute('href');
-    if (href && href.includes('/' + pageId + '/')) {
-      link.classList.add('active');
-    }
-  });
-
-  // Ctrl+K focuses topbar search
-  document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-      e.preventDefault();
-      var t = document.getElementById('top-search-input');
-      if (t) { t.focus(); t.select(); }
-    }
-  });
-
-  // Dark mode toggle
-  var themeBtn   = document.getElementById('theme-btn');
-  var themeLabel = document.getElementById('theme-label');
+  // ── Dark mode ────────────────────────────────────────────────────────────────
+  var themeBtn = document.getElementById('theme-btn');
 
   function applyTheme(dark, save) {
     if (dark) {
       document.documentElement.setAttribute('data-theme', 'dark');
-      if (themeLabel) themeLabel.textContent = 'Modo claro';
     } else {
       document.documentElement.removeAttribute('data-theme');
-      if (themeLabel) themeLabel.textContent = 'Modo escuro';
     }
     if (save) localStorage.setItem('wtc_theme', dark ? 'dark' : 'light');
   }
@@ -162,35 +147,27 @@
   applyTheme(document.documentElement.getAttribute('data-theme') === 'dark', false);
 
   if (themeBtn) {
-    themeBtn.addEventListener('click', function() {
+    themeBtn.addEventListener('click', function () {
       applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
     });
   }
 
-  // Anatomy table styler — aplica estilos via JS para zero conflito com CSS global
-  (function styleAnatomyTables() {
-    var CHARS  = { fontFamily:'monospace,monospace', fontSize:'1.15em', fontWeight:'bold',
-                   color:'#003366', background:'#f8f9fa', border:'none',
-                   borderBottom:'2px solid #adb5bd', padding:'8px 10px',
-                   textAlign:'center', whiteSpace:'nowrap', verticalAlign:'middle' };
-    var LABELS = { fontFamily:'sans-serif', fontSize:'0.82em', fontWeight:'bold',
-                   color:'#003366', background:'#e9ecef', border:'none',
-                   padding:'5px 8px', textAlign:'center', verticalAlign:'middle' };
-    var DESC   = { fontFamily:'sans-serif', fontSize:'0.82em', fontWeight:'normal',
-                   color:'#444', background:'#ffffff', border:'none',
-                   padding:'5px 8px', textAlign:'center', verticalAlign:'middle' };
-
-    function apply(row, styles) {
-      row.querySelectorAll('td').forEach(function(td) { Object.assign(td.style, styles); });
+  // ── Ctrl + K → foca busca principal ──────────────────────────────────────────
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      var inp = document.getElementById('big-search-input') || document.getElementById('top-search-input');
+      if (inp) { inp.focus(); inp.select(); }
     }
+  });
 
-    document.querySelectorAll('table.anatomy-table').forEach(function(tbl) {
-      tbl.style.cssText = 'border-collapse:collapse;width:100%;border:1px solid #dee2e6;';
-      tbl.querySelectorAll('tr.anat-chars' ).forEach(function(r){ apply(r, CHARS);  });
-      tbl.querySelectorAll('tr.anat-labels').forEach(function(r){ apply(r, LABELS); });
-      tbl.querySelectorAll('tr.anat-desc'  ).forEach(function(r){ apply(r, DESC);   });
+  // ── Anatomy table styler (mantido para compat com páginas de marca) ──────────
+  (function styleAnatomyTables() {
+    document.querySelectorAll('table.anatomy-table').forEach(function (tbl) {
+      tbl.style.cssText = 'border-collapse:collapse;width:100%;';
     });
   })();
+
 })();
 </script>
 {% block extra_js %}{% endblock %}

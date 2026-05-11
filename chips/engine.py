@@ -62,7 +62,15 @@ def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
         if dist <= threshold:
             matches.append((dist, candidate))
     matches.sort()
-    return [KnownPart.objects.get(part_number=c) for _, c in matches[:5]]
+    top_pns = [c for _, c in matches[:5]]
+    if not top_pns:
+        return []
+    # BUG-5: substituído N+1 get() individuais por um único filter com select_related.
+    parts_by_pn = {
+        p.part_number: p
+        for p in KnownPart.objects.filter(part_number__in=top_pns).select_related("brand", "family")
+    }
+    return [parts_by_pn[c] for _, c in matches[:5] if c in parts_by_pn]
 
 
 # ── Mapa de decodificação ──────────────────────────────────────────────────────
@@ -176,6 +184,13 @@ def _clean(s: str) -> str:
 
 def _result_from_family(pn: str, fam) -> dict:
     """Decodifica o PN usando as regras da família. Retorna resultado parcial."""
+    # BUG-4: json.loads defensivo — JSON inválido no admin não crasha o engine.
+    try:
+        _reasoning = json.loads(fam.reasoning) if fam.reasoning else []
+    except (json.JSONDecodeError, TypeError):
+        logger.warning("JSON inválido em ChipFamily.reasoning para prefix=%s", fam.prefix)
+        _reasoning = []
+
     r = {
         "pn":            pn,
         "known":         True,
@@ -187,7 +202,7 @@ def _result_from_family(pn: str, fam) -> dict:
         "brand":         fam.brand.name,
         "is_emcp":       fam.is_emcp,
         "tip":           fam.tip or "",
-        "reasoning":     json.loads(fam.reasoning) if fam.reasoning else [],
+        "reasoning":     _reasoning,
         "doc_url":       _doc_url(fam),
         "capacity":      None,
         "dram_density":  None,
@@ -305,7 +320,11 @@ def _result_from_family(pn: str, fam) -> dict:
 
     # ── Sufixo ───────────────────────────────────────────────────────────────
     if fam.suffix_rules:
-        sfx = json.loads(fam.suffix_rules)
+        try:
+            sfx = json.loads(fam.suffix_rules)
+        except (json.JSONDecodeError, TypeError):
+            logger.warning("JSON inválido em ChipFamily.suffix_rules para prefix=%s", fam.prefix)
+            sfx = {}
         for s, data in sfx.items():
             if pn.endswith(s):
                 r["suffix_note"] = data.get("note", "")
@@ -397,9 +416,17 @@ def _result_from_known(pn: str, known, fam) -> dict:
             db_nand = _clean(known.emcp_nand) or ""
             if db_nand:
                 if fam.interface and "UFS" in fam.interface and "eMMC" in db_nand:
-                    # Família é UFS mas DB diz "eMMC" → corrige o rótulo,
-                    # preserva a capacidade numérica.
-                    r["emcp_nand"] = db_nand.replace("eMMC", fam.interface.split()[0])
+                    # BUG-2: Família é UFS mas DB diz "eMMC" → corrige o rótulo
+                    # preservando apenas a capacidade numérica.
+                    # Antes: db_nand.replace("eMMC", fam.interface.split()[0])
+                    #   → perdia a versão ("UFS 3.1" virava "UFS") ou gerava
+                    #   versão errada ("UFS 5.1 32GB" quando DB tinha "eMMC 5.1 32GB").
+                    # Agora: extrai o número de capacidade e reconstrói com interface completa.
+                    _nand_cap_match = _CAP_RE.search(db_nand)
+                    if _nand_cap_match:
+                        r["emcp_nand"] = f"{fam.interface} {_nand_cap_match.group(0)}"
+                    else:
+                        r["emcp_nand"] = fam.interface  # sem capacidade: ao menos corrige interface
                 else:
                     r["emcp_nand"] = db_nand
             # (se db_nand vazio, mantém o valor da gramática)
@@ -428,6 +455,27 @@ def _result_from_known(pn: str, known, fam) -> dict:
 
 
 # ── Double-check: detecta possível remarked ───────────────────────────────────
+
+def _remarked_summary(r: dict) -> str:
+    """
+    Formata uma string legível com os valores de capacidade do resultado,
+    cobrindo tanto chips standalone (capacity, dram_density) quanto
+    eMCP/uMCP (emcp_nand, emcp_ram).
+
+    Usado em remarked_note para que o operador saiba qual campo divergiu.
+    Ex: "NAND: eMMC 5.1 64GB · RAM: LPDDR4/4X 4GB"
+    """
+    parts = []
+    if r.get("emcp_nand"):
+        parts.append(f"NAND: {r['emcp_nand']}")
+    if r.get("emcp_ram"):
+        parts.append(f"RAM: {r['emcp_ram']}")
+    if r.get("capacity"):
+        parts.append(r["capacity"])
+    if r.get("dram_density"):
+        parts.append(r["dram_density"])
+    return " · ".join(parts) if parts else "N/A"
+
 
 def _extract_gib(text: str) -> float | None:
     """Extrai capacidade em GB a partir de string como '4GB', '512MB'."""
@@ -1014,11 +1062,14 @@ def classify(pn_raw: str) -> dict:
                     db_result = _result_from_known(pn, db_part, db_part.family)
                     if _check_remarked(grammar_result, db_result):
                         grammar_result["remarked_flag"] = True
+                        # BUG-1: antes usava capacity/dram_density, que são None para
+                        # eMCP/uMCP → exibia "gramática indica None, banco confirma None".
+                        # _remarked_summary() cobre emcp_nand/emcp_ram também.
                         grammar_result["remarked_note"] = (
                             f"⚠️ Atenção: gramática indica "
-                            f"{grammar_result.get('capacity') or grammar_result.get('dram_density')}, "
+                            f"{_remarked_summary(grammar_result)}, "
                             f"banco confirma "
-                            f"{db_result.get('capacity') or db_result.get('dram_density')}. "
+                            f"{_remarked_summary(db_result)}. "
                             f"Verificar possível chip remarked."
                         )
             except KnownPart.DoesNotExist:

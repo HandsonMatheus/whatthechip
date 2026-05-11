@@ -14,8 +14,9 @@ _INDEX_CONTENT_PATH = _CONTENT_DIR / "index.html"
 
 
 def _nav_pages():
-    # 'index' (Início) e 'contato' são excluídos da sidebar
-    return Page.objects.exclude(slug__in=['index', 'contato']).order_by('order')
+    # Apenas as páginas de marca e tabela rápida aparecem na navegação.
+    # Todas as páginas de documentação foram removidas do frontend.
+    return Page.objects.filter(slug__in=['fab-samsung', 'fab-hynix', 'prefixos']).order_by('order')
 
 
 def _fix_html_links(content):

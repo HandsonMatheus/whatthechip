@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}{{ page.title }}{% endblock %}
+{% block title %}{{ page.title }} — WhatTheChip?{% endblock %}
 
 {% block content %}
+{% if current_slug == 'index' %}
+  {# Home page: conteúdo renderiza seu próprio layout (hero + sections) #}
   {{ page.content|safe }}
+{% else %}
+  {# Páginas de conteúdo (fab-samsung, fab-hynix, prefixos, etc.) #}
+  <div class="article">
+    {{ page.content|safe }}
+  </div>
+{% endif %}
 {% endblock %}

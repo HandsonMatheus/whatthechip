@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>WhatTheChip — Protótipo: Resultado Fixo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ── Design tokens (WTC Carbon) ───────────────────────────── */
+:root {
+  --bg:           #f4f4f4;
+  --surface:      #ffffff;
+  --surface-2:    #f4f4f4;
+  --text-primary: #161616;
+  --text-secondary:#525252;
+  --text-helper:  #6f6f6f;
+  --text-placeholder:#a8a8a8;
+  --interactive:  #0f62fe;
+  --link:         #0f62fe;
+  --border-subtle:#e0e0e0;
+  --border-default:#8d8d8d;
+  --success:      #198038;
+  --success-bg:   #defbe6;
+  --success-bd:   #a7f0ba;
+  --warning:      #b28600;
+  --warning-bg:   #fff8e1;
+  --warning-bd:   #f1c21b;
+  --info-bg:      #edf5ff;
+  --info-bd:      #d0e2ff;
+  --error:        #da1e28;
+  --font-sans:    'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  --r:            4px;
+  --r-md:         8px;
+  --shadow-md:    0 2px 8px rgba(0,0,0,.10);
+  --shadow-xl:    0 8px 32px rgba(0,0,0,.14);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: linear-gradient(160deg,#dde8ff 0%,#eef3ff 40%,#f4f4f4 100%);
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+}
+
+/* ── Topo de contexto ─────────────────────────────────────── */
+.proto-banner {
+  background: #0f62fe;
+  color: #fff;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+.proto-banner span { opacity: .75; font-weight: 400; margin-left: 8px; }
+
+/* ── Hero ─────────────────────────────────────────────────── */
+.hero {
+  padding: 56px 24px 64px;
+  text-align: center;
+}
+.hero-logo {
+  font-family: var(--font-sans);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.hero-logo-circle {
+  width: 44px; height: 44px;
+  border: 3px solid var(--interactive);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700; color: var(--interactive);
+}
+.hero-logo-cn { font-size: 22px; color: var(--text-secondary); font-weight: 400; }
+
+/* ── PIN search ─────────────────────────────────────────────── */
+.pin-search {
+  max-width: 640px;
+  margin: 0 auto;
+}
+.pin-family-hint {
+  font-size: 12px; font-weight: 600; color: transparent;
+  text-align: center; letter-spacing: .03em;
+  margin-bottom: 10px; height: 20px; line-height: 20px;
+  transition: color .2s;
+}
+.pin-family-hint--active { color: var(--interactive); }
+
+.pin-row {
+  display: flex; align-items: center; justify-content: center; cursor: text;
+}
+.pin-boxes {
+  display: flex; flex-wrap: nowrap; justify-content: center;
+  background: var(--surface);
+  border: 2px solid var(--border-default);
+  border-radius: var(--r);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: border-color .15s, box-shadow .15s;
+  max-width: 100%;
+}
+.pin-boxes:focus-within {
+  border-color: var(--interactive);
+  box-shadow: 0 0 0 3px rgba(15,98,254,.2), var(--shadow-md);
+}
+.pin-box {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 56px; flex-shrink: 0;
+  border: none; border-right: 1px solid var(--border-subtle);
+  font-family: var(--font-mono); font-size: 21px; font-weight: 600;
+  color: var(--text-primary); background: transparent;
+  transition: background .1s; user-select: none;
+}
+.pin-box:last-child  { border-right: none; }
+.pin-box:first-child { border-radius: 2px 0 0 2px; }
+.pin-box.pin-filled  { background: var(--surface-2); }
+.pin-box.pin-cursor  { background: var(--surface); animation: blink 1s step-end infinite; }
+.pin-box.pin-prefix  { background: var(--info-bg); color: var(--interactive); }
+@keyframes blink {
+  0%,49% { box-shadow: inset 0 -3px 0 var(--interactive); }
+  50%,100%{ box-shadow: inset 0 -3px 0 transparent; }
+}
+.pin-real-input {
+  position: fixed; opacity: 0; pointer-events: none;
+  width: 1px; height: 1px; left: -9999px; top: -9999px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   NOVO: Painel de resultado FIXO — substitui o dropdown
+   ══════════════════════════════════════════════════════════ */
+.result-panel {
+  margin-top: 24px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  /* sem background, sem sombra — fica "solto" na página */
+  overflow: hidden;
+}
+
+/* ── Barra de status (top do painel) ────────────────────── */
+.rp-status {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  transition: background .3s, color .3s;
+}
+.rp-status--idle {
+  background: var(--surface-2);
+  color: var(--text-placeholder);
+}
+.rp-status--typing {
+  background: var(--info-bg);
+  color: var(--interactive);
+}
+.rp-status--ok {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.rp-status--incomplete {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+.rp-status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  flex-shrink: 0;
+  background: currentColor;
+  opacity: .6;
+}
+
+/* ── Corpo principal ─────────────────────────────────────── */
+.rp-body {
+  padding: 16px 20px 12px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 68px;
+  background: transparent;
+}
+.rp-chiptype {
+  font-size: 26px; font-weight: 700; letter-spacing: -.01em;
+  color: var(--text-primary); line-height: 1.15;
+  transition: opacity .25s, transform .25s;
+}
+.rp-chiptype.is-empty {
+  color: var(--text-placeholder);
+  font-weight: 400; font-size: 16px;
+  margin-top: 4px;
+}
+.rp-subtype {
+  font-size: 14px; font-weight: 400; color: var(--text-secondary);
+  margin-left: 8px; display: inline;
+  transition: opacity .25s;
+}
+.rp-brand {
+  display: inline-block;
+  font-size: 10px; font-weight: 700; font-family: var(--font-mono);
+  color: var(--interactive); background: var(--info-bg);
+  border: 1px solid var(--info-bd); border-radius: var(--r);
+  padding: 3px 10px; letter-spacing: .06em; text-transform: uppercase;
+  align-self: flex-start;
+  transition: opacity .3s, transform .3s;
+}
+/* Estado vazio: placeholder cinza */
+.rp-brand.is-empty {
+  color: var(--text-placeholder); background: var(--surface-2);
+  border-color: var(--border-subtle); opacity: .5; pointer-events: none;
+}
+
+/* ── Grade de specs ──────────────────────────────────────── */
+.rp-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-subtle);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  /* sem borda lateral, sem border-radius — mistura com o painel aberto */
+}
+.rp-spec {
+  display: flex; align-items: center; gap: 10px;
+  background: transparent; padding: 10px 20px;
+  transition: opacity .3s;
+}
+.rp-spec-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--interactive);
+  font-family: var(--font-mono); flex-shrink: 0; white-space: nowrap;
+}
+.rp-spec-val {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+  transition: opacity .3s, transform .25s;
+}
+/* Placeholder estático — traço simples, sem animação de loading */
+.rp-spec-val.is-empty {
+  color: var(--border-default);
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: .1em;
+  user-select: none;
+}
+
+/* ── Rodapé ──────────────────────────────────────────────── */
+.rp-footer {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  padding: 8px 20px 12px;
+  font-size: 12px; color: var(--text-helper);
+  transition: opacity .3s;
+}
+.rp-footer.is-empty { opacity: .35; pointer-events: none; }
+.rp-sep { opacity: .4; }
+.rp-link { color: var(--link); }
+.rp-link:hover { color: #0043ce; text-decoration: underline; }
+.rp-report { background: none; border: none; padding: 0; font: inherit;
+  font-size: 12px; color: var(--error); cursor: pointer;
+  text-decoration: underline dotted; text-underline-offset: 2px; opacity: .7; }
+.rp-report:hover { opacity: 1; }
+
+/* ── Fade-in de valores quando preenchidos ───────────────── */
+.rp-fade-in {
+  animation: fadeSlideIn .3s ease forwards;
+}
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* ── Hint de instrução ───────────────────────────────────── */
+.proto-hint {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 12px;
+  color: var(--text-helper);
+}
+.proto-hint kbd {
+  display: inline-block;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  box-shadow: 0 1px 0 var(--border-default);
+}
+
+/* ── Comparação lado a lado (seção inferior) ─────────────── */
+.compare {
+  max-width: 860px; margin: 48px auto 0; padding: 0 24px 64px;
+}
+.compare-title {
+  text-align: center; font-size: 13px; font-weight: 700;
+  color: var(--text-secondary); text-transform: uppercase;
+  letter-spacing: .08em; margin-bottom: 20px;
+}
+.compare-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+}
+.compare-card {
+  background: var(--surface); border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md); overflow: hidden;
+}
+.compare-card-label {
+  padding: 8px 14px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em; background: var(--surface-2);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.compare-card-label--old { color: var(--text-secondary); }
+.compare-card-label--new { color: var(--interactive); }
+.compare-card-body { padding: 16px 14px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.compare-card-body b { color: var(--text-primary); }
+.compare-card-body ul { padding-left: 18px; margin-top: 6px; }
+.compare-card-body li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="proto-banner">
+  🔬 PROTÓTIPO DE INTERFACE — Resultado Fixo
+  <span>Não é a versão de produção</span>
+</div>
+
+<div class="hero">
+
+  <!-- Logo -->
+  <div class="hero-logo">
+    <div class="hero-logo-circle">W</div>
+    WhatTheChip
+    <span class="hero-logo-cn">什么芯片</span>
+  </div>
+
+  <!-- PIN input -->
+  <form class="pin-search" id="pin-search" onsubmit="return false;" autocomplete="off">
+
+    <div class="pin-family-hint" id="pin-family-hint"></div>
+
+    <div class="pin-row" id="pin-row">
+      <div class="pin-boxes" id="pin-boxes"></div>
+      <input type="text" id="pin-input"
+             class="pin-real-input"
+             autocomplete="off" autocapitalize="characters"
+             autocorrect="off" spellcheck="false"
+             aria-label="Digite o Part Number"/>
+    </div>
+
+    <!-- ══ NOVO: painel de resultado fixo ══ -->
+    <div class="result-panel" id="result-panel">
+
+      <!-- Barra de status -->
+      <div class="rp-status rp-status--idle" id="rp-status">
+        <span class="rp-status-dot"></span>
+        <span id="rp-status-text">Aguardando Part Number...</span>
+      </div>
+
+      <!-- Tipo + marca -->
+      <div class="rp-body">
+        <div>
+          <div class="rp-chiptype is-empty" id="rp-chiptype">
+            Digite o PN acima para identificar o chip
+          </div>
+        </div>
+        <div class="rp-brand is-empty" id="rp-brand">Fabricante</div>
+      </div>
+
+      <!-- Grade de specs -->
+      <div class="rp-specs">
+        <div class="rp-spec">
+          <span class="rp-spec-label">Densidade</span>
+          <span class="rp-spec-val is-empty" id="spec-density">—</span>
+        </div>
+        <div class="rp-spec">
+          <span class="rp-spec-label">Interface</span>
+          <span class="rp-spec-val is-empty" id="spec-interface">—</span>
+        </div>
+        <div class="rp-spec">
+          <span class="rp-spec-label">Capacidade</span>
+          <span class="rp-spec-val is-empty" id="spec-capacity">—</span>
+        </div>
+        <div class="rp-spec">
+          <span class="rp-spec-label">Confiança</span>
+          <span class="rp-spec-val is-empty" id="spec-confidence">—</span>
+        </div>
+      </div>
+
+      <!-- Rodapé -->
+      <div class="rp-footer is-empty" id="rp-footer">
+        <span id="rp-conf-label">~ Estimado</span>
+        <span class="rp-sep">·</span>
+        <span>via gramática</span>
+        <span class="rp-sep">·</span>
+        <a class="rp-link" href="#" id="rp-doc-link">Documentação →</a>
+        <span class="rp-sep">·</span>
+        <button class="rp-report" type="button">Reportar erro</button>
+        <span class="rp-sep">·</span>
+        <button class="rp-report" type="button" style="color:var(--text-helper)">📋 Debug</button>
+      </div>
+
+    </div>
+
+  </form>
+
+  <p class="proto-hint">
+    Experimente digitar: <kbd>K4A4G16</kbd> · <kbd>K4B4G08</kbd> · <kbd>KLMAG</kbd> · <kbd>K3RG</kbd>
+    &nbsp;&nbsp;|&nbsp;&nbsp; <kbd>Esc</kbd> para limpar
+  </p>
+</div>
+
+<!-- Comparativo conceitual -->
+<div class="compare">
+  <div class="compare-title">Antes × Depois — O que muda</div>
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="compare-card-label compare-card-label--old">Antes — Dropdown Suspenso</div>
+      <div class="compare-card-body">
+        O resultado aparecia em uma caixa com <b>position: absolute</b>, flutuando sobre a página como um autocomplete.<br><br>
+        <ul>
+          <li>Sentia-se provisório, como uma sugestão</li>
+          <li>Fechava ao clicar fora</li>
+          <li>Podia cobrir conteúdo da página</li>
+          <li>Z-index conflicts em mobile</li>
+        </ul>
+      </div>
+    </div>
+    <div class="compare-card">
+      <div class="compare-card-label compare-card-label--new">Depois — Painel Fixo ✓</div>
+      <div class="compare-card-body">
+        O painel <b>sempre está lá</b>, solto na página, sem box branco. Campos vazios mostram <b>—</b> estático. Conforme o usuário digita, os campos se revelam com fade-in.<br><br>
+        <ul>
+          <li>Sem fundo branco nem sombra — faz parte da página</li>
+          <li>Traço <b>—</b> indica "campo aguardando", sem parecer loading</li>
+          <li>Fade-in suave ao preencher cada campo</li>
+          <li>Sem dropdown de prefixos (funcionalidade premium futura)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+/* ── Mini-banco de dados para demo ─────────────────────────── */
+var DB = [
+  { prefix: 'K4A', fab: 'Samsung', tipo: 'DDR4 SDRAM', pn_length: 8 },
+  { prefix: 'K4B', fab: 'Samsung', tipo: 'DDR3 SDRAM', pn_length: 9 },
+  { prefix: 'K4E', fab: 'Samsung', tipo: 'DDR4 SDRAM', pn_length: 10 },
+  { prefix: 'K4R', fab: 'Samsung', tipo: 'DDR5 SDRAM', pn_length: 10 },
+  { prefix: 'K3R', fab: 'Samsung', tipo: 'LPDDR4',     pn_length: 10 },
+  { prefix: 'K3P', fab: 'Samsung', tipo: 'LPDDR5',     pn_length: 10 },
+  { prefix: 'KLM', fab: 'Samsung', tipo: 'eMMC',        pn_length: 12 },
+  { prefix: 'KMF', fab: 'Samsung', tipo: 'eMCP/uMCP',   pn_length: 14 },
+  { prefix: 'KMJ', fab: 'Samsung', tipo: 'eMCP/uMCP',   pn_length: 14 },
+  { prefix: 'K9F', fab: 'Samsung', tipo: 'NAND Flash',  pn_length: 10 },
+  { prefix: 'K5Q', fab: 'Samsung', tipo: 'NOR Flash',   pn_length: 10 },
+  { prefix: 'H5A', fab: 'SK Hynix', tipo: 'DDR4 SDRAM', pn_length: 10 },
+  { prefix: 'H9H', fab: 'SK Hynix', tipo: 'eMMC',       pn_length: 12 },
+  { prefix: 'MT4', fab: 'Micron',  tipo: 'DDR4 SDRAM',  pn_length: 10 },
+];
+
+/* Resultados simulados para PNs conhecidos */
+var CHIPS = {
+  'K4A4G16': { chip_type:'DDR4', subtype:'DDR4 SDRAM', brand:'Samsung',
+    density:'4Gb = 512MB por die', interface:'DDR4',
+    capacity: null, confidence:'~ Estimado' },
+  'K4B4G08': { chip_type:'DDR3', subtype:'DDR3 SDRAM', brand:'Samsung',
+    density:'4Gb = 512MB por die', interface:'DDR3',
+    capacity: null, confidence:'~ Estimado' },
+  'K4B2G16': { chip_type:'DDR3', subtype:'DDR3 SDRAM', brand:'Samsung',
+    density:'2Gb = 256MB por die', interface:'DDR3',
+    capacity: null, confidence:'~ Estimado' },
+  'K3RG4G': { chip_type:'LPDDR4', subtype:'LPDDR4', brand:'Samsung',
+    density:'4Gb por die', interface:'LPDDR4',
+    capacity: null, confidence:'~ Estimado' },
+  'KLMAG2G': { chip_type:'eMMC', subtype:'eMMC 5.1', brand:'Samsung',
+    density: null, interface:'eMMC',
+    capacity:'16GB', confidence:'✅ Confirmado' },
+};
+
+/* ── Elementos do DOM ───────────────────────────────────────── */
+var pinBoxesEl  = document.getElementById('pin-boxes');
+var pinRow      = document.getElementById('pin-row');
+var hintEl      = document.getElementById('pin-family-hint');
+var input       = document.getElementById('pin-input');
+var rpStatus    = document.getElementById('rp-status');
+var rpStatusTxt = document.getElementById('rp-status-text');
+var rpChiptype  = document.getElementById('rp-chiptype');
+var rpBrand     = document.getElementById('rp-brand');
+var specDensity = document.getElementById('spec-density');
+var specIface   = document.getElementById('spec-interface');
+var specCap     = document.getElementById('spec-capacity');
+var specConf    = document.getElementById('spec-confidence');
+var rpFooter    = document.getElementById('rp-footer');
+var rpConfLabel = document.getElementById('rp-conf-label');
+var rpDocLink   = document.getElementById('rp-doc-link');
+
+var PIN_DEFAULT = 8, PIN_MAX = 18;
+var _fam = null, _lastPn = '', _debounce = null;
+
+function norm(s){ return s.toUpperCase().replace(/[^A-Z0-9]/g,''); }
+
+/* Renderiza as pin-boxes */
+function renderBoxes(val, target) {
+  var len = Math.min(val.length > target ? val.length + 2 : target, PIN_MAX);
+  if (pinBoxesEl.children.length !== len) {
+    pinBoxesEl.innerHTML = '';
+    for (var i = 0; i < len; i++) {
+      var b = document.createElement('span');
+      b.className = 'pin-box';
+      pinBoxesEl.appendChild(b);
+    }
+  }
+  var boxes = pinBoxesEl.querySelectorAll('.pin-box');
+  var prefLen = _fam ? norm(_fam.prefix).length : 0;
+  for (var j = 0; j < boxes.length; j++) {
+    var ch = val[j] || '';
+    boxes[j].textContent = ch;
+    boxes[j].className = 'pin-box'
+      + (ch ? ' pin-filled' : '')
+      + (j === val.length ? ' pin-cursor' : '')
+      + (j < prefLen && ch ? ' pin-prefix' : '');
+  }
+}
+
+/* Atualiza barra de status */
+function setStatus(mode, text) {
+  rpStatus.className = 'rp-status rp-status--' + mode;
+  rpStatusTxt.textContent = text;
+}
+
+/* Anima um elemento com fade-slide-in */
+function fadeIn(el) {
+  el.classList.remove('rp-fade-in');
+  void el.offsetWidth; /* force reflow */
+  el.classList.add('rp-fade-in');
+}
+
+/* Preenche um spec-val com valor */
+function fillSpec(el, value) {
+  if (value) {
+    if (el.classList.contains('is-empty')) {
+      el.classList.remove('is-empty');
+      el.textContent = value;
+      fadeIn(el);
+    } else if (el.textContent !== value) {
+      el.textContent = value;
+      fadeIn(el);
+    }
+  } else {
+    el.classList.add('is-empty');
+    el.textContent = '—'; /* traço estático */
+  }
+}
+
+/* Limpa o painel para estado idle */
+function clearPanel() {
+  setStatus('idle', 'Aguardando Part Number...');
+  rpChiptype.className = 'rp-chiptype is-empty';
+  rpChiptype.innerHTML = 'Digite o PN acima para identificar o chip';
+  rpBrand.className = 'rp-brand is-empty';
+  rpBrand.textContent = 'Fabricante';
+  fillSpec(specDensity, null);
+  fillSpec(specIface, null);
+  fillSpec(specCap, null);
+  fillSpec(specConf, null);
+  rpFooter.classList.add('is-empty');
+  hintEl.textContent = '';
+  hintEl.className = 'pin-family-hint';
+  _fam = null; _lastPn = '';
+}
+
+/* Mostra estado "digitando / identificando família" */
+function showTyping(fam, q) {
+  if (fam) {
+    setStatus('typing', 'Família ' + fam.fab + ' · ' + fam.tipo + ' detectada — aguardando PN completo...');
+    hintEl.textContent = fam.fab + ' · ' + fam.tipo + (fam.pn_length ? ' (' + fam.pn_length + ' chars)' : '');
+    hintEl.className = 'pin-family-hint pin-family-hint--active';
+    /* Já preenche chiptype/brand com o que sabemos */
+    rpChiptype.className = 'rp-chiptype';
+    rpChiptype.innerHTML = fam.tipo + '<span class="rp-subtype" style="opacity:.5">…</span>';
+    if (!rpBrand.classList.contains('is-empty') || rpBrand.textContent !== fam.fab) {
+      rpBrand.className = 'rp-brand';
+      rpBrand.textContent = fam.fab;
+      fadeIn(rpBrand);
+    }
+  } else {
+    setStatus('typing', 'Buscando na base de dados...');
+  }
+}
+
+/* Preenche o painel com resultado final */
+function showResult(r) {
+  setStatus('ok', '✓ Chip identificado');
+
+  var typeHtml = r.chip_type;
+  if (r.subtype) typeHtml += '<span class="rp-subtype">' + r.subtype + '</span>';
+
+  if (rpChiptype.innerHTML !== typeHtml) {
+    rpChiptype.className = 'rp-chiptype';
+    rpChiptype.innerHTML = typeHtml;
+    fadeIn(rpChiptype);
+  }
+
+  rpBrand.className = 'rp-brand';
+  if (rpBrand.textContent !== r.brand) {
+    rpBrand.textContent = r.brand;
+    fadeIn(rpBrand);
+  }
+
+  fillSpec(specDensity,  r.density);
+  fillSpec(specIface,    r.interface);
+  fillSpec(specCap,      r.capacity);
+  fillSpec(specConf,     r.confidence);
+
+  rpFooter.classList.remove('is-empty');
+  rpConfLabel.textContent = r.confidence;
+}
+
+/* bestMatch: retorna família cujo prefixo é maior substring do q */
+function bestMatch(q) {
+  var best = null;
+  DB.forEach(function(row) {
+    var p = norm(row.prefix);
+    if (q.startsWith(p) && (!best || p.length > norm(best.prefix).length)) best = row;
+  });
+  return best;
+}
+
+/* Simulate decode (substitui fetch real) */
+function simulateDecode(q) {
+  /* Busca exata */
+  if (CHIPS[q]) { showResult(CHIPS[q]); _lastPn = q; return; }
+  /* Busca parcial (prefixo) */
+  var fam = bestMatch(q);
+  if (fam && !fam.pn_length) {
+    /* família sem tamanho definido — continua exibindo estado typing */
+  }
+}
+
+/* ── Função principal de render ─────────────────────────── */
+function render(raw) {
+  var q = norm(raw);
+
+  if (!q) { clearPanel(); renderBoxes('', PIN_DEFAULT); return; }
+
+  var fam = bestMatch(q);
+  if (fam !== _fam) { _fam = fam; }
+
+  /* Target length das caixas */
+  var target = PIN_DEFAULT;
+  if (fam && fam.pn_length) target = fam.pn_length;
+  else if (q.length >= PIN_DEFAULT) target = q.length + 2;
+  renderBoxes(q, target);
+
+  /* Painel de resultado */
+  var exact = CHIPS[q];
+  if (exact) {
+    showResult(exact);
+  } else {
+    showTyping(fam, q);
+    if (_lastPn !== q) fillSpec(specDensity, null), fillSpec(specIface, null),
+      fillSpec(specCap, null), fillSpec(specConf, null);
+  }
+
+  /* Debounce para simular chamada à API */
+  clearTimeout(_debounce);
+  if (!exact && q.length >= 4) {
+    _debounce = setTimeout(function() { simulateDecode(q); }, 400);
+  }
+}
+
+/* ── Init ───────────────────────────────────────────────── */
+renderBoxes('', PIN_DEFAULT);
+if (pinRow) pinRow.addEventListener('click', function(){ input && input.focus(); });
+if (input) {
+  input.addEventListener('input', function() {
+    var c = norm(this.value);
+    if (this.value !== c) this.value = c;
+    render(c);
+  });
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { this.value = ''; render(''); this.blur(); }
+  });
+  setTimeout(function(){ input.focus(); }, 200);
+}
+
+})();
+</script>
+</body>
+</html>

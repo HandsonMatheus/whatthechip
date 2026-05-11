@@ -3,6 +3,10 @@ Django>=4.2
 Pillow>=10.0
 psycopg2-binary>=2.9
 
+# Produção / deploy
+whitenoise>=6.5
+dj-database-url>=2.1
+
 # Variáveis de ambiente
 python-dotenv>=1.0
 

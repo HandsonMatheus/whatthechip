@@ -107,12 +107,18 @@ grammar_complete = (
     # Não-eMCP: tem capacidade ou densidade decodificada
     (not fam.is_emcp and _CAP_RE.search(r["capacity"] or r["dram_density"] or ""))
 )
-human_verified = known.confidence in ("confirmed", "manual", "distributor")
+# DOC-1 (corrigido): "distributor" foi REMOVIDO intencionalmente de human_verified.
+# Dados de distribuidores (wolfchip, censtry, aliexpress…) são raspados por robôs
+# e frequentemente contêm erros de capacidade RAM. A gramática interna é mais
+# confiável. Distribuidor só complementa quando a gramática está incompleta.
+# Ver engine.py linha ~348 para comentário completo.
+human_verified = known.confidence in ("confirmed", "manual")
 grammar_wins   = grammar_complete and not human_verified
 ```
 
 - `grammar_wins = True` → valores da gramática substituem os do banco
 - `human_verified = True` → banco sempre prevalece (alguém conferiu manualmente)
+- `distributor` **não** conta como human_verified — gramática vence dados de distribuidor quando completa
 
 ---
 

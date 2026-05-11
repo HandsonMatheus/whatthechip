@@ -1,37 +1,138 @@
-<!-- HERO -->
+<!-- ══════════════════════════════════════════════════════
+     HERO — logo + barra de busca (estilo Google)
+     ══════════════════════════════════════════════════════ -->
 <div class="hero">
-  <h1>Guia de Identificação de Chips IC<br>para o mercado de refurbishing</h1>
-  <p class="lede">Identifique qualquer chip pelo prefixo gravado no encapsulamento</p>
+  <div class="hero-inner">
 
-  <form class="pin-search" id="pin-search" role="search" onsubmit="event.preventDefault();" autocomplete="off">
-
-    <!-- Label da família detectada -->
-    <div class="pin-family-hint" id="pin-family-hint"></div>
-
-    <!-- Caixas de caracteres -->
-    <div class="pin-row" id="pin-row">
-      <span class="pin-icon" aria-hidden="true">⌕</span>
-      <div class="pin-boxes" id="pin-boxes"></div>
-      <!-- Input real oculto — captura teclado, paste, mobile keyboard -->
-      <input type="text" id="big-search-input"
-             class="pin-real-input"
-             autocomplete="off" autocapitalize="characters"
-             autocorrect="off" spellcheck="false"
-             aria-label="Digite o Part Number do chip" />
+    <!-- Logo central — SVG Figma (lupa + texto + mandarim) -->
+    <div class="hero-logo">
+      <img class="hero-logo-svg hero-logo-svg--light"
+           src="/static/img/logo-light.svg"
+           alt="WhatTheChip?" />
+      <img class="hero-logo-svg hero-logo-svg--dark"
+           src="/static/img/logo-dark.svg"
+           alt="WhatTheChip?" />
     </div>
 
-    <!-- Resultados: decode card + lista de prefixos -->
-    <div id="big-search-results">
-      <div id="dc-result"></div>
-      <div id="prefix-results"></div>
-    </div>
+    <!-- Busca principal -->
+    <form class="pin-search" id="pin-search" role="search" onsubmit="event.preventDefault();" autocomplete="off">
 
-  </form>
+      <!-- Label da família detectada -->
+      <div class="pin-family-hint" id="pin-family-hint"></div>
 
-  <p class="quicklinks">
-    <span class="count">{{PREFIX_COUNT}} prefixos catalogados</span>
-  </p>
+      <!-- Caixas de caracteres -->
+      <div class="pin-row" id="pin-row">
+        <div class="pin-boxes" id="pin-boxes"></div>
+        <!-- Input real oculto — captura teclado, paste, mobile keyboard -->
+        <input type="text" id="big-search-input"
+               class="pin-real-input"
+               autocomplete="off" autocapitalize="characters"
+               autocorrect="off" spellcheck="false"
+               aria-label="Digite o Part Number do chip" />
+      </div>
+
+      <!-- Painel de resultado fixo — sempre visível abaixo do input -->
+      <div id="big-search-results">
+
+        <!-- Painel único — idle / digitando / identificado, tudo no mesmo elemento -->
+        <div id="dc-result-panel">
+          <div class="wtc-rp-status wtc-rp-status--idle" id="rp-status">
+            <span class="wtc-rp-status-dot"></span>
+            <span id="rp-status-text">Aguardando Part Number…</span>
+          </div>
+          <div class="wtc-rp-body">
+            <div class="wtc-rp-chiptype wtc-rp-chiptype--idle" id="rp-chiptype">
+              Digite o PN acima para identificar o chip
+            </div>
+            <div class="wtc-rp-brand wtc-rp-brand--idle" id="rp-brand">Fabricante</div>
+          </div>
+          <div class="wtc-rp-specs">
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label" id="rp-spec-l0">Densidade</span>
+              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v0">—</span>
+            </div>
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label" id="rp-spec-l1">Interface</span>
+              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v1">—</span>
+            </div>
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label" id="rp-spec-l2">Capacidade</span>
+              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v2">—</span>
+            </div>
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label" id="rp-spec-l3">Confiança</span>
+              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v3">—</span>
+            </div>
+          </div>
+          <!-- Rodapé: aparece só quando há resultado -->
+          <div class="wtc-rp-footer" id="rp-footer" style="display:none">
+            <span id="rp-conf-label"></span>
+            <span class="wtc-rp-sep" id="rp-source-sep">·</span>
+            <span id="rp-source-label"></span>
+            <span class="wtc-rp-sep" id="rp-doc-sep" style="display:none">·</span>
+            <a class="wtc-rp-link" href="#" id="rp-doc-link" style="display:none">Documentação →</a>
+            <span class="wtc-rp-sep">·</span>
+            <span id="rp-report-wrap">
+              <button class="wtc-rp-report-btn" id="rp-report-btn" type="button">Reportar erro</button>
+            </span>
+            <span class="wtc-rp-sep">·</span>
+            <button class="wtc-rp-debug-btn" id="rp-debug-btn" type="button">📋 Debug</button>
+          </div>
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════
+     DIVISOR "SABER MAIS"
+     ══════════════════════════════════════════════════════ -->
+<div class="section-divider">
+  <span class="section-divider-text">Saber mais</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     COBERTURA
+     ══════════════════════════════════════════════════════ -->
+<section class="coverage">
+  <div class="coverage-inner">
+    <h2 class="coverage-title">Fabricantes cobertos</h2>
+    <p class="coverage-sub">Identificação com dados reais de datasheets e campo</p>
+
+    <div class="coverage-grid">
+
+      <!-- Samsung — ativo -->
+      <a class="coverage-card coverage-card--active" href="/fab-samsung/">
+        <div class="coverage-card-head">
+          <span class="cov-tag cov-tag--blue">Samsung</span>
+          <span class="cov-status cov-status--live">● Ativo</span>
+        </div>
+        <p class="coverage-card-desc">
+          eMCP · uMCP · DRAM (LPDDR / DDR) · UFS · eMMC ·
+          NAND · NOR · ePoP · SSD BGA
+        </p>
+        <span class="coverage-card-cta">Ver documentação →</span>
+      </a>
+
+      <!-- SK Hynix — em desenvolvimento -->
+      <div class="coverage-card coverage-card--dev">
+        <div class="coverage-card-head">
+          <span class="cov-tag cov-tag--teal">SK Hynix</span>
+          <span class="cov-status cov-status--dev">◌ Em desenvolvimento</span>
+        </div>
+        <p class="coverage-card-desc">
+          LPDDR · DDR · eMMC · UFS · NAND —
+          documentação em revisão e enriquecimento.
+        </p>
+        <span class="coverage-card-cta coverage-card-cta--disabled">Em breve</span>
+      </div>
+
+    </div>
+  </div>
+</section>
 
 <script>
 (function() {
@@ -42,9 +143,30 @@
   var pinRow      = document.getElementById('pin-row');
   var pinBoxes    = document.getElementById('pin-boxes');
   var familyHint  = document.getElementById('pin-family-hint');
-  var results     = document.getElementById('big-search-results');
-  var dcResult    = document.getElementById('dc-result');
-  var prefixDiv   = document.getElementById('prefix-results');
+  // ── Elementos do painel de resultado ────────────────────────────────────────
+  var rpStatus    = document.getElementById('rp-status');
+  var rpStatusTxt = document.getElementById('rp-status-text');
+  var rpChiptype  = document.getElementById('rp-chiptype');
+  var rpBrand     = document.getElementById('rp-brand');
+  var rpFooter    = document.getElementById('rp-footer');
+  var rpConfLabel = document.getElementById('rp-conf-label');
+  var rpSourceLabel= document.getElementById('rp-source-label');
+  var rpSourceSep = document.getElementById('rp-source-sep');
+  var rpDocLink   = document.getElementById('rp-doc-link');
+  var rpDocSep    = document.getElementById('rp-doc-sep');
+  var specLabels  = [0,1,2,3].map(function(i){ return document.getElementById('rp-spec-l'+i); });
+  var specVals    = [0,1,2,3].map(function(i){ return document.getElementById('rp-spec-v'+i); });
+  var _lastData   = null; // guarda JSON do último resultado para o Debug
+
+  var CONF_LABEL = {
+    'confirmed':   '✅ Confirmado',
+    'manual':      '✏️ Manual',
+    'distributor': '🏪 Distribuidor',
+    'ai_high':     '🤖 IA — Alta',
+    'ai_medium':   '🤖 IA — Média',
+    'ai_low':      '🤖 IA — Baixa',
+    'estimated':   '~ Estimado',
+  };
 
   // ── Utilitários ─────────────────────────────────────────────────────────────
   function normalize(s) { return s.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
@@ -91,7 +213,8 @@
 
   // ── Renderiza as caixas ──────────────────────────────────────────────────────
   function renderBoxes(value, targetLen) {
-    var len = Math.max(targetLen, value.length + (targetLen > value.length ? 0 : 2));
+    // Expande só se o usuário digitou MAIS que o esperado (não quando igual)
+    var len = value.length > targetLen ? value.length + 2 : targetLen;
     len = Math.min(len, PIN_MAX);
 
     // Só reconstrói o DOM se a quantidade mudou
@@ -156,33 +279,115 @@
     return best;
   }
 
-  function renderPrefixRows(hits, q) {
-    var MAX = 14;
-    var header = '<div class="pr-header"><span>Prefixo</span><span>Fabricante</span><span>Tipo / Categoria</span></div>';
-    var rows = hits.slice(0, MAX).map(function(r) {
-      var cleanPrefix = r.prefix.replace(/\.+$/, '').replace(/[^A-Za-z0-9]/g, '');
-      var page = fabToPage(r.fab);
-      return '<a class="pr-row" href="/' + page + '/#highlight-' + cleanPrefix + '">'
-        + '<span class="pr-prefix">' + r.prefix + '</span>'
-        + '<span class="pr-fab">'    + r.fab    + '</span>'
-        + '<span class="pr-tipo">'   + r.tipo   + '</span>'
-        + '</a>';
-    }).join('');
-    var more   = hits.length > MAX ? (hits.length - MAX) + ' ocultos · ' : '';
-    var footer = '<div class="pr-footer">' + more + '<a href="' + pageUrl('prefixos') + '">Ver tabela completa →</a></div>';
-    return header + rows + footer;
+  // ── Atualiza estado vazio enquanto o usuário digita ─────────────────────────
+  function updateEmptyState(q, fam) {
+    if (!q) {
+      if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--idle';
+      if (rpStatusTxt) rpStatusTxt.textContent = 'Aguardando Part Number…';
+      if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype wtc-rp-chiptype--idle'; rpChiptype.textContent = 'Digite o PN acima para identificar o chip'; }
+      if (rpBrand)     rpBrand.className      = 'wtc-rp-brand wtc-rp-brand--idle';
+      return;
+    }
+    if (fam) {
+      if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--typing';
+      if (rpStatusTxt) rpStatusTxt.textContent = fam.fab + ' · ' + fam.tipo
+        + (fam.pn_length ? ' — ' + q.length + '/' + fam.pn_length + ' chars' : '');
+      if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype'; rpChiptype.textContent = fam.tipo; }
+      if (rpBrand)     { rpBrand.className = 'wtc-rp-brand'; rpBrand.textContent = fam.fab; }
+    } else {
+      if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--typing';
+      if (rpStatusTxt) rpStatusTxt.textContent = 'Buscando na base de dados…';
+      if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype wtc-rp-chiptype--idle'; rpChiptype.textContent = 'Família não reconhecida'; }
+      if (rpBrand)     rpBrand.className      = 'wtc-rp-brand wtc-rp-brand--idle';
+    }
   }
 
-  // ── Camada 2: decode via HTMX ────────────────────────────────────────────────
+  // ── Preenche um spec com label + valor ──────────────────────────────────────
+  function setSpec(idx, label, value) {
+    if (!specLabels[idx]) return;
+    specLabels[idx].textContent = label;
+    var v = specVals[idx];
+    if (value) {
+      v.classList.remove('wtc-rp-spec-val--idle');
+      v.style.animation = 'none';
+      void v.offsetWidth; // força reflow para reiniciar animação
+      v.style.animation = 'wtc-fadein .3s ease forwards';
+      v.textContent = value;
+    } else {
+      v.classList.add('wtc-rp-spec-val--idle');
+      v.style.animation = '';
+      v.textContent = '—';
+    }
+  }
+
+  // ── Popula o painel com resultado do JSON ─────────────────────────────────
+  function fillResult(d) {
+    _lastData = d;
+
+    var mode = d.remarked_flag ? 'warn' : (d.pn_incomplete ? 'wait' : 'ok');
+    var txt  = d.remarked_flag        ? '⚠ Possível chip remarked'
+             : d.pn_incomplete        ? '⌛ PN incompleto — continue digitando'
+             : '✓ Chip identificado';
+    if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--' + mode;
+    if (rpStatusTxt) rpStatusTxt.textContent = txt;
+
+    if (rpChiptype) {
+      rpChiptype.className = 'wtc-rp-chiptype';
+      rpChiptype.innerHTML = escHtml(d.chip_type || '—')
+        + (d.subtype ? '<span class="wtc-rp-subtype"> ' + escHtml(d.subtype) + '</span>' : '');
+    }
+    if (rpBrand) {
+      rpBrand.className   = 'wtc-rp-brand';
+      rpBrand.textContent = d.brand || '—';
+    }
+
+    if (d.is_emcp) {
+      setSpec(0, 'NAND',        d.emcp_nand   || null);
+      setSpec(1, 'RAM',         d.emcp_ram    || null);
+      setSpec(2, 'Dispositivo', d.emcp_device || null);
+      setSpec(3, 'Interface',   d.interface   || null);
+    } else {
+      setSpec(0, 'Densidade',  d.dram_density || null);
+      setSpec(1, 'Interface',  d.interface    || null);
+      setSpec(2, 'Capacidade', d.capacity     || null);
+      setSpec(3, 'Confiança',  CONF_LABEL[d.confidence] || d.confidence || null);
+    }
+
+    // Rodapé
+    if (rpFooter) {
+      rpFooter.style.display = 'flex';
+      if (rpConfLabel)   rpConfLabel.textContent   = CONF_LABEL[d.confidence] || d.confidence || '';
+      if (rpSourceLabel) rpSourceLabel.textContent = d.classification_source ? 'via ' + d.classification_source : '';
+      if (rpSourceSep)   rpSourceSep.style.display = d.classification_source ? '' : 'none';
+      if (d.doc_url) {
+        if (rpDocLink) { rpDocLink.href = d.doc_url; rpDocLink.style.display = ''; }
+        if (rpDocSep)  rpDocSep.style.display = '';
+      } else {
+        if (rpDocLink) rpDocLink.style.display = 'none';
+        if (rpDocSep)  rpDocSep.style.display  = 'none';
+      }
+    }
+  }
+
+  // ── Reseta painel para estado inicial ────────────────────────────────────────
+  function resetResult() {
+    _lastData = null;
+    if (rpFooter) rpFooter.style.display = 'none';
+    setSpec(0, 'Densidade', null);
+    setSpec(1, 'Interface', null);
+    setSpec(2, 'Capacidade', null);
+    setSpec(3, 'Confiança', null);
+  }
+
+  // ── Decode via JSON (sem HTMX) ───────────────────────────────────────────────
   function callApi(pn) {
     if (!isDjango) return;
     if (pn === _lastApiPn) return;
     _lastApiPn = pn;
-    if (dcResult) dcResult.innerHTML = '<div class="dc-loading">Consultando base de dados<span class="dc-ellipsis"></span></div>';
-    htmx.ajax('GET', '/chips/decode/?pn=' + encodeURIComponent(pn), {
-      target: '#dc-result',
-      swap:   'innerHTML'
-    });
+    fetch('/chips/search/?pn=' + encodeURIComponent(pn))
+      .then(function(r) { return r.json(); })
+      .then(function(d) { if (d.known) fillResult(d); })
+      .catch(function() { /* silent fail */ });
   }
 
   // ── Render principal ─────────────────────────────────────────────────────────
@@ -192,10 +397,9 @@
     if (q.length === 0) {
       renderBoxes('', PIN_DEFAULT);
       updateHint(null);
+      updateEmptyState('', null);
+      resetResult();
       _detectedFam = null;
-      results.style.display = 'none';
-      prefixDiv.innerHTML = '';
-      if (dcResult) dcResult.innerHTML = '';
       _lastApiPn = '';
       clearTimeout(_debounceTimer);
       return;
@@ -206,8 +410,7 @@
     if (fam !== _detectedFam) {
       _detectedFam = fam;
       updateHint(fam);
-      // Reset do decode se mudou de família
-      if (dcResult) dcResult.innerHTML = '';
+      resetResult();
       _lastApiPn = '';
     }
 
@@ -221,17 +424,10 @@
     }
     renderBoxes(q, targetLen);
 
-    // ── Camada 1: prefixos (instantâneo) ────────────────────────────────────
-    var hits = DATA.filter(function(r) { return matchPrefix(r, q); });
-    if (hits.length === 0) {
-      prefixDiv.innerHTML = '<div class="pr-empty">Nenhum prefixo encontrado para "<strong>'
-        + escHtml(raw) + '</strong>". <a href="' + pageUrl('prefixos') + '">Ver tabela completa →</a></div>';
-    } else {
-      prefixDiv.innerHTML = renderPrefixRows(hits, q);
-    }
-    results.style.display = 'block';
+    // ── Atualiza estado vazio com info da família ────────────────────────────
+    updateEmptyState(q, fam);
 
-    // ── Camada 2: trigger do decode ──────────────────────────────────────────
+    // ── Trigger do decode via HTMX ───────────────────────────────────────────
     clearTimeout(_debounceTimer);
 
     if (fam && fam.pn_length && q.length >= fam.pn_length) {
@@ -278,13 +474,6 @@
     setTimeout(function() { input.focus(); }, 100);
   }
 
-  // ── Fecha resultados ao clicar fora ─────────────────────────────────────────
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('#pin-search')) {
-      results.style.display = 'none';
-    }
-  });
-
   // ── API global para sugestões fuzzy ─────────────────────────────────────────
   window.triggerSearch = function(pn) {
     if (!input) return;
@@ -319,23 +508,33 @@
     });
   }
 
-  // ── Botão de debug: copia diagnóstico completo para o clipboard ──────────────
-  // Lê os dados do atributo data-debug embedado no card pelo servidor.
-  // NÃO usa fetch — assim o clipboard API é chamado dentro do mesmo gesto do
-  // usuário (user activation), resolvendo a falha silenciosa que acontecia quando
-  // o fetch demorava (ex: Gemini em background) e expirava a janela de permissão.
-  if (dcResult) {
-    dcResult.addEventListener('click', function(e) {
-      var btn = e.target.closest('.dc-copy-btn');
-      if (!btn) return;
-      var card = btn.closest('[data-pn]');
-      var pn   = card ? card.getAttribute('data-pn') : '';
-      if (!pn) return;
+  // ── Botão de report ──────────────────────────────────────────────────────────
+  var rpReportBtn = document.getElementById('rp-report-btn');
+  if (rpReportBtn) {
+    rpReportBtn.addEventListener('click', function() {
+      if (!_lastData) return;
+      var wrap = document.getElementById('rp-report-wrap');
+      var body = new URLSearchParams({
+        pn:        _lastData.pn        || '',
+        chip_type: _lastData.chip_type || '',
+        capacity:  _lastData.capacity  || _lastData.emcp_nand || '',
+      });
+      fetch('/chips/report/', { method: 'POST', body: body })
+        .then(function() {
+          if (wrap) wrap.innerHTML = '<span style="color:var(--success)">✓ Reporte recebido — obrigado!</span>';
+        })
+        .catch(function() {});
+    });
+  }
 
-      // Lê JSON embedado no card (injetado pelo decode_html view via data-debug)
-      var raw = card ? card.getAttribute('data-debug') : null;
-      var d;
-      try { d = raw ? JSON.parse(raw) : null; } catch (_) { d = null; }
+  // ── Botão de debug: copia diagnóstico completo para o clipboard ──────────────
+  var rpDebugBtn = document.getElementById('rp-debug-btn');
+  if (rpDebugBtn) {
+    rpDebugBtn.addEventListener('click', function() {
+      if (!_lastData) return;
+      var btn = this;
+      var d   = _lastData;
+      var pn  = d.pn || '';
 
       function buildDebugText(d) {
         var lines = [];
@@ -398,42 +597,18 @@
         return lines.join('\n');
       }
 
-      function restoreBtn() {
-        btn.textContent = '📋 Debug';
-        btn.disabled    = false;
-      }
-
-      if (d) {
-        // Caminho rápido: dados já no DOM → copia dentro do gesto do usuário
-        btn.disabled    = true;
-        btn.textContent = '…';
-        _copyText(buildDebugText(d))
-          .then(function() {
-            btn.textContent = '✓ Copiado!';
-            setTimeout(restoreBtn, 2000);
-          })
-          .catch(function(err) {
-            console.error('[WTC debug copy]', err);
-            btn.textContent = 'Erro';
-            setTimeout(restoreBtn, 2000);
-          });
-      } else if (isDjango) {
-        // Fallback: card sem data-debug (renderizado antes da atualização) → fetch
-        btn.disabled    = true;
-        btn.textContent = '…';
-        fetch('/chips/search/?pn=' + encodeURIComponent(pn))
-          .then(function(r) { return r.json(); })
-          .then(function(data) { return _copyText(buildDebugText(data)); })
-          .then(function() {
-            btn.textContent = '✓ Copiado!';
-            setTimeout(restoreBtn, 2000);
-          })
-          .catch(function(err) {
-            console.error('[WTC debug copy]', err);
-            btn.textContent = 'Erro';
-            setTimeout(restoreBtn, 2000);
-          });
-      }
+      // Dados já em memória — copia sincronamente dentro do gesto do usuário
+      btn.disabled    = true;
+      btn.textContent = '…';
+      _copyText(buildDebugText(d))
+        .then(function() {
+          btn.textContent = '✓ Copiado!';
+          setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
+        })
+        .catch(function() {
+          btn.textContent = 'Erro';
+          setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
+        });
     });
   }
 

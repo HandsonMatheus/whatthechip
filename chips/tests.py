@@ -319,7 +319,9 @@ class EngineIntegrationTests(TestCase):
         )
 
         # DecodeMap para eMCP KMR — chaves de 2 chars (cap dual)
-        DecodeMap.objects.create(map_name='EMCP_CAP_KMR', char_key='X1', val_primary='64GB', val_secondary='4GB')
+        # BUG-3: X1 corrigido para 32GB+2GB (era 64GB+4GB — valor antigo, pré-Octopart).
+        # Produção usa SAM_EMCP_CAP onde X1=32GB+2GB (confirmado: KMQX10013MB, Octopart).
+        DecodeMap.objects.create(map_name='EMCP_CAP_KMR', char_key='X1', val_primary='32GB', val_secondary='2GB')
         DecodeMap.objects.create(map_name='EMCP_CAP_KMR', char_key='BT', val_primary='16GB', val_secondary='2GB')
         DecodeMap.objects.create(map_name='EMCP_CAP_KMR', char_key='GD', val_primary='32GB', val_secondary='3GB')
         # DecodeMap para geração RAM KMR
@@ -464,14 +466,17 @@ class EngineIntegrationTests(TestCase):
         """
         Família KMR com decode_cap_len=2 deve decodificar NAND e RAM
         diretamente pela gramática, sem precisar do Gemini.
-        KMRx1000B614 → pos2='R'→LPDDR4/4X, pos3-4='X1'→64GB NAND + 4GB RAM.
+        KMRx1000B614 → pos2='R'→LPDDR4/4X, pos3-4='X1'→32GB NAND + 2GB RAM.
+
+        Nota: X1=32GB+2GB (Octopart: KMQX10013MB). Era 64GB+4GB antes da correção
+        — atualizado em BUG-3 para refletir o valor real de produção (SAM_EMCP_CAP).
         """
         from chips.engine import classify
         result = classify('KMRX1000B614')
         self.assertTrue(result['known'])
         self.assertEqual(result['chip_type'], 'eMCP')
-        self.assertEqual(result['emcp_nand'],  'eMMC 5.1 64GB')
-        self.assertEqual(result['emcp_ram'],   'LPDDR4/4X 4GB')
+        self.assertEqual(result['emcp_nand'],  'eMMC 5.1 32GB')
+        self.assertEqual(result['emcp_ram'],   'LPDDR4/4X 2GB')
         self.assertEqual(result['emcp_source'], 'gramática')
         # Gemini NÃO deve ter sido chamado (campos já completos)
         self.assertFalse(result.get('gemini_found', False))
