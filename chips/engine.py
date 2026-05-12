@@ -6,8 +6,15 @@ Classifica um Part Number em três camadas:
   1. Banco exato (KnownPart enriched)  → resultado completo e verificado
   2. Gramática da família (ChipFamily) → decodificação posicional do PN
        └→ complementado por Gemini se campos essenciais estiverem vazios
+         (somente quando settings.GEMINI_ENABLED = True)
   3. Gemini puro (prefix desconhecido) → fallback IA com Google Search grounding
+         (somente quando settings.GEMINI_ENABLED = True)
   4. Fuzzy matching                    → sugestões para erros de digitação
+
+Gemini:
+    Controlado pelo flag settings.GEMINI_ENABLED (padrão: False).
+    Para reativar: defina GEMINI_ENABLED=true no .env e reinicie o servidor.
+    O script scripts/enrich_gemini.py é independente deste flag.
 
 Double-check:
     Quando o banco E a gramática têm resultados, eles são comparados.
@@ -130,16 +137,21 @@ def _doc_url(family) -> str | None:
     return None
 
 
-# ── eMCP: tipo RAM pela 3ª letra (fallback quando não há decode_gen_map) ────────
+# ── EMCP_RAM_TYPES — decodificação de tipo RAM Samsung legacy ─────────────────
 #
-# Este mapa é usado APENAS quando a família não tem decode_gen_map configurado.
-# Famílias modernas (KMG, KML, KMD…) têm decode_gen_map="SAM_EMCP_GEN" que
-# define seus próprios valores — inclusive V=LPDDR5/5X para uMCPs modernos.
-# Aqui V=LPDDR2 porque o único prefixo legacy sem decode_gen_map que usa V é o
-# KMV (Samsung eMCP 2010-2013, LPDDR2).
+# ESCOPO: EXCLUSIVAMENTE famílias Samsung sem decode_gen_map configurado.
+#         (Caminho 3 do bloco eMCP — ver comentário abaixo.)
 #
-# ATENÇÃO: Este mapa é Samsung-centric. Para outras marcas, configure
-# decode_gen_pos + decode_gen_map na família em vez de depender deste fallback.
+# ISOLAMENTO GARANTIDO POR CÓDIGO: o engine só consulta este dicionário quando
+# fam.decode_gen_map está vazio/None. Qualquer família de qualquer marca que
+# tenha decode_gen_map configurado NUNCA chega aqui — mesmo que o lookup
+# no mapa próprio falhe (Caminho 2 retorna mensagem neutra em vez disso).
+#
+# Letras: convenção Samsung — 3ª posição do PN (ex: KM[R]x1000B → R=LPDDR4/4X).
+# Famílias modernas Samsung (KMG, KML, KMD…) têm decode_gen_map="SAM_EMCP_GEN"
+# e portanto também não chegam aqui.
+# V=LPDDR2 porque o único prefixo legacy sem decode_gen_map que usa V é o
+# KMV (Samsung eMCP 2010-2013, LPDDR2) — não confundir com uMCP moderno.
 
 EMCP_RAM_TYPES = {
     # LPDDR / LPDDR2 (legado)
@@ -221,15 +233,19 @@ def _result_from_family(pn: str, fam) -> dict:
     }
 
     # ── Geração / tipo RAM (decode_gen_map) ──────────────────────────────────
-    # Funciona tanto para eMMC (geração: "eMMC 5.1") quanto para eMCP (tipo RAM: "LPDDR4/4X").
+    # Funciona tanto para eMMC (geração: "eMMC 5.1") quanto para eMCP.
+    # Para Samsung eMCP: chave de 1 char → tipo RAM (ex: "R"→"LPDDR4/4X").
+    # Para SK Hynix eMCP: chave de 2 chars → RAM completa (ex: "AC"→"LPDDR3 4GB").
+    # decode_gen_len controla o comprimento da chave (padrão=1 para compat Samsung).
     _decoded_gen = None
     if fam.decode_gen_pos is not None and fam.decode_gen_map:
         gen_map = _load_decode_map(fam.decode_gen_map)
-        pos = fam.decode_gen_pos
-        if len(pn) > pos:
-            entry = gen_map.get(pn[pos])
+        pos     = fam.decode_gen_pos
+        gen_len = (fam.decode_gen_len or 1)
+        if len(pn) >= pos + gen_len:
+            entry = gen_map.get(pn[pos:pos + gen_len])
             if entry:
-                _decoded_gen = entry[0]  # ex: "LPDDR4/4X" ou "eMMC 5.1"
+                _decoded_gen = entry[0]  # ex: "LPDDR4/4X", "eMMC 5.1", "LPDDR3 4GB"
                 if not fam.is_emcp:
                     r["interface"] = _decoded_gen  # eMMC/UFS: seta interface direto
 
@@ -245,9 +261,14 @@ def _result_from_family(pn: str, fam) -> dict:
                 r["capacity"] = entry[0]
 
     # ── eMCP / uMCP: capacidade dual via mapa ─────────────────────────────────
-    # Se a família tem decode_cap_map configurado, usamos para decodificar
-    # simultaneamente a capacidade NAND (val_primary) e RAM (val_secondary).
-    # Caso contrário, caímos no fallback de EMCP_RAM_TYPES pela 3ª letra.
+    # Cada marca tem seus próprios mapas — o engine nunca mistura dados entre marcas.
+    #
+    # NAND: decode_cap_map + decode_cap_len → val_primary = capacidade NAND
+    # RAM:  decode_gen_map + decode_gen_len → val_primary = tipo+capacidade RAM
+    #       (ou val_secondary do NAND map para padrão Samsung com chave única)
+    #
+    # Fallback EMCP_RAM_TYPES (Samsung legacy) só é ativado quando
+    # fam.decode_gen_map está vazio — garantido por código, ver bloco abaixo.
     if fam.is_emcp:
         _nand_cap = None
         _ram_cap  = None
@@ -263,15 +284,38 @@ def _result_from_family(pn: str, fam) -> dict:
                     _nand_cap = entry[0] or None   # ex: "64GB"
                     _ram_cap  = entry[1] or None   # ex: "4GB"
 
-        # Tipo RAM: decode_gen_map tem prioridade; fallback: EMCP_RAM_TYPES
+        # Tipo RAM — três caminhos mutuamente exclusivos:
+        #
+        # Caminho 1 — decode_gen_map configurado E chave encontrada
+        #   Qualquer marca que tenha decode_gen_map usa seu próprio mapa.
+        #   Resultado: o que o mapa retornar (ex: "LPDDR4/4X", "LPDDR3 4GB").
+        #
+        # Caminho 2 — decode_gen_map configurado MAS chave ausente do mapa
+        #   A família tem mapa próprio mas o código desse PN ainda não foi catalogado.
+        #   Extrai o tipo LPDDR do subtype como melhor esforço e sinaliza ao operador.
+        #   NUNCA consulta EMCP_RAM_TYPES — esse dicionário é exclusivo Samsung.
+        #
+        # Caminho 3 — decode_gen_map NÃO configurado (famílias Samsung legacy)
+        #   Decodifica pela 3ª letra do PN (convenção exclusiva Samsung: KMR→R=LPDDR4/4X).
+        #   EMCP_RAM_TYPES só é acessado aqui — nunca para outras marcas.
         if _decoded_gen:
-            ram_type = _decoded_gen                # ex: "LPDDR4/4X" via mapa
+            # Caminho 1: mapa próprio retornou resultado (qualquer marca)
+            ram_type = _decoded_gen
+        elif fam.decode_gen_map:
+            # Caminho 2: família tem mapa próprio, código ainda não catalogado.
+            # Extrai tipo LPDDR do subtype (ex: "eMCP LPDDR3" → "LPDDR3").
+            m = re.search(r'LPDDR[\dX/]+', fam.subtype or '')
+            ram_type = (
+                f"{m.group(0)} (código não mapeado — atualizar populate)"
+                if m else "RAM não mapeada — consultar datasheet"
+            )
         else:
+            # Caminho 3: Samsung legacy sem decode_gen_map (KMV, KMJ, KMQ antigo…)
+            # Convenção de letra na 3ª posição do PN — exclusiva Samsung.
             ram_char = pn[2] if len(pn) > 2 else "?"
             if ram_char.isdigit():
-                # Família numérica (KM4, KM8, KM5, KM2, KM1): decode_gen_pos=None por design.
-                # O dígito na 3ª posição é parte do prefixo, não letra de geração RAM.
-                # Extraímos o tipo RAM do subtype da família (ex: "LPDDR4 + eMMC 5.1" → "LPDDR4").
+                # Família numérica Samsung (KM4, KM8, KM5…): o dígito é parte do prefixo,
+                # não letra de geração. Extrai tipo do subtype da família.
                 m = re.search(r'LPDDR[\dX/]+', fam.subtype or '')
                 ram_type = m.group(0) if m else "LPDDR"
             else:
@@ -291,7 +335,12 @@ def _result_from_family(pn: str, fam) -> dict:
         else:
             r["emcp_ram"] = ram_type       # parcial, Gemini vai completar
 
-        r["emcp_source"] = "gramática" if (_nand_cap and _ram_cap) else "parcial (gramática)"
+        # Considera decode completo se:
+        #   - NAND via decode_cap_map E RAM via val_secondary (padrão Samsung), OU
+        #   - NAND via decode_cap_map E RAM via decode_gen_map com capacidade embutida
+        #     (padrão SK Hynix: "LPDDR3 4GB" vem do gen map, _ram_cap é None).
+        _ram_from_gen = _decoded_gen and bool(_CAP_RE.search(_decoded_gen))
+        r["emcp_source"] = "gramática" if (_nand_cap and (_ram_cap or _ram_from_gen)) else "parcial (gramática)"
 
         # interface já está codificada em emcp_nand (ex: "eMMC 5.1 64GB").
         # Exibi-la separadamente causaria redundância/confusão na UI ("Interface: LPDDR+eMMC").
@@ -596,6 +645,10 @@ GEMINI_MODELS_FALLBACK = [
 
 def _get_api_key() -> str:
     from django.conf import settings
+    # Respeita o flag GEMINI_ENABLED — se False, retorna string vazia, o que faz
+    # _gemini_lookup() e _gemini_emcp_followup() retornarem None imediatamente.
+    if not getattr(settings, "GEMINI_ENABLED", False):
+        return ""
     return getattr(settings, "GEMINI_API_KEY", "") or os.environ.get("GEMINI_API_KEY", "")
 
 

@@ -449,6 +449,110 @@ table td {
 table tr:nth-child(even) td { background: #F8F9F2; }
 table tr:hover td { background: #FFFFCC; }
 
+/* ── Títulos especiais das páginas de fabricante ────────────────
+   .fab-brand-title  → h2 com nome da marca (maior que o h2 padrão)
+   .fab-master-hdg   → h4 da Tabela Mestra (maior que h4 padrão)    */
+.fab-brand-title {
+  font-size: 30px !important;
+  letter-spacing: -0.4px !important;
+  padding-bottom: 8px !important;
+  margin-bottom: 14px !important;
+}
+.fab-master-hdg {
+  font-size: 15px !important;
+  margin-top: 22px !important;
+  margin-bottom: 10px !important;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+[data-theme="dark"] .fab-master-hdg { border-bottom-color: var(--rule); }
+
+/* ── Índice de página (fab pages) ──────────────────────────────
+   Uso: <div id="…" class="fab-toc">…</div>
+   Colocar antes da Tabela Mestra, como referência de navegação.        */
+.fab-toc {
+  background: var(--beige-1);
+  border: 1px solid var(--rule);
+  box-shadow: 1px 1px 0 #fff inset;
+  margin: 0 0 18px 0;
+  padding: 10px 14px 12px;
+}
+.fab-toc-title {
+  font-weight: bold;
+  color: var(--hi-1);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.fab-toc-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+}
+.fab-toc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 170px;
+}
+.fab-toc-group-label {
+  font-size: 10px;
+  font-weight: bold;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 4px;
+  margin-top: 2px;
+}
+.fab-toc-group a {
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--link);
+  border-bottom: none;
+  padding: 0;
+  display: block;
+}
+.fab-toc-group a:hover  { color: var(--link-hover); text-decoration: underline; background: transparent; }
+.fab-toc-group a:visited { color: var(--link-vis); border-bottom: none; }
+/* Link "↑ Índice" no cabeçalho de cada chip-block */
+.toc-up-link {
+  float: right;
+  font-size: 10px;
+  font-weight: normal;
+  color: var(--hi-2);
+  border-bottom: none !important;
+  opacity: 0.65;
+  margin-top: 1px;
+  margin-left: 8px;
+}
+.toc-up-link:hover  { opacity: 1; color: var(--hi-1); text-decoration: underline; background: transparent; border-bottom: none !important; }
+.toc-up-link:visited { color: var(--hi-2); border-bottom: none !important; }
+[data-theme="dark"] .fab-toc { background: var(--canvas); border-color: var(--rule); box-shadow: none; }
+[data-theme="dark"] .fab-toc-title { color: var(--hi-1); border-bottom-color: var(--rule); }
+[data-theme="dark"] .fab-toc-group-label { color: var(--ink-mute); }
+[data-theme="dark"] .fab-toc-group a { color: var(--hi-3); }
+[data-theme="dark"] .fab-toc-group a:visited { color: var(--link-vis); }
+[data-theme="dark"] .toc-up-link { color: var(--hi-3); }
+
+/* ── Tabela de prefixos: cabeçalho de grupo ─────────────────────
+   Uso: <tbody class="tbl-group-hdr"><tr><td colspan="3">…</td></tr></tbody>
+   Cada <tbody> de grupo reinicia o contador do nth-child(even).          */
+.tbl-group-hdr tr td {
+  background: #EBEBEB !important;
+  color: #555;
+  font-weight: bold;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 4px 10px;
+  border-top: 2px solid #D0D0D0;
+  border-bottom: 1px solid #D0D0D0;
+}
+.tbl-group-hdr tr:hover td { background: #EBEBEB !important; }
+
 /* ── Anatomy decode tables (chip part-number gabarito) ──────
    Uso: <table class="anatomy-table"> … </table>
    thead > tr > th  → linha de gabarito (caracteres do part number)
@@ -1190,6 +1294,8 @@ a.pr-row:visited { color: inherit; }
 [data-theme="dark"] table td { border-color: var(--rule); color: var(--ink); }
 [data-theme="dark"] table tr:nth-child(even) td { background: var(--canvas-2); }
 [data-theme="dark"] table tr:hover td { background: var(--hi-5); }
+[data-theme="dark"] .tbl-group-hdr tr td { background: #1A2845 !important; color: #7BA7E8; border-top-color: #2E3F60; }
+[data-theme="dark"] .tbl-group-hdr tr:hover td { background: #1A2845 !important; }
 
 /* ── Código: fundo azul escuro, texto azul claro bem visível ── */
 [data-theme="dark"] code,

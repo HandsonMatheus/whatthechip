@@ -123,14 +123,14 @@
     typesEl.style.display = 'none';
   })();
 
-  // ── CHIP TYPE BLOCK — toggle colapsável ─────────────────
-  function wtcToggle(id) {
-    var el   = document.getElementById(id);
-    var c    = el.querySelector('.chip-block-content');
-    var p    = el.querySelector('.chip-block-preview');
-    var btn  = el.querySelector('.btn-print');
-    var open = c.style.display !== 'none';
-    c.style.display = open ? 'none'  : 'block';
-    p.style.display = open ? ''      : 'none';
-    btn.textContent = open ? '▼ Aprender mais' : '▲ Recolher';
-  }
+  // ── CHIP TYPE BLOCK — toggle via event delegation ────────
+  document.addEventListener('click', function (e) {
+    var trigger = e.target.closest('.chip-block-header, .chip-block-expand');
+    if (!trigger) return;
+    var block = trigger.closest('.chip-block');
+    if (!block) return;
+    var lbl  = block.querySelector('.chip-block-expand-label');
+    var open = block.classList.contains('is-open');
+    block.classList.toggle('is-open', !open);
+    if (lbl) lbl.textContent = open ? 'EXPANDIR' : 'RECOLHER';
+  });

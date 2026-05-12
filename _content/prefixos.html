@@ -29,113 +29,414 @@
                 <th>Tecnologia / Tipo</th>
               </tr>
             </thead>
+
+            <!-- ═══════════════════════════════════════════════════════════
+                 SAMSUNG
+                 ═══════════════════════════════════════════════════════ -->
+
+            <!-- ARMAZENAMENTO FLASH -->
+            <tbody class="tbl-group-hdr">
+              <tr><td colspan="3">Samsung — Armazenamento Flash</td></tr>
+            </tbody>
             <tbody>
-<!-- SAMSUNG -->
               <tr>
                 <td><code>KLM...</code></td>
                 <td>Samsung</td>
-                <td>eMMC (Armazenamento Flash)</td>
+                <td>eMMC (Flash Puro)</td>
               </tr>
               <tr>
-                <td><code>KMF / KMK / KMN / KMQ / KMR / KMS...</code></td>
+                <td><code>KLUCG...</code></td>
                 <td>Samsung</td>
-                <td>eMCP (eMMC + LPDDR2/3/4/4X)</td>
+                <td>UFS 2.0</td>
               </tr>
               <tr>
-                <td><code>KMD / KME / KMG / KML / KMV / KMW...</code></td>
+                <td><code>KLUDG...</code></td>
                 <td>Samsung</td>
-                <td>uMCP (UFS + LPDDR4/4X/5/5X)</td>
+                <td>UFS 2.1</td>
               </tr>
               <tr>
-                <td><code>KLU...</code></td>
+                <td><code>KLUFG...</code></td>
                 <td>Samsung</td>
-                <td>UFS (Armazenamento Avançado 2.0 a 4.0)</td>
+                <td>UFS 3.1</td>
+              </tr>
+              <tr>
+                <td><code>KLU...</code> (outros)</td>
+                <td>Samsung</td>
+                <td>UFS (genérico — verificar sub-prefixo)</td>
               </tr>
               <tr>
                 <td><code>KUS...</code></td>
                 <td>Samsung</td>
-                <td>BGA NVMe SSD (Armazenamento Premium)</td>
+                <td>BGA SSD NVMe PCIe (Armazenamento Premium)</td>
+              </tr>
+            </tbody>
+
+            <!-- eMCP -->
+            <tbody class="tbl-group-hdr">
+              <tr><td colspan="3">Samsung — eMCP (Flash + RAM Mobile empacotados)</td></tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td><code>KMJ...</code></td>
+                <td>Samsung</td>
+                <td>eMCP LPDDR2 + eMMC (legado)</td>
               </tr>
               <tr>
-                <td><code>K3KL / K3LK...</code></td>
+                <td><code>KMK...</code></td>
                 <td>Samsung</td>
-                <td>LPDDR5 / LPDDR5X (Mobile)</td>
+                <td>eMCP LPDDR2 + eMMC (legado)</td>
               </tr>
               <tr>
-                <td><code>K4F / K4U / K3U...</code></td>
+                <td><code>KMV...</code> <small>(sem dígito após V)</small></td>
                 <td>Samsung</td>
-                <td>LPDDR4 / LPDDR4X (Mobile)</td>
+                <td>eMCP LPDDR2 + eMMC (legado)</td>
               </tr>
               <tr>
-                <td><code>K3Q...</code></td>
+                <td><code>KMF...</code></td>
                 <td>Samsung</td>
-                <td>LPDDR3 (Mobile)</td>
+                <td>eMCP LPDDR3 + eMMC</td>
+              </tr>
+              <tr>
+                <td><code>KMN...</code></td>
+                <td>Samsung</td>
+                <td>eMCP LPDDR3 + eMMC</td>
+              </tr>
+              <tr>
+                <td><code>KMG...</code></td>
+                <td>Samsung</td>
+                <td>eMCP LPDDR3 + eMMC 5.1</td>
+              </tr>
+              <tr>
+                <td><code>KMQ...</code></td>
+                <td>Samsung</td>
+                <td>eMCP LPDDR3 + eMMC 5.1</td>
+              </tr>
+              <tr>
+                <td><code>KMR...</code></td>
+                <td>Samsung</td>
+                <td>eMCP LPDDR4 / LPDDR4X + eMMC 5.1</td>
+              </tr>
+              <tr>
+                <td><code>KMS...</code></td>
+                <td>Samsung</td>
+                <td>eMCP LPDDR4X + eMMC 5.1</td>
+              </tr>
+              <tr>
+                <td><code>KM4...</code></td>
+                <td>Samsung</td>
+                <td>eMCP LPDDR4 + eMMC 5.1</td>
+              </tr>
+              <tr>
+                <td><code>KMD...</code></td>
+                <td>Samsung</td>
+                <td>eMCP LPDDR4X + eMMC 5.1</td>
+              </tr>
+              <tr>
+                <td><code>KMEYH...</code></td>
+                <td>Samsung</td>
+                <td>eMMC (família especial — usar ferramentas)</td>
+              </tr>
+              <tr>
+                <td><code>KM...</code> (outros)</td>
+                <td>Samsung</td>
+                <td>eMCP genérico — identificar pela 3ª letra</td>
+              </tr>
+            </tbody>
+
+            <!-- uMCP -->
+            <tbody class="tbl-group-hdr">
+              <tr><td colspan="3">Samsung — uMCP (UFS + RAM Mobile empacotados)</td></tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td><code>KML...</code></td>
+                <td>Samsung</td>
+                <td>uMCP UFS 3.1 + LPDDR5</td>
+              </tr>
+              <tr>
+                <td><code>KM2...</code></td>
+                <td>Samsung</td>
+                <td>uMCP UFS 3.1 + LPDDR5</td>
+              </tr>
+              <tr>
+                <td><code>KM5...</code></td>
+                <td>Samsung</td>
+                <td>uMCP UFS + LPDDR4X / LPDDR5X</td>
+              </tr>
+              <tr>
+                <td><code>KM8...</code></td>
+                <td>Samsung</td>
+                <td>uMCP UFS + LPDDR4X / LPDDR5X (alta densidade)</td>
+              </tr>
+              <tr>
+                <td><code>KM1...</code></td>
+                <td>Samsung</td>
+                <td>uMCP UFS 4.0 + LPDDR5X (ultra-premium)</td>
+              </tr>
+              <tr>
+                <td><code>KMV2...</code></td>
+                <td>Samsung</td>
+                <td>uMCP UFS 4.0 + LPDDR5X</td>
+              </tr>
+              <tr>
+                <td><code>KMV3...</code></td>
+                <td>Samsung</td>
+                <td>uMCP UFS 4.0 + LPDDR5X</td>
+              </tr>
+            </tbody>
+
+            <!-- RAM MOBILE (LPDDR) -->
+            <tbody class="tbl-group-hdr">
+              <tr><td colspan="3">Samsung — RAM Mobile (LPDDR)</td></tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td><code>K3KL...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR5 Mobile</td>
+              </tr>
+              <tr>
+                <td><code>K3LK...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR5X Mobile</td>
+              </tr>
+              <tr>
+                <td><code>K3L...</code> (outros)</td>
+                <td>Samsung</td>
+                <td>LPDDR5X Mobile (genérico)</td>
+              </tr>
+              <tr>
+                <td><code>K4F...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR4 Mobile</td>
+              </tr>
+              <tr>
+                <td><code>K4U...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR4X Mobile</td>
+              </tr>
+              <tr>
+                <td><code>K3U...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR4X Multi-Channel</td>
+              </tr>
+              <tr>
+                <td><code>K3QF...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR3 Mobile</td>
+              </tr>
+              <tr>
+                <td><code>K3Q...</code> (outros)</td>
+                <td>Samsung</td>
+                <td>LPDDR3 Mobile</td>
+              </tr>
+              <tr>
+                <td><code>K4E...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR3 Mobile</td>
+              </tr>
+              <tr>
+                <td><code>K3R...</code></td>
+                <td>Samsung</td>
+                <td>LPDDR3</td>
               </tr>
               <tr>
                 <td><code>K4P...</code></td>
                 <td>Samsung</td>
-                <td>LPDDR2 (Mobile)</td>
+                <td>LPDDR2 Mobile</td>
               </tr>
               <tr>
-                <td><code>K4M / K4X...</code></td>
+                <td><code>K4M...</code></td>
                 <td>Samsung</td>
-                <td>LPDDR1 / Mobile SDR</td>
+                <td>LPDDR1 / Mobile DDR (legado)</td>
               </tr>
               <tr>
-                <td><code>K4R...</code></td>
+                <td><code>K4X...</code></td>
                 <td>Samsung</td>
-                <td>DDR5 (RAM dedicada)</td>
+                <td>LPDDR1 / Mobile DDR (legado)</td>
+              </tr>
+            </tbody>
+
+            <!-- RAM DEDICADA (DDR) -->
+            <tbody class="tbl-group-hdr">
+              <tr><td colspan="3">Samsung — RAM Dedicada (DDR)</td></tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td><code>K4RA...</code></td>
+                <td>Samsung</td>
+                <td>DDR5</td>
+              </tr>
+              <tr>
+                <td><code>K4RB...</code></td>
+                <td>Samsung</td>
+                <td>DDR5</td>
               </tr>
               <tr>
                 <td><code>K4A...</code></td>
                 <td>Samsung</td>
-                <td>DDR4 (RAM dedicada)</td>
+                <td>DDR4</td>
               </tr>
               <tr>
                 <td><code>K4B...</code></td>
                 <td>Samsung</td>
-                <td>DDR3 / DDR3L (RAM dedicada)</td>
+                <td>DDR3 / DDR3L</td>
               </tr>
               <tr>
                 <td><code>K4T...</code></td>
                 <td>Samsung</td>
-                <td>DDR2 (RAM dedicada)</td>
+                <td>DDR2</td>
               </tr>
               <tr>
                 <td><code>K4H...</code></td>
                 <td>Samsung</td>
-                <td>DDR1 (RAM dedicada)</td>
+                <td>DDR1</td>
               </tr>
+              <tr>
+                <td><code>K4S...</code></td>
+                <td>Samsung</td>
+                <td>SDRAM (fluxo de resíduo)</td>
+              </tr>
+              <tr>
+                <td><code>K4R...</code> <small>(sem A/B após R)</small></td>
+                <td>Samsung</td>
+                <td>RDRAM — Rambus DRAM (fluxo de resíduo)</td>
+              </tr>
+            </tbody>
+
+            <!-- RAM GRÁFICA (GDDR) -->
+            <tbody class="tbl-group-hdr">
+              <tr><td colspan="3">Samsung — RAM Gráfica (GDDR)</td></tr>
+            </tbody>
+            <tbody>
               <tr>
                 <td><code>K4Z...</code></td>
                 <td>Samsung</td>
-                <td>GDDR6 / GDDR6X (Vídeo / GPU)</td>
+                <td>GDDR6 / GDDR6X (GPU)</td>
               </tr>
               <tr>
                 <td><code>K4G...</code></td>
                 <td>Samsung</td>
-                <td>GDDR5 / GDDR5X (Vídeo / GPU)</td>
+                <td>GDDR5 / GDDR5X (GPU)</td>
               </tr>
               <tr>
-                <td><code>K4N / K4J / K4U...</code></td>
+                <td><code>K4J...</code></td>
                 <td>Samsung</td>
-                <td>GDDR2 / GDDR3 / GDDR4 (Vídeo / GPU)</td>
+                <td>GDDR3 (GPU)</td>
               </tr>
               <tr>
-                <td><code>K9...</code></td>
+                <td><code>K4W...</code></td>
                 <td>Samsung</td>
-                <td>NAND Flash bruta</td>
+                <td>GDDR3 (GPU)</td>
               </tr>
               <tr>
-                <td><code>K5 / K8...</code></td>
+                <td><code>K4N...</code></td>
+                <td>Samsung</td>
+                <td>GDDR2 (GPU — legado)</td>
+              </tr>
+            </tbody>
+
+            <!-- NAND FLASH BRUTA -->
+            <tbody class="tbl-group-hdr">
+              <tr><td colspan="3">Samsung — NAND Flash Bruta</td></tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td><code>K9F...</code></td>
+                <td>Samsung</td>
+                <td>NAND Flash SLC (alta durabilidade)</td>
+              </tr>
+              <tr>
+                <td><code>K9W...</code></td>
+                <td>Samsung</td>
+                <td>NAND Flash SLC Industrial / White Label</td>
+              </tr>
+              <tr>
+                <td><code>K9C...</code></td>
+                <td>Samsung</td>
+                <td>NAND Flash SLC (tensão 1.8V — câmeras / PDAs)</td>
+              </tr>
+              <tr>
+                <td><code>K9G...</code></td>
+                <td>Samsung</td>
+                <td>NAND Flash MLC</td>
+              </tr>
+              <tr>
+                <td><code>K9HDG...</code></td>
+                <td>Samsung</td>
+                <td>NAND Flash MLC (alta densidade — TVs / monitores)</td>
+              </tr>
+              <tr>
+                <td><code>K9H...</code> (outros)</td>
+                <td>Samsung</td>
+                <td>NAND Flash MLC Large Page</td>
+              </tr>
+              <tr>
+                <td><code>K9K...</code></td>
+                <td>Samsung</td>
+                <td>NAND Flash SLC / MLC</td>
+              </tr>
+              <tr>
+                <td><code>K9L...</code></td>
+                <td>Samsung</td>
+                <td>NAND Flash MLC / TLC</td>
+              </tr>
+              <tr>
+                <td><code>K9X...</code></td>
+                <td>Samsung</td>
+                <td>NAND Flash MLC (expandido)</td>
+              </tr>
+              <tr>
+                <td><code>K9Z...</code></td>
+                <td>Samsung</td>
+                <td>NAND Flash MLC / TLC (variante especial)</td>
+              </tr>
+              <tr>
+                <td><code>K5D...</code></td>
+                <td>Samsung</td>
+                <td>OneNAND Flash</td>
+              </tr>
+            </tbody>
+
+            <!-- NOR FLASH / SRAM / MASK ROM -->
+            <tbody class="tbl-group-hdr">
+              <tr><td colspan="3">Samsung — NOR Flash, SRAM e Mask ROM</td></tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td><code>K5...</code> (outros)</td>
+                <td>Samsung</td>
+                <td>NOR Flash</td>
+              </tr>
+              <tr>
+                <td><code>K8...</code></td>
                 <td>Samsung</td>
                 <td>NOR Flash / Mask ROM</td>
               </tr>
               <tr>
+                <td><code>K7...</code></td>
+                <td>Samsung</td>
+                <td>SRAM</td>
+              </tr>
+            </tbody>
+
+            <!-- ePoP -->
+            <tbody class="tbl-group-hdr">
+              <tr><td colspan="3">Samsung — ePoP (atenção especial)</td></tr>
+            </tbody>
+            <tbody>
+              <tr>
                 <td><code>KAT...</code></td>
                 <td>Samsung</td>
-                <td>ePoP (Ciclo Reacondicional - Atenção Extrema)</td>
+                <td>ePoP — eMMC + LPDDR empilhados (ciclo re-acondicionado — atenção extrema)</td>
               </tr>
+            </tbody>
+
+            <!-- SoC / SENSORES / PMIC -->
+            <tbody class="tbl-group-hdr">
+              <tr><td colspan="3">Samsung — SoC, Sensores e PMICs</td></tr>
+            </tbody>
+            <tbody>
               <tr>
                 <td><code>S5E...</code></td>
                 <td>Samsung</td>
@@ -144,468 +445,26 @@
               <tr>
                 <td><code>S5K...</code></td>
                 <td>Samsung</td>
-                <td>ISOCELL (Módulos de Câmera)</td>
+                <td>ISOCELL (Sensor de Câmera)</td>
               </tr>
               <tr>
-                <td><code>S2M / S2A / S2D...</code></td>
+                <td><code>S2M...</code></td>
                 <td>Samsung</td>
                 <td>PMIC (Gerenciamento de Energia)</td>
               </tr>
               <tr>
-                <td><code>KNN / KSW...</code></td>
+                <td><code>S2A...</code></td>
                 <td>Samsung</td>
-                <td>Falsos Positivos / Combos Legados (Fluxo de residuo)</td>
+                <td>PMIC (Gerenciamento de Energia)</td>
               </tr>
               <tr>
-                <td><code>K4S...</code></td>
+                <td><code>S2D...</code></td>
                 <td>Samsung</td>
-                <td>SDRAM (Fluxo de residuo)</td>
-              </tr>
-              
-              <!-- SK HYNIX -->
-              <tr>
-                <td><code>H26M...</code></td>
-                <td>SK Hynix</td>
-                <td>eMMC (Armazenamento Flash)</td>
-              </tr>
-              <tr>
-                <td><code>H9TP / H9TQ / H8L...</code></td>
-                <td>SK Hynix</td>
-                <td>eMCP (eMMC + LPDDR2/3)</td>
-              </tr>
-              <tr>
-                <td><code>H9HP / H9HQ-U / H9QT...</code></td>
-                <td>SK Hynix</td>
-                <td>uMCP (UFS + LPDDR4/4X/5)</td>
-              </tr>
-              <tr>
-                <td><code>H28U / H28S / H28G / H28Y...</code></td>
-                <td>SK Hynix</td>
-                <td>UFS (Armazenamento Avançado 2.x a 4.0)</td>
-              </tr>
-              <tr>
-                <td><code>H27... / H2P...</code></td>
-                <td>SK Hynix</td>
-                <td>NAND Flash bruta / BGA SSD</td>
-              </tr>
-              <tr>
-                <td><code>H9HB / H9HQ / H55G / H54G...</code></td>
-                <td>SK Hynix</td>
-                <td>LPDDR5 / LPDDR5X (Mobile)</td>
-              </tr>
-              <tr>
-                <td><code>H9HC / H9HK / H58G...</code></td>
-                <td>SK Hynix</td>
-                <td>LPDDR4 / LPDDR4X (Mobile)</td>
-              </tr>
-              <tr>
-                <td><code>H9CC...</code></td>
-                <td>SK Hynix</td>
-                <td>LPDDR3 (Mobile)</td>
-              </tr>
-              <tr>
-                <td><code>H9D / H9DA / H9DC...</code></td>
-                <td>SK Hynix</td>
-                <td>LPDDR2 (Mobile)</td>
-              </tr>
-              <tr>
-                <td><code>H5M / HY5M...</code></td>
-                <td>SK Hynix</td>
-                <td>LPDDR1 / Mobile SDR</td>
-              </tr>
-              <tr>
-                <td><code>H5CG / HMCG...</code></td>
-                <td>SK Hynix</td>
-                <td>DDR5 (RAM dedicada / Módulo)</td>
-              </tr>
-              <tr>
-                <td><code>H5AN / HMA...</code></td>
-                <td>SK Hynix</td>
-                <td>DDR4 (RAM dedicada / Módulo)</td>
-              </tr>
-              <tr>
-                <td><code>H5TQ / H5TC...</code></td>
-                <td>SK Hynix</td>
-                <td>DDR3 / DDR3L (RAM dedicada)</td>
-              </tr>
-              <tr>
-                <td><code>H5PS / H5DS...</code></td>
-                <td>SK Hynix</td>
-                <td>DDR2 (RAM dedicada)</td>
-              </tr>
-              <tr>
-                <td><code>HY5D / HY5DU...</code></td>
-                <td>SK Hynix (Hyundai)</td>
-                <td>DDR1 (RAM dedicada)</td>
-              </tr>
-              <tr>
-                <td><code>H56G / H56C...</code></td>
-                <td>SK Hynix</td>
-                <td>GDDR6 (Vídeo / GPU)</td>
-              </tr>
-              <tr>
-                <td><code>H5GQ / H5GC...</code></td>
-                <td>SK Hynix</td>
-                <td>GDDR5 (Vídeo / GPU)</td>
-              </tr>
-              <tr>
-                <td><code>H5V...</code></td>
-                <td>SK Hynix</td>
-                <td>HBM (Alta Performance / IA)</td>
-              </tr>
-              <tr>
-                <td><code>HI...</code></td>
-                <td>SK Hynix</td>
-                <td>Sensor de Imagem (CMOS)</td>
-              </tr>
-              <tr>
-                <td><code>HY57...</code></td>
-                <td>SK Hynix (Hyundai)</td>
-                <td>SDRAM (Fluxo de residuo)</td>
-              </tr>
-
-              <!-- MICRON -->
-              <tr>
-                <td><code>MTFC...</code> / Códigos <code>NW...</code></td>
-                <td>Micron</td>
-                <td>eMMC</td>
-              </tr>
-              <tr>
-                <td><code>MT29T / MT29V...</code></td>
-                <td>Micron</td>
-                <td>eMCP / uMCP</td>
-              </tr>
-              <tr>
-                <td><code>MT62F...</code></td>
-                <td>Micron</td>
-                <td>LPDDR5 / 5X</td>
-              </tr>
-              <tr>
-                <td><code>MT53E / MT53D...</code></td>
-                <td>Micron</td>
-                <td>LPDDR4 / 4X</td>
-              </tr>
-              <tr>
-                <td><code>MT52L...</code></td>
-                <td>Micron</td>
-                <td>LPDDR3</td>
-              </tr>
-              <tr>
-                <td><code>MT60B...</code></td>
-                <td>Micron</td>
-                <td>DDR5 (RAM dedicada)</td>
-              </tr>
-              <tr>
-                <td><code>MT40A...</code> / Códigos <code>D9...</code></td>
-                <td>Micron</td>
-                <td>DDR4 (RAM dedicada)</td>
-              </tr>
-              <tr>
-                <td><code>MT41J / MT41K...</code></td>
-                <td>Micron</td>
-                <td>DDR3 / DDR3L</td>
-              </tr>
-              <tr>
-                <td><code>MT47H...</code></td>
-                <td>Micron</td>
-                <td>DDR2</td>
-              </tr>
-              <tr>
-                <td><code>MT46V...</code></td>
-                <td>Micron</td>
-                <td>DDR1 (Fluxo de refino)</td>
-              </tr>
-              <tr>
-                <td><code>MT48LC...</code></td>
-                <td>Micron</td>
-                <td>SDRAM (Fluxo de refino)</td>
-              </tr>
-              <tr>
-                <td><code>MT51 / MT61...</code></td>
-                <td>Micron</td>
-                <td>GDDR5 a GDDR6X (Vídeo)</td>
-              </tr>
-              <tr>
-                <td><code>MT29F...</code></td>
-                <td>Micron</td>
-                <td>NAND bruta</td>
-              </tr>
-
-              <!-- ELPIDA -->
-              <tr>
-                <td><code>EDF...</code></td>
-                <td>Elpida</td>
-                <td>LPDDR3</td>
-              </tr>
-              <tr>
-                <td><code>EDB / EDA...</code> (Abrev: <code>B4</code>)</td>
-                <td>Elpida</td>
-                <td>LPDDR2</td>
-              </tr>
-              <tr>
-                <td><code>EDJ...</code> (Abrev: <code>J4</code>)</td>
-                <td>Elpida</td>
-                <td>DDR3 / DDR3L</td>
-              </tr>
-              <tr>
-                <td><code>EDE...</code></td>
-                <td>Elpida</td>
-                <td>DDR2</td>
-              </tr>
-              <tr>
-                <td><code>EDD...</code></td>
-                <td>Elpida</td>
-                <td>DDR1 (Fluxo de refino)</td>
-              </tr>
-              <tr>
-                <td><code>EDS...</code></td>
-                <td>Elpida</td>
-                <td>SDRAM (Fluxo de refino)</td>
-              </tr>
-              <tr>
-                <td><code>EDW...</code></td>
-                <td>Elpida</td>
-                <td>GDDR5 (Vídeo)</td>
-              </tr>
-
-<!-- TOSHIBA / KIOXIA -->
-              <tr>
-                <td><code>THGB...</code></td>
-                <td>Toshiba / Kioxia</td>
-                <td>eMMC (Armazenamento Puro)</td>
-              </tr>
-              <tr>
-                <td><code>THGA / THGJ...</code></td>
-                <td>Toshiba / Kioxia</td>
-                <td>UFS (Armazenamento de Alta Velocidade)</td>
-              </tr>
-              <tr>
-                <td><code>THGW / THGV...</code></td>
-                <td>Toshiba / Kioxia</td>
-                <td>eMCP (Combo eMMC + LPDDR)</td>
-              </tr>
-              <tr>
-                <td><code>THGQ...</code></td>
-                <td>Toshiba / Kioxia</td>
-                <td>uMCP (Combo UFS + LPDDR)</td>
-              </tr>
-              <tr>
-                <td><code>TC58 / TH58...</code></td>
-                <td>Toshiba / Kioxia</td>
-                <td>NAND Flash Raw (Extraído de SSD/Pendrive)</td>
-              </tr>
-              <tr>
-                <td><code>THNS / KXG / KCM...</code></td>
-                <td>Toshiba / Kioxia</td>
-                <td>Módulo SSD Completo (Client e Enterprise)</td>
-              </tr>
-              <tr>
-                <td><code>TC7 / TMP / TLP / TK...</code></td>
-                <td>Toshiba / Kioxia</td>
-                <td>CIs Lógicos e Microcontroladores (➔ Descarte)</td>
-              </tr>
-              <tr>
-                <td><code>TC55 / TC51...</code></td>
-                <td>Toshiba / Kioxia</td>
-                <td>SRAM / DRAM Legada (Obsoleta ➔ Descarte)</td>
-              </tr>
-
-              <!-- SANDISK / WD -->
-              <tr>
-                <td><code>SDIN / SDMAG...</code></td>
-                <td>SanDisk / WD</td>
-                <td>eMMC (iNAND)</td>
-              </tr>
-              <tr>
-                <td><code>SDEM / SDAD / SD7D...</code></td>
-                <td>SanDisk / WD</td>
-                <td>eMCP</td>
-              </tr>
-              <tr>
-                <td><code>SDHQB / SDIND...</code></td>
-                <td>SanDisk / WD</td>
-                <td>UFS</td>
-              </tr>
-              <tr>
-                <td><code>SDT / SDZ...</code></td>
-                <td>SanDisk / WD</td>
-                <td>NAND bruta</td>
-              </tr>
-
-              <!-- NANYA -->
-              <tr>
-                <td><code>NT5W...</code></td>
-                <td>Nanya</td>
-                <td>DDR5 (RAM dedicada)</td>
-              </tr>
-              <tr>
-                <td><code>NT5AD / NT5AN...</code></td>
-                <td>Nanya</td>
-                <td>DDR4 (RAM dedicada)</td>
-              </tr>
-              <tr>
-                <td><code>NT5C / NT5CB / NT5CC...</code></td>
-                <td>Nanya</td>
-                <td>DDR3 / DDR3L</td>
-              </tr>
-              <tr>
-                <td><code>NT5TU...</code></td>
-                <td>Nanya</td>
-                <td>DDR2</td>
-              </tr>
-              <tr>
-                <td><code>NT5DS...</code></td>
-                <td>Nanya</td>
-                <td>DDR1 (Fluxo de refino)</td>
-              </tr>
-              <tr>
-                <td><code>NT5SV / NT5S...</code></td>
-                <td>Nanya</td>
-                <td>SDRAM (Fluxo de refino)</td>
-              </tr>
-              <tr>
-                <td><code>NT6AC...</code></td>
-                <td>Nanya</td>
-                <td>LPDDR5</td>
-              </tr>
-              <tr>
-                <td><code>NT6AN / NT6AH / NT6AP...</code></td>
-                <td>Nanya</td>
-                <td>LPDDR4 / LPDDR4X</td>
-              </tr>
-              <tr>
-                <td><code>NT6CL / NT6TL...</code></td>
-                <td>Nanya</td>
-                <td>LPDDR3</td>
-              </tr>
-
-<!-- KINGSTON -->
-              <tr>
-                <td><code>EMMC...</code></td>
-                <td>Kingston</td>
-                <td>eMMC (Armazenamento Puro)</td>
-              </tr>
-              <tr>
-                <td><code>EMCP / EM...</code></td>
-                <td>Kingston</td>
-                <td>eMCP / uMCP (Combo Inseparável ➔ Descarte)</td>
-              </tr>
-              <tr>
-                <td><code>D...</code> <small>(Ex: D2516, D1G8)</small></td>
-                <td>Kingston</td>
-                <td>Memória RAM Base (DDR2/3/4/5 em BGA)</td>
-              </tr>
-              <tr>
-                <td><code>F / FA / FB / FH / FP...</code></td>
-                <td>Kingston</td>
-                <td>NAND Flash Raw (Extraído de SSD/Pendrive)</td>
-              </tr>
-              <tr>
-                <td><code>CP / CS...</code></td>
-                <td>Kingston</td>
-                <td>Controlador Lógico (➔ Descarte)</td>
-              </tr>
-              <tr>
-                <td><code>KE4...</code></td>
-                <td>Kingston</td>
-                <td>eMMC Legado (Obsoleto ➔ Descarte)</td>
-              </tr>
-              <tr>
-                <td><code>KVR / KSM / KF...</code></td>
-                <td>Kingston</td>
-                <td>
-                  <strong>ATENÇÃO:</strong> Etiqueta de módulo. Ler o código BGA a laser.
-                </td>
-              </tr>
-
-              <!-- RAYSON -->
-              <tr>
-                <td><code>RS1GD4 / RS2GD4...</code></td>
-                <td>Rayson</td>
-                <td>DDR4 (Baixa viabilidade)</td>
-              </tr>
-              <tr>
-                <td><code>RS1GD3 / RS2GD3...</code></td>
-                <td>Rayson</td>
-                <td>DDR3 (Baixa viabilidade)</td>
-              </tr>
-              <tr>
-                <td><code>RSLPD3 / RSLPD4...</code></td>
-                <td>Rayson</td>
-                <td>LPDDR3 / 4 (Baixa viabilidade)</td>
-              </tr>
-              <tr>
-                <td><code>RSEMC...</code></td>
-                <td>Rayson</td>
-                <td>eMMC (Baixa viabilidade)</td>
-              </tr>
-
-              <!-- ISSI -->
-              <tr>
-                <td><code>IS43 / IS46...</code></td>
-                <td>ISSI</td>
-                <td>DDR1 a DDR4 (Industrial/Automotivo)</td>
-              </tr>
-              <tr>
-                <td><code>IS43LD / IS46LQ...</code></td>
-                <td>ISSI</td>
-                <td>LPDDR2 a LPDDR4</td>
-              </tr>
-              <tr>
-                <td><code>IS51 / IS52...</code></td>
-                <td>ISSI</td>
-                <td>eMMC (Alta durabilidade)</td>
-              </tr>
-              <tr>
-                <td><code>IS34 / IS35...</code></td>
-                <td>ISSI</td>
-                <td>NAND bruta</td>
-              </tr>
-              <tr>
-                <td><code>IS25 / IS29...</code></td>
-                <td>ISSI</td>
-                <td>NOR Flash (SPI)</td>
-              </tr>
-              <tr>
-                <td><code>IS61 / IS62...</code></td>
-                <td>ISSI</td>
-                <td>SRAM</td>
-              </tr>
-
-              <!-- GIGADEVICE -->
-              <tr>
-                <td><code>GD25...</code></td>
-                <td>GigaDevice</td>
-                <td>NOR Flash SPI</td>
-              </tr>
-              <tr>
-                <td><code>GD5F...</code></td>
-                <td>GigaDevice</td>
-                <td>SPI NAND</td>
-              </tr>
-              <tr>
-                <td><code>GD9...</code></td>
-                <td>GigaDevice</td>
-                <td>Parallel NAND</td>
-              </tr>
-              <tr>
-                <td><code>GDQ...</code></td>
-                <td>GigaDevice</td>
-                <td>DDR3 / DDR4</td>
-              </tr>
-              <tr>
-                <td><code>GDB...</code></td>
-                <td>GigaDevice</td>
-                <td>LPDDR4 / 4X</td>
-              </tr>
-              <tr>
-                <td><code>GD32...</code></td>
-                <td>GigaDevice</td>
-                <td>MCU (Microcontrolador ARM/RISC-V)</td>
+                <td>PMIC (Gerenciamento de Energia)</td>
               </tr>
             </tbody>
+
           </table>
         </div>
 
         <!-- SEÇÃO: CHIPS REMARKED E FALSIFICADOS -->
-        

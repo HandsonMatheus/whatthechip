@@ -88,6 +88,9 @@ class ChipFamily(models.Model):
     decode_gen_map      = models.TextField(blank=True, default="",
                               help_text="Nome do DecodeMap para geração/tipo RAM. "
                                         "val_primary=geração (ex: 'LPDDR4/4X', 'eMMC 5.1')")
+    decode_gen_len      = models.IntegerField(default=1,
+                              help_text="Nº de chars da chave no mapa de geração/RAM (padrão=1). "
+                                        "Use 2 para eMCP com chaves de 2 chars como 'AC', 'AD', 'A8'.")
     decode_density_type = models.TextField(blank=True, default="",
                               help_text="'pc' ou 'mobile' — ativa decode de densidade DRAM")
     pn_length           = models.IntegerField(null=True, blank=True,

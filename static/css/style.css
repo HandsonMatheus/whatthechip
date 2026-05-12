@@ -7,7 +7,7 @@
 :root {
 
   /* ── Superfícies ──────────────────────────────────────── */
-  --bg:        #f4f4f4;   /* Carbon Gray 10 */
+  --bg:        #ffffff;   /* White */
   --surface:   #ffffff;   /* White */
   --surface-2: #f4f4f4;   /* Gray 10 */
   --surface-3: #e0e0e0;   /* Gray 20 */
@@ -1434,34 +1434,87 @@ tr.row-highlight td { animation: row-flash 2s ease-out forwards !important; }
 /* ════════════════════════════════════════════════════════════
    CHIP BLOCK (colapsável dentro de páginas de marca)
    ════════════════════════════════════════════════════════════ */
+/* ── Chip Block ─────────────────────────────────────────────── */
 .chip-block {
   border: 1px solid var(--border-subtle);
-  margin: 0 0 var(--s5) 0;
+  margin: 0 0 var(--s4) 0;
   background: var(--surface);
   border-radius: var(--r-sm);
-  overflow: hidden;
 }
+
+/* Header — área clicável */
 .chip-block-header {
   background: var(--surface-2);
   border-bottom: 1px solid var(--border-subtle);
   padding: var(--s4) var(--s5);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s4);
+  user-select: none;
+  transition: background 0.12s;
 }
+.chip-block-header:hover { background: var(--surface-3); }
+.chip-block-header-body  { flex: 1; min-width: 0; }
 .chip-block-header strong {
   font-size: 14px;
+  font-weight: 600;
   color: var(--text-primary);
   display: block;
 }
 .chip-block-subtitle { font-weight: 400; color: var(--text-secondary); font-size: 12px; }
 .chip-block-prefixes { font-size: 12px; color: var(--text-helper); margin-top: 3px; }
-.chip-block-preview { position: relative; padding: 12px 16px 0; overflow: hidden; max-height: 5em; }
-.chip-block-preview p { margin: 0; font-size: 13px; line-height: 1.7; }
-.chip-block-preview-fade {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 2.5em;
-  background: linear-gradient(transparent, var(--surface));
+
+/* Chevron animado */
+.chip-block-chevron {
+  flex-shrink: 0;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+  margin-top: 2px;
 }
-.chip-block-toggle { padding: 8px 16px; }
-.chip-block-content { display: none; padding: 12px 16px 20px; border-top: 1px solid var(--border-subtle); }
+.chip-block.is-open .chip-block-chevron { transform: rotate(180deg); }
+
+/* Body — conteúdo truncado por padrão, com fade */
+.chip-block-body {
+  position: relative;
+  overflow: hidden;
+  max-height: 180px;
+  padding: 14px 16px 0;
+}
+.chip-block-body::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 64px;
+  background: linear-gradient(transparent, var(--surface));
+  pointer-events: none;
+}
+.chip-block.is-open .chip-block-body {
+  max-height: none;
+  overflow: visible;
+  padding-bottom: 16px;
+}
+.chip-block.is-open .chip-block-body::after { display: none; }
+
+/* Link EXPANDIR / RECOLHER — texto puro, azul, sem fundo */
+.chip-block-expand {
+  display: block;
+  padding: 6px 16px 12px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+.chip-block-expand-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.chip-block-expand:hover .chip-block-expand-label { color: var(--link-hover); }
 
 /* ════════════════════════════════════════════════════════════
    IMAGENS
@@ -2090,3 +2143,88 @@ ol.steps li::before {
     border-bottom: 2px solid #003399; padding-bottom: 4pt;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   FAB PAGES — estilos específicos das páginas de fabricante
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Título grande da marca (h2) ──────────────────────────── */
+.fab-brand-title {
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.5px !important;
+  padding-bottom: 10px !important;
+  margin-bottom: 16px !important;
+}
+
+/* ── Heading da Tabela Mestra ─────────────────────────────── */
+.fab-master-hdg {
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  margin-top: 24px !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--border-subtle);
+}
+
+/* ── Índice de navegação (TOC) ────────────────────────────── */
+.fab-toc {
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  margin: 0 0 20px 0;
+  padding: 12px 16px 14px;
+}
+.fab-toc-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.fab-toc-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 36px;
+}
+.fab-toc-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+.fab-toc-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-helper);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 4px;
+  margin-top: 2px;
+}
+.fab-toc-group a {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--link);
+  border-bottom: none;
+  display: block;
+}
+.fab-toc-group a:hover { color: var(--link-hover); text-decoration: underline; background: transparent; }
+.fab-toc-group a:visited { color: var(--link-visited); }
+
+/* ── Cabeçalho de grupo dentro de tabelas ─────────────────── */
+/*    Uso: <tbody class="tbl-group-hdr"><tr><td colspan="N">…  */
+.tbl-group-hdr tr td {
+  background: #ebebeb !important;
+  color: #555 !important;
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  padding: 5px 10px;
+  border-top: 2px solid #d0d0d0;
+  border-bottom: 1px solid #d0d0d0;
+}
+.tbl-group-hdr tr:hover td { background: #ebebeb !important; }

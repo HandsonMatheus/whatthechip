@@ -17,9 +17,6 @@
     <!-- Busca principal -->
     <form class="pin-search" id="pin-search" role="search" onsubmit="event.preventDefault();" autocomplete="off">
 
-      <!-- Label da família detectada -->
-      <div class="pin-family-hint" id="pin-family-hint"></div>
-
       <!-- Caixas de caracteres -->
       <div class="pin-row" id="pin-row">
         <div class="pin-boxes" id="pin-boxes"></div>
@@ -142,7 +139,6 @@
   var input       = document.getElementById('big-search-input');
   var pinRow      = document.getElementById('pin-row');
   var pinBoxes    = document.getElementById('pin-boxes');
-  var familyHint  = document.getElementById('pin-family-hint');
   // ── Elementos do painel de resultado ────────────────────────────────────────
   var rpStatus    = document.getElementById('rp-status');
   var rpStatusTxt = document.getElementById('rp-status-text');
@@ -239,18 +235,6 @@
         + (j === value.length ? ' pin-cursor' : '')
         + (j < prefixLen && ch ? ' pin-prefix' : '');
     }
-  }
-
-  // ── Atualiza hint da família ─────────────────────────────────────────────────
-  function updateHint(fam) {
-    if (!fam) {
-      familyHint.textContent = '';
-      familyHint.className = 'pin-family-hint';
-      return;
-    }
-    familyHint.textContent = fam.fab + ' · ' + fam.tipo
-      + (fam.pn_length ? '  (' + fam.pn_length + ' chars)' : '');
-    familyHint.className = 'pin-family-hint pin-family-hint--active';
   }
 
   // ── Camada 1: busca de prefixos (client-side, instantânea) ──────────────────
@@ -396,7 +380,6 @@
 
     if (q.length === 0) {
       renderBoxes('', PIN_DEFAULT);
-      updateHint(null);
       updateEmptyState('', null);
       resetResult();
       _detectedFam = null;
@@ -409,7 +392,6 @@
     var fam = bestMatch(q);
     if (fam !== _detectedFam) {
       _detectedFam = fam;
-      updateHint(fam);
       resetResult();
       _lastApiPn = '';
     }

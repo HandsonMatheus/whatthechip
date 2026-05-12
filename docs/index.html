@@ -109,58 +109,247 @@
 
   <!-- CONTENT -->
   <div class="article" id="content">
-    <!-- HERO -->
+    <!-- ══════════════════════════════════════════════════════
+     HERO — logo + barra de busca (estilo Google)
+     ══════════════════════════════════════════════════════ -->
 <div class="hero">
-  <h1>Guia de Identificação de Chips IC<br>para o mercado de refurbishing</h1>
-  <p class="lede">Identifique qualquer chip pelo prefixo gravado no encapsulamento</p>
+  <div class="hero-inner">
 
-  <form class="big-search" role="search" onsubmit="event.preventDefault();">
-    <span class="icon" aria-hidden="true">⌕</span>
-    <input id="big-search-input" type="text"
-      placeholder="Digite o prefixo… ex: KLM, H26M, TYBE, K3LK"
-      autocomplete="off" spellcheck="false" />
-    <div id="big-search-results"></div>
-  </form>
+    <!-- Logo central — SVG Figma (lupa + texto + mandarim) -->
+    <div class="hero-logo">
+      <img class="hero-logo-svg hero-logo-svg--light"
+           src="/static/img/logo-light.svg"
+           alt="WhatTheChip?" />
+      <img class="hero-logo-svg hero-logo-svg--dark"
+           src="/static/img/logo-dark.svg"
+           alt="WhatTheChip?" />
+    </div>
 
-  <p class="quicklinks">
-    <span class="count">106 prefixos catalogados</span>
-  </p>
+    <!-- Busca principal -->
+    <form class="pin-search" id="pin-search" role="search" onsubmit="event.preventDefault();" autocomplete="off">
+
+      <!-- Caixas de caracteres -->
+      <div class="pin-row" id="pin-row">
+        <div class="pin-boxes" id="pin-boxes"></div>
+        <!-- Input real oculto — captura teclado, paste, mobile keyboard -->
+        <input type="text" id="big-search-input"
+               class="pin-real-input"
+               autocomplete="off" autocapitalize="characters"
+               autocorrect="off" spellcheck="false"
+               aria-label="Digite o Part Number do chip" />
+      </div>
+
+      <!-- Painel de resultado fixo — sempre visível abaixo do input -->
+      <div id="big-search-results">
+
+        <!-- Painel único — idle / digitando / identificado, tudo no mesmo elemento -->
+        <div id="dc-result-panel">
+          <div class="wtc-rp-status wtc-rp-status--idle" id="rp-status">
+            <span class="wtc-rp-status-dot"></span>
+            <span id="rp-status-text">Aguardando Part Number…</span>
+          </div>
+          <div class="wtc-rp-body">
+            <div class="wtc-rp-chiptype wtc-rp-chiptype--idle" id="rp-chiptype">
+              Digite o PN acima para identificar o chip
+            </div>
+            <div class="wtc-rp-brand wtc-rp-brand--idle" id="rp-brand">Fabricante</div>
+          </div>
+          <div class="wtc-rp-specs">
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label" id="rp-spec-l0">Densidade</span>
+              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v0">—</span>
+            </div>
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label" id="rp-spec-l1">Interface</span>
+              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v1">—</span>
+            </div>
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label" id="rp-spec-l2">Capacidade</span>
+              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v2">—</span>
+            </div>
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label" id="rp-spec-l3">Confiança</span>
+              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v3">—</span>
+            </div>
+          </div>
+          <!-- Rodapé: aparece só quando há resultado -->
+          <div class="wtc-rp-footer" id="rp-footer" style="display:none">
+            <span id="rp-conf-label"></span>
+            <span class="wtc-rp-sep" id="rp-source-sep">·</span>
+            <span id="rp-source-label"></span>
+            <span class="wtc-rp-sep" id="rp-doc-sep" style="display:none">·</span>
+            <a class="wtc-rp-link" href="#" id="rp-doc-link" style="display:none">Documentação →</a>
+            <span class="wtc-rp-sep">·</span>
+            <span id="rp-report-wrap">
+              <button class="wtc-rp-report-btn" id="rp-report-btn" type="button">Reportar erro</button>
+            </span>
+            <span class="wtc-rp-sep">·</span>
+            <button class="wtc-rp-debug-btn" id="rp-debug-btn" type="button">📋 Debug</button>
+          </div>
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
 </div>
 
-<!-- 3-CARD GRID -->
-<section class="cards">
+<!-- ══════════════════════════════════════════════════════
+     DIVISOR "SABER MAIS"
+     ══════════════════════════════════════════════════════ -->
+<div class="section-divider">
+  <span class="section-divider-text">Saber mais</span>
+</div>
 
-  <article class="card">
-    <h3>Sobre esta documentação</h3>
-    <div class="card-body">
-      <p>
-        Guia prático para identificar, classificar e avaliar chips de memória e
-        processamento vindos de placas descartadas — de <strong>DDR1</strong> até
-        <strong>UFS 4.0</strong> e <strong>LPDDR5X</strong>. Construído para
-        operadores de triagem, analistas e compradores do mercado de refurbishing
-        e reciclagem eletrônica.
-      </p>
-      <p>
-        Cobre Part Numbers de <strong>11 fabricantes ativos</strong> e 1 histórico
-        (Elpida, absorvida pela Micron), com tabelas de decodificação, metodologia
-        de detecção de chips remarked e hierarquia de viabilidade comercial.
-      </p>
-      <a class="cta" href="aprender.html">Começar agora →</a>
-      <div class="updated">Última atualização: maio de 2026</div>
+<!-- ══════════════════════════════════════════════════════
+     COBERTURA
+     ══════════════════════════════════════════════════════ -->
+<section class="coverage">
+  <div class="coverage-inner">
+    <h2 class="coverage-title">Fabricantes cobertos</h2>
+    <p class="coverage-sub">Identificação com dados reais de datasheets e campo</p>
+
+    <div class="coverage-grid">
+
+      <!-- Samsung — ativo -->
+      <a class="coverage-card coverage-card--active" href="/fab-samsung/">
+        <div class="coverage-card-head">
+          <span class="cov-tag cov-tag--blue">Samsung</span>
+          <span class="cov-status cov-status--live">● Ativo</span>
+        </div>
+        <p class="coverage-card-desc">
+          eMCP · uMCP · DRAM (LPDDR / DDR) · UFS · eMMC ·
+          NAND · NOR · ePoP · SSD BGA
+        </p>
+        <span class="coverage-card-cta">Ver documentação →</span>
+      </a>
+
+      <!-- SK Hynix — em desenvolvimento -->
+      <div class="coverage-card coverage-card--dev">
+        <div class="coverage-card-head">
+          <span class="cov-tag cov-tag--teal">SK Hynix</span>
+          <span class="cov-status cov-status--dev">◌ Em desenvolvimento</span>
+        </div>
+        <p class="coverage-card-desc">
+          LPDDR · DDR · eMMC · UFS · NAND —
+          documentação em revisão e enriquecimento.
+        </p>
+        <span class="coverage-card-cta coverage-card-cta--disabled">Em breve</span>
+      </div>
+
     </div>
-  </article>
-
+  </div>
 </section>
 
 <script>
 (function() {
-  var DATA = [{"prefix": "KLM...", "fab": "Samsung", "tipo": "eMMC (Armazenamento Flash)"}, {"prefix": "KMF / KMN / KMQ / KMR / KMS...", "fab": "Samsung", "tipo": "eMCP (eMMC + LPDDR3/4/4X)"}, {"prefix": "KMD / KME / KMG / KML / KMV / KMW...", "fab": "Samsung", "tipo": "uMCP (UFS + LPDDR4/4X/5/5X)"}, {"prefix": "KLU...", "fab": "Samsung", "tipo": "UFS (Armazenamento Avançado 2.0 a 4.0)"}, {"prefix": "KUS...", "fab": "Samsung", "tipo": "BGA NVMe SSD (Armazenamento Premium)"}, {"prefix": "K3KL / K3LK...", "fab": "Samsung", "tipo": "LPDDR5 / LPDDR5X (Mobile)"}, {"prefix": "K4F / K4U / K3U...", "fab": "Samsung", "tipo": "LPDDR4 / LPDDR4X (Mobile)"}, {"prefix": "K3Q...", "fab": "Samsung", "tipo": "LPDDR3 (Mobile)"}, {"prefix": "K4P...", "fab": "Samsung", "tipo": "LPDDR2 (Mobile)"}, {"prefix": "K4M / K4X...", "fab": "Samsung", "tipo": "LPDDR1 / Mobile SDR"}, {"prefix": "K4R...", "fab": "Samsung", "tipo": "DDR5 (RAM dedicada)"}, {"prefix": "K4A...", "fab": "Samsung", "tipo": "DDR4 (RAM dedicada)"}, {"prefix": "K4B...", "fab": "Samsung", "tipo": "DDR3 / DDR3L (RAM dedicada)"}, {"prefix": "K4T...", "fab": "Samsung", "tipo": "DDR2 (RAM dedicada)"}, {"prefix": "K4H...", "fab": "Samsung", "tipo": "DDR1 (RAM dedicada)"}, {"prefix": "K4Z...", "fab": "Samsung", "tipo": "GDDR6 / GDDR6X (Vídeo / GPU)"}, {"prefix": "K4G...", "fab": "Samsung", "tipo": "GDDR5 / GDDR5X (Vídeo / GPU)"}, {"prefix": "K4N / K4J / K4U...", "fab": "Samsung", "tipo": "GDDR2 / GDDR3 / GDDR4 (Vídeo / GPU)"}, {"prefix": "K9...", "fab": "Samsung", "tipo": "NAND Flash bruta"}, {"prefix": "K5 / K8...", "fab": "Samsung", "tipo": "NOR Flash / Mask ROM"}, {"prefix": "KAT...", "fab": "Samsung", "tipo": "ePoP (Ciclo Reacondicional - Atenção Extrema)"}, {"prefix": "S5E...", "fab": "Samsung", "tipo": "Exynos SoC (Processador)"}, {"prefix": "S5K...", "fab": "Samsung", "tipo": "ISOCELL (Módulos de Câmera)"}, {"prefix": "S2M / S2A / S2D...", "fab": "Samsung", "tipo": "PMIC (Gerenciamento de Energia)"}, {"prefix": "K4S...", "fab": "Samsung", "tipo": "SDRAM (Fluxo de residuo)"}, {"prefix": "H26M...", "fab": "SK Hynix", "tipo": "eMMC (Armazenamento Flash)"}, {"prefix": "H9TP / H9TQ / H8L...", "fab": "SK Hynix", "tipo": "eMCP (eMMC + LPDDR2/3)"}, {"prefix": "H9HP / H9HQ-U / H9QT...", "fab": "SK Hynix", "tipo": "uMCP (UFS + LPDDR4/4X/5)"}, {"prefix": "H28U / H28S / H28G / H28Y...", "fab": "SK Hynix", "tipo": "UFS (Armazenamento Avançado 2.x a 4.0)"}, {"prefix": "H27... / H2P...", "fab": "SK Hynix", "tipo": "NAND Flash bruta / BGA SSD"}, {"prefix": "H9HB / H9HQ / H55G / H54G...", "fab": "SK Hynix", "tipo": "LPDDR5 / LPDDR5X (Mobile)"}, {"prefix": "H9HC / H9HK / H58G...", "fab": "SK Hynix", "tipo": "LPDDR4 / LPDDR4X (Mobile)"}, {"prefix": "H9CC...", "fab": "SK Hynix", "tipo": "LPDDR3 (Mobile)"}, {"prefix": "H9D / H9DA / H9DC...", "fab": "SK Hynix", "tipo": "LPDDR2 (Mobile)"}, {"prefix": "H5M / HY5M...", "fab": "SK Hynix", "tipo": "LPDDR1 / Mobile SDR"}, {"prefix": "H5CG / HMCG...", "fab": "SK Hynix", "tipo": "DDR5 (RAM dedicada / Módulo)"}, {"prefix": "H5AN / HMA...", "fab": "SK Hynix", "tipo": "DDR4 (RAM dedicada / Módulo)"}, {"prefix": "H5TQ / H5TC...", "fab": "SK Hynix", "tipo": "DDR3 / DDR3L (RAM dedicada)"}, {"prefix": "H5PS / H5DS...", "fab": "SK Hynix", "tipo": "DDR2 (RAM dedicada)"}, {"prefix": "HY5D / HY5DU...", "fab": "SK Hynix (Hyundai)", "tipo": "DDR1 (RAM dedicada)"}, {"prefix": "H56G / H56C...", "fab": "SK Hynix", "tipo": "GDDR6 (Vídeo / GPU)"}, {"prefix": "H5GQ / H5GC...", "fab": "SK Hynix", "tipo": "GDDR5 (Vídeo / GPU)"}, {"prefix": "H5V...", "fab": "SK Hynix", "tipo": "HBM (Alta Performance / IA)"}, {"prefix": "HI...", "fab": "SK Hynix", "tipo": "Sensor de Imagem (CMOS)"}, {"prefix": "HY57...", "fab": "SK Hynix (Hyundai)", "tipo": "SDRAM (Fluxo de residuo)"}, {"prefix": "MTFC... / Códigos NW...", "fab": "Micron", "tipo": "eMMC"}, {"prefix": "MT29T / MT29V...", "fab": "Micron", "tipo": "eMCP / uMCP"}, {"prefix": "MT62F...", "fab": "Micron", "tipo": "LPDDR5 / 5X"}, {"prefix": "MT53E / MT53D...", "fab": "Micron", "tipo": "LPDDR4 / 4X"}, {"prefix": "MT52L...", "fab": "Micron", "tipo": "LPDDR3"}, {"prefix": "MT60B...", "fab": "Micron", "tipo": "DDR5 (RAM dedicada)"}, {"prefix": "MT40A... / Códigos D9...", "fab": "Micron", "tipo": "DDR4 (RAM dedicada)"}, {"prefix": "MT41J / MT41K...", "fab": "Micron", "tipo": "DDR3 / DDR3L"}, {"prefix": "MT47H...", "fab": "Micron", "tipo": "DDR2"}, {"prefix": "MT46V...", "fab": "Micron", "tipo": "DDR1 (Fluxo de refino)"}, {"prefix": "MT48LC...", "fab": "Micron", "tipo": "SDRAM (Fluxo de refino)"}, {"prefix": "MT51 / MT61...", "fab": "Micron", "tipo": "GDDR5 a GDDR6X (Vídeo)"}, {"prefix": "MT29F...", "fab": "Micron", "tipo": "NAND bruta"}, {"prefix": "EDF...", "fab": "Elpida", "tipo": "LPDDR3"}, {"prefix": "EDB / EDA... (Abrev: B4)\n                Elpida\n                LPDDR2\n              \n              \n                EDJ... (Abrev: J4)\n                Elpida\n                DDR3 / DDR3L\n              \n              \n                EDE...", "fab": "Elpida", "tipo": "DDR2"}, {"prefix": "EDD...", "fab": "Elpida", "tipo": "DDR1 (Fluxo de refino)"}, {"prefix": "EDS...", "fab": "Elpida", "tipo": "SDRAM (Fluxo de refino)"}, {"prefix": "EDW...", "fab": "Elpida", "tipo": "GDDR5 (Vídeo)"}, {"prefix": "THGB...", "fab": "Toshiba / Kioxia", "tipo": "eMMC (Armazenamento Puro)"}, {"prefix": "THGA / THGJ...", "fab": "Toshiba / Kioxia", "tipo": "UFS (Armazenamento de Alta Velocidade)"}, {"prefix": "THGW / THGV...", "fab": "Toshiba / Kioxia", "tipo": "eMCP (Combo eMMC + LPDDR)"}, {"prefix": "THGQ...", "fab": "Toshiba / Kioxia", "tipo": "uMCP (Combo UFS + LPDDR)"}, {"prefix": "TC58 / TH58...", "fab": "Toshiba / Kioxia", "tipo": "NAND Flash Raw (Extraído de SSD/Pendrive)"}, {"prefix": "THNS / KXG / KCM...", "fab": "Toshiba / Kioxia", "tipo": "Módulo SSD Completo (Client e Enterprise)"}, {"prefix": "TC7 / TMP / TLP / TK...", "fab": "Toshiba / Kioxia", "tipo": "CIs Lógicos e Microcontroladores (➔ Descarte)"}, {"prefix": "TC55 / TC51...", "fab": "Toshiba / Kioxia", "tipo": "SRAM / DRAM Legada (Obsoleta ➔ Descarte)"}, {"prefix": "SDIN / SDMAG...", "fab": "SanDisk / WD", "tipo": "eMMC (iNAND)"}, {"prefix": "SDEM / SDAD / SD7D...", "fab": "SanDisk / WD", "tipo": "eMCP"}, {"prefix": "SDHQB / SDIND...", "fab": "SanDisk / WD", "tipo": "UFS"}, {"prefix": "SDT / SDZ...", "fab": "SanDisk / WD", "tipo": "NAND bruta"}, {"prefix": "NT5W...", "fab": "Nanya", "tipo": "DDR5 (RAM dedicada)"}, {"prefix": "NT5AD / NT5AN...", "fab": "Nanya", "tipo": "DDR4 (RAM dedicada)"}, {"prefix": "NT5C / NT5CB / NT5CC...", "fab": "Nanya", "tipo": "DDR3 / DDR3L"}, {"prefix": "NT5TU...", "fab": "Nanya", "tipo": "DDR2"}, {"prefix": "NT5DS...", "fab": "Nanya", "tipo": "DDR1 (Fluxo de refino)"}, {"prefix": "NT5SV / NT5S...", "fab": "Nanya", "tipo": "SDRAM (Fluxo de refino)"}, {"prefix": "NT6AC...", "fab": "Nanya", "tipo": "LPDDR5"}, {"prefix": "NT6AN / NT6AH / NT6AP...", "fab": "Nanya", "tipo": "LPDDR4 / LPDDR4X"}, {"prefix": "NT6CL / NT6TL...", "fab": "Nanya", "tipo": "LPDDR3"}, {"prefix": "EMMC...", "fab": "Kingston", "tipo": "eMMC (Armazenamento Puro)"}, {"prefix": "EMCP / EM...", "fab": "Kingston", "tipo": "eMCP / uMCP (Combo Inseparável ➔ Descarte)"}, {"prefix": "D... (Ex: D2516, D1G8)\n                Kingston\n                Memória RAM Base (DDR2/3/4/5 em BGA)\n              \n              \n                F / FA / FB / FH / FP...", "fab": "Kingston", "tipo": "NAND Flash Raw (Extraído de SSD/Pendrive)"}, {"prefix": "CP / CS...", "fab": "Kingston", "tipo": "Controlador Lógico (➔ Descarte)"}, {"prefix": "KE4...", "fab": "Kingston", "tipo": "eMMC Legado (Obsoleto ➔ Descarte)"}, {"prefix": "KVR / KSM / KF...", "fab": "Kingston", "tipo": "ATENÇÃO: Etiqueta de módulo. Ler o código BGA a laser."}, {"prefix": "RS1GD4 / RS2GD4...", "fab": "Rayson", "tipo": "DDR4 (Baixa viabilidade)"}, {"prefix": "RS1GD3 / RS2GD3...", "fab": "Rayson", "tipo": "DDR3 (Baixa viabilidade)"}, {"prefix": "RSLPD3 / RSLPD4...", "fab": "Rayson", "tipo": "LPDDR3 / 4 (Baixa viabilidade)"}, {"prefix": "RSEMC...", "fab": "Rayson", "tipo": "eMMC (Baixa viabilidade)"}, {"prefix": "IS43 / IS46...", "fab": "ISSI", "tipo": "DDR1 a DDR4 (Industrial/Automotivo)"}, {"prefix": "IS43LD / IS46LQ...", "fab": "ISSI", "tipo": "LPDDR2 a LPDDR4"}, {"prefix": "IS51 / IS52...", "fab": "ISSI", "tipo": "eMMC (Alta durabilidade)"}, {"prefix": "IS34 / IS35...", "fab": "ISSI", "tipo": "NAND bruta"}, {"prefix": "IS25 / IS29...", "fab": "ISSI", "tipo": "NOR Flash (SPI)"}, {"prefix": "IS61 / IS62...", "fab": "ISSI", "tipo": "SRAM"}, {"prefix": "GD25...", "fab": "GigaDevice", "tipo": "NOR Flash SPI"}, {"prefix": "GD5F...", "fab": "GigaDevice", "tipo": "SPI NAND"}, {"prefix": "GD9...", "fab": "GigaDevice", "tipo": "Parallel NAND"}, {"prefix": "GDQ...", "fab": "GigaDevice", "tipo": "DDR3 / DDR4"}, {"prefix": "GDB...", "fab": "GigaDevice", "tipo": "LPDDR4 / 4X"}, {"prefix": "GD32...", "fab": "GigaDevice", "tipo": "MCU (Microcontrolador ARM/RISC-V)"}];
-  var input   = document.getElementById('big-search-input');
-  var results = document.getElementById('big-search-results');
+  'use strict';
 
+  var DATA        = [{"prefix": "KLM...", "fab": "Samsung", "tipo": "eMMC (Flash Puro)"}, {"prefix": "KLUCG...", "fab": "Samsung", "tipo": "UFS 2.0"}, {"prefix": "KLUDG...", "fab": "Samsung", "tipo": "UFS 2.1"}, {"prefix": "KLUFG...", "fab": "Samsung", "tipo": "UFS 3.1"}, {"prefix": "KLU... (outros)\n                Samsung\n                UFS (genérico — verificar sub-prefixo)\n              \n              \n                KUS...", "fab": "Samsung", "tipo": "BGA SSD NVMe PCIe (Armazenamento Premium)"}, {"prefix": "KMJ...", "fab": "Samsung", "tipo": "eMCP LPDDR2 + eMMC (legado)"}, {"prefix": "KMK...", "fab": "Samsung", "tipo": "eMCP LPDDR2 + eMMC (legado)"}, {"prefix": "KMV... (sem dígito após V)\n                Samsung\n                eMCP LPDDR2 + eMMC (legado)\n              \n              \n                KMF...", "fab": "Samsung", "tipo": "eMCP LPDDR3 + eMMC"}, {"prefix": "KMN...", "fab": "Samsung", "tipo": "eMCP LPDDR3 + eMMC"}, {"prefix": "KMG...", "fab": "Samsung", "tipo": "eMCP LPDDR3 + eMMC 5.1"}, {"prefix": "KMQ...", "fab": "Samsung", "tipo": "eMCP LPDDR3 + eMMC 5.1"}, {"prefix": "KMR...", "fab": "Samsung", "tipo": "eMCP LPDDR4 / LPDDR4X + eMMC 5.1"}, {"prefix": "KMS...", "fab": "Samsung", "tipo": "eMCP LPDDR4X + eMMC 5.1"}, {"prefix": "KM4...", "fab": "Samsung", "tipo": "eMCP LPDDR4 + eMMC 5.1"}, {"prefix": "KMD...", "fab": "Samsung", "tipo": "eMCP LPDDR4X + eMMC 5.1"}, {"prefix": "KMEYH...", "fab": "Samsung", "tipo": "eMMC (família especial — usar ferramentas)"}, {"prefix": "KM... (outros)\n                Samsung\n                eMCP genérico — identificar pela 3ª letra\n              \n            \n\n            \n            \n              Samsung — uMCP (UFS + RAM Mobile empacotados)\n            \n            \n              \n                KML...", "fab": "Samsung", "tipo": "uMCP UFS 3.1 + LPDDR5"}, {"prefix": "KM2...", "fab": "Samsung", "tipo": "uMCP UFS 3.1 + LPDDR5"}, {"prefix": "KM5...", "fab": "Samsung", "tipo": "uMCP UFS + LPDDR4X / LPDDR5X"}, {"prefix": "KM8...", "fab": "Samsung", "tipo": "uMCP UFS + LPDDR4X / LPDDR5X (alta densidade)"}, {"prefix": "KM1...", "fab": "Samsung", "tipo": "uMCP UFS 4.0 + LPDDR5X (ultra-premium)"}, {"prefix": "KMV2...", "fab": "Samsung", "tipo": "uMCP UFS 4.0 + LPDDR5X"}, {"prefix": "KMV3...", "fab": "Samsung", "tipo": "uMCP UFS 4.0 + LPDDR5X"}, {"prefix": "K3KL...", "fab": "Samsung", "tipo": "LPDDR5 Mobile"}, {"prefix": "K3LK...", "fab": "Samsung", "tipo": "LPDDR5X Mobile"}, {"prefix": "K3L... (outros)\n                Samsung\n                LPDDR5X Mobile (genérico)\n              \n              \n                K4F...", "fab": "Samsung", "tipo": "LPDDR4 Mobile"}, {"prefix": "K4U...", "fab": "Samsung", "tipo": "LPDDR4X Mobile"}, {"prefix": "K3U...", "fab": "Samsung", "tipo": "LPDDR4X Multi-Channel"}, {"prefix": "K3QF...", "fab": "Samsung", "tipo": "LPDDR3 Mobile"}, {"prefix": "K3Q... (outros)\n                Samsung\n                LPDDR3 Mobile\n              \n              \n                K4E...", "fab": "Samsung", "tipo": "LPDDR3 Mobile"}, {"prefix": "K3R...", "fab": "Samsung", "tipo": "LPDDR3"}, {"prefix": "K4P...", "fab": "Samsung", "tipo": "LPDDR2 Mobile"}, {"prefix": "K4M...", "fab": "Samsung", "tipo": "LPDDR1 / Mobile DDR (legado)"}, {"prefix": "K4X...", "fab": "Samsung", "tipo": "LPDDR1 / Mobile DDR (legado)"}, {"prefix": "K4RA...", "fab": "Samsung", "tipo": "DDR5"}, {"prefix": "K4RB...", "fab": "Samsung", "tipo": "DDR5"}, {"prefix": "K4A...", "fab": "Samsung", "tipo": "DDR4"}, {"prefix": "K4B...", "fab": "Samsung", "tipo": "DDR3 / DDR3L"}, {"prefix": "K4T...", "fab": "Samsung", "tipo": "DDR2"}, {"prefix": "K4H...", "fab": "Samsung", "tipo": "DDR1"}, {"prefix": "K4S...", "fab": "Samsung", "tipo": "SDRAM (fluxo de resíduo)"}, {"prefix": "K4R... (sem A/B após R)\n                Samsung\n                RDRAM — Rambus DRAM (fluxo de resíduo)\n              \n            \n\n            \n            \n              Samsung — RAM Gráfica (GDDR)\n            \n            \n              \n                K4Z...", "fab": "Samsung", "tipo": "GDDR6 / GDDR6X (GPU)"}, {"prefix": "K4G...", "fab": "Samsung", "tipo": "GDDR5 / GDDR5X (GPU)"}, {"prefix": "K4J...", "fab": "Samsung", "tipo": "GDDR3 (GPU)"}, {"prefix": "K4W...", "fab": "Samsung", "tipo": "GDDR3 (GPU)"}, {"prefix": "K4N...", "fab": "Samsung", "tipo": "GDDR2 (GPU — legado)"}, {"prefix": "K9F...", "fab": "Samsung", "tipo": "NAND Flash SLC (alta durabilidade)"}, {"prefix": "K9W...", "fab": "Samsung", "tipo": "NAND Flash SLC Industrial / White Label"}, {"prefix": "K9C...", "fab": "Samsung", "tipo": "NAND Flash SLC (tensão 1.8V — câmeras / PDAs)"}, {"prefix": "K9G...", "fab": "Samsung", "tipo": "NAND Flash MLC"}, {"prefix": "K9HDG...", "fab": "Samsung", "tipo": "NAND Flash MLC (alta densidade — TVs / monitores)"}, {"prefix": "K9H... (outros)\n                Samsung\n                NAND Flash MLC Large Page\n              \n              \n                K9K...", "fab": "Samsung", "tipo": "NAND Flash SLC / MLC"}, {"prefix": "K9L...", "fab": "Samsung", "tipo": "NAND Flash MLC / TLC"}, {"prefix": "K9X...", "fab": "Samsung", "tipo": "NAND Flash MLC (expandido)"}, {"prefix": "K9Z...", "fab": "Samsung", "tipo": "NAND Flash MLC / TLC (variante especial)"}, {"prefix": "K5D...", "fab": "Samsung", "tipo": "OneNAND Flash"}, {"prefix": "K5... (outros)\n                Samsung\n                NOR Flash\n              \n              \n                K8...", "fab": "Samsung", "tipo": "NOR Flash / Mask ROM"}, {"prefix": "K7...", "fab": "Samsung", "tipo": "SRAM"}, {"prefix": "KAT...", "fab": "Samsung", "tipo": "ePoP — eMMC + LPDDR empilhados (ciclo re-acondicionado — atenção extrema)"}, {"prefix": "S5E...", "fab": "Samsung", "tipo": "Exynos SoC (Processador)"}, {"prefix": "S5K...", "fab": "Samsung", "tipo": "ISOCELL (Sensor de Câmera)"}, {"prefix": "S2M...", "fab": "Samsung", "tipo": "PMIC (Gerenciamento de Energia)"}, {"prefix": "S2A...", "fab": "Samsung", "tipo": "PMIC (Gerenciamento de Energia)"}, {"prefix": "S2D...", "fab": "Samsung", "tipo": "PMIC (Gerenciamento de Energia)"}];
+  var input       = document.getElementById('big-search-input');
+  var pinRow      = document.getElementById('pin-row');
+  var pinBoxes    = document.getElementById('pin-boxes');
+  // ── Elementos do painel de resultado ────────────────────────────────────────
+  var rpStatus    = document.getElementById('rp-status');
+  var rpStatusTxt = document.getElementById('rp-status-text');
+  var rpChiptype  = document.getElementById('rp-chiptype');
+  var rpBrand     = document.getElementById('rp-brand');
+  var rpFooter    = document.getElementById('rp-footer');
+  var rpConfLabel = document.getElementById('rp-conf-label');
+  var rpSourceLabel= document.getElementById('rp-source-label');
+  var rpSourceSep = document.getElementById('rp-source-sep');
+  var rpDocLink   = document.getElementById('rp-doc-link');
+  var rpDocSep    = document.getElementById('rp-doc-sep');
+  var specLabels  = [0,1,2,3].map(function(i){ return document.getElementById('rp-spec-l'+i); });
+  var specVals    = [0,1,2,3].map(function(i){ return document.getElementById('rp-spec-v'+i); });
+  var _lastData   = null; // guarda JSON do último resultado para o Debug
+
+  var CONF_LABEL = {
+    'confirmed':   '✅ Confirmado',
+    'manual':      '✏️ Manual',
+    'distributor': '🏪 Distribuidor',
+    'ai_high':     '🤖 IA — Alta',
+    'ai_medium':   '🤖 IA — Média',
+    'ai_low':      '🤖 IA — Baixa',
+    'estimated':   '~ Estimado',
+  };
+
+  // ── Utilitários ─────────────────────────────────────────────────────────────
   function normalize(s) { return s.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
 
-  function match(row, q) {
+  function escHtml(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function fabToPage(fab) {
+    var map = {
+      'Samsung':           'fab-samsung',
+      'SK Hynix':          'fab-hynix',
+      'Micron':            'fab-micron',
+      'Elpida':            'fab-elpida',
+      'Toshiba / Kioxia':  'fab-toshiba',
+      'SanDisk / WD':      'fab-sandisk',
+      'Nanya':             'fab-nanya',
+      'Kingston':          'fab-kingston',
+      'Kingston (HyperX)': 'fab-kingston',
+      'Rayson':            'fab-rayson',
+      'ISSI':              'fab-issi',
+      'GigaDevice':        'fab-gigadevice',
+    };
+    return map[fab] || 'prefixos';
+  }
+
+  // isDjango: verdadeiro quando servido por Django (qualquer porta HTTP/HTTPS),
+  // falso apenas quando aberto como arquivo local (file://) ou com extensão .html.
+  // A checagem anterior usava window.location.port !== '' — quebrava em porta 80/443
+  // (Nginx, proxy, domínio sem porta explícita).
+  var isDjango = window.location.protocol !== 'file:' && !window.location.pathname.endsWith('.html');
+
+  function pageUrl(slug) {
+    return isDjango ? '/' + slug + '/' : slug + '.html';
+  }
+
+  // ── Estado do PIN ────────────────────────────────────────────────────────────
+  var PIN_DEFAULT   = 8;   // caixas mostradas antes de identificar família
+  var PIN_MAX       = 18;  // teto absoluto
+  var _currentLen   = PIN_DEFAULT;
+  var _detectedFam  = null;
+  var _debounceTimer = null;
+  var _lastApiPn    = '';
+
+  // ── Renderiza as caixas ──────────────────────────────────────────────────────
+  function renderBoxes(value, targetLen) {
+    // Expande só se o usuário digitou MAIS que o esperado (não quando igual)
+    var len = value.length > targetLen ? value.length + 2 : targetLen;
+    len = Math.min(len, PIN_MAX);
+
+    // Só reconstrói o DOM se a quantidade mudou
+    if (pinBoxes.children.length !== len) {
+      pinBoxes.innerHTML = '';
+      for (var i = 0; i < len; i++) {
+        var box = document.createElement('span');
+        box.className = 'pin-box';
+        pinBoxes.appendChild(box);
+      }
+      _currentLen = len;
+    }
+
+    var boxes = pinBoxes.querySelectorAll('.pin-box');
+    var prefixLen = _detectedFam ? normalize(_detectedFam.prefix).length : 0;
+
+    for (var j = 0; j < boxes.length; j++) {
+      var ch = value[j] || '';
+      boxes[j].textContent = ch;
+      boxes[j].className = 'pin-box'
+        + (ch ? ' pin-filled' : '')
+        + (j === value.length ? ' pin-cursor' : '')
+        + (j < prefixLen && ch ? ' pin-prefix' : '');
+    }
+  }
+
+  // ── Camada 1: busca de prefixos (client-side, instantânea) ──────────────────
+  function matchPrefix(row, q) {
     var parts = row.prefix.split('/').map(function(p) {
       return normalize(p.replace(/\.\.\.$/, '').trim());
     });
@@ -169,72 +358,353 @@
         || normalize(row.tipo).includes(q);
   }
 
-  function fabToPage(fab) {
-    var map = {
-      'Samsung':          'fab-samsung',
-      'SK Hynix':         'fab-hynix',
-      'Micron':           'fab-micron',
-      'Elpida':           'fab-elpida',
-      'Toshiba / Kioxia': 'fab-toshiba',
-      'SanDisk / WD':     'fab-sandisk',
-      'Nanya':            'fab-nanya',
-      'Kingston':         'fab-kingston',
-      'Kingston (HyperX)':'fab-kingston',
-      'Rayson':           'fab-rayson',
-      'ISSI':             'fab-issi',
-      'GigaDevice':       'fab-gigadevice',
-    };
-    return map[fab] || 'prefixos';
+  function bestMatch(q) {
+    // Retorna a família com prefixo mais longo que ainda faça startsWith no q
+    var best = null;
+    DATA.forEach(function(row) {
+      var parts = row.prefix.split('/').map(function(p) {
+        return normalize(p.replace(/\.\.\.$/, '').trim());
+      });
+      parts.forEach(function(p) {
+        if (q.startsWith(p) && (!best || p.length > normalize(best.prefix).length)) {
+          best = row;
+        }
+      });
+    });
+    return best;
   }
 
-  // Detecta formato de URL: Django usa /slug/, site estático usa slug.html
-  var isDjango = !window.location.pathname.endsWith('.html') && window.location.port !== '';
-  function pageUrl(slug) {
-    return isDjango ? '/' + slug + '/' : slug + '.html';
-  }
-
-  function render(q) {
-    var norm = normalize(q);
-    if (norm.length < 2) {
-      results.innerHTML = '';
-      results.style.display = 'none';
+  // ── Atualiza estado vazio enquanto o usuário digita ─────────────────────────
+  function updateEmptyState(q, fam) {
+    if (!q) {
+      if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--idle';
+      if (rpStatusTxt) rpStatusTxt.textContent = 'Aguardando Part Number…';
+      if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype wtc-rp-chiptype--idle'; rpChiptype.textContent = 'Digite o PN acima para identificar o chip'; }
+      if (rpBrand)     rpBrand.className      = 'wtc-rp-brand wtc-rp-brand--idle';
       return;
     }
-    var hits = DATA.filter(function(r) { return match(r, norm); });
-    if (hits.length === 0) {
-      results.innerHTML = '<div class="pr-empty">Nenhum prefixo encontrado para "<strong>' + q + '</strong>". <a href="' + pageUrl('prefixos') + '">Ver tabela completa →</a></div>';
+    if (fam) {
+      if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--typing';
+      if (rpStatusTxt) rpStatusTxt.textContent = fam.fab + ' · ' + fam.tipo
+        + (fam.pn_length ? ' — ' + q.length + '/' + fam.pn_length + ' chars' : '');
+      if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype'; rpChiptype.textContent = fam.tipo; }
+      if (rpBrand)     { rpBrand.className = 'wtc-rp-brand'; rpBrand.textContent = fam.fab; }
     } else {
-      var MAX = 14;
-      var header = '<div class="pr-header"><span>Prefixo</span><span>Fabricante</span><span>Tipo / Categoria</span></div>';
-      var rows = hits.slice(0, MAX).map(function(r) {
-        var cleanPrefix = r.prefix.replace(/\.+$/, '').replace(/[^A-Za-z0-9]/g, '');
-        var page = fabToPage(r.fab);
-        return '<a class="pr-row" href="/' + page + '/#highlight-' + cleanPrefix + '">'
-          + '<span class="pr-prefix">' + r.prefix + '</span>'
-          + '<span class="pr-fab">' + r.fab + '</span>'
-          + '<span class="pr-tipo">' + r.tipo + '</span>'
-          + '</a>';
-      }).join('');
-      var more = hits.length > MAX
-        ? hits.length - MAX + ' ocultos · '
-        : '';
-      var footer = '<div class="pr-footer">' + more + '<a href="' + pageUrl('prefixos') + '">Ver tabela completa de prefixos →</a></div>';
-      results.innerHTML = header + rows + footer;
+      if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--typing';
+      if (rpStatusTxt) rpStatusTxt.textContent = 'Buscando na base de dados…';
+      if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype wtc-rp-chiptype--idle'; rpChiptype.textContent = 'Família não reconhecida'; }
+      if (rpBrand)     rpBrand.className      = 'wtc-rp-brand wtc-rp-brand--idle';
     }
-    results.style.display = 'block';
   }
 
+  // ── Preenche um spec com label + valor ──────────────────────────────────────
+  function setSpec(idx, label, value) {
+    if (!specLabels[idx]) return;
+    specLabels[idx].textContent = label;
+    var v = specVals[idx];
+    if (value) {
+      v.classList.remove('wtc-rp-spec-val--idle');
+      v.style.animation = 'none';
+      void v.offsetWidth; // força reflow para reiniciar animação
+      v.style.animation = 'wtc-fadein .3s ease forwards';
+      v.textContent = value;
+    } else {
+      v.classList.add('wtc-rp-spec-val--idle');
+      v.style.animation = '';
+      v.textContent = '—';
+    }
+  }
+
+  // ── Popula o painel com resultado do JSON ─────────────────────────────────
+  function fillResult(d) {
+    _lastData = d;
+
+    var mode = d.remarked_flag ? 'warn' : (d.pn_incomplete ? 'wait' : 'ok');
+    var txt  = d.remarked_flag        ? '⚠ Possível chip remarked'
+             : d.pn_incomplete        ? '⌛ PN incompleto — continue digitando'
+             : '✓ Chip identificado';
+    if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--' + mode;
+    if (rpStatusTxt) rpStatusTxt.textContent = txt;
+
+    if (rpChiptype) {
+      rpChiptype.className = 'wtc-rp-chiptype';
+      rpChiptype.innerHTML = escHtml(d.chip_type || '—')
+        + (d.subtype ? '<span class="wtc-rp-subtype"> ' + escHtml(d.subtype) + '</span>' : '');
+    }
+    if (rpBrand) {
+      rpBrand.className   = 'wtc-rp-brand';
+      rpBrand.textContent = d.brand || '—';
+    }
+
+    if (d.is_emcp) {
+      setSpec(0, 'NAND',        d.emcp_nand   || null);
+      setSpec(1, 'RAM',         d.emcp_ram    || null);
+      setSpec(2, 'Dispositivo', d.emcp_device || null);
+      setSpec(3, 'Interface',   d.interface   || null);
+    } else {
+      setSpec(0, 'Densidade',  d.dram_density || null);
+      setSpec(1, 'Interface',  d.interface    || null);
+      setSpec(2, 'Capacidade', d.capacity     || null);
+      setSpec(3, 'Confiança',  CONF_LABEL[d.confidence] || d.confidence || null);
+    }
+
+    // Rodapé
+    if (rpFooter) {
+      rpFooter.style.display = 'flex';
+      if (rpConfLabel)   rpConfLabel.textContent   = CONF_LABEL[d.confidence] || d.confidence || '';
+      if (rpSourceLabel) rpSourceLabel.textContent = d.classification_source ? 'via ' + d.classification_source : '';
+      if (rpSourceSep)   rpSourceSep.style.display = d.classification_source ? '' : 'none';
+      if (d.doc_url) {
+        if (rpDocLink) { rpDocLink.href = d.doc_url; rpDocLink.style.display = ''; }
+        if (rpDocSep)  rpDocSep.style.display = '';
+      } else {
+        if (rpDocLink) rpDocLink.style.display = 'none';
+        if (rpDocSep)  rpDocSep.style.display  = 'none';
+      }
+    }
+  }
+
+  // ── Reseta painel para estado inicial ────────────────────────────────────────
+  function resetResult() {
+    _lastData = null;
+    if (rpFooter) rpFooter.style.display = 'none';
+    setSpec(0, 'Densidade', null);
+    setSpec(1, 'Interface', null);
+    setSpec(2, 'Capacidade', null);
+    setSpec(3, 'Confiança', null);
+  }
+
+  // ── Decode via JSON (sem HTMX) ───────────────────────────────────────────────
+  function callApi(pn) {
+    if (!isDjango) return;
+    if (pn === _lastApiPn) return;
+    _lastApiPn = pn;
+    fetch('/chips/search/?pn=' + encodeURIComponent(pn))
+      .then(function(r) { return r.json(); })
+      .then(function(d) { if (d.known) fillResult(d); })
+      .catch(function() { /* silent fail */ });
+  }
+
+  // ── Render principal ─────────────────────────────────────────────────────────
+  function render(raw) {
+    var q = normalize(raw);
+
+    if (q.length === 0) {
+      renderBoxes('', PIN_DEFAULT);
+      updateEmptyState('', null);
+      resetResult();
+      _detectedFam = null;
+      _lastApiPn = '';
+      clearTimeout(_debounceTimer);
+      return;
+    }
+
+    // ── Detecta família ──────────────────────────────────────────────────────
+    var fam = bestMatch(q);
+    if (fam !== _detectedFam) {
+      _detectedFam = fam;
+      resetResult();
+      _lastApiPn = '';
+    }
+
+    // ── Calcula quantas caixas mostrar ───────────────────────────────────────
+    var targetLen = PIN_DEFAULT;
+    if (fam && fam.pn_length) {
+      targetLen = fam.pn_length;
+    } else if (q.length >= PIN_DEFAULT) {
+      // Sem pn_length definido: expande conforme o usuário digita
+      targetLen = q.length + 2;
+    }
+    renderBoxes(q, targetLen);
+
+    // ── Atualiza estado vazio com info da família ────────────────────────────
+    updateEmptyState(q, fam);
+
+    // ── Trigger do decode via HTMX ───────────────────────────────────────────
+    clearTimeout(_debounceTimer);
+
+    if (fam && fam.pn_length && q.length >= fam.pn_length) {
+      // PN completo para família conhecida → dispara imediatamente
+      callApi(q);
+    } else if (q.length >= 4) {
+      // Família sem pn_length definido → debounce de 500ms
+      _debounceTimer = setTimeout(function() { callApi(q); }, 500);
+    }
+  }
+
+  // ── Inicialização: caixas vazias ─────────────────────────────────────────────
+  renderBoxes('', PIN_DEFAULT);
+
+  // ── Foco: clicar em qualquer lugar do pin-row foca o input ──────────────────
+  if (pinRow) {
+    pinRow.addEventListener('click', function() { input && input.focus(); });
+  }
+
+  // ── Eventos do input ─────────────────────────────────────────────────────────
   if (input) {
-    input.addEventListener('input', function() { render(this.value); });
-    input.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') { this.value = ''; render(''); this.blur(); }
+    input.addEventListener('input', function() {
+      // Força maiúsculo e limpa caracteres inválidos direto no input
+      var clean = normalize(this.value);
+      if (this.value !== clean) this.value = clean;
+      render(clean);
     });
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.big-search')) {
-        results.style.display = 'none';
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(_debounceTimer);
+        var q = normalize(this.value);
+        if (isDjango && q.length >= 4) callApi(q);
+      }
+      if (e.key === 'Escape') {
+        this.value = '';
+        render('');
+        this.blur();
+      }
+    });
+
+    // Foca o input ao carregar a página
+    setTimeout(function() { input.focus(); }, 100);
+  }
+
+  // ── API global para sugestões fuzzy ─────────────────────────────────────────
+  window.triggerSearch = function(pn) {
+    if (!input) return;
+    var clean = normalize(pn);
+    input.value = clean;
+    render(clean);
+    if (isDjango && clean.length >= 4) callApi(clean);
+  };
+
+  // ── Clipboard helper: tenta navigator.clipboard, cai em execCommand ─────────
+  // navigator.clipboard.writeText exige contexto seguro (HTTPS ou localhost).
+  // execCommand('copy') é deprecated mas funciona em HTTP para compatibilidade.
+  function _copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function(resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('execCommand retornou false'));
+      } catch (err) {
+        document.body.removeChild(ta);
+        reject(err);
       }
     });
   }
+
+  // ── Botão de report ──────────────────────────────────────────────────────────
+  var rpReportBtn = document.getElementById('rp-report-btn');
+  if (rpReportBtn) {
+    rpReportBtn.addEventListener('click', function() {
+      if (!_lastData) return;
+      var wrap = document.getElementById('rp-report-wrap');
+      var body = new URLSearchParams({
+        pn:        _lastData.pn        || '',
+        chip_type: _lastData.chip_type || '',
+        capacity:  _lastData.capacity  || _lastData.emcp_nand || '',
+      });
+      fetch('/chips/report/', { method: 'POST', body: body })
+        .then(function() {
+          if (wrap) wrap.innerHTML = '<span style="color:var(--success)">✓ Reporte recebido — obrigado!</span>';
+        })
+        .catch(function() {});
+    });
+  }
+
+  // ── Botão de debug: copia diagnóstico completo para o clipboard ──────────────
+  var rpDebugBtn = document.getElementById('rp-debug-btn');
+  if (rpDebugBtn) {
+    rpDebugBtn.addEventListener('click', function() {
+      if (!_lastData) return;
+      var btn = this;
+      var d   = _lastData;
+      var pn  = d.pn || '';
+
+      function buildDebugText(d) {
+        var lines = [];
+        var now   = new Date().toLocaleString('pt-BR');
+        var sep   = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
+
+        lines.push('=== WhatTheChip Debug ===');
+        lines.push('PN:      ' + (d.pn || pn));
+        lines.push('Horário: ' + now);
+
+        lines.push('');
+        lines.push(sep + ' RESULTADO VISÍVEL');
+        lines.push('Tipo:        ' + (d.chip_type    || '—'));
+        lines.push('Subtipo:     ' + (d.subtype       || '—'));
+        lines.push('Marca:       ' + (d.brand         || '—'));
+        if (d.is_emcp) {
+          lines.push('NAND:        ' + (d.emcp_nand   || '—'));
+          lines.push('RAM:         ' + (d.emcp_ram    || '—'));
+          lines.push('Dispositivo: ' + (d.emcp_device || '—'));
+        } else {
+          lines.push('Capacidade:  ' + (d.capacity     || '—'));
+          lines.push('DRAM:        ' + (d.dram_density  || '—'));
+          lines.push('Interface:   ' + (d.interface     || '—'));
+          lines.push('Dispositivo: ' + (d.device        || '—'));
+        }
+        lines.push('Sufixo:      ' + (d.suffix_note   || '—'));
+        lines.push('Confiança:   ' + (d.confidence     || '—'));
+        lines.push('Tip:         ' + (d.tip            || '—'));
+
+        lines.push('');
+        lines.push(sep + ' MOTOR DE CLASSIFICAÇÃO');
+        lines.push('Fonte:         ' + (d.classification_source || '—'));
+        lines.push('Família:       ' + (d.family_prefix          || '—'));
+        lines.push('known_exact:   ' + !!d.known_exact);
+        lines.push('is_emcp:       ' + !!d.is_emcp);
+        if (d.is_emcp) {
+          lines.push('emcp_source:   ' + (d.emcp_source || '—'));
+        }
+        lines.push('from_web:      ' + !!d.from_web);
+        lines.push('raw_in_db:     ' + !!d.raw_in_db);
+        lines.push('remarked_flag: ' + !!d.remarked_flag);
+        if (d.remarked_note) {
+          lines.push('remarked_note: ' + d.remarked_note);
+        }
+        var geminiStatus = d.gemini_searched
+          ? (d.gemini_found ? 'encontrado' : 'não encontrado')
+          : 'não executado';
+        lines.push('Gemini:        ' + geminiStatus);
+        lines.push('doc_url:       ' + (d.doc_url    || '—'));
+        lines.push('source_url:    ' + (d.source_url || '—'));
+
+        if (d.fuzzy_suggestions && d.fuzzy_suggestions.length) {
+          lines.push('fuzzy_sugest.: ' + d.fuzzy_suggestions.join(', '));
+        }
+
+        lines.push('');
+        lines.push(sep + ' JSON COMPLETO');
+        lines.push(JSON.stringify(d, null, 2));
+
+        return lines.join('\n');
+      }
+
+      // Dados já em memória — copia sincronamente dentro do gesto do usuário
+      btn.disabled    = true;
+      btn.textContent = '…';
+      _copyText(buildDebugText(d))
+        .then(function() {
+          btn.textContent = '✓ Copiado!';
+          setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
+        })
+        .catch(function() {
+          btn.textContent = 'Erro';
+          setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
+        });
+    });
+  }
+
 })();
 </script>
 
