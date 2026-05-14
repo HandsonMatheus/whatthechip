@@ -1,0 +1,422 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Painel — WhatTheChip?{% endblock %}</title>
+
+  <script>
+    (function() {
+      if (localStorage.getItem('wtc_theme') === 'dark')
+        document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
+
+  <style>
+  /* ═══════════════════════════════════════════════════════════════
+     BASE DO PAINEL — layout de operador
+     Topbar fixo + sidebar + conteúdo principal
+     Segue WhatTheChip Design System v2.0 (IBM Carbon White)
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* ── Reset de herança do site público ───────────────────────── */
+  .pnl-topbar, .pnl-sidebar, .pnl-main {
+    font-family: var(--font);
+    font-size: 14px;
+    letter-spacing: 0.16px;
+    color: var(--text-primary);
+  }
+
+  /* ── Topbar ─────────────────────────────────────────────────── */
+  .pnl-topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 48px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--s5);
+    z-index: 300;
+  }
+
+  .pnl-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: var(--s4);
+  }
+
+  /* Logo SVG no topbar */
+  .pnl-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  .pnl-logo--light { display: inline; }
+  .pnl-logo--dark  { display: none; }
+  [data-theme="dark"] .pnl-logo--light { display: none; }
+  [data-theme="dark"] .pnl-logo--dark  { display: inline; }
+
+  /* Botão Voltar ao site */
+  .pnl-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+    height: 30px;
+    padding: 0 var(--s4);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--r-sm);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .12s, color .12s;
+  }
+  .pnl-back-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+
+  .pnl-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border-subtle);
+  }
+
+  .pnl-topbar-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.16px;
+  }
+
+  .pnl-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--s5);
+  }
+
+  .pnl-operator {
+    font-size: 12px;
+    color: var(--text-helper);
+  }
+
+  .pnl-operator strong {
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+
+  /* Botão tema */
+  .pnl-theme-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    padding: var(--s2);
+    border-radius: var(--r-sm);
+  }
+  .pnl-theme-btn:hover { background: var(--surface-2); }
+  .pnl-theme-btn .icon-sun  { display: none; }
+  .pnl-theme-btn .icon-moon { display: block; }
+  [data-theme="dark"] .pnl-theme-btn .icon-sun  { display: block; }
+  [data-theme="dark"] .pnl-theme-btn .icon-moon { display: none; }
+
+  /* Botão Sair na sidebar — vermelho */
+  .pnl-sidebar-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--border-subtle);
+    padding: var(--s3) 0;
+  }
+  .pnl-sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    height: 40px;
+    padding: 0 var(--s5);
+    font-size: 14px;
+    font-weight: 600;
+    color: #da1e28;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: background .1s;
+  }
+  .pnl-sidebar-logout:hover {
+    background: #fff1f1;
+    border-left-color: #da1e28;
+  }
+  [data-theme="dark"] .pnl-sidebar-logout:hover { background: #2d1518; }
+
+  /* ── Layout geral ───────────────────────────────────────────── */
+  .pnl-body {
+    display: flex;
+    min-height: 100vh;
+    padding-top: 48px; /* altura do topbar */
+  }
+
+  /* ── Sidebar ────────────────────────────────────────────────── */
+  .pnl-sidebar {
+    width: 256px;
+    flex-shrink: 0;
+    background: var(--surface-2);
+    border-right: 1px solid var(--border-subtle);
+    position: sticky;
+    top: 48px;
+    height: calc(100vh - 48px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Logo na sidebar */
+  .pnl-sidebar-logo {
+    padding: var(--s5) var(--s5) var(--s4);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .pnl-sidebar-logo a { display: inline-block; line-height: 0; }
+  .pnl-sidebar-logo--dark  { display: none; }
+  .pnl-sidebar-logo--light { display: inline; }
+  [data-theme="dark"] .pnl-sidebar-logo--light { display: none; }
+  [data-theme="dark"] .pnl-sidebar-logo--dark  { display: inline; }
+
+  .pnl-nav-section {
+    padding: var(--s5) 0 var(--s3);
+  }
+
+  .pnl-nav-label {
+    padding: 0 var(--s5) var(--s3);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-helper);
+  }
+
+  .pnl-nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    height: 40px;
+    padding: 0 var(--s5);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: background .1s, color .1s;
+  }
+
+  .pnl-nav-link:hover {
+    background: var(--surface-3);
+    color: var(--text-primary);
+  }
+
+  .pnl-nav-link--active {
+    background: var(--info-bg);
+    color: var(--interactive);
+    font-weight: 600;
+    border-left-color: var(--interactive);
+  }
+
+  .pnl-nav-link--active:hover {
+    background: var(--info-bg);
+    color: var(--interactive);
+  }
+
+  .pnl-nav-icon {
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .pnl-nav-link--active .pnl-nav-icon { opacity: 1; }
+
+  /* ── Conteúdo principal ─────────────────────────────────────── */
+  .pnl-main {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg);
+    padding: var(--s7) var(--s7) var(--s10);
+  }
+
+  /* ── Dark mode overrides ─────────────────────────────────────  */
+  [data-theme="dark"] .pnl-topbar  { background: #262626; border-color: #393939; }
+  [data-theme="dark"] .pnl-sidebar { background: #262626; border-color: #393939; }
+  [data-theme="dark"] .pnl-nav-link--active { background: #1c2333; }
+
+  /* ── Mobile: sidebar em drawer ─────────────────────────────── */
+  @media (max-width: 768px) {
+    .pnl-sidebar {
+      position: fixed;
+      left: -256px;
+      top: 48px;
+      z-index: 200;
+      height: calc(100vh - 48px);
+      transition: left .2s ease;
+    }
+    .pnl-sidebar.pnl-sidebar--open { left: 0; }
+    .pnl-main { padding: var(--s5); }
+    .pnl-operator { display: none; }
+
+    .pnl-hamburger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+  }
+
+  @media (min-width: 769px) {
+    .pnl-hamburger { display: none; }
+  }
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- ── Topbar ──────────────────────────────────────────────────── -->
+<header class="pnl-topbar">
+  <div class="pnl-topbar-left">
+    <button class="pnl-hamburger" id="pnl-hamburger" aria-label="Menu" onclick="toggleSidebar()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="1" y="4"  width="16" height="1.5" rx=".75" fill="currentColor"/>
+        <rect x="1" y="8.25" width="16" height="1.5" rx=".75" fill="currentColor"/>
+        <rect x="1" y="12.5" width="16" height="1.5" rx=".75" fill="currentColor"/>
+      </svg>
+    </button>
+    <a href="/" class="pnl-logo">
+      <img class="pnl-logo--light" src="{% static 'img/logo-light.svg' %}" alt="WhatTheChip?" height="24">
+      <img class="pnl-logo--dark"  src="{% static 'img/logo-dark.svg' %}"  alt="WhatTheChip?" height="24">
+    </a>
+  </div>
+  <div class="pnl-topbar-right">
+    <span class="pnl-operator">
+      <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+    </span>
+    <a href="/" class="pnl-back-btn">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Voltar ao site
+    </a>
+    <button class="pnl-theme-btn" id="pnl-theme-btn" aria-label="Alternar tema">
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ── Layout ─────────────────────────────────────────────────── -->
+<div class="pnl-body">
+
+  <!-- Sidebar -->
+  <aside class="pnl-sidebar" id="pnl-sidebar">
+
+    <!-- Logo -->
+    <nav class="pnl-nav-section" aria-label="Navegação do painel">
+      <div class="pnl-nav-label">Menu</div>
+
+      <a href="{% url 'estoque:index' %}"
+         class="pnl-nav-link{% block nav_estoque %} pnl-nav-link--active{% endblock %}">
+        <svg class="pnl-nav-icon" width="16" height="16" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+        Estoque
+      </a>
+
+      {# Futuros itens de menu entram aqui #}
+    </nav>
+
+    <!-- Logout no rodapé da sidebar -->
+    <div class="pnl-sidebar-footer">
+      <a href="{% url 'logout' %}" class="pnl-sidebar-logout">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Sair
+      </a>
+    </div>
+  </aside>
+
+  <!-- Conteúdo principal -->
+  <main class="pnl-main" id="pnl-content">
+    {% block main %}{% endblock %}
+  </main>
+
+</div><!-- /pnl-body -->
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Dark mode ──────────────────────────────────────────────────
+  var themeBtn = document.getElementById('pnl-theme-btn');
+  function applyTheme(dark, save) {
+    document.documentElement[dark ? 'setAttribute' : 'removeAttribute']('data-theme', 'dark');
+    if (save) localStorage.setItem('wtc_theme', dark ? 'dark' : 'light');
+  }
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark', false);
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
+    });
+  }
+
+  // ── Sidebar mobile ─────────────────────────────────────────────
+  window.toggleSidebar = function () {
+    document.getElementById('pnl-sidebar').classList.toggle('pnl-sidebar--open');
+  };
+  // Fecha ao clicar fora (mobile)
+  document.addEventListener('click', function (e) {
+    var sidebar = document.getElementById('pnl-sidebar');
+    var hamburger = document.getElementById('pnl-hamburger');
+    if (sidebar && !sidebar.contains(e.target) && e.target !== hamburger) {
+      sidebar.classList.remove('pnl-sidebar--open');
+    }
+  });
+})();
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -15,17 +15,31 @@
     </div>
 
     <!-- Busca principal -->
-    <form class="pin-search" id="pin-search" role="search" onsubmit="event.preventDefault();" autocomplete="off">
+    <form class="pin-search" id="pin-search" role="search" autocomplete="off">
 
-      <!-- Caixas de caracteres -->
+      <!-- Caixas + botões (mesma largura via pin-input-group) -->
       <div class="pin-row" id="pin-row">
-        <div class="pin-boxes" id="pin-boxes"></div>
+        <div class="pin-input-group">
+          <div class="pin-boxes" id="pin-boxes"></div>
+          <div class="pin-btn-group">
+            <button type="button" id="clear-btn" class="pin-btn pin-btn--secondary" disabled>Limpar</button>
+            <button type="submit" id="decode-btn" class="pin-btn pin-btn--primary" disabled>
+              <span class="pin-btn-label">Decodificar</span>
+              <span class="pin-btn-spinner" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
         <!-- Input real oculto — captura teclado, paste, mobile keyboard -->
         <input type="text" id="big-search-input"
                class="pin-real-input"
                autocomplete="off" autocapitalize="characters"
                autocorrect="off" spellcheck="false"
                aria-label="Digite o Part Number do chip" />
+      </div>
+
+      <!-- Hint abaixo dos botões -->
+      <div class="pin-actions">
+        <span class="pin-actions-hint" id="pin-hint">Digite o Part Number acima</span>
       </div>
 
       <!-- Painel de resultado fixo — sempre visível abaixo do input -->
@@ -139,6 +153,10 @@
   var input       = document.getElementById('big-search-input');
   var pinRow      = document.getElementById('pin-row');
   var pinBoxes    = document.getElementById('pin-boxes');
+  var decodeBtn   = document.getElementById('decode-btn');
+  var clearBtn    = document.getElementById('clear-btn');
+  var pinHint     = document.getElementById('pin-hint');
+  var pinSearch   = document.getElementById('pin-search');
   // ── Elementos do painel de resultado ────────────────────────────────────────
   var rpStatus    = document.getElementById('rp-status');
   var rpStatusTxt = document.getElementById('rp-status-text');
@@ -158,11 +176,20 @@
     'confirmed':   '✅ Confirmado',
     'manual':      '✏️ Manual',
     'distributor': '🏪 Distribuidor',
+    'grammar':     '📐 Gramática',
     'ai_high':     '🤖 IA — Alta',
     'ai_medium':   '🤖 IA — Média',
     'ai_low':      '🤖 IA — Baixa',
     'estimated':   '~ Estimado',
   };
+
+  // Retorna chave de confiança efetiva para exibição.
+  // Chips grammar_complete recebem label 'grammar' mesmo com confidence='estimated':
+  // a gramática com mapa verificado é mais confiável que um resultado parcial.
+  function effectiveConf(d) {
+    if (d.grammar_complete && d.confidence === 'estimated') return 'grammar';
+    return d.confidence || 'estimated';
+  }
 
   // ── Utilitários ─────────────────────────────────────────────────────────────
   function normalize(s) { return s.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
@@ -201,7 +228,7 @@
 
   // ── Estado do PIN ────────────────────────────────────────────────────────────
   var PIN_DEFAULT   = 8;   // caixas mostradas antes de identificar família
-  var PIN_MAX       = 18;  // teto absoluto
+  var PIN_MAX       = 20;  // teto absoluto
   var _currentLen   = PIN_DEFAULT;
   var _detectedFam  = null;
   var _debounceTimer = null;
@@ -210,7 +237,7 @@
   // ── Renderiza as caixas ──────────────────────────────────────────────────────
   function renderBoxes(value, targetLen) {
     // Expande só se o usuário digitou MAIS que o esperado (não quando igual)
-    var len = value.length > targetLen ? value.length + 2 : targetLen;
+    var len = value.length > targetLen ? value.length + 1 : targetLen;
     len = Math.min(len, PIN_MAX);
 
     // Só reconstrói o DOM se a quantidade mudou
@@ -270,19 +297,44 @@
       if (rpStatusTxt) rpStatusTxt.textContent = 'Aguardando Part Number…';
       if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype wtc-rp-chiptype--idle'; rpChiptype.textContent = 'Digite o PN acima para identificar o chip'; }
       if (rpBrand)     rpBrand.className      = 'wtc-rp-brand wtc-rp-brand--idle';
+      if (decodeBtn)   decodeBtn.disabled     = true;
+      if (clearBtn)    clearBtn.disabled      = true;
+      if (pinHint)     { pinHint.textContent  = 'Digite o Part Number acima'; pinHint.className = 'pin-actions-hint'; }
       return;
     }
     if (fam) {
       if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--typing';
-      if (rpStatusTxt) rpStatusTxt.textContent = fam.fab + ' · ' + fam.tipo
-        + (fam.pn_length ? ' — ' + q.length + '/' + fam.pn_length + ' chars' : '');
+      var statusTxt = fam.fab + ' · ' + fam.tipo;
+      if (fam.pn_length) {
+        statusTxt += ' — ' + q.length + '/' + fam.pn_length + ' chars';
+      }
+      if (rpStatusTxt) rpStatusTxt.textContent = statusTxt;
       if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype'; rpChiptype.textContent = fam.tipo; }
       if (rpBrand)     { rpBrand.className = 'wtc-rp-brand'; rpBrand.textContent = fam.fab; }
     } else {
       if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--typing';
-      if (rpStatusTxt) rpStatusTxt.textContent = 'Buscando na base de dados…';
+      if (rpStatusTxt) rpStatusTxt.textContent = 'Família não catalogada — clique Decodificar para tentar';
       if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype wtc-rp-chiptype--idle'; rpChiptype.textContent = 'Família não reconhecida'; }
       if (rpBrand)     rpBrand.className      = 'wtc-rp-brand wtc-rp-brand--idle';
+    }
+
+    // Ativa/desativa botões e atualiza hint — mínimo 4 chars para Decodificar
+    if (decodeBtn) decodeBtn.disabled = (q.length < 4);
+    if (clearBtn)  clearBtn.disabled  = (q.length === 0);
+    if (pinHint) {
+      if (q.length > 0 && q.length < 4) {
+        pinHint.textContent = 'Continue digitando (' + q.length + '/4 mín.)';
+        pinHint.className   = 'pin-actions-hint pin-actions-hint--warn';
+      } else if (fam && fam.pn_length && q.length < fam.pn_length) {
+        pinHint.textContent = 'PN incompleto — continue digitando (' + q.length + '/' + fam.pn_length + ')';
+        pinHint.className   = 'pin-actions-hint pin-actions-hint--warn';
+      } else if (q.length >= 4) {
+        pinHint.textContent = 'Clique Decodificar ou pressione Enter';
+        pinHint.className   = 'pin-actions-hint';
+      } else {
+        pinHint.textContent = 'Digite o Part Number acima';
+        pinHint.className   = 'pin-actions-hint';
+      }
     }
   }
 
@@ -334,15 +386,18 @@
       setSpec(0, 'Densidade',  d.dram_density || null);
       setSpec(1, 'Interface',  d.interface    || null);
       setSpec(2, 'Capacidade', d.capacity     || null);
-      setSpec(3, 'Confiança',  CONF_LABEL[d.confidence] || d.confidence || null);
+      setSpec(3, 'Confiança',  CONF_LABEL[effectiveConf(d)] || d.confidence || null);
     }
 
     // Rodapé
     if (rpFooter) {
       rpFooter.style.display = 'flex';
-      if (rpConfLabel)   rpConfLabel.textContent   = CONF_LABEL[d.confidence] || d.confidence || '';
-      if (rpSourceLabel) rpSourceLabel.textContent = d.classification_source ? 'via ' + d.classification_source : '';
-      if (rpSourceSep)   rpSourceSep.style.display = d.classification_source ? '' : 'none';
+      var eConf = effectiveConf(d);
+      if (rpConfLabel)   rpConfLabel.textContent   = CONF_LABEL[eConf] || d.confidence || '';
+      var srcTxt = d.classification_source ? 'via ' + d.classification_source : '';
+      if (d.in_review_queue) srcTxt += (srcTxt ? ' · ' : '') + '⚠ enviado para revisão';
+      if (rpSourceLabel) rpSourceLabel.textContent = srcTxt;
+      if (rpSourceSep)   rpSourceSep.style.display = srcTxt ? '' : 'none';
       if (d.doc_url) {
         if (rpDocLink) { rpDocLink.href = d.doc_url; rpDocLink.style.display = ''; }
         if (rpDocSep)  rpDocSep.style.display = '';
@@ -363,15 +418,43 @@
     setSpec(3, 'Confiança', null);
   }
 
-  // ── Decode via JSON (sem HTMX) ───────────────────────────────────────────────
+  // ── Decode via JSON ──────────────────────────────────────────────────────────
   function callApi(pn) {
     if (!isDjango) return;
     if (pn === _lastApiPn) return;
     _lastApiPn = pn;
+
+    // Feedback visual: spinner inline durante a requisição
+    if (decodeBtn) { decodeBtn.classList.add('pin-btn--loading'); decodeBtn.disabled = true; }
+    if (clearBtn)  clearBtn.disabled = true;
+    if (pinHint)   pinHint.textContent = '';
+
     fetch('/chips/search/?pn=' + encodeURIComponent(pn))
       .then(function(r) { return r.json(); })
-      .then(function(d) { if (d.known) fillResult(d); })
-      .catch(function() { /* silent fail */ });
+      .then(function(d) {
+        if (d.known) {
+          fillResult(d);
+        } else {
+          // PN não reconhecido — mostra feedback inline no status
+          if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--warn';
+          if (rpStatusTxt) rpStatusTxt.textContent = '⚠ PN não reconhecido — verifique a leitura';
+        }
+      })
+      .catch(function() {
+        if (rpStatusTxt) rpStatusTxt.textContent = 'Erro de conexão — tente novamente';
+      })
+      .finally(function() {
+        var currentQ = normalize(input ? input.value : '');
+        if (decodeBtn) { decodeBtn.classList.remove('pin-btn--loading'); decodeBtn.disabled = (currentQ.length < 4); }
+        if (clearBtn)  clearBtn.disabled = (currentQ.length === 0);
+      });
+  }
+
+  // ── Dispara decodificação para o valor atual do input ────────────────────────
+  function decode() {
+    var q = normalize(input ? input.value : '');
+    if (q.length < 1) return;
+    callApi(q);
   }
 
   // ── Render principal ─────────────────────────────────────────────────────────
@@ -402,23 +485,15 @@
       targetLen = fam.pn_length;
     } else if (q.length >= PIN_DEFAULT) {
       // Sem pn_length definido: expande conforme o usuário digita
-      targetLen = q.length + 2;
+      targetLen = q.length + 1;
     }
     renderBoxes(q, targetLen);
 
     // ── Atualiza estado vazio com info da família ────────────────────────────
     updateEmptyState(q, fam);
 
-    // ── Trigger do decode via HTMX ───────────────────────────────────────────
+    // Sem auto-fire — o resultado só aparece ao clicar "Decodificar" ou Enter.
     clearTimeout(_debounceTimer);
-
-    if (fam && fam.pn_length && q.length >= fam.pn_length) {
-      // PN completo para família conhecida → dispara imediatamente
-      callApi(q);
-    } else if (q.length >= 4) {
-      // Família sem pn_length definido → debounce de 500ms
-      _debounceTimer = setTimeout(function() { callApi(q); }, 500);
-    }
   }
 
   // ── Inicialização: caixas vazias ─────────────────────────────────────────────
@@ -442,8 +517,7 @@
       if (e.key === 'Enter') {
         e.preventDefault();
         clearTimeout(_debounceTimer);
-        var q = normalize(this.value);
-        if (isDjango && q.length >= 4) callApi(q);
+        decode();
       }
       if (e.key === 'Escape') {
         this.value = '';
@@ -456,13 +530,32 @@
     setTimeout(function() { input.focus(); }, 100);
   }
 
+  // ── Form submit — botão "Decodificar" ────────────────────────────────────────
+  if (pinSearch) {
+    pinSearch.addEventListener('submit', function(e) {
+      e.preventDefault();
+      clearTimeout(_debounceTimer);
+      decode();
+    });
+  }
+
+  // ── Botão "Limpar" ───────────────────────────────────────────────────────────
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function() {
+      if (input) { input.value = ''; }
+      render('');
+      if (input) input.focus();
+    });
+  }
+
   // ── API global para sugestões fuzzy ─────────────────────────────────────────
   window.triggerSearch = function(pn) {
     if (!input) return;
     var clean = normalize(pn);
     input.value = clean;
     render(clean);
-    if (isDjango && clean.length >= 4) callApi(clean);
+    // Fuzzy suggestion: PN já é completo (vem do banco), dispara imediatamente
+    if (isDjango && clean.length >= 1) callApi(clean);
   };
 
   // ── Clipboard helper: tenta navigator.clipboard, cai em execCommand ─────────
@@ -565,6 +658,7 @@
           ? (d.gemini_found ? 'encontrado' : 'não encontrado')
           : 'não executado';
         lines.push('Gemini:        ' + geminiStatus);
+        lines.push('in_review_q.:  ' + !!d.in_review_queue);
         lines.push('doc_url:       ' + (d.doc_url    || '—'));
         lines.push('source_url:    ' + (d.source_url || '—'));
 

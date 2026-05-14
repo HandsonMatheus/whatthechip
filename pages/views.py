@@ -48,7 +48,7 @@ def _prefix_data_from_db():
             'prefix':    f.prefix,
             'fab':       f.brand.name,
             'tipo':      f"{f.chip_type}{' ' + f.subtype if f.subtype else ''}".strip(),
-            'pn_length': f.pn_length,   # None → UI usa debounce fallback
+            'pn_length': f.pn_length,   # None → UI requer Enter explícito para classificar
         }
         for f in families
     ]

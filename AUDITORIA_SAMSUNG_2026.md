@@ -360,7 +360,7 @@ Posição pn[4:6], 2 chars. Usado por K3KL, K3LK, K3L.
 | KMQ | LPDDR3 | eMMC 5.1 | ✅ Completo (maior volume) |
 | KMG | LPDDR3 | eMMC 5.1 | ✅ Corrigido 2026-05-09 (era incorretamente uMCP) |
 | KMR | LPDDR4/4X | eMMC 5.1 | ✅ Completo |
-| KMS | LPDDR4X | eMMC 5.1 | ✅ Completo |
+| KMS | LPDDR1 | eMMC | ⚠ Corrigido 2026-05-13 (era incorretamente LPDDR4X — família legado ~2012-2013, ex: Galaxy Centura) |
 | KM4 | LPDDR4 | eMMC 5.1 | ✅ Completo |
 | KMD | LPDDR4X | eMMC 5.1 | ✅ Completo |
 | KM (fallback) | variável | eMMC/UFS | ✅ Fallback robusto |

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>WhatTheChip? — Painel de Estoque</title>
+
+  <!-- Tesseract.js para OCR -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
+  <!-- SheetJS para exportar Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3350;
+      --accent: #4f8ef7;
+      --accent2: #6ee7b7;
+      --danger: #f87171;
+      --text: #e8eaf6;
+      --muted: #8890b5;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+    }
+
+    header .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    header .logo span { color: var(--accent); }
+
+    header .badge {
+      margin-left: auto;
+      font-size: 0.72rem;
+      background: var(--accent);
+      color: #fff;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    h2 {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Câmera ── */
+    .camera-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto 12px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #000;
+      aspect-ratio: 4/3;
+    }
+
+    #video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .scan-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .scan-box {
+      width: 60%;
+      height: 30%;
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      box-shadow: 0 0 0 2000px rgba(0,0,0,0.35);
+      position: relative;
+    }
+
+    .scan-box::before, .scan-box::after {
+      content: '';
+      position: absolute;
+      left: -2px; top: -2px;
+      width: 18px; height: 18px;
+      border-top: 3px solid var(--accent2);
+      border-left: 3px solid var(--accent2);
+      border-radius: 2px 0 0 0;
+    }
+
+    .scan-box::after {
+      left: auto; top: auto;
+      right: -2px; bottom: -2px;
+      border-top: none; border-left: none;
+      border-bottom: 3px solid var(--accent2);
+      border-right: 3px solid var(--accent2);
+      border-radius: 0 0 2px 0;
+    }
+
+    canvas { display: none; }
+
+    .cam-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    button:active { transform: scale(0.97); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-success { background: #22c55e; color: #fff; }
+    .btn-danger  { background: var(--danger); color: #fff; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-excel  { background: #1d6f42; color: #fff; }
+
+    /* ── Status / OCR progress ── */
+    #status {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      min-height: 20px;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      margin-top: 6px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.2s;
+    }
+
+    /* ── Formulário de adição ── */
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input[type="text"], input[type="number"] {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 1rem;
+      padding: 10px 14px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus { border-color: var(--accent); }
+
+    input[type="number"] { max-width: 110px; }
+
+    /* ── Tabela de estoque ── */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .count-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead th {
+      background: var(--surface2);
+      padding: 10px 14px;
+      text-align: left;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface2); }
+
+    td {
+      padding: 10px 14px;
+      vertical-align: middle;
+    }
+
+    td .chip-code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 0.5px;
+    }
+
+    td .qty-badge {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-weight: 700;
+    }
+
+    td .time {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .del-btn {
+      background: transparent;
+      color: var(--danger);
+      border: none;
+      font-size: 1.1rem;
+      padding: 4px 8px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .del-btn:hover { background: rgba(248,113,113,0.12); }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+    /* ── Imagem capturada (miniatura) ── */
+    #preview-img {
+      display: none;
+      width: 100%;
+      max-width: 540px;
+      margin: 10px auto 0;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+    }
+
+    /* ── Responsividade mobile ── */
+    @media (max-width: 480px) {
+      body { padding: 10px; }
+      .form-row { flex-direction: column; }
+      input[type="number"] { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">What<span>The</span>Chip?</div>
+  <div class="badge">Painel do Usuário</div>
+</header>
+
+<!-- CÂMERA -->
+<div class="camera-card">
+  <h2>📷 Escanear Chip</h2>
+
+  <div class="video-wrapper">
+    <video id="video" autoplay playsinline muted></video>
+    <div class="scan-overlay"><div class="scan-box"></div></div>
+  </div>
+
+  <img id="preview-img" alt="Captura" />
+  <canvas id="canvas"></canvas>
+
+  <div class="cam-buttons" style="margin-top:10px;">
+    <button class="btn-outline" id="btn-cam" onclick="startCamera()">🎥 Ativar câmera</button>
+    <button class="btn-primary" id="btn-capture" onclick="capture()" disabled>📸 Capturar e ler</button>
+    <button class="btn-outline" id="btn-switch" onclick="switchCamera()" disabled title="Alternar câmera">🔄</button>
+  </div>
+
+  <div id="status">Câmera desativada</div>
+  <div class="progress-bar" id="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<!-- FORMULÁRIO -->
+<div class="form-card">
+  <h2>✏️ Adicionar ao Estoque</h2>
+  <div class="form-row">
+    <div class="form-group" style="flex:3;">
+      <label for="chip-code">Código do Chip</label>
+      <input type="text" id="chip-code" placeholder="Ex: TL071CP, LM358N, 7805…" />
+    </div>
+    <div class="form-group" style="flex:1;">
+      <label for="chip-qty">Qtd.</label>
+      <input type="number" id="chip-qty" value="1" min="1" max="9999" />
+    </div>
+    <div>
+      <button class="btn-success" onclick="addItem()" style="white-space:nowrap;">＋ Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TABELA DE ESTOQUE -->
+<div class="table-card">
+  <div class="table-header">
+    <div>
+      <h2 style="margin:0;">📦 Estoque</h2>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <span class="count-badge" id="count-badge">0 itens</span>
+      <button class="btn-excel" onclick="exportExcel()">⬇️ Exportar Excel</button>
+      <button class="btn-outline" onclick="exportCSV()">⬇️ CSV</button>
+      <button class="btn-danger" onclick="clearAll()" style="padding:8px 14px;font-size:0.82rem;">🗑️ Limpar</button>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Código do Chip</th>
+          <th>Quantidade</th>
+          <th>Adicionado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="stock-body">
+        <tr>
+          <td colspan="5">
+            <div class="empty-state">
+              <div class="icon">🔌</div>
+              <div>Nenhum chip adicionado ainda.<br>Use a câmera ou digite o código acima.</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // ── Estado ──────────────────────────────────────────────────
+  let stockItems = JSON.parse(localStorage.getItem('wtc_stock') || '[]');
+  let stream = null;
+  let facingMode = 'environment'; // câmera traseira por padrão
+  let worker = null;
+
+  // ── Inicializa Tesseract ────────────────────────────────────
+  async function initOCR() {
+    if (worker) return;
+    setStatus('Carregando motor OCR…');
+    worker = await Tesseract.createWorker('eng', 1, {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          const pct = Math.round(m.progress * 100);
+          document.getElementById('progress-fill').style.width = pct + '%';
+        }
+      }
+    });
+    await worker.setParameters({
+      tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz-/. ',
+    });
+    setStatus('OCR pronto ✓');
+  }
+
+  // ── Câmera ──────────────────────────────────────────────────
+  async function startCamera() {
+    try {
+      setStatus('Acessando câmera…');
+      if (stream) stream.getTracks().forEach(t => t.stop());
+
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      });
+
+      const video = document.getElementById('video');
+      video.srcObject = stream;
+      video.style.display = 'block';
+
+      document.getElementById('btn-capture').disabled = false;
+      document.getElementById('btn-switch').disabled = false;
+      setStatus('Aponte para o chip e capture');
+      await initOCR();
+    } catch (e) {
+      setStatus('❌ Câmera não acessível: ' + e.message);
+    }
+  }
+
+  async function switchCamera() {
+    facingMode = facingMode === 'environment' ? 'user' : 'environment';
+    await startCamera();
+  }
+
+  // ── Captura & OCR ───────────────────────────────────────────
+  async function capture() {
+    if (!stream) return;
+
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+
+    // Pré-processamento: aumenta contraste
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    processImage(imageData);
+    ctx.putImageData(imageData, 0, 0);
+
+    // Mostra miniatura
+    const img = document.getElementById('preview-img');
+    img.src = canvas.toDataURL('image/jpeg', 0.9);
+    img.style.display = 'block';
+
+    // OCR
+    setStatus('Lendo código…');
+    document.getElementById('progress-bar').style.display = 'block';
+    document.getElementById('progress-fill').style.width = '0%';
+    document.getElementById('btn-capture').disabled = true;
+
+    try {
+      const { data: { text } } = await worker.recognize(canvas);
+      const code = cleanOCR(text);
+
+      document.getElementById('chip-code').value = code;
+      document.getElementById('chip-qty').value = 1;
+      document.getElementById('chip-code').focus();
+
+      setStatus(code
+        ? `✅ Código lido: ${code} — confirme e clique em Adicionar`
+        : '⚠️ Não foi possível ler. Edite o código manualmente.');
+    } catch(e) {
+      setStatus('❌ Erro no OCR: ' + e.message);
+    }
+
+    document.getElementById('progress-bar').style.display = 'none';
+    document.getElementById('btn-capture').disabled = false;
+  }
+
+  // Pré-processamento: converte para tons de cinza + aumenta contraste
+  function processImage(imageData) {
+    const d = imageData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const gray = 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
+      const c = Math.min(255, Math.max(0, (gray - 128) * 1.6 + 128));
+      d[i] = d[i+1] = d[i+2] = c;
+    }
+  }
+
+  // Limpa e normaliza o texto OCR para código de chip
+  function cleanOCR(text) {
+    return text
+      .replace(/\n/g, ' ')
+      .replace(/[^A-Za-z0-9\-\/\.]/g, ' ')
+      .split(/\s+/)
+      .filter(t => t.length >= 3 && t.length <= 20)
+      .join(' ')
+      .trim()
+      .toUpperCase()
+      .substring(0, 40);
+  }
+
+  function setStatus(msg) {
+    document.getElementById('status').textContent = msg;
+  }
+
+  // ── Estoque ─────────────────────────────────────────────────
+  function addItem() {
+    const code = document.getElementById('chip-code').value.trim().toUpperCase();
+    const qty  = parseInt(document.getElementById('chip-qty').value) || 1;
+
+    if (!code) {
+      alert('Por favor, insira o código do chip.');
+      document.getElementById('chip-code').focus();
+      return;
+    }
+
+    // Se já existe, soma a quantidade
+    const existing = stockItems.find(i => i.code === code);
+    if (existing) {
+      existing.qty += qty;
+    } else {
+      stockItems.push({
+        code,
+        qty,
+        addedAt: new Date().toLocaleString('pt-BR')
+      });
+    }
+
+    saveAndRender();
+    document.getElementById('chip-code').value = '';
+    document.getElementById('chip-qty').value = 1;
+    document.getElementById('chip-code').focus();
+
+    // Feedback visual
+    setStatus(`✅ "${code}" adicionado ao estoque (total: ${existing ? existing.qty : qty} un.)`);
+  }
+
+  function removeItem(index) {
+    stockItems.splice(index, 1);
+    saveAndRender();
+  }
+
+  function clearAll() {
+    if (stockItems.length === 0) return;
+    if (!confirm('Limpar todo o estoque?')) return;
+    stockItems = [];
+    saveAndRender();
+  }
+
+  function saveAndRender() {
+    localStorage.setItem('wtc_stock', JSON.stringify(stockItems));
+    renderTable();
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('stock-body');
+    const badge = document.getElementById('count-badge');
+    const total = stockItems.reduce((s, i) => s + i.qty, 0);
+
+    badge.textContent = `${stockItems.length} tipo${stockItems.length !== 1 ? 's' : ''} · ${total} un.`;
+
+    if (stockItems.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5">
+        <div class="empty-state">
+          <div class="icon">🔌</div>
+          <div>Nenhum chip adicionado ainda.<br>Use a câmera ou digite o código acima.</div>
+        </div>
+      </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = stockItems.map((item, i) => `
+      <tr>
+        <td style="color:var(--muted);font-size:0.8rem;">${i + 1}</td>
+        <td><span class="chip-code">${item.code}</span></td>
+        <td><span class="qty-badge">${item.qty}</span></td>
+        <td><span class="time">${item.addedAt}</span></td>
+        <td><button class="del-btn" onclick="removeItem(${i})" title="Remover">✕</button></td>
+      </tr>
+    `).join('');
+  }
+
+  // ── Exportação ──────────────────────────────────────────────
+  function exportExcel() {
+    if (stockItems.length === 0) { alert('Estoque vazio!'); return; }
+
+    const ws_data = [
+      ['Código do Chip', 'Quantidade', 'Adicionado em'],
+      ...stockItems.map(i => [i.code, i.qty, i.addedAt])
+    ];
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+    // Larguras de coluna
+    ws['!cols'] = [{ wch: 22 }, { wch: 12 }, { wch: 22 }];
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Estoque WhatTheChip');
+    XLSX.writeFile(wb, `estoque_wtc_${datestamp()}.xlsx`);
+  }
+
+  function exportCSV() {
+    if (stockItems.length === 0) { alert('Estoque vazio!'); return; }
+
+    const rows = [
+      'Código do Chip,Quantidade,Adicionado em',
+      ...stockItems.map(i => `"${i.code}",${i.qty},"${i.addedAt}"`)
+    ];
+
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `estoque_wtc_${datestamp()}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function datestamp() {
+    return new Date().toISOString().slice(0,10);
+  }
+
+  // ── Enter no campo de código ─────────────────────────────────
+  document.getElementById('chip-code').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addItem();
+  });
+
+  // ── Init ─────────────────────────────────────────────────────
+  renderTable();
+</script>
+
+</body>
+</html>

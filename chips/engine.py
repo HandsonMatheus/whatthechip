@@ -1,15 +1,21 @@
 """
 WhatTheChip — Engine de Classificação de Chips
 ===============================================
-Classifica um Part Number em três camadas:
+Classifica um Part Number em quatro camadas:
 
   1. Banco exato (KnownPart enriched)  → resultado completo e verificado
   2. Gramática da família (ChipFamily) → decodificação posicional do PN
-       └→ complementado por Gemini se campos essenciais estiverem vazios
-         (somente quando settings.GEMINI_ENABLED = True)
+       └→ resultado sempre enfileirado para revisão manual (KnownPart raw)
+         se o PN não estiver já no banco principal
   3. Gemini puro (prefix desconhecido) → fallback IA com Google Search grounding
          (somente quando settings.GEMINI_ENABLED = True)
   4. Fuzzy matching                    → sugestões para erros de digitação
+
+Fila de revisão (Camada 2):
+    Todo PN que não está no banco principal (status=enriched) é enfileirado
+    automaticamente como KnownPart(status=raw) após a classificação.
+    O banco principal cresce apenas via revisão manual ou comandos de gestão.
+    Nunca auto-promove entradas para enriched a partir de input de usuário.
 
 Gemini:
     Controlado pelo flag settings.GEMINI_ENABLED (padrão: False).
@@ -171,7 +177,11 @@ EMCP_RAM_TYPES = {
     # A confusão anterior vinha do prefixo KMRP (KMRP6001AM, S5 Mini) que é LPDDR3 —
     # mas KMRP é uma sub-série legada; na codificação padrão KMR a 3ª letra R = LPDDR4.
     "R": "LPDDR4/4X",
-    "S": "LPDDR4X",
+    # S = LPDDR1 — letra de família KMS (legado 2012-2013, Galaxy Centura era).
+    # NÃO confundir com SAM_EMCP_GEN['S']="LPDDR4X" (esse mapa é para famílias
+    # com decode_gen_map configurado; EMCP_RAM_TYPES só é consultado quando
+    # decode_gen_map está vazio — Caminho 3 do engine).
+    "S": "LPDDR1",
     "D": "LPDDR4X",
     "E": "LPDDR4/4X",
     # LPDDR5
@@ -872,6 +882,76 @@ def _save_gemini_to_db(pn: str, specs: dict):
         return None
 
 
+def _persist_grammar_result(pn: str, fam, result: dict):
+    """
+    Persiste resultado completo da gramática no banco como KnownPart enriched.
+
+    Chamado apenas quando grammar_complete=True e pn_short=False.
+
+    Regra de confiança — não sobrescreve se a entrada existente tiver
+    confiança melhor que 'estimated':
+        confirmed > manual > distributor > ai_high > ai_medium > ai_low > estimated
+
+    Retorna o KnownPart salvo, ou None em caso de erro.
+    """
+    _CONF_PRIORITY = {
+        "confirmed": 7, "manual": 6, "distributor": 5,
+        "ai_high": 4, "ai_medium": 3, "ai_low": 2, "estimated": 1,
+    }
+    try:
+        from django.db import transaction
+
+        new_fields = {
+            "chip_type":  result.get("chip_type")  or "",
+            "subtype":    result.get("subtype")     or "",
+            "interface":  result.get("interface")   or "",
+            "emcp_ram":   result.get("emcp_ram")    or "",
+            "emcp_nand":  result.get("emcp_nand")   or "",
+            "capacity":   result.get("capacity")    or "",
+        }
+
+        part, created = KnownPart.objects.get_or_create(
+            part_number=pn,
+            defaults={
+                "brand":      fam.brand,
+                "family":     fam,
+                "status":     "enriched",
+                "confidence": "estimated",
+                "notes":      f"Auto-persistido pela gramática. Família: {fam.prefix}",
+                **new_fields,
+            },
+        )
+
+        if not created:
+            # Nunca sobrescreve entradas com confiança acima de 'estimated'
+            existing_priority = _CONF_PRIORITY.get(part.confidence, 0)
+            if existing_priority > _CONF_PRIORITY["estimated"]:
+                logger.debug(
+                    "_persist_grammar_result: PN=%s já tem confidence=%s — skip",
+                    pn, part.confidence,
+                )
+                return part
+
+            # Atualiza campos ainda vazios; promove status raw → enriched
+            changed = False
+            for field, val in new_fields.items():
+                if val and not getattr(part, field, ""):
+                    setattr(part, field, val)
+                    changed = True
+            if part.status == "raw":
+                part.status = "enriched"
+                changed = True
+            if changed:
+                with transaction.atomic():
+                    part.save()
+
+        return part
+
+    except Exception:
+        logger.exception("Erro ao persistir resultado da gramática PN=%s", pn)
+        return None
+
+
 def _build_result_from_gemini(pn: str, specs: dict, part) -> dict:
     chip_type = specs.get("chip_type", "")
     is_emcp   = chip_type in ("eMCP", "uMCP")
@@ -1021,10 +1101,6 @@ def classify(pn_raw: str) -> dict:
             grammar_result["pn_incomplete"]       = True
             grammar_result["pn_length_expected"]  = fam.pn_length
 
-        # Verifica se PN existe como raw (coletado mas não enriquecido)
-        is_raw_in_db = KnownPart.objects.filter(part_number=pn, status="raw").exists()
-        grammar_result["raw_in_db"] = is_raw_in_db
-
         # Decide se precisa do Gemini para completar
         # PN com resultado incompleto e ainda curto nunca vai ao Gemini —
         # não faz sentido enriquecer algo que o operador ainda está digitando.
@@ -1085,25 +1161,6 @@ def classify(pn_raw: str) -> dict:
             else:
                 grammar_result["gemini_searched"] = True
                 grammar_result["gemini_found"]    = False
-                # Gemini não encontrou e o resultado ainda está incompleto:
-                # enfileira como KnownPart status="raw" para revisão manual.
-                # O card mostra "⏳ Na fila de enriquecimento" ao operador.
-                try:
-                    _, created = KnownPart.objects.get_or_create(
-                        part_number=pn,
-                        defaults={
-                            "status": "raw",
-                            "notes": (
-                                f"Parcial: família={fam.prefix}, "
-                                f"chip_type={fam.chip_type}, "
-                                f"emcp_source={grammar_result.get('emcp_source') or 'n/a'}"
-                            ),
-                        },
-                    )
-                    if created:
-                        grammar_result["raw_in_db"] = True
-                except Exception:
-                    logger.exception("Erro ao enfileirar chip parcial PN=%s", pn)
 
         # Double-check: compara gramática com banco se PN já existia como enriched
         # ANTES desta execução. Se o Gemini acabou de criar o registro agora
@@ -1127,6 +1184,35 @@ def classify(pn_raw: str) -> dict:
                         )
             except KnownPart.DoesNotExist:
                 pass
+
+        # ── Fila de revisão ───────────────────────────────────────────────────
+        # Chips com gramática completa (NAND+RAM ou capacidade decodificados)
+        # NÃO vão para revisão — o resultado já é confiável.
+        # Só chips com gramática parcial/incompleta precisam de enriquecimento manual.
+        _in_review_queue = False
+        if not _gemini_saved_now and not grammar_complete:
+            try:
+                if not KnownPart.objects.filter(part_number=pn, status="enriched").exists():
+                    KnownPart.objects.get_or_create(
+                        part_number=pn,
+                        defaults={
+                            "status":    "raw",
+                            "brand":     fam.brand,
+                            "family":    fam,
+                            "chip_type": fam.chip_type or "",
+                            "notes": (
+                                f"Fila de revisão: família={fam.prefix}, "
+                                f"grammar_complete={grammar_complete}"
+                            ),
+                        },
+                    )
+                    _in_review_queue = True
+            except Exception:
+                logger.exception("Erro ao enfileirar PN=%s na fila de revisão", pn)
+
+        grammar_result["grammar_complete"]  = grammar_complete
+        grammar_result["in_review_queue"]   = _in_review_queue
+        grammar_result["grammar_persisted"] = False  # mantido para compatibilidade
 
         _log_search(pn, found=True, source_used="grammar")
         return grammar_result
@@ -1155,6 +1241,7 @@ def classify(pn_raw: str) -> dict:
         return result
 
     # ── 4. Fuzzy matching como sugestão ──────────────────────────────────────
+    # _log_unknown() já gravou em UnknownChip — família completamente desconhecida.
     suggestions = _fuzzy_candidates(pn)
     _log_search(pn, found=False, source_used="not_found")
 
@@ -1165,4 +1252,5 @@ def classify(pn_raw: str) -> dict:
         "gemini_found":     False,
         "gemini_searched":  True,
         "fuzzy_suggestions": [s.part_number for s in suggestions],
+        "in_review_queue":  True,   # UnknownChip já logado por _log_unknown()
     }

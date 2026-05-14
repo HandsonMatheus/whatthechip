@@ -1,0 +1,163 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — WhatTheChip?</title>
+  <script>
+    (function() {
+      if (localStorage.getItem('wtc_theme') === 'dark')
+        document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <style>
+    .login-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-2);
+      padding: var(--s5);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 380px;
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      padding: var(--s8) var(--s7);
+    }
+
+    .login-brand {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--interactive);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: var(--s6);
+    }
+
+    .login-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--s6);
+      letter-spacing: -0.01em;
+    }
+
+    .login-field {
+      margin-bottom: var(--s5);
+    }
+
+    .login-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: var(--s2);
+    }
+
+    .login-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 var(--s4);
+      font-size: 14px;
+      font-family: var(--font);
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--r-sm);
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .login-input:focus {
+      border-color: var(--interactive);
+      box-shadow: inset 0 0 0 1px var(--interactive);
+    }
+
+    .login-error {
+      padding: var(--s3) var(--s4);
+      background: var(--error-bg);
+      border: 1px solid var(--error-bd);
+      border-left: 3px solid var(--error);
+      color: var(--error);
+      font-size: 13px;
+      border-radius: var(--r-sm);
+      margin-bottom: var(--s5);
+    }
+
+    .login-btn {
+      display: block;
+      width: 100%;
+      height: 44px;
+      background: var(--interactive);
+      color: var(--text-on-color);
+      border: none;
+      border-radius: var(--r-sm);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      margin-top: var(--s6);
+      transition: background .15s;
+    }
+
+    .login-btn:hover { background: var(--interactive-hover); }
+    .login-btn:active { background: var(--interactive-active); }
+
+    .login-footer {
+      margin-top: var(--s6);
+      font-size: 11px;
+      color: var(--text-helper);
+      text-align: center;
+    }
+
+    [data-theme="dark"] .login-card { background: #1c1c1c; border-color: #3d3d3d; }
+    [data-theme="dark"] .login-input { background: #2d2d2d; border-color: #525252; color: #f4f4f4; }
+  </style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+
+    <div class="login-brand">WhatTheChip?</div>
+    <h1 class="login-title">Acesso ao Painel</h1>
+
+    {% if form.errors %}
+    <div class="login-error">Usuário ou senha incorretos. Tente novamente.</div>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+
+      <div class="login-field">
+        <label class="login-label" for="id_username">Usuário</label>
+        <input class="login-input" type="text" name="username"
+               id="id_username" autocomplete="username" autofocus />
+      </div>
+
+      <div class="login-field">
+        <label class="login-label" for="id_password">Senha</label>
+        <input class="login-input" type="password" name="password"
+               id="id_password" autocomplete="current-password" />
+      </div>
+
+      <button class="login-btn" type="submit">Entrar</button>
+    </form>
+
+    <p class="login-footer">Acesso restrito a operadores cadastrados.</p>
+  </div>
+</div>
+</body>
+</html>

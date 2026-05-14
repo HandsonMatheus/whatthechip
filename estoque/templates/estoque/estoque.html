@@ -1,0 +1,1210 @@
+{% extends "estoque/base_estoque.html" %}
+{% load static %}
+
+{% block title %}Estoque — WhatTheChip?{% endblock %}
+{% block nav_estoque %} pnl-nav-link--active{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   PAINEL DE ESTOQUE — estilos específicos
+   Design System WTC v2.0 · IBM Carbon White
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Cabeçalho da página ────────────────────────────────────── */
+.est-page-header {
+  margin-bottom: var(--s5);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--s4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+}
+
+.est-page-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.est-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  padding: var(--s5);
+  margin-bottom: var(--s5);
+}
+
+/* Reduz padding do painel principal para compactar */
+.pnl-main { padding: var(--s5) var(--s6) var(--s8) !important; }
+
+.est-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-helper);
+  margin-bottom: var(--s5);
+}
+
+/* ── Labels e inputs ────────────────────────────────────────── */
+.est-field { margin-bottom: 0; }
+
+/* Wrapper coluna: input + botões com mesma largura */
+.est-pn-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.est-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: var(--s2);
+}
+
+/* Carbon: input usa surface-2 (#f4f4f4) como fundo */
+.est-input {
+  display: block;
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--s4);
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--text-primary);
+  background: var(--surface-2);
+  border: none;
+  border-bottom: 1px solid var(--border-default);
+  outline: none;
+  transition: border-color .12s, box-shadow .12s;
+  letter-spacing: 0.16px;
+}
+
+.est-input:focus {
+  background: var(--surface);
+  border-bottom: 2px solid var(--interactive);
+  box-shadow: none;
+}
+
+/* PN: sempre monoespacado, maiúsculo */
+.est-input--pn {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  height: 48px;
+}
+
+.est-input--qty {
+  width: 80px;
+  text-align: center;
+}
+
+.est-helper {
+  font-size: 12px;
+  color: var(--text-helper);
+  margin-top: var(--s2);
+  min-height: 18px;
+  letter-spacing: 0.16px;
+}
+
+/* ── Linha de entrada ───────────────────────────────────────── */
+.est-input-row {
+  display: flex;
+  gap: var(--s4);
+  align-items: flex-end;
+}
+
+.est-input-row .est-field { flex: 1; }
+
+/* ── Botões (Carbon pattern) ────────────────────────────────── */
+.est-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  height: 40px;
+  padding: 0 var(--s5);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font);
+  letter-spacing: 0.16px;
+  border: none;
+  border-radius: var(--r-sm);  /* 2px — Carbon */
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background .12s;
+}
+
+.est-btn--lg { height: 48px; }
+
+.est-btn--primary {
+  background: var(--interactive);
+  color: var(--text-on-color);
+}
+.est-btn--primary:hover  { background: var(--interactive-hover); }
+.est-btn--primary:active { background: var(--interactive-active); }
+
+.est-btn--secondary {
+  background: var(--surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+.est-btn--secondary:hover { background: var(--surface-3); }
+
+.est-btn--ghost {
+  background: transparent;
+  color: var(--interactive);
+  border: 1px solid transparent;
+}
+.est-btn--ghost:hover { background: var(--info-bg); }
+
+.est-btn--warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+  border: 1px solid var(--warning-bd);
+}
+
+.est-btn--debug {
+  background: transparent;
+  color: var(--text-helper);
+  border: 1px solid var(--border-subtle);
+  margin-left: auto;
+  font-size: 12px;
+}
+.est-btn--debug:hover { background: var(--surface-2); color: var(--text-primary); }
+
+/* Câmera removida — funcionalidade desativada */
+
+/* ── Card de confirmação ─────────────────────────────────────── */
+#confirm-area { margin-top: var(--s5); }
+
+.est-confirm {
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--border-subtle);
+  padding: var(--s5);
+  background: var(--surface);
+  /* gradiente sutil conforme DS — card de resultado */
+  background: linear-gradient(135deg, #edf5ff 0%, var(--surface) 100%);
+}
+
+.est-confirm--ok      { border-left-color: var(--success); }
+.est-confirm--unknown { border-left-color: var(--warning); background: linear-gradient(135deg, var(--warning-bg) 0%, var(--surface) 100%); }
+.est-confirm--done    { border-left-color: var(--interactive); }
+
+.est-confirm-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s4);
+}
+
+.est-confirm-status {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.est-confirm-status--ok      { color: var(--success); }
+.est-confirm-status--unknown { color: var(--warning); }
+
+.est-confirm-pn {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--interactive);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+/* Grade de specs — Carbon inline data grid */
+.est-specs-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: var(--s5);
+}
+
+.est-spec {
+  background: var(--surface);
+  padding: var(--s3) var(--s4);
+  min-width: 120px;
+  flex: 1;
+}
+
+.est-spec-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--interactive);
+  font-family: var(--font-mono);
+  margin-bottom: 2px;
+}
+
+.est-spec-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.16px;
+  white-space: normal;
+  word-break: break-word;
+  display: block;
+}
+
+.est-confirm-hint {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: var(--s5);
+  line-height: 1.6;
+  letter-spacing: 0.16px;
+}
+
+.est-confirm-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+
+.est-qty-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+/* ── Seção da tabela ────────────────────────────────────────── */
+.est-table-section { margin-top: var(--s5); }
+
+.est-table-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s4);
+  margin-bottom: var(--s4);
+  flex-wrap: wrap;
+}
+
+.est-table-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.est-search-row {
+  display: flex;
+  gap: var(--s3);
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.est-search-row .est-input { max-width: 280px; }
+
+.est-select {
+  height: 40px;
+  padding: 0 var(--s4);
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--text-primary);
+  background: var(--surface-2);
+  border: none;
+  border-bottom: 1px solid var(--border-default);
+  outline: none;
+  cursor: pointer;
+  letter-spacing: 0.16px;
+}
+.est-select:focus { border-bottom: 2px solid var(--interactive); }
+
+/* ── Tabela ──────────────────────────────────────────────────── */
+.est-table-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: var(--s3);
+  min-height: 20px;
+}
+
+.est-count {
+  font-size: 12px;
+  color: var(--text-helper);
+  letter-spacing: 0.16px;
+}
+
+.est-table-wrap { overflow-x: auto; }
+
+/* Override específico para evitar conflito com estilos globais de <table> */
+table.est-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-family: var(--font);
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  table-layout: auto;
+}
+
+table.est-table th {
+  background: var(--surface-2) !important;           /* override do gradiente global */
+  border: none !important;
+  border-bottom: 2px solid var(--interactive) !important;
+  padding: var(--s3) var(--s5);
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary) !important;
+  white-space: nowrap;
+}
+
+table.est-table td {
+  border: none !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  padding: var(--s3) var(--s5);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+table.est-table tbody tr:last-child td { border-bottom: none !important; }
+
+table.est-table tbody tr:hover td {
+  background: var(--surface-2) !important;
+}
+
+/* PN — nunca truncado, sempre legível */
+.est-pn {
+  font-family: var(--font-mono) !important;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--interactive);
+  letter-spacing: 0.04em;
+  white-space: nowrap !important;  /* garante que o PN completo apareça */
+  display: inline !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+.est-type-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--tag-blue-bg);
+  color: var(--tag-blue-fg);
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.est-qty-badge {
+  display: inline-block;
+  min-width: 40px;
+  text-align: center;
+  padding: 2px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.est-muted { color: var(--text-helper); }
+
+.est-td-qty     { text-align: center; white-space: nowrap; }
+.est-td-action  { width: 40px; text-align: center; }
+table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
+
+/* .est-del-btn definido acima na seção "Botão lixeira" */
+
+/* ── Botão lixeira (Carbon danger icon-only) ─────────────────── */
+.est-del-btn {
+  background: #da1e28;          /* Carbon red-60 */
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 0;             /* Carbon flat */
+  transition: background .1s;
+}
+.est-del-btn:hover  { background: #a2191f; } /* red-70 */
+.est-del-btn:active { background: #750e13; } /* red-80 */
+
+/* ── Modal Carbon (medium-impact removal) ────────────────────── */
+.est-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.50);
+  z-index: 900;
+  display: none;               /* aberto via JS: display:flex */
+  align-items: center;
+  justify-content: center;
+  padding: var(--s5);
+}
+
+.est-modal {
+  background: var(--surface);
+  width: 100%;
+  max-width: 480px;
+  border-radius: 0;             /* Carbon flat */
+  box-shadow: 0 16px 48px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header — fundo surface-2, igual ao Carbon */
+.est-modal-header {
+  background: var(--surface-2);
+  padding: var(--s5) var(--s5) var(--s5) var(--s6);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s4);
+}
+
+.est-modal-header-text { flex: 1; min-width: 0; }
+
+.est-modal-label {
+  font-size: 12px;
+  color: var(--text-helper);
+  margin-bottom: var(--s2);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.est-modal-title {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+}
+
+.est-modal-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 0;
+  transition: background .1s;
+}
+.est-modal-close:hover { background: var(--surface-3); }
+
+/* Body */
+.est-modal-body {
+  background: var(--surface);
+  padding: var(--s6);
+  flex: 1;
+}
+
+.est-modal-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  letter-spacing: 0.16px;
+  margin-bottom: var(--s5);
+}
+
+.est-modal-qty-row { display: none; flex-direction: column; gap: var(--s2); }
+.est-modal-qty-row--visible { display: flex; }
+
+.est-modal-qty-meta {
+  font-size: 12px;
+  color: var(--text-helper);
+  margin-top: var(--s1);
+  letter-spacing: 0.16px;
+}
+
+/* Footer — dois botões full-width, separados por borda */
+.est-modal-footer {
+  display: flex;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.est-modal-btn-cancel,
+.est-modal-btn-delete {
+  flex: 1;
+  height: 64px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font);
+  letter-spacing: 0.16px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  transition: background .12s;
+}
+
+.est-modal-btn-cancel {
+  background: #161616;
+  color: #ffffff;
+}
+.est-modal-btn-cancel:hover { background: #393939; }
+
+.est-modal-btn-delete {
+  background: #da1e28;
+  color: #ffffff;
+}
+.est-modal-btn-delete:hover { background: #a2191f; }
+
+/* Dark mode adjustments */
+[data-theme="dark"] .est-modal           { background: #262626; }
+[data-theme="dark"] .est-modal-header    { background: #393939; }
+[data-theme="dark"] .est-modal-body      { background: #262626; }
+[data-theme="dark"] .est-modal-btn-cancel { background: #393939; }
+[data-theme="dark"] .est-modal-btn-cancel:hover { background: #525252; }
+
+/* ── Empty state ─────────────────────────────────────────────── */
+.est-empty {
+  padding: var(--s10) var(--s5);
+  text-align: center;
+  color: var(--text-helper);
+  border: 1px dashed var(--border-subtle);
+}
+.est-empty-icon  { font-size: 28px; margin-bottom: var(--s4); opacity: .35; }
+.est-empty-title { font-size: 14px; font-weight: 600; color: var(--text-secondary); margin-bottom: var(--s2); }
+.est-empty-sub   { font-size: 13px; line-height: 1.5; }
+
+/* ── Animações (DS §12) ──────────────────────────────────────── */
+@keyframes est-row-flash {
+  0%,  100% { background: transparent; }
+  12%        { background: #fff3b0; }
+  24%        { background: transparent; }
+  36%        { background: #fff3b0; }
+  48%        { background: transparent; }
+  60%        { background: #fff3b0; }
+  72%        { background: transparent; }
+}
+.est-row--new td { animation: est-row-flash 4s ease-out forwards; }
+
+/* ── Toast de confirmação ────────────────────────────────────── */
+.est-toast {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  background: #161616;
+  color: #f4f4f4;
+  padding: 14px 16px;
+  min-width: 260px;
+  max-width: 380px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.35);
+  border-left: 4px solid #42be65;
+  transition: opacity .2s, transform .2s;
+  border-radius: 0;
+}
+.est-toast--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+.est-toast-icon {
+  color: #42be65;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.est-toast-msg {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.est-toast-msg strong { color: #fff; font-weight: 600; }
+.est-toast-undo {
+  background: transparent;
+  border: 1px solid #6f6f6f;
+  color: #f4f4f4;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .12s;
+  border-radius: 0;
+}
+.est-toast-undo:hover { background: #393939; border-color: #a8a8a8; }
+.est-toast-close {
+  background: transparent;
+  border: none;
+  color: #6f6f6f;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.est-toast-close:hover { color: #f4f4f4; }
+
+/* ── Botão Cancelar ──────────────────────────────────────────── */
+.est-btn--cancel {
+  background: #ff832b;
+  color: #161616;
+  border: none;
+  font-weight: 700;
+}
+.est-btn--cancel:hover  { background: #eb6200; color: #161616; }
+.est-btn--cancel:active { background: #ba4e00; }
+
+/* ── Dark mode ───────────────────────────────────────────────── */
+[data-theme="dark"] .est-card,
+[data-theme="dark"] .est-confirm       { background: #262626 !important; }
+[data-theme="dark"] .est-confirm--ok   { background: #0d1f0d !important; }
+[data-theme="dark"] .est-confirm--unknown { background: #2b2200 !important; }
+[data-theme="dark"] .est-specs-grid    { background: #393939; }
+[data-theme="dark"] .est-spec          { background: #262626; }
+[data-theme="dark"] .est-qty-badge     { background: #393939; border-color: #525252; }
+[data-theme="dark"] table.est-table th { background: #393939 !important; }
+[data-theme="dark"] table.est-table tbody tr:hover td { background: #393939 !important; }
+[data-theme="dark"] .est-input,
+[data-theme="dark"] .est-select        { background: #393939; color: #f4f4f4; }
+
+/* ── Responsivo ──────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .est-input-row { flex-direction: column; }
+  .est-search-row { flex-direction: column; align-items: stretch; }
+  .est-search-row .est-input { max-width: 100%; }
+  .est-confirm-actions { flex-direction: column; align-items: stretch; }
+  .est-btn { justify-content: center; }
+}
+</style>
+{% endblock %}
+
+{% block main %}
+
+{# ── Cabeçalho da página ──────────────────────────────────────── #}
+<div class="est-page-header">
+  <h1 class="est-page-title">Estoque</h1>
+  <a class="est-btn est-btn--secondary"
+     href="{% url 'estoque:export' %}"
+     title="Exportar estoque para Excel">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    Exportar .xlsx
+  </a>
+</div>
+
+{# ── Card de entrada ──────────────────────────────────────────── #}
+<div class="est-card">
+  <div class="est-card-title">Adicionar chip</div>
+
+  <div class="est-field">
+    <label class="est-label" for="pn-input">Part Number</label>
+    {# Wrapper para igualar largura input + botões #}
+    <div class="est-pn-wrap">
+      <input
+        class="est-input est-input--pn"
+        type="text"
+        id="pn-input"
+        name="pn"
+        placeholder="Ex: KMQ310006M-B421"
+        autocomplete="off"
+        spellcheck="false"
+        inputmode="text"
+        hx-get="{% url 'estoque:preview' %}"
+        hx-trigger="pn-ready"
+        hx-target="#confirm-area"
+        hx-swap="innerHTML"
+        hx-include="[name='pn']"
+        autofocus
+      />
+      {# Botões Carbon flush — mesma largura do input via est-pn-wrap #}
+      <div class="pin-btn-group">
+        <button type="button" id="est-clear-btn" class="pin-btn pin-btn--secondary" disabled>Limpar</button>
+        <button type="button" id="est-decode-btn" class="pin-btn pin-btn--primary" disabled>
+          <span class="pin-btn-label">Decodificar</span>
+          <span class="pin-btn-spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+    <div class="est-helper" id="ocr-status"></div>
+  </div>
+
+  {# Hint abaixo dos botões #}
+  <div class="pin-actions" style="justify-content:flex-start;">
+    <span class="pin-actions-hint" id="est-pin-hint">Digite o Part Number acima</span>
+  </div>
+
+  {# ── Card de confirmação — HTMX target ──────────────────────── #}
+  <div id="confirm-area"></div>
+
+</div>{# /est-card #}
+
+{# ── Tabela de estoque ────────────────────────────────────────── #}
+<div class="est-table-section">
+
+  <div class="est-table-header">
+    <div class="est-search-row">
+      <div>
+        <label class="est-label" for="search-q">Buscar PN</label>
+        <input
+          class="est-input"
+          type="search"
+          id="search-q"
+          name="q"
+          value="{{ q }}"
+          placeholder="Filtrar por PN…"
+          hx-get="{% url 'estoque:index' %}"
+          hx-trigger="input changed delay:300ms"
+          hx-target="#table-body-wrap"
+          hx-swap="innerHTML"
+          hx-include="#tipo-filter"
+        />
+      </div>
+      <div>
+        <label class="est-label" for="tipo-filter">Tipo</label>
+        <select class="est-select" id="tipo-filter" name="tipo"
+                hx-get="{% url 'estoque:index' %}"
+                hx-trigger="change"
+                hx-target="#table-body-wrap"
+                hx-swap="innerHTML"
+                hx-include="#search-q">
+          <option value="">Todos</option>
+          <option value="eMCP" {% if tipo == "eMCP" %}selected{% endif %}>eMCP</option>
+          <option value="uMCP" {% if tipo == "uMCP" %}selected{% endif %}>uMCP</option>
+          <option value="eMMC" {% if tipo == "eMMC" %}selected{% endif %}>eMMC</option>
+          <option value="UFS"  {% if tipo == "UFS"  %}selected{% endif %}>UFS</option>
+          <option value="RAM"  {% if tipo == "RAM"  %}selected{% endif %}>RAM</option>
+          <option value="NAND" {% if tipo == "NAND" %}selected{% endif %}>NAND Flash</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="table-body-wrap">
+    {% include "estoque/partials/table_body.html" %}
+  </div>
+
+</div>{# /est-table-section #}
+
+{# Token CSRF acessível ao JS para htmx.ajax #}
+{% csrf_token %}
+
+{# ── Toast de confirmação de adição ──────────────────────────── #}
+<div class="est-toast est-toast--hidden" id="est-toast" role="status" aria-live="polite">
+  <span class="est-toast-icon">✓</span>
+  <span class="est-toast-msg" id="est-toast-msg"></span>
+  <button class="est-toast-undo" id="est-toast-undo" type="button">Desfazer</button>
+  <button class="est-toast-close" type="button" onclick="hideToast()" aria-label="Fechar">×</button>
+</div>
+
+{# ── Modal de confirmação de remoção (Carbon medium-impact) ───── #}
+<div class="est-modal-overlay" id="delete-modal-overlay"
+     role="dialog" aria-modal="true" aria-labelledby="modal-title"
+     onclick="handleOverlayClick(event)">
+  <div class="est-modal">
+
+    {# Header #}
+    <div class="est-modal-header">
+      <div class="est-modal-header-text">
+        <p class="est-modal-label" id="modal-label">Part Number</p>
+        <h2 class="est-modal-title" id="modal-title">Remover do estoque</h2>
+      </div>
+      <button class="est-modal-close" type="button"
+              onclick="closeDeleteModal()" aria-label="Fechar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    {# Body #}
+    <div class="est-modal-body">
+      <p class="est-modal-desc">
+        Remover <strong id="modal-pn-text"></strong> do estoque.
+        Esta ação não pode ser desfeita.
+      </p>
+
+      {# Aparece só se qty > 1 #}
+      <div class="est-modal-qty-row" id="modal-qty-row">
+        <label class="est-label" for="modal-qty-input">Quantidade a remover</label>
+        <input class="est-input est-input--qty"
+               type="number" id="modal-qty-input"
+               value="1" min="1" step="1">
+        <span class="est-modal-qty-meta" id="modal-qty-meta"></span>
+      </div>
+    </div>
+
+    {# Footer — Cancel preto + Remove vermelho, full-width #}
+    <div class="est-modal-footer">
+      <button class="est-modal-btn-cancel" type="button"
+              onclick="closeDeleteModal()">Cancelar</button>
+      <button class="est-modal-btn-delete" type="button"
+              id="modal-confirm-btn" onclick="confirmDelete()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14H6L5 6"/>
+          <path d="M10 11v6"/><path d="M14 11v6"/>
+          <path d="M9 6V4h6v2"/>
+        </svg>
+        Remover
+      </button>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  'use strict';
+
+  // ── Campo PN: uppercase + botões Carbon ──────────────────────
+  var pnInput      = document.getElementById('pn-input');
+  var estDecodeBtn = document.getElementById('est-decode-btn');
+  var estClearBtn  = document.getElementById('est-clear-btn');
+  var estPinHint   = document.getElementById('est-pin-hint');
+  var PN_MIN       = 4;
+
+  function updateEstHint(val) {
+    var len = val.length;
+    if (estDecodeBtn) estDecodeBtn.disabled = (len < PN_MIN);
+    if (estClearBtn)  estClearBtn.disabled  = (len === 0);
+    if (!estPinHint) return;
+    if (len === 0) {
+      estPinHint.textContent = 'Digite o Part Number acima';
+      estPinHint.className   = 'pin-actions-hint';
+    } else if (len < PN_MIN) {
+      estPinHint.textContent = 'Continue digitando (' + len + '/' + PN_MIN + ' mín.)';
+      estPinHint.className   = 'pin-actions-hint pin-actions-hint--warn';
+    } else {
+      estPinHint.textContent = 'Clique Decodificar ou pressione Enter';
+      estPinHint.className   = 'pin-actions-hint';
+    }
+  }
+
+  function estDecode() {
+    if (!pnInput || pnInput.value.length < PN_MIN) return;
+    if (estDecodeBtn) { estDecodeBtn.classList.add('pin-btn--loading'); estDecodeBtn.disabled = true; }
+    if (estClearBtn)  estClearBtn.disabled = true;
+    if (estPinHint)   estPinHint.textContent = '';
+    htmx.trigger(pnInput, 'pn-ready');
+  }
+
+  if (pnInput) {
+    pnInput.addEventListener('input', function () {
+      var pos   = this.selectionStart;
+      var upper = this.value.toUpperCase();
+      if (this.value !== upper) {
+        this.value = upper;
+        try { this.setSelectionRange(pos, pos); } catch(e) {}
+      }
+      if (this.value.length < PN_MIN) {
+        document.getElementById('confirm-area').innerHTML = '';
+      }
+      updateEstHint(this.value);
+    });
+
+    pnInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); estDecode(); }
+    });
+
+    pnInput.addEventListener('htmx:afterRequest', function () {
+      var len = pnInput.value.length;
+      if (estDecodeBtn) { estDecodeBtn.classList.remove('pin-btn--loading'); estDecodeBtn.disabled = (len < PN_MIN); }
+      if (estClearBtn)  estClearBtn.disabled = (len === 0);
+      if (estPinHint && len >= PN_MIN) estPinHint.textContent = 'Clique Decodificar ou pressione Enter';
+    });
+  }
+
+  if (estDecodeBtn) {
+    estDecodeBtn.addEventListener('click', function () { estDecode(); });
+  }
+
+  if (estClearBtn) {
+    estClearBtn.addEventListener('click', function () {
+      if (pnInput) { pnInput.value = ''; pnInput.focus(); }
+      document.getElementById('confirm-area').innerHTML = '';
+      updateEstHint('');
+    });
+  }
+
+  // ── Modal de remoção ─────────────────────────────────────────
+  var _delTarget = { pk: null, pn: '', maxQty: 1 };
+
+  window.openDeleteModal = function (pk, pn, qty) {
+    _delTarget = { pk: pk, pn: pn, maxQty: qty };
+
+    document.getElementById('modal-label').textContent   = pn;
+    document.getElementById('modal-pn-text').textContent = pn;
+
+    var qtyInput = document.getElementById('modal-qty-input');
+    var qtyRow   = document.getElementById('modal-qty-row');
+    var qtyMeta  = document.getElementById('modal-qty-meta');
+
+    qtyInput.value = 1;
+    qtyInput.max   = qty;
+
+    if (qty > 1) {
+      qtyRow.classList.add('est-modal-qty-row--visible');
+      qtyMeta.textContent = 'Em estoque: ' + qty + ' unidades';
+    } else {
+      qtyRow.classList.remove('est-modal-qty-row--visible');
+    }
+
+    var overlay = document.getElementById('delete-modal-overlay');
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    document.getElementById('modal-confirm-btn').focus();
+  };
+
+  window.closeDeleteModal = function () {
+    document.getElementById('delete-modal-overlay').style.display = 'none';
+    document.body.style.overflow = '';
+    _delTarget = { pk: null, pn: '', maxQty: 1 };
+  };
+
+  // Fecha ao clicar no overlay (fora do modal)
+  window.handleOverlayClick = function (e) {
+    if (e.target === document.getElementById('delete-modal-overlay')) {
+      closeDeleteModal();
+    }
+  };
+
+  // ESC fecha o modal
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeDeleteModal();
+  });
+
+  window.confirmDelete = function () {
+    if (!_delTarget.pk) return;
+
+    var qty  = Math.max(1, parseInt(document.getElementById('modal-qty-input').value) || 1);
+    var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+
+    // Usa htmx.ajax para CSRF + swap automático
+    var csrfVal = csrf ? csrf.value : '';
+    htmx.ajax('POST',
+      '/estoque/remove/' + _delTarget.pk + '/',
+      {
+        target : '#table-body-wrap',
+        swap   : 'innerHTML',
+        values : { qty: qty, csrfmiddlewaretoken: csrfVal },
+      }
+    );
+
+    closeDeleteModal();
+  };
+
+  // ── Sync PN no confirm card quando o usuário continua digitando ──
+  // Garante que o card sempre mostre e submeta o PN actual do input
+  document.addEventListener('htmx:afterSwap', function (e) {
+    if (e.detail.target && e.detail.target.id === 'confirm-area') {
+      syncConfirmPn();
+    }
+  });
+
+  function syncConfirmPn() {
+    if (!pnInput) return;
+    var val = pnInput.value;
+    var display = document.getElementById('confirm-pn-display');
+    if (display) display.textContent = val;
+    document.querySelectorAll('#confirm-area input[name="pn"]').forEach(function (inp) {
+      inp.value = val;
+    });
+  }
+
+  // Re-sync sempre que o usuário digitar após o card aparecer
+  if (pnInput) {
+    pnInput.addEventListener('input', function () {
+      var card = document.querySelector('#confirm-area .est-confirm');
+      if (card) syncConfirmPn();
+    });
+  }
+
+  // ── Debug button: copia diagnóstico completo para o clipboard ──────────────
+  function _copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function(resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      try {
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('execCommand retornou false'));
+      } catch (err) {
+        document.body.removeChild(ta);
+        reject(err);
+      }
+    });
+  }
+
+  function buildDebugText(d) {
+    var lines = [];
+    var now   = new Date().toLocaleString('pt-BR');
+    var sep   = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
+    lines.push('=== WhatTheChip Debug (Estoque) ===');
+    lines.push('PN:      ' + (d.pn || ''));
+    lines.push('Horário: ' + now);
+    lines.push('');
+    lines.push(sep + ' RESULTADO VISÍVEL');
+    lines.push('Tipo:        ' + (d.chip_type    || '—'));
+    lines.push('Subtipo:     ' + (d.subtype       || '—'));
+    lines.push('Marca:       ' + (d.brand         || '—'));
+    if (d.is_emcp) {
+      lines.push('NAND:        ' + (d.emcp_nand   || '—'));
+      lines.push('RAM:         ' + (d.emcp_ram    || '—'));
+      lines.push('Dispositivo: ' + (d.emcp_device || '—'));
+    } else {
+      lines.push('Capacidade:  ' + (d.capacity     || '—'));
+      lines.push('DRAM:        ' + (d.dram_density  || '—'));
+      lines.push('Interface:   ' + (d.interface     || '—'));
+      lines.push('Dispositivo: ' + (d.device        || '—'));
+    }
+    lines.push('Sufixo:      ' + (d.suffix_note   || '—'));
+    var confKey = (d.grammar_complete && d.confidence === 'estimated') ? 'grammar' : (d.confidence || '—');
+    var CONF_LABEL_EST = {'confirmed':'✅ Confirmado','manual':'✏️ Manual','distributor':'🏪 Distribuidor','grammar':'📐 Gramática','ai_high':'🤖 IA — Alta','ai_medium':'🤖 IA — Média','ai_low':'🤖 IA — Baixa','estimated':'~ Estimado'};
+    lines.push('Confiança:   ' + (CONF_LABEL_EST[confKey] || confKey));
+    lines.push('Tip:         ' + (d.tip            || '—'));
+    lines.push('');
+    lines.push(sep + ' MOTOR DE CLASSIFICAÇÃO');
+    lines.push('Fonte:         ' + (d.classification_source || '—'));
+    lines.push('Família:       ' + (d.family_prefix          || '—'));
+    lines.push('known_exact:   ' + !!d.known_exact);
+    lines.push('is_emcp:       ' + !!d.is_emcp);
+    if (d.is_emcp) {
+      lines.push('emcp_source:   ' + (d.emcp_source || '—'));
+    }
+    lines.push('from_web:      ' + !!d.from_web);
+    lines.push('raw_in_db:     ' + !!d.raw_in_db);
+    lines.push('remarked_flag: ' + !!d.remarked_flag);
+    if (d.remarked_note) {
+      lines.push('remarked_note: ' + d.remarked_note);
+    }
+    var geminiStatus = d.gemini_searched
+      ? (d.gemini_found ? 'encontrado' : 'não encontrado')
+      : 'não executado';
+    lines.push('Gemini:        ' + geminiStatus);
+    lines.push('doc_url:       ' + (d.doc_url    || '—'));
+    lines.push('source_url:    ' + (d.source_url || '—'));
+    if (d.fuzzy_suggestions && d.fuzzy_suggestions.length) {
+      lines.push('fuzzy_sugest.: ' + d.fuzzy_suggestions.join(', '));
+    }
+    lines.push('');
+    lines.push(sep + ' JSON COMPLETO');
+    lines.push(JSON.stringify(d, null, 2));
+    return lines.join('\n');
+  }
+
+  // Event delegation — funciona mesmo após HTMX substituir o card
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.est-debug-btn');
+    if (!btn) return;
+    var card = btn.closest('[data-debug]');
+    if (!card) return;
+    var rawJson = card.getAttribute('data-debug');
+    var d;
+    try { d = JSON.parse(rawJson); } catch(err) { return; }
+    // Sincroniza PN com o valor atual do input
+    if (pnInput) d.pn = pnInput.value || d.pn;
+    btn.disabled    = true;
+    btn.textContent = '…';
+    _copyText(buildDebugText(d))
+      .then(function() {
+        btn.textContent = '✓ Copiado!';
+        setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
+      })
+      .catch(function() {
+        btn.textContent = 'Erro';
+        setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
+      });
+  });
+
+  // ── Toast de confirmação de adição ──────────────────────────────────────────
+  var _toastTimer   = null;
+  var _toastUndoPk  = null;
+  var _toastUndoQty = null;
+
+  window.hideToast = function() {
+    var toast = document.getElementById('est-toast');
+    if (toast) toast.classList.add('est-toast--hidden');
+    if (_toastTimer) { clearTimeout(_toastTimer); _toastTimer = null; }
+  };
+
+  function showToast(pn, qty, pk) {
+    var toast = document.getElementById('est-toast');
+    var msg   = document.getElementById('est-toast-msg');
+    var undo  = document.getElementById('est-toast-undo');
+    if (!toast || !msg) return;
+
+    _toastUndoPk  = pk;
+    _toastUndoQty = qty;
+
+    msg.innerHTML = '<strong>' + qty + '×</strong> ' + pn + ' adicionado ao estoque';
+    toast.classList.remove('est-toast--hidden');
+
+    // Undo: remove exatamente a quantidade adicionada
+    undo.onclick = function() {
+      hideToast();
+      var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+      htmx.ajax('POST',
+        '/estoque/remove/' + _toastUndoPk + '/',
+        {
+          target : '#table-body-wrap',
+          swap   : 'innerHTML',
+          values : { qty: _toastUndoQty, csrfmiddlewaretoken: csrf ? csrf.value : '' },
+        }
+      );
+    };
+
+    // Auto-dismiss após 5s
+    if (_toastTimer) clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(hideToast, 5000);
+  }
+
+  // Escuta o evento disparado pelo HX-Trigger do servidor
+  document.body.addEventListener('est:added', function(e) {
+    var d = e.detail || {};
+    showToast(d.pn || '?', d.qty || 1, d.pk);
+  });
+
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% if has_cap %}
+{# ── Chip identificado ─────────────────────────────────────── #}
+<div class="est-confirm est-confirm--ok" data-debug="{{ result_json }}">
+
+  <div class="est-confirm-head">
+    <span class="est-confirm-status est-confirm-status--ok">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:-1px">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      Chip identificado
+    </span>
+    <span class="est-confirm-pn" id="confirm-pn-display">{{ pn }}</span>
+  </div>
+
+  <div class="est-specs-grid">
+    {% if result.chip_type %}
+    <div class="est-spec">
+      <span class="est-spec-label">Tipo</span>
+      <span class="est-spec-val">{{ result.chip_type }}{% if result.subtype %} · {{ result.subtype }}{% endif %}</span>
+    </div>
+    {% endif %}
+
+    {% if result.brand %}
+    <div class="est-spec">
+      <span class="est-spec-label">Fabricante</span>
+      <span class="est-spec-val">{{ result.brand }}</span>
+    </div>
+    {% endif %}
+
+    {% if display_cap %}
+    <div class="est-spec">
+      <span class="est-spec-label">Capacidade</span>
+      <span class="est-spec-val">{{ display_cap }}</span>
+    </div>
+    {% endif %}
+
+    {% if result.interface %}
+    <div class="est-spec">
+      <span class="est-spec-label">Interface</span>
+      <span class="est-spec-val">{{ result.interface }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  {# Form de adição #}
+  <form class="est-confirm-form"
+        hx-post="{% url 'estoque:add' %}"
+        hx-target="#table-body-wrap"
+        hx-swap="innerHTML"
+        hx-on::after-request="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('confirm-area').innerHTML='';">
+
+    {% csrf_token %}
+    <input type="hidden" name="pn"                    value="{{ pn }}">
+    <input type="hidden" name="has_cap"               value="true">
+    <input type="hidden" name="chip_type"             value="{{ result.chip_type }}">
+    <input type="hidden" name="brand"                 value="{{ result.brand }}">
+    <input type="hidden" name="capacity"              value="{{ result.capacity }}">
+    <input type="hidden" name="emcp_ram"              value="{{ result.emcp_ram }}">
+    <input type="hidden" name="emcp_nand"             value="{{ result.emcp_nand }}">
+    <input type="hidden" name="is_emcp"               value="{{ result.is_emcp|yesno:'true,false' }}">
+    <input type="hidden" name="interface"             value="{{ result.interface }}">
+    <input type="hidden" name="classification_source" value="{{ result.classification_source }}">
+
+    <div class="est-confirm-actions">
+      <div class="est-qty-wrap">
+        <label class="est-label" for="confirm-qty">Qtd.</label>
+        <input class="est-input est-input--qty" type="number" id="confirm-qty"
+               name="qty" value="1" min="1" max="9999">
+      </div>
+      <button class="est-btn est-btn--primary" type="submit">+ Adicionar ao estoque</button>
+      <button class="est-btn est-btn--cancel" type="button"
+              onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">
+        Cancelar
+      </button>
+      <button class="est-btn est-btn--debug est-debug-btn" type="button"
+              title="Copia diagnóstico completo para o clipboard">
+        📋 Debug
+      </button>
+    </div>
+  </form>
+</div>
+
+{% else %}
+{# ── Chip não identificado ─────────────────────────────────── #}
+<div class="est-confirm est-confirm--unknown">
+
+  <div class="est-confirm-head">
+    <span class="est-confirm-status est-confirm-status--unknown">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:-1px">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      Não identificado
+    </span>
+    <span class="est-confirm-pn">{{ pn }}</span>
+  </div>
+
+  <p class="est-confirm-hint">
+    O motor não encontrou capacidade para este PN.
+    Ele será registrado na fila de chips desconhecidos para análise futura.
+  </p>
+
+  <form class="est-confirm-form"
+        hx-post="{% url 'estoque:add' %}"
+        hx-target="#confirm-area"
+        hx-swap="innerHTML">
+
+    {% csrf_token %}
+    <input type="hidden" name="pn"      value="{{ pn }}">
+    <input type="hidden" name="has_cap" value="false">
+
+    <div class="est-confirm-actions">
+      <button class="est-btn est-btn--warning" type="submit">Registrar como desconhecido</button>
+      <button class="est-btn est-btn--cancel" type="button"
+              onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">
+        Cancelar
+      </button>
+    </div>
+  </form>
+</div>
+{% endif %}

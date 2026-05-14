@@ -31,7 +31,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pages',
     'chips',
+    'estoque',
 ]
+
+# ── Autenticação ──────────────────────────────────────────────
+LOGIN_URL          = '/login/'
+LOGIN_REDIRECT_URL = '/estoque/'
+LOGOUT_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

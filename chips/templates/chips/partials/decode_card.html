@@ -108,7 +108,7 @@
   <!-- ── Rodapé ──────────────────────────────────────────────────────────── -->
   <div class="dc2-footer">
 
-    <span class="dc2-conf">{{ confidence_label }}</span>
+    <span class="dc2-conf dc2-conf--{{ confidence_key }}">{{ confidence_label }}</span>
 
     {% if result.classification_source %}
       <span class="dc2-sep">·</span>
@@ -125,9 +125,9 @@
       <a class="dc2-srclink" href="{{ result.source_url }}" target="_blank" rel="noopener">Fonte ↗</a>
     {% endif %}
 
-    {% if result.raw_in_db %}
+    {% if result.in_review_queue %}
       <span class="dc2-sep">·</span>
-      <span class="dc2-queue">⏳ Na fila de enriquecimento</span>
+      <span class="dc2-queue dc2-queue--warn">⚠ Enviado para revisão</span>
     {% endif %}
 
     <span class="dc2-sep">·</span>

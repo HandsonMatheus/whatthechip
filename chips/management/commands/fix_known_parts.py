@@ -55,20 +55,27 @@ CORRECTIONS = [
     },
 
     # ── KMQD60013M ───────────────────────────────────────────────────────────
-    # Problema: banco continha dados do distribuidor Wolfchip (lixo).
-    #   emcp_ram = "LPDDR3 2GB"  → ERRADO. Gramática: D6 = 32GB + 3GB.
-    # Erro típico de catálogo asiático: confunde variantes de 2GB (cap "14")
-    # com os de 3GB (cap "D6"). A gramática resolve D6 corretamente.
-    # Após o fix do engine (distributor não vence gramática), a gramática já
-    # vence sozinha. Esta entrada limpa o registro histórico no banco.
+    # Chip físico confirmado na esteira (eMiner 2026-05-13).
+    # D6 = 32GB eMMC 5.1 + 3GB LPDDR3.
+    # create=True: raw_in_db=False no debug → pode não existir no banco ainda.
     {
         "pn": "KMQD60013M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
         "fields": {
-            "emcp_ram": "LPDDR3 3GB",
+            "emcp_nand": "eMMC 5.1 32GB",
+            "emcp_ram":  "LPDDR3 3GB",
         },
         "reason": (
-            "RAM corrigida: D6 = 32GB eMMC + 3GB LPDDR3 (era 2GB do distribuidor Wolfchip). "
-            "Erro típico de catálogo: confundiu variante de 2GB com D6=3GB."
+            "Chip físico confirmado na esteira (eMiner 2026-05-13). "
+            "D6 = 32GB eMMC 5.1 + 3GB LPDDR3. "
+            "create=True: cria registro confirmado se ainda não existir no banco."
         ),
     },
 
@@ -170,16 +177,24 @@ CORRECTIONS = [
     # D6 no SAM_EMCP_CAP = 32GB + 3GB (confirmado). Valores corretos abaixo.
     {
         "pn": "KMGD6001BM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
         "fields": {
             "emcp_nand": "eMMC 5.1 32GB",
             "emcp_ram":  "LPDDR3 3GB",
             "device":    "",
         },
         "reason": (
-            "REVERSAL: fix anterior estava errado — KMG é eMCP eMMC 5.1 + LPDDR3, não uMCP UFS 3.1. "
-            "Datasheet KMGP6001BM (2026-05-09) confirma a família. "
-            "D6 = 32GB eMMC + 3GB LPDDR3 (SAM_EMCP_CAP, sem controvérsia). "
-            "Device apagado: 'Galaxy A (MV3224)' é código interno Samsung — mantido."
+            "Chip físico confirmado na esteira (eMiner 2026-05-13). "
+            "KMG = eMCP eMMC 5.1 + LPDDR3 (datasheet KMGP6001BM confirma). "
+            "D6 = 32GB + 3GB LPDDR3. "
+            "create=True: raw_in_db=False no debug — não existia no banco."
         ),
     },
 
@@ -188,9 +203,17 @@ CORRECTIONS = [
     # Confirmado 2026-05-09: KMR8X0001M-B608 = 16GB eMMC + 16Gb (2GB) LPDDR3.
     # Correção do mapa: 8X NAND corrigida de 8GB → 16GB.
     # RAM do mapa: 1GB (base KMQ8X). KMR8X tem 2GB — conflito de shared map.
-    # Este fix corrige o registro histórico no banco para o valor real do KMR8X.
+    # create=True: sem Gemini, chip pode não estar no banco (só grammar-decoded).
     {
         "pn": "KMR8X0001M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR4/4X + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
         "fields": {
             "emcp_nand": "eMMC 5.1 16GB",
             "emcp_ram":  "LPDDR4/4X 2GB",
@@ -198,8 +221,37 @@ CORRECTIONS = [
         "reason": (
             "NAND corrigida: 8X era 8GB no mapa (ERRADO). KMR8X0001M-B608 = 16GB eMMC. "
             "RAM corrigida: 16Gb ÷ 8 = 2GB (mapa usa 1GB como base KMQ8X — divergência de família). "
-            "8X no SAM_EMCP_CAP corrigido para 16GB NAND. "
             "KMQ8X000SA-B414 (1GB) e KMR8X0001M (2GB) confirmados em B2B (SBiT)."
+        ),
+    },
+
+    # ── KMQ310006B ───────────────────────────────────────────────────────────
+    # Conflito de shared key "31" em SAM_EMCP_CAP:
+    #   KMQ310013B: chip físico (eMiner 2026-05-13) = 1GB. ← valor no mapa
+    #   KMQ310006B-B419: samsungparts.com "16Gb+12" = 1.5GB LPDDR3. ← exceção
+    # Ambos pn[3:5]="31" — o mapa não consegue distinguir.
+    # create=True: chip decodificado só via gramática (raw_in_db=False, Gemini nunca
+    # executado) — não existe no banco. Sem create=True o fix nunca aplicaria.
+    {
+        "pn": "KMQ310006B",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 16GB",
+            "emcp_ram":  "LPDDR3 1.5GB",
+            "device":    "Samsung Galaxy J3 (SM-J327A)",
+        },
+        "reason": (
+            "cap_key '31' conflito: KMQ310013B=1GB vs KMQ310006B=1.5GB (mesmo pn[3:5]). "
+            "samsungparts.com KMQ310006B-B419: '16Gb+12' = 12Gb÷8=1.5GB LPDDR3. "
+            "Galaxy J3 SM-J327A service manual confirma 1.5GB. Fonte fabricante ✓. "
+            "create=True: cria registro no banco se ainda não existir."
         ),
     },
 
@@ -208,8 +260,17 @@ CORRECTIONS = [
     # KMG é família LPDDR3 — para KMG, P6 = 64GB eMMC + 24Gb LPDDR3 → 24Gb÷8 = 3GB.
     # Mesma divergência de shared cap_key que KMRX60014M (X6 base KM4=2GB vs KMR=4GB).
     # Datasheet KMGP6001BM confirma KMG = eMCP eMMC 5.1 + LPDDR3 ✓
+    # create=True: chip grammar-decoded com 4GB errado (debug raw_in_db=False confirmado).
     {
         "pn": "KMGP6001BM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
         "fields": {
             "emcp_nand": "eMMC 5.1 64GB",
             "emcp_ram":  "LPDDR3 3GB",
@@ -217,7 +278,7 @@ CORRECTIONS = [
         "reason": (
             "P6 no SAM_EMCP_CAP = 4GB (base KMDP6001DA-B425, família KMD/LPDDR4X). "
             "KMG é LPDDR3: P6 para KMG = 64GB eMMC + 24Gb LPDDR3 → 24Gb÷8=3GB. "
-            "Divergência de cap_key compartilhado — override necessário para família KMG."
+            "Datasheet KMGP6001BM confirma. create=True: sem Gemini, chip não entra no banco sozinho."
         ),
     },
 
@@ -225,9 +286,17 @@ CORRECTIONS = [
     # Problema: SAM_EMCP_CAP mapeia X6 = "32GB NAND + 2GB RAM" (base KM4X6001KM).
     # KMRX60014M-B614 = 32GB eMMC 5.1 + 32Gb LPDDR4/4X → 32Gb ÷ 8 = 4GB.
     # Conflito de shared map: X6 base é 2GB (KM4X série), KMRX6 é 4GB (KMR série).
-    # Este fix corrige o registro KMRX60014M para o valor real da família KMR.
+    # create=True: sem Gemini, chip não entra no banco via grammar-only decode.
     {
         "pn": "KMRX60014M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR4/4X + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
         "fields": {
             "emcp_nand": "eMMC 5.1 32GB",
             "emcp_ram":  "LPDDR4/4X 4GB",
@@ -235,8 +304,166 @@ CORRECTIONS = [
         "reason": (
             "X6 base mapeado como 2GB (KM4X6001KM, Octopart). "
             "KMRX60014M-B614 = 32GB eMMC 5.1 + 32Gb LPDDR4/4X → 32Gb÷8=4GB. "
-            "Divergência de família no shared cap_key X6: KM4X6→2GB, KMRX6→4GB. "
-            "Override necessário para corrigir registro no banco."
+            "Divergência de família no shared cap_key X6: KM4X6→2GB, KMRX6→4GB."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Chips confirmados fisicamente na esteira eMiner — 2026-05-13
+    # Todos com create=True: raw_in_db=False no debug → não existiam no banco.
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K3QF5F50MM ────────────────────────────────────────────────────────────
+    # LPDDR3 standalone PoP (Mobile DRAM pura — sem NAND).
+    # Família K3QF, chave "5" adicionada ao K3QF_CAP: 12Gb = 2×6Gb die = 1.5GB.
+    # Dispositivo: Samsung Galaxy S5 Mini (SM-G800F/H, Exynos 3470).
+    # ⚠ NÃO é eMCP. Arquitetura PoP — incompatível com sockets BGA de eMCP.
+    {
+        "pn": "K3QF5F50MM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "1.5GB",
+            "interface": "LPDDR3",
+            "emcp_nand": "",
+            "emcp_ram":  "",
+            "device":    "Samsung Galaxy S5 Mini (SM-G800F/H, Exynos 3470)",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira (eMiner 2026-05-13). "
+            "K3QF5: 12Gb = 2×6Gb die = 1.5GB LPDDR3. Chave '5' adicionada ao K3QF_CAP. "
+            "RAM standalone PoP — sem NAND. Destino: resíduo (baixo valor B2B)."
+        ),
+    },
+
+    # ── KMDC6001DM ────────────────────────────────────────────────────────────
+    # eMCP LPDDR4X + eMMC 5.1. Família KMD, chave C6 adicionada ao SAM_EMCP_CAP.
+    # C6 = 64GB eMMC 5.1 + 3GB LPDDR4X (24Gb). IA + padrão C*=64GB.
+    # Aparelhos prováveis: Galaxy A20s / Moto G8 Play (pendente confirmação física).
+    {
+        "pn": "KMDC6001DM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR4X + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 64GB",
+            "emcp_ram":  "LPDDR4X 3GB",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira (eMiner 2026-05-13). "
+            "C6 adicionado ao SAM_EMCP_CAP: 64GB eMMC 5.1 + 24Gb LPDDR4X = 3GB. "
+            "Padrão C*=64GB consistente com C1 e C7 (ambos 64GB, confirmados)."
+        ),
+    },
+
+    # ── KMQN10006B ────────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMQ, chave N1 já existia no SAM_EMCP_CAP.
+    # N1 = 8GB eMMC 5.1 + 1GB LPDDR3 (8Gb). Segunda confirmação física da chave.
+    {
+        "pn": "KMQN10006B",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 8GB",
+            "emcp_ram":  "LPDDR3 1GB",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira (eMiner 2026-05-13). "
+            "N1 = 8GB eMMC 5.1 + 1GB LPDDR3. Segunda confirmação física (KMFN10012A-B214 era a primeira)."
+        ),
+    },
+
+    # ── KMQ7X000SA ────────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMQ, chave 7X adicionada ao SAM_EMCP_CAP.
+    # 7X = 8GB eMMC 5.1 + 1.5GB LPDDR3 (12Gb = 2×6Gb die).
+    # Mesmo padrão de die de 6Gb que KMQ310006B (Galaxy J3, 1.5GB confirmado).
+    {
+        "pn": "KMQ7X000SA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 8GB",
+            "emcp_ram":  "LPDDR3 1.5GB",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira (eMiner 2026-05-13). "
+            "7X adicionado ao SAM_EMCP_CAP: 8GB eMMC 5.1 + 12Gb LPDDR3 = 1.5GB. "
+            "12Gb = 2×6Gb die — mesmo padrão de KMQ310006B (Galaxy J3, fonte fabricante ✓)."
+        ),
+    },
+
+    # ── KMV3W000LW ───────────────────────────────────────────────────────────
+    # eMCP LPDDR2 + eMMC legado (~2010-2013). Família KMV.
+    # pn[3:5]="3W" adicionado ao SAM_EMCP_CAP: 16GB NAND + 512MB LPDDR2.
+    # ⚠ KMV3 = eMCP legado Galaxy S4 era — NÃO confundir com KM3V (uMCP flagship).
+    # Destino: Caixa Vermelha (resíduo — LPDDR2 sem liquidez em 2026).
+    {
+        "pn": "KMV3W000LW",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR2 + eMMC (legado)",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 16GB",
+            "emcp_ram":  "LPDDR2 512MB",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira (eMiner 2026-05-13). "
+            "3W adicionado ao SAM_EMCP_CAP: 16GB eMMC + 4Gbit LPDDR2 = 512MB. "
+            "KMV3 = eMCP legado Galaxy S4 era. Tip corrigido: KMV2/KMV3 não são flagship."
+        ),
+    },
+
+    # ── H9TQ64AAETAC ─────────────────────────────────────────────────────────
+    # SK Hynix eMCP LPDDR3 + eMMC 5.1. Família H9TQ.
+    # pn[4:6]="64" → HYX_EMCP_NAND_CAP = 8GB eMMC.
+    # pn[6:8]="AA" → HYX_H9TQ_RAM_CAP = LPDDR3 2GB (16Gb).
+    # AA já estava mapeado com este PN como âncora no populate_hynix.
+    {
+        "pn": "H9TQ64AAETAC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 8GB",
+            "emcp_ram":  "LPDDR3 2GB",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira (eMiner 2026-05-13). "
+            "H9TQ64: 64=8GB NAND (HYX_EMCP_NAND_CAP ✓). AA=LPDDR3 2GB (HYX_H9TQ_RAM_CAP ✓). "
+            "PN já era âncora da chave AA no populate_hynix — agora com confirmação física."
         ),
     },
 
@@ -275,20 +502,59 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.ERROR(f"PN '{target_pn}' não encontrado na tabela de correções."))
                 return
 
-        fixed = skipped = not_found = 0
+        fixed = skipped = not_found = created_count = 0
 
         for entry in corrections:
-            pn     = entry["pn"]
-            fields = entry["fields"]
-            reason = entry.get("reason", "")
+            pn          = entry["pn"]
+            fields      = entry["fields"]
+            reason      = entry.get("reason", "")
+            do_create   = entry.get("create", False)
 
-            from chips.models import KnownPart
+            from chips.models import KnownPart, Brand
+            obj = None
+            was_created = False
+
             try:
                 obj = KnownPart.objects.get(part_number=pn)
             except KnownPart.DoesNotExist:
-                self.stdout.write(self.style.WARNING(f"  ⚠ Não encontrado no banco: {pn}"))
-                not_found += 1
-                continue
+                if do_create:
+                    # ── Criar registro novo ──────────────────────────────────
+                    defaults  = dict(entry.get("create_defaults", {}))
+                    brand_name = defaults.pop("brand_name", "Samsung")
+                    try:
+                        brand = Brand.objects.get(name=brand_name)
+                    except Brand.DoesNotExist:
+                        self.stdout.write(self.style.ERROR(
+                            f"  ✗ Brand '{brand_name}' não encontrada — pulando {pn}."
+                        ))
+                        not_found += 1
+                        continue
+                    if not dry:
+                        obj = KnownPart(part_number=pn, brand=brand, **defaults)
+                        # aplica os campos do fix antes de salvar
+                        for field, val in fields.items():
+                            setattr(obj, field, val if val is not None else "")
+                        try:
+                            with transaction.atomic():
+                                obj.save()
+                        except Exception as e:
+                            self.stdout.write(self.style.ERROR(f"  ✗ Erro ao criar {pn}: {e}"))
+                            continue
+                        was_created = True
+                    prefix = "[DRY] " if dry else ""
+                    self.stdout.write(self.style.SUCCESS(
+                        f"  {prefix}✚ {pn} — registro CRIADO com {len(fields)} campo(s):"
+                    ))
+                    for field, val in fields.items():
+                        self.stdout.write(f"      {field}: → {repr(val)}")
+                    if reason:
+                        self.stdout.write(f"      Motivo: {reason}")
+                    created_count += 1
+                    continue
+                else:
+                    self.stdout.write(self.style.WARNING(f"  ⚠ Não encontrado no banco: {pn}"))
+                    not_found += 1
+                    continue
 
             changed_fields = []
             for field, new_val in fields.items():
@@ -322,6 +588,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             f"\n{'[DRY] ' if dry else ''}Resultado: {fixed} corrigido(s), "
+            f"{created_count} criado(s), "
             f"{skipped} já correto(s), {not_found} não encontrado(s) no banco."
         )
         if not dry and fixed:

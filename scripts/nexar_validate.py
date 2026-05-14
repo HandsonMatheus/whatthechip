@@ -149,7 +149,7 @@ FAMILY_META: dict[str, dict] = {
     "KMN":  {"chip_type": "eMCP", "is_emcp": True, "ram_gen": "LPDDR3",    "nand_iface": "eMMC 5.1", "cap_pos": (3,5), "gen_pos": 2},
     "KMQ":  {"chip_type": "eMCP", "is_emcp": True, "ram_gen": "LPDDR3",    "nand_iface": "eMMC 5.1", "cap_pos": (3,5), "gen_pos": 2},
     "KMR":  {"chip_type": "eMCP", "is_emcp": True, "ram_gen": "LPDDR4/4X", "nand_iface": "eMMC 5.1", "cap_pos": (3,5), "gen_pos": 2},
-    "KMS":  {"chip_type": "eMCP", "is_emcp": True, "ram_gen": "LPDDR4X",   "nand_iface": "eMMC 5.1", "cap_pos": (3,5), "gen_pos": 2},
+    "KMS":  {"chip_type": "eMCP", "is_emcp": True, "ram_gen": "LPDDR1",    "nand_iface": "eMMC",     "cap_pos": (3,5), "gen_pos": None},  # LEGADO ~2012-2013
     # uMCP
     "KMD":  {"chip_type": "uMCP", "is_emcp": True, "ram_gen": "LPDDR4X",   "nand_iface": "UFS 2.1",  "cap_pos": (3,5), "gen_pos": 2},
     "KMG":  {"chip_type": "uMCP", "is_emcp": True, "ram_gen": "LPDDR4X",   "nand_iface": "UFS 3.1",  "cap_pos": (3,5), "gen_pos": 2},

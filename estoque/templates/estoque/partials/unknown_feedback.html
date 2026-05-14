@@ -1,0 +1,15 @@
+<div class="est-confirm est-confirm--done">
+  <div class="est-confirm-head">
+    <span class="est-confirm-status est-confirm-status--ok">✓ Registrado</span>
+    <span class="est-confirm-pn">{{ pn }}</span>
+  </div>
+  <p class="est-confirm-hint">
+    PN adicionado à fila de chips desconhecidos. Obrigado por contribuir com o banco de dados.
+  </p>
+  <div class="est-confirm-actions">
+    <button class="est-btn est-btn--ghost" type="button"
+            onclick="this.closest('#confirm-area').innerHTML=''; document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">
+      Fechar
+    </button>
+  </div>
+</div>

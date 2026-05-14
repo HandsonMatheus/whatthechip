@@ -1,0 +1,1380 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>WhatTheChip — Design System Preview v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* =========================================================
+   WhatTheChip — Design System v2 (self-contained preview)
+   IBM Carbon-inspired · Helvetica Neue · Blue #0f62fe
+   ========================================================= */
+
+:root {
+  --bg:        #ffffff;
+  --surface:   #ffffff;
+  --surface-2: #f4f4f4;
+  --surface-3: #e0e0e0;
+  --text-primary:     #161616;
+  --text-secondary:   #525252;
+  --text-helper:      #6f6f6f;
+  --text-placeholder: #a8a8a8;
+  --text-on-color:    #ffffff;
+  --interactive:        #0f62fe;
+  --interactive-hover:  #0353e9;
+  --interactive-active: #002d9c;
+  --link:               #0f62fe;
+  --link-hover:         #0043ce;
+  --link-visited:       #8a3ffc;
+  --focus:              #0f62fe;
+  --border-subtle:  #e0e0e0;
+  --border-default: #8d8d8d;
+  --border-strong:  #161616;
+  --success:     #198038;  --success-bg:  #defbe6;  --success-bd:  #a7f0ba;
+  --warning:     #b28600;  --warning-bg:  #fff8e1;  --warning-bd:  #f1c21b;
+  --error:       #da1e28;  --error-bg:    #fff1f1;  --error-bd:    #ffd7d9;
+  --info:        #0043ce;  --info-bg:     #edf5ff;  --info-bd:     #d0e2ff;
+  --tag-blue-bg:  #d0e2ff;  --tag-blue-fg:  #0043ce;
+  --tag-green-bg: #defbe6;  --tag-green-fg: #0e6027;
+  --tag-teal-bg:  #d9fbfb;  --tag-teal-fg:  #005d5d;
+  --tag-cyan-bg:  #e5f6ff;  --tag-cyan-fg:  #0072c3;
+  --tag-gray-bg:  #e0e0e0;  --tag-gray-fg:  #393939;
+  --tag-cool-bg:  #dde1ff;  --tag-cool-fg:  #393aaa;
+  --code-bg:     #f4f4f4;  --code-fg:     #0f62fe;  --code-border: #e0e0e0;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.07);
+  --shadow-sm: 0 1px 4px rgba(0,0,0,.10);
+  --shadow-md: 0 2px 8px rgba(0,0,0,.13);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,.16);
+  --shadow-xl: 0 8px 32px rgba(0,0,0,.20);
+  --header-bg:     #ffffff;
+  --header-height: 48px;
+  --font:      "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "Fira Code", "Courier New", monospace;
+  --s1:2px; --s2:4px; --s3:8px; --s4:12px; --s5:16px; --s6:24px;
+  --s7:32px; --s8:40px; --s9:48px; --s10:64px; --s11:80px; --s12:96px;
+  --max-w: 1200px;
+  --content-w: 880px;
+  --r-sm:2px; --r:4px; --r-md:6px; --r-lg:8px;
+}
+
+[data-theme="dark"] {
+  --bg:        #161616;
+  --surface:   #262626;
+  --surface-2: #393939;
+  --surface-3: #525252;
+  --text-primary:   #f4f4f4;
+  --text-secondary: #c6c6c6;
+  --text-helper:    #a8a8a8;
+  --border-subtle:  #393939;
+  --border-default: #6f6f6f;
+  --interactive:       #78a9ff;
+  --interactive-hover: #a6c8ff;
+  --link:              #78a9ff;
+  --link-visited:      #be95ff;
+  --header-bg: #262626;
+  --code-bg: #393939;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.wtc-header {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--header-bg);
+  height: var(--header-height);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.wtc-header-inner {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--s5); height: 100%;
+  display: flex; align-items: center; gap: var(--s5);
+}
+.wtc-brand {
+  display: flex; align-items: center; gap: var(--s3);
+  font-weight: 700; font-size: 15px; letter-spacing: -0.02em;
+  text-decoration: none; color: var(--text-primary); white-space: nowrap;
+}
+.wtc-brand-name { color: var(--interactive); }
+.wtc-nav { display: flex; align-items: stretch; height: 100%; margin-left: var(--s3); }
+.wtc-nav-link {
+  display: flex; align-items: center; gap: var(--s2);
+  padding: 0 var(--s4); height: 100%;
+  color: var(--text-secondary); font-size: 14px;
+  text-decoration: none; white-space: nowrap;
+  transition: color 0.12s;
+}
+.wtc-nav-link:hover { color: var(--interactive); text-decoration: underline; text-underline-offset: 3px; }
+.wtc-nav-link--active { color: var(--interactive) !important; font-weight: 600; }
+.wtc-header-actions { margin-left: auto; display: flex; align-items: center; gap: var(--s3); }
+.wtc-theme-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  background: transparent; border: 1px solid var(--border-subtle);
+  color: var(--text-secondary); cursor: pointer;
+  transition: background 0.1s;
+}
+.wtc-theme-btn:hover { background: rgba(0,0,0,.05); color: var(--text-primary); }
+
+/* ── DS PAGE LAYOUT ─────────────────────────────────────── */
+.ds-page { max-width: var(--max-w); margin: 0 auto; padding: var(--s8) var(--s5) var(--s11); }
+.ds-section { margin-bottom: var(--s11); }
+.ds-section-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--interactive);
+  font-family: var(--font-mono);
+  border-bottom: 2px solid var(--interactive);
+  padding-bottom: var(--s2); margin-bottom: var(--s7);
+}
+.ds-section-h2 {
+  font-size: 28px; font-weight: 600; letter-spacing: -0.02em;
+  color: var(--text-primary); margin-bottom: var(--s3);
+}
+.ds-section-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: var(--s8); line-height: 1.75; }
+.ds-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--text-helper);
+  margin-bottom: var(--s3); display: block;
+}
+.ds-row { display: flex; flex-wrap: wrap; gap: var(--s5); align-items: flex-start; }
+.ds-col { flex: 1; min-width: 280px; }
+
+/* ── HERO PREVIEW ────────────────────────────────────────── */
+.hero-preview {
+  background: linear-gradient(180deg, #dbeafe 0%, #edf5ff 30%, #f4f4f4 80%);
+  padding: var(--s9) var(--s5) var(--s8);
+  text-align: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.hero-logo-text {
+  font-size: 36px; font-weight: 700; letter-spacing: -0.03em;
+  color: var(--text-primary); margin-bottom: var(--s2);
+}
+.hero-logo-text span { color: var(--interactive); }
+.hero-tagline { font-size: 13px; color: var(--text-secondary); margin-bottom: var(--s6); }
+
+/* ── PIN SEARCH ───────────────────────────────────────────── */
+.pin-search-demo { max-width: 560px; margin: 0 auto; }
+.pin-family-hint {
+  font-size: 12px; font-weight: 600; color: var(--interactive);
+  text-align: center; letter-spacing: 0.03em;
+  margin-bottom: var(--s3); height: 20px;
+}
+.pin-boxes {
+  display: flex; flex-wrap: nowrap; justify-content: center;
+  background: var(--surface);
+  border: 2px solid var(--interactive);
+  border-radius: var(--r); overflow: hidden;
+  box-shadow: 0 0 0 3px rgba(15,98,254,.2), var(--shadow-md);
+}
+.pin-box {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 56px; flex-shrink: 0;
+  border-right: 1px solid var(--border-subtle);
+  font-family: var(--font-mono); font-size: 21px; font-weight: 600;
+  color: var(--text-primary); background: transparent; user-select: none;
+}
+.pin-box:last-child { border-right: none; }
+.pin-box:first-child { border-radius: 2px 0 0 2px; }
+.pin-box.pin-filled { background: var(--surface-2); }
+.pin-box.pin-cursor {
+  background: var(--surface);
+  animation: pin-cursor-blink 1s step-end infinite;
+}
+.pin-box.pin-prefix { background: var(--info-bg); color: var(--interactive); }
+@keyframes pin-cursor-blink {
+  0%, 49% { box-shadow: inset 0 -3px 0 var(--interactive); }
+  50%, 100% { box-shadow: inset 0 -3px 0 transparent; }
+}
+.pin-hint-row {
+  display: flex; justify-content: center; gap: var(--s3);
+  margin-top: var(--s3); flex-wrap: wrap;
+}
+.pin-hint-chip {
+  font-size: 11px; font-weight: 600; padding: 3px 10px;
+  background: var(--info-bg); border: 1px solid var(--info-bd);
+  border-radius: var(--r-sm); color: var(--interactive);
+  font-family: var(--font-mono);
+}
+
+/* ── RESULT PANEL ─────────────────────────────────────────── */
+.result-panel {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md); overflow: hidden;
+  margin-top: var(--s5);
+}
+.wtc-rp-status {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+}
+.wtc-rp-status--idle   { background: var(--surface-2); color: var(--text-placeholder); }
+.wtc-rp-status--typing { background: var(--info-bg);   color: var(--interactive); }
+.wtc-rp-status--ok     { background: var(--success-bg); color: var(--success); }
+.wtc-rp-status--warn   { background: var(--warning-bg); color: var(--warning); }
+.wtc-rp-status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: currentColor; opacity: .6; flex-shrink: 0;
+}
+.wtc-rp-body {
+  padding: 14px 20px 12px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.wtc-rp-chiptype {
+  font-size: 24px; font-weight: 700; letter-spacing: -.01em;
+  color: var(--text-primary); line-height: 1.2;
+}
+.wtc-rp-subtype { font-size: 14px; font-weight: 400; color: var(--text-secondary); margin-left: 6px; }
+.wtc-rp-brand {
+  font-size: 10px; font-weight: 700; font-family: var(--font-mono);
+  color: var(--interactive); background: var(--info-bg);
+  border: 1px solid var(--info-bd); border-radius: var(--r);
+  padding: 3px 10px; letter-spacing: .06em; text-transform: uppercase;
+  align-self: flex-start;
+}
+.wtc-rp-specs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border-subtle);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.wtc-rp-spec {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); padding: 10px 20px;
+}
+.wtc-rp-spec-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--interactive); font-family: var(--font-mono);
+  flex-shrink: 0; white-space: nowrap;
+}
+.wtc-rp-spec-val { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.wtc-rp-footer {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  padding: 8px 20px 12px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 12px; color: var(--text-helper);
+}
+.wtc-rp-link { color: var(--link); text-decoration: none; }
+.wtc-rp-link:hover { text-decoration: underline; }
+.wtc-rp-sep { opacity: .4; }
+
+/* ── DECODE CARD ──────────────────────────────────────────── */
+.dc2-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--success);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  overflow: hidden;
+}
+.dc2-card--remarked { border-left-color: var(--warning); }
+.dc2-card--unknown  { border-left-color: var(--error); }
+.dc2-status {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 16px; font-size: 11px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  background: var(--success-bg); color: var(--success);
+  border-bottom: 1px solid var(--success-bd);
+}
+.dc2-card--remarked .dc2-status {
+  background: var(--warning-bg); color: var(--warning);
+  border-bottom-color: var(--warning-bd);
+}
+.dc2-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px 10px; gap: 12px;
+}
+.dc2-chiptype {
+  font-size: 24px; font-weight: 700; letter-spacing: -.01em;
+  color: var(--text-primary);
+}
+.dc2-brand-tag {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  color: var(--interactive); background: var(--info-bg);
+  border: 1px solid var(--info-bd); border-radius: var(--r-sm);
+  padding: 3px 9px; letter-spacing: .06em; text-transform: uppercase;
+  white-space: nowrap; align-self: flex-start; margin-top: 4px;
+}
+.dc2-alert {
+  margin: 0 20px 12px;
+  padding: 8px 14px;
+  background: var(--error-bg); border-left: 3px solid var(--error);
+  border-radius: var(--r-sm);
+  font-size: 12px; font-weight: 600; color: var(--error);
+  display: flex; align-items: center; gap: 8px;
+}
+.dc2-specs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border-subtle);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.dc2-spec-col {
+  background: var(--surface); padding: 10px 20px;
+}
+.dc2-spec-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--interactive); font-family: var(--font-mono);
+  margin-bottom: 4px;
+}
+.dc2-spec-val {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+}
+.dc2-spec-val--mono {
+  font-family: var(--font-mono); letter-spacing: .03em; font-size: 14px;
+}
+.dc2-footer {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  padding: 8px 20px 12px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 12px; color: var(--text-helper);
+}
+.dc2-conf-tag {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 2px 8px; border-radius: var(--r-sm);
+  background: var(--success-bg); color: var(--success);
+  border: 1px solid var(--success-bd);
+  font-family: var(--font-mono);
+}
+.dc2-conf-tag--estimated {
+  background: var(--tag-gray-bg); color: var(--tag-gray-fg);
+  border-color: var(--border-subtle);
+}
+.dc2-link { color: var(--link); text-decoration: none; }
+.dc2-link:hover { text-decoration: underline; }
+.dc2-sep { opacity: .4; }
+
+/* ── PREFIX TABLE ─────────────────────────────────────────── */
+.pr-header {
+  display: grid; grid-template-columns: 90px 100px 1fr;
+  gap: 12px; padding: 7px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 10px; font-weight: 700;
+  color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.07em;
+}
+.pr-row {
+  display: grid; grid-template-columns: 90px 100px 1fr;
+  gap: 12px; padding: 9px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 13px; align-items: center; cursor: pointer;
+  text-decoration: none; color: inherit; transition: background 0.1s;
+}
+.pr-row:last-child { border-bottom: 0; }
+.pr-row:hover { background: var(--info-bg); }
+.pr-prefix {
+  font-family: var(--font-mono); font-weight: 700; font-size: 13px;
+  color: var(--interactive); background: var(--info-bg);
+  border: 1px solid var(--info-bd); border-radius: var(--r-sm);
+  padding: 2px 8px; display: inline-block; letter-spacing: 0.03em;
+}
+.pr-fab  { font-size: 12px; color: var(--text-secondary); }
+.pr-tipo { font-size: 13px; color: var(--text-primary); }
+.pr-footer {
+  padding: 9px 18px; background: var(--surface-2);
+  border-top: 1px solid var(--border-subtle);
+  font-size: 12px; color: var(--text-helper); text-align: right;
+}
+
+/* ── ESTOQUE TABLE ───────────────────────────────────────── */
+.est-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  padding: var(--s6);
+}
+.est-input {
+  height: 40px; padding: 0 var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--r-sm);
+  font-family: var(--font); font-size: 14px;
+  color: var(--text-primary); width: 100%;
+  outline: none;
+}
+.est-input:focus {
+  border-color: var(--interactive);
+  box-shadow: inset 0 0 0 1px var(--interactive);
+}
+.est-input--mono {
+  font-family: var(--font-mono); font-size: 15px; letter-spacing: .03em;
+}
+.est-table { width: 100%; border-collapse: collapse; }
+.est-table th {
+  background: var(--surface-2);
+  border-bottom: 2px solid var(--interactive);
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .04em; color: var(--text-secondary);
+  padding: 8px 14px; text-align: left;
+}
+.est-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 13px; color: var(--text-primary);
+}
+.est-table tbody tr:hover td { background: var(--surface-2); }
+.est-pn {
+  font-family: var(--font-mono); color: var(--interactive);
+  font-size: 13px; font-weight: 600;
+}
+.est-type-tag {
+  display: inline-block; padding: 1px 8px;
+  background: var(--tag-blue-bg); color: var(--tag-blue-fg);
+  border-radius: var(--r-sm);
+  font-size: 11px; font-weight: 700; letter-spacing: .03em;
+}
+.est-type-tag--green  { background: var(--tag-green-bg); color: var(--tag-green-fg); }
+.est-type-tag--teal   { background: var(--tag-teal-bg);  color: var(--tag-teal-fg); }
+.est-type-tag--cool   { background: var(--tag-cool-bg);  color: var(--tag-cool-fg); }
+.est-type-tag--gray   { background: var(--tag-gray-bg);  color: var(--tag-gray-fg); }
+.est-qty-badge {
+  min-width: 36px; text-align: center; padding: 2px 8px;
+  background: var(--surface-2); border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm); font-family: var(--font-mono); font-weight: 700;
+  font-size: 12px;
+}
+.est-confirm {
+  padding: var(--s4) var(--s5);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: var(--s3);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.est-confirm--ok      { border-left: 3px solid var(--success); background: var(--success-bg); }
+.est-confirm--unknown { border-left: 3px solid var(--warning); background: var(--warning-bg); }
+.est-confirm--done    { border-left: 3px solid var(--interactive); background: var(--info-bg); }
+.est-confirm-label { font-size: 13px; font-weight: 600; }
+.est-confirm-pn { font-family: var(--font-mono); font-size: 13px; color: var(--interactive); }
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  padding: 10px 20px; min-height: 40px;
+  font-family: var(--font); font-size: 14px; font-weight: 600;
+  border-radius: var(--r-sm); cursor: pointer; border: none;
+  text-decoration: none; white-space: nowrap; transition: background .1s;
+}
+.btn-primary  { background: var(--interactive); color: var(--text-on-color); }
+.btn-primary:hover { background: var(--interactive-hover); }
+.btn-secondary { background: var(--surface-2); color: var(--text-primary); border: 1px solid var(--border-default); }
+.btn-secondary:hover { background: var(--surface-3); }
+.btn-ghost  { background: transparent; color: var(--interactive); }
+.btn-ghost:hover { background: var(--info-bg); }
+.btn-danger { background: transparent; color: var(--error); border: 1px solid transparent; }
+.btn-danger:hover { background: var(--error-bg); }
+.btn-sm { padding: 6px 14px; min-height: 32px; font-size: 13px; }
+.btn-lg { padding: 13px 24px; min-height: 48px; font-size: 15px; }
+
+/* ── COLOR SWATCHES ─────────────────────────────────────────── */
+.swatch-grid { display: flex; flex-wrap: wrap; gap: var(--s3); }
+.swatch {
+  display: flex; flex-direction: column;
+  width: 88px; overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm);
+}
+.swatch-color { height: 56px; }
+.swatch-label {
+  padding: 5px 8px; font-size: 10px; font-weight: 700;
+  font-family: var(--font-mono); color: var(--text-secondary);
+  background: var(--surface); line-height: 1.4;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* ── GRADIENT SHOWCASE ──────────────────────────────────────── */
+.grad-showcase { display: flex; flex-wrap: wrap; gap: var(--s5); }
+.grad-swatch {
+  flex: 1; min-width: 200px; height: 96px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  display: flex; align-items: flex-end; justify-content: flex-start;
+  padding: var(--s4); overflow: hidden;
+}
+.grad-swatch-label {
+  font-size: 11px; font-weight: 700;
+  font-family: var(--font-mono); letter-spacing: .04em;
+  padding: 3px 8px; border-radius: var(--r-sm);
+  background: rgba(255,255,255,.85);
+  color: var(--text-primary);
+}
+
+/* ── TYPE SCALE ─────────────────────────────────────────────── */
+.type-row {
+  display: flex; align-items: baseline; gap: var(--s6);
+  padding: var(--s3) 0; border-bottom: 1px solid var(--border-subtle);
+}
+.type-meta {
+  font-size: 10px; font-weight: 700; font-family: var(--font-mono);
+  color: var(--text-helper); text-transform: uppercase;
+  letter-spacing: .05em; min-width: 200px; flex-shrink: 0;
+}
+.type-sample { color: var(--text-primary); }
+
+/* ── CODE SAMPLE ─────────────────────────────────────────────── */
+.ds-code {
+  background: var(--code-bg); border: 1px solid var(--code-border);
+  border-radius: var(--r-sm);
+  padding: var(--s5); font-family: var(--font-mono);
+  font-size: 12px; line-height: 1.7; color: var(--text-secondary);
+  overflow-x: auto; margin-bottom: var(--s5);
+}
+.ds-code .k { color: var(--interactive); font-weight: 700; }
+.ds-code .v { color: var(--success); }
+.ds-code .c { color: var(--text-helper); font-style: italic; }
+
+/* ── SHADOW SCALE ────────────────────────────────────────────── */
+.shadow-item {
+  display: flex; flex-direction: column; align-items: center; gap: var(--s3);
+}
+.shadow-box {
+  display: flex; align-items: center; justify-content: center;
+  width: 100px; height: 64px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--text-helper); font-weight: 700;
+}
+.shadow-label {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--text-helper); text-transform: uppercase; letter-spacing: .04em;
+}
+
+/* ── RADIUS SCALE ────────────────────────────────────────────── */
+.radius-box {
+  display: flex; flex-direction: column; align-items: center; gap: var(--s3);
+}
+.radius-shape {
+  width: 64px; height: 64px;
+  background: var(--info-bg); border: 2px solid var(--interactive);
+}
+.radius-label {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  color: var(--text-helper); text-transform: uppercase; letter-spacing: .04em;
+  text-align: center; line-height: 1.4;
+}
+
+/* ── SPACING TOKENS ─────────────────────────────────────────── */
+.spacing-row {
+  display: flex; align-items: center; gap: var(--s6);
+  padding: var(--s2) 0; border-bottom: 1px solid var(--border-subtle);
+}
+.spacing-token {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  color: var(--interactive); min-width: 52px;
+}
+.spacing-value { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); min-width: 36px; }
+.spacing-bar { height: 12px; background: var(--info-bg); border: 1px solid var(--info-bd); border-radius: 2px; }
+
+/* ── FOOTER ─────────────────────────────────────────────────── */
+.wtc-footer {
+  background: #161616; color: rgba(255,255,255,0.6);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 12px; text-align: center;
+  padding: var(--s5); letter-spacing: .02em;
+}
+
+/* ── DARK MODE PANEL ─────────────────────────────────────────── */
+.ds-dark-strip {
+  background: #161616;
+  border-radius: var(--r-md); padding: var(--s6) var(--s6) var(--s7);
+  display: flex; flex-wrap: wrap; gap: var(--s6); align-items: flex-start;
+}
+.ds-dark-swatch {
+  display: flex; flex-direction: column;
+  width: 88px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--r-sm);
+}
+.ds-dark-label {
+  padding: 5px 8px; font-size: 10px; font-weight: 700;
+  font-family: var(--font-mono); color: rgba(255,255,255,.5);
+  background: rgba(255,255,255,.04); line-height: 1.4;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+/* ── TAG VARIANTS ─────────────────────────────────────────────── */
+.ds-tag-row { display: flex; flex-wrap: wrap; gap: var(--s3); }
+.ds-tag {
+  display: inline-block; padding: 3px 12px;
+  border-radius: var(--r-sm);
+  font-size: 12px; font-weight: 700; letter-spacing: .03em;
+}
+
+/* ── DIVIDER ─────────────────────────────────────────────────── */
+.ds-divider { border: none; border-top: 1px solid var(--border-subtle); margin: 0 0 var(--s8) 0; }
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .dc2-specs, .wtc-rp-specs { grid-template-columns: 1fr; }
+  .pin-box { width: 36px; height: 48px; font-size: 17px; }
+  .type-meta { min-width: 140px; }
+}
+
+/* ── CODE INLINE ─────────────────────────────────────────────── */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: var(--r-sm);
+  padding: 1px 6px;
+  color: var(--code-fg);
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ──────────────────────────────────────────────────── -->
+<header class="wtc-header">
+  <div class="wtc-header-inner">
+    <a class="wtc-brand" href="#">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="28" height="28" rx="4" fill="#0f62fe"/>
+        <text x="14" y="19" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-weight="800" font-size="11" fill="#fff" letter-spacing="-0.5">IC</text>
+      </svg>
+      <span>What<span class="wtc-brand-name">TheChip</span><span style="color:var(--interactive)">?</span></span>
+    </a>
+    <nav class="wtc-nav" aria-label="Principal">
+      <a class="wtc-nav-link wtc-nav-link--active" href="#">Início</a>
+      <a class="wtc-nav-link" href="#">Fabricantes</a>
+      <a class="wtc-nav-link" href="#">Prefixos</a>
+      <a class="wtc-nav-link" href="#">Estoque</a>
+    </nav>
+    <div class="wtc-header-actions">
+      <button class="wtc-theme-btn" id="theme-toggle" title="Alternar modo claro/escuro" type="button" aria-label="Alternar modo">
+        <svg id="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg id="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ── MAIN ─────────────────────────────────────────────────────── -->
+<main class="ds-page">
+
+  <!-- ══ INTRO ══════════════════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">Design System · Preview</div>
+    <div class="ds-section-h2">WhatTheChip v2.0</div>
+    <p class="ds-section-sub">
+      Sistema de design baseado no <strong>IBM Carbon White theme</strong> com três extensões proprietárias:
+      tipografia <strong>Helvetica Neue</strong>, gradientes de aquecimento visual para o mercado asiático e base em <strong>14 px</strong> para densidade operacional.
+      Esta página demonstra todos os componentes em uso real no sistema Django — fonte de verdade em <code>static/css/style.css</code>.
+    </p>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 01. HERO + PIN SEARCH ═══════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">01 — Hero &amp; PIN Search</div>
+
+    <div class="hero-preview">
+      <div class="hero-logo-text">What<span>TheChip</span>?</div>
+      <div class="hero-tagline">Identificação de chips IC para reciclagem eletrônica</div>
+
+      <div class="pin-search-demo">
+        <div class="pin-family-hint">K4F — LPDDR4 / LPDDR4X Samsung</div>
+        <div class="pin-boxes" role="group" aria-label="Part number">
+          <div class="pin-box pin-prefix pin-filled">K</div>
+          <div class="pin-box pin-prefix pin-filled">4</div>
+          <div class="pin-box pin-prefix pin-filled">F</div>
+          <div class="pin-box pin-filled">B</div>
+          <div class="pin-box pin-filled">C</div>
+          <div class="pin-box pin-filled">3</div>
+          <div class="pin-box pin-cursor">2</div>
+          <div class="pin-box" style="color:var(--text-placeholder)">·</div>
+          <div class="pin-box" style="color:var(--text-placeholder)">·</div>
+          <div class="pin-box" style="color:var(--text-placeholder)">·</div>
+          <div class="pin-box" style="color:var(--text-placeholder)">·</div>
+          <div class="pin-box" style="color:var(--text-placeholder)">·</div>
+        </div>
+
+        <div class="result-panel">
+          <div class="wtc-rp-status wtc-rp-status--ok">
+            <span class="wtc-rp-status-dot"></span>
+            Chip identificado
+          </div>
+          <div class="wtc-rp-body">
+            <div>
+              <span class="wtc-rp-chiptype">LPDDR4X</span>
+              <span class="wtc-rp-subtype">4 GB</span>
+            </div>
+            <span class="wtc-rp-brand">Samsung</span>
+          </div>
+          <div class="wtc-rp-specs">
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label">Capacidade</span>
+              <span class="wtc-rp-spec-val">4 GB</span>
+            </div>
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label">Densidade</span>
+              <span class="wtc-rp-spec-val">32Gb = 4GB/die</span>
+            </div>
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label">Interface</span>
+              <span class="wtc-rp-spec-val">LPDDR4X</span>
+            </div>
+            <div class="wtc-rp-spec">
+              <span class="wtc-rp-spec-label">Fonte</span>
+              <span class="wtc-rp-spec-val">gramática</span>
+            </div>
+          </div>
+          <div class="wtc-rp-footer">
+            <span>confirmado</span>
+            <span class="wtc-rp-sep">·</span>
+            <a class="wtc-rp-link" href="#">ver datasheet</a>
+            <span class="wtc-rp-sep">·</span>
+            <span style="color:var(--error);cursor:pointer;text-decoration:underline dotted;font-size:12px">reportar erro</span>
+          </div>
+        </div>
+
+        <div class="pin-hint-row">
+          <span class="pin-hint-chip">K4F — LPDDR4/4X</span>
+          <span class="pin-hint-chip">K4U — LPDDR4</span>
+          <span class="pin-hint-chip">K3U — LPDDR5</span>
+          <span class="pin-hint-chip">KMQ — eMCP</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-code" style="margin-top:var(--s5)">
+<span class="c">/* Hero gradient — WTC extension over Carbon flat */</span>
+.hero {
+  <span class="k">background</span>: <span class="v">linear-gradient(180deg, #dbeafe 0%, #edf5ff 30%, #f4f4f4 80%)</span>;
+  <span class="k">min-height</span>: <span class="v">58vh</span>;
+}
+
+<span class="c">/* PIN cursor — Carbon underline-focus idiom */</span>
+@keyframes pin-cursor-blink {
+  0%, 49%   { box-shadow: inset 0 -3px 0 <span class="v">var(--interactive)</span>; }
+  50%, 100% { box-shadow: inset 0 -3px 0 <span class="v">transparent</span>; }
+}
+
+<span class="c">/* focus-within ring — Carbon double border */</span>
+.pin-boxes:focus-within {
+  <span class="k">border-color</span>: <span class="v">var(--interactive)</span>;
+  <span class="k">box-shadow</span>: <span class="v">0 0 0 3px rgba(15,98,254,.2)</span>, var(--shadow-md);
+}</div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 02. DECODE CARD ═════════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">02 — Decode Card (dc2-card)</div>
+    <p class="ds-section-sub">
+      Partial Django (<code>chips/templates/chips/partials/decode_card.html</code>) renderizado via HTMX.
+      O acento lateral de 4 px comunica o estado: <strong style="color:var(--success)">verde</strong> = identificado,
+      <strong style="color:var(--warning)">amarelo</strong> = remarked/alerta.
+    </p>
+
+    <div class="ds-row">
+      <div class="ds-col">
+        <span class="ds-label">Estado: identificado</span>
+        <div class="dc2-card">
+          <div class="dc2-status">&#x2713;&nbsp; Identificado</div>
+          <div class="dc2-head">
+            <div class="dc2-chiptype">LPDDR4X</div>
+            <span class="dc2-brand-tag">Samsung</span>
+          </div>
+          <div class="dc2-specs">
+            <div class="dc2-spec-col">
+              <div class="dc2-spec-label">Capacidade</div>
+              <div class="dc2-spec-val">4 GB</div>
+            </div>
+            <div class="dc2-spec-col">
+              <div class="dc2-spec-label">Densidade</div>
+              <div class="dc2-spec-val">32Gb = 4GB/die</div>
+            </div>
+            <div class="dc2-spec-col">
+              <div class="dc2-spec-label">Part Number</div>
+              <div class="dc2-spec-val dc2-spec-val--mono">K4FBC32SM-BCRC</div>
+            </div>
+            <div class="dc2-spec-col">
+              <div class="dc2-spec-label">Interface</div>
+              <div class="dc2-spec-val">LPDDR4X</div>
+            </div>
+          </div>
+          <div class="dc2-footer">
+            <span class="dc2-conf-tag">confirmado</span>
+            <span class="dc2-sep">·</span>
+            <span>gramática</span>
+            <span class="dc2-sep">·</span>
+            <a class="dc2-link" href="#">datasheet</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-col">
+        <span class="ds-label">Estado: remarked / alerta</span>
+        <div class="dc2-card dc2-card--remarked">
+          <div class="dc2-status">&#x26A0;&nbsp; Remarked — verificar fisicamente</div>
+          <div class="dc2-head">
+            <div class="dc2-chiptype">Desconhecido</div>
+            <span class="dc2-brand-tag" style="background:var(--warning-bg);color:var(--warning);border-color:var(--warning-bd)">Remarked</span>
+          </div>
+          <div class="dc2-alert">
+            &#x26A0; Chip com marcação adulterada. Pode ser remarked ou counterfeit.
+          </div>
+          <div class="dc2-specs">
+            <div class="dc2-spec-col">
+              <div class="dc2-spec-label">Part Number</div>
+              <div class="dc2-spec-val dc2-spec-val--mono">H26M64002CMR</div>
+            </div>
+            <div class="dc2-spec-col">
+              <div class="dc2-spec-label">Prefixo detectado</div>
+              <div class="dc2-spec-val">H26M — eMMC SK Hynix</div>
+            </div>
+          </div>
+          <div class="dc2-footer">
+            <span class="dc2-conf-tag dc2-conf-tag--estimated">estimado</span>
+            <span class="dc2-sep">·</span>
+            <span>banco</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- eMCP variant -->
+    <div style="margin-top:var(--s6)">
+      <span class="ds-label">Variante eMCP / uMCP (NAND + RAM)</span>
+      <div class="dc2-card" style="max-width:560px">
+        <div class="dc2-status">&#x2713;&nbsp; eMCP Identificado</div>
+        <div class="dc2-head">
+          <div class="dc2-chiptype">eMCP</div>
+          <span class="dc2-brand-tag" style="background:var(--tag-cool-bg);color:var(--tag-cool-fg);border-color:var(--border-subtle)">Samsung</span>
+        </div>
+        <div class="dc2-specs" style="grid-template-columns:1fr 1fr 1fr 1fr">
+          <div class="dc2-spec-col">
+            <div class="dc2-spec-label">NAND</div>
+            <div class="dc2-spec-val">16 GB</div>
+          </div>
+          <div class="dc2-spec-col">
+            <div class="dc2-spec-label">LPDDR</div>
+            <div class="dc2-spec-val">3 GB</div>
+          </div>
+          <div class="dc2-spec-col">
+            <div class="dc2-spec-label">Interface</div>
+            <div class="dc2-spec-val">LPDDR4</div>
+          </div>
+          <div class="dc2-spec-col">
+            <div class="dc2-spec-label">Part Number</div>
+            <div class="dc2-spec-val dc2-spec-val--mono">KMR820013M</div>
+          </div>
+        </div>
+        <div class="dc2-footer">
+          <span class="dc2-conf-tag">confirmado</span>
+          <span class="dc2-sep">·</span>
+          <span>banco</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 03. PREFIX TABLE ════════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">03 — Tabela de Prefixos (pr-*)</div>
+    <p class="ds-section-sub">
+      Listagem abaixo do decode card. Grid 3 colunas com hover azul-claro e cabeçalho Carbon
+      (<code>surface-2</code> + uppercase 10 px).
+    </p>
+
+    <div style="border:1px solid var(--border-subtle);border-radius:var(--r-md);overflow:hidden;max-width:680px">
+      <div class="pr-header">
+        <span>Prefixo</span>
+        <span>Fabricante</span>
+        <span>Tipo</span>
+      </div>
+      <a class="pr-row" href="#" style="display:grid;color:inherit;text-decoration:none">
+        <span class="pr-prefix">K4F</span>
+        <span class="pr-fab">Samsung</span>
+        <span class="pr-tipo">LPDDR4 / LPDDR4X</span>
+      </a>
+      <a class="pr-row" href="#" style="display:grid;color:inherit;text-decoration:none">
+        <span class="pr-prefix">K3U</span>
+        <span class="pr-fab">Samsung</span>
+        <span class="pr-tipo">LPDDR5 / LPDDR5X</span>
+      </a>
+      <a class="pr-row" href="#" style="display:grid;color:inherit;text-decoration:none">
+        <span class="pr-prefix">KMQ</span>
+        <span class="pr-fab">Samsung</span>
+        <span class="pr-tipo">eMCP (LPDDR2 + eMMC)</span>
+      </a>
+      <a class="pr-row" href="#" style="display:grid;color:inherit;text-decoration:none">
+        <span class="pr-prefix">H9HQ</span>
+        <span class="pr-fab">SK Hynix</span>
+        <span class="pr-tipo">LPDDR4X</span>
+      </a>
+      <a class="pr-row" href="#" style="display:grid;color:inherit;text-decoration:none">
+        <span class="pr-prefix">MT53</span>
+        <span class="pr-fab">Micron</span>
+        <span class="pr-tipo">LPDDR4 / LPDDR4X</span>
+      </a>
+      <div class="pr-footer">
+        Mostrando 5 de 124 prefixos &nbsp;·&nbsp; <a href="#" style="color:var(--link);font-weight:700;text-decoration:none">Ver todos →</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 04. ESTOQUE ════════════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">04 — Painel de Estoque (est-*)</div>
+    <p class="ds-section-sub">
+      Painel operacional com OCR/câmera (Tesseract.js) e HTMX para preview live.
+      Input monospace para PNs, tabela com acento azul 2 px no cabeçalho — tratamento Carbon.
+    </p>
+
+    <div class="ds-row">
+      <div class="ds-col" style="max-width:320px">
+        <span class="ds-label">Input de Part Number</span>
+        <div class="est-card" style="border-radius:var(--r-md)">
+          <div style="display:flex;flex-direction:column;gap:var(--s4)">
+            <div>
+              <label style="font-size:12px;font-weight:700;color:var(--text-secondary);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em">Part Number</label>
+              <input type="text" class="est-input est-input--mono" value="K4FBC32SM-BCRC" readonly/>
+            </div>
+            <div>
+              <label style="font-size:12px;font-weight:700;color:var(--text-secondary);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em">Quantidade</label>
+              <input type="number" class="est-input" value="120" readonly/>
+            </div>
+            <div style="display:flex;gap:var(--s3)">
+              <button class="btn btn-primary" style="flex:1">Registrar</button>
+              <button class="btn btn-secondary">Limpar</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:var(--s5)">
+          <span class="ds-label">Confirmações inline (est-confirm)</span>
+          <div class="est-confirm est-confirm--ok">
+            <div>
+              <div class="est-confirm-label" style="color:var(--success)">&#x2713; Identificado</div>
+              <div class="est-confirm-pn">K4FBC32SM-BCRC</div>
+            </div>
+            <span class="est-type-tag">LPDDR4X</span>
+          </div>
+          <div class="est-confirm est-confirm--unknown">
+            <div>
+              <div class="est-confirm-label" style="color:var(--warning)">&#x26A0; Verificar</div>
+              <div class="est-confirm-pn">H26M64002CMR</div>
+            </div>
+            <span class="est-type-tag" style="background:var(--warning-bg);color:var(--warning)">Remarked?</span>
+          </div>
+          <div class="est-confirm est-confirm--done">
+            <div>
+              <div class="est-confirm-label" style="color:var(--interactive)">&#x25CF; Registrado</div>
+              <div class="est-confirm-pn">KLUDG8U1EA-B0C3</div>
+            </div>
+            <span class="est-type-tag est-type-tag--green">UFS 3.1</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ds-col">
+        <span class="ds-label">Tabela de estoque (est-table)</span>
+        <div style="border:1px solid var(--border-subtle);border-radius:var(--r-md);overflow:hidden">
+          <table class="est-table">
+            <thead>
+              <tr>
+                <th>Part Number</th>
+                <th>Tipo</th>
+                <th>Fabricante</th>
+                <th style="text-align:right">Qtd</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="est-pn">K4FBC32SM-BCRC</span></td>
+                <td><span class="est-type-tag">LPDDR4X</span></td>
+                <td>Samsung</td>
+                <td style="text-align:right"><span class="est-qty-badge">120</span></td>
+              </tr>
+              <tr>
+                <td><span class="est-pn">KLUDG8U1EA-B0C3</span></td>
+                <td><span class="est-type-tag est-type-tag--green">UFS 3.1</span></td>
+                <td>Samsung</td>
+                <td style="text-align:right"><span class="est-qty-badge">48</span></td>
+              </tr>
+              <tr>
+                <td><span class="est-pn">H9HQ52AECMMDAR</span></td>
+                <td><span class="est-type-tag est-type-tag--teal">LPDDR4X</span></td>
+                <td>SK Hynix</td>
+                <td style="text-align:right"><span class="est-qty-badge">200</span></td>
+              </tr>
+              <tr>
+                <td><span class="est-pn">KMR820013M-B419</span></td>
+                <td><span class="est-type-tag est-type-tag--cool">eMCP</span></td>
+                <td>Samsung</td>
+                <td style="text-align:right"><span class="est-qty-badge">35</span></td>
+              </tr>
+              <tr>
+                <td><span class="est-pn">MT53D512M64D4NQ</span></td>
+                <td><span class="est-type-tag">LPDDR4X</span></td>
+                <td>Micron</td>
+                <td style="text-align:right"><span class="est-qty-badge">90</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 05. BOTÕES ══════════════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">05 — Botões</div>
+    <p class="ds-section-sub">
+      Carbon: <code>border-radius: 2px</code> (<code>--r-sm</code>), peso 600, sem sombra. Quatro variantes de cor, três tamanhos.
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:var(--s6)">
+      <div>
+        <span class="ds-label">Variantes — tamanho padrão (40 px)</span>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--s4);align-items:center">
+          <button class="btn btn-primary">Primário</button>
+          <button class="btn btn-secondary">Secundário</button>
+          <button class="btn btn-ghost">Ghost</button>
+          <button class="btn btn-danger">Perigo</button>
+        </div>
+      </div>
+      <div>
+        <span class="ds-label">Tamanhos (sm / padrão / lg)</span>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--s4);align-items:center">
+          <button class="btn btn-primary btn-sm">Pequeno 32px</button>
+          <button class="btn btn-primary">Padrão 40px</button>
+          <button class="btn btn-primary btn-lg">Grande 48px</button>
+        </div>
+      </div>
+      <div>
+        <span class="ds-label">Com ícone — contextos operacionais</span>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--s4);align-items:center">
+          <button class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Buscar chip
+          </button>
+          <button class="btn btn-secondary btn-sm">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar CSV
+          </button>
+          <button class="btn btn-ghost btn-sm">Cancelar</button>
+          <button class="btn btn-danger btn-sm">Remover item</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 06. TIPOGRAFIA ══════════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">06 — Escala tipográfica</div>
+    <p class="ds-section-sub">
+      <strong>Helvetica Neue</strong> como principal (instalada no OS — zero carregamento externo).
+      <strong>IBM Plex Mono</strong> para PNs, código e labels. Base <strong>14 px</strong> com <code>letter-spacing: 0.16px</code> no corpo — detalhe Carbon.
+    </p>
+
+    <div>
+      <div class="type-row">
+        <span class="type-meta">Display h1 · 28px · 600</span>
+        <span class="type-sample" style="font-size:28px;font-weight:600;letter-spacing:-0.02em">Identificação de Chips IC</span>
+      </div>
+      <div class="type-row">
+        <span class="type-meta">Section h2 · 20px · 600</span>
+        <span class="type-sample" style="font-size:20px;font-weight:600;letter-spacing:-0.01em">Fabricantes Suportados</span>
+      </div>
+      <div class="type-row">
+        <span class="type-meta">Sub-heading h3 · 16px · 600</span>
+        <span class="type-sample" style="font-size:16px;font-weight:600">Samsung LPDDR4 / LPDDR4X</span>
+      </div>
+      <div class="type-row">
+        <span class="type-meta">Body · 14px · 400</span>
+        <span class="type-sample" style="font-size:14px;line-height:1.75;letter-spacing:0.16px;max-width:480px">
+          O prefixo <code>K4F</code> identifica chips de memória LPDDR4/4X da Samsung fabricados a partir de 2018.
+          A posição 4–5 do part number codifica a capacidade por die em Gigabits.
+        </span>
+      </div>
+      <div class="type-row">
+        <span class="type-meta">Chip type · 24px · 700</span>
+        <span class="type-sample" style="font-size:24px;font-weight:700;letter-spacing:-0.01em">LPDDR4X</span>
+      </div>
+      <div class="type-row">
+        <span class="type-meta">Part number mono · 13px · 600</span>
+        <span class="type-sample" style="font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.03em;color:var(--interactive)">K4FBC32SM-BCRC</span>
+      </div>
+      <div class="type-row">
+        <span class="type-meta">Caption · 11px · 700 · UC</span>
+        <span class="type-sample" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-helper)">Capacidade · Densidade · Interface</span>
+      </div>
+      <div class="type-row">
+        <span class="type-meta">Spec label mono · 10px · 700</span>
+        <span class="type-sample" style="font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--interactive)">CAP · DRAM_DENSITY · EMCP_RAM</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 07. CORES ═══════════════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">07 — Paleta (Carbon White theme + extensões WTC)</div>
+
+    <div style="display:flex;flex-direction:column;gap:var(--s7)">
+      <div>
+        <span class="ds-label">Superfícies</span>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="swatch-color" style="background:#ffffff;border-bottom:1px solid #e0e0e0"></div><div class="swatch-label">--bg / --surface<br/>#ffffff</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#f4f4f4"></div><div class="swatch-label">--surface-2<br/>#f4f4f4</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#e0e0e0"></div><div class="swatch-label">--surface-3<br/>#e0e0e0</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#161616"></div><div class="swatch-label" style="background:#1a1a1a;color:rgba(255,255,255,.6);border-top-color:rgba(255,255,255,.1)">--text-pri<br/>#161616</div></div>
+        </div>
+      </div>
+      <div>
+        <span class="ds-label">IBM Blue 60 — único acento cromático</span>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="swatch-color" style="background:#0f62fe"></div><div class="swatch-label">--interactive<br/>#0f62fe</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#0353e9"></div><div class="swatch-label">--hover<br/>#0353e9</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#002d9c"></div><div class="swatch-label">--active<br/>#002d9c</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#edf5ff"></div><div class="swatch-label">--info-bg<br/>#edf5ff</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#d0e2ff"></div><div class="swatch-label">--info-bd<br/>#d0e2ff</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#8a3ffc"></div><div class="swatch-label">--link-vis<br/>#8a3ffc</div></div>
+        </div>
+      </div>
+      <div>
+        <span class="ds-label">Semântica (sucesso / alerta / erro)</span>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="swatch-color" style="background:#198038"></div><div class="swatch-label">--success<br/>#198038</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#defbe6"></div><div class="swatch-label">--success-bg<br/>#defbe6</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#b28600"></div><div class="swatch-label">--warning<br/>#b28600</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#fff8e1"></div><div class="swatch-label">--warning-bg<br/>#fff8e1</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#da1e28"></div><div class="swatch-label">--error<br/>#da1e28</div></div>
+          <div class="swatch"><div class="swatch-color" style="background:#fff1f1"></div><div class="swatch-label">--error-bg<br/>#fff1f1</div></div>
+        </div>
+      </div>
+      <div>
+        <span class="ds-label">Tags de tipo de chip</span>
+        <div class="ds-tag-row">
+          <span class="ds-tag" style="background:var(--tag-blue-bg);color:var(--tag-blue-fg)">DDR / eMMC</span>
+          <span class="ds-tag" style="background:var(--tag-green-bg);color:var(--tag-green-fg)">UFS</span>
+          <span class="ds-tag" style="background:var(--tag-teal-bg);color:var(--tag-teal-fg)">UFS 3.x</span>
+          <span class="ds-tag" style="background:var(--tag-cyan-bg);color:var(--tag-cyan-fg)">Interface</span>
+          <span class="ds-tag" style="background:var(--tag-cool-bg);color:var(--tag-cool-fg)">eMCP / uMCP</span>
+          <span class="ds-tag" style="background:var(--tag-gray-bg);color:var(--tag-gray-fg)">Neutro</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 08. GRADIENTES ════════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">08 — Gradientes (extensão WTC sobre Carbon flat)</div>
+    <p class="ds-section-sub">
+      Carbon vanilla é completamente plano. O WTC adiciona gradientes para aquecimento visual no mercado asiático.
+      Um implementado (hero), quatro propostos para próximos sprints. Regra: máximo 3 pontos de cor, nunca em texto de resultado.
+    </p>
+
+    <div class="grad-showcase">
+      <div class="grad-swatch" style="background:linear-gradient(180deg,#dbeafe 0%,#edf5ff 30%,#f4f4f4 80%)">
+        <span class="grad-swatch-label">hero &#x2713; implementado</span>
+      </div>
+      <div class="grad-swatch" style="background:linear-gradient(90deg,#0043ce 0%,#0f62fe 60%,#4589ff 100%)">
+        <span class="grad-swatch-label" style="background:rgba(0,0,0,.55);color:#fff">header &#x25CB; proposto</span>
+      </div>
+      <div class="grad-swatch" style="background:linear-gradient(135deg,#edf5ff 0%,#ffffff 100%);border:1px solid var(--border-subtle)">
+        <span class="grad-swatch-label">card-result &#x25CB; proposto</span>
+      </div>
+      <div class="grad-swatch" style="background:linear-gradient(135deg,#fff1f1 0%,#ffffff 100%);border:1px solid var(--border-subtle)">
+        <span class="grad-swatch-label">card-danger &#x25CB; proposto</span>
+      </div>
+      <div class="grad-swatch" style="background:linear-gradient(180deg,#262626 0%,#161616 100%)">
+        <span class="grad-swatch-label" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.8)">footer &#x25CB; proposto</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 09. ESPAÇAMENTO ═════════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">09 — Tokens de espaçamento (base 8 px)</div>
+
+    <div style="max-width:480px">
+      <div class="spacing-row"><span class="spacing-token">--s1</span><span class="spacing-value">2px</span><div class="spacing-bar" style="width:2px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s2</span><span class="spacing-value">4px</span><div class="spacing-bar" style="width:4px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s3</span><span class="spacing-value">8px</span><div class="spacing-bar" style="width:8px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s4</span><span class="spacing-value">12px</span><div class="spacing-bar" style="width:12px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s5</span><span class="spacing-value">16px</span><div class="spacing-bar" style="width:16px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s6</span><span class="spacing-value">24px</span><div class="spacing-bar" style="width:24px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s7</span><span class="spacing-value">32px</span><div class="spacing-bar" style="width:32px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s8</span><span class="spacing-value">40px</span><div class="spacing-bar" style="width:40px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s9</span><span class="spacing-value">48px</span><div class="spacing-bar" style="width:48px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s10</span><span class="spacing-value">64px</span><div class="spacing-bar" style="width:64px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s11</span><span class="spacing-value">80px</span><div class="spacing-bar" style="width:80px"></div></div>
+      <div class="spacing-row"><span class="spacing-token">--s12</span><span class="spacing-value">96px</span><div class="spacing-bar" style="width:96px"></div></div>
+    </div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 10. SOMBRAS + RAIOS ════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">10 — Sombras e Raios de borda</div>
+
+    <div class="ds-row" style="gap:var(--s8)">
+      <div class="ds-col">
+        <span class="ds-label">Escala de sombra</span>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--s6)">
+          <div class="shadow-item"><div class="shadow-box" style="box-shadow:var(--shadow-xs)">xs</div><span class="shadow-label">--shadow-xs</span></div>
+          <div class="shadow-item"><div class="shadow-box" style="box-shadow:var(--shadow-sm)">sm</div><span class="shadow-label">--shadow-sm</span></div>
+          <div class="shadow-item"><div class="shadow-box" style="box-shadow:var(--shadow-md)">md</div><span class="shadow-label">--shadow-md</span></div>
+          <div class="shadow-item"><div class="shadow-box" style="box-shadow:var(--shadow-lg)">lg</div><span class="shadow-label">--shadow-lg</span></div>
+          <div class="shadow-item"><div class="shadow-box" style="box-shadow:var(--shadow-xl)">xl</div><span class="shadow-label">--shadow-xl</span></div>
+        </div>
+      </div>
+
+      <div class="ds-col">
+        <span class="ds-label">Raios de borda</span>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--s6)">
+          <div class="radius-box">
+            <div class="radius-shape" style="border-radius:2px"></div>
+            <span class="radius-label">--r-sm<br/>2px</span>
+          </div>
+          <div class="radius-box">
+            <div class="radius-shape" style="border-radius:4px"></div>
+            <span class="radius-label">--r<br/>4px</span>
+          </div>
+          <div class="radius-box">
+            <div class="radius-shape" style="border-radius:6px"></div>
+            <span class="radius-label">--r-md<br/>6px</span>
+          </div>
+          <div class="radius-box">
+            <div class="radius-shape" style="border-radius:8px"></div>
+            <span class="radius-label">--r-lg<br/>8px</span>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--text-helper);margin-top:var(--s4);max-width:300px">
+          Carbon puro usa 0 px. O WTC usa 2 px mínimo para suavizar levemente sem abandonar o caráter técnico.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 11. DARK MODE ════════════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">11 — Dark Mode</div>
+    <p class="ds-section-sub">
+      Paleta separada — não inverte, adapta. O charcoal <code>#161616</code> do footer não muda (já é o tom mais escuro).
+      Toggle no canto superior direito desta página para testar.
+    </p>
+
+    <div class="ds-dark-strip">
+      <div class="ds-dark-swatch"><div class="swatch-color" style="background:#161616;height:56px"></div><div class="ds-dark-label">--bg<br/>#161616</div></div>
+      <div class="ds-dark-swatch"><div class="swatch-color" style="background:#262626;height:56px"></div><div class="ds-dark-label">--surface<br/>#262626</div></div>
+      <div class="ds-dark-swatch"><div class="swatch-color" style="background:#393939;height:56px"></div><div class="ds-dark-label">--surface-2<br/>#393939</div></div>
+      <div class="ds-dark-swatch"><div class="swatch-color" style="background:#525252;height:56px"></div><div class="ds-dark-label">--surface-3<br/>#525252</div></div>
+      <div class="ds-dark-swatch"><div class="swatch-color" style="background:#f4f4f4;height:56px"></div><div class="ds-dark-label">--text-pri<br/>#f4f4f4</div></div>
+      <div class="ds-dark-swatch"><div class="swatch-color" style="background:#c6c6c6;height:56px"></div><div class="ds-dark-label">--text-sec<br/>#c6c6c6</div></div>
+      <div class="ds-dark-swatch"><div class="swatch-color" style="background:#78a9ff;height:56px"></div><div class="ds-dark-label">--interactive<br/>#78a9ff</div></div>
+      <div class="ds-dark-swatch"><div class="swatch-color" style="background:#a6c8ff;height:56px"></div><div class="ds-dark-label">--inter-hover<br/>#a6c8ff</div></div>
+      <div class="ds-dark-swatch"><div class="swatch-color" style="background:#be95ff;height:56px"></div><div class="ds-dark-label">--link-vis<br/>#be95ff</div></div>
+    </div>
+  </div>
+
+  <hr class="ds-divider"/>
+
+  <!-- ══ 12. DESVIOS DO CARBON ════════════════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-section-title">12 — WTC vs Carbon vanilla</div>
+
+    <div style="border:1px solid var(--border-subtle);border-radius:var(--r-md);overflow:hidden">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr>
+            <th style="background:var(--surface-2);border-bottom:2px solid var(--interactive);padding:8px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary)">Aspecto</th>
+            <th style="background:var(--surface-2);border-bottom:2px solid var(--interactive);padding:8px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary)">Carbon vanilla</th>
+            <th style="background:var(--surface-2);border-bottom:2px solid var(--interactive);padding:8px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--interactive)">WTC v2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600">Fonte sans-serif</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)">IBM Plex Sans</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600;color:var(--interactive)">Helvetica Neue</td></tr>
+          <tr><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600">Fonte mono</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)">IBM Plex Mono</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle)">IBM Plex Mono <span style="color:var(--success);font-size:11px;font-weight:700">(mantida)</span></td></tr>
+          <tr><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600">Border-radius</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)">0 px (absolutamente plano)</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600;color:var(--interactive)">2–8 px (levemente suavizado)</td></tr>
+          <tr><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600">Gradientes</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)">Nenhum (completamente plano)</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600;color:var(--interactive)">Hero implementado + 4 propostos</td></tr>
+          <tr><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600">Tamanho base</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)">16 px</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600;color:var(--interactive)">14 px (densidade operacional)</td></tr>
+          <tr><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600">Header</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)">Branco + hairline</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle)">Branco + hairline <span style="color:var(--success);font-size:11px;font-weight:700">(idêntico)</span></td></tr>
+          <tr><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600">PIN search</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)">n/a</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600;color:var(--interactive)">Componente exclusivo WTC</td></tr>
+          <tr><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600">Decode card</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);color:var(--text-secondary)">n/a</td><td style="padding:9px 16px;border-bottom:1px solid var(--border-subtle);font-weight:600;color:var(--interactive)">dc2-card com acento lateral 4 px</td></tr>
+          <tr><td style="padding:9px 16px;font-weight:600">Painel estoque</td><td style="padding:9px 16px;color:var(--text-secondary)">n/a</td><td style="padding:9px 16px;font-weight:600;color:var(--interactive)">est-* com OCR integrado</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer class="wtc-footer">
+  WhatTheChip Design System v2.0 &nbsp;·&nbsp; IBM Carbon-based &nbsp;·&nbsp; eMiner &nbsp;·&nbsp; Paraguai &nbsp;·&nbsp; maio 2026
+</footer>
+
+<script>
+(function() {
+  var saved = localStorage.getItem('wtc_theme');
+  if (saved === 'dark') applyTheme(true, false);
+
+  var btn  = document.getElementById('theme-toggle');
+  var moon = document.getElementById('icon-moon');
+  var sun  = document.getElementById('icon-sun');
+
+  function applyTheme(dark, save) {
+    if (dark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      if (moon) moon.style.display = 'none';
+      if (sun)  sun.style.display  = 'inline-block';
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      if (moon) moon.style.display = 'inline-block';
+      if (sun)  sun.style.display  = 'none';
+    }
+    if (save) localStorage.setItem('wtc_theme', dark ? 'dark' : 'light');
+  }
+
+  if (btn) {
+    btn.addEventListener('click', function() {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
+    });
+  }
+})();
+</script>
+</body>
+</html>

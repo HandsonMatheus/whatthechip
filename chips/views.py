@@ -20,11 +20,21 @@ _CONF_LABEL = {
     'confirmed':   '✅ Confirmado',
     'manual':      '✏️ Manual',
     'distributor': '🏪 Distribuidor',
+    'grammar':     '📐 Gramática',
     'ai_high':     '🤖 IA — Alta',
     'ai_medium':   '🤖 IA — Média',
     'ai_low':      '🤖 IA — Baixa',
     'estimated':   '~ Estimado',
 }
+
+
+def _effective_conf(result: dict) -> str:
+    """Retorna a chave de confiança efetiva para exibição.
+    Chips grammar_complete com confidence='estimated' mostram 'grammar' —
+    a gramática com mapa verificado é mais confiável que um resultado parcial."""
+    if result.get("grammar_complete") and result.get("confidence") == "estimated":
+        return "grammar"
+    return result.get("confidence", "estimated")
 
 
 @require_GET
@@ -88,8 +98,9 @@ def decode_html(request):
         "result": result,
         "result_json": json.dumps(result, ensure_ascii=False),
         "confidence_label": _CONF_LABEL.get(
-            result.get("confidence", ""), result.get("confidence", "")
+            _effective_conf(result), result.get("confidence", "")
         ),
+        "confidence_key": _effective_conf(result),
         "show_source": bool(
             result.get("source_url") and
             not result.get("source_url", "").startswith("gemini:")

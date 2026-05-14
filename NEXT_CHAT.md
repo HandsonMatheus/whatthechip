@@ -112,7 +112,7 @@ Chaves NVMe BGA (mapa KUS_CAP separado):
 - `KMJ/KMK` — LPDDR2 + eMMC (legado)
 - `KMF/KMN/KMQ` — LPDDR3 + eMMC 5.1
 - `KMR` — LPDDR4/4X + eMMC 5.1
-- `KMS` — LPDDR4X + eMMC 5.1
+- `KMS` — LPDDR1 + eMMC (LEGADO ~2012-2013, ex: Galaxy Centura; Caixa Vermelha)
 - `KMD` — LPDDR4X + eMMC 5.1 (NÃO uMCP)
 - `KMV` — LPDDR2 + eMMC (legado, separado de KMV2/KMV3)
 

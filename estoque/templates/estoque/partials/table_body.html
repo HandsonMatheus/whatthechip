@@ -1,0 +1,71 @@
+<div class="est-table-meta">
+  <span class="est-count">
+    {{ entries|length }} tipo{{ entries|length|pluralize:"s" }} &nbsp;·&nbsp; {{ total_qty }} un. total
+  </span>
+</div>
+
+{% if entries %}
+<div class="est-table-wrap">
+  <table class="est-table">
+    <thead>
+      <tr>
+        <th>Part Number</th>
+        <th>Tipo</th>
+        <th>Fabricante</th>
+        <th>Capacidade</th>
+        <th>Interface</th>
+        <th class="est-th-qty">Qtd.</th>
+        <th class="est-th-action"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr class="est-row{% if just_added == entry.part_number %} est-row--new{% endif %}">
+        <td style="min-width:160px; white-space:nowrap;">
+          <span class="est-pn">{{ entry.part_number }}</span>
+        </td>
+        <td>
+          {% if entry.chip_type %}
+            <span class="est-type-tag">{{ entry.chip_type }}</span>
+          {% else %}
+            <span class="est-muted">—</span>
+          {% endif %}
+        </td>
+        <td>{{ entry.brand|default:"—" }}</td>
+        <td>{{ entry.display_capacity }}</td>
+        <td>
+          {% if entry.interface %}{{ entry.interface }}
+          {% elif entry.is_emcp and entry.emcp_ram %}{{ entry.emcp_ram|truncatewords:1 }}
+          {% else %}<span class="est-muted">—</span>{% endif %}
+        </td>
+        <td class="est-td-qty">
+          <span class="est-qty-badge">{{ entry.quantity }}</span>
+        </td>
+        <td class="est-td-action">
+          <button class="est-del-btn" type="button"
+                  onclick="openDeleteModal({{ entry.pk }}, '{{ entry.part_number|escapejs }}', {{ entry.quantity }})"
+                  title="Remover {{ entry.part_number|escapejs }}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14H6L5 6"/>
+              <path d="M10 11v6"/>
+              <path d="M14 11v6"/>
+              <path d="M9 6V4h6v2"/>
+            </svg>
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% else %}
+<div class="est-empty">
+  <div class="est-empty-icon">◻</div>
+  <div class="est-empty-title">Nenhum chip no estoque</div>
+  <div class="est-empty-sub">Use o campo acima para digitar ou escanear um Part Number.</div>
+</div>
+{% endif %}

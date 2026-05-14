@@ -197,11 +197,25 @@ class Command(BaseCommand):
         #
         h9tq_ram_cap = [
             # char_key  val_primary        val_secondary
+            #
+            # Padrão: "A_" onde o 2º char indica densidade em Gigabits do die LPDDR3:
+            #   A6=6Gbit=768MB · A8=8Gbit=1GB · AA/AB=16Gbit=2GB · AC=32Gbit=4GB · AD=24Gbit=3GB
+            #
+            ("A6", "LPDDR3 768MB", ""),  # 6Gbit ÷ 8 = 768MB — H9TQ32A6BTMC (PN físico em estoque)
+                                          # Segue padrão A_: A6 = 6Gbit. Densidade confirmada indiretamente
+                                          # via specs oficiais do aparelho de origem.
+                                          # Device: Samsung Galaxy J1 Ace SM-J110F / SM-J110G ✓
+                                          #   SM-J110F (4G LTE global/africana): 768MB RAM + 4GB storage
+                                          #   SM-J110G (Ásia/Oceania): idem — confirmado GSMArena/PhoneMore
+                                          # Nota: SM-J110H/L = 512MB; SM-J110M/J111F = 1GB — fragmentação
+                                          # severa de specs por região e conectividade (2G vs 4G).
+            ("AA", "LPDDR3 2GB",  ""),  # H9TQ64AAETAC — mercado B2B asiático: "8+2" / "8G+16" ✓
+                                         # Par do "AB": 16Gbit = 2GB, organização de die diferente.
             ("AB", "LPDDR3 2GB",  ""),  # H9TQ17ABJTMCUR — Preduo: "16GB+2GB" ✓
                                          # H9TQ64ABJTMCUR — Preduo: "8GB+2GB" ✓
-            ("AC", "LPDDR3 4GB",  ""),  # H9TQ52ACLTMCUR-KUM — Preduo: "32Gb LPDDR3"=4GB ✓ [CORRIGIDO de 3GB]
+            ("AC", "LPDDR3 4GB",  ""),  # H9TQ52ACLTMCUR-KUM — Preduo: "32Gb LPDDR3"=4GB ✓
                                          # H9TQ27ACLTMCUR-KUM — Preduo: "32Gb DRAM"=4GB ✓
-            ("AD", "LPDDR3 3GB",  ""),  # H9TQ27ADFTMCUR-KUM — NetSource: "24Gbit LPDDR3"=3GB ✓ [CORRIGIDO de 4GB]
+            ("AD", "LPDDR3 3GB",  ""),  # H9TQ27ADFTMCUR-KUM — NetSource: "24Gbit LPDDR3"=3GB ✓
                                          # H9TQ26ADFTMCUR-KUM — ssfkg: confirma AD ✓
             ("A8", "LPDDR3 1GB",  ""),  # H9TQ65A8GTMCUR-KTM — ssfkg: "1GB LPDDR3" ✓
         ]
@@ -227,6 +241,76 @@ class Command(BaseCommand):
                                           # (bloqueado: sem fonte verificada — Gemini vai complementar se necessário)
         ]
         self._bulk_map("HYX_H9TP_RAM_CAP", h9tp_ram_cap, hynix, dry, overwrite)
+
+        # ══════════════════════════════════════════════════════════════════════
+        # DecodeMap: HYX_H9D_NAND_CAP — Capacidade NAND eMCP H9DP (LPDDR2), chave pn[4:6]
+        # ══════════════════════════════════════════════════════════════════════
+        #
+        # Posição: pn[4:6], comprimento 2 chars — idêntico ao H9TQ/H9TP.
+        # Anatomia H9DP:
+        #   H  9  D  P  [nand_hi][nand_lo]  [ctrl]  [ram]  ...
+        #   0  1  2  3      4         5        6       7
+        #
+        #   H9  = SK Hynix mobile
+        #   D   = identificador da família (LPDDR2 eMCP — consistente com todos PNs confirmados)
+        #   P   = variante de barramento/package
+        #   pn[6] = código de controlador — sempre "A" nos PNs rastreados; NÃO é capacidade
+        #   pn[7] = capacidade RAM (1 char) → HYX_H9D_RAM_CAP
+        #
+        # ⚠ COLISÃO DE CHAVES com HYX_EMCP_NAND_CAP (H9TQ/H9TP):
+        #   "32"=4GB e "64"=8GB existem em AMBOS os mapas com o MESMO val_primary.
+        #   O engine não se confunde porque a família é identificada primeiro pelo prefixo
+        #   (H9DP ≠ H9TQ/H9TP), e cada família aponta para seu próprio mapa.
+        #   H9DP NÃO pode compartilhar HYX_EMCP_NAND_CAP porque "AG"=16GB não existe nele.
+        #
+        # Progressão: numérico Mbit para densidades menores → alfanumérico para maiores.
+        #   "32" = 32Gbit ÷ 8 = 4GB · "64" = 64Gbit ÷ 8 = 8GB · "AG" = 128Gbit ÷ 8 = 16GB
+        #
+        # Fontes (Octopart + distribuidores B2B):
+        #   32=4GB  — H9DP32A4JJAC ✓ · H9DP32A2JJAC ✓ · H9DP32A4JJMC ✓
+        #   64=8GB  — H9DP64A8JJMC ✓
+        #   AG=16GB — H9DPAGA3JJMC ✓ (teto confirmado desta nomenclatura)
+        #
+        h9d_nand_cap = [
+            # char_key  val_primary  val_secondary
+            ("32", "4GB",  ""),  # 32Gbit ÷ 8  — H9DP32A4JJAC ✓ · H9DP32A2JJAC ✓ · H9DP32A4JJMC ✓
+            ("64", "8GB",  ""),  # 64Gbit ÷ 8  — H9DP64A8JJMC ✓
+            ("AG", "16GB", ""),  # 128Gbit ÷ 8 — H9DPAGA3JJMC ✓ (teto confirmado H9DP)
+        ]
+        self._bulk_map("HYX_H9D_NAND_CAP", h9d_nand_cap, hynix, dry, overwrite)
+
+        # ══════════════════════════════════════════════════════════════════════
+        # DecodeMap: HYX_H9D_RAM_CAP — RAM eMCP H9DP (LPDDR2), chave pn[7]
+        # ══════════════════════════════════════════════════════════════════════
+        #
+        # Posição: pn[7], comprimento 1 char.
+        #
+        # ⚠ DIFERENÇA CRÍTICA vs H9TP (que também é LPDDR2 eMCP):
+        #   H9TP: decode_gen_pos=6, decode_gen_len=2, chaves "A4"/"A8"/"AB"
+        #   H9DP: decode_gen_pos=7, decode_gen_len=1, chaves "2"/"4"/"8"/"3"
+        #   No H9DP, pn[6]="A" é código de controlador FIXO — não faz parte da chave RAM.
+        #   O motor fatia pn[7] diretamente: "A" é invisível para o decode de RAM.
+        #
+        # Nota sobre "8" e "3" → ambos 1GB:
+        #   Na era dos eMCPs LPDDR2, montadoras (MediaTek, Snapdragon antigos) exigiam
+        #   larguras de barramento distintas. "8" e "3" indicam organizações elétricas
+        #   diferentes (bus width ou empilhamento de dies), mas a capacidade total é
+        #   idêntica: 1GB de LPDDR2. O sistema deve aceitar as duas chaves como 1GB.
+        #
+        # Fontes:
+        #   "2"=256MB — H9DP32A2JJAC ✓
+        #   "4"=512MB — H9DP32A4JJAC ✓ · H9DP32A4JJMC ✓
+        #   "8"=1GB   — H9DP64A8JJMC ✓
+        #   "3"=1GB   — H9DPAGA3JJMC ✓ (organização diferente, capacidade idêntica ao "8")
+        #
+        h9d_ram_cap = [
+            # char_key  val_primary       val_secondary
+            ("2", "LPDDR2 256MB", ""),  # H9DP32A2JJAC ✓
+            ("4", "LPDDR2 512MB", ""),  # H9DP32A4JJAC ✓ · H9DP32A4JJMC ✓
+            ("8", "LPDDR2 1GB",   ""),  # H9DP64A8JJMC ✓
+            ("3", "LPDDR2 1GB",   ""),  # H9DPAGA3JJMC ✓ — org. diferente, mesma capacidade que "8"
+        ]
+        self._bulk_map("HYX_H9D_RAM_CAP", h9d_ram_cap, hynix, dry, overwrite)
 
         # ══════════════════════════════════════════════════════════════════════
         # DecodeMap: HYX_LPDDR4X_RAM_CAP — RAM LPDDR4X (H9HP + H9HQ), chave pn[6:8]
@@ -784,6 +868,9 @@ class Command(BaseCommand):
         #   2=256MB — H9TKNNN2GDAPLR ✓ (2Gbit ÷ 8)
         #   4=512MB — H9TKNNN4KDMPRR ✓ · H9TKMMM4GDARUR ✓ (4Gbit ÷ 8)
         #   8=1GB   — H9TKNNN8JDAPLR ✓ · H9TKMMM8KDHPQR ✓ (8Gbit ÷ 8)
+        #   A=2GB   — H9TKNNNAADMP ✓ (16Gbit ÷ 8 — distribuidores B2B: OMO, HKin)
+        #              Par do "B": mesma capacidade, revisão/organização de die diferente.
+        #              ⚠ OMP em H9TKNNNAAOMP é provável leitura OCR incorreta de DMP.
         #   B=2GB   — H9TKNNNBPDAR-NGM ✓ (16Gbit ÷ 8 — teto confirmado)
         #
         # BLOQUEADO: "C" → 4GB (32Gbit)
@@ -797,6 +884,7 @@ class Command(BaseCommand):
             ("2", "256MB", ""),  # 2Gbit ÷ 8  — H9TKNNN2GDAPLR ✓
             ("4", "512MB", ""),  # 4Gbit ÷ 8  — H9TKNNN4KDMPRR ✓ · H9TKMMM4GDARUR ✓
             ("8", "1GB",   ""),  # 8Gbit ÷ 8  — H9TKNNN8JDAPLR ✓ · H9TKMMM8KDHPQR ✓
+            ("A", "2GB",   ""),  # 16Gbit ÷ 8 — H9TKNNNAADMP ✓ (OMO, HKin) — par do "B"
             ("B", "2GB",   ""),  # 16Gbit ÷ 8 — H9TKNNNBPDAR-NGM ✓ (teto LPDDR2 confirmado)
         ]
         self._bulk_map("HYX_LPDDR2_CAP", lpddr2_cap, hynix, dry, overwrite)
@@ -1141,7 +1229,7 @@ class Command(BaseCommand):
                 interface="GDDR3",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
-                decode_cap_pos=None, decode_cap_len=None, decode_cap_map="",
+                decode_cap_pos=None, decode_cap_len=1, decode_cap_map="",  # len=1: NOT NULL exigido pelo banco; pos=None já desativa o decode
                 tip=(
                     "🚨 ATENÇÃO: Este chip é GDDR3 — memória gráfica (H5RS). "
                     "NÃO É DDR3 de PC. Estrutura elétrica completamente diferente. "
@@ -1301,7 +1389,7 @@ class Command(BaseCommand):
                 decode_cap_pos=7, decode_cap_len=1, decode_cap_map="HYX_LPDDR2_CAP",
                 tip=(
                     "LPDDR2 standalone SK Hynix (H9TK). DRAM móvel puro — sem flash acoplado. "
-                    "pn[7] = densidade: 1=128MB · 2=256MB · 4=512MB · 8=1GB · B=2GB por chip. "
+                    "pn[7] = densidade: 1=128MB · 2=256MB · 4=512MB · 8=1GB · A/B=2GB por chip. "
                     "⚠ Preenchimento pn[4:7] pode ser 'NNN' ou 'MMM' — ambos válidos, decode idêntico. "
                     "⚠ Não confundir com H9TQ (eMCP LPDDR3) ou H9TP (eMCP LPDDR2) — esses têm flash. "
                     "⚠ Teto confirmado: B=2GB. Leitura acima disso → triagem manual. "
@@ -1600,7 +1688,7 @@ class Command(BaseCommand):
                 tip=(
                     "eMCP SK Hynix com LPDDR3 (H9TQ). Chip combinado eMMC + RAM. "
                     "pn[4:6] = capacidade NAND: 16/17=16GB · 26/27=32GB · 52=64GB · 64/65=8GB. "
-                    "pn[6:8] = capacidade RAM: AB=2GB · AC=4GB · AD=3GB · A8=1GB. "
+                    "pn[6:8] = capacidade RAM: A6=768MB · A8=1GB · AA/AB=2GB · AC=4GB · AD=3GB. "
                     "⚠ AC=4GB e AD=3GB (não invertido — ordem não é alfabética por tamanho). "
                     "⚠ Dois códigos NAND para mesma capacidade são normais: organização interna diferente. "
                     "Ex: H9TQ52ACLT = 64GB NAND + 4GB LPDDR3. "
@@ -1619,9 +1707,30 @@ class Command(BaseCommand):
                     "pn[4:6] = capacidade NAND (mesmo mapa H9TQ): 32=4GB · 64=8GB. "
                     "pn[6:8] = capacidade RAM: A4=512MB · A8=1GB · AB=2GB. "
                     "⚠ H9TP usa LPDDR2, NÃO LPDDR4 — referências antigas a 'LPDDR4' são incorretas. "
+                    "⚠ Diferente do H9DP: H9TP usa RAM de 2 chars em pn[6:8]; H9DP usa 1 char em pn[7]. "
                     "Ex: H9TP32A4GDCC = 4GB NAND + 512MB LPDDR2 (Elnec, absunshine ✓). "
                     "Ex: H9TP64A8JDAC = 8GB NAND + 1GB LPDDR2 (Elnec ✓). "
                     "Destino: bancada eMCP legado."
+                ),
+            ),
+            dict(
+                prefix="H9DP", chip_type="eMCP", subtype="eMCP LPDDR2",
+                interface="eMMC + LPDDR2",
+                is_emcp=True, active=True, priority=50,
+                pn_length=12,
+                decode_cap_pos=4, decode_cap_len=2, decode_cap_map="HYX_H9D_NAND_CAP",
+                decode_gen_pos=7, decode_gen_len=1, decode_gen_map="HYX_H9D_RAM_CAP",
+                tip=(
+                    "eMCP SK Hynix família H9D com LPDDR2 (H9DP). Chip combinado eMMC + RAM. "
+                    "pn[4:6] = capacidade NAND: 32=4GB · 64=8GB · AG=16GB. "
+                    "pn[7] = capacidade RAM (1 char): 2=256MB · 4=512MB · 8=1GB · 3=1GB. "
+                    "⚠ RAM usa 1 char em pn[7] (não 2) — pn[6]='A' é código de controlador fixo, ignorar. "
+                    "⚠ '8' e '3' resultam ambos em 1GB — organização de barramento diferente, mesma capacidade. "
+                    "⚠ Mapa NAND próprio (HYX_H9D_NAND_CAP): 'AG'=16GB não existe no mapa H9TQ/H9TP. "
+                    "Ex: H9DPAGA3JJMC = 16GB eMMC + 1GB LPDDR2 ✓ "
+                    "Ex: H9DP64A8JJMC = 8GB eMMC + 1GB LPDDR2 ✓ "
+                    "Ex: H9DP32A4JJAC = 4GB eMMC + 512MB LPDDR2 ✓ "
+                    "Componente OBSOLETO para reuso — Destino: REFINO DE METAIS."
                 ),
             ),
 
