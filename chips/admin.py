@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django.utils import timezone
 from django.utils.html import format_html
-from .models import Brand, Source, ChipFamily, DecodeMap, KnownPart, SearchLog, UnknownChip, CorrectionRequest
+from .models import (
+    Brand, Source, ChipFamily, DecodeMap, KnownPart, SearchLog,
+    UnknownChip, CorrectionRequest, ChipSubmission,
+)
 
 
 @admin.register(Brand)
@@ -207,3 +210,52 @@ class CorrectionRequestAdmin(admin.ModelAdmin):
     def mark_rejected(self, request, queryset):
         queryset.update(status="rejected", resolved_at=timezone.now())
         self.message_user(request, f"{queryset.count()} solicitação(ões) rejeitada(s).")
+
+
+@admin.register(ChipSubmission)
+class ChipSubmissionAdmin(admin.ModelAdmin):
+    """Triagem dos envios colaborativos da feature 'Adicionar chip'."""
+    list_display    = ("part_number", "status_badge", "has_photo",
+                       "submitter_email", "created_at")
+    list_filter     = ("status",)
+    search_fields   = ("part_number", "submitter_email", "context")
+    readonly_fields = ("part_number", "photo", "photo_preview", "context",
+                       "submitter_email", "created_at", "resolved_at")
+    fields          = ("part_number", "photo_preview", "photo", "context",
+                       "submitter_email", "created_at", "status", "notes", "resolved_at")
+    actions         = ["mark_added", "mark_rejected"]
+
+    def has_add_permission(self, request):
+        return False
+
+    def status_badge(self, obj):
+        colors = {"pending": "#B45309", "added": "#166534", "rejected": "#6B7280"}
+        return format_html(
+            '<span style="color:{};font-weight:bold">{}</span>',
+            colors.get(obj.status, "#000"), obj.get_status_display(),
+        )
+    status_badge.short_description = "Status"
+
+    def has_photo(self, obj):
+        return "📷 sim" if obj.photo else "—"
+    has_photo.short_description = "Foto"
+
+    def photo_preview(self, obj):
+        if obj.photo:
+            return format_html(
+                '<img src="{}" style="max-height:280px;max-width:100%;'
+                'border:1px solid #ccc;border-radius:2px" />',
+                obj.photo.url,
+            )
+        return "— sem foto enviada —"
+    photo_preview.short_description = "Pré-visualização"
+
+    @admin.action(description="✅ Marcar como adicionado ao banco")
+    def mark_added(self, request, queryset):
+        queryset.update(status="added", resolved_at=timezone.now())
+        self.message_user(request, f"{queryset.count()} envio(s) marcado(s) como adicionado(s).")
+
+    @admin.action(description="✗ Marcar como rejeitado")
+    def mark_rejected(self, request, queryset):
+        queryset.update(status="rejected", resolved_at=timezone.now())
+        self.message_user(request, f"{queryset.count()} envio(s) rejeitado(s).")

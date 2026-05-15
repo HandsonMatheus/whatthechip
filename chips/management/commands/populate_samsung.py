@@ -118,6 +118,11 @@ class Command(BaseCommand):
         # capacidade decodificada (ex: KMQ310006A → chave "31" não existia).
         emcp_cap = [
             # ── Matriz direta (legado, 2012-2017) ────────────────────────────
+            ("LL", "4GB",   "1GB"),    # 4GB NAND + 1GB RAM   (KMKLL000UM-B406 — HTC EVO 3D, teardown GlobalSpec/Electronics360 Ago/2011 ✓)
+            #                          # "MCP Samsung KMKLL000UM-B406: 4GB eMMC NAND + 1GB Mobile DDR" — documentado em esquema elétrico.
+            #                          # KMMLL000QM-B503 usa a mesma chave LL mas com 768MB (die de 6Gb customizado).
+            #                          # Conflito: mapa base mantido em 1GB (KMK, teardown verificado);
+            #                          # KMMLL000QM (768MB) corrigido via fix_known_parts.py com create=True.
             ("JS", "4GB",   "512MB"),  # 4GB NAND + 512MB RAM  (KMSJS000KM — Galaxy Centura SCH-S738C 2013, LPDDR1)
             ("11", "4GB",   "512MB"),  # 4GB NAND + 512MB RAM
             ("5U", "4GB",   "512MB"),  # 4GB NAND + 512MB RAM  (KMN5U000FM-B203: 4Gb LPDDR2 — Jotrin ✓;
@@ -1047,7 +1052,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="KMR", chip_type="eMCP", subtype="LPDDR4/4X + eMMC 5.1",
-                interface="eMMC 5.1", pn_length=12,
+                interface="eMMC 5.1", pn_length=10,  # todos os PNs KMR são 10 chars (ex: KMRH60014A, KMR310001M)
                 is_emcp=True, active=True, priority=40,
                 decode_gen_pos=2, decode_gen_map="SAM_EMCP_GEN",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
@@ -1422,10 +1427,71 @@ class Command(BaseCommand):
                     "Destino: fluxo de resíduo (moagem/refino). Sem liquidez B2B."
                 ),
             ),
+            # ── K5W — MCP NOR Flash + Mobile SDRAM ───────────────────────────────
+            # Samsung MCP da era feature phone (Nokia, Sony-Ericsson, ~2005-2012).
+            # Combina NOR Flash (boot/código) + Mobile SDRAM (RAM de trabalho) num único BGA.
+            # pn[3:5] → DRAM_PC: capacidade do componente NOR.
+            #   Ex: K5W1G12ACM → "1G" → DRAM_PC → 1Gb = 128MB NOR.
+            # O segundo componente (SDRAM) NÃO é decodificável pelo PN sem datasheet.
+            # Fonte: teardown + Censtry (K5W1G12ACM-BL60TNO classificado como SRAM/MCP) ✓
+            # Destino: fluxo de resíduo. Zero liquidez B2B em 2026.
+            dict(
+                prefix="K5W", chip_type="MCP", subtype="NOR Flash + Mobile SDRAM (legado)",
+                interface="NOR (async) + SDRAM", is_emcp=False, active=True, priority=55,
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="DRAM_PC",
+                tip=(
+                    "MCP Samsung NOR + Mobile SDRAM — era feature phone (~2005-2012). "
+                    "NOR Flash (código/boot) + SDRAM (RAM de trabalho) num único BGA. "
+                    "Capacidade exibida = NOR Flash (pn[3:5]). SDRAM não decodificável pelo PN. "
+                    "Aparelhos: Nokia S60/S40, Sony-Ericsson, Samsung proprietary. "
+                    "⚠ Destino: Caixa Vermelha — sem liquidez B2B. Moagem/refino."
+                ),
+            ),
+            # ── K5L — MCP NOR Flash + UtRAM (micro SRAM) ─────────────────────────
+            # Samsung MCP NOR + UtRAM (ultra-thin RAM = SRAM de baixo consumo).
+            # Confirmado: K5L2731CAA-D770 = 128Mb NOR + 32Mb UtRAM (Jotrin ✓).
+            #             K5L5563CAA-D770 = 256Mb NOR + 64Mb UtRAM (padrão K5L ✓).
+            # pn[3:5]: os dois primeiros dígitos podem não mapear 1:1 com DRAM_PC.
+            #   K5L2731: "27" → não está em DRAM_PC (próximo de "28"=128Mb — encoding próprio).
+            #   Capacidade = "parcial" — gramática reconhece família mas não decodifica cap.
+            # Destino: fluxo de resíduo. Zero liquidez B2B em 2026.
+            dict(
+                prefix="K5L", chip_type="MCP", subtype="NOR Flash + UtRAM (legado)",
+                interface="NOR (async) + SRAM", is_emcp=False, active=True, priority=55,
+                tip=(
+                    "MCP Samsung NOR + UtRAM (micro SRAM) — era feature phone (~2003-2010). "
+                    "NOR Flash (código/boot) + UtRAM (SRAM ultra-fino de baixo consumo). "
+                    "Exemplos confirmados: K5L2731=128Mb NOR+32Mb UtRAM, K5L5563=256Mb NOR+64Mb UtRAM. "
+                    "⚠ Destino: Caixa Vermelha — sem liquidez B2B. Moagem/refino."
+                ),
+            ),
+            # ── K5N — MCP NOR Flash + PSRAM ───────────────────────────────────────
+            # Samsung MCP NOR + PSRAM (Pseudo-SRAM = DRAM com interface SRAM).
+            # Confirmado: K5N1229ACC-BQ12 (Jotrin) — família K5N existente.
+            # Capacidade não decodificável sem datasheet — encoding proprietário.
+            # Destino: fluxo de resíduo. Zero liquidez B2B em 2026.
+            dict(
+                prefix="K5N", chip_type="MCP", subtype="NOR Flash + PSRAM (legado)",
+                interface="NOR (async) + PSRAM", is_emcp=False, active=True, priority=55,
+                tip=(
+                    "MCP Samsung NOR + PSRAM (Pseudo-SRAM) — era feature phone (~2004-2011). "
+                    "NOR Flash (código/boot) + PSRAM (DRAM com interface SRAM). "
+                    "⚠ Destino: Caixa Vermelha — sem liquidez B2B. Moagem/refino."
+                ),
+            ),
+            # ── K5 (fallback) — NOR Flash Samsung genérico ────────────────────────
+            # Captura qualquer K5xx não mapeado pelas subfamílias específicas acima.
+            # Subfamílias conhecidas: K5D=OneNAND · K5W=NOR+SDRAM · K5L=NOR+UtRAM · K5N=NOR+PSRAM
+            # K5E = MCP NAND+DDR (era diferente, não NOR — raro na esteira).
             dict(
                 prefix="K5", chip_type="NOR Flash", subtype="Samsung NOR Flash",
-                interface="", is_emcp=False, active=True, priority=100,
-                tip="NOR Flash Samsung. Verificar demanda semanal antes de direcionar.",
+                interface="NOR", is_emcp=False, active=True, priority=100,
+                tip=(
+                    "NOR Flash Samsung (K5). Subfamílias comuns na esteira: "
+                    "K5W=NOR+SDRAM · K5L=NOR+UtRAM · K5N=NOR+PSRAM · K5D=OneNAND. "
+                    "Todos são chips da era feature phone (~2003-2012). "
+                    "⚠ Destino: Caixa Vermelha — sem liquidez B2B em 2026."
+                ),
             ),
             dict(
                 prefix="K7", chip_type="SRAM", subtype="Samsung SRAM",

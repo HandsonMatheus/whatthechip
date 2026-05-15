@@ -441,6 +441,193 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K5W1G12ACM ───────────────────────────────────────────────────────────
+    # MCP Samsung NOR Flash 1Gb (128MB) + Mobile SDRAM. Família K5W.
+    # pn[3:5]="1G" → DRAM_PC → 1Gb = 128MB NOR. SDRAM não decodificável pelo PN.
+    # Fontes: Censtry (K5W1G12ACM-BL60TNO) + Ciiva (K5W1G12ACM-BL60000) ✓.
+    # Aparelhos: Nokia, Sony-Ericsson, feature phones ~2006-2010.
+    # Destino: Caixa Vermelha (resíduo — sem liquidez B2B em 2026).
+    {
+        "pn": "K5W1G12ACM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "MCP",
+            "subtype":    "NOR Flash + Mobile SDRAM (legado)",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "128MB",
+            "interface":  "NOR (async) + SDRAM",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "MCP K5W: NOR Flash 1Gb (128MB) + Mobile SDRAM. "
+            "pn[3:5]='1G' → DRAM_PC → 1Gb = 128MB NOR. "
+            "Censtry + Ciiva confirmam chip real. Feature phone ~2006-2010. "
+            "Destino: resíduo — sem liquidez B2B."
+        ),
+    },
+
+    # ── KMR310001M ───────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMR.
+    # Conflito duplo de shared key:
+    #   (1) SAM_EMCP_GEN: R = "LPDDR4/4X" no mapa global (confirmado KMRH60014A-B614,
+    #       Galaxy A7 2017). KMR310001M é exceção da era anterior (~2015) com LPDDR3.
+    #   (2) SAM_EMCP_CAP: chave "31" = 16GB+1GB no mapa (base KMQ310013B, chip físico
+    #       confirmado). KMR310001M tem "31" mas com 16Gb LPDDR3 = 2GB RAM.
+    # Fonte: Preduo (preduo.com): KMR310001M-B611 → "eMCP eMMC+LPDDR3, 16+16, 221ball" ✓
+    # NÃO alterar SAM_EMCP_GEN nem SAM_EMCP_CAP — ambas as chaves base estão corretas
+    # para a maioria dos chips. Este chip é correção pontual via fix_known_parts.
+    {
+        "pn": "KMR310001M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 16GB",
+            "emcp_ram":  "LPDDR3 2GB",
+        },
+        "reason": (
+            "Preduo: KMR310001M-B611 = eMCP eMMC+LPDDR3, 16+16 (16GB NAND + 16Gb LPDDR3 = 2GB). "
+            "Conflito duplo: mapa R=LPDDR4/4X (base KMRH60014A-B614 ✓) e chave '31'=1GB (base KMQ310013B ✓). "
+            "KMR310001M é chip mais antigo (~2015) com LPDDR3 — exceção pontual, mapa global preservado."
+        ),
+    },
+
+    # ── KM3V6001CM ───────────────────────────────────────────────────────────
+    # eMCP LPDDR4X + eMMC 5.1. Família genérica "KM" (prefixo KM3V não cadastrado).
+    # 48Gb LPDDR4X ÷ 8 = 6GB RAM. 128GB eMMC 5.1 (V6 NAND correto no SAM_EMCP_CAP).
+    # Problema: SAM_EMCP_CAP["V6"] val_secondary=4GB (errado para este chip).
+    #           SAM_EMCP_GEN não mapeia "3" (dígito na pos 2) → "RAM não mapeada".
+    #           Resultado da gramática: grammar_complete=True mas tipo e cap RAM errados.
+    # Fonte: catálogos ECtronics/Ovaga, lote KM3V6001CM-B705/-B075:
+    #   "128 GB, eMMC 5.1, 48Gb, LPDDR4X, 254FBGA, 3733 Mbps"
+    # NÃO alterar SAM_EMCP_CAP V6 — afeta outros chips; tratar como exceção pontual.
+    {
+        "pn": "KM3V6001CM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR4X + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 128GB",
+            "emcp_ram":  "LPDDR4X 6GB",
+        },
+        "reason": (
+            "Catálogos ECtronics/Ovaga (lote B705/B075): 48Gb LPDDR4X ÷ 8 = 6GB, 128GB eMMC 5.1. "
+            "SAM_EMCP_CAP V6 val_secondary=4GB (base outro chip) — exceção pontual. "
+            "SAM_EMCP_GEN não mapeia dígitos (pos 2='3') → gramática produz 'RAM não mapeada'. "
+            "Família KM3V não cadastrada; pego pelo fallback genérico KM."
+        ),
+    },
+
+    # ── KMR4Z0001M ───────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMR — exceção da era anterior (~2015-2016).
+    # Mesmo conflito do KMR310001M: SAM_EMCP_GEN mapeia R → LPDDR4/4X (correto
+    # para série moderna), mas este chip pré-data a padronização LPDDR4/4X da família.
+    # cap_key "4Z" no SAM_EMCP_CAP: 32GB NAND + 2GB RAM — acerto correto da gramática.
+    # Evidência: sufixo -B802 (era 2015-2016), encontrado em Moto G4, Lenovo K5/K6.
+    # Fonte: confirmação física na esteira eMiner.
+    # NÃO alterar SAM_EMCP_GEN — R = LPDDR4/4X é correto para a maioria dos KMR.
+    # Destino: Caixa Vermelha (LPDDR3 2GB sem viabilidade de recondicionamento em 2026).
+    {
+        "pn": "KMR4Z0001M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 32GB",
+            "emcp_ram":  "LPDDR3 2GB",
+            "device":    "Moto G4 / Lenovo K5 / K6",
+        },
+        "reason": (
+            "Exceção de família KMR: chip era 2015-2016 (sufixo -B802) usa LPDDR3, "
+            "não LPDDR4/4X. SAM_EMCP_GEN R→LPDDR4/4X correto para série moderna. "
+            "cap_key 4Z = 32GB NAND + 2GB RAM (acerto da gramática preservado). "
+            "Confirmado na esteira eMiner. Destino: Caixa Vermelha (LPDDR3 sem liquidez)."
+        ),
+    },
+
+    # ── KMKLL000UN ────────────────────────────────────────────────────────────
+    # eMCP LPDDR2 + eMMC legado (~2011-2012). Família KMK.
+    # pn[3:5]="LL" adicionado ao SAM_EMCP_CAP: 4GB eMMC + 1GB LPDDR2.
+    # Fonte: teardown oficial GlobalSpec/Electronics360 (Agosto 2011) do HTC EVO 3D.
+    #   Documentado: "MCP Samsung KMKLL000UM-B406 — 4GB eMMC NAND + 1GB Mobile DDR".
+    # KMKLL000UN é variante do mesmo chip (sufixo de lote diferente, mesmo PN base).
+    # ⚠ Destino: Caixa Vermelha (LPDDR2 legado, sem liquidez em 2026).
+    {
+        "pn": "KMKLL000UN",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR2 + eMMC (legado)",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 4GB",
+            "emcp_ram":  "LPDDR2 1GB",
+            "device":    "HTC EVO 3D (2011)",
+        },
+        "reason": (
+            "Teardown GlobalSpec/Electronics360 (Ago/2011) HTC EVO 3D: "
+            "KMKLL000UM-B406 documentado como '4GB eMMC NAND + 1GB Mobile DDR'. "
+            "KMKLL000UN = variante de lote do mesmo chip base. "
+            "LL adicionado ao SAM_EMCP_CAP com 4GB+1GB. Destino: resíduo."
+        ),
+    },
+
+    # ── KMMLL000QM ────────────────────────────────────────────────────────────
+    # eMCP LPDDR2 + eMMC legado (~2011). Família KMM (não cadastrada na gramática).
+    # Mesma chave LL do SAM_EMCP_CAP mas RAM diferente: 768MB em vez de 1GB.
+    # Samsung fabricou die de 6Gb LPDDR2 (768MB) sob encomenda para HTC Sensation.
+    # Confirmado: Samsung Newsroom/Design-Reuse declara produção de eMCP com
+    #   "4GB eMMC + escolha de 256MB, 512MB ou 768MB LPDDR2 em 30nm".
+    # KMM não é família gramatical ativa — chip só entra via fix_known_parts.
+    # ⚠ Conflito de shared key: mapa base LL=1GB (KMK, teardown verificado);
+    #    este chip usa override manual (create=True) para registrar 768MB correto.
+    # ⚠ Destino: Caixa Vermelha (LPDDR2 legado, sem liquidez em 2026).
+    {
+        "pn": "KMMLL000QM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR2 + eMMC (legado)",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 4GB",
+            "emcp_ram":  "LPDDR2 768MB",
+            "device":    "HTC Sensation (2011)",
+        },
+        "reason": (
+            "Samsung fabricou eMCP 4GB + 768MB LPDDR2 (6Gb die, 30nm) para HTC Sensation. "
+            "Fonte: Samsung/Design-Reuse: '256MB, 512MB ou 768MB LPDDR2' explicitamente listados. "
+            "Chave LL compartilhada com KMK (1GB) — conflito de shared key. "
+            "KMM sem família gramatical ativa: create=True obrigatório."
+        ),
+    },
+
     # ── H9TQ64AAETAC ─────────────────────────────────────────────────────────
     # SK Hynix eMCP LPDDR3 + eMMC 5.1. Família H9TQ.
     # pn[4:6]="64" → HYX_EMCP_NAND_CAP = 8GB eMMC.
@@ -564,6 +751,29 @@ class Command(BaseCommand):
                     changed_fields.append((field, old_val, resolved))
                     if not dry:
                         setattr(obj, field, resolved)
+
+            # Quando a entrada tem create_defaults (chips confirmados manualmente),
+            # garante que status e confidence sejam promovidos mesmo se o registro
+            # já existia como raw ou estimated.
+            #
+            # Cenário típico sem Gemini:
+            #   1. PN buscado antes do fix existir → cria registro raw (via fila de revisão)
+            #   2. fix_known_parts roda → encontra o raw → atualiza só os fields
+            #   3. status permanece "raw" → engine filtra status="enriched" → nunca usa o banco
+            #
+            # Sem este bloco, confidence fica em create_defaults (só usado na criação)
+            # e nunca é aplicado no update. O engine exige status=enriched para Camada 1.
+            if do_create:
+                create_defs   = entry.get("create_defaults", {})
+                target_conf   = create_defs.get("confidence", "confirmed")
+                if obj.status != "enriched":
+                    changed_fields.append(("status", obj.status, "enriched"))
+                    if not dry:
+                        obj.status = "enriched"
+                if obj.confidence != target_conf:
+                    changed_fields.append(("confidence", obj.confidence, target_conf))
+                    if not dry:
+                        obj.confidence = target_conf
 
             if not changed_fields:
                 self.stdout.write(f"  — {pn}: já correto, sem alterações.")

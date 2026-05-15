@@ -64,6 +64,19 @@ def home(request):
     prefix_count = len(prefix_data)
     content = content.replace('{{PREFIX_COUNT}}', str(prefix_count))
     content = content.replace('{{PREFIX_DATA}}', json.dumps(prefix_data, ensure_ascii=False))
+
+    # Stats strip da index — números reais do banco.
+    # Formatação pt-BR: separador de milhar com espaço (ex: 12 847).
+    from chips.models import Brand, KnownPart, SearchLog
+
+    def _fmt(n):
+        return f"{n:,}".replace(",", " ")
+
+    content = content.replace('{{STAT_PARTS}}',    _fmt(KnownPart.objects.count()))
+    content = content.replace('{{STAT_BRANDS}}',   _fmt(Brand.objects.count()))
+    content = content.replace('{{STAT_FAMILIES}}', _fmt(prefix_count))
+    content = content.replace('{{STAT_SEARCHES}}', _fmt(SearchLog.objects.count()))
+
     content = _fix_html_links(content)
 
     # Objeto simples para manter compatibilidade com o template pages/page.html

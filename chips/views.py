@@ -3,6 +3,7 @@ WhatTheChip — Chips API views
 GET  /chips/search/?pn=XXXX   →  JSON com resultado de classificação
 GET  /chips/decode/?pn=XXXX   →  HTML parcial (HTMX) com decode card
 POST /chips/report/            →  Registra solicitação de correção
+POST /chips/submit/            →  Recebe envio colaborativo ("Adicionar chip")
 """
 import json
 import re
@@ -13,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_page
 
 from .engine import classify
-from .models import KnownPart, SearchLog, UnknownChip, CorrectionRequest
+from .models import KnownPart, SearchLog, UnknownChip, CorrectionRequest, ChipSubmission
 
 
 _CONF_LABEL = {
@@ -153,3 +154,46 @@ def stats_api(request):
         "total_searches": SearchLog.objects.count(),
         "unknown_count": UnknownChip.objects.count(),
     })
+
+
+@csrf_exempt
+@require_POST
+def submit_chip(request):
+    """
+    Recebe um envio colaborativo de PN não catalogado — feature "Adicionar chip".
+
+    Disparado de dois pontos da index:
+      • card vermelho "Chip não identificado" → botão "Enviar para análise"
+      • link "Adicionar chip" no menu principal / rodapé
+
+    Body (multipart/form-data):
+        pn       — Part Number (obrigatório, mín. 3 chars)
+        photo    — foto do chip (opcional, ImageField)
+        context  — contexto livre: origem, aparelho, observações (opcional)
+        email    — e-mail para retorno (opcional)
+
+    Resposta JSON:
+        {"ok": true}                       — envio registrado
+        {"ok": false, "error": "mensagem"} — PN inválido
+    """
+    pn = (request.POST.get("pn") or "").strip().upper()
+    pn = re.sub(r"[^A-Z0-9\-]", "", pn)
+
+    if not pn or len(pn) < 3:
+        return JsonResponse(
+            {"ok": False, "error": "Informe um Part Number válido (mín. 3 caracteres)."},
+            status=400,
+        )
+
+    context = (request.POST.get("context") or "").strip()[:2000]
+    email   = (request.POST.get("email") or "").strip()[:254]
+    photo   = request.FILES.get("photo")
+
+    ChipSubmission.objects.create(
+        part_number     = pn,
+        context         = context,
+        submitter_email = email,
+        photo           = photo,
+    )
+
+    return JsonResponse({"ok": True})

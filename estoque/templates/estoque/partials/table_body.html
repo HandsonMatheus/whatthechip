@@ -15,6 +15,7 @@
         <th>Capacidade</th>
         <th>Interface</th>
         <th class="est-th-qty">Qtd.</th>
+        <th class="est-th-date">Última adição</th>
         <th class="est-th-action"></th>
       </tr>
     </thead>
@@ -41,6 +42,7 @@
         <td class="est-td-qty">
           <span class="est-qty-badge">{{ entry.quantity }}</span>
         </td>
+        <td class="est-td-date">{{ entry.last_updated|date:"d/m/Y H:i:s" }}</td>
         <td class="est-td-action">
           <button class="est-del-btn" type="button"
                   onclick="openDeleteModal({{ entry.pk }}, '{{ entry.part_number|escapejs }}', {{ entry.quantity }})"

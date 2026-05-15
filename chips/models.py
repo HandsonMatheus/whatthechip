@@ -288,3 +288,52 @@ class CorrectionRequest(models.Model):
 
     def __str__(self):
         return f"{self.part_number} ({self.get_status_display()})"
+
+
+class ChipSubmission(models.Model):
+    """
+    Envio colaborativo de PN não catalogado — feature "Adicionar chip".
+
+    É a alma colaborativa do produto: quando o usuário busca um PN que NÃO
+    está no banco, mostramos um card amigável e pedimos que ele envie o PN
+    (idealmente com foto do chip) para análise manual. A equipe adiciona ao
+    banco em até 48 h. O mesmo fluxo é acessível pelo link "Adicionar chip"
+    no menu principal.
+
+    Alimenta o crescimento do banco pela comunidade — o "Google dos chips"
+    cresce com cada envio.
+
+    Fluxo de triagem:
+        pending  → operador analisa no admin
+        added    → chip adicionado ao banco (vira KnownPart / ChipFamily)
+        rejected → não foi possível identificar / envio inválido
+    """
+    STATUS_CHOICES = [
+        ("pending",  "⏳ Pendente"),
+        ("added",    "✅ Adicionado ao banco"),
+        ("rejected", "✗ Rejeitado"),
+    ]
+
+    part_number     = models.TextField(db_index=True, help_text="PN enviado pelo usuário")
+    photo           = models.ImageField(
+        upload_to="submissions/%Y/%m/", blank=True, null=True,
+        help_text="Foto do chip enviada pelo usuário (ajuda muito na identificação)")
+    context         = models.TextField(
+        blank=True, default="",
+        help_text="Contexto livre: origem, marca do aparelho, observações")
+    submitter_email = models.EmailField(
+        blank=True, default="", help_text="E-mail para retorno ao usuário")
+    status          = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="pending", db_index=True)
+    notes           = models.TextField(
+        blank=True, default="", help_text="Anotações internas do operador")
+    created_at      = models.DateTimeField(auto_now_add=True)
+    resolved_at     = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Envio de Chip"
+        verbose_name_plural = "Envios de Chips (Adicionar chip)"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.part_number} ({self.get_status_display()})"

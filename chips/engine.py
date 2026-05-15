@@ -434,16 +434,21 @@ def _result_from_known(pn: str, known, fam) -> dict:
             r["emcp_source"] = r.get("emcp_source", "gramática")
         else:
             # Gramática incompleta: DB complementa campos faltantes.
-            # EXCEÇÃO DE TIPO RAM: quando a família tem decode_gen_map configurado,
-            # o tipo RAM decodificado pela gramática (ex: "LPDDR4/4X" para KMR) é
-            # SEMPRE preferido sobre o valor armazenado no DB — mesmo que o DB tenha
-            # a capacidade correta. Isso evita que valores de AI desatualizados
-            # (ex: "LPDDR3" salvo antes de corrigirmos o bug do R=LPDDR4/4X) sobrevivam
-            # indefinidamente no banco sem re-enriquecimento manual.
+            #
+            # Tipo RAM quando decode_gen_map está configurado:
+            #   - Não verificado por humano (ai_*, estimated, distributor):
+            #       Tipo da gramática prevalece sobre o DB — distribuidores frequentemente
+            #       têm tipos desatualizados (ex: "LPDDR3" para chip LPDDR4X).
+            #   - Verificado por humano (confirmed / manual):
+            #       DB é autoridade total — tipo E capacidade do DB são usados.
+            #       A gramática pode estar errada para exceções de família
+            #       (ex: KMR310001M = LPDDR3, mas R no SAM_EMCP_GEN → LPDDR4/4X).
             grammar_ram = r.get("emcp_ram") or ""
-            if fam.decode_gen_map and grammar_ram and not _CAP_RE.search(grammar_ram):
+            if fam.decode_gen_map and grammar_ram and not _CAP_RE.search(grammar_ram) and not human_verified:
                 # Gramática tem o TIPO mas não a capacidade (cap_key ausente do mapa).
                 # Complementa com a capacidade que o DB já tem.
+                # Só aplicado quando não verificado por humano: se confidence=confirmed,
+                # o DB tem tipo E capacidade corretos — usamos o DB inteiro (cai no else abaixo).
                 db_ram = _clean(known.emcp_ram) or ""
                 cap_match = _CAP_RE.search(db_ram)
                 if cap_match:
@@ -453,12 +458,21 @@ def _result_from_known(pn: str, known, fam) -> dict:
                     # DB também não tem capacidade — deixa o tipo parcial
                     r["emcp_source"] = "gramática (cap. não mapeada)"
             else:
-                # DB vence na capacidade. Mas o TIPO RAM (LPDDR4X, LPDDR5…) é
-                # definido pela família — não por catálogo de distribuidor.
-                # Se decode_gen_map está configurado, o tipo da gramática sempre
-                # prevalece; apenas a capacidade numérica vem do DB.
+                # DB vence na capacidade.
+                #
+                # Quando NÃO verificado por humano (ai_*, estimated, distributor):
+                #   O TIPO RAM é definido pelo decode_gen_map da família — distribuidores
+                #   e IA frequentemente têm o tipo errado (ex: "LPDDR3" para chip LPDDR4X).
+                #   Neste caso, combinamos o tipo da gramática com a capacidade do DB.
+                #
+                # Quando verificado por humano (confirmed / manual):
+                #   O DB é totalmente confiável — não sobrescrever tipo nem capacidade.
+                #   Ex: KMR310001M tem confidence=confirmed com LPDDR3 2GB no banco.
+                #   A gramática diz LPDDR4/4X 1GB (errado — exceção de família).
+                #   Forçar grammar_type aqui produziria "LPDDR4/4X 2GB" — tipo incorreto.
                 db_ram = _clean(known.emcp_ram) or ""
-                if fam.decode_gen_map and grammar_ram:
+                if fam.decode_gen_map and grammar_ram and not human_verified:
+                    # Não-humano: tipo da gramática corrige o DB (proteção contra dados de distribuidor)
                     grammar_type = grammar_ram.split()[0]   # ex: "LPDDR4X"
                     cap_match    = _CAP_RE.search(db_ram)
                     if cap_match and grammar_type:
@@ -466,6 +480,7 @@ def _result_from_known(pn: str, known, fam) -> dict:
                     else:
                         r["emcp_ram"] = db_ram or r["emcp_ram"]
                 else:
+                    # Humano-verificado (confirmed/manual): DB é autoridade total
                     r["emcp_ram"] = db_ram or r["emcp_ram"]
                 r["emcp_source"] = known.confidence
 
@@ -503,6 +518,15 @@ def _result_from_known(pn: str, known, fam) -> dict:
     r["confidence"]  = known.confidence
     r["source_url"]  = known.source_url or r["source_url"]
     r["known_exact"] = True
+
+    # Subtype: para chips confirmados/manual que são exceções da família
+    # (ex: KMR310001M = LPDDR3, mas família KMR = LPDDR4/4X), usa o subtype
+    # salvo no KnownPart em vez do subtype da família.
+    # Não afeta outros chips da família — só registros com known.subtype preenchido
+    # e confidence=confirmed/manual.
+    if human_verified and known.subtype:
+        r["subtype"] = known.subtype
+
     # classification_source reflete qual camada dominou o resultado.
     if grammar_wins:
         r["classification_source"] = "gramática"
@@ -1186,11 +1210,24 @@ def classify(pn_raw: str) -> dict:
                 pass
 
         # ── Fila de revisão ───────────────────────────────────────────────────
-        # Chips com gramática completa (NAND+RAM ou capacidade decodificados)
-        # NÃO vão para revisão — o resultado já é confiável.
-        # Só chips com gramática parcial/incompleta precisam de enriquecimento manual.
+        # Todo PN buscado que ainda não tem registro enriched no banco vai para
+        # a fila de revisão (status=raw), independente de grammar_complete.
+        #
+        # Motivo da mudança (2026-05-14, era sem Gemini):
+        #   Antes: só enfileirava quando grammar_complete=False.
+        #   Problema: grammar_complete=True apenas significa que o _CAP_RE achou
+        #   um número nos campos — não garante que o tipo RAM esteja correto
+        #   (ex: KM3V6001CM marcado como grammar_complete=True com "RAM não mapeada 4GB",
+        #   mas o chip real é LPDDR4X 6GB). Sem Gemini, esses erros nunca apareciam
+        #   na fila e eram invisíveis para revisão manual.
+        #
+        # Comportamento correto: a fila é o principal mecanismo de rastreamento de
+        # PNs não confirmados. fix_known_parts + populate_samsung criam os registros
+        # enriched; a fila raw é visibilidade para o operador.
+        # PNs truncados (pn_short=True) continuam excluídos — não faz sentido
+        # enfileirar entrada incompleta que o operador ainda está digitando.
         _in_review_queue = False
-        if not _gemini_saved_now and not grammar_complete:
+        if not _gemini_saved_now and not pn_short:
             try:
                 if not KnownPart.objects.filter(part_number=pn, status="enriched").exists():
                     KnownPart.objects.get_or_create(

@@ -197,8 +197,8 @@ def export_xls(request):
     mono_font = Font(name="Courier New", size=10)
 
     # ── Cabeçalho ─────────────────────────────────────────────────
-    headers    = ["Part Number", "Brand", "Type", "Capacity", "Interface", "Qty.", "Source"]
-    col_widths = [22, 16, 12, 20, 16, 8, 18]
+    headers    = ["Part Number", "Brand", "Type", "Capacity", "Interface", "Qty.", "Source", "Last Added"]
+    col_widths = [22, 16, 12, 20, 16, 8, 18, 20]
 
     for col_idx, (h, w) in enumerate(zip(headers, col_widths), start=1):
         cell = ws.cell(row=1, column=col_idx, value=h)
@@ -219,6 +219,7 @@ def export_xls(request):
             entry.interface or "—",
             entry.quantity,
             entry.classification_source or "—",
+            entry.last_updated.strftime("%d/%m/%Y %H:%M:%S") if entry.last_updated else "—",
         ]
         for col_idx, value in enumerate(data, start=1):
             cell = ws.cell(row=row_idx, column=col_idx, value=value)

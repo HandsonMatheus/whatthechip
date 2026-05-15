@@ -1,176 +1,119 @@
 <!-- ══════════════════════════════════════════════════════
-     HERO — logo + barra de busca (estilo Google)
+     INDEX — WhatTheChip · 什么芯片
+     Design Claude Design (Carbon + camada Luna/XP) reimplementado
+     em HTML/CSS/JS sobre o Django. Topnav e footer ficam em base.html.
+     Este arquivo é injetado por pages/views.home — NÃO usar tags Django,
+     apenas os placeholders {{PREFIX_DATA}} e {{STAT_*}}.
      ══════════════════════════════════════════════════════ -->
-<div class="hero">
-  <div class="hero-inner">
 
-    <!-- Logo central — SVG Figma (lupa + texto + mandarim) -->
-    <div class="hero-logo">
-      <img class="hero-logo-svg hero-logo-svg--light"
-           src="/static/img/logo-light.svg"
-           alt="WhatTheChip?" />
-      <img class="hero-logo-svg hero-logo-svg--dark"
-           src="/static/img/logo-dark.svg"
-           alt="WhatTheChip?" />
+<!-- ── HERO — logo + barra de PN ── -->
+<section class="hero">
+  <div class="hero__inner">
+
+    <div class="logo" aria-label="WhatTheChip 什么芯片">
+      <img class="logo__svg is-light" src="/static/img/wtc-logo-light.svg" alt="WhatTheChip 什么芯片" />
+      <img class="logo__svg is-dark" src="/static/img/wtc-logo-dark.svg" alt="" aria-hidden="true" />
     </div>
 
-    <!-- Busca principal -->
-    <form class="pin-search" id="pin-search" role="search" autocomplete="off">
-
-      <!-- Caixas + botões (mesma largura via pin-input-group) -->
-      <div class="pin-row" id="pin-row">
-        <div class="pin-input-group">
-          <div class="pin-boxes" id="pin-boxes"></div>
-          <div class="pin-btn-group">
-            <button type="button" id="clear-btn" class="pin-btn pin-btn--secondary" disabled>Limpar</button>
-            <button type="submit" id="decode-btn" class="pin-btn pin-btn--primary" disabled>
-              <span class="pin-btn-label">Decodificar</span>
-              <span class="pin-btn-spinner" aria-hidden="true"></span>
-            </button>
-          </div>
-        </div>
-        <!-- Input real oculto — captura teclado, paste, mobile keyboard -->
-        <input type="text" id="big-search-input"
-               class="pin-real-input"
-               autocomplete="off" autocapitalize="characters"
-               autocorrect="off" spellcheck="false"
-               aria-label="Digite o Part Number do chip" />
+    <form class="pnbar" id="pn-form" role="search" autocomplete="off">
+      <div class="pnbar__prefix" id="pn-prefix" title="Detecção de prefixo">
+        <span>Aguardando PN…</span>
       </div>
+      <div class="pnbar__cells" id="pn-cells"></div>
 
-      <!-- Hint abaixo dos botões -->
-      <div class="pin-actions">
-        <span class="pin-actions-hint" id="pin-hint">Digite o Part Number acima</span>
-      </div>
+      <button type="button" class="pnbar__clear" id="pn-clear"
+              aria-label="Apagar PN" title="Apagar tudo" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>
+        </svg>
+      </button>
 
-      <!-- Painel de resultado fixo — sempre visível abaixo do input -->
-      <div id="big-search-results">
+      <button type="submit" class="pnbar__decode" id="pn-decode" aria-label="Decodificar" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>
+        </svg>
+        <span class="pnbar__decode-label">Decodificar</span>
+        <span class="pnbar__decode-spinner" aria-hidden="true"></span>
+      </button>
 
-        <!-- Painel único — idle / digitando / identificado, tudo no mesmo elemento -->
-        <div id="dc-result-panel">
-          <div class="wtc-rp-status wtc-rp-status--idle" id="rp-status">
-            <span class="wtc-rp-status-dot"></span>
-            <span id="rp-status-text">Aguardando Part Number…</span>
-          </div>
-          <div class="wtc-rp-body">
-            <div class="wtc-rp-chiptype wtc-rp-chiptype--idle" id="rp-chiptype">
-              Digite o PN acima para identificar o chip
-            </div>
-            <div class="wtc-rp-brand wtc-rp-brand--idle" id="rp-brand">Fabricante</div>
-          </div>
-          <div class="wtc-rp-specs">
-            <div class="wtc-rp-spec">
-              <span class="wtc-rp-spec-label" id="rp-spec-l0">Densidade</span>
-              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v0">—</span>
-            </div>
-            <div class="wtc-rp-spec">
-              <span class="wtc-rp-spec-label" id="rp-spec-l1">Interface</span>
-              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v1">—</span>
-            </div>
-            <div class="wtc-rp-spec">
-              <span class="wtc-rp-spec-label" id="rp-spec-l2">Capacidade</span>
-              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v2">—</span>
-            </div>
-            <div class="wtc-rp-spec">
-              <span class="wtc-rp-spec-label" id="rp-spec-l3">Confiança</span>
-              <span class="wtc-rp-spec-val wtc-rp-spec-val--idle" id="rp-spec-v3">—</span>
-            </div>
-          </div>
-          <!-- Rodapé: aparece só quando há resultado -->
-          <div class="wtc-rp-footer" id="rp-footer" style="display:none">
-            <span id="rp-conf-label"></span>
-            <span class="wtc-rp-sep" id="rp-source-sep">·</span>
-            <span id="rp-source-label"></span>
-            <span class="wtc-rp-sep" id="rp-doc-sep" style="display:none">·</span>
-            <a class="wtc-rp-link" href="#" id="rp-doc-link" style="display:none">Documentação →</a>
-            <span class="wtc-rp-sep">·</span>
-            <span id="rp-report-wrap">
-              <button class="wtc-rp-report-btn" id="rp-report-btn" type="button">Reportar erro</button>
-            </span>
-            <span class="wtc-rp-sep">·</span>
-            <button class="wtc-rp-debug-btn" id="rp-debug-btn" type="button">📋 Debug</button>
-          </div>
-        </div>
-
-      </div>
-
+      <input class="pnbar__input" id="pn-input" type="text" spellcheck="false"
+             autocomplete="off" autocapitalize="characters" autocorrect="off"
+             aria-label="Part number do chip" />
     </form>
 
+    <!-- Ações mobile: Apagar + Decodificar abaixo da barra -->
+    <div class="mobile-actions" aria-hidden="false">
+      <button type="button" class="pnbar__clear" id="pn-clear-mobile"
+              aria-label="Apagar PN" title="Apagar" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>
+        </svg>
+      </button>
+      <button type="button" class="pnbar__decode" id="pn-decode-mobile" aria-label="Decodificar" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>
+        </svg>
+        <span class="pnbar__decode-label">Decodificar</span>
+        <span class="pnbar__decode-spinner" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <p class="pn-hint" id="pn-hint">Digite o Part Number acima — pressione Enter ou Decodificar</p>
   </div>
-</div>
+</section>
 
-<!-- ══════════════════════════════════════════════════════
-     DIVISOR "SABER MAIS"
-     ══════════════════════════════════════════════════════ -->
-<div class="section-divider">
-  <span class="section-divider-text">Saber mais</span>
-</div>
+<!-- ── RESULTADO (preenchido por JS) ── -->
+<div class="result-wrap" id="result-wrap"></div>
 
-<!-- ══════════════════════════════════════════════════════
-     COBERTURA
-     ══════════════════════════════════════════════════════ -->
-<section class="coverage">
-  <div class="coverage-inner">
-    <h2 class="coverage-title">Fabricantes cobertos</h2>
-    <p class="coverage-sub">Identificação com dados reais de datasheets e campo</p>
-
-    <div class="coverage-grid">
-
-      <!-- Samsung — ativo -->
-      <a class="coverage-card coverage-card--active" href="/fab-samsung/">
-        <div class="coverage-card-head">
-          <span class="cov-tag cov-tag--blue">Samsung</span>
-          <span class="cov-status cov-status--live">● Ativo</span>
-        </div>
-        <p class="coverage-card-desc">
-          eMCP · uMCP · DRAM (LPDDR / DDR) · UFS · eMMC ·
-          NAND · NOR · ePoP · SSD BGA
-        </p>
-        <span class="coverage-card-cta">Ver documentação →</span>
-      </a>
-
-      <!-- SK Hynix — em desenvolvimento -->
-      <div class="coverage-card coverage-card--dev">
-        <div class="coverage-card-head">
-          <span class="cov-tag cov-tag--teal">SK Hynix</span>
-          <span class="cov-status cov-status--dev">◌ Em desenvolvimento</span>
-        </div>
-        <p class="coverage-card-desc">
-          LPDDR · DDR · eMMC · UFS · NAND —
-          documentação em revisão e enriquecimento.
-        </p>
-        <span class="coverage-card-cta coverage-card-cta--disabled">Em breve</span>
-      </div>
-
+<!-- ── STATS STRIP ── -->
+<section class="stats">
+  <div class="stats__inner">
+    <div class="stat">
+      <span class="stat__label">Chips na base</span>
+      <span class="stat__value">{{STAT_PARTS}}</span>
+      <span class="stat__delta">Part numbers catalogados</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">Fabricantes</span>
+      <span class="stat__value">{{STAT_BRANDS}}</span>
+      <span class="stat__delta">Marcas mapeadas</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">Famílias mapeadas</span>
+      <span class="stat__value">{{STAT_FAMILIES}}</span>
+      <span class="stat__delta">eMMC · LPDDR · UFS · NAND</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">Consultas registradas</span>
+      <span class="stat__value">{{STAT_SEARCHES}}</span>
+      <span class="stat__delta">Buscas processadas</span>
     </div>
   </div>
 </section>
 
 <script>
-(function() {
+(function () {
   'use strict';
 
-  var DATA        = {{PREFIX_DATA}};
-  var input       = document.getElementById('big-search-input');
-  var pinRow      = document.getElementById('pin-row');
-  var pinBoxes    = document.getElementById('pin-boxes');
-  var decodeBtn   = document.getElementById('decode-btn');
-  var clearBtn    = document.getElementById('clear-btn');
-  var pinHint     = document.getElementById('pin-hint');
-  var pinSearch   = document.getElementById('pin-search');
-  // ── Elementos do painel de resultado ────────────────────────────────────────
-  var rpStatus    = document.getElementById('rp-status');
-  var rpStatusTxt = document.getElementById('rp-status-text');
-  var rpChiptype  = document.getElementById('rp-chiptype');
-  var rpBrand     = document.getElementById('rp-brand');
-  var rpFooter    = document.getElementById('rp-footer');
-  var rpConfLabel = document.getElementById('rp-conf-label');
-  var rpSourceLabel= document.getElementById('rp-source-label');
-  var rpSourceSep = document.getElementById('rp-source-sep');
-  var rpDocLink   = document.getElementById('rp-doc-link');
-  var rpDocSep    = document.getElementById('rp-doc-sep');
-  var specLabels  = [0,1,2,3].map(function(i){ return document.getElementById('rp-spec-l'+i); });
-  var specVals    = [0,1,2,3].map(function(i){ return document.getElementById('rp-spec-v'+i); });
-  var _lastData   = null; // guarda JSON do último resultado para o Debug
+  // ── Dados de prefixo injetados pelo Django ────────────────────────────────
+  var DATA = {{PREFIX_DATA}};
+
+  // ── Elementos ─────────────────────────────────────────────────────────────
+  var form        = document.getElementById('pn-form');
+  var input       = document.getElementById('pn-input');
+  var cellsWrap   = document.getElementById('pn-cells');
+  var prefixWrap  = document.getElementById('pn-prefix');
+  var hint        = document.getElementById('pn-hint');
+  var resultWrap  = document.getElementById('result-wrap');
+  var clearBtns   = [document.getElementById('pn-clear'), document.getElementById('pn-clear-mobile')];
+  var decodeBtns  = [document.getElementById('pn-decode'), document.getElementById('pn-decode-mobile')];
+
+  var CELL_MIN  = 16;   // células mostradas por padrão
+  var CELL_MAX  = 24;   // teto absoluto
+  var _cellCount = 0;
+  var _detectedFam = null;
+  var _lastApiPn   = '';
+  var _lastData    = null;
 
   var CONF_LABEL = {
     'confirmed':   '✅ Confirmado',
@@ -183,106 +126,27 @@
     'estimated':   '~ Estimado',
   };
 
-  // Retorna chave de confiança efetiva para exibição.
-  // Chips grammar_complete recebem label 'grammar' mesmo com confidence='estimated':
-  // a gramática com mapa verificado é mais confiável que um resultado parcial.
+  // ── Utilitários ───────────────────────────────────────────────────────────
+  function normalize(s) { return (s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+  function escHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
   function effectiveConf(d) {
     if (d.grammar_complete && d.confidence === 'estimated') return 'grammar';
     return d.confidence || 'estimated';
   }
 
-  // ── Utilitários ─────────────────────────────────────────────────────────────
-  function normalize(s) { return s.toUpperCase().replace(/[^A-Z0-9]/g, ''); }
-
-  function escHtml(s) {
-    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  function fabToPage(fab) {
-    var map = {
-      'Samsung':           'fab-samsung',
-      'SK Hynix':          'fab-hynix',
-      'Micron':            'fab-micron',
-      'Elpida':            'fab-elpida',
-      'Toshiba / Kioxia':  'fab-toshiba',
-      'SanDisk / WD':      'fab-sandisk',
-      'Nanya':             'fab-nanya',
-      'Kingston':          'fab-kingston',
-      'Kingston (HyperX)': 'fab-kingston',
-      'Rayson':            'fab-rayson',
-      'ISSI':              'fab-issi',
-      'GigaDevice':        'fab-gigadevice',
-    };
-    return map[fab] || 'prefixos';
-  }
-
-  // isDjango: verdadeiro quando servido por Django (qualquer porta HTTP/HTTPS),
-  // falso apenas quando aberto como arquivo local (file://) ou com extensão .html.
-  // A checagem anterior usava window.location.port !== '' — quebrava em porta 80/443
-  // (Nginx, proxy, domínio sem porta explícita).
-  var isDjango = window.location.protocol !== 'file:' && !window.location.pathname.endsWith('.html');
-
-  function pageUrl(slug) {
-    return isDjango ? '/' + slug + '/' : slug + '.html';
-  }
-
-  // ── Estado do PIN ────────────────────────────────────────────────────────────
-  var PIN_DEFAULT   = 8;   // caixas mostradas antes de identificar família
-  var PIN_MAX       = 20;  // teto absoluto
-  var _currentLen   = PIN_DEFAULT;
-  var _detectedFam  = null;
-  var _debounceTimer = null;
-  var _lastApiPn    = '';
-
-  // ── Renderiza as caixas ──────────────────────────────────────────────────────
-  function renderBoxes(value, targetLen) {
-    // Expande só se o usuário digitou MAIS que o esperado (não quando igual)
-    var len = value.length > targetLen ? value.length + 1 : targetLen;
-    len = Math.min(len, PIN_MAX);
-
-    // Só reconstrói o DOM se a quantidade mudou
-    if (pinBoxes.children.length !== len) {
-      pinBoxes.innerHTML = '';
-      for (var i = 0; i < len; i++) {
-        var box = document.createElement('span');
-        box.className = 'pin-box';
-        pinBoxes.appendChild(box);
-      }
-      _currentLen = len;
-    }
-
-    var boxes = pinBoxes.querySelectorAll('.pin-box');
-    var prefixLen = _detectedFam ? normalize(_detectedFam.prefix).length : 0;
-
-    for (var j = 0; j < boxes.length; j++) {
-      var ch = value[j] || '';
-      boxes[j].textContent = ch;
-      boxes[j].className = 'pin-box'
-        + (ch ? ' pin-filled' : '')
-        + (j === value.length ? ' pin-cursor' : '')
-        + (j < prefixLen && ch ? ' pin-prefix' : '');
-    }
-  }
-
-  // ── Camada 1: busca de prefixos (client-side, instantânea) ──────────────────
-  function matchPrefix(row, q) {
-    var parts = row.prefix.split('/').map(function(p) {
-      return normalize(p.replace(/\.\.\.$/, '').trim());
-    });
-    return parts.some(function(p) { return p.startsWith(q); })
-        || normalize(row.fab).includes(q)
-        || normalize(row.tipo).includes(q);
-  }
-
+  // ── Camada 1: detecção de família por prefixo (client-side) ───────────────
   function bestMatch(q) {
-    // Retorna a família com prefixo mais longo que ainda faça startsWith no q
     var best = null;
-    DATA.forEach(function(row) {
-      var parts = row.prefix.split('/').map(function(p) {
+    DATA.forEach(function (row) {
+      var parts = row.prefix.split('/').map(function (p) {
         return normalize(p.replace(/\.\.\.$/, '').trim());
       });
-      parts.forEach(function(p) {
-        if (q.startsWith(p) && (!best || p.length > normalize(best.prefix).length)) {
+      parts.forEach(function (p) {
+        if (p && q.indexOf(p) === 0 &&
+            (!best || p.length > normalize(best.prefix).length)) {
           best = row;
         }
       });
@@ -290,403 +154,306 @@
     return best;
   }
 
-  // ── Atualiza estado vazio enquanto o usuário digita ─────────────────────────
-  function updateEmptyState(q, fam) {
-    if (!q) {
-      if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--idle';
-      if (rpStatusTxt) rpStatusTxt.textContent = 'Aguardando Part Number…';
-      if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype wtc-rp-chiptype--idle'; rpChiptype.textContent = 'Digite o PN acima para identificar o chip'; }
-      if (rpBrand)     rpBrand.className      = 'wtc-rp-brand wtc-rp-brand--idle';
-      if (decodeBtn)   decodeBtn.disabled     = true;
-      if (clearBtn)    clearBtn.disabled      = true;
-      if (pinHint)     { pinHint.textContent  = 'Digite o Part Number acima'; pinHint.className = 'pin-actions-hint'; }
-      return;
+  // ── Renderiza as células do PN ────────────────────────────────────────────
+  function renderCells(value) {
+    var want = CELL_MIN;
+    if (value.length >= CELL_MIN) want = Math.min(value.length + 1, CELL_MAX);
+
+    if (_cellCount !== want) {
+      cellsWrap.innerHTML = '';
+      for (var i = 0; i < want; i++) {
+        var cell = document.createElement('div');
+        cell.className = 'pncell';
+        cell.setAttribute('aria-hidden', 'true');
+        cellsWrap.appendChild(cell);
+      }
+      _cellCount = want;
     }
+
+    var cells = cellsWrap.children;
+    var focused = document.activeElement === input;
+    var prefixLen = _detectedFam ? normalize(_detectedFam.prefix).length : 0;
+
+    for (var j = 0; j < cells.length; j++) {
+      var ch = value[j] || '';
+      var isEmpty  = ch === '';
+      var isActive = focused && j === Math.min(value.length, cells.length - 1);
+      var isKnown  = !isEmpty && j < prefixLen;
+      cells[j].textContent = ch;
+      cells[j].className = 'pncell'
+        + (isActive ? ' is-active' : '')
+        + (isEmpty ? ' is-empty' : '')
+        + (isKnown ? ' is-known' : '');
+    }
+  }
+
+  // ── Atualiza o prefixo, o hint e o estado dos botões ──────────────────────
+  function updateChrome(q, fam) {
+    // Prefixo
     if (fam) {
-      if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--typing';
-      var statusTxt = fam.fab + ' · ' + fam.tipo;
-      if (fam.pn_length) {
-        statusTxt += ' — ' + q.length + '/' + fam.pn_length + ' chars';
-      }
-      if (rpStatusTxt) rpStatusTxt.textContent = statusTxt;
-      if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype'; rpChiptype.textContent = fam.tipo; }
-      if (rpBrand)     { rpBrand.className = 'wtc-rp-brand'; rpBrand.textContent = fam.fab; }
+      prefixWrap.innerHTML = '<span class="mfg">' + escHtml(fam.fab) + '</span>'
+        + '<span>&nbsp;·&nbsp;</span><span>' + escHtml(fam.tipo) + '</span>';
+    } else if (q) {
+      prefixWrap.innerHTML = '<span>Família não catalogada</span>';
     } else {
-      if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--typing';
-      if (rpStatusTxt) rpStatusTxt.textContent = 'Família não catalogada — clique Decodificar para tentar';
-      if (rpChiptype)  { rpChiptype.className = 'wtc-rp-chiptype wtc-rp-chiptype--idle'; rpChiptype.textContent = 'Família não reconhecida'; }
-      if (rpBrand)     rpBrand.className      = 'wtc-rp-brand wtc-rp-brand--idle';
+      prefixWrap.innerHTML = '<span>Aguardando PN…</span>';
     }
 
-    // Ativa/desativa botões e atualiza hint — mínimo 4 chars para Decodificar
-    if (decodeBtn) decodeBtn.disabled = (q.length < 4);
-    if (clearBtn)  clearBtn.disabled  = (q.length === 0);
-    if (pinHint) {
-      if (q.length > 0 && q.length < 4) {
-        pinHint.textContent = 'Continue digitando (' + q.length + '/4 mín.)';
-        pinHint.className   = 'pin-actions-hint pin-actions-hint--warn';
-      } else if (fam && fam.pn_length && q.length < fam.pn_length) {
-        pinHint.textContent = 'PN incompleto — continue digitando (' + q.length + '/' + fam.pn_length + ')';
-        pinHint.className   = 'pin-actions-hint pin-actions-hint--warn';
-      } else if (q.length >= 4) {
-        pinHint.textContent = 'Clique Decodificar ou pressione Enter';
-        pinHint.className   = 'pin-actions-hint';
-      } else {
-        pinHint.textContent = 'Digite o Part Number acima';
-        pinHint.className   = 'pin-actions-hint';
-      }
+    // Botões
+    var canDecode = q.length >= 4;
+    decodeBtns.forEach(function (b) { if (b) b.disabled = !canDecode; });
+    clearBtns.forEach(function (b) {
+      if (!b) return;
+      b.disabled = q.length === 0;
+      if (b.id === 'pn-clear') b.hidden = q.length === 0;
+    });
+
+    // Hint
+    if (!q) {
+      hint.textContent = 'Digite o Part Number acima — pressione Enter ou Decodificar';
+      hint.className = 'pn-hint';
+    } else if (q.length < 4) {
+      hint.textContent = 'Continue digitando (' + q.length + '/4 mínimo)';
+      hint.className = 'pn-hint is-warn';
+    } else if (fam && fam.pn_length && q.length < fam.pn_length) {
+      hint.textContent = 'PN incompleto — ' + q.length + '/' + fam.pn_length + ' caracteres';
+      hint.className = 'pn-hint is-warn';
+    } else {
+      hint.textContent = 'Pressione Enter ou clique em Decodificar';
+      hint.className = 'pn-hint';
     }
   }
 
-  // ── Preenche um spec com label + valor ──────────────────────────────────────
-  function setSpec(idx, label, value) {
-    if (!specLabels[idx]) return;
-    specLabels[idx].textContent = label;
-    var v = specVals[idx];
-    if (value) {
-      v.classList.remove('wtc-rp-spec-val--idle');
-      v.style.animation = 'none';
-      void v.offsetWidth; // força reflow para reiniciar animação
-      v.style.animation = 'wtc-fadein .3s ease forwards';
-      v.textContent = value;
-    } else {
-      v.classList.add('wtc-rp-spec-val--idle');
-      v.style.animation = '';
-      v.textContent = '—';
-    }
+  // ── Render principal enquanto o usuário digita ────────────────────────────
+  function render(raw) {
+    var q = normalize(raw);
+    var fam = q ? bestMatch(q) : null;
+    if (fam !== _detectedFam) { _detectedFam = fam; _lastApiPn = ''; }
+    renderCells(q);
+    updateChrome(q, fam);
   }
 
-  // ── Popula o painel com resultado do JSON ─────────────────────────────────
-  function fillResult(d) {
+  // ── Loading dos botões de decode ──────────────────────────────────────────
+  function setLoading(on) {
+    decodeBtns.forEach(function (b) {
+      if (!b) return;
+      b.classList.toggle('is-loading', on);
+      if (on) b.disabled = true;
+    });
+  }
+
+  // ════════════════════════════════════════════════════════════════════
+  //  CARTÃO DE RESULTADO
+  // ════════════════════════════════════════════════════════════════════
+  function clearResult() { resultWrap.innerHTML = ''; _lastData = null; }
+
+  function cellHtml(label, value, note, mod) {
+    var cls = 'result__cell' + (mod ? ' result__cell--' + mod : '');
+    var valCls = 'result__value' + (value ? '' : ' dim');
+    return '<div class="' + cls + '">'
+      + '<div class="result__label">' + escHtml(label) + '</div>'
+      + '<div class="' + valCls + '">' + escHtml(value || '—') + '</div>'
+      + (note ? '<div class="result__note">' + escHtml(note) + '</div>' : '')
+      + '</div>';
+  }
+
+  function renderResult(d) {
     _lastData = d;
+    var ts = new Date().toISOString().replace('T', ' ').slice(11, 19);
+    var remarked = !!d.remarked_flag;
+    var eConf = effectiveConf(d);
 
-    var mode = d.remarked_flag ? 'warn' : (d.pn_incomplete ? 'wait' : 'ok');
-    var txt  = d.remarked_flag        ? '⚠ Possível chip remarked'
-             : d.pn_incomplete        ? '⌛ PN incompleto — continue digitando'
-             : '✓ Chip identificado';
-    if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--' + mode;
-    if (rpStatusTxt) rpStatusTxt.textContent = txt;
+    // Cabeçalho
+    var titleSmall = d.subtype
+      ? ' <small class="result__subtype">· ' + escHtml(d.subtype) + '</small>'
+      : '';
+    var head = '<header class="result__head">'
+      + '<span class="led" aria-hidden="true"></span>'
+      + '<h2 class="result__title">' + escHtml(d.chip_type || 'Chip') + titleSmall + '</h2>'
+      + '<span class="result__head-spacer"></span>'
+      + '<span class="result__meta">' + escHtml(d.pn || '') + ' · t=' + ts + 'Z</span>'
+      + '<span class="result__mfg"><span class="ic" aria-hidden="true"></span>'
+      + escHtml(d.brand || '—') + '</span>'
+      + '</header>';
 
-    if (rpChiptype) {
-      rpChiptype.className = 'wtc-rp-chiptype';
-      rpChiptype.innerHTML = escHtml(d.chip_type || '—')
-        + (d.subtype ? '<span class="wtc-rp-subtype"> ' + escHtml(d.subtype) + '</span>' : '');
-    }
-    if (rpBrand) {
-      rpBrand.className   = 'wtc-rp-brand';
-      rpBrand.textContent = d.brand || '—';
-    }
-
+    // Grade de 4 células
+    var grid;
     if (d.is_emcp) {
-      setSpec(0, 'NAND',        d.emcp_nand   || null);
-      setSpec(1, 'RAM',         d.emcp_ram    || null);
-      setSpec(2, 'Dispositivo', d.emcp_device || null);
-      setSpec(3, 'Interface',   d.interface   || null);
+      grid = cellHtml('NAND', d.emcp_nand, '', 'em')
+           + cellHtml('RAM', d.emcp_ram, '', 'em')
+           + cellHtml('Dispositivo', d.emcp_device || d.device, '')
+           + cellHtml('Interface', d.interface, '', remarked ? 'warn' : '');
     } else {
-      setSpec(0, 'Densidade',  d.dram_density || null);
-      setSpec(1, 'Interface',  d.interface    || null);
-      setSpec(2, 'Capacidade', d.capacity     || null);
-      setSpec(3, 'Confiança',  CONF_LABEL[effectiveConf(d)] || d.confidence || null);
+      grid = cellHtml('Densidade', d.dram_density, '', 'em')
+           + cellHtml('Interface', d.interface, '')
+           + cellHtml('Capacidade', d.capacity, '')
+           + cellHtml('Confiança', CONF_LABEL[eConf] || d.confidence, '', remarked ? 'warn' : '');
     }
 
     // Rodapé
-    if (rpFooter) {
-      rpFooter.style.display = 'flex';
-      var eConf = effectiveConf(d);
-      if (rpConfLabel)   rpConfLabel.textContent   = CONF_LABEL[eConf] || d.confidence || '';
-      var srcTxt = d.classification_source ? 'via ' + d.classification_source : '';
-      if (d.in_review_queue) srcTxt += (srcTxt ? ' · ' : '') + '⚠ enviado para revisão';
-      if (rpSourceLabel) rpSourceLabel.textContent = srcTxt;
-      if (rpSourceSep)   rpSourceSep.style.display = srcTxt ? '' : 'none';
-      if (d.doc_url) {
-        if (rpDocLink) { rpDocLink.href = d.doc_url; rpDocLink.style.display = ''; }
-        if (rpDocSep)  rpDocSep.style.display = '';
-      } else {
-        if (rpDocLink) rpDocLink.style.display = 'none';
-        if (rpDocSep)  rpDocSep.style.display  = 'none';
-      }
+    var foot = '<footer class="result__foot">'
+      + '<span class="check" aria-hidden="true">✓</span>'
+      + '<span>' + escHtml(CONF_LABEL[eConf] || d.confidence || 'Resultado') + '</span>';
+    if (d.classification_source) {
+      foot += '<span class="sep">|</span><span>via ' + escHtml(d.classification_source) + '</span>';
+    }
+    if (d.doc_url) {
+      foot += '<span class="sep">|</span><a href="' + escHtml(d.doc_url) + '">Documentação →</a>';
+    }
+    foot += '<span class="sep">|</span>'
+      + '<button type="button" class="danger" id="rp-report">Reportar erro</button>'
+      + '<span class="sep">|</span>'
+      + '<button type="button" class="danger" id="rp-debug" style="color:var(--cds-text-placeholder)">📋 Debug</button>'
+      + '</footer>';
+
+    resultWrap.innerHTML = '<article class="result' + (remarked ? ' result--warn' : '') + '">'
+      + head + '<div class="result__grid">' + grid + '</div>' + foot + '</article>';
+
+    wireResultActions();
+  }
+
+  function renderNotFound(pn) {
+    _lastData = null;
+    resultWrap.innerHTML =
+      '<article class="result result--notfound">'
+      + '<header class="result__head">'
+      + '<span class="led" aria-hidden="true"></span>'
+      + '<h2 class="result__title">Chip não identificado '
+      + '<small>· sem correspondência no banco</small></h2>'
+      + '<span class="result__head-spacer"></span>'
+      + '<span class="result__meta">' + escHtml(pn) + '</span>'
+      + '</header>'
+      + '<div class="result__body">'
+      + 'Não encontramos esse Part Number. Confira a leitura do chip, ou '
+      + '<strong>envie o PN para análise</strong> — adicionamos manualmente ao banco em até 48&nbsp;h.'
+      + '</div>'
+      + '<footer class="result__foot">'
+      + '<button type="button" class="danger" id="rp-submit" style="color:var(--cds-link-primary)">Enviar para análise →</button>'
+      + '<span class="sep">|</span>'
+      + '<a href="/prefixos/">Ver tabela rápida</a>'
+      + '</footer>'
+      + '</article>';
+
+    var sub = document.getElementById('rp-submit');
+    if (sub) sub.addEventListener('click', function () {
+      if (window.wtcOpenSubmitModal) window.wtcOpenSubmitModal(pn);
+    });
+  }
+
+  // ── Report + Debug ────────────────────────────────────────────────────────
+  function wireResultActions() {
+    var reportBtn = document.getElementById('rp-report');
+    if (reportBtn) {
+      reportBtn.addEventListener('click', function () {
+        if (!_lastData) return;
+        var body = new URLSearchParams({
+          pn:        _lastData.pn || '',
+          chip_type: _lastData.chip_type || '',
+          capacity:  _lastData.capacity || _lastData.emcp_nand || '',
+        });
+        fetch('/chips/report/', { method: 'POST', body: body })
+          .then(function () {
+            reportBtn.outerHTML = '<span class="ok">✓ Reporte recebido — obrigado!</span>';
+          })
+          .catch(function () {});
+      });
+    }
+
+    var debugBtn = document.getElementById('rp-debug');
+    if (debugBtn) {
+      debugBtn.addEventListener('click', function () {
+        if (!_lastData) return;
+        var txt = '=== WhatTheChip Debug ===\nPN: ' + (_lastData.pn || '')
+          + '\n' + JSON.stringify(_lastData, null, 2);
+        var done = function () {
+          debugBtn.textContent = '✓ Copiado!';
+          setTimeout(function () { debugBtn.textContent = '📋 Debug'; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(txt).then(done).catch(function () {});
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = txt; ta.style.cssText = 'position:fixed;left:-9999px';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(); } catch (e) {}
+          document.body.removeChild(ta);
+        }
+      });
     }
   }
 
-  // ── Reseta painel para estado inicial ────────────────────────────────────────
-  function resetResult() {
-    _lastData = null;
-    if (rpFooter) rpFooter.style.display = 'none';
-    setSpec(0, 'Densidade', null);
-    setSpec(1, 'Interface', null);
-    setSpec(2, 'Capacidade', null);
-    setSpec(3, 'Confiança', null);
-  }
+  // ── Chama a API de classificação do Django ────────────────────────────────
+  function decode() {
+    var q = normalize(input.value);
+    if (q.length < 4) return;
+    if (q === _lastApiPn) return;
+    _lastApiPn = q;
 
-  // ── Decode via JSON ──────────────────────────────────────────────────────────
-  function callApi(pn) {
-    if (!isDjango) return;
-    if (pn === _lastApiPn) return;
-    _lastApiPn = pn;
+    setLoading(true);
+    hint.textContent = 'Decodificando…';
+    hint.className = 'pn-hint';
 
-    // Feedback visual: spinner inline durante a requisição
-    if (decodeBtn) { decodeBtn.classList.add('pin-btn--loading'); decodeBtn.disabled = true; }
-    if (clearBtn)  clearBtn.disabled = true;
-    if (pinHint)   pinHint.textContent = '';
-
-    fetch('/chips/search/?pn=' + encodeURIComponent(pn))
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        if (d.known) {
-          fillResult(d);
-        } else {
-          // PN não reconhecido — mostra feedback inline no status
-          if (rpStatus)    rpStatus.className    = 'wtc-rp-status wtc-rp-status--warn';
-          if (rpStatusTxt) rpStatusTxt.textContent = '⚠ PN não reconhecido — verifique a leitura';
-        }
+    fetch('/chips/search/?pn=' + encodeURIComponent(q))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.known) renderResult(d);
+        else renderNotFound(q);
       })
-      .catch(function() {
-        if (rpStatusTxt) rpStatusTxt.textContent = 'Erro de conexão — tente novamente';
+      .catch(function () {
+        hint.textContent = 'Erro de conexão — tente novamente';
+        hint.className = 'pn-hint is-warn';
+        _lastApiPn = '';
       })
-      .finally(function() {
-        var currentQ = normalize(input ? input.value : '');
-        if (decodeBtn) { decodeBtn.classList.remove('pin-btn--loading'); decodeBtn.disabled = (currentQ.length < 4); }
-        if (clearBtn)  clearBtn.disabled = (currentQ.length === 0);
+      .finally(function () {
+        setLoading(false);
+        updateChrome(normalize(input.value), _detectedFam);
       });
   }
 
-  // ── Dispara decodificação para o valor atual do input ────────────────────────
-  function decode() {
-    var q = normalize(input ? input.value : '');
-    if (q.length < 1) return;
-    callApi(q);
+  // ── Limpar ────────────────────────────────────────────────────────────────
+  function clearAll() {
+    input.value = '';
+    _lastApiPn = '';
+    render('');
+    clearResult();
+    input.focus();
   }
 
-  // ── Render principal ─────────────────────────────────────────────────────────
-  function render(raw) {
-    var q = normalize(raw);
+  // ── Eventos ───────────────────────────────────────────────────────────────
+  cellsWrap.addEventListener('click', function () { input.focus(); });
+  prefixWrap.addEventListener('click', function () { input.focus(); });
 
-    if (q.length === 0) {
-      renderBoxes('', PIN_DEFAULT);
-      updateEmptyState('', null);
-      resetResult();
-      _detectedFam = null;
-      _lastApiPn = '';
-      clearTimeout(_debounceTimer);
-      return;
-    }
+  input.addEventListener('input', function () {
+    var clean = normalize(this.value);
+    if (this.value !== clean) this.value = clean;
+    render(clean);
+  });
+  input.addEventListener('focus', function () { render(normalize(this.value)); });
+  input.addEventListener('blur', function () { render(normalize(this.value)); });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); decode(); }
+    if (e.key === 'Escape') { clearAll(); this.blur(); }
+  });
 
-    // ── Detecta família ──────────────────────────────────────────────────────
-    var fam = bestMatch(q);
-    if (fam !== _detectedFam) {
-      _detectedFam = fam;
-      resetResult();
-      _lastApiPn = '';
-    }
+  form.addEventListener('submit', function (e) { e.preventDefault(); decode(); });
 
-    // ── Calcula quantas caixas mostrar ───────────────────────────────────────
-    var targetLen = PIN_DEFAULT;
-    if (fam && fam.pn_length) {
-      targetLen = fam.pn_length;
-    } else if (q.length >= PIN_DEFAULT) {
-      // Sem pn_length definido: expande conforme o usuário digita
-      targetLen = q.length + 1;
-    }
-    renderBoxes(q, targetLen);
+  decodeBtns.forEach(function (b) {
+    if (b) b.addEventListener('click', function (e) { e.preventDefault(); decode(); });
+  });
+  clearBtns.forEach(function (b) {
+    if (b) b.addEventListener('click', function (e) { e.preventDefault(); clearAll(); });
+  });
 
-    // ── Atualiza estado vazio com info da família ────────────────────────────
-    updateEmptyState(q, fam);
-
-    // Sem auto-fire — o resultado só aparece ao clicar "Decodificar" ou Enter.
-    clearTimeout(_debounceTimer);
-  }
-
-  // ── Inicialização: caixas vazias ─────────────────────────────────────────────
-  renderBoxes('', PIN_DEFAULT);
-
-  // ── Foco: clicar em qualquer lugar do pin-row foca o input ──────────────────
-  if (pinRow) {
-    pinRow.addEventListener('click', function() { input && input.focus(); });
-  }
-
-  // ── Eventos do input ─────────────────────────────────────────────────────────
-  if (input) {
-    input.addEventListener('input', function() {
-      // Força maiúsculo e limpa caracteres inválidos direto no input
-      var clean = normalize(this.value);
-      if (this.value !== clean) this.value = clean;
-      render(clean);
-    });
-
-    input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        clearTimeout(_debounceTimer);
-        decode();
-      }
-      if (e.key === 'Escape') {
-        this.value = '';
-        render('');
-        this.blur();
-      }
-    });
-
-    // Foca o input ao carregar a página
-    setTimeout(function() { input.focus(); }, 100);
-  }
-
-  // ── Form submit — botão "Decodificar" ────────────────────────────────────────
-  if (pinSearch) {
-    pinSearch.addEventListener('submit', function(e) {
-      e.preventDefault();
-      clearTimeout(_debounceTimer);
-      decode();
-    });
-  }
-
-  // ── Botão "Limpar" ───────────────────────────────────────────────────────────
-  if (clearBtn) {
-    clearBtn.addEventListener('click', function() {
-      if (input) { input.value = ''; }
-      render('');
-      if (input) input.focus();
-    });
-  }
-
-  // ── API global para sugestões fuzzy ─────────────────────────────────────────
-  window.triggerSearch = function(pn) {
-    if (!input) return;
+  // ── API global para sugestões externas ────────────────────────────────────
+  window.triggerSearch = function (pn) {
     var clean = normalize(pn);
     input.value = clean;
     render(clean);
-    // Fuzzy suggestion: PN já é completo (vem do banco), dispara imediatamente
-    if (isDjango && clean.length >= 1) callApi(clean);
+    if (clean.length >= 4) decode();
   };
 
-  // ── Clipboard helper: tenta navigator.clipboard, cai em execCommand ─────────
-  // navigator.clipboard.writeText exige contexto seguro (HTTPS ou localhost).
-  // execCommand('copy') é deprecated mas funciona em HTTP para compatibilidade.
-  function _copyText(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      return navigator.clipboard.writeText(text);
-    }
-    return new Promise(function(resolve, reject) {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      try {
-        var ok = document.execCommand('copy');
-        document.body.removeChild(ta);
-        ok ? resolve() : reject(new Error('execCommand retornou false'));
-      } catch (err) {
-        document.body.removeChild(ta);
-        reject(err);
-      }
-    });
-  }
-
-  // ── Botão de report ──────────────────────────────────────────────────────────
-  var rpReportBtn = document.getElementById('rp-report-btn');
-  if (rpReportBtn) {
-    rpReportBtn.addEventListener('click', function() {
-      if (!_lastData) return;
-      var wrap = document.getElementById('rp-report-wrap');
-      var body = new URLSearchParams({
-        pn:        _lastData.pn        || '',
-        chip_type: _lastData.chip_type || '',
-        capacity:  _lastData.capacity  || _lastData.emcp_nand || '',
-      });
-      fetch('/chips/report/', { method: 'POST', body: body })
-        .then(function() {
-          if (wrap) wrap.innerHTML = '<span style="color:var(--success)">✓ Reporte recebido — obrigado!</span>';
-        })
-        .catch(function() {});
-    });
-  }
-
-  // ── Botão de debug: copia diagnóstico completo para o clipboard ──────────────
-  var rpDebugBtn = document.getElementById('rp-debug-btn');
-  if (rpDebugBtn) {
-    rpDebugBtn.addEventListener('click', function() {
-      if (!_lastData) return;
-      var btn = this;
-      var d   = _lastData;
-      var pn  = d.pn || '';
-
-      function buildDebugText(d) {
-        var lines = [];
-        var now   = new Date().toLocaleString('pt-BR');
-        var sep   = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
-
-        lines.push('=== WhatTheChip Debug ===');
-        lines.push('PN:      ' + (d.pn || pn));
-        lines.push('Horário: ' + now);
-
-        lines.push('');
-        lines.push(sep + ' RESULTADO VISÍVEL');
-        lines.push('Tipo:        ' + (d.chip_type    || '—'));
-        lines.push('Subtipo:     ' + (d.subtype       || '—'));
-        lines.push('Marca:       ' + (d.brand         || '—'));
-        if (d.is_emcp) {
-          lines.push('NAND:        ' + (d.emcp_nand   || '—'));
-          lines.push('RAM:         ' + (d.emcp_ram    || '—'));
-          lines.push('Dispositivo: ' + (d.emcp_device || '—'));
-        } else {
-          lines.push('Capacidade:  ' + (d.capacity     || '—'));
-          lines.push('DRAM:        ' + (d.dram_density  || '—'));
-          lines.push('Interface:   ' + (d.interface     || '—'));
-          lines.push('Dispositivo: ' + (d.device        || '—'));
-        }
-        lines.push('Sufixo:      ' + (d.suffix_note   || '—'));
-        lines.push('Confiança:   ' + (d.confidence     || '—'));
-        lines.push('Tip:         ' + (d.tip            || '—'));
-
-        lines.push('');
-        lines.push(sep + ' MOTOR DE CLASSIFICAÇÃO');
-        lines.push('Fonte:         ' + (d.classification_source || '—'));
-        lines.push('Família:       ' + (d.family_prefix          || '—'));
-        lines.push('known_exact:   ' + !!d.known_exact);
-        lines.push('is_emcp:       ' + !!d.is_emcp);
-        if (d.is_emcp) {
-          lines.push('emcp_source:   ' + (d.emcp_source || '—'));
-        }
-        lines.push('from_web:      ' + !!d.from_web);
-        lines.push('raw_in_db:     ' + !!d.raw_in_db);
-        lines.push('remarked_flag: ' + !!d.remarked_flag);
-        if (d.remarked_note) {
-          lines.push('remarked_note: ' + d.remarked_note);
-        }
-        var geminiStatus = d.gemini_searched
-          ? (d.gemini_found ? 'encontrado' : 'não encontrado')
-          : 'não executado';
-        lines.push('Gemini:        ' + geminiStatus);
-        lines.push('in_review_q.:  ' + !!d.in_review_queue);
-        lines.push('doc_url:       ' + (d.doc_url    || '—'));
-        lines.push('source_url:    ' + (d.source_url || '—'));
-
-        if (d.fuzzy_suggestions && d.fuzzy_suggestions.length) {
-          lines.push('fuzzy_sugest.: ' + d.fuzzy_suggestions.join(', '));
-        }
-
-        lines.push('');
-        lines.push(sep + ' JSON COMPLETO');
-        lines.push(JSON.stringify(d, null, 2));
-
-        return lines.join('\n');
-      }
-
-      // Dados já em memória — copia sincronamente dentro do gesto do usuário
-      btn.disabled    = true;
-      btn.textContent = '…';
-      _copyText(buildDebugText(d))
-        .then(function() {
-          btn.textContent = '✓ Copiado!';
-          setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
-        })
-        .catch(function() {
-          btn.textContent = 'Erro';
-          setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
-        });
-    });
-  }
-
+  // ── Init ──────────────────────────────────────────────────────────────────
+  render('');
+  setTimeout(function () { input.focus(); }, 120);
 })();
 </script>

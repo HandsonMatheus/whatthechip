@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}WhatTheChip?{% endblock %}</title>
+  <title>{% block title %}WhatTheChip? · 什么芯片{% endblock %}</title>
   <!-- Aplica tema antes do paint para evitar flash -->
   <script>
     (function() {
@@ -13,101 +13,113 @@
       }
     })();
   </script>
-  <!-- IBM Plex Mono para código -->
+  <!-- IBM Plex Mono para códigos de PN · Noto Sans SC para o mandarim -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/design.css' %}" />
+  <style>
+    /* Swap dos ícones de tema no topnav */
+    .topnav__util .icon-sun { display: none; }
+    [data-theme="dark"] .topnav__util .icon-moon { display: none; }
+    [data-theme="dark"] .topnav__util .icon-sun { display: inline; }
+  </style>
   <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
   {% block extra_head %}{% endblock %}
 </head>
 <body>
 
 <!-- ════════════════════════════════════════════════════════
-     HEADER
+     TOP NAV — Carbon + camada Luna
      ════════════════════════════════════════════════════════ -->
-<header class="wtc-header">
-  <div class="wtc-header-inner">
+<header class="topnav" aria-label="Navegação principal">
 
-    <!-- Navegação principal (sem brand — logo está no hero) -->
-    <nav class="wtc-nav" aria-label="Navegação principal">
+  <a class="topnav__brand" href="{% url 'home' %}">
+    <span>WhatTheChip</span>
+    <span class="cjk">什么芯片</span>
+  </a>
 
-      <a href="{% url 'home' %}"
-         class="wtc-nav-link{% if current_slug == 'index' %} wtc-nav-link--active{% endif %}">
-        Início
-      </a>
+  <button class="topnav__hamburger" id="nav-hamburger" type="button"
+          aria-label="Abrir menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
 
-      <!-- Dropdown Fabricantes -->
-      <div class="wtc-nav-item wtc-nav-item--dropdown">
-        <span class="wtc-nav-link wtc-nav-link--btn{% if current_slug == 'fab-samsung' or current_slug == 'fab-hynix' %} wtc-nav-link--active{% endif %}">
-          Fabricantes <span class="wtc-nav-arrow">▾</span>
-        </span>
-        <div class="wtc-dropdown">
-          <a class="wtc-dropdown-item" href="{% url 'page' 'fab-samsung' %}">
-            Samsung
-            <span class="wtc-dropdown-badge wtc-dropdown-badge--live">● Ativo</span>
-          </a>
-          <a class="wtc-dropdown-item" href="{% url 'page' 'fab-hynix' %}">
-            SK Hynix
-            <span class="wtc-dropdown-badge wtc-dropdown-badge--live">● Ativo</span>
-          </a>
-        </div>
-      </div>
+  <nav class="topnav__links" id="nav-links" aria-label="Seções">
+    <a class="topnav__link{% if current_slug == 'index' %} is-active{% endif %}"
+       href="{% url 'home' %}">Início</a>
 
-      <a href="{% url 'page' 'prefixos' %}"
-         class="wtc-nav-link{% if current_slug == 'prefixos' %} wtc-nav-link--active{% endif %}">
-        Tabela Rápida
-      </a>
-
-      <a href="{% url 'page' 'contato' %}"
-         class="wtc-nav-link{% if current_slug == 'contato' %} wtc-nav-link--active{% endif %}">
-        Contato
-      </a>
-
-    </nav>
-
-    <!-- Ações do header -->
-    <div class="wtc-header-actions">
-
-      <!-- Seletor de idioma -->
-      <div class="wtc-nav-item wtc-nav-item--dropdown">
-        <button class="wtc-lang-btn" type="button" aria-label="Idioma">
-          🌐 PT <span class="wtc-nav-arrow">▾</span>
-        </button>
-        <div class="wtc-dropdown wtc-dropdown--right">
-          <div class="wtc-dropdown-item wtc-dropdown-item--active">
-            🇧🇷 Português
-          </div>
-          <div class="wtc-dropdown-item wtc-dropdown-item--dev">
-            🇺🇸 English
-            <span class="wtc-dropdown-badge">Em breve</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tema claro/escuro -->
-      <button class="wtc-theme-btn" id="theme-btn" type="button" aria-label="Alternar modo escuro/claro">
-        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="5"/>
-          <line x1="12" y1="1"  x2="12" y2="3"/>
-          <line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22"   x2="5.64"  y2="5.64"/>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1"  y1="12" x2="3"  y2="12"/>
-          <line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
-          <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
-        </svg>
+    <div class="topnav__dd" id="nav-dd-fab">
+      <button class="topnav__navbtn" type="button" aria-haspopup="true" aria-expanded="false">
+        Fabricantes <span class="caret" aria-hidden="true"></span>
       </button>
-
+      <div class="topnav__dd-menu">
+        <a class="topnav__dd-item" href="{% url 'page' 'fab-samsung' %}">
+          Samsung <span class="topnav__dd-badge">● Ativo</span>
+        </a>
+        <a class="topnav__dd-item" href="{% url 'page' 'fab-hynix' %}">
+          SK Hynix <span class="topnav__dd-badge topnav__dd-badge--dev">◌ Em rev.</span>
+        </a>
+      </div>
     </div>
 
+    <a class="topnav__link{% if current_slug == 'prefixos' %} is-active{% endif %}"
+       href="{% url 'page' 'prefixos' %}">Tabela rápida</a>
+
+    <button class="topnav__navbtn" type="button" data-open-submit>Adicionar chip</button>
+
+    <a class="topnav__link{% if current_slug == 'contato' %} is-active{% endif %}"
+       href="{% url 'page' 'contato' %}">Contato</a>
+  </nav>
+
+  <div class="topnav__right">
+    <!-- Idioma -->
+    <div class="topnav__lang" id="nav-lang">
+      <button class="topnav__util" type="button" aria-haspopup="listbox" aria-expanded="false"
+              aria-label="Mudar idioma">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"/>
+        </svg>
+        <span class="swatch">PT</span>
+        <span class="caret" aria-hidden="true"></span>
+      </button>
+      <ul class="topnav__lang-menu" role="listbox">
+        <li class="topnav__lang-item is-active" role="option" aria-selected="true">
+          <span class="swatch">PT</span><span>Português</span>
+        </li>
+        <li class="topnav__lang-item" role="option" aria-selected="false" data-soon>
+          <span class="swatch">EN</span><span>English — em breve</span>
+        </li>
+        <li class="topnav__lang-item" role="option" aria-selected="false" data-soon>
+          <span class="swatch">中文</span><span>中文 — em breve</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Tema -->
+    <button class="topnav__util" id="theme-btn" type="button" aria-label="Alternar modo escuro/claro">
+      <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+
+    <!-- Entrar -->
+    <a class="topnav__login" href="{% url 'login' %}" aria-label="Entrar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>
+      </svg>
+      <span>Entrar</span>
+    </a>
   </div>
 </header>
 
@@ -121,53 +133,271 @@
 <!-- ════════════════════════════════════════════════════════
      FOOTER
      ════════════════════════════════════════════════════════ -->
-<footer class="wtc-footer">
-  <div class="wtc-footer-inner">
-    <span>WhatTheChip? · Revisão 5.0 · maio 2026</span>
+<footer class="foot">
+  <div class="foot__inner">
+    <div>
+      <div class="foot__brand">
+        <img src="{% static 'img/wtc-logo-dark.svg' %}" alt="WhatTheChip 什么芯片" />
+      </div>
+      <p class="foot__desc">
+        Decodificador de part numbers para memória móvel e armazenamento embarcado.
+        Banco de dados mantido pela comunidade — em breve disponível como SaaS para
+        fábricas e laboratórios de reciclagem.
+      </p>
+    </div>
+    <div>
+      <h6>Empresa</h6>
+      <a href="{% url 'page' 'contato' %}">Contato</a>
+      <a href="{% url 'page' 'prefixos' %}">Tabela rápida</a>
+      <a href="#" data-open-submit>Adicionar chip</a>
+      <a href="{% url 'login' %}">Entrar</a>
+    </div>
+    <div>
+      <h6>Fabricantes</h6>
+      <a href="{% url 'page' 'fab-samsung' %}">Samsung</a>
+      <a href="{% url 'page' 'fab-hynix' %}">SK Hynix</a>
+    </div>
+  </div>
+  <div class="foot__bar">
+    <span>© 2026 WhatTheChip · v0.5.0-beta</span>
   </div>
 </footer>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL — Adicionar chip / Enviar para análise
+     ════════════════════════════════════════════════════════ -->
+<div class="wtc-modal-overlay" id="submit-modal" aria-hidden="true">
+  <div class="wtc-modal" role="dialog" aria-modal="true" aria-labelledby="submit-modal-title">
+    <div class="wtc-modal__head">
+      <h3 class="wtc-modal__title" id="submit-modal-title">
+        Adicionar chip ao banco
+        <small>Chip não catalogado? Envie o PN — analisamos e adicionamos em até 48&nbsp;h.</small>
+      </h3>
+      <button class="wtc-modal__close" type="button" data-close-submit aria-label="Fechar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+    </div>
+
+    <form class="wtc-modal__body" id="submit-form" enctype="multipart/form-data">
+      <p class="wtc-modal__intro">
+        Quanto mais informação você enviar, mais rápido conseguimos identificar.
+        Uma foto nítida do chip ajuda muito.
+      </p>
+      <p class="wtc-form-error" id="submit-error"></p>
+
+      <div class="wtc-field">
+        <label for="submit-pn">Part Number <span class="req">*</span></label>
+        <input class="wtc-input is-mono" type="text" id="submit-pn" name="pn"
+               autocomplete="off" autocapitalize="characters" spellcheck="false"
+               placeholder="ex: KM3V6001CM" required />
+      </div>
+
+      <div class="wtc-field">
+        <label for="submit-photo">Foto do chip</label>
+        <label class="wtc-file" for="submit-photo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 16l4-4 4 4 4-6 4 6M3 5h18v14H3z"/>
+          </svg>
+          <span class="wtc-file-label">Escolher imagem…</span>
+          <span class="wtc-file-name" id="submit-photo-name"></span>
+          <input type="file" id="submit-photo" name="photo" accept="image/*" />
+        </label>
+      </div>
+
+      <div class="wtc-field">
+        <label for="submit-context">Contexto (opcional)</label>
+        <textarea class="wtc-textarea" id="submit-context" name="context"
+                  placeholder="Origem, marca do aparelho, observações…"></textarea>
+      </div>
+
+      <div class="wtc-field">
+        <label for="submit-email">Seu e-mail (para retorno)</label>
+        <input class="wtc-input" type="email" id="submit-email" name="email"
+               placeholder="voce@exemplo.com" />
+      </div>
+    </form>
+
+    <div class="wtc-modal__foot">
+      <button class="wtc-btn-cancel" type="button" data-close-submit>Cancelar</button>
+      <button class="wtc-btn-submit" type="submit" form="submit-form" id="submit-btn">
+        <span class="submit-btn-label">Enviar para análise</span>
+      </button>
+    </div>
+
+    <div class="wtc-modal__success">
+      <div class="ok-led" aria-hidden="true">✓</div>
+      <h4>Recebido — obrigado!</h4>
+      <p>Seu envio entrou na fila de análise. Adicionamos o chip ao banco em até 48&nbsp;h.</p>
+    </div>
+  </div>
+</div>
 
 <script src="{% static 'js/script.js' %}"></script>
 <script>
 (function () {
   'use strict';
 
-  // ── Dark mode ────────────────────────────────────────────────────────────────
+  // ── Dark mode ──────────────────────────────────────────────────────────────
   var themeBtn = document.getElementById('theme-btn');
-
   function applyTheme(dark, save) {
-    if (dark) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-    }
+    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    else      document.documentElement.removeAttribute('data-theme');
     if (save) localStorage.setItem('wtc_theme', dark ? 'dark' : 'light');
   }
-
-  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark', false);
-
   if (themeBtn) {
     themeBtn.addEventListener('click', function () {
       applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark', true);
     });
   }
 
-  // ── Ctrl + K → foca busca principal ──────────────────────────────────────────
+  // ── Hamburger (mobile) ─────────────────────────────────────────────────────
+  var hamburger = document.getElementById('nav-hamburger');
+  var navLinks  = document.getElementById('nav-links');
+  function closeDrawer() {
+    if (!navLinks || !hamburger) return;
+    navLinks.classList.remove('is-open');
+    hamburger.classList.remove('is-open');
+    hamburger.setAttribute('aria-expanded', 'false');
+  }
+  if (hamburger && navLinks) {
+    hamburger.addEventListener('click', function () {
+      var open = navLinks.classList.toggle('is-open');
+      hamburger.classList.toggle('is-open', open);
+      hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // Fecha o drawer ao tocar num link (não nos botões que abrem submenu/modal)
+    navLinks.querySelectorAll('a.topnav__link, .topnav__dd-item').forEach(function (el) {
+      el.addEventListener('click', closeDrawer);
+    });
+  }
+
+  // ── Dropdown de idioma ─────────────────────────────────────────────────────
+  var langWrap = document.getElementById('nav-lang');
+  if (langWrap) {
+    var langBtn = langWrap.querySelector('.topnav__util');
+    langBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = langWrap.classList.toggle('is-open');
+      langBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (e) {
+      if (!langWrap.contains(e.target)) {
+        langWrap.classList.remove('is-open');
+        langBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // ── Dropdown Fabricantes (clique no mobile, hover no desktop) ──────────────
+  var ddFab = document.getElementById('nav-dd-fab');
+  if (ddFab) {
+    var ddBtn = ddFab.querySelector('.topnav__navbtn');
+    ddBtn.addEventListener('click', function (e) {
+      if (window.innerWidth <= 720) {
+        e.preventDefault();
+        var open = ddFab.classList.toggle('is-open');
+        ddBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+    });
+  }
+
+  // ── Modal "Adicionar chip" ─────────────────────────────────────────────────
+  var modal     = document.getElementById('submit-modal');
+  var modalCard = modal ? modal.querySelector('.wtc-modal') : null;
+  var formEl    = document.getElementById('submit-form');
+  var pnField   = document.getElementById('submit-pn');
+  var errEl     = document.getElementById('submit-error');
+  var submitBtn = document.getElementById('submit-btn');
+  var photoIn   = document.getElementById('submit-photo');
+  var photoName = document.getElementById('submit-photo-name');
+
+  window.wtcOpenSubmitModal = function (prefillPn) {
+    if (!modal) return;
+    if (modalCard) modalCard.classList.remove('is-done');
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('is-shown'); }
+    if (prefillPn && pnField) pnField.value = String(prefillPn).toUpperCase();
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    setTimeout(function () { if (pnField) pnField.focus(); }, 60);
+  };
+  function closeModal() {
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  document.querySelectorAll('[data-open-submit]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      window.wtcOpenSubmitModal('');
+    });
+  });
+  document.querySelectorAll('[data-close-submit]').forEach(function (el) {
+    el.addEventListener('click', closeModal);
+  });
+  if (modal) {
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal && modal.classList.contains('is-open')) closeModal();
+  });
+
+  if (photoIn) {
+    photoIn.addEventListener('change', function () {
+      if (photoName) photoName.textContent = this.files && this.files[0] ? this.files[0].name : '';
+    });
+  }
+
+  if (formEl) {
+    formEl.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var pn = (pnField.value || '').trim();
+      if (pn.length < 3) {
+        if (errEl) { errEl.textContent = 'Informe um Part Number válido (mín. 3 caracteres).'; errEl.classList.add('is-shown'); }
+        return;
+      }
+      if (errEl) errEl.classList.remove('is-shown');
+      submitBtn.disabled = true;
+      var lbl = submitBtn.querySelector('.submit-btn-label');
+      var oldLbl = lbl ? lbl.textContent : '';
+      if (lbl) lbl.textContent = 'Enviando…';
+
+      fetch('/chips/submit/', { method: 'POST', body: new FormData(formEl) })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d && d.ok) {
+            if (modalCard) modalCard.classList.add('is-done');
+            formEl.reset();
+            if (photoName) photoName.textContent = '';
+          } else {
+            if (errEl) { errEl.textContent = (d && d.error) || 'Não foi possível enviar. Tente novamente.'; errEl.classList.add('is-shown'); }
+          }
+        })
+        .catch(function () {
+          if (errEl) { errEl.textContent = 'Erro de conexão — tente novamente.'; errEl.classList.add('is-shown'); }
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          if (lbl) lbl.textContent = oldLbl;
+        });
+    });
+  }
+
+  // ── Ctrl + K → foca a busca principal ──────────────────────────────────────
   document.addEventListener('keydown', function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
-      var inp = document.getElementById('big-search-input') || document.getElementById('top-search-input');
-      if (inp) { inp.focus(); inp.select(); }
+      var inp = document.getElementById('pn-input');
+      if (inp) inp.focus();
     }
   });
 
-  // ── Anatomy table styler (mantido para compat com páginas de marca) ──────────
-  (function styleAnatomyTables() {
-    document.querySelectorAll('table.anatomy-table').forEach(function (tbl) {
-      tbl.style.cssText = 'border-collapse:collapse;width:100%;';
-    });
-  })();
-
+  // ── Tabelas de anatomia (compat com páginas de marca) ──────────────────────
+  document.querySelectorAll('table.anatomy-table').forEach(function (tbl) {
+    tbl.style.cssText = 'border-collapse:collapse;width:100%;';
+  });
 })();
 </script>
 {% block extra_js %}{% endblock %}

@@ -8,4 +8,5 @@ urlpatterns = [
     path("decode/", views.decode_html,  name="decode"),
     path("stats/",  views.stats_api,    name="stats"),
     path("report/", views.report_error, name="report"),
+    path("submit/", views.submit_chip,  name="submit"),
 ]
