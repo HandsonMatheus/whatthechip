@@ -441,6 +441,34 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K4B4G1646E ───────────────────────────────────────────────────────────
+    # Samsung DDR3 SDRAM. Família K4B.
+    # pn[3:5]="4G" → DRAM_PC → 4Gb = 512MB por die.
+    # pn[5:7]="16" → x16 bus width (embarcado/mobile).
+    # Sufixo "46E" = speed grade / revisão.
+    # Chip físico confirmado na esteira (eMiner 2026-05-14).
+    {
+        "pn": "K4B4G1646E",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR",
+            "subtype":    "DDR3/DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "512MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira (eMiner 2026-05-14). "
+            "K4B: DDR3. pn[3:5]='4G' → 4Gb = 512MB por die. pn[5:7]='16' → x16."
+        ),
+    },
+
     # ── K5W1G12ACM ───────────────────────────────────────────────────────────
     # MCP Samsung NOR Flash 1Gb (128MB) + Mobile SDRAM. Família K5W.
     # pn[3:5]="1G" → DRAM_PC → 1Gb = 128MB NOR. SDRAM não decodificável pelo PN.
@@ -625,6 +653,38 @@ CORRECTIONS = [
             "Fonte: Samsung/Design-Reuse: '256MB, 512MB ou 768MB LPDDR2' explicitamente listados. "
             "Chave LL compartilhada com KMK (1GB) — conflito de shared key. "
             "KMM sem família gramatical ativa: create=True obrigatório."
+        ),
+    },
+
+    # ── KM2L9001CM ───────────────────────────────────────────────────────────
+    # uMCP UFS 2.2 + LPDDR4X. Subfamília KM2L (pn[2]='L').
+    # Capacidade real: 128GB UFS 2.2 (armazenamento) + 6GB LPDDR4X (48Gb ÷ 8 = 6GB).
+    # Conflito de shared key: SAM_EMCP_CAP["L9"] = 8GB RAM (base KM8L9001JM — 8GB correto).
+    #   KM2L9001CM usa 48Gb LPDDR4X (6GB) — die diferente, mesma chave.
+    # NÃO alterar SAM_EMCP_CAP["L9"] — KM8L9001JM com 8GB é a maioria.
+    # Fontes:
+    #   • Samsung Semiconductor: KM2L9001CM-B518 = "128GB eStorage, LPDDR4X 48Gb, UFS 2.2"
+    #   • Preduo: KM2L9001CM-B518 → categoria "UFS+LPDDR4x", Density "128+6"
+    # Destino: bancada reacondicional uMCP (intermediário/alta liquidez).
+    {
+        "pn": "KM2L9001CM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "uMCP",
+            "subtype":    "UFS 2.2 + LPDDR4X",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand": "UFS 2.2 128GB",
+            "emcp_ram":  "LPDDR4X 6GB",
+        },
+        "reason": (
+            "Samsung Semiconductor + Preduo: KM2L9001CM-B518 = 128GB UFS 2.2 + 6GB LPDDR4X (48Gb÷8). "
+            "Subfamília KM2L (pn[2]='L') = UFS 2.2 + LPDDR4X — NÃO UFS 3.1/LPDDR5. "
+            "Conflito cap_key 'L9': SAM_EMCP_CAP mapeia 8GB (base KM8L9001JM) — override pontual aqui. "
+            "Corrigido via fix_known_parts para evitar grammar_wins retornar 8GB incorreto."
         ),
     },
 

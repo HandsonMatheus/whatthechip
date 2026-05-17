@@ -225,6 +225,54 @@
   max-width: 260px;
 }
 
+/* ── Contador de estoque atual no card de confirmação ────────── */
+.est-stock-counter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--s4) var(--s5);
+  margin-bottom: var(--s4);
+  border: 1px solid var(--border-subtle);
+}
+.est-stock-counter--zero {
+  background: var(--surface-2);
+  border-color: var(--border-subtle);
+}
+.est-stock-counter--has {
+  background: #fff8e1;
+  border-color: #f59e0b;
+  border-left: 4px solid #f59e0b;
+}
+[data-theme="dark"] .est-stock-counter--has {
+  background: #2d2200;
+  border-color: #f1c21b;
+  border-left-color: #f1c21b;
+}
+.est-stock-counter__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-helper);
+}
+.est-stock-counter__qty {
+  font-size: 36px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  line-height: 1;
+  color: var(--text-primary);
+}
+.est-stock-counter--has .est-stock-counter__qty {
+  color: #b45309;
+}
+[data-theme="dark"] .est-stock-counter--has .est-stock-counter__qty {
+  color: #f1c21b;
+}
+.est-stock-counter__unit {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
 /* Grade de specs — Carbon inline data grid */
 .est-specs-grid {
   display: flex;

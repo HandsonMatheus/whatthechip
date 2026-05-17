@@ -95,17 +95,23 @@ def decode_html(request):
 
     result = classify(pn)
 
+    # family_undocumented: extraído explicitamente do result e passado como variável
+    # de contexto de primeiro nível — evita ambiguidade na resolução de template Django
+    # (result.family_undocumented envolve lookup aninhado que pode falhar silenciosamente).
+    family_undocumented = bool(result.get("family_undocumented", False))
+
     context = {
-        "result": result,
-        "result_json": json.dumps(result, ensure_ascii=False),
-        "confidence_label": _CONF_LABEL.get(
+        "result":              result,
+        "result_json":         json.dumps(result, ensure_ascii=False),
+        "confidence_label":    _CONF_LABEL.get(
             _effective_conf(result), result.get("confidence", "")
         ),
-        "confidence_key": _effective_conf(result),
-        "show_source": bool(
+        "confidence_key":      _effective_conf(result),
+        "show_source":         bool(
             result.get("source_url") and
             not result.get("source_url", "").startswith("gemini:")
         ),
+        "family_undocumented": family_undocumented,
     }
 
     return render(request, "chips/partials/decode_card.html", context)

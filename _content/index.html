@@ -261,6 +261,7 @@
     _lastData = d;
     var ts = new Date().toISOString().replace('T', ' ').slice(11, 19);
     var remarked = !!d.remarked_flag;
+    var undoc   = !!d.family_undocumented;
     var eConf = effectiveConf(d);
 
     // Cabeçalho
@@ -275,6 +276,27 @@
       + '<span class="result__mfg"><span class="ic" aria-hidden="true"></span>'
       + escHtml(d.brand || '—') + '</span>'
       + '</header>';
+
+    // Bloco de aviso — família sem documentação pública
+    var undocWarn = '';
+    if (undoc) {
+      var pnEnc = encodeURIComponent(d.pn || '');
+      undocWarn = '<div class="result__undoc-warn">'
+        + '<div class="result__undoc-warn-title">⚠ Família sem documentação pública verificável</div>'
+        + '<div class="result__undoc-warn-body">'
+        + 'Este Part Number pertence a uma família <strong>nunca documentada oficialmente</strong> — '
+        + 'não consta em nenhum catálogo SK Hynix, datasheet, Octopart ou distribuidor verificado.<br><br>'
+        + '<strong>Hipóteses:</strong> erro de gravação do fabricante (misprint de laser) ou produto OEM com datasheet sob NDA não publicado.<br><br>'
+        + 'Os dados exibidos abaixo são <strong>estimativas por analogia estrutural</strong> — '
+        + '<em>não usar como especificação confirmada sem verificar fisicamente.</em>'
+        + '</div>'
+        + '<a class="result__undoc-warn-btn" href="mailto:eminerparaguay@gmail.com'
+        + '?subject=Informa%C3%A7%C3%B5es%20sobre%20' + pnEnc
+        + '&body=PN%3A%20' + pnEnc + '%0A%0AInforma%C3%A7%C3%B5es%3A">'
+        + '📩 Você conhece este chip? Entre em contato'
+        + '</a>'
+        + '</div>';
+    }
 
     // Grade de 4 células
     var grid;
@@ -306,8 +328,11 @@
       + '<button type="button" class="danger" id="rp-debug" style="color:var(--cds-text-placeholder)">📋 Debug</button>'
       + '</footer>';
 
-    resultWrap.innerHTML = '<article class="result' + (remarked ? ' result--warn' : '') + '">'
-      + head + '<div class="result__grid">' + grid + '</div>' + foot + '</article>';
+    var articleClass = 'result'
+      + (remarked ? ' result--warn' : '')
+      + (undoc    ? ' result--undoc' : '');
+    resultWrap.innerHTML = '<article class="' + articleClass + '">'
+      + head + undocWarn + '<div class="result__grid">' + grid + '</div>' + foot + '</article>';
 
     wireResultActions();
   }

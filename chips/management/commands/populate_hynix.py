@@ -975,22 +975,40 @@ class Command(BaseCommand):
         #   H54G = LPDDR4X. "4"=LPDDR4X · "G"=DRAM isolado (sem flash).
         #   pn[5] = organização de banco (6 ou 8) — não é capacidade, ignorar.
         #
-        # Matemática sequencial: 2→3→4→5→6 (Gb dobra a cada passo).
+        # Dois mundos coexistem no mesmo prefixo:
+        #   Escala NUMÉRICA (geração inicial): dobra a cada passo (4Gbit→8→16→32→64).
+        #   Escala ALFABÉTICA (revisões de silício + capacidades fracionadas 3GB/6GB):
+        #     SK Hynix introduziu letras para cobrir 3GB e 6GB e criar aliases de
+        #     die-revision para capacidades existentes.
+        #     Comprovado via catálogos de distribuidor, esquemáticos e teardowns.
         #
-        # Fontes:
-        #   2=512MB — H54G26AYRPX066 ✓ (4Gbit ÷ 8)
+        # Fontes (escala numérica):
+        #   2=512MB — H54G26AYRPX066 ✓ (4Gbit ÷ 8 — catálogo VDO)
         #   3=1GB   — H54G36AYRPX246 ✓ (8Gbit ÷ 8)
-        #   4=2GB   — H54G46BYYQX085 ✓ (16Gbit ÷ 8)
-        #   5=4GB   — H54G56CYRB-X247 ✓ (32Gbit ÷ 8 — teardown Xiaomi Redmi 10C)
-        #   6=8GB   — H54G66AYZVX106 ✓ (64Gbit ÷ 8)
+        #   4=2GB   — H54G46BYYQX085 ✓ (16Gbit ÷ 8 — catálogo VDO)
+        #   5=4GB   — H54G56CYRB-X247 ✓ (32Gbit ÷ 8 — TechInsights HP Spectre)
+        #   6=8GB   — H54G66AYZVX106 ✓ (64Gbit ÷ 8 — listagens B2B)
+        #
+        # Fontes (escala alfabética):
+        #   A=2GB — 16Gbit ÷ 8 — die-revision do "4" (mesma capacidade)
+        #   C=3GB — 24Gbit ÷ 8 — capacidade fracionada nova
+        #   E=4GB — 32Gbit ÷ 8 — H54GE6CYRB-X252 ✓ (Helio G80/G85, broker B2B SEA)
+        #   G=6GB — 48Gbit ÷ 8 — capacidade fracionada nova
+        #   J=8GB — 64Gbit ÷ 8 — die-revision do "6" (mesma capacidade)
         #
         lpddr4x_h54g_cap = [
-            # char_key  val_primary  val_secondary
+            # ── Escala numérica (geração inicial) ─────────────────────────────
             ("2", "512MB", ""),  # 4Gbit ÷ 8  — H54G26AYRPX066 ✓
             ("3", "1GB",   ""),  # 8Gbit ÷ 8  — H54G36AYRPX246 ✓
             ("4", "2GB",   ""),  # 16Gbit ÷ 8 — H54G46BYYQX085 ✓
-            ("5", "4GB",   ""),  # 32Gbit ÷ 8 — H54G56CYRB-X247 ✓ (Redmi 10C)
+            ("5", "4GB",   ""),  # 32Gbit ÷ 8 — H54G56CYRB-X247 ✓ (TechInsights / Redmi 10C)
             ("6", "8GB",   ""),  # 64Gbit ÷ 8 — H54G66AYZVX106 ✓
+            # ── Escala alfabética (die-revisions + fracionados novos) ─────────
+            ("A", "2GB",   ""),  # 16Gbit ÷ 8 — die-revision do "4"
+            ("C", "3GB",   ""),  # 24Gbit ÷ 8 — fracionado novo
+            ("E", "4GB",   ""),  # 32Gbit ÷ 8 — H54GE6CYRB-X252 ✓ (Helio G80/G85)
+            ("G", "6GB",   ""),  # 48Gbit ÷ 8 — fracionado novo
+            ("J", "8GB",   ""),  # 64Gbit ÷ 8 — die-revision do "6"
         ]
         self._bulk_map("HYX_LPDDR4X_H54G_CAP", lpddr4x_h54g_cap, hynix, dry, overwrite)
 
@@ -1327,10 +1345,12 @@ class Command(BaseCommand):
                 decode_cap_pos=4, decode_cap_len=1, decode_cap_map="HYX_LPDDR4X_H54G_CAP",
                 tip=(
                     "LPDDR4X standalone SK Hynix, Era 2 nomenclatura H5 (H54G). DRAM móvel puro. "
-                    "pn[4] = densidade: 2=512MB · 3=1GB · 4=2GB · 5=4GB · 6=8GB por chip. "
+                    "pn[4] = densidade — dois sistemas coexistem: "
+                    "NUMÉRICO: 2=512MB · 3=1GB · 4=2GB · 5=4GB · 6=8GB. "
+                    "ALFABÉTICO (die-revision + fracionados): A=2GB · C=3GB · E=4GB · G=6GB · J=8GB. "
                     "pn[5] = organização de banco (6 ou 8) — NÃO é capacidade, ignorar. "
-                    "⚠ Matemática sequencial limpa: cada passo dobra a densidade. "
-                    "Ex: H54G56CYRB-X247 = 4GB LPDDR4X (teardown Xiaomi Redmi 10C ✓). "
+                    "Ex (numérico): H54G56CYRB-X247 = 4GB (TechInsights HP Spectre ✓). "
+                    "Ex (alfabético): H54GE6CYRB-X252 = 4GB (Helio G80/G85, broker B2B SEA ✓). "
                     "Origem: smartphones 2019-2023, tablets modernos. "
                     "Destino: triagem LPDDR4X — altíssima demanda no mercado de recondicionamento."
                 ),
@@ -1659,6 +1679,46 @@ class Command(BaseCommand):
                     "pn[4] = capacidade (mesmo mapa do H26M): 8=128GB confirmado (H26T87001CMR, SK Hynix oficial). "
                     "Pacote FBGA-153, 11.5×13mm. "
                     "Destino: bancada reacondicional eMMC."
+                ),
+            ),
+
+            # ═══ eMMC SEM DOCUMENTAÇÃO PÚBLICA (H28M) ════════════════════════════
+            #
+            # Situação: H28M não consta em nenhum catálogo oficial SK Hynix,
+            #   datasheet, Octopart, Preduo ou qualquer distribuidor verificado.
+            #   O prefixo H28x é documentado apenas para UFS (H28U, H28S, H28N).
+            #   A letra 'M' em pn[3] segue a convenção eMMC da linha H26M,
+            #   mas nenhuma fonte confirma a existência oficial deste produto.
+            #
+            # Hipóteses:
+            #   A) Misprint de fábrica: laser de marcação errou H26M → H28M.
+            #      Evidência: H28M31001BMR e H26M31001HPR são estruturalmente idênticos
+            #      exceto em pn[2] (6→8) e no sufixo de package (HPR→BMR).
+            #   B) Produto OEM/NDA: chip real com datasheet não publicado.
+            #      Evidência: data code 130A (início de 2013) — pré-era UFS.
+            #
+            # Decode: usa HYX_EMMC_CAP (analógico ao H26M) — confiança BAIXA.
+            #   Exemplo confirmado na bancada: H28M31001BMR (pn[4]='3' → 4GB analógico).
+            #
+            # is_documented=False: ativa banner de contribuição na UI.
+            #
+            dict(
+                prefix="H28M", chip_type="eMMC", subtype="eMMC (família sem documentação pública)",
+                interface="eMMC",
+                is_emcp=False, active=True, priority=50, is_documented=False,
+                pn_length=12,
+                decode_cap_pos=None, decode_cap_len=1, decode_cap_map="HYX_EMMC_CAP",
+                # decode_cap_pos=None: capacidade NÃO decodificada — família sem documentação,
+                # qualquer capacidade exibida seria especulativa. O tip já explica a analogia.
+                tip=(
+                    "⚠ FAMÍLIA SEM DOCUMENTAÇÃO PÚBLICA. "
+                    "O prefixo H28M não consta em nenhum catálogo oficial SK Hynix, datasheet, "
+                    "Octopart ou distribuidor verificável (pesquisa exaustiva: zero resultados). "
+                    "Decode de capacidade por ANALOGIA ESTRUTURAL com H26M (eMMC) — "
+                    "pn[4]: 3=4GB · 4=8GB · 5=16GB · 6=32GB · 7=64GB · 8=128GB. "
+                    "Hipóteses: misprint de fábrica (H26M→H28M) ou OEM com datasheet sob NDA. "
+                    "Confiança: BAIXA. "
+                    "Verificar na bancada antes de classificar para reacondicionamento."
                 ),
             ),
 

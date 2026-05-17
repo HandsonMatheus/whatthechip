@@ -13,6 +13,13 @@
     <span class="est-confirm-pn" id="confirm-pn-display">{{ pn }}</span>
   </div>
 
+  {# ── Contador de estoque atual ─────────────────────────────── #}
+  <div class="est-stock-counter {% if current_qty > 0 %}est-stock-counter--has{% else %}est-stock-counter--zero{% endif %}">
+    <span class="est-stock-counter__label">Estoque atual</span>
+    <span class="est-stock-counter__qty">{{ current_qty }}</span>
+    <span class="est-stock-counter__unit">un{% if current_qty != 1 %}. em estoque{% else %}. em estoque{% endif %}</span>
+  </div>
+
   <div class="est-specs-grid">
     {% if result.chip_type %}
     <div class="est-spec">

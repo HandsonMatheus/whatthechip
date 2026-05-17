@@ -233,13 +233,16 @@ def _result_from_family(pn: str, fam) -> dict:
         "emcp_device":   None,
         "emcp_source":   None,
         "device":        None,
-        "confidence":    "estimated",
-        "source_url":    None,
-        "from_web":      False,
-        "suffix_note":   None,
-        "remarked_flag": False,
-        "fuzzy_suggestions": [],
+        "confidence":         "estimated",
+        "source_url":         None,
+        "from_web":           False,
+        "suffix_note":        None,
+        "remarked_flag":      False,
+        "fuzzy_suggestions":  [],
         "classification_source": "gramática",
+        # Família sem documentação pública verificável (ex: H28M).
+        # True ativa banner de contribuição na UI.
+        "family_undocumented": not getattr(fam, "is_documented", True),
     }
 
     # ── Geração / tipo RAM (decode_gen_map) ──────────────────────────────────
@@ -1006,10 +1009,11 @@ def _build_result_from_gemini(pn: str, specs: dict, part) -> dict:
         "source_url":    specs.get("source_url"),
         "from_web":      True,
         "gemini_found":  True,
-        "suffix_note":   None,
-        "remarked_flag": False,
-        "fuzzy_suggestions": [],
+        "suffix_note":        None,
+        "remarked_flag":      False,
+        "fuzzy_suggestions":  [],
         "classification_source": "Gemini",
+        "family_undocumented": not getattr(family, "is_documented", True) if family else False,
     }
 
 
@@ -1092,10 +1096,12 @@ def classify(pn_raw: str) -> dict:
                     "reasoning":    [],
                     "from_web":     False,
                     "doc_url":      None,
-                    "remarked_flag": False,
+                    "remarked_flag":     False,
                     "fuzzy_suggestions": [],
-                    "interface":    known.interface,
-                    "family_prefix": "",
+                    "interface":         known.interface,
+                    "family_prefix":     "",
+                    # Sem família não há como saber se é não documentada — assume False.
+                    "family_undocumented": False,
                 }
             _log_search(pn, found=True, source_used="db_exact")
             return result

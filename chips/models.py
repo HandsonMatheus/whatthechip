@@ -104,6 +104,11 @@ class ChipFamily(models.Model):
     reasoning           = models.TextField(blank=True, default="", help_text="JSON list com passos de raciocínio")
     priority            = models.IntegerField(default=100, help_text="Menor = maior prioridade no match de prefixo")
     active              = models.BooleanField(default=True)
+    is_documented       = models.BooleanField(
+        default=True,
+        help_text="False para famílias identificadas mas sem documentação pública verificável. "
+                  "Exibe banner de contribuição na UI e desativa persistência automática na fila."
+    )
 
     # Ligação com a documentação do WhatTheChip
     doc_page = models.ForeignKey(

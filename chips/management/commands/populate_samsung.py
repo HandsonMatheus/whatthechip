@@ -1221,6 +1221,38 @@ class Command(BaseCommand):
                     "Destino: bancada reacondicional uMCP (Premium)."
                 ),
             ),
+            # ── KM2L: UFS 2.2 + LPDDR4X ─────────────────────────────────────────
+            # pn[2]='L' → subfamília intermediária (UFS 2.2, LPDDR4X).
+            # Confirmado: KM2L9001CM-B518 = 128GB UFS 2.2 + 6GB LPDDR4X.
+            # Fontes: Samsung Semiconductor + Preduo (categoria "UFS+LPDDR4x").
+            # ATENÇÃO: KM2L9001CM tem cap_key "L9" = 8GB no mapa SAM_EMCP_CAP
+            #   (base KM8L9001JM com 8GB RAM). KM2L9001CM usa 6GB (48Gb÷8).
+            #   Corrigir via fix_known_parts — exceção de shared key.
+            # priority=35: mais específico que KM2 genérico (priority=40).
+            dict(
+                prefix="KM2L", chip_type="uMCP", subtype="UFS 2.2 + LPDDR4X (intermediário)",
+                interface="UFS 2.2", pn_length=10,
+                is_emcp=True, active=True, priority=35,
+                decode_gen_pos=None, decode_gen_map="",
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
+                tip=(
+                    "uMCP Samsung KM2L — INTERMEDIÁRIO. "
+                    "Interface UFS 2.2 (~1200 MB/s) + LPDDR4X — NÃO é UFS 3.1/LPDDR5. "
+                    "pn[2]='L' identifica esta subfamília (L = UFS 2.2 + LPDDR4X). "
+                    "Presente em mid-range/upper-mid Galaxy e Android de terceiros (2021-2023). "
+                    "Capacidade: pn[3:5] → SAM_EMCP_CAP. "
+                    "⚠ Atenção ao cap_key 'L9': mapa base = 8GB RAM (KM8); "
+                    "KM2L9001CM usa 6GB — confirmar via fix_known_parts. "
+                    "Valor comercial ELEVADO mas inferior a KM2V (UFS 3.1 + LPDDR5). "
+                    "ATENÇÃO OCR: '1' confundido com 'I' — conferir PN físico no chip. "
+                    "Destino: bancada reacondicional uMCP (Intermediário/Alta liquidez)."
+                ),
+            ),
+            # ── KM2 genérico: cobre KM2V (UFS 3.1 + LPDDR5) e outras subfamílias ──
+            # pn[2]='V' → UFS 3.1 + LPDDR5 (ex: KM2V7001CM-B706 flagship). Confirmado.
+            # pn[2]='F' → alta capacidade (KM2F8001CM-B707 = 256+48 LPDDR4X per Preduo).
+            #   ⚠ KM2F NÃO é necessariamente LPDDR5 — aguardar confirmação adicional.
+            # KM2L é tratado pela subfamília acima (priority=35, mais específica).
             dict(
                 prefix="KM2", chip_type="uMCP", subtype="UFS 3.1 + LPDDR5 (ultra-premium)",
                 interface="UFS 3.1", pn_length=10,
@@ -1228,10 +1260,13 @@ class Command(BaseCommand):
                 decode_gen_pos=None, decode_gen_map="",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
                 tip=(
-                    "⚠ uMCP Samsung linha numérica KM2 — chip ULTRA-PREMIUM. "
+                    "⚠ uMCP Samsung linha numérica KM2 — chip ULTRA-PREMIUM (genérico). "
                     "Interface UFS 3.1 (~2100 MB/s) + LPDDR5 — NUNCA eMMC. "
-                    "Presente em flagships Galaxy S21/S22 e topo-de-linha Android (2021-2023). "
-                    "Capacidade: pn[3:5] → mapa SAM_EMCP_CAP (ex: V8=128GB+4GB, F9=256GB+8GB). "
+                    "Subfamílias: KM2L=UFS 2.2+LPDDR4X (intermediário, coberto pela família KM2L), "
+                    "KM2V=UFS 3.1+LPDDR5 (flagship, Galaxy S21/S22), "
+                    "KM2F=alta capacidade (verificar via fix_known_parts). "
+                    "Se o pn começa com KM2L, a família KM2L (priority=35) tem precedência. "
+                    "Capacidade: pn[3:5] → mapa SAM_EMCP_CAP. "
                     "Valor comercial MUITO ELEVADO — NÃO enviar para resíduo ou eMMC. "
                     "ATENÇÃO OCR: '1' confundido com 'I' nesses PNs — conferir PN físico. "
                     "Destino: bancada reacondicional uMCP (Premium Tier 1)."

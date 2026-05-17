@@ -1,5 +1,5 @@
 {% if result.known %}
-<div class="dc2-card{% if result.remarked_flag %} dc2-card--remarked{% endif %}" data-pn="{{ result.pn }}" data-debug="{{ result_json }}">
+<div class="dc2-card{% if result.remarked_flag %} dc2-card--remarked{% endif %}{% if family_undocumented %} dc2-card--undoc{% endif %}" data-pn="{{ result.pn }}" data-debug="{{ result_json }}">
 
   <!-- ── Barra de status ─────────────────────────────────────────────────── -->
   {% if result.pn_incomplete %}
@@ -10,6 +10,10 @@
   {% elif result.remarked_flag %}
   <div class="dc2-status dc2-status--warn">
     ⚠ Possível chip remarked
+  </div>
+  {% elif family_undocumented %}
+  <div class="dc2-status dc2-status--undoc" style="background:#fff8e1 !important;color:#b8860b !important;border-bottom:2px solid #e6a817;">
+    ⚠ Família identificada — sem documentação pública
   </div>
   {% else %}
   <div class="dc2-status dc2-status--ok">
@@ -33,6 +37,27 @@
   {% if result.remarked_flag %}
   <div class="dc2-alert">
     ⚠ {{ result.remarked_note|default:"Verificar autenticidade na bancada — marcação pode ser falsa." }}
+  </div>
+  {% endif %}
+
+  <!-- ── Bloco família sem documentação pública ────────────────────────── -->
+  {% if family_undocumented or "sem documentação" in result.subtype %}
+  <div class="dc2-undoc-block" style="margin:0 16px 12px 16px;padding:14px 16px;background:#fff8e1;border:1px solid #f0c040;border-left:4px solid #e6a817;border-radius:6px;line-height:1.6;">
+    <div style="font-size:13px;font-weight:700;color:#b8600a;margin-bottom:8px;">
+      ⚠ Prefixo sem documentação pública verificável
+    </div>
+    <div style="font-size:12px;color:#555;margin-bottom:12px;">
+      Este Part Number pertence a uma família <strong>nunca documentada oficialmente</strong>:
+      não consta em nenhum catálogo SK Hynix, datasheet, Octopart ou distribuidor verificado.<br><br>
+      <strong>Hipóteses:</strong> erro de gravação do fabricante (misprint de laser)
+      ou produto OEM com datasheet sob NDA não publicado.<br><br>
+      Os dados exibidos abaixo são <strong>estimativas por analogia estrutural</strong> —
+      <em>não usar como especificação confirmada antes de verificar fisicamente.</em>
+    </div>
+    <a href="mailto:eminerparaguay@gmail.com?subject=Informa%C3%A7%C3%B5es%20sobre%20{{ result.pn|urlencode }}&body=PN%3A%20{{ result.pn|urlencode }}%0A%0AInforma%C3%A7%C3%B5es%3A"
+       style="display:inline-block;padding:6px 14px;background:#e6a817;color:#fff;border-radius:5px;font-size:12px;font-weight:600;text-decoration:none;">
+      📩 Você conhece este chip? Entre em contato
+    </a>
   </div>
   {% endif %}
 

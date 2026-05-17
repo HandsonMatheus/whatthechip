@@ -98,12 +98,21 @@ def preview_chip(request):
     else:
         display_cap = result.get("capacity") or result.get("dram_density") or ""
 
+    # Quantidade já em estoque para este operador/PN
+    try:
+        current_qty = InventoryEntry.objects.get(
+            operator=request.user, part_number=pn
+        ).quantity
+    except InventoryEntry.DoesNotExist:
+        current_qty = 0
+
     ctx = {
         "pn":          pn,
         "result":      result,
         "has_cap":     has_cap,
         "display_cap": display_cap,
         "result_json": json.dumps({**result, "pn": pn}),
+        "current_qty": current_qty,
     }
     return render(request, "estoque/partials/confirm_card.html", ctx)
 

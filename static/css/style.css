@@ -1094,6 +1094,60 @@ a.pr-row:visited { color: inherit; }
   line-height: 1.55;
 }
 
+/* ── Família sem documentação pública ───────────────────────────────────── */
+/* Card modifier: borda laranja/amarela no lado esquerdo */
+.dc2-card--undoc { border-left-color: var(--warning); }
+
+/* Status bar — laranja, mesmo padrão visual do remarked */
+.dc2-status--undoc {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+/* Bloco central de aviso — destaque máximo, impossível de ignorar */
+.dc2-undoc-block {
+  margin: 0 var(--s5) var(--s4) var(--s5);
+  padding: var(--s4) var(--s5);
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-bd);
+  border-left: 4px solid var(--warning);
+  border-radius: var(--r-sm);
+  line-height: 1.6;
+}
+.dc2-undoc-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--warning);
+  margin-bottom: var(--s3);
+  letter-spacing: 0.02em;
+}
+.dc2-undoc-body {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: var(--s4);
+}
+.dc2-undoc-btn {
+  display: inline-block;
+  padding: var(--s2) var(--s4);
+  background: var(--warning);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+}
+.dc2-undoc-btn:hover { opacity: 0.88; }
+
+/* Dark mode */
+[data-theme="dark"] .dc2-undoc-block {
+  background: rgba(241,194,27,.08);
+  border-color: rgba(241,194,27,.25);
+}
+[data-theme="dark"] .dc2-undoc-body { color: var(--text-helper); }
+[data-theme="dark"] .dc2-status--undoc { background: rgba(241,194,27,.10); }
+
 /* Dica operacional — oculta no frontend (dados preservados no backend) */
 .dc2-tip {
   display: none; /* hidden: tips podem estar desatualizadas */
