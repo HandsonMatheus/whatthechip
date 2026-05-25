@@ -72,6 +72,22 @@ PARTS = [
             "Tensão I/O 0.6V — não confundir com K4F (LPDDR4, 1.1V)."
         ),
     ),
+    dict(
+        part_number   = "H9HCNNNECMML",
+        brand_name    = "SK Hynix",
+        family_prefix = "H9HCN",
+        chip_type     = "RAM",
+        subtype       = "LPDDR4X standalone",
+        capacity      = "6GB",
+        interface     = "LPDDR4X",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[7]='E' → 48Gbit ÷ 8 = 6GB (SK Hynix LPDDR4X PN Guide + manifesto aduaneiro). "
+            "Descrição aduaneira: 'LPDDR4X 6G BGA200 Memory Chip Original'. "
+            "RAM pura (zero NAND). 200FBGA. Smartphones premium / edge computing."
+        ),
+    ),
     # Adicione mais chips aqui no mesmo formato se necessário
 ]
 

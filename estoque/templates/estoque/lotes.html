@@ -1,0 +1,402 @@
+{% extends "estoque/base_estoque.html" %}
+{% load static %}
+
+{% block title %}Lotes — WhatTheChip?{% endblock %}
+{% block nav_estoque %} pnl-nav-link--active{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   PAINEL DE LOTES — estilos específicos
+   Design System WTC v2.0 · IBM Carbon White
+   ═══════════════════════════════════════════════════════════════ */
+
+.pnl-main { padding: var(--s5) var(--s6) var(--s8) !important; }
+
+/* ── Cabeçalho ──────────────────────────────────────────────── */
+.lots-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  margin-bottom: var(--s5);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--s4);
+}
+
+.lots-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* ── Botões ─────────────────────────────────────────────────── */
+.lot-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 var(--s5);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font);
+  letter-spacing: 0.16px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background .12s;
+}
+
+.lot-btn--primary {
+  background: var(--interactive);
+  color: #ffffff;
+}
+.lot-btn--primary:hover  { background: var(--interactive-hover); }
+.lot-btn--primary:active { background: var(--interactive-active); }
+
+.lot-btn--secondary {
+  background: var(--surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+.lot-btn--secondary:hover { background: var(--surface-3); }
+
+.lot-btn--danger {
+  background: transparent;
+  color: #da1e28;
+  border: 1px solid #da1e28;
+  font-size: 12px;
+  height: 32px;
+  padding: 0 12px;
+}
+.lot-btn--danger:hover { background: #fff1f1; }
+
+.lot-btn--success {
+  background: transparent;
+  color: #198038;
+  border: 1px solid #42be65;
+  font-size: 12px;
+  height: 32px;
+  padding: 0 12px;
+}
+.lot-btn--success:hover { background: #defbe6; }
+
+[data-theme="dark"] .lot-btn--danger:hover  { background: #2d0709; }
+[data-theme="dark"] .lot-btn--success:hover { background: #022d0d; }
+
+/* ── Formulário de criação ──────────────────────────────────── */
+.lots-create-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--interactive);
+  padding: var(--s5);
+  margin-bottom: var(--s6);
+}
+
+.lots-create-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-helper);
+  margin-bottom: var(--s4);
+}
+
+.lots-create-row {
+  display: flex;
+  gap: var(--s4);
+  align-items: flex-end;
+}
+
+.lots-create-field {
+  flex: 1;
+}
+
+.lot-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.lot-input {
+  display: block;
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--s4);
+  font-size: 14px;
+  font-family: var(--font);
+  color: var(--text-primary);
+  background: var(--surface-2);
+  border: none;
+  border-bottom: 1px solid var(--border-default);
+  outline: none;
+  transition: border-color .12s;
+  letter-spacing: 0.16px;
+}
+
+.lot-input:focus {
+  background: var(--surface);
+  border-bottom: 2px solid var(--interactive);
+}
+
+[data-theme="dark"] .lot-input { background: #393939; color: #f4f4f4; }
+
+/* ── Grid de cards ──────────────────────────────────────────── */
+.lots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--s4);
+}
+
+/* ── Card de lote ───────────────────────────────────────────── */
+.lot-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  transition: border-color .12s, box-shadow .12s;
+}
+
+.lot-card:hover {
+  border-color: var(--interactive);
+  box-shadow: 0 2px 8px rgba(15, 98, 254, 0.10);
+}
+
+.lot-card--closed {
+  opacity: 0.78;
+  border-style: dashed;
+}
+
+.lot-card-top {
+  padding: var(--s5);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.lot-card-number-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+
+.lot-card-number {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.lot-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 0;
+  flex-shrink: 0;
+}
+.lot-badge--open   { background: #defbe6; color: #0e6027; }
+.lot-badge--closed { background: #e0e0e0; color: #525252; }
+
+[data-theme="dark"] .lot-badge--open   { background: #022d0d; color: #42be65; }
+[data-theme="dark"] .lot-badge--closed { background: #393939; color: #a8a8a8; }
+
+.lot-card-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  min-height: 18px;
+}
+
+.lot-card-desc--empty {
+  color: var(--text-helper);
+  font-style: italic;
+}
+
+.lot-card-meta {
+  display: flex;
+  gap: var(--s5);
+  margin-top: var(--s2);
+}
+
+.lot-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lot-meta-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-helper);
+}
+
+.lot-meta-val {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.lot-card-date {
+  font-size: 11px;
+  color: var(--text-helper);
+  font-family: var(--font-mono);
+  margin-top: auto;
+}
+
+/* ── Footer do card ─────────────────────────────────────────── */
+.lot-card-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: var(--s3) var(--s5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  background: var(--surface-2);
+}
+
+/* ── Empty state ─────────────────────────────────────────────── */
+.lots-empty {
+  padding: 80px var(--s5);
+  text-align: center;
+  color: var(--text-helper);
+  border: 1px dashed var(--border-subtle);
+  margin-top: var(--s4);
+}
+.lots-empty-icon  { font-size: 32px; margin-bottom: var(--s4); opacity: .35; }
+.lots-empty-title { font-size: 15px; font-weight: 600; color: var(--text-secondary); margin-bottom: var(--s2); }
+.lots-empty-sub   { font-size: 13px; line-height: 1.5; }
+
+@media (max-width: 600px) {
+  .lots-create-row { flex-direction: column; align-items: stretch; }
+  .lots-grid { grid-template-columns: 1fr; }
+  .lots-header { flex-direction: column; align-items: flex-start; }
+}
+</style>
+{% endblock %}
+
+{% block main %}
+
+{# ── Cabeçalho ─────────────────────────────────────────────── #}
+<div class="lots-header">
+  <h1 class="lots-title">Lotes</h1>
+</div>
+
+{# ── Formulário de criação ─────────────────────────────────── #}
+<div class="lots-create-card">
+  <div class="lots-create-title">Novo Lote</div>
+  <form method="post" action="{% url 'estoque:lot_create' %}">
+    {% csrf_token %}
+    <div class="lots-create-row">
+      <div class="lots-create-field">
+        <label class="lot-label" for="lot-desc">Descrição (opcional)</label>
+        <input class="lot-input"
+               type="text"
+               id="lot-desc"
+               name="description"
+               placeholder="Ex: Compra Mai/2026 — Fornecedor X"
+               maxlength="255"
+               autocomplete="off">
+      </div>
+      <button class="lot-btn lot-btn--primary" type="submit">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Criar Lote
+      </button>
+    </div>
+  </form>
+</div>
+
+{# ── Lista de lotes ────────────────────────────────────────── #}
+{% if lots %}
+<div class="lots-grid">
+  {% for lot in lots %}
+  <div class="lot-card {% if lot.status == 'closed' %}lot-card--closed{% endif %}">
+
+    <div class="lot-card-top">
+      <div class="lot-card-number-row">
+        <span class="lot-card-number">#{{ lot.number|stringformat:"03d" }}</span>
+        {% if lot.status == 'open' %}
+          <span class="lot-badge lot-badge--open">Aberto</span>
+        {% else %}
+          <span class="lot-badge lot-badge--closed">Fechado</span>
+        {% endif %}
+      </div>
+
+      {% if lot.description %}
+        <div class="lot-card-desc">{{ lot.description }}</div>
+      {% else %}
+        <div class="lot-card-desc lot-card-desc--empty">Sem descrição</div>
+      {% endif %}
+
+      <div class="lot-card-meta">
+        <div class="lot-meta-item">
+          <span class="lot-meta-label">Tipos</span>
+          <span class="lot-meta-val">{{ lot.chip_count }}</span>
+        </div>
+        <div class="lot-meta-item">
+          <span class="lot-meta-label">Total un.</span>
+          <span class="lot-meta-val">{{ lot.total_qty }}</span>
+        </div>
+      </div>
+
+      <div class="lot-card-date">
+        Aberto em {{ lot.created_at|date:"d/m/Y H:i" }}
+        {% if lot.closed_at %}
+          · Fechado em {{ lot.closed_at|date:"d/m/Y H:i" }}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="lot-card-footer">
+      <a class="lot-btn lot-btn--primary"
+         href="{% url 'estoque:lot_detail' lot.pk %}">
+        Abrir →
+      </a>
+
+      {% if lot.status == 'open' %}
+      <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="margin:0">
+        {% csrf_token %}
+        <button type="submit" class="lot-btn lot-btn--danger">Fechar</button>
+      </form>
+      {% else %}
+      <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="margin:0">
+        {% csrf_token %}
+        <button type="submit" class="lot-btn lot-btn--success">Reabrir</button>
+      </form>
+      {% endif %}
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="lots-empty">
+  <div class="lots-empty-icon">◻</div>
+  <div class="lots-empty-title">Nenhum lote ainda</div>
+  <div class="lots-empty-sub">Crie o primeiro lote usando o formulário acima.</div>
+</div>
+{% endif %}
+
+{% endblock %}

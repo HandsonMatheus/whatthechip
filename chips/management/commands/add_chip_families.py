@@ -119,12 +119,18 @@ FAMILIES = [
     {
         'brand_name': 'SK Hynix',
         'prefix':     'H9HCN',
-        'chip_type':  'UFS',
-        'subtype':    'UFS 2.1 / 3.1',
-        'interface':  'UFS',
+        'chip_type':  'RAM',
+        'subtype':    'LPDDR4X standalone',
+        'interface':  'LPDDR4X',
         'is_emcp':    False,
-        'priority':   50,
-        'tip': 'UFS SK Hynix. Prefixo alternativo — verificar geração pelo sufixo.',
+        'priority':   40,  # < 55 (H9HC) para bater primeiro no prefixo mais longo
+        'tip': (
+            'LPDDR4X standalone SK Hynix, Era 1 (H9HCN — prefixo 5 chars). RAM pura, zero NAND. '
+            'Anatomia: H9H=Mobile DRAM · C=LPDDR4X bus (VDDQ 0.6V, NÃO é capacidade) · NNN=sem NAND · pn[7]=densidade. '
+            'pn[7]: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB · E=6GB · F=8GB. '
+            '⚠ NÃO é UFS — protocolo RAM volátil, incompatível com soquete de armazenamento. '
+            'Destino: bancada LPDDR4X — silício de alto valor, isolamento ESD obrigatório.'
+        ),
     },
 
     # ── Micron ────────────────────────────────────────────────────────────────
@@ -192,6 +198,65 @@ FAMILIES = [
             'Encontrado em SSDs, cartões de memória e equipamentos industriais.'
         ),
     },
+    {
+        'brand_name': 'Micron',
+        'prefix':     'MT53E',
+        'chip_type':  'RAM',
+        'subtype':    'LPDDR4X standalone',
+        'interface':  'LPDDR4X',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'LPDDR4X standalone Micron. RAM pura, zero NAND. '
+            'Decode: bloco [Profundidade][Largura] no PN — multiplicar Profundidade × Largura bits ÷ 8 = GB. '
+            'Ex: MT53E1G32D4NQ → 1G×32bit = 32Gb ÷ 8 = 4GB LPDDR4X. '
+            'Isolamento ESD obrigatório — chip de alto valor.'
+        ),
+    },
+    {
+        'brand_name': 'Micron',
+        'prefix':     'MT53D',
+        'chip_type':  'RAM',
+        'subtype':    'LPDDR4 standalone',
+        'interface':  'LPDDR4',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'LPDDR4 standalone Micron. RAM pura, zero NAND. '
+            'Decode: bloco [Profundidade][Largura] — ex: MT53D768M32D4BD → 768M×32bit = 24Gb ÷ 8 = 3GB LPDDR4. '
+            'Ex: MT53D384M32D2NQ → 384M×32bit = 12Gb ÷ 8 = 1.5GB LPDDR4.'
+        ),
+    },
+    {
+        'brand_name': 'Micron',
+        'prefix':     'MT29T',
+        'chip_type':  'eMCP',
+        'subtype':    'eMCP (eMMC + LPDDR)',
+        'interface':  'eMMC + LPDDR',
+        'is_emcp':    True,
+        'priority':   50,
+        'tip': (
+            'eMCP Micron série MT29T. NAND + RAM no mesmo encapsulamento. '
+            'Decode: bloco após "ZZZ" — 1° char=NAND, 3° char=DRAM (em Gbit). '
+            'Ex: MT29TZZZ8D5BKFAH → 8=64Gb NAND (8GB) / 5=8Gb DRAM (1GB). '
+            'Destino: bancada eMCP.'
+        ),
+    },
+    {
+        'brand_name': 'Micron',
+        'prefix':     'MT29P',
+        'chip_type':  'eMCP',
+        'subtype':    'eMCP (eMMC + LPDDR)',
+        'interface':  'eMMC + LPDDR',
+        'is_emcp':    True,
+        'priority':   50,
+        'tip': (
+            'eMCP Micron série MT29P. Mesmo esquema de decode do MT29T. '
+            'Bloco após "ZZZ": 1° char=NAND Gbit, 3° char=DRAM Gbit. '
+            'Ex: MT29PZZZ4D4BKESK → 4=32Gb NAND (4GB) / 4=4Gb DRAM (512MB). '
+            'Destino: bancada eMCP.'
+        ),
+    },
 
     # ── KIOXIA / Toshiba ──────────────────────────────────────────────────────
 
@@ -199,14 +264,33 @@ FAMILIES = [
         'brand_name': 'KIOXIA',
         'prefix':     'THGBMHG',
         'chip_type':  'eMMC',
-        'subtype':    'eMMC (Toshiba)',
+        'subtype':    'eMMC (Toshiba/KIOXIA)',
         'interface':  'eMMC 5.1',
         'is_emcp':    False,
         'priority':   50,
         'tip': (
-            'eMMC Toshiba (marca atual: KIOXIA). '
+            'eMMC Toshiba/KIOXIA série THGBMHG (BiCS NAND). '
             'THG = Toshiba NAND Group. '
-            'Ex: THGBMHG8C4LBAIR = 32GB eMMC 5.1.'
+            'Decode: par alfanumérico após THGBM = [geração][densidade]. '
+            'Mapa de densidade: G7=128Gb=16GB · G8=256Gb=32GB. '
+            'Ex: THGBMHG8C4LBAIR → G8 = 256Gb = 32GB eMMC 5.1 ✓ (SK Hynix PN Guide + manifesto). '
+            'Destino: bancada eMMC.'
+        ),
+    },
+    {
+        'brand_name': 'KIOXIA',
+        'prefix':     'THGBMFG',
+        'chip_type':  'eMMC',
+        'subtype':    'eMMC (Toshiba/KIOXIA)',
+        'interface':  'eMMC 5.1',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'eMMC Toshiba/KIOXIA série THGBMFG (geração anterior ao MHG). '
+            'Mesmo esquema de decode: par após THGBM = [geração][densidade]. '
+            'G7=128Gb=16GB. '
+            'Ex: THGBMFG7C2L → G7 = 128Gb = 16GB eMMC ✓ (Toshiba PN Guide). '
+            'Destino: bancada eMMC.'
         ),
     },
     {
@@ -322,6 +406,42 @@ FAMILIES = [
         'is_emcp':    False,
         'priority':   80,
         'tip': 'Módulo RAM Kingston série Action (mercado OEM/notebook). Prefixo ACR.',
+    },
+    {
+        'brand_name': 'Kingston',
+        'prefix':     'EMCP',
+        'chip_type':  'eMCP',
+        'subtype':    'eMCP (Kingston)',
+        'interface':  'eMMC + LPDDR',
+        'is_emcp':    True,
+        'priority':   50,
+        'tip': (
+            'eMCP Kingston. Chip combinado eMMC + RAM. '
+            'Decode direto: prefixo numérico = capacidade eMMC em GB. '
+            'Dígitos após "EMCP" = RAM em Gbit → dividir por 8 para GB. '
+            'Ex: 16EMCP08-NL3DTB28 → 16GB eMMC + 08Gb÷8=1GB RAM. '
+            'Ex: 04EMCP04-NL2AS100 → 4GB eMMC + 04Gb÷8=512MB RAM. '
+            'Destino: bancada eMCP.'
+        ),
+    },
+
+    # ── SanDisk ───────────────────────────────────────────────────────────────
+
+    {
+        'brand_name': 'SanDisk',
+        'prefix':     'SD7DP',
+        'chip_type':  'eMMC',
+        'subtype':    'eMMC standalone (iNAND)',
+        'interface':  'eMMC 5.1',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'eMMC SanDisk série iNAND SD7DP. '
+            'Capacidade declarada diretamente no sufixo: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB. '
+            'Die code intermediário (ex: 24C) mapeado nos catálogos Western Digital. '
+            'Ex: SD7DP24C-4G = 4GB eMMC ✓ (sufixo -4G = declaração de fábrica). '
+            'Destino: bancada eMMC.'
+        ),
     },
 
     # ── Samsung NAND Flash (K9x) ───────────────────────────────────────────────

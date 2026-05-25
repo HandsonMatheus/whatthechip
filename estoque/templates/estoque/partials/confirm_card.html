@@ -52,7 +52,7 @@
 
   {# Form de adição #}
   <form class="est-confirm-form"
-        hx-post="{% url 'estoque:add' %}"
+        hx-post="{% url 'estoque:add' lot.pk %}"
         hx-target="#table-body-wrap"
         hx-swap="innerHTML"
         hx-on::after-request="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('confirm-area').innerHTML='';">
@@ -110,7 +110,7 @@
   </p>
 
   <form class="est-confirm-form"
-        hx-post="{% url 'estoque:add' %}"
+        hx-post="{% url 'estoque:add' lot.pk %}"
         hx-target="#confirm-area"
         hx-swap="innerHTML">
 

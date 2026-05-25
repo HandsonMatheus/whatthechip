@@ -688,6 +688,89 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K3UH5H50AM ───────────────────────────────────────────────────────────
+    # LPDDR4X Multi-Channel Samsung. Família K3U, pn[3:5]="H5" → 32Gb ÷ 8 = 4GB.
+    # H5 não estava no mapa → grammar_complete=false → capacity=null.
+    # Após populate_samsung --overwrite, gramática passa a decodificar corretamente.
+    # Fontes:
+    #   • Samsung Semiconductor oficial: K3UH5H50AM-JGCL(32 Gb) — título da página ✓
+    #   • ssfkg.com: K3UH5H50AM-AGCL "Density: 32Gb LPDDR4X, 556FBGA" ✓
+    # ⚠ A IA sugeriu inicialmente H5=2GB (16Gb) — ERRADO. Corrigido por fontes primárias.
+    {
+        "pn": "K3UH5H50AM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4X",
+            "subtype":    "LPDDR4X Multi-Channel",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "4GB",
+            "interface": "LPDDR4X",
+        },
+        "reason": (
+            "Samsung Semiconductor + ssfkg: K3UH5H50AM = 32Gb LPDDR4X (556FBGA). "
+            "32Gb ÷ 8 = 4GB. H5 adicionado ao LPDDR4_CAP como alias de BE/HE/H6. "
+            "IA inicialmente afirmou 2GB (16Gb) — refutado por fontes primárias."
+        ),
+    },
+
+    # ── K4EHE304EC ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 3GB. Família K4E, pn[3:5]="HE" → 24Gb ÷ 8 = 3GB.
+    # "HE" é alias de "FE" (mesmo densidade 24Gb, die alternativo) — padrão Samsung.
+    # Fonte: Puris B2B (puris.net): K4EHE304EC-AGCF = "24Gbit 168ball LPD3" ✓
+    # Dispositivo: Samsung Galaxy Tab A SM-P585 (Exynos 7870, 2016) — 3GB RAM.
+    # Fix promove confidence de estimated → confirmed após decode_map corrigido.
+    {
+        "pn": "K4EHE304EC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "3GB",
+            "interface": "LPDDR3",
+            "device":    "Samsung Galaxy Tab A SM-P585 (2016)",
+        },
+        "reason": (
+            "Puris B2B: K4EHE304EC-AGCF = 24Gbit LPDDR3 (168ball) → 24Gb÷8=3GB. "
+            "HE = alias de FE no mapa K4E_CAP (mesmo 24Gb, die alternativo). "
+            "Dispositivo: Galaxy Tab A SM-P585 / Exynos 7870."
+        ),
+    },
+
+    # ── K3QF2F20DA ────────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung. Família K3QF, pn[4]='2' → 16Gb ÷ 8 = 2GB.
+    # Gramática já acerta — este fix promove confidence para "confirmed".
+    # Confirmado via distribuidores globais (Win Source, Veswin) com sufixo -QGCF.
+    # Chip era 2013-2015 (Galaxy S4/S5). Destino: reacondicional seletivo.
+    {
+        "pn": "K3QF2F20DA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "2GB",
+            "interface": "LPDDR3",
+        },
+        "reason": (
+            "Gramática correta (K3QF, pn[4]='2'=16Gb÷8=2GB). "
+            "Confirmado por distribuidores globais Win Source e Veswin (sufixo -QGCF). "
+            "Fix promove de estimated para confirmed, retira da fila de revisão."
+        ),
+    },
+
     # ── H9TQ64AAETAC ─────────────────────────────────────────────────────────
     # SK Hynix eMCP LPDDR3 + eMMC 5.1. Família H9TQ.
     # pn[4:6]="64" → HYX_EMCP_NAND_CAP = 8GB eMMC.

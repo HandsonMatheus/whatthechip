@@ -163,9 +163,8 @@ class Command(BaseCommand):
             ("NW", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMQNW000SM-B316) — confirmado ✓
             ("N1", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMQN10006B ✓ chip físico 2026-05-13; KMFN10012A-B214 — Censtry: 8Gb LPDDR3 ✓)
             ("N6", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMFN60012MB214) — Octopart: 8Gb LPDDR3 ✓
-            # NX: BLOQUEADO 2026-05-09. Fonte única = IA externa (Win Source/Arrow) = distribuidor.
-            #     Regra de ouro: não mapear sem PN físico em Octopart ou datasheet.
-            #     ("NX", "8GB", "1GB"),  # (KMFNX0012M) — pendente chip físico
+            ("NX", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM    (KMFNX0012) — chip físico na esteira eMiner 2026-05-22 ✓
+                                       # Desbloqueado: KMFNX0012 confirmado fisicamente (era pendente chip físico desde 2026-05-09).
             ("E1", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM   (KMQE10013M) — Galaxy J5/J7, Moto G
             ("BT", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM   (KMQBT·)
             ("V7", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM   alias BT
@@ -358,6 +357,7 @@ class Command(BaseCommand):
             ("8E", "1GB",  "8Gb — Galaxy entry (~2013). Sem liquidez B2B atual."),
             ("6E", "2GB",  "16Gb — Galaxy mid-range (~2014-2016)."),
             ("FE", "3GB",  "24Gb — Galaxy Note 3 / S5 (~2013-2014). Raro."),
+            ("HE", "3GB",  "24Gb — alias FE: mesmo densidade, die alternativo. K4EHE304EC-AGCF — Puris B2B ✓. Galaxy Tab A SM-P585 (Exynos 7870)."),
             ("BE", "4GB",  "32Gb — Galaxy flagship (~2015). Alta demanda residual."),
         ]
         self._bulk_map("K4E_CAP", k4e_cap, samsung, dry, overwrite)
@@ -377,7 +377,11 @@ class Command(BaseCommand):
             ("7E", "3GB",   "24Gb"),
             ("BE", "4GB",   "32Gb"),
             ("HE", "4GB",   "32Gb"),  # alias BE (empacotamento alternativo)
+            ("H5", "4GB",   "32Gb"),  # alias BE — K3UH5H50AM-AGCL/-JGCL/-JGCR: Samsung oficial + ssfkg ✓ "32Gb LPDDR4X"
             ("H6", "4GB",   "32Gb"),  # alias BE (geração 2020+)
+            # ⚠ BLOQUEADO: K3UH6H60AM = 2GB (16Gb)? IA afirma — SEM confirmação independente.
+            #   Conflito direto com H6=4GB (32Gb) já confirmado por múltiplas fontes K4F/K4U.
+            #   Não alterar até evidência de Octopart / Samsung Semiconductor / ssfkg.
             ("CE", "8GB",   "64Gb"),
             ("H7", "8GB",   "64Gb"),  # alias CE (ex: K3UH7H70MM-TFCL)
             ("HD", "16GB",  "128Gb"),
@@ -803,7 +807,8 @@ class Command(BaseCommand):
                 tip=(
                     "LPDDR3 Samsung standalone (~2013–2016). "
                     "E = LPDDR3 (sufixo de geração). RAM pura — sem componente Flash. "
-                    "Capacidade: pn[3:5] → 8E=1GB · 6E=2GB · FE=3GB · BE=4GB. "
+                    "Capacidade: pn[3:5] → 8E=1GB · 6E=2GB · FE=3GB · HE=3GB · BE=4GB. "
+                    "⚠ FE e HE são aliases de 3GB (24Gb) — die diferente, mesma densidade. "
                     "⚠ 1GB (8E): sem liquidez B2B atual → resíduo (moagem/refino). "
                     "2GB / 3GB / 4GB: avaliar demanda — bancada reacondicional mobile."
                 ),
@@ -841,8 +846,8 @@ class Command(BaseCommand):
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="LPDDR4_CAP",
                 tip=(
                     "LPDDR4X Multi-Channel Samsung. Tensão I/O: 0.6V. RAM pura — sem componente Flash. "
-                    "Capacidade: pn[3:5] → BE/HE/H6=4GB · CE/H7=8GB · HD=16GB (mais comuns nesta família). "
-                    "Exemplo confirmado: K3UH7H70MM-TFCL (H7=8GB). "
+                    "Capacidade: pn[3:5] → BE/HE/H5/H6=4GB · CE/H7=8GB · HD=16GB (mais comuns nesta família). "
+                    "Exemplos confirmados: K3UH5H50AM-AGCL (H5=32Gb=4GB, Samsung oficial ✓) · K3UH7H70MM-TFCL (H7=8GB). "
                     "⚠ NÃO misturar soquetes com K4F (LPDDR4, 1.1V) — tensão diferente. "
                     "Destino: bancada reacondicional mobile."
                 ),

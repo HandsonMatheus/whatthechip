@@ -747,27 +747,120 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
   .est-confirm-actions { flex-direction: column; align-items: stretch; }
   .est-btn { justify-content: center; }
 }
+
+/* ── Lote: breadcrumb e cabeçalho ───────────────────────────── */
+.est-lot-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: 12px;
+  color: var(--text-helper);
+  margin-bottom: var(--s3);
+}
+.est-lot-back {
+  color: var(--interactive);
+  text-decoration: none;
+  font-weight: 600;
+}
+.est-lot-back:hover { text-decoration: underline; }
+.est-lot-bc-sep { color: var(--border-default); }
+.est-lot-bc-current { color: var(--text-secondary); }
+
+.est-page-header-left { display: flex; flex-direction: column; gap: 2px; }
+.est-page-header-right { display: flex; align-items: center; gap: var(--s3); }
+.est-lot-number { font-family: var(--font-mono); }
+.est-lot-desc { font-size: 12px; color: var(--text-secondary); margin: 0; font-weight: 400; }
+
+.est-lot-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  vertical-align: middle;
+  margin-left: var(--s2);
+  border-radius: 0;
+}
+.est-lot-badge--open   { background: #defbe6; color: #0e6027; }
+.est-lot-badge--closed { background: #e0e0e0; color: #525252; }
+[data-theme="dark"] .est-lot-badge--open   { background: #022d0d; color: #42be65; }
+[data-theme="dark"] .est-lot-badge--closed { background: #393939; color: #a8a8a8; }
+
+.est-lot-closed-banner {
+  background: #fff8e1;
+  border: 1px solid #f59e0b;
+  border-left: 4px solid #f59e0b;
+  padding: var(--s4) var(--s5);
+  font-size: 13px;
+  color: #92400e;
+  margin-bottom: var(--s5);
+}
+[data-theme="dark"] .est-lot-closed-banner { background: #2d2200; color: #f1c21b; border-color: #f1c21b; }
 </style>
 {% endblock %}
 
 {% block main %}
 
-{# ── Cabeçalho da página ──────────────────────────────────────── #}
-<div class="est-page-header">
-  <h1 class="est-page-title">Estoque</h1>
-  <a class="est-btn est-btn--secondary"
-     href="{% url 'estoque:export' %}"
-     title="Exportar estoque para Excel">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2"
-         stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="7 10 12 15 17 10"/>
-      <line x1="12" y1="15" x2="12" y2="3"/>
-    </svg>
-    Exportar .xlsx
+{# ── Breadcrumb + cabeçalho do lote ──────────────────────────── #}
+<div class="est-lot-breadcrumb">
+  <a href="{% url 'estoque:index' %}" class="est-lot-back">
+    ← Lotes
   </a>
+  <span class="est-lot-bc-sep">/</span>
+  <span class="est-lot-bc-current">Lote #{{ lot.number|stringformat:"03d" }}</span>
 </div>
+
+<div class="est-page-header">
+  <div class="est-page-header-left">
+    <h1 class="est-page-title">
+      Lote <span class="est-lot-number">#{{ lot.number|stringformat:"03d" }}</span>
+      {% if lot.status == 'closed' %}
+        <span class="est-lot-badge est-lot-badge--closed">Fechado</span>
+      {% else %}
+        <span class="est-lot-badge est-lot-badge--open">Aberto</span>
+      {% endif %}
+    </h1>
+    {% if lot.description %}
+    <p class="est-lot-desc">{{ lot.description }}</p>
+    {% endif %}
+  </div>
+  <div class="est-page-header-right">
+    <a class="est-btn est-btn--secondary"
+       href="{% url 'estoque:export' lot.pk %}"
+       title="Exportar estoque para Excel">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Exportar .xlsx
+    </a>
+    {% if lot.status == 'open' %}
+    <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="display:inline">
+      {% csrf_token %}
+      <button type="submit" class="est-btn est-btn--secondary" style="border-color:#da1e28;color:#da1e28;">
+        Fechar Lote
+      </button>
+    </form>
+    {% else %}
+    <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="display:inline">
+      {% csrf_token %}
+      <button type="submit" class="est-btn est-btn--secondary" style="border-color:#42be65;color:#42be65;">
+        Reabrir Lote
+      </button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+{% if lot.status == 'closed' %}
+<div class="est-lot-closed-banner">
+  🔒 Este lote está fechado. Nenhum chip pode ser adicionado. Reabra-o para continuar operando.
+</div>
+{% endif %}
 
 {# ── Card de entrada ──────────────────────────────────────────── #}
 <div class="est-card">
@@ -786,7 +879,7 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
         autocomplete="off"
         spellcheck="false"
         inputmode="text"
-        hx-get="{% url 'estoque:preview' %}"
+        hx-get="{% url 'estoque:preview' lot.pk %}"
         hx-trigger="pn-ready"
         hx-target="#confirm-area"
         hx-swap="innerHTML"
@@ -829,7 +922,7 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
           name="q"
           value="{{ q }}"
           placeholder="Filtrar por PN…"
-          hx-get="{% url 'estoque:index' %}"
+          hx-get="{% url 'estoque:lot_detail' lot.pk %}"
           hx-trigger="input changed delay:300ms"
           hx-target="#table-body-wrap"
           hx-swap="innerHTML"
@@ -839,7 +932,7 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
       <div>
         <label class="est-label" for="tipo-filter">Tipo</label>
         <select class="est-select" id="tipo-filter" name="tipo"
-                hx-get="{% url 'estoque:index' %}"
+                hx-get="{% url 'estoque:lot_detail' lot.pk %}"
                 hx-trigger="change"
                 hx-target="#table-body-wrap"
                 hx-swap="innerHTML"
@@ -863,6 +956,7 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
 </div>{# /est-table-section #}
 
 {# Token CSRF acessível ao JS para htmx.ajax #}
+<div id="est-lot-data" data-lot-pk="{{ lot.pk }}" style="display:none"></div>
 {% csrf_token %}
 
 {# ── Toast de confirmação de adição ──────────────────────────── #}
@@ -1066,8 +1160,9 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
 
     // Usa htmx.ajax para CSRF + swap automático
     var csrfVal = csrf ? csrf.value : '';
+    var lotPk = document.getElementById('est-lot-data').getAttribute('data-lot-pk');
     htmx.ajax('POST',
-      '/estoque/remove/' + _delTarget.pk + '/',
+      '/estoque/lote/' + lotPk + '/remove/' + _delTarget.pk + '/',
       {
         target : '#table-body-wrap',
         swap   : 'innerHTML',
@@ -1234,8 +1329,9 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
     undo.onclick = function() {
       hideToast();
       var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+      var lotPk2 = document.getElementById('est-lot-data').getAttribute('data-lot-pk');
       htmx.ajax('POST',
-        '/estoque/remove/' + _toastUndoPk + '/',
+        '/estoque/lote/' + lotPk2 + '/remove/' + _toastUndoPk + '/',
         {
           target : '#table-body-wrap',
           swap   : 'innerHTML',

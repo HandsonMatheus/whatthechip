@@ -951,15 +951,21 @@ class Command(BaseCommand):
         #   B=2GB   — H9HCNNNBPUMLHR-NMO ✓ (16Gbit ÷ 8)
         #   D=3GB   — H9HKNNNDGUMUBR-NLHR ✓ (24Gbit ÷ 8 — assimétrico, smartphones 3GB)
         #   C=4GB   — H9HCNNNCPMMLHR-NME ✓ · H9HKNNNCTUMUBR-MUH ✓ (32Gbit ÷ 8)
+        #   E=6GB   — H9HCNNNECMML ✓ (48Gbit ÷ 8 — catálogo oficial SK Hynix LPDDR4X PN Guide)
+        #             "LPDDR4X 6G BGA200" nos manifestos aduaneiros de importação asiática.
         #   F=8GB   — H9HCNNNFBMMLPR-NME ✓ (64Gbit ÷ 8)
+        #
+        # ARMADILHA: o 'C' em H9HCN (pos 3) atesta barramento LPDDR4X (VDDQ 0.6V),
+        #            NÃO é a chave de capacidade. A capacidade é sempre pn[7].
         #
         lpddr4_h9hc_cap = [
             # char_key  val_primary  val_secondary
             ("4", "512MB", ""),  # 4Gbit ÷ 8  — H9HCNNN4KMMLHR-NMO ✓
             ("8", "1GB",   ""),  # 8Gbit ÷ 8  — H9HCNNN8KUMLHR-NME ✓
-            ("B", "2GB",   ""),  # 16Gbit ÷ 8 — H9HCNNNBPUMLHR-NMO ✓
-            ("D", "3GB",   ""),  # 24Gbit ÷ 8 — H9HKNNNDGUMUBR-NLHR ✓ (assimétrico — smartphones 3GB)
+            ("B", "2GB",   ""),  # 16Gbit ÷ 8 — H9HCNNNBPUMLHR-NMO ✓ (catálogo SK Hynix PN Guide)
+            ("D", "3GB",   ""),  # 24Gbit ÷ 8 — H9HKNNNDGUMUBR-NLHR ✓ (assimétrico)
             ("C", "4GB",   ""),  # 32Gbit ÷ 8 — H9HCNNNCPMMLHR-NME ✓ · H9HKNNNCTUMUBR-MUH ✓
+            ("E", "6GB",   ""),  # 48Gbit ÷ 8 — H9HCNNNECMML ✓ (SK Hynix PN Guide + manifesto aduaneiro)
             ("F", "8GB",   ""),  # 64Gbit ÷ 8 — H9HCNNNFBMMLPR-NME ✓
         ]
         self._bulk_map("HYX_LPDDR4_H9HC_CAP", lpddr4_h9hc_cap, hynix, dry, overwrite)
@@ -1329,12 +1335,40 @@ class Command(BaseCommand):
                 tip=(
                     "LPDDR4/LPDDR4X standalone SK Hynix, Era 1 barramento x64 (H9HK). DRAM móvel puro. "
                     "Variante dual-channel do H9HC — maior largura de banda para processadores exigentes. "
-                    "pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB · F=8GB por chip. "
+                    "pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB · E=6GB · F=8GB por chip. "
                     "⚠ 'D'=3GB assimétrico — H9HKNNNDGUMUBR-NLHR ✓ (OMO Electronic). "
                     "⚠ Mapa de capacidade idêntico ao H9HC — C=4GB confirmado em ambos os prefixos. "
                     "⚠ Preenchimento pn[4:7] variável — fatiar pn[7] direto. "
                     "Origem: smartphones premium com arquitetura dual-channel 2016-2020. "
                     "Destino: triagem LPDDR4 — alto valor no mercado de recondicionamento."
+                ),
+            ),
+            # ── H9HCN (prefixo 5 chars) — LPDDR4X standalone, RAM pura ─────────
+            #
+            # Anatomia: H  9  H  C  N  N  N  [cap] ...
+            #           0  1  2  3  4  5  6    7
+            #
+            # H9HCN é o sub-prefixo de H9HC onde pn[4]='N' (NNN = zero NAND).
+            # Prefixo 5 chars tem priority=40 < 55 (H9HC) para bater primeiro.
+            # Compartilha o mesmo mapa de capacidade do H9HC (pn[7]).
+            # Chave E=8GB documentada via H9HCNNNECMML (broker B2B, 64Gbit confirmed).
+            #
+            dict(
+                prefix="H9HCN", chip_type="RAM", subtype="LPDDR4X standalone",
+                interface="LPDDR4X",
+                is_emcp=False, active=True, priority=40,
+                pn_length=None,
+                decode_cap_pos=7, decode_cap_len=1, decode_cap_map="HYX_LPDDR4_H9HC_CAP",
+                tip=(
+                    "LPDDR4X standalone SK Hynix, Era 1 (H9HCN). RAM pura — zero NAND. "
+                    "H9H=Mobile DRAM standalone · C=LPDDR4X bus · NNN=sem flash embarcado. "
+                    "pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB · E=6GB · F=8GB por chip. "
+                    "⚠ 'C' em H9HCN (pos 3) = barramento LPDDR4X (VDDQ 0.6V), NÃO é capacidade. "
+                    "⚠ NÃO é UFS — protocolo é RAM volátil, incompatível com soquete de armazenamento. "
+                    "⚠ Encapsulamento 200FBGA — isolamento ESD obrigatório. "
+                    "Ex: H9HCNNNECMML = 6GB LPDDR4X ✓ (SK Hynix PN Guide + manifesto aduaneiro). "
+                    "Origem: smartphones flagship e tablets premium 2016-2020. "
+                    "Destino: bancada LPDDR4X — silício de alto valor, prioridade na triagem."
                 ),
             ),
             dict(
