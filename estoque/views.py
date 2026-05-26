@@ -37,11 +37,17 @@ def _normalise_pn(raw: str) -> str:
 
 
 def _has_capacity(result: dict) -> bool:
+    # Considera o chip "identificável" se tiver capacidade explícita em qualquer campo
+    # OU se for um KnownPart confirmado (known_exact=True) com chip_type definido.
+    # Isso evita que chips identificados mas sem capacidade mapeada (ex: DRAM raro,
+    # RAM standalone) caiam no fluxo de UnknownChip — o chip É conhecido, apenas
+    # a sua densidade não foi catalogada ainda.
     return bool(
         result.get('capacity')
         or result.get('emcp_ram')
         or result.get('emcp_nand')
         or result.get('dram_density')
+        or (result.get('known_exact') and result.get('chip_type'))
     )
 
 
@@ -152,14 +158,24 @@ def preview_chip(request, lot_pk):
     except InventoryEntry.DoesNotExist:
         current_qty = 0
 
+    _PROFIT_KEY = {
+        'RENTÁVEL':      'rentavel',
+        'NÃO RENTÁVEL':  'nao-rentavel',
+        'INDETERMINADO': 'indeterminado',
+    }
+    profitable     = result.get('profitable', 'INDETERMINADO')
+    profitable_key = _PROFIT_KEY.get(profitable, 'indeterminado')
+
     ctx = {
-        'lot':         lot,
-        'pn':          pn,
-        'result':      result,
-        'has_cap':     has_cap,
-        'display_cap': display_cap,
-        'result_json': json.dumps({**result, 'pn': pn}),
-        'current_qty': current_qty,
+        'lot':          lot,
+        'pn':           pn,
+        'result':       result,
+        'has_cap':      has_cap,
+        'display_cap':  display_cap,
+        'result_json':  json.dumps({**result, 'pn': pn}),
+        'current_qty':  current_qty,
+        'profitable':   profitable,
+        'profitable_key': profitable_key,
     }
     return render(request, 'estoque/partials/confirm_card.html', ctx)
 

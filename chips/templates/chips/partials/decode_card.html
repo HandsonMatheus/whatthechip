@@ -11,6 +11,10 @@
   <div class="dc2-status dc2-status--warn">
     ⚠ Possível chip remarked
   </div>
+  {% elif result.pn_not_in_db %}
+  <div class="dc2-status dc2-status--warn">
+    ⚠ PN não confirmado — confira a digitação{% if result.fuzzy_suggestions %} · veja sugestões abaixo{% endif %}
+  </div>
   {% elif family_undocumented %}
   <div class="dc2-status dc2-status--undoc" style="background:#fff8e1 !important;color:#b8860b !important;border-bottom:2px solid #e6a817;">
     ⚠ Família identificada — sem documentação pública
@@ -21,13 +25,18 @@
   </div>
   {% endif %}
 
-  <!-- ── Cabeçalho: tipo (esquerda) + marca (direita) ───────────────────── -->
+  <!-- ── Cabeçalho: tipo (esquerda) + rentabilidade + marca (direita) ─────── -->
   <div class="dc2-head">
     <div class="dc2-head-main">
       <div class="dc2-chiptype">
         {{ result.chip_type }}{% if result.subtype %}<span class="dc2-subtype">{{ result.subtype }}</span>{% endif %}
       </div>
     </div>
+    {% if profitable and profitable != "INDETERMINADO" %}
+    <span class="wtc-profit-badge wtc-profit-badge--{{ profitable_key }}">
+      {% if profitable == "RENTÁVEL" %}✓{% else %}✗{% endif %} {{ profitable }}
+    </span>
+    {% endif %}
     {% if result.brand %}
     <span class="dc2-brand-tag">{{ result.brand }}</span>
     {% endif %}
@@ -128,6 +137,22 @@
   <!-- ── Dica / tip ─────────────────────────────────────────────────────── -->
   {% if result.tip %}
   <div class="dc2-tip">⚑ {{ result.tip }}</div>
+  {% endif %}
+
+  <!-- ── Sugestões de PN (digitação errada) ───────────────────────────── -->
+  {% if result.pn_not_in_db and result.fuzzy_suggestions %}
+  <div style="margin:0 16px 12px 16px;padding:12px 14px;background:#fff8e1;border:1px solid #f0c040;border-left:4px solid #e6a817;border-radius:6px;">
+    <div style="font-size:12px;font-weight:700;color:#b8600a;margin-bottom:8px;">
+      🔍 Você quis dizer?
+    </div>
+    {% for pn in result.fuzzy_suggestions %}
+    <a href="#"
+       onclick="document.getElementById('big-search-input').value='{{ pn|escapejs }}';triggerSearch('{{ pn|escapejs }}');return false;"
+       style="display:block;padding:6px 10px;margin-bottom:4px;background:#fff;border:1px solid #e0c060;border-radius:4px;font-size:13px;font-weight:600;color:#333;text-decoration:none;font-family:monospace;">
+      {{ pn }}
+    </a>
+    {% endfor %}
+  </div>
   {% endif %}
 
   <!-- ── Rodapé ──────────────────────────────────────────────────────────── -->

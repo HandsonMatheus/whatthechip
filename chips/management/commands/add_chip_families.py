@@ -54,13 +54,18 @@ FAMILIES = [
         'brand_name': 'SK Hynix',
         'prefix':     'H9TP',
         'chip_type':  'eMCP',
-        'subtype':    'LPDDR4 + eMMC',
-        'interface':  'eMMC 5.1',
+        'subtype':    'eMCP LPDDR2',
+        'interface':  'eMMC 4.x + LPDDR2',
         'is_emcp':    True,
-        'priority':   50,
+        'priority':   40,  # < H9TQ (50) — prefixo específico, não conflitar
         'tip': (
-            'eMCP SK Hynix com LPDDR4 (RAM) + eMMC 5.1 (NAND). '
-            'Geração mais recente que H9TQ. Ex: H9TP65A8JDAC.'
+            'eMCP SK Hynix com LPDDR2 (H9TP). Chip combinado eMMC + RAM, geração ANTERIOR ao H9TQ. '
+            'pn[4:6] = capacidade NAND: 32=4GB · 64=8GB. '
+            'pn[6:8] = capacidade RAM: A4=512MB · A8=1GB · AB=2GB. '
+            '⚠ H9TP usa LPDDR2, NÃO LPDDR4 — subtype "LPDDR4" em fontes antigas é erro histórico. '
+            'Ex: H9TP32A4GDCC = 4GB NAND + 512MB LPDDR2 ✓ (absunshine). '
+            'Ex: H9TP64A8JDAC = 8GB NAND + 1GB LPDDR2 ✓ (Elnec). '
+            'Destino: bancada eMCP legado — peça obsoleta, baixo valor comercial.'
         ),
     },
     {
@@ -196,6 +201,23 @@ FAMILIES = [
         'tip': (
             'NAND Flash raw Micron. '
             'Encontrado em SSDs, cartões de memória e equipamentos industriais.'
+        ),
+    },
+    {
+        'brand_name': 'Micron',
+        'prefix':     'MT53B',
+        'chip_type':  'RAM',
+        'subtype':    'LPDDR4 standalone',
+        'interface':  'LPDDR4',
+        'is_emcp':    False,
+        'priority':   50,
+        'tip': (
+            'LPDDR4 standalone Micron (MT53B — VDDQ 1.1V). RAM pura, zero NAND. '
+            '⚠ Diferente do MT53E (LPDDR4X, 0.6V) — tensão incompatível entre os dois. '
+            'Decode: bloco [Profundidade][Largura] após o prefixo — multiplicar ÷ 8 = GB. '
+            'Ex: MT53B512M64D4TX → 512M×64bit = 32Gb ÷ 8 = 4GB LPDDR4. '
+            'FBGA code D9VFC. '
+            'Isolamento ESD obrigatório — chip de alto valor.'
         ),
     },
     {
@@ -426,23 +448,9 @@ FAMILIES = [
     },
 
     # ── SanDisk ───────────────────────────────────────────────────────────────
-
-    {
-        'brand_name': 'SanDisk',
-        'prefix':     'SD7DP',
-        'chip_type':  'eMMC',
-        'subtype':    'eMMC standalone (iNAND)',
-        'interface':  'eMMC 5.1',
-        'is_emcp':    False,
-        'priority':   50,
-        'tip': (
-            'eMMC SanDisk série iNAND SD7DP. '
-            'Capacidade declarada diretamente no sufixo: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB. '
-            'Die code intermediário (ex: 24C) mapeado nos catálogos Western Digital. '
-            'Ex: SD7DP24C-4G = 4GB eMMC ✓ (sufixo -4G = declaração de fábrica). '
-            'Destino: bancada eMMC.'
-        ),
-    },
+    # Famílias SanDisk migradas para populate_sandisk.py (2026-05).
+    # Rodar: python manage.py populate_sandisk --overwrite
+    # A entrada SD7DP abaixo foi removida — populate_sandisk.py é a fonte de verdade.
 
     # ── Samsung NAND Flash (K9x) ───────────────────────────────────────────────
     # Chips muito comuns em TVs, eletrodomésticos, impressoras e dispositivos IoT.

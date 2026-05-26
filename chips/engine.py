@@ -192,6 +192,10 @@ EMCP_RAM_TYPES = {
 # ── Regex de capacidade (usada em múltiplos lugares) ──────────────────────────
 _CAP_RE = re.compile(r"(\d+)\s*([GMK])B", re.I)
 
+# ── Regex para geração LPDDR / DDR (usada em assess_profitability) ────────────
+_LPDDR_GEN_RE = re.compile(r'LPDDR(\d+)?', re.I)
+_DDR_GEN_RE   = re.compile(r'(?<![A-Z])DDR(\d+)?', re.I)  # DDR mas não LPDDR
+
 
 def _clean(s: str) -> str:
     """Normaliza espaços internos e trim.
@@ -1033,6 +1037,164 @@ def _log_unknown(pn: str):
         logger.exception("Erro ao gravar UnknownChip para PN=%s", pn)
 
 
+# ── Rentabilidade comercial ────────────────────────────────────────────────────
+
+def _lpddr_generation(text: str) -> int | None:
+    """
+    Extrai a geração LPDDR como inteiro a partir de uma string de especificação.
+        LPDDR / LPDDR (legado)  → 1
+        LPDDR2                  → 2
+        LPDDR3                  → 3
+        LPDDR4 / LPDDR4X / LPDDR4/4X → 4
+        LPDDR5 / LPDDR5X        → 5
+    Retorna None se não encontrar nenhuma correspondência.
+    """
+    m = _LPDDR_GEN_RE.search(text or "")
+    if not m:
+        return None
+    gen_str = m.group(1)
+    if gen_str is None:
+        return 1  # "LPDDR" sem número → geração 1
+    return int(gen_str[0])  # pega só o primeiro dígito (LPDDR4X → 4)
+
+
+def _ddr_generation(text: str) -> int | None:
+    """
+    Extrai a geração DDR (não-LPDDR) como inteiro.
+        DDR (sem número) → 1
+        DDR2 → 2, DDR3 → 3, DDR4 → 4, DDR5 → 5
+    Retorna None se não encontrar.
+    """
+    # Verifica LPDDR primeiro: se o texto tem LPDDR, não é DDR standalone
+    if _LPDDR_GEN_RE.search(text or ""):
+        return None
+    m = _DDR_GEN_RE.search(text or "")
+    if not m:
+        return None
+    gen_str = m.group(1)
+    if gen_str is None:
+        return 1
+    return int(gen_str[0])
+
+
+def assess_profitability(result: dict) -> str:
+    """
+    Avalia a rentabilidade comercial de um chip identificado.
+
+    Retorna:
+        "RENTÁVEL"      — chip atende os critérios mínimos de mercado
+        "NÃO RENTÁVEL"  — chip abaixo dos critérios mínimos
+        "INDETERMINADO" — dados insuficientes para avaliação confiável
+
+    Regras aplicadas:
+
+        eMCP (qualquer marca):
+            - RAM < 1GB            → NÃO RENTÁVEL
+            - NAND < 8GB           → NÃO RENTÁVEL
+            - LPDDR2 ou inferior   → NÃO RENTÁVEL
+            - Todos os critérios OK → RENTÁVEL
+
+        uMCP (qualquer marca):
+            - RAM < 1GB  → NÃO RENTÁVEL
+            - NAND < 8GB → NÃO RENTÁVEL
+            - LPDDR2 ou inferior → NÃO RENTÁVEL
+            - Todos os critérios OK → RENTÁVEL
+
+        eMMC standalone:
+            - capacidade < 8GB → NÃO RENTÁVEL
+            - ≥ 8GB             → RENTÁVEL
+
+        UFS standalone:
+            - capacidade < 8GB → NÃO RENTÁVEL
+            - ≥ 8GB             → RENTÁVEL
+
+        DDR / LPDDR standalone:
+            - capacidade < 2GB       → NÃO RENTÁVEL
+            - DDR2 / LPDDR2 ou menor → NÃO RENTÁVEL
+            - Todos os critérios OK  → RENTÁVEL
+
+        Outros tipos (NOR, SoC, etc.):
+            → INDETERMINADO (sem regra definida)
+    """
+    chip_type = (result.get("chip_type") or "").strip()
+    subtype   = (result.get("subtype")   or "").strip()
+    combined  = f"{chip_type} {subtype}".upper()
+
+    # ── eMCP / uMCP ──────────────────────────────────────────────────────────
+    # uMCP: mesmas regras do eMCP (NAND ≥ 8 GB, RAM ≥ 1 GB, LPDDR3+).
+    # is_emcp cobre ambos via ChipFamily; a checagem explícita do chip_type
+    # garante que resultados Gemini (que podem retornar "uMCP") também sejam avaliados.
+    if result.get("is_emcp") or chip_type.lower() in ("emcp", "umcp"):
+        ram_str  = (result.get("emcp_ram")  or "").strip()
+        nand_str = (result.get("emcp_nand") or "").strip()
+
+        if not ram_str or not nand_str:
+            return "INDETERMINADO"
+
+        ram_gb  = _extract_gib(ram_str)
+        nand_gb = _extract_gib(nand_str)
+
+        if ram_gb is None or nand_gb is None:
+            return "INDETERMINADO"
+
+        lpddr_gen = _lpddr_generation(ram_str)
+        if lpddr_gen is None:
+            return "INDETERMINADO"
+
+        if lpddr_gen <= 2:
+            return "NÃO RENTÁVEL"
+        if ram_gb < 0.99:        # < 1 GB (512 MB etc.)
+            return "NÃO RENTÁVEL"
+        if nand_gb < 7.99:       # < 8 GB
+            return "NÃO RENTÁVEL"
+        return "RENTÁVEL"
+
+    # ── eMMC standalone ──────────────────────────────────────────────────────
+    if chip_type == "eMMC":
+        cap_gb = _extract_gib(result.get("capacity") or "")
+        if cap_gb is None:
+            return "INDETERMINADO"
+        return "RENTÁVEL" if cap_gb >= 7.99 else "NÃO RENTÁVEL"
+
+    # ── UFS standalone ────────────────────────────────────────────────────────
+    if chip_type == "UFS":
+        cap_gb = _extract_gib(result.get("capacity") or "")
+        if cap_gb is None:
+            return "INDETERMINADO"
+        return "RENTÁVEL" if cap_gb >= 7.99 else "NÃO RENTÁVEL"
+
+    # ── LPDDR standalone ─────────────────────────────────────────────────────
+    if "LPDDR" in combined:
+        lpddr_gen = _lpddr_generation(combined)
+        if lpddr_gen is None:
+            return "INDETERMINADO"
+        cap_gb = _extract_gib(result.get("capacity") or result.get("dram_density") or "")
+        if cap_gb is None:
+            return "INDETERMINADO"
+        if lpddr_gen <= 2:
+            return "NÃO RENTÁVEL"
+        if cap_gb < 1.99:        # < 2 GB
+            return "NÃO RENTÁVEL"
+        return "RENTÁVEL"
+
+    # ── DDR standalone ────────────────────────────────────────────────────────
+    if "DDR" in combined:
+        ddr_gen = _ddr_generation(combined)
+        if ddr_gen is None:
+            return "INDETERMINADO"
+        cap_gb = _extract_gib(result.get("capacity") or result.get("dram_density") or "")
+        if cap_gb is None:
+            return "INDETERMINADO"
+        if ddr_gen <= 2:
+            return "NÃO RENTÁVEL"
+        if cap_gb < 1.99:        # < 2 GB
+            return "NÃO RENTÁVEL"
+        return "RENTÁVEL"
+
+    # Tipo não coberto pelas regras (UFS, NOR, SoC, SDRAM puro, etc.)
+    return "INDETERMINADO"
+
+
 # ── Ponto de entrada público ───────────────────────────────────────────────────
 
 def classify(pn_raw: str) -> dict:
@@ -1103,6 +1265,7 @@ def classify(pn_raw: str) -> dict:
                     # Sem família não há como saber se é não documentada — assume False.
                     "family_undocumented": False,
                 }
+            result["profitable"] = assess_profitability(result)
             _log_search(pn, found=True, source_used="db_exact")
             return result
         except KnownPart.DoesNotExist:
@@ -1256,6 +1419,27 @@ def classify(pn_raw: str) -> dict:
         grammar_result["grammar_complete"]  = grammar_complete
         grammar_result["in_review_queue"]   = _in_review_queue
         grammar_result["grammar_persisted"] = False  # mantido para compatibilidade
+        grammar_result["profitable"] = assess_profitability(grammar_result)
+
+        # ── Approach 1: flag explícita de "não confirmado no banco" ──────────
+        # Ativa aviso visual no UI para o operador conferir digitação.
+        # Condição: chegamos à camada 2 (layer 1 / busca exata falhou) E o Gemini
+        # não acabou de salvar um novo chip confirmado agora (_gemini_saved_now=False).
+        # Se _gemini_saved_now=True → chip novo legítimo classificado pelo Gemini → sem aviso.
+        # Se _gemini_saved_now=False → gramática pura ou Gemini sem resultado → aviso ativo.
+        # Nota: known_exact pode ser True por modificação interna do Gemini (linha 1189),
+        # mas isso não equivale a "estava no banco antes desta chamada" — usamos _gemini_saved_now.
+        grammar_result["pn_not_in_db"] = not _gemini_saved_now
+
+        # ── Approach 2: fuzzy suggestions em gramática sem match exato ───────
+        # _fuzzy_candidates() já existe e roda na camada 4 (prefixo desconhecido).
+        # Aqui ativa também na camada 2 — quando a família foi reconhecida mas o
+        # PN exato não está no banco. Permite sugerir "Você quis dizer KLMAG1JETD?"
+        # para casos de digitação errada como KMLAG1JETD.
+        if grammar_result["pn_not_in_db"]:
+            fuzzy = _fuzzy_candidates(pn)
+            if fuzzy:
+                grammar_result["fuzzy_suggestions"] = [s.part_number for s in fuzzy]
 
         _log_search(pn, found=True, source_used="grammar")
         return grammar_result
@@ -1280,6 +1464,7 @@ def classify(pn_raw: str) -> dict:
 
         part = _save_gemini_to_db(pn, specs) if specs.get("chip_type") else None
         result = _build_result_from_gemini(pn, specs, part)
+        result["profitable"] = assess_profitability(result)
         _log_search(pn, found=True, source_used="gemini")
         return result
 

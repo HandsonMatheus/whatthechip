@@ -88,6 +88,54 @@ PARTS = [
             "RAM pura (zero NAND). 200FBGA. Smartphones premium / edge computing."
         ),
     ),
+    dict(
+        part_number   = "H26T87001CMR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H26T",
+        chip_type     = "eMMC",
+        subtype       = "eMMC standalone 3D NAND",
+        capacity      = "128GB",
+        interface     = "eMMC 5.1",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado via Octopart: '128GB EMMC5.1 EF510 3D-V4 FBGA153'. "
+            "pn[4]='8' → 128GB. Processo 3D-V4, dies 256Gb. FBGA-153 11.5×13mm. "
+            "Fonte: octopart.com/part/hynix/H26T87001CMR."
+        ),
+    ),
+    dict(
+        part_number   = "H26M74002HMR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H26M",
+        chip_type     = "eMMC",
+        subtype       = "eMMC standalone",
+        capacity      = "64GB",
+        interface     = "eMMC 5.1",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado via Octopart: '64GB EMMC5.1 EG510'. "
+            "pn[4]='7' → 64GB. FBGA-153. "
+            "Fonte: octopart.com/part/hynix/H26M74002HMR."
+        ),
+    ),
+    dict(
+        part_number   = "H9HCNNNCPMML",
+        brand_name    = "SK Hynix",
+        family_prefix = "H9HCN",
+        chip_type     = "RAM",
+        subtype       = "LPDDR4X standalone",
+        capacity      = "4GB",
+        interface     = "LPDDR4X",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[7]='C' → 32Gbit ÷ 8 = 4GB. "
+            "Fonte interna: H9HCNNNCPMMLHR-NME ✓ (duas referências independentes no mapa H9HC). "
+            "Octopart lista variante -XR-NEE com '4GBIT Par 78FBGA' — dados incorretos: "
+            "confusão Gbit/GB (4GB ≠ 4Gbit) e encapsulamento errado (200FBGA, não 78FBGA). "
+            "RAM pura, zero NAND. 200FBGA."
+        ),
+    ),
     # Adicione mais chips aqui no mesmo formato se necessário
 ]
 

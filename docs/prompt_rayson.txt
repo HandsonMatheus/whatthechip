@@ -1,0 +1,261 @@
+════════════════════════════════════════════════════════════════════════
+PROMPT — NOVO CHAT: Implementar Rayson no WhatTheChip
+════════════════════════════════════════════════════════════════════════
+
+Você vai me ajudar a implementar a classificação de chips Rayson
+no sistema WhatTheChip — uma plataforma Django para classificação de ICs
+de memória no mercado de reciclagem eletrônica.
+
+════════════════════════════════════════════════════════════════════════
+1. CONTEXTO DO SISTEMA
+════════════════════════════════════════════════════════════════════════
+
+O sistema classifica chips pelo Part Number (PN) digitado pelo operador.
+O motor (engine.py) segue esta hierarquia:
+
+  Camada 1 → Busca exata no banco (KnownPart status="enriched")
+  Camada 2 → Gramática da família (ChipFamily + DecodeMap)
+  Camada 3 → Gemini (LLM) como fallback
+  Camada 4 → Fuzzy suggestions (última opção)
+
+A nossa tarefa é sempre alimentar as Camadas 1 e 2, tornando o sistema
+independente de IA para os chips que aparecem na esteira.
+
+Arquivos relevantes no projeto
+(/Users/raphaelsilvabastos/Documents/WhatTheChip/chipdocs/):
+
+  chips/management/commands/populate_samsung.py  ← modelo a seguir
+  chips/management/commands/populate_hynix.py    ← outro exemplo bom
+  chips/management/commands/fix_known_parts.py   ← exceções pontuais
+  chips/models.py                                ← ChipFamily, DecodeMap, KnownPart, Brand
+
+O arquivo a criar será:
+  chips/management/commands/populate_rayson.py   ← ainda não existe!
+
+════════════════════════════════════════════════════════════════════════
+2. PADRÃO DE IMPLEMENTAÇÃO
+════════════════════════════════════════════════════════════════════════
+
+Leia populate_samsung.py e populate_hynix.py como referência.
+Cada fabricante registra no banco:
+
+  A) Brand — marca (get_or_create)
+
+  B) DecodeMap — tabelas de decodificação posicional
+     Cada linha é uma tupla (char_key, val_primary, val_secondary):
+       char_key    = chave extraída de posição fixa do PN
+       val_primary = capacidade / geração decodificada
+       val_secondary = contexto técnico ou comentário de fonte
+
+  C) ChipFamily — família/prefixo com metadados:
+       prefix          = prefixo do PN (ex: "RS1GD3", "RSEMC")
+       chip_type       = "DDR3", "DDR4", "LPDDR4", "eMMC", etc.
+       subtype         = descrição curta
+       interface       = "DDR3", "LPDDR4", "eMMC 5.1", etc.
+       pn_length       = comprimento esperado do PN (ou None se variável)
+       is_emcp         = False (Rayson não faz eMCP)
+       active          = True
+       priority        = 50 (chips de baixo custo têm prioridade menor)
+       decode_cap_pos  = posição no PN para extrair chave de capacidade
+       decode_cap_len  = comprimento da chave (1 ou 2)
+       decode_cap_map  = nome do DecodeMap de capacidade
+       tip             = aviso operacional (destino, cuidados de segregação)
+
+ATENÇÃO: Para Rayson, a abordagem de decode posicional pode não ser a melhor.
+Leia a seção 4 deste prompt antes de decidir a estratégia de implementação.
+
+REGRA CRÍTICA DE CONFIANÇA — nunca quebrar:
+  ✓ Tier 1: Rayson oficial (rayson.com.cn, datasheets oficiais)
+  ✓ Tier 2: Octopart, Mouser, Digi-Key, LCSC (com especificação confirmada)
+  ✓ Tier 3: B2B verificado (Nexar, Jotrin, Win Source)
+  ⚠ Tier 4: Alibaba / distribuidores genéricos (marcar como estimado)
+  ✗ Nunca: IA sem verificação, catálogos sem PN âncora
+
+════════════════════════════════════════════════════════════════════════
+3. RAYSON — CONTEXTO DA MARCA
+════════════════════════════════════════════════════════════════════════
+
+Rayson é uma fabricante chinesa de componentes de memória de baixo custo.
+Sede: Shenzhen, China.
+Site: rayson.com.cn
+
+ONDE APARECEM NA ESTEIRA DE RECICLAGEM:
+  • TV boxes (Android box, IPTV box)
+  • Centrais multimídia automotivas (car stereo, head unit)
+  • Roteadores de entrada (TP-Link budget, Mercusys, etc.)
+  • Tablets genéricos chineses
+  • Set-top boxes de operadora
+  • Leitores de DVD/Blu-ray com Android
+  NÃO costumam aparecer em smartphones premium.
+
+DECISÃO OPERACIONAL CRÍTICA — segregação, não recondicionar:
+  Chips Rayson têm viabilidade de reacondicionamento EXTREMAMENTE restrita.
+  O mercado secundário de placas (celulares, notebooks) NÃO aceita Rayson
+  como substituto de Samsung/SK Hynix/Micron por qualidade e rastreabilidade.
+  O objetivo do sistema ao identificar um chip Rayson é:
+    1. Nomear corretamente o tipo e capacidade para o laudo de triagem
+    2. Sinalizar que deve ir para LOTE SEPARADO (nunca misturar com premium)
+    3. Orientar para sucata ou mercado de reposição de equipamentos de entrada
+  O tip de cada família deve deixar isso CLARO para o operador.
+
+════════════════════════════════════════════════════════════════════════
+4. RAYSON — ESTRUTURA DOS PART NUMBERS (BRAINSTORM)
+════════════════════════════════════════════════════════════════════════
+
+DIFERENÇA FUNDAMENTAL em relação à Samsung:
+  Samsung codifica capacidade em 1-2 chars numa posição fixa (ex: pn[3:5]).
+  Rayson escreve a capacidade DIRETAMENTE no PN — é LITERAL, não codificado.
+
+PADRÃO GERAL OBSERVADO:
+  RS + [capacidade] + [geração] + [sufixo de speed/package/revisão]
+
+Exemplos:
+  RS512MD3xxxxxx  → RS + 512M + D3 = DDR3 512MB
+  RS1GD3xxxxxx   → RS + 1G   + D3 = DDR3 1GB
+  RS2GD3xxxxxx   → RS + 2G   + D3 = DDR3 2GB
+  RS4GD3xxxxxx   → RS + 4G   + D3 = DDR3 4GB (hipotético — verificar)
+  RS1GD4xxxxxx   → RS + 1G   + D4 = DDR4 1GB
+  RS2GD4xxxxxx   → RS + 2G   + D4 = DDR4 2GB
+  RS4GD4xxxxxx   → RS + 4G   + D4 = DDR4 4GB (hipotético — verificar)
+  RSLPD3xxxxxx   → RS + LP   + D3 = LPDDR3 (capacidade em outra posição?)
+  RSLPD4xxxxxx   → RS + LP   + D4 = LPDDR4 (idem)
+  RSEMCxxxxxx    → RS + EMC  = eMMC (sufixo define capacidade?)
+  EM6xxxxxx      → EM6 = outro prefixo eMMC Rayson?
+
+QUESTÕES A RESPONDER NO NOVO CHAT:
+  1. Para DDR3/DDR4: a capacidade (512M, 1G, 2G, 4G) é extraível por posição
+     ou é melhor usar prefixo completo por família?
+     → Hipótese: pode ser melhor definir uma ChipFamily por prefixo completo
+       (RS512MD3, RS1GD3, RS2GD3) do que tentar decode posicional.
+
+  2. Para LPDDR3/LPDDR4: onde fica a capacidade no PN?
+     → RSLPD3 / RSLPD4: o que vem depois? É posicional? Exemplos reais necessários.
+
+  3. Para eMMC: qual é o prefixo exato? RSEMC? EMC? EM6?
+     → EM6 pode ser prefixo de eMMC 6.x (hipotético) — verificar com fonte real.
+     → Exemplos reais necessários de Octopart ou LCSC.
+
+  4. Existe alguma família LPDDR4X da Rayson? (geração mais nova)
+     → Verificar rayson.com.cn / LCSC antes de assumir.
+
+ESTRATÉGIA DE IMPLEMENTAÇÃO SUGERIDA:
+  Dada a estrutura literal, em vez de decode posicional complexo, provavelmente
+  o melhor caminho é:
+    Opção A (recomendada): registrar um prefixo completo por capacidade
+      → ChipFamily "RS512MD3" = DDR3 512MB
+      → ChipFamily "RS1GD3"   = DDR3 1GB
+      → ChipFamily "RS2GD3"   = DDR3 2GB
+      Vantagem: simples, sem erro de decode. Desvantagem: mais famílias no banco.
+
+    Opção B: decode posicional parcial
+      → ChipFamily "RS" com decode_cap_pos para extrair capacidade
+      Risco: prefixo "RS" muito curto — pode colidir com outros fabricantes.
+      Só faz sentido se todos os PNs RS* forem Rayson sem exceção.
+
+  Discuta com o usuário qual opção usar ANTES de implementar.
+
+════════════════════════════════════════════════════════════════════════
+5. FAMÍLIAS CONHECIDAS — PONTO DE PARTIDA
+════════════════════════════════════════════════════════════════════════
+
+Estas são as famílias documentadas no sistema de referência WhatTheChip
+(fab-rayson.html). São pontos de partida, NÃO confirmações de capacidade:
+
+  RS512MD3* — DDR3 512MB (prefix "RS512MD3")
+  RS1GD3*   — DDR3 1GB   (prefix "RS1GD3")
+  RS2GD3*   — DDR3 2GB   (prefix "RS2GD3")
+  RS1GD4*   — DDR4 1GB   (prefix "RS1GD4")
+  RS2GD4*   — DDR4 2GB   (prefix "RS2GD4")
+  RSLPD3*   — LPDDR3     (capacidade a descobrir)
+  RSLPD4*   — LPDDR4     (capacidade a descobrir)
+  RSEMC*    — eMMC        (capacidade a descobrir)
+  EM6*      — eMMC (alt prefix, a confirmar)
+
+Para cada família: verificar em Octopart, LCSC ou rayson.com.cn se existe
+um PN real confirmado com a especificação. Não implementar sem PN âncora.
+
+════════════════════════════════════════════════════════════════════════
+6. HIERARQUIA DE DESTINO OPERACIONAL
+════════════════════════════════════════════════════════════════════════
+
+IMPORTANTE: Rayson NÃO segue a hierarquia de valor de chips premium.
+O fluxo operacional para Rayson é:
+
+  DDR3 / DDR4 Rayson:
+    → Lote de RAM genérica de baixo custo
+    → Possível reaproveitamento em equipamentos de entrada (set-top box, IoT)
+    → NÃO misturar com Samsung/Hynix/Micron DDR3/DDR4
+
+  LPDDR3 / LPDDR4 Rayson:
+    → Lote de mobile RAM de baixo custo
+    → Equipamentos genéricos de reposição (tablets, car stereo)
+    → NÃO misturar com Samsung/Hynix/Micron LPDDR
+
+  eMMC Rayson:
+    → Lote de eMMC de baixo custo
+    → Equipamentos de entrada (TV box, roteador)
+    → NÃO misturar com eMMC Samsung/Hynix/Kioxia
+    → Viabilidade de reacondicionamento em celular: NULA (não aceito no mercado)
+
+O tip de TODAS as famílias deve incluir:
+  "Segregar em lote Rayson/budget — não misturar com premium."
+
+════════════════════════════════════════════════════════════════════════
+7. MÉTODO DE TRABALHO
+════════════════════════════════════════════════════════════════════════
+
+Para cada família que formos implementar:
+
+  1. Pesquisar na Octopart, LCSC ou rayson.com.cn por um PN real
+  2. Confirmar: chip_type, interface, capacidade, package (FBGA?)
+  3. Registrar o PN âncora no comentário, ex:
+       # RS1GD3-xxx-xxx — LCSC/Octopart: DDR3 1GB ✓ (data)
+  4. Definir a melhor estratégia (prefixo completo vs. decode posicional)
+  5. Implementar em populate_rayson.py
+  6. Para PNs físicos trazidos pelo usuário durante a sessão:
+       → Se é padrão da família: registrar no populate_rayson.py
+       → Se é exceção (capacidade diferente do padrão): fix_known_parts.py
+
+BLOQUEIOS EXPLÍCITOS:
+  • Não adicionar nenhuma capacidade baseada só em padrão do nome sem
+    verificar em fonte real (o nome pode enganar — ex: EM6 pode não ser eMMC 6.x)
+  • Não colocar PNs hipotéticos (com x ou ?) no banco como enriched
+  • Não registrar confidence="confirmed" sem fonte Tier 1 ou Tier 2
+
+════════════════════════════════════════════════════════════════════════
+8. COMANDOS PARA RODAR APÓS IMPLEMENTAÇÃO
+════════════════════════════════════════════════════════════════════════
+
+  python manage.py populate_rayson
+  python manage.py populate_rayson --dry-run    # testar antes de salvar
+  python manage.py populate_rayson --overwrite  # atualizar se já rodou antes
+  python manage.py fix_known_parts              # depois de qualquer exceção
+  # reiniciar servidor (ou python manage.py runserver)
+
+════════════════════════════════════════════════════════════════════════
+9. PONTO DE PARTIDA PARA ESTE CHAT
+════════════════════════════════════════════════════════════════════════
+
+Comece por:
+
+  a) Ler populate_samsung.py e populate_hynix.py para entender o padrão
+     completo de implementação (_bulk_map, _families, get_or_create, etc.)
+
+  b) Pesquisar na Octopart / LCSC pelo menos 5-8 PNs Rayson reais com
+     especificações confirmadas (tipo, capacidade, package). Isto define
+     quais prefixos realmente existem e o que cada um significa.
+
+  c) Discutir com o usuário a estratégia: prefixo completo por capacidade
+     (Opção A) vs. decode posicional (Opção B). Só avançar depois da decisão.
+
+  d) Criar populate_rayson.py com:
+       - Brand "Rayson"
+       - ChipFamily por família confirmada (só com PNs âncora verificados)
+       - Tips claros de segregação para o operador
+
+  e) Para cada chip físico que o usuário trouxer durante a sessão:
+       - Verificar de forma independente (não confiar na IA cegamente)
+       - Implementar via populate_rayson.py ou fix_known_parts.py
+       - Confirmar destino operacional (segregação)
+
+════════════════════════════════════════════════════════════════════════

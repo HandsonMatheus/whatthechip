@@ -133,8 +133,9 @@ class Command(BaseCommand):
             #                          # 6Gb = densidade não-padrão. Samsung custom die para ultra entry-level.
             ("72", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM
             ("7U", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM   (KMK7U000VMB) — confirmado usuário
-            ("7X", "8GB",   "1.5GB"), # 8GB NAND + 1.5GB RAM (KMQ7X000SA ✓ chip físico 2026-05-13)
-            #                          # 12Gb LPDDR3 = 1.5GB. Die de 6Gb (mesmo padrão KMQ310006B, KMQ7F70DM).
+            ("7X", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM   (KMQ7X000SA-B315) — Preduo B2B: "8+8" ✓ (2026-05-25)
+            #                          # CORRIGIDO: estava 1.5GB (12Gb) por analogia com die 6Gb de KMQ310006B — errado.
+            #                          # Preduo e Alibaba confirmam 8Gb LPDDR3 = 1GB. "32dram" = barramento 32-bit.
             ("82", "16GB",  "1GB"),    # 16GB NAND + 1GB RAM
             ("IS", "16GB",  "1GB"),    # 16GB NAND + 1GB RAM   (KMVIS000LM) — Galaxy S2 i9100, confirmado IA externa
             ("TU", "16GB",  "1GB"),    # 16GB NAND + 1GB RAM   (KMVTU000LM) — Galaxy S3 i9300, confirmado IA externa
@@ -176,11 +177,17 @@ class Command(BaseCommand):
             ("W8", "32GB",  "4GB"),    # 32GB NAND + 4GB RAM   (KMFW8·)
             ("X1", "32GB",  "2GB"),    # 32GB NAND + 2GB RAM   (KMQX10013MB — Octopart: 32GB+16Gb)
             ("H9", "32GB",  "2GB"),    # 32GB NAND + 2GB RAM   alias X1 (corrigido junto, sem PN independente)
-            ("C6", "64GB",  "3GB"),    # 64GB NAND + 3GB RAM   (KMDC6001DM — Galaxy A20s / Moto G8 Play, IA + padrão C*=64GB ✓)
-            #                          # 24Gb LPDDR4X = 3GB. C consistente com C1/C7 (64GB). Confirmar Octopart quando PN físico disponível.
+            ("C6", "64GB",  "4GB"),    # 64GB NAND + 4GB RAM   (KMDC6001DM-B625) — Samsung Semiconductor oficial ✓ (2026-05-25)
+            #                          # 32Gb LPDDR4X = 4GB. Corrigido: estava 3GB (24Gb) baseado em IA+padrão — errado.
+            #                          # Samsung official: semiconductor.samsung.com/mcp/model/.../kmdc6001dm-b625/
             ("C1", "64GB",  "4GB"),    # 64GB NAND + 4GB RAM   (KMRC10014M) — Oppo R9 / mid-premium, confirmado IA externa
             ("M4", "128GB", "4GB"),    # 128GB NAND + 4GB RAM  (KMQM4·)
             ("J2", "128GB", "6GB"),    # 128GB NAND + 6GB RAM  (KMQJ2·)
+            #                          # ⚠ CONFLITO KMN: para a família KMN (LPDDR2, 2011-2014) a chave "J2"
+            #                          # em pn[3:5] NÃO é 128GB+6GB — é um chip entry-level de era antiga.
+            #                          # Ex: KMNJ2000ZM-B207 → provavelmente 8GB eMMC + 1GB LPDDR2 (AI estima,
+            #                          # sem fonte Tier 1 confirmada). NÃO alterar o mapa — âncora KMQJ2 = 128GB+6GB ✓.
+            #                          # Família KMN foi corrigida: decode_cap_pos=None → não usa este mapa.
             ("P5", "256GB", "8GB"),    # 256GB NAND + 8GB RAM  (KMQP5·)
             # ── Alfanumérico geração 2 (2020-2022, padrão [X]6) ──────────────
             # Sufixo "6" identifica a geração de empacotamento (eMMC 5.1 rev B)
@@ -198,7 +205,8 @@ class Command(BaseCommand):
             ("X6", "32GB",  "2GB"),    # 32GB NAND + 2GB RAM   (KM4X6001KM) — confirmado Octopart; era alias especulativo U6
             # ("T6", ...),             # BLOQUEADO 2026-05-09: zero PNs confirmados. Fonte era catálogo asiático não verificado.
             # ("Y6", ...),             # BLOQUEADO 2026-05-09: zero PNs confirmados. Fonte era Gemini-only.
-            ("H6", "64GB",  "4GB"),    # KMRH60014A (A7 2017): H=64GB, consistente com H9
+            ("H6", "64GB",  "4GB"),    # KMRH60014A (A7 2017, KMR): H=64GB, confirmado ✓
+            #                          # + KMDH6001DM-B422 (KMD/LPDDR4X): Octopart "64GB+32Gb=4GB LPDDR4X-3733" ✓ (2026-05-25)
             ("P6", "64GB",  "4GB"),    # KMDP6001DA-B425: 64GB eMMC 5.1 + 32Gb LPDDR4X → 32Gb÷8=4GB ✓
             #                          # ⚠ REVERTIDO 2026-05-09: sessão anterior havia mudado para 3GB priorizando
             #                          # KMGP6001BM (KMG/LPDDR3, 24Gb=3GB). Confirmação agora: KMDP6001DA-B425
@@ -219,8 +227,15 @@ class Command(BaseCommand):
             ("L9", "128GB", "8GB"),    # KM8L9001JM-B624: 128GB UFS2.2 + 64Gb÷8=8GB LPDDR4X (Samsung Electronics ✓)
             #                          # ⚠ CORRIGIDO 2026-05-09: era 6GB (fonte: KM2L9001CM-B518, "Fabricante ✓" não verificado).
             #                          # Confirmação definitiva: Samsung Electronics KM8L9001JM-B624 = 64Gb LPDDR4X-4266 → 8GB.
-            #                          # KM2L9001CM-B518 (config char C, 48Gb = 6GB) é variant minoritário da mesma cap key.
-            #                          # Variante minoritária KM2L9001CM-B518 (6GB): corrigir via fix_known_parts se chegar na esteira.
+            #                          # ⚠ CONFLITO PROFUNDO DE SHARED KEY — quatro variantes confirmadas por fonte Tier 1:
+            #                          #   KM8L9001JM-B624 = 8GB (64Gb) → base do mapa ✓ (Samsung Electronics)
+            #                          #   KM2L9001CM-B518 = 6GB (48Gb) → Octopart ✓ (2026-05-25) → fix_known_parts
+            #                          #   KM5L9000CM-B424 = 6GB (48Gb) → Samsung Semiconductor Global ✓ (2026-05-25) → fix_known_parts
+            #                          #   KM5L9001DM-B424 = 4GB (32Gb) → Samsung Semiconductor Global ✓ (2026-05-25) → fix_known_parts
+            #                          # NOTA: dentro da família KM5, mesmo cap_key "L9" → RAM diferente por variante:
+            #                          #   pn[7]="0" (KM5L9000x) = 48Gb = 6GB; pn[7]="1" (KM5L9001x) = 32Gb = 4GB.
+            #                          # O decode 2-char pn[3:5] NÃO distingue essas variantes. Cada PN KM5L9 é exceção pontual.
+            #                          # NÃO alterar o mapa — base KM8=8GB está correta para a maioria.
             ("F9", "256GB", "8GB"),    # KM8F9001JM-B813: 256GB UFS2.2 + 64Gb÷8=8GB LPDDR4X ✓
             ("F8", "256GB", "12GB"),   # KM8F8001MM-B813: 256GB UFS2.1 + 96Gb÷8=12GB LPDDR4X ✓
             # Gaps ainda não mapeados — ⚠ Dead-end sem Gemini: capacidade nula até PN físico confirmar:
@@ -267,8 +282,17 @@ class Command(BaseCommand):
         # O engine usa decode_gen para is_emcp=False → r["interface"] direto.
         emmc_gen = [
             ("F", "eMMC 4.5", ""),  # legado 2012+: HS200, sem Command Queuing
-            ("E", "eMMC 5.0", ""),  # transição 2014: HS200, parcialmente melhorado
+            ("E", "eMMC 5.0", ""),  # transição 2014: HS200, parcialmente melhorado (200MHz DDR)
+            ("W", "eMMC 5.0", ""),  # variante de processo de E: eMMC 5.0 em nó alternativo
+            #                       # KLM8G1WEMB-B031 — datasheet Samsung oficial ✓ (Alldatasheet/datasheet4u, 2026-05-26)
+            #                       # "e.MMC 5.0 Specification compatibility" explícito no datasheet.
+            #                       # ⚠ HS200 (não HS400) — HS400 é exclusivo do eMMC 5.1.
             ("J", "eMMC 5.1", ""),  # padrão atual 2015+: HS400 + Command Queuing
+            ("K", "eMMC 5.1", ""),  # variante de processo de J: eMMC 5.1 em nó mais novo
+            #                       # KLMCG2KCTA-B041 — Samsung Semiconductor Global ✓ (2026-05-25)
+            #                       # semiconductor.samsung.com: "KLMCG2KCTA-B041(eMMC 5.1)"
+            #                       # Preduo: "eMMC 5.1, 64GB, Samsung, BGA" ✓
+            #                       # pn[6]='K' não aparece em chips eMMC 4.5/5.0 → exclusivo 5.1.
         ]
         self._bulk_map("SAM_EMMC_GEN", emmc_gen, samsung, dry, overwrite)
 
@@ -909,8 +933,8 @@ class Command(BaseCommand):
                 is_emcp=False, active=True, priority=50,
                 tip=(
                     "eMMC Samsung — armazenamento Flash puro, sem RAM embutida. "
-                    "Geração automática: pn[6] → F=eMMC 4.5 | E=eMMC 5.0 | J=eMMC 5.1. "
-                    "⚠ Separe por geração na bancada: 5.1 (J) vale ~15-25% a mais que 4.5 (F). "
+                    "Geração automática: pn[6] → F=eMMC 4.5 | E/W=eMMC 5.0 | J/K=eMMC 5.1. "
+                    "⚠ Separe por geração na bancada: 5.1 (J/K) vale ~15-25% a mais que 4.5 (F). "
                     "Capacidade: pn[3] → 4=4GB · 8=8GB · A=16GB · B=32GB · C=64GB · "
                     "D=128GB · E=256GB · F=512GB · G=1TB. "
                     "Tipo NAND: pn[5] → 4=MLC · 8=TLC (TLC = maioria dos volumes modernos). "
@@ -958,6 +982,24 @@ class Command(BaseCommand):
                     "Destino: bancada reacondicional Flash UFS."
                 ),
             ),
+            # KLUBG: UFS 2.0 32GB — primeira geração UFS Samsung (Galaxy S6 era, 2015).
+            # Samsung Semiconductor Global lista KLUBG4G1CE-B0B1 sob "UFS 2.0" ✓
+            # (mesmo prefixo KLUBG, variante de sufixo BD/CE = lotes de produção).
+            # Família estava ausente → engine caía para KLU genérico (UFS 3.1, ERRADO).
+            dict(
+                prefix="KLUBG", chip_type="UFS", subtype="UFS 2.0 Samsung",
+                interface="UFS 2.0", pn_length=10,
+                decode_cap_pos=3, decode_cap_len=1, decode_cap_map="SAM_FLASH_CAP",
+                is_emcp=False, active=True, priority=40,
+                tip=(
+                    "UFS 2.0 Samsung — armazenamento Flash standalone, 1ª geração UFS. "
+                    "K=Samsung, L=NAND, U=UFS, B=32GB. "
+                    "Presente no Galaxy S6 / S6 Edge / S6 Edge Plus (2015). "
+                    "Interface UFS — NUNCA usar socket de eMMC (BGA153, mesmo footprint físico que eMMC). "
+                    "Velocidade: ~700 MB/s (leitura teórica UFS 2.0). "
+                    "Destino: bancada reacondicional Flash UFS (valor comercial: lote legacy)."
+                ),
+            ),
             dict(
                 prefix="KLUCG", chip_type="UFS", subtype="UFS 2.0 Samsung",
                 interface="UFS 2.0", pn_length=10,
@@ -965,8 +1007,8 @@ class Command(BaseCommand):
                 is_emcp=False, active=True, priority=40,
                 tip=(
                     "UFS 2.0 Samsung — armazenamento Flash standalone. "
-                    "K=Samsung, L=NAND, U=UFS, C=UFS 2.0. "
-                    "Capacidade: pn[3] → B=32GB, C=64GB, D=128GB. "
+                    "K=Samsung, L=NAND, U=UFS, C=64GB. "
+                    "Capacidade: pn[3] → B=32GB, C=64GB. "
                     "Destino: bancada reacondicional Flash UFS."
                 ),
             ),
@@ -1031,11 +1073,19 @@ class Command(BaseCommand):
                 # KMN5U000FM-B203 (Jotrin: 4Gb LPDDR2) + KMN5X000ZM-B209 (Preduo: lpddr2).
                 # KMN = família LPDDR2 entry-level (~2011-2014). eMMC 4.4/4.5.
                 # Interface removida: "eMMC 5.1" era imprecisa para chips de 2011-2014.
+                #
+                # ⚠ CORRIGIDO 2026-05-25: decode_cap_pos DESLIGADO (era 3, decode_cap_map=SAM_EMCP_CAP).
+                # Problema: pn[3:5]="J2" no SAM_EMCP_CAP → 128GB+6GB (âncora moderna KMQJ2·) — ERRADO.
+                # Para chips KMN de 2011-2014, pn[3:5] tem codificação de era diferente (densidades muito menores).
+                # Exemplo: KMNJ2000ZM sistema mostrava "eMMC 128GB + LPDDR2 6GB" — fisicamente impossível.
+                # Sem decode_cap_pos, o engine não decodifica capacidade → campos ficam em branco.
+                # Isso é correto: destino é Caixa Vermelha de qualquer forma; capacidade exata não muda rota.
+                # PNs específicos com capacidade verificada → adicionar via fix_known_parts.py.
                 prefix="KMN", chip_type="eMCP", subtype="LPDDR2 + eMMC",
                 interface="eMMC", pn_length=10,
                 is_emcp=True, active=True, priority=40,
                 decode_gen_pos=2, decode_gen_map="SAM_EMCP_GEN",
-                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
+                decode_cap_pos=None, decode_cap_len=0, decode_cap_map="",
                 tip=(
                     "eMCP Samsung LPDDR2 + eMMC (~2011-2014). N = LPDDR2. "
                     "Família entry-level legada. Baixa liquidez em 2026. "

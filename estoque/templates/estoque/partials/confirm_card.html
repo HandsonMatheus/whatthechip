@@ -50,6 +50,18 @@
     {% endif %}
   </div>
 
+  {# ── Banner de rentabilidade ───────────────────────────────────────── #}
+  {% if profitable %}
+  <div class="est-profit-banner est-profit-banner--{{ profitable_key }}">
+    <span class="est-profit-banner__icon">
+      {% if profitable == "RENTÁVEL" %}✓{% elif profitable == "NÃO RENTÁVEL" %}✗{% else %}?{% endif %}
+    </span>
+    <span>
+      <span class="est-profit-banner__label">Rentabilidade · </span>{{ profitable }}
+    </span>
+  </div>
+  {% endif %}
+
   {# Form de adição #}
   <form class="est-confirm-form"
         hx-post="{% url 'estoque:add' lot.pk %}"

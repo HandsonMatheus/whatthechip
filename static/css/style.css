@@ -1263,6 +1263,42 @@ a.pr-row:visited { color: inherit; }
 .dc2-fuzzy-item:hover { background: var(--info-bg); }
 .dc2-fuzzy-item:last-child { border-bottom: 0; }
 
+/* ── Badge de Rentabilidade (dc2 card) ───────────────────── */
+.wtc-profit-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 11px;
+  border-radius: 24px;
+  font-family: var(--font); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  white-space: nowrap; flex-shrink: 0;
+}
+.wtc-profit-badge--rentavel {
+  background: linear-gradient(180deg, #defbe6 0%, #b6f5c4 100%);
+  color: #0e6027;
+  border: 1px solid #a7f0ba;
+}
+.wtc-profit-badge--nao-rentavel {
+  background: linear-gradient(180deg, #fff1f1 0%, #ffd7d9 100%);
+  color: #750e13;
+  border: 1px solid #ffb3b8;
+}
+.wtc-profit-badge--indeterminado {
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+[data-theme="dark"] .wtc-profit-badge--rentavel {
+  background: linear-gradient(180deg, #082d14 0%, #0a3d1c 100%);
+  color: #42be65; border-color: #198038;
+}
+[data-theme="dark"] .wtc-profit-badge--nao-rentavel {
+  background: linear-gradient(180deg, #2d0a0a 0%, #3d0e0e 100%);
+  color: #ff8389; border-color: #da1e28;
+}
+[data-theme="dark"] .wtc-profit-badge--indeterminado {
+  background: var(--surface-2); color: var(--text-helper); border-color: var(--border-default);
+}
+
 /* ── Card v1 (backward compat) ───────────────────────────── */
 .dc-card {
   padding: 16px 20px 14px;

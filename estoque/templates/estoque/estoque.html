@@ -332,6 +332,44 @@
   gap: var(--s2);
 }
 
+/* ── Banner de Rentabilidade ────────────────────────────────── */
+.est-profit-banner {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  font-family: var(--font); font-size: 13px; font-weight: 700;
+  letter-spacing: 0.16px;
+}
+.est-profit-banner__icon {
+  font-size: 16px; flex-shrink: 0;
+}
+.est-profit-banner__label {
+  font-size: 11px; font-weight: 400; letter-spacing: 0.32px;
+  text-transform: uppercase; opacity: 0.75; margin-right: 2px;
+}
+.est-profit-banner--rentavel {
+  background: var(--success-bg);
+  border-color: var(--success-bd);
+  color: #0e6027;
+}
+.est-profit-banner--nao-rentavel {
+  background: var(--error-bg);
+  border-color: var(--error-bd);
+  color: #750e13;
+}
+.est-profit-banner--indeterminado {
+  background: var(--surface-2);
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
+}
+[data-theme="dark"] .est-profit-banner--rentavel {
+  background: #082d14; border-color: #198038; color: #42be65;
+}
+[data-theme="dark"] .est-profit-banner--nao-rentavel {
+  background: #2d0a0a; border-color: #da1e28; color: #ff8389;
+}
+
 /* ── Seção da tabela ────────────────────────────────────────── */
 .est-table-section { margin-top: var(--s5); }
 

@@ -100,6 +100,14 @@ def decode_html(request):
     # (result.family_undocumented envolve lookup aninhado que pode falhar silenciosamente).
     family_undocumented = bool(result.get("family_undocumented", False))
 
+    _PROFIT_KEY = {
+        "RENTÁVEL":      "rentavel",
+        "NÃO RENTÁVEL":  "nao-rentavel",
+        "INDETERMINADO": "indeterminado",
+    }
+    profitable     = result.get("profitable", "INDETERMINADO")
+    profitable_key = _PROFIT_KEY.get(profitable, "indeterminado")
+
     context = {
         "result":              result,
         "result_json":         json.dumps(result, ensure_ascii=False),
@@ -112,6 +120,8 @@ def decode_html(request):
             not result.get("source_url", "").startswith("gemini:")
         ),
         "family_undocumented": family_undocumented,
+        "profitable":          profitable,
+        "profitable_key":      profitable_key,
     }
 
     return render(request, "chips/partials/decode_card.html", context)
