@@ -205,6 +205,18 @@ class KnownPart(models.Model):
     emcp_ram     = models.TextField(blank=True, default="", help_text="Ex: LPDDR4X 4GB")
     emcp_nand    = models.TextField(blank=True, default="", help_text="Ex: eMMC 5.1 64GB")
     interface    = models.TextField(blank=True, default="")
+    fbga_code    = models.CharField(
+        max_length=10,
+        blank=True,
+        default="",
+        db_index=True,
+        help_text=(
+            "Código FBGA gravado a laser no chip (ex: D9VFC). "
+            "Micron DRAM mobile: padrão D9XXX. NAND: D8XXX. "
+            "Permite lookup direto pelo código que o operador lê na esteira, "
+            "sem precisar digitar o PN completo."
+        ),
+    )
     device       = models.TextField(blank=True, default="", help_text="Ex: Galaxy J3/J5 2016")
     notes        = models.TextField(blank=True, default="")
 

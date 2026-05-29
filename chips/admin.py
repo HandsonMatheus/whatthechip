@@ -107,17 +107,17 @@ class DecodeMapAdmin(admin.ModelAdmin):
 @admin.register(KnownPart)
 class KnownPartAdmin(admin.ModelAdmin):
     list_display  = (
-        "part_number", "brand", "status_badge", "chip_type",
+        "part_number", "fbga_code", "brand", "status_badge", "chip_type",
         "capacity_display", "device", "confidence", "last_updated"
     )
     list_filter   = ("status", "brand", "chip_type", "confidence")
-    search_fields = ("part_number", "device", "chip_type")
+    search_fields = ("part_number", "fbga_code", "device", "chip_type")
     readonly_fields = ("added_at", "last_updated")
     list_per_page = 50
 
     fieldsets = (
         ("Identificação", {
-            "fields": ("brand", "family", "part_number", "status", "confidence", "source", "source_url")
+            "fields": ("brand", "family", "part_number", "fbga_code", "status", "confidence", "source", "source_url")
         }),
         ("Dados do Chip", {
             "fields": ("chip_type", "subtype", "interface", "capacity", "density_gbit", "density_gb")

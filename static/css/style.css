@@ -557,6 +557,94 @@ strong { font-weight: 700; }
   cursor: not-allowed;
 }
 
+/* ── Mic: barras animadas (equalizador) — compartilhado entre home e estoque ── */
+.mic-bars {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 18px;
+}
+.mic-bar {
+  display: inline-block;
+  width: 3px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: mic-bar-bounce 0.75s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+.mic-bar:nth-child(1) { height: 6px;  animation-delay: 0s; }
+.mic-bar:nth-child(2) { height: 13px; animation-delay: 0.18s; }
+.mic-bar:nth-child(3) { height: 6px;  animation-delay: 0.36s; }
+
+@keyframes mic-bar-bounce {
+  0%, 100% { transform: scaleY(0.35); }
+  50%       { transform: scaleY(1.0);  }
+}
+
+/* Spinner de processamento */
+.mic-icon__spin {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(0,0,0,0.18);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: mic-spin-anim 0.65s linear infinite;
+  vertical-align: middle;
+}
+@keyframes mic-spin-anim { to { transform: rotate(360deg); } }
+
+/* Dica "↵ Pressione Enter" — aparece após reconhecimento bem-sucedido */
+.wtc-mic-hint--active {
+  color: var(--interactive) !important;
+  font-weight: 600 !important;
+  transition: color 0.2s, font-weight 0.2s;
+}
+
+/* Flash no botão CTA (Decodificar) após reconhecimento */
+.wtc-mic-cta-flash {
+  animation: mic-cta-flash 1.2s ease-out forwards;
+}
+@keyframes mic-cta-flash {
+  0%   { box-shadow: 0 0 0 0   rgba(15, 98, 254, 0.6); }
+  30%  { box-shadow: 0 0 0 6px rgba(15, 98, 254, 0.3); }
+  100% { box-shadow: 0 0 0 0   rgba(15, 98, 254, 0.0); }
+}
+
+/* ── Mic button — variante para pin-btn-group (estoque) ────────────────────── */
+/* Largura fixa para não comprimir Limpar/Decodificar */
+.pin-btn--mic {
+  flex: 0 0 48px;
+  background: #e8e8e8;
+  color: #525252;
+}
+.pin-btn--mic:hover { background: #d8d8d8; color: #161616; }
+.pin-btn--mic:active { background: #c6c6c6; }
+
+/* Ouvindo — azul IBM pulsante */
+.pin-btn--mic.is-listening {
+  background: var(--interactive);
+  color: #fff;
+  animation: mic-btn-pulse 1.4s ease-in-out infinite;
+}
+@keyframes mic-btn-pulse {
+  0%, 100% { filter: brightness(1.0);  }
+  50%       { filter: brightness(1.18) saturate(1.1); }
+}
+/* Processando */
+.pin-btn--mic.is-processing { background: #d0d0d0; color: #525252; cursor: wait; }
+
+/* Reconhecido */
+.pin-btn--mic.is-ok  { background: #24a148; color: #fff; }
+
+/* Erro */
+.pin-btn--mic.is-err { background: #da1e28; color: #fff; }
+
+/* Dark mode */
+[data-theme="dark"] .pin-btn--mic           { background: #4c4c4c; color: #c6c6c6; }
+[data-theme="dark"] .pin-btn--mic:hover     { background: #606060; color: #f4f4f4; }
+[data-theme="dark"] .pin-btn--mic.is-processing { background: #393939; color: #8d8d8d; }
+
 /* ── Inline loading spinner ────────────────────────────────────────────────── */
 .pin-btn-label  { pointer-events: none; transition: opacity 0.1s; }
 .pin-btn-spinner {

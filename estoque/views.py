@@ -24,7 +24,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from chips.engine import classify
+from chips.engine import assess_profitability, classify
 from chips.models import UnknownChip
 
 from .models import InventoryEntry, Lot
@@ -62,6 +62,68 @@ def _entries_qs(lot, q='', tipo=''):
 
 def _get_lot(request, lot_pk):
     return get_object_or_404(Lot, pk=lot_pk, operator=request.user)
+
+
+def _extract_gb(text: str) -> str:
+    """'eMMC 5.1 8GB' → '8',  '32GB' → '32',  '' → ''."""
+    if not text:
+        return ''
+    m = re.search(r'(\d+)\s*GB', text, re.IGNORECASE)
+    return m.group(1) if m else ''
+
+
+def _compute_destination(result: dict) -> tuple:
+    """
+    Return (label, category) for the physical storage bin.
+    category is used as CSS modifier:
+      emcp | umcp | lpddr | ufs | emmc | nand | unknown
+    """
+    chip_type = (result.get('chip_type') or '').strip()
+    ct = chip_type.lower()
+
+    if 'umcp' in ct:
+        nand  = _extract_gb(result.get('emcp_nand', ''))
+        ram   = _extract_gb(result.get('emcp_ram', ''))
+        label = f"UMCP{nand}+{ram}" if nand else 'uMCP'
+        return label, 'umcp'
+
+    if 'emcp' in ct or result.get('is_emcp'):
+        nand  = _extract_gb(result.get('emcp_nand', ''))
+        ram   = _extract_gb(result.get('emcp_ram', ''))
+        label = f"EMCP{nand}+{ram}" if nand else 'eMCP'
+        return label, 'emcp'
+
+    if 'ufs' in ct:
+        cap   = _extract_gb(result.get('capacity', ''))
+        label = f"UFS{cap}GB" if cap else 'UFS'
+        return label, 'ufs'
+
+    if 'emmc' in ct:
+        cap   = _extract_gb(result.get('capacity', ''))
+        label = f"EMMC{cap}GB" if cap else 'eMMC'
+        return label, 'emmc'
+
+    if 'lpddr' in ct or 'ddr' in ct or ct in ('ram', 'dram', 'sdram'):
+        iface = (result.get('interface') or '').upper()
+        cap   = _extract_gb(
+            result.get('capacity', '') or result.get('dram_density', '')
+        )
+        if iface and cap:
+            label = f"{iface}+{cap}GB"
+        elif iface:
+            label = iface
+        elif cap:
+            label = f"RAM {cap}GB"
+        else:
+            label = 'RAM'
+        return label, 'lpddr'
+
+    if 'nand' in ct:
+        cap   = _extract_gb(result.get('capacity', ''))
+        label = f"NAND {cap}GB" if cap else 'NAND'
+        return label, 'nand'
+
+    return chip_type or '?', 'unknown'
 
 
 # ─── lot list ───────────────────────────────────────────────────────────────
@@ -158,24 +220,27 @@ def preview_chip(request, lot_pk):
     except InventoryEntry.DoesNotExist:
         current_qty = 0
 
-    _PROFIT_KEY = {
+    destination, dest_cat = _compute_destination(result)
+
+    profitable = assess_profitability(result) if has_cap else 'INDETERMINADO'
+    prof_key = {
         'RENTÁVEL':      'rentavel',
-        'NÃO RENTÁVEL':  'nao-rentavel',
+        'NÃO RENTÁVEL':  'nao_rentavel',
         'INDETERMINADO': 'indeterminado',
-    }
-    profitable     = result.get('profitable', 'INDETERMINADO')
-    profitable_key = _PROFIT_KEY.get(profitable, 'indeterminado')
+    }.get(profitable, 'indeterminado')
 
     ctx = {
-        'lot':          lot,
-        'pn':           pn,
-        'result':       result,
-        'has_cap':      has_cap,
-        'display_cap':  display_cap,
-        'result_json':  json.dumps({**result, 'pn': pn}),
-        'current_qty':  current_qty,
-        'profitable':   profitable,
-        'profitable_key': profitable_key,
+        'lot':             lot,
+        'pn':              pn,
+        'result':          result,
+        'has_cap':         has_cap,
+        'display_cap':     display_cap,
+        'result_json':     json.dumps({**result, 'pn': pn}),
+        'current_qty':     current_qty,
+        'destination':     destination,
+        'destination_cat': dest_cat,
+        'profitable':      profitable,
+        'profitable_key':  prof_key,
     }
     return render(request, 'estoque/partials/confirm_card.html', ctx)
 

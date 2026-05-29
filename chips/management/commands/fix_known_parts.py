@@ -112,14 +112,22 @@ CORRECTIONS = [
     {
         "pn": "KLUDG4U1EA",
         "fields": {
-            "capacity": "128GB",
-            "interface": "UFS 2.1",
-            "device":    "",   # limpar device alucinado, se houver
+            "capacity":   "128GB",
+            "interface":  "UFS 2.1",
+            "device":     "",    # limpar device alucinado, se houver
+            "source_url": "",    # limpar: era "gemini:KLUDG4U1EA" (resíduo Gemini antigo)
+            "doc_url":    "",    # limpar: era "/fab-toshiba/" — KLUDG é Samsung, não Toshiba
+            "confidence": "confirmed",
+            "status":     "enriched",
         },
         "reason": (
             "Família KLUDG estava cadastrada como Kioxia (erro em add_chip_families.py). "
             "KLUDG é Samsung UFS 2.1: K=Samsung, L=NAND, U=UFS, D=128GB, pn[6]=U→UFS 2.1. "
             "fix: capacity=128GB, interface=UFS 2.1, device apagado. "
+            "Bugs de metadados (2026-05-26): doc_url='/fab-toshiba/' (errado — Samsung, não Toshiba); "
+            "confidence='ai_high' e source_url='gemini:KLUDG4U1EA' — resíduos de run Gemini antigo. "
+            "confidence+status em fields (não só create_defaults): garante grammar_wins=False "
+            "e sobrescreve valores de registros já existentes no DB. "
             "Família corrigida via populate_samsung --overwrite."
         ),
     },
@@ -203,6 +211,8 @@ CORRECTIONS = [
     # Confirmado 2026-05-09: KMR8X0001M-B608 = 16GB eMMC + 16Gb (2GB) LPDDR3.
     # Correção do mapa: 8X NAND corrigida de 8GB → 16GB.
     # RAM do mapa: 1GB (base KMQ8X). KMR8X tem 2GB — conflito de shared map.
+    # ⚠ CORRIGIDO 2026-05-26: subtype e emcp_ram estavam "LPDDR4/4X" — ERRADO.
+    #   KMR = LPDDR3 (SAM_EMCP_GEN corrigido; R era LPDDR4/4X por âncora falsa).
     # create=True: sem Gemini, chip pode não estar no banco (só grammar-decoded).
     {
         "pn": "KMR8X0001M",
@@ -210,28 +220,57 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
-            "subtype":    "LPDDR4/4X + eMMC 5.1",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 5.1 16GB",
+            "emcp_ram":   "LPDDR3 2GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "NAND corrigida: 8X era 8GB no mapa (ERRADO). KMR8X0001M-B608 = 16GB eMMC. "
+            "RAM corrigida: 16Gb ÷ 8 = 2GB (mapa usa 1GB como base KMQ8X — divergência de família). "
+            "KMQ8X000SA-B414 (1GB) e KMR8X0001M (2GB) confirmados em B2B (SBiT). "
+            "2026-05-26: RAM tipo corrigido LPDDR4/4X→LPDDR3 (KMR=LPDDR3, SAM_EMCP_GEN corrigido)."
+        ),
+    },
+
+    # ── KMQ310006A / KMQ310006B ──────────────────────────────────────────────
+    # Conflito de shared key "31" em SAM_EMCP_CAP:
+    #   KMQ310013B: chip físico (eMiner 2026-05-13) = 1GB. ← valor no mapa
+    #   KMQ310006B-B419: samsungparts.com "16Gb+12" = 1.5GB LPDDR3. ← exceção
+    # Ambos pn[3:5]="31" — o mapa não consegue distinguir.
+    # A = revisão anterior de B (mesmo die 12Gb LPDDR3). KMQ310006A confirmado
+    # em estoque eMiner (2026-05-28) com pn_not_in_db=True — banco não o reconhecia.
+    # create=True: chip decodificado só via gramática (raw_in_db=False, Gemini nunca
+    # executado) — não existe no banco. Sem create=True o fix nunca aplicaria.
+    {
+        "pn": "KMQ310006A",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand": "eMMC 5.1 16GB",
-            "emcp_ram":  "LPDDR4/4X 2GB",
+            "emcp_ram":  "LPDDR3 1.5GB",
+            "device":    "Samsung Galaxy J3 (SM-J327A)",
         },
         "reason": (
-            "NAND corrigida: 8X era 8GB no mapa (ERRADO). KMR8X0001M-B608 = 16GB eMMC. "
-            "RAM corrigida: 16Gb ÷ 8 = 2GB (mapa usa 1GB como base KMQ8X — divergência de família). "
-            "KMQ8X000SA-B414 (1GB) e KMR8X0001M (2GB) confirmados em B2B (SBiT)."
+            "cap_key '31' conflito: KMQ310013B=1GB vs KMQ310006*=1.5GB (mesmo pn[3:5]). "
+            "KMQ310006A = revisão A do mesmo die 12Gb LPDDR3 do KMQ310006B. "
+            "samsungparts.com KMQ310006B-B419: '16Gb+12' = 12Gb÷8=1.5GB LPDDR3 (Galaxy J3 SM-J327A). "
+            "Revisão A compartilha o mesmo die — capacidade idêntica ao B confirmado. "
+            "Detectado em estoque eMiner 2026-05-28 (pn_not_in_db=True, gramática retornava 1GB). "
+            "create=True: cria registro no banco se ainda não existir."
         ),
     },
-
-    # ── KMQ310006B ───────────────────────────────────────────────────────────
-    # Conflito de shared key "31" em SAM_EMCP_CAP:
-    #   KMQ310013B: chip físico (eMiner 2026-05-13) = 1GB. ← valor no mapa
-    #   KMQ310006B-B419: samsungparts.com "16Gb+12" = 1.5GB LPDDR3. ← exceção
-    # Ambos pn[3:5]="31" — o mapa não consegue distinguir.
-    # create=True: chip decodificado só via gramática (raw_in_db=False, Gemini nunca
-    # executado) — não existe no banco. Sem create=True o fix nunca aplicaria.
     {
         "pn": "KMQ310006B",
         "create": True,
@@ -319,8 +358,11 @@ CORRECTIONS = [
 
     # ── KMRX60014M ───────────────────────────────────────────────────────────
     # Problema: SAM_EMCP_CAP mapeia X6 = "32GB NAND + 2GB RAM" (base KM4X6001KM).
-    # KMRX60014M-B614 = 32GB eMMC 5.1 + 32Gb LPDDR4/4X → 32Gb ÷ 8 = 4GB.
+    # KMRX60014M-B614 = 32GB eMMC 5.1 + 32Gb LPDDR3 → 32Gb ÷ 8 = 4GB.
     # Conflito de shared map: X6 base é 2GB (KM4X série), KMRX6 é 4GB (KMR série).
+    # ⚠ CORRIGIDO 2026-05-26: subtype e emcp_ram estavam "LPDDR4/4X" — ERRADO.
+    #   Preduo lista KMRX60014M-B614 sob caminho /emmc-lpddr3/ → LPDDR3 confirmado.
+    #   KMR = LPDDR3 (SAM_EMCP_GEN corrigido 2026-05-26).
     # create=True: sem Gemini, chip não entra no banco via grammar-only decode.
     {
         "pn": "KMRX60014M",
@@ -328,18 +370,78 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
-            "subtype":    "LPDDR4/4X + eMMC 5.1",
+            "subtype":    "LPDDR3 + eMMC 5.1",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "emcp_nand": "eMMC 5.1 32GB",
-            "emcp_ram":  "LPDDR4/4X 4GB",
+            "emcp_nand":  "eMMC 5.1 32GB",
+            "emcp_ram":   "LPDDR3 4GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
         },
         "reason": (
             "X6 base mapeado como 2GB (KM4X6001KM, Octopart). "
-            "KMRX60014M-B614 = 32GB eMMC 5.1 + 32Gb LPDDR4/4X → 32Gb÷8=4GB. "
-            "Divergência de família no shared cap_key X6: KM4X6→2GB, KMRX6→4GB."
+            "KMRX60014M-B614 = 32GB eMMC 5.1 + 32Gb LPDDR3 → 32Gb÷8=4GB. "
+            "Divergência de família no shared cap_key X6: KM4X6→2GB, KMRX6→4GB. "
+            "2026-05-26: RAM tipo corrigido LPDDR4/4X→LPDDR3 (Preduo /emmc-lpddr3/ ✓; "
+            "SAM_EMCP_GEN R=LPDDR3 restaurado)."
+        ),
+    },
+
+    # ── KMRX1000BM / KMRX10014M ──────────────────────────────────────────────
+    # Problema: SAM_EMCP_CAP mapeia X1 = "32GB NAND + 2GB RAM" (base KMQX10013MB — Octopart ✓).
+    # Família KMR diverge: KMR+X1 = 3GB(24Gb) LPDDR3, não 2GB(16Gb) como KMQ.
+    # Confirmado: KMRX1000BM-B614T07 = 3GB — Octopart ✓ + UFI Box ✓ (2026-05-29).
+    # KMRX10014M: mesmo cap_key X1, mesma família KMR → 3GB pelo padrão de família.
+    #   Octopart confirma existência (sem specs). confidence=estimated para KMRX10014M.
+    # Mesmo padrão KMR: X6→KM4=2GB/KMR=4GB; 8X→KMQ=1GB/KMR=2GB; 31→KMQ=1GB/KMR=2GB.
+    # Mostrar 2GB (âncora KMQ) é ativamente errado para família KMR. Fix obrigatório.
+    {
+        "pn": "KMRX1000BM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 5.1 32GB",
+            "emcp_ram":   "LPDDR3 3GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "X1 base mapeado como 2GB(16Gb) via KMQX10013MB (Octopart ✓). "
+            "KMRX1000BM-B614T07 = 32GB eMMC + 3GB(24Gb) LPDDR3 — Octopart ✓ + UFI Box ✓ (2026-05-29). "
+            "Divergência de família no shared cap_key X1: KMQX1→2GB(16Gb), KMRX1→3GB(24Gb). "
+            "Padrão recorrente KMR: usa die LPDDR3 maior que base KMQ no mesmo cap_key."
+        ),
+    },
+    {
+        "pn": "KMRX10014M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 5.1 32GB",
+            "emcp_ram":   "LPDDR3 3GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Família KMR + cap_key X1: padrão confirmado = 3GB(24Gb), não 2GB(16Gb) da âncora KMQ. "
+            "KMRX1000BM-B614T07 (mesmo cap_key, mesma família) = 3GB — Octopart ✓ + UFI Box ✓ (2026-05-29). "
+            "2GB do grammar é ativamente errado (âncora KMQX10013MB, família KMQ ≠ KMR). "
+            "confidence=confirmed: humano revisou e corrigiu — necessário para grammar_wins=False no engine. "
+            "(engine: grammar_wins = grammar_complete AND NOT human_verified; human_verified requer confirmed/manual)"
         ),
     },
 
@@ -431,6 +533,41 @@ CORRECTIONS = [
             "Octopart: KMDH6001DM-B422 = 64GB eMMC v5.1 + 32Gb(4GB) LPDDR4X-3733. "
             "H6=4GB consistente com SAM_EMCP_CAP (segunda âncora da chave, após KMRH60014A ✓). "
             "confidence+status em fields: garante grammar_wins=False para registros existentes."
+        ),
+    },
+
+    # ── KMDV6001DB ───────────────────────────────────────────────────────────
+    # eMCP LPDDR4X + eMMC 5.1. Família KMD, chave V6 no SAM_EMCP_CAP.
+    # V6 = 128GB eMMC 5.1 + 32Gb LPDDR4X → 32Gb÷8 = 4GB. Gramática acertou.
+    # Esta é a segunda âncora da chave V6 (primeira: KMDV6001DA-B620, Octopart ✓).
+    # Revisão A→B (pn[9] A→B): controladora/package revision — capacidade idêntica.
+    # Fontes:
+    #   • Preduo (Tier 3, 2026-05-26): KMDV6001DB-B625 = "128+32, eMCP, eMMC+LPDDR4x, 254ball" ✓
+    #     preduo.com/product/emcp/emmc-lpddr4x/254ball_emmc-lpd4x/kmdv6001db-b625
+    #   • Amazon (Tier 4, 2026-05-26): "eMMC+LPDDR4x 128+32 Storage chip" ✓ (corrobora Preduo)
+    #   • "128+32" no mercado = 128GB NAND + 32Gb DRAM (Gigabit, não Gigabyte). 32Gb÷8=4GB.
+    # Nota: resultado da gramática já correto — este fix promove confidence de estimated → confirmed.
+    {
+        "pn": "KMDV6001DB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR4X + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 5.1 128GB",
+            "emcp_ram":   "LPDDR4X 4GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo (2026-05-26): KMDV6001DB-B625 = '128+32' → 128GB eMMC + 32Gb LPDDR4X = 4GB. "
+            "Segunda âncora da chave V6 (primeira: KMDV6001DA-B620 Octopart ✓). "
+            "Revisão A→B = package revision, capacidade idêntica. "
+            "Gramática acertou via V6=128GB+4GB. Fix promove de estimated para confirmed."
         ),
     },
 
@@ -571,6 +708,40 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K4B8G1646Q ───────────────────────────────────────────────────────────
+    # Samsung DDR3L SDRAM (Q-die). Família K4B.
+    # pn[3:5]="8G" → DRAM_PC → 8Gb = 1GB por die. pn[5:7]="16" → x16 bus width.
+    # Sufixo "Q" = Q-die (revisão de silício Samsung). DDR3L = 1.35V (low-voltage).
+    # Distinção DDR3 vs DDR3L pelo sufixo completo: BC=DDR3 1.5V · BY=DDR3L 1.35V.
+    # Fonte: AllDatasheet K4B8G1646Q-AGC2 = "8G-Bit DDP Q-die DDR3L SDRAM, 512Mx16, 96-Pin FBGA" ✓.
+    # DDP = Dual Die Package (2× 4Gb die = 8Gb total).
+    # Destino: resíduo — DDR3L 1GB (embarcado tablet/laptop entry-level ~2013-2016),
+    #   sem liquidez B2B significativa em 2026 (capacidade muito baixa para reacondicional).
+    {
+        "pn": "K4B8G1646Q",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR",
+            "subtype":    "DDR3/DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "1GB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "AllDatasheet K4B8G1646Q-AGC2 = '8G-Bit DDP Q-die DDR3L SDRAM, 512Mx16, 1.2V/1.35V, 96-Pin FBGA'. "
+            "pn[3:5]='8G' → DRAM_PC → 8Gb = 1GB ✓. pn[5:7]='16' → x16. "
+            "DDP (Dual Die Package): 2× 4Gb die = 8Gb total = 1GB. "
+            "DDR3L (1.35V) confirmado — distinção de DDR3 (1.5V) preservada no campo interface. "
+            "Destino: resíduo — 1GB DDR3L embarcado sem liquidez B2B em 2026."
+        ),
+    },
+
     # ── K5W1G12ACM ───────────────────────────────────────────────────────────
     # MCP Samsung NOR Flash 1Gb (128MB) + Mobile SDRAM. Família K5W.
     # pn[3:5]="1G" → DRAM_PC → 1Gb = 128MB NOR. SDRAM não decodificável pelo PN.
@@ -601,16 +772,192 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KMRH60014A ───────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMR. cap_key "H6" → 64GB NAND + 4GB RAM.
+    # Sistema mostrava "LPDDR4/4X 4GB" — ERRADO. R estava mapeado como LPDDR4/4X
+    # por âncora falsa que usava este próprio chip como evidência de LPDDR4!
+    # Múltiplas fontes Tier 2-3 confirmam LPDDR3:
+    #   Preduo: /emmc-lpddr3/221ball/kmrh60014a-b614 ✓
+    #   Censtry: KMRH60014A-B614 LPDDR3 ✓
+    #   cpuprocessorchip: "64+32 EMCP D3 LPDDR3-1866MHz" ✓ (D3 = DRAM gen 3 = LPDDR3)
+    #   Octopart: "QDP LPDDR3" ✓
+    # Fix sistêmico: SAM_EMCP_GEN R corrigido LPDDR4/4X→LPDDR3 (populate_samsung.py).
+    # Octopart correto desta vez — a IA que contestou estava errada.
+    {
+        "pn": "KMRH60014A",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 5.1 64GB",
+            "emcp_ram":   "LPDDR3 4GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Sistema mostrava LPDDR4/4X — ERRADO. SAM_EMCP_GEN R=LPDDR4/4X era âncora falsa. "
+            "Preduo (/emmc-lpddr3/), Censtry, cpuprocessorchip ('EMCP D3 LPDDR3-1866MHz'), "
+            "Octopart ('QDP LPDDR3') confirmam LPDDR3 (2026-05-26). "
+            "cap_key H6: 64GB NAND + 32Gb÷8=4GB RAM. Fix sistêmico: R→LPDDR3 no gen map."
+        ),
+    },
+
+    # ── KMRP60014M ───────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMR. cap_key "P6" → 64GB NAND + 4GB RAM.
+    # Tipo estava "LPDDR4/4X" — corrigido pelo fix sistêmico R→LPDDR3 (2026-05-26).
+    # Capacidade (P6=64GB+4GB) confirmada: Preduo "64+32 eMMC+LPDDR3, 221ball" ✓
+    # Samsung Semiconductor Global: "KMRP60014M-B614(1866 Mbps)" — 1866 Mbps = LPDDR3 ✓
+    {
+        "pn": "KMRP60014M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 5.1 64GB",
+            "emcp_ram":   "LPDDR3 4GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo: KMRP60014M-B614 = '64+32 eMMC+LPDDR3' (64GB NAND + 32Gb÷8=4GB LPDDR3). "
+            "Samsung Semiconductor Global: 1866 Mbps → velocidade LPDDR3. "
+            "Tipo estava LPDDR4/4X — corrigido pelo fix sistêmico R→LPDDR3 (2026-05-26). "
+            "Cap_key P6 = 64GB+4GB correto (mesma chave que KMDP6001DA, 2026-05-09 ✓)."
+        ),
+    },
+
+    # ── KMR21000BM ───────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMR. cap_key "21" → conflito de shared map.
+    # SAM_EMCP_CAP "21" = 32GB+2GB (base KMQ310013B, chip físico ✓).
+    # KMR21000BM-B809: Puris "32+24 221ball eMCP-D3" → 32GB NAND + 24Gb÷8=3GB LPDDR3.
+    # Conflict: shared key "21" = 2GB para KMQ, = 3GB para KMR21000BM.
+    # NÃO alterar SAM_EMCP_CAP — base KMQ=2GB está correta. Exceção pontual aqui.
+    {
+        "pn": "KMR21000BM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 5.1 32GB",
+            "emcp_ram":   "LPDDR3 3GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Puris: KMR21000BM-B809 = '32+24 221ball eMCP-D3' → 32GB NAND + 24Gb LPDDR3 = 3GB. "
+            "SAM_EMCP_CAP '21' = 2GB (base KMQ310013B) — conflito de shared key, KMR21=3GB. "
+            "Tipo corrigido pelo fix sistêmico R→LPDDR3 (2026-05-26). "
+            "confidence+status em fields: garante grammar_wins=False."
+        ),
+    },
+
+    # ── KM2V8001CM ───────────────────────────────────────────────────────────
+    # uMCP Samsung UFS 2.1 + LPDDR4X. Família KM2. EOL.
+    # ⚠ Sistema mostrava "UFS 3.1 + LPDDR5, 128GB, 4GB" — DOIS erros simultâneos.
+    #   1. Tipo RAM: LPDDR4X (não LPDDR5). Speed 4266 Mbps = LPDDR4X-4266.
+    #   2. Capacidade RAM: 6GB (48Gb), não 4GB (32Gb). Conflito shared key V8.
+    # Fontes:
+    #   • Preduo (Tier 2): KM2V8001CM-B707, categoria "UFS+LPDDR4x", "128+48" ✓
+    #   • Amazon: "KM2V8001CM-6G-4266Mbps" → 6GB, LPDDR4X-4266 ✓
+    #   • ssfkg.com: "KM2V8001CM-B707 UFS 2.1 SAMSUNG" ✓
+    #   • Samsung Semiconductor Global/EMEA: "KM2V8001CM-B707(4266Mbps)" ✓
+    #   [Samsung redireciona para seção "LPDDR5 uMCP" — categorização do site, não da velocidade]
+    # Shared key V8 conflict: KM5V8001DM-B622 = 32Gb = 4GB ✓ (mapa SAM_EMCP_CAP base)
+    #                          KM2V8001CM-B707 = 48Gb = 6GB ✓ — exceção pontual aqui.
+    {
+        "pn": "KM2V8001CM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "uMCP",
+            "subtype":    "UFS 2.1 + LPDDR4X",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "UFS 2.1 128GB",
+            "emcp_ram":   "LPDDR4X 6GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo: KM2V8001CM-B707 = '128+48 254ball UFS+LPD4x' → 128GB UFS + 48Gb÷8=6GB LPDDR4X. "
+            "Amazon: 'KM2V8001CM-6G-4266Mbps' → 6GB, 4266Mbps = LPDDR4X-4266 ✓. "
+            "ssfkg.com: 'UFS 2.1 SAMSUNG' ✓. Samsung Global/EMEA: '4266Mbps' ✓. "
+            "Sistema mostrava LPDDR5 (errado: mínimo LPDDR5 ≥ 6400 Mbps) e 4GB (errado: shared key V8). "
+            "SAM_EMCP_CAP V8=4GB é âncora KM5V8001DM-B622 (32Gb) — KM2V8001CM é exceção com 48Gb=6GB. "
+            "confidence+status em fields: garante grammar_wins=False."
+        ),
+    },
+
+    # ── KML7X000HM ───────────────────────────────────────────────────────────
+    # eMCP Samsung LPDDR2 + eMMC. Família KML. Legado ~2013-2015.
+    # ⚠ Sistema mostrava "uMCP UFS 3.1 + LPDDR5, 8GB NAND, 1GB RAM" — ERRADO.
+    #   chip_type/subtype/interface corrigidos via populate_samsung (2026-05-27).
+    # Fontes:
+    #   • eetgroup.com: KML7X000HM-B507 = "8GB+8GB, EMMC+LPDD" → eMMC ✓, NÃO UFS 3.1
+    #   • Puris: KML5U000HM-B505 = "4+8 153ball eMCP-D1" → categoria "eMMC+LPDDR"
+    #   • emmc-ufs.com: KML7X000HM tem página de firmware eMMC (NÃO UFS)
+    #   • Dispositivo: Galaxy Core i8262 usa Exynos 4212 → suporta LPDDR2 (NÃO LPDDR1)
+    # LPDDR version:
+    #   Puris "eMMC+LPDDR" (sem número) é ambíguo — poderia ser LPDDR1 ou LPDDR2 não especificado.
+    #   LPDDR2 adotado pela consistência de era (2013-2015 = era KMJ/KMN = LPDDR2).
+    #   Exynos 4212 (Galaxy Core i8262) suporta LPDDR2 — LPDDR1 seria SoC incompatível.
+    #   LPDDR1 era obsoleto em smartphones desde ~2012. Sem fonte Tier 1 confirmando versão.
+    #   ⚠ LPDDR2 = inferência de era+SoC. Confirmar com datasheet Samsung se possível.
+    # Capacidade: "8GB+8GB" (eetgroup) = 8GB eMMC + 8Gb LPDDR2 = 1GB.
+    # cap_key "7X" não está em SAM_EMCP_CAP → capacidade viria nula sem este fix.
+    {
+        "pn": "KML7X000HM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR2 + eMMC (legado)",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 8GB",
+            "emcp_ram":   "LPDDR2 1GB",
+            "device":     "Samsung Galaxy Core i8262",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "eetgroup.com: KML7X000HM-B507 = '8GB+8GB, EMMC+LPDD' → 8GB eMMC + 8Gb LPDDR = 1GB. "
+            "LPDDR version: Puris categoria 'eMMC+LPDDR' (sem número) — ambíguo. "
+            "LPDDR2 adotado: Exynos 4212 (Galaxy Core i8262) suporta LPDDR2; "
+            "LPDDR1 obsoleto em smartphones desde 2012; era 2013-2015 = KMJ/KMN = LPDDR2. "
+            "⚠ LPDDR2 é inferência de era+SoC — sem fonte Tier 1 explícita para versão LPDDR. "
+            "eMMC (NÃO UFS): eetgroup + emmc-ufs.com firmware page ✓. "
+            "KML NÃO é uMCP UFS 3.1 + LPDDR5 — corrigido em populate_samsung (2026-05-27). "
+            "confidence+status em fields: garante grammar_wins=False."
+        ),
+    },
+
     # ── KMR310001M ───────────────────────────────────────────────────────────
-    # eMCP LPDDR3 + eMMC 5.1. Família KMR.
-    # Conflito duplo de shared key:
-    #   (1) SAM_EMCP_GEN: R = "LPDDR4/4X" no mapa global (confirmado KMRH60014A-B614,
-    #       Galaxy A7 2017). KMR310001M é exceção da era anterior (~2015) com LPDDR3.
-    #   (2) SAM_EMCP_CAP: chave "31" = 16GB+1GB no mapa (base KMQ310013B, chip físico
-    #       confirmado). KMR310001M tem "31" mas com 16Gb LPDDR3 = 2GB RAM.
-    # Fonte: Preduo (preduo.com): KMR310001M-B611 → "eMCP eMMC+LPDDR3, 16+16, 221ball" ✓
-    # NÃO alterar SAM_EMCP_GEN nem SAM_EMCP_CAP — ambas as chaves base estão corretas
-    # para a maioria dos chips. Este chip é correção pontual via fix_known_parts.
+    # eMCP LPDDR3 + eMMC 5.1. Família KMR. Era ~2015.
+    # Conflito de shared key SAM_EMCP_CAP:
+    #   chave "31" = 16GB+1GB no mapa (base KMQ310013B, chip físico confirmado).
+    #   KMR310001M tem "31" mas com 16Gb LPDDR3 = 2GB RAM — divergência de família.
+    # Nota 2026-05-26: conflito com SAM_EMCP_GEN foi removido (R agora = LPDDR3 ✓).
+    # Fonte: Preduo: KMR310001M-B611 → "eMCP eMMC+LPDDR3, 16+16, 221ball" ✓
     {
         "pn": "KMR310001M",
         "create": True,
@@ -622,13 +969,15 @@ CORRECTIONS = [
             "confidence": "confirmed",
         },
         "fields": {
-            "emcp_nand": "eMMC 5.1 16GB",
-            "emcp_ram":  "LPDDR3 2GB",
+            "emcp_nand":  "eMMC 5.1 16GB",
+            "emcp_ram":   "LPDDR3 2GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
         },
         "reason": (
             "Preduo: KMR310001M-B611 = eMCP eMMC+LPDDR3, 16+16 (16GB NAND + 16Gb LPDDR3 = 2GB). "
-            "Conflito duplo: mapa R=LPDDR4/4X (base KMRH60014A-B614 ✓) e chave '31'=1GB (base KMQ310013B ✓). "
-            "KMR310001M é chip mais antigo (~2015) com LPDDR3 — exceção pontual, mapa global preservado."
+            "Conflito cap_key '31': mapa base = 1GB (KMQ310013B ✓) — KMR310001M tem 2GB (16Gb÷8). "
+            "2026-05-26: conflito com SAM_EMCP_GEN removido (R=LPDDR3 restaurado no mapa global)."
         ),
     },
 
@@ -664,13 +1013,11 @@ CORRECTIONS = [
     },
 
     # ── KMR4Z0001M ───────────────────────────────────────────────────────────
-    # eMCP LPDDR3 + eMMC 5.1. Família KMR — exceção da era anterior (~2015-2016).
-    # Mesmo conflito do KMR310001M: SAM_EMCP_GEN mapeia R → LPDDR4/4X (correto
-    # para série moderna), mas este chip pré-data a padronização LPDDR4/4X da família.
+    # eMCP LPDDR3 + eMMC 5.1. Família KMR. Era ~2015-2016.
     # cap_key "4Z" no SAM_EMCP_CAP: 32GB NAND + 2GB RAM — acerto correto da gramática.
     # Evidência: sufixo -B802 (era 2015-2016), encontrado em Moto G4, Lenovo K5/K6.
     # Fonte: confirmação física na esteira eMiner.
-    # NÃO alterar SAM_EMCP_GEN — R = LPDDR4/4X é correto para a maioria dos KMR.
+    # Nota 2026-05-26: conflito com SAM_EMCP_GEN removido (R agora = LPDDR3 ✓).
     # Destino: Caixa Vermelha (LPDDR3 2GB sem viabilidade de recondicionamento em 2026).
     {
         "pn": "KMR4Z0001M",
@@ -683,15 +1030,17 @@ CORRECTIONS = [
             "confidence": "confirmed",
         },
         "fields": {
-            "emcp_nand": "eMMC 5.1 32GB",
-            "emcp_ram":  "LPDDR3 2GB",
-            "device":    "Moto G4 / Lenovo K5 / K6",
+            "emcp_nand":  "eMMC 5.1 32GB",
+            "emcp_ram":   "LPDDR3 2GB",
+            "device":     "Moto G4 / Lenovo K5 / K6",
+            "confidence": "confirmed",
+            "status":     "enriched",
         },
         "reason": (
-            "Exceção de família KMR: chip era 2015-2016 (sufixo -B802) usa LPDDR3, "
-            "não LPDDR4/4X. SAM_EMCP_GEN R→LPDDR4/4X correto para série moderna. "
-            "cap_key 4Z = 32GB NAND + 2GB RAM (acerto da gramática preservado). "
-            "Confirmado na esteira eMiner. Destino: Caixa Vermelha (LPDDR3 sem liquidez)."
+            "Confirmado na esteira eMiner (sufixo -B802, 2015-2016). "
+            "cap_key 4Z = 32GB NAND + 2GB RAM (acerto da gramática). "
+            "Dispositivos: Moto G4 / Lenovo K5 / K6 (LPDDR3 2GB). "
+            "2026-05-26: conflito com SAM_EMCP_GEN removido (R=LPDDR3 restaurado)."
         ),
     },
 
@@ -869,6 +1218,41 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KM5L9001DA ───────────────────────────────────────────────────────────
+    # uMCP UFS 2.2 + LPDDR4X. Família KM5, subfamília L (pn[2]='L'), variante pn[7]="1" (9001).
+    # Capacidade real: 128GB UFS 2.2 + 4GB LPDDR4X (32Gb ÷ 8 = 4GB), 254 FBGA, 4266 Mbps.
+    # Sufixo "DA" vs "DM" (KM5L9001DM): variante de package — mesma capacidade.
+    # Sistema mostrava 8GB — erro por herdar SAM_EMCP_CAP['L9']=8GB (base KM8L9001JM).
+    # Fonte: Samsung Semiconductor Global (Tier 1) ✓
+    #   semiconductor.samsung.com/mcp/model/lpddr5-umcp/km5l9001da-b424/
+    #   "32 Gb DRAM (LPDDR4X-4266), 128GB eStorage (UFS 2.2), 254 FBGA" ✓ (2026-05-26)
+    {
+        "pn": "KM5L9001DA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "uMCP",
+            "subtype":    "UFS 2.2 + LPDDR4X",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "UFS 2.2 128GB",
+            "emcp_ram":   "LPDDR4X 4GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1, 2026-05-26): KM5L9001DA-B424 = "
+            "128GB UFS 2.2 + 32Gb LPDDR4X-4266 → 32Gb÷8=4GB, 254 FBGA. "
+            "Sistema mostrava 8GB — erro por herdar SAM_EMCP_CAP['L9']=8GB (base KM8L9001JM). "
+            "Sufixo 'DA' vs 'DM' (KM5L9001DM): variante de package, capacidade idêntica. "
+            "Conflito cap_key 'L9': KM8=8GB (base ✓), KM2=6GB, KM5=4GB (esta exceção). "
+            "NÃO alterar SAM_EMCP_CAP — base KM8=8GB está correta. "
+            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+        ),
+    },
+
     # ── KLUBG4G1BD ───────────────────────────────────────────────────────────
     # UFS 2.0 Samsung, 32GB. Primeira geração UFS — Galaxy S6 / S6 Edge / S6 Edge Plus (2015).
     # Problema: família KLUBG não existia no populate_samsung.py. Engine caía para KLU
@@ -963,6 +1347,88 @@ CORRECTIONS = [
             "Puris B2B: K4EHE304EC-AGCF = 24Gbit LPDDR3 (168ball) → 24Gb÷8=3GB. "
             "HE = alias de FE no mapa K4E_CAP (mesmo 24Gb, die alternativo). "
             "Dispositivo: Galaxy Tab A SM-P585 / Exynos 7870."
+        ),
+    },
+
+    # ── K4FHE3D ───────────────────────────────────────────────────────────────
+    # LPDDR4 standalone Samsung 3GB. Família K4F, pn[3:5]="HE" → 24Gb ÷ 8 = 3GB.
+    #
+    # BUG SISTÊMICO DETECTADO (2026-05-26):
+    #   LPDDR4_CAP tinha ("HE", "4GB", "32Gb") — comentado como "alias BE" — ERRADO.
+    #   HE = 24Gb (alias de FE/7E, 3GB), NÃO 32Gb (BE, 4GB). Densidades distintas.
+    #
+    # PROVAS (Samsung Semiconductor — Tier 1):
+    #   K4FHE3D4HM-MHCJ: semiconductor.samsung.com → título "(24 Gb)" ✓
+    #   K4FHE3D4HA-THCL: semiconductor.samsung.com/emea → título "(24Gb)" ✓
+    #   K4FBE3D4HM-MGCJ: 32Gb (4GB) — confirma HE ≠ BE.
+    #
+    # FIX SISTÊMICO:
+    #   LPDDR4_CAP["HE"] corrigido: 4GB→3GB em populate_samsung.py (2026-05-26).
+    #   Tips K4F, K4U, K3U atualizadas: "7E/HE=3GB · BE/H5/H6=4GB".
+    #   Este entry cobre K4FHE3D (base PN sem sufixo de lote) e confirma o decode.
+    {
+        "pn": "K4FHE3D",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "3GB",
+            "interface":  "LPDDR4",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1, 2026-05-26): "
+            "K4FHE3D4HM-MHCJ = '(24 Gb)' LPDDR4; K4FHE3D4HA-THCL = '(24Gb)'. "
+            "24Gb ÷ 8 = 3GB. Sistema mostrava 4GB — LPDDR4_CAP['HE'] estava como 32Gb (erro). "
+            "K4FBE3D4HM-MGCJ = 32Gb (4GB) confirma: HE ≠ BE (densidades distintas). "
+            "Fix sistêmico: LPDDR4_CAP['HE'] corrigido 4GB→3GB (populate_samsung.py). "
+            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+        ),
+    },
+
+    # ── K4UJE3T ───────────────────────────────────────────────────────────────
+    # LPDDR4X standalone Samsung 6GB. Família K4U. pn[3:5]="JE" → 48Gb ÷ 8 = 6GB.
+    # Tensão I/O: 0.6V. RAM pura — sem componente Flash. EOL.
+    #
+    # PROVA (Samsung Semiconductor Global — Tier 1):
+    #   K4UJE3Q4AA-TFCL: semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uje3q4aa-tfcl/
+    #     → título da página: "K4UJE3Q4AA-TFCL(48 Gb)" ✓
+    #   K4UJE3Q4AA-THCL: semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uje3q4aa-thcl/
+    #     → título da página: "K4UJE3Q4AA-THCL(48 Gb)" ✓
+    #   JE = densidade 48Gb confirmada Tier 1 — adicionada ao LPDDR4_CAP (2026-05-27).
+    #
+    # NOTA IA EXTERNA: afirmou JE=6GB mas citou AliExpress/Shopee/Lazada "manifests" —
+    #   fontes fabricadas. Confirmação vem de Samsung Semiconductor Global (independente).
+    {
+        "pn": "K4UJE3T",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4X",
+            "subtype":    "LPDDR4X Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "6GB",
+            "interface":  "LPDDR4X",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1, 2026-05-27): "
+            "K4UJE3Q4AA-TFCL(48 Gb) e K4UJE3Q4AA-THCL(48 Gb) — página oficial semiconductor.samsung.com ✓. "
+            "JE = 48Gb → 48÷8 = 6GB. Família K4U = LPDDR4X 0.6V. "
+            "LPDDR4_CAP['JE']='6GB'/'48Gb' adicionado em populate_samsung.py (2026-05-27). "
+            "IA externa citou AliExpress/Shopee/Lazada como provas — fontes fabricadas; "
+            "confirmação mantida exclusivamente via Samsung Semiconductor Global. "
+            "confidence+status em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -1644,6 +2110,88 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KMN5X000ZM ───────────────────────────────────────────────────────────
+    # Samsung eMCP LPDDR2 + eMMC. Família KMN (~2011-2014, entrada legada).
+    #
+    # DECODE (2026-05-26):
+    #   Sistema: emcp_source="parcial (gramática)" — família KMN reconhecida,
+    #   mas pn[3:5]="5X" não está em SAM_EMCP_CAP (e KMN tem decode_cap_pos=None).
+    #   emcp_nand="eMMC" e emcp_ram="LPDDR2" — corretos, mas sem valores de GB.
+    #   fuzzy_suggestions=["KMNJ2000ZM"] — motor encontrou vizinho de estrutura similar.
+    #
+    # CAPACIDADE (chave "5X"):
+    #   IA externa estimou: 4GB NAND + 512MB LPDDR2.
+    #   Analogia parcial: "5U" → 4GB+512MB confirmado (KMN5U000FM-B203 Jotrin ✓).
+    #   O "5" aponta para 4GB NAND, mas "X" (RAM) não tem fonte Tier 1-2.
+    #   ⚠ Conflito interno: populate_samsung.py linha 158 tinha "5X"→8GB+1GB bloqueado
+    #   como wildcard especulativo para família KMQ (distinta!). Não extrapolável para KMN.
+    #   BLOQUEADO: sem fonte Tier 1-2, capacidade fica em branco.
+    #
+    # IMPACTO OPERACIONAL:
+    #   Capacidade vazia não muda o destino: tip já encaminha para Caixa Vermelha.
+    #   profitable="INDETERMINADO" (sem GB para calcular) é correto — não é bug.
+    #   A IA sugeriu regra LPDDR2→"NÃO RENTÁVEL" forçado: discutir separadamente
+    #   com o usuário — impacta o engine, não apenas este chip.
+    {
+        "pn": "KMN5X000ZM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR2 + eMMC (legado)",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "",   # bloqueado: "5X" sem fonte Tier 1-2 confirmada (2026-05-26)
+            "emcp_ram":   "",   # bloqueado: idem — "5U"→512MB é análogo mas não idêntico
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "KMN5X000ZM: Samsung eMCP LPDDR2 + eMMC, era 2011-2014. "
+            "pn[3:5]='5X' ausente do SAM_EMCP_CAP; família KMN tem decode_cap_pos=None. "
+            "IA estimou 4GB+512MB por analogia com '5U' (KMN5U000FM-B203 ✓). "
+            "Conflito: populate_samsung.py linha 158 tinha '5X'→8GB+1GB (especulativo, KMQ). "
+            "Sem fonte Tier 1-2 para KMN5X: capacidade bloqueada pela regra de ouro. "
+            "confidence+status em fields: garante grammar_wins=False. "
+            "Destino: Caixa Vermelha (LPDDR2 legado, sem liquidez em 2026)."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Samsung LPDDR2 standalone confirmados — 2026-05-27
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K4P8G304EQ ────────────────────────────────────────────────────────────
+    # LPDDR2 standalone Samsung. K4P = LPDDR2 Mobile (legado, ~2010-2015).
+    # Gramática já cobre: pn[3]='8' → DRAM_MOBILE: 8Gb = 1GB [✓].
+    # Adicionado com confidence=confirmed para travar contra substituição futura.
+    # Fonte: AllDatasheet K4P8G304EQ-AGC2 = "LPDDR2 SDRAM 8G-Bit 256Mx32" = 8Gb = 1GB ✓
+    # Variantes de sufixo conhecidas: -AGC2 (FBGA-168), -PGC2.
+    {
+        "pn": "K4P8G304EQ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "RAM",
+            "subtype":    "LPDDR2 Mobile (legado)",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "1GB",
+            "interface":  "LPDDR2",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "AllDatasheet K4P8G304EQ-AGC2 = 'LPDDR2 SDRAM 8G-Bit 256Mx32 1.2V/1.8V 168-Pin FBGA'. "
+            "8Gb ÷ 8 = 1GB. K4P = LPDDR2 Mobile Samsung (P = LPDDR2, confirmado família K4P). "
+            "Destino: fluxo de resíduo — LPDDR2 obsoleto, sem liquidez B2B (~2010-2015)."
+        ),
+    },
+
     # ══════════════════════════════════════════════════════════════════════════
     # Chips Micron confirmados — 2026-05-26
     # ══════════════════════════════════════════════════════════════════════════
@@ -1669,6 +2217,7 @@ CORRECTIONS = [
         "fields": {
             "capacity":   "4GB",
             "interface":  "LPDDR4",
+            "fbga_code":  "D9VFC",
             "confidence": "confirmed",
             "status":     "enriched",
             "source_url": "https://octopart.com/mt53b512m64d4tx-053+wt%3ac+tr-micron-122342782",
@@ -1678,6 +2227,199 @@ CORRECTIONS = [
             "Octopart: 32Gb 512M×64bit ÷ 8 = 4GB LPDDR4. VDDQ 1.1V (≠ MT53E LPDDR4X 0.6V). "
             "Família MT53B adicionada em add_chip_families.py. "
             "Chip obsoleto, comum em flagships Android 2017-2019 (velocidade 1866MHz / 3733MT/s)."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # MT29C4G48 — NAND Flash paralela industrial Micron (4 Gbit = 512 MB)
+    # ══════════════════════════════════════════════════════════════════════════
+    #
+    # MT29C4G48MAZAPAKD = SLC NAND Flash 4 Gbit, interface paralela 8-bit (x8),
+    # 48-pin TSOP1 package. ⚠ NÃO é eMCP, eMMC nem UFS — NAND raw sem controlador.
+    #
+    # Decodificação do PN:
+    #   MT = Micron Technology
+    #   29 = Flash NAND
+    #   C  = bus x8 paralela (8-bit)
+    #   4G = 4 Gbit de capacidade
+    #   48 = 48 pinos (package TSOP1)
+    #   MAZAPAKD = opções de die (VCC, organização de página, etc.)
+    #   -5 / -6 = cycle time (ns): -5 = 50ns, -6 = 60ns
+    #   IT = Industrial Temperature (-40°C a +85°C)
+    #   E  = Extended (variante de qualificação estendida)
+    #   ES = Engineering Sample (amostra de engenharia — NÃO produção final)
+    #
+    # Capacidade: 4 Gbit = 4 × 128 MB = 512 MB
+    #
+    # Uso típico: sistemas embarcados industriais, roteadores, STBs.
+    # ⚠ Destino na bancada: caixa industrial / resíduo — arquitetura paralela
+    #   incompatível com programadores eMMC/UFS. Sem liquidez no mercado móvel.
+    #
+    # FBGAs confirmados via API Micron FBGA decoder (2026-05-28):
+    #   JW454 → MT29C4G48MAZAPAKD-6 IT   (produção, -6)
+    #   JW464 → MT29C4G48MAZAPAKD-5 IT   (produção, -5) ← chip testado na esteira
+    #   JW699 → MT29C4G48MAZAPAKD-5 E IT (extended, -5)
+    #   JY454 → MT29C4G48MAZAPAKD-6 IT ES (engineering sample, -6)
+    #   JY464 → MT29C4G48MAZAPAKD-5 IT ES (engineering sample, -5)
+
+    # ── JW464 — MT29C4G48MAZAPAKD-5 IT ─────────────────────────────────────
+    # Chip testado na esteira eMiner — não reconhecido (MT29C sem família no DB).
+    {
+        "pn": "MT29C4G48MAZAPAKD5IT",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "NAND Flash",
+            "subtype":    "SLC NAND paralela industrial",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "512MB",
+            "interface":  "Parallel NAND (8-bit)",
+            "fbga_code":  "JW464",
+            "confidence": "confirmed",
+            "status":     "enriched",
+            "notes": (
+                "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
+                "⚠ NÃO é eMCP/eMMC/UFS — NAND raw, sem controlador. "
+                "Destino: resíduo/industrial. Variante -5 (50ns)."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=JW464",
+        },
+        "reason": (
+            "FBGA JW464 = MT29C4G48MAZAPAKD-5 IT (API Micron FBGA decoder). "
+            "4 Gbit SLC NAND Flash ÷ 8 = 512MB. Paralela 8-bit (x8), 48-pin TSOP1. "
+            "Industrial Temp (-40°C/+85°C). ⚠ NÃO é eMCP — NAND raw sem controlador. "
+            "Chip testado na esteira eMiner — não reconhecido (MT29C sem família no DB)."
+        ),
+    },
+
+    # ── JW454 — MT29C4G48MAZAPAKD-6 IT ─────────────────────────────────────
+    {
+        "pn": "MT29C4G48MAZAPAKD6IT",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "NAND Flash",
+            "subtype":    "SLC NAND paralela industrial",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "512MB",
+            "interface":  "Parallel NAND (8-bit)",
+            "fbga_code":  "JW454",
+            "confidence": "confirmed",
+            "status":     "enriched",
+            "notes": (
+                "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
+                "⚠ NÃO é eMCP/eMMC/UFS — NAND raw, sem controlador. "
+                "Destino: resíduo/industrial. Variante -6 (60ns, mais lenta que JW464)."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=JW454",
+        },
+        "reason": (
+            "FBGA JW454 = MT29C4G48MAZAPAKD-6 IT (API Micron FBGA decoder). "
+            "4 Gbit SLC NAND Flash ÷ 8 = 512MB. Paralela 8-bit (x8), 48-pin TSOP1. "
+            "Industrial Temp (-40°C/+85°C). Variante -6 (60ns). "
+            "⚠ NÃO é eMCP — NAND raw sem controlador."
+        ),
+    },
+
+    # ── JW699 — MT29C4G48MAZAPAKD-5 E IT ───────────────────────────────────
+    {
+        "pn": "MT29C4G48MAZAPAKD5EIT",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "NAND Flash",
+            "subtype":    "SLC NAND paralela industrial",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "512MB",
+            "interface":  "Parallel NAND (8-bit)",
+            "fbga_code":  "JW699",
+            "confidence": "confirmed",
+            "status":     "enriched",
+            "notes": (
+                "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
+                "⚠ NÃO é eMCP/eMMC/UFS — NAND raw, sem controlador. "
+                "Destino: resíduo/industrial. Variante -5 E (Extended, 50ns)."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=JW699",
+        },
+        "reason": (
+            "FBGA JW699 = MT29C4G48MAZAPAKD-5 E IT (API Micron FBGA decoder). "
+            "4 Gbit SLC NAND Flash ÷ 8 = 512MB. Paralela 8-bit (x8), 48-pin TSOP1. "
+            "Industrial Temp. Variante -5 E (Extended). "
+            "⚠ NÃO é eMCP — NAND raw sem controlador."
+        ),
+    },
+
+    # ── JY454 — MT29C4G48MAZAPAKD-6 IT ES (Engineering Sample) ─────────────
+    {
+        "pn": "MT29C4G48MAZAPAKD6ITES",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "NAND Flash",
+            "subtype":    "SLC NAND paralela industrial",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "512MB",
+            "interface":  "Parallel NAND (8-bit)",
+            "fbga_code":  "JY454",
+            "confidence": "confirmed",
+            "status":     "enriched",
+            "notes": (
+                "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
+                "⚠ ES = Engineering Sample — amostra de engenharia, NÃO produção final. "
+                "⚠ NÃO é eMCP/eMMC/UFS — NAND raw, sem controlador. "
+                "Destino: resíduo/industrial. Variante -6 ES (60ns)."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=JY454",
+        },
+        "reason": (
+            "FBGA JY454 = MT29C4G48MAZAPAKD-6 IT ES (API Micron FBGA decoder). "
+            "ES = Engineering Sample (NÃO produção final). "
+            "4 Gbit SLC NAND Flash ÷ 8 = 512MB. ⚠ NÃO é eMCP — NAND raw."
+        ),
+    },
+
+    # ── JY464 — MT29C4G48MAZAPAKD-5 IT ES (Engineering Sample) ─────────────
+    {
+        "pn": "MT29C4G48MAZAPAKD5ITES",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "NAND Flash",
+            "subtype":    "SLC NAND paralela industrial",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "512MB",
+            "interface":  "Parallel NAND (8-bit)",
+            "fbga_code":  "JY464",
+            "confidence": "confirmed",
+            "status":     "enriched",
+            "notes": (
+                "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
+                "⚠ ES = Engineering Sample — amostra de engenharia, NÃO produção final. "
+                "⚠ NÃO é eMCP/eMMC/UFS — NAND raw, sem controlador. "
+                "Destino: resíduo/industrial. Variante -5 ES (50ns)."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=JY464",
+        },
+        "reason": (
+            "FBGA JY464 = MT29C4G48MAZAPAKD-5 IT ES (API Micron FBGA decoder). "
+            "ES = Engineering Sample (NÃO produção final). "
+            "4 Gbit SLC NAND Flash ÷ 8 = 512MB. ⚠ NÃO é eMCP — NAND raw."
         ),
     },
 

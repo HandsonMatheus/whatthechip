@@ -225,100 +225,73 @@
   max-width: 260px;
 }
 
-/* ── Contador de estoque atual no card de confirmação ────────── */
-.est-stock-counter {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: var(--s4) var(--s5);
+/* ── DESTINO — caixa física ──────────────────────────────────── */
+.est-dest {
+  padding: 20px var(--s5) 16px;
+  text-align: center;
   margin-bottom: var(--s4);
-  border: 1px solid var(--border-subtle);
+  border-radius: 0;
 }
-.est-stock-counter--zero {
-  background: var(--surface-2);
-  border-color: var(--border-subtle);
-}
-.est-stock-counter--has {
-  background: #fff8e1;
-  border-color: #f59e0b;
-  border-left: 4px solid #f59e0b;
-}
-[data-theme="dark"] .est-stock-counter--has {
-  background: #2d2200;
-  border-color: #f1c21b;
-  border-left-color: #f1c21b;
-}
-.est-stock-counter__label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-helper);
-}
-.est-stock-counter__qty {
-  font-size: 36px;
-  font-weight: 700;
+.est-dest__label {
+  font-size: 46px;
+  font-weight: 800;
   font-family: var(--font-mono);
+  letter-spacing: -0.01em;
   line-height: 1;
-  color: var(--text-primary);
+  margin-bottom: 6px;
 }
-.est-stock-counter--has .est-stock-counter__qty {
-  color: #b45309;
-}
-[data-theme="dark"] .est-stock-counter--has .est-stock-counter__qty {
-  color: #f1c21b;
-}
-.est-stock-counter__unit {
+.est-dest__meta {
   font-size: 13px;
-  color: var(--text-secondary);
+  font-weight: 500;
+  opacity: .88;
+  line-height: 1.4;
 }
+/* Cores por tecnologia — correspondem às caixas físicas */
+.est-dest--emcp    { background: #da1e28; color: #fff; }
+.est-dest--umcp    { background: #ff7eb6; color: #1c0408; }
+.est-dest--lpddr   { background: #4589ff; color: #fff; }
+.est-dest--ufs     { background: #f1c21b; color: #231c00; }
+.est-dest--emmc    { background: #42be65; color: #001c00; }
+.est-dest--nand    { background: #8a3ffc; color: #fff; }
+.est-dest--unknown { background: var(--surface-2); color: var(--text-primary); border: 1px dashed var(--border-default); }
 
-/* Grade de specs — Carbon inline data grid */
-.est-specs-grid {
+/* ── Pills de meta-informação ────────────────────────────────── */
+.est-meta-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 1px;
-  background: var(--border-subtle);
-  border: 1px solid var(--border-subtle);
-  margin-bottom: var(--s5);
+  gap: var(--s2);
+  margin-bottom: var(--s4);
+  align-items: center;
 }
-
-.est-spec {
-  background: var(--surface);
-  padding: var(--s3) var(--s4);
-  min-width: 120px;
-  flex: 1;
-}
-
-.est-spec-label {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--interactive);
-  font-family: var(--font-mono);
-  margin-bottom: 2px;
-}
-
-.est-spec-val {
-  font-size: 13px;
+.est-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 22px;
+  padding: 0 9px;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--text-primary);
-  letter-spacing: 0.16px;
-  white-space: normal;
-  word-break: break-word;
-  display: block;
+  border-radius: 11px;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
 }
+.est-meta-pill--ok      { background: #defbe6; color: #0e6027; }
+.est-meta-pill--info    { background: #edf5ff; color: #0043ce; }
+.est-meta-pill--warn    { background: #fff8e1; color: #7a5000; }
+.est-meta-pill--danger  { background: #fff1f1; color: #750e13; }
+.est-meta-pill--neutral { background: var(--surface-2); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
+[data-theme="dark"] .est-meta-pill--ok      { background: #022d0d; color: #42be65; }
+[data-theme="dark"] .est-meta-pill--info    { background: #001141; color: #78a9ff; }
+[data-theme="dark"] .est-meta-pill--warn    { background: #2d2200; color: #f1c21b; }
+[data-theme="dark"] .est-meta-pill--danger  { background: #2d0709; color: #ff8389; }
 
+/* ── Outros elementos do card ────────────────────────────────── */
 .est-confirm-hint {
   font-size: 13px;
   color: var(--text-secondary);
   margin-bottom: var(--s5);
   line-height: 1.6;
-  letter-spacing: 0.16px;
 }
-
 .est-confirm-actions {
   display: flex;
   align-items: flex-end;
@@ -926,6 +899,11 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
       />
       {# Botões Carbon flush — mesma largura do input via est-pn-wrap #}
       <div class="pin-btn-group">
+        <button type="button" id="est-mic-btn" class="pin-btn pin-btn--mic wtc-mic-btn"
+                data-mic-target="pn-input"
+                data-mic-hint="est-pin-hint"
+                data-mic-cta="est-decode-btn"
+                aria-label="Fale o Part Number" title="Fale o Part Number"></button>
         <button type="button" id="est-clear-btn" class="pin-btn pin-btn--secondary" disabled>Limpar</button>
         <button type="button" id="est-decode-btn" class="pin-btn pin-btn--primary" disabled>
           <span class="pin-btn-label">Decodificar</span>

@@ -424,6 +424,92 @@ footer.foot { flex-shrink: 0; }
 .pnbar__decode.is-loading .pnbar__decode-spinner { display: inline-block; }
 @keyframes wtc-spin { to { transform: rotate(360deg); } }
 
+/* Microfone embutido — ícone só, mesmo estilo de altura que pnbar__clear */
+.pnbar__mic {
+  appearance: none; border: 0; cursor: pointer;
+  padding: 0 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--cds-text-secondary);
+  background: linear-gradient(180deg, #f4f4f4 0%, #e0e0e0 55%, #c6c6c6 100%);
+  border-left: 1px solid var(--cds-border-subtle);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.55),
+    inset 0 -1px 0 rgba(0,0,0,0.12),
+    inset 1px 0 0 #c6c6c6;
+  position: relative;
+  transition: filter 0.12s ease, background 0.18s ease, color 0.18s ease;
+  min-width: 56px;
+  flex-shrink: 0;
+}
+.pnbar__mic::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+.pnbar__mic:hover   { filter: brightness(1.05); }
+.pnbar__mic:active  { filter: brightness(0.90); }
+/* focus ring igual ao dos outros botões do pnbar */
+.pnbar__mic:focus-visible {
+  outline: 2px solid var(--cds-focus);
+  outline-offset: 1px;
+}
+
+/* Estado: ouvindo — azul Luna pulsante */
+.pnbar__mic.is-listening {
+  color: #fff;
+  background: linear-gradient(180deg, var(--luna-blue-top) 0%, var(--luna-blue-mid) 50%, var(--luna-blue-deep) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    inset 0 -1px 0 rgba(0,0,0,0.18),
+    inset 1px 0 0 var(--luna-blue-deep);
+  animation: mic-pnbar-pulse 1.4s ease-in-out infinite;
+}
+@keyframes mic-pnbar-pulse {
+  0%, 100% { filter: brightness(1.0);   }
+  50%       { filter: brightness(1.15) saturate(1.1); }
+}
+
+/* Estado: processando — spinner */
+.pnbar__mic.is-processing {
+  color: var(--cds-text-secondary);
+  cursor: wait;
+}
+
+/* Estado: reconhecido — verde */
+.pnbar__mic.is-ok {
+  color: #fff;
+  background: linear-gradient(180deg, #42be65 0%, #24a148 55%, #198038 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    inset 0 -1px 0 rgba(0,0,0,0.18),
+    inset 1px 0 0 #198038;
+}
+
+/* Estado: erro — vermelho */
+.pnbar__mic.is-err {
+  color: #fff;
+  background: linear-gradient(180deg, #fa4d56 0%, #da1e28 55%, #a2191f 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.30),
+    inset 0 -1px 0 rgba(0,0,0,0.18),
+    inset 1px 0 0 #a2191f;
+}
+
+/* Dark mode
+[data-theme="dark"] .pnbar__mic {
+  color: var(--cds-text-secondary);
+  background: linear-gradient(180deg, #4c4c4c 0%, #393939 55%, #2d2d2d 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    inset 0 -1px 0 rgba(0,0,0,0.30),
+    inset 1px 0 0 #2d2d2d;
+}
+[data-theme="dark"] .pnbar__mic.is-processing { color: var(--cds-text-secondary); }
+[data-theme="dark"] .mic-icon__spin {
+  border-color: rgba(255,255,255,0.15);
+  border-top-color: var(--cds-text-secondary);
+}
+
 /* Input real escondido — captura teclado/paste/mobile.
    pointer-events:none é essencial: sem isso o input (inset:0) cobre toda a
    barra e intercepta os cliques de Decodificar/Apagar. As células e o prefixo
@@ -889,7 +975,8 @@ footer.foot {
   .pnbar__cells { min-height: 56px; width: 100%; }
   .pncell { min-width: 0; font-size: 14px; padding: 0; letter-spacing: -0.5px; }
   .pnbar > .pnbar__clear,
-  .pnbar > .pnbar__decode { display: none; }
+  .pnbar > .pnbar__decode,
+  .pnbar > .pnbar__mic { display: none; }
 
   /* Ações mobile: Apagar + Decodificar lado a lado abaixo da barra */
   .mobile-actions { display: grid; grid-template-columns: 88px 1fr; gap: 0; margin-top: 0; }

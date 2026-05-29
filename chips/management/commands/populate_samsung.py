@@ -67,6 +67,15 @@ class Command(BaseCommand):
         "KMV3",  # Removida 2026-05-13: KMV3W000LM-B310 = Galaxy S4 eMCP (2013), não uMCP 2022+.
     ]
 
+    # Chaves de decode map removidas do código mas que podem ainda existir no banco.
+    # Tuplas (map_name, key, motivo). Removidas com --overwrite.
+    OBSOLETE_DECODE_KEYS = [
+        # L6 bloqueado 2026-05-28: âncora "KMFL6·/S21 FE" é falsa.
+        # KMDL6001DA e KMFL6· = zero resultados em semiconductor.samsung.com.
+        # S21 FE usa KM8-series (UFS uMCP), não eMCP KMF. Sem PN Tier 1 confirmado.
+        ("SAM_EMCP_CAP", "L6", "Âncora KMFL6·/S21 FE falsa — KMDL6001DA inexistente em Samsung Global"),
+    ]
+
     def _run(self, dry, overwrite=False):
         from chips.models import Brand, ChipFamily, DecodeMap
 
@@ -80,6 +89,19 @@ class Command(BaseCommand):
                     self.stdout.write(
                         self.style.WARNING(
                             f"  {'[DRY] ' if dry else ''}🗑  Família obsoleta removida: {prefix}"
+                        )
+                    )
+
+        # ── Limpeza de chaves de decode map obsoletas ──────────────────────────
+        if overwrite:
+            for map_name, key, motivo in self.OBSOLETE_DECODE_KEYS:
+                qs = DecodeMap.objects.filter(map_name=map_name, char_key=key)
+                if qs.exists():
+                    if not dry:
+                        qs.delete()
+                    self.stdout.write(
+                        self.style.WARNING(
+                            f"  {'[DRY] ' if dry else ''}🗑  DecodeMap obsoleto removido: {map_name}[{key!r}] — {motivo}"
                         )
                     )
 
@@ -172,10 +194,17 @@ class Command(BaseCommand):
             ("V8", "128GB", "4GB"),    # 128GB NAND + 4GB RAM  (KM5V8001DM-B622 — fabricante: 32Gb÷8=4GB)
             #                          # ⚠ CORRIGIDO: entrada anterior dizia 8GB (fonte: AI sem confirmação).
             #                          # KM8V8001JM também é 4GB — cap_key compartilhado.
+            #                          # ⚠ CONFLITO SHARED KEY 2026-05-27: KM2V8001CM-B707 = V8 mas 48Gb = 6GB!
+            #                          #   KM5/KM8 com V8 = 32Gb = 4GB ✓ (Samsung Semiconductor Global)
+            #                          #   KM2V8001CM com V8 = 48Gb = 6GB ✓ (Preduo "128+48", Amazon "6G-4266Mbps")
+            #                          #   Mapa mantido em 4GB (âncora KM5 confirmada). KM2V8001CM → fix_known_parts.
             ("GD", "32GB",  "3GB"),    # 32GB NAND + 3GB RAM   (KMQGD·)
             ("W7", "32GB",  "3GB"),    # 32GB NAND + 3GB RAM   alias GD
             ("W8", "32GB",  "4GB"),    # 32GB NAND + 4GB RAM   (KMFW8·)
             ("X1", "32GB",  "2GB"),    # 32GB NAND + 2GB RAM   (KMQX10013MB — Octopart: 32GB+16Gb)
+                                       # ⚠ KMR DIVERGE: família KMR usa 3GB(24Gb) para X1.
+                                       #   Confirmado: KMRX1000BM-B614T07 = 3GB — Octopart ✓ + UFI Box ✓ (2026-05-29).
+                                       #   Chips KMR+X1 → corrigidos individualmente em fix_known_parts.py.
             ("H9", "32GB",  "2GB"),    # 32GB NAND + 2GB RAM   alias X1 (corrigido junto, sem PN independente)
             ("C6", "64GB",  "4GB"),    # 64GB NAND + 4GB RAM   (KMDC6001DM-B625) — Samsung Semiconductor oficial ✓ (2026-05-25)
             #                          # 32Gb LPDDR4X = 4GB. Corrigido: estava 3GB (24Gb) baseado em IA+padrão — errado.
@@ -200,7 +229,9 @@ class Command(BaseCommand):
             #                          # Gemini alucinava KMDG6001BM com confiança — rejeitado (fonte AI sem evidência física).
             ("V6", "128GB", "4GB"),    # 128GB NAND + 4GB RAM  KMDV6001DA-B620 (Octopart) ✓
             #                          # ⚠ CORRIGIDO 2026-05-09: era alias de D6 (32GB+3GB) — ERRADO.
-            #                          # KMDV6001DA-B620 = 64GB×2 dies UFS + 32Gb LPDDR4X → 32Gb÷8=4GB.
+            #                          # KMDV6001DA-B620: Octopart = 128GB eMMC + 32Gb LPDDR4X → 32Gb÷8=4GB ✓
+            #                          # KMDV6001DB-B625: Preduo + Amazon = "128+32" (128GB+32Gb=4GB) ✓ (2026-05-26)
+            #                          # Revisão A→B: controladora/package revision — capacidade idêntica.
             # ("U6", ...),             # BLOQUEADO 2026-05-09: zero PNs confirmados. Fonte era Gemini-only.
             ("X6", "32GB",  "2GB"),    # 32GB NAND + 2GB RAM   (KM4X6001KM) — confirmado Octopart; era alias especulativo U6
             # ("T6", ...),             # BLOQUEADO 2026-05-09: zero PNs confirmados. Fonte era catálogo asiático não verificado.
@@ -217,11 +248,21 @@ class Command(BaseCommand):
             ("P9", "64GB",  "4GB"),    # KM5P9001DMB424: 64GB UFS 2.1 + 32Gb LPDDR4X-4266 (Octopart)
             #                          # 32Gb ÷ 8 = 4GB. uMCP linha numérica KM5 (mid-premium 2021+).
             # Z6: BLOQUEADO — evidência insuficiente. ⚠ Dead-end sem Gemini: chips Z6 ficam com capacidade nula.
-            ("L6", "256GB", "8GB"),    # 256GB NAND + 8GB RAM  (KMFL6·, uMCP S21 FE)
+            # L6: BLOQUEADO 2026-05-28. Âncora "KMFL6·, uMCP S21 FE" é FALSA:
+            #   • KMDL6001DA — zero resultados em semiconductor.samsung.com (pesquisado 2026-05-28).
+            #   • KMFL6·    — zero resultados. PN âncora não existe no catálogo Samsung.
+            #   • "S21 FE"  — usa KM8-series (UFS+LPDDR4X uMCP), NÃO eMCP LPDDR3 KMF.
+            #   Conclusão: chave inserida com dois erros de premissa. Sem PN Tier 1 confirmado.
+            #   ⚠ Dead-end: chips L6 ficam com capacidade nula até PN físico confirmar.
+            # ("L6", "256GB", "8GB"),
             # ── uMCP high-cap (2021+, LPDDR5/5X, flagships) ──────────────────
             # A partir daqui os códigos são derivados por engenharia de padrão +
             # dados de teardown. Verificar com PN real antes de usar como referência.
-            ("K6", "128GB", "8GB"),    # 128GB NAND + 8GB RAM  (KML·, S21 Exynos / A73 5G)
+            ("K6", "128GB", "8GB"),    # 128GB NAND + 8GB RAM  (uMCP high-cap — âncora sem PN confirmado Tier 1)
+            #                          # ⚠ CORRIGIDO 2026-05-27: atribuição "KML·, S21 Exynos" era FALSA.
+            #                          # KML = eMCP legado LPDDR1 (~2013-2015), NÃO uMCP moderno.
+            #                          # Galaxy S21 Exynos usa KM8-series (KM8V8001LM-B813 ✓).
+            #                          # K6 bloqueado como especulação até PN Tier 1 confirmar.
             # ── uMCP linha numérica KM5/KM8/KM2 (confirmados pelo fabricante) ──────
             ("C7", "64GB",  "4GB"),    # KM5C7001DM-B622: 64GB UFS2.1 + 32Gb÷8=4GB LPDDR4X ✓
             ("L9", "128GB", "8GB"),    # KM8L9001JM-B624: 128GB UFS2.2 + 64Gb÷8=8GB LPDDR4X (Samsung Electronics ✓)
@@ -238,6 +279,26 @@ class Command(BaseCommand):
             #                          # NÃO alterar o mapa — base KM8=8GB está correta para a maioria.
             ("F9", "256GB", "8GB"),    # KM8F9001JM-B813: 256GB UFS2.2 + 64Gb÷8=8GB LPDDR4X ✓
             ("F8", "256GB", "12GB"),   # KM8F8001MM-B813: 256GB UFS2.1 + 96Gb÷8=12GB LPDDR4X ✓
+            #                          # ⚠ CONFLITO SHARED KEY 2026-05-28: KM8F8001JA/JM = 256GB+8GB (64Gb)
+            #                          #   KM8F8001LM = 256GB+10GB (80Gb) — todos usam F8 mas RAM diferente.
+            #                          # Mapa mantido em 12GB (âncora MM = maior densidade = referência conservadora).
+            #                          # JA/JM/LM corrigidos via fix_known_parts.
+            # ── uMCP KM8V variantes de velocidade e densidade ────────────────
+            ("V7", "128GB", "8GB"),    # KM8V7001JM-B810: 128GB UFS2.1 + 64Gb÷8=8GB LPDDR4X-3733 ✓
+            #                          # Confirmado Samsung Semiconductor Global 2026-05-28.
+            ("V9", "128GB", "8GB"),    # KM8V9001JM-B813: 128GB UFS2.2 + 64Gb÷8=8GB LPDDR4X-4266 ✓
+            #                          # Confirmado Samsung Semiconductor Global 2026-05-28.
+            # ── uMCP KM5H variantes ───────────────────────────────────────────
+            ("H7", "64GB",  "4GB"),    # KM5H7001DM-B424: 64GB UFS2.1 + 32Gb÷8=4GB LPDDR4X-4266 ✓
+            #                          # ⚠ CONFLITO SHARED KEY 2026-05-28: KM2H7001CM-B518 = H7 mas 48Gb=6GB.
+            #                          # Mapa em 4GB (âncora KM5H7001DM). KM2H7001CM → fix_known_parts.
+            ("H8", "64GB",  "3GB"),    # KM5H80018M-B424: 64GB UFS2.1 + 24Gb÷8=3GB LPDDR4X-4266 ✓
+            #                          # Confirmado Samsung Semiconductor Global 2026-05-28.
+            # ── uMCP KMAG/KMAS: UFS 3.1 + LPDDR5 ────────────────────────────
+            ("G9", "128GB", "8GB"),    # KMAG9001PM-B814: 128GB UFS3.1 + 64Gb÷8=8GB LPDDR5-6400 ✓
+            #                          # Família KMAG — flagship uMCP LPDDR5. Confirmado Samsung Global 2026-05-28.
+            ("S9", "256GB", "8GB"),    # KMAS9001PM-BC02: 256GB UFS3.1 + 64Gb÷8=8GB LPDDR5-6400 ✓
+            #                          # Família KMAS — variante 256GB do KMAG. Confirmado Samsung Global 2026-05-28.
             # Gaps ainda não mapeados — ⚠ Dead-end sem Gemini: capacidade nula até PN físico confirmar:
             #   512GB + 12GB (S22 Ultra 512GB, S23 Ultra)
             # Adicionar quando PN real confirmar o cap_key.
@@ -245,9 +306,6 @@ class Command(BaseCommand):
         self._bulk_map("SAM_EMCP_CAP", emcp_cap, samsung, dry, overwrite)
 
         # ── DecodeMap: geração RAM eMCP (pos 2, 1 char) ───────────────────────
-        # Correção: R = LPDDR3, não LPDDR4/4X (erro histórico no gabarito).
-        # R = LPDDR4/4X confirmado: série KMR (Galaxy A 2016-2019) é oficialmente LPDDR4.
-        # Ref: KMRH60014A-B614 (A7 2017, 3GB LPDDR4), KMRY60014A (A8 2018, 4GB LPDDR4).
         emcp_gen = [
             ("J", "LPDDR2",    ""),   # KMJ: eMCP legado entrada (~2013-2015), LPDDR2
             ("K", "LPDDR2",    ""),
@@ -256,7 +314,12 @@ class Command(BaseCommand):
             #                          # KMN5U000FM-B203 (Jotrin: 4Gb LPDDR2) + KMN5X000ZM-B209 (Preduo: lpddr2).
             #                          # KMN = família LPDDR2 entry-level (~2011-2014), eMMC 4.4/4.5.
             ("Q", "LPDDR3",    ""),
-            ("R", "LPDDR4/4X", ""),   # confirmado: KMR = LPDDR4/4X (não LPDDR3)
+            ("R", "LPDDR3",    ""),   # ⚠ CORRIGIDO 2026-05-26: era LPDDR4/4X — ERRADO.
+            #                          # Âncora usada (KMRH60014A-B614) era ela mesma LPDDR3 — premissa falsa.
+            #                          # KMRH60014A-B614: Preduo, Censtry, cpuprocessorchip ✓ → "LPDDR3-1866MHz".
+            #                          # KMRX60014M-B614: Preduo (caminho /emmc-lpddr3/) ✓ → LPDDR3.
+            #                          # KMR310001M, KMR4Z0001M, KMR8X0001M: todos LPDDR3 (fix_known_parts ✓).
+            #                          # KMR = família eMCP LPDDR3 + eMMC 5.1 (~2015-2019). Sem exceção confirmada.
             ("S", "LPDDR4X",   ""),
             # uMCP / geração alta
             ("D", "LPDDR4X",   ""),   # KMD: eMCP LPDDR4X + eMMC 5.1 (confirmado)
@@ -265,7 +328,9 @@ class Command(BaseCommand):
             ("G", "LPDDR3",    ""),   # KMG: entrada morta (decode_gen_pos=None → engine nunca lê aqui).
             #                          # ⚠ CORRIGIDO 2026-05-09: era LPDDR4X (errado). KMG=LPDDR3 confirmado
             #                          # via datasheet KMGP6001BM. Sem impacto funcional — KMG usa EMCP_RAM_TYPES.
-            ("L", "LPDDR5",    ""),
+            ("L", "LPDDR5",    ""),   # ⚠ KML NÃO lê esta entrada (decode_gen_pos=None — KML=LPDDR1 legado).
+            #                          # CORRIGIDO 2026-05-27: KML era falsamente classificado como uMCP LPDDR5.
+            #                          # Entrada mantida para eventual família futura com L=LPDDR5. Sem âncora ativa.
             ("V", "LPDDR5/5X", ""),
         ]
         self._bulk_map("SAM_EMCP_GEN", emcp_gen, samsung, dry, overwrite)
@@ -293,6 +358,14 @@ class Command(BaseCommand):
             #                       # semiconductor.samsung.com: "KLMCG2KCTA-B041(eMMC 5.1)"
             #                       # Preduo: "eMMC 5.1, 64GB, Samsung, BGA" ✓
             #                       # pn[6]='K' não aparece em chips eMMC 4.5/5.0 → exclusivo 5.1.
+            ("G", "eMMC 5.1", ""),  # geração G: nova revisão de processo pós-J/K (~2017-2019)
+            #                       # KLMAG2GEND-B041, KLMCG8GEND-B041, KLM8G1GEME-B041 — Samsung Global ✓ (2026-05-28)
+            #                       # pn[6]='G' → eMMC 5.1 (sem regressão para 4.5/5.0 nesta geração).
+            ("R", "eMMC 5.1", ""),  # geração R: processo RCTE/REWF (~2018-2019)
+            #                       # KLMCG1RCTE-B041, KLMDG2RCTE-B041, KLMEG4RCTE-B041 — Samsung Global ✓ (2026-05-28)
+            ("U", "eMMC 5.1", ""),  # geração U: processo UCTA/UCTB/UERM (~2019-2021)
+            #                       # KLMCG2UCTA-B041, KLMDG4UCTA-B041, KLMEG8UERM-C041 — Samsung Global ✓ (2026-05-28)
+            #                       # Nota: KLMEG8UERM tem sufixo -C041 (geração ainda mais nova) — capacidade igual.
         ]
         self._bulk_map("SAM_EMMC_GEN", emmc_gen, samsung, dry, overwrite)
 
@@ -360,16 +433,19 @@ class Command(BaseCommand):
         #          12Gb total = 2× 6Gb die. Mesmo tipo de die do K3QF7 (4× 6Gb).
         #   "7" → K3QF7F70DM-QGCE (distribuidores: 24Gx64 = 24Gb = 3GB;
         #          Samsung press release "3GB LPDDR3" confirm produção; Galaxy Note 3) ✓ 2026-05-09
-        # Bloqueadas por falta de evidência de fabricante:
-        #   "4" → K3QF4F40BM-FGCF citado como 32Gb (4GB) apenas por distribuidores.
-        #         Aguarda página semiconductor.samsung.com ou Octopart.
+        # Confirmadas por PSG 1H 2017 (Samsung oficial):
+        #   "6" → K3QF6F60AM-FGCF (PSG 1H 2017: 24Gb = 3GB) ✓ 2026-05-27
+        #          Consistente com K3QF6F60MM (PSG 2H 2014) = 3GB ✓
+        #   "4" → K3QF4F40BM-FGCF / K3QF4F40BM-AGCF (PSG 1H 2017: 32Gb = 4GB) ✓ 2026-05-27
         k3qf_cap = [
             ("1", "1GB",   "8Gb — 1× 8Gb die. Ex: K3QF1F10DMAGCE000 (Octopart). Resíduo."),
             ("2", "2GB",   "16Gb — 2× 8Gb die. Ex: K3QF2F20EM. Reacondicional seletivo."),
             ("3", "2GB",   "16Gb — revisão de die (NÃO é 3GB). Ex: K3QF3F30BM-AGCG (Samsung.com ✓). Reacondicional seletivo."),
             ("5", "1.5GB", "12Gb — 2× 6Gb die. Ex: K3QF5F50MM (Galaxy S5 Mini, Exynos 3470 ✓). Reacondicional seletivo."),
+            ("6", "3GB",   "24Gb — Ex: K3QF6F60AM-FGCF / K3QF6F60MM (PSG 1H 2017 + PSG 2H 2014 ✓). Reacondicional seletivo."),
             ("7", "3GB",   "24Gb — 4× 6Gb die. Ex: K3QF7F70DM-QGCE (Note 3, Samsung PR 3GB LPDDR3 ✓). Reacondicional seletivo."),
-            ("4", "4GB",   "32Gb — Ex: K3QF4F40BM-FGCF (Octopart: LPDDR3-1866 32G ✓). Reacondicional seletivo."),
+            ("4", "4GB",   "32Gb — Ex: K3QF4F40BM-FGCF / K3QF4F40BM-AGCF (PSG 1H 2017 ✓). Reacondicional seletivo."),
+            ("A", "8GB",   "64Gb — K3QFAFA0CM-AGCF (Samsung Semiconductor Global ✓ 2026-05-28). Geração C. Novo key — não existia no mapa anterior."),
         ]
         self._bulk_map("K3QF_CAP", k3qf_cap, samsung, dry, overwrite)
 
@@ -400,17 +476,42 @@ class Command(BaseCommand):
             ("6E", "2GB",   "16Gb"),
             ("7E", "3GB",   "24Gb"),
             ("BE", "4GB",   "32Gb"),
-            ("HE", "4GB",   "32Gb"),  # alias BE (empacotamento alternativo)
+            ("JE", "6GB",   "48Gb"),  # K4UJE3Q4AA-TFCL / K4UJE3Q4AA-THCL — Samsung Semiconductor Global ✓ "(48 Gb)"
+            #                         # Confirmado 2026-05-27: semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uje3q4aa-tfcl/
+            #                         # K4UJE3T (base PN) → pn[3:5]="JE" → 48Gb ÷ 8 = 6GB.
+            ("HE", "3GB",   "24Gb"),  # alias FE/7E (24Gb) — NÃO é alias de BE (32Gb)
+            #                         # CORRIGIDO 2026-05-26: era 4GB (32Gb) — ERRADO.
+            #                         # K4FHE3D4HM-MHCJ: Samsung Semiconductor Global ✓ → "(24 Gb)"
+            #                         # K4FHE3D4HA-THCL: Samsung Semiconductor EMEA ✓ → "(24Gb)"
+            #                         # K4FBE3D4HM-MGCJ = 32Gb (4GB) — HE ≠ BE densidades distintas.
             ("H5", "4GB",   "32Gb"),  # alias BE — K3UH5H50AM-AGCL/-JGCL/-JGCR: Samsung oficial + ssfkg ✓ "32Gb LPDDR4X"
             ("H6", "4GB",   "32Gb"),  # alias BE (geração 2020+)
-            # ⚠ BLOQUEADO: K3UH6H60AM = 2GB (16Gb)? IA afirma — SEM confirmação independente.
-            #   Conflito direto com H6=4GB (32Gb) já confirmado por múltiplas fontes K4F/K4U.
-            #   Não alterar até evidência de Octopart / Samsung Semiconductor / ssfkg.
+            # ⚠ CONFLITO H6 para K3U: PSG 1H 2017 lista K3UH6H60AM como 48Gb=6GB
+            #   enquanto H6=4GB (32Gb) está confirmado para K4F/K4U por múltiplas fontes.
+            #   Hipótese: em 4CH (K3RG/K3UH), o código H6 representa o total de 4 canais (48Gb),
+            #   enquanto em 2CH/1CH (K4F/K4U), H6=32Gb por chip.
+            #   Solução: K3UH6H60AM importado via CSV PSG 1H 2017 com capacity=6GB (DB vence grammar).
+            #   Decode para PNs genéricos K3U não importados: mantém H6=4GB até evidência direta.
+            #   ✓ 2026-05-27: PSG 1H 2017 confirma K3UH6H60AM=48Gb=6GB via KnownPart.
             ("CE", "8GB",   "64Gb"),
             ("H7", "8GB",   "64Gb"),  # alias CE (ex: K3UH7H70MM-TFCL)
             ("HD", "16GB",  "128Gb"),
         ]
         self._bulk_map("LPDDR4_CAP", lpddr4_cap, samsung, dry, overwrite)
+
+        # ── DecodeMap: capacidade K3RG (LPDDR4 4CH, pos 4-5, 2 chars) ──────────
+        # K3RG = LPDDR4 multi-channel 4CH x16 (≠ K3R=LPDDR3).
+        # Confirmado por PSG Samsung 1H 2017:
+        #   "4G" → K3RG4G40MM-MGCJ (24Gb = 3GB) ✓
+        #   "2G" → K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ (32Gb = 4GB) ✓
+        #   "6G" → K3RG6G60MM-MGCJ (48Gb = 6GB) ✓
+        # decode_cap_pos=4, decode_cap_len=2 — prefixo K3RG = 4 chars.
+        k3rg_cap = [
+            ("4G", "3GB", "24Gb — K3RG4G40MM-MGCJ (PSG 1H 2017 ✓)."),
+            ("2G", "4GB", "32Gb — K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ (PSG 1H 2017 ✓)."),
+            ("6G", "6GB", "48Gb — K3RG6G60MM-MGCJ (PSG 1H 2017 ✓)."),
+        ]
+        self._bulk_map("K3RG_CAP", k3rg_cap, samsung, dry, overwrite)
 
         # ── DecodeMap: densidade DRAM Mobile (pos 3, 1 char) ─────────────────
         dram_mob = [
@@ -438,15 +539,26 @@ class Command(BaseCommand):
             ("BK", "4GB",  "32Gb — ex: K3LKBKB0BMMGCP (Octopart: 1GX32 ✓)"),
             ("8L", "4GB",  "32Gb — ex: K3KL8L80EMMGCU (Octopart: 1GX32 ✓)"),
             ("7K", "8GB",  "64Gb — ex: K3LK7K70BM-BGCP (Galaxy S22; Octopart: 64Gb ✓)"),
-            ("CK", "8GB",  "64Gb — variante de empilhamento alternativo (sem PN Octopart)"),
-            ("4K", "12GB", "96Gb — ex: K3LK4K40CM (Galaxy S20 Ultra; Octopart: 12GB ✓)"),
-            ("5L", "16GB", "128Gb — ex: K3KL5L50DM (Octopart: 128Gb = 16GB ✓)"),
-            # Adicionados 2026-05-09 — fonte: distribuidores (⚠ sem Octopart/Samsung.com individual):
-            ("2K", "6GB",  "48Gb — ex: K3LK2K20CM-JFCP (distribuidor). Confirmar Octopart ao encontrar."),
-            ("3L", "8GB",  "64Gb — ex: K3KL3L30CM-BGCT (distribuidor). Confirmar Octopart ao encontrar."),
-            ("1L", "8GB",  "64Gb — ex: K3KL1L10GM-JGCT (distribuidor). Confirmar Octopart ao encontrar."),
-            ("6K", "16GB", "128Gb — ex: K3LK6K60BM-JHCP (distribuidor). Confirmar Octopart ao encontrar."),
-            ("4L", "16GB", "128Gb — ex: K3KL4L40DM-BGCU (distribuidor). Confirmar Octopart ao encontrar."),
+            ("CK", "8GB",  "64Gb — K3LKCKC0BM-MFCP (Samsung Global ✓). Variante de empilhamento alternativo."),
+            ("4K", "12GB", "96Gb — ex: K3LK4K40CM (Galaxy S20 Ultra; Octopart: 12GB ✓). K3LK4K40CM-JFCP Samsung Global ✓."),
+            ("5L", "16GB", "128Gb — K3KL5L50DM-BGCU (Samsung Global ✓)."),
+            # Adicionados 2026-05-09 (distribuidores) / confirmados 2026-05-27 (Samsung Global):
+            ("2K", "6GB",  "48Gb — K3LK2K20BM-BGCN (Samsung Global ✓)."),
+            ("3K", "8GB",  "64Gb — K3LK3K30EM-BGCN (Samsung Global ✓)."),
+            ("DK", "18GB", "144Gb — K3LKDKD0CM-BGCP (Samsung Global ✓). Flagship 2022+."),
+            ("3L", "8GB",  "64Gb — K3KL3L30CM-BGCU (Samsung Global ✓)."),
+            ("1L", "4GB",  "32Gb — K3KL1L10GM-JGCT (Samsung Global ✓ 2026-05-28). ⚠ CORRIGIDO: era 8GB/64Gb (bug distribuidor)."),
+            ("6L", "2GB",  "16Gb — K3KL6L60GM (Samsung Global ✓ 2026-05-28). Wearable/ultra-compact, 7500 Mbps."),
+            ("7L", "3GB",  "24Gb — K3KL7L70DM (Samsung Global ✓ 2026-05-28)."),
+            ("2L", "6GB",  "48Gb — K3KL2L20DM (Samsung Global ✓ 2026-05-28)."),
+            ("6K", "16GB", "128Gb — K3LK6K60BM-JGCP (Samsung Global ✓)."),
+            ("4L", "12GB", "96Gb — K3KL4L40DM-BGCU (Samsung Global ✓ '96 Gb'). ⚠ CORRIGIDO 2026-05-27: era 16GB/128Gb (bug distribuidor)."),
+            # Código DL (geração FM/EM 2023+): 48Gb=6GB via nova arquitetura de die.
+            # Mesmo volume que 2L mas processo diferente — NÃO intercambiável.
+            # Confirmado Samsung Semiconductor Global 2026-05-28:
+            #   K3KLDLD0FM (gen FM): MUCV / MGCV / MFCV
+            #   K3KLDLD0EM (gen EM): MUCU / TGCT (grau automotivo AEC-Q100)
+            ("DL", "6GB",  "48Gb — K3KLDLD0FM-MUCV (Samsung Global ✓ 2026-05-28). Gen FM/EM. VDDQ=0.5V. Processo diferente do 2L (mesma capacidade)."),
         ]
         self._bulk_map("LPDDR5_CAP", lpddr5_cap, samsung, dry, overwrite)
 
@@ -761,6 +873,28 @@ class Command(BaseCommand):
                     "Destino: bancada reacondicional mobile."
                 ),
             ),
+            # ── K3RG = LPDDR4 multi-channel 4CH x16 ──────────────────────────────
+            # ⚠ NÃO confundir com K3R (LPDDR3). K3RG é LPDDR4 — sufixo G diferencia.
+            # Prefixo 4 chars + priority=40 → vence K3R (3 chars) pelo tiebreaker -prefix_len.
+            # Confirmado por PSG Samsung 1H 2017 (tabela Mobile DRAM, seção LPDDR4):
+            #   K3RG4G40MM-MGCJ (24Gb=3GB), K3RG2G20CA-MGCJ (32Gb=4GB), K3RG6G60MM-MGCJ (48Gb=6GB).
+            # decode_cap_pos=4, decode_cap_len=2 → K3RG_CAP: 4G=3GB · 2G=4GB · 6G=6GB.
+            dict(
+                prefix="K3RG", chip_type="LPDDR4", subtype="LPDDR4 Multi-Channel",
+                interface="LPDDR4", decode_density_type="",
+                is_emcp=False, active=True, priority=40,
+                decode_cap_pos=4, decode_cap_len=2, decode_cap_map="K3RG_CAP",
+                tip=(
+                    "LPDDR4 Multi-Channel Samsung (K3RG). Tensão I/O: 1.1V. "
+                    "Configuração: 4CH x16 = 64-bit total — encapsulamento multi-die. "
+                    "Capacidade pn[4:6] → K3RG_CAP: 4G=3GB · 2G=4GB · 6G=6GB. "
+                    "Exemplos PSG 1H 2017: K3RG4G40MM (3GB, 366-ball 15×15) · "
+                    "K3RG2G20CA/CM (4GB, 366/432-ball) · K3RG6G60MM (6GB, 366-ball). "
+                    "⚠ NÃO confundir com K3R (LPDDR3) — K3RG é LPDDR4. "
+                    "⚠ NÃO misturar soquetes com K3U/K3UH (LPDDR4X, 0.6V). "
+                    "Destino: bancada reacondicional mobile (2016+ era)."
+                ),
+            ),
             # ═══ K3 GENÉRICO (fallback LPDDR2/3 — prioridade mínima) ════════════
             # Captura K3Q e qualquer K3x não mapeado explicitamente (K3R tem entrada própria acima).
             # DEVE ter priority > que todos os prefixos K3x específicos (K3U/K3Q=40)
@@ -819,6 +953,47 @@ class Command(BaseCommand):
                     "Destino: bancada reacondicional mobile."
                 ),
             ),
+            # K3PE = Samsung LPDDR2 multi-channel PoP (dual-channel, ~2013-2014).
+            # Prefixo 4 chars — precisa vencer K3P (3 chars, priority=35, LPDDR5X).
+            # Engine ordena por (priority ASC, prefix_len DESC): priority igual → prefixo
+            # mais longo vence. K3PE=35 iguala K3P=35 e prefix_len tiebreaker elege K3PE.
+            # ⚠ NÃO usar priority < 35 — K3P é LPDDR5X legítimo; só o tiebreaker deve decidir.
+            # K3=multi-channel PoP · P=LPDDR2 · E=geração.
+            # decode_density_type="" — suprime DRAM_MOBILE (pn[3]='E' sem mapeamento).
+            # Chips PSG 2H 2014: K3PE7E70QM (1GB, 216/220-ball) · K3PE0E00QM (2GB, 216/220-ball).
+            dict(
+                prefix="K3PE", chip_type="LPDDR2", subtype="LPDDR2 Multi-Channel PoP",
+                interface="LPDDR2", decode_density_type="",
+                is_emcp=False, active=True, priority=35,
+                tip=(
+                    "LPDDR2 Multi-Channel Samsung (K3PE). "
+                    "K3=multi-channel PoP · P=LPDDR2 · E=geração. "
+                    "Configuração dual-channel (2CH x32) — pacote PoP empilhado. "
+                    "Exemplos PSG 2H 2014: K3PE7E70QM (1GB, 216/220-ball) · K3PE0E00QM (2GB). "
+                    "⚠ NÃO confundir com K4P (LPDDR2 single-channel, sem PoP). "
+                    "Destino: bancada reacondicional mobile (verificar demanda B2B)."
+                ),
+            ),
+            # K3MF = Samsung LPDDR3 multi-channel PoP (dual-channel, ~2013-2014).
+            # Prefixo 4 chars → vence K3 genérico (2 chars, chip_type="RAM").
+            # K3=multi-channel PoP · M=geração interna · F=sufixo LPDDR3.
+            # decode_density_type="" — suprime DRAM_MOBILE: pn[3]='F' retornaria
+            #   16Gb=2GB para TODOS, mas K3MF9=3GB (24Gb) — valor errado.
+            # Chips PSG 2H 2014: K3MF8F80DM (2GB, 504-ball 15×15mm) · K3MF9F90MM (3GB, 504-ball).
+            dict(
+                prefix="K3MF", chip_type="LPDDR3", subtype="LPDDR3 Multi-Channel PoP",
+                interface="LPDDR3", decode_density_type="",
+                is_emcp=False, active=True, priority=40,
+                tip=(
+                    "LPDDR3 Multi-Channel Samsung (K3MF). "
+                    "K3=multi-channel PoP · M=geração interna · F=LPDDR3. "
+                    "Pacote grande: 504-ball 15×15mm — dual-channel (2CH x32). "
+                    "Exemplos PSG 2H 2014: K3MF8F80DM (2GB) · K3MF9F90MM (3GB). "
+                    "⚠ NÃO confundir com K3QF (também LPDDR3 multi-channel, prefixo K3Q). "
+                    "⚠ decode_density_type='' — pn[3]='F' via DRAM_MOBILE erraria K3MF9=3GB. "
+                    "Destino: bancada reacondicional mobile (PoP LPDDR3 — checar demanda)."
+                ),
+            ),
             # K4E = Samsung LPDDR3 standalone (~2013-2016).
             # Capacidade: pn[3:5] — sufixo "E" identifica LPDDR3 nessa família.
             # Chaves: 8E=1GB · 6E=2GB · FE=3GB(raro) · BE=4GB.
@@ -844,7 +1019,9 @@ class Command(BaseCommand):
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="LPDDR4_CAP",
                 tip=(
                     "LPDDR4 Samsung. Tensão I/O: 1.1V. RAM pura — sem componente Flash. "
-                    "Capacidade: pn[3:5] → 4E=512MB · 8E=1GB · 6E=2GB · 7E=3GB · BE/HE/H6=4GB · CE/H7=8GB · HD=16GB. "
+                    "Capacidade: pn[3:5] → 4E=512MB · 8E=1GB · 6E=2GB · 7E/HE=3GB · BE/H5/H6=4GB · JE=6GB · CE/H7=8GB · HD=16GB. "
+                    "⚠ HE=3GB (24Gb) — NÃO confundir com BE=4GB (32Gb). "
+                    "⚠ JE=6GB (48Gb) — Samsung Semiconductor Global ✓ (confirmado 2026-05-27). "
                     "⚠ 512MB e 1GB: sem liquidez B2B → resíduo (moagem/refino). "
                     "2GB+: bancada reacondicional mobile. "
                     "⚠ NÃO misturar soquetes com K4U/K3U (LPDDR4X, 0.6V) — tensão diferente."
@@ -857,7 +1034,9 @@ class Command(BaseCommand):
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="LPDDR4_CAP",
                 tip=(
                     "LPDDR4X Samsung. Tensão I/O: 0.6V. RAM pura — sem componente Flash. "
-                    "Capacidade: pn[3:5] → 4E=512MB · 8E=1GB · 6E=2GB · 7E=3GB · BE/HE/H6=4GB · CE/H7=8GB · HD=16GB. "
+                    "Capacidade: pn[3:5] → 4E=512MB · 8E=1GB · 6E=2GB · 7E/HE=3GB · BE/H5/H6=4GB · JE=6GB · CE/H7=8GB · HD=16GB. "
+                    "⚠ HE=3GB (24Gb) — NÃO confundir com BE=4GB (32Gb). "
+                    "⚠ JE=6GB (48Gb) — Samsung Semiconductor Global ✓ (confirmado 2026-05-27). "
                     "⚠ 512MB e 1GB: sem liquidez B2B → resíduo (moagem/refino). "
                     "2GB+: bancada reacondicional mobile. "
                     "⚠ NÃO misturar soquetes com K4F (LPDDR4, 1.1V) — tensão diferente."
@@ -870,7 +1049,8 @@ class Command(BaseCommand):
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="LPDDR4_CAP",
                 tip=(
                     "LPDDR4X Multi-Channel Samsung. Tensão I/O: 0.6V. RAM pura — sem componente Flash. "
-                    "Capacidade: pn[3:5] → BE/HE/H5/H6=4GB · CE/H7=8GB · HD=16GB (mais comuns nesta família). "
+                    "Capacidade: pn[3:5] → HE=3GB · BE/H5/H6=4GB · CE/H7=8GB · HD=16GB (mais comuns nesta família). "
+                    "⚠ HE=3GB (24Gb) — NÃO confundir com BE=4GB (32Gb). "
                     "Exemplos confirmados: K3UH5H50AM-AGCL (H5=32Gb=4GB, Samsung oficial ✓) · K3UH7H70MM-TFCL (H7=8GB). "
                     "⚠ NÃO misturar soquetes com K4F (LPDDR4, 1.1V) — tensão diferente. "
                     "Destino: bancada reacondicional mobile."
@@ -892,31 +1072,35 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="K3KL", chip_type="LPDDR5", subtype="LPDDR5",
-                interface="LPDDR5", decode_density_type="",
-                decode_cap_pos=4, decode_cap_len=2, decode_cap_map="LPDDR5_CAP",
-                is_emcp=False, active=True, priority=40,
-                tip=(
-                    "LPDDR5 Samsung (maioria dos K3KL). VDDQ=0.9V típico — mas alguns SKUs são LPDDR5X (0.5V). "
-                    "⚠ Sempre verificar sufixo/revisão antes de inserir no jig: K3KL8L/K3KL*EM podem ser LPDDR5X. "
-                    "Velocidade: 6400 Mbps (sufixo CT). "
-                    "Densidade em pn[4:6] → mapa LPDDR5_CAP: 9L=2GB(16Gb), 8L=4GB(32Gb), 5L=16GB(128Gb). "
-                    "Códigos não mapeados: capacity=null — consultar datasheet. "
-                    "Exemplos: K3KL9L90DM (2GB), K3KL8L80EM (4GB), K3KL5L50DM (16GB). "
-                    "Destino: bancada reacondicional MOBILE (BGA mobile — socket diferente do DDR5 desktop)."
-                ),
-            ),
-            dict(
-                prefix="K3LK", chip_type="LPDDR5X", subtype="LPDDR5X",
+                prefix="K3KL", chip_type="LPDDR5X", subtype="LPDDR5X",
                 interface="LPDDR5X", decode_density_type="",
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="LPDDR5_CAP",
                 is_emcp=False, active=True, priority=40,
                 tip=(
-                    "⚠ LPDDR5X (2021–presente). VDDQ=0.5V — RISCO DE QUEIMA no socket de LPDDR5 (0.9V). "
-                    "Velocidade: 8533 Mbps (sufixo CP). Flagships Samsung (Galaxy S22+, S23, S24). "
-                    "Densidade em pn[4:6] → mapa LPDDR5_CAP: BK=4GB(32Gb), 7K/CK=8GB(64Gb), 4K=12GB(96Gb). "
-                    "Exemplos: K3LKBKB0BM (4GB), K3LK7K70BM (8GB), K3LK4K40CM (12GB). "
-                    "Destino: bancada reacondicional MOBILE. Tolerância zero para envio a resíduo."
+                    "LPDDR5X Samsung (K3KL). VDDQ=0.5V — RISCO DE QUEIMA no socket de LPDDR5 (VDDQ=0.9V). "
+                    "⚠ CORRIGIDO 2026-05-27: era classificado como LPDDR5 — ERRADO. "
+                    "Samsung Global categoriza K3KL em /lpddr5x/ (K3LK vai para /lpddr5/). "
+                    "Velocidade: até 8533 Mbps (gen DM/EM/FM). Flagships Samsung (Galaxy S22+ S23 S24). "
+                    "Densidade em pn[4:6] → LPDDR5_CAP: 6L/9L=2GB · 1L/8L=4GB · 7L=3GB · 2L/DL=6GB · 3L=8GB · 4L=12GB · 5L=16GB. "
+                    "Gerações pn[8]: DM (2021-22) · CM/EM (2022-23) · FM (2023+). "
+                    "Exemplos Samsung Global: K3KL3L30CM-BGCT (8GB) · K3KL4L40FM-BGCV (12GB) · K3KL5L50DM-BGCU (16GB) · K3KLDLD0FM-MUCV (6GB DL). "
+                    "Destino: bancada reacondicional MOBILE. Verificar VDDQ antes de inserir no jig."
+                ),
+            ),
+            dict(
+                prefix="K3LK", chip_type="LPDDR5", subtype="LPDDR5",
+                interface="LPDDR5", decode_density_type="",
+                decode_cap_pos=4, decode_cap_len=2, decode_cap_map="LPDDR5_CAP",
+                is_emcp=False, active=True, priority=40,
+                tip=(
+                    "LPDDR5 Samsung (K3LK). VDDQ=0.9V típico. "
+                    "⚠ CORRIGIDO 2026-05-27: era classificado como LPDDR5X — ERRADO. "
+                    "Samsung Global categoriza K3LK em /lpddr5/ (não /lpddr5x/). "
+                    "K3KL=LPDDR5X (VDDQ=0.5V) — NÃO confundir sockets: incompatíveis, risco de queima. Ambas corrigidas 2026-05-27. "
+                    "Velocidade: até 6400 Mbps. Flagships Samsung (Galaxy S21, S22, S23, S24). "
+                    "Densidade em pn[4:6] → LPDDR5_CAP: BK=4GB · 7K/CK/3K=8GB · 4K=12GB · 6K/DK=16-18GB. "
+                    "Exemplos Samsung Global: K3LKBKB0BM (4GB) · K3LK7K70BM (8GB) · K3LK4K40CM (12GB) · K3LKDKD0CM (18GB). "
+                    "Destino: bancada reacondicional MOBILE. Verificar subtype antes de inserir no jig."
                 ),
             ),
 
@@ -1025,6 +1209,37 @@ class Command(BaseCommand):
                     "Destino: bancada reacondicional Flash UFS."
                 ),
             ),
+            dict(
+                prefix="KLUEG", chip_type="UFS", subtype="UFS 3.1 Samsung",
+                interface="UFS 3.1", pn_length=10,
+                decode_cap_pos=3, decode_cap_len=1, decode_cap_map="SAM_FLASH_CAP",
+                is_emcp=False, active=True, priority=40,
+                tip=(
+                    "UFS 3.1 Samsung — 256GB standalone (K=Samsung, L=NAND, U=UFS, E=256GB). "
+                    "Sufixos UHY/UHD = UFS 3.1. Presente em Samsung Galaxy S21/S22/S23 256GB. "
+                    "⚠ Variante legado: KLUEG8U1EM = UFS 2.1 (PSG 1H 2017 — KnownPart confirmado). "
+                    "⚠ Variante UFS 4.0: KLUEG4RHHD/F/HF (2023+) — KnownPart confirmado. "
+                    "Capacidade: pn[3] → E=256GB (SAM_FLASH_CAP). "
+                    "Destino: bancada reacondicional Flash UFS alta capacidade."
+                ),
+            ),
+            # KLUGG: UFS 4.0/4.1 1TB — família flagship 2023+.
+            # Confirmado Samsung Semiconductor Global: KLUGG8NHHB, KLUGG8NHKB,
+            # KLUGGARHHD, KLUGGARHUF, KLUGGGRHKF (UFS 4.1).
+            # Sem esta entrada, engine cai para KLU genérico (UFS 3.1 — ERRADO).
+            dict(
+                prefix="KLUGG", chip_type="UFS", subtype="UFS Samsung (1TB)",
+                interface="UFS", pn_length=10,
+                decode_cap_pos=3, decode_cap_len=1, decode_cap_map="SAM_FLASH_CAP",
+                is_emcp=False, active=True, priority=40,
+                tip=(
+                    "Samsung UFS 1TB standalone — família KLUGG abrange UFS 3.0 e 4.0+. "
+                    "K=Samsung, L=NAND, U=UFS, G=1TB (SAM_FLASH_CAP). "
+                    "⚠ Versão UFS exata (3.0/4.0/4.1) determinada pelo KnownPart — não confiar no grammar. "
+                    "Sem esta entrada o engine caia para KLU genérico (pn_length=10 não bate). "
+                    "Destino: bancada reacondicional Flash UFS alta capacidade (valor premium)."
+                ),
+            ),
 
             # ═══ eMCP: eMMC + LPDDR ══════════════════════════════════════════
             # Cada prefixo de 3 letras = geração diferente de RAM
@@ -1106,13 +1321,14 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="KMR", chip_type="eMCP", subtype="LPDDR4/4X + eMMC 5.1",
+                prefix="KMR", chip_type="eMCP", subtype="LPDDR3 + eMMC 5.1",
                 interface="eMMC 5.1", pn_length=10,  # todos os PNs KMR são 10 chars (ex: KMRH60014A, KMR310001M)
                 is_emcp=True, active=True, priority=40,
                 decode_gen_pos=2, decode_gen_map="SAM_EMCP_GEN",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
-                tip="eMCP Samsung LPDDR4/4X + eMMC 5.1. "
-                    "R = LPDDR4/4X confirmado (Galaxy A7 2017, A8 2018). "
+                tip="eMCP Samsung LPDDR3 + eMMC 5.1. "
+                    "R = LPDDR3 (2026-05-26: corrigido de LPDDR4/4X — âncora anterior era falsa). "
+                    "Exemplos: KMRH60014A (64GB+4GB LPDDR3-1866), KMRX60014M (32GB+4GB LPDDR3). "
                     "Destino: reacondicional eMCP.",
             ),
             dict(
@@ -1175,6 +1391,55 @@ class Command(BaseCommand):
                     "Destino: bancada reacondicional eMCP.",
             ),
 
+            # ═══ eMCP LPDDR4X: KM3P ═══════════════════════════════════════════
+            # Família Samsung eMCP geração 2022+ confirmada (Glochip/Indasina).
+            # KM3P6001CM-B517 = 64GB eMMC 5.1 + 48Gb LPDDR4X = 6GB.
+            # decode_gen_pos=None: '3' em pn[2] é dígito numérico de geração,
+            #   NÃO é letra de tipo RAM — SAM_EMCP_GEN não cobre dígitos.
+            # ⚠ ATENÇÃO cap_key: pn[3:5]='P6' → SAM_EMCP_CAP['P6'] = 64GB + 4GB
+            #   (âncora KMD/KMDP6001DA). KM3P6001CM tem 6GB RAM (48Gb).
+            #   Shared key conflict → tratar via fix_known_parts.py.
+            dict(
+                prefix="KM3P", chip_type="eMCP", subtype="LPDDR4X + eMMC 5.1",
+                interface="eMMC 5.1", pn_length=10,
+                is_emcp=True, active=True, priority=40,
+                decode_gen_pos=None, decode_gen_map="",
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
+                tip=(
+                    "eMCP Samsung LPDDR4X + eMMC 5.1 (família KM3P, geração 2022+). "
+                    "K=Samsung · M=MCP · 3=geração numérica · P=LPDDR4X. "
+                    "Confirmado: KM3P6001CM-B517 = 64GB eMMC 5.1 + 48Gb÷8=6GB LPDDR4X (Glochip/Indasina ✓). "
+                    "⚠ cap_key pn[3:5]='P6' → SAM_EMCP_CAP = 64GB+4GB (âncora KMD); "
+                    "KM3P6001CM tem 6GB RAM — exceção: corrigir via fix_known_parts. "
+                    "Status 2022+: Sample → aparição crescente prevista. "
+                    "Destino: bancada reacondicional eMCP."
+                ),
+            ),
+
+            # ═══ eMCP LPDDR4X: KM3H ═══════════════════════════════════════════
+            # Família Samsung eMCP geração 2022+ — variante de velocidade 3733 Mbps.
+            # KM3H6001CA-B515 = 64GB eMMC 5.1 + 48Gb LPDDR4X-3733 = 6GB.
+            # 'H' = LPDDR4X a 3733 Mbps (vs 'P' = 4266 Mbps na família KM3P).
+            # priority=38: mais específico que KMD (3 chars, priority=40).
+            # ⚠ cap_key H6 → SAM_EMCP_CAP H6=64GB+4GB (âncora KMD). KM3H6001CA tem 6GB.
+            #   Shared key conflict → tratar via fix_known_parts.
+            dict(
+                prefix="KM3H", chip_type="eMCP", subtype="LPDDR4X + eMMC 5.1",
+                interface="eMMC 5.1", pn_length=10,
+                is_emcp=True, active=True, priority=38,
+                decode_gen_pos=None, decode_gen_map="",
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
+                tip=(
+                    "eMCP Samsung LPDDR4X-3733 + eMMC 5.1 (família KM3H — variante velocidade). "
+                    "K=Samsung · M=MCP · 3=geração numérica · H=LPDDR4X 3733 Mbps (vs P=4266 Mbps). "
+                    "Confirmado: KM3H6001CA-B515 = 64GB eMMC 5.1 + 48Gb÷8=6GB LPDDR4X-3733 ✓. "
+                    "⚠ cap_key pn[3:5]='H6' → SAM_EMCP_CAP = 64GB+4GB (âncora KMD); "
+                    "KM3H6001CA tem 6GB RAM — exceção: corrigir via fix_known_parts. "
+                    "Status 2022+: geração nova — aparição crescente prevista no mercado secundário. "
+                    "Destino: bancada reacondicional eMCP."
+                ),
+            ),
+
             # ═══ uMCP: UFS + LPDDR ═══════════════════════════════════════════
             # uMCP (Universal Multi-Chip Package) combina armazenamento UFS com
             # LPDDR em um único package. Interface UFS é incompatível com sockets
@@ -1208,18 +1473,35 @@ class Command(BaseCommand):
                     "Destino: bancada reacondicional eMCP."
                 ),
             ),
+            # ── KML: eMCP legado LPDDR1 (~2013-2015) ─────────────────────────────
+            # ⚠ CORRIGIDO 2026-05-27: era classificado como "uMCP UFS 3.1 + LPDDR5" — ERRADO.
+            # Evidências:
+            #   • KML7X000HM-B507: eetgroup.com → "8GB+8GB, EMMC+LPDD" (eMMC, NÃO UFS 3.1)
+            #   • KML5U000HM-B505: Puris → "4+8 153ball eMCP-D1" → categoria "eMMC+LPDDR" (LPDDR1)
+            #   • emmc-ufs.com: KML7X000HM possui página de firmware eMMC (NÃO UFS)
+            #   • Aparece em Galaxy Core i8262 (2013) — era incompatível com UFS 3.1 + LPDDR5
+            #   • uMCPs modernos Samsung são KM8-series (ex: KM8V8001LM-B813 Galaxy S21 ✓)
+            # eMCP-D1 (Puris nomenclatura): D = geração DRAM, 1 = LPDDR1.
+            # decode_gen_pos=None obrigatório: SAM_EMCP_GEN['L']="LPDDR5" é ERRADO para KML.
+            # Engine usará Caminho 3 (subtype) para extrair "LPDDR1".
             dict(
-                prefix="KML", chip_type="uMCP", subtype="UFS 3.1 + LPDDR5",
-                interface="UFS 3.1", pn_length=10,
+                prefix="KML", chip_type="eMCP", subtype="LPDDR2 + eMMC (legado)",
+                interface="eMMC", pn_length=10,
                 is_emcp=True, active=True, priority=40,
-                decode_gen_pos=2, decode_gen_map="SAM_EMCP_GEN",
+                decode_gen_pos=None, decode_gen_map="",  # L=LPDDR5 no SAM_EMCP_GEN é errado; engine usa subtype.
+                # LPDDR version: Puris "eMCP-D1" / categoria "eMMC+LPDDR" (sem nº) é ambíguo.
+                # LPDDR2 adotado: Exynos 4212 (Galaxy Core i8262) suporta LPDDR2 (NÃO LPDDR1).
+                # LPDDR1 era obsoleto em smartphones desde ~2012. Era 2013-2015 = KMJ/KMN = LPDDR2.
+                # ⚠ Sem confirmação Tier 1 explícita para versão LPDDR — inferência de era+SoC.
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
                 tip=(
-                    "uMCP Samsung UFS 3.1 (~1200 MB/s) + LPDDR5 (0.9V) — high-end, 2021-2022. "
-                    "L = LPDDR5 confirmado. Dispositivos: Galaxy S21 série, S21 FE. "
-                    "Capacidade: pn[3:5] → mapa SAM_EMCP_CAP (ex: K6=128GB+8GB, L6=256GB+8GB). "
-                    "Alta demanda no mercado de reparo — NÃO enviar para resíduo. "
-                    "Destino: bancada reacondicional uMCP (Premium)."
+                    "⚠ eMCP Samsung LPDDR2 + eMMC legado (~2013-2015). "
+                    "NÃO confundir com uMCP moderno: KML NÃO usa UFS 3.1 + LPDDR5 (erro corrigido 2026-05-27). "
+                    "Puris: KML5U000HM-B505 = 'eMCP-D1', categoria eMMC+LPDDR — versão LPDDR ambígua. "
+                    "LPDDR2 inferido: era 2013-2015 + Exynos 4212 compatível com LPDDR2. "
+                    "Galaxy S21 Exynos usa KM8-series (KM8V8001LM-B813), NÃO KML. "
+                    "Capacidade: pn[3:5] → SAM_EMCP_CAP (ex: 7X=8GB+1GB via fix_known_parts). "
+                    "Destino: legado — valor comercial baixo, apenas reacondicional entry-level."
                 ),
             ),
             # ── KM + DÍGITO: uMCP linha numérica Samsung (2020+) ─────────────────
@@ -1303,28 +1585,61 @@ class Command(BaseCommand):
                     "Destino: bancada reacondicional uMCP (Intermediário/Alta liquidez)."
                 ),
             ),
+            # ── KM2P: UFS 2.1/2.2 + LPDDR4X (64GB — densidade intermediária) ──────
+            # pn[2]='2', pn[3]='P' → subfamília 64GB UFS + 6GB LPDDR4X.
+            # Confirmado: KM2P8001CM-B518 = 64GB UFS 2.1 + 6GB LPDDR4X-4266.
+            #             KM2P9001CM-B518 = 64GB UFS 2.2 + 6GB LPDDR4X-4266.
+            # priority=38: mais específico que KM2 genérico (priority=40).
+            # ⚠ cap_key: P8 → SAM_EMCP_CAP P8=64GB+4GB (âncora KM5P). KM2P usa 6GB.
+            #   Shared key conflict → tratar via fix_known_parts.
+            dict(
+                prefix="KM2P", chip_type="uMCP", subtype="UFS + LPDDR4X (64GB intermediário)",
+                interface="UFS", pn_length=10,
+                is_emcp=True, active=True, priority=38,
+                decode_gen_pos=None, decode_gen_map="",
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
+                tip=(
+                    "uMCP Samsung KM2P — 64GB UFS 2.1/2.2 + LPDDR4X-4266. "
+                    "pn[3]='P' identifica 64GB storage (vs KM2L=128GB, KM2V=128GB). "
+                    "Confirmado: KM2P8001CM-B518 = 64GB UFS2.1 + 6GB LPDDR4X ✓. "
+                    "  KM2P9001CM-B518 = 64GB UFS2.2 + 6GB LPDDR4X ✓. "
+                    "⚠ cap_key P8→4GB e P9→4GB no mapa base (âncora KM5P); "
+                    "KM2P usa 6GB — corrigir via fix_known_parts. "
+                    "Valor comercial ELEVADO — NÃO enviar para resíduo. "
+                    "Destino: bancada reacondicional uMCP (Intermediário)."
+                ),
+            ),
             # ── KM2 genérico: cobre KM2V (UFS 3.1 + LPDDR5) e outras subfamílias ──
             # pn[2]='V' → UFS 3.1 + LPDDR5 (ex: KM2V7001CM-B706 flagship). Confirmado.
             # pn[2]='F' → alta capacidade (KM2F8001CM-B707 = 256+48 LPDDR4X per Preduo).
             #   ⚠ KM2F NÃO é necessariamente LPDDR5 — aguardar confirmação adicional.
             # KM2L é tratado pela subfamília acima (priority=35, mais específica).
+            # ⚠ CORRIGIDO 2026-05-27: "KM2V=UFS 3.1+LPDDR5" era ERRADO.
+            # KM2V8001CM-B707 (âncora confirmada): UFS 2.1 + LPDDR4X-4266 + 6GB (48Gb).
+            #   Preduo: categoria "UFS+LPDDR4x", "128+48". Amazon: "KM2V8001CM-6G-4266Mbps".
+            #   ssfkg.com: "UFS 2.1 SAMSUNG". Speed 4266 Mbps = LPDDR4X (LPDDR5 ≥ 6400 Mbps).
+            # Samsung Semiconductor Global redireciona a página do chip para seção "LPDDR5 uMCP"
+            # — parece categorização do site, NÃO reflete a velocidade real (4266 Mbps = LPD4X).
+            # Subtype atualizado para "UFS + LPDDR4X" como base até PN LPDDR5 real ser confirmado.
             dict(
-                prefix="KM2", chip_type="uMCP", subtype="UFS 3.1 + LPDDR5 (ultra-premium)",
-                interface="UFS 3.1", pn_length=10,
+                prefix="KM2", chip_type="uMCP", subtype="UFS + LPDDR4X (premium)",
+                interface="UFS", pn_length=10,
                 is_emcp=True, active=True, priority=40,
                 decode_gen_pos=None, decode_gen_map="",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
                 tip=(
-                    "⚠ uMCP Samsung linha numérica KM2 — chip ULTRA-PREMIUM (genérico). "
-                    "Interface UFS 3.1 (~2100 MB/s) + LPDDR5 — NUNCA eMMC. "
-                    "Subfamílias: KM2L=UFS 2.2+LPDDR4X (intermediário, coberto pela família KM2L), "
-                    "KM2V=UFS 3.1+LPDDR5 (flagship, Galaxy S21/S22), "
-                    "KM2F=alta capacidade (verificar via fix_known_parts). "
-                    "Se o pn começa com KM2L, a família KM2L (priority=35) tem precedência. "
-                    "Capacidade: pn[3:5] → mapa SAM_EMCP_CAP. "
-                    "Valor comercial MUITO ELEVADO — NÃO enviar para resíduo ou eMMC. "
-                    "ATENÇÃO OCR: '1' confundido com 'I' nesses PNs — conferir PN físico. "
-                    "Destino: bancada reacondicional uMCP (Premium Tier 1)."
+                    "⚠ uMCP Samsung linha numérica KM2 — chip PREMIUM. NÃO eMMC. "
+                    "Subfamílias: KM2L=UFS 2.2+LPDDR4X (coberto pela família KM2L com priority=35). "
+                    "KM2V=UFS 2.1+LPDDR4X (CORRIGIDO 2026-05-27: era LPDDR5 — ERRADO). "
+                    "  Âncora: KM2V8001CM-B707 = 128GB UFS 2.1 + 48Gb÷8=6GB LPDDR4X-4266 ✓. "
+                    "  Speed 4266 Mbps confirma LPDDR4X (LPDDR5 mínimo ≥ 6400 Mbps). "
+                    "KM2F=alta capacidade — verificar via fix_known_parts. "
+                    "⚠ cap_key V8: KM2V8001CM=6GB (48Gb) vs KM5/KM8 V8=4GB (32Gb) — shared key conflict. "
+                    "Se o PN começa com KM2L, família KM2L (priority=35) tem precedência. "
+                    "Capacidade: pn[3:5] → SAM_EMCP_CAP (atenção a conflitos de shared key). "
+                    "Valor comercial ELEVADO — NÃO enviar para resíduo ou eMMC. "
+                    "ATENÇÃO OCR: '1' confundido com 'I' — conferir PN físico. "
+                    "Destino: bancada reacondicional uMCP (Premium)."
                 ),
             ),
             dict(
@@ -1352,6 +1667,47 @@ class Command(BaseCommand):
             #     KLUDG4UHDC-B0E1 (UFS 3.1 standalone) — sem uMCP.
             #   • Nenhum PN KMV2.../KMV3... encontrado no Octopart ou Samsung semiconductor.
             # Chips KMVx... → cobertos pela família KMV (3 chars, priority=40) abaixo.
+
+            # ── KMAG: uMCP UFS 3.1 + LPDDR5 (128GB) ─────────────────────────────
+            # pn[2]='A', pn[3]='G' → subfamília 128GB UFS 3.1 + 8GB LPDDR5.
+            # Confirmado: KMAG9001PM-B814 = 128GB UFS 3.1 + 8GB LPDDR5-6400. 297 FBGA.
+            # SAM_EMCP_CAP G9=128GB+8GB (entrada adicionada 2026-05-28).
+            # priority=38: mais específico que KM (2 chars, priority=90).
+            dict(
+                prefix="KMAG", chip_type="uMCP", subtype="LPDDR5 + UFS 3.1 (128GB flagship)",
+                interface="UFS 3.1", pn_length=10,
+                is_emcp=True, active=True, priority=38,
+                decode_gen_pos=None, decode_gen_map="",
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
+                tip=(
+                    "⚠ uMCP Samsung KMAG — FLAGSHIP. UFS 3.1 (~2400 MB/s) + LPDDR5-6400. "
+                    "Confirmado: KMAG9001PM-B814 = 128GB UFS 3.1 + 64Gb÷8=8GB LPDDR5 ✓. "
+                    "297-ball FBGA. SAM_EMCP_CAP G9=128GB+8GB. "
+                    "⚠ VDDQ=0.6V (LPDDR5 — diferente do LPDDR4X). NÃO confundir na bancada. "
+                    "Destinado a flagships Galaxy 2022+. Valor comercial MUITO ELEVADO. "
+                    "Destino: bancada reacondicional uMCP (Flagship Tier)."
+                ),
+            ),
+            # ── KMAS: uMCP UFS 3.1 + LPDDR5 (256GB) ─────────────────────────────
+            # pn[2]='A', pn[3]='S' → subfamília 256GB UFS 3.1 + 8GB LPDDR5.
+            # Confirmado: KMAS9001PM-BC02 = 256GB UFS 3.1 + 8GB LPDDR5-6400. 297 FBGA.
+            # SAM_EMCP_CAP S9=256GB+8GB (entrada adicionada 2026-05-28).
+            # priority=38: mais específico que KM (2 chars, priority=90).
+            dict(
+                prefix="KMAS", chip_type="uMCP", subtype="LPDDR5 + UFS 3.1 (256GB flagship)",
+                interface="UFS 3.1", pn_length=10,
+                is_emcp=True, active=True, priority=38,
+                decode_gen_pos=None, decode_gen_map="",
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
+                tip=(
+                    "⚠ uMCP Samsung KMAS — FLAGSHIP 256GB. UFS 3.1 (~2400 MB/s) + LPDDR5-6400. "
+                    "Confirmado: KMAS9001PM-BC02 = 256GB UFS 3.1 + 64Gb÷8=8GB LPDDR5 ✓. "
+                    "297-ball FBGA. SAM_EMCP_CAP S9=256GB+8GB. Sufixo -BC02 (geração C, mais nova). "
+                    "⚠ VDDQ=0.6V (LPDDR5). NÃO confundir KMAS com KMDX (eMCP LPDDR4X). "
+                    "Destinado a flagships Galaxy 2022+. Valor comercial MUITO ELEVADO. "
+                    "Destino: bancada reacondicional uMCP (Flagship Tier)."
+                ),
+            ),
 
             dict(
                 # KMV = eMCP legado (2010-2013): LPDDR2 + eMMC.

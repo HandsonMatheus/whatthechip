@@ -18,3 +18,7 @@ playwright>=1.40        # Browser real para Cloudflare JS challenge
 # Utilitários dos scripts
 tqdm>=4.0               # Barra de progresso no enrich_gemini.py
 openpyxl>=3.1           # Exportação de estoque para .xlsx
+
+# Coleta FBGA — pipeline bulk (stages 2-5)
+pdfplumber>=0.10        # Extração de tabelas de datasheets PDF (Stage 2)
+requests>=2.31          # Fallback HTTP simples (Wayback CDX API, etc.)

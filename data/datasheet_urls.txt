@@ -1,0 +1,12 @@
+# datasheet_urls.txt — fila de PDFs para o Stage 2 (collect_datasheets.py)
+# Uma URL por linha. Linhas com # são comentários.
+#
+# URLs adicionadas por collect_preduo_bulk e collect_octopart ficam aqui.
+# Para adicionar PDFs de datasheet manualmente, use data/datasheet_seed_urls.txt
+# (execute: python scripts/collect_datasheets.py --discover para criar o arquivo).
+#
+# NOTA: a URL abaixo era um flyer de marketing (0 bytes) — removida:
+# https://assets.micron.com/adobe/assets/urn:aaid:aem:6d979075.../emmc-embedded-flyer.pdf
+
+# Adicionado automaticamente (1 URLs)
+https://assets.micron.com/adobe/assets/urn:aaid:aem:6d979075-dac7-40e2-b0ac-25e65ee228e7/renditions/original/as/emmc-embedded-flyer.pdf

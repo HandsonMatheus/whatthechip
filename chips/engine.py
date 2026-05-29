@@ -192,9 +192,25 @@ EMCP_RAM_TYPES = {
 # ── Regex de capacidade (usada em múltiplos lugares) ──────────────────────────
 _CAP_RE = re.compile(r"(\d+)\s*([GMK])B", re.I)
 
+# ── Regex de detecção de código FBGA ─────────────────────────────────────────
+# Padrão Micron: 5 caracteres alfanuméricos, 2º char numérico.
+# DRAM mobile (LPDDR3/4/4X): D9XXX  ex: D9VFC, D9TBH, D9WFJ, D9SHD
+# NAND / flash:               D8XXX  ex: D8TXF, D8WXW
+# eMCP / LPDDR / eMMC / UFS:  JWB11, JY106, JY938, etc. (duas letras no início)
+#
+# Padrão ampliado: qualquer 5 chars alfanuméricos começando com letra maiúscula.
+# Critério de não-conflito com PNs reais: PNs têm 8+ chars (MT53B..., MTFC...).
+_FBGA_RE = re.compile(r'^[A-Z][A-Z0-9]{4}$')
+
 # ── Regex para geração LPDDR / DDR (usada em assess_profitability) ────────────
 _LPDDR_GEN_RE = re.compile(r'LPDDR(\d+)?', re.I)
 _DDR_GEN_RE   = re.compile(r'(?<![A-Z])DDR(\d+)?', re.I)  # DDR mas não LPDDR
+# Nota: _DDR_GEN_RE é usado com findall() para capturar TODAS as ocorrências
+# (ex: "DDR DDR3/DDR3L" → [gen1, gen3, gen3]) e retornar o máximo.
+# search() pegaria apenas o "DDR" genérico do chip_type e devolveria geração 1.
+
+# Gigabits (case-sensitive: "Gb" ≠ "GB") — para densidade DRAM ex: "8Gb = 1GB por die"
+_GBIT_RE = re.compile(r'(\d+(?:\.\d+)?)\s*Gb\b')
 
 
 def _clean(s: str) -> str:
@@ -345,12 +361,17 @@ def _result_from_family(pn: str, fam) -> dict:
         if _nand_cap:
             r["emcp_nand"] = f"{nand_version} {_nand_cap}".strip()
         else:
-            r["emcp_nand"] = nand_version  # parcial, Gemini vai completar
+            # Decode incompleto: tipo sem capacidade numérica.
+            # Label explícito para o operador não confundir com dado real —
+            # "eMMC 5.0" sem GB é INDISTINGUÍVEL de "eMMC 5.0 64GB" no estoque.
+            # Adicionar mais entradas ao decode map (populate_micron_mcp --overwrite)
+            # ou enriquecer via fill_capacity_from_micron_api para resolver.
+            r["emcp_nand"] = f"{nand_version} ⚠ cap. não mapeada"
 
         if _ram_cap:
             r["emcp_ram"] = f"{ram_type} {_ram_cap}".strip()
         else:
-            r["emcp_ram"] = ram_type       # parcial, Gemini vai completar
+            r["emcp_ram"] = f"{ram_type} ⚠ cap. não mapeada"
 
         # Considera decode completo se:
         #   - NAND via decode_cap_map E RAM via val_secondary (padrão Samsung), OU
@@ -487,14 +508,25 @@ def _result_from_known(pn: str, known, fam) -> dict:
                     else:
                         r["emcp_ram"] = db_ram or r["emcp_ram"]
                 else:
-                    # Humano-verificado (confirmed/manual): DB é autoridade total
-                    r["emcp_ram"] = db_ram or r["emcp_ram"]
+                    # Humano-verificado (confirmed/manual): DB é autoridade quando tem capacidade.
+                    #
+                    # BUG-6 FIX: Se DB tem apenas tipo sem capacidade (ex: "LPDDR3") mas a gramática
+                    # decodificou tipo+capacidade (ex: "LPDDR2 1GB"), usa a gramática.
+                    # Cenário típico: chip confirmado via enrich_micron_fbga antes da chave "8D5"
+                    # existir no MIC_MCP_CAP. O DB ficou com "LPDDR3" (incompleto) + tipo errado.
+                    # Após populate_micron_mcp --overwrite, a gramática produz o resultado correto
+                    # mas o DB "confirmado" impedia o override. Esta regra corrige isso.
+                    if db_ram and _CAP_RE.search(db_ram):
+                        # DB tem tipo E capacidade → DB é autoridade (ex: KMR310001M LPDDR3 2GB)
+                        r["emcp_ram"] = db_ram
+                    # else: DB vazio ou sem capacidade → mantém valor da gramática (já em r["emcp_ram"])
                 r["emcp_source"] = known.confidence
 
             # NAND: a interface física (UFS vs eMMC) é definida pela família,
             # não pelo banco de dados. Distribuidores frequentemente preenchem
             # "eMMC" para chips uMCP UFS por copy-paste de catálogo genérico.
-            db_nand = _clean(known.emcp_nand) or ""
+            db_nand   = _clean(known.emcp_nand) or ""
+            _gram_nand = r.get("emcp_nand") or ""
             if db_nand:
                 if fam.interface and "UFS" in fam.interface and "eMMC" in db_nand:
                     # BUG-2: Família é UFS mas DB diz "eMMC" → corrige o rótulo
@@ -508,9 +540,59 @@ def _result_from_known(pn: str, known, fam) -> dict:
                         r["emcp_nand"] = f"{fam.interface} {_nand_cap_match.group(0)}"
                     else:
                         r["emcp_nand"] = fam.interface  # sem capacidade: ao menos corrige interface
+                elif not _CAP_RE.search(db_nand) and _CAP_RE.search(_gram_nand):
+                    # BUG-6: DB tem NAND sem número de capacidade (ex: "eMMC 5.0") mas gramática
+                    # decodificou a capacidade (ex: "eMMC 5.0 8GB"). Manter gramática.
+                    # Ocorre após populate --overwrite preencher chave antes inexistente (ex: "8D5").
+                    pass  # mantém _gram_nand que já está em r["emcp_nand"]
                 else:
                     r["emcp_nand"] = db_nand
             # (se db_nand vazio, mantém o valor da gramática)
+
+        # ── BUG-3: Micron MCP — interface correta via source_url ────────────
+        #
+        # PROBLEMA: A família MT29VZZZ tem chip_type="eMCP" e interface="eMMC 5.1"
+        # como padrão, mas a família cobre DOIS tipos de chips fisicamente distintos:
+        #   - emmc-based-mcp → eMCP: NAND eMMC + LPDDR4 RAM (bancada eMMC)
+        #   - ufs-based-mcp  → uMCP: NAND UFS  + LPDDR4 RAM (bancada UFS)
+        #
+        # Usar o chip UFS no programador eMMC causa dano permanente ao hardware.
+        #
+        # SOLUÇÃO: A API FBGA da Micron classifica cada chip na URL do produto:
+        #   "...multichip-packages/ufs-based-mcp/..."  → uMCP / UFS 2.2
+        #   "...multichip-packages/emmc-based-mcp/..." → eMCP / eMMC 5.1
+        #
+        # Quando source_url indica UFS mas emcp_nand foi montado como "eMMC 5.1 xxGB"
+        # (pela gramática usando fam.interface="eMMC 5.1"), corrigimos aqui.
+        # Mesma lógica para emmc-based-mcp quando a família for uMCP (ex: MT30AZZZ
+        # com algumas variantes eMMC futuras).
+        #
+        # Prioridade: source_url da API Micron > fam.interface > gramática.
+        # Aplica-se APENAS a chips com source_url da API Micron (confidence=confirmed
+        # via enrich_micron_fbga). Não afeta chips sem source_url ou de outras fontes.
+        if known.source_url:
+            _src = known.source_url
+            if "ufs-based-mcp" in _src:
+                # source_url confirma: é chip UFS-based (uMCP)
+                _nand_str = r.get("emcp_nand") or ""
+                if "eMMC" in _nand_str:
+                    # Gramática/família disse eMMC mas Micron diz UFS — corrige
+                    _cap_m = _CAP_RE.search(_nand_str)
+                    _cap_s = f" {_cap_m.group(0)}" if _cap_m else ""
+                    r["emcp_nand"] = f"UFS 2.2{_cap_s}"
+                r["chip_type"] = "uMCP"
+                r["is_emcp"]   = True   # continua sendo chip composto (NAND+RAM)
+            elif "emmc-based-mcp" in _src:
+                # source_url confirma: é chip eMMC-based (eMCP)
+                _nand_str = r.get("emcp_nand") or ""
+                if "UFS" in _nand_str:
+                    # Família disse UFS mas Micron diz eMMC — corrige
+                    _cap_m = _CAP_RE.search(_nand_str)
+                    _cap_s = f" {_cap_m.group(0)}" if _cap_m else ""
+                    r["emcp_nand"] = f"eMMC 5.1{_cap_s}"
+                r["chip_type"] = "eMCP"
+                r["is_emcp"]   = True
+
         r["emcp_device"] = known.device or None
         r["source_url"]  = known.source_url
     else:
@@ -1058,23 +1140,40 @@ def _lpddr_generation(text: str) -> int | None:
     return int(gen_str[0])  # pega só o primeiro dígito (LPDDR4X → 4)
 
 
+def _extract_gbit(text: str) -> float | None:
+    """
+    Extrai valor em Gigabits de strings de densidade DRAM.
+    Case-sensitive: "Gb" = Gigabit, "GB" = Gigabyte — não confundir.
+    Ex: "8Gb = 1GB por die [✓]" → 8.0
+        "2Gb = 256MB por die"   → 2.0
+        "1Gb = 128MB por die"   → 1.0
+    """
+    m = _GBIT_RE.search(text or "")
+    if not m:
+        return None
+    return float(m.group(1))
+
+
 def _ddr_generation(text: str) -> int | None:
     """
     Extrai a geração DDR (não-LPDDR) como inteiro.
         DDR (sem número) → 1
         DDR2 → 2, DDR3 → 3, DDR4 → 4, DDR5 → 5
     Retorna None se não encontrar.
+
+    Usa findall() + max() para lidar com strings como "DDR DDR3/DDR3L" onde
+    chip_type="DDR" e subtype="DDR3/DDR3L" são concatenados em combined.
+    search() pegaria o "DDR" genérico primeiro e devolveria geração 1 erroneamente.
     """
     # Verifica LPDDR primeiro: se o texto tem LPDDR, não é DDR standalone
     if _LPDDR_GEN_RE.search(text or ""):
         return None
-    m = _DDR_GEN_RE.search(text or "")
-    if not m:
+    matches = _DDR_GEN_RE.findall(text or "")
+    if not matches:
         return None
-    gen_str = m.group(1)
-    if gen_str is None:
-        return 1
-    return int(gen_str[0])
+    # findall() com grupo captura a parte numérica (ou "" para DDR sem número)
+    gens = [1 if (not g) else int(g[0]) for g in matches]
+    return max(gens)
 
 
 def assess_profitability(result: dict) -> str:
@@ -1108,10 +1207,15 @@ def assess_profitability(result: dict) -> str:
             - capacidade < 8GB → NÃO RENTÁVEL
             - ≥ 8GB             → RENTÁVEL
 
-        DDR / LPDDR standalone:
-            - capacidade < 2GB       → NÃO RENTÁVEL
-            - DDR2 / LPDDR2 ou menor → NÃO RENTÁVEL
-            - Todos os critérios OK  → RENTÁVEL
+        DDR standalone:
+            - DDR2 ou inferior → NÃO RENTÁVEL
+            - densidade < 2Gb  → NÃO RENTÁVEL  (2Gb = 256 MB por die)
+            - Todos os critérios OK → RENTÁVEL
+
+        LPDDR standalone:
+            - LPDDR2 ou inferior → NÃO RENTÁVEL
+            - capacidade < 2GB   → NÃO RENTÁVEL
+            - Todos os critérios OK → RENTÁVEL
 
         Outros tipos (NOR, SoC, etc.):
             → INDETERMINADO (sem regra definida)
@@ -1131,21 +1235,29 @@ def assess_profitability(result: dict) -> str:
         if not ram_str or not nand_str:
             return "INDETERMINADO"
 
+        # ── FIX 2026-05-27: verificar geração LPDDR ANTES da extração de GB ──
+        # LPDDR2 ou inferior → NÃO RENTÁVEL independente da capacidade numérica.
+        # Caso típico: emcp_ram="LPDDR2" (sem GB) → _extract_gib retornaria None
+        # e causaria retorno INDETERMINADO antes de checar a geração (bug original).
+        # Chips afetados: KMN5X000ZM, KML7X000HM, KMK*, KMV* etc. (campos sem GB).
+        lpddr_gen = _lpddr_generation(ram_str)
+        if lpddr_gen is not None and lpddr_gen <= 2:
+            return "NÃO RENTÁVEL"
+
         ram_gb  = _extract_gib(ram_str)
         nand_gb = _extract_gib(nand_str)
 
         if ram_gb is None or nand_gb is None:
             return "INDETERMINADO"
 
-        lpddr_gen = _lpddr_generation(ram_str)
         if lpddr_gen is None:
             return "INDETERMINADO"
 
-        if lpddr_gen <= 2:
+        if lpddr_gen <= 2:          # redundante pós-fix, mas mantido por segurança
             return "NÃO RENTÁVEL"
-        if ram_gb < 0.99:        # < 1 GB (512 MB etc.)
+        if ram_gb < 0.99:           # < 1 GB (512 MB etc.)
             return "NÃO RENTÁVEL"
-        if nand_gb < 7.99:       # < 8 GB
+        if nand_gb < 7.99:          # < 8 GB
             return "NÃO RENTÁVEL"
         return "RENTÁVEL"
 
@@ -1178,18 +1290,24 @@ def assess_profitability(result: dict) -> str:
         return "RENTÁVEL"
 
     # ── DDR standalone ────────────────────────────────────────────────────────
+    # Threshold em Gigabits (não Gigabytes): ≥ 2Gb por die é rentável.
+    #   2Gb = 256MB | 4Gb = 512MB | 8Gb = 1GB
+    # Fonte primária: dram_density ("8Gb = 1GB por die [✓]") → extrai Gigabits.
+    # Fallback: capacity em GB (KnownParts enriquecidos) → converte (2Gb = 0.25GB).
     if "DDR" in combined:
         ddr_gen = _ddr_generation(combined)
         if ddr_gen is None:
             return "INDETERMINADO"
-        cap_gb = _extract_gib(result.get("capacity") or result.get("dram_density") or "")
-        if cap_gb is None:
-            return "INDETERMINADO"
         if ddr_gen <= 2:
             return "NÃO RENTÁVEL"
-        if cap_gb < 1.99:        # < 2 GB
-            return "NÃO RENTÁVEL"
-        return "RENTÁVEL"
+        gbit = _extract_gbit(result.get("dram_density") or "")
+        if gbit is not None:
+            return "RENTÁVEL" if gbit >= 2.0 else "NÃO RENTÁVEL"
+        # Fallback: capacity em GB (ex: "512MB" → 0.5 GB → 4 Gb)
+        cap_gb = _extract_gib(result.get("capacity") or "")
+        if cap_gb is None:
+            return "INDETERMINADO"
+        return "RENTÁVEL" if cap_gb >= 0.24 else "NÃO RENTÁVEL"  # 0.24 ≈ 2Gb (256MB)
 
     # Tipo não coberto pelas regras (UFS, NOR, SoC, SDRAM puro, etc.)
     return "INDETERMINADO"
@@ -1270,6 +1388,109 @@ def classify(pn_raw: str) -> dict:
             return result
         except KnownPart.DoesNotExist:
             pass
+
+    # ── 1b. FBGA lookup ─────────────────────────────────────────────────────
+    # Código FBGA (ex: D9VFC) gravado a laser no chip pela Micron.
+    # O operador na esteira digita o código de 5 chars que vê no chip —
+    # não o PN completo. Padrão: [A-Z]\d[A-Z0-9]{3} (D9XXX, D8XXX, etc.).
+    #
+    # Se estiver cadastrado em KnownPart.fbga_code → retorna o resultado enriquecido.
+    # Se não estiver → registra no UnknownChip com nota "FBGA desconhecido"
+    # para o job noturno processar via micron.com/fbga-parts-decoder.
+    #
+    # Este bloco corre ANTES da gramática porque um FBGA code nunca vai bater
+    # em nenhum prefixo de família (prefixos são MT53B, MTFC, etc.) — cair na
+    # gramática seria apenas desperdício de CPU + risco de resultado incorreto.
+    if _FBGA_RE.match(pn):
+        try:
+            known_fbga = KnownPart.objects.select_related(
+                "family", "brand", "family__doc_page"
+            ).get(fbga_code=pn, status="enriched")
+            fam_fbga = _match_family(known_fbga.part_number) or known_fbga.family
+            if fam_fbga:
+                result = _result_from_known(known_fbga.part_number, known_fbga, fam_fbga)
+            else:
+                result = {
+                    "pn":            known_fbga.part_number,
+                    "known":         True,
+                    "known_exact":   True,
+                    "chip_type":     known_fbga.chip_type,
+                    "subtype":       known_fbga.subtype,
+                    "brand":         known_fbga.brand.name,
+                    "capacity":      _clean(known_fbga.capacity),
+                    "emcp_ram":      _clean(known_fbga.emcp_ram),
+                    "emcp_nand":     _clean(known_fbga.emcp_nand),
+                    "device":        known_fbga.device,
+                    "confidence":    known_fbga.confidence,
+                    "source_url":    known_fbga.source_url,
+                    "is_emcp":       bool(known_fbga.emcp_ram),
+                    "tip":           known_fbga.notes or "",
+                    "reasoning":     [],
+                    "from_web":      False,
+                    "doc_url":       None,
+                    "remarked_flag":      False,
+                    "fuzzy_suggestions":  [],
+                    "interface":          known_fbga.interface,
+                    "family_prefix":      "",
+                    "family_undocumented": False,
+                    "dram_density":       None,
+                    "suffix_note":        None,
+                }
+            # Expõe o PN completo separado do código FBGA digitado
+            result["fbga_input"]  = pn
+            result["pn_full"]     = known_fbga.part_number
+            result["profitable"]  = assess_profitability(result)
+            _log_search(pn_raw, found=True, source_used="db_fbga")
+            return result
+        except KnownPart.MultipleObjectsReturned:
+            # Múltiplos KnownParts com o mesmo fbga_code — usa o primeiro enriched.
+            # Situação anômala: fbga_code é laser-gravado pelo fabricante e deveria
+            # ser único por modelo. Se ocorrer, logar e usar .first() para não travar.
+            logger.warning("FBGA ambíguo: múltiplos KnownParts com fbga_code=%s — usando o primeiro", pn)
+            known_fbga = KnownPart.objects.select_related(
+                "family", "brand", "family__doc_page"
+            ).filter(fbga_code=pn, status="enriched").first()
+            if known_fbga:
+                fam_fbga = _match_family(known_fbga.part_number) or known_fbga.family
+                result = _result_from_known(known_fbga.part_number, known_fbga, fam_fbga) if fam_fbga else {
+                    "pn": known_fbga.part_number, "known": True, "known_exact": True,
+                    "chip_type": known_fbga.chip_type, "subtype": known_fbga.subtype,
+                    "brand": known_fbga.brand.name, "capacity": _clean(known_fbga.capacity),
+                    "emcp_ram": _clean(known_fbga.emcp_ram), "emcp_nand": _clean(known_fbga.emcp_nand),
+                    "device": known_fbga.device, "confidence": known_fbga.confidence,
+                    "source_url": known_fbga.source_url, "is_emcp": bool(known_fbga.emcp_ram),
+                    "tip": known_fbga.notes or "", "reasoning": [], "from_web": False,
+                    "doc_url": None, "remarked_flag": False, "fuzzy_suggestions": [],
+                    "interface": known_fbga.interface, "family_prefix": "",
+                    "family_undocumented": False, "dram_density": None, "suffix_note": None,
+                }
+                result["fbga_input"] = pn
+                result["pn_full"]    = known_fbga.part_number
+                result["profitable"] = assess_profitability(result)
+                _log_search(pn_raw, found=True, source_used="db_fbga")
+                return result
+            # Nenhum enriched encontrado — cai no fluxo de desconhecido abaixo
+        except KnownPart.DoesNotExist:
+            # FBGA não cadastrado → enfileira para enriquecimento noturno
+            try:
+                UnknownChip.objects.get_or_create(
+                    part_number=pn,
+                    defaults={"notes": "FBGA code — pendente resolução noturna via micron.com/fbga-parts-decoder"},
+                )
+            except Exception:
+                logger.exception("Erro ao registrar FBGA desconhecido PN=%s", pn)
+            _log_search(pn_raw, found=False, source_used="fbga_unknown")
+            return {
+                "pn":              pn,
+                "known":           False,
+                "fbga_input":      pn,
+                "fbga_unknown":    True,
+                "from_web":        False,
+                "gemini_found":    False,
+                "gemini_searched": False,
+                "fuzzy_suggestions": [],
+                "in_review_queue": True,
+            }
 
     # ── 2. Gramática da família ──────────────────────────────────────────────
     fam = fam_early  # já resolvido acima, reutiliza sem novo SELECT

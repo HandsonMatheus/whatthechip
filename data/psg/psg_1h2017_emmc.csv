@@ -1,0 +1,7 @@
+pn,pn_raw,base_pn,is_base,chip_type,subtype,capacity,density_gbit,density_gb,interface,organization,voltage,speed_mbps,package_pins,package_size,package_type,notes,source,confidence,status
+KLMEG8UERM,KLMEG8UERM,KLMEG8UERM,yes,eMMC,eMMC 5.1,256GB,,,eMMC 5.1,,3.3V/1.8V,R:320 W:150 MB/s,,11.5x13.0mm,FBGA,TLC M-die. eMMC 5.1 (compat. 5.0/4.5). IOPS R/W: 22K/18K. CS. Base PN (sem bucket).,Samsung PSG 1H 2017,confirmed,enriched
+KLMDG4UERM,KLMDG4UERM,KLMDG4UERM,yes,eMMC,eMMC 5.1,128GB,,,eMMC 5.1,,3.3V/1.8V,R:320 W:150 MB/s,,11.5x13.0mm,FBGA,TLC M-die. eMMC 5.1. CS in Dec/Jan.,Samsung PSG 1H 2017,confirmed,enriched
+KLMCG4JETD,KLMCG4JETD,KLMCG4JETD,yes,eMMC,eMMC 5.1,64GB,,,eMMC 5.1,,3.3V/1.8V,R:320 W:150 MB/s,,11.5x13.0mm,FBGA,MLC D-die. eMMC 5.1.,Samsung PSG 1H 2017,confirmed,enriched
+KLMBG2JETD,KLMBG2JETD,KLMBG2JETD,yes,eMMC,eMMC 5.1,32GB,,,eMMC 5.1,,3.3V/1.8V,R:320 W:150 MB/s,,11.5x13.0mm,FBGA,MLC D-die. eMMC 5.1.,Samsung PSG 1H 2017,confirmed,enriched
+KLMAG1JETD,KLMAG1JETD,KLMAG1JETD,yes,eMMC,eMMC 5.1,16GB,,,eMMC 5.1,,3.3V/1.8V,R:320 W:150 MB/s,,11.5x13.0x0.8mm,FBGA,MLC D-die. eMMC 5.1. Slim 0.8mm.,Samsung PSG 1H 2017,confirmed,enriched
+KLM8G1GETF,KLM8G1GETF,KLM8G1GETF,yes,eMMC,eMMC 5.1,8GB,,,eMMC 5.1,,3.3V/1.8V,R:320 W:150 MB/s,,11.5x13.0mm,FBGA,MLC F-die. eMMC 5.1.,Samsung PSG 1H 2017,confirmed,enriched

@@ -136,6 +136,90 @@ PARTS = [
             "RAM pura, zero NAND. 200FBGA."
         ),
     ),
+    dict(
+        part_number   = "H28U64222MMR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H28U",
+        chip_type     = "UFS",
+        subtype       = "UFS standalone legado",
+        capacity      = "32GB",
+        interface     = "UFS 2.0/2.1",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[4]='6' → 256Gbit ÷ 8 = 32GB. Era de transição H28U. "
+            "BGA-153 idêntico ao eMMC H26M — verificar protocolo antes do contato físico. "
+            "Fonte do mapa: H28U62301AMR B2B ✓ (mesma chave '6'=32GB)."
+        ),
+    ),
+    dict(
+        part_number   = "H9TQ32A6BTMC",
+        brand_name    = "SK Hynix",
+        family_prefix = "H9TQ",
+        chip_type     = "eMCP",
+        subtype       = "eMCP LPDDR3",
+        capacity      = "4GB + 768MB",
+        interface     = "eMMC 5.x + LPDDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[4:6]='32' → 4GB eMMC (HYX_EMCP_NAND_CAP ✓ — '32'=4GB). "
+            "pn[6:8]='A6' → LPDDR3 768MB (HYX_H9TQ_RAM_CAP ✓ — A6=6Gbit÷8=768MB). "
+            "PN físico em estoque, referência documentada em populate_hynix.py. "
+            "Dispositivo de origem: Samsung Galaxy J1 Ace SM-J110F / SM-J110G "
+            "(4G LTE global/africana — 768MB RAM + 4GB storage — GSMArena ✓). "
+            "⚠ Fragmentação severa: SM-J110H/L=512MB; SM-J110M/J111F=1GB por região e conectividade."
+        ),
+    ),
+    dict(
+        part_number   = "H26M31001HPR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H26M",
+        chip_type     = "eMMC",
+        subtype       = "eMMC standalone",
+        capacity      = "4GB",
+        interface     = "eMMC 4.5",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[4]='3' → 4GB (HYX_EMMC_CAP ✓ — 32Gbit÷8=4GB). "
+            "Preduo: '4GB / eMMC4.5 / 1ynm 32Gb' ✓ · Octopart ✓ · eBay: '4GB eMMC FBGA153' ✓. "
+            "FBGA-153. Processo planar 1ynm."
+        ),
+    ),
+    dict(
+        part_number   = "H9TKNNN8JDAP",
+        brand_name    = "SK Hynix",
+        family_prefix = "H9TK",
+        chip_type     = "RAM",
+        subtype       = "LPDDR2 standalone",
+        capacity      = "1GB",
+        interface     = "LPDDR2",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[7]='8' → 1GB (HYX_LPDDR2_CAP ✓ — 8Gbit÷8=1GB). "
+            "Variante sem sufixo -LR do PN de referência H9TKNNN8JDAPLR ✓. "
+            "DRAM puro — zero NAND. pn[4:7]='NNN' (preenchimento fixo padrão)."
+        ),
+    ),
+    dict(
+        part_number   = "H9DP32A4JJBC",
+        brand_name    = "SK Hynix",
+        family_prefix = "H9DP",
+        chip_type     = "eMCP",
+        subtype       = "eMCP LPDDR2",
+        capacity      = "4GB + 512MB",
+        interface     = "eMMC + LPDDR2",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[4:6]='32' → 4GB eMMC (HYX_H9D_NAND_CAP ✓ — 32Gbit÷8=4GB). "
+            "pn[6]='A' → código de controlador fixo (não é capacidade). "
+            "pn[7]='4' → LPDDR2 512MB (HYX_H9D_RAM_CAP ✓ — 4Gbit÷8=512MB). "
+            "Variante de revisão (pos[10]='B') dos PNs de referência H9DP32A4JJAC ✓ / H9DP32A4JJMC ✓."
+        ),
+    ),
     # Adicione mais chips aqui no mesmo formato se necessário
 ]
 

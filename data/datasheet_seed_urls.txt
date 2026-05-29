@@ -1,0 +1,19 @@
+# datasheet_seed_urls.txt — URLs de datasheets Micron para processar
+# Uma URL por linha. Linhas com # são comentários.
+#
+# Como encontrar datasheets Micron eMCP/eMMC/LPDDR4:
+#   1. Acesse https://www.micron.com/support/tools-and-utilities/fbga
+#   2. Digite um PN base (ex: MT29VZZZAD8GQFSL) e clique em "Data Sheet"
+#   3. Copie o URL do PDF e cole aqui
+#
+# Exemplos de URLs válidas (verifique disponibilidade):
+# https://media-www.micron.com/media/document/data-sheet/...
+#
+# ── eMCP série MT29VZZZ ───────────────────────────────────────────────────────
+# (adicione URLs encontradas via micron.com ou buscas web)
+#
+# ── eMMC série MTFC ──────────────────────────────────────────────────────────
+# (adicione URLs encontradas via micron.com ou buscas web)
+#
+# ── LPDDR4 série MT53E ───────────────────────────────────────────────────────
+# (adicione URLs encontradas via micron.com ou buscas web)

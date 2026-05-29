@@ -1,0 +1,16 @@
+pn,pn_raw,base_pn,is_base,chip_type,subtype,capacity,density_gbit,density_gb,interface,organization,voltage,speed_mbps,package_pins,package_size,package_type,notes,source,confidence,status
+K4A4G045WDBC,K4A4G045WD-BC,K4A4G045WDBC,yes,DDR4,DDR4,512MB,4Gb,512MB,DDR4,1Gx4,1.2V,"RC,PB",78,7.5x11mm,FBGA,"Base PN (sem speed code). Flip Chip, Lead Free & Halogen Free",Samsung PSG 2H 2014,confirmed,enriched
+K4A4G045WDBCRC,K4A4G045WD-BCRC,K4A4G045WDBC,no,DDR4,DDR4,512MB,4Gb,512MB,DDR4,1Gx4,1.2V,RC,78,7.5x11mm,FBGA,"Flip Chip, Lead Free & Halogen Free",Samsung PSG 2H 2014,confirmed,enriched
+K4A4G045WDBCPB,K4A4G045WD-BCPB,K4A4G045WDBC,no,DDR4,DDR4,512MB,4Gb,512MB,DDR4,1Gx4,1.2V,PB,78,7.5x11mm,FBGA,"Flip Chip, Lead Free & Halogen Free",Samsung PSG 2H 2014,confirmed,enriched
+K4A4G085WDBC,K4A4G085WD-BC,K4A4G085WDBC,yes,DDR4,DDR4,512MB,4Gb,512MB,DDR4,512Mx8,1.2V,"RC,PB",78,7.5x11mm,FBGA,"Base PN (sem speed code). Flip Chip, Lead Free & Halogen Free",Samsung PSG 2H 2014,confirmed,enriched
+K4A4G085WDBCRC,K4A4G085WD-BCRC,K4A4G085WDBC,no,DDR4,DDR4,512MB,4Gb,512MB,DDR4,512Mx8,1.2V,RC,78,7.5x11mm,FBGA,"Flip Chip, Lead Free & Halogen Free",Samsung PSG 2H 2014,confirmed,enriched
+K4A4G085WDBCPB,K4A4G085WD-BCPB,K4A4G085WDBC,no,DDR4,DDR4,512MB,4Gb,512MB,DDR4,512Mx8,1.2V,PB,78,7.5x11mm,FBGA,"Flip Chip, Lead Free & Halogen Free",Samsung PSG 2H 2014,confirmed,enriched
+K4A4G165WDBC,K4A4G165WD-BC,K4A4G165WDBC,yes,DDR4,DDR4,512MB,4Gb,512MB,DDR4,256Mx16,1.2V,"RC,PB",96,7.5x13.3mm,FBGA,Base PN (sem speed code). Lead Free & Halogen Free,Samsung PSG 2H 2014,confirmed,enriched
+K4A4G165WDBCRC,K4A4G165WD-BCRC,K4A4G165WDBC,no,DDR4,DDR4,512MB,4Gb,512MB,DDR4,256Mx16,1.2V,RC,96,7.5x13.3mm,FBGA,Lead Free & Halogen Free,Samsung PSG 2H 2014,confirmed,enriched
+K4A4G165WDBCPB,K4A4G165WD-BCPB,K4A4G165WDBC,no,DDR4,DDR4,512MB,4Gb,512MB,DDR4,256Mx16,1.2V,PB,96,7.5x13.3mm,FBGA,Lead Free & Halogen Free,Samsung PSG 2H 2014,confirmed,enriched
+K4A8G045WBBC,K4A8G045WB-BC,K4A8G045WBBC,yes,DDR4,DDR4,1GB,8Gb,1GB,DDR4,2Gx4,1.2V,"RC,PB",78,,FBGA,Base PN (sem speed code). Lead Free & Halogen Free. 2Q'15 production,Samsung PSG 2H 2014,confirmed,enriched
+K4A8G045WBBCRC,K4A8G045WB-BCRC,K4A8G045WBBC,no,DDR4,DDR4,1GB,8Gb,1GB,DDR4,2Gx4,1.2V,RC,78,,FBGA,Lead Free & Halogen Free. 2Q'15 production,Samsung PSG 2H 2014,confirmed,enriched
+K4A8G045WBBCPB,K4A8G045WB-BCPB,K4A8G045WBBC,no,DDR4,DDR4,1GB,8Gb,1GB,DDR4,2Gx4,1.2V,PB,78,,FBGA,Lead Free & Halogen Free. 2Q'15 production,Samsung PSG 2H 2014,confirmed,enriched
+K4A8G085WBBC,K4A8G085WB-BC,K4A8G085WBBC,yes,DDR4,DDR4,1GB,8Gb,1GB,DDR4,1Gx8,1.2V,"RC,PB",78,,FBGA,Base PN (sem speed code). Lead Free & Halogen Free. 2Q'15 production,Samsung PSG 2H 2014,confirmed,enriched
+K4A8G085WBBCRC,K4A8G085WB-BCRC,K4A8G085WBBC,no,DDR4,DDR4,1GB,8Gb,1GB,DDR4,1Gx8,1.2V,RC,78,,FBGA,Lead Free & Halogen Free. 2Q'15 production,Samsung PSG 2H 2014,confirmed,enriched
+K4A8G085WBBCPB,K4A8G085WB-BCPB,K4A8G085WBBC,no,DDR4,DDR4,1GB,8Gb,1GB,DDR4,1Gx8,1.2V,PB,78,,FBGA,Lead Free & Halogen Free. 2Q'15 production,Samsung PSG 2H 2014,confirmed,enriched

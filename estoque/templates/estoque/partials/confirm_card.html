@@ -2,10 +2,11 @@
 {# ── Chip identificado ─────────────────────────────────────── #}
 <div class="est-confirm est-confirm--ok" data-debug="{{ result_json }}">
 
+  {# ── Cabeçalho compacto ──────────────────────────────────── #}
   <div class="est-confirm-head">
     <span class="est-confirm-status est-confirm-status--ok">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:-1px">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:3px;vertical-align:-1px">
         <polyline points="20 6 9 17 4 12"/>
       </svg>
       Chip identificado
@@ -13,56 +14,49 @@
     <span class="est-confirm-pn" id="confirm-pn-display">{{ pn }}</span>
   </div>
 
-  {# ── Contador de estoque atual ─────────────────────────────── #}
-  <div class="est-stock-counter {% if current_qty > 0 %}est-stock-counter--has{% else %}est-stock-counter--zero{% endif %}">
-    <span class="est-stock-counter__label">Estoque atual</span>
-    <span class="est-stock-counter__qty">{{ current_qty }}</span>
-    <span class="est-stock-counter__unit">un{% if current_qty != 1 %}. em estoque{% else %}. em estoque{% endif %}</span>
+  {# ── DESTINO — informação principal ─────────────────────── #}
+  <div class="est-dest est-dest--{{ destination_cat }}">
+    <div class="est-dest__label">{{ destination }}</div>
+    <div class="est-dest__meta">
+      {{ result.chip_type }}{% if result.subtype %} · {{ result.subtype }}{% endif %}
+      {% if result.brand %} · {{ result.brand }}{% endif %}
+      {% if display_cap %} · {{ display_cap }}{% endif %}
+    </div>
   </div>
 
-  <div class="est-specs-grid">
-    {% if result.chip_type %}
-    <div class="est-spec">
-      <span class="est-spec-label">Tipo</span>
-      <span class="est-spec-val">{{ result.chip_type }}{% if result.subtype %} · {{ result.subtype }}{% endif %}</span>
-    </div>
-    {% endif %}
+  {# ── Meta: estoque · confiança · rentabilidade ───────────── #}
+  <div class="est-meta-row">
 
-    {% if result.brand %}
-    <div class="est-spec">
-      <span class="est-spec-label">Fabricante</span>
-      <span class="est-spec-val">{{ result.brand }}</span>
-    </div>
-    {% endif %}
-
-    {% if display_cap %}
-    <div class="est-spec">
-      <span class="est-spec-label">Capacidade</span>
-      <span class="est-spec-val">{{ display_cap }}</span>
-    </div>
-    {% endif %}
-
-    {% if result.interface %}
-    <div class="est-spec">
-      <span class="est-spec-label">Interface</span>
-      <span class="est-spec-val">{{ result.interface }}</span>
-    </div>
-    {% endif %}
-  </div>
-
-  {# ── Banner de rentabilidade ───────────────────────────────────────── #}
-  {% if profitable %}
-  <div class="est-profit-banner est-profit-banner--{{ profitable_key }}">
-    <span class="est-profit-banner__icon">
-      {% if profitable == "RENTÁVEL" %}✓{% elif profitable == "NÃO RENTÁVEL" %}✗{% else %}?{% endif %}
+    <span class="est-meta-pill {% if current_qty > 0 %}est-meta-pill--warn{% else %}est-meta-pill--neutral{% endif %}">
+      {% if current_qty > 0 %}<strong>{{ current_qty }}</strong>&nbsp;em estoque
+      {% else %}0 em estoque{% endif %}
     </span>
-    <span>
-      <span class="est-profit-banner__label">Rentabilidade · </span>{{ profitable }}
-    </span>
-  </div>
-  {% endif %}
 
-  {# Form de adição #}
+    {% with conf=result.confidence %}
+    <span class="est-meta-pill
+      {% if conf == 'confirmed' or conf == 'manual' or conf == 'distributor' %}est-meta-pill--ok
+      {% elif conf == 'ai_high' %}est-meta-pill--info
+      {% elif conf == 'ai_medium' or conf == 'ai_low' %}est-meta-pill--warn
+      {% else %}est-meta-pill--danger{% endif %}">
+      {% if conf == 'confirmed' %}● Confirmado
+      {% elif conf == 'manual' %}● Manual
+      {% elif conf == 'distributor' %}● Distribuidor
+      {% elif conf == 'ai_high' %}● IA alta
+      {% elif conf == 'ai_medium' %}● IA média
+      {% elif conf == 'ai_low' %}⚠ IA baixa
+      {% else %}⚠ Só gramática{% endif %}
+    </span>
+    {% endwith %}
+
+    {% if profitable and profitable != 'INDETERMINADO' %}
+    <span class="est-meta-pill {% if profitable_key == 'rentavel' %}est-meta-pill--ok{% else %}est-meta-pill--danger{% endif %}">
+      {% if profitable_key == 'rentavel' %}✓{% else %}✗{% endif %} {{ profitable }}
+    </span>
+    {% endif %}
+
+  </div>
+
+  {# ── Form de adição ──────────────────────────────────────── #}
   <form class="est-confirm-form"
         hx-post="{% url 'estoque:add' lot.pk %}"
         hx-target="#table-body-wrap"
@@ -87,17 +81,16 @@
         <input class="est-input est-input--qty" type="number" id="confirm-qty"
                name="qty" value="1" min="1" max="9999">
       </div>
-      <button class="est-btn est-btn--primary" type="submit">+ Adicionar ao estoque</button>
-      <button class="est-btn est-btn--cancel" type="button"
+      <button class="est-btn est-btn--primary est-btn--lg" type="submit">+ Adicionar ao estoque</button>
+      <button class="est-btn est-btn--cancel est-btn--lg" type="button"
               onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">
         Cancelar
       </button>
       <button class="est-btn est-btn--debug est-debug-btn" type="button"
-              title="Copia diagnóstico completo para o clipboard">
-        📋 Debug
-      </button>
+              title="Copia diagnóstico completo para o clipboard">📋</button>
     </div>
   </form>
+
 </div>
 
 {% else %}
@@ -106,8 +99,8 @@
 
   <div class="est-confirm-head">
     <span class="est-confirm-status est-confirm-status--unknown">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:-1px">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:3px;vertical-align:-1px">
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
         <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
       </svg>
@@ -131,8 +124,8 @@
     <input type="hidden" name="has_cap" value="false">
 
     <div class="est-confirm-actions">
-      <button class="est-btn est-btn--warning" type="submit">Registrar como desconhecido</button>
-      <button class="est-btn est-btn--cancel" type="button"
+      <button class="est-btn est-btn--warning est-btn--lg" type="submit">Registrar como desconhecido</button>
+      <button class="est-btn est-btn--cancel est-btn--lg" type="button"
               onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">
         Cancelar
       </button>

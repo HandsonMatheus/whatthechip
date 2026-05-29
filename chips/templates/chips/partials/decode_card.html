@@ -197,6 +197,28 @@
 
 </div>
 
+{% elif result.fbga_unknown %}
+
+<!-- ── FBGA desconhecido (código Micron não cadastrado) ─────────────────── -->
+<div class="dc2-not-found">
+  <div class="dc2-not-found-title">
+    ⚠ Código FBGA não cadastrado — chip Micron na fila de análise
+  </div>
+  <div class="dc2-not-found-hint">
+    O código <strong>{{ result.pn }}</strong> parece ser um <strong>código FBGA Micron</strong>
+    (gravado a laser no encapsulamento — padrão D9XXX / D8XXX).
+    Ele foi registrado para enriquecimento automático via
+    <em>micron.com/fbga-parts-decoder</em> no job noturno.<br><br>
+    Se o chip estiver fisicamente disponível, anote o PN completo do encapsulamento
+    e tente novamente — o PN completo (ex: MT53B512M64D4TX) funciona diretamente.
+  </div>
+  {% if result.in_review_queue %}
+  <div style="margin-top:8px;font-size:12px;color:#888;">
+    ✓ Enviado para a fila de revisão noturna
+  </div>
+  {% endif %}
+</div>
+
 {% elif result.gemini_searched and not result.gemini_found %}
 
 <!-- ── Chip não reconhecido ────────────────────────────────────────────────── -->
