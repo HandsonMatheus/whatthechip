@@ -65,11 +65,23 @@ def _get_lot(request, lot_pk):
 
 
 def _extract_gb(text: str) -> str:
-    """'eMMC 5.1 8GB' → '8',  '32GB' → '32',  '' → ''."""
+    """
+    Extrai o valor em GB de uma string de capacidade.
+    '8GB' → '8'  |  '1.5GB' → '1.5'  |  'eMMC 5.1 16GB' → '16'
+    Usa look-behind negativo para não capturar o ".1" de "eMMC 5.1 8GB".
+    """
     if not text:
         return ''
-    m = re.search(r'(\d+)\s*GB', text, re.IGNORECASE)
-    return m.group(1) if m else ''
+    # Captura número decimal ou inteiro seguido de GB,
+    # mas exige que não seja precedido por outro dígito (evita pegar "5.1" de "eMMC 5.1")
+    m = re.search(r'(?<!\d)(\d+(?:\.\d+)?)\s*GB', text, re.IGNORECASE)
+    if not m:
+        return ''
+    val = m.group(1)
+    # Remove ".0" redundante: "8.0" → "8"
+    if val.endswith('.0'):
+        val = val[:-2]
+    return val
 
 
 def _compute_destination(result: dict) -> tuple:
