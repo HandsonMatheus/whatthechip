@@ -145,11 +145,11 @@
     <div style="font-size:12px;font-weight:700;color:#b8600a;margin-bottom:8px;">
       🔍 Você quis dizer?
     </div>
-    {% for pn in result.fuzzy_suggestions %}
+    {% for sug in result.fuzzy_suggestions %}
     <a href="#"
-       onclick="document.getElementById('big-search-input').value='{{ pn|escapejs }}';triggerSearch('{{ pn|escapejs }}');return false;"
+       onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;"
        style="display:block;padding:6px 10px;margin-bottom:4px;background:#fff;border:1px solid #e0c060;border-radius:4px;font-size:13px;font-weight:600;color:#333;text-decoration:none;font-family:monospace;">
-      {{ pn }}
+      {{ sug }}
     </a>
     {% endfor %}
   </div>
@@ -217,6 +217,29 @@
     ✓ Enviado para a fila de revisão noturna
   </div>
   {% endif %}
+</div>
+
+{% elif not result.gemini_searched and result.fuzzy_suggestions %}
+
+<!-- ── Chip não reconhecido — sem Gemini, mas com sugestões fuzzy ───────────── -->
+<div class="dc2-not-found">
+  <div class="dc2-not-found-title">
+    ⚠ Chip não reconhecido — veja sugestões abaixo
+  </div>
+  <div class="dc2-not-found-hint">
+    O PN digitado não foi identificado. Confira os caracteres — confusões comuns: <strong>0/O, 1/l, B/8, M/W</strong>.
+  </div>
+  <div class="dc2-fuzzy">
+    <div class="pr-header"><span>Sugestões</span><span></span><span></span></div>
+    {% for sug in result.fuzzy_suggestions %}
+    <a class="pr-row dc2-fuzzy-item" href="#"
+       onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;">
+      <span class="pr-prefix">{{ sug }}</span>
+      <span class="pr-fab">Você quis dizer?</span>
+      <span class="pr-tipo"></span>
+    </a>
+    {% endfor %}
+  </div>
 </div>
 
 {% elif result.gemini_searched and not result.gemini_found %}

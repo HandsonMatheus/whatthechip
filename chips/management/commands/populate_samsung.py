@@ -454,6 +454,10 @@ class Command(BaseCommand):
         # val_secondary = densidade em Gb (referência técnica).
         # Fonte: datasheets Samsung K4E + Galaxy Note 3 / S5 teardowns.
         k4e_cap = [
+            ("2E", "1.5GB", "12Gb — Galaxy Tab E / S5 Mini (~2014-2015). Sem liquidez B2B atual. "
+                            "K4E2E304EA-AGCF: Kynix/Worldway ✓. K4E2E304EE-AGCE: Alldatasheet Samsung PSG ✓ (2026-05-29). "
+                            "Galaxy Tab E SM-T560 = 1.5GB RAM confirmado — GSMarena/Icecat ✓. "
+                            "Chave também presente em LPDDR4_CAP (confirmado por datasheet Samsung)."),
             ("8E", "1GB",  "8Gb — Galaxy entry (~2013). Sem liquidez B2B atual."),
             ("6E", "2GB",  "16Gb — Galaxy mid-range (~2014-2016)."),
             ("FE", "3GB",  "24Gb — Galaxy Note 3 / S5 (~2013-2014). Raro."),
@@ -1006,8 +1010,9 @@ class Command(BaseCommand):
                 tip=(
                     "LPDDR3 Samsung standalone (~2013–2016). "
                     "E = LPDDR3 (sufixo de geração). RAM pura — sem componente Flash. "
-                    "Capacidade: pn[3:5] → 8E=1GB · 6E=2GB · FE=3GB · HE=3GB · BE=4GB. "
+                    "Capacidade: pn[3:5] → 2E=1.5GB · 8E=1GB · 6E=2GB · FE=3GB · HE=3GB · BE=4GB. "
                     "⚠ FE e HE são aliases de 3GB (24Gb) — die diferente, mesma densidade. "
+                    "⚠ 1.5GB (2E): Galaxy Tab E SM-T560 / S5 Mini — sem liquidez B2B atual → resíduo. "
                     "⚠ 1GB (8E): sem liquidez B2B atual → resíduo (moagem/refino). "
                     "2GB / 3GB / 4GB: avaliar demanda — bancada reacondicional mobile."
                 ),

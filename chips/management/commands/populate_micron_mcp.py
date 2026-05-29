@@ -136,17 +136,27 @@ class Command(BaseCommand):
             ("DDB", "512GB", "12GB"),   # D→12GB RAM (96Gb) + DB→512GB NAND (4096Gb) = 4192Gb ✓
             ("EDB", "512GB", "16GB"),   # E→16GB RAM (128Gb) + DB→512GB NAND (4096Gb) = 4224Gb ✓
             #
-            # ── MT29TZZZ Gen A (LPDDR2) — estrutura legada ───────────────────
-            # Posição 8 = dígito código NAND, posição 9 = 'D' (constante),
-            # posição 10 = código DRAM.
+            # ── MT29TZZZ Gen A (LPDDR2/LPDDR3) — estrutura legada ──────────────
+            # Convenção confirmada por 5 pontos de dados cruzados (Micron FBGA API, 2026-05):
+            #   pn[8]  = código RAM (dígito): '4'→512MB · '5'→2GB · '8'→1GB
+            #   pn[9]  = 'D' (constante na maioria dos chips Gen A)
+            #   pn[10] = código NAND (dígito): '4'→4GB(32Gb) · '5'→8GB(64Gb) · '6'→16GB(128Gb)
             #
-            # Convenção (source: Micron FBGA API + COMPONENT DENSITY CSV):
-            #   pn[8] = NAND: '8'→64Gb=8GB  (confirmado: JWA60/JY941 = MT29TZZZ8D5...)
-            #   pn[10]= DRAM: '5'→8Gb=1GB   (confirmado: 72G total - 64Gb NAND = 8Gb RAM)
-            #   Verificação: 64+8 = 72Gb ✓ (part-name: "MLC EMMC/LPDDR2 72G VFBGA")
+            # Verificações (Micron FBGA API total Gbit):
+            #   4D4 → 36Gb  = 32Gb NAND + 4Gb RAM   ✓  "EMCP 36G VFBGA"            (1 chip)
+            #   8D4 → 40Gb  = 32Gb NAND + 8Gb RAM   ✓  "MLC EMMC/LPDDR2 40G VFBGA"
+            #   8D5 → 72Gb  = 64Gb NAND + 8Gb RAM   ✓  "MLC EMMC/LPDDR2 72G VFBGA" ← JWA60/JY941
+            #   5D6 → 144Gb = 128Gb NAND + 16Gb RAM ✓  "EMCP 144G VFBGA"            (11 chips)
+            #   8D6 → 136Gb = 128Gb NAND + 8Gb RAM  ✓  "MLC EMMC/LPDDR3 136G VFBGA"
             #
-            # O tipo RAM (LPDDR2) é decodificado separadamente via MIC_TZZZ_GEN.
-            ("8D5", "8GB",   "1GB"),    # 8→8GB NAND (64Gb) + D5→1GB LPDDR2 (8Gb) = 72Gb ✓
+            # ⚠ Ambiguidade tipo RAM: 8D5→LPDDR2 e 8D6→LPDDR3 (API explícito).
+            #   pn[8]='8' = 1GB para ambos, mas o tipo depende de pn[10], não apenas pn[8].
+            #   MIC_TZZZ_GEN ('8'→LPDDR2) fica impreciso para 8D6 — refinamento futuro.
+            ("4D4", "4GB",   "512MB"),  # 4→512MB RAM (4Gb)  + D4→4GB NAND (32Gb)   = 36Gb  ✓
+            ("8D4", "4GB",   "1GB"),    # 8→1GB RAM (8Gb)    + D4→4GB NAND (32Gb)   = 40Gb  ✓ LPDDR2
+            ("8D5", "8GB",   "1GB"),    # 8→1GB RAM (8Gb)    + D5→8GB NAND (64Gb)   = 72Gb  ✓ LPDDR2
+            ("5D6", "16GB",  "2GB"),    # 5→2GB RAM (16Gb)   + D6→16GB NAND (128Gb) = 144Gb ✓ tipo?
+            ("8D6", "16GB",  "1GB"),    # 8→1GB RAM (8Gb)    + D6→16GB NAND (128Gb) = 136Gb ✓ LPDDR3
         ]
         self._bulk_map("MIC_MCP_CAP", mcp_cap, micron, dry, overwrite)
 

@@ -1322,6 +1322,43 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K4E2E304EA ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 1.5GB. Família K4E, pn[3:5]="2E" → 12Gb ÷ 8 = 1.5GB.
+    # Chave "2E" adicionada ao K4E_CAP em populate_samsung.py (2026-05-29).
+    # Fontes confirmadas:
+    #   • K4E2E304EA-AGCF: Kynix + Worldway Electronics ✓
+    #   • K4E2E304EE-AGCE: Alldatasheet (Samsung Product Selection Guide) ✓
+    #   • Galaxy Tab E SM-T560/T560NU: 1.5GB RAM oficial — GSMarena/Icecat ✓
+    #   • "2E"=12Gb já em LPDDR4_CAP com nota "confirmado por datasheet Samsung"
+    # Dispositivo: Samsung Galaxy Tab E (SM-T560, SM-T560NU, SM-T567V), S5 Mini (~2014-2015).
+    # Destino: resíduo (1.5GB LPDDR3 → sem liquidez B2B atual, NÃO RENTÁVEL via engine).
+    # create=True: pn_not_in_db=True no debug → não existia no banco.
+    # confidence=confirmed + fields: garante grammar_wins=False → fonte = "banco de dados".
+    {
+        "pn": "K4E2E304EA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "1.5GB",
+            "interface":  "LPDDR3",
+            "device":     "Samsung Galaxy Tab E (SM-T560 / SM-T560NU / SM-T567V), Galaxy S5 Mini (~2014-2015)",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "K4E2E304EA-AGCF = LPDDR3 1.5GB (12Gb ÷ 8). "
+            "Kynix + Worldway ✓. Alldatasheet Samsung PSG (K4E2E304EE-AGCE) ✓. "
+            "Galaxy Tab E SM-T560 = 1.5GB RAM — GSMarena/Icecat ✓ (2026-05-29). "
+            "Chave '2E' adicionada ao K4E_CAP. confidence=confirmed: garante grammar_wins=False."
+        ),
+    },
+
     # ── K4EHE304EC ───────────────────────────────────────────────────────────
     # LPDDR3 standalone Samsung 3GB. Família K4E, pn[3:5]="HE" → 24Gb ÷ 8 = 3GB.
     # "HE" é alias de "FE" (mesmo densidade 24Gb, die alternativo) — padrão Samsung.
@@ -2388,6 +2425,97 @@ CORRECTIONS = [
             "FBGA JY454 = MT29C4G48MAZAPAKD-6 IT ES (API Micron FBGA decoder). "
             "ES = Engineering Sample (NÃO produção final). "
             "4 Gbit SLC NAND Flash ÷ 8 = 512MB. ⚠ NÃO é eMCP — NAND raw."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Samsung NAND Flash standalone — KF9 family (K9 series, legacy)
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── KF98G16Q4X ────────────────────────────────────────────────────────────
+    # Samsung NAND Flash standalone: 8Gbit (1GB), x16 bus, FBGA63.
+    # Conflito de prefixo resolvido em add_chip_families.py:
+    #   Samsung "KF9" (priority=70) > Kingston "KF" (priority=80).
+    # Fontes Tier 1:
+    #   • Octopart: KF98G16Q4X-BEB0 — 6 distribuidores, Samsung ✓ (2026-05-29)
+    #   • Elnec: KF98G16Q4X [FBGA63] — suporte confirmado em programador BGA ✓
+    #   • Elnec K9 naming table: 8G = 8Gbit, 16 = x16 bus
+    # Era: feature phone / embedded (~2008-2012). Sem controladora eMMC.
+    # Destino: sucata ou aplicações industriais específicas.
+    {
+        "pn": "KF98G16Q4X",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "NAND Flash",
+            "subtype":    "NAND Flash 8Gbit (1GB) x16 — K9 series (legado)",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "NAND Flash",
+            "subtype":    "NAND Flash 8Gbit (1GB) x16 — K9 series (legado)",
+            "capacity":   "8Gbit (1GB)",
+            "interface":  "NAND x16 (raw, sem controladora)",
+            "device":     "SUCATA / uso industrial específico — Samsung NAND Flash standalone legado "
+                          "(feature phone / embedded ~2008-2012). Sem controladora eMMC.",
+            "source_url": "https://octopart.com/kf98g16q4x-beb0-samsung-52061167",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "KF98G16Q4X = Samsung K9 NAND Flash standalone. NÃO é Kingston Fury. "
+            "Conflito de prefixo KF: Kingston (DDR módulos) vs Samsung (NAND Flash). "
+            "Octopart: KF98G16Q4X-BEB0, 6 distribuidores, Samsung ✓ (2026-05-29). "
+            "Elnec: FBGA63, K9 naming table → 8G=8Gbit(1GB), x16 bus ✓. "
+            "Família KF9 adicionada em add_chip_families.py (priority=70 < Kingston KF priority=80). "
+            "create=True: chip não existia no banco (grammar retornava Kingston por erro de prefixo)."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Raw MCP legado — K5 family (Samsung feature phone era ~2004-2008)
+    # chip_type = "MCP" (não eMCP — sem controladora eMMC)
+    # assess_profitability retorna "NÃO RENTÁVEL" para chip_type="MCP" (engine.py)
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K524G2GACJ ────────────────────────────────────────────────────────────
+    # Samsung Raw MCP: 4Gbit NAND (512MB) + 2Gbit mDDR1 (256MB).
+    # NÃO é eMCP — expõe pinos NAND e DRAM diretamente, sem controladora eMMC.
+    # Era feature phone / basic phone Samsung (~2004-2008). Hoje 100% sucata.
+    # Fontes Tier 1:
+    #   • Octopart: K524G2GACJ-B050 — 5 distribuidores listados ✓ (2026-05-29)
+    #   • Datasheet K524G2GACB (família): "4Gbit NAND Flash + 2Gbit Mobile DDR" ✓
+    #   • datasheetspdf.com/pdf/696405/Samsungsemiconductor/K524G2GACB-A050/1
+    # Sem controladora: nenhum programador BGA atual consegue extrair partições.
+    # Destino obrigatório: moagem / recuperação de metais preciosos.
+    {
+        "pn": "K524G2GACJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "MCP",
+            "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "MCP",
+            "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
+            "capacity":   "NAND 512MB + mDDR1 256MB",
+            "device":     "SUCATA — Raw MCP Samsung legado (feature phone ~2004-2008). "
+                          "Sem controladora eMMC. Programadores BGA atuais incompatíveis. "
+                          "Destino: moagem / recuperação de metais.",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Família K5 = Samsung Raw MCP pré-eMCP: NAND raw + mDDR1 sem controladora. "
+            "K524G2GACJ = 4Gbit NAND (÷8=512MB) + 2Gbit mDDR1 (÷8=256MB). "
+            "Octopart: K524G2GACJ-B050, 5 distribuidores ✓ (2026-05-29). "
+            "Datasheet K524G2GACB-A050: '4Gbit NAND Flash + 2Gbit Mobile DDR' ✓. "
+            "chip_type='MCP' → assess_profitability retorna 'NÃO RENTÁVEL' (engine.py). "
+            "Operador deve descartar imediatamente para moagem — sem liquidez B2B."
         ),
     },
 

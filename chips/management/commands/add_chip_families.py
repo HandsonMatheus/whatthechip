@@ -405,6 +405,30 @@ FAMILIES = [
             'Ex: KVR32N22S8/8 = DDR4-3200, CL22, SO-DIMM, 8GB.'
         ),
     },
+    # ── Samsung KF9* NAND Flash (priority 70 < Kingston KF priority 80) ──────
+    # Conflito de prefixo: Samsung usa KF9* para NAND Flash (K9-series);
+    # Kingston usa KF* para módulos Fury DDR4/DDR5.
+    # Solução: KF9 com priority=70 é verificado ANTES de KF Kingston (priority=80).
+    # Motor: order_by("priority", "-prefix_len") → KF9 (len=3, p=70) vence KF (len=2, p=80).
+    # Confirmado: KF98G16Q4X-BEB0 = Samsung 8Gbit NAND Flash — Octopart ✓ + Elnec ✓ (2026-05-29).
+    {
+        'brand_name': 'Samsung',
+        'prefix':     'KF9',
+        'chip_type':  'NAND Flash',
+        'subtype':    'NAND Flash — K9 series (legado, standalone)',
+        'interface':  'NAND (raw)',
+        'is_emcp':    False,
+        'priority':   70,
+        'tip': (
+            'Samsung NAND Flash standalone — série K9 (legacy). '
+            'KF9 = Samsung, família NAND Flash pré-eMMC. '
+            'Densidade: 8G=8Gbit(1GB), 4G=4Gbit(512MB). '
+            'Barramento: 16=x16. Sem controladora eMMC. '
+            'Era: feature phone / embedded (~2005-2012). '
+            '⚠ NÃO É Kingston Fury (que usa KF+DDR com "/" no PN). '
+            'Destino: sucata / aplicações industriais específicas.'
+        ),
+    },
     {
         'brand_name': 'Kingston',
         'prefix':     'KF',

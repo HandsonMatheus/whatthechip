@@ -1309,6 +1309,12 @@ def assess_profitability(result: dict) -> str:
             return "INDETERMINADO"
         return "RENTÁVEL" if cap_gb >= 0.24 else "NÃO RENTÁVEL"  # 0.24 ≈ 2Gb (256MB)
 
+    # ── Raw MCP legado (feature phone / basic phone era) ─────────────────────
+    # K5* e similares: NAND raw + mDDR1, sem controladora eMMC.
+    # Tecnologia pré-eMCP, sem liquidez B2B em 2026. Sempre sucata.
+    if chip_type.lower() == "mcp":
+        return "NÃO RENTÁVEL"
+
     # Tipo não coberto pelas regras (UFS, NOR, SoC, SDRAM puro, etc.)
     return "INDETERMINADO"
 
