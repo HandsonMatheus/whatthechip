@@ -343,6 +343,41 @@
   background: #2d0a0a; border-color: #da1e28; color: #ff8389;
 }
 
+/* ── Entrada de alerta — NÃO RENTÁVEL (toca 1× ao aparecer) ─── */
+/* 3 pulsos decrescentes em 3s: forte → médio → leve → para.     */
+@keyframes est-danger-entrance {
+  0%   { box-shadow: 0 0 0 0px  rgba(218,30,40,0);   transform: scale(1);    }
+  8%   { box-shadow: 0 0 0 8px  rgba(218,30,40,0.55); transform: scale(1.07); }
+  18%  { box-shadow: 0 0 0 0px  rgba(218,30,40,0);   transform: scale(1);    }
+  32%  { box-shadow: 0 0 0 6px  rgba(218,30,40,0.38); transform: scale(1.04); }
+  44%  { box-shadow: 0 0 0 0px  rgba(218,30,40,0);   transform: scale(1);    }
+  58%  { box-shadow: 0 0 0 4px  rgba(218,30,40,0.22); transform: scale(1.02); }
+  70%  { box-shadow: 0 0 0 0px  rgba(218,30,40,0);   transform: scale(1);    }
+  100% { box-shadow: none;                            transform: scale(1);    }
+}
+.est-meta-pill--danger {
+  animation: est-danger-entrance 3s ease-out 1 forwards;
+}
+
+/* ── LED de alerta (NÃO RENTÁVEL) ───────────────────────────── */
+@keyframes est-danger-pulse {
+  0%   { box-shadow: 0 0 5px rgba(218,30,40,0.7), inset 0 -1px 0 rgba(0,0,0,0.2); }
+  50%  { box-shadow: 0 0 12px rgba(218,30,40,1),  0 0 20px rgba(218,30,40,0.4),
+                     inset 0 -1px 0 rgba(0,0,0,0.2); }
+  100% { box-shadow: 0 0 5px rgba(218,30,40,0.7), inset 0 -1px 0 rgba(0,0,0,0.2); }
+}
+.est-danger-led {
+  display: inline-block; flex-shrink: 0;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff8389 0%, #da1e28 55%, #750e13 100%);
+  box-shadow: 0 0 6px rgba(218,30,40,0.7), inset 0 -1px 0 rgba(0,0,0,0.2);
+  animation: est-danger-pulse 1.4s ease-in-out infinite;
+  vertical-align: middle;
+}
+[data-theme="dark"] .est-danger-led {
+  background: radial-gradient(circle at 30% 30%, #ffb3b8 0%, #da1e28 55%, #520408 100%);
+}
+
 /* ── Seção da tabela ────────────────────────────────────────── */
 .est-table-section { margin-top: var(--s5); }
 

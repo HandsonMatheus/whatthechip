@@ -49,8 +49,14 @@
     {% endwith %}
 
     {% if profitable and profitable != 'INDETERMINADO' %}
-    <span class="est-meta-pill {% if profitable_key == 'rentavel' %}est-meta-pill--ok{% else %}est-meta-pill--danger{% endif %}">
-      {% if profitable_key == 'rentavel' %}✓{% else %}✗{% endif %} {{ profitable }}
+    <span class="est-meta-pill {% if profitable_key == 'rentavel' %}est-meta-pill--ok{% else %}est-meta-pill--danger{% endif %}"
+          style="display:inline-flex;align-items:center;gap:6px;">
+      {% if profitable_key == 'rentavel' %}
+        ✓
+      {% else %}
+        <span class="est-danger-led"></span>
+      {% endif %}
+      {{ profitable }}
     </span>
     {% endif %}
 
