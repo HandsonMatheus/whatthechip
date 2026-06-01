@@ -158,7 +158,10 @@ class Command(BaseCommand):
             ("7X", "8GB",   "1GB"),    # 8GB NAND + 1GB RAM   (KMQ7X000SA-B315) — Preduo B2B: "8+8" ✓ (2026-05-25)
             #                          # CORRIGIDO: estava 1.5GB (12Gb) por analogia com die 6Gb de KMQ310006B — errado.
             #                          # Preduo e Alibaba confirmam 8Gb LPDDR3 = 1GB. "32dram" = barramento 32-bit.
-            ("82", "16GB",  "1GB"),    # 16GB NAND + 1GB RAM
+            ("82", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM (16Gb LPDDR3)
+                                       # Âncora: KMR820001M-B609 — Preduo ✓ "16+16" + Puris ✓ "16+16 221ball eMCP-D3" (2026-05-29).
+                                       # Wileyfox Swift (Snapdragon 410, 2015) = 16GB + 2GB RAM — aparelho com KMR820001M-B609 ✓.
+                                       # CORRIGIDO de 1GB: entrada original sem âncora documentada.
             ("IS", "16GB",  "1GB"),    # 16GB NAND + 1GB RAM   (KMVIS000LM) — Galaxy S2 i9100, confirmado IA externa
             ("TU", "16GB",  "1GB"),    # 16GB NAND + 1GB RAM   (KMVTU000LM) — Galaxy S3 i9300, confirmado IA externa
             ("3W", "16GB",  "512MB"), # 16GB NAND + 512MB RAM (KMV3W000LW ✓ chip físico 2026-05-13; Galaxy S4 I9500 era)
@@ -465,6 +468,24 @@ class Command(BaseCommand):
             ("BE", "4GB",  "32Gb — Galaxy flagship (~2015). Alta demanda residual."),
         ]
         self._bulk_map("K4E_CAP", k4e_cap, samsung, dry, overwrite)
+
+        # ── DecodeMap: capacidade LPDDR2 standalone K3PE (pos 4-5, 2 chars) ──────
+        # Família K3PE = Samsung LPDDR2 Mobile DRAM (~2011-2013). Antecessor do K3QF/K4E.
+        # pn[4:6] = cap_key (2 chars). Formato: K3PE[cap_key][variant][revision].
+        # Organização: x32 em todos os SKUs. VDD 1.8V / VDDQ 1.2V. 533MHz / 1066 Mbps.
+        # Fontes:
+        #   • K3PE4E400A-XGC1: harddiskdirect "128Mx32 LPDDR2 4Gbit" ✓
+        #   • K3PE7E700B-XXC1: TechInsights DPR-1110-901 "32nm 2X 4Gb/die DDP = 8Gb" ✓
+        #   • K3PE0E000A-XGC2: harddiskdirect "512Mx32 LPDDR2 16Gbit" ✓
+        #   • Preduo 216/220/240ball LPDDR2: listagens confirmas de todos os grupos ✓
+        # ⚠ LPDDR2 → assess_profitability → NÃO RENTÁVEL (lpddr_gen=2 ≤ 2).
+        k3pe_cap = [
+            ("4E", "512MB", "4Gbit SDP (128Mx32) — K3PE4E400x. Galaxy entry (~2011-2012). Resíduo."),
+            ("7E", "1GB",   "8Gbit DDP (2× 4Gb) — K3PE7E700x. Galaxy mid-range (~2011-2012). Resíduo."),
+            ("8E", "1GB",   "8Gbit DDP — K3PE8E800M, die alternativo de 7E. Mesma densidade. Resíduo."),
+            ("0E", "2GB",   "16Gbit DDP (2× 8Gb ou 512Mx32) — K3PE0E000x. Galaxy flagship (~2012-2013). Resíduo."),
+        ]
+        self._bulk_map("K3PE_CAP", k3pe_cap, samsung, dry, overwrite)
 
         # ── DecodeMap: capacidade LPDDR4 / LPDDR4X (pos 3-4, 2 chars) ───────────
         # Usado por K4F (LPDDR4), K4U (LPDDR4X), K3U (LPDDR4X multi-channel).
@@ -996,6 +1017,25 @@ class Command(BaseCommand):
                     "⚠ NÃO confundir com K3QF (também LPDDR3 multi-channel, prefixo K3Q). "
                     "⚠ decode_density_type='' — pn[3]='F' via DRAM_MOBILE erraria K3MF9=3GB. "
                     "Destino: bancada reacondicional mobile (PoP LPDDR3 — checar demanda)."
+                ),
+            ),
+            # K3PE = Samsung LPDDR2 Mobile standalone (~2011-2013).
+            # Antecessor do K3QF (LPDDR3). Todos NÃO RENTÁVEL — LPDDR2 sem liquidez B2B.
+            # pn[4:6] = cap_key (decode_cap_pos=4, decode_cap_len=2).
+            # Chaves: 4E=512MB · 7E/8E=1GB · 0E=2GB.
+            # Fontes: harddiskdirect ✓, TechInsights ✓, Preduo ✓ (2026-05-29).
+            dict(
+                prefix="K3PE", chip_type="LPDDR2", subtype="LPDDR2 Mobile",
+                interface="LPDDR2", is_emcp=False, active=True, priority=100,
+                decode_density_type="",
+                decode_cap_pos=4, decode_cap_len=2, decode_cap_map="K3PE_CAP",
+                tip=(
+                    "LPDDR2 Samsung standalone (~2011-2013). "
+                    "K3PE = prefixo família LPDDR2 mobile (antecessor do K3QF/LPDDR3). "
+                    "Capacidade: pn[4:6] → 4E=512MB · 7E/8E=1GB · 0E=2GB. "
+                    "533MHz / 1066 Mbps. VDD 1.8V / VDDQ 1.2V. Organização x32. "
+                    "⚠ LPDDR2: sem liquidez B2B em 2026 → NÃO RENTÁVEL (moagem/refino). "
+                    "Exemplos: K3PE4E400A (512MB), K3PE7E700B (1GB), K3PE0E000A (2GB)."
                 ),
             ),
             # K4E = Samsung LPDDR3 standalone (~2013-2016).

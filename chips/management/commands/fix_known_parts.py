@@ -389,6 +389,38 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KMR820001M ───────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMR. cap_key pn[3:5]="82" → SAM_EMCP_CAP.
+    # SAM_EMCP_CAP["82"] corrigido de 1GB para 2GB (16Gb) em populate_samsung.py (2026-05-29).
+    # Entrada original "82"=1GB não tinha âncora documentada — inserção sem Tier 1.
+    # Confirmado: Preduo "16+16" ✓ + Puris "16+16 221ball eMCP-D3" ✓ (2026-05-29).
+    # Dispositivo: Wileyfox Swift (Snapdragon 410, 2015) = 16GB + 2GB RAM ✓.
+    # create=True: pn_not_in_db=True no debug → chip não existia no banco.
+    {
+        "pn": "KMR820001M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 5.1 16GB",
+            "emcp_ram":   "LPDDR3 2GB",
+            "device":     "Wileyfox Swift (2015), Lenovo P70-A",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "SAM_EMCP_CAP['82'] corrigido: era 1GB (sem âncora) → 2GB (16Gb LPDDR3). "
+            "Preduo: KMR820001M-B609 = '16+16' ✓. Puris: '16+16 221ball eMCP-D3' ✓ (2026-05-29). "
+            "Wileyfox Swift (Snapdragon 410) = 16GB + 2GB RAM — chip soldado: KMR820001M-B609 ✓. "
+            "confidence=confirmed: garante grammar_wins=False → fonte = banco de dados."
+        ),
+    },
+
     # ── KMRX1000BM / KMRX10014M ──────────────────────────────────────────────
     # Problema: SAM_EMCP_CAP mapeia X1 = "32GB NAND + 2GB RAM" (base KMQX10013MB — Octopart ✓).
     # Família KMR diverge: KMR+X1 = 3GB(24Gb) LPDDR3, não 2GB(16Gb) como KMQ.
@@ -1322,6 +1354,76 @@ CORRECTIONS = [
         ),
     },
 
+    # ══════════════════════════════════════════════════════════════════════════
+    # Samsung K3PE — LPDDR2 Mobile standalone (~2011-2013)
+    # Família adicionada ao grammar em populate_samsung.py (2026-05-29).
+    # Todos NÃO RENTÁVEL: LPDDR2 (lpddr_gen=2 ≤ 2 → engine retorna NÃO RENTÁVEL).
+    # Decode: pn[4:6] → 4E=512MB · 7E/8E=1GB · 0E=2GB.
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K3PE4E400A ───────────────────────────────────────────────────────────
+    # LPDDR2 Samsung 512MB standalone. cap_key pn[4:6]="4E" → 4Gbit SDP.
+    # Fontes Tier 1:
+    #   • harddiskdirect: K3PE4E400A-XGC1 = "LPDDR2 128Mx32" → 4Gbit ÷ 8 = 512MB ✓
+    #   • Octopart: K3PE4E400A-XGC0 — 3 distribuidores ✓ (2026-05-29)
+    #   • Datasheets360: K3PE4E400A-XGC100 listado ✓
+    # Organização: 128Mx32, 533MHz/1066Mbps, 240-ball FBGA 14×14mm.
+    # Era: feature phone / entry-level Android (~2011-2012). Sem liquidez B2B.
+    {
+        "pn": "K3PE4E400A",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR2",
+            "subtype":    "LPDDR2 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "512MB",
+            "interface":  "LPDDR2",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "K3PE família LPDDR2 adicionada ao grammar (2026-05-29). "
+            "K3PE4E400A-XGC1: harddiskdirect '128Mx32 LPDDR2' → 4Gbit÷8=512MB ✓. "
+            "Octopart: K3PE4E400A-XGC0, 3 distribuidores ✓. "
+            "cap_key '4E' adicionado ao K3PE_CAP em populate_samsung.py."
+        ),
+    },
+
+    # ── K3PE7E700B ───────────────────────────────────────────────────────────
+    # LPDDR2 Samsung 1GB standalone. cap_key pn[4:6]="7E" → 8Gbit DDP (2× 4Gb).
+    # Fontes Tier 1:
+    #   • TechInsights DPR-1110-901: K3PE7E700B-XXC1 = "Samsung 32nm 2X 4Gb Mobile LPDDR2 DRAM"
+    #     → 4Gb/die × 2 dies DDP = 8Gbit = 1GB ✓
+    #   • Jotrin + Veswin: K3PE7E700B-XXC1 listado ✓ (2026-05-29)
+    # Organização: 128Mx32 × 2 DDP, 533MHz/1066Mbps, 32nm process.
+    # Era: Galaxy S2 / Note era (~2011-2012). Sem liquidez B2B.
+    {
+        "pn": "K3PE7E700B",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR2",
+            "subtype":    "LPDDR2 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "1GB",
+            "interface":  "LPDDR2",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "TechInsights DPR-1110-901: K3PE7E700B-XXC1 = '32nm 2X 4Gb Mobile LPDDR2 DRAM'. "
+            "DDP: 4Gb/die × 2 = 8Gb = 1GB. Jotrin + Veswin: listados ✓ (2026-05-29). "
+            "cap_key '7E' adicionado ao K3PE_CAP → 8Gbit=1GB."
+        ),
+    },
+
     # ── K4E2E304EA ───────────────────────────────────────────────────────────
     # LPDDR3 standalone Samsung 1.5GB. Família K4E, pn[3:5]="2E" → 12Gb ÷ 8 = 1.5GB.
     # Chave "2E" adicionada ao K4E_CAP em populate_samsung.py (2026-05-29).
@@ -1384,6 +1486,70 @@ CORRECTIONS = [
             "Puris B2B: K4EHE304EC-AGCF = 24Gbit LPDDR3 (168ball) → 24Gb÷8=3GB. "
             "HE = alias de FE no mapa K4E_CAP (mesmo 24Gb, die alternativo). "
             "Dispositivo: Galaxy Tab A SM-P585 / Exynos 7870."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Samsung K3RG — LPDDR4 Multi-Channel (4CH x16, 64-bit) (~2015-2017)
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K3RG2G20BM ────────────────────────────────────────────────────────────
+    # LPDDR4 Samsung 4GB. Família K3RG, pn[4:6]="2G" → 32Gbit ÷ 8 = 4GB.
+    # Fontes Tier 1:
+    #   • iFixit Google Pixel XL Teardown: K3RG2G20BM-MGCJ = "4GB LPDDR4" ✓
+    #     (Snapdragon 821, 2016) — ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237
+    #   • iFixit LG G5 Teardown: K3RG2G20BM-MGCJ = "4GB LPDDR4" ✓
+    #     (Snapdragon 820, 2016) — ifixit.com/Teardown/LG+G5+Teardown/61205
+    # Grammar já decodifica corretamente (2G → 4GB). Este fix promove a
+    # confidence para "confirmed" e exibe "banco de dados" como fonte.
+    # create=True: pn_not_in_db=True → chip não existia no banco.
+    {
+        "pn": "K3RG2G20BM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4 Multi-Channel",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "LPDDR4",
+            "device":     "Google Pixel XL (Snapdragon 821, 2016), LG G5 (Snapdragon 820, 2016)",
+            "source_url": "https://www.ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "K3RG2G20BM-MGCJ = 4GB LPDDR4. "
+            "iFixit Google Pixel XL teardown ✓ + iFixit LG G5 teardown ✓ (2026-05-29). "
+            "pn[4:6]='2G' → K3RG_CAP → 32Gbit ÷ 8 = 4GB. Grammar correto. "
+            "confidence=confirmed: garante grammar_wins=False → banco de dados."
+        ),
+    },
+    {
+        "pn": "K3RG2G20BM0G0J",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4 Multi-Channel",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "LPDDR4",
+            "device":     "Google Pixel XL (Snapdragon 821, 2016), LG G5 (Snapdragon 820, 2016)",
+            "source_url": "https://www.ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "PN completo como lido pelo scanner (sem hífen): K3RG2G20BM + sufixo 0G0J. "
+            "Mesma base K3RG2G20BM confirmada por iFixit Pixel XL + LG G5 teardowns ✓ (2026-05-29). "
+            "pn[4:6]='2G' → 4GB LPDDR4. confidence=confirmed: banco de dados."
         ),
     },
 
