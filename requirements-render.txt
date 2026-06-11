@@ -18,6 +18,7 @@ google-generativeai>=0.5
 
 # ── Utilitários ─────────────────────────────────────────────────────────────────
 tqdm>=4.0
+openpyxl>=3.1              # Exportação de estoque/lote para .xlsx
 
 # ── NÃO incluídos (não rodam no Render free) ────────────────────────────────────
 # curl_cffi    ← scraping local apenas
