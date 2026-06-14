@@ -1,3 +1,13 @@
+> ⚠️ **DOCUMENTO ARQUIVADO — NOTA DE SESSÃO HISTÓRICA (não é fonte da verdade)**
+>
+> Movido para `docs/archive/` em 2026-06-14, mantido apenas como registro histórico.
+> **Fonte da verdade = `CLAUDE.md` (raiz) + o código** (`chips/engine.py`, `core/settings.py`).
+> ⚠️ Ponto obsoleto conhecido: o **Gemini é LEGADO e fica DESLIGADO por padrão**
+> (`GEMINI_ENABLED=false`). Qualquer menção a ele como "camada ativa" aqui está superada.
+> Não tome decisões com base neste arquivo sem confirmar no código.
+
+---
+
 # Briefing — WhatTheChip: Gabaritos Samsung (Backend)
 
 > **Leia este arquivo inteiro antes de qualquer ação.**

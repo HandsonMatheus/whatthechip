@@ -1,3 +1,13 @@
+> ⚠️ **DOCUMENTO ARQUIVADO — NOTA DE SESSÃO HISTÓRICA (não é fonte da verdade)**
+>
+> Movido para `docs/archive/` em 2026-06-14, mantido apenas como registro histórico.
+> **Fonte da verdade = `CLAUDE.md` (raiz) + o código** (`chips/engine.py`, `core/settings.py`).
+> ⚠️ Ponto obsoleto conhecido: o **Gemini é LEGADO e fica DESLIGADO por padrão**
+> (`GEMINI_ENABLED=false`). Qualquer menção a ele como "camada ativa" aqui está superada.
+> Não tome decisões com base neste arquivo sem confirmar no código.
+
+---
+
 # Prompt de Sessão — WhatTheChip: Refinamento Samsung
 
 Você está ajudando a manter e refinar o **WhatTheChip**, um sistema Django de classificação de chips IC para o mercado de reciclagem eletrônica (eMiner, Paraguai). O objetivo é ser o maior e mais preciso sistema de classificação do mercado.
