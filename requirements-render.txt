@@ -1,5 +1,5 @@
 # ── Core Django ────────────────────────────────────────────────────────────────
-Django>=4.2
+Django==5.2.15             # LTS; Python 3.11 (runtime.txt). 6.0 exigiria Python 3.12+ → quebraria o deploy
 Pillow>=10.0
 
 # ── Banco de dados ──────────────────────────────────────────────────────────────

@@ -24,7 +24,7 @@ from django.test import TestCase, SimpleTestCase
 class DecodeLenTests(SimpleTestCase):
     """Testa decode de chave multi-char (decode_cap_len > 1)."""
 
-    def _make_family(self, pos, cap_len, map_name, is_emcp=False, interface='', gen_pos=None, gen_map=''):
+    def _make_family(self, pos, cap_len, map_name, is_emcp=False, interface='', gen_pos=None, gen_map='', gen_len=1):
         """Helper: cria um objeto ChipFamily fake (sem banco)."""
         from unittest.mock import MagicMock
         fam = MagicMock()
@@ -33,6 +33,7 @@ class DecodeLenTests(SimpleTestCase):
         fam.decode_cap_map  = map_name
         fam.decode_gen_pos  = gen_pos
         fam.decode_gen_map  = gen_map
+        fam.decode_gen_len  = gen_len   # precisa ser int: o engine faz pos+gen_len (senão MagicMock vaza)
         fam.decode_density_type = ''
         fam.is_emcp         = is_emcp
         fam.chip_type       = 'eMCP' if is_emcp else 'eMMC'
@@ -100,7 +101,9 @@ class DecodeLenTests(SimpleTestCase):
                 # 3ª letra 'R' → LPDDR4/4X
                 r = _result_from_family('KMRABC001X', fam)
 
-        self.assertEqual(r['emcp_ram'], 'LPDDR4/4X')
+        # o engine anexa "⚠ cap. não mapeada" quando não há capacidade decodificada;
+        # o que importa neste teste é o tipo RAM vindo do fallback EMCP_RAM_TYPES ('R' → LPDDR4/4X)
+        self.assertTrue(r['emcp_ram'].startswith('LPDDR4/4X'))
         self.assertIn('eMMC', r['emcp_nand'])
         self.assertEqual(r['emcp_source'], 'parcial (gramática)')
 

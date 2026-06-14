@@ -96,7 +96,7 @@ de rentabilidade**.
 | Camada | Tecnologia |
 |---|---|
 | Linguagem | Python 3.11.9 (`runtime.txt`) |
-| Framework | Django 4.2+ (confirme com `python -m django --version`) |
+| Framework | **Django 5.2.15 (LTS)** — pinado em `requirements*.txt`; roda em Python 3.11 |
 | Banco | **PostgreSQL** (local e produção). Testes usam SQLite em memória |
 | Front-end | **HTMX** + templates Django + **CSS puro** — **sem** React/SPA/build JS |
 | Estáticos | **WhiteNoise** (`CompressedManifestStaticFilesStorage`) |
@@ -300,6 +300,10 @@ Detalhes e armadilhas: **`DEPLOY_RENDER.md`**.
 - **`decode_density_type` + `decode_cap_map` juntos** na mesma família → conflito.
   São mutuamente exclusivos (K4F/K4U/K3U devem ter `decode_density_type=""`).
 - **Postgres free do Render** limita a ~10 conexões ("too many connections").
+- **Versão do Django travada em 5.2.x (LTS) + Python 3.11.** O Django 6.0 exige
+  **Python 3.12+**; **não suba o Django para 6.0 sem subir o `runtime.txt`** para
+  3.12 — senão o build no Render quebra. (Se o ambiente local tiver 6.0 instalado,
+  rode `pip install -r requirements.txt` para alinhar em 5.2.15.)
 - **Scrapers são frágeis e local-only:** preduo/glochip estão atrás de Cloudflare
   (exigem Playwright); `--brand` default é "Samsung" em `collect_pns`/`enrich_gemini`
   — fácil raspar a marca errada por omissão.
