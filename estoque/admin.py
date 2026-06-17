@@ -1,5 +1,44 @@
 from django.contrib import admin
-from .models import InventoryEntry, Lot
+from django.db.models import F
+from django.utils import timezone
+
+from .models import InventoryEntry, Lot, PendingEntry
+
+
+def _confirm_as_knownpart(pend):
+    """Promove um PendingEntry aprovado a KnownPart manual/enriched (o gestor
+    avalizou), para que o PN passe a ser confirmado no banco daqui pra frente.
+    Defensivo: nunca rebaixa um confirmed/manual existente; falhas não quebram
+    a ação de admin."""
+    try:
+        from chips.models import Brand, KnownPart
+        existing = KnownPart.objects.filter(part_number=pend.part_number).first()
+        if existing and existing.confidence in ("confirmed", "manual"):
+            return
+        name = (pend.brand or "").strip() or "Desconhecida"
+        brand = Brand.objects.filter(name__iexact=name).first()
+        if not brand:
+            code = (name[:3] or "XXX").upper()
+            while Brand.objects.filter(code=code).exists():
+                code += "X"
+            brand = Brand.objects.create(name=name, code=code, notes="Criada via aprovação de fila.")
+        try:
+            from chips.engine import _match_family
+            family = _match_family(pend.part_number)
+        except Exception:
+            family = None
+        KnownPart.objects.update_or_create(
+            part_number=pend.part_number,
+            defaults=dict(
+                brand=brand, family=family, status="enriched", confidence="manual",
+                chip_type=pend.chip_type or "", capacity=pend.capacity or "",
+                emcp_ram=pend.emcp_ram or "", emcp_nand=pend.emcp_nand or "",
+                interface=pend.interface or "",
+                notes="Confirmado pelo gestor via fila de conferência (estoque).",
+            ),
+        )
+    except Exception:
+        pass
 
 
 @admin.register(Lot)
@@ -22,3 +61,44 @@ class InventoryEntryAdmin(admin.ModelAdmin):
     def display_capacity(self, obj):
         return obj.display_capacity
     display_capacity.short_description = "Capacidade"
+
+
+@admin.register(PendingEntry)
+class PendingEntryAdmin(admin.ModelAdmin):
+    list_display  = ("part_number", "lot", "chip_type", "capacity", "quantity",
+                     "confidence", "nearest_confirmed", "operator", "created_at")
+    list_filter   = ("classification_source", "confidence", "lot", "operator")
+    search_fields = ("part_number", "nearest_confirmed")
+    readonly_fields = ("created_at",)
+    ordering      = ("-created_at",)
+    actions       = ("aprovar", "reprovar")
+
+    @admin.action(description="✓ Aprovar: mover para o estoque e confirmar no banco")
+    def aprovar(self, request, queryset):
+        moved = 0
+        for p in queryset:
+            entry, created = InventoryEntry.objects.get_or_create(
+                lot=p.lot, part_number=p.part_number,
+                defaults=dict(
+                    chip_type=p.chip_type, brand=p.brand, capacity=p.capacity,
+                    emcp_ram=p.emcp_ram, emcp_nand=p.emcp_nand, is_emcp=p.is_emcp,
+                    interface=p.interface, classification_source="banco de dados",
+                    quantity=p.quantity,
+                ),
+            )
+            if not created:
+                InventoryEntry.objects.filter(pk=entry.pk).update(
+                    quantity=F("quantity") + p.quantity, last_updated=timezone.now())
+            _confirm_as_knownpart(p)
+            p.delete()
+            moved += 1
+        self.message_user(
+            request,
+            f"{moved} chip(s) movido(s) para o estoque e confirmado(s) no banco. "
+            f"⚠ Reinicie o servidor para o engine enxergar os novos confirmados (regra de ouro #3).")
+
+    @admin.action(description="✗ Reprovar: descartar (typo / chip inexistente)")
+    def reprovar(self, request, queryset):
+        n = queryset.count()
+        queryset.delete()
+        self.message_user(request, f"{n} pendência(s) descartada(s).")

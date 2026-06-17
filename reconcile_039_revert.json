@@ -1,0 +1,119 @@
+{
+  "lot": 39,
+  "ts": "2026-06-15T15:31:22.774235",
+  "removed_placeholders": 0,
+  "bumps": [
+    {
+      "pk": 70,
+      "pn": "KMFNX0012M",
+      "delta": 25,
+      "before": 41,
+      "after": 66
+    },
+    {
+      "pk": 49,
+      "pn": "16EMCP08-NL3DTB28",
+      "delta": 2,
+      "before": 8,
+      "after": 10
+    },
+    {
+      "pk": 54,
+      "pn": "KMQ310006B",
+      "delta": 1,
+      "before": 25,
+      "after": 26
+    },
+    {
+      "pk": 71,
+      "pn": "KMFE60012M",
+      "delta": 13,
+      "before": 36,
+      "after": 49
+    },
+    {
+      "pk": 64,
+      "pn": "KMQX60013M",
+      "delta": 2,
+      "before": 7,
+      "after": 9
+    },
+    {
+      "pk": 62,
+      "pn": "KMQD60013M",
+      "delta": 1,
+      "before": 13,
+      "after": 14
+    },
+    {
+      "pk": 78,
+      "pn": "KMDC6001DM",
+      "delta": 4,
+      "before": 6,
+      "after": 10
+    },
+    {
+      "pk": 119,
+      "pn": "KLM8G1GETF",
+      "delta": 1,
+      "before": 14,
+      "after": 15
+    },
+    {
+      "pk": 98,
+      "pn": "KLMAG1JENB",
+      "delta": 1,
+      "before": 26,
+      "after": 27
+    },
+    {
+      "pk": 83,
+      "pn": "KLMBG2JETD",
+      "delta": 3,
+      "before": 13,
+      "after": 16
+    },
+    {
+      "pk": 111,
+      "pn": "KLMCG2KCTA",
+      "delta": 1,
+      "before": 1,
+      "after": 2
+    },
+    {
+      "pk": 103,
+      "pn": "K4E6E30",
+      "delta": 4,
+      "before": 23,
+      "after": 27
+    },
+    {
+      "pk": 108,
+      "pn": "K4EHE30",
+      "delta": 3,
+      "before": 8,
+      "after": 11
+    },
+    {
+      "pk": 117,
+      "pn": "RS512M32LZ4",
+      "delta": 1,
+      "before": 15,
+      "after": 16
+    },
+    {
+      "pk": 81,
+      "pn": "K3UH5H5",
+      "delta": 1,
+      "before": 6,
+      "after": 7
+    },
+    {
+      "pk": 153,
+      "pn": "KLUCG4J1ED",
+      "delta": 1,
+      "before": 7,
+      "after": 8
+    }
+  ]
+}

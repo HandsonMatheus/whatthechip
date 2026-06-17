@@ -16,6 +16,7 @@ import io
 import json
 import re
 from datetime import datetime
+from difflib import get_close_matches
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
@@ -27,7 +28,28 @@ from django.views.decorators.http import require_POST
 from chips.engine import assess_profitability, classify
 from chips.models import UnknownChip
 
-from .models import InventoryEntry, Lot
+from .models import InventoryEntry, Lot, PendingEntry
+
+
+# Bloqueio "só confirmados": só passa para o estoque quem é confirmado no banco.
+CONFIRMED_SOURCES = {"banco de dados"}
+CONFIRMED_CONF = {"confirmed", "manual"}
+
+
+def _is_confirmed(result: dict) -> bool:
+    """True se o PN é confirmado no banco (vence a gramática). Reavaliado no
+    servidor — nunca confia no campo hidden do formulário."""
+    return (
+        result.get("classification_source") in CONFIRMED_SOURCES
+        or result.get("confidence") in CONFIRMED_CONF
+    )
+
+
+def _nearest_in_lot(lot, pn: str) -> str:
+    """PN já existente no lote mais parecido — provável original de um typo."""
+    pool = list(lot.entries.values_list("part_number", flat=True))
+    near = get_close_matches(pn, [p for p in pool if p != pn], n=1, cutoff=0.8)
+    return near[0] if near else ""
 
 
 # ─── helpers ────────────────────────────────────────────────────────────────
@@ -284,6 +306,38 @@ def add_chip(request, lot_pk):
     if not has_cap:
         UnknownChip.objects.get_or_create(part_number=pn)
         return render(request, 'estoque/partials/unknown_feedback.html', {'pn': pn})
+
+    # ── Bloqueio "só confirmados" ────────────────────────────────────────────
+    # Reclassifica no servidor (não confia no hidden do form). Se o PN não é
+    # confirmado no banco, NÃO entra no estoque: vai para a fila de conferência
+    # (PendingEntry) para o gestor aprovar/reprovar. Evita typos e chips ainda
+    # não catalogados contaminarem o inventário.
+    server_result = classify(pn)
+    if not _is_confirmed(server_result):
+        near = _nearest_in_lot(lot, pn)
+        pend, p_created = PendingEntry.objects.get_or_create(
+            lot=lot, part_number=pn,
+            defaults={
+                'quantity':              qty,
+                'chip_type':             server_result.get('chip_type', ''),
+                'brand':                 server_result.get('brand', ''),
+                'capacity':              server_result.get('capacity', ''),
+                'emcp_ram':              server_result.get('emcp_ram', ''),
+                'emcp_nand':             server_result.get('emcp_nand', ''),
+                'is_emcp':               bool(server_result.get('is_emcp')),
+                'interface':             server_result.get('interface', ''),
+                'classification_source': server_result.get('classification_source', ''),
+                'confidence':            server_result.get('confidence', ''),
+                'nearest_confirmed':     near,
+                'operator':              request.user,
+            },
+        )
+        if not p_created:
+            PendingEntry.objects.filter(pk=pend.pk).update(quantity=F('quantity') + qty)
+            pend.refresh_from_db()
+        return render(request, 'estoque/partials/pending_feedback.html', {
+            'pn': pn, 'qty': pend.quantity, 'near': near,
+        })
 
     defaults = {
         'chip_type':             request.POST.get('chip_type', ''),

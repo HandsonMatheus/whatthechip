@@ -354,8 +354,11 @@ def _result_from_family(pn: str, fam) -> dict:
             else:
                 ram_type = EMCP_RAM_TYPES.get(ram_char, f"tipo '{ram_char}' — consultar datasheet")
 
-        # Versão NAND eMMC: usa fam.interface se preenchido (ex: "eMMC 5.1")
-        nand_version = fam.interface or "eMMC"
+        # Versão NAND eMMC/UFS: usa a parte ANTES do "+" da interface.
+        # fam.interface para eMCP SK Hynix contém a string combinada (ex: "eMMC 5.1 + LPDDR4X").
+        # Para emcp_nand só queremos a parte NAND — "eMMC 5.1" ou "UFS 2.1".
+        # BUG-7 FIX: sem o split, emcp_nand ficava "eMMC 5.1 + LPDDR4X 128GB" (LPDDR vaza no campo NAND).
+        nand_version = (fam.interface or "eMMC").split("+")[0].strip()
 
         # Monta strings finais
         if _nand_cap:
@@ -370,6 +373,12 @@ def _result_from_family(pn: str, fam) -> dict:
 
         if _ram_cap:
             r["emcp_ram"] = f"{ram_type} {_ram_cap}".strip()
+        elif _CAP_RE.search(ram_type):
+            # BUG-7 FIX: gen map SK Hynix já embute capacidade no val_primary
+            # (ex: HYX_LPDDR4X_RAM_CAP: "AE" → "LPDDR4X 6GB").
+            # Como _ram_cap vem do val_secondary (vazio nesses mapas), caia no else
+            # e adicionava "⚠ cap. não mapeada" a um string que já tinha a capacidade.
+            r["emcp_ram"] = ram_type
         else:
             r["emcp_ram"] = f"{ram_type} ⚠ cap. não mapeada"
 
@@ -536,10 +545,13 @@ def _result_from_known(pn: str, known, fam) -> dict:
                     #   versão errada ("UFS 5.1 32GB" quando DB tinha "eMMC 5.1 32GB").
                     # Agora: extrai o número de capacidade e reconstrói com interface completa.
                     _nand_cap_match = _CAP_RE.search(db_nand)
+                    # BUG-7 FIX: fam.interface pode conter "+ LPDDR4X" (ex: "UFS 2.1 + LPDDR4X").
+                    # Para emcp_nand usar apenas a parte UFS/eMMC antes do "+".
+                    _nand_iface = (fam.interface or "").split("+")[0].strip() or (fam.interface or "UFS")
                     if _nand_cap_match:
-                        r["emcp_nand"] = f"{fam.interface} {_nand_cap_match.group(0)}"
+                        r["emcp_nand"] = f"{_nand_iface} {_nand_cap_match.group(0)}"
                     else:
-                        r["emcp_nand"] = fam.interface  # sem capacidade: ao menos corrige interface
+                        r["emcp_nand"] = _nand_iface  # sem capacidade: ao menos corrige interface
                 elif not _CAP_RE.search(db_nand) and _CAP_RE.search(_gram_nand):
                     # BUG-6: DB tem NAND sem número de capacidade (ex: "eMMC 5.0") mas gramática
                     # decodificou a capacidade (ex: "eMMC 5.0 8GB"). Manter gramática.

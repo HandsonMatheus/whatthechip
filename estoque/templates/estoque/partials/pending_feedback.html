@@ -1,0 +1,20 @@
+<div class="est-confirm est-confirm--done">
+  <div class="est-confirm-head">
+    <span class="est-confirm-status est-confirm-status--warn">⏳ Separar para conferência</span>
+    <span class="est-confirm-pn">{{ pn }}</span>
+  </div>
+  <p class="est-confirm-hint">
+    Este PN <strong>não está confirmado no banco</strong>, então não entrou no estoque.
+    Foi enviado para a <strong>fila de conferência</strong> do gestor (qtd. acumulada: {{ qty }}).
+    {% if near %}<br>Pode ser erro de digitação de <strong>{{ near }}</strong> — confira o chip físico.{% endif %}
+  </p>
+  <p class="est-confirm-hint" style="color:#b8600a;">
+    👉 Separe este chip fisicamente e avise o gestor para confirmá-lo.
+  </p>
+  <div class="est-confirm-actions">
+    <button class="est-btn est-btn--ghost" type="button"
+            onclick="this.closest('#confirm-area').innerHTML=''; document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">
+      Fechar
+    </button>
+  </div>
+</div>

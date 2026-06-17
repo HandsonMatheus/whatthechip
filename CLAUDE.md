@@ -101,7 +101,7 @@ de rentabilidade**.
 | Front-end | **HTMX** + templates Django + **CSS puro** — **sem** React/SPA/build JS |
 | Estáticos | **WhiteNoise** (`CompressedManifestStaticFilesStorage`) |
 | Servidor prod | **gunicorn** (`Procfile`) |
-| Deploy | **Render** (free tier), auto-deploy no push para `main` |
+| Deploy | **Render** (workspace **Hobby pago**: web + Postgres pagos, ~US$17/mês [jun/2026], 2 custom domains inclusos) — auto-deploy no push para `main` |
 | Export | **openpyxl** (estoque → `.xlsx`) |
 | IA (legado) | Google Gemini via `google-generativeai` — desligado por padrão |
 | Coleta (local) | `curl_cffi`, `playwright`, `pdfplumber`, Nexar/Octopart |
@@ -237,8 +237,22 @@ python manage.py fix_known_parts           # correções curadas (força confirm
 python manage.py link_doc_pages / sync_index_page
 ```
 
+**Manutenção de estoque** (dry-run por padrão, reversíveis via JSON; rodar com
+`DATABASE_URL` apontando ao Render — ver `docs/archive/2026-06-16-limpeza-e-bloqueio-estoque.md`):
+
+```bash
+python manage.py clean_lote --lot 39 --since 2026-06-16   # remove PNs novos NÃO confirmados (typos/contaminação); --keep, --commit, --revert
+python manage.py bless_base --lot 39 --since 2026-06-16    # promove a base lançada antes do corte a KnownPart manual/enriched; --commit, --revert
+```
+
+> O bloqueio **"só confirmados"** em `estoque/views.py::add_chip` barra PN não
+> confirmado: vai para `PendingEntry` (fila em `/admin/estoque/pendingentry/`,
+> ações Aprovar/Reprovar) em vez do estoque. `bless_base` é a ponte para não
+> travar reposição dos comuns. Reinicie o servidor após `bless_base --commit`.
+
 **Somente local** (precisam de `playwright`/`curl_cffi`/`pdfplumber` ou chaves de
-API — **não** rodam no Render free):
+API — **não** rodam no Render: a imagem de produção (`requirements-render.txt`)
+não inclui esses pacotes):
 
 ```bash
 python scripts/collect_pns.py --brand Samsung      # coleta PNs crus (default: Samsung!)
@@ -299,7 +313,9 @@ Detalhes e armadilhas: **`DEPLOY_RENDER.md`**.
   Burlar isso gera o bug clássico "544Gb → 68GB".
 - **`decode_density_type` + `decode_cap_map` juntos** na mesma família → conflito.
   São mutuamente exclusivos (K4F/K4U/K3U devem ter `decode_density_type=""`).
-- **Postgres free do Render** limita a ~10 conexões ("too many connections").
+- **Limite de conexões do Postgres** depende do tier da instância paga (não é
+  mais o free de ~10). Se aparecer "too many connections", ative o **connection
+  pooling (PgBouncer)** nativo do Render antes de pensar em subir o tier.
 - **Versão do Django travada em 5.2.x (LTS) + Python 3.11.** O Django 6.0 exige
   **Python 3.12+**; **não suba o Django para 6.0 sem subir o `runtime.txt`** para
   3.12 — senão o build no Render quebra. (Se o ambiente local tiver 6.0 instalado,

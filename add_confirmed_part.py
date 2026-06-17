@@ -89,21 +89,6 @@ PARTS = [
         ),
     ),
     dict(
-        part_number   = "H26T87001CMR",
-        brand_name    = "SK Hynix",
-        family_prefix = "H26T",
-        chip_type     = "eMMC",
-        subtype       = "eMMC standalone 3D NAND",
-        capacity      = "128GB",
-        interface     = "eMMC 5.1",
-        confidence    = "confirmed",
-        notes         = (
-            "Confirmado via Octopart: '128GB EMMC5.1 EF510 3D-V4 FBGA153'. "
-            "pn[4]='8' → 128GB. Processo 3D-V4, dies 256Gb. FBGA-153 11.5×13mm. "
-            "Fonte: octopart.com/part/hynix/H26T87001CMR."
-        ),
-    ),
-    dict(
         part_number   = "H26M74002HMR",
         brand_name    = "SK Hynix",
         family_prefix = "H26M",
@@ -218,6 +203,56 @@ PARTS = [
             "pn[6]='A' → código de controlador fixo (não é capacidade). "
             "pn[7]='4' → LPDDR2 512MB (HYX_H9D_RAM_CAP ✓ — 4Gbit÷8=512MB). "
             "Variante de revisão (pos[10]='B') dos PNs de referência H9DP32A4JJAC ✓ / H9DP32A4JJMC ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H26M78103CCR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H26M",
+        chip_type     = "eMMC",
+        subtype       = "eMMC standalone Automotive",
+        capacity      = "64GB",
+        interface     = "eMMC 5.1",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[4]='7' → 64GB (HYX_EMMC_CAP ✓ — referência direta na tabela). "
+            "Preduo: '64GB ODP' ✓ (ODP = Octal Die Package). Variante Automotive. "
+            "FBGA-153."
+        ),
+    ),
+    dict(
+        part_number   = "H26T87001CMR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H26T",
+        chip_type     = "eMMC",
+        subtype       = "eMMC standalone 3D NAND",
+        capacity      = "128GB",
+        interface     = "eMMC 5.1",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado via Octopart: '128GB EMMC5.1 EF510 3D-V4 FBGA153'. "
+            "pn[4]='8' → 128GB. Processo 3D-V4, dies 256Gb. FBGA-153 11.5×13mm. "
+            "⚠ Entrada digitada no estoque como H26T87001CMB (typo B→R) — PN correto: H26T87001CMR. "
+            "Fonte: octopart.com/part/hynix/H26T87001CMR."
+        ),
+    ),
+    dict(
+        part_number   = "H9HP16AECMMD",
+        brand_name    = "SK Hynix",
+        family_prefix = "H9HP",
+        chip_type     = "eMCP",
+        subtype       = "eMCP LPDDR4X",
+        capacity      = "128GB + 6GB",
+        interface     = "eMMC 5.1 + LPDDR4X",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[4:6]='16' → 128GB eMMC (HYX_H9HP_NAND_CAP ✓ — ⚠ '16'=128GB nesta família, NÃO 16GB). "
+            "pn[6:8]='AE' → LPDDR4X 6GB (HYX_LPDDR4X_RAM_CAP ✓ — AE=48Gbit÷8=6GB). "
+            "BUG-7 corrigido no engine: emcp_nand exibia 'eMMC 5.1 + LPDDR4X 128GB' (LPDDR vazava); "
+            "emcp_ram exibia 'LPDDR4X 6GB ⚠ cap. não mapeada' (falso aviso). "
+            "Chip de alto valor: eMCP premium LPDDR4X — bancada equipamento dedicado."
         ),
     ),
     # Adicione mais chips aqui no mesmo formato se necessário
