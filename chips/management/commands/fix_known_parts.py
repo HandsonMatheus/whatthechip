@@ -654,6 +654,39 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K3QF7F70DM ────────────────────────────────────────────────────────────
+    # LPDDR3 standalone PoP (Mobile DRAM pura — sem NAND). Família K3QF.
+    # pn[4]="7" → K3QF_CAP["7"] = 3GB (4×6Gb die = 24Gbit).
+    # Gramática acertou: tipo LPDDR3 ✓, capacidade 3GB ✓.
+    # Fonte Tier 1:
+    #   • Preduo: K3QF7F70DM-QGCF = 24Gbit Samsung LPDDR3, 216ball ✓
+    #     preduo.com/product/lpddr/lpddr3/216ball-lpddr3/k3qf7f70dm-qgcf
+    # create=True: pn_not_in_db=True no debug. Fix promove estimated → confirmed.
+    {
+        "pn": "K3QF7F70DM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "3GB",
+            "interface": "LPDDR3",
+            "emcp_nand": "",
+            "emcp_ram":  "",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo Tier 1: K3QF7F70DM-QGCF = 24Gbit Samsung LPDDR3, 216ball ✓ (2026-06-17). "
+            "K3QF_CAP['7'] = 3GB = 4×6Gb die = 24Gbit ÷ 8 = 3GB. Gramática acertou na íntegra. "
+            "RAM standalone PoP — sem NAND. confidence=confirmed: grammar_wins=False."
+        ),
+    },
+
     # ── KMDC6001DM ────────────────────────────────────────────────────────────
     # eMCP LPDDR4X + eMMC 5.1. Família KMD, chave C6 no SAM_EMCP_CAP.
     # CORRIGIDO 2026-05-25: estava 3GB (24Gb) — baseado em IA+padrão (errado).
@@ -855,6 +888,37 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K4B4G1646B ───────────────────────────────────────────────────────────
+    # Samsung DDR3 SDRAM (B-die). Família K4B.
+    # pn[3:5]="4G" → DRAM_PC → 4Gb = 512MB por die.
+    # pn[5:7]="16" → x16 bus width (embarcado) — está no mapa, gramática [✓].
+    # "B" = B-die (revisão de silício; mais antiga que D/E). PBGA96.
+    # Fonte Tier 1:
+    #   • Octopart: K4B4G1646B-HCK0 = "DDR DRAM, 256MX16, 0.225NS, CMOS, PBGA96" ✓
+    #   • 256MX16 = 256M × 16b = 4Gbit = 512MB por die — confirma gramática.
+    {
+        "pn": "K4B4G1646B",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR",
+            "subtype":    "DDR3/DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Octopart Tier 1: K4B4G1646B-HCK0 = 'DDR DRAM, 256MX16, 0.225NS, CMOS, PBGA96' ✓ (2026-06-17). "
+            "256MX16 = 256M×16b = 4Gbit = 512MB por die — confirma gramática (DRAM_PC['4G'], [✓]). "
+            "pn[5:7]='16' = x16 bus width (em mapa). B-die, PBGA96. "
+            "DDR3 embarcado (x16). Gramática completa e correta."
+        ),
+    },
+
     # ── K4B4G1646E ───────────────────────────────────────────────────────────
     # Samsung DDR3 SDRAM. Família K4B.
     # pn[3:5]="4G" → DRAM_PC → 4Gb = 512MB por die.
@@ -914,6 +978,105 @@ CORRECTIONS = [
             "DDP (Dual Die Package): 2× 4Gb die = 8Gb total = 1GB. "
             "DDR3L (1.35V) confirmado — distinção de DDR3 (1.5V) preservada no campo interface. "
             "Destino: resíduo — 1GB DDR3L embarcado sem liquidez B2B em 2026."
+        ),
+    },
+
+    # ── K4B2G0446C ───────────────────────────────────────────────────────────
+    # Samsung DDR3L SDRAM (C-die). Família K4B.
+    # pn[3:5]="2G" → DRAM_PC → 2Gb = 256MB por die.
+    # pn[5:7]="04" → x4 bus width — NÃO está no mapa DRAM_PC (só 08=x8, 16=x16).
+    # Organização x4 → chip para módulos servidor (RDIMM/LRDIMM ECC).
+    # Gramática acerta tipo (DDR3) e densidade (2Gbit) mas não decodifica "04".
+    # Fonte Tier 1:
+    #   • Datasheets360: K4B2G0446C-HYH9 = "DDR3L DRAM, 512MX4, CMOS, PBGA78 — Discontinued" ✓
+    #   • 512MX4 = 512M × 4b = 2Gbit = 256MB por die (confirma gramática)
+    {
+        "pn": "K4B2G0446C",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Datasheets360 Tier 1: K4B2G0446C-HYH9 = 'DDR3L DRAM, 512MX4, CMOS, PBGA78 — Discontinued' ✓ (2026-06-17). "
+            "512MX4 = 512M×4b = 2Gbit = 256MB por die — confirma gramática (DRAM_PC['2G']). "
+            "pn[5:7]='04' = x4 bus width (não está no mapa DRAM_PC atual); chip para servidor RDIMM/LRDIMM ECC. "
+            "DDR3L (1.35V nativo, retrocompat. 1.5V) — mais preciso que DDR3/DDR3L genérico. "
+            "Gramática correta em tipo e densidade; fix promove estimated→confirmed."
+        ),
+    },
+
+    # ── K4B2G0446D ───────────────────────────────────────────────────────────
+    # Samsung DDR3L SDRAM (D-die). Família K4B. Revisão de die D (↑ do C-die).
+    # pn[3:5]="2G" → DRAM_PC → 2Gb = 256MB por die.
+    # pn[5:7]="04" → x4 bus width — chip para módulos servidor (RDIMM/LRDIMM ECC).
+    # Especificação elétrica idêntica ao K4B2G0446C; apenas revisão de silício atualizada.
+    # Fonte Tier 1:
+    #   • Octopart: K4B2G0446D-HYH9 = "DDR DRAM, 512MX4, 0.255NS, CMOS, PBGA78" ✓
+    {
+        "pn": "K4B2G0446D",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Octopart Tier 1: K4B2G0446D-HYH9 = 'DDR DRAM, 512MX4, 0.255NS, CMOS, PBGA78' ✓ (2026-06-17). "
+            "512MX4 = 2Gbit = 256MB por die — confirma gramática (DRAM_PC['2G']). "
+            "D-die: revisão de silício atualizada do C-die (K4B2G0446C); especificação elétrica idêntica. "
+            "pn[5:7]='04' = x4 bus width — chip para servidor RDIMM/LRDIMM ECC. "
+            "DDR3L (1.35V, retrocompat. 1.5V). Gramática correta em tipo e densidade."
+        ),
+    },
+
+    # ── K4B2G1646Q ───────────────────────────────────────────────────────────
+    # Samsung DDR3 SDRAM (Q-die). Família K4B.
+    # pn[3:5]="2G" → DRAM_PC → 2Gb = 256MB por die.
+    # pn[5:7]="16" → x16 bus width — em mapa, gramática [✓].
+    # Q-die: revisão de silício de alto desempenho (usado em notebooks Dell, HP, Lenovo).
+    # ATENÇÃO: a IA forneceu "256MX16" para este PN (duas vezes nesta sessão) — ERRADO.
+    # Octopart real: 128MX16 = 128M × 16b = 2Gbit = 256MB por die. IA confundiu com K4B4G1646B.
+    # Fonte Tier 1:
+    #   • Octopart: K4B2G1646Q-BCK0 = "DDR3 DRAM, 128MX16, 0.225NS, CMOS, PBGA96" ✓ (26 resultados)
+    #   • Octopart: K4B2G1646Q-BIK0 = "DDR3 DRAM, 128MX16, 0.225NS, CMOS, PBGA96" ✓
+    #   • Octopart: K4B2G1646Q-BCMA = "DDR DRAM, 128MX16, 0.195NS, CMOS, PBGA96" ✓
+    {
+        "pn": "K4B2G1646Q",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Octopart Tier 1: K4B2G1646Q-BCK0 = 'DDR3 DRAM, 128MX16, 0.225NS, CMOS, PBGA96' ✓ (2026-06-17). "
+            "26 resultados consistentes. 128MX16 = 128M×16b = 2Gbit = 256MB por die — confirma gramática (DRAM_PC['2G']). "
+            "pn[5:7]='16' = x16 (em mapa). Q-die (high-perf Samsung DDR3). PBGA96. DDR3 (1.5V). "
+            "NOTA: IA forneceu '256MX16' para este PN (errado — dado era do K4B4G1646B). "
+            "Gramática completa e correta; fix promove estimated→confirmed."
         ),
     },
 
@@ -1601,6 +1764,35 @@ CORRECTIONS = [
             "Kynix + Worldway ✓. Alldatasheet Samsung PSG (K4E2E304EE-AGCE) ✓. "
             "Galaxy Tab E SM-T560 = 1.5GB RAM — GSMarena/Icecat ✓ (2026-05-29). "
             "Chave '2E' adicionada ao K4E_CAP. confidence=confirmed: garante grammar_wins=False."
+        ),
+    },
+
+    # ── K4E6E304ED ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 2GB. Família K4E, pn[3:5]="6E" → 16Gb ÷ 8 = 2GB.
+    # Gramática completa [✓]: K4E_CAP["6E"]=2GB; capacity="2GB" ✓.
+    # FBGA-178, 1066MHz. "ED" = sufixo de revisão (E-die + grade D).
+    # Fonte Tier 1:
+    #   • Octopart: K4E6E304ED-EGCG = "16GBIT SDRAM LPDDR3 1066MHZ FBGA-178" ✓
+    {
+        "pn": "K4E6E304ED",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "LPDDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Octopart Tier 1: K4E6E304ED-EGCG = '16GBIT SDRAM LPDDR3 1066MHZ FBGA-178' ✓ (2026-06-17). "
+            "16Gbit ÷ 8 = 2GB — confirma K4E_CAP['6E']=2GB (gramática [✓]). "
+            "LPDDR3 standalone, FBGA-178. confidence=confirmed: grammar_wins=False."
         ),
     },
 
