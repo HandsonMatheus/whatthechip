@@ -243,6 +243,8 @@ python manage.py link_doc_pages / sync_index_page
 ```bash
 python manage.py clean_lote --lot 39 --since 2026-06-16   # remove PNs novos NÃO confirmados (typos/contaminação); --keep, --commit, --revert
 python manage.py bless_base --lot 39 --since 2026-06-16    # promove a base lançada antes do corte a KnownPart manual/enriched; --commit, --revert
+python manage.py audit_targets --file correcoes.csv        # read-only: status (CONFIRMADO/GRAMATICA/NAO-VISIVEL/AUSENTE) de cada PN destino
+python manage.py fix_pns --lot 39 --file correcoes.csv     # corrige PNs (merge/rename/refresh) via CSV errado,certo; reavalia estado a cada passo; --commit, --revert
 ```
 
 > O bloqueio **"só confirmados"** em `estoque/views.py::add_chip` barra PN não

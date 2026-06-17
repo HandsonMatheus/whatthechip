@@ -1,0 +1,12 @@
+errado,certo,status_alvo,confidence,status_kp,fonte_engine,capacidade
+KMQ3100136,KMQ310013M,CONFIRMADO,confirmed,enriched,banco de dados,eMMC 5.1 16GB / LPDDR3 2GB
+KMQ31000B,KMQ310006B,CONFIRMADO,confirmed,enriched,banco de dados,eMMC 5.1 16GB / LPDDR3 1.5GB
+KMGD6001MB,KMGD6001BM,CONFIRMADO,confirmed,enriched,banco de dados,eMMC 5.1 32GB / LPDDR3 3GB
+KLUD4UEA,KLUDG4U1EA,CONFIRMADO,confirmed,enriched,banco de dados,128GB
+KLUCG4J1E,KLUCG4J1ED,CONFIRMADO,confirmed,enriched,banco de dados,64GB
+KLMAGJETD,KLMAG1JETD,CONFIRMADO,confirmed,enriched,banco de dados,16GB
+KLM8G1TEF,KLM8G1GETF,CONFIRMADO,confirmed,enriched,banco de dados,8GB
+KLM8G1GGETF,KLM8G1GETF,CONFIRMADO,confirmed,enriched,banco de dados,8GB
+KLM81GGETF,KLM8G1GETF,CONFIRMADO,confirmed,enriched,banco de dados,8GB
+KLM81GETF,KLM8G1GETF,CONFIRMADO,confirmed,enriched,banco de dados,8GB
+K4FHE30,K4FHE3D,CONFIRMADO,confirmed,enriched,banco de dados,3GB

@@ -39,6 +39,7 @@ import re
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.db.models import F
 from django.utils import timezone
 
 from chips.engine import classify
@@ -143,18 +144,32 @@ class Command(BaseCommand):
         self.stdout.write(f"Lote #{opts['lot']:03d} · correções: {len(pairs)} · modo: {mode}")
         self.stdout.write("=" * 92)
         warns = 0
+        # Estado projetado p/ o preview: quantidade por PN e quais PNs existem.
+        # Reproduz a sequência — um alvo recém-criado por um rename vira MERGE no
+        # passo seguinte que apontar pra ele (ex.: dois typos → mesmo alvo novo).
+        qty_by_pn, exists = {}, set()
+        for e in InventoryEntry.objects.filter(lot=lot):
+            qty_by_pn[e.part_number] = e.quantity
+            exists.add(e.part_number)
         for action, wrong, correct, src, dst, fields, confirmed in plan:
             if action == "nao_encontrado":
                 self.stdout.write(self.style.ERROR(f"  ✗ {wrong:<18} não está no lote — pulado"))
                 continue
             flag = "" if confirmed else self.style.WARNING("  ⚠ destino ainda NÃO confirmado")
-            if action == "refresh":
+            sq = src.quantity if src else 0
+            if wrong == correct:
                 self.stdout.write(f"  ↻ REFRESH {wrong:<18} specs/fonte → {fields['classification_source'] or '—'}{flag}")
-            elif action == "merge":
+            elif correct in exists:
+                base = qty_by_pn.get(correct, 0)
+                after = base + sq
+                qty_by_pn[correct] = after
+                exists.discard(wrong); qty_by_pn.pop(wrong, None)
                 self.stdout.write(
-                    f"  ⇶ MERGE   {wrong:<18} (×{src.quantity}) → {correct} "
-                    f"({dst.quantity} → {dst.quantity + src.quantity}); remove o errado{flag}")
+                    f"  ⇶ MERGE   {wrong:<18} (×{sq}) → {correct} "
+                    f"({base} → {after}); remove o errado{flag}")
             else:
+                qty_by_pn[correct] = sq
+                exists.add(correct); exists.discard(wrong); qty_by_pn.pop(wrong, None)
                 self.stdout.write(f"  ✎ RENAME  {wrong:<18} → {correct} (atualiza specs){flag}")
             if not confirmed:
                 warns += 1
@@ -171,23 +186,35 @@ class Command(BaseCommand):
         # ── commit ────────────────────────────────────────────────────────────
         log = {"lot": opts["lot"], "ts": timezone.now().isoformat(), "ops": []}
         with transaction.atomic():
-            for action, wrong, correct, src, dst, fields, confirmed in plan:
+            for action, wrong, correct, src0, dst0, fields, confirmed in plan:
                 if action == "nao_encontrado":
                     continue
-                if action == "refresh":
+                # Reavalia o estado AGORA (operações anteriores deste mesmo run podem
+                # ter criado/alterado o destino). Assim, dois typos no mesmo alvo que
+                # ainda não existia: o 1º vira rename (cria), o 2º vira merge.
+                src = InventoryEntry.objects.select_for_update().filter(
+                    lot=lot, part_number=wrong).first()
+                if not src:
+                    continue
+                if wrong == correct:
                     log["ops"].append({"action": "refresh", "before": _snapshot(src)})
                     for k, v in fields.items():
                         setattr(src, k, v)
                     src.save()
-                elif action == "merge":
+                    continue
+                dst = InventoryEntry.objects.select_for_update().filter(
+                    lot=lot, part_number=correct).first()
+                if dst and dst.pk != src.pk:
+                    # MERGE — F() acumula no valor atual; múltiplos typos somam certo.
                     log["ops"].append({"action": "merge",
                                        "wrong_snapshot": _snapshot(src),
                                        "dst_before": _snapshot(dst)})
                     InventoryEntry.objects.filter(pk=dst.pk).update(
-                        quantity=dst.quantity + src.quantity,
+                        quantity=F("quantity") + src.quantity,
                         last_updated=timezone.now(), **fields)
                     src.delete()
-                else:  # rename
+                else:
+                    # RENAME
                     log["ops"].append({"action": "rename", "before": _snapshot(src)})
                     src.part_number = correct
                     for k, v in fields.items():
@@ -196,6 +223,9 @@ class Command(BaseCommand):
                     src.save()
 
         path = _revert_path(opts["lot"])
+        # Não clobberar um revert anterior (ex.: lote SK já aplicado): arquiva antes.
+        if os.path.exists(path):
+            os.rename(path, f"{path}.{timezone.now().strftime('%Y%m%d_%H%M%S')}.bak")
         with open(path, "w", encoding="utf-8") as fh:
             json.dump(log, fh, ensure_ascii=False, indent=2)
         self.stdout.write(self.style.SUCCESS(f"\n✅ {len(log['ops'])} correção(ões) aplicada(s)."))

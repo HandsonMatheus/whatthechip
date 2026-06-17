@@ -421,6 +421,149 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KMQ820013M ───────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMQ. cap_key pn[3:5]="82" → SAM_EMCP_CAP.
+    # SAM_EMCP_CAP["82"] corrigido de 1GB para 2GB (16Gb) — âncora KMR820001M (Preduo+Puris ✓).
+    # Confirmado: Preduo "16+16" ✓ para KMQ820013M-B419 (2026-06-17).
+    # Nota: chave "82" NÃO diverge entre KMQ e KMR — ambos = 16GB NAND + 2GB LPDDR3.
+    # create=True: pn_not_in_db=True no debug → chip não existia no banco.
+    {
+        "pn": "KMQ820013M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 5.1 16GB",
+            "emcp_ram":   "LPDDR3 2GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "SAM_EMCP_CAP['82'] = 2GB (16Gb LPDDR3). "
+            "Preduo: KMQ820013M-B419 = '16+16' ✓ (2026-06-17). "
+            "Mesma chave '82' confirmada em KMR820001M (Preduo+Puris ✓ 2026-05-29). "
+            "Não há divergência KMQ/KMR para a chave '82' — ambos = 2GB. "
+            "confidence=confirmed: garante grammar_wins=False → fonte = banco de dados."
+        ),
+    },
+
+    # ── KMFJ20007M ───────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC (~2012-2014, sufixo -B214). cap_key pn[3:5]="J2" → SAM_EMCP_CAP.
+    # PROBLEMA: SAM_EMCP_CAP["J2"]=128GB+6GB ancorado por chip MODERNO KMQJ2· — ERRADO para esta era.
+    # Fisicamente impossível: chip B214 de 2012-2014 com 128GB NAND não existia.
+    # Mesmo conflito cross-era já documentado e resolvido para família KMN (decode_cap_pos=None lá).
+    # Para KMF, solução é por chip (outros KMF têm chaves válidas em SAM_EMCP_CAP).
+    # FONTES: SEM TIER 1 — Preduo/Octopart/Samsung Global não indexam este PN.
+    # Consenso não-Tier-1 (Jotrin, mercado asiático B2B): 4GB NAND eMMC.
+    # RAM: 512MB LPDDR3 — AI estimate + analogia SKhynix H9TQ32A4GTMCUR-KUM (Preduo: "4+4") ✓.
+    # confidence="manual": bloqueia gramática (grammar_wins=False), documenta ausência de Tier 1.
+    # RENTABILIDADE: NÃO RENTÁVEL em qualquer spec — sucata absoluta em 2026 (moagem).
+    {
+        "pn": "KMFJ20007M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 4GB",
+            "emcp_ram":   "LPDDR3 512MB",
+            "device":     "Aparelhos entry-level Samsung 2012-2014 (obsoleto)",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "BLOQUEIO DE GRAMÁTICA: SAM_EMCP_CAP['J2']=128GB+6GB ancorado por KMQJ2· moderno — ERRADO. "
+            "KMFJ20007M-B214 é chip de 2012-2014, 128GB impossível para a era. "
+            "Mesmo conflito cross-era já resolvido em KMN (populate_samsung.py, decode_cap_pos=None). "
+            "Consenso não-Tier-1: 4GB NAND (Jotrin, mercado); 512MB RAM (analogia H9TQ32A4 SKhynix 4+4). "
+            "SEM FONTE TIER 1 para este PN — confirmar se aparecer Preduo/Octopart futuramente. "
+            "Confirmado pelo operador (2026-06-17). NÃO RENTÁVEL = moagem."
+        ),
+    },
+
+    # ── KMFJ20005A ───────────────────────────────────────────────────────────
+    # Mesmo problema que KMFJ20007M: cap_key pn[3:5]="J2" → SAM_EMCP_CAP → 128GB+6GB (ERRADO).
+    # Sufixo "5A" vs "7M" = revisão de die/controladora, capacidade idêntica à variante 07M.
+    # Sem Tier 1 independente — spec aprovado pelo operador (2026-06-17): 4GB eMMC + 512MB LPDDR3.
+    # Nota: IA alegou que este chip está no Amazon Echo Dot 2ª Geração — FALSO.
+    # AllAboutCircuits teardown (AAC, 2016) identifica chip Micron MT29TZZZ4D4BKERL no Echo Dot,
+    # não Samsung. Preduo lista o Micron como "4+4" = 4GB+512MB — mesmo spec que o Samsung.
+    # A IA confundiu o spec do Micron equivalente com o Samsung.
+    # create=True: pn_not_in_db=True no debug.
+    {
+        "pn": "KMFJ20005A",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 4GB",
+            "emcp_ram":   "LPDDR3 512MB",
+            "device":     "Aparelhos entry-level Samsung 2012-2014 (obsoleto)",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Mesmo bloqueio que KMFJ20007M: SAM_EMCP_CAP['J2']=128GB+6GB (âncora KMQJ2· moderno) — ERRADO. "
+            "Revisão de die diferente ('5A' vs '7M'), capacidade idêntica. "
+            "SEM FONTE TIER 1 — confirmado pelo operador (2026-06-17): 4GB eMMC + 512MB LPDDR3. "
+            "NÃO RENTÁVEL = moagem."
+        ),
+    },
+
+    # ── KMFE10012M ───────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMF. cap_key pn[3:5]="E1" → SAM_EMCP_CAP.
+    # PROBLEMA: SAM_EMCP_CAP["E1"]=16GB+2GB ancorado por KMQE10013M (KMQ moderno).
+    # KMF família usa mesma chave "E1" mas com 1GB LPDDR3 (8Gbit) — conflito cross-família.
+    # NOTA: a gramática acerta o NAND (16GB ✓) mas erra a RAM (2GB em vez de 1GB).
+    # Não alterar SAM_EMCP_CAP["E1"] — âncora KMQE10013M=2GB é correta para KMQ.
+    # Mesma chave "E6" tem problema idêntico: KMFE60012A/M=1GB, SAM_EMCP_CAP["E6"]=2GB.
+    # Fontes Tier 1:
+    #   • Preduo: KMFE10012M-B214 = "16+8" (16GB NAND + 8Gbit÷8=1GB LPDDR3) ✓
+    #     preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/kmfe10012m-b214
+    #   • Puris: "KMFE10012M-B214 16+8 221ball eMCP-D3 Samsung" ✓
+    #     puris.net/archives/2974
+    # create=True: pn_not_in_db=True no debug.
+    {
+        "pn": "KMFE10012M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3 + eMMC 5.1",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 5.1 16GB",
+            "emcp_ram":   "LPDDR3 1GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "BLOQUEIO DE GRAMÁTICA: SAM_EMCP_CAP['E1']=16GB+2GB ancorado por KMQE10013M (KMQ moderno). "
+            "Família KMF usa mesma chave 'E1' mas com 1GB LPDDR3 (8Gbit) — conflito cross-família. "
+            "Gramática acerta NAND (16GB ✓) mas erra RAM (2GB em vez de 1GB). "
+            "Preduo Tier 1: KMFE10012M-B214 = '16+8' ✓ (2026-06-17). "
+            "Puris Tier 1: '16+8 221ball eMCP-D3 Samsung' ✓ (2026-06-17). "
+            "Mesma chave 'E6' tem problema idêntico (KMFE60012A/M=1GB vs SAM_EMCP_CAP['E6']=2GB). "
+            "confidence=confirmed: garante grammar_wins=False → fonte = banco de dados."
+        ),
+    },
+
     # ── KMRX1000BM / KMRX10014M ──────────────────────────────────────────────
     # Problema: SAM_EMCP_CAP mapeia X1 = "32GB NAND + 2GB RAM" (base KMQX10013MB — Octopart ✓).
     # Família KMR diverge: KMR+X1 = 3GB(24Gb) LPDDR3, não 2GB(16Gb) como KMQ.

@@ -1363,49 +1363,58 @@ def classify(pn_raw: str) -> dict:
     )
 
     # ── 1. Busca exata no banco ──────────────────────────────────────────────
-    # Pulado quando PN está visivelmente curto — evita acerto acidental em
-    # registros criados para PNs truncados (OCR parcial, digitação incompleta).
-    if not pn_short:
-        try:
-            known = KnownPart.objects.select_related("family", "brand", "family__doc_page").get(
-                part_number=pn, status="enriched"
-            )
-            # Preferir ChipFamily pelo prefixo — mais confiável que o chip_type
-            # salvo pelo Gemini (que pode ter classificado errado, ex: uMCP como eMCP).
-            fam = _match_family(pn) or known.family
-            if fam:
-                result = _result_from_known(pn, known, fam)
-            else:
-                result = {
-                    "pn":           pn,
-                    "known":        True,
-                    "known_exact":  True,
-                    "chip_type":    known.chip_type,
-                    "subtype":      known.subtype,
-                    "brand":        known.brand.name,
-                    "capacity":     _clean(known.capacity),
-                    "emcp_ram":     _clean(known.emcp_ram),
-                    "emcp_nand":    _clean(known.emcp_nand),
-                    "device":       known.device,
-                    "confidence":   known.confidence,
-                    "source_url":   known.source_url,
-                    "is_emcp":      bool(known.emcp_ram),
-                    "tip":          known.notes or "",
-                    "reasoning":    [],
-                    "from_web":     False,
-                    "doc_url":      None,
-                    "remarked_flag":     False,
-                    "fuzzy_suggestions": [],
-                    "interface":         known.interface,
-                    "family_prefix":     "",
-                    # Sem família não há como saber se é não documentada — assume False.
-                    "family_undocumented": False,
-                }
-            result["profitable"] = assess_profitability(result)
-            _log_search(pn, found=True, source_used="db_exact")
-            return result
-        except KnownPart.DoesNotExist:
-            pass
+    # Normalmente pulada quando PN está visivelmente curto — evita acerto acidental
+    # em registros de baixa qualidade criados para PNs truncados (OCR parcial,
+    # alucinação Gemini, digitação incompleta).
+    #
+    # Exceção (BUG-8 FIX): quando pn_short=True, ainda tentamos o banco mas
+    # APENAS para confidence=confirmed/manual — PNs verificados pelo operador.
+    # Motivo: alguns chips físicos têm PN sem o sufixo de package (ex: H9HP16AECMMD
+    # = 12 chars, pn_length=14 por causa do sufixo -DAR; o decode usa só pn[0:8]).
+    # A busca é EXATA por part_number=pn → sem risco de falso positivo.
+    _db_qs = KnownPart.objects.select_related("family", "brand", "family__doc_page")
+    if pn_short:
+        _db_qs = _db_qs.filter(confidence__in=("confirmed", "manual"))
+    try:
+        known = _db_qs.get(
+            part_number=pn, status="enriched"
+        )
+        # Preferir ChipFamily pelo prefixo — mais confiável que o chip_type
+        # salvo pelo Gemini (que pode ter classificado errado, ex: uMCP como eMCP).
+        fam = _match_family(pn) or known.family
+        if fam:
+            result = _result_from_known(pn, known, fam)
+        else:
+            result = {
+                "pn":           pn,
+                "known":        True,
+                "known_exact":  True,
+                "chip_type":    known.chip_type,
+                "subtype":      known.subtype,
+                "brand":        known.brand.name,
+                "capacity":     _clean(known.capacity),
+                "emcp_ram":     _clean(known.emcp_ram),
+                "emcp_nand":    _clean(known.emcp_nand),
+                "device":       known.device,
+                "confidence":   known.confidence,
+                "source_url":   known.source_url,
+                "is_emcp":      bool(known.emcp_ram),
+                "tip":          known.notes or "",
+                "reasoning":    [],
+                "from_web":     False,
+                "doc_url":      None,
+                "remarked_flag":     False,
+                "fuzzy_suggestions": [],
+                "interface":         known.interface,
+                "family_prefix":     "",
+                # Sem família não há como saber se é não documentada — assume False.
+                "family_undocumented": False,
+            }
+        result["profitable"] = assess_profitability(result)
+        _log_search(pn, found=True, source_used="db_exact")
+        return result
+    except KnownPart.DoesNotExist:
+        pass
 
     # ── 1b. FBGA lookup ─────────────────────────────────────────────────────
     # Código FBGA (ex: D9VFC) gravado a laser no chip pela Micron.
