@@ -58,17 +58,30 @@ def _normalise_pn(raw: str) -> str:
     return re.sub(r'[^A-Z0-9\-]', '', (raw or '').strip().upper())
 
 
+_PLACEHOLDER_MARKERS = ("não mapead", "nao mapead", "consultar datasheet")
+
+
+def _real_spec(val) -> bool:
+    """True só se o valor é uma spec REAL — não um placeholder de gramática
+    incompleta (ex.: "Código 'BG' não mapeado — consultar datasheet")."""
+    if not val:
+        return False
+    low = str(val).lower()
+    return not any(m in low for m in _PLACEHOLDER_MARKERS)
+
+
 def _has_capacity(result: dict) -> bool:
-    # Considera o chip "identificável" se tiver capacidade explícita em qualquer campo
+    # Considera o chip "identificável" se tiver capacidade REAL em qualquer campo,
     # OU se for um KnownPart confirmado (known_exact=True) com chip_type definido.
-    # Isso evita que chips identificados mas sem capacidade mapeada (ex: DRAM raro,
-    # RAM standalone) caiam no fluxo de UnknownChip — o chip É conhecido, apenas
-    # a sua densidade não foi catalogada ainda.
+    # ⚠ Placeholder de gramática incompleta ("código não mapeado — consultar
+    # datasheet") NÃO conta: senão o operador vê um card confiante (ex.: "DDR4"
+    # sem specs) e pode encaixotar um chip que na verdade não foi reconhecido.
+    # Esses caem no fluxo de "Não identificado" / UnknownChip.
     return bool(
-        result.get('capacity')
-        or result.get('emcp_ram')
-        or result.get('emcp_nand')
-        or result.get('dram_density')
+        _real_spec(result.get('capacity'))
+        or _real_spec(result.get('emcp_ram'))
+        or _real_spec(result.get('emcp_nand'))
+        or _real_spec(result.get('dram_density'))
         or (result.get('known_exact') and result.get('chip_type'))
     )
 

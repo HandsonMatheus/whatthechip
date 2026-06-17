@@ -60,6 +60,8 @@ class Command(BaseCommand):
                             help="Corte (YYYY-MM-DD): só PNs criados ANTES desta data são a base.")
         parser.add_argument("--confidence", type=str, default="manual",
                             choices=["manual", "confirmed"])
+        parser.add_argument("--min-qty", type=int, default=0,
+                            help="Em vez do corte por data, abençoa PNs com quantidade >= N (ex.: 2).")
         parser.add_argument("--commit", action="store_true")
         parser.add_argument("--revert", action="store_true")
 
@@ -101,7 +103,11 @@ class Command(BaseCommand):
         conf = opts["confidence"]
         commit = opts["commit"]
 
-        qs = InventoryEntry.objects.filter(added_at__lt=since_dt)
+        min_qty = opts["min_qty"]
+        if min_qty:
+            qs = InventoryEntry.objects.filter(quantity__gte=min_qty)
+        else:
+            qs = InventoryEntry.objects.filter(added_at__lt=since_dt)
         if not opts["all_lots"]:
             try:
                 lot = Lot.objects.get(number=opts["lot"])
@@ -126,22 +132,32 @@ class Command(BaseCommand):
         mode = self.style.SUCCESS("COMMIT (grava)") if commit \
             else self.style.WARNING("DRY-RUN (não grava — use --commit)")
         scope = "TODOS os lotes" if opts["all_lots"] else f"lote #{opts['lot']:03d}"
+        criterio = f"quantidade >= {min_qty}" if min_qty else f"criados antes de {since_date}"
         self.stdout.write("")
-        self.stdout.write(f"Abençoar base · {scope} · PNs criados antes de {since_date} · "
+        self.stdout.write(f"Abençoar · {scope} · {criterio} · "
                           f"confidence={conf} · modo: {mode}")
         self.stdout.write("=" * 78)
-        self.stdout.write(f"PNs distintos na base: {len(by_pn)}   "
+        self.stdout.write(f"PNs distintos no critério: {len(by_pn)}   "
                           f"criar: {self.style.SUCCESS(str(len(to_create)))}   "
                           f"atualizar: {len(to_update)}   "
                           f"poupados (já confirmados): {len(skipped)}")
+        def _cap(e):
+            return e.capacity or (f"{e.emcp_nand} / {e.emcp_ram}".strip(" /")) or "—"
         if to_create:
             self.stdout.write("")
             self.stdout.write("Serão CRIADOS como KnownPart manual/enriched:")
             for pn, e, _ in to_create[:60]:
-                cap = e.capacity or (f"{e.emcp_nand} / {e.emcp_ram}".strip(" /")) or "—"
-                self.stdout.write(f"    {pn:<20} {e.brand:<10} {e.chip_type:<8} {cap}")
+                self.stdout.write(f"    {pn:<20} q={e.quantity:<4} {e.brand:<10} {e.chip_type:<8} {_cap(e)}")
             if len(to_create) > 60:
                 self.stdout.write(f"    ... (+{len(to_create) - 60})")
+        if to_update:
+            self.stdout.write("")
+            self.stdout.write("Serão CONFIRMADOS (tinham KnownPart NÃO confirmado):")
+            for pn, e, existing in to_update[:80]:
+                cur = f"{existing.confidence}/{existing.status}" if existing else "—"
+                self.stdout.write(f"    {pn:<20} q={e.quantity:<4} {e.brand:<10} {e.chip_type:<8} {_cap(e):<24} (era {cur})")
+            if len(to_update) > 80:
+                self.stdout.write(f"    ... (+{len(to_update) - 80})")
 
         if not commit:
             self.stdout.write("")
@@ -180,6 +196,9 @@ class Command(BaseCommand):
                     log["created"].append({"part_number": pn})
                     KnownPart.objects.create(part_number=pn, **fields)
 
+        # Não clobberar um revert anterior (ex.: a bênção da base): arquiva antes.
+        if os.path.exists(REVERT_LOG):
+            os.rename(REVERT_LOG, f"{REVERT_LOG}.{datetime.now().strftime('%Y%m%d_%H%M%S')}.bak")
         with open(REVERT_LOG, "w", encoding="utf-8") as fh:
             json.dump(log, fh, ensure_ascii=False, indent=2)
 
