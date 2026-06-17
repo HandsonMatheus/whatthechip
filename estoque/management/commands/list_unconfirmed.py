@@ -47,6 +47,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("--lot", type=int, default=39)
         parser.add_argument("--qty", type=int, default=1, help="Quantidade exata (default 1).")
+        parser.add_argument("--all", action="store_true",
+                            help="Ignora --qty: lista TODOS os não confirmados (qualquer quantidade).")
         parser.add_argument("--out", type=str, default="")
 
     def handle(self, *args, **opts):
@@ -55,29 +57,33 @@ class Command(BaseCommand):
         except Lot.DoesNotExist:
             raise CommandError(f"Lote #{opts['lot']:03d} não existe.")
 
-        ents = list(InventoryEntry.objects.filter(lot=lot, quantity=opts["qty"])
-                    .order_by("brand", "part_number"))
+        base_qs = InventoryEntry.objects.filter(lot=lot)
+        if not opts["all"]:
+            base_qs = base_qs.filter(quantity=opts["qty"])
+        ents = list(base_qs.order_by("brand", "part_number"))
         nao_conf = [e for e in ents if not _is_confirmed(e.part_number)]
 
         by_brand = OrderedDict()
         for e in nao_conf:
             by_brand.setdefault(e.brand or "—", []).append(e)
 
+        criterio = "qualquer qtd" if opts["all"] else f"qtd == {opts['qty']}"
         self.stdout.write("")
-        self.stdout.write(f"Lote #{opts['lot']:03d} · qtd == {opts['qty']} · "
+        self.stdout.write(f"Lote #{opts['lot']:03d} · {criterio} · "
                           f"NÃO confirmados: {self.style.WARNING(str(len(nao_conf)))} de {len(ents)}")
         self.stdout.write("=" * 70)
         for brand, items in by_brand.items():
             self.stdout.write(self.style.SUCCESS(f"\n{brand} ({len(items)}):"))
             for e in items:
-                self.stdout.write(f"   {e.part_number:<22} {e.chip_type:<8} {e.display_capacity}")
+                self.stdout.write(f"   {e.part_number:<22} q={e.quantity:<4} {e.chip_type:<8} {e.display_capacity}")
 
+        suffix = "todos" if opts["all"] else f"q{opts['qty']}"
         out = opts["out"] or os.path.join(
-            str(settings.BASE_DIR), f"nao_confirmados_lote{opts['lot']:03d}_q{opts['qty']}.csv")
+            str(settings.BASE_DIR), f"nao_confirmados_lote{opts['lot']:03d}_{suffix}.csv")
         with open(out, "w", newline="", encoding="utf-8") as fh:
             w = csv.writer(fh)
-            w.writerow(["marca", "part_number", "tipo", "capacidade"])
+            w.writerow(["marca", "part_number", "quantidade", "tipo", "capacidade"])
             for brand, items in by_brand.items():
                 for e in items:
-                    w.writerow([brand, e.part_number, e.chip_type, e.display_capacity])
+                    w.writerow([brand, e.part_number, e.quantity, e.chip_type, e.display_capacity])
         self.stdout.write(f"\nCSV (por marca): {out}")

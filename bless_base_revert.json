@@ -1,27 +1,47 @@
 {
-  "ts": "2026-06-17T13:34:47.355609",
+  "ts": "2026-06-17T14:07:55.872710",
   "confidence": "manual",
   "created": [],
   "updated": [
     {
-      "part_number": "K4F8E3D",
+      "part_number": "08EMCP08NL3DT227",
       "prev_status": "raw",
       "prev_confidence": "estimated"
     },
     {
-      "part_number": "KMF310012M",
+      "part_number": "16EMCP08NL3DTB28",
       "prev_status": "raw",
       "prev_confidence": "estimated"
     },
     {
-      "part_number": "RS512M32LO4",
+      "part_number": "KMQ72000SMB316",
       "prev_status": "raw",
       "prev_confidence": "estimated"
     },
     {
-      "part_number": "RS70B08G3S03F",
+      "part_number": "KMQN1000SMB316",
       "prev_status": "raw",
       "prev_confidence": "estimated"
+    },
+    {
+      "part_number": "SDADB48K16G",
+      "prev_status": "enriched",
+      "prev_confidence": "distributor"
+    },
+    {
+      "part_number": "SDIN7DU28G",
+      "prev_status": "enriched",
+      "prev_confidence": "distributor"
+    },
+    {
+      "part_number": "SDIN9DW416G",
+      "prev_status": "enriched",
+      "prev_confidence": "distributor"
+    },
+    {
+      "part_number": "SDIN9DW432G",
+      "prev_status": "enriched",
+      "prev_confidence": "distributor"
     }
   ]
 }

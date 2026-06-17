@@ -33,6 +33,7 @@ Uso (DATABASE_URL apontando ao Render — ver DEPLOY_RENDER.md):
 
 import json
 import os
+import re
 from datetime import datetime, time
 
 from django.conf import settings
@@ -42,6 +43,14 @@ from django.utils import timezone
 
 from chips.models import Brand, KnownPart
 from estoque.models import InventoryEntry, Lot
+
+
+def _norm(pn):
+    """Normaliza o PN como o engine faz (sem hífen/símbolos). Sem isso, um PN com
+    sufixo (ex.: KMQ72000SM-B316) vira um KnownPart com hífen que o classify() —
+    que tira os símbolos — nunca encontra: 'confirmado' mas invisível."""
+    return re.sub(r"[^A-Z0-9]", "", (pn or "").strip().upper())
+
 
 DEFAULT_LOT = 39
 DEFAULT_SINCE = "2026-06-16"
@@ -115,10 +124,11 @@ class Command(BaseCommand):
                 raise CommandError(f"Lote #{opts['lot']:03d} não existe.")
             qs = qs.filter(lot=lot)
 
-        # Agrupa por PN (um PN pode ter entradas em vários lotes).
+        # Agrupa por PN NORMALIZADO (um PN pode ter entradas em vários lotes).
+        # Normalizar garante que o KnownPart criado case com o lookup do classify().
         by_pn = {}
         for e in qs:
-            by_pn.setdefault(e.part_number, []).append(e)
+            by_pn.setdefault(_norm(e.part_number), []).append(e)
 
         to_create, to_update, skipped = [], [], []
         for pn, entries in sorted(by_pn.items()):

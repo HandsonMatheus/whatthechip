@@ -1,0 +1,27 @@
+{
+  "ts": "2026-06-17T13:34:47.355609",
+  "confidence": "manual",
+  "created": [],
+  "updated": [
+    {
+      "part_number": "K4F8E3D",
+      "prev_status": "raw",
+      "prev_confidence": "estimated"
+    },
+    {
+      "part_number": "KMF310012M",
+      "prev_status": "raw",
+      "prev_confidence": "estimated"
+    },
+    {
+      "part_number": "RS512M32LO4",
+      "prev_status": "raw",
+      "prev_confidence": "estimated"
+    },
+    {
+      "part_number": "RS70B08G3S03F",
+      "prev_status": "raw",
+      "prev_confidence": "estimated"
+    }
+  ]
+}
