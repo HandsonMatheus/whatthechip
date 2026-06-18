@@ -1329,8 +1329,53 @@ def assess_profitability(result: dict) -> str:
     if chip_type.lower() == "mcp":
         return "NÃO RENTÁVEL"
 
-    # Tipo não coberto pelas regras (NOR, SoC, SDRAM puro, etc.)
+    # ── NOR Flash (feature phone / IoT ROM — K5*, outros fabricantes) ─────────
+    # chip_type="NOR Flash": memória de código read-only, sem mercado B2B de
+    # reciclagem. Sucata independente de capacidade — regra capacity-independent:
+    # is_dead_by_generation() devolve True automaticamente para esta classe.
+    if chip_type.lower() == "nor flash":
+        return "NÃO RENTÁVEL"
+
+    # Tipo não coberto pelas regras (SoC, SDRAM puro, etc.)
     return "INDETERMINADO"
+
+
+# Números de capacidade/densidade (ex.: "16GB", "1.5GB", "512MB", "8Gb").
+_CAP_NUM_RE = re.compile(r"\d+(?:\.\d+)?\s*(?:GB|MB)\b", re.I)
+
+
+def _strip_capacity(result: dict) -> dict:
+    """Cópia de `result` com os NÚMEROS de capacidade/densidade removidos,
+    preservando tipo, geração e subtype. Ex.: "LPDDR3 1GB" → "LPDDR3"; "16GB" → "".
+    Base para detectar não-rentabilidade que INDEPENDE da capacidade."""
+    out = dict(result)
+    for k in ("capacity", "dram_density", "emcp_ram", "emcp_nand"):
+        v = out.get(k)
+        if v:
+            out[k] = _CAP_NUM_RE.sub("", str(v)).strip()
+    return out
+
+
+def is_dead_by_generation(result: dict) -> bool:
+    """
+    True quando o chip é NÃO RENTÁVEL por um motivo que **independe da capacidade**
+    (geração / era de tecnologia) — em oposição a "não rentável por capacidade
+    pequena".
+
+    DERIVADO de assess_profitability (FONTE ÚNICA da verdade): removemos os números
+    de capacidade do `result` e perguntamos se ele AINDA é NÃO RENTÁVEL. Se sim, a
+    rejeição não dependia da capacidade → é por geração/era.
+
+    Por que derivar (e não manter uma lista própria): fica SEMPRE em sincronia com
+    as regras de rentabilidade. Qualquer regra capacity-independent nova lá
+    (LPDDR2-, DDR2-, MCP legado, NOR Flash/K5, …) passa a valer aqui
+    automaticamente — sem um segundo sistema para manter e sair de sincronia.
+
+    Usado pelo gateway do estoque: chip morto por geração vai direto ao descarte
+    mesmo SEM confirmação no banco e SEM capacidade mapeada (rótulo distinto +
+    auditoria). Capacidade pequena NÃO entra aqui — essa exige confirmação.
+    """
+    return assess_profitability(_strip_capacity(result)) == "NÃO RENTÁVEL"
 
 
 # ── Ponto de entrada público ───────────────────────────────────────────────────
