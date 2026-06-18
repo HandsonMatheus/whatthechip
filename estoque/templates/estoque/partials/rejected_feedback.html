@@ -5,7 +5,8 @@
   </div>
   <p class="est-confirm-hint">
     Este chip{% if chip_type %} (<strong>{{ chip_type }}</strong>{% if capacity %} · {{ capacity }}{% endif %}){% endif %}
-    foi classificado como <strong>NÃO RENTÁVEL</strong> e registrado para auditoria.
+    foi classificado como <strong>NÃO RENTÁVEL{% if by_generation %} pela geração{% endif %}</strong>
+    {% if by_generation %}(reconhecido por gramática, não confirmado no banco) {% endif %}e registrado para auditoria.
     <strong>Nenhuma unidade entrou no estoque</strong> — encaminhe para o descarte de
     resíduos eletrônicos.
   </p>

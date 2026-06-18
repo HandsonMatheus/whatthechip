@@ -25,7 +25,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from chips.engine import assess_profitability, classify
+from chips.engine import assess_profitability, classify, is_dead_by_generation
 from chips.models import UnknownChip
 
 from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
@@ -235,14 +235,26 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
         {'id': 'rentabilidade', 'label': 'Rentável',    'status': 'skip', 'detail': ''},
     ]
 
-    def _out(destination, profitable=''):
+    def _out(destination, profitable='', by_generation=False):
         return {
-            'destination':    destination,
-            'steps':          steps,
-            'typo':           typo,
-            'profitable':     profitable,
-            'profitable_key': _PROFIT_KEY.get(profitable, 'indeterminado'),
+            'destination':          destination,
+            'steps':                steps,
+            'typo':                 typo,
+            'profitable':           profitable,
+            'profitable_key':       _PROFIT_KEY.get(profitable, 'indeterminado'),
+            'reject_by_generation': by_generation,
         }
+
+    # ── Atalho: morto por GERAÇÃO → reprovado direto ─────────────────────────
+    # Tecnologia velha (LPDDR2-, DDR2-, MCP legado) é sucata por fato de mercado.
+    # Vale mesmo SEM confirmação no banco e SEM capacidade mapeada — a geração é
+    # lida da gramática curada. Só geração; nunca capacidade (limite de negócio).
+    if is_dead_by_generation(result) and not _is_confirmed(result):
+        steps[0].update(status='pass', detail='tipo/geração')
+        steps[1].update(status='fail',
+                        detail=result.get('classification_source') or 'gramática')
+        steps[2].update(status='fail', detail='Geração não rentável')
+        return _out('reprovado', 'NÃO RENTÁVEL', by_generation=True)
 
     # ── 1. Identificação (specs reais) ───────────────────────────────────────
     if not has_cap:
@@ -411,6 +423,30 @@ def add_chip(request, lot_pk):
             '<div class="est-msg est-msg--error" style="padding:12px 16px;">PN inválido.</div>'
         )
 
+    # Reclassifica no servidor (não confia no hidden do form).
+    server_result = classify(pn)
+    confirmed = _is_confirmed(server_result)
+
+    # ── Atalho: morto por GERAÇÃO (não confirmado) → descarte direto ─────────
+    # Tecnologia velha (LPDDR2-, DDR2-, MCP legado) é sucata por fato de mercado.
+    # Reprovado mesmo SEM confirmação e SEM capacidade mapeada — por isso vem
+    # ANTES do ramo has_cap (senão um chip sem capacidade cairia em "desconhecido")
+    # e da fila. Razão distinta ("geração") para a auditoria separar do reprovado
+    # confirmado. Confirmados seguem o fluxo normal abaixo.
+    if is_dead_by_generation(server_result) and not confirmed:
+        RejectedEntry.objects.create(
+            lot=lot, part_number=pn, quantity=qty,
+            **_snapshot(server_result),
+            rejection_reason='NÃO RENTÁVEL (geração)',
+            operator=request.user,
+        )
+        return render(request, 'estoque/partials/rejected_feedback.html', {
+            'pn': pn, 'qty': qty,
+            'chip_type': server_result.get('chip_type', ''),
+            'capacity':  server_result.get('capacity', ''),
+            'by_generation': True,
+        })
+
     has_cap = request.POST.get('has_cap') == 'true'
 
     if not has_cap:
@@ -418,12 +454,9 @@ def add_chip(request, lot_pk):
         return render(request, 'estoque/partials/unknown_feedback.html', {'pn': pn})
 
     # ── Bloqueio "só confirmados" ────────────────────────────────────────────
-    # Reclassifica no servidor (não confia no hidden do form). Se o PN não é
-    # confirmado no banco, NÃO entra no estoque: vai para a fila de conferência
-    # (PendingEntry) para o gestor aprovar/reprovar. Evita typos e chips ainda
-    # não catalogados contaminarem o inventário.
-    server_result = classify(pn)
-    if not _is_confirmed(server_result):
+    # Se o PN não é confirmado no banco, NÃO entra no estoque: vai para a fila de
+    # conferência (PendingEntry) para o gestor aprovar/reprovar.
+    if not confirmed:
         near = _nearest_in_lot(lot, pn)
         pend, p_created = PendingEntry.objects.get_or_create(
             lot=lot, part_number=pn,
@@ -458,6 +491,7 @@ def add_chip(request, lot_pk):
             'pn': pn, 'qty': qty,
             'chip_type': server_result.get('chip_type', ''),
             'capacity':  server_result.get('capacity', ''),
+            'by_generation': False,
         })
 
     defaults = {

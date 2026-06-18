@@ -17,9 +17,10 @@ Dois blocos:
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
-from django.test import SimpleTestCase, TestCase
+from django.test import TestCase
 from django.urls import reverse
 
+from chips.engine import is_dead_by_generation
 from chips.models import UnknownChip
 
 from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
@@ -38,8 +39,11 @@ def _result(**over):
     return base
 
 
-class GatewayDestinationTests(SimpleTestCase):
-    """_compute_gateway: destino correto + estados das 3 etapas (sem banco)."""
+class GatewayDestinationTests(TestCase):
+    """_compute_gateway: destino correto + estados das 3 etapas.
+
+    TestCase (não SimpleTestCase): assess_profitability / is_dead_by_generation
+    leem ProfitabilityConfig do banco (get_config cria o singleton default)."""
 
     def test_confirmado_rentavel_aprovado(self):
         r = _result(chip_type='eMMC', capacity='16GB',
@@ -51,7 +55,7 @@ class GatewayDestinationTests(SimpleTestCase):
         self.assertEqual([s['status'] for s in g['steps']], ['pass', 'pass', 'pass'])
 
     def test_confirmado_nao_rentavel_reprovado(self):
-        r = _result(chip_type='eMMC', capacity='4GB',
+        r = _result(chip_type='eMMC', capacity='2GB',  # < 4GB (default) → NÃO RENTÁVEL
                     classification_source='banco de dados', confidence='confirmed')
         g = _compute_gateway(r, has_cap=True)
         self.assertEqual(g['destination'], 'reprovado')
@@ -94,6 +98,43 @@ class GatewayDestinationTests(SimpleTestCase):
                                      confidence='confirmed'), has_cap=True)
         self.assertFalse(g['typo']['has'])
 
+    # ── Morto por geração (DERIVADO da rentabilidade) ───────────────────────
+    def test_is_dead_by_generation(self):
+        # Geração morta — independe da capacidade (eMCP exige RAM e NAND, como no real).
+        self.assertTrue(is_dead_by_generation(_result(
+            chip_type='eMCP', is_emcp=True,
+            emcp_ram='LPDDR2 ⚠ cap. não mapeada', emcp_nand='eMMC ⚠ cap. não mapeada')))
+        self.assertTrue(is_dead_by_generation(_result(chip_type='DDR', subtype='DDR2')))
+        self.assertTrue(is_dead_by_generation(_result(chip_type='MCP')))
+        # Geração viva
+        self.assertFalse(is_dead_by_generation(_result(
+            chip_type='eMCP', is_emcp=True, emcp_ram='LPDDR4 2GB', emcp_nand='eMMC 16GB')))
+        # Não-rentável por CAPACIDADE NÃO conta como morto por geração
+        self.assertFalse(is_dead_by_generation(_result(chip_type='eMMC', capacity='2GB')))
+        self.assertFalse(is_dead_by_generation(_result(
+            chip_type='eMCP', is_emcp=True, emcp_ram='LPDDR3 0.5GB', emcp_nand='eMMC 16GB')))
+
+    def test_gen_dead_nao_confirmado_vai_reprovado(self):
+        # KMN5W000ZM-like: eMCP LPDDR2 por gramática, capacidade não mapeada (has_cap
+        # False). Antes caía em DESCONHECIDO; agora vai direto pra REPROVADO por geração.
+        r = _result(chip_type='eMCP', is_emcp=True, subtype='LPDDR2 + eMMC',
+                    emcp_ram='LPDDR2 ⚠ cap. não mapeada', emcp_nand='eMMC ⚠ cap. não mapeada',
+                    classification_source='gramática', confidence='estimated')
+        g = _compute_gateway(r, has_cap=False)
+        self.assertEqual(g['destination'], 'reprovado')
+        self.assertTrue(g['reject_by_generation'])
+        self.assertEqual([s['status'] for s in g['steps']], ['pass', 'fail', 'fail'])
+
+    def test_gen_dead_confirmado_segue_fluxo_normal(self):
+        # eMCP LPDDR2 CONFIRMADO → reprovado normal (sem rótulo de geração).
+        r = _result(chip_type='eMCP', is_emcp=True, subtype='LPDDR2 + eMMC',
+                    emcp_ram='LPDDR2 1GB', emcp_nand='eMMC 8GB',
+                    classification_source='banco de dados', confidence='confirmed')
+        g = _compute_gateway(r, has_cap=True)
+        self.assertEqual(g['destination'], 'reprovado')
+        self.assertFalse(g['reject_by_generation'])
+        self.assertEqual([s['status'] for s in g['steps']], ['pass', 'pass', 'fail'])
+
 
 class AddChipHardBlockTests(TestCase):
     """add_chip: roteamento estoque / fila / reprovado / desconhecido."""
@@ -108,7 +149,7 @@ class AddChipHardBlockTests(TestCase):
     @patch('estoque.views.classify')
     def test_confirmado_nao_rentavel_vira_rejected(self, mock_classify):
         mock_classify.return_value = _result(
-            chip_type='eMMC', capacity='4GB',
+            chip_type='eMMC', capacity='2GB',  # < 4GB → NÃO RENTÁVEL por capacidade
             classification_source='banco de dados', confidence='confirmed')
         self.client.post(self.url, {'pn': 'TESTREJECT01', 'qty': '2', 'has_cap': 'true'})
         self.assertEqual(
@@ -154,6 +195,21 @@ class AddChipHardBlockTests(TestCase):
         self.assertFalse(RejectedEntry.objects.filter(part_number='TESTGRAM01').exists())
 
     def test_has_cap_false_vai_para_unknown(self):
-        # has_cap=false não chega a classificar — registra UnknownChip direto.
+        # has_cap=false e chip não-reconhecido → UnknownChip (classify roda, mas
+        # não é morto por geração nem confirmado).
         self.client.post(self.url, {'pn': 'TESTUNK01', 'qty': '1', 'has_cap': 'false'})
         self.assertTrue(UnknownChip.objects.filter(part_number='TESTUNK01').exists())
+
+    @patch('estoque.views.classify')
+    def test_gen_dead_nao_confirmado_vira_rejected_geracao(self, mock_classify):
+        # eMCP LPDDR2 por gramática, capacidade não mapeada, has_cap=false:
+        # antes ia pra UnknownChip; agora vai direto pra reprovado POR GERAÇÃO.
+        mock_classify.return_value = _result(
+            chip_type='eMCP', is_emcp=True, subtype='LPDDR2 + eMMC',
+            emcp_ram='LPDDR2 ⚠ cap. não mapeada', emcp_nand='eMMC ⚠ cap. não mapeada',
+            classification_source='gramática', confidence='estimated')
+        self.client.post(self.url, {'pn': 'KMN5W000ZM', 'qty': '1', 'has_cap': 'false'})
+        rej = RejectedEntry.objects.filter(lot=self.lot, part_number='KMN5W000ZM')
+        self.assertEqual(rej.count(), 1)
+        self.assertEqual(rej.first().rejection_reason, 'NÃO RENTÁVEL (geração)')
+        self.assertFalse(UnknownChip.objects.filter(part_number='KMN5W000ZM').exists())

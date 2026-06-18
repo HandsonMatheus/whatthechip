@@ -12,7 +12,7 @@
     {% elif gateway_dest == 'fila' %}
       <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#fff8e1;color:#b28600;white-space:nowrap;">⏳ EM FILA</span>
     {% elif gateway_dest == 'reprovado' %}
-      <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#fff1f1;color:#da1e28;white-space:nowrap;">✗ REPROVADO</span>
+      <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#fff1f1;color:#da1e28;white-space:nowrap;">✗ REPROVADO{% if gateway.reject_by_generation %} · GERAÇÃO{% endif %}</span>
     {% else %}
       <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#f4f4f4;color:#6f6f6f;white-space:nowrap;">? NÃO IDENTIFICADO</span>
     {% endif %}
@@ -62,9 +62,13 @@
     {% endif %}
   {% elif gateway_dest == 'reprovado' %}
     <div style="padding:24px 26px;background:#750e13;color:#ffb3b8;display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">DESCARTE</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% if gateway.reject_by_generation %}DESCARTE · POR GERAÇÃO{% else %}DESCARTE{% endif %}</span>
       <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;">REPROVADO</div>
+      {% if gateway.reject_by_generation %}
+      <div style="font-size:14px;opacity:0.92;">Não rentável pela geração · reconhecido por gramática (não confirmado)</div>
+      {% else %}
       <div style="font-size:14px;opacity:0.92;">Não rentável · resíduo eletrônico</div>
+      {% endif %}
       {% if result.chip_type or result.brand or display_cap %}
       <div style="font-size:14px;opacity:0.92;">{{ result.chip_type }}{% if result.chip_type and result.brand %} · {% endif %}{{ result.brand }}{% if display_cap and result.chip_type or display_cap and result.brand %} · {% endif %}{{ display_cap }}</div>
       {% endif %}
