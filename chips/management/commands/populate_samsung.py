@@ -530,9 +530,12 @@ class Command(BaseCommand):
         #   "4G" → K3RG4G40MM-MGCJ (24Gb = 3GB) ✓
         #   "2G" → K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ (32Gb = 4GB) ✓
         #   "6G" → K3RG6G60MM-MGCJ (48Gb = 6GB) ✓
+        #   "3G" → K3RG3G30MM-DGCH (24Gb = 3GB) ✓ — iFixit Galaxy S6 Teardown 2015
+        #          Mesmo total que "4G" (24Gb), configuração de die diferente.
         # decode_cap_pos=4, decode_cap_len=2 — prefixo K3RG = 4 chars.
         k3rg_cap = [
             ("4G", "3GB", "24Gb — K3RG4G40MM-MGCJ (PSG 1H 2017 ✓)."),
+            ("3G", "3GB", "24Gb — K3RG3G30MM-DGCH (iFixit Galaxy S6 Teardown 2015 ✓). Mesma capacidade que 4G, die diferente."),
             ("2G", "4GB", "32Gb — K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ (PSG 1H 2017 ✓)."),
             ("6G", "6GB", "48Gb — K3RG6G60MM-MGCJ (PSG 1H 2017 ✓)."),
         ]
@@ -903,7 +906,9 @@ class Command(BaseCommand):
             # Prefixo 4 chars + priority=40 → vence K3R (3 chars) pelo tiebreaker -prefix_len.
             # Confirmado por PSG Samsung 1H 2017 (tabela Mobile DRAM, seção LPDDR4):
             #   K3RG4G40MM-MGCJ (24Gb=3GB), K3RG2G20CA-MGCJ (32Gb=4GB), K3RG6G60MM-MGCJ (48Gb=6GB).
-            # decode_cap_pos=4, decode_cap_len=2 → K3RG_CAP: 4G=3GB · 2G=4GB · 6G=6GB.
+            # "3G" → K3RG3G30MM-DGCH = 3GB (iFixit Galaxy S6 Teardown 2015 ✓).
+            #   Mesmo total que "4G" (24Gb=3GB), die diferente. Usado no Galaxy S6 (Exynos 7420 PoP).
+            # decode_cap_pos=4, decode_cap_len=2 → K3RG_CAP: 4G=3GB · 3G=3GB · 2G=4GB · 6G=6GB.
             dict(
                 prefix="K3RG", chip_type="LPDDR4", subtype="LPDDR4 Multi-Channel",
                 interface="LPDDR4", decode_density_type="",
@@ -912,8 +917,8 @@ class Command(BaseCommand):
                 tip=(
                     "LPDDR4 Multi-Channel Samsung (K3RG). Tensão I/O: 1.1V. "
                     "Configuração: 4CH x16 = 64-bit total — encapsulamento multi-die. "
-                    "Capacidade pn[4:6] → K3RG_CAP: 4G=3GB · 2G=4GB · 6G=6GB. "
-                    "Exemplos PSG 1H 2017: K3RG4G40MM (3GB, 366-ball 15×15) · "
+                    "Capacidade pn[4:6] → K3RG_CAP: 4G=3GB · 3G=3GB · 2G=4GB · 6G=6GB. "
+                    "Exemplos: K3RG4G40MM (3GB, PSG 1H 2017 ✓) · K3RG3G30MM-DGCH (3GB, Galaxy S6 iFixit ✓) · "
                     "K3RG2G20CA/CM (4GB, 366/432-ball) · K3RG6G60MM (6GB, 366-ball). "
                     "⚠ NÃO confundir com K3R (LPDDR3) — K3RG é LPDDR4. "
                     "⚠ NÃO misturar soquetes com K3U/K3UH (LPDDR4X, 0.6V). "

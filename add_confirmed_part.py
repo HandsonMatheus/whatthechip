@@ -255,6 +255,40 @@ PARTS = [
             "Chip de alto valor: eMCP premium LPDDR4X — bancada equipamento dedicado."
         ),
     ),
+    dict(
+        part_number   = "H26M64103EMR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H26M",
+        chip_type     = "eMMC",
+        subtype       = "eMMC standalone",
+        capacity      = "32GB",
+        interface     = "eMMC 5.1",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[4]='6' → 32GB (HYX_EMMC_CAP ✓ — referência direta na tabela). "
+            "Octopart ✓ · datasheets.com: '256G-bit (32GB)' ✓ (256Gbit÷8=32GB). "
+            "⚠ H26M64 = 32GB, NÃO 64GB — '6' é capacidade, '4' é organização interna (QDP). "
+            "FBGA-153."
+        ),
+    ),
+    dict(
+        part_number   = "H9TQ17ABJTCC",
+        brand_name    = "SK Hynix",
+        family_prefix = "H9TQ",
+        chip_type     = "eMCP",
+        subtype       = "eMCP LPDDR3",
+        capacity      = "16GB + 2GB",
+        interface     = "eMMC 5.x + LPDDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "Confirmado manualmente pelo operador. "
+            "pn[4:6]='17' → 16GB eMMC (HYX_EMCP_NAND_CAP ✓). "
+            "pn[6:8]='AB' → LPDDR3 2GB (HYX_H9TQ_RAM_CAP ✓). "
+            "Variante de sufixo (BTCC) do PN de referência H9TQ17ABJTMCUR — Preduo: '16GB+2GB' ✓. "
+            "Decode em pn[0:8] idêntico."
+        ),
+    ),
     # Adicione mais chips aqui no mesmo formato se necessário
 ]
 

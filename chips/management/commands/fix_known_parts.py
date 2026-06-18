@@ -149,6 +149,38 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K3LK3K3 ──────────────────────────────────────────────────────────────
+    # Samsung LPDDR5 standalone. Família K3LK. pn[4:6]="3K" → LPDDR5_CAP → 8GB.
+    # CONVENÇÃO DE LEITURA: PN tem 7 chars porque o operador lê SOMENTE a primeira
+    # linha do marcador laser (a que começa com "K"). As 3 letras da linha inferior
+    # (ex.: "0BM") identificam o package mas não são digitadas. PN efetivo = K3LK3K3.
+    # Família K3LK = LPDDR5 (VDDQ=0.9V). NÃO confundir com K3KL = LPDDR5X (0.5V).
+    # chave "3K" confirmada via Samsung Semiconductor Global ao construir LPDDR5_CAP
+    # (sessão 2026-05-27; mesma chave que LPDDR5_CAP["3K/CK/7K"] = 8GB).
+    {
+        "pn": "K3LK3K3",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR5",
+            "subtype":    "LPDDR5",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "8GB",
+            "interface":  "LPDDR5",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "PN de 7 chars: convenção de bancada — operador lê só a 1ª linha do laser (começa com K). "
+            "pn[4:6]='3K' → LPDDR5_CAP['3K']=8GB (confirmado via Samsung Semiconductor Global 2026-05-27). "
+            "Família K3LK = LPDDR5 (VDDQ=0.9V); K3KL = LPDDR5X (0.5V) — sockets incompatíveis. "
+            "Confirmado pelo operador (2026-06-18). RENTÁVEL."
+        ),
+    },
+
     # ── KM8V8001JM ───────────────────────────────────────────────────────────
     # Problema: cap_key V8 estava mapeado como 128GB+8GB no SAM_EMCP_CAP
     # (fonte: AI externa, sem confirmação de fabricante).
@@ -452,6 +484,44 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KMF820012M ───────────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.1. Família KMF. cap_key pn[3:5]="82" → SAM_EMCP_CAP.
+    # SAM_EMCP_CAP["82"] = 16GB NAND + 2GB LPDDR3 (16Gb).
+    # Chave "82" NÃO apresenta divergência cross-família entre KMF/KMQ/KMR:
+    #   • KMR820001M-B609: Preduo "16+16" + Puris "16+16 221ball eMCP-D3" ✓ (2026-05-29)
+    #   • KMQ820013M-B419: Preduo "16+16" ✓ (2026-06-17)
+    # Contraste com "E1" (onde KMF diverge de KMQ): para "82" a chave é consistente.
+    # SEM FONTE TIER 1 DIRETA para KMF820012M — confirmado pelo operador (2026-06-18)
+    # com base na convergência KMQ/KMR via Preduo+Puris.
+    # confidence="manual": bloqueia gramática (grammar_wins=False); documenta ausência de Tier 1 direto.
+    # MOTIVO PRÁTICO: só chips confirmed/manual entram no estoque (regra add_chip).
+    # create=True: chip pode não existir no banco (grammar-only até agora).
+    {
+        "pn": "KMF820012M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "emcp_nand":  "16GB",
+            "emcp_ram":   "2GB LPDDR3",
+            "interface":  "eMMC+LPDDR3",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "SAM_EMCP_CAP['82'] = 16GB NAND + 2GB LPDDR3 (16Gb). "
+            "Chave '82' consistente entre famílias: KMR820001M-B609 (Preduo+Puris ✓ 2026-05-29) e "
+            "KMQ820013M-B419 (Preduo ✓ 2026-06-17). Sem divergência KMF/KMQ/KMR para '82' "
+            "(contraste com 'E1' onde KMF≠KMQ). "
+            "SEM FONTE TIER 1 DIRETA — confirmado pelo operador (2026-06-18). "
+            "confidence=manual: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+
     # ── KMFJ20007M ───────────────────────────────────────────────────────────
     # eMCP LPDDR3 + eMMC (~2012-2014, sufixo -B214). cap_key pn[3:5]="J2" → SAM_EMCP_CAP.
     # PROBLEMA: SAM_EMCP_CAP["J2"]=128GB+6GB ancorado por chip MODERNO KMQJ2· — ERRADO para esta era.
@@ -684,6 +754,93 @@ CORRECTIONS = [
             "Preduo Tier 1: K3QF7F70DM-QGCF = 24Gbit Samsung LPDDR3, 216ball ✓ (2026-06-17). "
             "K3QF_CAP['7'] = 3GB = 4×6Gb die = 24Gbit ÷ 8 = 3GB. Gramática acertou na íntegra. "
             "RAM standalone PoP — sem NAND. confidence=confirmed: grammar_wins=False."
+        ),
+    },
+
+    # ── K3QF3F30BM ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 2GB. Família K3QF, pn[4]="3" → K3QF_CAP["3"]=2GB.
+    # "3" = revisão de die (16Gb total = 2GB — NÃO é 3GB).
+    # Fonte Tier 1:
+    #   • Samsung Semiconductor Global: K3QF3F30BM-AGCG(16 Gb) ✓
+    #     semiconductor.samsung.com/dram/lpddr/lpddr3/k3qf3f30bm-agcg/
+    {
+        "pn": "K3QF3F30BM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "LPDDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K3QF3F30BM-AGCG(16 Gb) ✓. "
+            "16Gb ÷ 8 = 2GB. pn[4]='3' → K3QF_CAP['3']=2GB. "
+            "⚠ chave '3' ≠ 3GB — é revisão de die (16Gb total = 2GB como '2'). "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+
+    # ── K3QF4F40BM ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 4GB. Família K3QF, pn[4]="4" → K3QF_CAP["4"]=4GB.
+    # Fonte Tier 1:
+    #   • PSG Samsung 1H 2017: K3QF4F40BM-FGCF / K3QF4F40BM-AGCF = 32Gb = 4GB ✓
+    {
+        "pn": "K3QF4F40BM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "LPDDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "PSG Samsung 1H 2017 (Tier 1): K3QF4F40BM-FGCF / K3QF4F40BM-AGCF = 32Gb = 4GB ✓. "
+            "32Gb ÷ 8 = 4GB. pn[4]='4' → K3QF_CAP['4']=4GB. "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+
+    # ── K3QF4F40CM ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 4GB. Família K3QF, pn[4]="4" → K3QF_CAP["4"]=4GB.
+    # "CM" = revisão posterior de K3QF4F40BM (mesma capacidade 32Gb = 4GB).
+    # Fonte Tier 1:
+    #   • Samsung Semiconductor Global: K3QF4F40CM-AGCF(32 Gb) ✓
+    #     semiconductor.samsung.com/dram/lpddr/lpddr3/k3qf4f40cm-agcf/
+    {
+        "pn": "K3QF4F40CM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "LPDDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K3QF4F40CM-AGCF(32 Gb) ✓. "
+            "32Gb ÷ 8 = 4GB. pn[4]='4' → K3QF_CAP['4']=4GB. "
+            "Revisão posterior de K3QF4F40BM (mesma densidade 32Gb). "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
         ),
     },
 
@@ -1767,6 +1924,66 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K4E6E304EB ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 2GB. Família K4E, pn[3:5]="6E" → 16Gb ÷ 8 = 2GB.
+    # "EB" = 1ª revisão de die da série K4E6E304.
+    # Fonte Tier 1:
+    #   • Samsung Semiconductor Global: K4E6E304EB-EGCG(16 Gb) ✓
+    #     semiconductor.samsung.com/dram/lpddr/lpddr3/k4e6e304eb-egcg/
+    {
+        "pn": "K4E6E304EB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "LPDDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4E6E304EB-EGCG(16 Gb) ✓. "
+            "16Gb ÷ 8 = 2GB. pn[3:5]='6E' → K4E_CAP['6E']=2GB. "
+            "Die revision EB (1ª revisão da série K4E6E304). "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+
+    # ── K4E6E304EC ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 2GB. Família K4E, pn[3:5]="6E" → 16Gb ÷ 8 = 2GB.
+    # "EC" = 2ª revisão de die da série K4E6E304.
+    # Fonte Tier 1:
+    #   • Samsung Semiconductor Global: K4E6E304EC-EGCG(16 Gb) ✓
+    #     semiconductor.samsung.com/dram/lpddr/lpddr3/k4e6e304ec-egcg/
+    {
+        "pn": "K4E6E304EC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "LPDDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4E6E304EC-EGCG(16 Gb) ✓. "
+            "16Gb ÷ 8 = 2GB. pn[3:5]='6E' → K4E_CAP['6E']=2GB. "
+            "Die revision EC (2ª revisão da série K4E6E304). "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+
     # ── K4E6E304ED ───────────────────────────────────────────────────────────
     # LPDDR3 standalone Samsung 2GB. Família K4E, pn[3:5]="6E" → 16Gb ÷ 8 = 2GB.
     # Gramática completa [✓]: K4E_CAP["6E"]=2GB; capacity="2GB" ✓.
@@ -1793,6 +2010,102 @@ CORRECTIONS = [
             "Octopart Tier 1: K4E6E304ED-EGCG = '16GBIT SDRAM LPDDR3 1066MHZ FBGA-178' ✓ (2026-06-17). "
             "16Gbit ÷ 8 = 2GB — confirma K4E_CAP['6E']=2GB (gramática [✓]). "
             "LPDDR3 standalone, FBGA-178. confidence=confirmed: grammar_wins=False."
+        ),
+    },
+
+    # ── K4E6E304EE ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 2GB. Família K4E, pn[3:5]="6E" → 16Gb ÷ 8 = 2GB.
+    # Gramática completa [✓]: K4E_CAP["6E"]=2GB; capacity="2GB" ✓.
+    # "EE" = sufixo de revisão de die (5ª geração da série K4E6E304).
+    # Fontes Tier 1:
+    #   • Samsung Semiconductor Global: K4E6E304EB(16Gb) / K4E6E304EC(16Gb) / K4E6E304ED(16Gb)
+    #     — toda a família K4E6E304 é 16Gb LPDDR3 ✓ (semiconductor.samsung.com)
+    #   • K4E6E304ED confirmado 2GB LPDDR3 via Octopart ✓ (sessão 2026-06-17)
+    # Corrobora: datasheet4u indexa datasheet Samsung: K4E6E304EE = "16Gb QDP LPDDR3 SDRAM" ✓
+    # Die revision EB→EC→ED→EE nunca muda capacidade em LPDDR Samsung.
+    {
+        "pn": "K4E6E304EE",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "LPDDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4E6E304EB/EC/ED todos listados como '16Gb' LPDDR3 ✓. "
+            "K4E6E304ED confirmado 2GB LPDDR3 via Octopart Tier 1 (2026-06-17). "
+            "Datasheet Samsung (via datasheet4u): K4E6E304EE = '16Gb QDP LPDDR3 SDRAM' ✓. "
+            "pn[3:5]='6E' → K4E_CAP['6E']=2GB (gramática [✓]). "
+            "Die revision EE (5ª revisão) não altera capacidade — padrão Samsung. "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+
+    # ── K4EBE304EB ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 4GB. Família K4E, pn[3:5]="BE" → 32Gb ÷ 8 = 4GB.
+    # "EB" = 1ª revisão de die da série K4EBE304 (flagship ~2015).
+    # Fonte Tier 1:
+    #   • Samsung Semiconductor Global: K4EBE304EB-EGCG(32 Gb) ✓
+    #     semiconductor.samsung.com/dram/lpddr/lpddr3/k4ebe304eb-egcg/
+    {
+        "pn": "K4EBE304EB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "LPDDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4EBE304EB-EGCG(32 Gb) ✓. "
+            "32Gb ÷ 8 = 4GB. pn[3:5]='BE' → K4E_CAP['BE']=4GB. "
+            "Die revision EB (1ª revisão da série K4EBE304, flagship ~2015). "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+
+    # ── K4EBE304EC ───────────────────────────────────────────────────────────
+    # LPDDR3 standalone Samsung 4GB. Família K4E, pn[3:5]="BE" → 32Gb ÷ 8 = 4GB.
+    # "EC" = 2ª revisão de die da série K4EBE304.
+    # Fonte Tier 1:
+    #   • Samsung Semiconductor Global: K4EBE304EC-EGCG(32 Gb) ✓
+    #     semiconductor.samsung.com/dram/lpddr/lpddr3/k4ebe304ec-egcg/
+    {
+        "pn": "K4EBE304EC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3 Mobile",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "LPDDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4EBE304EC-EGCG(32 Gb) ✓. "
+            "32Gb ÷ 8 = 4GB. pn[3:5]='BE' → K4E_CAP['BE']=4GB. "
+            "Die revision EC (2ª revisão da série K4EBE304). "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
         ),
     },
 
@@ -1827,6 +2140,45 @@ CORRECTIONS = [
     # ══════════════════════════════════════════════════════════════════════════
     # Samsung K3RG — LPDDR4 Multi-Channel (4CH x16, 64-bit) (~2015-2017)
     # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K3RG3G3 ───────────────────────────────────────────────────────────────
+    # Samsung LPDDR4 3GB. Família K3RG. pn[4:6]="3G" → K3RG_CAP → 24Gbit ÷ 8 = 3GB.
+    # CONVENÇÃO DE LEITURA: PN tem 7 chars porque o operador lê SOMENTE a primeira
+    # linha do marcador laser (a que começa com "K"). Linha inferior = sufixo de package.
+    # PN efetivo lido na bancada = K3RG3G3. PN completo = K3RG3G30MM-DGCH.
+    # Chave "3G" = mesmo total que "4G" (ambos = 24Gb = 3GB), configuração de die diferente.
+    # Fontes Tier 1:
+    #   • iFixit Galaxy S6 Teardown (2015), Step 10:
+    #     "Samsung K3RG3G30MM-DGCH 3 GB LPDDR4 RAM layered in" ✓
+    #     ifixit.com/Teardown/Samsung+Galaxy+S6+Teardown/39174
+    #   • Samsung Exynos 7420 (Snapdragon 410), Galaxy S6 / S6 Edge (2015).
+    # Populate_samsung.py: "3G" adicionado ao K3RG_CAP (2026-06-18).
+    # create=True: pn_not_in_db=True no debug — chip não existia no banco.
+    {
+        "pn": "K3RG3G3",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4 Multi-Channel",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "3GB",
+            "interface":  "LPDDR4",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "K3RG3G30MM-DGCH = 3GB LPDDR4. "
+            "iFixit Galaxy S6 Teardown (2015), Step 10: 'Samsung K3RG3G30MM-DGCH 3 GB LPDDR4 RAM' ✓. "
+            "PN de 7 chars: convenção de bancada — operador lê só a 1ª linha do laser. "
+            "pn[4:6]='3G' → K3RG_CAP['3G']=3GB (24Gb, mesma capacidade que '4G', die diferente). "
+            "K3RG_CAP atualizado em populate_samsung.py (2026-06-18). "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
 
     # ── K3RG2G20BM ────────────────────────────────────────────────────────────
     # LPDDR4 Samsung 4GB. Família K3RG, pn[4:6]="2G" → 32Gbit ÷ 8 = 4GB.
@@ -1885,6 +2237,102 @@ CORRECTIONS = [
             "PN completo como lido pelo scanner (sem hífen): K3RG2G20BM + sufixo 0G0J. "
             "Mesma base K3RG2G20BM confirmada por iFixit Pixel XL + LG G5 teardowns ✓ (2026-05-29). "
             "pn[4:6]='2G' → 4GB LPDDR4. confidence=confirmed: banco de dados."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Samsung K3RG — 7-char bancada reads (convenção: operador lê 1ª linha laser)
+    # PSG Samsung 1H 2017 confirma todos: K3RG4G40MM-MGCJ (24Gb=3GB),
+    # K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ (32Gb=4GB), K3RG6G60MM-MGCJ (48Gb=6GB).
+    # K3RG_CAP: 4G=3GB · 3G=3GB · 2G=4GB · 6G=6GB (grammar correto).
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K3RG4G4 ───────────────────────────────────────────────────────────────
+    # LPDDR4 Samsung 3GB. 7-char bancada read de K3RG4G40MM-MGCJ.
+    # pn[4:6]="4G" → K3RG_CAP["4G"]=3GB (24Gb).
+    # Fonte Tier 1:
+    #   • PSG Samsung 1H 2017: K3RG4G40MM-MGCJ = 24Gb = 3GB ✓
+    {
+        "pn": "K3RG4G4",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4 Multi-Channel",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "3GB",
+            "interface":  "LPDDR4",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "PSG Samsung 1H 2017 (Tier 1): K3RG4G40MM-MGCJ = 24Gb = 3GB ✓. "
+            "PN 7 chars: convenção de bancada — operador lê só a 1ª linha do laser. "
+            "pn[4:6]='4G' → K3RG_CAP['4G']=3GB. "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+
+    # ── K3RG2G2 ───────────────────────────────────────────────────────────────
+    # LPDDR4 Samsung 4GB. 7-char bancada read de K3RG2G20CA/CM-MGCJ/FGCJ.
+    # pn[4:6]="2G" → K3RG_CAP["2G"]=4GB (32Gb).
+    # Cobre K3RG2G20CA-MGCJ e K3RG2G20CM-FGCJ (mesma 7-char prefix, mesma capacidade).
+    # Fonte Tier 1:
+    #   • PSG Samsung 1H 2017: K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ = 32Gb = 4GB ✓
+    {
+        "pn": "K3RG2G2",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4 Multi-Channel",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "LPDDR4",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "PSG Samsung 1H 2017 (Tier 1): K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ = 32Gb = 4GB ✓. "
+            "PN 7 chars: convenção de bancada — operador lê só a 1ª linha do laser. "
+            "Cobre variantes CA (366-ball) e CM (432-ball) — mesma capacidade 4GB. "
+            "pn[4:6]='2G' → K3RG_CAP['2G']=4GB. "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+
+    # ── K3RG6G6 ───────────────────────────────────────────────────────────────
+    # LPDDR4 Samsung 6GB. 7-char bancada read de K3RG6G60MM-MGCJ.
+    # pn[4:6]="6G" → K3RG_CAP["6G"]=6GB (48Gb).
+    # Fonte Tier 1:
+    #   • PSG Samsung 1H 2017: K3RG6G60MM-MGCJ = 48Gb = 6GB ✓
+    {
+        "pn": "K3RG6G6",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4 Multi-Channel",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "6GB",
+            "interface":  "LPDDR4",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "PSG Samsung 1H 2017 (Tier 1): K3RG6G60MM-MGCJ = 48Gb = 6GB ✓. "
+            "PN 7 chars: convenção de bancada — operador lê só a 1ª linha do laser. "
+            "pn[4:6]='6G' → K3RG_CAP['6G']=6GB. "
+            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
         ),
     },
 
@@ -3017,6 +3465,119 @@ CORRECTIONS = [
             "Datasheet K524G2GACB-A050: '4Gbit NAND Flash + 2Gbit Mobile DDR' ✓. "
             "chip_type='MCP' → assess_profitability retorna 'NÃO RENTÁVEL' (engine.py). "
             "Operador deve descartar imediatamente para moagem — sem liquidez B2B."
+        ),
+    },
+
+    # ── K524G2GACB ────────────────────────────────────────────────────────────
+    # Die revision B (1ª revisão): o próprio datasheet Samsung K524G2GACB-A050
+    # é a fonte canônica da família — Revisão 1.3, novembro 2009.
+    # Fontes Tier 1:
+    #   • Datasheet Samsung K524G2GACB-A050 (Tier 1 direto): título na página
+    #     alldatasheet = "MCP MEMORY" (94 páginas, fabricante Samsung Semiconductor)
+    #     Conteúdo pág 12: "4,096M Bit for 4Gb NAND Flash" + "2Gbit Mobile DDR" ✓
+    #   • URL: alldatasheet.com/datasheet-pdf/pdf/412398/SAMSUNG/K524G2GACB-A050.html
+    #   • Package: -A050 = 137-ball FBGA, 10.5×13×1.2mm, pitch 0.8mm
+    {
+        "pn": "K524G2GACB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "MCP",
+            "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "MCP",
+            "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
+            "capacity":   "NAND 512MB + mDDR1 256MB",
+            "device":     "SUCATA — Raw MCP Samsung legado (feature phone ~2004-2009). "
+                          "Sem controladora eMMC. Programadores BGA atuais incompatíveis. "
+                          "Destino: moagem / recuperação de metais.",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Datasheet Samsung K524G2GACB-A050 (Tier 1 direto, Rev 1.3, nov 2009): "
+            "'MCP MEMORY' — '4,096M Bit for 4Gb NAND Flash' + '2Gbit Mobile DDR' ✓. "
+            "4Gbit NAND ÷8=512MB; 2Gbit mDDR1 ÷8=256MB. "
+            "Package: -A050 = 137-ball FBGA 10.5×13×1.2mm (pitch 0.8mm). "
+            "chip_type='MCP' → assess_profitability retorna 'NÃO RENTÁVEL' (engine.py). "
+            "Operador: descartar para moagem — sem controladora, sem liquidez B2B."
+        ),
+    },
+
+    # ── K524G2GACH ────────────────────────────────────────────────────────────
+    # Die revision H — mesmos specs do K524G2GACB (mesmo datasheet Samsung).
+    # Package evoluiu para -B050 (revisions H/I/J em diante).
+    # Fontes Tier 1:
+    #   • Apogeeweb (datasheet Samsung): K524G2GACH-B050 = "MCP 512MB Nand 256M MDDR400 FBGA" ✓
+    #   • Win-Source, Kynix, Jotrin, Censtry, Veswin: confirmam mesmos specs
+    #   • Base: datasheet Samsung K524G2GACB-A050 (família) — die revision ≠ specs
+    {
+        "pn": "K524G2GACH",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "MCP",
+            "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "MCP",
+            "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
+            "capacity":   "NAND 512MB + mDDR1 256MB",
+            "device":     "SUCATA — Raw MCP Samsung legado (feature phone ~2004-2009). "
+                          "Sem controladora eMMC. Programadores BGA atuais incompatíveis. "
+                          "Destino: moagem / recuperação de metais.",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Família K524G2G: die revision H (package -B050). "
+            "Apogeeweb (cita datasheet Samsung): K524G2GACH-B050 = '512MB NAND + 256M MDDR400 FBGA' ✓. "
+            "Specs idênticos ao K524G2GACB (datasheet Samsung K524G2GACB-A050, Rev 1.3). "
+            "Die revision (B→H) não altera capacidade — padrão Samsung. "
+            "chip_type='MCP' → assess_profitability retorna 'NÃO RENTÁVEL' (engine.py). "
+            "Operador: descartar para moagem — sem controladora, sem liquidez B2B."
+        ),
+    },
+
+    # ── K524G2GACI ────────────────────────────────────────────────────────────
+    # Die revision I — mesmos specs (NAND 512MB + mDDR1 256MB), package -B050.
+    # Fontes Tier 1:
+    #   • Samsung MemoryLink (portal oficial Samsung): K524G2GACI-B050 = "NAND based MCP" ✓
+    #   • Jotrin Electronics, Ariat-Tech: "512MB NAND + 256MB MDDR400 FBGA" ✓
+    #   • Base: datasheet Samsung K524G2GACB-A050 (família)
+    {
+        "pn": "K524G2GACI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "MCP",
+            "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "MCP",
+            "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
+            "capacity":   "NAND 512MB + mDDR1 256MB",
+            "device":     "SUCATA — Raw MCP Samsung legado (feature phone ~2004-2009). "
+                          "Sem controladora eMMC. Programadores BGA atuais incompatíveis. "
+                          "Destino: moagem / recuperação de metais.",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Família K524G2G: die revision I (package -B050). "
+            "Samsung MemoryLink (portal oficial Samsung): K524G2GACI-B050 = 'NAND based MCP' ✓. "
+            "Jotrin / Ariat-Tech: '512MB NAND + 256MB MDDR400 FBGA' ✓. "
+            "Specs idênticos ao K524G2GACB (datasheet Samsung K524G2GACB-A050, Rev 1.3). "
+            "Die revision (B→I) não altera capacidade — padrão Samsung. "
+            "chip_type='MCP' → assess_profitability retorna 'NÃO RENTÁVEL' (engine.py). "
+            "Operador: descartar para moagem — sem controladora, sem liquidez B2B."
         ),
     },
 
