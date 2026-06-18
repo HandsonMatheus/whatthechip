@@ -139,6 +139,23 @@ def _extract_gb(text: str) -> str:
     return val
 
 
+# "Gb" = gigabit (≠ "GB" gigabyte). Densidade DRAM por die.
+_GBIT_RE = re.compile(r'(\d+(?:\.\d+)?)\s*Gb\b')
+
+
+def _density_g(result: dict) -> str:
+    """Densidade DRAM por die em Gb (ex.: '2Gb = …' → '2'), para o rótulo da caixa
+    física de RAM (2G/4G/8G). Lê só de `dram_density` (campo canônico de densidade);
+    NÃO usa `capacity`, que vem em bytes — unidade errada para a caixa, que é rotulada
+    pela densidade impressa no chip. Agnóstico de marca: vale p/ qualquer fabricante
+    cujo decoder preencha dram_density em Gb."""
+    m = _GBIT_RE.search(result.get('dram_density') or '')
+    if not m:
+        return ''
+    v = m.group(1)
+    return v[:-2] if v.endswith('.0') else v
+
+
 def _compute_destination(result: dict) -> tuple:
     """
     Return (label, category) for the physical storage bin.
@@ -171,16 +188,19 @@ def _compute_destination(result: dict) -> tuple:
         return label, 'emmc'
 
     if 'lpddr' in ct or 'ddr' in ct or ct in ('ram', 'dram', 'sdram'):
-        iface = (result.get('interface') or '').upper()
-        cap   = _extract_gb(
-            result.get('capacity', '') or result.get('dram_density', '')
-        )
-        if iface and cap:
-            label = f"{iface}+{cap}GB"
-        elif iface:
-            label = iface
-        elif cap:
-            label = f"RAM {cap}GB"
+        # Caixa de RAM = GERAÇÃO + DENSIDADE, no formato impresso na caixa física,
+        # ex.: "DDR3+2G", "DDR4+4G", "LPDDR4+8G". A geração vem de subtype (ex.: "DDR3",
+        # "LPDDR4X") — campo específico para o tipo de RAM. `interface` é a config de
+        # barramento (ex.: "x16 @ 800MHz (1600MTPS)") e NÃO é usada como label da caixa.
+        # Densidade (Gb) vem de dram_density; capacity (bytes) é ignorada de propósito.
+        gen  = (result.get('subtype') or result.get('interface') or '').strip()
+        dens = _density_g(result)
+        if gen and dens:
+            label = f"{gen}+{dens}G"
+        elif dens:
+            label = f"{dens}G"
+        elif gen:
+            label = gen
         else:
             label = 'RAM'
         return label, 'lpddr'
@@ -365,9 +385,18 @@ def preview_chip(request, lot_pk):
     result  = classify(pn)
     has_cap = _has_capacity(result)
 
+    destination, dest_cat = _compute_destination(result)
+
+    # display_cap = detalhe da sub-linha. Para DRAM, a densidade já está no rótulo
+    # da caixa (2G/4G/8G); não mostrar a capacidade em bytes (256MB), que confunde
+    # o operador — a caixa de RAM é por densidade.
     if result.get('is_emcp'):
         parts = [p for p in [result.get('emcp_nand', ''), result.get('emcp_ram', '')] if p]
         display_cap = ' / '.join(parts)
+    elif dest_cat == 'lpddr':
+        # Geração + densidade já estão no rótulo da caixa (ex.: D3+2G). A sub-linha
+        # fica só com a marca — sem capacidade em bytes (256MB), que confunde.
+        display_cap = ''
     else:
         display_cap = result.get('capacity') or result.get('dram_density') or ''
 
@@ -375,8 +404,6 @@ def preview_chip(request, lot_pk):
         current_qty = InventoryEntry.objects.get(lot=lot, part_number=pn).quantity
     except InventoryEntry.DoesNotExist:
         current_qty = 0
-
-    destination, dest_cat = _compute_destination(result)
 
     # Gateway de triagem (3 etapas + typo). Substitui o cálculo solto de
     # profitable/prof_key — a regra de destino agora mora num lugar só.

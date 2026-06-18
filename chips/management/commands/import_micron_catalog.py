@@ -251,18 +251,21 @@ def _read_catalog_csv(filepath: str) -> dict[str, dict]:
             # Tratar como DRAM gera valores errados (ex: 544Gb → 68GB em vez de 64GB NAND).
             # A capacidade real é decodificada pelo engine via MIC_MCP_CAP (ChipFamily).
             if chip_type in ("eMCP", "uMCP"):
-                cap = ""
+                cap         = ""
+                density_gb  = ""   # densidade "por die" não se aplica a pacotes combinados
             else:
-                cap = _density_to_capacity(density)
+                cap         = _density_to_capacity(density)
+                density_gb  = cap  # DRAM: COMPONENT DENSITY é por die; cap = conversão por die
 
             info = {
-                "chip_type":   chip_type,
-                "subtype":     subtype,
+                "chip_type":    chip_type,
+                "subtype":      subtype,
                 "density_gbit": density,
-                "capacity":    cap,
-                "interface":   _build_interface(bus_width, speed, mts),
-                "notes":       _build_notes(row),
-                "part_status": part_stat,
+                "density_gb":   density_gb,
+                "capacity":     cap,
+                "interface":    _build_interface(bus_width, speed, mts),
+                "notes":        _build_notes(row),
+                "part_status":  part_stat,
             }
 
             if base_pn not in result:
@@ -497,6 +500,7 @@ class Command(BaseCommand):
                         update_fields.append(field)
 
                 _maybe_update("density_gbit", info["density_gbit"])
+                _maybe_update("density_gb",   info["density_gb"])
                 _maybe_update("capacity",     info["capacity"])
                 _maybe_update("interface",    info["interface"])
                 _maybe_update("notes",        info["notes"])
@@ -615,6 +619,7 @@ class Command(BaseCommand):
                                 chip_type=info["chip_type"],
                                 subtype=info["subtype"],
                                 density_gbit=info["density_gbit"],
+                                density_gb=info["density_gb"],
                                 capacity=info["capacity"],
                                 interface=info["interface"],
                                 notes=info["notes"],

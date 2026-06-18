@@ -135,6 +135,26 @@ class GatewayDestinationTests(TestCase):
         self.assertFalse(g['reject_by_generation'])
         self.assertEqual([s['status'] for s in g['steps']], ['pass', 'pass', 'fail'])
 
+    # ── Caixa física: DRAM = geração(LITERAL)+densidade; NAND por capacidade GB ──
+    def test_caixa_dram_geracao_mais_densidade(self):
+        from estoque.views import _compute_destination
+        # Geração aparece EXATA (DDR3L, não 'D3'); densidade do dram_density.
+        # capacity (256MB) é IGNORADA — caixa é por densidade impressa no chip.
+        self.assertEqual(_compute_destination(_result(
+            chip_type='RAM', subtype='DDR3', interface='DDR3L',
+            capacity='256MB', dram_density='2Gb = por die [✓]')), ('DDR3L+2G', 'lpddr'))
+        # Samsung DDR4 (sem confundir Gb com GB)
+        self.assertEqual(_compute_destination(_result(
+            chip_type='DDR4', interface='DDR4',
+            dram_density='4Gb = 512MB por die [✓]')), ('DDR4+4G', 'lpddr'))
+        # LPDDR4 sem interface → cai no subtype, literal
+        self.assertEqual(_compute_destination(_result(
+            chip_type='LPDDR4', subtype='LPDDR4',
+            dram_density='8Gb = 1GB por die [✓]')), ('LPDDR4+8G', 'lpddr'))
+        # NAND continua por capacidade em GB (não afetado)
+        self.assertEqual(_compute_destination(_result(
+            chip_type='eMMC', capacity='16GB')), ('EMMC16GB', 'emmc'))
+
 
 class AddChipHardBlockTests(TestCase):
     """add_chip: roteamento estoque / fila / reprovado / desconhecido."""

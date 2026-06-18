@@ -3423,6 +3423,550 @@ CORRECTIONS = [
     },
 
     # ══════════════════════════════════════════════════════════════════════════
+    # Samsung DDR3 / DDR3L PC DRAM — família K4B (~2010–2016, laptops/desktops)
+    # Capacidade = die individual: 1Gb=128MB, 2Gb=256MB, 4Gb=512MB, 8Gb=1GB.
+    # assess_profitability DDR3: ≥2Gb/die (256MB) → RENTÁVEL (config padrão).
+    # DDR3L (1.35V/1.5V dual): sufixos BY (x16), MY/MM (8Gb), BY (x8).
+    # DDR3  (1.5V):            sufixo BC (todas densidades).
+    # Não há família K4B na gramática — estes são os únicos registros no banco.
+    # Fontes primárias Tier 1:
+    #   • Samsung Semiconductor Global (título Google indexado "(X Gb)") ✓
+    #   • DS_K4B4G1646E_BY_M_Rev1_11-0.pdf — DDR3L E-die (download.semiconductor.samsung.com)
+    #   • DS_K4B4G1646E-BC_Rev101-0.pdf    — DDR3 E-die "4Gb E-die DDR3 SDRAM x16"
+    #   • harddiskdirect.com: K4B8G1646D-MYK0 "DDR3-1600 512Mx16 1.35V" ✓
+    #                         K4B8G1646D-MMK0 "DDR3-1600 512Mx16 Ind 1.35V" ✓
+    #   • Xecor: K4B8G1646D-MMMA "DDR3L SDRAM 8Gbit 512Mx16 1.35V/1.5V" ✓
+    #   • JLCPCB: K4B4G1646E-BYMA "DDR3L SDRAM 4Gbit 256Mx16 1.35V/1.5V" ✓
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K4B4G1646E-BYMA — 4Gb DDR3L x16 (512MB/die) ─────────────────────────
+    # Samsung Semiconductor Global: K4B4G1646E-BYMA(4 Gb) ✓
+    # BY = DDR3L 1.35V/1.5V dual voltage. E-die = die revision E.
+    {
+        "pn": "K4B4G1646E-BYMA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "capacity":   "512MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B4G1646E-BYMA(4 Gb) ✓. "
+            "JLCPCB (cita Samsung): 'DDR3L SDRAM 4Gbit 256Mx16 1.35V/1.5V' ✓. "
+            "BY = DDR3L dual voltage. Datasheet Samsung DS_K4B4G1646E_BY_M_Rev1_11-0.pdf ✓. "
+            "4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B4G1646E-BYK0 — 4Gb DDR3L x16 (512MB/die) ─────────────────────────
+    {
+        "pn": "K4B4G1646E-BYK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "capacity":   "512MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B4G1646E-BYK0(4 Gb) ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. E-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B4G1646D-BYK0 — 4Gb DDR3L x16 (512MB/die) ─────────────────────────
+    {
+        "pn": "K4B4G1646D-BYK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "capacity":   "512MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B4G1646D-BYK0(4 Gb) ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. D-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B4G1646D-BYNB — 4Gb DDR3L x16 (512MB/die) ─────────────────────────
+    # Variante com package NB (Narrow Body / SO-DIMM specific)
+    {
+        "pn": "K4B4G1646D-BYNB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "capacity":   "512MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global EMEA: K4B4G1646D-BYNB(4 Gb) ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. D-die, NB package. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B8G1646D-MYK0 — 8Gb DDR3L x16 (1GB/die) ───────────────────────────
+    # Samsung Semiconductor Global: K4B8G1646D-MYK0(8 Gb) ✓
+    # MY = DDR3L 1.35V. harddiskdirect: "DDR3-1600MHz 512Mx16 1.35V DRAM" ✓
+    {
+        "pn": "K4B8G1646D-MYK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 8Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 8Gb x16",
+            "capacity":   "1GB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B8G1646D-MYK0(8 Gb) ✓. "
+            "harddiskdirect: 'Samsung DDR3-1600MHz 512Mx16 (8GB) 1.35V DRAM' ✓. "
+            "MY = DDR3L 1.35V. D-die. 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+
+    # ── K4B8G1646D-MYMA — 8Gb DDR3L x16 (1GB/die) ───────────────────────────
+    {
+        "pn": "K4B8G1646D-MYMA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 8Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 8Gb x16",
+            "capacity":   "1GB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B8G1646D-MYMA(8 Gb) ✓. "
+            "MY = DDR3L 1.35V. D-die, MA package. 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+
+    # ── K4B8G1646D-MMK0 — 8Gb DDR3L Industrial x16 (1GB/die) ────────────────
+    # harddiskdirect: "DDR3-1600MHz 512Mx16 (8GB) Ind 1.35V DRAM" ✓
+    # MM = DDR3L Industrial grade (faixa temperatura estendida)
+    {
+        "pn": "K4B8G1646D-MMK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 8Gb x16 Industrial",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 8Gb x16 Industrial",
+            "capacity":   "1GB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B8G1646D-MMK0(8 Gb) ✓. "
+            "harddiskdirect: 'DDR3-1600MHz 512Mx16 Ind 1.35V DRAM' ✓. "
+            "MM = DDR3L Industrial (temp. estendida). 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+
+    # ── K4B8G1646D-MMMA — 8Gb DDR3L Industrial x16 (1GB/die) ────────────────
+    # Xecor: "DDR3L SDRAM 8Gbit 512Mx16 1.35V/1.5V" ✓
+    {
+        "pn": "K4B8G1646D-MMMA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 8Gb x16 Industrial",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 8Gb x16 Industrial",
+            "capacity":   "1GB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B8G1646D-MMMA(8 Gb) ✓. "
+            "Xecor (cita Samsung): 'DDR3L SDRAM 8Gbit 512Mx16 1.35V/1.5V' ✓. "
+            "MM = DDR3L Industrial. 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+
+    # ── K4B2G1646F-BYMA — 2Gb DDR3L x16 (256MB/die) ─────────────────────────
+    # Samsung Semiconductor Global: K4B2G1646F-BYMA(2 Gb) ✓
+    # 2Gbit ÷ 8 = 256MB. Exatamente no limiar DDR3 do assess_profitability.
+    {
+        "pn": "K4B2G1646F-BYMA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 2Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 2Gb x16",
+            "capacity":   "256MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B2G1646F-BYMA(2 Gb) ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. F-die. 2Gbit ÷ 8 = 256MB/die."
+        ),
+    },
+
+    # ── K4B2G1646F-BYNB — 2Gb DDR3L x16 (256MB/die) ─────────────────────────
+    {
+        "pn": "K4B2G1646F-BYNB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 2Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 2Gb x16",
+            "capacity":   "256MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B2G1646F-BYNB(2 Gb) ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. F-die, NB package. 2Gbit ÷ 8 = 256MB/die."
+        ),
+    },
+
+    # ── K4B4G0846D-BYK0 — 4Gb DDR3L x8 (512MB/die) ──────────────────────────
+    # Variante x8 (barramento 8-bit): mesmo die, metade dos pinos de dados.
+    # Samsung Semiconductor Global USA: K4B4G0846D-BYK0(4 Gb) ✓
+    {
+        "pn": "K4B4G0846D-BYK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "capacity":   "512MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global USA: K4B4G0846D-BYK0(4 Gb) ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. x8 bus width. D-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B4G0846D-BYNB — 4Gb DDR3L x8 (512MB/die) ──────────────────────────
+    {
+        "pn": "K4B4G0846D-BYNB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "capacity":   "512MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global EMEA: K4B4G0846D-BYNB(4 Gb) ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. x8 bus width. D-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B2G0846F-BYMA — 2Gb DDR3L x8 (256MB/die) ──────────────────────────
+    {
+        "pn": "K4B2G0846F-BYMA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 2Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 2Gb x8",
+            "capacity":   "256MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B2G0846F-BYMA(2 Gb) ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. x8 bus width. F-die. 2Gbit ÷ 8 = 256MB/die."
+        ),
+    },
+
+    # ── DDR3 (1.5V) Samsung PC DRAM ──────────────────────────────────────────
+    # Sufixo BC = DDR3 padrão 1.5V (não dual voltage).
+    # Confirmado: datasheet Samsung DS_K4B4G1646E-BC_Rev101-0.pdf
+    #   título = "4Gb E-die DDR3 SDRAM x16" (sem L = 1.5V only).
+
+    # ── K4B4G1646E-BCK0 — 4Gb DDR3 x16 (512MB/die) ──────────────────────────
+    {
+        "pn": "K4B4G1646E-BCK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "capacity":   "512MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B4G1646E-BCK0(4 Gb) ✓. "
+            "BC = DDR3 1.5V. Datasheet Samsung DS_K4B4G1646E-BC_Rev101-0.pdf "
+            "'4Gb E-die DDR3 SDRAM x16' ✓. E-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B4G1646E-BCMA — 4Gb DDR3 x16 (512MB/die) ──────────────────────────
+    {
+        "pn": "K4B4G1646E-BCMA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "capacity":   "512MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B4G1646E-BCMA(4 Gb) ✓. "
+            "BC = DDR3 1.5V (alldatasheet: 'DDR3 SDRAM 4Gbit 256Mx16 at 1.5V') ✓. "
+            "E-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B4G1646D-BCK0 — 4Gb DDR3 x16 (512MB/die) ──────────────────────────
+    {
+        "pn": "K4B4G1646D-BCK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "capacity":   "512MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B4G1646D-BCK0(4 Gb) ✓. "
+            "BC = DDR3 1.5V. D-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B4G1646D-BCNB — 4Gb DDR3 x16 (512MB/die) ──────────────────────────
+    {
+        "pn": "K4B4G1646D-BCNB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "capacity":   "512MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B4G1646D-BCNB(4 Gb) ✓. "
+            "BC = DDR3 1.5V. D-die, NB package. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B2G1646F-BCK0 — 2Gb DDR3 x16 (256MB/die) ──────────────────────────
+    {
+        "pn": "K4B2G1646F-BCK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 2Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 2Gb x16",
+            "capacity":   "256MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B2G1646F-BCK0(2 Gb) ✓. "
+            "BC = DDR3 1.5V. F-die. 2Gbit ÷ 8 = 256MB/die."
+        ),
+    },
+
+    # ── K4B2G1646F-BCMA — 2Gb DDR3 x16 (256MB/die) ──────────────────────────
+    {
+        "pn": "K4B2G1646F-BCMA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 2Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 2Gb x16",
+            "capacity":   "256MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B2G1646F-BCMA(2 Gb) ✓. "
+            "BC = DDR3 1.5V. F-die. 2Gbit ÷ 8 = 256MB/die."
+        ),
+    },
+
+    # ── K4B1G1646I-BCK0 — 1Gb DDR3 x16 (128MB/die — NÃO RENTÁVEL) ───────────
+    # Samsung Semiconductor Global: K4B1G1646I-BCK0(1 Gb) ✓
+    # 1Gbit = 128MB/die < 256MB limiar DDR3 → NÃO RENTÁVEL (assess_profitability)
+    {
+        "pn": "K4B1G1646I-BCK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 1Gb x16",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 1Gb x16",
+            "capacity":   "128MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global: K4B1G1646I-BCK0(1 Gb) ✓. "
+            "BC = DDR3 1.5V. I-die. 1Gbit ÷ 8 = 128MB/die. "
+            "128MB < 256MB limiar DDR3 → NÃO RENTÁVEL (assess_profitability)."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
     # Raw MCP legado — K5 family (Samsung feature phone era ~2004-2008)
     # chip_type = "MCP" (não eMCP — sem controladora eMMC)
     # assess_profitability retorna "NÃO RENTÁVEL" para chip_type="MCP" (engine.py)

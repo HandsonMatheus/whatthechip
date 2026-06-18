@@ -212,7 +212,19 @@
     Se o chip estiver fisicamente disponível, anote o PN completo do encapsulamento
     e tente novamente — o PN completo (ex: MT53B512M64D4TX) funciona diretamente.
   </div>
-  {% if result.in_review_queue %}
+  {% if result.fuzzy_suggestions %}
+  <div class="dc2-fuzzy" style="margin-top:12px;">
+    <div class="pr-header"><span>Código parecido no banco — você quis dizer?</span><span></span><span></span></div>
+    {% for sug in result.fuzzy_suggestions %}
+    <a class="pr-row dc2-fuzzy-item" href="#"
+       onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;">
+      <span class="pr-prefix">{{ sug }}</span>
+      <span class="pr-fab">Você quis dizer?</span>
+      <span class="pr-tipo"></span>
+    </a>
+    {% endfor %}
+  </div>
+  {% elif result.in_review_queue %}
   <div style="margin-top:8px;font-size:12px;color:#888;">
     ✓ Enviado para a fila de revisão noturna
   </div>
@@ -280,7 +292,7 @@
     <div class="pr-header"><span>Sugestões</span><span></span><span></span></div>
     {% for pn in result.fuzzy_suggestions %}
     <a class="pr-row dc2-fuzzy-item" href="#"
-       onclick="document.getElementById('big-search-input').value='{{ pn|escapejs }}';triggerSearch('{{ pn|escapejs }}');return false;">
+       onclick="document.getElementById('pn-input').value='{{ pn|escapejs }}';triggerSearch('{{ pn|escapejs }}');return false;">
       <span class="pr-prefix">{{ pn }}</span>
       <span class="pr-fab">Você quis dizer?</span>
       <span class="pr-tipo"></span>

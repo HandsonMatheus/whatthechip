@@ -48,9 +48,31 @@ COMMON_CONFUSIONS = [
     ("O", "0"), ("I", "1"), ("B", "8"), ("V", "Y"), ("Z", "2"), ("S", "5"),
 ]
 
+# ── Matriz de confusão visual — chips IC gravados a laser ──────────────────────
+# Pares de caracteres visualmente ambíguos em silkscreen/laser de chips.
+# Custo < 1.0 = confusão de leitura mais provável que substituição aleatória.
+# Custo padrão para pares não listados = 1.0 (substituição arbitrária).
+# Uso: _visual_edit_distance prioriza esses pares na ordenação fuzzy, garantindo
+# que sugestões visualmente prováveis apareçam antes de vizinhos alfabéticos.
+_CHIP_VISUAL_COST: dict = {
+    frozenset({'O', '0'}): 0.1,   # letra O vs dígito zero — confusão mais comum
+    frozenset({'O', 'Q'}): 0.1,   # Q tem cauda pequena; em laser de baixa resolução parece O
+    frozenset({'Q', '0'}): 0.1,   # Q vs zero (mesma família circular)
+    frozenset({'1', 'I'}): 0.1,   # um vs I maiúsculo
+    frozenset({'B', '8'}): 0.1,   # B vs 8 — clássico do mercado de reciclagem
+    frozenset({'L', '1'}): 0.2,   # L vs 1 em fontes sem serifa
+    frozenset({'S', '5'}): 0.2,   # S vs 5
+    frozenset({'Z', '2'}): 0.2,   # Z vs 2
+    frozenset({'M', 'W'}): 0.2,   # M vs W (espelhado)
+    frozenset({'U', 'V'}): 0.3,   # U vs V
+    frozenset({'C', 'G'}): 0.3,   # C vs G (arco quase fechado)
+    frozenset({'D', '0'}): 0.3,   # D vs zero em fontes monospace
+    frozenset({'K', 'X'}): 0.4,   # K vs X em fontes comprimidas
+}
+
 
 def _edit_distance(a: str, b: str) -> int:
-    """Distância de Levenshtein."""
+    """Distância de Levenshtein inteira (usada em paths não-FBGA)."""
     if len(a) > len(b):
         a, b = b, a
     distances = range(len(a) + 1)
@@ -64,14 +86,51 @@ def _edit_distance(a: str, b: str) -> int:
     return distances[-1]
 
 
+def _visual_edit_distance(a: str, b: str) -> float:
+    """Distância de edição ponderada por confusão visual em chips IC.
+
+    Similar ao Levenshtein padrão, mas substituições entre caracteres visualmente
+    ambíguos em silkscreen/laser de chips custam < 1.0 (ver _CHIP_VISUAL_COST).
+    Inserções e deleções sempre custam 1.0 — diferença de comprimento é objetiva.
+
+    Resultado: candidatos visualmente prováveis (ex: O↔Q, B↔8, O↔0) ordenam-se
+    ANTES de vizinhos alfabéticos aleatórios, mesmo com a mesma distância inteira.
+
+    Exemplos para D9SGO:
+        D9SGQ → 0.1  (O→Q, confusão visual — aparece primeiro)
+        D9SG0 → 0.1  (O→0, confusão visual — aparece primeiro)
+        D9SGB → 1.0  (O→B, sem confusão especial)
+        D9SGG → 1.0  (O→G, sem confusão especial)
+    """
+    if a == b:
+        return 0.0
+    if len(a) > len(b):
+        a, b = b, a
+    prev = [float(i) for i in range(len(a) + 1)]
+    for c2 in b:
+        curr = [prev[0] + 1.0]
+        for j, c1 in enumerate(a):
+            if c1 == c2:
+                sub_cost = 0.0
+            else:
+                sub_cost = _CHIP_VISUAL_COST.get(frozenset({c1, c2}), 1.0)
+            curr.append(min(
+                curr[-1] + 1.0,       # inserção
+                prev[j + 1] + 1.0,   # deleção
+                prev[j] + sub_cost,  # substituição (visual)
+            ))
+        prev = curr
+    return prev[-1]
+
+
 def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
-    """Retorna KnownParts parecidos por distância de edição."""
+    """Retorna KnownParts parecidos — ordena por distância visual (confusões comuns primeiro)."""
     all_parts = KnownPart.objects.filter(status="enriched").values_list("part_number", flat=True)
     matches = []
     for candidate in all_parts:
         if abs(len(candidate) - len(pn)) > threshold:
             continue
-        dist = _edit_distance(pn, candidate)
+        dist = _visual_edit_distance(pn, candidate)
         if dist <= threshold:
             matches.append((dist, candidate))
     matches.sort()
@@ -84,6 +143,37 @@ def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
         for p in KnownPart.objects.filter(part_number__in=top_pns).select_related("brand", "family")
     }
     return [parts_by_pn[c] for _, c in matches[:5] if c in parts_by_pn]
+
+
+def _fuzzy_fbga_candidates(pn: str, threshold: int = 2) -> list:
+    """Retorna códigos FBGA parecidos — ordena por distância visual (confusões comuns primeiro).
+
+    Diferente de _fuzzy_candidates (que busca por part_number), esta função
+    busca pelo campo fbga_code — necessário porque o operador digitou o código
+    gravado a laser (ex: D9SGO) e queremos sugerir outros FBGAs próximos
+    (ex: D9SGQ), não os PNs completos Micron (ex: MT52L...).
+
+    Usa _visual_edit_distance: D9SGQ (O→Q, custo 0.1) ordena antes de D9SGB
+    (O→B, custo 1.0), mesmo que ambos tenham Levenshtein inteiro = 1.
+
+    Retorna lista de strings (os códigos FBGA), não objetos KnownPart.
+    """
+    all_fbga = (
+        KnownPart.objects
+        .filter(status="enriched")
+        .exclude(fbga_code__isnull=True)
+        .exclude(fbga_code="")
+        .values_list("fbga_code", flat=True)
+    )
+    matches = []
+    for candidate in all_fbga:
+        if abs(len(candidate) - len(pn)) > threshold:
+            continue
+        dist = _visual_edit_distance(pn, candidate)
+        if dist <= threshold:
+            matches.append((dist, candidate))
+    matches.sort()
+    return [c for _, c in matches[:5]]
 
 
 # ── Mapa de decodificação ──────────────────────────────────────────────────────
@@ -612,7 +702,11 @@ def _result_from_known(pn: str, known, fam) -> dict:
             if known.capacity:
                 r["capacity"] = _clean(known.capacity)
             if known.density_gbit:
-                r["dram_density"] = f"{known.density_gbit} = {known.density_gb} por die [✓]"
+                _dgb = known.density_gb
+                r["dram_density"] = (
+                    f"{known.density_gbit} = {_dgb} por die [✓]"
+                    if _dgb else f"{known.density_gbit} por die [✓]"
+                )
         if known.device:
             r["device"] = known.device
 
@@ -1507,7 +1601,15 @@ def classify(pn_raw: str) -> dict:
                     "interface":          known_fbga.interface,
                     "family_prefix":      "",
                     "family_undocumented": False,
-                    "dram_density":       None,
+                    # Lê density_gbit/density_gb do KnownPart — preenchidos pelo
+                    # import_micron_catalog. Sem família não há decode posicional,
+                    # então esses campos são a única fonte de densidade.
+                    "dram_density":       (
+                        f"{known_fbga.density_gbit} = {known_fbga.density_gb} por die [✓]"
+                        if known_fbga.density_gbit and known_fbga.density_gb else
+                        f"{known_fbga.density_gbit} por die [✓]"
+                        if known_fbga.density_gbit else None
+                    ),
                     "suffix_note":        None,
                 }
             # Expõe o PN completo separado do código FBGA digitado
@@ -1536,7 +1638,13 @@ def classify(pn_raw: str) -> dict:
                     "tip": known_fbga.notes or "", "reasoning": [], "from_web": False,
                     "doc_url": None, "remarked_flag": False, "fuzzy_suggestions": [],
                     "interface": known_fbga.interface, "family_prefix": "",
-                    "family_undocumented": False, "dram_density": None, "suffix_note": None,
+                    "family_undocumented": False, "suffix_note": None,
+                    "dram_density": (
+                        f"{known_fbga.density_gbit} = {known_fbga.density_gb} por die [✓]"
+                        if known_fbga.density_gbit and known_fbga.density_gb else
+                        f"{known_fbga.density_gbit} por die [✓]"
+                        if known_fbga.density_gbit else None
+                    ),
                 }
                 result["fbga_input"] = pn
                 result["pn_full"]    = known_fbga.part_number
@@ -1554,6 +1662,10 @@ def classify(pn_raw: str) -> dict:
             except Exception:
                 logger.exception("Erro ao registrar FBGA desconhecido PN=%s", pn)
             _log_search(pn_raw, found=False, source_used="fbga_unknown")
+            # Busca FBGAs próximos para ajudar o operador a corrigir o código.
+            # Confusões visuais comuns: O/0, Q/0, B/8, M/W — distância ≤ 2 captura
+            # praticamente todos os erros de 1 caractere nesse espaço de 5 chars.
+            fbga_fuzzy = _fuzzy_fbga_candidates(pn)
             return {
                 "pn":              pn,
                 "known":           False,
@@ -1562,7 +1674,7 @@ def classify(pn_raw: str) -> dict:
                 "from_web":        False,
                 "gemini_found":    False,
                 "gemini_searched": False,
-                "fuzzy_suggestions": [],
+                "fuzzy_suggestions": fbga_fuzzy,
                 "in_review_queue": True,
             }
 
