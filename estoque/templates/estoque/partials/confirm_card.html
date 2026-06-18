@@ -65,6 +65,9 @@
       <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">DESCARTE</span>
       <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;">REPROVADO</div>
       <div style="font-size:14px;opacity:0.92;">Não rentável · resíduo eletrônico</div>
+      {% if result.chip_type or result.brand or display_cap %}
+      <div style="font-size:14px;opacity:0.92;">{{ result.chip_type }}{% if result.chip_type and result.brand %} · {% endif %}{{ result.brand }}{% if display_cap and result.chip_type or display_cap and result.brand %} · {% endif %}{{ display_cap }}</div>
+      {% endif %}
     </div>
   {% elif gateway_dest == 'fila' %}
     <div style="padding:24px 26px;background:#ff832b;color:#161616;display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
