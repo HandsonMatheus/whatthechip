@@ -1,94 +1,111 @@
-{% if has_cap %}
-{# ── Chip identificado ─────────────────────────────────────── #}
-<div class="est-confirm est-confirm--ok" data-debug="{{ result_json }}">
+{% comment %}
+  Card de triagem (Carbon v2). Root .est-confirm + data-debug (contrato JS:
+  syncConfirmPn procura #confirm-area .est-confirm; o 📋 procura [data-debug]).
+  Destinos (gateway_dest): aprovado | fila | reprovado | desconhecido.
+{% endcomment %}
+<div class="est-confirm est-confirm--{{ gateway_dest }}" data-debug="{{ result_json }}" style="margin-top:28px;">
 
-  {# ── Cabeçalho compacto ──────────────────────────────────── #}
-  <div class="est-confirm-head">
-    <span class="est-confirm-status est-confirm-status--ok">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:3px;vertical-align:-1px">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
-      Chip identificado
-    </span>
-    <span class="est-confirm-pn" id="confirm-pn-display">{{ pn }}</span>
-  </div>
-
-  {# ── DESTINO — informação principal ─────────────────────── #}
-  <div class="est-dest est-dest--{{ destination_cat }}">
-    <div class="est-dest__label">{{ destination }}</div>
-    <div class="est-dest__meta">
-      {{ result.chip_type }}{% if result.subtype %} · {{ result.subtype }}{% endif %}
-      {% if result.brand %} · {{ result.brand }}{% endif %}
-      {% if display_cap %} · {{ display_cap }}{% endif %}
-    </div>
-  </div>
-
-  {# ── Meta: estoque · confiança · rentabilidade ───────────── #}
-  <div class="est-meta-row">
-
-    <span class="est-meta-pill {% if current_qty > 0 %}est-meta-pill--warn{% else %}est-meta-pill--neutral{% endif %}">
-      {% if current_qty > 0 %}<strong>{{ current_qty }}</strong>&nbsp;em estoque
-      {% else %}0 em estoque{% endif %}
-    </span>
-
-    {% with conf=result.confidence %}
-    <span class="est-meta-pill
-      {% if conf == 'confirmed' or conf == 'manual' or conf == 'distributor' %}est-meta-pill--ok
-      {% elif conf == 'ai_high' %}est-meta-pill--info
-      {% elif conf == 'ai_medium' or conf == 'ai_low' %}est-meta-pill--warn
-      {% else %}est-meta-pill--danger{% endif %}">
-      {% if conf == 'confirmed' %}● Confirmado
-      {% elif conf == 'manual' %}● Manual
-      {% elif conf == 'distributor' %}● Distribuidor
-      {% elif conf == 'ai_high' %}● IA alta
-      {% elif conf == 'ai_medium' %}● IA média
-      {% elif conf == 'ai_low' %}⚠ IA baixa
-      {% else %}⚠ Só gramática{% endif %}
-    </span>
-    {% endwith %}
-
-    {% if profitable and profitable != 'INDETERMINADO' %}
-    <span class="est-meta-pill {% if profitable_key == 'rentavel' %}est-meta-pill--ok{% else %}est-meta-pill--danger{% endif %}"
-          style="display:inline-flex;align-items:center;gap:6px;">
-      {% if profitable_key == 'rentavel' %}
-        ✓
-      {% else %}
-        <span class="est-danger-led"></span>
-      {% endif %}
-      {{ profitable }}
-    </span>
+  {# ── Header: tag de status + PN ──────────────────────────────── #}
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+    {% if gateway_dest == 'aprovado' %}
+      <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#defbe6;color:#198038;white-space:nowrap;">✓ APROVADO</span>
+    {% elif gateway_dest == 'fila' %}
+      <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#fff8e1;color:#b28600;white-space:nowrap;">⏳ EM FILA</span>
+    {% elif gateway_dest == 'reprovado' %}
+      <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#fff1f1;color:#da1e28;white-space:nowrap;">✗ REPROVADO</span>
+    {% else %}
+      <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#f4f4f4;color:#6f6f6f;white-space:nowrap;">? NÃO IDENTIFICADO</span>
     {% endif %}
-
+    <span id="confirm-pn-display" style="font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:#0f62fe;">{{ pn }}</span>
   </div>
 
-  {# ── Aviso PN não confirmado + sugestões fuzzy ──────────── #}
-  {% if result.pn_not_in_db and result.fuzzy_suggestions %}
-  <div style="margin-bottom:var(--s4);padding:10px 14px;background:#fff8e1;border:1px solid #f0c040;border-left:3px solid #e6a817;">
-    <div style="font-size:11px;font-weight:700;color:#b8600a;margin-bottom:8px;letter-spacing:0.04em;text-transform:uppercase;">
-      ⚠ PN não confirmado — Você quis dizer?
+  {# ── Gates (3 círculos com linha de conexão) ─────────────────── #}
+  <div style="position:relative;margin:4px 0 24px;">
+    <div style="position:absolute;top:17px;left:16.66%;right:16.66%;height:2px;background:#e0e0e0;"></div>
+    <div style="position:relative;display:flex;">
+      {% for step in gateway_steps %}
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;">
+        {% if step.status == 'pass' %}
+          <div style="width:36px;height:36px;border-radius:50%;background:#198038;color:#fff;border:2px solid #198038;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;position:relative;z-index:1;">✓</div>
+        {% elif step.status == 'fail' %}
+          <div style="width:36px;height:36px;border-radius:50%;background:#da1e28;color:#fff;border:2px solid #da1e28;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;position:relative;z-index:1;">✗</div>
+        {% else %}
+          <div style="width:36px;height:36px;border-radius:50%;background:#fff;color:#a8a8a8;border:2px solid #e0e0e0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;position:relative;z-index:1;font-family:'IBM Plex Mono',monospace;">{{ forloop.counter }}</div>
+        {% endif %}
+        <div style="font-size:13px;font-weight:600;color:#393939;">{{ step.label }}</div>
+        {% if step.status == 'pass' %}
+          <div style="font-size:12px;font-weight:600;color:#198038;">sim</div>
+        {% elif step.status == 'fail' %}
+          <div style="font-size:12px;font-weight:600;color:#da1e28;">não</div>
+        {% else %}
+          <div style="font-size:12px;font-weight:600;color:#a8a8a8;">—</div>
+        {% endif %}
+      </div>
+      {% endfor %}
     </div>
-    {% for s in result.fuzzy_suggestions %}
+  </div>
+
+  {# ── Painel de destino ───────────────────────────────────────── #}
+  {% if gateway_dest == 'aprovado' %}
+    {% if destination_cat == 'emcp' %}{% with pbg='#da1e28' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span>
+      <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>
+      {% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}
+    </div>{% endwith %}
+    {% else %}
+      {% if destination_cat == 'umcp' %}{% with pbg='#ff7eb6' pfg='#161616' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% elif destination_cat == 'ufs' %}{% with pbg='#f1c21b' pfg='#161616' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% elif destination_cat == 'emmc' %}{% with pbg='#42be65' pfg='#161616' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% elif destination_cat == 'nand' %}{% with pbg='#8a3ffc' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% else %}{% with pbg='#4589ff' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% endif %}
+    {% endif %}
+  {% elif gateway_dest == 'reprovado' %}
+    <div style="padding:24px 26px;background:#750e13;color:#ffb3b8;display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">DESCARTE</span>
+      <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;">REPROVADO</div>
+      <div style="font-size:14px;opacity:0.92;">Não rentável · resíduo eletrônico</div>
+    </div>
+  {% elif gateway_dest == 'fila' %}
+    <div style="padding:24px 26px;background:#ff832b;color:#161616;display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CONFERÊNCIA</span>
+      <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;">FILA</div>
+      <div style="font-size:14px;opacity:0.92;">Aguarda revisão do gestor · reconhecido por gramática</div>
+    </div>
+  {% else %}
+    <div style="padding:24px 26px;background:#f4f4f4;color:#161616;border:2px dashed #c6c6c6;display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">NÃO IDENTIFICADO</span>
+      <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;">?</div>
+      <div style="font-size:14px;opacity:0.92;">Specs ausentes ou incompletas</div>
+    </div>
+  {% endif %}
+
+  {# ── Sugestão de digitação (fuzzy) ───────────────────────────── #}
+  {% if gateway.typo.has %}
+  <div style="margin-top:16px;background:#fff8e1;border:1px solid #f1c21b;border-left:4px solid #ff832b;padding:14px 16px;">
+    <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#b28600;margin-bottom:10px;letter-spacing:0.02em;">
+      ⚠ CONFIRA A DIGITAÇÃO — VOCÊ QUIS DIZER?
+    </div>
+    {% for s in gateway.typo.suggestions %}
     <a href="#"
-       style="display:block;padding:5px 10px;margin-bottom:3px;background:#fff;border:1px solid #e0c060;font-size:13px;font-weight:700;color:#333;text-decoration:none;font-family:var(--font-mono);letter-spacing:0.04em;"
-       onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;">
-      {{ s }}
-      <span style="font-family:var(--font);font-size:11px;color:#b8600a;font-weight:400;margin-left:8px;">usar este →</span>
+       onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
+       style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;background:#fff;border:1px solid #f1c21b;padding:14px 16px;margin-bottom:6px;cursor:pointer;text-align:left;text-decoration:none;">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;color:#161616;">{{ s }}</span>
+      <span style="font-size:14px;font-weight:600;color:#b28600;white-space:nowrap;">usar este →</span>
     </a>
     {% endfor %}
   </div>
   {% endif %}
 
-  {# ── Form de adição ──────────────────────────────────────── #}
+  {# ── Ações ───────────────────────────────────────────────────── #}
   <form class="est-confirm-form"
         hx-post="{% url 'estoque:add' lot.pk %}"
-        hx-target="#table-body-wrap"
+        hx-target="{% if gateway_dest == 'aprovado' %}#table-body-wrap{% else %}#confirm-area{% endif %}"
         hx-swap="innerHTML"
-        hx-on::after-request="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('confirm-area').innerHTML='';">
-
+        {% if gateway_dest == 'aprovado' %}hx-on::after-request="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('confirm-area').innerHTML='';"{% endif %}>
     {% csrf_token %}
     <input type="hidden" name="pn"                    value="{{ pn }}">
-    <input type="hidden" name="has_cap"               value="true">
+    <input type="hidden" name="has_cap"               value="{{ has_cap|yesno:'true,false' }}">
     <input type="hidden" name="chip_type"             value="{{ result.chip_type }}">
     <input type="hidden" name="brand"                 value="{{ result.brand }}">
     <input type="hidden" name="capacity"              value="{{ result.capacity }}">
@@ -98,86 +115,38 @@
     <input type="hidden" name="interface"             value="{{ result.interface }}">
     <input type="hidden" name="classification_source" value="{{ result.classification_source }}">
 
-    <div class="est-confirm-actions">
-      <div class="est-qty-wrap">
-        <label class="est-label" for="confirm-qty">Qtd.</label>
-        <input class="est-input est-input--qty" type="number" id="confirm-qty"
-               name="qty" value="1" min="1" max="9999">
+    <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:22px;">
+      {% if gateway_dest != 'desconhecido' %}
+      <div>
+        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:7px;">QTD.</label>
+        <div style="display:flex;border:1px solid #8d8d8d;height:52px;background:#f4f4f4;">
+          <input id="confirm-qty" name="qty" type="number" value="1" min="1" max="9999" inputmode="numeric"
+                 style="width:58px;border:none;background:transparent;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:18px;color:#161616;" />
+          <div style="display:flex;flex-direction:column;border-left:1px solid #c6c6c6;">
+            <button type="button" onclick="document.getElementById('confirm-qty').stepUp()" style="flex:1;width:34px;border:none;border-bottom:1px solid #c6c6c6;background:#fff;cursor:pointer;color:#161616;font-size:10px;">▲</button>
+            <button type="button" onclick="document.getElementById('confirm-qty').stepDown()" style="flex:1;width:34px;border:none;background:#fff;cursor:pointer;color:#161616;font-size:10px;">▼</button>
+          </div>
+        </div>
       </div>
-      {% if result.classification_source == 'banco de dados' or result.confidence == 'confirmed' or result.confidence == 'manual' %}
-      <button class="est-btn est-btn--primary est-btn--lg" type="submit">+ Adicionar ao estoque</button>
-      {% else %}
-      <button class="est-btn est-btn--lg" type="submit"
-              style="background:#e6a817;color:#3a2a00;font-weight:700;"
-              title="PN não confirmado no banco — vai para a fila de conferência do gestor, não entra no estoque">
-        ⏳ Enviar para conferência
-      </button>
       {% endif %}
-      <button class="est-btn est-btn--cancel est-btn--lg" type="button"
-              onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">
-        Cancelar
-      </button>
-      <button class="est-btn est-btn--debug est-debug-btn" type="button"
-              title="Copia diagnóstico completo para o clipboard">📋</button>
+
+      {% if gateway_dest == 'aprovado' %}
+        <button type="submit" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#0f62fe;color:#fff;">+ Adicionar ao estoque</button>
+      {% elif gateway_dest == 'fila' %}
+        <button type="submit" title="PN não confirmado — vai para a fila de conferência do gestor" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#ff832b;color:#161616;">⏳ Enviar para conferência</button>
+      {% elif gateway_dest == 'reprovado' %}
+        <button type="submit" title="Chip não rentável — registra o descarte para auditoria" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#da1e28;color:#fff;">✗ Registrar descarte</button>
+      {% else %}
+        <button type="submit" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#ff832b;color:#161616;">Registrar como desconhecido</button>
+      {% endif %}
+
+      <button type="button"
+              onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();"
+              style="height:52px;padding:0 22px;background:#fff;border:1px solid #161616;color:#161616;font-size:15px;font-weight:600;cursor:pointer;">Cancelar</button>
+
+      <button type="button" class="est-debug-btn" title="Copiar diagnóstico"
+              style="margin-left:auto;width:52px;height:52px;background:#fff;border:1px solid #8d8d8d;cursor:pointer;font-size:18px;">📋</button>
     </div>
   </form>
 
 </div>
-
-{% else %}
-{# ── Chip não identificado ─────────────────────────────────── #}
-<div class="est-confirm est-confirm--unknown">
-
-  <div class="est-confirm-head">
-    <span class="est-confirm-status est-confirm-status--unknown">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:3px;vertical-align:-1px">
-        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
-      Não identificado
-    </span>
-    <span class="est-confirm-pn">{{ pn }}</span>
-  </div>
-
-  <p class="est-confirm-hint">
-    O motor não encontrou capacidade para este PN.
-    Ele será registrado na fila de chips desconhecidos para análise futura.
-  </p>
-
-  {# ── Sugestões fuzzy para PN não identificado ─────────────── #}
-  {% if result.fuzzy_suggestions %}
-  <div style="margin-bottom:var(--s4);padding:10px 14px;background:#fff8e1;border:1px solid #f0c040;border-left:3px solid #e6a817;">
-    <div style="font-size:11px;font-weight:700;color:#b8600a;margin-bottom:8px;letter-spacing:0.04em;text-transform:uppercase;">
-      🔍 Confira a digitação — Você quis dizer?
-    </div>
-    {% for s in result.fuzzy_suggestions %}
-    <a href="#"
-       style="display:block;padding:5px 10px;margin-bottom:3px;background:#fff;border:1px solid #e0c060;font-size:13px;font-weight:700;color:#333;text-decoration:none;font-family:var(--font-mono);letter-spacing:0.04em;"
-       onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;">
-      {{ s }}
-      <span style="font-family:var(--font);font-size:11px;color:#b8600a;font-weight:400;margin-left:8px;">usar este →</span>
-    </a>
-    {% endfor %}
-  </div>
-  {% endif %}
-
-  <form class="est-confirm-form"
-        hx-post="{% url 'estoque:add' lot.pk %}"
-        hx-target="#confirm-area"
-        hx-swap="innerHTML">
-
-    {% csrf_token %}
-    <input type="hidden" name="pn"      value="{{ pn }}">
-    <input type="hidden" name="has_cap" value="false">
-
-    <div class="est-confirm-actions">
-      <button class="est-btn est-btn--warning est-btn--lg" type="submit">Registrar como desconhecido</button>
-      <button class="est-btn est-btn--cancel est-btn--lg" type="button"
-              onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">
-        Cancelar
-      </button>
-    </div>
-  </form>
-</div>
-{% endif %}

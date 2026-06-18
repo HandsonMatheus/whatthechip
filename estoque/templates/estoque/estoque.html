@@ -37,8 +37,7 @@
   margin-bottom: var(--s5);
 }
 
-/* Reduz padding do painel principal para compactar */
-.pnl-main { padding: var(--s5) var(--s6) var(--s8) !important; }
+/* Layout do painel (topbar horizontal + container ~1200px) vive em base_estoque.html */
 
 .est-card-title {
   font-size: 12px;
@@ -284,6 +283,80 @@
 [data-theme="dark"] .est-meta-pill--info    { background: #001141; color: #78a9ff; }
 [data-theme="dark"] .est-meta-pill--warn    { background: #2d2200; color: #f1c21b; }
 [data-theme="dark"] .est-meta-pill--danger  { background: #2d0709; color: #ff8389; }
+
+/* ── Gateway de triagem: barra de 3 etapas ───────────────────── */
+.est-steps {
+  display: flex;
+  gap: 4px;
+  margin-bottom: var(--s4);
+}
+.est-step {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;                 /* permite o ellipsis do label, evita overflow */
+  padding: 6px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.est-step__num { font-size: 9px; opacity: .55; }
+.est-step__ico { font-size: 11px; }
+.est-step__lbl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.est-step--pass { background: #defbe6; color: #0e6027; }
+.est-step--fail { background: #fff1f1; color: #da1e28; }
+.est-step--skip { background: var(--surface-2); color: var(--text-helper); }
+[data-theme="dark"] .est-step--pass { background: #022d0d; color: #42be65; }
+[data-theme="dark"] .est-step--fail { background: #2d0709; color: #ff8389; }
+[data-theme="dark"] .est-step--skip { background: #2a2a2a; color: var(--text-helper); }
+
+/* Variantes do card por destino (só a borda esquerda — fundo herda a base) */
+.est-confirm--aprovado     { border-left-color: var(--success); }
+.est-confirm--fila         { border-left-color: #ff832b; }
+.est-confirm--reprovado    { border-left-color: #da1e28; }
+.est-confirm--desconhecido { border-left-color: var(--text-helper); }
+
+/* Destinos extras (fila/reprovado) + rótulo de palavra (menor que o código mono) */
+.est-dest--fila      { background: #ff832b; color: #231c00; }
+.est-dest--reprovado { background: #750e13; color: #ffd7d9; }
+.est-dest__label--word { font-size: 30px; letter-spacing: 0.02em; }
+
+/* Banner de digitação (paralelo às etapas) */
+.est-typo {
+  margin: var(--s5) 0;
+  padding: var(--s5);
+  background: #fff8e1;
+  border: 2px solid #f1c21b;
+  border-left: 10px solid #ff832b;     /* barra de destaque laranja */
+  box-shadow: var(--shadow-md);
+}
+.est-typo__title {
+  display: flex; align-items: center; gap: var(--s2);
+  font-size: 16px; font-weight: 700; color: #8a3800;
+  margin-bottom: var(--s4); letter-spacing: 0.03em; text-transform: uppercase;
+}
+.est-typo__item {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: 12px 14px; margin-bottom: var(--s2);
+  background: var(--surface); border: 2px solid #f1c21b;
+  font-size: 18px; font-weight: 700; color: var(--text-primary);
+  text-decoration: none; font-family: var(--font-mono); letter-spacing: 0.04em;
+}
+.est-typo__item:hover { background: #fff8e1; border-color: #ff832b; }
+.est-typo__item:last-child { margin-bottom: 0; }
+.est-typo__cta {
+  font-family: var(--font); font-size: 14px; color: #8a3800;
+  font-weight: 600; margin-left: auto;
+}
+[data-theme="dark"] .est-typo { background: #2d2200; border-color: #5c4a00; }
+[data-theme="dark"] .est-typo__item { background: #1f1a00; border-color: #5c4a00; }
+
+/* Botão de descarte (destino reprovado) */
+.est-btn--reject { background: #da1e28; color: #fff; font-weight: 700; }
+.est-btn--reject:hover  { background: #b81922; }
+.est-btn--reject:active { background: #a2191f; }
 
 /* ── Outros elementos do card ────────────────────────────────── */
 .est-confirm-hint {
@@ -764,13 +837,23 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
 
 /* ── Botão Cancelar ──────────────────────────────────────────── */
 .est-btn--cancel {
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--border-strong);   /* preto, sem fundo */
+  font-weight: 600;
+}
+.est-btn--cancel:hover  { background: var(--surface-2); color: var(--text-primary); }
+.est-btn--cancel:active { background: var(--surface-3); }
+
+/* Registrar como desconhecido — laranja sólido (ação distinta do Cancelar) */
+.est-btn--orange {
   background: #ff832b;
   color: #161616;
   border: none;
   font-weight: 700;
 }
-.est-btn--cancel:hover  { background: #eb6200; color: #161616; }
-.est-btn--cancel:active { background: #ba4e00; }
+.est-btn--orange:hover  { background: #eb6200; }
+.est-btn--orange:active { background: #ba4e00; }
 
 /* ── Dark mode ───────────────────────────────────────────────── */
 [data-theme="dark"] .est-card,
@@ -843,168 +926,213 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
   margin-bottom: var(--s5);
 }
 [data-theme="dark"] .est-lot-closed-banner { background: #2d2200; color: #f1c21b; border-color: #f1c21b; }
+/* ═══════════════════════════════════════════════════════════════
+   BANCADA — elementos ampliados (toque · tablet · idoso).
+   Camada de acessibilidade: sobrepõe os tamanhos-base acima sem
+   reescrevê-los. Tema é claro fixo (Carbon White) pelo base_estoque.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Cabeçalho do lote */
+.est-lot-breadcrumb, .est-lot-back, .est-lot-bc-current { font-size: 14px; }
+.est-page-title { font-size: 28px; }
+.est-lot-desc   { font-size: 15px; }
+.est-lot-badge  { font-size: 12px; padding: 3px 10px; }
+
+/* Card "Adicionar chip" — sem caixa (limpo), só respiro */
+.est-card       { border: none; background: transparent; padding: 0; margin-bottom: var(--s9); }
+.est-card-title { font-size: 14px; }
+.est-label      { font-size: 13px; }
+.est-helper, .pin-actions-hint { font-size: 14px; }
+
+/* Inputs — o campo de PN é o protagonista da bancada */
+.est-input      { height: 56px; font-size: 17px; }
+.est-input--pn  { height: 72px; font-size: 26px; }
+.est-input--qty { width: 100px; height: 60px; font-size: 20px; }
+.est-select     { height: 56px; font-size: 17px; }
+
+/* Botões grandes */
+.est-btn        { height: 52px; font-size: 16px; padding: 0 var(--s6); }
+.est-btn--lg    { height: 60px; font-size: 18px; }
+.est-btn--debug { font-size: 16px; min-width: 52px; }
+
+/* Decodificar / Limpar / microfone (pin-btn do design system) */
+.est-pn-wrap .pin-btn { min-height: 64px; font-size: 18px; }
+
+/* Tabela — linhas altas e fonte legível */
+table.est-table    { font-size: 16px; }
+table.est-table th { padding: var(--s4) var(--s5); font-size: 13px; }
+table.est-table td { padding: var(--s5) var(--s5); }
+.est-pn            { font-size: 16px; }
+.est-type-tag      { font-size: 13px; padding: 4px 10px; }
+.est-qty-badge     { font-size: 16px; min-width: 48px; padding: 4px 10px; }
+.est-td-date       { font-size: 14px; }
+.est-table-title   { font-size: 20px; }
+.est-count         { font-size: 14px; }
+.est-search-row .est-input { max-width: 360px; }
+
+/* Botão de remover — alvo de toque confortável */
+.est-td-action   { width: 64px; }
+.est-del-btn     { width: 48px; height: 48px; }
+.est-del-btn svg { width: 18px; height: 18px; }
+
+/* Card de triagem — sem container/borda, conteúdo direto na página */
+.est-confirm        { border: none; background: transparent; padding: 0; }
+.est-confirm-pn     { font-size: 16px; max-width: 360px; }
+.est-confirm-status { font-size: 13px; }
+.est-step           { font-size: 12px; padding: 8px 10px; }
+.est-meta-pill      { height: 28px; font-size: 13px; }
+
+/* Limpeza estilo Google — sem caixas, mais espaço em branco */
+.est-page-header   { margin-bottom: var(--s8); }
+.est-table-actions { display: flex; gap: var(--s3); align-items: flex-end; flex-wrap: wrap; }
+.pin-actions       { display: none; }   /* esconde o hint "Clique Decodificar…" */
+
+/* "Estado atual do lote" — seção secundária (consulta), empurrada para baixo */
+.est-state-heading {
+  margin: var(--s11) 0 var(--s6);
+  padding-top: var(--s8);
+  border-top: 1px solid var(--border-subtle);
+  font-size: 22px; font-weight: 700; color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+.est-table-section { margin-top: 0; }
+
+/* ── Redesign Carbon v2 (console + estoque) ──────────────────── */
+.wtc-decode-btn { flex:1; height:52px; border:none; font-family:'IBM Plex Sans',sans-serif; font-size:16px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#0f62fe; color:#fff; cursor:pointer; }
+.wtc-decode-btn:hover:not(:disabled) { background:#0353e9; }
+.wtc-decode-btn:disabled { background:#c6c6c6; color:#8d8d8d; cursor:not-allowed; }
+.wtc-clear-btn { flex:none; height:52px; padding:0 22px; border:none; font-family:'IBM Plex Sans',sans-serif; font-size:16px; font-weight:600; background:#393939; color:#fff; cursor:pointer; }
+.wtc-clear-btn:hover:not(:disabled) { background:#262626; }
+.wtc-clear-btn:disabled { background:#e0e0e0; color:#a8a8a8; cursor:not-allowed; }
+.wtc-mic-btn:hover { background:#e8e8e8 !important; }
+#pn-input:focus { outline:2px solid #0f62fe; outline-offset:-2px; }
+#search-q:focus, #tipo-filter:focus { outline:2px solid #0f62fe; outline-offset:-2px; }
+.wtc-stock-row:hover { background:#f4f4f4; }
+/* Remove o seletor nativo de número (deixa só os ▲▼ custom) */
+#confirm-qty::-webkit-outer-spin-button,
+#confirm-qty::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+#confirm-qty { -moz-appearance:textfield; appearance:textfield; }
 </style>
 {% endblock %}
 
 {% block main %}
 
-{# ── Breadcrumb + cabeçalho do lote ──────────────────────────── #}
-<div class="est-lot-breadcrumb">
-  <a href="{% url 'estoque:index' %}" class="est-lot-back">
-    ← Lotes
-  </a>
-  <span class="est-lot-bc-sep">/</span>
-  <span class="est-lot-bc-current">Lote #{{ lot.number|stringformat:"03d" }}</span>
+{# ── Breadcrumb ──────────────────────────────────────────────── #}
+<div style="font-size:13px;color:#6f6f6f;margin-bottom:14px;">
+  <a href="{% url 'estoque:index' %}" style="font-weight:500;">Lotes</a>
+  <span style="color:#a8a8a8;margin:0 6px;">/</span>
+  <span style="color:#393939;">Lote #{{ lot.number|stringformat:"03d" }}</span>
 </div>
 
-<div class="est-page-header">
-  <div class="est-page-header-left">
-    <h1 class="est-page-title">
-      Lote <span class="est-lot-number">#{{ lot.number|stringformat:"03d" }}</span>
-      {% if lot.status == 'closed' %}
-        <span class="est-lot-badge est-lot-badge--closed">Fechado</span>
-      {% else %}
-        <span class="est-lot-badge est-lot-badge--open">Aberto</span>
-      {% endif %}
-    </h1>
-    {% if lot.description %}
-    <p class="est-lot-desc">{{ lot.description }}</p>
-    {% endif %}
-  </div>
-  <div class="est-page-header-right">
-    <a class="est-btn est-btn--secondary"
-       href="{% url 'estoque:export' lot.pk %}"
-       title="Exportar estoque para Excel">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2"
-           stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-      Exportar .xlsx
-    </a>
-    {% if lot.status == 'open' %}
-    <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="display:inline">
-      {% csrf_token %}
-      <button type="submit" class="est-btn est-btn--secondary" style="border-color:#da1e28;color:#da1e28;">
-        Fechar Lote
-      </button>
-    </form>
-    {% else %}
-    <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="display:inline">
-      {% csrf_token %}
-      <button type="submit" class="est-btn est-btn--secondary" style="border-color:#42be65;color:#42be65;">
-        Reabrir Lote
-      </button>
-    </form>
-    {% endif %}
-  </div>
+{# ── Cabeçalho do lote ───────────────────────────────────────── #}
+<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;">
+  <h1 style="margin:0;font-size:clamp(26px,3.4vw,32px);font-weight:300;letter-spacing:-0.01em;white-space:nowrap;">Lote <span style="font-family:'IBM Plex Mono',monospace;font-weight:500;">#{{ lot.number|stringformat:"03d" }}</span></h1>
+  {% if lot.status == 'closed' %}
+  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.08em;padding:4px 9px;background:#e0e0e0;color:#525252;">FECHADO</span>
+  {% else %}
+  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.08em;padding:4px 9px;background:#defbe6;color:#198038;">ABERTO</span>
+  {% endif %}
+  {% if lot.description %}
+  <span style="width:1px;height:18px;background:#c6c6c6;"></span>
+  <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6f6f6f;letter-spacing:0.04em;">{{ lot.description|upper }}</span>
+  {% endif %}
 </div>
 
 {% if lot.status == 'closed' %}
-<div class="est-lot-closed-banner">
-  🔒 Este lote está fechado. Nenhum chip pode ser adicionado. Reabra-o para continuar operando.
+<div style="display:flex;align-items:center;gap:12px;background:#fff;border-left:4px solid #6f6f6f;padding:14px 18px;margin-bottom:20px;font-size:14px;color:#393939;">
+  🔒 <span>Lote <strong>fechado</strong> — adições bloqueadas. Reabra para retomar a triagem.</span>
 </div>
 {% endif %}
 
-{# ── Card de entrada ──────────────────────────────────────────── #}
-<div class="est-card">
-  <div class="est-card-title">Adicionar chip</div>
+{# ── Duas colunas: console (esquerda) + estoque (direita) ─────── #}
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:stretch;">
 
-  <div class="est-field">
-    <label class="est-label" for="pn-input">Part Number</label>
-    {# Wrapper para igualar largura input + botões #}
-    <div class="est-pn-wrap">
-      <input
-        class="est-input est-input--pn"
-        type="text"
-        id="pn-input"
-        name="pn"
-        placeholder="Ex: KMQ310006M-B421"
-        autocomplete="off"
-        spellcheck="false"
-        inputmode="text"
-        hx-get="{% url 'estoque:preview' lot.pk %}"
-        hx-trigger="pn-ready"
-        hx-target="#confirm-area"
-        hx-swap="innerHTML"
-        hx-include="[name='pn']"
-        autofocus
-      />
-      {# Botões Carbon flush — mesma largura do input via est-pn-wrap #}
-      <div class="pin-btn-group">
-        <button type="button" id="est-mic-btn" class="pin-btn pin-btn--mic wtc-mic-btn"
-                data-mic-target="pn-input"
-                data-mic-hint="est-pin-hint"
-                data-mic-cta="est-decode-btn"
-                aria-label="Fale o Part Number" title="Fale o Part Number"></button>
-        <button type="button" id="est-clear-btn" class="pin-btn pin-btn--secondary" disabled>Limpar</button>
-        <button type="button" id="est-decode-btn" class="pin-btn pin-btn--primary" disabled>
-          <span class="pin-btn-label">Decodificar</span>
-          <span class="pin-btn-spinner" aria-hidden="true"></span>
-        </button>
+  {# ── LEFT: console de triagem ──────────────────────────────── #}
+  <div style="flex:2 1 540px;min-width:0;background:#fff;border:1px solid #e0e0e0;padding:28px;">
+
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <span style="font-size:12px;font-weight:600;letter-spacing:0.1em;color:#6f6f6f;">PART NUMBER</span>
+      <span style="height:1px;background:#e0e0e0;flex:1;"></span>
+    </div>
+
+    <input id="pn-input" name="pn" type="text" value=""
+           placeholder="KMQ310006M-B421" spellcheck="false" autocomplete="off" inputmode="text" autofocus
+           hx-get="{% url 'estoque:preview' lot.pk %}" hx-trigger="pn-ready" hx-target="#confirm-area" hx-swap="innerHTML" hx-include="[name='pn']"
+           style="width:100%;height:76px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 18px;font-family:'IBM Plex Mono',monospace;font-size:clamp(28px,4vw,40px);color:#161616;letter-spacing:0.02em;text-transform:uppercase;" />
+
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button type="button" id="est-decode-btn" class="wtc-decode-btn" disabled>Decodificar <span style="font-size:18px;">→</span></button>
+      <button type="button" id="est-clear-btn" class="wtc-clear-btn" disabled>Limpar</button>
+      <button type="button" id="est-mic-btn" class="wtc-mic-btn"
+              data-mic-target="pn-input" data-mic-hint="est-pin-hint" data-mic-cta="est-decode-btn"
+              title="Ditar por voz" aria-label="Ditar por voz"
+              style="width:52px;height:52px;flex:none;background:#f4f4f4;border:1px solid #e0e0e0;color:#525252;cursor:pointer;display:flex;align-items:center;justify-content:center;"></button>
+    </div>
+
+    {# hints ocultos — mantidos para o JS de decode/voz #}
+    <span id="est-pin-hint" class="pin-actions-hint" style="display:none;"></span>
+    <span id="ocr-status" style="display:none;"></span>
+
+    {# Resultado / estado vazio — alvo HTMX #}
+    <div id="confirm-area">
+      <div style="margin-top:28px;border:1px dashed #e0e0e0;padding:44px 24px;text-align:center;">
+        <svg width="40" height="40" viewBox="0 0 32 32" fill="none" stroke="#d0d0d0" stroke-width="1.5" style="margin-bottom:12px;"><path d="M16 4 28 10v12L16 28 4 22V10z"/><path d="M4 10l12 6 12-6M16 16v12"/></svg>
+        <div style="font-size:14px;color:#a8a8a8;">Nenhum chip lido ainda</div>
       </div>
     </div>
-    <div class="est-helper" id="ocr-status"></div>
   </div>
 
-  {# Hint abaixo dos botões #}
-  <div class="pin-actions" style="justify-content:flex-start;">
-    <span class="pin-actions-hint" id="est-pin-hint">Digite o Part Number acima</span>
-  </div>
+  {# ── RIGHT: estoque do lote ─────────────────────────────────── #}
+  <div style="flex:1 1 360px;min-width:0;background:#fff;border:1px solid #e0e0e0;display:flex;flex-direction:column;align-self:stretch;">
 
-  {# ── Card de confirmação — HTMX target ──────────────────────── #}
-  <div id="confirm-area"></div>
-
-</div>{# /est-card #}
-
-{# ── Tabela de estoque ────────────────────────────────────────── #}
-<div class="est-table-section">
-
-  <div class="est-table-header">
-    <div class="est-search-row">
-      <div>
-        <label class="est-label" for="search-q">Buscar PN</label>
-        <input
-          class="est-input"
-          type="search"
-          id="search-q"
-          name="q"
-          value="{{ q }}"
-          placeholder="Filtrar por PN…"
-          hx-get="{% url 'estoque:lot_detail' lot.pk %}"
-          hx-trigger="input changed delay:300ms"
-          hx-target="#table-body-wrap"
-          hx-swap="innerHTML"
-          hx-include="#tipo-filter"
-        />
+    <div style="padding:22px 20px 14px;border-bottom:1px solid #e0e0e0;">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:16px;">
+        <h2 style="margin:0;font-size:18px;font-weight:600;white-space:nowrap;">Estoque do lote</h2>
+        <span style="font-size:12px;color:#6f6f6f;white-space:nowrap;">{{ lot.chip_count }} tipos · {{ lot.total_qty }} un.</span>
       </div>
-      <div>
-        <label class="est-label" for="tipo-filter">Tipo</label>
-        <select class="est-select" id="tipo-filter" name="tipo"
-                hx-get="{% url 'estoque:lot_detail' lot.pk %}"
-                hx-trigger="change"
-                hx-target="#table-body-wrap"
-                hx-swap="innerHTML"
-                hx-include="#search-q">
+      <div style="display:flex;gap:8px;">
+        <input id="search-q" name="q" type="search" value="{{ q }}" placeholder="Filtrar por PN…"
+               hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="input changed delay:300ms" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#tipo-filter"
+               style="flex:1;min-width:0;height:40px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 12px;font-size:14px;color:#161616;" />
+        <select id="tipo-filter" name="tipo"
+                hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="change" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#search-q"
+                style="width:108px;flex:none;height:40px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 8px;font-size:14px;color:#161616;cursor:pointer;">
           <option value="">Todos</option>
           <option value="eMCP" {% if tipo == "eMCP" %}selected{% endif %}>eMCP</option>
           <option value="uMCP" {% if tipo == "uMCP" %}selected{% endif %}>uMCP</option>
           <option value="eMMC" {% if tipo == "eMMC" %}selected{% endif %}>eMMC</option>
           <option value="UFS"  {% if tipo == "UFS"  %}selected{% endif %}>UFS</option>
           <option value="RAM"  {% if tipo == "RAM"  %}selected{% endif %}>RAM</option>
-          <option value="NAND" {% if tipo == "NAND" %}selected{% endif %}>NAND Flash</option>
+          <option value="NAND" {% if tipo == "NAND" %}selected{% endif %}>NAND</option>
         </select>
       </div>
     </div>
+
+    <div id="table-body-wrap" style="flex:1;overflow-y:auto;max-height:560px;">
+      {% include "estoque/partials/table_body.html" %}
+    </div>
+
+    <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid #e0e0e0;">
+      <a href="{% url 'estoque:export' lot.pk %}"
+         style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:44px;background:#fff;border:1px solid #8d8d8d;color:#161616;font-size:14px;font-weight:600;text-decoration:none;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#161616" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 19h14"/></svg>
+        Exportar
+      </a>
+      {% if lot.status == 'open' %}
+      <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="flex:none;margin:0;">
+        {% csrf_token %}
+        <button type="submit" style="height:44px;padding:0 18px;background:#fff;border:1px solid #da1e28;color:#da1e28;font-size:14px;font-weight:600;cursor:pointer;">Fechar Lote</button>
+      </form>
+      {% else %}
+      <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="flex:none;margin:0;">
+        {% csrf_token %}
+        <button type="submit" style="height:44px;padding:0 18px;background:#0f62fe;border:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">Reabrir</button>
+      </form>
+      {% endif %}
+    </div>
   </div>
 
-  <div id="table-body-wrap">
-    {% include "estoque/partials/table_body.html" %}
-  </div>
-
-</div>{# /est-table-section #}
+</div>{# /duas colunas #}
 
 {# Token CSRF acessível ao JS para htmx.ajax #}
 <div id="est-lot-data" data-lot-pk="{{ lot.pk }}" style="display:none"></div>
@@ -1085,6 +1213,20 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
 <script>
 (function () {
   'use strict';
+
+  // ── Torna visível erro do servidor (htmx esconde 5xx por padrão) ──
+  document.body.addEventListener('htmx:responseError', function (e) {
+    var x = e.detail && e.detail.xhr;
+    console.error('[WTC] Erro do servidor:', x && x.status, x && x.responseText);
+    try {
+      var box = document.getElementById('confirm-area');
+      if (box) box.innerHTML =
+        '<div style="margin-top:16px;background:#fff1f1;border:1px solid #da1e28;'
+        + 'border-left:4px solid #da1e28;padding:14px 16px;color:#a2191f;font-size:14px;">'
+        + '⚠ Erro do servidor (' + (x ? x.status : '?') + '). '
+        + 'Veja o terminal do <code>runserver</code> para o traceback.</div>';
+    } catch (err) {}
+  });
 
   // ── Campo PN: uppercase + botões Carbon ──────────────────────
   var pnInput      = document.getElementById('pn-input');

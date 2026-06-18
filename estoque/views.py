@@ -28,7 +28,7 @@ from django.views.decorators.http import require_POST
 from chips.engine import assess_profitability, classify
 from chips.models import UnknownChip
 
-from .models import InventoryEntry, Lot, PendingEntry
+from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
 
 
 # Bloqueio "só confirmados": só passa para o estoque quem é confirmado no banco.
@@ -43,6 +43,26 @@ def _is_confirmed(result: dict) -> bool:
         result.get("classification_source") in CONFIRMED_SOURCES
         or result.get("confidence") in CONFIRMED_CONF
     )
+
+
+def _snapshot(result: dict) -> dict:
+    """Campos de snapshot da classificação para PendingEntry/RejectedEntry.
+
+    Coage None → '' porque os CharFields são NOT NULL com default ''. O
+    classify() devolve None em emcp_ram/emcp_nand para chips que NÃO são eMCP
+    (ex.: LPDDR2 avulso), e `.get(chave, '')` não cobre esse caso (a chave
+    existe com valor None) — daí o NotNullViolation no insert."""
+    return {
+        "chip_type":             result.get("chip_type") or "",
+        "brand":                 result.get("brand") or "",
+        "capacity":              result.get("capacity") or "",
+        "emcp_ram":              result.get("emcp_ram") or "",
+        "emcp_nand":             result.get("emcp_nand") or "",
+        "is_emcp":               bool(result.get("is_emcp")),
+        "interface":             result.get("interface") or "",
+        "classification_source": result.get("classification_source") or "",
+        "confidence":            result.get("confidence") or "",
+    }
 
 
 def _nearest_in_lot(lot, pn: str) -> str:
@@ -173,6 +193,83 @@ def _compute_destination(result: dict) -> tuple:
     return chip_type or '?', 'unknown'
 
 
+# ─── gateway de triagem ───────────────────────────────────────────────────────
+
+# Rótulos comerciais da rentabilidade → chave CSS curta (reusados no template).
+_PROFIT_KEY = {
+    'RENTÁVEL':      'rentavel',
+    'NÃO RENTÁVEL':  'nao_rentavel',
+    'INDETERMINADO': 'indeterminado',
+}
+
+
+def _compute_gateway(result: dict, has_cap: bool) -> dict:
+    """
+    Decide o destino de triagem de um chip em 3 etapas de funil (a primeira que
+    falha decide), mais um sinal de digitação em paralelo.
+
+    Ordem (importa!): identificação → fonte → rentabilidade.
+      1. Identificação: tem specs reais (has_cap)?  Não → 'desconhecido'.
+      2. Fonte: confirmado no banco (_is_confirmed)? Não → 'fila' (gestor revisa).
+      3. Rentabilidade: assess_profitability. 'NÃO RENTÁVEL' → 'reprovado';
+         'RENTÁVEL' ou 'INDETERMINADO' → 'aprovado'.
+
+    Regra de negócio: INDETERMINADO conta como aprovado — melhor deixar entrar do
+    que descartar material valioso por falta de regra (ver brainstorm/CLAUDE).
+
+    O typo (fuzzy_suggestions) NÃO é uma etapa: é uma rede de segurança exibida à
+    parte, válida em qualquer destino.
+
+    Retorna dict com:
+      destination   : 'aprovado' | 'fila' | 'desconhecido' | 'reprovado'
+      steps         : 3 dicts {id, label, status: pass|fail|skip, detail}
+      typo          : {has: bool, suggestions: list}
+      profitable    : string crua de assess_profitability ('' quando não avaliada)
+      profitable_key: chave CSS ('rentavel' | 'nao_rentavel' | 'indeterminado')
+    """
+    fuzzy = result.get('fuzzy_suggestions') or []
+    typo = {'has': bool(fuzzy), 'suggestions': fuzzy}
+    steps = [
+        {'id': 'identificacao', 'label': 'Reconheci',  'status': 'skip', 'detail': ''},
+        {'id': 'fonte',         'label': 'Confirmado',  'status': 'skip', 'detail': ''},
+        {'id': 'rentabilidade', 'label': 'Rentável',    'status': 'skip', 'detail': ''},
+    ]
+
+    def _out(destination, profitable=''):
+        return {
+            'destination':    destination,
+            'steps':          steps,
+            'typo':           typo,
+            'profitable':     profitable,
+            'profitable_key': _PROFIT_KEY.get(profitable, 'indeterminado'),
+        }
+
+    # ── 1. Identificação (specs reais) ───────────────────────────────────────
+    if not has_cap:
+        steps[0].update(status='fail', detail='specs ausentes')
+        return _out('desconhecido')
+    steps[0].update(status='pass', detail='specs reais')
+
+    # ── 2. Fonte (confirmado no banco) — NÃO altera _is_confirmed ─────────────
+    if not _is_confirmed(result):
+        steps[1].update(status='fail',
+                        detail=result.get('classification_source') or 'gramática')
+        return _out('fila')
+    steps[1].update(status='pass', detail='banco de dados')
+
+    # ── 3. Rentabilidade (conservador: INDETERMINADO → aprovado) ─────────────
+    profitable = assess_profitability(result)
+    if profitable == 'NÃO RENTÁVEL':
+        steps[2].update(status='fail', detail='Não rentável')
+        return _out('reprovado', profitable)
+
+    steps[2].update(
+        status='pass',
+        detail='Rentável' if profitable == 'RENTÁVEL' else 'Indeterminado (aprovado)',
+    )
+    return _out('aprovado', profitable)
+
+
 # ─── lot list ───────────────────────────────────────────────────────────────
 
 @login_required
@@ -269,12 +366,9 @@ def preview_chip(request, lot_pk):
 
     destination, dest_cat = _compute_destination(result)
 
-    profitable = assess_profitability(result) if has_cap else 'INDETERMINADO'
-    prof_key = {
-        'RENTÁVEL':      'rentavel',
-        'NÃO RENTÁVEL':  'nao_rentavel',
-        'INDETERMINADO': 'indeterminado',
-    }.get(profitable, 'indeterminado')
+    # Gateway de triagem (3 etapas + typo). Substitui o cálculo solto de
+    # profitable/prof_key — a regra de destino agora mora num lugar só.
+    gateway = _compute_gateway(result, has_cap)
 
     ctx = {
         'lot':             lot,
@@ -286,8 +380,11 @@ def preview_chip(request, lot_pk):
         'current_qty':     current_qty,
         'destination':     destination,
         'destination_cat': dest_cat,
-        'profitable':      profitable,
-        'profitable_key':  prof_key,
+        'gateway':         gateway,
+        'gateway_dest':    gateway['destination'],
+        'gateway_steps':   gateway['steps'],
+        'profitable':      gateway['profitable'],
+        'profitable_key':  gateway['profitable_key'],
     }
     return render(request, 'estoque/partials/confirm_card.html', ctx)
 
@@ -331,18 +428,10 @@ def add_chip(request, lot_pk):
         pend, p_created = PendingEntry.objects.get_or_create(
             lot=lot, part_number=pn,
             defaults={
-                'quantity':              qty,
-                'chip_type':             server_result.get('chip_type', ''),
-                'brand':                 server_result.get('brand', ''),
-                'capacity':              server_result.get('capacity', ''),
-                'emcp_ram':              server_result.get('emcp_ram', ''),
-                'emcp_nand':             server_result.get('emcp_nand', ''),
-                'is_emcp':               bool(server_result.get('is_emcp')),
-                'interface':             server_result.get('interface', ''),
-                'classification_source': server_result.get('classification_source', ''),
-                'confidence':            server_result.get('confidence', ''),
-                'nearest_confirmed':     near,
-                'operator':              request.user,
+                'quantity':          qty,
+                **_snapshot(server_result),
+                'nearest_confirmed': near,
+                'operator':          request.user,
             },
         )
         if not p_created:
@@ -350,6 +439,25 @@ def add_chip(request, lot_pk):
             pend.refresh_from_db()
         return render(request, 'estoque/partials/pending_feedback.html', {
             'pn': pn, 'qty': pend.quantity, 'near': near,
+        })
+
+    # ── Bloqueio DURO de rentabilidade ───────────────────────────────────────
+    # Chip confirmado e com specs, mas NÃO RENTÁVEL: não entra no estoque. É
+    # desviado para RejectedEntry (log de auditoria) e segue para resíduo
+    # eletrônico. Decisão de negócio: bloqueio real no servidor, não só na UI.
+    # INDETERMINADO/RENTÁVEL passam (regra conservadora — só barra o que é
+    # claramente não-rentável).
+    if assess_profitability(server_result) == 'NÃO RENTÁVEL':
+        RejectedEntry.objects.create(
+            lot=lot, part_number=pn, quantity=qty,
+            **_snapshot(server_result),
+            rejection_reason='NÃO RENTÁVEL',
+            operator=request.user,
+        )
+        return render(request, 'estoque/partials/rejected_feedback.html', {
+            'pn': pn, 'qty': qty,
+            'chip_type': server_result.get('chip_type', ''),
+            'capacity':  server_result.get('capacity', ''),
         })
 
     defaults = {

@@ -1,0 +1,18 @@
+<div class="est-confirm est-confirm--done" style="border-left-color:#da1e28;">
+  <div class="est-confirm-head">
+    <span class="est-confirm-status" style="color:#da1e28;">✗ Reprovado — Resíduo eletrônico</span>
+    <span class="est-confirm-pn">{{ pn }}</span>
+  </div>
+  <p class="est-confirm-hint">
+    Este chip{% if chip_type %} (<strong>{{ chip_type }}</strong>{% if capacity %} · {{ capacity }}{% endif %}){% endif %}
+    foi classificado como <strong>NÃO RENTÁVEL</strong> e registrado para auditoria.
+    <strong>Nenhuma unidade entrou no estoque</strong> — encaminhe para o descarte de
+    resíduos eletrônicos.
+  </p>
+  <div class="est-confirm-actions">
+    <button class="est-btn est-btn--ghost" type="button"
+            onclick="this.closest('#confirm-area').innerHTML=''; document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">
+      Fechar
+    </button>
+  </div>
+</div>

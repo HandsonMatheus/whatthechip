@@ -155,3 +155,50 @@ class PendingEntry(models.Model):
 
     def __str__(self):
         return f'{self.part_number} × {self.quantity} (pendente · Lote #{self.lot.number:03d})'
+
+
+class RejectedEntry(models.Model):
+    """
+    Log de auditoria (append-only): chip CONFIRMADO no banco e com specs completas,
+    mas que o operador tentou adicionar e foi barrado por NÃO RENTÁVEL na etapa 3 do
+    gateway. Não entra no estoque nem na fila — segue para resíduo eletrônico. Serve
+    só para auditoria e calibração das regras de rentabilidade (ver
+    chips.engine.assess_profitability e estoque.views._compute_gateway).
+
+    Por que sem unique(lot, part_number): cada tentativa de descarte é um evento
+    distinto na linha do tempo. Acumular numa só linha esconderia a frequência — que
+    é justamente o sinal de calibração. Logamos um registro por reprovação.
+    """
+    lot         = models.ForeignKey(
+        Lot, on_delete=models.CASCADE, related_name='rejected', verbose_name='Lote',
+    )
+    part_number = models.CharField(max_length=100, db_index=True, verbose_name='Part Number')
+    quantity    = models.PositiveIntegerField(default=1, verbose_name='Quantidade')
+
+    # Snapshot da classificação no momento da reprovação (para auditoria posterior).
+    chip_type   = models.CharField(max_length=50,  blank=True, default='', verbose_name='Tipo')
+    brand       = models.CharField(max_length=100, blank=True, default='', verbose_name='Fabricante')
+    capacity    = models.CharField(max_length=100, blank=True, default='', verbose_name='Capacidade')
+    emcp_ram    = models.CharField(max_length=100, blank=True, default='', verbose_name='RAM (eMCP)')
+    emcp_nand   = models.CharField(max_length=100, blank=True, default='', verbose_name='NAND (eMCP)')
+    is_emcp     = models.BooleanField(default=False, verbose_name='É eMCP/uMCP')
+    interface   = models.CharField(max_length=100, blank=True, default='', verbose_name='Interface')
+    classification_source = models.CharField(max_length=50, blank=True, default='', verbose_name='Fonte')
+    confidence  = models.CharField(max_length=20, blank=True, default='', verbose_name='Confiança')
+
+    # Razão da reprovação. Hoje sempre "NÃO RENTÁVEL"; campo deixado extensível.
+    rejection_reason = models.CharField(max_length=100, default='NÃO RENTÁVEL', verbose_name='Razão')
+
+    operator    = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='rejected_entries', verbose_name='Operador',
+    )
+    created_at  = models.DateTimeField(auto_now_add=True, verbose_name='Reprovado em')
+
+    class Meta:
+        verbose_name = 'Reprovado'
+        verbose_name_plural = 'Reprovados'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.part_number} × {self.quantity} (reprovado · Lote #{self.lot.number:03d})'

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models import F
 from django.utils import timezone
 
-from .models import InventoryEntry, Lot, PendingEntry
+from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
 
 
 def _confirm_as_knownpart(pend):
@@ -102,3 +102,30 @@ class PendingEntryAdmin(admin.ModelAdmin):
         n = queryset.count()
         queryset.delete()
         self.message_user(request, f"{n} pendência(s) descartada(s).")
+
+
+@admin.register(RejectedEntry)
+class RejectedEntryAdmin(admin.ModelAdmin):
+    """Auditoria de chips reprovados por NÃO RENTÁVEL. Read-only: o registro é
+    gravado só pelo fluxo de estoque (add_chip), nunca à mão. Use os filtros para
+    calibrar as regras de rentabilidade (que tipos estão indo para o lixo)."""
+    list_display  = ("part_number", "lot", "chip_type", "display_capacity",
+                     "rejection_reason", "quantity", "operator", "created_at")
+    list_filter   = ("rejection_reason", "chip_type", "lot", "operator")
+    search_fields = ("part_number", "chip_type")
+    ordering      = ("-created_at",)
+    readonly_fields = (
+        "lot", "part_number", "quantity", "chip_type", "brand", "capacity",
+        "emcp_ram", "emcp_nand", "is_emcp", "interface", "classification_source",
+        "confidence", "rejection_reason", "operator", "created_at",
+    )
+
+    def display_capacity(self, obj):
+        if obj.is_emcp:
+            parts = [p for p in [obj.emcp_nand, obj.emcp_ram] if p]
+            return " / ".join(parts) if parts else "—"
+        return obj.capacity or "—"
+    display_capacity.short_description = "Capacidade"
+
+    def has_add_permission(self, request):
+        return False
