@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 from django.db.models.functions import Length
 
-from .models import Brand, ChipFamily, DecodeMap, KnownPart, SearchLog, Source, UnknownChip
+from .models import Brand, ChipFamily, DecodeMap, KnownPart, ProfitabilityConfig, SearchLog, Source, UnknownChip
 
 
 # ── Fuzzy matching ─────────────────────────────────────────────────────────────
@@ -1197,47 +1197,44 @@ def assess_profitability(result: dict) -> str:
         "NÃO RENTÁVEL"  — chip abaixo dos critérios mínimos
         "INDETERMINADO" — dados insuficientes para avaliação confiável
 
-    Regras aplicadas:
+    Os limiares são lidos de ProfitabilityConfig (singleton no banco).
+    Para alterar as regras sem redeploy: Admin Django → Configuração de Rentabilidade.
 
-        eMCP (qualquer marca):
-            - RAM < 1GB            → NÃO RENTÁVEL
-            - NAND < 8GB           → NÃO RENTÁVEL
-            - LPDDR2 ou inferior   → NÃO RENTÁVEL
-            - Todos os critérios OK → RENTÁVEL
+    Regras aplicadas (valores default):
 
-        uMCP (qualquer marca):
-            - RAM < 1GB  → NÃO RENTÁVEL
-            - NAND < 8GB → NÃO RENTÁVEL
-            - LPDDR2 ou inferior → NÃO RENTÁVEL
-            - Todos os critérios OK → RENTÁVEL
+        eMCP / uMCP:
+            - LPDDR2 ou inferior       → NÃO RENTÁVEL
+            - RAM < 1 GB               → NÃO RENTÁVEL
+            - NAND < 8 GB              → NÃO RENTÁVEL
+            - Todos os critérios OK    → RENTÁVEL
 
         eMMC standalone:
-            - capacidade < 8GB → NÃO RENTÁVEL
-            - ≥ 8GB             → RENTÁVEL
+            - capacidade < 4 GB        → NÃO RENTÁVEL
 
         UFS standalone:
-            - capacidade < 8GB → NÃO RENTÁVEL
-            - ≥ 8GB             → RENTÁVEL
-
-        DDR standalone:
-            - DDR2 ou inferior → NÃO RENTÁVEL
-            - densidade < 2Gb  → NÃO RENTÁVEL  (2Gb = 256 MB por die)
-            - Todos os critérios OK → RENTÁVEL
+            - capacidade < 4 GB        → NÃO RENTÁVEL
 
         LPDDR standalone:
-            - LPDDR2 ou inferior → NÃO RENTÁVEL
-            - capacidade < 2GB   → NÃO RENTÁVEL
-            - Todos os critérios OK → RENTÁVEL
+            - LPDDR2 ou inferior       → NÃO RENTÁVEL
+            - LPDDR3: < 2 GB           → NÃO RENTÁVEL
+            - LPDDR4+: < 1 GB          → NÃO RENTÁVEL
 
-        Outros tipos (NOR, SoC, etc.):
-            → INDETERMINADO (sem regra definida)
+        DDR standalone (threshold em Gigabits por die):
+            - DDR2 ou inferior         → NÃO RENTÁVEL
+            - DDR3: < 2 Gb (= 256 MB)  → NÃO RENTÁVEL
+            - DDR4+: < 8 Gb (= 1 GB)   → NÃO RENTÁVEL
+
+        Outros tipos (NOR, SoC, MCP legado raw, etc.):
+            → INDETERMINADO
     """
+    cfg = ProfitabilityConfig.get_config()
+
     chip_type = (result.get("chip_type") or "").strip()
     subtype   = (result.get("subtype")   or "").strip()
     combined  = f"{chip_type} {subtype}".upper()
 
     # ── eMCP / uMCP ──────────────────────────────────────────────────────────
-    # uMCP: mesmas regras do eMCP (NAND ≥ 8 GB, RAM ≥ 1 GB, LPDDR3+).
+    # uMCP: mesmas regras do eMCP (NAND ≥ cfg.emcp_min_nand_gb, RAM ≥ cfg.emcp_min_ram_gb).
     # is_emcp cobre ambos via ChipFamily; a checagem explícita do chip_type
     # garante que resultados Gemini (que podem retornar "uMCP") também sejam avaliados.
     if result.get("is_emcp") or chip_type.lower() in ("emcp", "umcp"):
@@ -1253,7 +1250,7 @@ def assess_profitability(result: dict) -> str:
         # e causaria retorno INDETERMINADO antes de checar a geração (bug original).
         # Chips afetados: KMN5X000ZM, KML7X000HM, KMK*, KMV* etc. (campos sem GB).
         lpddr_gen = _lpddr_generation(ram_str)
-        if lpddr_gen is not None and lpddr_gen <= 2:
+        if lpddr_gen is not None and lpddr_gen < cfg.emcp_min_lpddr_gen:
             return "NÃO RENTÁVEL"
 
         ram_gb  = _extract_gib(ram_str)
@@ -1265,11 +1262,11 @@ def assess_profitability(result: dict) -> str:
         if lpddr_gen is None:
             return "INDETERMINADO"
 
-        if lpddr_gen <= 2:          # redundante pós-fix, mas mantido por segurança
+        if lpddr_gen < cfg.emcp_min_lpddr_gen:  # redundante pós-fix, mantido por segurança
             return "NÃO RENTÁVEL"
-        if ram_gb < 0.99:           # < 1 GB (512 MB etc.)
+        if ram_gb < cfg.emcp_min_ram_gb - 0.01:
             return "NÃO RENTÁVEL"
-        if nand_gb < 7.99:          # < 8 GB
+        if nand_gb < cfg.emcp_min_nand_gb - 0.01:
             return "NÃO RENTÁVEL"
         return "RENTÁVEL"
 
@@ -1278,14 +1275,14 @@ def assess_profitability(result: dict) -> str:
         cap_gb = _extract_gib(result.get("capacity") or "")
         if cap_gb is None:
             return "INDETERMINADO"
-        return "RENTÁVEL" if cap_gb >= 7.99 else "NÃO RENTÁVEL"
+        return "RENTÁVEL" if cap_gb >= cfg.emmc_min_cap_gb - 0.01 else "NÃO RENTÁVEL"
 
     # ── UFS standalone ────────────────────────────────────────────────────────
     if chip_type == "UFS":
         cap_gb = _extract_gib(result.get("capacity") or "")
         if cap_gb is None:
             return "INDETERMINADO"
-        return "RENTÁVEL" if cap_gb >= 7.99 else "NÃO RENTÁVEL"
+        return "RENTÁVEL" if cap_gb >= cfg.ufs_min_cap_gb - 0.01 else "NÃO RENTÁVEL"
 
     # ── LPDDR standalone ─────────────────────────────────────────────────────
     if "LPDDR" in combined:
@@ -1295,31 +1292,36 @@ def assess_profitability(result: dict) -> str:
         cap_gb = _extract_gib(result.get("capacity") or result.get("dram_density") or "")
         if cap_gb is None:
             return "INDETERMINADO"
-        if lpddr_gen <= 2:
+        if lpddr_gen < cfg.lpddr_min_gen:
             return "NÃO RENTÁVEL"
-        if cap_gb < 1.99:        # < 2 GB
+        # LPDDR4+ e LPDDR3 têm limiares separados
+        threshold_gb = cfg.lpddr4plus_min_cap_gb if lpddr_gen >= 4 else cfg.lpddr3_min_cap_gb
+        if cap_gb < threshold_gb - 0.01:
             return "NÃO RENTÁVEL"
         return "RENTÁVEL"
 
     # ── DDR standalone ────────────────────────────────────────────────────────
-    # Threshold em Gigabits (não Gigabytes): ≥ 2Gb por die é rentável.
+    # Threshold em Gigabits (não Gigabytes): DDR3 ≥ cfg.ddr3_min_gbit; DDR4+ ≥ cfg.ddr4plus_min_gbit.
     #   2Gb = 256MB | 4Gb = 512MB | 8Gb = 1GB
     # Fonte primária: dram_density ("8Gb = 1GB por die [✓]") → extrai Gigabits.
-    # Fallback: capacity em GB (KnownParts enriquecidos) → converte (2Gb = 0.25GB).
+    # Fallback: capacity em GB (KnownParts enriquecidos).
     if "DDR" in combined:
         ddr_gen = _ddr_generation(combined)
         if ddr_gen is None:
             return "INDETERMINADO"
-        if ddr_gen <= 2:
+        if ddr_gen < cfg.ddr_min_gen:
             return "NÃO RENTÁVEL"
+        # DDR4+ e DDR3 têm limiares de densidade separados (em Gigabits)
+        min_gbit   = cfg.ddr4plus_min_gbit if ddr_gen >= 4 else cfg.ddr3_min_gbit
+        # Fallback em GB: 1 Gb = 0.125 GB
+        min_cap_gb = min_gbit * 0.125
         gbit = _extract_gbit(result.get("dram_density") or "")
         if gbit is not None:
-            return "RENTÁVEL" if gbit >= 2.0 else "NÃO RENTÁVEL"
-        # Fallback: capacity em GB (ex: "512MB" → 0.5 GB → 4 Gb)
+            return "RENTÁVEL" if gbit >= min_gbit - 0.01 else "NÃO RENTÁVEL"
         cap_gb = _extract_gib(result.get("capacity") or "")
         if cap_gb is None:
             return "INDETERMINADO"
-        return "RENTÁVEL" if cap_gb >= 0.24 else "NÃO RENTÁVEL"  # 0.24 ≈ 2Gb (256MB)
+        return "RENTÁVEL" if cap_gb >= min_cap_gb - 0.01 else "NÃO RENTÁVEL"
 
     # ── Raw MCP legado (feature phone / basic phone era) ─────────────────────
     # K5* e similares: NAND raw + mDDR1, sem controladora eMMC.
@@ -1327,7 +1329,7 @@ def assess_profitability(result: dict) -> str:
     if chip_type.lower() == "mcp":
         return "NÃO RENTÁVEL"
 
-    # Tipo não coberto pelas regras (UFS, NOR, SoC, SDRAM puro, etc.)
+    # Tipo não coberto pelas regras (NOR, SoC, SDRAM puro, etc.)
     return "INDETERMINADO"
 
 

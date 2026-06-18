@@ -1,9 +1,11 @@
 from django.contrib import admin
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from .models import (
     Brand, Source, ChipFamily, DecodeMap, KnownPart, SearchLog,
-    UnknownChip, CorrectionRequest, ChipSubmission,
+    UnknownChip, CorrectionRequest, ChipSubmission, ProfitabilityConfig,
 )
 
 
@@ -259,3 +261,59 @@ class ChipSubmissionAdmin(admin.ModelAdmin):
     def mark_rejected(self, request, queryset):
         queryset.update(status="rejected", resolved_at=timezone.now())
         self.message_user(request, f"{queryset.count()} envio(s) rejeitado(s).")
+
+
+# ── Configuração de Rentabilidade (singleton) ─────────────────────────────────
+
+@admin.register(ProfitabilityConfig)
+class ProfitabilityConfigAdmin(admin.ModelAdmin):
+    """
+    Admin singleton para as regras de rentabilidade.
+    Não permite adicionar nem deletar — sempre existe exatamente um registro (pk=1).
+    Alterações têm efeito imediato sem restart do servidor.
+    """
+
+    fieldsets = (
+        ("eMCP / uMCP", {
+            "description": (
+                "Pacotes eMCP (eMMC + LPDDR) e uMCP (UFS + LPDDR). "
+                "Todos os critérios abaixo devem ser atendidos simultaneamente."
+            ),
+            "fields": ("emcp_min_lpddr_gen", "emcp_min_ram_gb", "emcp_min_nand_gb"),
+        }),
+        ("eMMC standalone", {
+            "fields": ("emmc_min_cap_gb",),
+        }),
+        ("UFS standalone", {
+            "fields": ("ufs_min_cap_gb",),
+        }),
+        ("LPDDR standalone", {
+            "description": "RAM móvel. LPDDR3 e LPDDR4+ têm limiares de capacidade separados.",
+            "fields": ("lpddr_min_gen", "lpddr3_min_cap_gb", "lpddr4plus_min_cap_gb"),
+        }),
+        ("DDR standalone", {
+            "description": (
+                "RAM de PC/servidor. Threshold em Gigabits por die — "
+                "atenção: Gb ≠ GB.  (2 Gb = 256 MB | 8 Gb = 1 GB)"
+            ),
+            "fields": ("ddr_min_gen", "ddr3_min_gbit", "ddr4plus_min_gbit"),
+        }),
+        ("Histórico", {
+            "classes": ("collapse",),
+            "fields": ("updated_at", "notes"),
+        }),
+    )
+
+    readonly_fields = ("updated_at",)
+
+    def has_add_permission(self, request):
+        # Singleton: bloqueia criação de registros extras
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def changelist_view(self, request, extra_context=None):
+        # Redireciona a listagem diretamente para o único objeto (cria se não existir)
+        obj = ProfitabilityConfig.get_config()
+        return redirect(reverse("admin:chips_profitabilityconfig_change", args=[obj.pk]))

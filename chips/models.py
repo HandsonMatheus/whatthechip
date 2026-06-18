@@ -354,3 +354,103 @@ class ChipSubmission(models.Model):
 
     def __str__(self):
         return f"{self.part_number} ({self.get_status_display()})"
+
+
+class ProfitabilityConfig(models.Model):
+    """
+    Regras de rentabilidade configuráveis pelo admin Django.
+
+    Singleton — sempre pk=1. Edite pelo admin; as alterações têm efeito imediato
+    sem necessidade de restart ou redeploy. Crie com get_config() se não existir.
+
+    Unidades:
+        - Capacidade de armazenamento (eMMC, UFS, eMCP/uMCP): GB
+        - Capacidade de RAM (LPDDR standalone, eMCP/uMCP): GB
+        - Densidade DDR: Gigabits por die (Gb)  →  8 Gb = 1 GB
+    """
+
+    # ── eMCP / uMCP ──────────────────────────────────────────────────────────
+    emcp_min_lpddr_gen = models.IntegerField(
+        default=3,
+        verbose_name="eMCP/uMCP — Geração LPDDR mínima",
+        help_text="Gerações abaixo deste valor → NÃO RENTÁVEL.  (3 = LPDDR3 é o mínimo aceito)"
+    )
+    emcp_min_ram_gb = models.FloatField(
+        default=1.0,
+        verbose_name="eMCP/uMCP — RAM mínima (GB)",
+        help_text="Chips com menos de X GB de RAM → NÃO RENTÁVEL."
+    )
+    emcp_min_nand_gb = models.FloatField(
+        default=8.0,
+        verbose_name="eMCP/uMCP — NAND mínima (GB)",
+        help_text="Chips com menos de X GB de NAND → NÃO RENTÁVEL."
+    )
+
+    # ── eMMC standalone ───────────────────────────────────────────────────────
+    emmc_min_cap_gb = models.FloatField(
+        default=4.0,
+        verbose_name="eMMC — Capacidade mínima (GB)",
+        help_text="eMMC com menos de X GB → NÃO RENTÁVEL.  (ex: 4 = a partir de 4 GB)"
+    )
+
+    # ── UFS standalone ────────────────────────────────────────────────────────
+    ufs_min_cap_gb = models.FloatField(
+        default=4.0,
+        verbose_name="UFS — Capacidade mínima (GB)",
+        help_text="UFS com menos de X GB → NÃO RENTÁVEL."
+    )
+
+    # ── LPDDR standalone ─────────────────────────────────────────────────────
+    lpddr_min_gen = models.IntegerField(
+        default=3,
+        verbose_name="LPDDR — Geração mínima",
+        help_text="Gerações abaixo deste valor → NÃO RENTÁVEL.  (3 = LPDDR3 é o mínimo)"
+    )
+    lpddr3_min_cap_gb = models.FloatField(
+        default=2.0,
+        verbose_name="LPDDR3 — Capacidade mínima (GB)",
+        help_text="Para LPDDR3: abaixo de X GB → NÃO RENTÁVEL."
+    )
+    lpddr4plus_min_cap_gb = models.FloatField(
+        default=1.0,
+        verbose_name="LPDDR4+ — Capacidade mínima (GB)",
+        help_text="Para LPDDR4 ou superior: abaixo de X GB → NÃO RENTÁVEL."
+    )
+
+    # ── DDR standalone ────────────────────────────────────────────────────────
+    ddr_min_gen = models.IntegerField(
+        default=3,
+        verbose_name="DDR — Geração mínima",
+        help_text="Gerações abaixo deste valor → NÃO RENTÁVEL.  (3 = DDR3 é o mínimo)"
+    )
+    ddr3_min_gbit = models.FloatField(
+        default=2.0,
+        verbose_name="DDR3 — Densidade mínima (Gb por die)",
+        help_text="Para DDR3: abaixo de X Gb por die → NÃO RENTÁVEL.  (2 Gb = 256 MB | 4 Gb = 512 MB | 8 Gb = 1 GB)"
+    )
+    ddr4plus_min_gbit = models.FloatField(
+        default=8.0,
+        verbose_name="DDR4+ — Densidade mínima (Gb por die)",
+        help_text="Para DDR4 ou superior: abaixo de X Gb por die → NÃO RENTÁVEL.  (8 Gb = 1 GB | 4 Gb = 512 MB)"
+    )
+
+    # ── Metadados ─────────────────────────────────────────────────────────────
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Última atualização")
+    notes = models.TextField(
+        blank=True, default="",
+        verbose_name="Notas / Histórico de alterações",
+        help_text="Registre o motivo das alterações para auditoria futura."
+    )
+
+    class Meta:
+        verbose_name        = "Configuração de Rentabilidade"
+        verbose_name_plural = "Configuração de Rentabilidade"
+
+    def __str__(self):
+        return f"Regras de Rentabilidade (atualizado: {self.updated_at.strftime('%d/%m/%Y %H:%M')})"
+
+    @classmethod
+    def get_config(cls):
+        """Retorna a configuração ativa (singleton pk=1). Cria com defaults se não existir."""
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
