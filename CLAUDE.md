@@ -88,6 +88,10 @@ de rentabilidade**.
    local e nas env vars do Render.
 10. **Gemini é legado / em remoção** (ver §4). Não construa nada novo em cima
     dele; o núcleo é **banco + gramática**.
+11. **Rentabilidade tem fonte ÚNICA: `assess_profitability`.** Nunca reimplemente
+    regra de rentabilidade em outro lugar. O `is_dead_by_generation` (engine) e o
+    gateway do estoque (`estoque/views.py`) **derivam** dela — ver §4 e
+    `docs/CONTRATO_RENTABILIDADE_GATEWAY.md`.
 
 ---
 
@@ -144,7 +148,20 @@ Ponto de entrada único: **`classify(pn)`**. Normaliza o PN e tenta, **em ordem*
 
 Além disso: **`assess_profitability(result)`** aplica as regras comerciais
 (eMCP/uMCP, eMMC, UFS, LPDDR, DDR) e devolve `RENTÁVEL` / `NÃO RENTÁVEL` /
-`INDETERMINADO`. Os limiares estão documentados no docstring da função.
+`INDETERMINADO`. Os limiares vivem em **`ProfitabilityConfig`** (singleton no
+banco, editável no admin); `assess_profitability` é a **fonte única da verdade**
+da rentabilidade.
+
+**`is_dead_by_generation(result)`** (mesmo arquivo) é **derivado** — não tem lista
+própria: `assess_profitability(_strip_capacity(result)) == "NÃO RENTÁVEL"`, ou seja,
+"ainda é não rentável depois de remover os números de capacidade?". Detecta
+rejeição que **independe da capacidade** (geração/era/tipo: LPDDR2-, DDR2-, MCP
+legado, NOR/K5…) e fica sempre em sincronia com a rentabilidade. O **gateway de
+triagem do estoque** (`estoque/views.py::_compute_gateway`) consome os dois:
+rentabilidade decide APROVADO/REPROVADO, e `is_dead_by_generation` manda chip de
+geração morta ao descarte **mesmo sem confirmação no banco** (rótulo distinto +
+`RejectedEntry` de auditoria). Contrato completo:
+**`docs/CONTRATO_RENTABILIDADE_GATEWAY.md`**.
 
 ### Modelos — `chips/models.py`
 

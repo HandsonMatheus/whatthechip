@@ -270,6 +270,42 @@ python scripts/enrich_gemini.py
 
 ---
 
+## Gateway de triagem do estoque + rentabilidade derivada (jun/2026)
+
+O app **`estoque/`** tem um "gateway" (`estoque/views.py::_compute_gateway` + o
+bloqueio em `add_chip`) que roteia cada chip lido na bancada para um destino:
+**APROVADO / FILA / REPROVADO / DESCONHECIDO**. Decisão central: o gateway **não
+tem regra de rentabilidade própria** — defere 100% a `chips.engine.assess_profitability`
+(fonte única da verdade).
+
+**Ordem do funil** (a primeira que falha decide): identificação (tem specs reais?)
+→ fonte (confirmado no banco?) → rentabilidade. Regra conservadora: `INDETERMINADO`
+→ APROVADO (melhor deixar entrar do que descartar material valioso por falta de regra).
+
+**Reprovado "por geração" (jun/2026).** `assess_profitability` rejeita por dois
+motivos: por **capacidade** (precisa do número de GB) ou por **geração/era**
+(LPDDR2-, DDR2-, MCP legado, NOR/K5 — independe da capacidade). O gateway os trata
+diferente:
+
+- **Por capacidade**: só REPROVA se o chip estiver **confirmado** no banco; senão
+  vai pra FILA (gramática pode errar o número).
+- **Por geração**: REPROVA **mesmo sem confirmação e sem capacidade mapeada** — a
+  era é fato de mercado. Rótulo distinto ("REPROVADO · POR GERAÇÃO") e `RejectedEntry`
+  com razão `"NÃO RENTÁVEL (geração)"` para auditoria.
+
+Para distinguir os dois sabores **sem duplicar lógica**, `is_dead_by_generation(result)`
+(no engine) é **derivado**: `assess_profitability(_strip_capacity(result)) == "NÃO
+RENTÁVEL"` — "ainda é não rentável depois de tirar os números de capacidade?". Assim
+qualquer regra capacity-independent nova passa a valer no gateway automaticamente,
+sem um segundo sistema. Contrato p/ o time de rentabilidade:
+**`docs/CONTRATO_RENTABILIDADE_GATEWAY.md`**.
+
+Modelos (`estoque/models.py`): `Lot`, `InventoryEntry`, `PendingEntry` (fila de
+conferência), `RejectedEntry` (auditoria de descartes). Migrations:
+`estoque/0009_rejectedentry`; config de rentabilidade em `chips/0010_profitabilityconfig`.
+
+---
+
 ## Estado atual do sistema (maio/2026)
 
 ### O que está funcionando
