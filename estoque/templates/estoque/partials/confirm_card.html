@@ -45,6 +45,39 @@
     </div>
   </div>
 
+  {# ── Sugestão de digitação (fuzzy) — antes do painel de destino #}
+  {% if gateway.typo.has %}
+  <div style="margin-bottom:18px;">
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:8px;">VOCÊ QUIS DIZER?</div>
+    <style>.wtc-chip:hover{background:#e0e0e0;}</style>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      {% for s in gateway.typo.suggestions %}
+      <a class="wtc-chip" href="#"
+         onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
+         style="display:inline-flex;align-items:center;padding:5px 10px;background:#f4f4f4;text-decoration:none;cursor:pointer;">
+        <span class="wtc-fuzzy-pn"
+              data-typed="{{ pn }}"
+              data-suggestion="{{ s|escapejs }}"
+              style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#0f62fe;">{{ s }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  <script>
+  (function(){
+    document.querySelectorAll('.wtc-fuzzy-pn').forEach(function(el){
+      var t=el.dataset.typed||'', s=el.dataset.suggestion||'', i=0;
+      while(i<t.length&&i<s.length&&s[i]===t[i])i++;
+      var pre=s.slice(0,i), dif=s.slice(i);
+      el.innerHTML=
+        (pre?'<span>'+pre+'</span>':'')+
+        (dif?'<span style="color:#198038;font-weight:700">'+dif+' →</span>':
+             '<span style="color:#6f6f6f;font-size:13px;margin-left:2px;">→</span>');
+    });
+  })();
+  </script>
+  {% endif %}
+
   {# ── Painel de destino ───────────────────────────────────────── #}
   {% if gateway_dest == 'aprovado' %}
     {% if destination_cat == 'emcp' %}{% with pbg='#da1e28' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
@@ -87,36 +120,6 @@
     </div>
   {% endif %}
 
-  {# ── Sugestão de digitação (fuzzy) ───────────────────────────── #}
-  {% if gateway.typo.has %}
-  <div style="margin-top:14px;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">VOCÊ QUIS DIZER?</div>
-    <style>.wtc-sugg-row:hover{background:#f4f4f4;}</style>
-    {% for s in gateway.typo.suggestions %}
-    <a class="wtc-sugg-row" href="#"
-       onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
-       style="display:block;padding:8px 4px;border-bottom:1px solid #e0e0e0;text-decoration:none;cursor:pointer;">
-      <span class="wtc-fuzzy-pn"
-            data-typed="{{ pn }}"
-            data-suggestion="{{ s|escapejs }}"
-            style="font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;color:#0f62fe;">{{ s }}</span>
-    </a>
-    {% endfor %}
-  </div>
-  <script>
-  (function(){
-    document.querySelectorAll('.wtc-fuzzy-pn').forEach(function(el){
-      var t=el.dataset.typed||'', s=el.dataset.suggestion||'', i=0;
-      while(i<t.length&&i<s.length&&s[i]===t[i])i++;
-      var pre=s.slice(0,i), dif=s.slice(i);
-      el.innerHTML=
-        (pre?'<span>'+pre+'</span>':'')+
-        (dif?'<span style="color:#198038;font-weight:700">'+dif+' →</span>':
-             '<span style="color:#6f6f6f;font-size:13px;margin-left:2px;">→</span>');
-    });
-  })();
-  </script>
-  {% endif %}
 
   {# ── Ações ───────────────────────────────────────────────────── #}
   <form class="est-confirm-form"
