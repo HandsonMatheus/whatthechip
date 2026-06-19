@@ -5917,12 +5917,12 @@ CORRECTIONS = [
         "pn": "K4W1G1646E",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR3",
-            "subtype": "gDDR3 1Gb x16", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR3", "subtype": "gDDR3 1Gb x16",
-            "capacity": "128MB", "interface": "gDDR3",
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "128MB", "interface": "x16",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5935,12 +5935,12 @@ CORRECTIONS = [
         "pn": "K4W1G1646E-HC12",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR3",
-            "subtype": "gDDR3 1Gb x16", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR3", "subtype": "gDDR3 1Gb x16",
-            "capacity": "128MB", "interface": "gDDR3",
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "128MB", "interface": "x16",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5956,12 +5956,12 @@ CORRECTIONS = [
         "pn": "K4W1G1646D",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR3",
-            "subtype": "gDDR3 1Gb x16", "status": "enriched", "confidence": "manual",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
         },
         "fields": {
-            "chip_type": "GDDR3", "subtype": "gDDR3 1Gb x16",
-            "capacity": "128MB", "interface": "gDDR3",
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "128MB", "interface": "x16",
             "confidence": "manual", "status": "enriched",
         },
         "reason": (
@@ -5975,12 +5975,12 @@ CORRECTIONS = [
         "pn": "K4W1G1646D-EC12",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR3",
-            "subtype": "gDDR3 1Gb x16", "status": "enriched", "confidence": "manual",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
         },
         "fields": {
-            "chip_type": "GDDR3", "subtype": "gDDR3 1Gb x16",
-            "capacity": "128MB", "interface": "gDDR3",
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "128MB", "interface": "x16",
             "confidence": "manual", "status": "enriched",
         },
         "reason": (
@@ -5995,12 +5995,12 @@ CORRECTIONS = [
         "pn": "K4W2G1646C",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR3",
-            "subtype": "gDDR3 2Gb x16", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR3", "subtype": "gDDR3 2Gb x16",
-            "capacity": "256MB", "interface": "gDDR3",
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "256MB", "interface": "x16",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6013,12 +6013,12 @@ CORRECTIONS = [
         "pn": "K4W2G1646C-HC11",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR3",
-            "subtype": "gDDR3 2Gb x16", "status": "enriched", "confidence": "manual",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
         },
         "fields": {
-            "chip_type": "GDDR3", "subtype": "gDDR3 2Gb x16",
-            "capacity": "256MB", "interface": "gDDR3",
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "256MB", "interface": "x16",
             "confidence": "manual", "status": "enriched",
         },
         "reason": (
@@ -6031,12 +6031,12 @@ CORRECTIONS = [
         "pn": "K4W2G1646C-HC12",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR3",
-            "subtype": "gDDR3 2Gb x16", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR3", "subtype": "gDDR3 2Gb x16",
-            "capacity": "256MB", "interface": "gDDR3",
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "256MB", "interface": "x16",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6053,12 +6053,12 @@ CORRECTIONS = [
         "pn": "K4W4G1646Q",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR3",
-            "subtype": "gDDR3 4Gb x16", "status": "enriched", "confidence": "manual",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
         },
         "fields": {
-            "chip_type": "GDDR3", "subtype": "gDDR3 4Gb x16",
-            "capacity": "512MB", "interface": "gDDR3",
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "512MB", "interface": "x16",
             "confidence": "manual", "status": "enriched",
         },
         "reason": (
@@ -6085,12 +6085,12 @@ CORRECTIONS = [
         "pn": "K4G20325FD",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 2Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 2Gb x32",
-            "capacity": "256MB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "256MB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6104,12 +6104,12 @@ CORRECTIONS = [
         "pn": "K4G20325FD-FC04",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 2Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 2Gb x32",
-            "capacity": "256MB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "256MB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6125,12 +6125,12 @@ CORRECTIONS = [
         "pn": "K4G41325FE",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 4Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 4Gb x32",
-            "capacity": "512MB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "512MB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6144,12 +6144,12 @@ CORRECTIONS = [
         "pn": "K4G41325FE-HC25",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 4Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 4Gb x32",
-            "capacity": "512MB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "512MB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6162,12 +6162,12 @@ CORRECTIONS = [
         "pn": "K4G41325FE-HC28",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 4Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 4Gb x32",
-            "capacity": "512MB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "512MB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6183,12 +6183,12 @@ CORRECTIONS = [
         "pn": "K4G80325FB",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
-            "capacity": "1GB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "1GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6202,12 +6202,12 @@ CORRECTIONS = [
         "pn": "K4G80325FB-HC22",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
-            "capacity": "1GB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "1GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6220,12 +6220,12 @@ CORRECTIONS = [
         "pn": "K4G80325FB-HC25",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
-            "capacity": "1GB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "1GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6238,12 +6238,12 @@ CORRECTIONS = [
         "pn": "K4G80325FB-HC28",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
-            "capacity": "1GB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "1GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6259,12 +6259,12 @@ CORRECTIONS = [
         "pn": "K4G80325FC",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
-            "capacity": "1GB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "1GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6278,12 +6278,12 @@ CORRECTIONS = [
         "pn": "K4G80325FC-HC22",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
-            "capacity": "1GB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "1GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6296,12 +6296,12 @@ CORRECTIONS = [
         "pn": "K4G80325FC-HC25",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR5",
-            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
-            "capacity": "1GB", "interface": "GDDR5",
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "1GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6327,12 +6327,12 @@ CORRECTIONS = [
         "pn": "K4Z80325BC",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR6",
-            "subtype": "GDDR6 8Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR6", "subtype": "GDDR6 8Gb x32",
-            "capacity": "1GB", "interface": "GDDR6",
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "1GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6345,12 +6345,12 @@ CORRECTIONS = [
         "pn": "K4Z80325BC-HC14",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR6",
-            "subtype": "GDDR6 8Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR6", "subtype": "GDDR6 8Gb x32",
-            "capacity": "1GB", "interface": "GDDR6",
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "1GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6368,12 +6368,12 @@ CORRECTIONS = [
         "pn": "K4ZAF325BM",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR6",
-            "subtype": "GDDR6 16Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR6", "subtype": "GDDR6 16Gb x32",
-            "capacity": "2GB", "interface": "GDDR6",
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "2GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6386,12 +6386,12 @@ CORRECTIONS = [
         "pn": "K4ZAF325BM-HC14",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR6",
-            "subtype": "GDDR6 16Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR6", "subtype": "GDDR6 16Gb x32",
-            "capacity": "2GB", "interface": "GDDR6",
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "2GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6404,12 +6404,12 @@ CORRECTIONS = [
         "pn": "K4ZAF325BM-HC16",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR6",
-            "subtype": "GDDR6 16Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR6", "subtype": "GDDR6 16Gb x32",
-            "capacity": "2GB", "interface": "GDDR6",
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "2GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6422,12 +6422,12 @@ CORRECTIONS = [
         "pn": "K4ZAF325BM-HC18",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR6",
-            "subtype": "GDDR6 16Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR6", "subtype": "GDDR6 16Gb x32",
-            "capacity": "2GB", "interface": "GDDR6",
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "2GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6440,12 +6440,12 @@ CORRECTIONS = [
         "pn": "K4ZAF325BM-SC14",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "GDDR6",
-            "subtype": "GDDR6 16Gb x32", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "GDDR6", "subtype": "GDDR6 16Gb x32",
-            "capacity": "2GB", "interface": "GDDR6",
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "2GB", "interface": "x32",
             "confidence": "confirmed", "status": "enriched",
         },
         "reason": (

@@ -307,11 +307,80 @@ Corrigido em 2026-06-19: `confirm_card.html` + `decode_card.html` (4 pontos).
 
 ---
 
-## 10. Checklist antes de commitar
+## 10. Convenção de campos para o estoque — caixa física limpa
+
+> Válido para KnownPart de qualquer DRAM (DDR, GDDR, LPDDR). Alimentar certo
+> desde o início evita rótulos poluídos na bancada.
+
+### Como o rótulo da caixa é montado
+
+| `chip_type` contém | Rótulo | Lê de |
+|---|---|---|
+| `RAM` / `DDR` / `LPDDR` / `SDRAM` | **`{subtype}+{tamanho}G`** | `subtype` + densidade/capacidade |
+| `eMMC` | `EMMC{cap}GB` | `capacity` |
+| `UFS` | `UFS{cap}GB` | `capacity` |
+| `eMCP` / `uMCP` | `EMCP{nand}+{ram}` | `emcp_nand`, `emcp_ram` |
+
+**Para `{tamanho}` em DRAM:**
+- DDR / GDDR (componente, 1 die) → lê `dram_density` (ex: "4Gb" → "4G"); fallback: deriva de `capacity` (256MB → 2G, 512MB → 4G, 1GB → 8G, 2GB → 16G)
+- LPDDR (pacote multi-die) → lê `capacity` do pacote (ex: "4GB" → "4G")
+
+### Tabela de preenchimento
+
+| Campo | O que vai | O que **NÃO** vai |
+|---|---|---|
+| `chip_type` | categoria: `RAM` (toda DRAM), `eMMC`, `UFS`, `eMCP`, `uMCP`, `NAND` | specs, densidade |
+| `subtype` | **só a geração/variante**: `DDR3`, `DDR3L`, `LPDDR4X`, `GDDR5`, `GDDR6`… | densidade (`4Gb`), barramento (`x16`), voltagem |
+| `interface` | barramento elétrico: `x16`, `x32`, velocidade | o protocolo (não repetir `DDR3`, `GDDR5`) |
+| `capacity` | capacidade total do **pacote** em bytes: `512MB`, `1GB`, `4GB` | gigabits |
+
+### Exemplos corretos
+
+```python
+# GDDR3 (K4W) — componente 4Gb x16
+chip_type = "RAM";  subtype = "GDDR3";  interface = "x16";  capacity = "512MB"
+# → caixa: GDDR3+4G ✅
+
+# GDDR5 (K4G) — componente 8Gb x32
+chip_type = "RAM";  subtype = "GDDR5";  interface = "x32";  capacity = "1GB"
+# → caixa: GDDR5+8G ✅
+
+# GDDR6 (K4Z) — componente 16Gb x32
+chip_type = "RAM";  subtype = "GDDR6";  interface = "x32";  capacity = "2GB"
+# → caixa: GDDR6+16G ✅
+
+# DDR3 (K4B) — componente 8Gb x8
+chip_type = "RAM";  subtype = "DDR3";   interface = "x8";   capacity = "1GB"
+# → caixa: DDR3+8G ✅
+
+# LPDDR4 — pacote 4GB multi-die
+chip_type = "RAM";  subtype = "LPDDR4"; interface = "x32";  capacity = "4GB"
+# → caixa: LPDDR4+4G ✅
+```
+
+### Bug real: subtype com dados extras → caixa poluída
+
+```
+❌  subtype = "gDDR3 4Gb x16"  →  caixa: "gDDR3 4Gb x16+4G"
+✅  subtype = "GDDR3"           →  caixa: "GDDR3+4G"
+```
+
+### Regras críticas
+
+1. **`subtype` = só a geração.** Nunca coloque densidade (`4Gb`) ou barramento (`x16`) no subtype.
+2. **Unidades: die em Gb, pacote em GB.** DDR/GDDR → densidade do die. LPDDR → capacidade do pacote. Nunca troque — gera `32G` no lugar de `4G`.
+3. **`interface` = barramento elétrico** (`x16`, `x32`), não o protocolo.
+4. **`chip_type="RAM"` é para KnownPart.** O populate_samsung (ChipFamily) pode manter tipos específicos (`GDDR3`, `GDDR5`) — eles são usados pelo engine de classificação, não pela caixa.
+5. Corrigido em 2026-06-19: 27 KnownParts GDDR (K4W/K4G/K4Z) + ChipFamilies em populate_samsung.py.
+
+---
+
+## 11. Checklist antes de commitar
 
 - [ ] Sintaxe OK: `python3 -c "import ast; ast.parse(open('arquivo.py').read())"`
 - [ ] fix_known_parts rodou sem erros locais
 - [ ] Busca de teste retorna `known_exact: true` e `confidence: confirmed`
+- [ ] Caixa física mostra `{subtype}+{tamanho}G` limpo (sem densidade/bus no subtype)
 - [ ] Nenhum segredo commitado (API keys, DATABASE_URL)
 - [ ] Se mudou gramática: populate_samsung rodou + servidor reiniciado
 - [ ] Mensagem de commit descritiva (família, nº de PNs, fonte)

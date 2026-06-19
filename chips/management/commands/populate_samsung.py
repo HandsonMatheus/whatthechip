@@ -1805,8 +1805,8 @@ class Command(BaseCommand):
             #   K4W4G1646:       4Gb (512MB) — mercado secundário VRAM GPU
             # Decode: pn[3:5] via DRAM_PC (1G=1Gb · 2G=2Gb · 4G=4Gb) ✓
             dict(
-                prefix="K4W", chip_type="GDDR3", subtype="gDDR3 (Graphics DDR3)",
-                interface="gDDR3", decode_density_type="pc",
+                prefix="K4W", chip_type="GDDR3", subtype="GDDR3",
+                interface="x16", decode_density_type="pc",
                 is_emcp=False, active=True, priority=100,
                 tip=(
                     "gDDR3 Samsung (Graphics DDR3) — VRAM dedicada em GPUs de entrada "
@@ -1829,8 +1829,8 @@ class Command(BaseCommand):
             #   K4G80325FB-HC22/HC25/HC28: 8Gb·1GB (RX580·GTX1060/1070)
             #   K4G80325FC-HC22/HC25: 8Gb·1GB (C-die)
             dict(
-                prefix="K4G", chip_type="GDDR5", subtype="GDDR5/GDDR5X",
-                interface="GDDR5", is_emcp=False, active=True, priority=100,
+                prefix="K4G", chip_type="GDDR5", subtype="GDDR5",
+                interface="x32", is_emcp=False, active=True, priority=100,
                 decode_density_type="mobile",
                 tip=(
                     "GDDR5/GDDR5X Samsung — VRAM dedicada em GPUs discretas (~2012-2020). "
@@ -1850,8 +1850,8 @@ class Command(BaseCommand):
             # PNs confirmados (Samsung Semiconductor Global ✓ 2026-06-19):
             #   K4Z80325BC-HC14: 8Gb·1GB; K4ZAF325BM-HC14/HC16/HC18/SC14: 16Gb·2GB (RTX20xx/30xx)
             dict(
-                prefix="K4Z", chip_type="GDDR6", subtype="GDDR6/GDDR6X",
-                interface="GDDR6", is_emcp=False, active=True, priority=100,
+                prefix="K4Z", chip_type="GDDR6", subtype="GDDR6",
+                interface="x32", is_emcp=False, active=True, priority=100,
                 tip=(
                     "GDDR6/GDDR6X Samsung — VRAM de alta velocidade em GPUs modernas (~2018-presente). "
                     "Z = GDDR6; densidade em pn[3:5]: '80'=8Gb(1GB) · 'AF'=16Gb(2GB). Bus: x32. "
