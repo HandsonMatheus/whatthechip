@@ -1452,6 +1452,46 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KML7U000HM ───────────────────────────────────────────────────────────
+    # eMCP Samsung LPDDR2 + eMMC. Família KML. Legado ~2013-2015.
+    # ⚠ Sistema mostrava "emcp_ram: LPDDR5 1GB" — ERRADO. Root cause: cache do
+    #   servidor OU decode_gen_pos não efetivado no DB (L→SAM_EMCP_GEN["L"]="LPDDR5").
+    #   KML tem decode_gen_pos=None em populate_samsung.py → NÃO deve ler SAM_EMCP_GEN.
+    #   LPDDR5 é impossível nessa era (~2013-2015). Fix: KnownPart confirmed vence grammar.
+    # Fontes:
+    #   • Octopart: KMK7U000VM-B309 = "eMCP 8GB eMMC + LPDDR2 1GB" ✓
+    #     (família KMK, mesma chave cap "7U" → 8GB NAND + 1GB RAM — mesma tabela SAM_EMCP_CAP)
+    #   • SAM_EMCP_CAP["7U"] = ("8GB", "1GB") ✓ (populate_samsung.py l.157)
+    # LPDDR2: mesmo raciocínio de KML7X000HM — era 2013-2015 + família KML (Exynos 4212).
+    {
+        "pn": "KML7U000HM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR2 + eMMC (legado)",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 8GB",
+            "emcp_ram":   "LPDDR2 1GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "SAM_EMCP_CAP['7U'] = ('8GB', '1GB'): 8GB eMMC + 1GB LPDDR2. "
+            "Cross-família confirmado: Octopart KMK7U000VM-B309 = 'eMCP 8GB eMMC + LPDDR2 1GB' ✓ "
+            "(Win Source 2279u, ICPartonline 10050u, SHENGYU 9855u, YIC 48830u — 2026-06-19). "
+            "LPDDR2: mesma era e família que KML7X000HM (Exynos 4212, ~2013-2015); "
+            "LPDDR1 obsoleto desde 2012; LPDDR5 impossível nessa era. "
+            "Grammar bug observado: exibia 'LPDDR5 1GB' → cache servidor ou decode_gen_pos=None "
+            "não efetivado no DB (L em SAM_EMCP_GEN='LPDDR5'). KnownPart confirmed vence. "
+            "⚠ LPDDR2 = inferência era+SoC — sem fonte Tier 1 explícita para versão LPDDR. "
+            "confidence+status em fields: garante grammar_wins=False."
+        ),
+    },
+
     # ── KMR310001M ───────────────────────────────────────────────────────────
     # eMCP LPDDR3 + eMMC 5.1. Família KMR. Era ~2015.
     # Conflito de shared key SAM_EMCP_CAP:
