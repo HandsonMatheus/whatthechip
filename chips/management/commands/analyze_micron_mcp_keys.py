@@ -38,9 +38,16 @@ Para cada prefixo analisado, o script reporta:
   AD8    12     MT29VZZZAD8GQFSL...     MCP 544Gb EMMC+LPDDR4 VFBGA  544       64        4        CONFIRMADO ✓
   ?X?    2      MT29TZZZ...             (sem API data)                 ?         ?         ?        REQUER PESQUISA
 
+  ⚠ BUG-8 (2026-06-19): o part-name "MLC EMMC/LPDDR2 72G VFBGA" acima diz "LPDDR2"
+  mas a família MT29TZZZ é LPDDR3 — o "LPDDR2" pertence à família MT29PZZZ (162-ball).
+  A API Micron retorna part-names de famílias relacionadas que podem ter tipos de RAM
+  DIFERENTES. Usar o part-name para determinar tipo de RAM = FONTE NÃO CONFIÁVEL.
+  Fontes confiáveis: datasheet oficial / DigiKey (confirmado: MT29TZZZ = LPDDR3).
+
   --- MIC_TZZZ_GEN (decode_gen, pn[8]) ---
   Char  Chips  Tipo       Part-names API                              Status
-  8     3      LPDDR2     MLC EMMC/LPDDR2 72G VFBGA                 CONFIRMADO ✓ (pn[8] dígito → Gen A)
+  8     3      LPDDR3     MLC EMMC/LPDDR2 72G VFBGA (⚠ "LPDDR2"    CONFIRMADO ✓ (BUG-8:
+                          no part-name é ERRO DA API — ver BUG-8)    datasheet=LPDDR3; pn[8] dígito → Gen A)
   A     7      (?)        (sem API data suficiente)                  REQUER PESQUISA
 
 COMO FUNCIONA A EXTRAÇÃO DE CAPACIDADE
@@ -49,6 +56,9 @@ A API Micron retorna o campo "part-name" para cada chip.
 Exemplos de formatos encontrados (todos confirmados da bancada):
 
   "MLC EMMC/LPDDR2 72G VFBGA"       → 72 Gbit total (Gen A MT29TZZZ)
+  ⚠ ATENÇÃO BUG-8: "LPDDR2" neste part-name é ERRO da API Micron para MT29TZZZ.
+    A família MT29TZZZ é LPDDR3. O "LPDDR2" pertence à MT29PZZZ (162-ball).
+    NÃO use o part-name para inferir tipo de RAM — use datasheet/DigiKey.
   "MCP 544Gb EMMC+LPDDR4 VFBGA"     → 544 Gbit total
   "MCP eMMC+LPDDR4 1056Gb"          → 1056 Gbit total
   "e.MMC 5.1 + LPDDR4 544G"         → 544 Gbit total
@@ -86,7 +96,7 @@ FAMILY_CONFIG = {
                  "desc": "eMCP/uMCP LPDDR4 (eMMC 5.1 / UFS 2.2)"},
     "MT29TZZZ": {"cap_pos": 8, "cap_len": 3, "gen_pos": 8, "gen_len": 1,
                  "cap_map": "MIC_MCP_CAP", "gen_map": "MIC_TZZZ_GEN",
-                 "desc": "eMCP LPDDR2/3 (eMMC 4.x/5.0, geração anterior)"},
+                 "desc": "eMCP LPDDR3 (eMMC 4.x/5.0, geração anterior) — BUG-8: TODA família é LPDDR3"},
     "MT30AZZZ": {"cap_pos": 8, "cap_len": 3, "gen_pos": 8, "gen_len": 1,
                  "cap_map": "MIC_MCP_CAP", "gen_map": None,
                  "desc": "uMCP LPDDR5 (UFS 3.1)"},

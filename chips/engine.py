@@ -554,6 +554,15 @@ def _result_from_family(pn: str, fam) -> dict:
         # Exibi-la separadamente causaria redundância/confusão na UI ("Interface: LPDDR+eMMC").
         r["interface"] = ""
 
+        # Sincroniza `subtype` com o tipo RAM decodificado pelo gen map (Caminho 1).
+        # Sem isso, subtype fica com o default da família (ex: "LPDDR3" para MT29TZZZ),
+        # enquanto emcp_ram já contém o tipo correto (ex: "LPDDR2 1GB"). Necessário
+        # para MT29TZZZ Gen A onde o tipo varia por PN (dígito→LPDDR2, letra→LPDDR3+).
+        # Só sincroniza quando _decoded_gen é tipo limpo (sem capacidade embutida) para
+        # não tornar subtype = "LPDDR4X 6GB" (SK Hynix embute capacidade no gen map).
+        if _decoded_gen and not _CAP_RE.search(_decoded_gen):
+            r["subtype"] = _decoded_gen
+
     # ── Densidade DRAM ───────────────────────────────────────────────────────
     if fam.decode_density_type and not fam.is_emcp:
         dtype = fam.decode_density_type

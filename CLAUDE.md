@@ -314,6 +314,12 @@ Detalhes e armadilhas: **`DEPLOY_RENDER.md`**.
   Importadores **nunca** rebaixam um registro `confirmed`/`manual`.
 - **Não confie em dado de distribuidor ou IA** sem verificação por datasheet/Octopart
   (confundem Gb/GB, invertem primary/secondary, alucinam capacidade).
+- **Part-name da API Micron FBGA não é fonte para tipo de RAM** (BUG-8, 2026-06-19).
+  A API retorna strings como `"MLC EMMC/LPDDR2 72G VFBGA"` que podem pertencer a
+  famílias relacionadas com RAM diferente. Para MT29TZZZ, a API dizia "LPDDR2" mas
+  a família é LPDDR3 (MT29PZZZ é que é LPDDR2). Regra: o **prefixo do PN** define
+  o tipo de RAM (`_infer_lpddr_gen` em `fill_capacity_from_micron_api.py`); para
+  confirmar, use **datasheet oficial** ou **DigiKey** — nunca o campo `part-name` da API.
 
 ---
 
@@ -344,6 +350,12 @@ Detalhes e armadilhas: **`DEPLOY_RENDER.md`**.
   — fácil raspar a marca errada por omissão.
 - **`confidence="estimated"`** (ex.: Wayback) fica oculto na UI de triagem até
   confirmação manual.
+- **`enrich_micron_fbga.py` NÃO salva `emcp_ram`/`emcp_nand`.** Ele só cria o
+  KnownPart com FBGA + PN completo + `subtype` copiado do base. Os campos de
+  capacidade ficam vazios até o `fill_capacity_from_micron_api` rodar. Com DB
+  vazio para `emcp_ram`, a gramática vence no engine — por isso erros no decode
+  map (ex.: BUG-8) aparecem mesmo em chips com KnownPart `confidence=confirmed`.
+  Depois de `fill_capacity_from_micron_api`, o DB tem valores explícitos e vence.
 
 ---
 
@@ -372,7 +384,8 @@ relevante quando a tarefa pedir:
 - **`README.md`** — visão geral e setup original.
 - **`HANDOFF.md`** — decisões de arquitetura, histórico e correções (BUG-1…BUG-6).
 - **`DEPLOY_RENDER.md`** — deploy, env vars, armadilhas de produção.
-- **`PLANO_MICRON_FBGA.md`** — pipeline FBGA da Micron (estágios, decode de densidade).
+- **`MICRON.md`** — bíblia técnica e de negócio da Micron: famílias, decode maps, convenção de campos, pipeline, fontes de dados, bugs corrigidos, lacunas.
+- **`PLANO_MICRON_FBGA.md`** — pipeline FBGA da Micron (estágios iniciais — parcialmente histórico; ver MICRON.md para estado atual).
 - **`AUDITORIA_SAMSUNG_2026.md`** / **`BRIEFING_DDR_SAMSUNG.md`** — gabarito Samsung,
   chaves de cap/gen, casos confirmados e descartados.
 - **`INVESTIGACAO_ENGINE_STATUS_ENRICHED.md`** — o bug do gatekeeper `status/confidence`.
