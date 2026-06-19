@@ -145,6 +145,58 @@ def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
     return [parts_by_pn[c] for _, c in matches[:5] if c in parts_by_pn]
 
 
+def _prefix_candidates(pn: str, min_prefix_len: int = 7) -> list:
+    """Retorna KnownParts cujo part_number começa com o PN digitado.
+
+    Cobre o caso de PN incompleto: o operador para de digitar antes do sufixo
+    (ex: H5TQ2G83 → H5TQ2G83CFR, KMQ3100 → KMQ310006B-A).
+
+    Diferente de _fuzzy_candidates: não compara por distância de edição —
+    simplesmente filtra `part_number__startswith=pn`. Isso captura qualquer
+    sufixo sem custo de edição alto demais (H5TQ2G83 vs H5TQ2G83CFR: diff=3,
+    acima do threshold=2 do fuzzy, então o fuzzy nunca os capturaria).
+
+    min_prefix_len evita retornar ruído para prefixos muito curtos (< 7 chars).
+    Retorna lista de KnownPart objects (mesmo padrão que _fuzzy_candidates).
+    """
+    if len(pn) < min_prefix_len:
+        return []
+    return list(
+        KnownPart.objects
+        .filter(status="enriched", part_number__startswith=pn)
+        .exclude(part_number=pn)
+        .select_related("brand", "family")
+        .order_by("part_number")[:5]
+    )
+
+
+def _combined_suggestions(pn: str) -> list:
+    """Combina sugestões de prefixo (PN incompleto) e fuzzy visual (typo).
+
+    Prefixo vem primeiro — certeza maior, pois o digitado é literalmente o
+    início do PN completo. Fuzzy completa a lista com confusões de caracteres.
+    Retorna lista de strings (part_numbers), sem duplicatas, máx. 5 itens.
+
+    Exemplos:
+        H5TQ2G83    → [H5TQ2G83CFR, ...]  (prefixo: faltou o sufixo)
+        D9SGO       → [D9SGQ, D9SG0, ...]  (fuzzy visual: O↔Q, O↔0)
+        KMQ3100068  → [KMQ310006B, ...]    (fuzzy visual: 8↔B)
+    """
+    prefix = _prefix_candidates(pn)
+    fuzzy  = _fuzzy_candidates(pn)
+    seen: set = set()
+    merged: list = []
+    for s in prefix:
+        if s.part_number not in seen:
+            seen.add(s.part_number)
+            merged.append(s.part_number)
+    for s in fuzzy:
+        if s.part_number not in seen:
+            seen.add(s.part_number)
+            merged.append(s.part_number)
+    return merged[:5]
+
+
 def _fuzzy_fbga_candidates(pn: str, threshold: int = 2) -> list:
     """Retorna códigos FBGA parecidos — ordena por distância visual (confusões comuns primeiro).
 
@@ -1838,15 +1890,13 @@ def classify(pn_raw: str) -> dict:
         # mas isso não equivale a "estava no banco antes desta chamada" — usamos _gemini_saved_now.
         grammar_result["pn_not_in_db"] = not _gemini_saved_now
 
-        # ── Approach 2: fuzzy suggestions em gramática sem match exato ───────
-        # _fuzzy_candidates() já existe e roda na camada 4 (prefixo desconhecido).
-        # Aqui ativa também na camada 2 — quando a família foi reconhecida mas o
-        # PN exato não está no banco. Permite sugerir "Você quis dizer KLMAG1JETD?"
-        # para casos de digitação errada como KMLAG1JETD.
-        if grammar_result["pn_not_in_db"]:
-            fuzzy = _fuzzy_candidates(pn)
-            if fuzzy:
-                grammar_result["fuzzy_suggestions"] = [s.part_number for s in fuzzy]
+        # ── Approach 2: sugestões em gramática sem match exato ───────────────
+        # Combina prefixo (PN incompleto) + fuzzy visual (typo).
+        # Ex: H5TQ2G83 → H5TQ2G83CFR (prefixo) ou KMQ3100068 → KMQ310006B (fuzzy).
+        if grammar_result["pn_not_in_db"] or grammar_result.get("pn_incomplete"):
+            suggs = _combined_suggestions(pn)
+            if suggs:
+                grammar_result["fuzzy_suggestions"] = suggs
 
         _log_search(pn, found=True, source_used="grammar")
         return grammar_result
@@ -1875,9 +1925,10 @@ def classify(pn_raw: str) -> dict:
         _log_search(pn, found=True, source_used="gemini")
         return result
 
-    # ── 4. Fuzzy matching como sugestão ──────────────────────────────────────
+    # ── 4. Prefixo + fuzzy como sugestão (prefixo desconhecido) ─────────────
     # _log_unknown() já gravou em UnknownChip — família completamente desconhecida.
-    suggestions = _fuzzy_candidates(pn)
+    # _combined_suggestions: prefixo (PN incompleto) vem primeiro, fuzzy visual depois.
+    suggs = _combined_suggestions(pn)
     _log_search(pn, found=False, source_used="not_found")
 
     return {
@@ -1886,6 +1937,6 @@ def classify(pn_raw: str) -> dict:
         "from_web":         True,
         "gemini_found":     False,
         "gemini_searched":  True,
-        "fuzzy_suggestions": [s.part_number for s in suggestions],
+        "fuzzy_suggestions": suggs,
         "in_review_queue":  True,   # UnknownChip já logado por _log_unknown()
     }
