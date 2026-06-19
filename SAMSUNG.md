@@ -630,14 +630,14 @@ Posição `pn[3:5]`, 2 chars. BGA NVMe SSD.
 | K4F | `"LPDDR4"` | `"LPDDR4"` | LPDDR4_CAP | 100 | ✅ Completo |
 | K4U | `"LPDDR4X"` | `"LPDDR4X"` | LPDDR4_CAP | 100 | ✅ Completo |
 | K3U | `"LPDDR4X"` | `"LPDDR4X"` | LPDDR4_CAP | 40 | ✅ Completo (multi-canal) |
-| K3KL | `"LPDDR5"` | `"LPDDR5"` | LPDDR5_CAP | 40 | ✅ Completo |
-| K3LK | `"LPDDR5X"` | `"LPDDR5X"` | LPDDR5_CAP | 40 | ✅ Completo |
+| K3KL | `"LPDDR5X"` | `"LPDDR5X"` | LPDDR5_CAP | 40 | ✅ Completo |
+| K3LK | `"LPDDR5"` | `"LPDDR5"` | LPDDR5_CAP | 40 | ✅ Completo |
 | K3L | `"LPDDR5X"` | `"LPDDR5X"` | LPDDR5_CAP | 60 | ✅ Fallback (K3LK/K3KL têm prioridade) |
 
-> **K3LK — risco elétrico:** VDDQ=0.5V. Placa mal projetada pode queimar o chip.
+> **K3KL — risco elétrico:** VDDQ=0.5V. Placa mal projetada pode queimar o chip ao instalar no socket de LPDDR5 (VDDQ=0.9V).
 > Anotar no tip: confirmar especificações da placa receptora antes de instalar.
 
-> **K3KL sufixo `*EM`:** alguns SKUs são LPDDR5X — confirmar por datasheet antes
+> **K3LK sufixo `*EM`:** alguns SKUs são LPDDR5X — confirmar por datasheet antes
 > de tratar junto com LPDDR5 padrão.
 
 > **Interface de TODAS as famílias LPDDR acima:** `""` (string vazia). **Nunca** colocar
@@ -1137,6 +1137,8 @@ SoC/PMIC/Sensor        ████████░░ 80%   routing OK, decode m
 | 2026-06-19 | KML7U000HM | KnownPart eMCP: corrige grammar bug "LPDDR5 1GB" → correto "LPDDR2 1GB" | Octopart KMK7U000VM-B309 = "eMCP 8GB eMMC + LPDDR2 1GB" ✓ (cross-família, mesma chave "7U") | decode_gen_pos=None → KML nunca deve ler SAM_EMCP_GEN; LPDDR5 impossível em 2013-2015 |
 | 2026-06-19 | KML5U000HM | KnownPart eMCP: 4GB eMMC + LPDDR2 1GB | Puris KML5U000HM-B505 = "4+8 eMCP-D1" (direto) + Octopart/Avnet KMK5U000VM-B309 = "256Mx32 LPDDR2" = 1GB (cross-família, chave "5U") | SAM_EMCP_CAP["5U"] dizia 512MB (errado); KnownPart confirmed vence grammar |
 | 2026-06-19 | SAM_EMCP_CAP "5U" | Gramática corrigida: 512MB → 1GB em populate_samsung.py | Octopart/Avnet Tier 1: KMK5U000VM = "256Mx32 LPDDR2" = 8Gbit = 1GB; Puris KML5U = "4+8" ✓ | Fonte anterior: Jotrin Tier 3 ("4Gb" = die único ≠ pacote). KMN não afetado. Requer populate_samsung --overwrite + reiniciar |
+| 2026-06-19 | **51 PNs PSG** (K3LK×7, K3UH×5, K4EBE304EBEGCF×1, K4F×28, K4P/K3PE×10) | `subtype` corrigido: "LPDDR4 Mobile"→"LPDDR4", "LPDDR2 Mobile"→"LPDDR2", "LPDDR4X Multi-Channel"→"LPDDR4X", "LPDDR5 \<cap\>"→"LPDDR5" | PSG Samsung 2H2014 + 1H2017 + Global 2017-2020 | Qualificadores verbose vazavam para label da caixa (ex.: "LPDDR3 Mobile+4G"). Fix via fix_known_parts + correção dos 4 CSVs PSG. Importer protege confirmed → workaround necessário (ver PROPOSTA_IMPORTER_FREE_FIELDS.md) |
+| 2026-06-19 | SAMSUNG.md §5.2 | K3KL e K3LK estavam trocados na tabela | populate_samsung.py (⚠ CORRIGIDO 2026-05-27) | Bug doc herdado: K3KL=LPDDR5X (VDDQ=0.5V), K3LK=LPDDR5 (VDDQ=0.9V). Notas de risco elétrico também corrigidas |
 
 ### Chips confirmados individuais (histórico)
 

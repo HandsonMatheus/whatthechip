@@ -181,6 +181,46 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K3LK* base PNs — correção de subtype PSG (2026-06-19) ────────────────
+    # samsung_global_lpddr5_k3lk_v2.csv importou com subtype="LPDDR5 XGB"
+    # (ex.: "LPDDR5 8GB", "LPDDR5 12GB"). O importer protege registros confirmed
+    # e não os atualiza. Regra CLAUDE.md §6: subtype = só geração, nunca capacidade.
+    {
+        "pn": "K3LKCKC0BM",
+        "fields": {"subtype": "LPDDR5"},
+        "reason": "subtype 'LPDDR5 8GB' → 'LPDDR5'. k3lk_v2.csv CK=8GB (64Gb). Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3LK7K70BM",
+        "fields": {"subtype": "LPDDR5"},
+        "reason": "subtype 'LPDDR5 8GB' → 'LPDDR5'. k3lk_v2.csv 7K=8GB (64Gb). Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3LK2K20CM",
+        "fields": {"subtype": "LPDDR5"},
+        "reason": "subtype 'LPDDR5 6GB' → 'LPDDR5'. k3lk_v2.csv 2K=6GB (48Gb). Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3LK4K40BM",
+        "fields": {"subtype": "LPDDR5"},
+        "reason": "subtype 'LPDDR5 12GB' → 'LPDDR5'. k3lk_v2.csv 4K=12GB (96Gb). Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3LK4K40CM",
+        "fields": {"subtype": "LPDDR5"},
+        "reason": "subtype 'LPDDR5 12GB' → 'LPDDR5'. k3lk_v2.csv 4K=12GB gen CM (96Gb). Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3LK6K60BM",
+        "fields": {"subtype": "LPDDR5"},
+        "reason": "subtype 'LPDDR5 16GB' → 'LPDDR5'. k3lk_v2.csv 6K=16GB (128Gb). Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3LK3K30EM",
+        "fields": {"subtype": "LPDDR5"},
+        "reason": "subtype 'LPDDR5 8GB' → 'LPDDR5'. k3lk_v2.csv 3K=8GB gen EM (64Gb). Regra CLAUDE.md: subtype=só geração.",
+    },
+
     # ── KM8V8001JM ───────────────────────────────────────────────────────────
     # Problema: cap_key V8 estava mapeado como 128GB+8GB no SAM_EMCP_CAP
     # (fonte: AI externa, sem confirmação de fabricante).
@@ -1919,6 +1959,35 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K3UH* PSG — correção de subtype "Multi-Channel" (2026-06-19) ─────────
+    # Importados com "LPDDR4X Multi-Channel" (psg_1h2017 e samsung_global_lpddr4).
+    # O importer protege registros confirmed. Regra CLAUDE.md: subtype=só geração.
+    {
+        "pn": "K3UH5H50MMNGCJ",
+        "fields": {"subtype": "LPDDR4X"},
+        "reason": "subtype 'LPDDR4X Multi-Channel' → 'LPDDR4X'. PSG 1H 2017. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3UH6H60AMNGCJ",
+        "fields": {"subtype": "LPDDR4X"},
+        "reason": "subtype 'LPDDR4X Multi-Channel' → 'LPDDR4X'. PSG 1H 2017. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3UH6H60AMTHCL",
+        "fields": {"subtype": "LPDDR4X"},
+        "reason": "subtype 'LPDDR4X Multi-Channel' → 'LPDDR4X'. Samsung Global 2017-2020. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3UH6H60BMEGCL",
+        "fields": {"subtype": "LPDDR4X"},
+        "reason": "subtype 'LPDDR4X Multi-Channel' → 'LPDDR4X'. Samsung Global 2017-2020. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3UH6H60BMAGCL",
+        "fields": {"subtype": "LPDDR4X"},
+        "reason": "subtype 'LPDDR4X Multi-Channel' → 'LPDDR4X'. Samsung Global 2017-2020. Regra CLAUDE.md: subtype=só geração.",
+    },
+
     # ══════════════════════════════════════════════════════════════════════════
     # Samsung K3PE — LPDDR2 Mobile standalone (~2011-2013)
     # Família adicionada ao grammar em populate_samsung.py (2026-05-29).
@@ -2200,6 +2269,19 @@ CORRECTIONS = [
             "Correção de convenção (2026-06-19): subtype 'LPDDR3 Mobile' → 'LPDDR3'; "
             "interface 'LPDDR3' → '' (vazio — bus width não aplicável a LPDDR standalone). "
             "PN base artificial — não recriar. BE=4GB conforme K4E_CAP."
+        ),
+    },
+
+    # ── K4EBE304EBEGCF ────────────────────────────────────────────────────────
+    # PN completo (14 chars) importado do PSG 1H 2017 com subtype errado.
+    # O importer protege registros confirmed; fix_known_parts é o único canal.
+    {
+        "pn": "K4EBE304EBEGCF",
+        "fields": {"subtype": "LPDDR3"},
+        "reason": (
+            "subtype 'LPDDR3 Mobile' → 'LPDDR3'. PSG 1H 2017 confirma LPDDR3 standalone 4GB "
+            "(BE=4GB, gen B 1866Mbps, 178-ball FBGA). "
+            "Regra CLAUDE.md: subtype=só geração, nunca qualificador Mobile/PC/Multi-Channel."
         ),
     },
 
@@ -2634,6 +2716,158 @@ CORRECTIONS = [
             "Fix sistêmico: LPDDR4_CAP['HE'] corrigido 4GB→3GB (populate_samsung.py). "
             "confidence+status em fields: garante grammar_wins=False para registros existentes."
         ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Correção de subtype PSG: "LPDDR4 Mobile" → "LPDDR4" (2026-06-19)
+    # Fontes: PSG 1H 2017 + Samsung Semiconductor Global 2017-2020.
+    # O importer protege registros confirmed; fix_known_parts é o único canal.
+    # Regra CLAUDE.md §6: subtype = só geração, nunca qualificador "Mobile".
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # — PSG 1H 2017 ──────────────────────────────────────────────────────────
+    {
+        "pn": "K4F8E304HBMGCJ",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. PSG 1H 2017. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F6E304HBMGCJ",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. PSG 1H 2017. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FHE3D4HMMFCJ",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. PSG 1H 2017. Regra CLAUDE.md: subtype=só geração.",
+    },
+    # — Samsung Global 2017-2020 (gen S, 1GB/2GB LPDDR4) ─────────────────
+    {
+        "pn": "K4F8E3S4HBMHCJ",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S SDP 1GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F8E3S4HBMFCJ",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S SDP 1GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F8E3S4HDGHCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S Rev D SDP 1GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F8E3S4HDMGCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S Rev D SDP 1GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F8E3S4HDGFCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S Rev D SDP 1GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F8E3S4HDGUCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S Rev D SDP 1GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F6E3S4HMMGCJ",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F6E3S4HMGFCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F6E3S4HMGUCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F6E3S4HMTHCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F6E3S4HMGHCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4F6E3S4HMTFCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    # — Samsung Global 2017-2020 (gen D, 3GB LPDDR4) ─────────────────────
+    {
+        "pn": "K4FHE3D4HMMHCJ",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D DDP 3GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FHE3D4HATHCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D Rev A DDP 3GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FHE3D4HATFCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D Rev A DDP 3GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FHE3D4HAGFCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D Rev A DDP 3GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FHE3D4HATUCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D Rev A DDP 3GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    # — Samsung Global 2017-2020 (gen D, 4GB LPDDR4) ─────────────────────
+    {
+        "pn": "K4FBE3D4HBKHCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D Rev B QDP 4GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FBE3D4HBKFCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D Rev B QDP 4GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FBE3D4HBKUCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D Rev B QDP 4GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FBE3D4HMTHCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FBE3D4HMGFCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FBE3D4HMGHCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FBE3D4HMGUCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4FBE3D4HMTUCL",
+        "fields": {"subtype": "LPDDR4"},
+        "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.",
     },
 
     # ── K4UJE3T ───────────────────────────────────────────────────────────────
@@ -3437,6 +3671,66 @@ CORRECTIONS = [
     },
 
     # ══════════════════════════════════════════════════════════════════════════
+    # Correção de subtype PSG: "LPDDR2 Mobile" → "LPDDR2" (2026-06-19)
+    # Fonte: Samsung PSG 2H 2014 (psg_2h2014_mobile_dram.csv corrigido).
+    # O importer protege registros confirmed; fix_known_parts é o único canal.
+    # Regra CLAUDE.md §6: subtype = só geração, nunca qualificador "Mobile".
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # — K4P* LPDDR2 standalone ────────────────────────────────────────────────
+    {
+        "pn": "K4P4G324EQAGC2",
+        "fields": {"subtype": "LPDDR2"},
+        "reason": "subtype 'LPDDR2 Mobile' → 'LPDDR2'. PSG 2H 2014 SDP 512MB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4P4G324EQFGC2",
+        "fields": {"subtype": "LPDDR2"},
+        "reason": "subtype 'LPDDR2 Mobile' → 'LPDDR2'. PSG 2H 2014 SDP 512MB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4P8G304EQAGC2",
+        "fields": {"subtype": "LPDDR2"},
+        "reason": "subtype 'LPDDR2 Mobile' → 'LPDDR2'. PSG 2H 2014 DDP 1GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4P8G304EQPGC2",
+        "fields": {"subtype": "LPDDR2"},
+        "reason": "subtype 'LPDDR2 Mobile' → 'LPDDR2'. PSG 2H 2014 DDP 1GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4P2E304EQAGC2",
+        "fields": {"subtype": "LPDDR2"},
+        "reason": "subtype 'LPDDR2 Mobile' → 'LPDDR2'. PSG 2H 2014 TDP 1.5GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K4PAG304EQAGC2",
+        "fields": {"subtype": "LPDDR2"},
+        "reason": "subtype 'LPDDR2 Mobile' → 'LPDDR2'. PSG 2H 2014 QDP 2GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    # — K3PE* LPDDR2 multi-channel standalone ─────────────────────────────────
+    {
+        "pn": "K3PE7E70QMBGC2",
+        "fields": {"subtype": "LPDDR2"},
+        "reason": "subtype 'LPDDR2 Mobile' → 'LPDDR2'. PSG 2H 2014 2CH DDP 1GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3PE7E70QMCGC2",
+        "fields": {"subtype": "LPDDR2"},
+        "reason": "subtype 'LPDDR2 Mobile' → 'LPDDR2'. PSG 2H 2014 2CH DDP 1GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3PE0E00QMBGC2",
+        "fields": {"subtype": "LPDDR2"},
+        "reason": "subtype 'LPDDR2 Mobile' → 'LPDDR2'. PSG 2H 2014 2CH QDP 2GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+    {
+        "pn": "K3PE0E00QMCGC2",
+        "fields": {"subtype": "LPDDR2"},
+        "reason": "subtype 'LPDDR2 Mobile' → 'LPDDR2'. PSG 2H 2014 2CH QDP 2GB. Regra CLAUDE.md: subtype=só geração.",
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
     # Chips Micron confirmados — 2026-05-26
     # ══════════════════════════════════════════════════════════════════════════
 
@@ -3660,15 +3954,15 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "NAND Flash",
-            "subtype":    "NAND Flash 8Gbit (1GB) x16 — K9 series (legado)",
+            "subtype":    "SLC NAND",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "chip_type":  "NAND Flash",
-            "subtype":    "NAND Flash 8Gbit (1GB) x16 — K9 series (legado)",
-            "capacity":   "8Gbit (1GB)",
-            "interface":  "NAND x16 (raw, sem controladora)",
+            "subtype":    "SLC NAND",
+            "capacity":   "1GB",
+            "interface":  "x16",
             "device":     "SUCATA / uso industrial específico — Samsung NAND Flash standalone legado "
                           "(feature phone / embedded ~2008-2012). Sem controladora eMMC.",
             "source_url": "https://octopart.com/kf98g16q4x-beb0-samsung-52061167",
@@ -5163,10 +5457,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5178,10 +5472,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5194,10 +5488,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5210,10 +5504,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5226,10 +5520,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5241,10 +5535,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5257,10 +5551,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5273,10 +5567,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5288,10 +5582,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5307,10 +5601,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5322,10 +5616,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5338,10 +5632,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5354,10 +5648,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5370,10 +5664,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5385,10 +5679,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5401,10 +5695,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5417,10 +5711,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5432,10 +5726,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5453,10 +5747,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5468,10 +5762,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5486,10 +5780,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5502,10 +5796,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5518,10 +5812,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5533,10 +5827,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5549,10 +5843,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5565,10 +5859,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5581,10 +5875,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5596,10 +5890,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5615,10 +5909,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5630,10 +5924,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5646,10 +5940,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5662,10 +5956,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5678,10 +5972,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5693,10 +5987,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5709,10 +6003,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5725,10 +6019,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5741,10 +6035,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5756,10 +6050,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5776,10 +6070,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5791,10 +6085,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5807,10 +6101,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5823,10 +6117,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5838,10 +6132,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x8",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5857,10 +6151,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5872,10 +6166,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5888,10 +6182,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5904,10 +6198,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5919,10 +6213,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x16",
+            "chip_type": "DDR4", "subtype": "DDR4",
             "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5951,10 +6245,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5966,10 +6260,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5982,10 +6276,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -5998,10 +6292,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6014,10 +6308,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6029,10 +6323,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6045,10 +6339,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6060,10 +6354,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6079,10 +6373,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x16",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6094,10 +6388,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x16",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6110,10 +6404,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x16",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6126,10 +6420,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x16",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6142,10 +6436,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x16",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6158,10 +6452,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x16",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6173,10 +6467,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x16",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6193,10 +6487,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 32Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 32Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6208,10 +6502,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 32Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 32Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6224,10 +6518,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 32Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 32Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6250,10 +6544,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 32Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 32Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6265,10 +6559,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 32Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 32Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
@@ -6284,10 +6578,10 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5 PC DRAM 32Gb x8", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 32Gb x8",
+            "chip_type": "DDR5", "subtype": "DDR5",
             "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
