@@ -47,18 +47,21 @@
 
   {# ── Sugestão de digitação (fuzzy) — antes do painel de destino #}
   {% if gateway.typo.has %}
-  <div style="margin-bottom:18px;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:8px;">VOCÊ QUIS DIZER?</div>
-    <style>.wtc-chip:hover{background:#e0e0e0;}</style>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+  <style>
+    .wtc-chip{transition:background 0.12s;}
+    .wtc-chip:hover{background:#c6c6c6;}
+  </style>
+  <div style="margin-bottom:22px;">
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:10px;">VOCÊ QUIS DIZER?</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
       {% for s in gateway.typo.suggestions %}
       <a class="wtc-chip" href="#"
          onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
-         style="display:inline-flex;align-items:center;padding:5px 10px;background:#f4f4f4;text-decoration:none;cursor:pointer;">
+         style="display:inline-flex;align-items:center;padding:8px 14px;background:#e8e8e8;text-decoration:none;cursor:pointer;">
         <span class="wtc-fuzzy-pn"
               data-typed="{{ pn }}"
               data-suggestion="{{ s|escapejs }}"
-              style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#0f62fe;">{{ s }}</span>
+              style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:#0f62fe;">{{ s }}</span>
       </a>
       {% endfor %}
     </div>
@@ -71,8 +74,8 @@
       var pre=s.slice(0,i), dif=s.slice(i);
       el.innerHTML=
         (pre?'<span>'+pre+'</span>':'')+
-        (dif?'<span style="color:#198038;font-weight:700">'+dif+' →</span>':
-             '<span style="color:#6f6f6f;font-size:13px;margin-left:2px;">→</span>');
+        (dif?'<span style="color:#198038;font-weight:700">'+dif+' +</span>':
+             '<span style="color:#6f6f6f;margin-left:3px;">+</span>');
     });
   })();
   </script>
