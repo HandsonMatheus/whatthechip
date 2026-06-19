@@ -691,10 +691,37 @@ quando chip físico aparecer na esteira.
 | Prefixo | `chip_type` | `subtype` | Decode | Status |
 |---------|-------------|-----------|--------|--------|
 | K4N | `"RAM"` | `"GDDR2"` | nenhum | ℹ️ Routing (resíduo) |
-| K4J | `"RAM"` | `"GDDR3"` | nenhum | ⚠️ Sem decode capacidade |
+| K4J | `"RAM"` | `"GDDR3"` | nenhum | ✅ KnownParts (13 PNs, 2026-06-19) |
 | K4W | `"RAM"` | `"GDDR3"` | DRAM_PC | ✅ Adicionado 2026-05-09 |
 | K4G | `"RAM"` | `"GDDR5"` | nenhum | ❌ GAP IMPORTANTE — alto volume |
 | K4Z | `"RAM"` | `"GDDR6"` | nenhum | ❌ GAP IMPORTANTE — alto volume |
+
+> **K4J — GDDR3 Samsung (~2005–2012):**
+> VRAM de GPUs ATI/AMD Radeon HD 4xxx/5xxx e Nvidia GeForce 9xxx/200. Usa refresh
+> 8K/32ms (GDDR3-específico), diferente do DDR3 standard.
+>
+> **Anatomia do PN:**
+> `K4J | [density 2ch pn[3:5]] | [org 2ch pn[5:7]] | [bank pn[7]] | [iface pn[8]] | [rev pn[9]] | - | [speed suffix]`
+>
+> **Density codes GDDR3-específicos — ⚠️ NÃO usar DRAM_PC:**
+>
+> | Código `pn[3:5]` | Capacidade | bytes/die | Label gateway |
+> |-----------------|-----------|-----------|---------------|
+> | `"10"` | 1Gb | **128MB** | `"GDDR3+1G"` |
+> | `"52"` | 512Mb | **64MB** | `"GDDR3+0.5G"` |
+> | `"55"` | 256Mb | **32MB** | `"GDDR3+0.25G"` |
+>
+> Fonte: Samsung Consumer Memory Product Guide, Abr. 2010 ✓ (Alldatasheet ref #347919).
+> Os códigos "10", "52", "55" **não existem** no mapa DRAM_PC (que usa "1G", "51", "56").
+> Por isso `decode_density_type` é vazio para K4J — `grammar_complete=false` é **by design**.
+>
+> **Campo correto em `fix_known_parts`:** `capacity` em bytes. O gateway `_density_g()`
+> converte capacity em Gbit para o label (`128MB ÷ 128 = 1Gbit → "+1G"`).
+>
+> **PNs confirmados (fix_known_parts, 2026-06-19):**
+> K4J10324KE (base, BC14, HC14, HC1A) · K4J10324QD (base, HC12) — 1Gb, 128MB
+> K4J52324QH (base, HJ1A, HJ08) — 512Mb, 64MB
+> K4J55323QF (base, GC16) · K4J55323QG (base, BC14) — 256Mb, 32MB
 
 > **K4W — gDDR3 Graphics DDR3:** Classificação corrigida em 2026-05-09. K4W **NÃO** é
 > DDR3L ultrabook — é VRAM dedicada em GPUs de entrada (ATI Radeon HD 4550, notebooks
@@ -709,10 +736,9 @@ quando chip físico aparecer na esteira.
 > **Nunca criar o mapa sem confirmar ao menos 3–4 chaves por Octopart/datasheet.**
 
 > **Enquanto não há decode — preenchimento manual em `fix_known_parts`:**
-> Para K4J/K4G/K4Z individuais confirmados por Octopart, preencha `density_gbit`
-> (ex.: `"8Gb"`) — é o campo que o gateway lê para montar `"GDDR5+8G"`. Sem ele,
-> o label sai vazio e `profitable='INDETERMINADO'`. Não usar `capacity` para GDDR
-> (capacity é reservado para pacotes LPDDR/eMMC/UFS).
+> K4J: coberto por KnownParts (13 PNs, 2026-06-19). Para K4G/K4Z individuais confirmados
+> por Octopart, preencha `density_gbit` (ex.: `"8Gb"`) — é o campo que o gateway lê para
+> montar `"GDDR5+8G"`. Não usar `capacity` para GDDR5/6 (reservado para LPDDR/eMMC/UFS).
 
 ### 5.8 NAND Flash (K9)
 
@@ -1088,6 +1114,8 @@ SoC/PMIC/Sensor        ████████░░ 80%   routing OK, decode m
 | 2026-06-19 | **Subtypes verbosos** | `"DDR1 PC DRAM 256Mb x16"` → `"DDR1"` etc. | Auditoria convenção | Label gateway truncava com texto longo |
 | 2026-06-19 | K4EBE304EB | UPDATE-ONLY: subtype `"LPDDR3 Mobile"` → `"LPDDR3"`, interface `"LPDDR3"` → `""` | Auditoria conveção | Registro antigo com dados fora de convenção |
 | 2026-06-19 | LPDDR5_CAP K3KL subtype | engine.py: subtype sync com `_decoded_gen` para eMCP | — | subtype de eMCP não era preenchido pela gramática |
+| 2026-06-19 | K4J (13 PNs) | KnownParts GDDR3 adicionados: K4J10324KE/QD, K4J52324QH, K4J55323QF/QG | Samsung Product Guide Abr. 2010, Alldatasheet ref #347919, Octopart | grammar_complete=false by design — density codes "10"/"52"/"55" não estão no DRAM_PC |
+| 2026-06-19 | K3RG (7 PNs) | KnownParts LPDDR4 adicionados: BMCGCJ, CAMGCJ, CMFGCJ, CMCGCJ, 4G40MMMGCJ, 4G40MMMGCJT00E, 6G60MMMGCJ | PSG Samsung 1H 2017, Octopart (Worldway/Win Source) | pn_not_in_db=true apesar de grammar_complete=true |
 
 ### Chips confirmados individuais (histórico)
 
