@@ -860,7 +860,7 @@ class Command(BaseCommand):
             # K4P = LPDDR2 — pn[3] = densidade (DRAM_MOBILE). Reacondicional.
             # K3Q = LPDDR3 — pn[3] = densidade (DRAM_MOBILE). Reacondicional.
             dict(
-                prefix="K4M", chip_type="LPDDR1", subtype="LPDDR1 / Mobile DDR (legado)",
+                prefix="K4M", chip_type="LPDDR1", subtype="LPDDR1",
                 interface="LPDDR1", is_emcp=False, active=True, priority=100,
                 tip=(
                     "⚠ LPDDR1 / Mobile DDR Samsung (obsoleto, ~2004–2010). "
@@ -869,7 +869,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="K4X", chip_type="LPDDR1", subtype="LPDDR1 / Mobile DDR (legado)",
+                prefix="K4X", chip_type="LPDDR1", subtype="LPDDR1",
                 interface="LPDDR1", is_emcp=False, active=True, priority=100,
                 decode_density_type="pc",
                 tip=(
@@ -881,7 +881,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="K4P", chip_type="LPDDR2", subtype="LPDDR2 Mobile (legado)",
+                prefix="K4P", chip_type="LPDDR2", subtype="LPDDR2",
                 interface="LPDDR2", decode_density_type="mobile",
                 is_emcp=False, active=True, priority=100,
                 tip=(
@@ -994,7 +994,7 @@ class Command(BaseCommand):
             # decode_density_type="" — suprime DRAM_MOBILE (pn[3]='E' sem mapeamento).
             # Chips PSG 2H 2014: K3PE7E70QM (1GB, 216/220-ball) · K3PE0E00QM (2GB, 216/220-ball).
             dict(
-                prefix="K3PE", chip_type="LPDDR2", subtype="LPDDR2 Multi-Channel PoP",
+                prefix="K3PE", chip_type="LPDDR2", subtype="LPDDR2",
                 interface="LPDDR2", decode_density_type="",
                 is_emcp=False, active=True, priority=35,
                 tip=(
@@ -1013,7 +1013,7 @@ class Command(BaseCommand):
             #   16Gb=2GB para TODOS, mas K3MF9=3GB (24Gb) — valor errado.
             # Chips PSG 2H 2014: K3MF8F80DM (2GB, 504-ball 15×15mm) · K3MF9F90MM (3GB, 504-ball).
             dict(
-                prefix="K3MF", chip_type="LPDDR3", subtype="LPDDR3 Multi-Channel PoP",
+                prefix="K3MF", chip_type="LPDDR3", subtype="LPDDR3",
                 interface="LPDDR3", decode_density_type="",
                 is_emcp=False, active=True, priority=40,
                 tip=(
@@ -1032,7 +1032,7 @@ class Command(BaseCommand):
             # Chaves: 4E=512MB · 7E/8E=1GB · 0E=2GB.
             # Fontes: harddiskdirect ✓, TechInsights ✓, Preduo ✓ (2026-05-29).
             dict(
-                prefix="K3PE", chip_type="LPDDR2", subtype="LPDDR2 Mobile",
+                prefix="K3PE", chip_type="LPDDR2", subtype="LPDDR2",
                 interface="LPDDR2", is_emcp=False, active=True, priority=100,
                 decode_density_type="",
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="K3PE_CAP",
@@ -1065,7 +1065,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="K4F", chip_type="LPDDR4", subtype="LPDDR4 Mobile",
+                prefix="K4F", chip_type="LPDDR4", subtype="LPDDR4",
                 interface="LPDDR4", is_emcp=False, active=True, priority=100,
                 decode_density_type="",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="LPDDR4_CAP",
@@ -1095,7 +1095,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="K3U", chip_type="LPDDR4X", subtype="LPDDR4X Multi-Channel",
+                prefix="K3U", chip_type="LPDDR4X", subtype="LPDDR4X",
                 interface="LPDDR4X", is_emcp=False, active=True, priority=40,
                 decode_density_type="",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="LPDDR4_CAP",
@@ -1966,7 +1966,7 @@ class Command(BaseCommand):
             # Fonte: teardown + Censtry (K5W1G12ACM-BL60TNO classificado como SRAM/MCP) ✓
             # Destino: fluxo de resíduo. Zero liquidez B2B em 2026.
             dict(
-                prefix="K5W", chip_type="MCP", subtype="NOR Flash + Mobile SDRAM (legado)",
+                prefix="K5W", chip_type="MCP", subtype="NOR Flash + SDRAM",
                 interface="NOR (async) + SDRAM", is_emcp=False, active=True, priority=55,
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="DRAM_PC",
                 tip=(

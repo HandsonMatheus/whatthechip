@@ -211,7 +211,7 @@ class Command(BaseCommand):
                 # 256M × 32bit = 8Gb = 1GB · single die (D1) · FBGA178
                 prefix="RS256M32LD3",
                 chip_type="LPDDR3",
-                subtype="LPDDR3 Mobile 1GB",
+                subtype="LPDDR3",
                 interface="LPDDR3",
                 decode_cap_pos=2, decode_cap_len=4, decode_cap_map="RAY_LPDDR_4CHAR_CAP",
                 pn_length=None,
@@ -233,7 +233,7 @@ class Command(BaseCommand):
                 # 512M × 32bit = 16Gb = 2GB
                 prefix="RS512M32LD3",
                 chip_type="LPDDR3",
-                subtype="LPDDR3 Mobile 2GB",
+                subtype="LPDDR3",
                 interface="LPDDR3",
                 decode_cap_pos=2, decode_cap_len=4, decode_cap_map="RAY_LPDDR_4CHAR_CAP",
                 pn_length=None,
@@ -277,7 +277,7 @@ class Command(BaseCommand):
                 # Este entry (priority=55) cobre Z4 e quaisquer outros variantes LPDDR4/4X de 1GB.
                 prefix="RS256M32L",
                 chip_type="LPDDR4",
-                subtype="LPDDR4/4X Mobile 1GB",
+                subtype="LPDDR4/4X",
                 interface="LPDDR4/4X",
                 decode_cap_pos=2, decode_cap_len=4, decode_cap_map="RAY_LPDDR_4CHAR_CAP",
                 pn_length=None,
@@ -306,7 +306,7 @@ class Command(BaseCommand):
                 # para chips D3 — este entry (priority=55) só pega o que sobrar.
                 prefix="RS512M32L",
                 chip_type="LPDDR4",
-                subtype="LPDDR4/4X Mobile 2GB",
+                subtype="LPDDR4/4X",
                 interface="LPDDR4/4X",
                 decode_cap_pos=2, decode_cap_len=4, decode_cap_map="RAY_LPDDR_4CHAR_CAP",
                 pn_length=None,
@@ -331,7 +331,7 @@ class Command(BaseCommand):
                 # 1G × 32bit = 32Gb = 4GB · dual die (D2) · FBGA200
                 prefix="RS1G32L",
                 chip_type="LPDDR4",
-                subtype="LPDDR4/4X Mobile 4GB",
+                subtype="LPDDR4/4X",
                 interface="LPDDR4/4X",
                 decode_cap_pos=2, decode_cap_len=2, decode_cap_map="RAY_LPDDR_2CHAR_CAP",
                 pn_length=None,
@@ -355,7 +355,7 @@ class Command(BaseCommand):
                 # 2G × 32bit = 64Gb = 8GB · quad die (D4) · FBGA200
                 prefix="RS2G32L",
                 chip_type="LPDDR4",
-                subtype="LPDDR4/4X Mobile 8GB",
+                subtype="LPDDR4/4X",
                 interface="LPDDR4/4X",
                 decode_cap_pos=2, decode_cap_len=2, decode_cap_map="RAY_LPDDR_2CHAR_CAP",
                 pn_length=None,
