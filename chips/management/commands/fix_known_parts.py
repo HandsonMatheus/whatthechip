@@ -2049,66 +2049,6 @@ CORRECTIONS = [
         ),
     },
 
-    # ── K4EBE304EB ───────────────────────────────────────────────────────────
-    # LPDDR3 standalone Samsung 4GB. Família K4E, pn[3:5]="BE" → 32Gb ÷ 8 = 4GB.
-    # "EB" = 1ª revisão de die da série K4EBE304 (flagship ~2015).
-    # Fonte Tier 1:
-    #   • Samsung Semiconductor Global: K4EBE304EB-EGCG(32 Gb) ✓
-    #     semiconductor.samsung.com/dram/lpddr/lpddr3/k4ebe304eb-egcg/
-    {
-        "pn": "K4EBE304EB",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "Samsung",
-            "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
-            "status":     "enriched",
-            "confidence": "confirmed",
-        },
-        "fields": {
-            "capacity":   "4GB",
-            "interface":  "LPDDR3",
-            "confidence": "confirmed",
-            "status":     "enriched",
-        },
-        "reason": (
-            "Samsung Semiconductor Global (Tier 1): K4EBE304EB-EGCG(32 Gb) ✓. "
-            "32Gb ÷ 8 = 4GB. pn[3:5]='BE' → K4E_CAP['BE']=4GB. "
-            "Die revision EB (1ª revisão da série K4EBE304, flagship ~2015). "
-            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
-        ),
-    },
-
-    # ── K4EBE304EC ───────────────────────────────────────────────────────────
-    # LPDDR3 standalone Samsung 4GB. Família K4E, pn[3:5]="BE" → 32Gb ÷ 8 = 4GB.
-    # "EC" = 2ª revisão de die da série K4EBE304.
-    # Fonte Tier 1:
-    #   • Samsung Semiconductor Global: K4EBE304EC-EGCG(32 Gb) ✓
-    #     semiconductor.samsung.com/dram/lpddr/lpddr3/k4ebe304ec-egcg/
-    {
-        "pn": "K4EBE304EC",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "Samsung",
-            "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
-            "status":     "enriched",
-            "confidence": "confirmed",
-        },
-        "fields": {
-            "capacity":   "4GB",
-            "interface":  "LPDDR3",
-            "confidence": "confirmed",
-            "status":     "enriched",
-        },
-        "reason": (
-            "Samsung Semiconductor Global (Tier 1): K4EBE304EC-EGCG(32 Gb) ✓. "
-            "32Gb ÷ 8 = 4GB. pn[3:5]='BE' → K4E_CAP['BE']=4GB. "
-            "Die revision EC (2ª revisão da série K4EBE304). "
-            "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
-        ),
-    },
-
     # ── K4EHE304EC ───────────────────────────────────────────────────────────
     # LPDDR3 standalone Samsung 3GB. Família K4E, pn[3:5]="HE" → 24Gb ÷ 8 = 3GB.
     # "HE" é alias de "FE" (mesmo densidade 24Gb, die alternativo) — padrão Samsung.
@@ -4341,6 +4281,342 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K4B4G0846E — 4Gb DDR3/DDR3L x8 (E-die) — Samsung Semiconductor Global ✓
+    # BC suffix = DDR3 1.5V; BY suffix = DDR3L 1.35V/1.5V dual.
+    # 4Gbit ÷ 8 = 512MB/die. x8 bus width. E-die = mesma revisão do K4B4G1646E x16.
+    {
+        "pn": "K4B4G0846E",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR3",
+            "subtype": "DDR3 PC DRAM 4Gb x8", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "DDR3", "subtype": "DDR3 PC DRAM 4Gb x8",
+            "capacity": "512MB", "interface": "DDR3", "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4B4G0846E-BCK0/BCNB/BYK0/BYMA (Samsung Semiconductor Global ✓). "
+            "4Gbit ÷ 8 = 512MB/die. E-die, x8. Tem variantes DDR3 (BC) e DDR3L (BY)."
+        ),
+    },
+    {
+        "pn": "K4B4G0846E-BCK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x8",
+            "capacity":   "512MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B4G0846E-BCK0 ✓. "
+            "BC = DDR3 1.5V. x8 bus width. E-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+    {
+        "pn": "K4B4G0846E-BCNB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 4Gb x8",
+            "capacity":   "512MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B4G0846E-BCNB ✓. "
+            "BC = DDR3 1.5V. NB = narrow body package. E-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+    {
+        "pn": "K4B4G0846E-BYK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "capacity":   "512MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B4G0846E-BYK0 ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. x8 bus width. E-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+    {
+        "pn": "K4B4G0846E-BYMA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "capacity":   "512MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B4G0846E-BYMA ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. MA = package. E-die. 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+
+    # ── K4B8G0846D — 8Gb DDR3/DDR3L x8 (D-die) — Samsung Semiconductor Global ✓
+    # MC suffix = DDR3 1.5V; MY suffix = DDR3L 1.35V.
+    # 8Gbit ÷ 8 = 1GB/die. x8 bus width. Alta densidade — SO-DIMM 16GB com 16 chips.
+    {
+        "pn": "K4B8G0846D",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR3",
+            "subtype": "DDR3 PC DRAM 8Gb x8", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "DDR3", "subtype": "DDR3 PC DRAM 8Gb x8",
+            "capacity": "1GB", "interface": "DDR3", "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4B8G0846D-MCMA/MCNB/MCK0/MYK0 (Samsung Semiconductor Global ✓). "
+            "8Gbit ÷ 8 = 1GB/die. D-die, x8. Tem variantes DDR3 (MC) e DDR3L (MY)."
+        ),
+    },
+    {
+        "pn": "K4B8G0846D-MCMA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "capacity":   "1GB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B8G0846D-MCMA ✓. "
+            "MC = DDR3 1.5V (sufixo para 8Gb). MA = package. D-die. 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+    {
+        "pn": "K4B8G0846D-MCNB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "capacity":   "1GB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B8G0846D-MCNB ✓. "
+            "MC = DDR3 1.5V. NB = narrow body package. D-die. 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+    {
+        "pn": "K4B8G0846D-MCK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "capacity":   "1GB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B8G0846D-MCK0 ✓. "
+            "MC = DDR3 1.5V. K0 = speed grade. D-die. 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+    {
+        "pn": "K4B8G0846D-MYK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 8Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 8Gb x8",
+            "capacity":   "1GB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B8G0846D-MYK0 ✓. "
+            "MY = DDR3L 1.35V (sufixo para 8Gb DDR3L). D-die. 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+
+    # ── K4B1G0846I — 1Gb DDR3/DDR3L x8 (I-die) — Samsung Semiconductor Global ✓
+    # BC suffix = DDR3 1.5V; BY suffix = DDR3L 1.35V/1.5V dual.
+    # 1Gbit ÷ 8 = 128MB/die. x8 bus width. Geração antiga — classe resíduo.
+    {
+        "pn": "K4B1G0846I",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR3",
+            "subtype": "DDR3 PC DRAM 1Gb x8", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "DDR3", "subtype": "DDR3 PC DRAM 1Gb x8",
+            "capacity": "128MB", "interface": "DDR3", "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4B1G0846I-BCK0/BYK0/BYMA/BYNB (Samsung Semiconductor Global ✓). "
+            "1Gbit ÷ 8 = 128MB/die. I-die, x8. Tem variantes DDR3 (BC) e DDR3L (BY)."
+        ),
+    },
+    {
+        "pn": "K4B1G0846I-BCK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 1Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3",
+            "subtype":    "DDR3 PC DRAM 1Gb x8",
+            "capacity":   "128MB",
+            "interface":  "DDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B1G0846I-BCK0 ✓. "
+            "BC = DDR3 1.5V. x8 bus width. I-die. 1Gbit ÷ 8 = 128MB/die."
+        ),
+    },
+    {
+        "pn": "K4B1G0846I-BYK0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "capacity":   "128MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B1G0846I-BYK0 ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. x8 bus width. I-die. 1Gbit ÷ 8 = 128MB/die."
+        ),
+    },
+    {
+        "pn": "K4B1G0846I-BYMA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "capacity":   "128MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B1G0846I-BYMA ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. MA = package. I-die. 1Gbit ÷ 8 = 128MB/die."
+        ),
+    },
+    {
+        "pn": "K4B1G0846I-BYNB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "capacity":   "128MB",
+            "interface":  "DDR3L",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global (Tier 1): K4B1G0846I-BYNB ✓. "
+            "BY = DDR3L 1.35V/1.5V dual. NB = narrow body package. I-die. 1Gbit ÷ 8 = 128MB/die."
+        ),
+    },
+
     # ── DDR3 (1.5V) Samsung PC DRAM ──────────────────────────────────────────
     # Sufixo BC = DDR3 padrão 1.5V (não dual voltage).
     # Confirmado: datasheet Samsung DS_K4B4G1646E-BC_Rev101-0.pdf
@@ -6149,6 +6425,50 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K4W4G1646D — 4Gb GDDR3 x16 (D-die) — Octopart ✓
+    # D-die, 4Gbit, x16. Capacidade: 4Gbit ÷ 8 = 512MB/die.
+    # Convenção GDDR: chip_type="RAM", subtype=geração apenas ("GDDR3"), interface="x16".
+    {
+        "pn": "K4W4G1646D",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "512MB", "interface": "x16", "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4W4G1646D-BC1A (Octopart ✓: GDDR3 256Mx16). "
+            "4Gbit ÷ 8 = 512MB/die. D-die, x16. chip_type='RAM', subtype='GDDR3' por convenção GDDR."
+        ),
+    },
+    {
+        "pn": "K4W4G1646D-BC1A",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "RAM",
+            "subtype":    "GDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "chip_type":  "RAM",
+            "subtype":    "GDDR3",
+            "capacity":   "512MB",
+            "interface":  "x16",
+            "confidence": "distributor",
+            "status":     "enriched",
+            "source_url": "https://octopart.com/k4w4g1646d-bc1a-samsung-70760918",
+        },
+        "reason": (
+            "Octopart (Samsung): K4W4G1646D-BC1A confirmado como GDDR3 256Mx16 ✓. "
+            "D-die, x16, 4Gbit ÷ 8 = 512MB. BC1A = variante de speed/temp grade."
+        ),
+    },
+
     # ══════════════════════════════════════════════════════════════════════════
     # K4G — GDDR5 / GDDR5X Samsung (~2012-2020)
     # VRAM de alto volume em GPUs discretas (AMD RX / Nvidia GTX / RTX).
@@ -6633,6 +6953,67 @@ CORRECTIONS = [
             "Samsung Semiconductor Global ✓: K4ZAF325BC-SC16(16 Gb). "
             "B-die C-variant, x32, 16Gbit ÷ 8 = 2GB. SC16 = 16 Gbps grade. "
             "pn[3:5]='AF' = código densidade 16Gb GDDR6."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════════
+    # ── Micron MT29TZZZ — Correção BUG-8: LPDDR2→LPDDR3 (2026-06-19) ──────────
+    #
+    # CONTEXTO: A API Micron FBGA retornava "MLC EMMC/LPDDR2 72G VFBGA" para chips
+    # MT29TZZZ com chave 8D5. Isso levou o enrich_micron_fbga a salvar emcp_ram="LPDDR2 ..."
+    # com confidence=confirmed. Porém fontes superiores (datasheet oficial + DigiKey)
+    # confirmam que TODA a família MT29TZZZ é LPDDR3 — a distinção LPDDR2 pertence
+    # à família MT29PZZZ (prefixo diferente, 162-ball vs 221-ball).
+    #
+    # Fontes Tier 1:
+    #   • Datasheet oficial Micron (via NXP community):
+    #     MT29TZZZ8D5JKEZB = "MLC e·MMC™ and Mobile LPDDR3 221-Ball MCP"
+    #     data rate 1866 Mb/s → LPDDR3 inequivocamente.
+    #     community.nxp.com/pwmxy87654/attachments/pwmxy87654/imx-processors/113200/3/
+    #   • DigiKey: MT29TZZZ8D5BKFAH-125 W.95K = "DRAM - LPDDR3 Memory IC, 8Gbit (LPDDR3)"
+    #     digikey.com/en/products/detail/micron-technology-inc/MT29TZZZ8D5BKFAH-125-W-95K/7918751
+    #
+    # Estes registros corrigem qualquer entrada "confirmed" que enrich_micron_fbga
+    # possa ter gravado com dado errado da API. A gramática (populate_micron_mcp)
+    # também foi corrigida (BUG-8) e cuida de chips com confidence != confirmed.
+    # ══════════════════════════════════════════════════════════════════════════════
+
+    # ── MT29TZZZ8D5BKFAH ──────────────────────────────────────────────────────
+    # eMCP LPDDR3 + eMMC 5.0. FBGAs: JWA60, JY941.
+    # Chave 8D5: NAND=8GB (64Gb) + DRAM=1GB (8Gb) = 72Gb total.
+    # BUG-8: enrich_micron_fbga gravou emcp_ram="LPDDR2 1GB" baseado em API Micron
+    # errada. Datasheet oficial e DigiKey confirmam LPDDR3.
+    {
+        "pn": "MT29TZZZ8D5BKFAH",
+        "fields": {
+            "emcp_ram":  "LPDDR3 1GB",
+            "subtype":   "LPDDR3",
+            "confidence": "confirmed",
+            "status":    "enriched",
+        },
+        "reason": (
+            "BUG-8: API Micron FBGA dizia LPDDR2 para chave 8D5 — ERRADO. "
+            "Datasheet oficial Micron (NXP community, MT29TZZZ8D5JKEZB): Mobile LPDDR3. "
+            "DigiKey: MT29TZZZ8D5BKFAH-125 = LPDDR3 8Gbit. "
+            "Família MT29TZZZ é LPDDR3 uniformemente; LPDDR2 = família MT29PZZZ (162-ball)."
+        ),
+    },
+
+    # ── MT29TZZZ8D4BKFAH ──────────────────────────────────────────────────────
+    # Mesma família MT29TZZZ, chave 8D4: NAND=4GB (32Gb) + DRAM=1GB (8Gb) = 40Gb.
+    # API dizia "MLC EMMC/LPDDR2 40G VFBGA" — mesma correção se existir no DB.
+    {
+        "pn": "MT29TZZZ8D4BKFAH",
+        "fields": {
+            "emcp_ram":  "LPDDR3 1GB",
+            "subtype":   "LPDDR3",
+            "confidence": "confirmed",
+            "status":    "enriched",
+        },
+        "reason": (
+            "BUG-8: mesma correção que MT29TZZZ8D5BKFAH. "
+            "Chave 8D4 = 4GB NAND + 1GB LPDDR3. "
+            "API dizia LPDDR2 — família TZZZ é LPDDR3 uniformemente."
         ),
     },
 
