@@ -2232,6 +2232,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "3GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -2268,6 +2269,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "device":     "Google Pixel XL (Snapdragon 821, 2016), LG G5 (Snapdragon 820, 2016)",
             "source_url": "https://www.ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237",
@@ -2293,6 +2295,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "device":     "Google Pixel XL (Snapdragon 821, 2016), LG G5 (Snapdragon 820, 2016)",
             "source_url": "https://www.ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237",
@@ -2327,6 +2330,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -2351,6 +2355,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -2374,6 +2379,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -2397,6 +2403,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "manual",
             "status":     "enriched",
@@ -2434,6 +2441,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "3GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -2457,6 +2465,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "3GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -2482,6 +2491,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "3GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -2514,6 +2524,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -2544,6 +2555,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "6GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -2567,6 +2579,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "6GB",
+            "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
