@@ -6069,6 +6069,86 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K4W4G1646B — 4Gb gDDR3 x16 (B-die) ──────────────────────────────────
+    # B-die 4Gb GDDR3 — Octopart ✓ (HC11/HC12/HC1A). Amplo estoque ativo (~2010-2014).
+    # Gramática K4W decodifica: pn[3:5]='4G' via DRAM_PC → 4Gb (512MB) ✓.
+    {
+        "pn": "K4W4G1646B",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "512MB", "interface": "x16",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — gDDR3 Samsung 4Gb x16 (B-die). "
+            "Deriva de K4W4G1646B-HC11 (Octopart ✓: 'GDDR3 256MX16'). "
+            "4Gbit ÷ 8 = 512MB/die. Bus x16. Gramática K4W: pn[3:5]='4G' via DRAM_PC ✓."
+        ),
+    },
+    {
+        "pn": "K4W4G1646B-HC11",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "distributor",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "512MB", "interface": "x16",
+            "confidence": "distributor", "status": "enriched",
+            "source_url": "https://octopart.com/part/samsung/K4W4G1646B-HC11",
+        },
+        "reason": (
+            "Octopart ✓ (Samsung): K4W4G1646B-HC11 = 'GDDR3 256MX16'. "
+            "B-die, x16, 4Gbit ÷ 8 = 512MB. HC11 = speed/temp grade. "
+            "Amplo estoque ativo em múltiplos distribuidores (Win Source 1.3k, ICPartonline 25k, "
+            "Antdic 29k, Run Hong 7k). VRAM de GPUs de entrada/notebooks (~2010-2014)."
+        ),
+    },
+    {
+        "pn": "K4W4G1646B-HC12",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "distributor",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "512MB", "interface": "x16",
+            "confidence": "distributor", "status": "enriched",
+            "source_url": "https://octopart.com/part/samsung/K4W4G1646B-HC11",
+        },
+        "reason": (
+            "Octopart (Samsung): K4W4G1646B-HC12 listado ('GDDR3 256MX16'). "
+            "B-die, x16, 4Gbit ÷ 8 = 512MB. HC12 = speed grade. "
+            "Specs idênticos ao HC11. source_url aponta ao HC11 (página Octopart mais completa)."
+        ),
+    },
+    {
+        "pn": "K4W4G1646B-HC1A",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "distributor",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "512MB", "interface": "x16",
+            "confidence": "distributor", "status": "enriched",
+            "source_url": "https://octopart.com/part/samsung/K4W4G1646B-HC11",
+        },
+        "reason": (
+            "Octopart (Samsung): K4W4G1646B-HC1A listado, sem estoque ativo. "
+            "B-die, x16, 4Gbit ÷ 8 = 512MB. HC1A = variante de speed/temp grade. "
+            "Specs funcionais idênticos ao HC11."
+        ),
+    },
+
     # ══════════════════════════════════════════════════════════════════════════
     # K4G — GDDR5 / GDDR5X Samsung (~2012-2020)
     # VRAM de alto volume em GPUs discretas (AMD RX / Nvidia GTX / RTX).
@@ -6320,6 +6400,9 @@ CORRECTIONS = [
     #   • Samsung Semiconductor Global ✓ (2026-06-19):
     #     K4ZAF325BM-HC14(16 Gb) · HC16(16 Gb) · HC18(16 Gb) · SC14(16 Gb)
     #     K4Z80325BC-HC14(8 Gb)
+    #   • Samsung Semiconductor Global ✓ (2026-06-19, pesquisa ampliada):
+    #     K4Z80325BC-HC12(8 Gb) · HC16(8 Gb)
+    #     K4ZAF325BC-SC14(16 Gb) · SC16(16 Gb)  [C-variant, diferente do BM]
     # ══════════════════════════════════════════════════════════════════════════
 
     # ── K4Z80325BC — 8Gb GDDR6 x32 (C-die) ──────────────────────────────────
@@ -6357,6 +6440,44 @@ CORRECTIONS = [
             "Samsung Semiconductor Global ✓: K4Z80325BC-HC14(8 Gb). "
             "C-die, x32, 8Gbit ÷ 8 = 1GB. HC14 = 14 Gbps speed grade. "
             "pn[3:5]='80' → 8Gb GDDR6. Usado em GPUs mid-range com 8GB VRAM."
+        ),
+    },
+    {
+        "pn": "K4Z80325BC-HC12",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "1GB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+            "source_url": "https://semiconductor.samsung.com/us/dram/gddr/gddr6/k4z80325bc-hc12",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4Z80325BC-HC12(8 Gb). "
+            "C-die, x32, 8Gbit ÷ 8 = 1GB. HC12 = 12 Gbps speed grade. "
+            "Variante de frequência inferior ao HC14 — GPUs entry-to-mid com 8GB VRAM."
+        ),
+    },
+    {
+        "pn": "K4Z80325BC-HC16",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "1GB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+            "source_url": "https://semiconductor.samsung.com/dram/gddr/gddr6/k4z80325bc-hc16/",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4Z80325BC-HC16(8 Gb). "
+            "C-die, x32, 8Gbit ÷ 8 = 1GB. HC16 = 16 Gbps speed grade. "
+            "Variante de alta frequência — GPUs mid-range com 8GB VRAM de maior desempenho."
         ),
     },
 
@@ -6452,6 +6573,66 @@ CORRECTIONS = [
             "Samsung Semiconductor Global ✓: K4ZAF325BM-SC14(16 Gb). "
             "B-die M-variant, x32, 16Gbit ÷ 8 = 2GB. SC14 = variante de temp/grade 14 Gbps. "
             "Configs de workstation / servidor."
+        ),
+    },
+
+    # ── K4ZAF325BC — 16Gb GDDR6 x32 (B-die C-variant) ───────────────────────
+    # C-variant do K4ZAF325B (distinto do BM). SC14/SC16 confirmados no Samsung Global.
+    # Mesma densidade (16Gb = 2GB/die, x32) com qualificação de grade diferente.
+    {
+        "pn": "K4ZAF325BC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "2GB", "interface": "x32",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR6 Samsung 16Gb x32 (B-die C-variant). "
+            "Deriva de K4ZAF325BC-SC14/SC16 (Samsung Semiconductor Global ✓). "
+            "16Gbit ÷ 8 = 2GB/die. Bus x32. C-variant distinto do BM (M-variant)."
+        ),
+    },
+    {
+        "pn": "K4ZAF325BC-SC14",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "2GB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+            "source_url": "https://semiconductor.samsung.com/dram/gddr/gddr6/k4zaf325bc-sc14/",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4ZAF325BC-SC14(16 Gb). "
+            "B-die C-variant, x32, 16Gbit ÷ 8 = 2GB. SC14 = 14 Gbps grade. "
+            "Distinto do K4ZAF325BM-SC14 (M-variant). pn[3:5]='AF' = 16Gb GDDR6."
+        ),
+    },
+    {
+        "pn": "K4ZAF325BC-SC16",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR6",
+            "capacity": "2GB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+            "source_url": "https://semiconductor.samsung.com/dram/gddr/gddr6/k4zaf325bc-sc16/",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4ZAF325BC-SC16(16 Gb). "
+            "B-die C-variant, x32, 16Gbit ÷ 8 = 2GB. SC16 = 16 Gbps grade. "
+            "pn[3:5]='AF' = código densidade 16Gb GDDR6."
         ),
     },
 
