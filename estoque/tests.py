@@ -135,23 +135,32 @@ class GatewayDestinationTests(TestCase):
         self.assertFalse(g['reject_by_generation'])
         self.assertEqual([s['status'] for s in g['steps']], ['pass', 'pass', 'fail'])
 
-    # ── Caixa física: DRAM = geração(LITERAL)+densidade; NAND por capacidade GB ──
+    # ── Caixa física: DRAM = geração(subtype, LITERAL)+densidade; NAND por GB ──
     def test_caixa_dram_geracao_mais_densidade(self):
         from estoque.views import _compute_destination
-        # Geração aparece EXATA (DDR3L, não 'D3'); densidade do dram_density.
-        # capacity (256MB) é IGNORADA — caixa é por densidade impressa no chip.
+        # Geração vem do subtype, literal — MENOS o ruído "SDRAM" (toda DDR é SDRAM).
+        # A variante (DDR3/DDR3L/LPDDR3) é preservada. interface pode ser config de
+        # barramento ("x16 @ 800MHz") → NÃO vira rótulo. Densidade do dram_density (Gb).
         self.assertEqual(_compute_destination(_result(
-            chip_type='RAM', subtype='DDR3', interface='DDR3L',
+            chip_type='RAM', subtype='DDR3L SDRAM', interface='x16 @ 800MHz',
             capacity='256MB', dram_density='2Gb = por die [✓]')), ('DDR3L+2G', 'lpddr'))
-        # Samsung DDR4 (sem confundir Gb com GB)
+        # Variante móvel preservada (não vira "DDR3")
         self.assertEqual(_compute_destination(_result(
-            chip_type='DDR4', interface='DDR4',
-            dram_density='4Gb = 512MB por die [✓]')), ('DDR4+4G', 'lpddr'))
-        # LPDDR4 sem interface → cai no subtype, literal
+            chip_type='LPDDR3', subtype='LPDDR3',
+            dram_density='4Gb = 512MB por die [✓]')), ('LPDDR3+4G', 'lpddr'))
         self.assertEqual(_compute_destination(_result(
             chip_type='LPDDR4', subtype='LPDDR4',
             dram_density='8Gb = 1GB por die [✓]')), ('LPDDR4+8G', 'lpddr'))
-        # NAND continua por capacidade em GB (não afetado)
+        # SK Hynix H5TQ confirmado: dram_density VAZIO + subtype "DDR3 SDRAM".
+        # Strip de SDRAM + fallback bytes→Gb (256MB→2G) → 'DDR3+2G'.
+        self.assertEqual(_compute_destination(_result(
+            chip_type='RAM', subtype='DDR3 SDRAM', interface='DDR3',
+            capacity='256MB', dram_density=None)), ('DDR3+2G', 'lpddr'))
+        # 1GB por chip → 8G (teto físico DDR3)
+        self.assertEqual(_compute_destination(_result(
+            chip_type='RAM', subtype='DDR3 SDRAM',
+            capacity='1GB', dram_density=None)), ('DDR3+8G', 'lpddr'))
+        # NAND continua por capacidade em GB (não afetado pelo fallback de densidade)
         self.assertEqual(_compute_destination(_result(
             chip_type='eMMC', capacity='16GB')), ('EMMC16GB', 'emmc'))
 

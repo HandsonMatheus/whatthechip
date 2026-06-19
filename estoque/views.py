@@ -141,19 +141,29 @@ def _extract_gb(text: str) -> str:
 
 # "Gb" = gigabit (≠ "GB" gigabyte). Densidade DRAM por die.
 _GBIT_RE = re.compile(r'(\d+(?:\.\d+)?)\s*Gb\b')
+_CAP_BYTES_RE = re.compile(r'(\d+(?:\.\d+)?)\s*(GB|MB)\b', re.I)  # capacidade em bytes
 
 
 def _density_g(result: dict) -> str:
-    """Densidade DRAM por die em Gb (ex.: '2Gb = …' → '2'), para o rótulo da caixa
-    física de RAM (2G/4G/8G). Lê só de `dram_density` (campo canônico de densidade);
-    NÃO usa `capacity`, que vem em bytes — unidade errada para a caixa, que é rotulada
-    pela densidade impressa no chip. Agnóstico de marca: vale p/ qualquer fabricante
-    cujo decoder preencha dram_density em Gb."""
+    """Densidade DRAM por die em Gb, para o rótulo da caixa física (2G/4G/8G).
+    Em ordem de prioridade:
+      1) `dram_density` (campo canônico, já em Gb): '2Gb = …' → '2';
+      2) fallback — deriva da `capacity` em bytes. Em DRAM standalone (1 die por
+         chip) a capacidade do CHIP é a própria densidade do die:
+         256MB→2G, 512MB→4G, 1GB→8G  (bytes ×8 ÷1024 = Gbit). Muitos registros
+         CONFIRMADOS guardam a densidade só como bytes em `capacity`, deixando
+         `dram_density` vazio — sem este fallback o rótulo perderia o '+2G'.
+    Nunca devolve os bytes crus (256MB confunde — a caixa é por densidade).
+    Agnóstico de marca: serve a qualquer fabricante, com ou sem dram_density."""
     m = _GBIT_RE.search(result.get('dram_density') or '')
-    if not m:
-        return ''
-    v = m.group(1)
-    return v[:-2] if v.endswith('.0') else v
+    if m:
+        v = m.group(1)
+        return v[:-2] if v.endswith('.0') else v
+    c = _CAP_BYTES_RE.search(result.get('capacity') or '')
+    if c:
+        mb = float(c.group(1)) * (1024 if c.group(2).upper() == 'GB' else 1)
+        return f"{mb / 128:g}"   # MB → Gbit  (1Gb = 128 MB)
+    return ''
 
 
 def _compute_destination(result: dict) -> tuple:
@@ -194,6 +204,11 @@ def _compute_destination(result: dict) -> tuple:
         # barramento (ex.: "x16 @ 800MHz (1600MTPS)") e NÃO é usada como label da caixa.
         # Densidade (Gb) vem de dram_density; capacity (bytes) é ignorada de propósito.
         gen  = (result.get('subtype') or result.get('interface') or '').strip()
+        # "SDRAM" é redundante (toda DDR é SDRAM) → removido quando há geração DDR.
+        # A VARIANTE (DDR3 vs DDR3L vs LPDDR3) é o que importa p/ a caixa e fica
+        # LITERAL — só some o ruído. Ex.: "DDR3 SDRAM" → "DDR3"; "LPDDR3" intacto.
+        if re.search(r'DDR', gen, re.I):
+            gen = re.sub(r'\s*\bSDRAM\b', '', gen, flags=re.I).strip()
         dens = _density_g(result)
         if gen and dens:
             label = f"{gen}+{dens}G"
