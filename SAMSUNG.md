@@ -1117,6 +1117,8 @@ SoC/PMIC/Sensor        ████████░░ 80%   routing OK, decode m
 | 2026-06-19 | K4J (13 PNs) | KnownParts GDDR3 adicionados: K4J10324KE/QD, K4J52324QH, K4J55323QF/QG | Samsung Product Guide Abr. 2010, Alldatasheet ref #347919, Octopart | grammar_complete=false by design — density codes "10"/"52"/"55" não estão no DRAM_PC |
 | 2026-06-19 | K3RG (7 PNs) | KnownParts LPDDR4 adicionados: BMCGCJ, CAMGCJ, CMFGCJ, CMCGCJ, 4G40MMMGCJ, 4G40MMMGCJT00E, 6G60MMMGCJ | PSG Samsung 1H 2017, Octopart (Worldway/Win Source) | pn_not_in_db=true apesar de grammar_complete=true |
 | 2026-06-19 | KML7U000HM | KnownPart eMCP: corrige grammar bug "LPDDR5 1GB" → correto "LPDDR2 1GB" | Octopart KMK7U000VM-B309 = "eMCP 8GB eMMC + LPDDR2 1GB" ✓ (cross-família, mesma chave "7U") | decode_gen_pos=None → KML nunca deve ler SAM_EMCP_GEN; LPDDR5 impossível em 2013-2015 |
+| 2026-06-19 | KML5U000HM | KnownPart eMCP: 4GB eMMC + LPDDR2 1GB | Puris KML5U000HM-B505 = "4+8 eMCP-D1" (direto) + Octopart/Avnet KMK5U000VM-B309 = "256Mx32 LPDDR2" = 1GB (cross-família, chave "5U") | SAM_EMCP_CAP["5U"] dizia 512MB (errado); KnownPart confirmed vence grammar |
+| 2026-06-19 | SAM_EMCP_CAP "5U" | Gramática corrigida: 512MB → 1GB em populate_samsung.py | Octopart/Avnet Tier 1: KMK5U000VM = "256Mx32 LPDDR2" = 8Gbit = 1GB; Puris KML5U = "4+8" ✓ | Fonte anterior: Jotrin Tier 3 ("4Gb" = die único ≠ pacote). KMN não afetado. Requer populate_samsung --overwrite + reiniciar |
 
 ### Chips confirmados individuais (histórico)
 
