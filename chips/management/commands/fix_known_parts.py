@@ -2210,6 +2210,110 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K3RG2G20BM-CGCJ / K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ / K3RG2G20CM-CGCJ ──────
+    # LPDDR4 Samsung 4GB — variantes de die+sufixo do bloco K3RG2G20.
+    # pn[4:6]="2G" → K3RG_CAP["2G"]=4GB (32Gb). Todas 4GB confirmadas.
+    # Fontes:
+    #   • K3RG2G20BM-CGCJ: Octopart Win Source ✓ (K3RG2G20BM-CGCJTTN, LPDDR4-3733, 32Gb)
+    #     octopart.com/part/samsung/K3RG2G20BM-CGCJTTN
+    #   • K3RG2G20CA-MGCJ: PSG Samsung 1H 2017 (Tier 1) = 32Gb = 4GB ✓
+    #   • K3RG2G20CM-FGCJ: PSG Samsung 1H 2017 (Tier 1) = 32Gb = 4GB ✓
+    #   • K3RG2G20CM-CGCJ: Octopart (Samsung part registrado, sem distribuidores ativos)
+    {
+        "pn": "K3RG2G20BMCGCJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "",
+            "confidence": "confirmed",
+            "status":     "enriched",
+            "source_url": "https://octopart.com/part/samsung/K3RG2G20BM-CGCJTTN",
+        },
+        "reason": (
+            "K3RG2G20BM-CGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. "
+            "Octopart: K3RG2G20BM-CGCJTTN = LPDDR4-3733 (32Gb), Win Source 20 units ✓. "
+            "pn[4:6]='2G' → K3RG_CAP='4GB'. Mesma base BM confirmada por iFixit Pixel XL + LG G5. "
+            "Adicionado 2026-06-19."
+        ),
+    },
+    {
+        "pn": "K3RG2G20CAMGCJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "K3RG2G20CA-MGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. "
+            "PSG Samsung 1H 2017 (Tier 1): K3RG2G20CA-MGCJ = 32Gb = 4GB ✓. "
+            "pn[4:6]='2G' → K3RG_CAP='4GB'. Die CA, 366-ball. "
+            "Adicionado 2026-06-19."
+        ),
+    },
+    {
+        "pn": "K3RG2G20CMFGCJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "K3RG2G20CM-FGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. "
+            "PSG Samsung 1H 2017 (Tier 1): K3RG2G20CM-FGCJ = 32Gb = 4GB ✓. "
+            "pn[4:6]='2G' → K3RG_CAP='4GB'. Die CM, 432-ball. "
+            "Adicionado 2026-06-19."
+        ),
+    },
+    {
+        "pn": "K3RG2G20CMCGCJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "K3RG2G20CM-CGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. "
+            "Octopart: Samsung part registrado, sem distribuidores ativos. "
+            "Die CM (cf. K3RG2G20CM-FGCJ PSG 1H 2017 ✓) + sufixo CGCJ (cf. K3RG2G20BM-CGCJ Octopart ✓). "
+            "confidence=manual: parte Samsung reconhecida, sem estoque distribuidor confirmado. "
+            "Adicionado 2026-06-19."
+        ),
+    },
+
     # ══════════════════════════════════════════════════════════════════════════
     # Samsung K3RG — 7-char bancada reads (convenção: operador lê 1ª linha laser)
     # PSG Samsung 1H 2017 confirma todos: K3RG4G40MM-MGCJ (24Gb=3GB),
@@ -2243,6 +2347,56 @@ CORRECTIONS = [
             "PN 7 chars: convenção de bancada — operador lê só a 1ª linha do laser. "
             "pn[4:6]='4G' → K3RG_CAP['4G']=3GB. "
             "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+    {
+        "pn": "K3RG4G40MMMGCJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "3GB",
+            "interface":  "",
+            "confidence": "confirmed",
+            "status":     "enriched",
+            "source_url": "https://octopart.com/part/samsung/K3RG4G40MMMGCJ",
+        },
+        "reason": (
+            "K3RG4G40MM-MGCJ (scanner sem hífen): LPDDR4 Samsung 3GB. "
+            "Octopart: Worldway 42,485 units ✓. "
+            "PSG Samsung 1H 2017 (Tier 1): K3RG4G40MM-MGCJ = 24Gb = 3GB ✓. "
+            "pn[4:6]='4G' → K3RG_CAP='3GB'. PN completo — complementa K3RG4G4 (7-char). "
+            "Adicionado 2026-06-19."
+        ),
+    },
+    {
+        "pn": "K3RG4G40MMMGCJT00E",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "3GB",
+            "interface":  "",
+            "confidence": "confirmed",
+            "status":     "enriched",
+            "source_url": "https://octopart.com/part/samsung/K3RG4G40MMMGCJT00E",
+        },
+        "reason": (
+            "K3RG4G40MM-MGCJT00E: variante de embalagem do K3RG4G40MMMGCJ. "
+            "Octopart: Win Source 20 units + Worldway 49,696 units ✓. "
+            "pn[4:6]='4G' → K3RG_CAP='3GB' = 24Gb. "
+            "Sufixo T00E = código de embalagem Samsung (Tape + customer code). "
+            "Adicionado 2026-06-19."
         ),
     },
 
@@ -2303,6 +2457,31 @@ CORRECTIONS = [
             "PN 7 chars: convenção de bancada — operador lê só a 1ª linha do laser. "
             "pn[4:6]='6G' → K3RG_CAP['6G']=6GB. "
             "confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque."
+        ),
+    },
+    {
+        "pn": "K3RG6G60MMMGCJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4",
+            "subtype":    "LPDDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "6GB",
+            "interface":  "",
+            "confidence": "confirmed",
+            "status":     "enriched",
+            "source_url": "https://octopart.com/part/samsung/K3RG6G60MMMGCJ",
+        },
+        "reason": (
+            "K3RG6G60MM-MGCJ (scanner sem hífen): LPDDR4 Samsung 6GB. "
+            "Octopart: Samsung part ✓ (K3RG6G60MMMGCJ). "
+            "PSG Samsung 1H 2017 (Tier 1): K3RG6G60MM-MGCJ = 48Gb = 6GB ✓. "
+            "pn[4:6]='6G' → K3RG_CAP='6GB'. PN completo — complementa K3RG6G6 (7-char). "
+            "Adicionado 2026-06-19."
         ),
     },
 
