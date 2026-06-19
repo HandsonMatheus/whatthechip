@@ -193,7 +193,9 @@ class Command(BaseCommand):
                                        # Desbloqueado: KMFNX0012 confirmado fisicamente (era pendente chip físico desde 2026-05-09).
             ("E1", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM   (KMQE10013M) — Galaxy J5/J7, Moto G
             ("BT", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM   (KMQBT·)
-            ("V7", "16GB",  "2GB"),    # 16GB NAND + 2GB RAM   alias BT
+            # ("V7", "16GB",  "2GB"),  # REMOVIDO 2026-06-19: conflito com V7 → 128GB (KM8V7001JM uMCP, linha ~290).
+            #                          # Nenhum PN eMCP KMQV7/KMRV7/KMFV7 confirmado encontrado.
+            #                          # Se aparecer chip eMCP com V7, usar fix_known_parts individualmente.
             ("V8", "128GB", "4GB"),    # 128GB NAND + 4GB RAM  (KM5V8001DM-B622 — fabricante: 32Gb÷8=4GB)
             #                          # ⚠ CORRIGIDO: entrada anterior dizia 8GB (fonte: AI sem confirmação).
             #                          # KM8V8001JM também é 4GB — cap_key compartilhado.
