@@ -1168,6 +1168,423 @@ PARTS = [
     ),
 
     # ──────────────────────────────────────────────────────────────────────────
+    # DDR3 1.5V — H5TQ x4 (bus x4, organização 4 bits por chip)
+    # Decode pn[4:6]: 1G=128MB · 2G=256MB · 4G=512MB (igual ao x8)
+    # pn[6]='4' distingue x4; pn[7]='3' = 8 banks (fixo DDR3)
+    # Uso: RDIMMs de servidor (x4 permite ECC com 18 chips por módulo)
+    # ⚠ H5TQ8G43 NÃO existe (SK Hynix não produziu 8Gb x4 em 1.5V)
+    # ──────────────────────────────────────────────────────────────────────────
+    dict(
+        part_number   = "H5TQ1G43AFP",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "128MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='1G' → 128MB (1Gbit ÷ 8). x4, FBGA-78, 1.5V. A-gen. "
+            "⚠ Sufixo 'AFP' (P = package diferente) — não 'AFR'. "
+            "Fonte: Alldatasheet H5TQ1G43AFP datasheet ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TQ1G43BFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "128MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='1G' → 128MB. x4, FBGA-78, 1.5V. B-gen. "
+            "Fonte: Alldatasheet H5TQ1G43BFR ✓ · Datasheets360 -H9C ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TQ1G43TFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "128MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='1G' → 128MB. x4, FBGA-78, 1.5V. T-gen (variante de die). "
+            "Fonte: Alldatasheet H5TQ1G43TFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TQ2G43AFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "256MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='2G' → 256MB (2Gbit ÷ 8). x4, FBGA-78, 1.5V. A-gen. "
+            "Chip físico confirmado em bancada eMiner ✓. RDIMM servidor. "
+            "Fonte: Alldatasheet H5TQ2G43AFR datasheet ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TQ2G43BFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "256MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='2G' → 256MB. x4, FBGA-78, 1.5V. B-gen. "
+            "Fonte: Alldatasheet H5TQ2G43BFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TQ2G43CFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "256MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='2G' → 256MB. x4, FBGA-78, 1.5V. C-gen. "
+            "Velocidades: -G7C · -H9C · -PBC · -RDC · -TEC · -XXC. "
+            "Fonte: Alldatasheet H5TQ2G43CFR ✓ · Octopart -PBC em estoque ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TQ2G43EFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "256MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='2G' → 256MB. x4, FBGA-78, 1.5V. E-gen (EOL). "
+            "Fonte: SK Hynix EOL page H5TQ2G43EFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TQ4G43AFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "512MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='4G' → 512MB (4Gbit ÷ 8). x4, FBGA-78, 1.5V. A-gen. "
+            "Velocidades: -G7C · -H9C · -PBC · -RDC · -TEC (RDIMM). "
+            "Fonte: Alldatasheet H5TQ4G43AFR ✓ · Datasheets360 -RDC ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TQ4G43MFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "512MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='4G' → 512MB. x4, FBGA-78, 1.5V. M-gen (EOL). "
+            "Fonte: Alldatasheet H5TQ4G43MFR ✓ · SK Hynix EOL ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TQ4G43AMR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "512MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='4G' → 512MB total. x4, FBGA-78 DDP, 1.5V. A-gen. "
+            "⚠ DDP = Dual Die Package (dois dies de 2Gb empilhados = 4Gb total). "
+            "Sufixo 'MR' (M = multi-die). Capacidade por pacote = 512MB. "
+            "Fonte: Alldatasheet H5TQ4G43AMR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TQ4G43MMR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TQ",
+        chip_type     = "RAM",
+        subtype       = "DDR3 SDRAM",
+        capacity      = "512MB",
+        interface     = "DDR3",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='4G' → 512MB total. x4, FBGA-78 DDP, 1.5V. M-gen. "
+            "⚠ DDP (M no sufixo). Velocidades: -G7C · -S6C. "
+            "Fonte: Alldatasheet H5TQ4G43MMR ✓."
+        ),
+    ),
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # DDR3L 1.35V — H5TC x4 (bus x4)
+    # Decode pn[4:6]: 1G=128MB · 2G=256MB · 4G=512MB · 8G=1GB (DDP)
+    # ⚠ Sufixos terminam em 'A' (ex: -PBA), não 'C' — qualif. temp DDR3L
+    # ──────────────────────────────────────────────────────────────────────────
+    dict(
+        part_number   = "H5TC1G43BFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "128MB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='1G' → 128MB. x4, FBGA-78, 1.35V. B-gen. "
+            "Fonte: Alldatasheet H5TC1G43BFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC1G43TFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "128MB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='1G' → 128MB. x4, FBGA-78, 1.35V. T-gen. "
+            "Fonte: Alldatasheet H5TC1G43TFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC2G43AFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "256MB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='2G' → 256MB (2Gbit ÷ 8). x4, FBGA-78, 1.35V. A-gen. "
+            "Velocidades: -G7A · -H9A · -PBA · -RDA. "
+            "Fonte: Alldatasheet H5TC2G43AFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC2G43BFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "256MB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='2G' → 256MB. x4, FBGA-78, 1.35V. B-gen. "
+            "Fonte: Alldatasheet H5TC2G43BFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC2G43CFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "256MB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='2G' → 256MB. x4, FBGA-78, 1.35V. C-gen. "
+            "Fonte: Alldatasheet H5TC2G43CFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC2G43EFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "256MB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='2G' → 256MB. x4, FBGA-78, 1.35V. E-gen. "
+            "Fonte: Alldatasheet H5TC2G43EFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC4G43AFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "512MB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='4G' → 512MB (4Gbit ÷ 8). x4, FBGA-78, 1.35V. A-gen. "
+            "Velocidades: -G7A · -H9A · -PBA · -RDA · -XXA (RDIMM DDR3L). "
+            "Fonte: Alldatasheet H5TC4G43AFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC4G43BFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "512MB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='4G' → 512MB. x4, FBGA-78, 1.35V. B-gen. "
+            "Organização 1Gx4 confirmada no datasheet -PBA. "
+            "Fonte: Alldatasheet H5TC4G43BFR-PBA ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC4G43DFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "512MB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='4G' → 512MB. x4, FBGA-78, 1.35V. D-gen. "
+            "Fonte: Datasheets.com H5TC4G43DFR-RDA ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC4G43MFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "512MB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='4G' → 512MB. x4, FBGA-78, 1.35V. M-gen. "
+            "Velocidades: -G7A · -H9A · -PBA. "
+            "Fonte: Alldatasheet H5TC4G43MFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC8G43AMR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "1GB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='8G' → 1GB (8Gbit ÷ 8). x4, FBGA-78 DDP, 1.35V. A-gen. "
+            "⚠ DDP = dois dies de 4Gb empilhados (2G×4 por die × 2 dies). "
+            "Sufixo 'MR' = multi-die package. "
+            "Fonte: datasheet oficial SK Hynix via NXP 99H02-11185D ✓ · Alldatasheet ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5TC8G43MMR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5TC",
+        chip_type     = "RAM",
+        subtype       = "DDR3L SDRAM",
+        capacity      = "1GB",
+        interface     = "DDR3L",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='8G' → 1GB. x4, FBGA-78 DDP, 1.35V. M-gen. "
+            "⚠ DDP (sufixo MR). Velocidades: -G7A · -H9A · -PBA. "
+            "Fonte: Alldatasheet H5TC8G43MMR ✓."
+        ),
+    ),
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # DDR4 1.2V — H5AN x4 (barramento x4, organização 4 bits por chip)
+    # Em DDR4 não há dígito '3' — pn[6]='4' sozinho indica x4
+    # Decode pn[4:6]: 4G=512MB · 8G=1GB (mapa HYX_DDR4_CAP, igual x8)
+    # Familia H5AN: A-die=NAFR, B-die=NBJR, C-die=NCJR
+    # ──────────────────────────────────────────────────────────────────────────
+    dict(
+        part_number   = "H5AN4G4NAFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5AN",
+        chip_type     = "RAM",
+        subtype       = "DDR4 SDRAM",
+        capacity      = "512MB",
+        interface     = "DDR4",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='4G' → 512MB (4Gbit ÷ 8). x4, FBGA-78, 1.2V. A-die (Era 1). "
+            "Velocidades: -TFC (DDR4-2133) · -UHC (DDR4-2400). RDIMM/LRDIMM servidor. "
+            "Fonte: Alldatasheet H5AN4G4NAFR-UHC ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5AN4G4NBJR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5AN",
+        chip_type     = "RAM",
+        subtype       = "DDR4 SDRAM",
+        capacity      = "512MB",
+        interface     = "DDR4",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='4G' → 512MB. x4, FBGA-78, 1.2V. B-die (Era 1, 2ª ger.). "
+            "Velocidades: -PBC · -RDC · -TFC · -UHC · -VKC · -XNC. "
+            "Fonte: datasheet Netlist/DigiKey H5AN4GxNBJR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5AN8G4NAFR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5AN",
+        chip_type     = "RAM",
+        subtype       = "DDR4 SDRAM",
+        capacity      = "1GB",
+        interface     = "DDR4",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='8G' → 1GB (8Gbit ÷ 8). x4, FBGA-78, 1.2V. A-die (Era 1). "
+            "Velocidades: -PBC · -RDC · -TFC · -UHC · -VKC. "
+            "Fonte: Alldatasheet H5AN8G4NAFR ✓."
+        ),
+    ),
+    dict(
+        part_number   = "H5AN8G4NCJR",
+        brand_name    = "SK Hynix",
+        family_prefix = "H5AN",
+        chip_type     = "RAM",
+        subtype       = "DDR4 SDRAM",
+        capacity      = "1GB",
+        interface     = "DDR4",
+        confidence    = "confirmed",
+        notes         = (
+            "pn[4:6]='8G' → 1GB. x4, FBGA-78, 1.2V. C-die (Era 1, 3ª ger. 10nm). "
+            "Rev. 1.5 (Mar 2019). "
+            "Fonte: Alldatasheet H5AN8G4NCJR ✓."
+        ),
+    ),
+
+    # ──────────────────────────────────────────────────────────────────────────
     # LPDDR3 standalone — H9CC (SK Hynix, x32, móvel)
     # Decode: pn[7] → HYX_LPDDR3_H9CC_CAP  |  8=1GB · B=2GB · D=3GB · C=4GB
     # ──────────────────────────────────────────────────────────────────────────

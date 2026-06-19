@@ -89,19 +89,33 @@
 
   {# ── Sugestão de digitação (fuzzy) ───────────────────────────── #}
   {% if gateway.typo.has %}
-  <div style="margin-top:16px;background:#fff8e1;border:1px solid #f1c21b;border-left:4px solid #ff832b;padding:14px 16px;">
-    <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#b28600;margin-bottom:10px;letter-spacing:0.02em;">
-      ⚠ CONFIRA A DIGITAÇÃO — VOCÊ QUIS DIZER?
-    </div>
+  <div style="margin-top:14px;">
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">VOCÊ QUIS DIZER?</div>
+    <style>.wtc-sugg-row:hover{background:#f4f4f4;}</style>
     {% for s in gateway.typo.suggestions %}
-    <a href="#"
+    <a class="wtc-sugg-row" href="#"
        onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
-       style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;background:#fff;border:1px solid #f1c21b;padding:14px 16px;margin-bottom:6px;cursor:pointer;text-align:left;text-decoration:none;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;color:#161616;">{{ s }}</span>
-      <span style="font-size:14px;font-weight:600;color:#b28600;white-space:nowrap;">usar este →</span>
+       style="display:block;padding:8px 4px;border-bottom:1px solid #e0e0e0;text-decoration:none;cursor:pointer;">
+      <span class="wtc-fuzzy-pn"
+            data-typed="{{ pn }}"
+            data-suggestion="{{ s|escapejs }}"
+            style="font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;color:#0f62fe;">{{ s }}</span>
     </a>
     {% endfor %}
   </div>
+  <script>
+  (function(){
+    document.querySelectorAll('.wtc-fuzzy-pn').forEach(function(el){
+      var t=el.dataset.typed||'', s=el.dataset.suggestion||'', i=0;
+      while(i<t.length&&i<s.length&&s[i]===t[i])i++;
+      var pre=s.slice(0,i), dif=s.slice(i);
+      el.innerHTML=
+        (pre?'<span>'+pre+'</span>':'')+
+        (dif?'<span style="color:#198038;font-weight:700">'+dif+' →</span>':
+             '<span style="color:#6f6f6f;font-size:13px;margin-left:2px;">→</span>');
+    });
+  })();
+  </script>
   {% endif %}
 
   {# ── Ações ───────────────────────────────────────────────────── #}

@@ -139,17 +139,18 @@
   <div class="dc2-tip">⚑ {{ result.tip }}</div>
   {% endif %}
 
-  <!-- ── Sugestões de PN (digitação errada) ───────────────────────────── -->
+  <!-- ── Sugestões de PN (digitação errada / incompleto) ──────────────── -->
   {% if result.pn_not_in_db and result.fuzzy_suggestions %}
-  <div style="margin:0 16px 12px 16px;padding:12px 14px;background:#fff8e1;border:1px solid #f0c040;border-left:4px solid #e6a817;border-radius:6px;">
-    <div style="font-size:12px;font-weight:700;color:#b8600a;margin-bottom:8px;">
-      🔍 Você quis dizer?
-    </div>
+  <div style="margin:0 16px 12px 16px;padding:4px 0 0;">
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">VOCÊ QUIS DIZER?</div>
     {% for sug in result.fuzzy_suggestions %}
     <a href="#"
        onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;"
-       style="display:block;padding:6px 10px;margin-bottom:4px;background:#fff;border:1px solid #e0c060;border-radius:4px;font-size:13px;font-weight:600;color:#333;text-decoration:none;font-family:monospace;">
-      {{ sug }}
+       style="display:block;padding:7px 4px;border-bottom:1px solid #e0e0e0;text-decoration:none;cursor:pointer;">
+      <span class="wtc-fuzzy-pn"
+            data-typed="{{ result.pn }}"
+            data-suggestion="{{ sug|escapejs }}"
+            style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#0f62fe;">{{ sug }}</span>
     </a>
     {% endfor %}
   </div>
@@ -213,14 +214,16 @@
     e tente novamente — o PN completo (ex: MT53B512M64D4TX) funciona diretamente.
   </div>
   {% if result.fuzzy_suggestions %}
-  <div class="dc2-fuzzy" style="margin-top:12px;">
-    <div class="pr-header"><span>Código parecido no banco — você quis dizer?</span><span></span><span></span></div>
+  <div style="margin-top:12px;">
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">VOCÊ QUIS DIZER?</div>
     {% for sug in result.fuzzy_suggestions %}
-    <a class="pr-row dc2-fuzzy-item" href="#"
-       onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;">
-      <span class="pr-prefix">{{ sug }}</span>
-      <span class="pr-fab">Você quis dizer?</span>
-      <span class="pr-tipo"></span>
+    <a href="#"
+       onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;"
+       style="display:block;padding:7px 4px;border-bottom:1px solid #e0e0e0;text-decoration:none;cursor:pointer;">
+      <span class="wtc-fuzzy-pn"
+            data-typed="{{ result.pn }}"
+            data-suggestion="{{ sug|escapejs }}"
+            style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#0f62fe;">{{ sug }}</span>
     </a>
     {% endfor %}
   </div>
@@ -241,14 +244,16 @@
   <div class="dc2-not-found-hint">
     O PN digitado não foi identificado. Confira os caracteres — confusões comuns: <strong>0/O, 1/l, B/8, M/W</strong>.
   </div>
-  <div class="dc2-fuzzy">
-    <div class="pr-header"><span>Sugestões</span><span></span><span></span></div>
+  <div style="margin-top:10px;">
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">VOCÊ QUIS DIZER?</div>
     {% for sug in result.fuzzy_suggestions %}
-    <a class="pr-row dc2-fuzzy-item" href="#"
-       onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;">
-      <span class="pr-prefix">{{ sug }}</span>
-      <span class="pr-fab">Você quis dizer?</span>
-      <span class="pr-tipo"></span>
+    <a href="#"
+       onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;"
+       style="display:block;padding:7px 4px;border-bottom:1px solid #e0e0e0;text-decoration:none;cursor:pointer;">
+      <span class="wtc-fuzzy-pn"
+            data-typed="{{ result.pn }}"
+            data-suggestion="{{ sug|escapejs }}"
+            style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#0f62fe;">{{ sug }}</span>
     </a>
     {% endfor %}
   </div>
@@ -288,14 +293,16 @@
   {% endwith %}
 
   {% if result.fuzzy_suggestions %}
-  <div class="dc2-fuzzy">
-    <div class="pr-header"><span>Sugestões</span><span></span><span></span></div>
-    {% for pn in result.fuzzy_suggestions %}
-    <a class="pr-row dc2-fuzzy-item" href="#"
-       onclick="document.getElementById('pn-input').value='{{ pn|escapejs }}';triggerSearch('{{ pn|escapejs }}');return false;">
-      <span class="pr-prefix">{{ pn }}</span>
-      <span class="pr-fab">Você quis dizer?</span>
-      <span class="pr-tipo"></span>
+  <div style="margin-top:10px;">
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">VOCÊ QUIS DIZER?</div>
+    {% for sug in result.fuzzy_suggestions %}
+    <a href="#"
+       onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;"
+       style="display:block;padding:7px 4px;border-bottom:1px solid #e0e0e0;text-decoration:none;cursor:pointer;">
+      <span class="wtc-fuzzy-pn"
+            data-typed="{{ result.pn }}"
+            data-suggestion="{{ sug|escapejs }}"
+            style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#0f62fe;">{{ sug }}</span>
     </a>
     {% endfor %}
   </div>
@@ -303,4 +310,19 @@
 
 </div>
 
+{% endif %}
+{% if result.fuzzy_suggestions %}
+<script>
+(function(){
+  document.querySelectorAll('.wtc-fuzzy-pn').forEach(function(el){
+    var t=el.dataset.typed||'', s=el.dataset.suggestion||'', i=0;
+    while(i<t.length&&i<s.length&&s[i]===t[i])i++;
+    var pre=s.slice(0,i), dif=s.slice(i);
+    el.innerHTML=
+      (pre?'<span>'+pre+'</span>':'')+
+      (dif?'<span style="color:#198038;font-weight:700">'+dif+' →</span>':
+           '<span style="color:#6f6f6f;font-size:13px;margin-left:2px;">→</span>');
+  });
+})();
+</script>
 {% endif %}
