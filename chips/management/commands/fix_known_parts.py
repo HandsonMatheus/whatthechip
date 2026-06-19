@@ -3524,6 +3524,21 @@ CORRECTIONS = [
     # ── K4H561638D-TCB3 — 256Mb DDR1 x16 (32MB/die) ─────────────────────────
     # Octopart (Samsung Semiconductor): K4H561638D-TCB3 = "16Mx16, DDR400" ✓
     {
+        "pn": "K4H561638D",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR",
+            "subtype": "DDR1 PC DRAM 256Mb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR", "subtype": "DDR1 PC DRAM 256Mb x16",
+            "capacity": "32MB", "interface": "DDR1", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4H561638D-TCB3 (Octopart/Samsung ✓). 256Mbit ÷ 8 = 32MB/die. D-die, x16. gen=1 → NÃO RENTÁVEL."
+        ),
+    },
+    {
         "pn": "K4H561638D-TCB3",
         "create": True,
         "create_defaults": {
@@ -3666,6 +3681,21 @@ CORRECTIONS = [
     # ── K4T51083QN-BI — 512Mb DDR2 x8 (64MB/die) ────────────────────────────
     # Samsung Semiconductor Global: K4T51083QN-BI(512 Mb) ✓ (x8 bus)
     {
+        "pn": "K4T51083QN",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR",
+            "subtype": "DDR2 PC DRAM 512Mb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR", "subtype": "DDR2 PC DRAM 512Mb x8",
+            "capacity": "64MB", "interface": "DDR2", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4T51083QN-BI (Samsung Semiconductor Global ✓). 512Mbit ÷ 8 = 64MB/die. x8 bus. gen=2 → NÃO RENTÁVEL."
+        ),
+    },
+    {
         "pn": "K4T51083QN-BI",
         "create": True,
         "create_defaults": {
@@ -3720,6 +3750,21 @@ CORRECTIONS = [
 
     # ── K4T1G083QJ-BI — 1Gb DDR2 x8 (128MB/die) ─────────────────────────────
     {
+        "pn": "K4T1G083QJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR",
+            "subtype": "DDR2 PC DRAM 1Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR", "subtype": "DDR2 PC DRAM 1Gb x8",
+            "capacity": "128MB", "interface": "DDR2", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4T1G083QJ-BI (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. x8 bus. gen=2 → NÃO RENTÁVEL."
+        ),
+    },
+    {
         "pn": "K4T1G083QJ-BI",
         "create": True,
         "create_defaults": {
@@ -3773,6 +3818,21 @@ CORRECTIONS = [
     },
 
     # ── K4T1G163QJ-BI — 1Gb DDR2 x16 (128MB/die) ────────────────────────────
+    {
+        "pn": "K4T1G163QJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR",
+            "subtype": "DDR2 PC DRAM 1Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR", "subtype": "DDR2 PC DRAM 1Gb x16",
+            "capacity": "128MB", "interface": "DDR2", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4T1G163QJ-BI (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. x16 bus. gen=2 → NÃO RENTÁVEL."
+        ),
+    },
     {
         "pn": "K4T1G163QJ-BI",
         "create": True,
@@ -3920,6 +3980,21 @@ CORRECTIONS = [
 
     # ── K4B4G1646D-BYK0 — 4Gb DDR3L x16 (512MB/die) ─────────────────────────
     {
+        "pn": "K4B4G1646D",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR3L",
+            "subtype": "DDR3L PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR3L", "subtype": "DDR3L PC DRAM 4Gb x16",
+            "capacity": "512MB", "interface": "DDR3L", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4B4G1646D-BYK0/BYNB/BCK0/BCNB (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die. D-die, x16."
+        ),
+    },
+    {
         "pn": "K4B4G1646D-BYK0",
         "create": True,
         "create_defaults": {
@@ -3972,6 +4047,21 @@ CORRECTIONS = [
     # ── K4B8G1646D-MYK0 — 8Gb DDR3L x16 (1GB/die) ───────────────────────────
     # Samsung Semiconductor Global: K4B8G1646D-MYK0(8 Gb) ✓
     # MY = DDR3L 1.35V. harddiskdirect: "DDR3-1600MHz 512Mx16 1.35V DRAM" ✓
+    {
+        "pn": "K4B8G1646D",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR3L",
+            "subtype": "DDR3L PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR3L", "subtype": "DDR3L PC DRAM 8Gb x16",
+            "capacity": "1GB", "interface": "DDR3L", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4B8G1646D-MYK0/MYMA/MMK0/MMMA (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die. D-die, x16."
+        ),
+    },
     {
         "pn": "K4B8G1646D-MYK0",
         "create": True,
@@ -4081,6 +4171,21 @@ CORRECTIONS = [
     # Samsung Semiconductor Global: K4B2G1646F-BYMA(2 Gb) ✓
     # 2Gbit ÷ 8 = 256MB. Exatamente no limiar DDR3 do assess_profitability.
     {
+        "pn": "K4B2G1646F",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR3L",
+            "subtype": "DDR3L PC DRAM 2Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR3L", "subtype": "DDR3L PC DRAM 2Gb x16",
+            "capacity": "256MB", "interface": "DDR3L", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4B2G1646F-BYMA/BYNB/BCK0/BCMA (Samsung Semiconductor Global ✓). 2Gbit ÷ 8 = 256MB/die. F-die, x16."
+        ),
+    },
+    {
         "pn": "K4B2G1646F-BYMA",
         "create": True,
         "create_defaults": {
@@ -4133,6 +4238,21 @@ CORRECTIONS = [
     # Variante x8 (barramento 8-bit): mesmo die, metade dos pinos de dados.
     # Samsung Semiconductor Global USA: K4B4G0846D-BYK0(4 Gb) ✓
     {
+        "pn": "K4B4G0846D",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR3L",
+            "subtype": "DDR3L PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR3L", "subtype": "DDR3L PC DRAM 4Gb x8",
+            "capacity": "512MB", "interface": "DDR3L", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4B4G0846D-BYK0/BYNB (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die. D-die, x8."
+        ),
+    },
+    {
         "pn": "K4B4G0846D-BYK0",
         "create": True,
         "create_defaults": {
@@ -4182,6 +4302,21 @@ CORRECTIONS = [
     },
 
     # ── K4B2G0846F-BYMA — 2Gb DDR3L x8 (256MB/die) ──────────────────────────
+    {
+        "pn": "K4B2G0846F",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR3L",
+            "subtype": "DDR3L PC DRAM 2Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR3L", "subtype": "DDR3L PC DRAM 2Gb x8",
+            "capacity": "256MB", "interface": "DDR3L", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4B2G0846F-BYMA (Samsung Semiconductor Global ✓). 2Gbit ÷ 8 = 256MB/die. F-die, x8."
+        ),
+    },
     {
         "pn": "K4B2G0846F-BYMA",
         "create": True,
@@ -4367,6 +4502,21 @@ CORRECTIONS = [
     # Samsung Semiconductor Global: K4B1G1646I-BCK0(1 Gb) ✓
     # 1Gbit = 128MB/die < 256MB limiar DDR3 → NÃO RENTÁVEL (assess_profitability)
     {
+        "pn": "K4B1G1646I",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR3",
+            "subtype": "DDR3 PC DRAM 1Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR3", "subtype": "DDR3 PC DRAM 1Gb x16",
+            "capacity": "128MB", "interface": "DDR3", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — deriva de K4B1G1646I-BCK0 (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. I-die, x16. 128MB < 256MB limiar DDR3 → NÃO RENTÁVEL."
+        ),
+    },
+    {
         "pn": "K4B1G1646I-BCK0",
         "create": True,
         "create_defaults": {
@@ -4409,6 +4559,21 @@ CORRECTIONS = [
 
     # ─── 4 Gb DDR4 x8 (512MB/die) ────────────────────────────────────────────
 
+    {
+        "pn": "K4A4G085WE",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — E-die, x8. Deriva de K4A4G085WE-BCPB/BCTD/BITD (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
     {
         "pn": "K4A4G085WE-BCPB",
         "create": True,
@@ -4458,6 +4623,21 @@ CORRECTIONS = [
         ),
     },
     {
+        "pn": "K4A4G085WF",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — F-die, x8. Deriva de K4A4G085WF-BCTD/BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+    {
         "pn": "K4A4G085WF-BCTD",
         "create": True,
         "create_defaults": {
@@ -4490,6 +4670,21 @@ CORRECTIONS = [
         ),
     },
     {
+        "pn": "K4A4G085WG",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x8",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — G-die, x8. Deriva de K4A4G085WG-BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+    {
         "pn": "K4A4G085WG-BCWE",
         "create": True,
         "create_defaults": {
@@ -4508,6 +4703,21 @@ CORRECTIONS = [
 
     # ─── 4 Gb DDR4 x16 (512MB/die) ───────────────────────────────────────────
 
+    {
+        "pn": "K4A4G165WE",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — E-die, x16. Deriva de K4A4G165WE-BCRC/BCTD/BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
     {
         "pn": "K4A4G165WE-BCRC",
         "create": True,
@@ -4557,6 +4767,21 @@ CORRECTIONS = [
         ),
     },
     {
+        "pn": "K4A4G165WF",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — F-die, x16. Deriva de K4A4G165WF-BCTD/BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+    {
         "pn": "K4A4G165WF-BCTD",
         "create": True,
         "create_defaults": {
@@ -4589,6 +4814,21 @@ CORRECTIONS = [
         ),
     },
     {
+        "pn": "K4A4G165WG",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 4Gb x16",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — G-die, x16. Deriva de K4A4G165WG-BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
+        ),
+    },
+    {
         "pn": "K4A4G165WG-BCWE",
         "create": True,
         "create_defaults": {
@@ -4609,6 +4849,21 @@ CORRECTIONS = [
     # Samsung datasheet 8G_B_DDR4_Samsung_Spec_Rev2_1_Feb_17-0.pdf ✓
     # (download.semiconductor.samsung.com) — K4A8G085WB confirma "8Gb B-die DDR4 x8, 1.2V"
 
+    {
+        "pn": "K4A8G085WB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — B-die, x8. Deriva de K4A8G085WB-BCPB/BCRC/BCTD (Samsung Global + datasheet ✓). 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
     {
         "pn": "K4A8G085WB-BCPB",
         "create": True,
@@ -4660,6 +4915,21 @@ CORRECTIONS = [
         ),
     },
     {
+        "pn": "K4A8G085WC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — C-die, x8. Deriva de K4A8G085WC-BCRC/BCTD/BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+    {
         "pn": "K4A8G085WC-BCRC",
         "create": True,
         "create_defaults": {
@@ -4708,6 +4978,21 @@ CORRECTIONS = [
         ),
     },
     {
+        "pn": "K4A8G085WG",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 8Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x8",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — G-die, x8. Deriva de K4A8G085WG-BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+    {
         "pn": "K4A8G085WG-BCWE",
         "create": True,
         "create_defaults": {
@@ -4726,6 +5011,21 @@ CORRECTIONS = [
 
     # ─── 8 Gb DDR4 x16 (1GB/die) ─────────────────────────────────────────────
 
+    {
+        "pn": "K4A8G165WB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — B-die, x16. Deriva de K4A8G165WB-BCPB/BCRC/BITD (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
     {
         "pn": "K4A8G165WB-BCPB",
         "create": True,
@@ -4772,6 +5072,21 @@ CORRECTIONS = [
         "reason": (
             "Samsung Semiconductor Global: K4A8G165WB-BITD(8 Gb) ✓. "
             "B-die, x16, DDR4-2666. 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+    {
+        "pn": "K4A8G165WC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — C-die, x16. Deriva de K4A8G165WC-BCRC/BCTD/BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die."
         ),
     },
     {
@@ -4823,6 +5138,21 @@ CORRECTIONS = [
         ),
     },
     {
+        "pn": "K4A8G165WG",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 8Gb x16",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — G-die, x16. Deriva de K4A8G165WG-BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die."
+        ),
+    },
+    {
         "pn": "K4A8G165WG-BCWE",
         "create": True,
         "create_defaults": {
@@ -4842,6 +5172,21 @@ CORRECTIONS = [
     # ─── 16 Gb DDR4 x8 (2GB/die) — K4AAG085W ────────────────────────────────
     # K4AAG: pn[3:5]='AG' → DRAM_PC 'AG'=16Gb. x8 bus → 2GB/die.
 
+    {
+        "pn": "K4AAG085WA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x8",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — A-die, x8. Deriva de K4AAG085WA-BCTD/BCWE (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
+        ),
+    },
     {
         "pn": "K4AAG085WA-BCTD",
         "create": True,
@@ -4875,6 +5220,21 @@ CORRECTIONS = [
         ),
     },
     {
+        "pn": "K4AAG085WC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x8",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — C-die, x8. Deriva de K4AAG085WC-BCWE (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
+        ),
+    },
+    {
         "pn": "K4AAG085WC-BCWE",
         "create": True,
         "create_defaults": {
@@ -4893,6 +5253,21 @@ CORRECTIONS = [
 
     # ─── 16 Gb DDR4 x16 (2GB/die) — K4AAG165W ───────────────────────────────
 
+    {
+        "pn": "K4AAG165WA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x16",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — A-die, x16. Deriva de K4AAG165WA-BCTD/BCWE (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
+        ),
+    },
     {
         "pn": "K4AAG165WA-BCTD",
         "create": True,
@@ -4923,6 +5298,21 @@ CORRECTIONS = [
         "reason": (
             "Samsung Semiconductor Global: K4AAG165WA-BCWE(16 Gb) ✓. "
             "A-die, x16, DDR4-3200. 16Gbit ÷ 8 = 2GB/die."
+        ),
+    },
+    {
+        "pn": "K4AAG165WB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR4",
+            "subtype": "DDR4 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR4", "subtype": "DDR4 PC DRAM 16Gb x16",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — B-die, x16. Deriva de K4AAG165WB-MCTD (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
         ),
     },
     {
@@ -4957,6 +5347,21 @@ CORRECTIONS = [
     # ─── 16 Gb DDR5 x8 (2GB/die) — K4RAH086V ────────────────────────────────
     # K4RA: gramática existe (priority=80); entradas elevam para confirmed.
 
+    {
+        "pn": "K4RAH086VB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR5",
+            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — B-die, x8. Deriva de K4RAH086VB-BCQK/BIQK/BIWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
+        ),
+    },
     {
         "pn": "K4RAH086VB-BCQK",
         "create": True,
@@ -5006,6 +5411,21 @@ CORRECTIONS = [
         ),
     },
     {
+        "pn": "K4RAH086VE",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR5",
+            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — E-die, x8. Deriva de K4RAH086VE-BCWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
+        ),
+    },
+    {
         "pn": "K4RAH086VE-BCWM",
         "create": True,
         "create_defaults": {
@@ -5019,6 +5439,21 @@ CORRECTIONS = [
         "reason": (
             "Samsung Semiconductor Global: K4RAH086VE-BCWM(16 Gb) ✓. "
             "E-die, x8, DDR5-5600. 16Gbit ÷ 8 = 2GB/die."
+        ),
+    },
+    {
+        "pn": "K4RAH086VP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR5",
+            "subtype": "DDR5 PC DRAM 16Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x8",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — P-die, x8. Deriva de K4RAH086VP-BCWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
         ),
     },
     {
@@ -5040,6 +5475,21 @@ CORRECTIONS = [
 
     # ─── 16 Gb DDR5 x16 (2GB/die) — K4RAH165V ───────────────────────────────
 
+    {
+        "pn": "K4RAH165VB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR5",
+            "subtype": "DDR5 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x16",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — B-die, x16. Deriva de K4RAH165VB-BCQK/BCWM/BIQK/BIWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
+        ),
+    },
     {
         "pn": "K4RAH165VB-BCQK",
         "create": True,
@@ -5105,6 +5555,21 @@ CORRECTIONS = [
         ),
     },
     {
+        "pn": "K4RAH165VP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR5",
+            "subtype": "DDR5 PC DRAM 16Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 16Gb x16",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — P-die, x16. Deriva de K4RAH165VP-BCWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
+        ),
+    },
+    {
         "pn": "K4RAH165VP-BCWM",
         "create": True,
         "create_defaults": {
@@ -5124,6 +5589,21 @@ CORRECTIONS = [
     # ─── 32 Gb DDR5 x8 (4GB/die) — K4RBH046V ────────────────────────────────
     # K4RB: gramática existe (priority=80). Entradas elevam para confirmed.
 
+    {
+        "pn": "K4RBH046VM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR5",
+            "subtype": "DDR5 PC DRAM 32Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 32Gb x8",
+            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — B-die, x8. Deriva de K4RBH046VM-BCCP/BCWM (Samsung Semiconductor Global ✓). 32Gbit ÷ 8 = 4GB/die."
+        ),
+    },
     {
         "pn": "K4RBH046VM-BCCP",
         "create": True,
@@ -5166,6 +5646,21 @@ CORRECTIONS = [
     # ⚠ Nota para arquivo: K4RC merece família na gramática (populate_samsung.py)
     #   para cobrir variantes futuras. Por ora, PNs abaixo resolvem os conhecidos.
 
+    {
+        "pn": "K4RCH046VM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "DDR5",
+            "subtype": "DDR5 PC DRAM 32Gb x8", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "DDR5", "subtype": "DDR5 PC DRAM 32Gb x8",
+            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — C-die, x8. Deriva de K4RCH046VM-2CLP/2CCM (Samsung Semiconductor Global ✓). 32Gbit ÷ 8 = 4GB/die. ⚠ K4RC SEM gramática → cairia em K4R RDRAM sem esta entrada."
+        ),
+    },
     {
         "pn": "K4RCH046VM-2CLP",
         "create": True,
