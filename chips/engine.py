@@ -1316,7 +1316,7 @@ def assess_profitability(result: dict) -> str:
         DDR standalone (threshold em Gigabits por die):
             - DDR2 ou inferior         → NÃO RENTÁVEL
             - DDR3: < 2 Gb (= 256 MB)  → NÃO RENTÁVEL
-            - DDR4+: < 8 Gb (= 1 GB)   → NÃO RENTÁVEL
+            - DDR4+: < 1 Gb (= 128 MB)  → NÃO RENTÁVEL
 
         Outros tipos (NOR, SoC, MCP legado raw, etc.):
             → INDETERMINADO

@@ -429,9 +429,9 @@ class ProfitabilityConfig(models.Model):
         help_text="Para DDR3: abaixo de X Gb por die → NÃO RENTÁVEL.  (2 Gb = 256 MB | 4 Gb = 512 MB | 8 Gb = 1 GB)"
     )
     ddr4plus_min_gbit = models.FloatField(
-        default=8.0,
+        default=1.0,
         verbose_name="DDR4+ — Densidade mínima (Gb por die)",
-        help_text="Para DDR4 ou superior: abaixo de X Gb por die → NÃO RENTÁVEL.  (8 Gb = 1 GB | 4 Gb = 512 MB)"
+        help_text="Para DDR4 ou superior: abaixo de X Gb por die → NÃO RENTÁVEL.  (1 Gb = 128 MB | 2 Gb = 256 MB | 8 Gb = 1 GB)"
     )
 
     # ── Metadados ─────────────────────────────────────────────────────────────

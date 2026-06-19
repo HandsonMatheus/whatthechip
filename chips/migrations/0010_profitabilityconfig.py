@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('lpddr4plus_min_cap_gb', models.FloatField(default=1.0, help_text='Para LPDDR4 ou superior: abaixo de X GB → NÃO RENTÁVEL.', verbose_name='LPDDR4+ — Capacidade mínima (GB)')),
                 ('ddr_min_gen', models.IntegerField(default=3, help_text='Gerações abaixo deste valor → NÃO RENTÁVEL.  (3 = DDR3 é o mínimo)', verbose_name='DDR — Geração mínima')),
                 ('ddr3_min_gbit', models.FloatField(default=2.0, help_text='Para DDR3: abaixo de X Gb por die → NÃO RENTÁVEL.  (2 Gb = 256 MB | 4 Gb = 512 MB | 8 Gb = 1 GB)', verbose_name='DDR3 — Densidade mínima (Gb por die)')),
-                ('ddr4plus_min_gbit', models.FloatField(default=8.0, help_text='Para DDR4 ou superior: abaixo de X Gb por die → NÃO RENTÁVEL.  (8 Gb = 1 GB | 4 Gb = 512 MB)', verbose_name='DDR4+ — Densidade mínima (Gb por die)')),
+                ('ddr4plus_min_gbit', models.FloatField(default=1.0, help_text='Para DDR4 ou superior: abaixo de X Gb por die → NÃO RENTÁVEL.  (1 Gb = 128 MB | 2 Gb = 256 MB | 8 Gb = 1 GB)', verbose_name='DDR4+ — Densidade mínima (Gb por die)')),
                 ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Última atualização')),
                 ('notes', models.TextField(blank=True, default='', help_text='Registre o motivo das alterações para auditoria futura.', verbose_name='Notas / Histórico de alterações')),
             ],
