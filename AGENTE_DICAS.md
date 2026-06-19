@@ -275,7 +275,39 @@ for r in obj: print(r)
 
 ---
 
-## 9. Checklist antes de commitar
+## 9. Templates Django — armadilha do `escapejs` em `data-*` (bug real)
+
+### O problema
+Django's `|escapejs` converte **`-`** (hífen) em `-` para segurança em
+contextos JavaScript inline (`onclick="...'{{ s|escapejs }}'..."` → correto).
+
+**Mas em atributos `data-*`** o comportamento é errado:
+```html
+<!-- ❌ ERRADO — data-suggestion recebe K4B4G1646D-BCK0 (literal 6 chars) -->
+<span data-suggestion="{{ sug|escapejs }}">
+<!-- JavaScript lê el.dataset.suggestion → recebe "-" como texto puro -->
+<!-- el.innerHTML = ... + dif + ... → exibe "-" em vez de "-"           -->
+
+<!-- ✅ CORRETO — Django auto-escaping converte < > & " ' mas NÃO o hífen -->
+<span data-suggestion="{{ sug }}">
+<!-- JavaScript lê el.dataset.suggestion → recebe "-" real                    -->
+```
+
+### Regra
+| Contexto | Usar |
+|----------|------|
+| `onclick="...var x='{{ s\|escapejs }}'..."` | `\|escapejs` ✓ |
+| `<span data-foo="{{ s }}">` | sem filtro (auto-escaping) ✓ |
+| `hx-vals='{"key": "{{ s\|escapejs }}"}'` | `\|escapejs` ✓ (é JSON inline) |
+| Texto visível `{{ s }}` dentro de tag | sem filtro ✓ |
+
+### Detectar regressão
+Buscar `-` (literal) na página renderizada. Se aparecer na tela = bug.
+Corrigido em 2026-06-19: `confirm_card.html` + `decode_card.html` (4 pontos).
+
+---
+
+## 10. Checklist antes de commitar
 
 - [ ] Sintaxe OK: `python3 -c "import ast; ast.parse(open('arquivo.py').read())"`
 - [ ] fix_known_parts rodou sem erros locais
