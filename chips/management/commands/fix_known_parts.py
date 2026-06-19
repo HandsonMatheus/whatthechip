@@ -5890,6 +5890,571 @@ CORRECTIONS = [
         ),
     },
 
+    # ══════════════════════════════════════════════════════════════════════════
+    # Samsung GDDR (Graphics DDR) — K4W / K4G / K4Z
+    # Memória VRAM para GPUs. assess_profitability → RENTÁVEL: GDDR não casa o
+    # regex (?<![A-Z])DDR porque "G" antes de "DDR" aciona o lookbehind negativo.
+    # Gramática: K4W usa decode_density_type="pc" (DRAM_PC); K4G usa "mobile" (DRAM_MOBILE).
+    # K4Z: sem decode automático de densidade (pn[3:5] com códigos específicos GDDR6).
+    # Destino: bancada reacondicional GPU (reparo de placa de vídeo). Adicionado: 2026-06-19.
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # K4W — gDDR3 (Graphics DDR3) Samsung (~2008-2013)
+    # VRAM dedicada em GPUs de entrada e notebooks com vídeo discreto soldado.
+    # Anatomia: K4W | [density 2ch pn[3:5]] | 1646 | [die] | [-] | [sufixo]
+    # Gramática: decode_density_type="pc" → pn[3:5] via DRAM_PC ✓
+    #   "1G"=1Gb(128MB) · "2G"=2Gb(256MB) · "4G"=4Gb(512MB). Bus: x16. Tensão: 1.5V.
+    # Fontes:
+    #   • Octopart (Samsung): K4W1G1646E-HC12, K4W2G1646C-HC12 ✓ (2026-06-19)
+    #   • Teardown/esquemático: K4W1G1646D-EC12 (ATI Radeon HD 4550) — manual
+    #   • Esquemático Dell N4110: K4W2G1646C-HC11 (linha +1.5V_GFX) — manual
+    #   • eMiner bancada: K4W4G1646Q (chip físico confirmado, sem Tier 1 para Q-die) — manual
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K4W1G1646E — 1Gb gDDR3 x16 (E-die) ──────────────────────────────────
+    {
+        "pn": "K4W1G1646E",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR3",
+            "subtype": "gDDR3 1Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR3", "subtype": "gDDR3 1Gb x16",
+            "capacity": "128MB", "interface": "gDDR3",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — gDDR3 Samsung 1Gb x16 (E-die). "
+            "Deriva de K4W1G1646E-HC12 (Octopart ✓: '1Gb gDDR3 SDRAM 1.5V 800MHz FBGA96'). "
+            "1Gbit ÷ 8 = 128MB/die. Bus x16 (64M×16). Gramática K4W: pn[3:5]='1G' via DRAM_PC ✓."
+        ),
+    },
+    {
+        "pn": "K4W1G1646E-HC12",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR3",
+            "subtype": "gDDR3 1Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR3", "subtype": "gDDR3 1Gb x16",
+            "capacity": "128MB", "interface": "gDDR3",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Octopart ✓ (Samsung): K4W1G1646E-HC12 = '1Gb gDDR3 SDRAM 1.5V 800MHz FBGA96'. "
+            "E-die, x16 bus. 1Gbit ÷ 8 = 128MB. HC12 = speed/temp grade. "
+            "VRAM de GPUs de entrada Samsung/ATI/Nvidia (~2009-2012)."
+        ),
+    },
+
+    # ── K4W1G1646D — 1Gb gDDR3 x16 (D-die) ──────────────────────────────────
+    # D-die anterior ao E-die. Mesmos specs (1Gb, x16, 1.5V). ATI Radeon HD 4550.
+    {
+        "pn": "K4W1G1646D",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR3",
+            "subtype": "gDDR3 1Gb x16", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "GDDR3", "subtype": "gDDR3 1Gb x16",
+            "capacity": "128MB", "interface": "gDDR3",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — gDDR3 Samsung 1Gb x16 (D-die). "
+            "Deriva de K4W1G1646D-EC12 (identificado em esquemático ATI Radeon HD 4550). "
+            "1Gbit ÷ 8 = 128MB/die. D-die anterior ao E-die, specs idênticos. "
+            "Gramática K4W: pn[3:5]='1G' via DRAM_PC ✓."
+        ),
+    },
+    {
+        "pn": "K4W1G1646D-EC12",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR3",
+            "subtype": "gDDR3 1Gb x16", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "GDDR3", "subtype": "gDDR3 1Gb x16",
+            "capacity": "128MB", "interface": "gDDR3",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Identificado em esquemático/teardown: ATI Radeon HD 4550 VRAM = K4W1G1646D-EC12. "
+            "D-die, 1Gb (128MB), x16, 1.5V. EC12 = speed/temp grade. "
+            "Specs funcionais idênticos ao E-die K4W1G1646E-HC12 (Octopart ✓)."
+        ),
+    },
+
+    # ── K4W2G1646C — 2Gb gDDR3 x16 (C-die) ──────────────────────────────────
+    {
+        "pn": "K4W2G1646C",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR3",
+            "subtype": "gDDR3 2Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR3", "subtype": "gDDR3 2Gb x16",
+            "capacity": "256MB", "interface": "gDDR3",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — gDDR3 Samsung 2Gb x16 (C-die). "
+            "Deriva de K4W2G1646C-HC12 (Octopart ✓). "
+            "2Gbit ÷ 8 = 256MB/die. Bus x16 (128M×16). Gramática K4W: pn[3:5]='2G' via DRAM_PC ✓."
+        ),
+    },
+    {
+        "pn": "K4W2G1646C-HC11",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR3",
+            "subtype": "gDDR3 2Gb x16", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "GDDR3", "subtype": "gDDR3 2Gb x16",
+            "capacity": "256MB", "interface": "gDDR3",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Identificado em esquemático Dell N4110 (linha +1.5V_GFX com rede de desacoplamento): "
+            "VRAM = K4W2G1646C-HC11. C-die, 2Gb (256MB), x16. "
+            "HC11 = grade anterior ao HC12 (Octopart ✓). Specs funcionais idênticos."
+        ),
+    },
+    {
+        "pn": "K4W2G1646C-HC12",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR3",
+            "subtype": "gDDR3 2Gb x16", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR3", "subtype": "gDDR3 2Gb x16",
+            "capacity": "256MB", "interface": "gDDR3",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Octopart ✓ (Samsung): K4W2G1646C-HC12 = '2Gb gDDR3 SDRAM 1.5V FBGA'. "
+            "C-die, x16, 2Gbit ÷ 8 = 256MB. HC12 = speed/temp grade. "
+            "Usado em notebooks com vídeo discreto Samsung/Dell/HP (~2010-2013)."
+        ),
+    },
+
+    # ── K4W4G1646Q — 4Gb gDDR3 x16 (Q-die) ──────────────────────────────────
+    # Chip físico confirmado em bancada eMiner (2026-06-19). Sem PN Tier 1 para Q-die.
+    # Gramática K4W decodifica corretamente: pn[3:5]='4G' → DRAM_PC → 4Gb (512MB) ✓.
+    {
+        "pn": "K4W4G1646Q",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR3",
+            "subtype": "gDDR3 4Gb x16", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "GDDR3", "subtype": "gDDR3 4Gb x16",
+            "capacity": "512MB", "interface": "gDDR3",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Chip gDDR3 4Gb x16 (Q-die) confirmado fisicamente em bancada eMiner (2026-06-19). "
+            "Sem PN K4W4G1646Q confirmado via Samsung Semiconductor Global ou Octopart. "
+            "4Gbit ÷ 8 = 512MB/die. Gramática K4W: pn[3:5]='4G' → DRAM_PC → 4Gb (512MB) ✓. "
+            "confidence=manual: chip físico presente, sem URL Tier 1 para Q-die."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # K4G — GDDR5 / GDDR5X Samsung (~2012-2020)
+    # VRAM de alto volume em GPUs discretas (AMD RX / Nvidia GTX / RTX).
+    # Anatomia: K4G | [density pn[3]] | [die pn[4]] | 325 | [die rev pn[8]] | [var pn[9]] | - | [sufixo]
+    # Gramática K4G: decode_density_type="mobile" → pn[3] via DRAM_MOBILE ✓
+    #   "2"=2Gb(256MB) · "4"=4Gb(512MB) · "8"=8Gb(1GB). Bus: x32 (sempre).
+    # Fontes:
+    #   • Samsung Semiconductor Global (título indexado com "(X Gb)") ✓ (2026-06-19)
+    #   • Octopart (Samsung) para K4G20325FD-FC04 ✓
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K4G20325FD — 2Gb GDDR5 x32 (D-die) ──────────────────────────────────
+    {
+        "pn": "K4G20325FD",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 2Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 2Gb x32",
+            "capacity": "256MB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR5 Samsung 2Gb x32 (D-die). "
+            "Deriva de K4G20325FD-FC04 (Octopart ✓: '2Gb GDDR5 SDRAM'). "
+            "2Gbit ÷ 8 = 256MB/die. Bus x32 (64M×32). "
+            "Gramática K4G: pn[3]='2' via DRAM_MOBILE → 2Gb (256MB) ✓."
+        ),
+    },
+    {
+        "pn": "K4G20325FD-FC04",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 2Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 2Gb x32",
+            "capacity": "256MB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Octopart ✓ (Samsung): K4G20325FD-FC04 = '2Gb GDDR5 SDRAM'. "
+            "D-die, x32, 2Gbit ÷ 8 = 256MB. FC04 = speed/temp grade. "
+            "Usado em GPUs de baixo perfil / integrado discreto (~2012-2015)."
+        ),
+    },
+
+    # ── K4G41325FE — 4Gb GDDR5 x32 (E-die) ──────────────────────────────────
+    # Alto volume: AMD RX 470 4GB / RX 570 4GB, Nvidia GTX 1050 Ti (4 chips × 512MB = 2GB).
+    {
+        "pn": "K4G41325FE",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 4Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 4Gb x32",
+            "capacity": "512MB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR5 Samsung 4Gb x32 (E-die). "
+            "Deriva de K4G41325FE-HC25/HC28 (Samsung Semiconductor Global ✓). "
+            "4Gbit ÷ 8 = 512MB/die. Bus x32 (128M×32). "
+            "Gramática K4G: pn[3]='4' via DRAM_MOBILE → 4Gb (512MB) ✓."
+        ),
+    },
+    {
+        "pn": "K4G41325FE-HC25",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 4Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 4Gb x32",
+            "capacity": "512MB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4G41325FE-HC25(4 Gb). "
+            "E-die, x32, 4Gbit ÷ 8 = 512MB. HC25 = speed/temp grade. "
+            "Usado em AMD RX 470 / RX 570 (4GB) e Nvidia GTX 1050 Ti."
+        ),
+    },
+    {
+        "pn": "K4G41325FE-HC28",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 4Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 4Gb x32",
+            "capacity": "512MB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global USA/CN ✓: K4G41325FE-HC28(4 Gb). "
+            "E-die, x32, 4Gbit ÷ 8 = 512MB. HC28 = speed/temp grade (frequência superior). "
+            "Usado em AMD RX 480 4GB e Nvidia GTX 1060 3GB (configs selecionados)."
+        ),
+    },
+
+    # ── K4G80325FB — 8Gb GDDR5 x32 (B-die) ──────────────────────────────────
+    # Alto volume: AMD RX 480/580 8GB, Nvidia GTX 1060 6GB, GTX 1070 8GB.
+    {
+        "pn": "K4G80325FB",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
+            "capacity": "1GB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR5 Samsung 8Gb x32 (B-die). "
+            "Deriva de K4G80325FB-HC22/HC25/HC28 (Samsung Semiconductor Global ✓). "
+            "8Gbit ÷ 8 = 1GB/die. Bus x32 (256M×32). "
+            "Gramática K4G: pn[3]='8' via DRAM_MOBILE → 8Gb (1GB) ✓."
+        ),
+    },
+    {
+        "pn": "K4G80325FB-HC22",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
+            "capacity": "1GB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4G80325FB-HC22(8 Gb). "
+            "B-die, x32, 8Gbit ÷ 8 = 1GB. HC22 = speed/temp grade. "
+            "Usado em AMD RX 480 8GB (8 chips × 1GB = 8GB VRAM)."
+        ),
+    },
+    {
+        "pn": "K4G80325FB-HC25",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
+            "capacity": "1GB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4G80325FB-HC25(8 Gb). "
+            "B-die, x32, 8Gbit ÷ 8 = 1GB. HC25 = speed/temp grade. "
+            "Usado em Nvidia GTX 1060 6GB (6 chips × 1GB) e GTX 1070 8GB."
+        ),
+    },
+    {
+        "pn": "K4G80325FB-HC28",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
+            "capacity": "1GB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4G80325FB-HC28(8 Gb). "
+            "B-die, x32, 8Gbit ÷ 8 = 1GB. HC28 = speed/temp grade (frequência superior). "
+            "Usado em AMD RX 580 8GB (8 chips × 1GB) e configs GTX 1080."
+        ),
+    },
+
+    # ── K4G80325FC — 8Gb GDDR5 x32 (C-die) ──────────────────────────────────
+    # C-die é revisão posterior do B-die, specs idênticos (8Gb, x32, 1GB/die).
+    {
+        "pn": "K4G80325FC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
+            "capacity": "1GB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR5 Samsung 8Gb x32 (C-die). "
+            "Deriva de K4G80325FC-HC22/HC25 (Samsung Semiconductor Global ✓). "
+            "8Gbit ÷ 8 = 1GB/die. C-die: revisão posterior do B-die, specs idênticos. "
+            "Gramática K4G: pn[3]='8' via DRAM_MOBILE → 8Gb (1GB) ✓."
+        ),
+    },
+    {
+        "pn": "K4G80325FC-HC22",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
+            "capacity": "1GB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4G80325FC-HC22(8 Gb). "
+            "C-die, x32, 8Gbit ÷ 8 = 1GB. HC22 = speed/temp grade. "
+            "Revisão C do K4G80325FB-HC22 — compatível em reparo de GPU."
+        ),
+    },
+    {
+        "pn": "K4G80325FC-HC25",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR5",
+            "subtype": "GDDR5 8Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR5", "subtype": "GDDR5 8Gb x32",
+            "capacity": "1GB", "interface": "GDDR5",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4G80325FC-HC25(8 Gb). "
+            "C-die, x32, 8Gbit ÷ 8 = 1GB. HC25 = speed/temp grade. "
+            "Revisão C do K4G80325FB-HC25 — compatível em reparo de GPU."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # K4Z — GDDR6 / GDDR6X Samsung (~2018-presente)
+    # VRAM de última geração: Nvidia RTX 20xx / RTX 30xx / AMD RX 6000.
+    # Anatomia: K4Z | [density 2ch pn[3:5]] | 25 | [die rev pn[8]] | [var pn[9]] | - | [sufixo]
+    # Densidade: pn[3:5]: "80"=8Gb(1GB) · "AF"=16Gb(2GB). Bus: x32. Sem decode de grammar.
+    # Fontes:
+    #   • Samsung Semiconductor Global ✓ (2026-06-19):
+    #     K4ZAF325BM-HC14(16 Gb) · HC16(16 Gb) · HC18(16 Gb) · SC14(16 Gb)
+    #     K4Z80325BC-HC14(8 Gb)
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K4Z80325BC — 8Gb GDDR6 x32 (C-die) ──────────────────────────────────
+    {
+        "pn": "K4Z80325BC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR6",
+            "subtype": "GDDR6 8Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR6", "subtype": "GDDR6 8Gb x32",
+            "capacity": "1GB", "interface": "GDDR6",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR6 Samsung 8Gb x32 (C-die). "
+            "Deriva de K4Z80325BC-HC14 (Samsung Semiconductor Global ✓). "
+            "8Gbit ÷ 8 = 1GB/die. Bus x32. pn[3:5]='80' = código densidade 8Gb."
+        ),
+    },
+    {
+        "pn": "K4Z80325BC-HC14",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR6",
+            "subtype": "GDDR6 8Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR6", "subtype": "GDDR6 8Gb x32",
+            "capacity": "1GB", "interface": "GDDR6",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4Z80325BC-HC14(8 Gb). "
+            "C-die, x32, 8Gbit ÷ 8 = 1GB. HC14 = 14 Gbps speed grade. "
+            "pn[3:5]='80' → 8Gb GDDR6. Usado em GPUs mid-range com 8GB VRAM."
+        ),
+    },
+
+    # ── K4ZAF325BM — 16Gb GDDR6 x32 (B-die M-variant) ───────────────────────
+    # Alto volume: Nvidia RTX 2070 Super, RTX 3070 8GB, RTX 3080 10GB, RTX 3090 24GB.
+    # 16Gb × N chips = VRAM total (ex.: RTX 3090: 12 chips × 2GB = 24GB VRAM).
+    # pn[3:5]='AF' = código proprietário Samsung para 16Gb GDDR6.
+    {
+        "pn": "K4ZAF325BM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR6",
+            "subtype": "GDDR6 16Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR6", "subtype": "GDDR6 16Gb x32",
+            "capacity": "2GB", "interface": "GDDR6",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR6 Samsung 16Gb x32 (B-die M-variant). "
+            "Deriva de K4ZAF325BM-HC14/HC16/HC18/SC14 (Samsung Semiconductor Global ✓). "
+            "16Gbit ÷ 8 = 2GB/die. Bus x32. pn[3:5]='AF' = código densidade 16Gb GDDR6."
+        ),
+    },
+    {
+        "pn": "K4ZAF325BM-HC14",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR6",
+            "subtype": "GDDR6 16Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR6", "subtype": "GDDR6 16Gb x32",
+            "capacity": "2GB", "interface": "GDDR6",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4ZAF325BM-HC14(16 Gb). "
+            "B-die M-variant, x32, 16Gbit ÷ 8 = 2GB. HC14 = 14 Gbps speed grade. "
+            "Usado em Nvidia RTX 2070 Super (8 chips × 2GB = 8GB VRAM)."
+        ),
+    },
+    {
+        "pn": "K4ZAF325BM-HC16",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR6",
+            "subtype": "GDDR6 16Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR6", "subtype": "GDDR6 16Gb x32",
+            "capacity": "2GB", "interface": "GDDR6",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4ZAF325BM-HC16(16 Gb). "
+            "B-die M-variant, x32, 16Gbit ÷ 8 = 2GB. HC16 = 16 Gbps speed grade. "
+            "Usado em Nvidia RTX 3070 8GB (8 chips × 2GB) e RTX 3080 10GB."
+        ),
+    },
+    {
+        "pn": "K4ZAF325BM-HC18",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR6",
+            "subtype": "GDDR6 16Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR6", "subtype": "GDDR6 16Gb x32",
+            "capacity": "2GB", "interface": "GDDR6",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4ZAF325BM-HC18(16 Gb). "
+            "B-die M-variant, x32, 16Gbit ÷ 8 = 2GB. HC18 = 18 Gbps speed grade. "
+            "Usado em Nvidia RTX 3080 12GB e RTX 3090 (12 chips × 2GB = 24GB VRAM)."
+        ),
+    },
+    {
+        "pn": "K4ZAF325BM-SC14",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "GDDR6",
+            "subtype": "GDDR6 16Gb x32", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "GDDR6", "subtype": "GDDR6 16Gb x32",
+            "capacity": "2GB", "interface": "GDDR6",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Samsung Semiconductor Global ✓: K4ZAF325BM-SC14(16 Gb). "
+            "B-die M-variant, x32, 16Gbit ÷ 8 = 2GB. SC14 = variante de temp/grade 14 Gbps. "
+            "Configs de workstation / servidor."
+        ),
+    },
+
 ]
 
 

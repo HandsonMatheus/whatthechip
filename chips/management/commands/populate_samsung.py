@@ -1813,21 +1813,53 @@ class Command(BaseCommand):
                     "e notebooks com vídeo discreto soldado (~2008-2013). "
                     "W = gDDR3; NÃO confundir com K4B (DDR3 de sistema). "
                     "Densidade: pn[3:5] → DRAM_PC: 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB). "
-                    "Chips confirmados: K4W1G1646D-EC12 (ATI Radeon HD 4550), "
-                    "K4W2G1646C-HC11 (Dell N4110 VRAM). "
-                    "Tensão diferente do DDR3 sistema — NÃO misturar na bancada. "
+                    "Bus: x16. 1.5V (timing/empacotamento GDDR, NÃO trocar com DDR3 sistema). "
+                    "PNs confirmados: K4W1G1646D-EC12 (1Gb·ATI Radeon HD 4550) · "
+                    "K4W1G1646E-HC12 (1Gb·Octopart ✓) · K4W2G1646C-HC11 (2Gb·Dell N4110 VRAM) · "
+                    "K4W2G1646C-HC12 (2Gb·Octopart ✓) · K4W4G1646Q (4Gb·eMiner bancada). "
                     "Destino: bancada reacondicional GPU (junto com K4J/K4G)."
                 ),
             ),
+            # ── K4G = GDDR5 / GDDR5X ─────────────────────────────────────────
+            # Memória gráfica de alto volume (~2012-2020). VRAM de GPUs discretas.
+            # Anatomia: K4G | [density pn[3]] | [die pn[4]] | 325 | [die rev] | [var] | - | [sufixo]
+            # Decode: pn[3] via DRAM_MOBILE: "2"=2Gb(256MB) · "4"=4Gb(512MB) · "8"=8Gb(1GB)
+            # PNs confirmados (Samsung Semiconductor Global ✓ / Octopart ✓ 2026-06-19):
+            #   K4G20325FD-FC04: 2Gb·256MB; K4G41325FE-HC25/HC28: 4Gb·512MB (RX470/480·GTX1050)
+            #   K4G80325FB-HC22/HC25/HC28: 8Gb·1GB (RX580·GTX1060/1070)
+            #   K4G80325FC-HC22/HC25: 8Gb·1GB (C-die)
             dict(
                 prefix="K4G", chip_type="GDDR5", subtype="GDDR5/GDDR5X",
-                interface="", is_emcp=False, active=True, priority=100,
-                tip="GDDR5/GDDR5X. Alto volume. Destino: bancada reacondicional GPU.",
+                interface="GDDR5", is_emcp=False, active=True, priority=100,
+                decode_density_type="mobile",
+                tip=(
+                    "GDDR5/GDDR5X Samsung — VRAM dedicada em GPUs discretas (~2012-2020). "
+                    "G = GDDR5; densidade: pn[3] via DRAM_MOBILE: "
+                    "'2'=2Gb(256MB) · '4'=4Gb(512MB) · '8'=8Gb(1GB). Bus: x32 (sempre). "
+                    "GDDR5X: mesmo prefixo K4G, velocidade superior (14–16 Gbps vs 7–9 Gbps GDDR5). "
+                    "PNs confirmados: K4G41325FE (4Gb·RX470/480·GTX1050) · "
+                    "K4G80325FB/FC (8Gb·RX580·GTX1060/1070) · K4G20325FD (2Gb·GPUs antigos). "
+                    "assess_profitability: RENTÁVEL (GDDR não casa regex DDR por lookbehind). "
+                    "Destino: bancada reacondicional GPU."
+                ),
             ),
+            # ── K4Z = GDDR6 / GDDR6X ─────────────────────────────────────────
+            # Memória gráfica de última geração (~2018-presente). VRAM RTX 20xx/30xx · RX 6000.
+            # Anatomia: K4Z | [density 2ch pn[3:5]] | 25 | [die rev] | [var] | - | [sufixo]
+            # Densidade pn[3:5]: "80"=8Gb(1GB) · "AF"=16Gb(2GB) (sem decode automático de grammar)
+            # PNs confirmados (Samsung Semiconductor Global ✓ 2026-06-19):
+            #   K4Z80325BC-HC14: 8Gb·1GB; K4ZAF325BM-HC14/HC16/HC18/SC14: 16Gb·2GB (RTX20xx/30xx)
             dict(
                 prefix="K4Z", chip_type="GDDR6", subtype="GDDR6/GDDR6X",
-                interface="", is_emcp=False, active=True, priority=100,
-                tip="GDDR6/GDDR6X (2018–presente). Destino: bancada reacondicional GPU.",
+                interface="GDDR6", is_emcp=False, active=True, priority=100,
+                tip=(
+                    "GDDR6/GDDR6X Samsung — VRAM de alta velocidade em GPUs modernas (~2018-presente). "
+                    "Z = GDDR6; densidade em pn[3:5]: '80'=8Gb(1GB) · 'AF'=16Gb(2GB). Bus: x32. "
+                    "Sem decode automático de densidade — cobertura via KnownParts. "
+                    "PNs confirmados: K4Z80325BC-HC14 (8Gb·GPUs mid-range) · "
+                    "K4ZAF325BM-HC14/HC16/HC18/SC14 (16Gb·RTX 20xx/30xx). "
+                    "assess_profitability: RENTÁVEL. Destino: bancada reacondicional GPU."
+                ),
             ),
 
             # ═══ FLASH BASE: NAND Raw ═════════════════════════════════════════
