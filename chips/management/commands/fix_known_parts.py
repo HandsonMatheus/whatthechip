@@ -3165,12 +3165,13 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Micron",
-            "chip_type":  "RAM",
+            "chip_type":  "LPDDR4",   # standalone LPDDR → chip_type = geração (não "RAM")
             "subtype":    "LPDDR4",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
+            "chip_type":  "LPDDR4",   # corrige registros existentes com "RAM"
             "capacity":   "4GB",
             "interface":  "",
             "fbga_code":  "D9VFC",
@@ -6202,13 +6203,291 @@ CORRECTIONS = [
     },
 
     # ══════════════════════════════════════════════════════════════════════════
-    # Samsung GDDR (Graphics DDR) — K4W / K4G / K4Z
-    # Memória VRAM para GPUs. assess_profitability → RENTÁVEL: GDDR não casa o
-    # regex (?<![A-Z])DDR porque "G" antes de "DDR" aciona o lookbehind negativo.
+    # Samsung GDDR (Graphics DDR) — K4J / K4W / K4G / K4Z
+    # Memória VRAM para GPUs. assess_profitability → INDETERMINADO (BUG): GDDR não
+    # casa o regex (?<![A-Z])DDR porque "G" antes de "DDR" aciona o lookbehind negativo.
+    # Operador deve guiar-se pelo tip ("bancada reacondicional GPU").
     # Gramática: K4W usa decode_density_type="pc" (DRAM_PC); K4G usa "mobile" (DRAM_MOBILE).
-    # K4Z: sem decode automático de densidade (pn[3:5] com códigos específicos GDDR6).
+    # K4J e K4Z: sem decode automático de densidade — cobertura via KnownParts.
     # Destino: bancada reacondicional GPU (reparo de placa de vídeo). Adicionado: 2026-06-19.
     # ══════════════════════════════════════════════════════════════════════════
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # K4J — GDDR3 Samsung (~2005-2012)
+    # VRAM em GPUs ATI/AMD Radeon HD 4xxx/5xxx e Nvidia GeForce 9xxx/200/300 series.
+    # Anatomia: K4J | [density 2ch pn[3:5]] | [org 2ch pn[5:7]] | [bank pn[7]] | [iface pn[8]] | [rev pn[9]] | - | [sufixo]
+    # Density codes (GDDR3-specific, refresh 8K/32ms — diferente do DRAM_PC):
+    #   "10" = 1Gb (32Mx32) · "52" = 512Mb (16Mx32) · "55" = 256Mb (8Mx32)
+    #   Fonte: Samsung Consumer Memory Product Guide, Abr. 2010 ✓ (Alldatasheet ref #347919)
+    #   ⚠ NÃO usar DRAM_PC para K4J — os códigos são distintos ("10" ≠ "1G", "52" ≠ "51").
+    # Gramática K4J: sem decode_density_type → grammar_complete=false → KnownParts obrigatório.
+    # Convenção: chip_type="RAM", subtype="GDDR3", interface="x32" (todos os K4J são x32).
+    # assess_profitability: INDETERMINADO (BUG engine — lookbehind regex). Tip orienta operador.
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K4J10324KE — 1Gb GDDR3 x32 (E-die / KE-interface) ───────────────────
+    # Chip mais comum da família K4J. Utilizado em:
+    #   ATI Radeon HD 4870 (8× K4J10324KE-BC14 = 512MB), HD 4850, HD 5670, HD 5770.
+    # pn[3:5]="10" (1Gb, 8K/32ms) · pn[5:7]="32" (x32) · pn[7]="4" (8 banks)
+    # pn[8]="K" (POD_18, 1.8V/1.8V) · pn[9]="E" (6th gen / E-die)
+    # Fonte base PN: Samsung Consumer Memory Product Guide Abr. 2010 ✓
+    # Fontes speed bins: Datasheets.com (Samsung) · Jotrin Electronics ✓ (2026-06-19)
+    {
+        "pn": "K4J10324KE",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR3 Samsung 1Gb x32 (E-die). "
+            "Samsung Consumer Memory Product Guide Abr. 2010 ✓: "
+            "pn[3:5]='10' → 1Gb, 8K/32ms; pn[5:7]='32' → x32; pn[8]='K' → POD_18 1.8V. "
+            "1Gbit ÷ 8 = 128MB/die. Densidade '10' é GDDR3-específico — NÃO é '1G' do DRAM_PC. "
+            "assess_profitability: INDETERMINADO (BUG lookbehind). Destino: GPU repair."
+        ),
+    },
+    {
+        "pn": "K4J10324KE-BC14",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "K4J10324KE-BC14: 1Gb GDDR3 x32 (E-die). "
+            "BC14 = FBGA Lead-free, Commercial temp, 700MHz bin. "
+            "Alldatasheet ref #347919 (Samsung) ✓ · Datasheets.com (Samsung) ✓ (2026-06-19). "
+            "Uso: ATI Radeon HD 4870 (8× 128MB = 512MB VRAM total)."
+        ),
+    },
+    {
+        "pn": "K4J10324KE-HC14",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "K4J10324KE-HC14: 1Gb GDDR3 x32 (E-die). "
+            "HC14 = FBGA Lead-free & Halogen-free, Commercial temp, 700MHz bin. "
+            "Datasheets.com (Samsung Electronics) ✓ · Jotrin Electronics ✓ (2026-06-19)."
+        ),
+    },
+    {
+        "pn": "K4J10324KE-HC1A",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "K4J10324KE-HC1A: 1Gb GDDR3 x32 (E-die). "
+            "HC1A = FBGA Lead-free & Halogen-free, Commercial temp, 500MHz bin. "
+            "Variante de menor velocidade do HC14. Samsung Product Guide ✓ (2026-06-19)."
+        ),
+    },
+
+    # ── K4J10324QD — 1Gb GDDR3 x32 (D-die / Q-interface) ────────────────────
+    # pn[8]="Q" (SSTL_18, 1.8V/1.8V) · pn[9]="D" (5th gen / D-die)
+    # Variante anterior ao KE — encontrada em GPUs Radeon HD 4xxx e GeForce 9xxx.
+    {
+        "pn": "K4J10324QD",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR3 Samsung 1Gb x32 (D-die). "
+            "pn[8]='Q' (SSTL_18); pn[9]='D' (5th gen). "
+            "Samsung Consumer Memory Product Guide Abr. 2010 ✓. "
+            "1Gbit ÷ 8 = 128MB/die."
+        ),
+    },
+    {
+        "pn": "K4J10324QD-HC12",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "K4J10324QD-HC12: 1Gb GDDR3 x32 (D-die). "
+            "HC12 = FBGA LF&HF, Commercial, 600MHz. "
+            "Jotrin Electronics (Samsung) ✓ (2026-06-19)."
+        ),
+    },
+
+    # ── K4J52324QH — 512Mb GDDR3 x32 (H-die) ────────────────────────────────
+    # pn[3:5]="52" → 512Mb, 8K/32ms (GDDR3-specific — ≠ "51" do DRAM_PC)
+    # pn[5:7]="32" → x32 · pn[7]="4" → 8 banks · pn[8]="Q" → SSTL_18 · pn[9]="H" → 9th gen
+    # Usado em GPUs de entrada (~2006-2009): Radeon HD 3650, GeForce 9400 GT.
+    {
+        "pn": "K4J52324QH",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "64MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR3 Samsung 512Mb x32 (H-die). "
+            "pn[3:5]='52' → 512Mb, 8K/32ms (GDDR3-specific, ≠ '51' do DRAM_PC). "
+            "Samsung Consumer Memory Product Guide Abr. 2010 ✓. "
+            "512Mbit ÷ 8 = 64MB/die. Bus x32 (16M×32)."
+        ),
+    },
+    {
+        "pn": "K4J52324QH-HJ1A",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "64MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "K4J52324QH-HJ1A: 512Mb GDDR3 x32 (H-die). "
+            "Octopart (Samsung, 61-page datasheet) ✓ (2026-06-19): "
+            "https://octopart.com/k4j52324qhhj1a-samsung-128262552. "
+            "512Mbit ÷ 8 = 64MB. HJ1A = FBGA LF&HF, Industrial temp, 500MHz."
+        ),
+    },
+    {
+        "pn": "K4J52324QH-HJ08",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "64MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "K4J52324QH-HJ08: 512Mb GDDR3 x32 (H-die). "
+            "Octopart datasheet PDF: 'Rev 1.0 May 2008 512M GDDR3 SDRAM' ✓ (2026-06-19). "
+            "HJ08 = FBGA LF&HF, Industrial, 400MHz bin."
+        ),
+    },
+
+    # ── K4J55323QF / QG — 256Mb GDDR3 x32 (F/G-die) ─────────────────────────
+    # pn[3:5]="55" → 256Mb (GDDR3-specific) · pn[5:7]="32" → x32 · pn[7]="3" → 4 banks
+    # Chips mais antigos (~2005-2008), GPUs de entrada/integradas baixo custo.
+    # Baixa prevalência na bancada eMiner — cobertura básica apenas.
+    {
+        "pn": "K4J55323QF",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "32MB", "interface": "x32",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR3 Samsung 256Mb x32 (F-die). "
+            "pn[3:5]='55' → 256Mb (GDDR3-specific). "
+            "Alldatasheet: K4J55323QF-GC16 listado como '256Mbit GDDR3 SDRAM' ✓. "
+            "256Mbit ÷ 8 = 32MB/die. Geração: F-die (7th gen). "
+            "Raro na bancada — GPUs muito antigas (~2005-2007)."
+        ),
+    },
+    {
+        "pn": "K4J55323QF-GC16",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "32MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "K4J55323QF-GC16: 256Mb GDDR3 x32 (F-die). "
+            "Alldatasheet ref #94366 (Samsung): 256Mbit GDDR3 SDRAM ✓ (2026-06-19). "
+            "GC16 = FBGA LF, Commercial, 800MHz."
+        ),
+    },
+    {
+        "pn": "K4J55323QG",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "32MB", "interface": "x32",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — GDDR3 Samsung 256Mb x32 (G-die / 8th gen). "
+            "Deriva de K4J55323QG-BC14 (Alldatasheet Samsung ✓). "
+            "256Mbit ÷ 8 = 32MB. G-die = geração posterior ao QF."
+        ),
+    },
+    {
+        "pn": "K4J55323QG-BC14",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR3",
+            "capacity": "32MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "K4J55323QG-BC14: 256Mb GDDR3 x32 (G-die). "
+            "Alldatasheet ref #135660 (Samsung) ✓ (2026-06-19). "
+            "BC14 = FBGA LF, Commercial, 700MHz."
+        ),
+    },
 
     # ══════════════════════════════════════════════════════════════════════════
     # K4W — gDDR3 (Graphics DDR3) Samsung (~2008-2013)
@@ -7031,10 +7310,12 @@ CORRECTIONS = [
     {
         "pn": "MT29TZZZ8D5BKFAH",
         "fields": {
-            "emcp_ram":  "LPDDR3 1GB",
-            "subtype":   "LPDDR3",
+            "chip_type":  "eMCP",       # defesa-em-profundidade: garante que não fica vazio
+            "emcp_nand":  "8GB",        # chave 8D5: 64Gb NAND ÷ 8 = 8GB
+            "emcp_ram":   "LPDDR3 1GB",
+            "subtype":    "LPDDR3",
             "confidence": "confirmed",
-            "status":    "enriched",
+            "status":     "enriched",
         },
         "reason": (
             "BUG-8: API Micron FBGA dizia LPDDR2 para chave 8D5 — ERRADO. "
