@@ -163,8 +163,26 @@ de DRAM móvel, eMCP/uMCP, eMMC, UFS, DDR PC, GDDR e NAND Flash.
 - **NUNCA** colocar no `subtype`: densidade (`"8Gb"`), bus width (`"x8"`), tensão (`"1.35V"`),
   qualificadores verbosos (`"PC DRAM"`, `"Mobile"`, `"Multi-Channel"`, `"paralela industrial"`,
   `"Graphics DDR3"`, `"standalone"`).
-- Qualquer qualificador além da geração/célula **vaza para o label do gateway** e
-  trunca o display na esteira.
+- Qualquer qualificador além da geração/célula **vazaria para o label do gateway** e
+  truncaria o display na esteira — hoje **mitigado no consumo** por `canonical_gen`
+  (ver callout abaixo). A regra de escrita continua valendo: só a geração.
+
+> **Label protegido por `canonical_gen` (2026-06-19) — FONTE ÚNICA da convenção.**
+> O label da caixa é montado em `estoque/views.py::_compute_destination`, que passa o
+> `subtype` por `chips/conventions.py::canonical_gen()`. Ela reduz qualquer subtype ao
+> token canônico por **whitelist** (`"LPDDR4 Mobile"`→`"LPDDR4"`, `"DDR3 SDRAM"`→`"DDR3"`,
+> `"SLC NAND paralela industrial"`→`"SLC NAND"`). **Consequência:** subtype verboso **não
+> trunca mais a etiqueta** — para todas as marcas, banco e gramática, retroativamente.
+>
+> **Mas continue escrevendo `subtype` limpo (só a geração) ao popular PNs:** a normalização
+> é aplicada só no label; o card de busca ainda mostra o subtype cru; e a função é fail-open
+> (token não reconhecido passa intacto). A regra "subtype = só a geração" segue valendo no
+> write-time (`populate_samsung`, `import_samsung_psg`, `fix_known_parts`).
+>
+> **Samsung:** a proposta `_CONVENTION_FIELDS` em `import_samsung_psg`
+> (`docs/PROPOSTA_IMPORTER_FREE_FIELDS.md`) vira **opcional** (só higiene de banco), e as
+> 51 entradas de `fix_known_parts` (2026-06-19: K3LK*/K3UH*/K4F*/K4P*/K3PE*) **não são
+> mais necessárias para o label**.
 
 ### 2.3 Campo `interface` — quando usar e o quê
 

@@ -200,6 +200,7 @@ confunda os dois nem edite um esperando que o outro mude.
 ```
 chips/engine.py          → classify(), gramática, profitability, Gemini (legado)
 chips/models.py          → todo o modelo de dados + glossário nos docstrings
+chips/conventions.py     → canonical_gen(): FONTE ÚNICA da convenção de label (consumida pelo gateway)
 chips/admin.py           → workflows de triagem (ChipFamily, KnownPart, correções)
 chips/management/commands/→ pipeline de dados (populate/import/fix/collect) — §5
 core/settings.py         → config; flags GEMINI_ENABLED, DATABASE_URL, etc.
@@ -321,6 +322,42 @@ Detalhes e armadilhas: **`DEPLOY_RENDER.md`**.
   o tipo de RAM (`_infer_lpddr_gen` em `fill_capacity_from_micron_api.py`); para
   confirmar, use **datasheet oficial** ou **DigiKey** — nunca o campo `part-name` da API.
 
+### Convenção de campos → label da caixa física (estoque)
+
+O gateway `estoque/views.py::_compute_destination` escolhe o branch pelo `chip_type`
+e monta o label com os campos abaixo. **Alimente os campos certos; não mexa no gateway.**
+Modelo canônico: `JW464` (`SLC NAND 512MB`).
+
+| Tipo | `chip_type` | `subtype` | Capacidade | Resultado |
+|---|---|---|---|---|
+| NAND raw | `"NAND Flash"` | célula: `"SLC NAND"` / `"MLC NAND"` / `"TLC NAND"` | `capacity` em bytes (`"512MB"`, `"4GB"`) | `"SLC NAND 512MB"` |
+| eMMC | `"eMMC"` | — | `capacity` em GB (`"16GB"`) | `"EMMC16GB"` |
+| eMCP | `"eMCP"` | geração RAM (`"LPDDR3"`) | `emcp_nand` = `"16GB"`; `emcp_ram` = `"LPDDR3 1GB"` (tipo + GB) | `"EMCP16+1"` |
+| uMCP | `"uMCP"` | geração RAM | `emcp_nand`, `emcp_ram` | `"UMCP…+…"` |
+| UFS | `"UFS"` | — | `capacity` em GB | `"UFS128GB"` |
+| DDR/GDDR | `"RAM"` | geração (`"DDR3"`) | `density_gbit` = die em Gb | `"DDR3+8G"` |
+| LPDDR avulso | `"LPDDR{n}"` | geração (`"LPDDR4"`) | `capacity` = pacote em GB | `"LPDDR4+4G"` |
+
+**Regras absolutas de campo:**
+- `subtype` = **SOMENTE** célula (NAND) ou geração (RAM) — nunca densidade, bus width, voltagem, "Mobile", "Multi-Channel", "paralela industrial"
+- `interface` = bus width (`"x8"`, `"x16"`) para DDR/GDDR; vazio para LPDDR eMCP
+- `emcp_ram` = `"LPDDR{n} {cap}GB"` — tipo **antes** da capacidade (ex.: `"LPDDR3 1GB"`, nunca `"1GB LPDDR3"`)
+- `density_gbit` é o campo modelo do `KnownPart` para densidade DDR (em Gb); `dram_density` é campo calculado pelo engine — não confundir
+- Tudo que sobrar (temperatura, organização, variante, ECC) vai no `tip`/`notes`
+
+Referência completa: **`docs/CONVENCAO_MICRON_ESTOQUE.md`**
+
+> **Label protegido por `canonical_gen` (2026-06-19) — FONTE ÚNICA da convenção.**
+> O label da caixa é montado em `estoque/views.py::_compute_destination`, que passa o
+> `subtype` por `chips/conventions.py::canonical_gen()`. Ela reduz qualquer subtype ao
+> token canônico de geração/célula por **whitelist** (`"LPDDR4 Mobile"`→`"LPDDR4"`,
+> `"DDR3 SDRAM"`→`"DDR3"`, `"SLC NAND paralela industrial"`→`"SLC NAND"`), cobrindo
+> **todas as marcas** e os **dois caminhos** (banco confirmado e gramática),
+> retroativamente, sem reescrever o banco — mesma filosofia de fonte única do
+> `assess_profitability` (Regra de ouro #11). **Continue escrevendo `subtype` limpo no
+> write-time** (populate/import/fix): `canonical_gen` é fail-open (token não reconhecido
+> passa intacto) e o subtype cru ainda aparece no card de busca.
+
 ---
 
 ## 7. Armadilhas comuns (o que costuma quebrar)
@@ -356,6 +393,33 @@ Detalhes e armadilhas: **`DEPLOY_RENDER.md`**.
   vazio para `emcp_ram`, a gramática vence no engine — por isso erros no decode
   map (ex.: BUG-8) aparecem mesmo em chips com KnownPart `confidence=confirmed`.
   Depois de `fill_capacity_from_micron_api`, o DB tem valores explícitos e vence.
+- **FBGA duplicado (PN raw vs normalizado):** `enrich_micron_fbga.py` salva o PN no
+  formato raw da API (ex.: `"MT29C4G48MAZAPAKD-5 IT"` com hífen/espaço); `fix_known_parts`
+  cria o PN normalizado (`"MT29C4G48MAZAPAKD5IT"`). Dois registros, mesmo `fbga_code`.
+  O engine (`chips/engine.py`, handler `MultipleObjectsReturned`) prefere o registro
+  com `chip_type` preenchido — órfãos com `chip_type=""` são ignorados automaticamente.
+  Limpeza via shell é opcional (não urgente): `KnownPart.objects.filter(part_number__contains="-", chip_type="").delete()`.
+- **Label "NAND" sem info:** antes de 2026-06-19, o branch NAND do gateway usava
+  `_extract_gb` (só lê GB) e `chip_type` ("NAND Flash") → resultava em `"NAND"` para
+  chips < 1GB. Corrigido em `estoque/views.py`: agora usa `subtype` + `_format_cap`
+  (lê MB e GB). O `subtype` deve ser `"SLC NAND"` / `"MLC NAND"` / `"TLC NAND"`.
+- **`subtype` verboso no label da caixa — mitigado por `canonical_gen` (2026-06-19):**
+  o gateway (`_compute_destination`) normaliza o `subtype` via
+  `chips/conventions.py::canonical_gen()` ao montar o label, então qualificadores
+  (`"paralela industrial"`, `"Multi-Channel"`, `"Mobile"`, `"PC DRAM"`, `"8GB"`, `"x16"`)
+  **não truncam mais a etiqueta**. Ainda assim, escreva `subtype` = 1–3 palavras (só o
+  tipo) no write-time: a normalização é fail-open e o subtype cru aparece no card de busca.
+- **`is_dead_by_generation` falso para LPDDR2 com decode DRAM_MOBILE (2026-06-19):**
+  `_strip_capacity` usa `re.I` e remove todos os padrões `\d+(GB|MB)` de `dram_density`
+  — inclusive `"8Gb"` (b minúsculo). Ex.: `"8Gb = 1GB por die [~]"` → `" =  por die [~]"`.
+  O bloco LPDDR standalone checava `cap_gb is None → INDETERMINADO` **antes** de
+  `lpddr_gen < lpddr_min_gen`, então `is_dead_by_generation` retornava `False` para
+  LPDDR2 cujo único campo de capacidade era `dram_density`. Efeito: chip LPDDR2
+  não confirmado caía na **FILA** em vez do descarte automático. O bloco eMCP tinha
+  fix equivalente (2026-05-27) mas o LPDDR standalone não. **Corrigido em
+  `chips/engine.py` (2026-06-19):** verificação de geração movida para antes de
+  `_extract_gib`. Chips históricos afetados: K3PE, K4P, K4E8E. Sintoma que revelou:
+  K3PE0E000E (LPDDR2 2GB) ia para a FILA apesar de `profitable="NÃO RENTÁVEL"`.
 
 ---
 
@@ -392,6 +456,9 @@ relevante quando a tarefa pedir:
 - **`design_system.md`** (+ `design_system_preview.html`) — tema visual (IBM Carbon
   White), tokens CSS, componentes.
 - **`SETUP_CHIPS.md`** — passo a passo de povoamento inicial.
+- **`docs/CONVENCAO_MICRON_ESTOQUE.md`** — convenção canônica de campos por tipo de chip
+  (NAND / eMMC / eMCP / UFS / DDR / LPDDR) e como cada campo alimenta o label da caixa física.
+  Modelo de referência: `JW464`. Leia ao adicionar qualquer novo PN Micron.
 
 > ⚠️ **Notas de sessão antigas foram movidas para `docs/archive/`**
 > (`NEXT_CHAT.md`, `BRIEFING_PROXIMO_CHAT.md`, `PROMPT_SESSAO_REFINAMENTO.md`).

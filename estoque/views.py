@@ -25,6 +25,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
+from chips.conventions import canonical_gen
 from chips.engine import assess_profitability, classify, is_dead_by_generation
 from chips.models import UnknownChip
 
@@ -144,6 +145,22 @@ _GBIT_RE = re.compile(r'(\d+(?:\.\d+)?)\s*Gb\b')
 _CAP_BYTES_RE = re.compile(r'(\d+(?:\.\d+)?)\s*(GB|MB)\b', re.I)  # capacidade em bytes
 
 
+def _format_cap(text: str) -> str:
+    """Capacidade em MB ou GB, preservando a unidade original.
+    '512MB' → '512MB'  |  '8GB' → '8GB'  |  'eMMC 5.1 16GB' → '16GB'
+    Não converte MB→GB (512MB é 512MB, não 0.5GB).
+    Retorna '' se não encontrar nenhuma unidade reconhecida."""
+    if not text:
+        return ''
+    m = _CAP_BYTES_RE.search(text)
+    if not m:
+        return ''
+    val, unit = m.group(1), m.group(2).upper()
+    if val.endswith('.0'):
+        val = val[:-2]
+    return f"{val}{unit}"
+
+
 def _density_g(result: dict) -> str:
     """Densidade DRAM por die em Gb, para o rótulo da caixa física (2G/4G/8G).
     Em ordem de prioridade:
@@ -215,12 +232,14 @@ def _compute_destination(result: dict) -> tuple:
         # "LPDDR4X") — campo específico para o tipo de RAM. `interface` é a config de
         # barramento (ex.: "x16 @ 800MHz (1600MTPS)") e NÃO é usada como label da caixa.
         # Densidade (Gb) vem de dram_density; capacity (bytes) é ignorada de propósito.
-        gen  = (result.get('subtype') or result.get('interface') or '').strip()
-        # "SDRAM" é redundante (toda DDR é SDRAM) → removido quando há geração DDR.
-        # A VARIANTE (DDR3 vs DDR3L vs LPDDR3) é o que importa p/ a caixa e fica
-        # LITERAL — só some o ruído. Ex.: "DDR3 SDRAM" → "DDR3"; "LPDDR3" intacto.
-        if re.search(r'DDR', gen, re.I):
-            gen = re.sub(r'\s*\bSDRAM\b', '', gen, flags=re.I).strip()
+        # canonical_gen (chips/conventions.py, FONTE ÚNICA) reduz o subtype ao
+        # token de geração para o label: "LPDDR4 Mobile"→"LPDDR4", "DDR3 SDRAM"→
+        # "DDR3", "LPDDR4X Multi-Channel"→"LPDDR4X". Generaliza o antigo strip de
+        # "SDRAM" e cobre TODAS as marcas e os dois caminhos (banco e gramática),
+        # de forma retroativa, sem reescrever o banco. Fallback p/ interface se o
+        # subtype estiver vazio (comportamento anterior preservado).
+        gen = canonical_gen(result.get('subtype') or '', chip_type) \
+            or (result.get('interface') or '').strip()
         # Tamanho da caixa depende do TIPO (ambos rotulados "<n>G"; a geração no
         # prefixo desambigua a unidade):
         #  • LPDDR (móvel) = pacote multi-die → CAPACIDADE do pacote em GB (4GB→"4G");
@@ -240,8 +259,13 @@ def _compute_destination(result: dict) -> tuple:
         return label, 'lpddr'
 
     if 'nand' in ct:
-        cap   = _extract_gb(result.get('capacity', ''))
-        label = f"NAND {cap}GB" if cap else 'NAND'
+        # Usa subtype como prefixo do rótulo (ex.: "SLC NAND") + capacidade na
+        # unidade original (MB ou GB). _extract_gb só lê GB e perderia "512MB".
+        # canonical_gen normaliza a célula: "SLC NAND paralela industrial" → "SLC NAND".
+        gen     = canonical_gen(result.get('subtype') or '', chip_type)
+        cap_str = _format_cap(result.get('capacity') or '')
+        prefix  = gen if gen else 'NAND'
+        label   = f"{prefix} {cap_str}" if cap_str else prefix
         return label, 'nand'
 
     return chip_type or '?', 'unknown'

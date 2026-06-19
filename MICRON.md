@@ -8,6 +8,87 @@ Criado: 2026-06-19 | Atualizado: 2026-06-19
 
 ---
 
+## 0. ⚠️ LEIA PRIMEIRO — Regras de ouro e limites de escopo
+
+### 0.1 Arquivos que PODE editar (escopo Micron)
+
+```
+chips/management/commands/populate_micron_mcp.py   ← gramática MCP Micron
+chips/management/commands/add_chip_families.py      ← famílias standalone Micron
+chips/management/commands/fix_known_parts.py        ← entradas com brand_name="Micron"
+chips/management/commands/fill_capacity_from_micron_api.py
+chips/management/commands/collect_micron_catalog.py
+chips/management/commands/analyze_micron_mcp_keys.py
+chips/management/commands/import_micron_catalog.py
+```
+
+### 0.2 Arquivos que NÃO PODE tocar sem revisão explícita do usuário
+
+```
+chips/engine.py              ← motor global — mudança afeta TODAS as marcas
+estoque/views.py             ← gateway global — mudança afeta TODAS as marcas
+chips/management/commands/populate_samsung.py
+chips/management/commands/populate_hynix.py
+chips/management/commands/populate_kingston.py
+chips/management/commands/populate_rayson.py
+chips/management/commands/fix_known_parts.py  ← seções de outras marcas (Samsung, SK Hynix…)
+```
+
+> Se precisar de mudança em `engine.py` ou `estoque/views.py`, **proponha ao usuário**
+> com justificativa e impacto — nunca edite silenciosamente.
+
+### 0.3 Regras de ouro — nunca violar
+
+1. **Claude edita arquivos. O usuário roda os comandos.** Nunca execute `populate_*`,
+   `import_*`, `fix_*`, `migrate` sem confirmação explícita do usuário.
+
+2. **`--dry-run` antes de qualquer comando que escreve no banco.** Sempre.
+
+3. **Reiniciar o servidor após `populate --overwrite`.** O `lru_cache` do engine não
+   invalida automaticamente no processo do servidor web.
+
+4. **Não confie em IAs externas para classificação de chips Micron.** IAs generalistas
+   erram prefixos de família (ex.: "MT29C = Combo" — ERRADO, é NAND raw), confundem
+   Gb/GB e alucinam specs. A fonte é sempre Micron oficial → DigiKey → datasheet.
+   Se uma IA externa sugerir uma correção de classificação, **ignore e verifique na fonte**.
+
+5. **Não confie no `part-name` da API Micron FBGA para tipo de RAM.** A API retorna
+   strings como `"MLC EMMC/LPDDR2 72G VFBGA"` que podem ser de famílias relacionadas.
+   O **prefixo do PN** define o tipo (MT29TZZZ = LPDDR3, MT29PZZZ = LPDDR2). Confirme
+   via datasheet oficial ou DigiKey — nunca pelo campo `part-name` da API.
+
+6. **`subtype` = só a geração — sem mais nada.** `"LPDDR3"` sim. `"LPDDR3 + eMMC 5.1"`,
+   `"LPDDR3 Mobile"`, `"SLC NAND paralela industrial"` — ERRADO. Todo qualificador além
+   da geração vaza para o label da caixa física e trunca o display na esteira.
+
+7. **LPDDR standalone: `chip_type = geração`, não `"RAM"`.** `"LPDDR4"`, `"LPDDR5"` — não o
+   genérico `"RAM"` (que é para DDR/GDDR de PC). Afeta o branch do gateway e a UI.
+
+8. **`emcp_ram` = tipo ANTES da capacidade.** `"LPDDR3 1GB"` — nunca `"1GB LPDDR3"`.
+   O campo `emcp_nand` é só GB: `"8GB"`, `"16GB"`, sem prefixo de tipo.
+
+9. **Não rebaixe `confirmed`/`manual`.** Ao corrigir um campo, preserve
+   `confidence` e `status="enriched"`. Nunca mude para `"distributor"` ou `"estimated"`.
+
+10. **`status="raw"` = invisível para o engine.** Chip com dados certos mas `status="raw"`
+    não é classificado. Sempre terminar com `status="enriched"` nos registros corrigidos.
+
+### 0.4 Hierarquia de fontes (imutável)
+
+```
+1. Datasheet oficial Micron (PDF) ← fonte definitiva
+2. API FBGA Micron: micron.com/fbga?fbga={CODE}
+3. DigiKey (produto listado com specs)
+4. Octopart / Nexar  ← frequentemente inverte Gb/GB; sempre cruzar
+5. Distribuidor B2B rastreável (Puris, Win Source)
+6. IA externa (Gemini, GPT, outro Claude) ← ÚLTIMO RECURSO; verificar SEMPRE
+```
+
+Nunca use como fonte primária: AliExpress, catálogos genéricos, `part-name` da API FBGA,
+dados de distribuidor sem rastreabilidade, output de IA sem verificação.
+
+---
+
 ## 1. Contexto de negócio
 
 A Micron é o **segundo fabricante de DRAM e NAND do mundo** (depois da Samsung).
@@ -35,7 +116,7 @@ O sistema suporta os dois como entrada na busca.
 | **MT29VZZZ** | eMCP / uMCP LPDDR4 | ✅ COMPLETO | 13 chaves MIC_MCP_CAP; eMMC 5.1 ou UFS 2.2 (detectado por source_url) |
 | **MT30AZZZ** | uMCP LPDDR5 | ✅ COMPLETO | Compartilha MIC_MCP_CAP; UFS 3.1 |
 | **MT29TZZZ** | eMCP **LPDDR3** | ⚠️ PARCIAL | 5 chaves Gen A + chaves Gen B compartilhadas; 7 chaves sem dados API. **Toda família é LPDDR3** (BUG-8 corrigido 2026-06-19) |
-| **MT29C***  | eMCP LPDDR2 | ⚠️ MÍNIMO | Família cadastrada via `add_chip_families`; só JW464 confirmado |
+| **MT29C***  | **NAND Flash paralela industrial** (raw, sem controlador) | ✅ 5 chips confirmados | TSOP1 48-pin — NÃO é MCP. Sem RAM empilhada. Interface paralela x8. Incompat. com programadores eMMC/UFS. Destino: resíduo industrial. JW454/JW464/JW699/JY454/JY464 confirmados. |
 | **MTFC****  | eMMC standalone | ✅ FUNCIONAL | Sem decode posicional — cobertura via FBGA/KnownPart |
 | **MT53B**   | LPDDR4 standalone | ✅ FUNCIONAL | D9VFC confirmado (4GB); decode manual pelo PN |
 | **MT53E**   | LPDDR4X standalone | ✅ FUNCIONAL | Cobertura via FBGA; decode: `[M][bits] ÷ 8 = GB` |
@@ -145,9 +226,9 @@ A capacidade é obtida por:
 
 **Regra matemática do PN** (não implementada no engine, mas útil para confirmar manualmente):
 ```
-MT53B512M64D4TX → 512M × 64 bits = 32 Gbit ÷ 8 = 4GB LPDDR4
-MT53E1G32D4NQ   → 1G × 32 bits   = 32 Gbit ÷ 8 = 4GB LPDDR4X
-MT53D768M32D4BD → 768M × 32 bits = 24 Gbit ÷ 8 = 3GB LPDDR4
+MT53B512M64D4TX → 512M × 64 bits = 32 Gbit ÷ 8 = 4GB  → vai em capacity="4GB"
+MT53E1G32D4NQ   → 1G × 32 bits   = 32 Gbit ÷ 8 = 4GB  → vai em capacity="4GB"
+MT53D768M32D4BD → 768M × 32 bits = 24 Gbit ÷ 8 = 3GB  → vai em capacity="3GB"
 ```
 
 **MT53B vs MT53E — tensão diferente, INCOMPATÍVEIS:**
@@ -171,7 +252,8 @@ dram_density = "2Gb = 256MB por die [✓]"
 capacity     = "256MB"
 density_gbit = "2Gb"
 density_gb   = "256MB"
-interface    = "x16 @ 800MHz (1600MTPS)"
+interface    = "x16"                      # só o barramento — velocidade vai no tip
+tip          = "800MHz (1600MTPS)"        # frequência → tip, não interface
 ```
 → caixa estoque: **`DDR3+2G`** ✓
 
@@ -180,8 +262,47 @@ interface    = "x16 @ 800MHz (1600MTPS)"
 ## 7. Convenção de campos KnownPart — REGRAS CRÍTICAS
 
 > Esta é a causa raiz de todos os bugs de exibição no estoque.
-> O gateway do estoque está correto — ele só lê os campos.
-> A responsabilidade é popular os campos certos.
+> O gateway do estoque lê os campos e, desde 2026-06-19, **normaliza o `subtype` no
+> label** via `canonical_gen` (ver callout na §7.0). Ainda assim, a responsabilidade é
+> popular os campos certos — a normalização é só uma rede de segurança no consumo.
+
+### 7.0 Tabela canônica por tipo — valores a preencher
+
+| Tipo Micron | `chip_type` | `subtype` | `interface` | Campo de capacidade |
+|---|---|---|---|---|
+| eMCP (MT29TZZZ, MT29VZZZ) | `"eMCP"` | geração RAM: `"LPDDR3"` / `"LPDDR4"` | `""` vazio | `emcp_nand` (GB) + `emcp_ram` (tipo + GB) |
+| uMCP (MT30AZZZ) | `"uMCP"` | geração RAM: `"LPDDR5"` | `""` vazio | `emcp_nand` (GB) + `emcp_ram` (tipo + GB) |
+| eMMC standalone (MTFC) | `"eMMC"` | `""` vazio | `"eMMC 5.1"` / `"eMMC 4.5"` | `capacity` em GB (`"16GB"`) |
+| UFS standalone | `"UFS"` | `""` vazio | `"UFS 2.2"` / `"UFS 3.1"` | `capacity` em GB |
+| LPDDR4 standalone (MT53B) | `"LPDDR4"` | `"LPDDR4"` | `""` vazio | `capacity` em GB (`"4GB"`) |
+| LPDDR4X standalone (MT53E) | `"LPDDR4X"` | `"LPDDR4X"` | `""` vazio | `capacity` em GB |
+| LPDDR5 standalone | `"LPDDR5"` | `"LPDDR5"` | `""` vazio | `capacity` em GB |
+| DDR3 standalone (MT41J) | `"RAM"` | `"DDR3"` | `"x16"` / `"x8"` | `density_gbit` (Gb por die) |
+| DDR3L standalone (MT41K) | `"RAM"` | `"DDR3L"` | `"x16"` / `"x8"` | `density_gbit` (Gb por die) |
+| DDR4 standalone (MT40A) | `"RAM"` | `"DDR4"` | `"x16"` / `"x8"` | `density_gbit` (Gb por die) |
+| NAND Flash raw (MT29C, MT29F) | `"NAND Flash"` | `"SLC NAND"` / `"MLC NAND"` / `"TLC NAND"` | `"Parallel NAND (8-bit)"` | `capacity` em bytes (`"512MB"`, `"4GB"`) |
+
+> **Regra absoluta do `subtype`:** só a geração (1–3 palavras). `"LPDDR3"` — nunca
+> `"LPDDR3 Mobile"`, `"SLC NAND paralela industrial"`, `"DDR3 PC DRAM"`. Qualificadores
+> extra vazariam para o label da caixa física — hoje **mitigado no consumo** por
+> `canonical_gen` (ver callout abaixo). A regra de escrita continua valendo.
+
+> **Label protegido por `canonical_gen` (2026-06-19) — FONTE ÚNICA da convenção.**
+> O label da caixa é montado em `estoque/views.py::_compute_destination`, que passa o
+> `subtype` por `chips/conventions.py::canonical_gen()`. Ela reduz qualquer subtype ao
+> token canônico por **whitelist** (`"LPDDR4 Mobile"`→`"LPDDR4"`, `"DDR3 SDRAM"`→`"DDR3"`,
+> `"SLC NAND paralela industrial"`→`"SLC NAND"`). **Consequência:** subtype verboso **não
+> trunca mais a etiqueta** — para todas as marcas, banco e gramática, retroativamente.
+>
+> **Mas continue escrevendo `subtype` limpo (só a geração) ao popular PNs:** a normalização
+> é aplicada só no label; o card de busca ainda mostra o subtype cru; e a função é fail-open
+> (token não reconhecido passa intacto). A regra "subtype = só a geração" segue valendo no
+> write-time.
+>
+> **Micron:** subtypes vindos do `import_micron_catalog` (CSV) e do `fix_known_parts`
+> passam pela mesma normalização no label — sem ação adicional necessária.
+
+### 7.1 Campos — o que vai e o que não vai
 
 | Campo | O que vai | O que NÃO vai |
 |-------|-----------|---------------|
@@ -193,7 +314,7 @@ interface    = "x16 @ 800MHz (1600MTPS)"
 | `capacity` | capacidade total do **pacote** em bytes: `"512MB"`, `"4GB"` | gigabits |
 | `interface` | barramento elétrico: `"x16"`, `"x32 @ 1866MHz"`, `"eMMC 5.1"` | a geração RAM (não repetir "DDR3" aqui) |
 | `emcp_nand` | (eMCP/uMCP) NAND em GB: `"128GB"` | — |
-| `emcp_ram` | (eMCP/uMCP) RAM em GB: `"6GB"` | — |
+| `emcp_ram` | (eMCP/uMCP) **tipo + RAM em GB**: `"LPDDR4 6GB"`, `"LPDDR3 1GB"` — o tipo vem ANTES da capacidade | só o número (`"6GB"`) — perde a geração de RAM |
 | `tip` | **tudo que não couber acima**: voltagem, organização, avisos, notas de densidade, observações de uso | — |
 
 **Como o estoque monta o rótulo da caixa física:**
@@ -225,6 +346,12 @@ Os limiares vivem em `ProfitabilityConfig` (singleton no banco, editável no adm
 
 **Sem `dram_density`** (ou sem `capacity` para LPDDR) → `assess_profitability` retorna `INDETERMINADO`.
 Isso significa chip não triado — **bloqueador de produção**. Sempre preencher o campo certo.
+
+> **✅ CORRIGIDO 2026-06-19 — NAND Flash raw:** `assess_profitability()` agora tem bloco
+> unificado no topo que retorna `NÃO RENTÁVEL` para `chip_type in ("nand flash", "nor flash", "mcp")`.
+> `is_dead_by_generation()` também retorna `True` automaticamente — gateway descarta sem confirmar.
+> Verificação de pré-requisito: Samsung K9* usa `chip_type="NAND Flash"` ✓; Toshiba TH58 NAND
+> está BLOQUEADA no populate_toshiba.py (família não ativa) ✓ — sem risco assimétrico.
 
 ---
 
@@ -273,6 +400,154 @@ python manage.py import_micron_catalog ddr3-sdram_full-catalog.csv --only-update
 # ou via admin Django: /admin/chips/knownpart/add/
 # Campos mínimos: part_number, brand, chip_type, subtype, confidence="confirmed",
 #                 status="enriched", + o campo de capacidade correto
+```
+
+### 9.4 Templates `fix_known_parts.py` por tipo Micron
+
+Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
+
+```python
+# eMCP — ex.: MT29TZZZ8D5BKFAH (JWA60, 8GB NAND + LPDDR3 1GB)
+{
+    "pn": "MT29TZZZ8D5BKFAH",
+    "fbga_code": "JWA60",            # FBGA conhecido → link FBGA→PN no engine
+    "create": True,
+    "create_defaults": {
+        "brand_name": "Micron",
+        "chip_type":  "eMCP",
+        "subtype":    "LPDDR3",      # geração RAM — SOMENTE a geração
+        "status":     "enriched",
+        "confidence": "confirmed",
+    },
+    "fields": {
+        "chip_type":  "eMCP",
+        "subtype":    "LPDDR3",
+        "interface":  "",            # SEMPRE vazio para eMCP/uMCP
+        "emcp_nand":  "8GB",         # NAND em GB — sem prefixo de tipo
+        "emcp_ram":   "LPDDR3 1GB",  # tipo ANTES da capacidade — SEMPRE
+        "confidence": "confirmed",
+        "status":     "enriched",
+    },
+    "reason": "DigiKey: MT29TZZZ8D5BKFAH-125 LPDDR3 8Gbit(1GB). BUG-8: API dizia LPDDR2 — errada.",
+},
+```
+
+```python
+# LPDDR standalone — ex.: MT53B512M64D4TX (D9VFC, 4GB LPDDR4)
+{
+    "pn": "MT53B512M64D4TX",
+    "fbga_code": "D9VFC",
+    "create": True,
+    "create_defaults": {
+        "brand_name": "Micron",
+        "chip_type":  "LPDDR4",     # LPDDR standalone: chip_type = geração — NUNCA "RAM"
+        "subtype":    "LPDDR4",
+        "status":     "enriched",
+        "confidence": "confirmed",
+    },
+    "fields": {
+        "chip_type":  "LPDDR4",
+        "subtype":    "LPDDR4",
+        "interface":  "",           # SEMPRE vazio para LPDDR standalone
+        "capacity":   "4GB",        # GB do pacote completo (512M × 64bit ÷ 8 = 4GB)
+        "confidence": "confirmed",
+        "status":     "enriched",
+    },
+    "reason": "Math: 512M × 64bit = 32Gbit ÷ 8 = 4GB LPDDR4. Micron FBGA API: D9VFC.",
+},
+```
+
+```python
+# DDR3 standalone — ex.: MT41J128M16JT-093:K (D9PRW, 2Gb = 256MB/die)
+{
+    "pn": "MT41J128M16JT-093:K",
+    "fbga_code": "D9PRW",
+    "create": True,
+    "create_defaults": {
+        "brand_name": "Micron",
+        "chip_type":  "RAM",         # DDR standalone: chip_type="RAM" (não "DDR3")
+        "subtype":    "DDR3",
+        "status":     "enriched",
+        "confidence": "confirmed",
+    },
+    "fields": {
+        "chip_type":    "RAM",
+        "subtype":      "DDR3",
+        "interface":    "x16",       # bus width do chip
+        "capacity":     "256MB",     # por die: density_Gbit ÷ 8 = GB (2Gb ÷ 8 = 256MB)
+        "density_gbit": "2Gb",       # por die em Gb — campo para profitability
+        "density_gb":   "256MB",
+        "confidence":   "confirmed",
+        "status":       "enriched",
+    },
+    "reason": "Micron FBGA API: D9PRW → MT41J128M16JT-093:K, 2Gb DDR3 SDRAM x16.",
+},
+```
+
+```python
+# NAND Flash raw — ex.: MT29C4G48MAZAPAKD5IT (JW464, SLC 512MB)
+{
+    "pn": "MT29C4G48MAZAPAKD5IT",
+    "fbga_code": "JW464",
+    "create": True,
+    "create_defaults": {
+        "brand_name": "Micron",
+        "chip_type":  "NAND Flash",
+        "subtype":    "SLC NAND",   # célula — SOMENTE (SLC/MLC/TLC)
+        "status":     "enriched",
+        "confidence": "confirmed",
+    },
+    "fields": {
+        "chip_type":  "NAND Flash",
+        "subtype":    "SLC NAND",   # NUNCA "SLC NAND paralela industrial" — vaza para label
+        "interface":  "Parallel NAND (8-bit)",
+        "capacity":   "512MB",      # em bytes — "512MB" (4Gbit ÷ 8 = 512MB)
+        "confidence": "confirmed",
+        "status":     "enriched",
+    },
+    "reason": "Micron FBGA: JW464 = MT29C4G48MAZAPAKD5IT. 4Gbit SLC NAND = 512MB. NÃO é eMCP.",
+},
+```
+
+```python
+# eMMC standalone — ex.: MTFC16GAPALBH (16GB eMMC 5.1)
+{
+    "pn": "MTFC16GAPALBH",
+    "create": True,
+    "create_defaults": {
+        "brand_name": "Micron",
+        "chip_type":  "eMMC",
+        "subtype":    "",            # eMMC standalone: subtype VAZIO
+        "status":     "enriched",
+        "confidence": "confirmed",
+    },
+    "fields": {
+        "chip_type":  "eMMC",
+        "subtype":    "",
+        "interface":  "eMMC 5.1",   # padrão/versão da interface
+        "capacity":   "16GB",        # total em GB
+        "confidence": "confirmed",
+        "status":     "enriched",
+    },
+    "reason": "Micron catálogo: MTFC16GAPALBH = 16GB eMMC 5.1.",
+},
+```
+
+```python
+# UPDATE-ONLY (sem "create": True) — corrigir campos sem criar novo registro
+{
+    "pn": "MT29TZZZ8D5BKFAH",
+    # SEM "create": True — só atualiza se existir no banco
+    "fields": {
+        "chip_type":  "eMCP",
+        "subtype":    "LPDDR3",
+        "emcp_nand":  "8GB",
+        "emcp_ram":   "LPDDR3 1GB",
+        "confidence": "confirmed",
+        "status":     "enriched",
+    },
+    "reason": "Defesa-em-profundidade: garante chip_type/emcp_nand se fill_capacity não preencheu.",
+},
 ```
 
 ---
@@ -343,6 +618,23 @@ print(kp.part_number, kp.chip_type, kp.subtype, kp.density_gbit, kp.capacity)
 ---
 
 ## 12. Armadilhas e pegadinhas
+
+### Tabela de consulta rápida
+
+| Armadilha | Detalhe |
+|-----------|---------|
+| **`"G"` no PN Micron = Gbit, não GB** | `MTFC8G` = 8Gbit = 1GB. `"72G VFBGA"` = 72Gbit total. Sempre ÷8. Para DDR standalone → vai em `density_gbit`. Para LPDDR standalone → vai em `capacity`. Para MCP: **NÃO** usar como `capacity` — usar `emcp_nand`/`emcp_ram` (o `"G"` do MCP é soma NAND+RAM, não NAND sozinho). |
+| **`part-name` da API FBGA = fonte fraca para tipo de RAM** | `"LPDDR2"` na API pode ser LPDDR3 (BUG-8). O prefixo do PN define o tipo. |
+| **eMCP/uMCP: `capacity` deixar vazio** | Para MCP, `capacity=""`. Usar `emcp_nand` + `emcp_ram`. Preencher `capacity` gera bug `"68GB"`. |
+| **COMPONENT DENSITY do CSV = total NAND+RAM** | Para MCP, o CSV soma tudo em Gbit. Não usar como `capacity`. |
+| **`status="raw"` invisível para o engine** | Dados certos, chip não classificado. Promover para `enriched`. |
+| **`lru_cache` após `populate --overwrite`** | Engine continua servindo gramática antiga até reiniciar o servidor. |
+| **FBGA com duplicatas** | Engine prefere registro com `chip_type` preenchido (`.exclude(chip_type="").first()`). |
+| **`"por die"` duplicado no `val_secondary`** | Não colocar `"por die"` — engine já acrescenta. Resultado: `"por die por die"`. |
+| **MT29C ≠ eMCP** | `"C"` no prefixo = configuração de barramento paralelo, **não** "Combo". NAND raw sem RAM. |
+| **IA externa inventando chaves** | IAs sugerem chaves com 4 chars quando são 2 chars, trocam LPDDR2/3, invertem primary/secondary. Verificar SEMPRE na fonte. |
+
+---
 
 ### "G" no PN eMMC Micron = Gbit, não GB
 `MTFC8G` = 8 Gbit = **1GB**. `MTFC64G` = 64 Gbit = 8GB.
@@ -442,10 +734,46 @@ print(json.dumps(r, indent=2, ensure_ascii=False))
 | 2026-06-19 | **BUG-8**: MIC_TZZZ_GEN mapeava `'8'→LPDDR2` baseado em API Micron errada; chip é LPDDR3 | `populate_micron_mcp.py` + `fix_known_parts.py` | Corrigido: `'8'→LPDDR3`; fontes: datasheet oficial Micron (MT29TZZZ8D5JKEZB, NXP community) + DigiKey |
 | 2026-05 | `populate_micron_mcp.py` comentário dizia pn[8]=NAND | `populate_micron_mcp.py` | Corrigido: pn[8]=RAM, pn[10]=NAND (confirmado por 5 pontos de dados API) |
 | 2026-05 | Engine usava decode Samsung para Micron em Path 3 | `engine.py` | Corrigido: Path 3 verifica prefixo antes de usar mapa legado |
+| 2026-06-19 | CAIXA FÍSICA NAND mostrava só "NAND" (sem subtype nem capacidade) | `estoque/views.py` | Branch NAND agora usa `subtype` + `_format_cap()` (lê MB e GB). Corrige: "NAND" → "SLC NAND 512MB" |
+| 2026-06-19 | Engine FBGA com duplicatas pegava registro antigo com `chip_type=""` | `engine.py` (`MultipleObjectsReturned`) | Handler agora faz `.exclude(chip_type="").first() or .first()` — prefere registros com tipo preenchido |
+| 2026-06-19 | MT53B512M64D4TX tinha `chip_type="RAM"` em vez de `"LPDDR4"` | `fix_known_parts.py` | Corrigido: LPDDR standalone deve ter `chip_type=geração`, não "RAM" genérico |
+| 2026-06-19 | MT29TZZZ8D5BKFAH sem `chip_type` e `emcp_nand` no bloco `fields` | `fix_known_parts.py` | Adicionados `chip_type="eMCP"` e `emcp_nand="8GB"` como defesa-em-profundidade |
+| 2026-06-19 | **MICRON.md §2 dizia MT29C = "eMCP LPDDR2"** | `MICRON.md` | ERRADO: MT29C é NAND Flash paralela industrial (TSOP1 48-pin, raw, sem RAM). Corrigido. |
+
+### Chips Micron confirmados individualmente
+
+| FBGA | PN | Tipo | Capacidade | Fonte | Observação |
+|------|----|------|-----------|-------|-----------|
+| `JW464` | MT29C4G48MAZAPAKD5IT | NAND Flash SLC | 512MB | Micron FBGA API | 4Gbit SLC, x8, industrial |
+| `JW454` | MT29C4G88MAZAPAKD-5IT | NAND Flash SLC | 512MB | Micron FBGA API | variante x8 wide |
+| `JW699` | MT29C4G96MAZAPAKC-5WT | NAND Flash SLC | 512MB | Micron FBGA API | industrial temp |
+| `JY464` | MT29C2G48MAZAPAKD5IT | NAND Flash SLC | 256MB | Micron FBGA API | 2Gbit SLC |
+| `JY454` | MT29C2G88MAZAPAKD-5IT | NAND Flash SLC | 256MB | Micron FBGA API | variante |
+| `JWA60` | MT29TZZZ8D5BKFAH | eMCP | 8GB NAND + LPDDR3 1GB | DigiKey | BUG-8: API dizia LPDDR2 — é LPDDR3 |
+| `JY941` | MT29TZZZ8D5BKFAH variant | eMCP | 8GB NAND + LPDDR3 1GB | DigiKey | mesmo decode que JWA60 |
+| `D9VFC` | MT53B512M64D4TX | LPDDR4 | 4GB | Octopart | 512M×64bit=32Gbit÷8=4GB; chip_type="LPDDR4" |
+| `D9PRW` | MT41J128M16JT-093:K | DDR3 | 2Gb por die = 256MB | Micron FBGA API | x16, 800MHz |
 
 ---
 
 ## 15. Lacunas conhecidas — próximo trabalho
+
+### Status de completude por categoria
+
+```
+CATEGORIA                        COMPLETUDE    PRÓXIMO PASSO
+──────────────────────────────────────────────────────────────────────
+MT29VZZZ (eMCP/uMCP LPDDR4)     ██████████100%   completo (13 chaves confirmadas)
+MT30AZZZ (uMCP LPDDR5)          ██████████100%   completo (compartilha MIC_MCP_CAP)
+MT29TZZZ (eMCP LPDDR3)          ████████░░  80%   7 chaves sem dados API
+MT29C (NAND raw paralela)        █████████░  90%   5 FBGA confirmados; mais chegam
+MTFC (eMMC standalone)           █████░░░░░  50%   só via FBGA; sem decode posicional
+MT53B/E/D (LPDDR4/4X standalone) ███████░░░  70%   só via FBGA; decode math disponível
+MT41J/K (DDR3/3L standalone)     ███████░░░  70%   só via FBGA/CSV
+MT40A (DDR4 standalone)          ██░░░░░░░░  20%   família cadastrada; sem cobertura real
+MT29F (NAND Flash raw)           ██░░░░░░░░  20%   família cadastrada; raramente aparece
+MT52L (LPDDR4 SDRAM)             ██░░░░░░░░  20%   família cadastrada; sem cobertura
+```
 
 ### Alta prioridade
 
@@ -473,17 +801,27 @@ com datasheet se possível, especialmente para o chip 4D4 (512MB RAM, raro).
 Têm part-name nas notes mas nenhuma entrada MIC_MCP_CAP correspondente.
 Rodar `analyze_micron_mcp_keys` para identificar as chaves faltantes.
 
-**Task #53 (pendente desde 2026-06-19):**
+**Task #53 — comandos pendentes de execução:**
 ```bash
-python manage.py populate_micron_mcp --overwrite
-python manage.py fix_known_parts
+python manage.py populate_micron_mcp --overwrite   # BUG-8 LPDDR3
+python manage.py populate_samsung --overwrite       # subtype verbose
+python manage.py fix_known_parts                    # MT29C subtype + MT53B chip_type + MT29TZZZ8D5 emcp_nand
 # reiniciar servidor
-# verificar JWA60, JY941, JW464 na UI
+# verificar: JW464 → "SLC NAND 512MB" | JWA60/JY941 → EMCP8+1 LPDDR3 | D9VFC → LPDDR4+4G
 ```
+
+**MT29C — convenção a manter:**
+`chip_type = "NAND Flash"`, `subtype = "SLC NAND"` (ou MLC/TLC), `capacity = bytes`.
+Não é eMCP — não tem RAM. Qualquer catálogo que diga "LPDDR2 Combo" para MT29C está errado.
+A letra "C" no prefixo é configuração de barramento paralelo, NÃO "Combo".
 
 **MT41J vs MT41K sem decode posicional:**
 Chips DDR3/DDR3L são cobertos só via FBGA. Se um chip DDR3 chega sem FBGA legível,
 o engine não consegue decodificar pelo PN. Avaliar adicionar `DRAM_PC` decode para essas famílias.
+
+**~~NAND Flash raw → `NÃO RENTÁVEL`~~:** ✅ CORRIGIDO 2026-06-19 em `chips/engine.py`.
+Bloco unificado no topo de `assess_profitability()` cobre `("nand flash", "nor flash", "mcp")`.
+`is_dead_by_generation()` retorna `True` automaticamente — gateway descarta na esteira sem banco.
 
 ### Baixa prioridade
 
