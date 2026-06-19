@@ -10,6 +10,95 @@ Criado: 2026-06-19 | Atualizado: 2026-06-19
 
 ---
 
+## 0. ⚠️ LEIA PRIMEIRO — Regras de ouro e limites de escopo
+
+### 0.1 Arquivos que PODE editar (escopo Samsung)
+
+```
+chips/management/commands/populate_samsung.py   ← gramática mestre: ChipFamilies + DecodeMaps
+chips/management/commands/fix_known_parts.py    ← somente entradas brand_name="Samsung"
+chips/management/commands/import_samsung_psg.py ← importa CSVs do Samsung PSG
+data/psg/*.csv                                  ← CSVs Samsung Product Selection Guide
+```
+
+### 0.2 Arquivos que NÃO PODE tocar sem revisão explícita do usuário
+
+```
+chips/engine.py                                    ← motor global — mudança afeta TODAS as marcas
+estoque/views.py                                   ← gateway global — mudança afeta TODAS as marcas
+chips/management/commands/populate_micron_mcp.py
+chips/management/commands/populate_hynix.py
+chips/management/commands/populate_kingston.py
+chips/management/commands/populate_rayson.py
+chips/management/commands/populate_toshiba.py
+chips/management/commands/add_chip_families.py     ← compartilhado — editar só para famílias Samsung
+chips/management/commands/fix_known_parts.py       ← seções de OUTRAS marcas (Micron, SK Hynix…)
+```
+
+> Se precisar de mudança em `engine.py` ou `estoque/views.py`, **proponha ao usuário**
+> com justificativa e impacto — nunca edite silenciosamente.
+
+### 0.3 Regras de ouro — nunca violar
+
+1. **Claude edita arquivos. O usuário roda os comandos.** Nunca execute `populate_*`,
+   `import_*`, `fix_*` sem confirmação explícita do usuário.
+
+2. **`--dry-run` antes de qualquer comando que escreve no banco.** Sempre.
+
+3. **Reiniciar o servidor após `populate_samsung --overwrite`.** O `lru_cache` do engine
+   não invalida automaticamente no processo do servidor web.
+
+4. **`chip_type="RAM"` para todos os chips DDR/GDDR discretos** (K4H, K4T, K4B, K4A,
+   K4RA, K4J, K4G, K4Z, K4W…). Nunca `"DDR3"`, `"DDR"`, `"GDDR5"` no `chip_type`.
+   O gateway quebra se `chip_type` não for `"RAM"` para esses chips.
+
+5. **`subtype` = SOMENTE a geração — sem mais nada.** `"DDR3"` ✓. `"DDR3 PC DRAM 8Gb x8"`,
+   `"LPDDR4X Mobile"`, `"GDDR3 Graphics"` ✗. Qualquer qualificador além da geração
+   vaza para o label da caixa física e trunca o display na esteira.
+
+6. **`interface=""` (vazio) para LPDDR standalone e eMCP/uMCP.** Nunca colocar a
+   geração de RAM no campo `interface`. `interface="LPDDR4"` é sempre ERRADO para
+   esses tipos. Para DDR/GDDR discretos, `interface` = bus width: `"x8"`, `"x16"`, `"x4"`.
+
+7. **`emcp_ram` = tipo ANTES da capacidade.** `"LPDDR3 1GB"` ✓ — nunca `"1GB LPDDR3"`.
+   O campo `emcp_nand` é só GB: `"16GB"`, sem prefixo de tipo.
+
+8. **Nunca inverta `val_primary`/`val_secondary` nos DecodeMaps.** Em SAM_EMCP_CAP:
+   `val_primary`=NAND (GB), `val_secondary`=RAM (GB). Em DRAM_PC/DRAM_MOBILE:
+   `val_primary`=densidade (Gb ou Mb), `val_secondary`=bytes/die (MB).
+   Siga EXATAMENTE o padrão das linhas já existentes — nunca assuma sem verificar.
+
+9. **Nunca escreva "por die" no `val_secondary`.** O engine já acrescenta " por die"
+   automaticamente. Se vier no mapa, duplica: "por die por die".
+
+10. **`decode_density_type` e `decode_cap_map` são mutuamente exclusivos.** K4F, K4U e
+    K3U DEVEM ter `decode_density_type=""`. Configurar os dois na mesma família produz
+    dados conflitantes no engine.
+
+11. **Não confie em dados de distribuidor ou IA sem verificação.** Jotrin, WinSource,
+    catálogos de Shenzhen e IAs generalistas confundem Gb/GB, invertem primary/secondary
+    e alucinam capacidades. Sempre cruzar com Samsung Semiconductor Global ou datasheet.
+
+### 0.4 Hierarquia de fontes (imutável)
+
+```
+1. Samsung Semiconductor Global: semiconductor.samsung.com
+   → busca por PN → confirma specs (título com "(X Gb)" ou "(X GB)")
+2. Datasheet Samsung oficial: download.semiconductor.samsung.com
+   → fonte definitiva para specs de timing, tensão, package
+3. Octopart com fonte Samsung
+   → frequentemente inverte Gb/GB; sempre cruzar com Samsung Global
+4. Distribuidor B2B rastreável (SBiT, Puris, parceiros confirmados)
+   → só como apoio; nunca rebaixa um "confirmed" com dado de distribuidor
+5. IA externa (Gemini, GPT, outro Claude)
+   → ÚLTIMO RECURSO — verificar SEMPRE antes de usar
+```
+
+Nunca usar como fonte primária: Flash64Box, fóruns asiáticos de reparo, WinSource
+sem rastreabilidade, catálogos genéricos de Shenzhen, output de IA sem verificação.
+
+---
+
 ## 1. Visão Geral
 
 Samsung é o maior fornecedor de chips no banco WTC. A cobertura inclui toda a linha
@@ -115,6 +204,19 @@ completamente errado. Use **somente** `"DDR3"`.
 - `emcp_ram` = tipo **antes** da capacidade, ex.: `"LPDDR3 1GB"` — **nunca** `"1GB LPDDR3"`
 - A gramática preenche esses campos via `decode_cap_map="SAM_EMCP_CAP"` com `val_primary`=NAND
   e `val_secondary`=RAM, e `decode_gen_map="SAM_EMCP_GEN"` para o tipo de RAM.
+
+### 2.6 Tabela completa de campos — O que vai / O que NÃO vai
+
+| Campo | O que vai | O que NÃO vai |
+|-------|-----------|---------------|
+| `chip_type` | `"RAM"`, `"eMMC"`, `"UFS"`, `"eMCP"`, `"uMCP"`, `"NAND Flash"`, `"LPDDR4"` (geração, para LPDDR standalone) | specs, densidades, tensão, `"DDR3"`, `"DDR"` |
+| `subtype` | **só a geração**: `"DDR3"`, `"DDR3L"`, `"LPDDR4X"`, `"DDR5"`, `"GDDR6"`, `"SLC NAND"` | densidade (`"8Gb"`), barramento (`"x16"`), tensão (`"1.35V"`), qualificadores (`"Mobile"`, `"PC DRAM"`, `"Graphics"`, `"Multi-Channel"`) |
+| `interface` | bus width para DDR/GDDR: `"x8"`, `"x16"`, `"x4"`; versão para eMMC/UFS: `"eMMC 5.1"`, `"UFS 3.1"` | a geração de RAM (`"LPDDR4"`, `"DDR3"`) — nunca repetir aqui; `""` vazio para LPDDR/eMCP/uMCP |
+| `capacity` | capacidade total do **pacote** em bytes: `"512MB"`, `"4GB"`, `"16GB"` | gigabits; capacity de eMCP (usar `emcp_nand`/`emcp_ram`) |
+| `density_gbit` | densidade do **die** para DDR/GDDR: `"8Gb"`, `"2Gb"` | bytes; capacidade de pacote; LPDDR |
+| `emcp_nand` | (só eMCP/uMCP) NAND em GB: `"64GB"`, `"128GB"` | tipo de interface; RAM |
+| `emcp_ram` | (só eMCP/uMCP) **tipo + GB**: `"LPDDR3 1GB"`, `"LPDDR5 8GB"` — tipo VEM ANTES | só o número (`"4GB"`) — perde a geração; ordem invertida (`"4GB LPDDR4"`) |
+| `tip` | tudo que não couber acima: tensão, organização, avisos, notas de compatibilidade | — |
 
 ---
 
@@ -998,3 +1100,129 @@ SoC/PMIC/Sensor        ████████░░ 80%   routing OK, decode m
 | K4A8G165WC-BCRC | DDR4 | 8Gb x16 1GB DDR4-2400 | Octopart | tip com guia comercial |
 | KMQ8X000SA-B414 | eMCP | 8X=16GB NAND+1GB LPDDR3 | SBiT B2B | 8X corrigido de 8GB→16GB |
 | KMR8X0001M | eMCP | 8X=16GB NAND, emcp_ram=2GB | fix_known_parts | variante KMR com RAM diferente |
+
+---
+
+## 11. Pipeline de trabalho
+
+### Para atualizar gramática (famílias + DecodeMaps)
+
+```bash
+# 1. Editar populate_samsung.py (ChipFamily ou DecodeMap)
+# 2. Propor ao usuário — que roda:
+python manage.py populate_samsung --dry-run      # revisar antes
+python manage.py populate_samsung --overwrite    # usuário executa
+
+# 3. REINICIAR O SERVIDOR — obrigatório; lru_cache não invalida automaticamente
+
+# 4. Verificar resultado:
+python manage.py shell -c "
+from chips.engine import classify; import json
+print(json.dumps(classify('KMQ8X000SA-B414'), indent=2, ensure_ascii=False))
+"
+```
+
+### Para corrigir registros individuais (sem alterar gramática)
+
+```bash
+# 1. Editar fix_known_parts.py (somente seção Samsung)
+# 2. Propor ao usuário — que roda:
+python manage.py fix_known_parts    # usuário executa
+# NÃO requer reinício do servidor (não altera gramática/lru_cache)
+```
+
+### Para importar PNs do Samsung PSG
+
+```bash
+# 1. Colocar o CSV em data/psg/
+# 2. Registrar o arquivo em import_samsung_psg.py (se necessário)
+# 3. Propor ao usuário — que roda:
+python manage.py import_samsung_psg --all    # usuário executa
+# Não altera gramática — não requer restart
+```
+
+### Ordem típica de uma sessão de atualização Samsung
+
+```bash
+python manage.py populate_samsung --overwrite   # usuário
+python manage.py fix_known_parts                # usuário
+# → REINICIAR SERVIDOR ←
+# verificar chips representativos no shell (ver §12)
+# git add + git commit
+```
+
+---
+
+## 12. Como verificar se um chip Samsung está correto
+
+### Verificação via shell
+
+```bash
+# eMCP — esperado: chip_type='eMCP', emcp_nand='eMMC 5.1 16GB', emcp_ram='LPDDR3 1GB'
+python manage.py shell -c "
+from chips.engine import classify; import json
+print(json.dumps(classify('KMQ8X000SA-B414'), indent=2, ensure_ascii=False))
+"
+
+# DDR3 — esperado: chip_type='RAM', subtype='DDR3', dram_density='8Gb = 1GB por die [~]'
+python manage.py shell -c "
+from chips.engine import classify; import json
+print(json.dumps(classify('K4B8G1646D'), indent=2, ensure_ascii=False))
+"
+
+# LPDDR4 — esperado: chip_type='LPDDR4', subtype='LPDDR4', capacity='4GB', interface=''
+python manage.py shell -c "
+from chips.engine import classify; import json
+print(json.dumps(classify('K4F8E304HB-MGCH'), indent=2, ensure_ascii=False))
+"
+
+# URL alternativa: /chips/decode/?pn=<PN>
+# No estoque: botão "Debug" → JSON completo + fonte de cada campo
+```
+
+### Checklist de chip correto
+
+- [ ] `known=true`
+- [ ] `confidence="confirmed"` ou `"manual"`
+- [ ] `chip_type` correto para o tipo (ver tabela §2.1)
+- [ ] `subtype` é apenas a geração — sem qualificadores, máximo 3 palavras
+- [ ] `interface=""` para LPDDR/eMCP/uMCP; bus width (`"x8"`, `"x16"`) para DDR/GDDR
+- [ ] Campo de capacidade preenchido: `emcp_nand`+`emcp_ram` para eMCP/uMCP; `dram_density` para DDR; `capacity` para LPDDR/eMMC/UFS
+- [ ] `profitable != "INDETERMINADO"` — INDETERMINADO significa campo de capacidade ausente → **bloqueador de produção**
+- [ ] Label do estoque correto: `DDR3+8G`, `LPDDR4X+4G`, `EMCP64+4`, `EMMC64GB`, `UFS128GB`
+
+---
+
+## 13. Arquivos-chave Samsung
+
+```
+chips/management/commands/
+  populate_samsung.py         ← GRAMÁTICA: ChipFamilies + DecodeMaps (SAM_FLASH_CAP,
+                                 SAM_EMCP_CAP, SAM_EMCP_GEN, SAM_EMMC_GEN, DRAM_PC,
+                                 DRAM_MOBILE, LPDDR4_CAP, LPDDR5_CAP, K4E_CAP,
+                                 K3QF_CAP, RDRAM_CAP, KUS_CAP).
+                                 Editar para adicionar novas chaves ou famílias confirmadas.
+  fix_known_parts.py          ← Correções pontuais de KnownParts Samsung no banco.
+                                 Entradas com brand_name="Samsung" ou PNs que começam
+                                 com K4, K3, KL, KM, K9, K7, K5, K8, KAT, KUS.
+  import_samsung_psg.py       ← Importa CSVs do Samsung Product Selection Guide.
+                                 Preenche KnownParts com dados oficiais Samsung.
+
+data/psg/
+  *.csv                       ← CSVs por categoria: mobile_dram, emmc, ufs, lpddr5,
+                                 emcp_lpddr3, emcp_lpddr4x, umcp_lpddr4x, umcp_lpddr5…
+
+Referências cruzadas:
+  CLAUDE.md §2                ← regras de ouro do projeto inteiro (não violar)
+  CLAUDE.md §4                ← arquitetura do engine (classify, lru_cache, precedência)
+  CLAUDE.md §5                ← pipeline de comandos completo do projeto
+  CLAUDE.md §6                ← convenção canônica de campos por tipo de chip (projeto inteiro)
+  HANDOFF.md                  ← histórico de decisões arquiteturais (BUG-1…BUG-6)
+  docs/CONVENCAO_MICRON_ESTOQUE.md ← convenção canônica de campos (referência cross-marca)
+```
+
+---
+
+> **Regra de trabalho:** Claude edita arquivos. O usuário roda os comandos.
+> Nunca execute `populate_*`, `import_*`, `fix_*`, `migrate` sem o usuário confirmar.
+> Sempre `--dry-run` antes de qualquer comando que escreve no banco de dados.
