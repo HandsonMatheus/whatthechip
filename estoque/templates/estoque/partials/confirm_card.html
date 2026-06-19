@@ -5,19 +5,6 @@
 {% endcomment %}
 <div class="est-confirm est-confirm--{{ gateway_dest }}" data-debug="{{ result_json }}" style="margin-top:28px;">
 
-  {# ── Header: tag de status + PN ──────────────────────────────── #}
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
-    {% if gateway_dest == 'aprovado' %}
-      <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#defbe6;color:#198038;white-space:nowrap;">✓ APROVADO</span>
-    {% elif gateway_dest == 'fila' %}
-      <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#fff8e1;color:#b28600;white-space:nowrap;">⏳ EM FILA</span>
-    {% elif gateway_dest == 'reprovado' %}
-      <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#fff1f1;color:#da1e28;white-space:nowrap;">✗ REPROVADO{% if gateway.reject_by_generation %} · GERAÇÃO{% endif %}</span>
-    {% else %}
-      <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;padding:5px 12px;background:#f4f4f4;color:#6f6f6f;white-space:nowrap;">? NÃO IDENTIFICADO</span>
-    {% endif %}
-    <span id="confirm-pn-display" style="font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:#0f62fe;">{{ pn }}</span>
-  </div>
 
   {# ── Gates (3 círculos com linha de conexão) ─────────────────── #}
   <div style="position:relative;margin:4px 0 24px;">
