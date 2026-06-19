@@ -1186,8 +1186,8 @@ class Command(BaseCommand):
             # Progressão alfanumérica: 4G→8G→AG(16Gb)→BG(32Gb).
             #
             dict(
-                prefix="H5AN", chip_type="RAM", subtype="DDR4 SDRAM",
-                interface="DDR4",
+                prefix="H5AN", chip_type="RAM", subtype="DDR4",
+                interface="",
                 is_emcp=False, active=True, priority=50,  # prioridade > H5A (55) — prefixo mais longo vence
                 pn_length=None,
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="HYX_DDR4_CAP",
@@ -1201,8 +1201,8 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H5A", chip_type="RAM", subtype="DDR4 SDRAM",
-                interface="DDR4",
+                prefix="H5A", chip_type="RAM", subtype="DDR4",
+                interface="",
                 is_emcp=False, active=True, priority=55,  # menor prioridade — H5AN (50) bate primeiro
                 pn_length=None,
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="HYX_DDR4_H5A_CAP",
@@ -1224,8 +1224,8 @@ class Command(BaseCommand):
             # "GD" é a matriz assimétrica de 24Gb que viabiliza pentes de 24GB e 48GB.
             #
             dict(
-                prefix="H5C", chip_type="RAM", subtype="DDR5 SDRAM",
-                interface="DDR5",
+                prefix="H5C", chip_type="RAM", subtype="DDR5",
+                interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="HYX_DDR5_CAP",
@@ -1249,8 +1249,8 @@ class Command(BaseCommand):
             # Se cair sem cadastro → UnknownChip → sem aviso → risco de mistura com DDR3 PC.
             #
             dict(
-                prefix="H5RS", chip_type="RAM", subtype="GDDR3 (Memória Gráfica)",
-                interface="GDDR3",
+                prefix="H5RS", chip_type="RAM", subtype="GDDR3",
+                interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
                 decode_cap_pos=None, decode_cap_len=1, decode_cap_map="",  # len=1: NOT NULL exigido pelo banco; pos=None já desativa o decode
@@ -1269,7 +1269,7 @@ class Command(BaseCommand):
             # Era 2 (H58G): nomenclatura H5 moderna, pn[4], misto numérico/letra.
             #
             dict(
-                prefix="H9JK", chip_type="RAM", subtype="LPDDR5 standalone",
+                prefix="H9JK", chip_type="LPDDR5", subtype="LPDDR5",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -1284,7 +1284,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H58G", chip_type="RAM", subtype="LPDDR5/LPDDR5X standalone",
+                prefix="H58G", chip_type="LPDDR5", subtype="LPDDR5",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -1311,7 +1311,7 @@ class Command(BaseCommand):
             #   Quando catalogado: dar priority < 55 para bater antes do H9HC.
             #
             dict(
-                prefix="H9HC", chip_type="RAM", subtype="LPDDR4/LPDDR4X standalone",
+                prefix="H9HC", chip_type="LPDDR4", subtype="LPDDR4",
                 interface="",
                 is_emcp=False, active=True, priority=55,
                 pn_length=None,
@@ -1327,7 +1327,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H9HK", chip_type="RAM", subtype="LPDDR4/LPDDR4X standalone",
+                prefix="H9HK", chip_type="LPDDR4X", subtype="LPDDR4X",
                 interface="",
                 is_emcp=False, active=True, priority=55,
                 pn_length=None,
@@ -1354,7 +1354,7 @@ class Command(BaseCommand):
             # Chave E=8GB documentada via H9HCNNNECMML (broker B2B, 64Gbit confirmed).
             #
             dict(
-                prefix="H9HCN", chip_type="RAM", subtype="LPDDR4X standalone",
+                prefix="H9HCN", chip_type="LPDDR4X", subtype="LPDDR4X",
                 interface="",
                 is_emcp=False, active=True, priority=40,
                 pn_length=None,
@@ -1372,7 +1372,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H54G", chip_type="RAM", subtype="LPDDR4X standalone",
+                prefix="H54G", chip_type="LPDDR4X", subtype="LPDDR4X",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -1397,7 +1397,7 @@ class Command(BaseCommand):
             # Volume alto na esteira: smartphones premium e ultrabooks 2013-2017.
             #
             dict(
-                prefix="H9CC", chip_type="RAM", subtype="LPDDR3 standalone",
+                prefix="H9CC", chip_type="LPDDR3", subtype="LPDDR3",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -1413,7 +1413,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H9CK", chip_type="RAM", subtype="LPDDR3 standalone",
+                prefix="H9CK", chip_type="LPDDR3", subtype="LPDDR3",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -1436,7 +1436,7 @@ class Command(BaseCommand):
             # Aparece em smartphones intermediários início da década passada, tablets legados.
             #
             dict(
-                prefix="H9TK", chip_type="RAM", subtype="LPDDR2 standalone",
+                prefix="H9TK", chip_type="LPDDR2", subtype="LPDDR2",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -1461,7 +1461,7 @@ class Command(BaseCommand):
             #   Ver comentário detalhado no mapa HYX_LPDDR1_CAP.
             #
             dict(
-                prefix="H5MS", chip_type="RAM", subtype="LPDDR1 (Mobile DDR)",
+                prefix="H5MS", chip_type="LPDDR1", subtype="LPDDR1",
                 interface="",
                 is_emcp=False, active=True, priority=60,
                 pn_length=None,
@@ -1477,7 +1477,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="HY5MS", chip_type="RAM", subtype="LPDDR1 (Mobile DDR)",
+                prefix="HY5MS", chip_type="LPDDR1", subtype="LPDDR1",
                 interface="",
                 is_emcp=False, active=True, priority=60,
                 pn_length=None,
@@ -1500,8 +1500,8 @@ class Command(BaseCommand):
             # Mapa compartilhado HYX_DDR3_CAP — codificação idêntica.
             #
             dict(
-                prefix="H5TQ", chip_type="RAM", subtype="DDR3 SDRAM",
-                interface="DDR3",
+                prefix="H5TQ", chip_type="RAM", subtype="DDR3",
+                interface="",
                 is_emcp=False, active=True, priority=55,
                 pn_length=None,
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="HYX_DDR3_CAP",
@@ -1514,8 +1514,8 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H5TC", chip_type="RAM", subtype="DDR3L SDRAM",
-                interface="DDR3L",
+                prefix="H5TC", chip_type="RAM", subtype="DDR3L",
+                interface="",
                 is_emcp=False, active=True, priority=55,
                 pn_length=None,
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="HYX_DDR3_CAP",
@@ -1536,8 +1536,8 @@ class Command(BaseCommand):
             # Nova chave "1G" marca o teto desta nomenclatura.
             #
             dict(
-                prefix="HY5PS", chip_type="RAM", subtype="DDR2 SDRAM",
-                interface="DDR2",
+                prefix="HY5PS", chip_type="RAM", subtype="DDR2",
+                interface="",
                 is_emcp=False, active=True, priority=60,
                 pn_length=None,  # variável: arquiteturas x4/x8/x16 geram tamanhos diferentes
                 decode_cap_pos=5, decode_cap_len=2, decode_cap_map="HYX_DDR2_HY5PS_CAP",
@@ -1558,8 +1558,8 @@ class Command(BaseCommand):
             # Âncora H5 estabelecida aqui — usada até DDR5.
             #
             dict(
-                prefix="H5PS", chip_type="RAM", subtype="DDR2 SDRAM",
-                interface="DDR2",
+                prefix="H5PS", chip_type="RAM", subtype="DDR2",
+                interface="",
                 is_emcp=False, active=True, priority=55,
                 pn_length=None,
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="HYX_DDR2_H5PS_CAP",
@@ -1580,8 +1580,8 @@ class Command(BaseCommand):
             # Aparece em lotes de reciclagem B2B de PCs antigos, PDVs, servidores legados.
             #
             dict(
-                prefix="HY5DU", chip_type="RAM", subtype="DDR1 SDRAM",
-                interface="DDR1",
+                prefix="HY5DU", chip_type="RAM", subtype="DDR1",
+                interface="",
                 is_emcp=False, active=True, priority=60,
                 pn_length=None,  # comprimento variável: x4/x8/x16 geram tamanhos diferentes
                 decode_cap_pos=5, decode_cap_len=2, decode_cap_map="HYX_DDR1_CAP",
@@ -1606,7 +1606,7 @@ class Command(BaseCommand):
             #   qualquer contato físico — essa é a primeira linha de defesa.
             #
             dict(
-                prefix="H28U", chip_type="UFS", subtype="UFS standalone legado",
+                prefix="H28U", chip_type="UFS", subtype="",
                 interface="UFS 2.0/2.1",
                 is_emcp=False, active=True, priority=50,
                 pn_length=12,
@@ -1620,7 +1620,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H28S", chip_type="UFS", subtype="UFS standalone legado alta densidade",
+                prefix="H28S", chip_type="UFS", subtype="",
                 interface="UFS 2.1",
                 is_emcp=False, active=True, priority=50,
                 pn_length=12,
@@ -1637,7 +1637,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="HN8T", chip_type="UFS", subtype="UFS standalone 4D NAND",
+                prefix="HN8T", chip_type="UFS", subtype="",
                 interface="UFS 2.1/2.2/3.1",
                 is_emcp=False, active=True, priority=50,
                 pn_length=14,
@@ -1655,7 +1655,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="HN8G", chip_type="UFS", subtype="UFS standalone 4D NAND",
+                prefix="HN8G", chip_type="UFS", subtype="",
                 interface="UFS 2.2",
                 is_emcp=False, active=True, priority=50,
                 pn_length=14,
@@ -1688,7 +1688,7 @@ class Command(BaseCommand):
             # Fonte: SK Hynix eMMC 5.1 lineup (Netlist ✓) + Preduo ✓ + Octopart ✓
             #
             dict(
-                prefix="H26M", chip_type="eMMC", subtype="eMMC standalone",
+                prefix="H26M", chip_type="eMMC", subtype="",
                 interface="eMMC 5.x",
                 is_emcp=False, active=True, priority=50,
                 pn_length=12,
@@ -1702,7 +1702,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H26T", chip_type="eMMC", subtype="eMMC standalone 3D NAND",
+                prefix="H26T", chip_type="eMMC", subtype="",
                 interface="eMMC 5.1",
                 is_emcp=False, active=True, priority=50,
                 pn_length=12,
@@ -1737,7 +1737,7 @@ class Command(BaseCommand):
             # is_documented=False: ativa banner de contribuição na UI.
             #
             dict(
-                prefix="H28M", chip_type="eMMC", subtype="eMMC (família sem documentação pública)",
+                prefix="H28M", chip_type="eMMC", subtype="",
                 interface="eMMC",
                 is_emcp=False, active=True, priority=50, is_documented=False,
                 pn_length=12,
@@ -1773,7 +1773,7 @@ class Command(BaseCommand):
             # Fonte: Preduo PN list ✓ · NetSource ✓ · ssfkg.com ✓ · absunshine ✓ · Elnec ✓
             #
             dict(
-                prefix="H9TQ", chip_type="eMCP", subtype="eMCP LPDDR3",
+                prefix="H9TQ", chip_type="eMCP", subtype="LPDDR3",
                 interface="eMMC 5.x + LPDDR3",
                 is_emcp=True, active=True, priority=50,
                 pn_length=12,
@@ -1790,7 +1790,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H9TP", chip_type="eMCP", subtype="eMCP LPDDR2",
+                prefix="H9TP", chip_type="eMCP", subtype="LPDDR2",
                 interface="eMMC 4.x + LPDDR2",
                 is_emcp=True, active=True, priority=40,
                 pn_length=12,
@@ -1808,7 +1808,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H9DP", chip_type="eMCP", subtype="eMCP LPDDR2",
+                prefix="H9DP", chip_type="eMCP", subtype="LPDDR2",
                 interface="eMMC + LPDDR2",
                 is_emcp=True, active=True, priority=50,
                 pn_length=12,
@@ -1846,7 +1846,7 @@ class Command(BaseCommand):
             # Fonte: Preduo PN list ✓ · distribuidores B2B ✓ · indasina ✓
             #
             dict(
-                prefix="H9HP", chip_type="eMCP", subtype="eMCP LPDDR4X",
+                prefix="H9HP", chip_type="eMCP", subtype="LPDDR4X",
                 interface="eMMC 5.1 + LPDDR4X",
                 is_emcp=True, active=True, priority=50,
                 pn_length=14,
@@ -1864,7 +1864,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H9HQ", chip_type="eMCP", subtype="uMCP LPDDR4X",
+                prefix="H9HQ", chip_type="uMCP", subtype="LPDDR4X",
                 interface="UFS 2.1 + LPDDR4X",
                 is_emcp=True, active=True, priority=50,
                 pn_length=14,
@@ -1891,7 +1891,7 @@ class Command(BaseCommand):
             #        Decode posicional COMPLETO — validado com 7 PNs em distribuidores B2B premium.
             #
             dict(
-                prefix="H9HR", chip_type="eMCP", subtype="uMCP LPDDR5",
+                prefix="H9HR", chip_type="uMCP", subtype="LPDDR5",
                 interface="UFS + LPDDR5",
                 is_emcp=True, active=True, priority=50,
                 pn_length=14,
@@ -1909,7 +1909,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H9RT", chip_type="eMCP", subtype="uMCP LPDDR5",
+                prefix="H9RT", chip_type="uMCP", subtype="LPDDR5",
                 interface="UFS + LPDDR5",
                 is_emcp=True, active=True, priority=50,
                 pn_length=14,
