@@ -506,8 +506,8 @@ CORRECTIONS = [
             "confidence": "manual",
         },
         "fields": {
-            "emcp_nand":  "16GB",
-            "emcp_ram":   "2GB LPDDR3",
+            "emcp_nand":  "eMMC 5.1 16GB",
+            "emcp_ram":   "LPDDR3 2GB",
             "interface":  "eMMC+LPDDR3",
             "confidence": "manual",
             "status":     "enriched",
@@ -1064,7 +1064,7 @@ CORRECTIONS = [
             "confidence": "confirmed",
         },
         "fields": {
-            "interface":  "DDR3",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -1094,7 +1094,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "512MB",
-            "interface":  "DDR3",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -1125,7 +1125,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "1GB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -1158,7 +1158,7 @@ CORRECTIONS = [
             "confidence": "confirmed",
         },
         "fields": {
-            "interface":  "DDR3L",
+            "interface":  "x4",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -1189,7 +1189,7 @@ CORRECTIONS = [
             "confidence": "confirmed",
         },
         "fields": {
-            "interface":  "DDR3L",
+            "interface":  "x4",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -1224,7 +1224,7 @@ CORRECTIONS = [
             "confidence": "confirmed",
         },
         "fields": {
-            "interface":  "DDR3",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -3872,16 +3872,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "512MB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -3899,16 +3899,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "512MB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -3923,12 +3923,12 @@ CORRECTIONS = [
         "pn": "K4B4G1646D",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "DDR3L",
-            "subtype": "DDR3L PC DRAM 4Gb x16", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "DDR3L", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR3L", "subtype": "DDR3L PC DRAM 4Gb x16",
-            "capacity": "512MB", "interface": "DDR3L", "confidence": "confirmed", "status": "enriched",
+            "chip_type": "RAM", "subtype": "DDR3L",
+            "capacity": "512MB", "interface": "x16", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
             "Base PN — deriva de K4B4G1646D-BYK0/BYNB/BCK0/BCNB (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die. D-die, x16."
@@ -3939,16 +3939,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "512MB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -3965,16 +3965,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "512MB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -3991,12 +3991,12 @@ CORRECTIONS = [
         "pn": "K4B8G1646D",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "DDR3L",
-            "subtype": "DDR3L PC DRAM 8Gb x16", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "DDR3L", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR3L", "subtype": "DDR3L PC DRAM 8Gb x16",
-            "capacity": "1GB", "interface": "DDR3L", "confidence": "confirmed", "status": "enriched",
+            "chip_type": "RAM", "subtype": "DDR3L",
+            "capacity": "1GB", "interface": "x16", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
             "Base PN — deriva de K4B8G1646D-MYK0/MYMA/MMK0/MMMA (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die. D-die, x16."
@@ -4007,16 +4007,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 8Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 8Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "1GB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4033,16 +4033,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 8Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 8Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "1GB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4060,16 +4060,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 8Gb x16 Industrial",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 8Gb x16 Industrial",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "1GB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4087,16 +4087,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 8Gb x16 Industrial",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 8Gb x16 Industrial",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "1GB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4114,12 +4114,12 @@ CORRECTIONS = [
         "pn": "K4B2G1646F",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "DDR3L",
-            "subtype": "DDR3L PC DRAM 2Gb x16", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "DDR3L", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR3L", "subtype": "DDR3L PC DRAM 2Gb x16",
-            "capacity": "256MB", "interface": "DDR3L", "confidence": "confirmed", "status": "enriched",
+            "chip_type": "RAM", "subtype": "DDR3L",
+            "capacity": "256MB", "interface": "x16", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
             "Base PN — deriva de K4B2G1646F-BYMA/BYNB/BCK0/BCMA (Samsung Semiconductor Global ✓). 2Gbit ÷ 8 = 256MB/die. F-die, x16."
@@ -4130,16 +4130,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 2Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 2Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "256MB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4155,16 +4155,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 2Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 2Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "256MB",
-            "interface":  "DDR3L",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4181,12 +4181,12 @@ CORRECTIONS = [
         "pn": "K4B4G0846D",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "DDR3L",
-            "subtype": "DDR3L PC DRAM 4Gb x8", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "DDR3L", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR3L", "subtype": "DDR3L PC DRAM 4Gb x8",
-            "capacity": "512MB", "interface": "DDR3L", "confidence": "confirmed", "status": "enriched",
+            "chip_type": "RAM", "subtype": "DDR3L",
+            "capacity": "512MB", "interface": "x8", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
             "Base PN — deriva de K4B4G0846D-BYK0/BYNB (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die. D-die, x8."
@@ -4197,16 +4197,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "512MB",
-            "interface":  "DDR3L",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4222,16 +4222,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "512MB",
-            "interface":  "DDR3L",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4246,12 +4246,12 @@ CORRECTIONS = [
         "pn": "K4B2G0846F",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "DDR3L",
-            "subtype": "DDR3L PC DRAM 2Gb x8", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "DDR3L", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR3L", "subtype": "DDR3L PC DRAM 2Gb x8",
-            "capacity": "256MB", "interface": "DDR3L", "confidence": "confirmed", "status": "enriched",
+            "chip_type": "RAM", "subtype": "DDR3L",
+            "capacity": "256MB", "interface": "x8", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
             "Base PN — deriva de K4B2G0846F-BYMA (Samsung Semiconductor Global ✓). 2Gbit ÷ 8 = 256MB/die. F-die, x8."
@@ -4262,16 +4262,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 2Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 2Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "256MB",
-            "interface":  "DDR3L",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4288,12 +4288,12 @@ CORRECTIONS = [
         "pn": "K4B4G0846E",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "DDR3",
-            "subtype": "DDR3 PC DRAM 4Gb x8", "status": "enriched", "confidence": "manual",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "DDR3", "status": "enriched", "confidence": "manual",
         },
         "fields": {
-            "chip_type": "DDR3", "subtype": "DDR3 PC DRAM 4Gb x8",
-            "capacity": "512MB", "interface": "DDR3", "confidence": "manual", "status": "enriched",
+            "chip_type": "RAM", "subtype": "DDR3",
+            "capacity": "512MB", "interface": "x8", "confidence": "manual", "status": "enriched",
         },
         "reason": (
             "Base PN — deriva de K4B4G0846E-BCK0/BCNB/BYK0/BYMA (Samsung Semiconductor Global ✓). "
@@ -4305,16 +4305,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "512MB",
-            "interface":  "DDR3",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4328,16 +4328,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "512MB",
-            "interface":  "DDR3",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4351,16 +4351,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "512MB",
-            "interface":  "DDR3L",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4374,16 +4374,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 4Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "512MB",
-            "interface":  "DDR3L",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4400,12 +4400,12 @@ CORRECTIONS = [
         "pn": "K4B8G0846D",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "DDR3",
-            "subtype": "DDR3 PC DRAM 8Gb x8", "status": "enriched", "confidence": "manual",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "DDR3", "status": "enriched", "confidence": "manual",
         },
         "fields": {
-            "chip_type": "DDR3", "subtype": "DDR3 PC DRAM 8Gb x8",
-            "capacity": "1GB", "interface": "DDR3", "confidence": "manual", "status": "enriched",
+            "chip_type": "RAM", "subtype": "DDR3",
+            "capacity": "1GB", "interface": "x8", "confidence": "manual", "status": "enriched",
         },
         "reason": (
             "Base PN — deriva de K4B8G0846D-MCMA/MCNB/MCK0/MYK0 (Samsung Semiconductor Global ✓). "
@@ -4417,16 +4417,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "1GB",
-            "interface":  "DDR3",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4440,16 +4440,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "1GB",
-            "interface":  "DDR3",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4463,16 +4463,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 8Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "1GB",
-            "interface":  "DDR3",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4486,16 +4486,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 8Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 8Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "1GB",
-            "interface":  "DDR3L",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4512,12 +4512,12 @@ CORRECTIONS = [
         "pn": "K4B1G0846I",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "DDR3",
-            "subtype": "DDR3 PC DRAM 1Gb x8", "status": "enriched", "confidence": "manual",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "DDR3", "status": "enriched", "confidence": "manual",
         },
         "fields": {
-            "chip_type": "DDR3", "subtype": "DDR3 PC DRAM 1Gb x8",
-            "capacity": "128MB", "interface": "DDR3", "confidence": "manual", "status": "enriched",
+            "chip_type": "RAM", "subtype": "DDR3",
+            "capacity": "128MB", "interface": "x8", "confidence": "manual", "status": "enriched",
         },
         "reason": (
             "Base PN — deriva de K4B1G0846I-BCK0/BYK0/BYMA/BYNB (Samsung Semiconductor Global ✓). "
@@ -4529,16 +4529,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 1Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 1Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "128MB",
-            "interface":  "DDR3",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4552,16 +4552,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "128MB",
-            "interface":  "DDR3L",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4575,16 +4575,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "128MB",
-            "interface":  "DDR3L",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4598,16 +4598,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3L",
-            "subtype":    "DDR3L PC DRAM 1Gb x8",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
             "capacity":   "128MB",
-            "interface":  "DDR3L",
+            "interface":  "x8",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4628,16 +4628,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "512MB",
-            "interface":  "DDR3",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4654,16 +4654,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "512MB",
-            "interface":  "DDR3",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4680,16 +4680,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "512MB",
-            "interface":  "DDR3",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4705,16 +4705,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 4Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "512MB",
-            "interface":  "DDR3",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4730,16 +4730,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 2Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 2Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "256MB",
-            "interface":  "DDR3",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4755,16 +4755,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 2Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 2Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "256MB",
-            "interface":  "DDR3",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -4781,12 +4781,12 @@ CORRECTIONS = [
         "pn": "K4B1G1646I",
         "create": True,
         "create_defaults": {
-            "brand_name": "Samsung", "chip_type": "DDR3",
-            "subtype": "DDR3 PC DRAM 1Gb x16", "status": "enriched", "confidence": "confirmed",
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "DDR3", "status": "enriched", "confidence": "confirmed",
         },
         "fields": {
-            "chip_type": "DDR3", "subtype": "DDR3 PC DRAM 1Gb x16",
-            "capacity": "128MB", "interface": "DDR3", "confidence": "confirmed", "status": "enriched",
+            "chip_type": "RAM", "subtype": "DDR3",
+            "capacity": "128MB", "interface": "x16", "confidence": "confirmed", "status": "enriched",
         },
         "reason": (
             "Base PN — deriva de K4B1G1646I-BCK0 (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. I-die, x16. 128MB < 256MB limiar DDR3 → NÃO RENTÁVEL."
@@ -4797,16 +4797,16 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung",
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 1Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
-            "chip_type":  "DDR3",
-            "subtype":    "DDR3 PC DRAM 1Gb x16",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
             "capacity":   "128MB",
-            "interface":  "DDR3",
+            "interface":  "x16",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -6960,10 +6960,18 @@ CORRECTIONS = [
     # ── Micron MT29TZZZ — Correção BUG-8: LPDDR2→LPDDR3 (2026-06-19) ──────────
     #
     # CONTEXTO: A API Micron FBGA retornava "MLC EMMC/LPDDR2 72G VFBGA" para chips
-    # MT29TZZZ com chave 8D5. Isso levou o enrich_micron_fbga a salvar emcp_ram="LPDDR2 ..."
-    # com confidence=confirmed. Porém fontes superiores (datasheet oficial + DigiKey)
-    # confirmam que TODA a família MT29TZZZ é LPDDR3 — a distinção LPDDR2 pertence
-    # à família MT29PZZZ (prefixo diferente, 162-ball vs 221-ball).
+    # MT29TZZZ com chave 8D5. Esse part-name pertence à família MT29PZZZ (LPDDR2, 162-ball),
+    # mas a API às vezes retorna o mesmo resultado para FBGA codes de famílias relacionadas.
+    #
+    # ⚠ MECANISMO REAL do BUG-8 (auditado 2026-06-19):
+    # O enrich_micron_fbga.py NÃO salva emcp_ram — só cria o KnownPart com fbga_code
+    # e PN completo (campos emcp_ram/emcp_nand ficam vazios). O erro foi introduzido
+    # MANUALMENTE no decode map MIC_TZZZ_GEN de populate_micron_mcp.py, onde o agente
+    # codificou ('8', 'LPDDR2', '') baseando-se no part-name da API sem verificar o
+    # datasheet. Com emcp_ram vazio no DB, a gramática vencia e exibia LPDDR2.
+    #
+    # Fontes superiores (datasheet oficial + DigiKey) confirmam que TODA a família
+    # MT29TZZZ é LPDDR3 — a distinção LPDDR2 pertence à família MT29PZZZ.
     #
     # Fontes Tier 1:
     #   • Datasheet oficial Micron (via NXP community):
@@ -6981,8 +6989,10 @@ CORRECTIONS = [
     # ── MT29TZZZ8D5BKFAH ──────────────────────────────────────────────────────
     # eMCP LPDDR3 + eMMC 5.0. FBGAs: JWA60, JY941.
     # Chave 8D5: NAND=8GB (64Gb) + DRAM=1GB (8Gb) = 72Gb total.
-    # BUG-8: enrich_micron_fbga gravou emcp_ram="LPDDR2 1GB" baseado em API Micron
-    # errada. Datasheet oficial e DigiKey confirmam LPDDR3.
+    # BUG-8: gramática (MIC_TZZZ_GEN['8']='LPDDR2', codificado manualmente com base
+    # no part-name da API) produzia emcp_ram="LPDDR2 1GB". DB estava vazio → gramática
+    # vencia. Datasheet oficial e DigiKey confirmam LPDDR3. Estes campos forçam o DB
+    # a ter o valor correto, sobrepondo a gramática mesmo após fix do grammar (defesa-em-profundidade).
     {
         "pn": "MT29TZZZ8D5BKFAH",
         "fields": {
@@ -7067,44 +7077,77 @@ class Command(BaseCommand):
             try:
                 obj = KnownPart.objects.get(part_number=pn)
             except KnownPart.DoesNotExist:
-                if do_create:
-                    # ── Criar registro novo ──────────────────────────────────
-                    defaults  = dict(entry.get("create_defaults", {}))
-                    brand_name = defaults.pop("brand_name", "Samsung")
-                    try:
-                        brand = Brand.objects.get(name=brand_name)
-                    except Brand.DoesNotExist:
-                        self.stdout.write(self.style.ERROR(
-                            f"  ✗ Brand '{brand_name}' não encontrada — pulando {pn}."
+                # ── Fallback: busca por fbga_code quando PN exato não existe ─
+                # Ocorre quando enrich_micron_fbga salvou o PN com formato raw
+                # da API (ex: "MT29C4G48MAZAPAKD-5 IT" com hífen/espaço) mas a
+                # entrada aqui usa o PN normalizado (ex: "MT29C4G48MAZAPAKD5IT").
+                # Neste caso atualizamos o registro existente pelo FBGA code em vez
+                # de criar um duplicado.
+                fbga_fallback = fields.get("fbga_code", "")
+                if fbga_fallback:
+                    fbga_qs = KnownPart.objects.filter(
+                        fbga_code=fbga_fallback, status="enriched"
+                    ).order_by("pk")  # pega o mais antigo (original do enrich_micron_fbga)
+                    if fbga_qs.exists():
+                        obj = fbga_qs.first()
+                        self.stdout.write(self.style.WARNING(
+                            f"  ↳ PN '{pn}' não encontrado — usando registro existente "
+                            f"por FBGA {fbga_fallback}: '{obj.part_number}'"
                         ))
+                        # Verifica se existe duplicata normalizada criada anteriormente
+                        # por este mesmo comando e avisa para limpeza manual
+                        duplicates = KnownPart.objects.filter(
+                            part_number=pn
+                        )
+                        if duplicates.exists():
+                            self.stdout.write(self.style.WARNING(
+                                f"  ⚠  Duplicata encontrada: '{pn}' existe além do registro "
+                                f"raw. Considere deletar o duplicado via admin "
+                                f"(mantendo apenas o registro com FBGA={fbga_fallback})."
+                            ))
+                        # Continua para aplicar os fields no obj encontrado por FBGA
+                    else:
+                        obj = None
+
+                if obj is None:
+                    if do_create:
+                        # ── Criar registro novo ──────────────────────────────
+                        defaults  = dict(entry.get("create_defaults", {}))
+                        brand_name = defaults.pop("brand_name", "Samsung")
+                        try:
+                            brand = Brand.objects.get(name=brand_name)
+                        except Brand.DoesNotExist:
+                            self.stdout.write(self.style.ERROR(
+                                f"  ✗ Brand '{brand_name}' não encontrada — pulando {pn}."
+                            ))
+                            not_found += 1
+                            continue
+                        if not dry:
+                            obj = KnownPart(part_number=pn, brand=brand, **defaults)
+                            # aplica os campos do fix antes de salvar
+                            for field, val in fields.items():
+                                setattr(obj, field, val if val is not None else "")
+                            try:
+                                with transaction.atomic():
+                                    obj.save()
+                            except Exception as e:
+                                self.stdout.write(self.style.ERROR(f"  ✗ Erro ao criar {pn}: {e}"))
+                                continue
+                            was_created = True
+                        prefix = "[DRY] " if dry else ""
+                        self.stdout.write(self.style.SUCCESS(
+                            f"  {prefix}✚ {pn} — registro CRIADO com {len(fields)} campo(s):"
+                        ))
+                        for field, val in fields.items():
+                            self.stdout.write(f"      {field}: → {repr(val)}")
+                        if reason:
+                            self.stdout.write(f"      Motivo: {reason}")
+                        created_count += 1
+                        continue
+                    else:
+                        self.stdout.write(self.style.WARNING(f"  ⚠ Não encontrado no banco: {pn}"))
                         not_found += 1
                         continue
-                    if not dry:
-                        obj = KnownPart(part_number=pn, brand=brand, **defaults)
-                        # aplica os campos do fix antes de salvar
-                        for field, val in fields.items():
-                            setattr(obj, field, val if val is not None else "")
-                        try:
-                            with transaction.atomic():
-                                obj.save()
-                        except Exception as e:
-                            self.stdout.write(self.style.ERROR(f"  ✗ Erro ao criar {pn}: {e}"))
-                            continue
-                        was_created = True
-                    prefix = "[DRY] " if dry else ""
-                    self.stdout.write(self.style.SUCCESS(
-                        f"  {prefix}✚ {pn} — registro CRIADO com {len(fields)} campo(s):"
-                    ))
-                    for field, val in fields.items():
-                        self.stdout.write(f"      {field}: → {repr(val)}")
-                    if reason:
-                        self.stdout.write(f"      Motivo: {reason}")
-                    created_count += 1
-                    continue
-                else:
-                    self.stdout.write(self.style.WARNING(f"  ⚠ Não encontrado no banco: {pn}"))
-                    not_found += 1
-                    continue
 
             changed_fields = []
             for field, new_val in fields.items():
