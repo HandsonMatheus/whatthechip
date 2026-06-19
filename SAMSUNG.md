@@ -1116,6 +1116,7 @@ SoC/PMIC/Sensor        ████████░░ 80%   routing OK, decode m
 | 2026-06-19 | LPDDR5_CAP K3KL subtype | engine.py: subtype sync com `_decoded_gen` para eMCP | — | subtype de eMCP não era preenchido pela gramática |
 | 2026-06-19 | K4J (13 PNs) | KnownParts GDDR3 adicionados: K4J10324KE/QD, K4J52324QH, K4J55323QF/QG | Samsung Product Guide Abr. 2010, Alldatasheet ref #347919, Octopart | grammar_complete=false by design — density codes "10"/"52"/"55" não estão no DRAM_PC |
 | 2026-06-19 | K3RG (7 PNs) | KnownParts LPDDR4 adicionados: BMCGCJ, CAMGCJ, CMFGCJ, CMCGCJ, 4G40MMMGCJ, 4G40MMMGCJT00E, 6G60MMMGCJ | PSG Samsung 1H 2017, Octopart (Worldway/Win Source) | pn_not_in_db=true apesar de grammar_complete=true |
+| 2026-06-19 | KML7U000HM | KnownPart eMCP: corrige grammar bug "LPDDR5 1GB" → correto "LPDDR2 1GB" | Octopart KMK7U000VM-B309 = "eMCP 8GB eMMC + LPDDR2 1GB" ✓ (cross-família, mesma chave "7U") | decode_gen_pos=None → KML nunca deve ler SAM_EMCP_GEN; LPDDR5 impossível em 2013-2015 |
 
 ### Chips confirmados individuais (histórico)
 
