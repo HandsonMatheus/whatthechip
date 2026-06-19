@@ -123,9 +123,21 @@ def _visual_edit_distance(a: str, b: str) -> float:
     return prev[-1]
 
 
+# Níveis de confiança elegíveis para sugestão fuzzy/prefixo.
+# Apenas registros verificados por humano ou datasheet oficial são sugeridos —
+# evita que o operador seja direcionado a um PN estimado/IA/distribuidor duvidoso.
+_SUGGESTION_CONFIDENCE = ("confirmed", "manual")
+
+
 def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
-    """Retorna KnownParts parecidos — ordena por distância visual (confusões comuns primeiro)."""
-    all_parts = KnownPart.objects.filter(status="enriched").values_list("part_number", flat=True)
+    """Retorna KnownParts parecidos — ordena por distância visual (confusões comuns primeiro).
+    Restrito a confidence confirmed/manual: só PNs verificados são sugeridos.
+    """
+    all_parts = (
+        KnownPart.objects
+        .filter(status="enriched", confidence__in=_SUGGESTION_CONFIDENCE)
+        .values_list("part_number", flat=True)
+    )
     matches = []
     for candidate in all_parts:
         if abs(len(candidate) - len(pn)) > threshold:
@@ -140,7 +152,9 @@ def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
     # BUG-5: substituído N+1 get() individuais por um único filter com select_related.
     parts_by_pn = {
         p.part_number: p
-        for p in KnownPart.objects.filter(part_number__in=top_pns).select_related("brand", "family")
+        for p in KnownPart.objects
+            .filter(part_number__in=top_pns, confidence__in=_SUGGESTION_CONFIDENCE)
+            .select_related("brand", "family")
     }
     return [parts_by_pn[c] for _, c in matches[:5] if c in parts_by_pn]
 
@@ -157,13 +171,18 @@ def _prefix_candidates(pn: str, min_prefix_len: int = 7) -> list:
     acima do threshold=2 do fuzzy, então o fuzzy nunca os capturaria).
 
     min_prefix_len evita retornar ruído para prefixos muito curtos (< 7 chars).
+    Restrito a confidence confirmed/manual: só PNs verificados são sugeridos.
     Retorna lista de KnownPart objects (mesmo padrão que _fuzzy_candidates).
     """
     if len(pn) < min_prefix_len:
         return []
     return list(
         KnownPart.objects
-        .filter(status="enriched", part_number__startswith=pn)
+        .filter(
+            status="enriched",
+            confidence__in=_SUGGESTION_CONFIDENCE,
+            part_number__startswith=pn,
+        )
         .exclude(part_number=pn)
         .select_related("brand", "family")
         .order_by("part_number")[:5]
