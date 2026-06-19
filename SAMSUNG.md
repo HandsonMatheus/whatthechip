@@ -145,13 +145,13 @@ de DRAM móvel, eMCP/uMCP, eMMC, UFS, DDR PC, GDDR e NAND Flash.
 | GDDR3 / gDDR3 | `"RAM"` | `"GDDR3"` | `"x16"` | `density_gbit` |
 | GDDR5 | `"RAM"` | `"GDDR5"` | `"x8"` / `"x16"` | `density_gbit` |
 | GDDR6 | `"RAM"` | `"GDDR6"` | `"x8"` / `"x16"` | `density_gbit` |
-| LPDDR1 | `"LPDDR1"` | `"LPDDR1"` | `""` (vazio) | `capacity` (GB, por die) |
-| LPDDR2 | `"LPDDR2"` | `"LPDDR2"` | `""` | `capacity` |
-| LPDDR3 | `"LPDDR3"` | `"LPDDR3"` | `""` | `capacity` |
-| LPDDR4 | `"LPDDR4"` | `"LPDDR4"` | `""` | `capacity` |
-| LPDDR4X | `"LPDDR4X"` | `"LPDDR4X"` | `""` | `capacity` |
-| LPDDR5 | `"LPDDR5"` | `"LPDDR5"` | `""` | `capacity` |
-| LPDDR5X | `"LPDDR5X"` | `"LPDDR5X"` | `""` | `capacity` |
+| LPDDR1 | `"LPDDR1"` | `"LPDDR1"` | `""` (vazio) | `capacity` (GB, **do pacote**) |
+| LPDDR2 | `"LPDDR2"` | `"LPDDR2"` | `""` | `capacity` (GB, **do pacote**) |
+| LPDDR3 | `"LPDDR3"` | `"LPDDR3"` | `""` | `capacity` (GB, **do pacote**) |
+| LPDDR4 | `"LPDDR4"` | `"LPDDR4"` | `""` | `capacity` (GB, **do pacote**) |
+| LPDDR4X | `"LPDDR4X"` | `"LPDDR4X"` | `""` | `capacity` (GB, **do pacote**) |
+| LPDDR5 | `"LPDDR5"` | `"LPDDR5"` | `""` | `capacity` (GB, **do pacote**) |
+| LPDDR5X | `"LPDDR5X"` | `"LPDDR5X"` | `""` | `capacity` (GB, **do pacote**) |
 | eMMC | `"eMMC"` | `""` | `"eMMC"` (ou versão decodificada) | `capacity` (GB) |
 | UFS | `"UFS"` | `""` | `"UFS 3.1"` (ou versão) | `capacity` (GB) |
 | eMCP | `"eMCP"` | geração RAM (`"LPDDR3"`) | `""` | `emcp_nand` + `emcp_ram` |
@@ -708,6 +708,12 @@ quando chip físico aparecer na esteira.
 > Sprint B prioritário: confirmar chaves `pn[3:5]` por Octopart e criar GDDR5_CAP/GDDR6_CAP.
 > **Nunca criar o mapa sem confirmar ao menos 3–4 chaves por Octopart/datasheet.**
 
+> **Enquanto não há decode — preenchimento manual em `fix_known_parts`:**
+> Para K4J/K4G/K4Z individuais confirmados por Octopart, preencha `density_gbit`
+> (ex.: `"8Gb"`) — é o campo que o gateway lê para montar `"GDDR5+8G"`. Sem ele,
+> o label sai vazio e `profitable='INDETERMINADO'`. Não usar `capacity` para GDDR
+> (capacity é reservado para pacotes LPDDR/eMMC/UFS).
+
 ### 5.8 NAND Flash (K9)
 
 | Prefixo | Tipo célula | Decode | Status |
@@ -724,6 +730,12 @@ quando chip físico aparecer na esteira.
 **Sprint A:** Criar mapa `NAND_FLASH_CAP` com chaves `pn[3:5]`: 1G=1Gb(128MB),
 2G=2Gb, 4G=4Gb, 8G=8Gb, AG=16Gb, BG=32Gb, CG=64Gb, DG=128Gb. Aplicar às 8 famílias K9.
 Confirmar ao menos as chaves mais comuns por datasheet antes de criar.
+
+> **Enquanto não há decode — preenchimento manual em `fix_known_parts`:**
+> Para chips K9 individuais confirmados por datasheet, preencha `capacity`
+> (ex.: `"512MB"`, `"4GB"`) — é o campo que o gateway lê para montar `"SLC NAND 512MB"`.
+> Sem ele, o label sai sem tamanho e `profitable='INDETERMINADO'`. O `subtype`
+> deve ser `"SLC NAND"`, `"MLC NAND"` ou `"TLC NAND"` — nunca só `"NAND"`.
 
 ### 5.9 NOR Flash / OneNAND / Mask ROM
 
@@ -1158,7 +1170,7 @@ python manage.py fix_known_parts                # usuário
 ### Verificação via shell
 
 ```bash
-# eMCP — esperado: chip_type='eMCP', emcp_nand='eMMC 5.1 16GB', emcp_ram='LPDDR3 1GB'
+# eMCP — esperado: chip_type='eMCP', emcp_nand='16GB', emcp_ram='LPDDR3 1GB'
 python manage.py shell -c "
 from chips.engine import classify; import json
 print(json.dumps(classify('KMQ8X000SA-B414'), indent=2, ensure_ascii=False))
