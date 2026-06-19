@@ -1398,7 +1398,10 @@ def assess_profitability(result: dict) -> str:
             - DDR3: < 2 Gb (= 256 MB)  → NÃO RENTÁVEL
             - DDR4+: < 1 Gb (= 128 MB)  → NÃO RENTÁVEL
 
-        Outros tipos (NOR, SoC, MCP legado raw, etc.):
+        NAND Flash raw / NOR Flash / MCP legado:
+            → NÃO RENTÁVEL (sucata por tipo, independente de capacidade)
+
+        Outros tipos (SoC, SDRAM puro, etc.):
             → INDETERMINADO
     """
     cfg = ProfitabilityConfig.get_config()
@@ -1406,6 +1409,15 @@ def assess_profitability(result: dict) -> str:
     chip_type = (result.get("chip_type") or "").strip()
     subtype   = (result.get("subtype")   or "").strip()
     combined  = f"{chip_type} {subtype}".upper()
+
+    # ── Tipos sempre NÃO RENTÁVEL (resíduo por tipo, não por capacidade) ─────
+    # NAND Flash raw (MT29C, MT29F, K9*): sem controlador eMMC/UFS — resíduo industrial.
+    # NOR Flash: memória de código read-only, sem mercado B2B de reciclagem.
+    # MCP legado: NAND raw + mDDR1 pré-eMCP, sem liquidez B2B.
+    # is_dead_by_generation() retorna True automaticamente para estes tipos.
+    # ⚠ Adicionar novos tipos aqui só após confirmar chip_type em todos os populate_*.
+    if chip_type.lower() in ("nand flash", "nor flash", "mcp"):
+        return "NÃO RENTÁVEL"
 
     # ── eMCP / uMCP ──────────────────────────────────────────────────────────
     # uMCP: mesmas regras do eMCP (NAND ≥ cfg.emcp_min_nand_gb, RAM ≥ cfg.emcp_min_ram_gb).
@@ -1463,11 +1475,19 @@ def assess_profitability(result: dict) -> str:
         lpddr_gen = _lpddr_generation(combined)
         if lpddr_gen is None:
             return "INDETERMINADO"
+        # ── FIX 2026-06-19: verificar geração ANTES da extração de GB ────────
+        # Espelho do fix eMCP 2026-05-27. LPDDR2 ou inferior → NÃO RENTÁVEL
+        # independente da capacidade numérica.
+        # Caso típico: dram_density="8Gb = 1GB por die [~]" → _strip_capacity
+        # remove "8Gb" e "1GB" (re.I) → cap_gb fica None → retornava INDETERMINADO
+        # antes de checar geração → is_dead_by_generation=False → chip LPDDR2
+        # caía na FILA (PendingEntry) em vez do descarte automático.
+        # Chips afetados: K3PE, K4P, K4E8E e qualquer LPDDR2 com decode DRAM_MOBILE.
+        if lpddr_gen < cfg.lpddr_min_gen:
+            return "NÃO RENTÁVEL"
         cap_gb = _extract_gib(result.get("capacity") or result.get("dram_density") or "")
         if cap_gb is None:
             return "INDETERMINADO"
-        if lpddr_gen < cfg.lpddr_min_gen:
-            return "NÃO RENTÁVEL"
         # LPDDR4+ e LPDDR3 têm limiares separados
         threshold_gb = cfg.lpddr4plus_min_cap_gb if lpddr_gen >= 4 else cfg.lpddr3_min_cap_gb
         if cap_gb < threshold_gb - 0.01:
@@ -1496,19 +1516,6 @@ def assess_profitability(result: dict) -> str:
         if cap_gb is None:
             return "INDETERMINADO"
         return "RENTÁVEL" if cap_gb >= min_cap_gb - 0.01 else "NÃO RENTÁVEL"
-
-    # ── Raw MCP legado (feature phone / basic phone era) ─────────────────────
-    # K5* e similares: NAND raw + mDDR1, sem controladora eMMC.
-    # Tecnologia pré-eMCP, sem liquidez B2B em 2026. Sempre sucata.
-    if chip_type.lower() == "mcp":
-        return "NÃO RENTÁVEL"
-
-    # ── NOR Flash (feature phone / IoT ROM — K5*, outros fabricantes) ─────────
-    # chip_type="NOR Flash": memória de código read-only, sem mercado B2B de
-    # reciclagem. Sucata independente de capacidade — regra capacity-independent:
-    # is_dead_by_generation() devolve True automaticamente para esta classe.
-    if chip_type.lower() == "nor flash":
-        return "NÃO RENTÁVEL"
 
     # Tipo não coberto pelas regras (SoC, SDRAM puro, etc.)
     return "INDETERMINADO"
@@ -1699,13 +1706,18 @@ def classify(pn_raw: str) -> dict:
             _log_search(pn_raw, found=True, source_used="db_fbga")
             return result
         except KnownPart.MultipleObjectsReturned:
-            # Múltiplos KnownParts com o mesmo fbga_code — usa o primeiro enriched.
-            # Situação anômala: fbga_code é laser-gravado pelo fabricante e deveria
-            # ser único por modelo. Se ocorrer, logar e usar .first() para não travar.
-            logger.warning("FBGA ambíguo: múltiplos KnownParts com fbga_code=%s — usando o primeiro", pn)
-            known_fbga = KnownPart.objects.select_related(
+            # Múltiplos KnownParts com o mesmo fbga_code.
+            # Situação anômala: pode ocorrer quando enrich_micron_fbga salva o PN
+            # no formato raw da API (ex: "MT29C4G48MAZAPAKD-5 IT") e depois
+            # fix_known_parts cria o PN normalizado (ex: "MT29C4G48MAZAPAKD5IT") —
+            # dois registros, mesmo fbga_code.
+            # Estratégia: preferir registros com chip_type preenchido (registros
+            # normalizados pelo fix_known_parts); só usar o "vazio" se todos forem vazios.
+            logger.warning("FBGA ambíguo: múltiplos KnownParts com fbga_code=%s — preferindo chip_type preenchido", pn)
+            _fbga_qs = KnownPart.objects.select_related(
                 "family", "brand", "family__doc_page"
-            ).filter(fbga_code=pn, status="enriched").first()
+            ).filter(fbga_code=pn, status="enriched")
+            known_fbga = _fbga_qs.exclude(chip_type="").first() or _fbga_qs.first()
             if known_fbga:
                 fam_fbga = _match_family(known_fbga.part_number) or known_fbga.family
                 result = _result_from_known(known_fbga.part_number, known_fbga, fam_fbga) if fam_fbga else {
