@@ -1270,7 +1270,7 @@ class Command(BaseCommand):
             #
             dict(
                 prefix="H9JK", chip_type="RAM", subtype="LPDDR5 standalone",
-                interface="LPDDR5",
+                interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
                 decode_cap_pos=7, decode_cap_len=1, decode_cap_map="HYX_LPDDR5_H9JK_CAP",
@@ -1285,7 +1285,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="H58G", chip_type="RAM", subtype="LPDDR5/LPDDR5X standalone",
-                interface="LPDDR5/LPDDR5X",
+                interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
                 decode_cap_pos=4, decode_cap_len=1, decode_cap_map="HYX_LPDDR5_H58G_CAP",
@@ -1312,7 +1312,7 @@ class Command(BaseCommand):
             #
             dict(
                 prefix="H9HC", chip_type="RAM", subtype="LPDDR4/LPDDR4X standalone",
-                interface="LPDDR4/LPDDR4X",
+                interface="",
                 is_emcp=False, active=True, priority=55,
                 pn_length=None,
                 decode_cap_pos=7, decode_cap_len=1, decode_cap_map="HYX_LPDDR4_H9HC_CAP",
@@ -1328,7 +1328,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="H9HK", chip_type="RAM", subtype="LPDDR4/LPDDR4X standalone",
-                interface="LPDDR4/LPDDR4X",
+                interface="",
                 is_emcp=False, active=True, priority=55,
                 pn_length=None,
                 decode_cap_pos=7, decode_cap_len=1, decode_cap_map="HYX_LPDDR4_H9HC_CAP",
@@ -1355,7 +1355,7 @@ class Command(BaseCommand):
             #
             dict(
                 prefix="H9HCN", chip_type="RAM", subtype="LPDDR4X standalone",
-                interface="LPDDR4X",
+                interface="",
                 is_emcp=False, active=True, priority=40,
                 pn_length=None,
                 decode_cap_pos=7, decode_cap_len=1, decode_cap_map="HYX_LPDDR4_H9HC_CAP",
@@ -1373,7 +1373,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="H54G", chip_type="RAM", subtype="LPDDR4X standalone",
-                interface="LPDDR4X",
+                interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
                 decode_cap_pos=4, decode_cap_len=1, decode_cap_map="HYX_LPDDR4X_H54G_CAP",
@@ -1398,7 +1398,7 @@ class Command(BaseCommand):
             #
             dict(
                 prefix="H9CC", chip_type="RAM", subtype="LPDDR3 standalone",
-                interface="LPDDR3",
+                interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
                 decode_cap_pos=7, decode_cap_len=1, decode_cap_map="HYX_LPDDR3_CAP",
@@ -1414,7 +1414,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="H9CK", chip_type="RAM", subtype="LPDDR3 standalone",
-                interface="LPDDR3",
+                interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
                 decode_cap_pos=7, decode_cap_len=1, decode_cap_map="HYX_LPDDR3_CAP",
@@ -1437,7 +1437,7 @@ class Command(BaseCommand):
             #
             dict(
                 prefix="H9TK", chip_type="RAM", subtype="LPDDR2 standalone",
-                interface="LPDDR2",
+                interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
                 decode_cap_pos=7, decode_cap_len=1, decode_cap_map="HYX_LPDDR2_CAP",
@@ -1462,7 +1462,7 @@ class Command(BaseCommand):
             #
             dict(
                 prefix="H5MS", chip_type="RAM", subtype="LPDDR1 (Mobile DDR)",
-                interface="LPDDR1",
+                interface="",
                 is_emcp=False, active=True, priority=60,
                 pn_length=None,
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="HYX_LPDDR1_H5MS_CAP",
@@ -1478,7 +1478,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="HY5MS", chip_type="RAM", subtype="LPDDR1 (Mobile DDR)",
-                interface="LPDDR1",
+                interface="",
                 is_emcp=False, active=True, priority=60,
                 pn_length=None,
                 decode_cap_pos=5, decode_cap_len=2, decode_cap_map="HYX_LPDDR1_HY5MS_CAP",

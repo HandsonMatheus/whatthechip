@@ -169,7 +169,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "8GB",
-            "interface":  "LPDDR5",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -712,7 +712,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":  "1.5GB",
-            "interface": "LPDDR3",
+            "interface":  "",
             "emcp_nand": "",
             "emcp_ram":  "",
             "device":    "Samsung Galaxy S5 Mini (SM-G800F/H, Exynos 3470)",
@@ -744,7 +744,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":  "3GB",
-            "interface": "LPDDR3",
+            "interface":  "",
             "emcp_nand": "",
             "emcp_ram":  "",
             "confidence": "confirmed",
@@ -775,7 +775,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "2GB",
-            "interface":  "LPDDR3",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -803,7 +803,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
-            "interface":  "LPDDR3",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -832,7 +832,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
-            "interface":  "LPDDR3",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -1814,7 +1814,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":  "4GB",
-            "interface": "LPDDR4X",
+            "interface":  "",
         },
         "reason": (
             "Samsung Semiconductor + ssfkg: K3UH5H50AM = 32Gb LPDDR4X (556FBGA). "
@@ -1850,7 +1850,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "512MB",
-            "interface":  "LPDDR2",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -1882,7 +1882,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "1GB",
-            "interface":  "LPDDR2",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -1917,7 +1917,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "1.5GB",
-            "interface":  "LPDDR3",
+            "interface":  "",
             "device":     "Samsung Galaxy Tab E (SM-T560 / SM-T560NU / SM-T567V), Galaxy S5 Mini (~2014-2015)",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -1948,7 +1948,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "2GB",
-            "interface":  "LPDDR3",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -1978,7 +1978,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "2GB",
-            "interface":  "LPDDR3",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -2008,7 +2008,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "2GB",
-            "interface":  "LPDDR3",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -2041,7 +2041,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "2GB",
-            "interface":  "LPDDR3",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -2073,13 +2073,37 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":  "3GB",
-            "interface": "LPDDR3",
+            "interface":  "",
             "device":    "Samsung Galaxy Tab A SM-P585 (2016)",
         },
         "reason": (
             "Puris B2B: K4EHE304EC-AGCF = 24Gbit LPDDR3 (168ball) → 24Gb÷8=3GB. "
             "HE = alias de FE no mapa K4E_CAP (mesmo 24Gb, die alternativo). "
             "Dispositivo: Galaxy Tab A SM-P585 / Exynos 7870."
+        ),
+    },
+
+    # ── K4EBE304EB ─── UPDATE-ONLY (sem create) ──────────────────────────────
+    # PN base artificial de 10 chars — removido como criação automática porque
+    # LPDDR3 Samsung NÃO tem separação por hífen (o marking real é o PN completo
+    # de 14 chars: K4EBE304EBEGCF). Base PNs de 10 chars causam fuzzy falso-positivo.
+    # Esta entrada CORRIGE campos antigos no banco (subtype/interface verbose)
+    # sem recriar o registro. Se o registro for apagado do banco, esta entrada
+    # vira no-op (não recria). Não adicionar "create": True aqui.
+    {
+        "pn": "K4EBE304EB",
+        "fields": {
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "interface":  "",
+            "capacity":   "4GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Correção de convenção (2026-06-19): subtype 'LPDDR3 Mobile' → 'LPDDR3'; "
+            "interface 'LPDDR3' → '' (vazio — bus width não aplicável a LPDDR standalone). "
+            "PN base artificial — não recriar. BE=4GB conforme K4E_CAP."
         ),
     },
 
@@ -2112,7 +2136,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "3GB",
-            "interface":  "LPDDR4",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -2148,7 +2172,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
-            "interface":  "LPDDR4",
+            "interface":  "",
             "device":     "Google Pixel XL (Snapdragon 821, 2016), LG G5 (Snapdragon 820, 2016)",
             "source_url": "https://www.ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237",
             "confidence": "confirmed",
@@ -2173,7 +2197,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
-            "interface":  "LPDDR4",
+            "interface":  "",
             "device":     "Google Pixel XL (Snapdragon 821, 2016), LG G5 (Snapdragon 820, 2016)",
             "source_url": "https://www.ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237",
             "confidence": "confirmed",
@@ -2210,7 +2234,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "3GB",
-            "interface":  "LPDDR4",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -2240,7 +2264,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
-            "interface":  "LPDDR4",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -2270,7 +2294,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "6GB",
-            "interface":  "LPDDR4",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -2310,7 +2334,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "3GB",
-            "interface":  "LPDDR4",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -2349,7 +2373,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "6GB",
-            "interface":  "LPDDR4X",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -2381,7 +2405,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":  "2GB",
-            "interface": "LPDDR3",
+            "interface":  "",
         },
         "reason": (
             "Gramática correta (K3QF, pn[4]='2'=16Gb÷8=2GB). "
@@ -3113,7 +3137,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "1GB",
-            "interface":  "LPDDR2",
+            "interface":  "",
             "confidence": "confirmed",
             "status":     "enriched",
         },
@@ -3148,7 +3172,7 @@ CORRECTIONS = [
         },
         "fields": {
             "capacity":   "4GB",
-            "interface":  "LPDDR4",
+            "interface":  "",
             "fbga_code":  "D9VFC",
             "confidence": "confirmed",
             "status":     "enriched",
@@ -3202,12 +3226,13 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Micron",
             "chip_type":  "NAND Flash",
-            "subtype":    "SLC NAND paralela industrial",
+            "subtype":    "SLC NAND",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "512MB",
+            "subtype":    "SLC NAND",
             "interface":  "Parallel NAND (8-bit)",
             "fbga_code":  "JW464",
             "confidence": "confirmed",
@@ -3234,12 +3259,13 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Micron",
             "chip_type":  "NAND Flash",
-            "subtype":    "SLC NAND paralela industrial",
+            "subtype":    "SLC NAND",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "512MB",
+            "subtype":    "SLC NAND",
             "interface":  "Parallel NAND (8-bit)",
             "fbga_code":  "JW454",
             "confidence": "confirmed",
@@ -3266,12 +3292,13 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Micron",
             "chip_type":  "NAND Flash",
-            "subtype":    "SLC NAND paralela industrial",
+            "subtype":    "SLC NAND",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "512MB",
+            "subtype":    "SLC NAND",
             "interface":  "Parallel NAND (8-bit)",
             "fbga_code":  "JW699",
             "confidence": "confirmed",
@@ -3298,12 +3325,13 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Micron",
             "chip_type":  "NAND Flash",
-            "subtype":    "SLC NAND paralela industrial",
+            "subtype":    "SLC NAND",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "512MB",
+            "subtype":    "SLC NAND",
             "interface":  "Parallel NAND (8-bit)",
             "fbga_code":  "JY454",
             "confidence": "confirmed",
@@ -6147,12 +6175,13 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Micron",
             "chip_type":  "NAND Flash",
-            "subtype":    "SLC NAND paralela industrial",
+            "subtype":    "SLC NAND",
             "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "512MB",
+            "subtype":    "SLC NAND",
             "interface":  "Parallel NAND (8-bit)",
             "fbga_code":  "JY464",
             "confidence": "confirmed",
@@ -7017,19 +7046,32 @@ CORRECTIONS = [
 
     # ── MT29TZZZ8D4BKFAH ──────────────────────────────────────────────────────
     # Mesma família MT29TZZZ, chave 8D4: NAND=4GB (32Gb) + DRAM=1GB (8Gb) = 40Gb.
-    # API dizia "MLC EMMC/LPDDR2 40G VFBGA" — mesma correção se existir no DB.
+    # API dizia "MLC EMMC/LPDDR2 40G VFBGA" — mesma correção que 8D5.
+    # Adicionado create=True porque o registro pode não existir no banco (pipeline
+    # FBGA só cria KnownPart quando o chip aparece na esteira).
     {
         "pn": "MT29TZZZ8D4BKFAH",
-        "fields": {
-            "emcp_ram":  "LPDDR3 1GB",
-            "subtype":   "LPDDR3",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
             "confidence": "confirmed",
-            "status":    "enriched",
+        },
+        "fields": {
+            "chip_type":  "eMCP",
+            "emcp_ram":   "LPDDR3 1GB",
+            "emcp_nand":  "4GB",
+            "subtype":    "LPDDR3",
+            "confidence": "confirmed",
+            "status":     "enriched",
         },
         "reason": (
             "BUG-8: mesma correção que MT29TZZZ8D5BKFAH. "
             "Chave 8D4 = 4GB NAND + 1GB LPDDR3. "
-            "API dizia LPDDR2 — família TZZZ é LPDDR3 uniformemente."
+            "API dizia LPDDR2 — família TZZZ é LPDDR3 uniformemente. "
+            "create=True: registro pode não existir (pipeline FBGA só cria sob demanda)."
         ),
     },
 

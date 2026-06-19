@@ -861,7 +861,7 @@ class Command(BaseCommand):
             # K3Q = LPDDR3 — pn[3] = densidade (DRAM_MOBILE). Reacondicional.
             dict(
                 prefix="K4M", chip_type="LPDDR1", subtype="LPDDR1",
-                interface="LPDDR1", is_emcp=False, active=True, priority=100,
+                interface="", is_emcp=False, active=True, priority=100,
                 tip=(
                     "⚠ LPDDR1 / Mobile DDR Samsung (obsoleto, ~2004–2010). "
                     "M = LPDDR1. Teto de capacidade incompatível com B2B atual. "
@@ -870,7 +870,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="K4X", chip_type="LPDDR1", subtype="LPDDR1",
-                interface="LPDDR1", is_emcp=False, active=True, priority=100,
+                interface="", is_emcp=False, active=True, priority=100,
                 decode_density_type="pc",
                 tip=(
                     "⚠ LPDDR1 / Mobile DDR Samsung (obsoleto, ~2004–2010). "
@@ -882,7 +882,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="K4P", chip_type="LPDDR2", subtype="LPDDR2",
-                interface="LPDDR2", decode_density_type="mobile",
+                interface="", decode_density_type="mobile",
                 is_emcp=False, active=True, priority=100,
                 tip=(
                     "⚠ LPDDR2 Samsung (obsoleto, ~2010–2015). "
@@ -895,7 +895,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="K3R", chip_type="LPDDR3", subtype="LPDDR3",
-                interface="LPDDR3", decode_density_type="mobile",
+                interface="", decode_density_type="mobile",
                 is_emcp=False, active=True, priority=40,
                 tip=(
                     "LPDDR3 Samsung (K3R). Velocidade: até 2133 Mbps. Tensão: 1.2V. "
@@ -913,7 +913,7 @@ class Command(BaseCommand):
             # decode_cap_pos=4, decode_cap_len=2 → K3RG_CAP: 4G=3GB · 3G=3GB · 2G=4GB · 6G=6GB.
             dict(
                 prefix="K3RG", chip_type="LPDDR4", subtype="LPDDR4",
-                interface="LPDDR4", decode_density_type="",
+                interface="", decode_density_type="",
                 is_emcp=False, active=True, priority=40,
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="K3RG_CAP",
                 tip=(
@@ -934,7 +934,7 @@ class Command(BaseCommand):
             # Sem decode de densidade: variabilidade alta. Chips K3 genéricos ficam sem capacidade — completar via fix_known_parts.
             dict(
                 prefix="K3", chip_type="RAM", subtype="LPDDR2 / LPDDR3 (legado)",
-                interface="LPDDR2/3", decode_density_type="mobile",
+                interface="", decode_density_type="mobile",
                 is_emcp=False, active=True, priority=90,
                 reasoning='["K → Samsung Memory", "3 → 3rd-gen DRAM (LPDDR2/3)", '
                           '"K3R/K3Q → LPDDR3 séries comuns", '
@@ -955,7 +955,7 @@ class Command(BaseCommand):
             #   (que erroneamente retorna 16Gb=2GB para TODOS os K3QF).
             dict(
                 prefix="K3QF", chip_type="LPDDR3", subtype="LPDDR3",
-                interface="LPDDR3", decode_density_type="",
+                interface="", decode_density_type="",
                 decode_cap_pos=4, decode_cap_len=1, decode_cap_map="K3QF_CAP",
                 is_emcp=False, active=True, priority=40,
                 tip=(
@@ -973,7 +973,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="K3Q", chip_type="LPDDR3", subtype="LPDDR3",
-                interface="LPDDR3", decode_density_type="mobile",
+                interface="", decode_density_type="mobile",
                 is_emcp=False, active=True, priority=40,
                 tip=(
                     "LPDDR3 Samsung (~2013–2017). "
@@ -995,7 +995,7 @@ class Command(BaseCommand):
             # Chips PSG 2H 2014: K3PE7E70QM (1GB, 216/220-ball) · K3PE0E00QM (2GB, 216/220-ball).
             dict(
                 prefix="K3PE", chip_type="LPDDR2", subtype="LPDDR2",
-                interface="LPDDR2", decode_density_type="",
+                interface="", decode_density_type="",
                 is_emcp=False, active=True, priority=35,
                 tip=(
                     "LPDDR2 Multi-Channel Samsung (K3PE). "
@@ -1014,7 +1014,7 @@ class Command(BaseCommand):
             # Chips PSG 2H 2014: K3MF8F80DM (2GB, 504-ball 15×15mm) · K3MF9F90MM (3GB, 504-ball).
             dict(
                 prefix="K3MF", chip_type="LPDDR3", subtype="LPDDR3",
-                interface="LPDDR3", decode_density_type="",
+                interface="", decode_density_type="",
                 is_emcp=False, active=True, priority=40,
                 tip=(
                     "LPDDR3 Multi-Channel Samsung (K3MF). "
@@ -1033,7 +1033,7 @@ class Command(BaseCommand):
             # Fontes: harddiskdirect ✓, TechInsights ✓, Preduo ✓ (2026-05-29).
             dict(
                 prefix="K3PE", chip_type="LPDDR2", subtype="LPDDR2",
-                interface="LPDDR2", is_emcp=False, active=True, priority=100,
+                interface="", is_emcp=False, active=True, priority=100,
                 decode_density_type="",
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="K3PE_CAP",
                 tip=(
@@ -1051,7 +1051,7 @@ class Command(BaseCommand):
             # 1GB (8E) → resíduo. 2GB+ → reacondicional se houver demanda.
             dict(
                 prefix="K4E", chip_type="LPDDR3", subtype="LPDDR3",
-                interface="LPDDR3", is_emcp=False, active=True, priority=100,
+                interface="", is_emcp=False, active=True, priority=100,
                 decode_density_type="",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="K4E_CAP",
                 tip=(
@@ -1066,7 +1066,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="K4F", chip_type="LPDDR4", subtype="LPDDR4",
-                interface="LPDDR4", is_emcp=False, active=True, priority=100,
+                interface="", is_emcp=False, active=True, priority=100,
                 decode_density_type="",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="LPDDR4_CAP",
                 tip=(
@@ -1081,7 +1081,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="K4U", chip_type="LPDDR4X", subtype="LPDDR4X",
-                interface="LPDDR4X", is_emcp=False, active=True, priority=100,
+                interface="", is_emcp=False, active=True, priority=100,
                 decode_density_type="",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="LPDDR4_CAP",
                 tip=(
@@ -1096,7 +1096,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="K3U", chip_type="LPDDR4X", subtype="LPDDR4X",
-                interface="LPDDR4X", is_emcp=False, active=True, priority=40,
+                interface="", is_emcp=False, active=True, priority=40,
                 decode_density_type="",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="LPDDR4_CAP",
                 tip=(
@@ -1113,7 +1113,7 @@ class Command(BaseCommand):
                 # priority=60 garante que K3KL e K3LK (priority=40, prefixo mais longo)
                 # vencem no sort quando o PN começa com K3KL* ou K3LK*.
                 prefix="K3L", chip_type="LPDDR5X", subtype="LPDDR5X",
-                interface="LPDDR5X", decode_density_type="",
+                interface="", decode_density_type="",
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="LPDDR5_CAP",
                 is_emcp=False, active=True, priority=60,
                 tip=(
@@ -1125,7 +1125,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="K3KL", chip_type="LPDDR5X", subtype="LPDDR5X",
-                interface="LPDDR5X", decode_density_type="",
+                interface="", decode_density_type="",
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="LPDDR5_CAP",
                 is_emcp=False, active=True, priority=40,
                 tip=(
@@ -1141,7 +1141,7 @@ class Command(BaseCommand):
             ),
             dict(
                 prefix="K3LK", chip_type="LPDDR5", subtype="LPDDR5",
-                interface="LPDDR5", decode_density_type="",
+                interface="", decode_density_type="",
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="LPDDR5_CAP",
                 is_emcp=False, active=True, priority=40,
                 tip=(
