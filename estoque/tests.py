@@ -144,13 +144,17 @@ class GatewayDestinationTests(TestCase):
         self.assertEqual(_compute_destination(_result(
             chip_type='RAM', subtype='DDR3L SDRAM', interface='x16 @ 800MHz',
             capacity='256MB', dram_density='2Gb = por die [✓]')), ('DDR3L+2G', 'lpddr'))
-        # Variante móvel preservada (não vira "DDR3")
+        # LPDDR móvel = pacote MULTI-DIE → caixa pela CAPACIDADE do pacote (GB),
+        # não pela densidade do die. H9CC 4GB (4 dies de 8Gb) → "LPDDR3+4G",
+        # NUNCA "LPDDR3+32G" (o bug do fallback bytes→Gbit assumindo 1 die).
         self.assertEqual(_compute_destination(_result(
-            chip_type='LPDDR3', subtype='LPDDR3',
-            dram_density='4Gb = 512MB por die [✓]')), ('LPDDR3+4G', 'lpddr'))
+            chip_type='RAM', subtype='LPDDR3', interface='LPDDR3',
+            capacity='4GB', dram_density=None)), ('LPDDR3+4G', 'lpddr'))
+        # P/ LPDDR a capacidade VENCE a densidade do die (prova que usa capacity):
+        # 6GB de pacote, dram_density de 8Gb por die → "LPDDR4+6G" (6, não 8).
         self.assertEqual(_compute_destination(_result(
             chip_type='LPDDR4', subtype='LPDDR4',
-            dram_density='8Gb = 1GB por die [✓]')), ('LPDDR4+8G', 'lpddr'))
+            capacity='6GB', dram_density='8Gb = 1GB por die [✓]')), ('LPDDR4+6G', 'lpddr'))
         # SK Hynix H5TQ confirmado: dram_density VAZIO + subtype "DDR3 SDRAM".
         # Strip de SDRAM + fallback bytes→Gb (256MB→2G) → 'DDR3+2G'.
         self.assertEqual(_compute_destination(_result(

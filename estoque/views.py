@@ -166,6 +166,18 @@ def _density_g(result: dict) -> str:
     return ''
 
 
+def _capacity_g(result: dict) -> str:
+    """Capacidade total do PACOTE em GB, p/ o rótulo de caixa de LPDDR (móvel,
+    multi-die): '4GB'→'4', '2GB'→'2', '512MB'→'0.5'. LPDDR é triado pela
+    capacidade do pacote (não pela densidade do die), porque empilha vários dies —
+    tratar a capacidade como densidade de 1 die daria valor absurdo (4GB→32Gbit)."""
+    c = _CAP_BYTES_RE.search(result.get('capacity') or '')
+    if not c:
+        return ''
+    gb = float(c.group(1)) * (1 if c.group(2).upper() == 'GB' else 1 / 1024)
+    return f"{gb:g}"
+
+
 def _compute_destination(result: dict) -> tuple:
     """
     Return (label, category) for the physical storage bin.
@@ -209,11 +221,18 @@ def _compute_destination(result: dict) -> tuple:
         # LITERAL — só some o ruído. Ex.: "DDR3 SDRAM" → "DDR3"; "LPDDR3" intacto.
         if re.search(r'DDR', gen, re.I):
             gen = re.sub(r'\s*\bSDRAM\b', '', gen, flags=re.I).strip()
-        dens = _density_g(result)
-        if gen and dens:
-            label = f"{gen}+{dens}G"
-        elif dens:
-            label = f"{dens}G"
+        # Tamanho da caixa depende do TIPO (ambos rotulados "<n>G"; a geração no
+        # prefixo desambigua a unidade):
+        #  • LPDDR (móvel) = pacote multi-die → CAPACIDADE do pacote em GB (4GB→"4G");
+        #  • DDR (componente) = 1 die → DENSIDADE do die em Gb (256MB→"2G").
+        if 'lpddr' in ct or gen.upper().startswith('LPDDR'):
+            size = _capacity_g(result)
+        else:
+            size = _density_g(result)
+        if gen and size:
+            label = f"{gen}+{size}G"
+        elif size:
+            label = f"{size}G"
         elif gen:
             label = gen
         else:
