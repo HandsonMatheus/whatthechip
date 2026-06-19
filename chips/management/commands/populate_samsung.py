@@ -912,7 +912,7 @@ class Command(BaseCommand):
             #   Mesmo total que "4G" (24Gb=3GB), die diferente. Usado no Galaxy S6 (Exynos 7420 PoP).
             # decode_cap_pos=4, decode_cap_len=2 → K3RG_CAP: 4G=3GB · 3G=3GB · 2G=4GB · 6G=6GB.
             dict(
-                prefix="K3RG", chip_type="LPDDR4", subtype="LPDDR4 Multi-Channel",
+                prefix="K3RG", chip_type="LPDDR4", subtype="LPDDR4",
                 interface="LPDDR4", decode_density_type="",
                 is_emcp=False, active=True, priority=40,
                 decode_cap_pos=4, decode_cap_len=2, decode_cap_map="K3RG_CAP",
@@ -954,7 +954,7 @@ class Command(BaseCommand):
             # ⚠ decode_density_type="" para suprimir DRAM_MOBILE em pn[3]='F'
             #   (que erroneamente retorna 16Gb=2GB para TODOS os K3QF).
             dict(
-                prefix="K3QF", chip_type="LPDDR3", subtype="LPDDR3 Mobile",
+                prefix="K3QF", chip_type="LPDDR3", subtype="LPDDR3",
                 interface="LPDDR3", decode_density_type="",
                 decode_cap_pos=4, decode_cap_len=1, decode_cap_map="K3QF_CAP",
                 is_emcp=False, active=True, priority=40,
@@ -972,7 +972,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="K3Q", chip_type="LPDDR3", subtype="LPDDR3 Mobile",
+                prefix="K3Q", chip_type="LPDDR3", subtype="LPDDR3",
                 interface="LPDDR3", decode_density_type="mobile",
                 is_emcp=False, active=True, priority=40,
                 tip=(
@@ -1050,7 +1050,7 @@ class Command(BaseCommand):
             # Chaves: 8E=1GB · 6E=2GB · FE=3GB(raro) · BE=4GB.
             # 1GB (8E) → resíduo. 2GB+ → reacondicional se houver demanda.
             dict(
-                prefix="K4E", chip_type="LPDDR3", subtype="LPDDR3 Mobile",
+                prefix="K4E", chip_type="LPDDR3", subtype="LPDDR3",
                 interface="LPDDR3", is_emcp=False, active=True, priority=100,
                 decode_density_type="",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="K4E_CAP",
@@ -1080,7 +1080,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="K4U", chip_type="LPDDR4X", subtype="LPDDR4X Mobile",
+                prefix="K4U", chip_type="LPDDR4X", subtype="LPDDR4X",
                 interface="LPDDR4X", is_emcp=False, active=True, priority=100,
                 decode_density_type="",
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="LPDDR4_CAP",

@@ -706,7 +706,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -738,7 +738,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -769,7 +769,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -797,7 +797,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -826,7 +826,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -1905,7 +1905,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -1936,7 +1936,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -1966,7 +1966,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -1996,7 +1996,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -2029,7 +2029,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -2061,7 +2061,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -2100,7 +2100,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
-            "subtype":    "LPDDR4 Multi-Channel",
+            "subtype":    "LPDDR4",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -2136,7 +2136,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
-            "subtype":    "LPDDR4 Multi-Channel",
+            "subtype":    "LPDDR4",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -2161,7 +2161,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
-            "subtype":    "LPDDR4 Multi-Channel",
+            "subtype":    "LPDDR4",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -2198,7 +2198,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
-            "subtype":    "LPDDR4 Multi-Channel",
+            "subtype":    "LPDDR4",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -2228,7 +2228,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
-            "subtype":    "LPDDR4 Multi-Channel",
+            "subtype":    "LPDDR4",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -2258,7 +2258,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
-            "subtype":    "LPDDR4 Multi-Channel",
+            "subtype":    "LPDDR4",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -2337,7 +2337,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
-            "subtype":    "LPDDR4X Mobile",
+            "subtype":    "LPDDR4X",
             "status":     "enriched",
             "confidence": "confirmed",
         },
@@ -2369,7 +2369,7 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
-            "subtype":    "LPDDR3 Mobile",
+            "subtype":    "LPDDR3",
             "status":     "enriched",
             "confidence": "confirmed",
         },
