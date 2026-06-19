@@ -1492,6 +1492,62 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KML5U000HM ───────────────────────────────────────────────────────────
+    # eMCP Samsung LPDDR2 + eMMC. Família KML. Legado ~2013-2015.
+    # Fontes:
+    #   • Puris (direto, Tier 2): KML5U000HM-B505 = "4+8 153ball eMCP-D1"
+    #     categoria "eMMC+LPDDR" (puris.net/archives/2716, 2026-06-19)
+    #     "4" = 4GB eMMC NAND ✓ (SAM_EMCP_CAP["5U"][0] = "4GB")
+    #     "8" = 8Gbit = 1GB LPDDR (notação Puris: NAND em GB, LPDDR em Gbit)
+    #   • Octopart/Avnet (cross-família, Tier 1): KMK5U000VM-B309000 =
+    #     "Combo Mem 4Gx8 eMMC Flash + 256Mx32 LPDDR2 DRAM 162-Pin BGA"
+    #     → 4GB eMMC + 256M×32bit = 8Gbit = 1GB LPDDR2 ✓
+    #     Mesma chave cap "5U" → mesma tabela SAM_EMCP_CAP.
+    #     Octopart: Worldway 40864u, Win Source 1040u (2026-06-19).
+    # ⚠ SAM_EMCP_CAP["5U"] na gramática = 512MB — INCORRETO.
+    #   Fonte original era Jotrin (Tier 3): "4Gb LPDDR2" = um único die de 4Gbit,
+    #   enquanto o pacote usa 256Mx32 = 2 dies × 4Gbit = 8Gbit total = 1GB.
+    #   KnownPart confirmed vence a gramática independentemente.
+    #   Correção da gramática: SAM_EMCP_CAP["5U"] → "1GB" em populate_samsung.py
+    #   (requer populate_samsung --overwrite + reiniciar servidor).
+    # LPDDR2: mesma era e família que KML7X/KML7U (Exynos 4212, ~2013-2015);
+    # LPDDR1 obsoleto em smartphones desde ~2012.
+    # ⚠ LPDDR2 = inferência era+SoC — sem fonte Tier 1 explícita para versão LPDDR.
+    {
+        "pn": "KML5U000HM",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR2 + eMMC (legado)",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "emcp_nand":  "eMMC 4GB",
+            "emcp_ram":   "LPDDR2 1GB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Puris (direto): KML5U000HM-B505 = '4+8 153ball eMCP-D1' categoria 'eMMC+LPDDR' ✓ "
+            "(puris.net/archives/2716, 2026-06-19). "
+            "'4' = 4GB eMMC NAND (SAM_EMCP_CAP['5U'][0]='4GB'); "
+            "'8' = 8Gbit = 1GB LPDDR (Puris usa GB para NAND, Gbit para LPDDR). "
+            "Cross-família Tier 1 — Octopart/Avnet: KMK5U000VM-B309 = "
+            "'4Gx8 eMMC Flash + 256Mx32 LPDDR2 DRAM' → 4GB eMMC + 8Gbit = 1GB LPDDR2 ✓ "
+            "(mesma chave '5U' → mesma tabela SAM_EMCP_CAP; Worldway 40864u, Win Source 1040u). "
+            "LPDDR2: mesma era e família que KML7X/KML7U (Exynos 4212, ~2013-2015); "
+            "LPDDR1 obsoleto desde 2012. "
+            "⚠ SAM_EMCP_CAP['5U']=512MB na gramática é INCORRETO "
+            "(Jotrin Tier 3: '4Gb' = die único, não pacote completo 256Mx32). "
+            "KnownPart confirmed vence. Correção do grammar em populate_samsung.py: "
+            "SAM_EMCP_CAP['5U'] → '1GB' (requer populate_samsung --overwrite + reiniciar servidor). "
+            "⚠ LPDDR2 = inferência era+SoC — sem fonte Tier 1 explícita para versão LPDDR. "
+            "confidence+status em fields: garante grammar_wins=False."
+        ),
+    },
+
     # ── KMR310001M ───────────────────────────────────────────────────────────
     # eMCP LPDDR3 + eMMC 5.1. Família KMR. Era ~2015.
     # Conflito de shared key SAM_EMCP_CAP:

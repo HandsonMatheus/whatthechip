@@ -147,8 +147,12 @@ class Command(BaseCommand):
             #                          # KMMLL000QM (768MB) corrigido via fix_known_parts.py com create=True.
             ("JS", "4GB",   "512MB"),  # 4GB NAND + 512MB RAM  (KMSJS000KM — Galaxy Centura SCH-S738C 2013, LPDDR1)
             ("11", "4GB",   "512MB"),  # 4GB NAND + 512MB RAM
-            ("5U", "4GB",   "512MB"),  # 4GB NAND + 512MB RAM  (KMN5U000FM-B203: 4Gb LPDDR2 — Jotrin ✓;
-            #                          #                         KMK5U000VM-B309 — Censtry ✓)
+            ("5U", "4GB",   "1GB"),    # 4GB NAND + 1GB RAM
+            #   ⚠ CORRIGIDO 2026-06-19: era 512MB (Jotrin "4Gb LPDDR2" — Tier 3, die único ≠ pacote).
+            #   Octopart/Avnet (Tier 1): KMK5U000VM-B309 = "4Gx8 eMMC + 256Mx32 LPDDR2"
+            #     → 256M×32bit = 8Gbit = 1GB ✓ (mesma chave "5U"; Worldway 40864u).
+            #   Puris (Tier 2): KML5U000HM-B505 = "4+8" = 4GB NAND + 8Gbit = 1GB LPDDR ✓.
+            #   KMN família: decode_cap_pos=None → não usa este mapa (sem impacto).
             ("JW", "4GB",   "768MB"),  # 4GB NAND + 768MB RAM (6Gb LPDDR3)
             #                          # KMFJW0007M-B212 (Alibaba: "4GB+6GB 32dram MV MLC LPDDR3") ✓
             #                          # Galaxy J1 LTE (SM-J100 LTE): 768MB RAM + 4GB storage — device spec ✓
@@ -985,25 +989,33 @@ class Command(BaseCommand):
                     "Destino: bancada reacondicional mobile."
                 ),
             ),
-            # K3PE = Samsung LPDDR2 multi-channel PoP (dual-channel, ~2013-2014).
-            # Prefixo 4 chars — precisa vencer K3P (3 chars, priority=35, LPDDR5X).
-            # Engine ordena por (priority ASC, prefix_len DESC): priority igual → prefixo
-            # mais longo vence. K3PE=35 iguala K3P=35 e prefix_len tiebreaker elege K3PE.
-            # ⚠ NÃO usar priority < 35 — K3P é LPDDR5X legítimo; só o tiebreaker deve decidir.
+            # K3PE = Samsung LPDDR2 (standalone ~2011-2013 e multi-channel PoP ~2013-2014).
+            # ⚠ ENTRADA ÚNICA — prefixo 4 chars com priority=35 e cap decode.
+            # Por que priority=35 é obrigatório:
+            #   Engine ordena por (priority ASC, prefix_len DESC). K3 genérico tem priority=90
+            #   → K3PE (35) vence K3 (90) e exibe "LPDDR2" em vez de "RAM". Se K3P (LPDDR5X,
+            #   priority=35) for adicionado no futuro, o tiebreaker prefix_len (4 > 3) elege K3PE.
+            # ⚠ NÃO dividir em duas entradas — o loop usa filter(prefix).first() e a segunda
+            #   iteração sobrescreveria priority=35 com priority=100, fazendo K3 (90) vencer.
             # K3=multi-channel PoP · P=LPDDR2 · E=geração.
             # decode_density_type="" — suprime DRAM_MOBILE (pn[3]='E' sem mapeamento).
-            # Chips PSG 2H 2014: K3PE7E70QM (1GB, 216/220-ball) · K3PE0E00QM (2GB, 216/220-ball).
+            # decode_cap_pos=4, len=2 — standalone: pn[4:6]=4E/7E/8E/0E → 512MB/1GB/1GB/2GB.
+            # Fontes: harddiskdirect ✓, TechInsights ✓, Preduo ✓ (2026-05-29).
+            # Chips PSG 2H 2014 (multi-channel PoP): K3PE7E70QM (1GB) · K3PE0E00QM (2GB).
             dict(
                 prefix="K3PE", chip_type="LPDDR2", subtype="LPDDR2",
                 interface="", decode_density_type="",
                 is_emcp=False, active=True, priority=35,
+                decode_cap_pos=4, decode_cap_len=2, decode_cap_map="K3PE_CAP",
                 tip=(
-                    "LPDDR2 Multi-Channel Samsung (K3PE). "
+                    "LPDDR2 Samsung (K3PE) — standalone (~2011-2013) e multi-channel PoP (~2013-2014). "
                     "K3=multi-channel PoP · P=LPDDR2 · E=geração. "
-                    "Configuração dual-channel (2CH x32) — pacote PoP empilhado. "
-                    "Exemplos PSG 2H 2014: K3PE7E70QM (1GB, 216/220-ball) · K3PE0E00QM (2GB). "
-                    "⚠ NÃO confundir com K4P (LPDDR2 single-channel, sem PoP). "
-                    "Destino: bancada reacondicional mobile (verificar demanda B2B)."
+                    "Capacidade: pn[4:6] → 4E=512MB · 7E/8E=1GB · 0E=2GB. "
+                    "533MHz / 1066 Mbps. VDD 1.8V / VDDQ 1.2V. Organização x32. "
+                    "Exemplos standalone: K3PE4E400A (512MB), K3PE7E700B (1GB), K3PE0E000A (2GB). "
+                    "Exemplos PoP PSG 2H 2014: K3PE7E70QM (1GB, 216/220-ball) · K3PE0E00QM (2GB). "
+                    "⚠ LPDDR2: sem liquidez B2B em 2026 → NÃO RENTÁVEL (moagem/refino). "
+                    "⚠ NÃO confundir com K4P (LPDDR2 single-channel, sem PoP)."
                 ),
             ),
             # K3MF = Samsung LPDDR3 multi-channel PoP (dual-channel, ~2013-2014).
@@ -1024,25 +1036,6 @@ class Command(BaseCommand):
                     "⚠ NÃO confundir com K3QF (também LPDDR3 multi-channel, prefixo K3Q). "
                     "⚠ decode_density_type='' — pn[3]='F' via DRAM_MOBILE erraria K3MF9=3GB. "
                     "Destino: bancada reacondicional mobile (PoP LPDDR3 — checar demanda)."
-                ),
-            ),
-            # K3PE = Samsung LPDDR2 Mobile standalone (~2011-2013).
-            # Antecessor do K3QF (LPDDR3). Todos NÃO RENTÁVEL — LPDDR2 sem liquidez B2B.
-            # pn[4:6] = cap_key (decode_cap_pos=4, decode_cap_len=2).
-            # Chaves: 4E=512MB · 7E/8E=1GB · 0E=2GB.
-            # Fontes: harddiskdirect ✓, TechInsights ✓, Preduo ✓ (2026-05-29).
-            dict(
-                prefix="K3PE", chip_type="LPDDR2", subtype="LPDDR2",
-                interface="", is_emcp=False, active=True, priority=100,
-                decode_density_type="",
-                decode_cap_pos=4, decode_cap_len=2, decode_cap_map="K3PE_CAP",
-                tip=(
-                    "LPDDR2 Samsung standalone (~2011-2013). "
-                    "K3PE = prefixo família LPDDR2 mobile (antecessor do K3QF/LPDDR3). "
-                    "Capacidade: pn[4:6] → 4E=512MB · 7E/8E=1GB · 0E=2GB. "
-                    "533MHz / 1066 Mbps. VDD 1.8V / VDDQ 1.2V. Organização x32. "
-                    "⚠ LPDDR2: sem liquidez B2B em 2026 → NÃO RENTÁVEL (moagem/refino). "
-                    "Exemplos: K3PE4E400A (512MB), K3PE7E700B (1GB), K3PE0E000A (2GB)."
                 ),
             ),
             # K4E = Samsung LPDDR3 standalone (~2013-2016).
@@ -1525,34 +1518,38 @@ class Command(BaseCommand):
                     "Destino: bancada reacondicional eMCP."
                 ),
             ),
-            # ── KML: eMCP legado LPDDR1 (~2013-2015) ─────────────────────────────
+            # ── KML: eMCP legado LPDDR2 (~2013-2015) ─────────────────────────────
             # ⚠ CORRIGIDO 2026-05-27: era classificado como "uMCP UFS 3.1 + LPDDR5" — ERRADO.
             # Evidências:
             #   • KML7X000HM-B507: eetgroup.com → "8GB+8GB, EMMC+LPDD" (eMMC, NÃO UFS 3.1)
-            #   • KML5U000HM-B505: Puris → "4+8 153ball eMCP-D1" → categoria "eMMC+LPDDR" (LPDDR1)
+            #   • KML5U000HM-B505: Puris → "4+8 153ball eMCP-D1" → categoria "eMMC+LPDDR"
             #   • emmc-ufs.com: KML7X000HM possui página de firmware eMMC (NÃO UFS)
             #   • Aparece em Galaxy Core i8262 (2013) — era incompatível com UFS 3.1 + LPDDR5
             #   • uMCPs modernos Samsung são KM8-series (ex: KM8V8001LM-B813 Galaxy S21 ✓)
-            # eMCP-D1 (Puris nomenclatura): D = geração DRAM, 1 = LPDDR1.
+            # eMCP-D1 (Puris nomenclatura): "D1" = tier legado de DRAM na classificação Puris,
+            #   NÃO significa LPDDR1. A categoria "eMMC+LPDDR" do Puris inclui chips LPDDR2
+            #   (ex: H9TA4GH2GDMCPR-4GM = "4Gbit Nand+2Gbit LPDDR2" está na mesma categoria).
             # decode_gen_pos=None obrigatório: SAM_EMCP_GEN['L']="LPDDR5" é ERRADO para KML.
-            # Engine usará Caminho 3 (subtype) para extrair "LPDDR1".
+            # Engine usará subtype para extrair a geração LPDDR.
             dict(
                 prefix="KML", chip_type="eMCP", subtype="LPDDR2 + eMMC (legado)",
                 interface="eMMC", pn_length=10,
                 is_emcp=True, active=True, priority=40,
                 decode_gen_pos=None, decode_gen_map="",  # L=LPDDR5 no SAM_EMCP_GEN é errado; engine usa subtype.
-                # LPDDR version: Puris "eMCP-D1" / categoria "eMMC+LPDDR" (sem nº) é ambíguo.
+                # LPDDR version: "eMCP-D1" é tier legado do Puris (NÃO = LPDDR1):
+                # categoria "eMMC+LPDDR" inclui chips LPDDR2 (ex: H9TA4GH2GDMCPR-4GM).
                 # LPDDR2 adotado: Exynos 4212 (Galaxy Core i8262) suporta LPDDR2 (NÃO LPDDR1).
                 # LPDDR1 era obsoleto em smartphones desde ~2012. Era 2013-2015 = KMJ/KMN = LPDDR2.
+                # Capacidade "5U": corrigida para 1GB em SAM_EMCP_CAP (2026-06-19).
                 # ⚠ Sem confirmação Tier 1 explícita para versão LPDDR — inferência de era+SoC.
                 decode_cap_pos=3, decode_cap_len=2, decode_cap_map="SAM_EMCP_CAP",
                 tip=(
                     "⚠ eMCP Samsung LPDDR2 + eMMC legado (~2013-2015). "
                     "NÃO confundir com uMCP moderno: KML NÃO usa UFS 3.1 + LPDDR5 (erro corrigido 2026-05-27). "
-                    "Puris: KML5U000HM-B505 = 'eMCP-D1', categoria eMMC+LPDDR — versão LPDDR ambígua. "
+                    "Puris: KML5U000HM-B505 = '4+8 eMCP-D1' (D1 = tier legado Puris, ≠ LPDDR1). "
                     "LPDDR2 inferido: era 2013-2015 + Exynos 4212 compatível com LPDDR2. "
                     "Galaxy S21 Exynos usa KM8-series (KM8V8001LM-B813), NÃO KML. "
-                    "Capacidade: pn[3:5] → SAM_EMCP_CAP (ex: 7X=8GB+1GB via fix_known_parts). "
+                    "Capacidade: pn[3:5] → SAM_EMCP_CAP (ex: 5U=4GB+1GB, 7X=8GB+1GB). "
                     "Destino: legado — valor comercial baixo, apenas reacondicional entry-level."
                 ),
             ),
