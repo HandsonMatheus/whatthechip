@@ -199,7 +199,7 @@ def _compute_destination(result: dict) -> tuple:
     """
     Return (label, category) for the physical storage bin.
     category is used as CSS modifier:
-      emcp | umcp | lpddr | ddr | ufs | emmc | nand | unknown
+      emcp | umcp | lpddr | ddr | gddr | ufs | emmc | nand | unknown
     """
     chip_type = (result.get('chip_type') or '').strip()
     ct = chip_type.lower()
@@ -225,6 +225,16 @@ def _compute_destination(result: dict) -> tuple:
         cap   = _extract_gb(result.get('capacity', ''))
         label = f"EMMC{cap}GB" if cap else 'eMMC'
         return label, 'emmc'
+
+    # GDDR antes do bloco DDR — 'ddr' in 'gddr3' seria True (substring), causando
+    # falso-positivo. Samsung usa chip_type dedicado ("GDDR3"/"GDDR5"/etc.);
+    # Hynix H5RS usa chip_type="RAM" com subtype="GDDR3" (coberto pelo elif).
+    subtype_lower = (result.get('subtype') or '').lower()
+    if 'gddr' in ct or ('gddr' in subtype_lower and ct in ('ram', 'dram', 'sdram')):
+        gen  = canonical_gen(result.get('subtype') or '', chip_type) or chip_type.upper()
+        size = _density_g(result)
+        label = f"{gen}+{size}G" if (gen and size) else (gen or 'GDDR')
+        return label, 'gddr'
 
     if 'lpddr' in ct or 'ddr' in ct or ct in ('ram', 'dram', 'sdram'):
         # Caixa de RAM = GERAÇÃO + DENSIDADE, no formato impresso na caixa física,
