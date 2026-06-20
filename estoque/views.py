@@ -238,7 +238,7 @@ def _compute_destination(result: dict) -> tuple:
 
     if 'lpddr' in ct or 'ddr' in ct or ct in ('ram', 'dram', 'sdram'):
         # Caixa de RAM = GERAÇÃO + DENSIDADE, no formato impresso na caixa física,
-        # ex.: "DDR3+2G", "DDR4+4G", "LPDDR4+8G". A geração vem de subtype (ex.: "DDR3",
+        # ex.: "DDR3+2G", "DDR4+4G", "LPDDR4+8GB". A geração vem de subtype (ex.: "DDR3",
         # "LPDDR4X") — campo específico para o tipo de RAM. `interface` é a config de
         # barramento (ex.: "x16 @ 800MHz (1600MTPS)") e NÃO é usada como label da caixa.
         # Densidade (Gb) vem de dram_density; capacity (bytes) é ignorada de propósito.
@@ -250,18 +250,21 @@ def _compute_destination(result: dict) -> tuple:
         # subtype estiver vazio (comportamento anterior preservado).
         gen = canonical_gen(result.get('subtype') or '', chip_type) \
             or (result.get('interface') or '').strip()
-        # Tamanho da caixa depende do TIPO (ambos rotulados "<n>G"; a geração no
-        # prefixo desambigua a unidade):
-        #  • LPDDR (móvel) = pacote multi-die → CAPACIDADE do pacote em GB (4GB→"4G");
-        #  • DDR (componente) = 1 die → DENSIDADE do die em Gb (256MB→"2G").
+        # Tamanho da caixa depende do TIPO (unidade explícita no sufixo):
+        #  • LPDDR (móvel) = pacote multi-die → CAPACIDADE do pacote em GB (4GB→"4GB");
+        #  • DDR (componente) = 1 die → DENSIDADE do die em Gbit (1GB/die→"8G").
+        # "G" sozinho = Gigabits (convenção do setor); "GB" = Gigabytes.
+        # UFS/eMMC já usam "GB" explícito; LPDDR alinhado neste padrão.
         if 'lpddr' in ct or gen.upper().startswith('LPDDR'):
             size = _capacity_g(result)
+            unit = 'GB'
         else:
             size = _density_g(result)
+            unit = 'G'
         if gen and size:
-            label = f"{gen}+{size}G"
+            label = f"{gen}+{size}{unit}"
         elif size:
-            label = f"{size}G"
+            label = f"{size}{unit}"
         elif gen:
             label = gen
         else:

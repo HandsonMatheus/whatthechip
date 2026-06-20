@@ -336,7 +336,7 @@ Modelo canônico: `JW464` (`SLC NAND 512MB`).
 | uMCP | `"uMCP"` | geração RAM | `emcp_nand`, `emcp_ram` | `"UMCP…+…"` |
 | UFS | `"UFS"` | — | `capacity` em GB | `"UFS128GB"` |
 | DDR/GDDR | `"RAM"` | geração (`"DDR3"`) | `density_gbit` = die em Gb | `"DDR3+8G"` |
-| LPDDR avulso | `"LPDDR{n}"` | geração (`"LPDDR4"`) | `capacity` = pacote em GB | `"LPDDR4+4G"` |
+| LPDDR avulso | `"LPDDR{n}"` | geração (`"LPDDR4"`) | `capacity` = pacote em GB | `"LPDDR4+4GB"` |
 
 **Regras absolutas de campo:**
 - `subtype` = **SOMENTE** célula (NAND) ou geração (RAM) — nunca densidade, bus width, voltagem, "Mobile", "Multi-Channel", "paralela industrial"
