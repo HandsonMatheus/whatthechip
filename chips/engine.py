@@ -1398,8 +1398,15 @@ def assess_profitability(result: dict) -> str:
             - DDR3: < 2 Gb (= 256 MB)  → NÃO RENTÁVEL
             - DDR4+: < 1 Gb (= 128 MB)  → NÃO RENTÁVEL
 
+        ePoP (Package on Package, ex.: Samsung KAT):
+            → NÃO RENTÁVEL (memória empilhada em SoC — sem mercado B2B de reciclagem)
+
         NAND Flash raw / NOR Flash / MCP legado:
             → NÃO RENTÁVEL (sucata por tipo, independente de capacidade)
+
+        GDDR standalone (GPU memory):
+            - GDDR2 ou inferior       → NÃO RENTÁVEL
+            - GDDR3+: sem threshold de densidade definido → INDETERMINADO (raro no fluxo)
 
         Outros tipos (SoC, SDRAM puro, etc.):
             → INDETERMINADO
@@ -1414,9 +1421,12 @@ def assess_profitability(result: dict) -> str:
     # NAND Flash raw (MT29C, MT29F, K9*): sem controlador eMMC/UFS — resíduo industrial.
     # NOR Flash: memória de código read-only, sem mercado B2B de reciclagem.
     # MCP legado: NAND raw + mDDR1 pré-eMCP, sem liquidez B2B.
+    # ePoP (ex.: Samsung KAT): memória empilhada em SoC (Package-on-Package ~2012-2015);
+    #   is_emcp=True → sem este guard, entraria no bloco eMCP mas retornaria INDETERMINADO
+    #   quando a gramática não decodifica capacidade (placeholder "tipo 'T' — consultar datasheet").
     # is_dead_by_generation() retorna True automaticamente para estes tipos.
     # ⚠ Adicionar novos tipos aqui só após confirmar chip_type em todos os populate_*.
-    if chip_type.lower() in ("nand flash", "nor flash", "mcp"):
+    if chip_type.lower() in ("nand flash", "nor flash", "mcp", "epop"):
         return "NÃO RENTÁVEL"
 
     # ── eMCP / uMCP ──────────────────────────────────────────────────────────
@@ -1493,6 +1503,20 @@ def assess_profitability(result: dict) -> str:
         if cap_gb < threshold_gb - 0.01:
             return "NÃO RENTÁVEL"
         return "RENTÁVEL"
+
+    # ── GDDR (memória de GPU) ─────────────────────────────────────────────────
+    # "DDR" in combined é True para "GDDR2" (substring) → o bloco DDR abaixo seria
+    # atingido, mas _ddr_generation usa (?<![A-Z])DDR: lookbehind falha em "GDDR2"
+    # (G precede DDR) → ddr_gen=None → INDETERMINADO. Solução: bloco GDDR próprio
+    # verificado ANTES do DDR para interceptar e tratar corretamente.
+    # GDDR2 e abaixo (ou sem número de geração): NÃO RENTÁVEL.
+    # GDDR3+: raro no fluxo — sem threshold de densidade definido → INDETERMINADO.
+    if "GDDR" in combined:
+        m = re.search(r'GDDR(\d+)', combined)
+        gddr_gen = int(m.group(1)) if m else None
+        if gddr_gen is None or gddr_gen < cfg.gddr_min_gen:
+            return "NÃO RENTÁVEL"
+        return "INDETERMINADO"
 
     # ── DDR standalone ────────────────────────────────────────────────────────
     # Threshold em Gigabits (não Gigabytes): DDR3 ≥ cfg.ddr3_min_gbit; DDR4+ ≥ cfg.ddr4plus_min_gbit.

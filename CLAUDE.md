@@ -248,6 +248,7 @@ python manage.py populate_samsung          # gabarito mestre (famílias + Decode
 python manage.py populate_hynix
 python manage.py populate_micron_mcp
 python manage.py populate_kingston / populate_sandisk / populate_toshiba / populate_rayson
+python manage.py populate_piecemakers      # PieceMakers: Brand + PMF_DDR3_CAP + famílias PMF/PMA/PME/PMD/PMS
 python manage.py add_chip_families         # famílias "magras" p/ outras marcas
 python manage.py import_micron_catalog *_full-catalog.csv   # CSVs Micron da raiz
 python manage.py import_samsung_psg --all                   # CSVs em data/psg/
@@ -420,6 +421,30 @@ Referência completa: **`docs/CONVENCAO_MICRON_ESTOQUE.md`**
   `chips/engine.py` (2026-06-19):** verificação de geração movida para antes de
   `_extract_gib`. Chips históricos afetados: K3PE, K4P, K4E8E. Sintoma que revelou:
   K3PE0E000E (LPDDR2 2GB) ia para a FILA apesar de `profitable="NÃO RENTÁVEL"`.
+- **GDDR entra no bloco DDR via substring mas lookbehind bloqueia decode (2026-06-20):**
+  `"DDR" in combined` é `True` para "GDDR2" (substring). `_ddr_generation` usa
+  `(?<![A-Z])DDR(\d+)?` — lookbehind falha quando 'G' precede 'DDR' → `ddr_gen=None` →
+  INDETERMINADO. **Corrigido em `chips/engine.py` (2026-06-20):** bloco GDDR próprio
+  adicionado **antes** do bloco DDR. Extrai geração via `GDDR(\d+)`; geração ausente ou
+  `< cfg.gddr_min_gen` (default 3) → NÃO RENTÁVEL. Campo `gddr_min_gen` adicionado ao
+  `ProfitabilityConfig` em `chips/models.py` (requer `makemigrations` + `migrate`).
+  Chip revelador: K4N51163Q7 (GDDR2) retornava INDETERMINADO.
+- **ePoP retorna INDETERMINADO quando gramática não decodifica capacidade (2026-06-20):**
+  KAT (ePoP, Samsung ~2012-2015): `is_emcp=True` → bloco eMCP. `emcp_ram` recebe
+  placeholder "tipo 'T' — consultar datasheet ⚠ cap. não mapeada" (string não-vazia,
+  sem GB) → `_extract_gib` = None → `ram_gb is None` → INDETERMINADO. Decisão de
+  negócio (2026-06-20): ePoP é **sempre NÃO RENTÁVEL** (memória empilhada em SoC,
+  sem mercado B2B de reciclagem). **Corrigido:** `"epop"` adicionado ao bloco de tipos
+  sempre NÃO RENTÁVEL em `assess_profitability` (antes do bloco eMCP) → intercepta
+  ePoP antes de chegar ao guard de capacidade.
+- **Padrão recorrente — INDETERMINADO em vez de NÃO RENTÁVEL para chips legados:**
+  Chips reprovados **por tipo ou geração** (não por capacidade) retornam INDETERMINADO
+  quando `assess_profitability` chega a um bloco que exige dados de capacidade e não
+  os encontra. Instâncias corrigidas: LPDDR2 com DRAM_MOBILE (2026-06-19), GDDR2
+  (2026-06-20), ePoP (2026-06-20). **Regra de prevenção:** ao adicionar um novo
+  chip_type ao sistema, pergunte — "este tipo é NÃO RENTÁVEL independente de
+  capacidade?". Se sim → bloco de tipos no topo de `assess_profitability`. Se é
+  NÃO RENTÁVEL por geração → verificar geração ANTES de `_extract_gib` no bloco.
 
 ---
 
@@ -449,6 +474,7 @@ relevante quando a tarefa pedir:
 - **`HANDOFF.md`** — decisões de arquitetura, histórico e correções (BUG-1…BUG-6).
 - **`DEPLOY_RENDER.md`** — deploy, env vars, armadilhas de produção.
 - **`MICRON.md`** — bíblia técnica e de negócio da Micron: famílias, decode maps, convenção de campos, pipeline, fontes de dados, bugs corrigidos, lacunas.
+- **`PIECEMAKERS.md`** — bíblia técnica PieceMakers: anatomia do PN PMF, decode map PMF_DDR3_CAP, famílias, rentabilidade, fontes, armadilhas.
 - **`PLANO_MICRON_FBGA.md`** — pipeline FBGA da Micron (estágios iniciais — parcialmente histórico; ver MICRON.md para estado atual).
 - **`AUDITORIA_SAMSUNG_2026.md`** / **`BRIEFING_DDR_SAMSUNG.md`** — gabarito Samsung,
   chaves de cap/gen, casos confirmados e descartados.
