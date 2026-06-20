@@ -730,6 +730,85 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KMRC10014M ───────────────────────────────────────────────────────────
+    # Samsung eMCP: LPDDR3 4GB + eMMC 5.1 64GB. Família KMR, cap_key pn[3:5]="C1".
+    # Grammar já decodifica C1 corretamente → 64GB NAND + 4GB LPDDR3.
+    # pn_not_in_db=True no debug → nenhum KnownPart enriched existia.
+    # Fontes:
+    #   • Octopart (Samsung): KMRC10014M-B809 — múltiplos distribuidores ✓ (Tier 2)
+    #   • Octopart (Samsung): KMRC10014M-B809007 = "eMCP 64GB eMMC + 4GB(32Gb) LPDDR3" ✓ (Tier 2)
+    # KMR = LPDDR3 (SAM_EMCP_GEN corrigido sessões anteriores). confidence="manual": chip físico + Octopart.
+    {
+        "pn": "KMRC10014M",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 64GB",
+            "emcp_ram":  "LPDDR3 4GB",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Chip físico eMiner (2026-06-20). pn_not_in_db=True. "
+            "Samsung eMCP LPDDR3 4GB + eMMC 5.1 64GB. "
+            "Octopart (Samsung): KMRC10014M-B809 listado por múltiplos distribuidores (Tier 2 ✓). "
+            "Grammar decodifica C1→64GB NAND + 4GB LPDDR3 (SAM_EMCP_CAP ✓). "
+            "KMR=LPDDR3 (SAM_EMCP_GEN). confidence=manual: Octopart Tier 2 + chip físico."
+        ),
+    },
+    {
+        "pn": "KMRC10014M-B809",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 64GB",
+            "emcp_ram":  "LPDDR3 4GB",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Variante B809 do KMRC10014M. "
+            "Octopart (Samsung): KMRC10014M-B809 = múltiplos distribuidores (Tier 2 ✓). "
+            "Specs: eMCP 64GB eMMC 5.1 + 4GB LPDDR3. KMR=LPDDR3 (SAM_EMCP_GEN ✓). "
+            "confidence=manual: Octopart Tier 2 sem datasheet Samsung direto."
+        ),
+    },
+    {
+        "pn": "KMRC10014M-B809007",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 5.1 64GB",
+            "emcp_ram":  "LPDDR3 4GB",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Variante B809007 do KMRC10014M. "
+            "Octopart (Samsung): KMRC10014M-B809007 = 'eMCP 64GB eMMC + 4GB(32Gb) LPDDR3' ✓ (Tier 2). "
+            "32Gb LPDDR3 ÷ 8 = 4GB ✓. Fonte mais detalhada da família — specs explícitas. "
+            "confidence=manual: Octopart Tier 2 sem datasheet Samsung direto."
+        ),
+    },
+
     # ══════════════════════════════════════════════════════════════════════════
     # Chips confirmados fisicamente na esteira eMiner — 2026-05-13
     # Todos com create=True: raw_in_db=False no debug → não existiam no banco.
@@ -1930,6 +2009,83 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KLUCG8G1BD ───────────────────────────────────────────────────────────
+    # Samsung UFS 2.0, 64GB. Família KLUCG (K=Samsung, L=NAND, U=UFS, C=64GB, G=UFS 2.0).
+    # pn[3]='C' → SAM_FLASH_CAP = 64GB ✓. pn[6]='G' → KLUCG família = UFS 2.0.
+    # Grammar decodifica corretamente via família KLUCG (populate_samsung.py).
+    # pn_not_in_db=True → nenhum KnownPart enriched existia para esta variante.
+    # Fontes:
+    #   • Octopart (Samsung): KLUCG8G1BD-E0B1 = "Universal Flash storage", Samsung ✓ (Tier 2)
+    #   • Octopart (Samsung): KLUCG8G1BD-B0B1 = "Universal Flash storage", Samsung ✓ (Tier 2)
+    # confidence="manual": chip físico eMiner + Octopart Tier 2.
+    {
+        "pn": "KLUCG8G1BD",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "UFS",
+            "subtype":    "UFS 2.0 Samsung",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "64GB",
+            "interface":  "UFS 2.0",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Chip físico eMiner (2026-06-20). pn_not_in_db=True. "
+            "Samsung UFS 2.0 64GB. KLUCG família: C=64GB (SAM_FLASH_CAP ✓), pn[6]=G → UFS 2.0. "
+            "Octopart: KLUCG8G1BD-E0B1 e KLUCG8G1BD-B0B1 = 'Universal Flash storage', Samsung (Tier 2 ✓). "
+            "confidence=manual: chip físico + Octopart Tier 2 sem datasheet Samsung direto."
+        ),
+    },
+    {
+        "pn": "KLUCG8G1BD-E0B1",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "UFS",
+            "subtype":    "UFS 2.0 Samsung",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "64GB",
+            "interface":  "UFS 2.0",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Variante E0B1 do KLUCG8G1BD (chip em estoque eMiner). "
+            "Octopart (Samsung): KLUCG8G1BD-E0B1 = 'Universal Flash storage' (Tier 2 ✓). "
+            "UFS 2.0 64GB Samsung. confidence=manual: Octopart Tier 2."
+        ),
+    },
+    {
+        "pn": "KLUCG8G1BD-B0B1",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "UFS",
+            "subtype":    "UFS 2.0 Samsung",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "64GB",
+            "interface":  "UFS 2.0",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Variante B0B1 do KLUCG8G1BD. "
+            "Octopart (Samsung): KLUCG8G1BD-B0B1 = 'Universal Flash storage' (Tier 2 ✓). "
+            "UFS 2.0 64GB Samsung. confidence=manual: Octopart Tier 2."
+        ),
+    },
+
     # ── K3UH5H50AM ───────────────────────────────────────────────────────────
     # LPDDR4X Multi-Channel Samsung. Família K3U, pn[3:5]="H5" → 32Gb ÷ 8 = 4GB.
     # H5 não estava no mapa → grammar_complete=false → capacity=null.
@@ -1986,6 +2142,45 @@ CORRECTIONS = [
         "pn": "K3UH6H60BMAGCL",
         "fields": {"subtype": "LPDDR4X"},
         "reason": "subtype 'LPDDR4X Multi-Channel' → 'LPDDR4X'. Samsung Global 2017-2020. Regra CLAUDE.md: subtype=só geração.",
+    },
+
+    # ── K3UH6H6 ───────────────────────────────────────────────────────────────
+    # LPDDR4X Multi-Channel Samsung, 6GB. Família K3UH (4CH). cap_key pn[3:5]="H6".
+    # CONVENÇÃO DE LEITURA: PN de 7 chars — operador lê só a 1ª linha do laser.
+    # Linha inferior = sufixo "0AM-NGCJ" (ou similar). PN completo = K3UH6H60AM-NGCJ.
+    # ⚠ ATENÇÃO: grammar decodifica H6→4GB (32Gb) — ERRADO para família K3UH multi-channel.
+    #   K3UH6H60AM-NGCJ (PSG 1H 2017) + K3UH6H60AM-THCL, K3UH6H60BM-EGCL, K3UH6H60BM-AGCL
+    #   (Samsung Global): todos confirmed = 48Gb = 6GB. H6 em K3UH = 4CH × 12Gb, total 6GB.
+    #   Este KnownPart sobrepõe o decode errado da gramática para o PN truncado da bancada.
+    # Fontes:
+    #   • Samsung PSG 1H 2017 (psg_1h2017_mobile_dram.csv): K3UH6H60AM-NGCJ = 48Gb = 6GB ✓
+    #   • Samsung Global (samsung_global_lpddr4_2017_2020.csv): 3 PNs K3UH6H60*/BM* = 6GB ✓
+    # confidence="manual": PN truncado de bancada; specs ancoradas em confirmed do banco.
+    {
+        "pn": "K3UH6H6",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR4X",
+            "subtype":    "LPDDR4X",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "6GB",
+            "subtype":    "LPDDR4X",
+            "interface":  "",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Chip físico eMiner (2026-06-20). PN de 7 chars — convenção de bancada (1ª linha laser). "
+            "PN completo = K3UH6H60AM-NGCJ (ou variantes AM/BM). "
+            "⚠ Grammar decodifica H6→4GB (ERRADO para K3UH multi-channel). "
+            "Samsung PSG 1H 2017: K3UH6H60AM-NGCJ = 48Gb = 6GB ✓. "
+            "Samsung Global: K3UH6H60AM-THCL / K3UH6H60BM-EGCL / K3UH6H60BM-AGCL = 6GB ✓. "
+            "confidence=manual: âncoras confirmed no banco; PN truncado = convenção de bancada."
+        ),
     },
 
     # ══════════════════════════════════════════════════════════════════════════
@@ -2282,6 +2477,41 @@ CORRECTIONS = [
             "subtype 'LPDDR3 Mobile' → 'LPDDR3'. PSG 1H 2017 confirma LPDDR3 standalone 4GB "
             "(BE=4GB, gen B 1866Mbps, 178-ball FBGA). "
             "Regra CLAUDE.md: subtype=só geração, nunca qualificador Mobile/PC/Multi-Channel."
+        ),
+    },
+
+    # ── K4EBE304ECEGCF ────────────────────────────────────────────────────────
+    # LPDDR3 Samsung 4GB standalone. Família K4EBE304, revisão C, sufixo EGCF.
+    # pn[3:5]='BE' → K4E_CAP = 4GB (32Gb) ✓. pn[7:8]='C' = die revision C.
+    # Difere de K4EBE304ECEGCG (já confirmed no banco) apenas no último char: F vs G
+    # (variante de pacote/grade de velocidade — mesmas specs elétricas).
+    # Âncora Tier 1: K4EBE304ECEGCG — Samsung Semiconductor Global confirmed
+    #   (samsung_global_lpddr3.csv): LPDDR3 4GB, 178-ball FBGA, 1866MHz, 11x11.5mm.
+    # confidence="manual": chip físico eMiner; ECEGCG confirmado por Samsung Global (Tier 1).
+    {
+        "pn": "K4EBE304ECEGCF",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "subtype":    "LPDDR3",
+            "interface":  "",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Chip físico eMiner (2026-06-20). pn_not_in_db=True. "
+            "LPDDR3 4GB Samsung standalone. pn[3:5]='BE' → K4E_CAP=4GB (32Gb) ✓. "
+            "Âncora Tier 1: K4EBE304ECEGCG = confirmed Samsung Semiconductor Global "
+            "(lpddr3.csv: LPDDR3 4GB, 178-ball FBGA, 1866MHz, 11x11.5mm). "
+            "ECEGCF difere de ECEGCG apenas no último char — F vs G (speed/package grade). "
+            "confidence=manual: chip físico + âncora Samsung Global no banco."
         ),
     },
 
@@ -3597,6 +3827,65 @@ CORRECTIONS = [
             "explicitamente nomeado na compatibilidade. Specs: 2GB, eMMC genérico, era 2012. "
             "confidence=manual: Rockchip list (Tier 1) + Octopart (Tier 2); sem leitura "
             "direta de datasheet Samsung."
+        ),
+    },
+
+    # ── KLMAG2GE4A ───────────────────────────────────────────────────────────
+    # Samsung eMMC 5.1 standalone, 16GB. Família KLM. "Movinand" (21NM MLC, ~2017-2019).
+    # pn[3]='A' → SAM_FLASH_CAP = 16GB ✓. pn[6]='G' → SAM_EMMC_GEN = "eMMC 5.1" ✓.
+    # Grammar decodifica corretamente: 16GB, eMMC 5.1.
+    # pn_not_in_db=True → nenhum KnownPart enriched existia para este PN.
+    # Âncora: KLMAG2GEND — Samsung Semiconductor Global confirmed (samsung_global_emmc_post2017.csv):
+    #   "eMMC 5.1 Samsung, 16GB. pn[3]='A'=16GB; pn[6]='G'=eMMC 5.1".
+    # Fontes:
+    #   • Octopart (Samsung): KLMAG2GE4A-A001 = "16GB Movinand Flash 21NM" ✓ (Tier 2)
+    #   • Samsung Global (âncora): KLMAG2GEND confirmed eMMC 5.1 16GB (mesmo prefixo A+G).
+    # confidence="manual": chip físico + Octopart Tier 2; âncora Samsung Global no banco.
+    {
+        "pn": "KLMAG2GE4A",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Samsung",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "16GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Chip físico eMiner (2026-06-20). pn_not_in_db=True. "
+            "Samsung eMMC 5.1 16GB (21NM MLC). pn[3]='A'=16GB; pn[6]='G'=eMMC 5.1 (SAM_EMMC_GEN ✓). "
+            "Âncora: KLMAG2GEND (Samsung Semiconductor Global, confirmed, eMMC 5.1 16GB). "
+            "Octopart: KLMAG2GE4A-A001 = '16GB Movinand Flash 21NM', Samsung (Tier 2 ✓). "
+            "confidence=manual: Octopart Tier 2 + âncora Samsung Global no banco."
+        ),
+    },
+    {
+        "pn": "KLMAG2GE4A-A001",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Samsung",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "16GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Variante A001 do KLMAG2GE4A (chip em estoque eMiner). "
+            "Octopart (Samsung): KLMAG2GE4A-A001 = '16GB Movinand Flash 21NM', Samsung (Tier 2 ✓). "
+            "eMMC 5.1 16GB (21NM MLC). A001 = bucket code padrão Samsung. "
+            "confidence=manual: Octopart Tier 2 + âncora KLMAG2GEND (Samsung Global)."
         ),
     },
 
