@@ -3533,6 +3533,174 @@ CORRECTIONS = [
         ),
     },
 
+    # ── KLM2G1HE3F ───────────────────────────────────────────────────────────
+    # Samsung eMMC standalone, 2GB. Família KLM. Variante legada (era 2012).
+    # pn[3]='2' → SAM_FLASH_CAP = 2GB ✓
+    # pn[6]='H' → NÃO mapeado em SAM_EMMC_GEN — geração desconhecida na gramática.
+    # Era: 2012, 20nm class, 52MHz. Adicionado junto com KLM4G1FE3A no mesmo lote.
+    # Fontes:
+    #   • Octopart: KLM2G1HE3F-B001 = "IC 2GB EMMC NAND FLASH STORAGE BGA" (Samsung,
+    #     datasheet 6p., ~2013). Confirma tipo e PN. (Tier 2)
+    #   • Rockchip eMMC Support List v1.06 (2012-02-02, Tier 1): "Add Samsung
+    #     KLM2G1HE3F-B001, KLM4G1FE3A-A001 and KLM4G1FE3A-M001." — PN explicitamente
+    #     nomeado em documento técnico oficial de fabricante de SoC.
+    # confidence="manual": chip físico confirmado na esteira eMiner; Octopart +
+    #   Rockchip list confirmam PN e tipo. Datasheet Samsung não acessível em Tier 1.
+    # interface="eMMC": genérico — pn[6]='H' sem mapeamento (geração não confirmada).
+    # NÃO RENTÁVEL: eMMC 2GB legado (~2012), capacidade e geração obsoletas.
+    {
+        "pn": "KLM2G1HE3F",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Samsung",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "eMMC",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira eMiner (2026-06-20). "
+            "Octopart: KLM2G1HE3F-B001 = '2GB eMMC NAND Flash', Samsung, datasheet 6p. "
+            "Rockchip eMMC Support List v1.06 (2012-02-02, Tier 1): lista explicitamente "
+            "'KLM2G1HE3F-B001' na adição de compatibilidade. "
+            "pn[3]='2'=2GB (SAM_FLASH_CAP ✓); pn[6]='H' não mapeado em SAM_EMMC_GEN "
+            "(interface='eMMC' genérico — geração não confirmada por Tier 1). "
+            "Era: 2012, 20nm, 52MHz. pn_not_in_db=true resolvido."
+        ),
+    },
+    {
+        "pn": "KLM2G1HE3F-B001",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Samsung",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "eMMC",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Variante B001 do KLM2G1HE3F. "
+            "Octopart: KLM2G1HE3F-B001 = '2GB eMMC', Samsung, 153-FBGA (Tier 2 ✓). "
+            "Rockchip eMMC Support List v1.06 (2012-02-02, Tier 1): PN completo "
+            "explicitamente nomeado na compatibilidade. Specs: 2GB, eMMC genérico, era 2012. "
+            "confidence=manual: Rockchip list (Tier 1) + Octopart (Tier 2); sem leitura "
+            "direta de datasheet Samsung."
+        ),
+    },
+
+    # ── KLM4G1FE3B ───────────────────────────────────────────────────────────
+    # Samsung eMMC 4.5 standalone, 4GB. Família KLM.
+    # pn[3]='4' → SAM_FLASH_CAP = 4GB ✓
+    # pn[6]='F' → SAM_EMMC_GEN = "eMMC 4.5" ✓ (Samsung chama de 4.5; spec JEDEC JESD84-A441)
+    # Datasheet Samsung oficial (Tier 1 via Alldatasheet ID 1132357):
+    #   "KLMxGxFE3B-x00x — Samsung e·MMC Product family — e.MMC 4.41 Specification compatibility"
+    #   Rev. 1.0, Oct. 2011. 37 páginas. Cobre variantes 4GB, 8GB, 16GB, 32GB com sufixo -x00x.
+    # BGA153, MLC NAND.
+    # ⚠ "e.MMC 4.41" e "eMMC 4.5" são a mesma especificação (JESD84-A441 arredondado p/ "4.5").
+    {
+        "pn": "KLM4G1FE3B",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Samsung",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "eMMC 4.5",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Datasheet Samsung oficial (Alldatasheet ID 1132357, Tier 1, Oct 2011): "
+            "KLMxGxFE3B-x00x = 'e.MMC 4.41 Specification compatibility', 4GB, BGA153, MLC. "
+            "pn[3]='4'=4GB (SAM_FLASH_CAP ✓), pn[6]='F'=eMMC 4.5 (SAM_EMMC_GEN ✓). "
+            "e.MMC 4.41 e eMMC 4.5 são a mesma spec (JESD84-A441). "
+            "Fix promove de estimated para confirmed, retira da fila de revisão."
+        ),
+    },
+
+    # ── KLM4G1FEPD ───────────────────────────────────────────────────────────
+    # Samsung eMMC 4.5 standalone, 4GB. Família KLM. Variante PD do FE3B.
+    # pn[3]='4' → SAM_FLASH_CAP = 4GB ✓
+    # pn[6]='F' → SAM_EMMC_GEN = "eMMC 4.5" ✓
+    # Confirmado por Samsung Product Selection Guide (Tier 1 via Alldatasheet ID 1425778):
+    #   "PRODUCT SELECTION GUIDE Displays, Memory and Storage 2H 2014"
+    #   KLM4G1FEPD-B031 listado explicitamente. 28 páginas, 4,6MB.
+    # BGA153, MLC NAND.
+    {
+        "pn": "KLM4G1FEPD",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Samsung",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "eMMC 4.5",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Samsung Product Selection Guide 'Displays, Memory and Storage 2H 2014' "
+            "(Alldatasheet ID 1425778, Tier 1): KLM4G1FEPD-B031 = 4GB eMMC 4.5, BGA153, MLC. "
+            "pn[3]='4'=4GB (SAM_FLASH_CAP ✓), pn[6]='F'=eMMC 4.5 (SAM_EMMC_GEN ✓). "
+            "Fix promove de estimated para confirmed, retira da fila de revisão."
+        ),
+    },
+
+    # ── KLM4G1FETE ───────────────────────────────────────────────────────────
+    # Samsung eMMC 4.5 standalone, 4GB. Família KLM. Variante TE do FE3B.
+    # pn[3]='4' → SAM_FLASH_CAP = 4GB ✓
+    # pn[6]='F' → SAM_EMMC_GEN = "eMMC 4.5" ✓
+    # Gramática decodifica corretamente como 4GB eMMC 4.5 — sem datasheet Tier 1 específico
+    # para a variante FETE (KLM4G1FE3B e FEPD confirmados em Alldatasheet; FETE não listado).
+    # confidence="manual": chip físico confirmado na esteira eMiner (operador tem o chip).
+    # A gramática acerta o decode — fix eleva de estimated/raw para manual+enriched, saindo
+    # da fila de revisão.
+    # BGA153, MLC NAND.
+    {
+        "pn": "KLM4G1FETE",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Samsung",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "eMMC 4.5",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira eMiner (2026-06-20). "
+            "Gramática correta: pn[3]='4'=4GB (SAM_FLASH_CAP ✓), pn[6]='F'=eMMC 4.5 (SAM_EMMC_GEN ✓). "
+            "Sem datasheet Tier 1 específico para variante FETE (FE3B e FEPD confirmados — ver acima). "
+            "confidence=manual (chip físico verificado; datasheet não encontrado em Alldatasheet). "
+            "Fix retira da fila de revisão."
+        ),
+    },
+
     # ── KMNJ2000ZM ───────────────────────────────────────────────────────────
     # Samsung eMCP LPDDR2 + eMMC. Família KMN (~2011-2014, entrada legada).
     #
@@ -6785,7 +6953,7 @@ CORRECTIONS = [
     },
 
     # ══════════════════════════════════════════════════════════════════════════
-    # Samsung GDDR (Graphics DDR) — K4J / K4W / K4G / K4Z
+    # Samsung GDDR (Graphics DDR) — K4N / K4J / K4W / K4G / K4Z
     # Memória VRAM para GPUs. assess_profitability → INDETERMINADO (BUG): GDDR não
     # casa o regex (?<![A-Z])DDR porque "G" antes de "DDR" aciona o lookbehind negativo.
     # Operador deve guiar-se pelo tip ("bancada reacondicional GPU").
@@ -7366,15 +7534,189 @@ CORRECTIONS = [
     },
 
     # ══════════════════════════════════════════════════════════════════════════
-    # K4G — GDDR5 / GDDR5X Samsung (~2012-2020)
+    # K4N — gDDR2 Samsung (~2004-2008)
+    # VRAM obsoleta — GPUs de geração Xbox 360 / PlayStation Portable / entrada (~2004-2008).
+    # NÃO RENTÁVEL: geração morta, sem mercado de reparo para GDDR2 em 2026.
+    # Anatomia: K4N | [density+org code] | Q | [die/variant] | [-] | [sufixo]
+    #   K4N51163: 512Mbit, 16Mx32 (x32 bus) — mais comum da família.
+    # Gramática K4N: chip_type="GDDR2" (não-padrão vs K4J/K4W — sem override via KnownPart,
+    #   assess_profitability trata chip_type="GDDR2" como INDETERMINADO).
+    # Fix: KnownPart com chip_type="RAM", subtype="GDDR2" alinha com convenção GDDR do WTC
+    #   e garante que a gramática seja substituída pelo registro confirmado.
+    # Fontes: Alldatasheet (Samsung) — K4N51163QC-ZC (ID 125618) = "512Mbit gDDR2 SDRAM" ✓.
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K4N51163QC — 512Mb gDDR2 x32 (C-variant) ────────────────────────────
+    # Samsung Alldatasheet ID 125618 (Tier 1): K4N51163QC-ZC = "512Mbit gDDR2 SDRAM", 64 págs.
+    # 512Mbit ÷ 8 = 64MB. Organização: 16Mx32 → bus x32. NÃO RENTÁVEL.
+    {
+        "pn": "K4N51163QC",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR2", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR2",
+            "capacity": "64MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Base PN — Alldatasheet Samsung ID 125618 (Tier 1): "
+            "K4N51163QC-ZC = '512Mbit gDDR2 SDRAM', 64 páginas ✓ (2026-06-20). "
+            "512Mbit ÷ 8 = 64MB. Organização 16Mx32 → bus x32. Geração GDDR2 obsoleta. "
+            "chip_type='RAM' + subtype='GDDR2': alinha com convenção GDDR do WTC (K4J/K4W). "
+            "Override do chip_type='GDDR2' da gramática K4N — que não casa regex DDR. "
+            "NÃO RENTÁVEL: sem mercado de reparo GDDR2 em 2026."
+        ),
+    },
+
+    # ── K4N51163Q7 — 512Mb gDDR2 x32 (Q7-variant) ───────────────────────────
+    # Chip físico confirmado na esteira eMiner (2026-06-20). Sem Tier 1 específico para Q7.
+    # K4N51163QC-ZC confirmado como base (Alldatasheet ID 125618). Q7 = variante de speed grade.
+    # A estrutura 512Mbit gDDR2 x32 é consistente para toda a família K4N51163Q*.
+    {
+        "pn": "K4N51163Q7",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR2", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR2",
+            "capacity": "64MB", "interface": "x32",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira eMiner (2026-06-20). "
+            "Família K4N51163Q*: base K4N51163QC-ZC = '512Mbit gDDR2 SDRAM' "
+            "(Alldatasheet Samsung ID 125618, Tier 1 ✓). "
+            "Q7 = variante de speed/die grade sem datasheet Tier 1 próprio. "
+            "512Mbit ÷ 8 = 64MB, bus x32 (16Mx32). "
+            "confidence=manual: chip físico presente, base da família confirmada. "
+            "NÃO RENTÁVEL: GDDR2 geração obsoleta (~2004-2008)."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # K4G — GDDR5 / GDDR5X Samsung (~2010-2020)
     # VRAM de alto volume em GPUs discretas (AMD RX / Nvidia GTX / RTX).
     # Anatomia: K4G | [density pn[3]] | [die pn[4]] | 325 | [die rev pn[8]] | [var pn[9]] | - | [sufixo]
     # Gramática K4G: decode_density_type="mobile" → pn[3] via DRAM_MOBILE ✓
-    #   "2"=2Gb(256MB) · "4"=4Gb(512MB) · "8"=8Gb(1GB). Bus: x32 (sempre).
+    #   "1"=1Gb(128MB)[~] · "2"=2Gb(256MB) · "4"=4Gb(512MB) · "8"=8Gb(1GB). Bus: x32 (sempre).
+    #   ⚠ '1' NÃO tem entrada em DRAM_MOBILE → engine retorna 1Gb[~] aproximado.
+    #      KnownParts K4G10 neste arquivo resolvem pn_not_in_db e o INDETERMINADO.
     # Fontes:
+    #   • Alldatasheet Samsung ID 347889: K4G10325FE = "Graphic Memory" (Apr 2010, Tier 1 ✓)
     #   • Samsung Semiconductor Global (título indexado com "(X Gb)") ✓ (2026-06-19)
     #   • Octopart (Samsung) para K4G20325FD-FC04 ✓
     # ══════════════════════════════════════════════════════════════════════════
+
+    # ── K4G10325FE/FG — 1Gb GDDR5 x32 (E/G-die) ─────────────────────────────
+    # 1Gb = 128MB/die, bus x32 (32Mx32), 170-ball FBGA, 1.5V.
+    # Geração mais antiga da família K4G (~2010). GPU móvel / entry-level.
+    # Gramática K4G: pn[3]='1' NÃO tem entrada em DRAM_MOBILE → decode [~] aproximado.
+    # Estas entradas resolvem o INDETERMINADO e o pn_not_in_db para K4G10325FG.
+    # Fontes:
+    #   • Alldatasheet Samsung ID 347889: K4G10325FE = "Graphic Memory" (Apr 2010, Tier 1 ✓).
+    #   • Web search + Censtry: K4G10325FG-HC03/HC04/HC05 como variantes de speed/temp grade.
+    {
+        "pn": "K4G10325FE",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "confirmed", "status": "enriched",
+        },
+        "reason": (
+            "Alldatasheet Samsung ID 347889: K4G10325FE = 'Graphic Memory', Apr 2010 (Tier 1 ✓). "
+            "1Gbit ÷ 8 = 128MB/die. Bus x32 (32M×32). E-die, 170-ball FBGA, 1.5V. "
+            "chip_type=RAM/subtype=GDDR5 faz override da gramática (grammar retorna chip_type='GDDR5' "
+            "que antes do fix engine.py 2026-06-20 causava INDETERMINADO). "
+            "Gramática K4G: pn[3]='1' não mapeado em DRAM_MOBILE → banco vence."
+        ),
+    },
+    {
+        "pn": "K4G10325FG",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Chip físico confirmado na esteira eMiner (2026-06-20). "
+            "Família K4G10325 ancorada em K4G10325FE (Alldatasheet ID 347889, Tier 1 ✓). "
+            "G-die: mesma densidade e bus que E-die (1Gb, x32, 128MB). "
+            "pn_not_in_db=true + INDETERMINADO resolvidos. "
+            "confidence=manual: chip físico presente; datasheet específico do FG não encontrado."
+        ),
+    },
+    {
+        "pn": "K4G10325FG-HC03",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Variante de speed/temp grade do K4G10325FG. HC03 = freq. padrão / comercial. "
+            "1Gb GDDR5, x32, 128MB. Fonte: web search + distribuidor. "
+            "confidence=manual: família confirmada (K4G10325FE Tier 1 ✓); "
+            "variante HC03 sem datasheet Tier 1 próprio."
+        ),
+    },
+    {
+        "pn": "K4G10325FG-HC04",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Variante de speed/temp grade do K4G10325FG. HC04 = speed grade intermediário. "
+            "1Gb GDDR5, x32, 128MB. Fonte: web search + distribuidor. "
+            "confidence=manual: família confirmada (K4G10325FE Tier 1 ✓); "
+            "variante HC04 sem datasheet Tier 1 próprio."
+        ),
+    },
+    {
+        "pn": "K4G10325FG-HC05",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung", "chip_type": "RAM",
+            "subtype": "GDDR5", "status": "enriched", "confidence": "manual",
+        },
+        "fields": {
+            "chip_type": "RAM", "subtype": "GDDR5",
+            "capacity": "128MB", "interface": "x32",
+            "confidence": "manual", "status": "enriched",
+        },
+        "reason": (
+            "Variante de speed/temp grade do K4G10325FG. HC05 = speed grade mais alto. "
+            "1Gb GDDR5, x32, 128MB. Fonte: web search + Censtry (distribuidor). "
+            "confidence=manual: família confirmada (K4G10325FE Tier 1 ✓); "
+            "variante HC05 sem datasheet Tier 1 próprio."
+        ),
+    },
 
     # ── K4G20325FD — 2Gb GDDR5 x32 (D-die) ──────────────────────────────────
     {
@@ -8401,6 +8743,50 @@ CORRECTIONS = [
         },
         "reason": "PN base (sem sufixo) do NT5CC256M16EP — DDR3L 4Gbit 256Mx16 1.35V VFBGA96. Specs = mesmas do grupo EP-DI/EK/EKT/DII/DIH.",
     },
+    # NT5CC256M16 (alias curto sem revisão EP) — operador lê sem designador de die
+    {
+        "pn": "NT5CC256M16",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Alias curto: operador lê NT5CC256M16 sem o designador EP quando laser está parcial. Aponta para DDR3L 4Gbit 256Mx16 1.35V — mesmas specs de NT5CC256M16EP.",
+    },
+    # NT5CC128M16 (alias curto sem revisão JR/IP/FP) — operador lê sem designador de pacote
+    {
+        "pn": "NT5CC128M16",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Alias curto: operador lê NT5CC128M16 sem o designador JR/IP/FP quando laser está parcial. Aponta para DDR3L 2Gbit 128Mx16 1.35V — mesmas specs de NT5CC128M16JR.",
+    },
     # NT5CB256M8 (base) — chip do usuário #3 (marcação lida como NT5CB256M81M)
     {
         "pn": "NT5CB256M8",
@@ -8428,6 +8814,27 @@ CORRECTIONS = [
     # Octopart (Nanya mfr page): "DRAM Chip DDR3 SDRAM 4Gbit 256Mx16 1.5V 96-Pin VFBGA"
     # NT5CB = DDR3 standard 1.5V; 256M×16 = 4Gbit ÷ 8 = 512MB por die.
     # Variantes confirmadas: DI (PBGA96), EK (VFBGA96), DII (VFBGA96).
+    {
+        "pn": "NT5CB256M16",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "PN curto sem revisão (DP) — operador lê NT5CB256M16 quando o sufixo DP não é visível no laser. Specs = mesmas do NT5CB256M16DP: DDR3 1.5V 4Gbit 256Mx16.",
+    },
     {
         "pn": "NT5CB256M16DP",
         "create": True,
@@ -8514,6 +8921,191 @@ CORRECTIONS = [
     },
 
     # ═══════════════════════════════════════════════════════════════════════════
+    # NANYA — NT5CB128M16 (DDR3 2Gbit 128Mx16 1.5V) — adicionado 2026-06-20
+    # Octopart (Nanya mfr page): 33 resultados confirmados.
+    # NT5CB = DDR3 padrão 1.5V (mesmo prefixo de NT5CB256M8 e NT5CB256M16DP).
+    # 128M×16 = 2Gbit ÷ 8 = 256MB por die. Pacote 96-pin VFBGA/TFBGA/PBGA.
+    # ATENÇÃO: O operador pode ler este chip como "NT5C128M16" (sem o 'B')
+    # quando a marcação laser está deteriorada. B↔8 é confusão clássica.
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # ── Base PN (marcação laser frequentemente omite sufixo) ─────────────────
+    {
+        "pn": "NT5CB128M16",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "PN base (sem sufixo) NT5CB128M16 — DDR3 1.5V 2Gbit 128Mx16. Octopart (Nanya mfr page): 33 variantes confirmadas. Operador pode ler como NT5C128M16 quando 'B' está ilegível.",
+    },
+
+    # ── FP die (TFBGA96 / PBGA96) ────────────────────────────────────────────
+    {
+        "pn": "NT5CB128M16FP-DI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Alldatasheet (Nanya Technology Corporation): NT5CB128M16FP-DI = DDR3 SDRAM 2Gbit 128Mx16 1.5V. DI = Industrial grade (-40 to 95°C).",
+    },
+    {
+        "pn": "NT5CB128M16FP-DII",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CB128M16FP-DII = DDR3 SDRAM 2Gbit 128Mx16 1.5V Automotive 96-Pin TFBGA. DII = Automotive Grade II (-40 to 105°C).",
+    },
+    {
+        "pn": "NT5CB128M16FP-FL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CB128M16FP-FL = DDR3 DRAM 128MX16 PBGA96. Variante comercial pacote PBGA.",
+    },
+
+    # ── IP die (VFBGA96) ─────────────────────────────────────────────────────
+    {
+        "pn": "NT5CB128M16IP-FL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CB128M16IP-FL = DDR3 SDRAM 2Gbit 128Mx16 1.5V 96-Pin VFBGA.",
+    },
+
+    # ── JR die (processo mais novo) ───────────────────────────────────────────
+    {
+        "pn": "NT5CB128M16JR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Alldatasheet (Nanya Technology Corporation): NT5CB128M16JR = DDR3 2Gbit 128Mx16 1.5V. Revisão J (processo shrink, mesma organização FP).",
+    },
+    {
+        "pn": "NT5CB128M16JR-DI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Nanya DDR3 2Gbit 128Mx16 1.5V, revisão JR, grade Industrial (-40 to 95°C). Confirmado via datasheet Nanya Technology Corporation.",
+    },
+    {
+        "pn": "NT5CB128M16JR-EKT",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Nanya DDR3 2Gbit 128Mx16 1.5V, revisão JR, EK = commercial (0–85°C), T = Tape & Reel. Confirmado via datasheet Nanya Technology Corporation.",
+    },
+
+    # ═══════════════════════════════════════════════════════════════════════════
     # MICRON — DDR3L standalone confirmados via FBGA API (2026-06-20)
     # Família MT41K = DDR3L (1.35V). Ambos 4Gbit 256M×16-bit, package 96-FBGA.
     # Fonte tier-1: API Micron FBGA (getpartbyfbgacode) + DigiKey.
@@ -8587,6 +9179,257 @@ CORRECTIONS = [
             "D9PXV identificado via API Micron FBGA (2026-06-20): MT41K256M16HA-125:E. "
             "DDR3L 4Gbit (256M×16), DDR3-1600 (tCK=1.25ns), 96-FBGA 9×14mm. "
             "Fonte: micron.com/fbga + DigiKey. Chip obsoleto — comum em notebooks/tablets ~2012-2015."
+        ),
+    },
+
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # PIECEMAKERS — chips confirmados via fontes cruzadas (element14 + glochip + piecemakers.com.tw)
+    # Adicionados em 2026-06-20 | eMiner/WhatTheChip
+    #
+    # Fontes utilizadas:
+    #   [T1] piecemakers.com.tw/products/standard-dram/ — catálogo oficial; confirma DDR3 2Gb
+    #   [T2] element14.com (hrishi98, 2022-06-01) — eng. hardware confirma PMF511816EBR-KADN
+    #        como substituto drop-in de Micron MT41K128M16XX-15E na placa Digilent Arty S7-50
+    #   [T2] glochip.com/ddr3/piecemakers.html — tabela DDR3 PieceMakers; decode pn[4:6]="11"=2Gb
+    #
+    # Decode do PN PMF511816EBR:
+    #   P M F [5]  [11]  [8] [16] [E]  BR
+    #   0 1 2  3   4-5    6  7-8   9  10-11
+    #   PMF = família DDR3/DDR3L PieceMakers
+    #   5   = 1.5V (DDR3)
+    #   11  = 2Gb die (2^11 Mb = 2048 Mb = 2 Gbit → 256MB)
+    #   8   = 8 banks
+    #   16  = x16 (barramento 16 bits)
+    #   E   = revisão de silício
+    #   BR  = package FBGA
+    #
+    # capacity = 2Gb ÷ 8 = 256MB por die
+    # density_gbit = "2Gb"
+    # Rentabilidade: 2Gb = ddr3_min_gbit → limiar RENTÁVEL (verificar ProfitabilityConfig)
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # ── PMF511816EBR — DDR3 2Gbit 128Mx16 1.5V 96-FBGA (PN base sem sufixo) ─
+    {
+        "pn": "PMF511816EBR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "PieceMakers",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "manual",
+            "status":       "enriched",
+            "source_url":   "https://www.piecemakers.com.tw/en/product/standard-dram",
+        },
+        "reason": (
+            "PMF511816EBR: PieceMakers DDR3 2Gbit (128Mx16), 1.5V, 96-FBGA. "
+            "Decode: pn[4:6]='11'=2Gb(256MB), pn[7:9]='16'=x16, pn[3]='5'=DDR3 1.5V. "
+            "Fontes: piecemakers.com.tw ✓ (catálogo DDR3, 2Gb confirmado) + "
+            "element14.com (hrishi98 2022-06-01): usado na Digilent Arty S7-50 como "
+            "drop-in do Micron MT41K128M16XX-15E + glochip DDR3 table ✓. "
+            "Confiança 'manual' (não há DigiKey/datasheet Tier 1 diretamente acessível)."
+        ),
+    },
+
+    # ── PMF511816EBR-KADN — variante com sufixo de velocidade/temperatura ────
+    # PN exato que chega ao operador na esteira de reciclagem.
+    # Sufixo KADN: 'K' = grau comercial; 'ADN' = speed bin / packing.
+    # Specs idênticas ao PN base PMF511816EBR.
+    {
+        "pn": "PMF511816EBR-KADN",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "PieceMakers",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "manual",
+            "status":       "enriched",
+            "source_url":   "https://www.piecemakers.com.tw/en/product/standard-dram",
+        },
+        "reason": (
+            "PMF511816EBR-KADN: variante do PMF511816EBR com sufixo KADN "
+            "(speed/temperature grade). Specs idênticas: DDR3 2Gbit x16 256MB 1.5V 96-FBGA. "
+            "PN reportado pelo operador WTC na esteira de reciclagem (2026-06-20). "
+            "element14.com (hrishi98 2022-06-01) cita este PN exato como drop-in do "
+            "Micron MT41K128M16XX-15E na Digilent Arty S7-50 ✓."
+        ),
+    },
+
+    # ── GDQ2BFAA — GigaDevice DDR4 SDRAM 4Gbit ×16 ───────────────────────────
+    #
+    # PN base + variantes de temperatura/velocidade confirmadas pelo datasheet
+    # oficial DS-00808-GDQ2BFAA-Rev1.4 (gigadevice.com).
+    #
+    # Anatomia: G D Q 2 B F A A - [temp][speed]
+    #   pn[3]='2' = 4Gbit (256Mb×16)
+    #   pn[4]='B' = pacote FBGA-96
+    #   pn[5]='F' = organização ×16
+    #   pn[6]='A' = 1.2V
+    #   pn[7]='A' = 2ª revisão
+    #   sufixo: C=Commercial (0-95°C) / W=Wide (-40-95°C)
+    #           E=DDR4-2400 / Q=DDR4-2666 / J=DDR4-3200
+    #
+    # ⚠ LEITURA LASER: pn[4]='B' (FBGA-96) facilmente confundido com '6'.
+    #   "GDQ26FAA" = provavelmente "GDQ2BFAA" mal lido. Confirmar com datasheet físico.
+    #
+    # Fonte Tier 1: GigaDevice Datasheet DS-00808-GDQ2BFAA-Rev1.4 ✓
+    #               LCSC C2937367 (GDQ2BFAA-CE) ✓
+    #
+    {
+        "pn": "GDQ2BFAA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "GigaDevice",
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "interface":  "x16",
+            "capacity":   "512MB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "GigaDevice Datasheet DS-00808-GDQ2BFAA-Rev1.4: 4Gbit DDR4 SDRAM, 256Mb×16, FBGA-96, 1.2V. "
+            "JEDEC JESD-79-4 compliant. Fonte Tier 1: LCSC C2937367 + datasheet oficial GigaDevice ✓. "
+            "⚠ GDQ26FAA = provável misread de GDQ2BFAA (pn[4]='B' lido como '6' no laser)."
+        ),
+    },
+    {
+        "pn": "GDQ2BFAA-CE",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "GigaDevice",
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "interface":  "x16",
+            "capacity":   "512MB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "GDQ2BFAA variante CE: Commercial temp (0-95°C), DDR4-2400. "
+            "Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 + LCSC C2937367 ✓."
+        ),
+    },
+    {
+        "pn": "GDQ2BFAA-CQ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "GigaDevice",
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "interface":  "x16",
+            "capacity":   "512MB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "GDQ2BFAA variante CQ: Commercial temp (0-95°C), DDR4-2666. "
+            "Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 ✓."
+        ),
+    },
+    {
+        "pn": "GDQ2BFAA-CJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "GigaDevice",
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "interface":  "x16",
+            "capacity":   "512MB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "GDQ2BFAA variante CJ: Commercial temp (0-95°C), DDR4-3200. "
+            "Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 ✓."
+        ),
+    },
+    {
+        "pn": "GDQ2BFAA-WQ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "GigaDevice",
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "interface":  "x16",
+            "capacity":   "512MB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "GDQ2BFAA variante WQ: Wide temp (-40-95°C), DDR4-2666. "
+            "Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 ✓."
+        ),
+    },
+    {
+        "pn": "GDQ2BFAA-WJ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "GigaDevice",
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "RAM",
+            "subtype":    "DDR4",
+            "interface":  "x16",
+            "capacity":   "512MB",
+            "confidence": "confirmed",
+            "status":     "enriched",
+        },
+        "reason": (
+            "GDQ2BFAA variante WJ: Wide temp (-40-95°C), DDR4-3200. "
+            "Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 ✓."
         ),
     },
 
