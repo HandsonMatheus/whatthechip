@@ -199,7 +199,7 @@ def _compute_destination(result: dict) -> tuple:
     """
     Return (label, category) for the physical storage bin.
     category is used as CSS modifier:
-      emcp | umcp | lpddr | ufs | emmc | nand | unknown
+      emcp | umcp | lpddr | ddr | ufs | emmc | nand | unknown
     """
     chip_type = (result.get('chip_type') or '').strip()
     ct = chip_type.lower()
@@ -256,7 +256,8 @@ def _compute_destination(result: dict) -> tuple:
             label = gen
         else:
             label = 'RAM'
-        return label, 'lpddr'
+        cat = 'lpddr' if ('lpddr' in ct or gen.upper().startswith('LPDDR')) else 'ddr'
+        return label, cat
 
     if 'nand' in ct:
         # Usa subtype como prefixo do rótulo (ex.: "SLC NAND") + capacidade na
