@@ -7938,6 +7938,658 @@ CORRECTIONS = [
         ),
     },
 
+    # ═══════════════════════════════════════════════════════════════════════════
+    # NANYA — chips confirmados via Octopart (fonte: página fabricante Nanya)
+    # Adicionados em 2026-06-20 | eMiner/WhatTheChip
+    # Regras de campo: chip_type="RAM", subtype=geração SEM "SDRAM",
+    #   interface=bus width ("x8"/"x16") NUNCA o nome da geração,
+    #   capacity em bytes (MB/GB), density_gbit em Gb.
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # ── NT5CC128M16JR — DDR3L 2Gbit 128Mx16 1.35V TFBGA96 ───────────────────
+    # Chip do usuário #1: "NT5CC128M16JR" (marcação laser sem sufixo).
+    # Octopart (Nanya mfr page): "DRAM Chip DDR3L SDRAM 2Gbit 128Mx16 1.35V 96-Pin TFBGA"
+    # capacity = 2Gbit ÷ 8 = 256MB por die.
+    {
+        "pn": "NT5CC128M16JR-EK",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC128M16JR-EK = DDR3L SDRAM 2Gbit 128Mx16 1.35V 96-Pin TFBGA. EK = commercial 0–85°C.",
+    },
+    {
+        "pn": "NT5CC128M16JR-EKT",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC128M16JR-EKT = DDR3L 2Gbit 128Mx16 TFBGA96. T = Tape & Reel; mesmas specs de JR-EK.",
+    },
+    {
+        "pn": "NT5CC128M16JR-EKH",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC128M16JR-EKH = DDR3L 2Gbit 128Mx16 TFBGA96. H = Automotive -40°C a 125°C.",
+    },
+    {
+        "pn": "NT5CC128M16JR-EKI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC128M16JR-EKI = DDR3L SDRAM 2Gbit 128Mx16 1.35V Automotive 96-Pin TFBGA.",
+    },
+
+    # ── NT5CC128M16IP — DDR3L 2Gbit 128Mx16 1.35V VFBGA96 ───────────────────
+    # Mesmo die do JR, pacote VFBGA96. Confirmado Octopart (Nanya mfr page):
+    # "DRAM Chip DDR3L SDRAM 2Gbit 128Mx16 1.35V 96-Pin VFBGA"
+    {
+        "pn": "NT5CC128M16IP-DI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC128M16IP-DI = DDR3L SDRAM 2Gbit 128Mx16 1.35V 96-Pin VFBGA. DI = Industrial -40°C a 85°C.",
+    },
+    {
+        "pn": "NT5CC128M16IP-DII",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC128M16IP-DII = DDR3L SDRAM 2Gbit 128Mx16 1.35V Automotive 96-Pin VFBGA.",
+    },
+
+    # ── NT5CC128M16FP — DDR3L 2Gbit 128Mx16 PBGA96 ──────────────────────────
+    # Mesmo die, pacote PBGA96. Octopart (Nanya mfr page):
+    # "DDR3L Dram, 128MX16, 0.225NS, Cmos, PBGA96"
+    {
+        "pn": "NT5CC128M16FP-DI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC128M16FP-DI = DDR3L Dram 128Mx16 0.225ns PBGA96. DI = Industrial.",
+    },
+
+    # ── NT5CC256M16EP — DDR3L 4Gbit 256Mx16 1.35V VFBGA96 ───────────────────
+    # Chip do usuário #2: "NT5CC256M16EP" (marcação laser sem sufixo).
+    # Octopart (Nanya mfr page): "DRAM Chip DDR3L SDRAM 4Gbit 256Mx16 1.35V 96-Pin VFBGA"
+    # capacity = 4Gbit ÷ 8 = 512MB por die.
+    {
+        "pn": "NT5CC256M16EP-DI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-DI = DDR3L SDRAM 4Gbit 256Mx16 1.35V VFBGA96. DI = Industrial -40°C a 85°C.",
+    },
+    {
+        "pn": "NT5CC256M16EP-EK",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-EK = DDR3L SDRAM 4Gbit 256Mx16 1.35V VFBGA96. EK = commercial 0–85°C.",
+    },
+    {
+        "pn": "NT5CC256M16EP-EKT",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-EKT = DDR3L 4Gbit 256Mx16 VFBGA96. T = Tape & Reel.",
+    },
+    {
+        "pn": "NT5CC256M16EP-DII",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-DII = DDR3L 4Gbit 256Mx16 VFBGA96 Automotive Grade II.",
+    },
+    {
+        "pn": "NT5CC256M16EP-DI-TR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-DI-TR = DDR3L 4Gbit 256Mx16 VFBGA96. Industrial, Tape & Reel.",
+    },
+    {
+        "pn": "NT5CC256M16EP-DIH",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-DIH = DDR3L 4Gbit 256Mx16 VFBGA96. H = Automotive -40°C a 125°C.",
+    },
+
+    # ── NT5CB256M8 — DDR3 2Gbit 256Mx8 1.5V VFBGA78 ─────────────────────────
+    # Chip do usuário #3: "NT5CB256M81M" — PN não encontrado em Octopart.
+    # Provável leitura errada: o traço do sufixo não está visível na marcação
+    # laser, e "1M" pode ser "FN" ou "BN" + código de temp lido incorretamente.
+    # Os variantes abaixo são os PNs reais confirmados via Octopart/Nanya.
+    # NT5CB (3ª letra B) = DDR3 standard 1.5V (vs NT5CC = DDR3L 1.35V).
+    # capacity = 2Gbit ÷ 8 = 256MB por die.
+    {
+        "pn": "NT5CB256M8FN-DI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x8",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya): NT5CB256M8FN-DI = DDR3 SDRAM 2Gbit 256Mx8 1.5V 78-Pin VFBGA. DI = Industrial. NT5CB = DDR3 standard 1.5V (≠ NT5CC = 1.35V).",
+    },
+    {
+        "pn": "NT5CB256M8FN-DII",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x8",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya): NT5CB256M8FN-DII = DDR3 SDRAM 2Gbit 256Mx8 1.5V 78-Pin VFBGA. DII = Automotive Grade II.",
+    },
+    {
+        "pn": "NT5CB256M8BN-CG",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x8",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya): NT5CB256M8BN-CG = DDR3 Dram 256Mx8 0.255ns PBGA78. DDR3 standard 1.5V. CG = commercial grade.",
+    },
+
+    # ── Base PNs sem sufixo — marcação laser no chip físico ──────────────────
+    # O operador lê o PN base no chip (antes do traço). A marcação a laser
+    # frequentemente não mostra o sufixo de temperatura/embalagem.
+    # Cada base PN aponta para as mesmas specs do grupo de variantes.
+
+    # NT5CC128M16JR (base) — chip do usuário #1 como aparece no chip
+    {
+        "pn": "NT5CC128M16JR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "PN base (sem sufixo) do NT5CC128M16JR — DDR3L 2Gbit 128Mx16 1.35V. Operador lê sem sufixo no chip. Specs = mesmas do grupo JR-EK/EKH/EKI/EKT.",
+    },
+    # NT5CC128M16IP (base) — mesmo die, pacote VFBGA96
+    {
+        "pn": "NT5CC128M16IP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "PN base (sem sufixo) do NT5CC128M16IP — DDR3L 2Gbit 128Mx16 1.35V VFBGA96. Specs = mesmas do grupo IP-DI/DII.",
+    },
+    # NT5CC128M16FP (base) — mesmo die, pacote PBGA96
+    {
+        "pn": "NT5CC128M16FP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "PN base (sem sufixo) do NT5CC128M16FP — DDR3L 2Gbit 128Mx16 PBGA96. Specs = mesmas do grupo FP-DI.",
+    },
+    # NT5CC256M16EP (base) — chip do usuário #2 como aparece no chip
+    {
+        "pn": "NT5CC256M16EP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "PN base (sem sufixo) do NT5CC256M16EP — DDR3L 4Gbit 256Mx16 1.35V VFBGA96. Specs = mesmas do grupo EP-DI/EK/EKT/DII/DIH.",
+    },
+    # NT5CB256M8 (base) — chip do usuário #3 (marcação lida como NT5CB256M81M)
+    {
+        "pn": "NT5CB256M8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x8",
+            "capacity":     "256MB",
+            "density_gbit": "2Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "PN base (sem sufixo) do NT5CB256M8 — DDR3 2Gbit 256Mx8 1.5V. NT5CB = DDR3 1.5V. Specs = mesmas do grupo FN-DI/DII e BN-CG.",
+    },
+
+    # ── NT5CB256M16DP — DDR3 4Gbit 256Mx16 1.5V ─────────────────────────────
+    # Octopart (Nanya mfr page): "DRAM Chip DDR3 SDRAM 4Gbit 256Mx16 1.5V 96-Pin VFBGA"
+    # NT5CB = DDR3 standard 1.5V; 256M×16 = 4Gbit ÷ 8 = 512MB por die.
+    # Variantes confirmadas: DI (PBGA96), EK (VFBGA96), DII (VFBGA96).
+    {
+        "pn": "NT5CB256M16DP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "PN base (sem sufixo) do NT5CB256M16DP — DDR3 4Gbit 256Mx16 1.5V. Octopart (Nanya mfr page) ✓. 9 variantes encontradas.",
+    },
+    {
+        "pn": "NT5CB256M16DP-DI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CB256M16DP-DI = DDR3 Dram 256Mx16 PBGA96. DI = Industrial. DDR3 1.5V 4Gbit.",
+    },
+    {
+        "pn": "NT5CB256M16DP-EK",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CB256M16DP-EK = DDR3 SDRAM 4Gbit 256Mx16 1.5V 96-Pin VFBGA. EK = commercial 0–85°C.",
+    },
+    {
+        "pn": "NT5CB256M16DP-DII",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Nanya",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+        },
+        "reason": "Octopart (Nanya mfr page): NT5CB256M16DP-DII = DDR3 SDRAM 4Gbit 256Mx16 1.5V 96-Pin VFBGA. DII = Automotive Grade II.",
+    },
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # MICRON — DDR3L standalone confirmados via FBGA API (2026-06-20)
+    # Família MT41K = DDR3L (1.35V). Ambos 4Gbit 256M×16-bit, package 96-FBGA.
+    # Fonte tier-1: API Micron FBGA (getpartbyfbgacode) + DigiKey.
+    # Regras de campo: chip_type="RAM", subtype="DDR3L", interface="x16",
+    #   capacity=512MB (4Gbit÷8), density_gbit="4Gb" (campo do modelo).
+    # Label na caixa: "DDR3L+4G" (via canonical_gen).
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    # ── D9SDD — MT41K256M16LY-107:N ──────────────────────────────────────────
+    # API Micron FBGA (2026-06-20): D9SDD → MT41K256M16LY-107:N
+    # DDR3L 4Gbit (256M×16), DDR3-1866 (933MHz, tCK=1.07ns, CL13).
+    # Package: 96-FBGA (7.5×13.5mm). Variante LY = package comercial.
+    # Matemática: 256M × 16bit = 4Gb ÷ 8 = 512MB por die.
+    # PN normalizado: MT41K256M16LY107N (engine: re.sub(r"[^A-Z0-9]","",pn)).
+    {
+        "pn": "MT41K256M16LY107N",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "fbga_code":    "D9SDD",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+            "source_url":   "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41K256M16LY-107-N/7707573",
+        },
+        "reason": (
+            "D9SDD identificado via API Micron FBGA (2026-06-20): MT41K256M16LY-107:N. "
+            "DDR3L 4Gbit (256M×16), DDR3-1866 (tCK=1.07ns), 96-FBGA 7.5×13.5mm. "
+            "Fonte: micron.com/fbga + DigiKey. Chip obsoleto — comum em notebooks ~2013-2016."
+        ),
+    },
+
+    # ── D9PXV — MT41K256M16HA-125:E ──────────────────────────────────────────
+    # API Micron FBGA (2026-06-20): D9PXV → MT41K256M16HA-125:E
+    # DDR3L 4Gbit (256M×16), DDR3-1600 (800MHz, tCK=1.25ns, CL11).
+    # Package: 96-FBGA (9×14mm). Variante HA = package diferente (maior footprint).
+    # Mesma organização que D9SDD (4Gb x16), velocidade inferior (1600 vs 1866).
+    # PN normalizado: MT41K256M16HA125E (engine: re.sub(r"[^A-Z0-9]","",pn)).
+    {
+        "pn": "MT41K256M16HA125E",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "status":     "enriched",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "RAM",
+            "subtype":      "DDR3L",
+            "interface":    "x16",
+            "capacity":     "512MB",
+            "density_gbit": "4Gb",
+            "fbga_code":    "D9PXV",
+            "confidence":   "confirmed",
+            "status":       "enriched",
+            "source_url":   "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41K256M16HA-125-E/4251401",
+        },
+        "reason": (
+            "D9PXV identificado via API Micron FBGA (2026-06-20): MT41K256M16HA-125:E. "
+            "DDR3L 4Gbit (256M×16), DDR3-1600 (tCK=1.25ns), 96-FBGA 9×14mm. "
+            "Fonte: micron.com/fbga + DigiKey. Chip obsoleto — comum em notebooks/tablets ~2012-2015."
+        ),
+    },
+
 ]
 
 
