@@ -141,29 +141,32 @@ class GatewayDestinationTests(TestCase):
         # Geração vem do subtype, literal — MENOS o ruído "SDRAM" (toda DDR é SDRAM).
         # A variante (DDR3/DDR3L/LPDDR3) é preservada. interface pode ser config de
         # barramento ("x16 @ 800MHz") → NÃO vira rótulo. Densidade do dram_density (Gb).
+        # Categoria CSS (split jun/2026): DDR/DDR3L → 'ddr' (marrom); LPDDR* → 'lpddr'
+        # (azul). O rótulo (DDR3L+2G) é o mesmo; só a cor da caixa muda.
         self.assertEqual(_compute_destination(_result(
             chip_type='RAM', subtype='DDR3L SDRAM', interface='x16 @ 800MHz',
-            capacity='256MB', dram_density='2Gb = por die [✓]')), ('DDR3L+2G', 'lpddr'))
-        # LPDDR móvel = pacote MULTI-DIE → caixa pela CAPACIDADE do pacote (GB),
-        # não pela densidade do die. H9CC 4GB (4 dies de 8Gb) → "LPDDR3+4G",
-        # NUNCA "LPDDR3+32G" (o bug do fallback bytes→Gbit assumindo 1 die).
+            capacity='256MB', dram_density='2Gb = por die [✓]')), ('DDR3L+2G', 'ddr'))
+        # LPDDR móvel = pacote MULTI-DIE → caixa pela CAPACIDADE do pacote em GB
+        # (sufixo "GB", convenção CLAUDE.md §6), não pela densidade do die. H9CC 4GB
+        # (4 dies de 8Gb) → "LPDDR3+4GB", NUNCA "LPDDR3+32G" (bug do fallback
+        # bytes→Gbit assumindo 1 die).
         self.assertEqual(_compute_destination(_result(
             chip_type='RAM', subtype='LPDDR3', interface='LPDDR3',
-            capacity='4GB', dram_density=None)), ('LPDDR3+4G', 'lpddr'))
+            capacity='4GB', dram_density=None)), ('LPDDR3+4GB', 'lpddr'))
         # P/ LPDDR a capacidade VENCE a densidade do die (prova que usa capacity):
-        # 6GB de pacote, dram_density de 8Gb por die → "LPDDR4+6G" (6, não 8).
+        # 6GB de pacote, dram_density de 8Gb por die → "LPDDR4+6GB" (6, não 8).
         self.assertEqual(_compute_destination(_result(
             chip_type='LPDDR4', subtype='LPDDR4',
-            capacity='6GB', dram_density='8Gb = 1GB por die [✓]')), ('LPDDR4+6G', 'lpddr'))
+            capacity='6GB', dram_density='8Gb = 1GB por die [✓]')), ('LPDDR4+6GB', 'lpddr'))
         # SK Hynix H5TQ confirmado: dram_density VAZIO + subtype "DDR3 SDRAM".
         # Strip de SDRAM + fallback bytes→Gb (256MB→2G) → 'DDR3+2G'.
         self.assertEqual(_compute_destination(_result(
             chip_type='RAM', subtype='DDR3 SDRAM', interface='DDR3',
-            capacity='256MB', dram_density=None)), ('DDR3+2G', 'lpddr'))
+            capacity='256MB', dram_density=None)), ('DDR3+2G', 'ddr'))
         # 1GB por chip → 8G (teto físico DDR3)
         self.assertEqual(_compute_destination(_result(
             chip_type='RAM', subtype='DDR3 SDRAM',
-            capacity='1GB', dram_density=None)), ('DDR3+8G', 'lpddr'))
+            capacity='1GB', dram_density=None)), ('DDR3+8G', 'ddr'))
         # NAND continua por capacidade em GB (não afetado pelo fallback de densidade)
         self.assertEqual(_compute_destination(_result(
             chip_type='eMMC', capacity='16GB')), ('EMMC16GB', 'emmc'))

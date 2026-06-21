@@ -546,7 +546,11 @@ def add_chip(request, lot_pk):
             'by_generation': True,
         })
 
-    has_cap = request.POST.get('has_cap') == 'true'
+    # has_cap recomputado NO SERVIDOR (regra de ouro #3): a identificação é decisão
+    # de negócio (manda o chip para UnknownChip) e não pode confiar no hidden do
+    # form. classify() é determinístico (lru_cache), então casa com o do preview;
+    # um POST forjado não burla mais esta etapa.
+    has_cap = _has_capacity(server_result)
 
     if not has_cap:
         UnknownChip.objects.get_or_create(part_number=pn)
