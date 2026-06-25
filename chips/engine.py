@@ -37,7 +37,8 @@ from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
-from django.db.models.functions import Length
+from django.db.models import Value
+from django.db.models.functions import Length, Replace
 
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, ProfitabilityConfig, SearchLog, Source, UnknownChip
 
@@ -1667,6 +1668,58 @@ def classify(pn_raw: str) -> dict:
         return result
     except KnownPart.DoesNotExist:
         pass
+
+    # ── 1a′. Fallback normalizado — part_number com hífen/espaço no banco ───
+    # O engine normaliza o input (re.sub r"[^A-Z0-9]") antes do lookup, mas
+    # registros criados antes dessa convenção podem ter sido salvos COM hífen
+    # (ex: "K4B4G1646E-BYMA" vs input normalizado "K4B4G1646EBYMA").
+    # Tenta de novo removendo separadores do lado do banco via Replace.
+    # Só roda quando o lookup exato falhou — sem custo no caminho normal.
+    # MultipleObjectsReturned: dois registros normalizam igual → salta silencioso.
+    try:
+        _norm_qs = (
+            _db_qs.filter(status="enriched")
+            .annotate(
+                pn_norm=Replace(
+                    Replace("part_number", Value("-"), Value("")),
+                    Value(" "), Value(""),
+                )
+            )
+        )
+        known = _norm_qs.get(pn_norm=pn)
+        fam = _match_family(pn) or known.family
+        if fam:
+            result = _result_from_known(pn, known, fam)
+        else:
+            result = {
+                "pn":           pn,
+                "known":        True,
+                "known_exact":  True,
+                "chip_type":    known.chip_type,
+                "subtype":      known.subtype,
+                "brand":        known.brand.name,
+                "capacity":     _clean(known.capacity),
+                "emcp_ram":     _clean(known.emcp_ram),
+                "emcp_nand":    _clean(known.emcp_nand),
+                "device":       known.device,
+                "confidence":   known.confidence,
+                "source_url":   known.source_url,
+                "is_emcp":      bool(known.emcp_ram),
+                "tip":          known.notes or "",
+                "reasoning":    [],
+                "from_web":     False,
+                "doc_url":      None,
+                "remarked_flag":     False,
+                "fuzzy_suggestions": [],
+                "interface":         known.interface,
+                "family_prefix":     "",
+                "family_undocumented": False,
+            }
+        result["profitable"] = assess_profitability(result)
+        _log_search(pn, found=True, source_used="db_exact")
+        return result
+    except (KnownPart.DoesNotExist, KnownPart.MultipleObjectsReturned):
+        pass  # Continua para FBGA lookup e gramática
 
     # ── 1b. FBGA lookup ─────────────────────────────────────────────────────
     # Código FBGA (ex: D9VFC) gravado a laser no chip pela Micron.
