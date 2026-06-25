@@ -14,8 +14,6 @@ Uso:
     python manage.py fix_known_parts --pn KMDP6001DA  # corrige só um PN
 """
 
-import re as _re
-
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -3102,218 +3100,6 @@ CORRECTIONS = [
         "reason": "subtype 'LPDDR4 Mobile' → 'LPDDR4'. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.",
     },
 
-    # ── K4UHE3D / K4UHE3S ────────────────────────────────────────────────────
-    # Samsung LPDDR4X standalone. Família K4U. pn[3:5]="HE" → 24Gb ÷ 8 = 3GB.
-    # 7-char: convenção de bancada eMiner (operador lê linha 1 do laser marking).
-    # Die gen "D" = 3rd-gen 10nm-class; "S" = die node diferente.
-    #
-    # PROVA (Samsung Semiconductor Global — Tier 1, 2026-06-22):
-    #   K4UHE3D4AA-GFCL(24 Gb): semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3d4aa-gfcl/ ✓
-    #   K4UHE3D4AA-GHCL(48 Gb): semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3d4aa-ghcl/ ✓
-    #   K4UHE3D4AA-GUCL(16 Gb): semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3d4aa-gucl/ ✓
-    #   K4UHE3S4AA-KUCL(24 Gb): semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3s4aa-kucl/ ✓
-    #   K4UHE3S4AA-KHCL(24 Gb): semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3s4aa-khcl/ ✓
-    # → Títulos das páginas confirmados via pesquisa Google (Tier 1).
-    #
-    # PROVA adicional (Octopart — Tier 2):
-    #   K4UHE3D4AB-MGCL: "LPDDR4X-4266 X32" — Win Source (9.800) + Worldway (46.406).
-    #   ⚠ Octopart descreve "(24GB)" = erro de distribuidor (deve ser 24Gb = 3GB).
-    #   Cross-validado: HE = 24Gb = 3GB (Samsung Global, K4UHE3D4AA-GFCL).
-    #
-    # ⚠ ATENÇÃO DENSIDADE: GHCL (48Gb=6GB) e GUCL (16Gb=2GB) divergem do decode
-    #   HE→3GB da gramática. Banco confirmed VENCE a gramática para estes PNs completos.
-    #   Chip físico K4UHE3D (7-char): provavelmente GFCL (3GB) — o standard.
-    {
-        "pn": "K4UHE3D",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "Samsung",
-            "chip_type":  "LPDDR4X",
-            "subtype":    "LPDDR4X",
-            "status":     "enriched",
-            "confidence": "manual",
-        },
-        "fields": {
-            "capacity":   "3GB",
-            "interface":  "",
-            "confidence": "manual",
-            "status":     "enriched",
-        },
-        "reason": (
-            "PN de 7 chars — convenção de bancada eMiner (linha 1 do laser). "
-            "Samsung Semiconductor Global (Tier 1): K4UHE3D4AA-GFCL(24 Gb) ✓. "
-            "HE = 24Gb ÷ 8 = 3GB (decode standard LPDDR4_CAP). "
-            "Variantes GHCL (6GB) e GUCL (2GB) existem mas são configs especiais; "
-            "leitura de 7 chars não permite distinguir: capacity=3GB é o standard. "
-            "confidence=manual: densidade âncora confirmada Samsung Global."
-        ),
-    },
-    {
-        "pn": "K4UHE3D4AA-GFCL",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "Samsung",
-            "chip_type":  "LPDDR4X",
-            "subtype":    "LPDDR4X",
-            "status":     "enriched",
-            "confidence": "confirmed",
-        },
-        "fields": {
-            "capacity":   "3GB",
-            "interface":  "",
-            "confidence": "confirmed",
-            "status":     "enriched",
-        },
-        "reason": (
-            "Samsung Semiconductor Global (Tier 1, 2026-06-22): "
-            "semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3d4aa-gfcl/ "
-            "→ título: 'K4UHE3D4AA-GFCL(24 Gb)' ✓. "
-            "24Gb ÷ 8 = 3GB. FBGA-200. EOL."
-        ),
-    },
-    {
-        "pn": "K4UHE3D4AA-GHCL",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "Samsung",
-            "chip_type":  "LPDDR4X",
-            "subtype":    "LPDDR4X",
-            "status":     "enriched",
-            "confidence": "confirmed",
-        },
-        "fields": {
-            "capacity":   "6GB",
-            "interface":  "",
-            "confidence": "confirmed",
-            "status":     "enriched",
-        },
-        "reason": (
-            "Samsung Semiconductor Global (Tier 1, 2026-06-22): "
-            "semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3d4aa-ghcl/ "
-            "→ título: 'K4UHE3D4AA-GHCL(48 Gb)' ✓. "
-            "48Gb ÷ 8 = 6GB. ⚠ Gramática decode HE→3GB (ERRADO para este PN). "
-            "Banco confirmed VENCE: capacity=6GB. FBGA-200. EOL."
-        ),
-    },
-    {
-        "pn": "K4UHE3D4AA-GUCL",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "Samsung",
-            "chip_type":  "LPDDR4X",
-            "subtype":    "LPDDR4X",
-            "status":     "enriched",
-            "confidence": "confirmed",
-        },
-        "fields": {
-            "capacity":   "2GB",
-            "interface":  "",
-            "confidence": "confirmed",
-            "status":     "enriched",
-        },
-        "reason": (
-            "Samsung Semiconductor Global (Tier 1, 2026-06-22): "
-            "semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3d4aa-gucl/ "
-            "→ título: 'K4UHE3D4AA-GUCL(16 Gb)' ✓. "
-            "16Gb ÷ 8 = 2GB. ⚠ Gramática decode HE→3GB (ERRADO para este PN). "
-            "Banco confirmed VENCE: capacity=2GB. FBGA-200. EOL."
-        ),
-    },
-    {
-        "pn": "K4UHE3D4AB-MGCL",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "Samsung",
-            "chip_type":  "LPDDR4X",
-            "subtype":    "LPDDR4X",
-            "status":     "enriched",
-            "confidence": "manual",
-        },
-        "fields": {
-            "capacity":   "3GB",
-            "interface":  "",
-            "confidence": "manual",
-            "status":     "enriched",
-        },
-        "reason": (
-            "Octopart (Tier 2): K4UHE3D4AB-MGCL = 'LPDDR4X-4266 X32' — Samsung. "
-            "Win Source (9.800 un) + Worldway Electronics (46.406 un). "
-            "⚠ Octopart descreve '(24GB)' = erro de distribuidor (= 24Gb = 3GB). "
-            "Cross-validado: HE = 24Gb = 3GB (Samsung Global, K4UHE3D4AA-GFCL Rev AA). "
-            "Rev B (4AB) = mesma densidade Rev A, ajuste de processo. confidence=manual."
-        ),
-    },
-    # — K4UHE3S: mesmo HE=3GB, die node "S" (vs "D" = 3rd-gen 10nm) ──────────
-    {
-        "pn": "K4UHE3S",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "Samsung",
-            "chip_type":  "LPDDR4X",
-            "subtype":    "LPDDR4X",
-            "status":     "enriched",
-            "confidence": "manual",
-        },
-        "fields": {
-            "capacity":   "3GB",
-            "interface":  "",
-            "confidence": "manual",
-            "status":     "enriched",
-        },
-        "reason": (
-            "PN de 7 chars — convenção de bancada. "
-            "Samsung Semiconductor Global (Tier 1): K4UHE3S4AA-KUCL(24 Gb) e KHCL(24 Gb) ✓. "
-            "HE = 24Gb ÷ 8 = 3GB. 'S' = die node diferente de 'D' (3rd-gen 10nm). "
-            "confidence=manual."
-        ),
-    },
-    {
-        "pn": "K4UHE3S4AA-KUCL",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "Samsung",
-            "chip_type":  "LPDDR4X",
-            "subtype":    "LPDDR4X",
-            "status":     "enriched",
-            "confidence": "confirmed",
-        },
-        "fields": {
-            "capacity":   "3GB",
-            "interface":  "",
-            "confidence": "confirmed",
-            "status":     "enriched",
-        },
-        "reason": (
-            "Samsung Semiconductor Global (Tier 1, 2026-06-22): "
-            "semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3s4aa-kucl/ "
-            "→ título: 'K4UHE3S4AA-KUCL(24 Gb)' ✓. "
-            "24Gb ÷ 8 = 3GB. LPDDR4X. EOL."
-        ),
-    },
-    {
-        "pn": "K4UHE3S4AA-KHCL",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "Samsung",
-            "chip_type":  "LPDDR4X",
-            "subtype":    "LPDDR4X",
-            "status":     "enriched",
-            "confidence": "confirmed",
-        },
-        "fields": {
-            "capacity":   "3GB",
-            "interface":  "",
-            "confidence": "confirmed",
-            "status":     "enriched",
-        },
-        "reason": (
-            "Samsung Semiconductor Global (Tier 1, 2026-06-22): "
-            "semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3s4aa-khcl/ "
-            "→ título: 'K4UHE3S4AA-KHCL(24 Gb)' ✓. "
-            "24Gb ÷ 8 = 3GB. LPDDR4X. EOL."
-        ),
-    },
-
     # ── K4UJE3T ───────────────────────────────────────────────────────────────
     # LPDDR4X standalone Samsung 6GB. Família K4U. pn[3:5]="JE" → 48Gb ÷ 8 = 6GB.
     # Tensão I/O: 0.6V. RAM pura — sem componente Flash. EOL.
@@ -3431,124 +3217,6 @@ CORRECTIONS = [
             "Chip físico confirmado na esteira (eMiner 2026-05-13). "
             "H9TQ64: 64=8GB NAND (HYX_EMCP_NAND_CAP ✓). AA=LPDDR3 2GB (HYX_H9TQ_RAM_CAP ✓). "
             "PN já era âncora da chave AA no populate_hynix — agora com confirmação física."
-        ),
-    },
-
-    # ── SK Hynix H9DA — eMCP LPDDR1 família legada 2012-2015 ────────────────
-    #
-    # ⚠ CORREÇÃO (jun/2026): H9DA = eMMC + LPDDR1 (NÃO LPDDR3).
-    # Fonte tier-1: Preduo.com confirma H9DA4VH4JJMMCR-4EM como "4+4 SKhynix,
-    # 137ball eMMC+LPD1". H9TP = LPDDR2 (162-ball); H9TQ = LPDDR3 (221-ball).
-    # Notação Preduo "X+Y": X=NAND em GB, Y=RAM em Gb (Gigabits!):
-    #   "4+4" = 4GB NAND + 4Gb RAM = 4GB + 512MB LPDDR1.
-    # Portanto pn[7:9]='2G' = 2Gb = 256MB LPDDR1 (NÃO 2GB LPDDR3).
-    # Sufixo "-4EM" confirma protocolo eMMC 4.x.
-    #
-    # Decode posicional H9DA (diferente de toda a linha H9Tx):
-    #   pn[4]   = NAND cap (1 char): '4' → 4GB   (mapa HYX_H9DA_NAND_CAP ✓)
-    #   pn[5:7] = "GH" filler fixo
-    #   pn[7:9] = RAM  cap (2 chars): '2G' → LPDDR1 256MB (2Gb=256MB, HYX_H9DA_RAM_CAP ✓)
-    #   pn[10]  = die gen: A=2ª · B=3ª geração de silício
-    #
-    # Confiança: manual — chip físico identificado na esteira eMiner (jun/2026).
-    # Specs confirmadas por Preduo.com (tier-1, banco curado) → LPDDR1 não LPDDR3.
-    #
-    {
-        "pn": "H9DA4GH2GJAM",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "SK Hynix",
-            "chip_type":  "eMCP",
-            "subtype":    "LPDDR1",
-            "status":     "enriched",
-            "confidence": "manual",
-        },
-        "fields": {
-            "emcp_nand":  "eMMC 4.x 4GB",
-            "emcp_ram":   "LPDDR1 256MB",
-            "confidence": "manual",
-            "status":     "enriched",
-        },
-        "reason": (
-            "Chip físico identificado na esteira eMiner (jun/2026). "
-            "Preduo.com (tier-1): H9DA = família '137ball eMMC+LPD1' (LPDDR1, NÃO LPDDR3). "
-            "Notação Preduo '4+4' (H9DA4VH4JJMMCR) = 4GB NAND + 4Gb(512MB) LPDDR1. "
-            "pn[7:9]='2G' → 2Gb = 256MB LPDDR1 (Gb, não GB). "
-            "Decode H9DA: pn[4]='4'→4GB NAND · pn[7:9]='2G'→LPDDR1 256MB ✓. "
-            "Sufixo '-4EM' confirma eMMC 4.x. Die gen A (pn[10]='A'). "
-            "Confidence=manual: chip físico + Preduo tier-1 convergem."
-        ),
-    },
-    {
-        "pn": "H9DA4GH2GJBM",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "SK Hynix",
-            "chip_type":  "eMCP",
-            "subtype":    "LPDDR1",
-            "status":     "enriched",
-            "confidence": "manual",
-        },
-        "fields": {
-            "emcp_nand":  "eMMC 4.x 4GB",
-            "emcp_ram":   "LPDDR1 256MB",
-            "confidence": "manual",
-            "status":     "enriched",
-        },
-        "reason": (
-            "Mesmas specs que H9DA4GH2GJAM — die gen B (pn[10]='B' = 3ª revisão de silício). "
-            "PN físico que originou a pesquisa da família H9DA (esteira eMiner, jun/2026). "
-            "Preduo.com (tier-1): H9DA = '137ball eMMC+LPD1' → LPDDR1, NÃO LPDDR3. "
-            "pn[7:9]='2G' → 2Gb = 256MB LPDDR1. 4GB eMMC 4.x + 256MB LPDDR1. "
-            "Confidence=manual: chip físico em mãos + Preduo tier-1 ✓."
-        ),
-    },
-    {
-        "pn": "H9DA4GH2GJAMCR",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "SK Hynix",
-            "chip_type":  "eMCP",
-            "subtype":    "LPDDR1",
-            "status":     "enriched",
-            "confidence": "manual",
-        },
-        "fields": {
-            "emcp_nand":  "eMMC 4.x 4GB",
-            "emcp_ram":   "LPDDR1 256MB",
-            "confidence": "manual",
-            "status":     "enriched",
-        },
-        "reason": (
-            "PN com grade suffix 'CR' (Commercial, RoHS) — mesmo chip que H9DA4GH2GJAM. "
-            "Citado em Alibaba: 'H9da4gh2gjamcr Memory Emcp 4+2 Flash H9da4gh2gjamcr-4em'. "
-            "Preduo.com (tier-1): H9DA = LPDDR1 (NÃO LPDDR3). "
-            "pn[7:9]='2G' → 2Gb = 256MB LPDDR1. Die gen A · 4GB eMMC 4.x + 256MB LPDDR1. "
-            "Confidence=manual: chip físico + Preduo tier-1 + gramática convergem."
-        ),
-    },
-    {
-        "pn": "H9DA4GH2GJBMCR",
-        "create": True,
-        "create_defaults": {
-            "brand_name": "SK Hynix",
-            "chip_type":  "eMCP",
-            "subtype":    "LPDDR1",
-            "status":     "enriched",
-            "confidence": "manual",
-        },
-        "fields": {
-            "emcp_nand":  "eMMC 4.x 4GB",
-            "emcp_ram":   "LPDDR1 256MB",
-            "confidence": "manual",
-            "status":     "enriched",
-        },
-        "reason": (
-            "PN com grade suffix 'CR', die gen B — variante do H9DA4GH2GJAMCR. "
-            "Rastreado em listas ariat-tech / ic-components (B2B). "
-            "Die gen B = 3ª revisão de silício; specs idênticas à variante die gen A. "
-            "Preduo.com (tier-1): H9DA = LPDDR1 (NÃO LPDDR3). "
-            "4GB eMMC 4.x + 256MB LPDDR1. Confidence=manual: família confirmada fisicamente."
         ),
     },
 
@@ -10092,10 +9760,7 @@ class Command(BaseCommand):
         fixed = skipped = not_found = created_count = 0
 
         for entry in corrections:
-            # pn_entry: PN como escrito na tabela (pode ter hífen/ponto por legibilidade).
-            # pn:       forma normalizada idêntica ao engine (só [A-Z0-9]) — usada no DB.
-            pn_entry    = entry["pn"]
-            pn          = _re.sub(r"[^A-Z0-9]", "", pn_entry.upper())
+            pn          = entry["pn"]
             fields      = entry["fields"]
             reason      = entry.get("reason", "")
             do_create   = entry.get("create", False)
@@ -10103,35 +9768,17 @@ class Command(BaseCommand):
             from chips.models import KnownPart, Brand
             obj = None
             was_created = False
-            _pn_renamed_from = None  # rastreia rename de part_number legado (com hífen)
 
             try:
                 obj = KnownPart.objects.get(part_number=pn)
             except KnownPart.DoesNotExist:
-                # ── Fallback 0: registro legado salvo COM hífen/separador ─────
-                # Quando a entrada tem "K4B4G1646E-BYMA" e o DB ainda guarda com
-                # hífen, tenta pelo pn_entry; se encontrar, renomeia para a forma
-                # normalizada (sem hífen) e continua para aplicar os fields.
-                if pn != pn_entry.upper():  # pn foi normalizado — tinha separador
-                    try:
-                        obj_legacy = KnownPart.objects.get(part_number=pn_entry.upper())
-                        _pn_renamed_from = pn_entry.upper()  # registra old pn para changed_fields
-                        obj_legacy.part_number = pn          # renomeia em memória
-                        obj = obj_legacy
-                        self.stdout.write(self.style.WARNING(
-                            f"  ↳ Renomeando part_number '{pn_entry}' → '{pn}' "
-                            f"(remove separador — alinha com convenção do engine)"
-                        ))
-                    except KnownPart.DoesNotExist:
-                        obj = None
-
-                # ── Fallback 1: busca por fbga_code quando PN exato não existe ─
+                # ── Fallback: busca por fbga_code quando PN exato não existe ─
                 # Ocorre quando enrich_micron_fbga salvou o PN com formato raw
                 # da API (ex: "MT29C4G48MAZAPAKD-5 IT" com hífen/espaço) mas a
                 # entrada aqui usa o PN normalizado (ex: "MT29C4G48MAZAPAKD5IT").
                 # Neste caso atualizamos o registro existente pelo FBGA code em vez
-                # de criar um duplicado. Só roda se fallback 0 não encontrou nada.
-                fbga_fallback = fields.get("fbga_code", "") if obj is None else ""
+                # de criar um duplicado.
+                fbga_fallback = fields.get("fbga_code", "")
                 if fbga_fallback:
                     fbga_qs = KnownPart.objects.filter(
                         fbga_code=fbga_fallback, status="enriched"
@@ -10198,10 +9845,6 @@ class Command(BaseCommand):
                         continue
 
             changed_fields = []
-            # Rastreia rename de part_number legado (parte do fallback 0 acima)
-            if _pn_renamed_from:
-                changed_fields.append(("part_number", _pn_renamed_from, pn))
-                # obj.part_number já está em memória como pn — será salvo com obj.save()
             for field, new_val in fields.items():
                 old_val = getattr(obj, field, None)
                 resolved = new_val if new_val is not None else ""

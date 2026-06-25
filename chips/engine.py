@@ -37,7 +37,7 @@ from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
-from django.db.models import Value
+from django.db.models import CharField, Value
 from django.db.models.functions import Length, Replace
 
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, ProfitabilityConfig, SearchLog, Source, UnknownChip
@@ -1683,6 +1683,7 @@ def classify(pn_raw: str) -> dict:
                 pn_norm=Replace(
                     Replace("part_number", Value("-"), Value("")),
                     Value(" "), Value(""),
+                    output_field=CharField(),
                 )
             )
         )
