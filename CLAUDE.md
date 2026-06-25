@@ -473,6 +473,7 @@ relevante quando a tarefa pedir:
 - **`README.md`** — visão geral e setup original.
 - **`HANDOFF.md`** — decisões de arquitetura, histórico e correções (BUG-1…BUG-6).
 - **`DEPLOY_RENDER.md`** — deploy, env vars, armadilhas de produção.
+- **`RENTABILIDADE.md`** — bíblia técnica completa do sistema de rentabilidade: `assess_profitability`, `is_dead_by_generation`, `ProfitabilityConfig`, gateway do estoque, todos os bugs corrigidos, limitações, regras invioláveis, checklist para novos chip_types. **Leia antes de tocar em qualquer código de rentabilidade.**
 - **`MICRON.md`** — bíblia técnica e de negócio da Micron: famílias, decode maps, convenção de campos, pipeline, fontes de dados, bugs corrigidos, lacunas.
 - **`PIECEMAKERS.md`** — bíblia técnica PieceMakers: anatomia do PN PMF, decode map PMF_DDR3_CAP, famílias, rentabilidade, fontes, armadilhas.
 - **`PLANO_MICRON_FBGA.md`** — pipeline FBGA da Micron (estágios iniciais — parcialmente histórico; ver MICRON.md para estado atual).
