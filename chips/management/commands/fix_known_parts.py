@@ -4179,6 +4179,160 @@ CORRECTIONS = [
     },
 
     # ══════════════════════════════════════════════════════════════════════════
+    # SanDisk iNAND 7 Series consumer (SD7DP) — eMMC standalone, 2026-06-26
+    # ══════════════════════════════════════════════════════════════════════════
+    #
+    # Linha consumer da 7ª geração iNAND (pré-WD, circa 2014-2015).
+    # Presente em Huawei Y330, G730, Y625 (Android mid-range era eMMC 5.x).
+    # Capacidade EXCLUSIVAMENTE no sufixo declarativo após o traço:
+    #   SD7DP24C-4G → SD7DP24C4G (engine strip) → capacity="4GB"
+    #   SD7DP28C-8G → SD7DP28C8G               → capacity="8GB"
+    #
+    # Die codes (24C, 24F, 26A, 28C, 41E): identificam revisão do processo NAND —
+    # NÃO determinam capacidade. O mesmo die code 28C existe em -4G e -8G.
+    #
+    # ⚠ Interface: populate_sandisk.py declara "eMMC 5.1" referenciando WD datasheet.
+    #   Nota de incerteza: a contraparte OEM SDIN7DP2 (Mouser Commercial Embedded
+    #   Product Brief, dez/2015, fonte Tier 1) é eMMC 4.51. Se fonte Tier 1 futura
+    #   confirmar 4.51, corrigir populate_sandisk.py e estes registros.
+    #
+    # Confirmados para adição (2026-06-26):
+    #   SD7DP28C4G — Octopart Tier 2 (5 distribuidores) + Martview (Huawei Y625/G730)
+    #   SD7DP28C8G — Jotrin + Censtry (Tier 3, múltiplas fontes independentes)
+    #   SD7DP24C4G — Win Source + Veswin + Huawei Y330-U01 (Tier 3)
+    #   SD7DP24F4G — IC-Components + Jotrin + OMO + Grandado (Tier 3)
+    #
+    # NÃO adicionados (evidência insuficiente — fonte única Grandado):
+    #   SD7DP26A4G — só 1 listagem (Grandado bundle); aguardar confirmação independente
+    #   SD7DP41E16G — só 1 listagem (Grandado bundle); aguardar confirmação independente
+    # ──────────────────────────────────────────────────────────────────────────
+
+    # ── SD7DP28C4G ────────────────────────────────────────────────────────────
+    # SanDisk iNAND 7 Series, 4GB. Die code 28C = revisão de processo NAND.
+    # PN normalizado: SD7DP28C-4G → SD7DP28C4G (engine strip hífens e espaços).
+    #
+    # Fontes (2026-06-26):
+    #   • Octopart (Tier 2): SD7DP28C-4G com 5 distribuidores ativos ✓
+    #     (Win Source, hICPart, Fmall, SHENGYU, Augswan). Categoria Flash Memory.
+    #   • Martview.com (reciclagem): "SD7DP28C-4G EMMC IC Flash IC Memory — used"
+    #     → Dispositivos confirmados: Huawei Y625-U32, Huawei G730-U10 ✓.
+    #   • Veswin.com (Tier 3 B2B): listagem independente ✓.
+    {
+        "pn": "SD7DP28C4G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "4GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Octopart Tier 2: SD7DP28C-4G com 5 distribuidores ativos (Win Source, hICPart, Fmall). "
+            "Martview (reciclagem): Huawei Y625-U32 e G730-U10 usam este chip. "
+            "Sufixo -4G = 4GB (convenção declarativa SanDisk). Sem RAM. "
+            "WD oficial não consultado diretamente → confidence=distributor."
+        ),
+    },
+
+    # ── SD7DP28C8G ────────────────────────────────────────────────────────────
+    # SanDisk iNAND 7 Series, 8GB. Mesmo die code 28C, sufixo -8G.
+    # PN normalizado: SD7DP28C-8G → SD7DP28C8G.
+    # ⚠ NÃO confirmado no Octopart (0 resultados). Apenas fontes Tier 3.
+    #
+    # Fontes (2026-06-26):
+    #   • Jotrin Electronics (Tier 3): SD7DP28C-8G como "SANDISK BGA" ✓.
+    #   • Censtry Electronics (Tier 3): "SanDisk IC Chips BGA" ✓ (em estoque).
+    #   • Grandado NZ (Tier 3): SD7DP28C-8G em lote junto a SD7DP24F-4G ✓.
+    #   Múltiplas fontes Tier 3 independentes → plausível; confidence=distributor.
+    {
+        "pn": "SD7DP28C8G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Jotrin + Censtry + Grandado (Tier 3 múltiplas fontes independentes): "
+            "SD7DP28C-8G como SanDisk BGA. Sufixo -8G = 8GB. Sem RAM. "
+            "Não confirmado Octopart → confidence=distributor (conservador)."
+        ),
+    },
+
+    # ── SD7DP24C4G ────────────────────────────────────────────────────────────
+    # SanDisk iNAND 7 Series, 4GB. Die code 24C (processo mais antigo que 28C).
+    # PN normalizado: SD7DP24C-4G → SD7DP24C4G.
+    # Dispositivo associado: Huawei Y330-U01 (2014, Android 4.4, mid-range).
+    #
+    # Fontes (2026-06-26):
+    #   • Win Source (Tier 3 B2B): SD7DP24C-4G listado ✓.
+    #   • Veswin.com (Tier 3): SD7DP24C-4G na mesma página de SD7DP28C-4G ✓.
+    #   • AB Sunshine Electronics (Tier 3): listagem ativa ✓.
+    #   • AliExpress (Tier 3): SD7DP24C-4G e SD7DP28C-4G vendidos juntos ✓.
+    {
+        "pn": "SD7DP24C4G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "4GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Win Source, Veswin, AB Sunshine (Tier 3 B2B): SD7DP24C-4G listado independentemente. "
+            "Dispositivo: Huawei Y330-U01 (2014). Sufixo -4G = 4GB. Sem RAM. "
+            "WD oficial não consultado → confidence=distributor."
+        ),
+    },
+
+    # ── SD7DP24F4G ────────────────────────────────────────────────────────────
+    # SanDisk iNAND 7 Series, 4GB. Die code 24F (variante de processo).
+    # PN normalizado: SD7DP24F-4G → SD7DP24F4G.
+    #
+    # Fontes (2026-06-26):
+    #   • IC-Components.com (Tier 3): SD7DP24F-4G em estoque (2816 pcs), "SANDISK BGA" ✓.
+    #   • Jotrin Electronics (Tier 3): listagem ativa ✓.
+    #   • OMO Electronic (Tier 3): listagem ativa ✓.
+    #   • Grandado NZ (Tier 3): no mesmo lote que SD7DP28C-8G e SD7DP26A-4G ✓.
+    #   Quatro fontes Tier 3 independentes → alta plausibilidade.
+    {
+        "pn": "SD7DP24F4G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "4GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "IC-Components, Jotrin, OMO Electronic, Grandado (Tier 3, 4 fontes independentes): "
+            "SD7DP24F-4G como SanDisk BGA. Sufixo -4G = 4GB. Sem RAM. "
+            "WD oficial não consultado → confidence=distributor."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
     # SanDisk eMCP — verificados em fontes B2B (2026-05)
     # ══════════════════════════════════════════════════════════════════════════
 

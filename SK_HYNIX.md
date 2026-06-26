@@ -128,12 +128,13 @@ mais frequente depois da Samsung, com forte presença em LPDDR mobile e DDR PC.
 | eMMC standalone | 3 (H26M, H26T, H28M) | 2 | 1 (H28M) | — |
 | UFS legado | 2 (H28U, H28S) | 2 | 0 | 0 |
 | UFS atual (4D NAND) | 2 (HN8T, HN8G) | 2 | 0 | 0 |
+| eMCP LPDDR1 | 1 (H9DA) | 1 | 0 | 0 |
 | eMCP LPDDR3 | 1 (H9TQ) | 1 | 0 | 0 |
 | eMCP LPDDR2 | 2 (H9TP, H9DP) | 2 | 0 | 0 |
 | eMCP LPDDR4X | 1 (H9HP) | 1 | 0 | 0 |
 | uMCP LPDDR4X | 1 (H9HQ) | 1 | 0 | 0 |
 | uMCP LPDDR5 | 2 (H9HR, H9RT) | 2 | 0 | 0 |
-| **TOTAL** | **33** | **30** | **2** | **~3** |
+| **TOTAL** | **34** | **31** | **2** | **~3** |
 
 **Arquivos que definem as famílias:**
 - `chips/management/commands/populate_hynix.py` — gabarito mestre (ChipFamilies + DecodeMaps)
@@ -340,7 +341,7 @@ H  9  T  K  [N/M][N/M][N/M]  [cap] ...
 H  9  C  [C|K]  [N/M][N/M][N/M]  [cap] ...
 0  1  2    3      4    5    6       7
 ```
-`pn[7]` → HYX_LPDDR3_CAP: `4`=512MB · `8`=1GB · `B`=2GB · `D`=3GB · `C`=4GB
+`pn[7]` → HYX_LPDDR3_CAP: `4`=512MB · `8`=1GB · `B`=2GB · `D`=3GB · `C`=4GB · `E`=6GB · `F`=8GB
 
 ⚠ H9CC = x32 barramento · H9CK = x64 (dual-channel).
 
@@ -416,6 +417,21 @@ H9TP `pn[4:6]` → HYX_EMCP_NAND_CAP · `pn[6:8]` → HYX_H9TP_RAM_CAP
 H9DP `pn[4:6]` → HYX_H9D_NAND_CAP  · `pn[7]` (1 char) → HYX_H9D_RAM_CAP
 
 ⚠ H9DP: `pn[6]='A'` é código de controlador fixo — invisível para o decode de RAM.
+
+### 3.13b eMCP — H9DA (LPDDR1 legado, ~2012-2015) — DECODE DIFERENTE
+```
+H  9  D  A  [nand]  G   H  [ram_hi][ram_lo]  [pkg]  [gen]  [tmp]
+0  1  2  3    4     5   6      7        8       9      10     11
+```
+H9DA `pn[4]` (1 char) → HYX_H9DA_NAND_CAP · `pn[7:9]` (2 chars) → HYX_H9DA_RAM_CAP
+
+⚠ `pn[5:7]='GH'` é **filler fixo** — NÃO faz parte do decode de capacidade.
+⚠ H9DA usa esquema **completamente diferente** de H9TQ/H9TP/H9DP: NAND em 1 char (pn[4]), RAM em pn[7:9].
+⚠ Sufixo `-4EM` = eMMC 4.x (protocolo legado). `pn[10]` = die gen (A=2ª · B=3ª · C=4ª).
+⚠ **RAM é LPDDR1** (NÃO LPDDR3): H9DA = 137-ball/153-ball eMMC+LPDDR1 (Preduo tier-1 ✓).
+  H9TP = LPDDR2 (162-ball); H9TQ = LPDDR3 (221-ball). Prefixo define geração.
+⚠ Notação Preduo "X+Y": Y em **Gb** (Gigabits): "4+4" = 4GB NAND + 4Gb (512MB) LPDDR1.
+⚠ `4J` (H9DA4GH4JJAM) confirmado via Preduo H9DA4VH4JJMMCR-4EM "4+4" → `4J`=4Gb=512MB LPDDR1.
 
 ### 3.14 eMCP LPDDR4X — H9HP / uMCP LPDDR4X — H9HQ
 ```
@@ -540,15 +556,17 @@ Bloqueado: `C`=4GB — SK Hynix migrou para LPDDR3 antes. **Status: ✅ COMPLETO
 
 ### 4.11 HYX_LPDDR3_CAP — pn[7], 1 char (H9CC e H9CK compartilham)
 
-| Chave | val_primary | Fonte |
-|-------|-------------|-------|
-| `4` | 512MB | H9CCNNN4GTMLAR ✓ |
-| `8` | 1GB | H9CCNNN8GTMLAR ✓ |
-| `B` | 2GB | H9CCNNNBJTMLAR ✓ |
-| `D` | 3GB | H9CKNNNDATMTDR ✓ (24Gbit assimétrico) |
-| `C` | 4GB | H9CKNNNCPTMTLR ✓ (teto LPDDR3) |
+| Chave | val_primary | Densidade | Fonte |
+|-------|-------------|-----------|-------|
+| `4` | 512MB | 4Gbit | H9CCNNN4GTMLAR ✓ |
+| `8` | 1GB | 8Gbit | H9CCNNN8GTMLAR ✓ |
+| `B` | 2GB | 16Gbit | H9CCNNNBJTMLAR ✓ |
+| `D` | 3GB | 24Gbit | H9CKNNNDATMTDR ✓ (assimétrico — viabilizou 3GB nos smartphones) |
+| `C` | 4GB | 32Gbit | H9CKNNNCPTMTLR ✓ |
+| `E` | 6GB | 48Gbit | H9CKNNNECTMUPR-NUH Preduo WP01025 256ball ✓ (jun/2026) |
+| `F` | 8GB | 64Gbit | H9CCNNNFAGMLLR-NUD Preduo WP01836 253ball ✓ (jun/2026) |
 
-Bloqueado: 6GB/8GB — LPDDR3 atingiu limite físico/térmico em 32Gb. **Status: ✅ COMPLETO.**
+⚠ O comentário anterior "BLOQUEADO — limite físico/térmico em 32Gb" estava errado. Preduo tier-1 confirma pacotes multi-die 48Gbit (E=6GB) e 64Gbit (F=8GB) circulando no mercado de reciclagem. Padrão idêntico ao HYX_LPDDR4_H9HC_CAP, onde E=6GB e F=8GB já eram confirmados desde a escrita inicial. O esquema de capacidade é consistente ao longo das gerações H9CC/H9CK → H9HC/H9HK. **Status: ✅ COMPLETO.**
 
 ### 4.12 HYX_LPDDR4_H9HC_CAP — pn[7], 1 char (H9HC, H9HK, H9HCN compartilham)
 
@@ -735,6 +753,31 @@ NAND `pn[4:6]`: `0G`=128GB · `1G`=256GB · `2G`=512GB
 RAM `pn[6:8]`: `6A/6M`=LPDDR5 8GB · `GA`=LPDDR5 12GB · `7M`=LPDDR5 16GB
 (Esquema de codificação NAND "dígito+G" — completamente diferente de todas as outras famílias)
 
+### 4.30 HYX_H9DA_NAND_CAP — pn[4], 1 char (H9DA — eMCP LPDDR1 legado)
+
+⚠ Decode em **1 char** — único caso eMCP com NAND de 1 char (todos os outros usam 2).
+
+| Chave | val_primary | Fonte |
+|-------|-------------|-------|
+| `1` | 1GB | H9DA1GH25HAMMR-4EM · H9DA1GH51JAMMR-4EM — ariat-tech ✓ |
+| `2` | 2GB | H9DA2GH1GHAM-4EM — ariat-tech ✓ |
+| `4` | 4GB | H9DA4GH2GJAM-4EM · H9DA4VH4JJMMCR-4EM — ariat-tech / Preduo ✓ |
+
+### 4.31 HYX_H9DA_RAM_CAP — pn[7:9], 2 chars (H9DA — eMCP LPDDR1)
+
+`val_primary` = string completa com tipo + capacidade.
+⚠ **RAM = LPDDR1** (confirmado Preduo tier-1). Notação Preduo "X+Y": Y em **Gb** (Gigabits).
+Chaves decimais `"25"`/`"51"` = 256Mbit/512Mbit (= 256MB/512MB); alfanuméricos `"2G"`/`"4J"` = Gigabits (2Gb=256MB, 4Gb=512MB).
+⚠ `"2G"` ≠ 2GB — é 2Gb = **256MB** LPDDR1.
+
+| Chave | val_primary | Fonte |
+|-------|-------------|-------|
+| `25` | LPDDR1 256MB | H9DA1GH25HAMMR-4EM — ariat-tech ✓ |
+| `51` | LPDDR1 512MB | H9DA1GH51HAMMR-4EM · H9DA1GH51JAMMR-4EM — ariat-tech ✓ |
+| `1G` | LPDDR1 1GB | H9DA2GH1GHAM-4EM — ariat-tech ✓ |
+| `2G` | LPDDR1 256MB | H9DA4GH2GJAM-4EM — chip físico eMiner; 2Gb=256MB ✓ |
+| `4J` | LPDDR1 512MB | H9DA4VH4JJMMCR-4EM — Preduo "4+4" (4Gb=512MB) ✓ |
+
 ---
 
 ## 5. Famílias — Inventário Completo
@@ -804,6 +847,7 @@ RAM `pn[6:8]`: `6A/6M`=LPDDR5 8GB · `GA`=LPDDR5 12GB · `7M`=LPDDR5 16GB
 |---------|-------------|-----|-----------|--------|
 | H9DP | `"eMCP"` | LPDDR2 (legado) | eMMC + LPDDR2 | ✅ Completo |
 | H9TP | `"eMCP"` | LPDDR2 (legado) | eMMC 4.x + LPDDR2 | ✅ Completo |
+| H9DA | `"eMCP"` | LPDDR1 (legado ~2012-2015) | eMMC 4.x + LPDDR1 | ✅ Completo (4 PNs confirmados, Preduo tier-1) |
 | H9TQ | `"eMCP"` | LPDDR3 | eMMC 5.x + LPDDR3 | ✅ Completo |
 | H9HP | `"eMCP"` | LPDDR4X | eMMC 5.1 + LPDDR4X | ✅ Completo |
 | H9HQ | `"uMCP"` | LPDDR4X | UFS 2.1 + LPDDR4X | ✅ Completo |
@@ -1206,6 +1250,8 @@ LPDDR1 (H5MS, HY5MS)     ██████░░░░ 65%   HY5MS com 1 PN
 | 2026-06-19 | Subtypes LPDDR | `"LPDDR3 standalone"` → `"LPDDR3"` (e similares) | Auditoria convenção | Qualificador "standalone" vazava para label |
 | 2026-06-19 | H9TQ64AAETAC | Criado em fix_known_parts (PN âncora da chave AA) | eMiner 2026-05-13 | Chip físico na esteira |
 | 2026-06-19 | SKHYNIX.md → SK_HYNIX.md | Bíblia reescrita seguindo template PROMPT_NOVO_MD_MARCA | — | Arquivo anterior não seguia estrutura canônica |
+| 2026-06-25 | HYX_LPDDR3_CAP | Adicionadas chaves `E`=6GB (48Gbit) e `F`=8GB (64Gbit) | Preduo WP01025 e WP01836 tier-1 | Comentário "BLOQUEADO" anterior estava errado — multi-die confirmado |
+| 2026-06-25 | 15 chips H9CK/H9CC LPDDR3 | Adicionados em fix_known_parts.py | Preduo, iFixit, absunshine, ssfkg | H9CKNNNBJTMP chip físico na esteira eMiner; restantes distributor |
 
 ### Chips confirmados individualmente (histórico)
 
@@ -1235,6 +1281,21 @@ LPDDR1 (H5MS, HY5MS)     ██████░░░░ 65%   HY5MS com 1 PN
 | H5TC8G83AMR-PBA | DDR3L | 1GB (DDP) | Octopart ✓ | confirmed |
 | H5TQ2G43AFR | DDR3 x4 | 256MB | Alldatasheet ✓ | confirmed |
 | H5TC8G43AMR | DDR3L x4 | 1GB (DDP) | LCSC / Octopart ✓ | confirmed |
+| H9CKNNNBJTMP | LPDDR3 x64 | 2GB | chip físico bancada eMiner; ssfkg H9CKNNNBJTMPLR 16Gb 168ball ✓ | manual |
+| H9CKNNNBJTMPLR | LPDDR3 x64 | 2GB | ssfkg.com 16Gb 168ball LPDDR3 SK Hynix ✓ | distributor |
+| H9CKNNNBKTMRPR | LPDDR3 x64 | 2GB | Preduo H9CKNNNBKTMRPR-NUH 16Gbit 256ball ✓ | distributor |
+| H9CKNNN8KTMRWR | LPDDR3 x64 | 1GB | iFixit Apple iPhone 6 (2014) step 15 ✓ | distributor |
+| H9CKNNNBPTMRLR | LPDDR3 x64 | 2GB | iFixit Google Nexus 5 (LG, 2013) ✓ | distributor |
+| H9CKNNNDBTMTAR | LPDDR3 x64 | 3GB | iFixit Motorola Nexus 6 (Google, 2014) ✓ | distributor |
+| H9CKNNNDATMUPR | LPDDR3 x64 | 3GB | Preduo WP01020 H9CKNNNDATMUPR-NUH 24Gbit 256ball ✓ | distributor |
+| H9CKNNNDATMRPR | LPDDR3 x64 | 3GB | Preduo H9CKNNNDATMRPR-NUH 24Gbit 256ball ✓ | distributor |
+| H9CKNNNCPTMRPR | LPDDR3 x64 | 4GB | Preduo H9CKNNNCPTMRPR-NUH/-NUM 32Gbit 256ball ✓ | distributor |
+| H9CKNNNECTMUPR | LPDDR3 x64 | 6GB | Preduo WP01025 H9CKNNNECTMUPR-NUH 48Gbit 256ball ✓ | distributor |
+| H9CCNNN8JTMLAR | LPDDR3 x32 | 1GB | absunshine 8Gb DDP 256MX32 FBGA-178 ✓ | distributor |
+| H9CCNNNBKTMLBR | LPDDR3 x32 | 2GB | Preduo H9CCNNNBKTMLBR-NTD/-NUD 16Gbit 253ball ✓ | distributor |
+| H9CCNNNBPTBLBR | LPDDR3 x32 | 2GB | Preduo H9CCNNNBPTBLBR-NTD 16Gbit 253ball ✓ | distributor |
+| H9CCNNNCPTMLBR | LPDDR3 x32 | 4GB | Preduo H9CCNNNCPTMLBR-NTD 32Gbit 253ball ✓ | distributor |
+| H9CCNNNFAGMLLR | LPDDR3 x32 | 8GB | Preduo WP01836 H9CCNNNFAGMLLR-NUD 64Gbit 253ball ✓ | distributor |
 
 ---
 

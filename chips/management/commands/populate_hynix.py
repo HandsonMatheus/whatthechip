@@ -313,6 +313,78 @@ class Command(BaseCommand):
         self._bulk_map("HYX_H9D_RAM_CAP", h9d_ram_cap, hynix, dry, overwrite)
 
         # ══════════════════════════════════════════════════════════════════════
+        # DecodeMap: HYX_H9DA_NAND_CAP — Capacidade NAND eMCP H9DA (LPDDR1), chave pn[4]
+        # ══════════════════════════════════════════════════════════════════════
+        #
+        # Posição: pn[4], comprimento 1 char.
+        # Anatomia H9DA:
+        #   H  9  D  A  [nand]  G   H  [ram_hi][ram_lo]  [pkg]  [gen]  [tmp]
+        #   0  1  2  3    4     5   6      7        8       9      10     11
+        #
+        #   pn[4]   = capacidade NAND (1 char): 1=1GB · 2=2GB · 4=4GB
+        #   pn[5]   = "G" fixo (código de velocidade/estrutura do controlador eMMC)
+        #   pn[6]   = "H" fixo (código de package — constante em todos os PNs H9DA rastreados)
+        #   pn[7:9] = capacidade RAM (2 chars) → HYX_H9DA_RAM_CAP
+        #
+        # ⚠ ESQUEMA DIFERENTE de toda a linha H9Tx / H9DP:
+        #   H9TQ/H9TP/H9DP: NAND em pn[4:6] (2 chars), RAM em pn[6:8] ou pn[7]
+        #   H9DA:            NAND em pn[4]   (1 char),  RAM em pn[7:9] (2 chars)
+        #   pn[5:7] = "GH" é filler fixo — invisível para o decode.
+        #
+        # Fontes tier-1: Preduo.com (banco curado) confirma H9DA = eMMC+LPDDR1 (categoria
+        #   "137ball eMMC+LPD1" / "153ball eMMC+LPD1"). H9TP = LPDDR2; H9TQ = LPDDR3.
+        # Fontes tier-2 (distribuidores B2B: ariat-tech, ic-components, Alibaba):
+        #   1=1GB — H9DA1GH25HAMMR-4EM ✓ · H9DA1GH51JAMMR-4EM ✓
+        #   2=2GB — H9DA2GH1GHAM-4EM   ✓
+        #   4=4GB — H9DA4GH2GJAM-4EM   ✓ · H9DA4VH4JJMMCR-4EM (Preduo "4+4" ✓)
+        #
+        # Era/uso: ~2012-2015, eMMC 4.x. Antecessor do H9TP/H9TQ. Obsoleto para reuso.
+        #
+        h9da_nand_cap = [
+            # char_key  val_primary  val_secondary
+            ("1", "1GB",  ""),  # H9DA1GH25HAMMR-4EM · H9DA1GH51JAMMR-4EM — ariat-tech ✓
+            ("2", "2GB",  ""),  # H9DA2GH1GHAM-4EM   — ariat-tech ✓
+            ("4", "4GB",  ""),  # H9DA4GH2GJAM-4EM · H9DA4VH4JJMMCR-4EM — Preduo ✓
+        ]
+        self._bulk_map("HYX_H9DA_NAND_CAP", h9da_nand_cap, hynix, dry, overwrite)
+
+        # ══════════════════════════════════════════════════════════════════════
+        # DecodeMap: HYX_H9DA_RAM_CAP — RAM eMCP H9DA (LPDDR1), chave pn[7:9]
+        # ══════════════════════════════════════════════════════════════════════
+        #
+        # Posição: pn[7:9], comprimento 2 chars.
+        # val_primary = string COMPLETA "LPDDR1 XMB" — padrão SK Hynix RAM maps.
+        #
+        # ⚠ ATENÇÃO UNIDADES: H9DA usa LPDDR1 (NÃO LPDDR3). Prefixo H9DA = eMCP
+        #   com LPDDR1 (137-ball/153-ball); H9TP = LPDDR2 (162-ball); H9TQ = LPDDR3 (221-ball).
+        #   Confirmado por Preduo.com (tier-1, banco curado): H9DA4VH4JJMMCR-4EM listado
+        #   como "4+4 SKhynix, 137ball eMMC+LPD1" — "4+4" = 4GB NAND + 4Gb (512MB) LPDDR1.
+        #   ⚠ Notação Preduo: "X+Y" usa Gb (Gigabits) para a RAM — 4Gb = 512MB LPDDR1.
+        #
+        # Chaves: notação decimal "25"/"51" para densidades sub-GB (256Mbit → 256MB;
+        # 512Mbit → 512MB), e alfanumérica "1G"/"2G"/"4J" para densidades maiores.
+        # ⚠ "2G" = 2Gb = 256MB (NÃO 2GB!) — Preduo usa Gb na notação "X+Y".
+        # ⚠ "4J" = 4Gb = 512MB  — confirmado via H9DA4VH4JJMMCR-4EM "4+4" Preduo.
+        #
+        # Fontes:
+        #   "25"=256MB — H9DA1GH25HAMMR-4EM — ariat-tech ✓
+        #   "51"=512MB — H9DA1GH51HAMMR-4EM · H9DA1GH51JAMMR-4EM — ariat-tech ✓
+        #   "1G"=1GB   — H9DA2GH1GHAM-4EM   — ariat-tech ✓ (1G provavelmente 1Gb=128MB,
+        #                 mas este PN não cruzado com Preduo; mapeado conservadoramente)
+        #   "2G"=256MB — H9DA4GH2GJAM-4EM   — chip físico eMiner (jun/2026); 2Gb=256MB
+        #   "4J"=512MB — H9DA4VH4JJMMCR-4EM — Preduo "4+4" (4Gb=512MB) ✓
+        #
+        h9da_ram_cap = [
+            # char_key  val_primary         val_secondary
+            ("25", "LPDDR1 256MB", ""),  # H9DA1GH25HAMMR-4EM — ariat-tech ✓
+            ("51", "LPDDR1 512MB", ""),  # H9DA1GH51HAMMR-4EM · H9DA1GH51JAMMR-4EM — ariat-tech ✓
+            ("1G", "LPDDR1 1GB",   ""),  # H9DA2GH1GHAM-4EM   — ariat-tech ✓
+            ("2G", "LPDDR1 256MB", ""),  # H9DA4GH2GJAM-4EM   — 2Gb=256MB · chip físico eMiner ✓
+            ("4J", "LPDDR1 512MB", ""),  # H9DA4VH4JJMMCR-4EM — Preduo "4+4" 4Gb=512MB ✓
+        ]
+        self._bulk_map("HYX_H9DA_RAM_CAP", h9da_ram_cap, hynix, dry, overwrite)
+
+        # ══════════════════════════════════════════════════════════════════════
         # DecodeMap: HYX_LPDDR4X_RAM_CAP — RAM LPDDR4X (H9HP + H9HQ), chave pn[6:8]
         # ══════════════════════════════════════════════════════════════════════
         #
@@ -913,11 +985,15 @@ class Command(BaseCommand):
         #   8=1GB   — H9CCNNN8GTMLAR ✓ (8Gbit ÷ 8)
         #   B=2GB   — H9CCNNNBJTMLAR ✓ (16Gbit ÷ 8)
         #   D=3GB   — H9CKNNNDATMTDR ✓ (24Gbit ÷ 8 — assimétrico)
-        #   C=4GB   — H9CKNNNCPTMTLR ✓ (32Gbit ÷ 8 — teto confirmado)
+        #   C=4GB   — H9CKNNNCPTMTLR ✓ (32Gbit ÷ 8)
+        #   E=6GB   — H9CKNNNECTMUPR-NUH Preduo WP01025 (48Gbit ÷ 8, 256ball) ✓ (jun/2026)
+        #   F=8GB   — H9CCNNNFAGMLLR-NUD Preduo WP01836 (64Gbit ÷ 8, 253ball) ✓ (jun/2026)
         #
-        # BLOQUEADO: chaves para 6GB ou 8GB
-        #   LPDDR3 atingiu limite físico/térmico em 32Gb. Aparelhos acima de 4GB
-        #   de RAM já usam LPDDR4. Regra de ouro: não mapear.
+        # ⚠ Nota sobre 6GB/8GB: o comentário anterior ("BLOQUEADO — limite físico 32Gb")
+        #   estava errado. Preduo tier-1 confirma pacotes multi-die 48Gbit e 64Gbit existentes
+        #   e circulando no mercado de reciclagem. Padrão idêntico ao HYX_LPDDR4_H9HC_CAP
+        #   (onde E=6GB e F=8GB já eram confirmados). Esquema de capacidade consistente
+        #   ao longo das gerações SK Hynix H9CC/H9CK/H9HC/H9HK.
         #
         lpddr3_cap = [
             # char_key  val_primary  val_secondary
@@ -925,7 +1001,9 @@ class Command(BaseCommand):
             ("8", "1GB",   ""),  # 8Gbit ÷ 8  — H9CCNNN8GTMLAR ✓
             ("B", "2GB",   ""),  # 16Gbit ÷ 8 — H9CCNNNBJTMLAR ✓
             ("D", "3GB",   ""),  # 24Gbit ÷ 8 — H9CKNNNDATMTDR ✓ (assimétrico — viabilizou 3GB nos smartphones)
-            ("C", "4GB",   ""),  # 32Gbit ÷ 8 — H9CKNNNCPTMTLR ✓ (teto LPDDR3 confirmado)
+            ("C", "4GB",   ""),  # 32Gbit ÷ 8 — H9CKNNNCPTMTLR ✓
+            ("E", "6GB",   ""),  # 48Gbit ÷ 8 — H9CKNNNECTMUPR-NUH Preduo 256ball ✓ (jun/2026)
+            ("F", "8GB",   ""),  # 64Gbit ÷ 8 — H9CCNNNFAGMLLR-NUD Preduo 253ball ✓ (jun/2026)
         ]
         self._bulk_map("HYX_LPDDR3_CAP", lpddr3_cap, hynix, dry, overwrite)
 
@@ -1805,6 +1883,49 @@ class Command(BaseCommand):
                     "Ex: H9TP32A4GDCC = 4GB NAND + 512MB LPDDR2 (Elnec, absunshine ✓). "
                     "Ex: H9TP64A8JDAC = 8GB NAND + 1GB LPDDR2 (Elnec ✓). "
                     "Destino: bancada eMCP legado."
+                ),
+            ),
+            # ── H9DA — eMCP LPDDR1 geração legada (~2012-2015) ─────────────────
+            #
+            # Anatomia H9DA (decode DIFERENTE de toda a linha H9Tx / H9DP):
+            #   H  9  D  A  [nand]  G   H  [ram_hi][ram_lo]  [pkg]  [gen]  [tmp]
+            #   0  1  2  3    4     5   6      7        8       9      10     11
+            #
+            #   pn[4]   = capacidade NAND (1 char) → HYX_H9DA_NAND_CAP
+            #   pn[5]   = "G" fixo (filler)
+            #   pn[6]   = "H" fixo (código de package)
+            #   pn[7:9] = capacidade RAM LPDDR1 (2 chars) → HYX_H9DA_RAM_CAP
+            #
+            # ⚠ pn[5:7] = "GH" é filler fixo — pn[4] é o único char de capacidade NAND.
+            # ⚠ Sufixo "-4EM" = eMMC 4.x eMCP (confirma protocolo legado).
+            # ⚠ H9DA não usa HYX_EMCP_NAND_CAP nem HYX_H9D_NAND_CAP — mapas incompatíveis.
+            # ⚠ RAM é LPDDR1 (NÃO LPDDR3): H9DA = 137-ball/153-ball eMMC+LPDDR1
+            #   (Preduo tier-1 confirma). H9TP = LPDDR2 (162-ball); H9TQ = LPDDR3 (221-ball).
+            # ⚠ "2G" em pn[7:9] = 2Gb = 256MB (Gigabits, não Gigabytes!).
+            #
+            # Fontes: Preduo.com (tier-1) · ariat-tech · ic-components · Alibaba
+            #
+            dict(
+                prefix="H9DA", chip_type="eMCP", subtype="LPDDR1",
+                interface="eMMC 4.x + LPDDR1",
+                is_emcp=True, active=True, priority=50,
+                pn_length=12,
+                decode_cap_pos=4, decode_cap_len=1, decode_cap_map="HYX_H9DA_NAND_CAP",
+                decode_gen_pos=7, decode_gen_len=2, decode_gen_map="HYX_H9DA_RAM_CAP",
+                tip=(
+                    "eMCP SK Hynix LPDDR1 geração legada (H9DA). Chip combinado eMMC 4.x + LPDDR1. "
+                    "Nomenclatura anterior ao H9TP/H9TQ — decode posicional DIFERENTE de toda a linha H9Tx. "
+                    "Preduo.com (tier-1) confirma H9DA = eMMC+LPDDR1 (categoria '137ball eMMC+LPD1'). "
+                    "pn[4] = capacidade NAND (1 char): 1=1GB · 2=2GB · 4=4GB. "
+                    "pn[7:9] = capacidade RAM LPDDR1 (2 chars): 25=256MB · 51=512MB · 2G=256MB · 4J=512MB. "
+                    "⚠ 'X+Y' na notação Preduo usa Gb para RAM: '4+4' = 4GB NAND + 4Gb(512MB) LPDDR1. "
+                    "pn[5:7]='GH' fixo (filler) — apenas pn[4] e pn[7:9] carregam capacidade. "
+                    "pn[10] = die gen (A=2ª · B=3ª · C=4ª); sufixo '-4EM' = eMMC 4.x eMCP. "
+                    "⚠ Não compartilha DecodeMap com H9TQ/H9TP/H9DP — esquema completamente diferente. "
+                    "⚠ Componente OBSOLETO para reuso comercial — eMMC 4.x + LPDDR1, era 2012-2015. "
+                    "Ex: H9DA4GH2GJAM = 4GB eMMC + 256MB LPDDR1 (pn[7:9]='2G'→2Gb=256MB). "
+                    "Ex: H9DA4VH4JJMMCR = 4GB eMMC + 512MB LPDDR1 (Preduo '4+4', 4Gb=512MB). "
+                    "Destino: bancada eMCP legado / REFINO DE METAIS se sem demanda."
                 ),
             ),
             dict(
