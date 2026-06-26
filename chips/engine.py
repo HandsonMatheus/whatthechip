@@ -565,25 +565,50 @@ def _result_from_family(pn: str, fam) -> dict:
             r["subtype"] = _decoded_gen
 
     # ── Densidade DRAM ───────────────────────────────────────────────────────
+    # Modo escolhido por ChipFamily.decode_density_type (DADO, por família — mesma
+    # filosofia do resto do decode: lógica genérica no engine, config no populate):
+    #   'pc' / 'mobile' → lookup posicional num DecodeMap (DRAM_PC / DRAM_MOBILE);
+    #   'micron'        → FÓRMULA depth×width (nomenclatura JEDEC da Micron).
+    # Adicionar um modo aqui (uma vez) cobre uma família/marca inteira sem código
+    # novo por marca.
     if fam.decode_density_type and not fam.is_emcp:
         dtype = fam.decode_density_type
-        density_map = _load_decode_map("DRAM_PC" if dtype == "pc" else "DRAM_MOBILE")
-        if dtype == "pc" and len(pn) >= 5:
-            code = pn[3:5]
-            entry = density_map.get(code)
-            if entry and entry[0]:
-                conf = "✓" if code in ("4G", "8G", "16", "32", "64") else "~"
-                r["dram_density"] = f"{entry[0]} = {entry[1]} por die [{conf}]"
-            else:
-                r["dram_density"] = f"Código '{code}' não mapeado — consultar datasheet"
-        elif dtype == "mobile" and len(pn) >= 4:
-            code = pn[3]
-            entry = density_map.get(code)
-            if entry and entry[0]:
-                conf = "✓" if code in ("4", "8", "G", "H") else "~"
-                r["dram_density"] = f"{entry[0]} = {entry[1]} por die [{conf}]"
-            else:
-                r["dram_density"] = f"Código '{code}' não mapeado — consultar datasheet"
+        if dtype in ("pc", "mobile"):
+            density_map = _load_decode_map("DRAM_PC" if dtype == "pc" else "DRAM_MOBILE")
+            if dtype == "pc" and len(pn) >= 5:
+                code = pn[3:5]
+                entry = density_map.get(code)
+                if entry and entry[0]:
+                    conf = "✓" if code in ("4G", "8G", "16", "32", "64") else "~"
+                    r["dram_density"] = f"{entry[0]} = {entry[1]} por die [{conf}]"
+                else:
+                    r["dram_density"] = f"Código '{code}' não mapeado — consultar datasheet"
+            elif dtype == "mobile" and len(pn) >= 4:
+                code = pn[3]
+                entry = density_map.get(code)
+                if entry and entry[0]:
+                    conf = "✓" if code in ("4", "8", "G", "H") else "~"
+                    r["dram_density"] = f"{entry[0]} = {entry[1]} por die [{conf}]"
+                else:
+                    r["dram_density"] = f"Código '{code}' não mapeado — consultar datasheet"
+        elif dtype == "micron":
+            # FÓRMULA (Micron LPDDR/DDR MT4x/MT5x/MT6x): o bloco
+            # [profundidade][unidade M|G][largura] após o prefixo dá a densidade
+            # TOTAL do dispositivo = profundidade × largura. Capacidade do pacote
+            # = total ÷ 8. ⚠ O sufixo D{N} (dies/canais) NÃO multiplica — o total já
+            # é depth×width (datasheet Micron: MT53E768M32D4 = 24Gb total = 3GB, nunca
+            # 96Gb/12GB). Mesma conta de fix_micron_capacity e MICRON.md, agora no
+            # classify() — cobre toda a cauda MT5x de uma vez, sem script offline.
+            mm = re.match(r"^MT\d{2}[A-Z]+?(\d+)([MG])(\d+)", pn)
+            if mm:
+                rows, unit, bus = int(mm.group(1)), mm.group(2).upper(), int(mm.group(3))
+                total_gbit = rows * (1024 if unit == "G" else 1) * bus // 1024
+                gb = total_gbit / 8
+                if gb >= 1:
+                    r["capacity"] = f"{int(gb)}GB" if gb == int(gb) else f"{gb:.1f}GB"
+                else:
+                    r["capacity"] = f"{int(round(gb * 1024))}MB"
+                r["dram_density"] = f"{total_gbit}Gb total [✓]"
 
     # ── Sufixo ───────────────────────────────────────────────────────────────
     if fam.suffix_rules:
