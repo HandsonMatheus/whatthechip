@@ -60,7 +60,9 @@ _MTFC_RE = re.compile(r"^MTFC(\d+)G", re.IGNORECASE)
 # MTFD{N}G → eMMC standalone (série mais nova)
 _MTFD_RE = re.compile(r"^MTFD(\d+)G", re.IGNORECASE)
 
-# LPDDR / DDR: extrai N (densidade) e width (largura de bus)
+# LPDDR / DDR: extrai N (densidade) e width (largura de bus). Mesma fórmula
+# (depth × width ÷ 8, SEM dies) que o engine usa no decode_density_type='micron'.
+# Comando offline mantido p/ corrigir capacity de KnownParts já gravados (--overwrite).
 # Formato padrão: MT53E1G32D2FW → N=1, unit=G, width=32
 #                  MT52L512M32D2PF → N=512, unit=M, width=32
 # Formato alternativo MT62F: MT62F1DD4EK → N=1, width=32 (assume 32-bit padrão)
@@ -133,7 +135,8 @@ def _decode_mtfc(pn: str) -> str | None:
 
 def _decode_lpddr(pn: str) -> str | None:
     """
-    LPDDR/DDR: formula N × width ÷ 8 [MB ou GB].
+    LPDDR/DDR: formula N × width ÷ 8 [MB ou GB]. ⚠ O sufixo D{N} (dies) NÃO entra
+    na conta — N × width já é a densidade total (ver docs/BRIEFING_MICRON_BUG_MT53_DENSIDADE.md).
 
     Para M (Mega):  capacity_mb = N × width ÷ 8  → converte pra GB se >= 1024
     Para G (Giga):  capacity_gb = N × width ÷ 8

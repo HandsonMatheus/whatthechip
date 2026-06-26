@@ -185,9 +185,11 @@ FAMILIES = [
         'interface':  'LPDDR4',
         'is_emcp':    False,
         'priority':   50,
+        'decode_density_type': 'micron',   # fórmula depth×width no engine (sem dies)
         'tip': (
             'LPDDR4 mobile Micron. '
-            'Ex: MT52L512M32D2PF-107 = 512M×32bit × 2 dies = 4GB.'
+            'Decode: profundidade × largura ÷ 8 = GB (o sufixo D{N} = dies NÃO multiplica). '
+            'Ex: MT52L512M32D2PF-107 = 512M×32bit = 16Gb ÷ 8 = 2GB.'
         ),
     },
     {
@@ -211,10 +213,12 @@ FAMILIES = [
         'interface':  'LPDDR4',
         'is_emcp':    False,
         'priority':   50,
+        'decode_density_type': 'micron',   # fórmula depth×width no engine (sem dies)
         'tip': (
             'LPDDR4 standalone Micron (MT53B — VDDQ 1.1V). RAM pura, zero NAND. '
             '⚠ Diferente do MT53E (LPDDR4X, 0.6V) — tensão incompatível entre os dois. '
-            'Decode: bloco [Profundidade][Largura] após o prefixo — multiplicar ÷ 8 = GB. '
+            'Decode: bloco [Profundidade][Largura] após o prefixo — multiplicar ÷ 8 = GB '
+            '(o sufixo D{N} = dies NÃO multiplica). '
             'Ex: MT53B512M64D4TX → 512M×64bit = 32Gb ÷ 8 = 4GB LPDDR4. '
             'FBGA code D9VFC. '
             'Isolamento ESD obrigatório — chip de alto valor.'
@@ -228,10 +232,12 @@ FAMILIES = [
         'interface':  'LPDDR4X',
         'is_emcp':    False,
         'priority':   50,
+        'decode_density_type': 'micron',   # fórmula depth×width no engine (sem dies)
         'tip': (
             'LPDDR4X standalone Micron. RAM pura, zero NAND. '
-            'Decode: bloco [Profundidade][Largura] no PN — multiplicar Profundidade × Largura bits ÷ 8 = GB. '
-            'Ex: MT53E1G32D4NQ → 1G×32bit = 32Gb ÷ 8 = 4GB LPDDR4X. '
+            'Decode: bloco [Profundidade][Largura] no PN — Profundidade × Largura bits ÷ 8 = GB '
+            '(o sufixo D{N} = dies NÃO multiplica). '
+            'Ex: MT53E1G32D4NQ → 1G×32bit = 32Gb ÷ 8 = 4GB; MT53E768M32D4DT → 768M×32 = 24Gb ÷ 8 = 3GB. '
             'Isolamento ESD obrigatório — chip de alto valor.'
         ),
     },
@@ -243,10 +249,11 @@ FAMILIES = [
         'interface':  'LPDDR4',
         'is_emcp':    False,
         'priority':   50,
+        'decode_density_type': 'micron',   # fórmula depth×width no engine (sem dies)
         'tip': (
             'LPDDR4 standalone Micron. RAM pura, zero NAND. '
-            'Decode: bloco [Profundidade][Largura] — ex: MT53D768M32D4BD → 768M×32bit = 24Gb ÷ 8 = 3GB LPDDR4. '
-            'Ex: MT53D384M32D2NQ → 384M×32bit = 12Gb ÷ 8 = 1.5GB LPDDR4.'
+            'Decode: bloco [Profundidade][Largura], ÷ 8 = GB (o sufixo D{N} = dies NÃO multiplica). '
+            'Ex: MT53D768M32D4BD → 768M×32bit = 24Gb ÷ 8 = 3GB; MT53D384M32D2NQ → 384M×32 = 12Gb ÷ 8 = 1.5GB.'
         ),
     },
     {
@@ -646,6 +653,9 @@ class Command(BaseCommand):
                     'tip':         fam.get('tip', ''),
                     'priority':    fam.get('priority', 100),
                     'active':      True,
+                    # decode_density_type ('pc'/'mobile'/'micron'): ativa o decode de
+                    # densidade/capacidade DRAM no engine. Default '' = sem decode.
+                    'decode_density_type': fam.get('decode_density_type', ''),
                 }
                 if exists:
                     for k, v in defaults.items():
