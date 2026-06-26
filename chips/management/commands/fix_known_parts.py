@@ -10354,6 +10354,29 @@ class Command(BaseCommand):
                         # ── Criar registro novo ──────────────────────────────
                         defaults  = dict(entry.get("create_defaults", {}))
                         brand_name = defaults.pop("brand_name", "Samsung")
+                        # ── Blindagem contra campos legados/inválidos ─────────────
+                        # KnownPart(**defaults) estoura TypeError (e a criação falha)
+                        # se 'defaults' tiver uma chave que não é campo do modelo —
+                        # ex.: o 'status' removido em jun/2026, reintroduzido por quem
+                        # segue um template antigo. Em vez de quebrar calado, removemos
+                        # a chave inválida e AVISAMOS ALTO. Vale para qualquer marca.
+                        _model_fields = {f.name for f in KnownPart._meta.get_fields()}
+                        _invalid = [k for k in defaults if k not in _model_fields]
+                        if _invalid:
+                            self.stdout.write(self.style.WARNING(
+                                f"  ⚠ {pn}: campo(s) inválido(s) em create_defaults ignorado(s): "
+                                f"{_invalid}. Campo removido do modelo? (ex.: 'status' saiu em jun/2026). "
+                                f"Remova-o do template da marca."
+                            ))
+                            for _k in _invalid:
+                                defaults.pop(_k, None)
+                        # Idem para os 'fields' aplicados via setattr (não estouram, mas
+                        # seriam ignorados em silêncio — avisa pra não enganar o operador).
+                        _invalid_fields = [k for k in fields if k not in _model_fields]
+                        if _invalid_fields:
+                            self.stdout.write(self.style.WARNING(
+                                f"  ⚠ {pn}: campo(s) inválido(s) em 'fields' ignorado(s): {_invalid_fields}."
+                            ))
                         try:
                             brand = Brand.objects.get(name=brand_name)
                         except Brand.DoesNotExist:

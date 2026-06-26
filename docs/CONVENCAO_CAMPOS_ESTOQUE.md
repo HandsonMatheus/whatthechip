@@ -116,7 +116,14 @@ capacity     = "16GB"
 3. **`subtype` = só a geração.** Sem densidade, sem `x16`, sem voltagem. É o que
    aparece antes do `+` na caixa.
 4. **Não rebaixe `confirmed`/`manual`** (regra de ouro #6). Ao corrigir, preserve
-   o `confidence` e `status="enriched"`.
+   o `confidence`.
+
+   > ⚠ NÃO inclua `status` (nem `ai_high`/`ai_medium`/`ai_low`) em
+   > `create_defaults`/`fields` — esses campos foram REMOVIDOS do modelo (jun/2026).
+   > O `fix_known_parts` agora ignora campos inválidos e avisa, mas o template não
+   > deve ensiná-los. Para um chip vencer a gramática, use `confidence="confirmed"`
+   > ou `"manual"`. (Visibilidade no engine = specs reais OU `confidence`
+   > confirmed/manual, gate `_USABLE`.)
 5. Comandos que **escrevem no banco** são propostos por você, mas **rodados pelo
    usuário** (regra de ouro #1), idempotentes e com `--dry-run` antes. Depois de
    `populate_* --overwrite`, **reinicie o servidor** (regra #3).

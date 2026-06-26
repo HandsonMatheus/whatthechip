@@ -1,5 +1,7 @@
 # Briefing — Refinamento de Chips DDR Samsung (WhatTheChip)
 
+> ⚠️ HISTÓRICO — menções a Gemini e ao campo `status` estão obsoletas (removidos jun/2026). Ver CLAUDE.md §4 e docs/archive/2026-06-26-remocao-gemini-status.md.
+
 ## Contexto do Projeto
 
 **WhatTheChip** é um sistema Django de classificação de chips IC para o mercado de reciclagem eletrônica (eMiner/Paraguay). O operador escaneia o Part Number de um chip, o motor classifica e retorna tipo, capacidade, interface, destino comercial (reacondicional vs. resíduo) e tip com instruções de bancada.

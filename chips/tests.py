@@ -264,6 +264,31 @@ class NoGeminiNoStatusTests(SimpleTestCase):
         self.assertNotIn("ai", dict(Source.SOURCE_TYPES).keys())
 
 
+class FixKnownPartsEntriesTests(SimpleTestCase):
+    """
+    Guarda de CI contra reintrodução de campos removidos nas entradas curadas do
+    fix_known_parts. Um `create_defaults` com uma chave que não é campo do modelo
+    (ex.: o 'status' removido em jun/2026) faz KnownPart(**defaults) estourar
+    TypeError e a criação do chip falhar. Este teste pega isso no CI, antes de ir
+    pro ar — para qualquer marca que siga um template antigo.
+    """
+
+    def test_create_defaults_sem_campos_invalidos(self):
+        from chips.management.commands.fix_known_parts import CORRECTIONS
+        from chips.models import KnownPart
+        valid = {f.name for f in KnownPart._meta.get_fields()} | {"brand_name"}
+        offenders = []
+        for e in CORRECTIONS:
+            pn = e.get("pn", "?")
+            for k in (e.get("create_defaults") or {}):
+                if k not in valid:
+                    offenders.append(f"{pn}: create_defaults['{k}']")
+        self.assertEqual(
+            offenders, [],
+            f"Campos inválidos em create_defaults (modelo não tem mais esses campos): {offenders}",
+        )
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # TESTES DE INTEGRAÇÃO — usam banco de dados real (TestCase)
 # ═══════════════════════════════════════════════════════════════════════════════

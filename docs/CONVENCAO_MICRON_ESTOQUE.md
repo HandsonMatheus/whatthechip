@@ -54,7 +54,14 @@ mexa no estoque; alimente os campos.**
    capacidade/pacote em **GB** (gigabyte). NAND raw usa a capacidade em bytes
    verbatim (`512MB`, `4GB`). 1GB = 8Gb — nunca troque.
 4. **Não rebaixe `confirmed` / `manual`** (regra de ouro #6). Ao corrigir,
-   preserve `confidence` e `status="enriched"`.
+   preserve `confidence`.
+
+> ⚠ NÃO inclua `status` (nem `ai_high`/`ai_medium`/`ai_low`) em
+> `create_defaults`/`fields` — esses campos foram REMOVIDOS do modelo (jun/2026). O
+> `fix_known_parts` agora ignora campos inválidos e avisa, mas o template não deve
+> ensiná-los. Para um chip vencer a gramática, use `confidence="confirmed"` ou
+> `"manual"`. (Visibilidade no engine = specs reais OU `confidence` confirmed/manual,
+> gate `_USABLE`.)
 
 ---
 

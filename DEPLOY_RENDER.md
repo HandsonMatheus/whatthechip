@@ -47,7 +47,6 @@ dj-database-url        # lê DATABASE_URL do Render
 gunicorn               # servidor WSGI de produção
 whitenoise             # estáticos sem nginx
 python-dotenv
-google-generativeai    # Gemini (legado / desligado por padrão)
 Pillow, tqdm, openpyxl
 ```
 
@@ -98,8 +97,6 @@ Estas são as variáveis **realmente lidas** por `core/settings.py`:
 | `DJANGO_SECRET_KEY` | **sim** | Gere uma chave forte (comando abaixo). Sem ela, o código usa um fallback **inseguro** só para dev. |
 | `DEBUG` | **sim** | `False` em produção. ⚠️ O default do código é `True`. |
 | `RENDER_EXTERNAL_HOSTNAME` | automática | O Render injeta; `ALLOWED_HOSTS` já a inclui. |
-| `GEMINI_ENABLED` | não | Deixe ausente ou `false` — Gemini é **legado/desligado**. |
-| `GEMINI_API_KEY` | não | Só se um dia reativar o Gemini. |
 
 > `NEXAR_CLIENT_ID` / `NEXAR_CLIENT_SECRET` **não** são necessárias no Render — são
 > usadas apenas por scripts locais (`scripts/nexar_validate.py`).

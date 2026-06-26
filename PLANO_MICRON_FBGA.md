@@ -1,4 +1,7 @@
 # Plano de Desenvolvimento — Micron FBGA & Cobertura Total
+
+> ⚠️ HISTÓRICO — menções a Gemini e ao campo `status` estão obsoletas (removidos jun/2026). Ver CLAUDE.md §4 e docs/archive/2026-06-26-remocao-gemini-status.md.
+
 **WhatTheChip — documento de acompanhamento interno**
 Criado: 2026-05-26 | Responsável: Claude + eMiner
 

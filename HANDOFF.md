@@ -9,6 +9,14 @@
 
 Sistema web Django para classificação de chips de memória usados no mercado de reciclagem de eletrônicos. O usuário digita um Part Number (ex: `KMQE60013M`, `KLM8G1GETF`) e o sistema identifica: tipo do chip (eMCP, eMMC, UFS, LPDDR4, etc.), capacidade, marca, geração, e quando possível o dispositivo onde é usado.
 
+> **Decisão jun/2026 — Gemini e campo `status` removidos.** Não há mais fallback de
+> IA — `_gemini_lookup`/`_gemini_emcp_followup`/`scripts/enrich_gemini.py` foram removidos (jun/2026),
+> assim como o campo `KnownPart.status` (raw/enriched/failed). O gate do engine para usar um
+> `KnownPart` na camada 1 é agora **specs reais (capacity/emcp_ram/emcp_nand/density)
+> OU `confidence ∈ (confirmed, manual)`**; só `confirmed`/`manual` vencem a gramática.
+> Ladder de confiança: `confirmed > manual > distributor > estimated` (sem `ai_*`).
+> Ver `CLAUDE.md` §4. Trechos abaixo foram atualizados para essa realidade.
+
 **Stack:** Django 5.2 + PostgreSQL + HTMX + CSS puro (sem framework). Design system retro Windows 98/XP.
 
 **Pasta do projeto (no servidor/local):** `chipdocs/` contém o Django project. Fora dela ficam assets estáticos, backups e documentação.
@@ -24,26 +32,26 @@ Este é o arquivo mais importante. Entender ele é entender o sistema todo.
 ```
 classify("KMQE60013M")
    │
-   ├─ 1. KnownPart (banco exato, status=enriched)?
+   ├─ 1. KnownPart (banco exato, registro utilizável)?
+   │       │  utilizável = specs reais OU confidence ∈ (confirmed, manual)  [gate _USABLE]
    │       ├─ SIM → _result_from_known(pn, known, fam)
    │       │         ↳ grammar_wins logic (veja abaixo)
    │       └─ NÃO → continua
    │
-   ├─ 2. ChipFamily (gramática, prefixo conhecido)?
+   ├─ 2. Lookup FBGA (PN casa ^[A-Z][A-Z0-9]{4}$)?
+   │       ├─ SIM → KnownPart.fbga_code (confirmed/manual)
+   │       │         desconhecido → enfileira em UnknownChip
+   │       └─ NÃO → continua
+   │
+   ├─ 3. ChipFamily (gramática, prefixo conhecido)?
    │       ├─ SIM → _result_from_family(pn, fam)
    │       │         ↳ decode posicional do PN
-   │       │         ↳ campos essenciais vazios? → _gemini_lookup()
-   │       │         ↳ _gemini_emcp_followup() se eMCP sem RAM/NAND
+   │       │         ↳ PN não confirmado → pn_not_in_db=True
    │       │         ↳ double-check remarked vs banco
    │       └─ NÃO → continua
    │
-   ├─ 3. Gemini puro (prefixo desconhecido)
-   │       ↳ _gemini_lookup() sem family_hint
-   │       ↳ _gemini_emcp_followup() se necessário
-   │       ↳ _save_gemini_to_db()
-   │
    └─ 4. Fuzzy matching
-           ↳ _fuzzy_candidates() via Levenshtein
+           ↳ _fuzzy_candidates() via distância visual/Levenshtein
            ↳ retorna sugestões para exibir no card
 ```
 
@@ -52,11 +60,20 @@ classify("KMQE60013M")
 ### Camada 1 — Banco de dados exato
 
 ```python
-known = KnownPart.objects.get(part_number=pn, status="enriched")
-fam   = _match_family(pn) or known.family  # gramática tem prioridade!
+known = KnownPart.objects.get(part_number=pn)   # filtrado pelo gate _USABLE
+fam   = _match_family(pn) or known.family        # gramática tem prioridade!
 ```
 
-**IMPORTANTE:** `_match_family(pn)` vem ANTES de `known.family`. Isso é intencional: o Gemini pode ter salvo um `chip_type` errado (ex: "eMCP" quando deveria ser "uMCP"). A família pelo prefixo é sempre mais confiável.
+**Gate `_USABLE` (visibilidade ≠ autoridade):** um `KnownPart` só é considerado na
+camada 1 quando tem **specs reais** (capacity/emcp_ram/emcp_nand/density) **OU**
+`confidence ∈ (confirmed, manual)`. É o substituto fiel do antigo `status="enriched"`
+(campo removido em jun/2026). *Vencer a gramática* (autoridade), porém, é só de
+`confirmed`/`manual`; `distributor`/`estimated` com specs são reconhecidos e
+complementam decode incompleto, mas a gramática completa prevalece sobre eles.
+
+**IMPORTANTE:** `_match_family(pn)` vem ANTES de `known.family`. Isso é intencional: o
+registro do banco pode ter um `chip_type` impreciso (ex.: "eMCP" quando deveria ser
+"uMCP"). A família pelo prefixo é sempre mais confiável.
 
 Se família for encontrada → vai para `_result_from_known()` que aplica **grammar-wins logic** (veja abaixo).
 
@@ -122,25 +139,6 @@ grammar_wins   = grammar_complete and not human_verified
 
 ---
 
-### Camada Gemini
-
-**Quando é chamado:**
-- Gramática reconhece a família mas não tem dados de capacidade completos
-- PN completamente desconhecido (nenhum prefixo bate)
-
-**Dois chamados possíveis:**
-1. `_gemini_lookup(pn, family_hint)` — chamada principal com Google Search grounding
-2. `_gemini_emcp_followup(pn, chip_type, brand)` — chamada cirúrgica só para obter RAM+NAND quando o primeiro retornou eMCP mas sem capacidades
-
-**Modelos tentados em ordem:** `gemini-2.5-pro` → `gemini-2.5-flash`
-
-**Para cada modelo:** tenta COM grounding primeiro, depois SEM grounding.
-
-**Gate de cache:** `if specs.get("chip_type"): _save_gemini_to_db(pn, specs)`
-— Salva SEMPRE que tiver chip_type, mesmo incompleto. Dados parciais no cache são melhores que re-chamar Gemini toda vez.
-
----
-
 ### Double-check remarked
 
 Após classificar pela gramática, o engine compara com o banco:
@@ -158,7 +156,7 @@ if _check_remarked(grammar_result, db_result):
 Fabricante. `name` + `code` (ex: "Samsung", "SAM").
 
 ### `Source`
-Origem de um dado. `src_type` ∈ `("manual", "distributor", "ai", "datasheet")`.
+Origem de um dado. `src_type` ∈ `("manual", "distributor", "datasheet")`.
 
 ### `ChipFamily`
 Regras de decodificação de uma família de chips. **Campos críticos:**
@@ -187,8 +185,10 @@ Tabela de lookup. `(map_name, char_key) → (val_primary, val_secondary)`.
 Um `map_name` pode ser compartilhado entre famílias (ex: `"EMCP_RAM_GEN"` usado por todas as famílias Samsung KM*).
 
 ### `KnownPart`
-Chips conhecidos. `status` ∈ `("raw", "enriched", "failed")`.
-`confidence` ∈ `("confirmed", "manual", "distributor", "ai_high", "ai_medium", "ai_low", "estimated")`.
+Chips conhecidos. **Sem campo `status`** (o antigo `raw/enriched/failed` foi removido
+em jun/2026). `confidence` ∈ `("confirmed", "manual", "distributor", "estimated")` —
+só `confirmed`/`manual` são autoritativos (vencem a gramática). Visibilidade na camada
+1 do engine = ter specs reais OU ser `confirmed`/`manual` (gate `_USABLE`).
 
 ### `SearchLog` / `UnknownChip`
 Log de buscas e chips nunca encontrados. Usados para métricas e backlog de enriquecimento.
@@ -245,7 +245,7 @@ python manage.py test chips --settings=core.settings_test
 
 39 testes cobrindo: decode posicional, eMCP dual-output, grammar-wins, remarked detection, fuzzy matching, views (search_api, decode_html, report_error).
 
-`core/settings_test.py` usa SQLite em memória e desativa Gemini (sem `GEMINI_API_KEY`).
+`core/settings_test.py` usa SQLite em memória.
 
 ---
 
@@ -263,9 +263,6 @@ python manage.py test chips --settings=core.settings_test
 
 # Aplicar migrations
 python manage.py migrate
-
-# Enriquecer chips raw com Gemini
-python scripts/enrich_gemini.py
 ```
 
 ---
@@ -315,7 +312,6 @@ conferência), `RejectedEntry` (auditoria de descartes). Migrations:
 - ✅ PIN UI com auto-trigger por `pn_length`
 - ✅ Grammar-wins: corrigir regras corrige resultados imediatamente
 - ✅ CorrectionRequest: usuários reportam erros, admin resolve
-- ✅ Cache Gemini: salva mesmo resultados parciais
 - ✅ `classification_source` exibido no decode card
 - ✅ Animação de loading retro (reticências)
 - ✅ Botão "Reportar erro" com HTMX inline
@@ -379,12 +375,10 @@ conferência), `RejectedEntry` (auditoria de descartes). Migrations:
 **Chip classificando errado:**
 1. Verificar se `ChipFamily` tem o prefixo correto e `active=True`
 2. Verificar `DecodeMap` para o `map_name` da família
-3. Se `grammar_wins=False` (banco prevalece), checar `KnownPart.confidence` — se for `ai_*`, a gramática deveria estar vencendo
+3. Se `grammar_wins=False` (banco prevalece), checar `KnownPart.confidence` — só
+   `confirmed`/`manual` vencem a gramática; `distributor`/`estimated` deveriam estar
+   perdendo para a gramática completa
 4. Checar se `_CAP_RE` consegue extrair número do resultado da gramática (ex: "eMMC 5.1" sem GB → não extrai → gramática incompleta → banco prevalece)
-
-**Gemini sendo chamado toda vez:**
-- O `KnownPart` foi salvo? Checar no admin se existe com `status=enriched`
-- Se existir mas o Gemini ainda é chamado: `_match_family(pn)` não está retornando família → prefixo errado ou família inativa
 
 **PIN UI não auto-triggering:**
 - `pn_length` está definido na família?
@@ -419,9 +413,7 @@ chipdocs/
 ├── static/
 │   └── css/
 │       └── style.css      ← CSS completo (design system retro)
-├── scripts/
-│   └── enrich_gemini.py   ← script standalone de enriquecimento em lote
 └── core/
     ├── settings.py        ← settings principal
-    └── settings_test.py   ← settings para testes (SQLite, sem Gemini)
+    └── settings_test.py   ← settings para testes (SQLite em memória)
 ```

@@ -406,12 +406,14 @@ da migration 0005).
 Ações bulk:
 - **`aprovar`**: para cada PendingEntry selecionado, cria um `InventoryEntry` com
   os dados do snapshot + chama `_confirm_as_knownpart()` para criar/atualizar um
-  `KnownPart` com `confidence="manual"` e `status="enriched"`.
+  `KnownPart` com `confidence="manual"`.
 - **`reprovar`**: deleta o PendingEntry sem criar nada (operador descarta o chip).
 
 `_confirm_as_knownpart(pending)` — função interna no admin:
 - Cria ou atualiza `KnownPart` com os campos do snapshot
-- Seta `confidence="manual"`, `status="enriched"`
+- Seta `confidence="manual"` (autoritativo — vence a gramática). **Não existe mais
+  campo `status`** (removido em jun/2026); a visibilidade/autoridade vem do
+  `confidence` confirmed/manual + specs reais (gate `_USABLE` no engine).
 - Isso faz o PN passar no `_is_confirmed()` na próxima triagem
 
 ### `RejectedEntryAdmin`

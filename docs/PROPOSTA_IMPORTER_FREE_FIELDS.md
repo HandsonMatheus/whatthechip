@@ -1,5 +1,7 @@
 # PROPOSTA: `import_samsung_psg` — Campos livres para registros `confirmed`
 
+> ⚠️ HISTÓRICO — menções a Gemini e ao campo `status` estão obsoletas (removidos jun/2026). Ver CLAUDE.md §4 e docs/archive/2026-06-26-remocao-gemini-status.md.
+
 > **Status:** aguardando revisão e aprovação  
 > **Data:** 2026-06-19  
 > **Arquivo a modificar:** `chips/management/commands/import_samsung_psg.py`  

@@ -120,12 +120,18 @@ Qualquer texto extra no `subtype` vai direto para o label e quebra o display na 
    O engine usa `lru_cache` — o processo do comando limpa o cache local, mas o servidor
    web continua servindo a gramática antiga até reiniciar.
 
-9. **`status="raw"` é invisível para o engine.** Só registros com `status="enriched"`
-   são usados na classificação. Se criar um KnownPart sem setar `status`, ele não funciona.
+9. **NÃO existe mais o campo `status` (removido jun/2026).** ⚠ NÃO inclua `status`
+   (nem `ai_high`/`ai_medium`/`ai_low`) em `create_defaults`/`fields` — esses campos
+   foram REMOVIDOS do modelo. O `fix_known_parts` agora ignora campos inválidos e
+   avisa, mas o template não deve ensiná-los. Um `KnownPart` é **visível** ao engine
+   quando tem specs reais (capacity/emcp_ram/emcp_nand/density) **OU** `confidence ∈
+   (confirmed, manual)` (gate `_USABLE`). Para um chip **vencer a gramática**, use
+   `confidence="confirmed"` ou `"manual"`.
 
 10. **`confidence="confirmed"` ou `"manual"` vencem a gramática.**
-    Confianças menores (`distributor`, `ai_*`, `estimated`) perdem para a gramática se
+    Confianças menores (`distributor`, `estimated`) perdem para a gramática se
     ela estiver completa. Para que o banco tenha precedência, use `confirmed` ou `manual`.
+    (Os níveis `ai_*` foram removidos junto com o Gemini.)
 
 ---
 
@@ -162,6 +168,12 @@ Crie `[MARCA].md` com as seguintes seções, nesta ordem:
 - Template Python correto para cada tipo de chip desta marca
 - Regras de `capacity` (MB vs GB vs Gbit)
 - Regra dos dois PNs (base + variante com sufixo)
+
+> ⚠ NÃO inclua `status` (nem `ai_high`/`ai_medium`/`ai_low`) em
+> `create_defaults`/`fields` — esses campos foram REMOVIDOS do modelo (jun/2026). O
+> `fix_known_parts` agora ignora campos inválidos e avisa, mas o template não deve
+> ensiná-los. Para um chip vencer a gramática, use `confidence="confirmed"` ou
+> `"manual"`.
 
 ### §7 assess_profitability — Limiares
 - Parâmetros do ProfitabilityConfig que afetam esta marca
