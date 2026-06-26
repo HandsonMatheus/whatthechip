@@ -192,8 +192,24 @@ class Command(BaseCommand):
         #   '8' (Gen A): MT29TZZZ8D5BKFAH / MT29TZZZ8D5JKEZB → LPDDR3 ✓
         tzzz_gen = [
             # (1-char key, RAM type, unused_secondary)
-            ("8", "LPDDR3", ""),   # Gen A (pn[8]='8') — LPDDR3 ✓ datasheet Micron oficial
-            # ADICIONAR AQUI somente após verificação via datasheet/DigiKey/analyze_micron_mcp_keys
+            # pn[8] = código RAM (Gen A: dígito; Gen B: letra).
+            # TODA a família MT29TZZZ é LPDDR3 — confirmado por BUG-8 (2026-06-19):
+            #   MT29PZZZ = LPDDR2 (162-ball); MT29TZZZ = LPDDR3 (221-ball). Fisicamente distintas.
+            #   Datasheet: MT29TZZZ8D5JKEZB = "Mobile LPDDR3" ✓
+            # Gen A dígitos confirmados em MIC_MCP_CAP:
+            #   '4' → 512MB RAM (4Gb)  — chave 4D4 = 4GB+512MB  ✓
+            #   '5' → 2GB RAM  (16Gb)  — chave 5D6 = 16GB+2GB   ✓ (JZ008 2026-06-26)
+            #   '8' → 1GB RAM  (8Gb)   — chave 8D4/8D5/8D6      ✓ datasheet Micron oficial
+            # Gen A dígitos com capacidade ainda não mapeada em MIC_MCP_CAP (7 chaves unknowns):
+            #   '7', '9' — tipo LPDDR3 confirmado por família; capacidade pendente
+            # Gen B letra confirmada em exemplo do tip:
+            #   'A' — AD8 → 64GB+4GB ✓ (tip família); tipo LPDDR3 por família
+            ("4", "LPDDR3", ""),   # Gen A pn[8]='4' → 512MB RAM — chave 4D4 ✓
+            ("5", "LPDDR3", ""),   # Gen A pn[8]='5' → 2GB RAM   — chave 5D6 ✓ (JZ008)
+            ("7", "LPDDR3", ""),   # Gen A pn[8]='7' → RAM ?GB   — chave 7C7/7D6/7D7 (cap pendente)
+            ("8", "LPDDR3", ""),   # Gen A pn[8]='8' → 1GB RAM   — datasheet Micron ✓
+            ("9", "LPDDR3", ""),   # Gen A pn[8]='9' → RAM ?GB   — chave 9D5/9D6 (cap pendente)
+            ("A", "LPDDR3", ""),   # Gen B pn[8]='A' → RAM ?GB   — chave AD7/AD8 (cap pendente)
         ]
         self._bulk_map("MIC_TZZZ_GEN", tzzz_gen, micron, dry, overwrite)
 
