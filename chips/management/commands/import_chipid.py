@@ -94,7 +94,7 @@ class Command(BaseCommand):
             "Próximos passos:\n"
             "  1. Rode 'python manage.py migrate' se ainda não rodou\n"
             "  2. Acesse /admin/chips/chipfamily/ e vincule doc_page para cada família\n"
-            "  3. Execute scripts/enrich_gemini.py para enriquecer os PNs raw\n"
+            "  3. Confirme os PNs no admin (confidence=manual) para o engine usá-los\n"
         )
 
     # ── Brands ────────────────────────────────────────────────────────────────
@@ -243,7 +243,7 @@ class Command(BaseCommand):
         rows = cur.fetchall()
         created = skipped = updated = 0
 
-        ai_source, _ = Source.objects.get_or_create(
+        chipid_source, _ = Source.objects.get_or_create(
             name="chipid_import",
             defaults={"src_type": "distributor", "url": "chipid_project"}
         ) if not dry_run else (None, None)
@@ -258,15 +258,13 @@ class Command(BaseCommand):
             if not pn:
                 continue
 
-            # Determina status baseado nos dados disponíveis
+            # has_data: a linha tem specs reais? (usado só para a contagem dry-run)
             has_data = bool(
                 row["capacity"] or row["emcp_ram"] or row["emcp_nand"] or row["density_gbit"]
             )
-            status = "enriched" if has_data else "raw"
 
             defaults = {
                 "brand":        brand_obj,
-                "status":       status,
                 "chip_type":    row["chip_type"]    or "",
                 "subtype":      row["subtype"]      or "",
                 "capacity":     row["capacity"]     or "",
@@ -278,7 +276,7 @@ class Command(BaseCommand):
                 "device":       row["device"]       or "",
                 "notes":        row["notes"]        or "",
                 "confidence":   row["confidence"]   or "estimated",
-                "source":       ai_source,
+                "source":       chipid_source,
                 "source_url":   row["source_url"]   or "",
             }
 
@@ -308,7 +306,7 @@ class Command(BaseCommand):
                 else:
                     skipped += 1
             else:
-                if status == "enriched":
+                if has_data:
                     created += 1
 
         self.stdout.write(
@@ -374,7 +372,6 @@ class Command(BaseCommand):
                         part_number=pn,
                         defaults={
                             "brand":  brand_obj,
-                            "status": "raw",
                         }
                     )
                     if was_created:

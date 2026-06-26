@@ -71,7 +71,6 @@ kp = KnownPart.objects.filter(part_number="MT53B512M64D4TX").first()
 
 check("KnownPart MT53B512M64D4TX existe",  kp is not None)
 if kp:
-    check("status == 'enriched'",          kp.status == "enriched",    f"got: {kp.status}")
     check("confidence == 'confirmed'",     kp.confidence == "confirmed", f"got: {kp.confidence}")
     check("capacity == '4GB'",             kp.capacity == "4GB",       f"got: {kp.capacity}")
     check("interface == 'LPDDR4'",         kp.interface == "LPDDR4",   f"got: {kp.interface}")

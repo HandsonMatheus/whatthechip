@@ -25,17 +25,17 @@ O operador na bancada pode ver o chip com ou sem sufixo legível.
 - ❌ Só `K4B4G1646D-BYK0` → operador digita `K4B4G1646D` → cai na gramática
 - ✅ `K4B4G1646D` + `K4B4G1646D-BYK0` + `K4B4G1646D-BYNB` + …
 
-### status="enriched" + confidence="confirmed" — os dois juntos
-Um sem o outro não funciona:
-- `status="raw"` → engine ignora o registro (invisível)
-- `confidence="estimated"` → gramática vence mesmo com dados corretos
-Sempre setar os dois em `create_defaults` E em `fields`.
+### confidence="confirmed"/"manual" — a única coisa que torna o registro autoritativo
+*(O campo `status` foi removido em jun/2026; não existe mais.)*
+- `confidence="estimated"` ou `"distributor"` → gramática vence mesmo com dados corretos
+- `confidence="confirmed"` ou `"manual"` → banco vence
+Sempre setar `confidence="confirmed"` (ou `"manual"`) em `create_defaults` E em `fields`.
 
 ### Gramática vence quando confidence < confirmed/manual
 A precedência real (não intuitiva) do engine:
 - `confirmed` / `manual` → banco vence
-- Qualquer outra confidence + gramática completa → **gramática vence**
-Isso significa: um registro com `confidence="ai_high"` e dados perfeitos ainda
+- Qualquer outra confidence (`distributor`, `estimated`) + gramática completa → **gramática vence**
+Isso significa: um registro com `confidence="distributor"` e dados perfeitos ainda
 perde para a gramática. Só `confirmed`/`manual` garante que o banco vence.
 
 ### Restart após populate, nunca após fix_known_parts
@@ -73,7 +73,7 @@ a página. Se só aparecer o PN sem parênteses de capacidade, não conta.
 | ❌ | Fóruns de reparo asiáticos | não aceito |
 | ❌ | WinSource sozinho | não aceito |
 | ❌ | Catálogos B2B de Shenzhen | não aceito |
-| ❌ | IA local (Gemini, GPT) | não aceito |
+| ❌ | IA generalista (qualquer LLM) | não aceito |
 
 ### Estratégia de busca eficiente
 1. Tente primeiro: `site:semiconductor.samsung.com "PN"` no Google
@@ -102,7 +102,6 @@ a página. Se só aparecer o PN sem parênteses de capacidade, não conta.
         "brand_name": "Samsung",
         "chip_type":  "DDR4",
         "subtype":    "DDR4 PC DRAM 8Gb x8",
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {                # campos atualizados sempre (criação E update)
@@ -111,7 +110,6 @@ a página. Se só aparecer o PN sem parênteses de capacidade, não conta.
         "capacity":   "1GB",   # MB ou GB — nunca Gbit!
         "interface":  "DDR4",
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "Samsung Semiconductor Global: K4A8G085WB-BCPB(8 Gb) ✓. ...",
 },
@@ -200,7 +198,7 @@ No painel de debug de uma busca, os campos-chave para diagnóstico:
 
 ### Checklist de diagnóstico
 1. `pn_not_in_db: true` → PN não está no banco → rodar fix_known_parts
-2. `pn_not_in_db: false` mas `known_exact: false` → PN no banco mas `status="raw"` ou `confidence` baixa → promover para enriched/confirmed
+2. `pn_not_in_db: false` mas `known_exact: false` → PN no banco mas `confidence` baixa (`distributor`/`estimated`) → promover para `confirmed`/`manual`
 3. `known_exact: true` mas resultado errado → verificar fields do KnownPart no admin
 4. Resultado correto mas rentabilidade errada → checar ProfitabilityConfig no admin
 

@@ -128,7 +128,6 @@ class Command(BaseCommand):
 
         qs = KnownPart.objects.filter(
             prefix_q,
-            status="enriched",
             confidence="confirmed",
         )
 

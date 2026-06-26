@@ -94,8 +94,8 @@ chips/management/commands/fix_known_parts.py       ← seções de OUTRAS marcas
    → só como apoio; nunca rebaixa um "confirmed" com dado de distribuidor
 6. iFixit Teardowns / GSMArena
    → chip_type confirmado por inspeção física real em dispositivo conhecido
-7. IA externa (Gemini, GPT, outro Claude)
-   → ÚLTIMO RECURSO — verificar SEMPRE antes de usar
+7. IA externa (qualquer LLM)
+   → ÚLTIMO RECURSO — nunca fonte primária; verificar SEMPRE antes de usar
 ```
 
 Nunca usar como fonte primária: fóruns de reparo asiáticos (GSMForum), WinSource sem
@@ -869,7 +869,6 @@ Chaves decimais `"25"`/`"51"` = 256Mbit/512Mbit (= 256MB/512MB); alfanuméricos 
         "brand_name": "SK Hynix",
         "chip_type":  "RAM",          # sempre "RAM" para DDR/GDDR
         "subtype":    "DDR3",         # SÓ a geração — sem "SDRAM", sem qualificadores
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {
@@ -881,7 +880,6 @@ Chaves decimais `"25"`/`"51"` = 256Mbit/512Mbit (= 256MB/512MB); alfanuméricos 
         "capacity":      "512MB",     # por die, em bytes — 4Gbit ÷ 8
         "dram_density":  "4Gb",       # densidade do die em Gb
         "confidence":    "confirmed",
-        "status":        "enriched",
     },
     "reason": "LCSC C2803259 ✓ (datasheet SK Hynix H5TQ4G63EFR Rev1.2, Set/2016).",
 },
@@ -898,7 +896,6 @@ Chaves decimais `"25"`/`"51"` = 256Mbit/512Mbit (= 256MB/512MB); alfanuméricos 
         "brand_name": "SK Hynix",
         "chip_type":  "LPDDR4X",     # tipo LPDDR vai no chip_type (não "RAM")
         "subtype":    "LPDDR4X",     # mesmo que chip_type
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {
@@ -907,7 +904,6 @@ Chaves decimais `"25"`/`"51"` = 256Mbit/512Mbit (= 256MB/512MB); alfanuméricos 
         "interface":  "",             # SEMPRE VAZIO para LPDDR
         "capacity":   "4GB",         # capacidade do pacote
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "H9HCNNNCPMMLHR-NME: duas refs independentes mapa H9HC (C=4GB) ✓.",
 },
@@ -924,7 +920,6 @@ Chaves decimais `"25"`/`"51"` = 256Mbit/512Mbit (= 256MB/512MB); alfanuméricos 
         "brand_name": "SK Hynix",
         "chip_type":  "eMCP",
         "subtype":    "LPDDR3",      # geração da RAM
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {
@@ -934,7 +929,6 @@ Chaves decimais `"25"`/`"51"` = 256Mbit/512Mbit (= 256MB/512MB); alfanuméricos 
         "emcp_nand":  "4GB",         # NAND em GB
         "emcp_ram":   "LPDDR3 768MB",  # tipo ANTES da capacidade
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "...",
 },
@@ -955,13 +949,12 @@ Quando o PN já existe no banco mas com dados errados — use sem `"create": Tru
         "interface":  "",           # VAZIO — era "LPDDR3"
         "capacity":   "4GB",
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "Correção convenção 2026-06-19: subtype era 'LPDDR3 standalone', interface era 'LPDDR3'.",
 },
 ```
 
-> **Quando usar UPDATE-ONLY:** registro existe no banco via scraping, Gemini ou entrada
+> **Quando usar UPDATE-ONLY:** registro existe no banco via scraping ou entrada
 > manual anterior com dados incorretos. Adicionar `"create": True` causaria duplicata.
 > **Quando usar create:** PN nunca foi inserido no banco antes.
 

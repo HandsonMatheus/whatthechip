@@ -1,8 +1,8 @@
 """
 bless_base
 ==========
-"Abençoa" a base atual de estoque: promove a KnownPart CONFIRMADO (confidence=
-"manual", status="enriched") cada Part Number que o operador JÁ tinha lançado
+"Abençoa" a base atual de estoque: promove a KnownPart CONFIRMADO
+(confidence="manual") cada Part Number que o operador JÁ tinha lançado
 antes de uma data de corte. É a ponte para ligar o bloqueio "só confirmados" no
 add_chip sem travar a reposição dos chips comuns legítimos.
 
@@ -15,7 +15,7 @@ pirâmide e ainda assim VENCE a gramática no engine (human_verified).
 O que faz, por PN distinto com added_at < --since (a base pré-corte):
   - se já existe KnownPart confirmed/manual  -> NÃO toca (regra: nunca rebaixar);
   - senão -> cria/atualiza KnownPart com os campos decodificados da entrada
-    (chip_type, capacity, emcp_ram/nand, interface), status="enriched",
+    (chip_type, capacity, emcp_ram/nand, interface),
     confidence="manual", family casada pelo prefixo, brand pelo nome.
 
 Regra de ouro #1: ESCREVE no banco -> dry-run por padrão.
@@ -164,7 +164,7 @@ class Command(BaseCommand):
             self.stdout.write("")
             self.stdout.write("Serão CONFIRMADOS (tinham KnownPart NÃO confirmado):")
             for pn, e, existing in to_update[:80]:
-                cur = f"{existing.confidence}/{existing.status}" if existing else "—"
+                cur = existing.confidence if existing else "—"
                 self.stdout.write(f"    {pn:<20} q={e.quantity:<4} {e.brand:<10} {e.chip_type:<8} {_cap(e):<24} (era {cur})")
             if len(to_update) > 80:
                 self.stdout.write(f"    ... (+{len(to_update) - 80})")
@@ -184,7 +184,6 @@ class Command(BaseCommand):
                 fields = dict(
                     brand=self._brand_for(e.brand),
                     family=self._family_for(pn),
-                    status="enriched",
                     chip_type=e.chip_type or "",
                     capacity=e.capacity or "",
                     emcp_ram=e.emcp_ram or "",
@@ -196,7 +195,6 @@ class Command(BaseCommand):
                 if existing:
                     log["updated"].append({
                         "part_number": pn,
-                        "prev_status": existing.status,
                         "prev_confidence": existing.confidence,
                     })
                     for k, v in fields.items():
@@ -239,9 +237,8 @@ class Command(BaseCommand):
             for rec in log.get("updated", []):
                 kp = KnownPart.objects.filter(part_number=rec["part_number"]).first()
                 if kp:
-                    kp.status = rec["prev_status"]
                     kp.confidence = rec["prev_confidence"]
-                    kp.save(update_fields=["status", "confidence"])
+                    kp.save(update_fields=["confidence"])
                     restored += 1
 
         os.rename(REVERT_LOG, REVERT_LOG + ".done")

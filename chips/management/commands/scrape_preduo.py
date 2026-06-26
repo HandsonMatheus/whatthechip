@@ -2,7 +2,7 @@
 scrape_preduo.py — Scraper do catálogo Preduo para KnownParts
 ==============================================================
 Coleta Part Numbers de preduo.com e persiste no banco como
-KnownPart(status="raw", confidence="distributor").
+KnownPart(confidence="distributor").
 
 Preduo é um catálogo B2B do mercado de reciclagem de memórias para smartphones.
 Na hierarquia de fontes:
@@ -502,7 +502,7 @@ class _DryRunAbort(Exception):
 
 class Command(BaseCommand):
     help = (
-        "Raspa preduo.com e salva Part Numbers como KnownPart(status='raw', "
+        "Raspa preduo.com e salva Part Numbers como KnownPart("
         "confidence='distributor'). Todos os tipos de chip suportados pelo Preduo."
     )
 
@@ -540,7 +540,7 @@ class Command(BaseCommand):
             action="store_true",
             help=(
                 "Atualiza KnownParts já existentes com os dados do Preduo "
-                "(só se status=raw e confidence <= distributor)."
+                "(só se confidence <= distributor)."
             ),
         )
         parser.add_argument(
@@ -779,7 +779,7 @@ class Command(BaseCommand):
         # Ordem de precedência (menor = mais confiável):
         CONFIDENCE_ORDER = {
             "confirmed": 0, "manual": 1, "distributor": 2,
-            "ai_high": 3, "ai_medium": 4, "ai_low": 5, "estimated": 6,
+            "estimated": 3,
         }
         TARGET_CONFIDENCE = "distributor"
         TARGET_CONFIDENCE_RANK = CONFIDENCE_ORDER[TARGET_CONFIDENCE]
@@ -833,7 +833,6 @@ class Command(BaseCommand):
                         part_number=pn,
                         chip_type=chip_type,
                         subtype=subtype,
-                        status="raw",
                         confidence=TARGET_CONFIDENCE,
                         source=preduo_source,
                         source_url=src_url,

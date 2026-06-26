@@ -104,15 +104,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ── Gemini API ─────────────────────────────────────────────────────────────────
-# Defina GEMINI_API_KEY no arquivo .env (nunca commitar a chave)
-# Exemplo em .env:  GEMINI_API_KEY=AIzaSy...
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
-
-# Habilita/desabilita o fallback Gemini no engine de classificação.
-# False  → o engine nunca chama a API Gemini (gramática + banco apenas).
-# True   → comportamento original; só funciona se GEMINI_API_KEY estiver definida.
-# Para reativar temporariamente sem editar código: GEMINI_ENABLED=true no .env
-GEMINI_ENABLED = os.environ.get('GEMINI_ENABLED', 'false').lower() == 'true'
+# Gemini removido (jun/2026): o engine de classificação usa apenas o banco de
+# PNs confirmados (confidence ∈ confirmed/manual) + a gramática das famílias.
+# Não há mais fallback de IA nem enriquecimento automático.
 
 # CKEditor removido — pages/admin.py usa Textarea monospace simples.

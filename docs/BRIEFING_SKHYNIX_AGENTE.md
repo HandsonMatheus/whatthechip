@@ -13,8 +13,9 @@ classifica Part Numbers (PNs) de chips de memória para o mercado de reciclagem 
 refurbishing de eletrônicos. Operado pela **eMiner (Paraguai)**.
 
 O engine (`chips/engine.py`) tenta, em ordem:
-1. **Banco exato** — `KnownPart` com `status="enriched"`. Só conta se
-   `confidence="confirmed"` ou `"manual"`.
+1. **Banco exato** — `KnownPart` autoritativo, ou seja, com
+   `confidence="confirmed"` ou `"manual"`. (Registros `distributor`/`estimated`
+   não são autoritativos e caem na gramática.)
 2. **Gramática** — decode posicional via `ChipFamily` + `DecodeMap` (resultado
    `"estimated"`).
 
@@ -412,7 +413,7 @@ dict(
 ## 9. Regras de ouro do projeto (não quebrar)
 
 1. O banco de produção não é acessível ao agente — Claude **propõe**, usuário **roda**.
-2. Só `KnownPart` com `status="enriched"` conta no engine.
+2. Só `KnownPart` com `confidence` ∈ (`confirmed`, `manual`) é autoritativo no engine (vence a gramática). *(O campo `status` foi removido em jun/2026.)*
 3. Depois de `populate_* --overwrite`, reiniciar o servidor (lru_cache).
 4. Nunca rebaixe `confidence="confirmed"` ou `"manual"` sem motivo explícito.
 5. `subtype` = só a geração. Sem densidade, sem barramento, sem voltagem.

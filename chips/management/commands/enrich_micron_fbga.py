@@ -1,11 +1,11 @@
 """
 enrich_micron_fbga.py — Enriquece KnownParts Micron com FBGA codes oficiais
 ===========================================================================
-Para cada KnownPart Micron com status='raw' e confidence='distributor':
+Para cada KnownPart Micron com confidence='distributor':
   1. Consulta o FBGA Decoder oficial da Micron (API REST descoberta via DevTools)
   2. Para cada resultado (fbga_code + full_part_number):
        - Cria novo KnownPart com PN completo (com sufixo) e fbga_code preenchido
-       - status='enriched', confidence='confirmed', source=Micron FBGA API
+       - confidence='confirmed', source=Micron FBGA API
   3. Remove o registro base original (substituído pelos específicos com FBGA)
 
 URL da API (busca por PN base, retorna todos os FBGAs):
@@ -242,9 +242,9 @@ class _DryRunAbort(Exception):
 
 class Command(BaseCommand):
     help = (
-        "Enriquece KnownParts Micron (status=raw, confidence=distributor) "
+        "Enriquece KnownParts Micron (confidence=distributor) "
         "consultando a API FBGA oficial da Micron. "
-        "Cria um KnownPart por FBGA encontrado (status=enriched, confidence=confirmed) "
+        "Cria um KnownPart por FBGA encontrado (confidence=confirmed) "
         "e remove o registro base original."
     )
 
@@ -306,7 +306,6 @@ class Command(BaseCommand):
         # ── Seleciona registros a processar ──────────────────────────────────
         qs = KnownPart.objects.filter(
             brand__name="Micron",
-            status="raw",
             confidence="distributor",
         ).filter(
             Q(fbga_code="") | Q(fbga_code__isnull=True)
@@ -407,7 +406,6 @@ class Command(BaseCommand):
                             fbga_code=fbga,
                             chip_type=base_kp.chip_type,
                             subtype=base_kp.subtype,
-                            status="enriched",
                             confidence="confirmed",
                             source=micron_source,
                             source_url=item.get("source_url", MICRON_FBGA_API.format(pn=pn)),

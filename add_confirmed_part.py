@@ -1982,7 +1982,6 @@ for p in PARTS:
         defaults=dict(
             brand      = brand,
             family     = family,
-            status     = "enriched",
             chip_type  = p["chip_type"],
             subtype    = p.get("subtype", ""),
             capacity   = p.get("capacity", ""),

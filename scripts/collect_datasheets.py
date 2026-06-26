@@ -7,7 +7,7 @@ Fluxo:
   2. Baixa cada PDF para cache local em data/datasheets/
   3. Usa pdfplumber para localizar a seção "Ordering Information"
   4. Extrai linhas de tabela com Part Number e/ou FBGA code
-  5. Salva no banco como KnownPart com status='confirmed', confidence='confirmed'
+  5. Salva no banco como KnownPart com confidence='confirmed'
 
 Fontes de URLs:
   a) data/datasheet_urls.txt — uma URL por linha (gerado por collect_octopart,
@@ -594,7 +594,7 @@ def save_chips_to_db(
 
     CONFIDENCE_ORDER = {
         "confirmed": 0, "manual": 1, "distributor": 2,
-        "ai_high": 3, "ai_medium": 4, "ai_low": 5, "estimated": 6,
+        "estimated": 3,
     }
     MY_CONFIDENCE      = "confirmed"
     MY_CONFIDENCE_RANK = CONFIDENCE_ORDER[MY_CONFIDENCE]
@@ -651,7 +651,6 @@ def save_chips_to_db(
                     fbga_code=fbga,
                     chip_type=chip_type,
                     subtype=subtype,
-                    status="confirmed",
                     confidence=MY_CONFIDENCE,
                     source=micron_source,
                     source_url=src_url,

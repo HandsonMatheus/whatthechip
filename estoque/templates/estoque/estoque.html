@@ -1438,7 +1438,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
     }
     lines.push('Sufixo:      ' + (d.suffix_note   || '—'));
     var confKey = (d.grammar_complete && d.confidence === 'estimated') ? 'grammar' : (d.confidence || '—');
-    var CONF_LABEL_EST = {'confirmed':'✅ Confirmado','manual':'✏️ Manual','distributor':'🏪 Distribuidor','grammar':'📐 Gramática','ai_high':'🤖 IA — Alta','ai_medium':'🤖 IA — Média','ai_low':'🤖 IA — Baixa','estimated':'~ Estimado'};
+    var CONF_LABEL_EST = {'confirmed':'✅ Confirmado','manual':'✏️ Manual','distributor':'🏪 Distribuidor','grammar':'📐 Gramática','estimated':'~ Estimado'};
     lines.push('Confiança:   ' + (CONF_LABEL_EST[confKey] || confKey));
     lines.push('Tip:         ' + (d.tip            || '—'));
     lines.push('');
@@ -1450,16 +1450,10 @@ table.est-table td { padding: var(--s5) var(--s5); }
     if (d.is_emcp) {
       lines.push('emcp_source:   ' + (d.emcp_source || '—'));
     }
-    lines.push('from_web:      ' + !!d.from_web);
-    lines.push('raw_in_db:     ' + !!d.raw_in_db);
     lines.push('remarked_flag: ' + !!d.remarked_flag);
     if (d.remarked_note) {
       lines.push('remarked_note: ' + d.remarked_note);
     }
-    var geminiStatus = d.gemini_searched
-      ? (d.gemini_found ? 'encontrado' : 'não encontrado')
-      : 'não executado';
-    lines.push('Gemini:        ' + geminiStatus);
     lines.push('doc_url:       ' + (d.doc_url    || '—'));
     lines.push('source_url:    ' + (d.source_url || '—'));
     if (d.fuzzy_suggestions && d.fuzzy_suggestions.length) {

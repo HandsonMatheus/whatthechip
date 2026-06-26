@@ -1,29 +1,24 @@
 """
 WhatTheChip — Engine de Classificação de Chips
 ===============================================
-Classifica um Part Number em quatro camadas:
+Classifica um Part Number em três camadas:
 
-  1. Banco exato (KnownPart enriched)  → resultado completo e verificado
-  2. Gramática da família (ChipFamily) → decodificação posicional do PN
-       └→ resultado sempre enfileirado para revisão manual (KnownPart raw)
-         se o PN não estiver já no banco principal
-  3. Gemini puro (prefix desconhecido) → fallback IA com Google Search grounding
-         (somente quando settings.GEMINI_ENABLED = True)
-  4. Fuzzy matching                    → sugestões para erros de digitação
+  1. Banco exato (KnownPart confirmado)  → resultado completo e verificado
+       Só registros com confidence em (confirmed, manual) são autoritativos —
+       verificados por humano/datasheet. Vencem a gramática.
+  2. Gramática da família (ChipFamily)   → decodificação posicional do PN
+       Cobre a cauda longa: qualquer PN não confirmado é decodificado pelas
+       regras da família. O resultado é marcado pn_not_in_db (não confirmado).
+  3. Fuzzy matching                      → sugestões para erros de digitação
 
-Fila de revisão (Camada 2):
-    Todo PN que não está no banco principal (status=enriched) é enfileirado
-    automaticamente como KnownPart(status=raw) após a classificação.
-    O banco principal cresce apenas via revisão manual ou comandos de gestão.
-    Nunca auto-promove entradas para enriched a partir de input de usuário.
-
-Gemini:
-    Controlado pelo flag settings.GEMINI_ENABLED (padrão: False).
-    Para reativar: defina GEMINI_ENABLED=true no .env e reinicie o servidor.
-    O script scripts/enrich_gemini.py é independente deste flag.
+Fonte da verdade:
+    Um KnownPart só vence a gramática quando confidence ∈ (confirmed, manual).
+    Não há enriquecimento automático: as specs vêm de confirmação manual
+    (populate_*/import_*/fix_* + revisão no admin), nunca de IA. O antigo
+    campo KnownPart.status (raw/enriched) e o fallback Gemini foram removidos.
 
 Double-check:
-    Quando o banco E a gramática têm resultados, eles são comparados.
+    Quando o banco confirmado E a gramática têm resultados, eles são comparados.
     Divergência de capacidade é sinalizada como possível chip remarked.
 """
 
@@ -31,8 +26,6 @@ import json
 import logging
 import os
 import re
-import urllib.request
-import urllib.error
 from functools import lru_cache
 
 logger = logging.getLogger(__name__)
@@ -126,8 +119,16 @@ def _visual_edit_distance(a: str, b: str) -> float:
 
 # Níveis de confiança elegíveis para sugestão fuzzy/prefixo.
 # Apenas registros verificados por humano ou datasheet oficial são sugeridos —
-# evita que o operador seja direcionado a um PN estimado/IA/distribuidor duvidoso.
+# evita que o operador seja direcionado a um PN estimado/distribuidor duvidoso.
 _SUGGESTION_CONFIDENCE = ("confirmed", "manual")
+
+# Níveis de confiança que o engine trata como AUTORITATIVOS: vencem a gramática
+# e entram no estoque como "confirmado". São os verificados por humano/datasheet.
+# Substitui o antigo gate status="enriched" — agora um KnownPart só é autoridade
+# se foi confirmado manualmente. Não há mais enriquecimento automático por IA, e
+# dados de distribuidor/estimados ficam invisíveis ao caminho confiável (caem na
+# gramática). Ver _result_from_known() para a precedência banco × gramática.
+_CONFIRMED_CONFIDENCE = ("confirmed", "manual")
 
 
 def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
@@ -136,7 +137,7 @@ def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
     """
     all_parts = (
         KnownPart.objects
-        .filter(status="enriched", confidence__in=_SUGGESTION_CONFIDENCE)
+        .filter(confidence__in=_SUGGESTION_CONFIDENCE)
         .values_list("part_number", flat=True)
     )
     matches = []
@@ -180,7 +181,6 @@ def _prefix_candidates(pn: str, min_prefix_len: int = 7) -> list:
     return list(
         KnownPart.objects
         .filter(
-            status="enriched",
             confidence__in=_SUGGESTION_CONFIDENCE,
             part_number__startswith=pn,
         )
@@ -232,7 +232,7 @@ def _fuzzy_fbga_candidates(pn: str, threshold: int = 2) -> list:
     """
     all_fbga = (
         KnownPart.objects
-        .filter(status="enriched")
+        .filter(confidence__in=_SUGGESTION_CONFIDENCE)
         .exclude(fbga_code__isnull=True)
         .exclude(fbga_code="")
         .values_list("fbga_code", flat=True)
@@ -639,7 +639,7 @@ def _result_from_known(pn: str, known, fam) -> dict:
     """
     r = _result_from_family(pn, fam)
 
-    # Verifica se a gramática produziu resultado completo (sem precisar de Gemini)
+    # Verifica se a gramática produziu resultado completo (decode posicional total)
     grammar_emcp_ok = fam.is_emcp and bool(
         _CAP_RE.search(str(r.get("emcp_ram")  or "")) and
         _CAP_RE.search(str(r.get("emcp_nand") or ""))
@@ -898,423 +898,6 @@ def _check_remarked(grammar_result: dict, db_result: dict) -> bool:
     return False
 
 
-# ── Gemini fallback ────────────────────────────────────────────────────────────
-
-GEMINI_PROMPT = """Você é especialista em chips de memória e semicondutores para dispositivos eletrônicos.
-Pesquise o Part Number abaixo — use o Google Search se disponível.
-
-Part Number: {pn}
-{family_hint}
-⚠ REGRA CRÍTICA PARA eMCP/uMCP:
-Identificar apenas que o chip É um eMCP NÃO É SUFICIENTE.
-Para chips eMCP e uMCP, os campos "ram" e "nand" são OBRIGATÓRIOS com valores reais (ex: "LPDDR4X 4GB", "eMMC 5.1 64GB").
-Se você encontrar que é um eMCP mas não tem os valores de RAM e NAND, CONTINUE pesquisando.
-Busque em: preduo.com, censtry.com, serviceemmc.com, jotrin.com, wolfchip.com, glochip.com
-
-== GUIA DE DECODIFICAÇÃO DE PART NUMBERS ==
-
-SAMSUNG eMCP (KMR, KMQ, KMD, KMF, KMK, KMG, KM3, KM5, KM8...):
-  Prefixo KM = eMCP Samsung (NAND eMMC + LPDDR RAM no mesmo package)
-  Prefixo KLM = eMMC Samsung (standalone, sem RAM)
-  Para KLM: Pos 3 = capacidade NAND (A=4GB, B=8GB, C=16GB, D=32GB, E=64GB, F=128GB, G=256GB)
-
-SK HYNIX eMCP (H9TQ, H9HP, H9HQ):
-  H9TQ = eMCP (eMMC + LPDDR). Buscar capacidade exata em preduo.com ou glochip.com.
-
-MICRON eMCP (MTFC, MT29):
-  MTFC = eMMC Micron. MT29 + prefixo específico pode ser eMCP.
-
-NANYA DRAM (NT5, NT5C, NT5CC, NT6):
-  NT5CC256M16 = DDR3L — 256M×16bit = 4Gbit = 512MB por die
-  Regra: (número_M × bits_bus) / 8 = MB por die
-
-QUALCOMM SoC (SM, MSM, APQ, SDM): SM8xxx=Snapdragon 8xx, SM6xxx=6xx
-MEDIATEK SoC (MT6, MT8): MT6xxx=Helio/Dimensity, MT8xxx=tablet
-GIGADEVICE NOR (GD25): GD25Q128=128Mbit=16MB
-
-Responda APENAS com JSON válido (sem markdown):
-{{
-  "brand": "nome da marca",
-  "chip_type": "tipo do chip",
-  "ram": null,
-  "nand": null,
-  "capacity": null,
-  "interface": null,
-  "device": null,
-  "source_url": null,
-  "confidence": "high|medium|low",
-  "reasoning": "de onde vieram os dados"
-}}
-
-- ram:      eMCP/uMCP APENAS — tipo + capacidade. Ex: "LPDDR4X 4GB"
-- nand:     eMCP/uMCP APENAS — versão + capacidade. Ex: "eMMC 5.1 32GB"
-- capacity: eMMC/UFS/DRAM standalone. Ex: "64GB", "512MB"
-- chip_type: eMCP | uMCP | eMMC | UFS | LPDDR | LPDDR2 | LPDDR3 | LPDDR4 | LPDDR4X | LPDDR5 |
-             DDR | DDR2 | DDR3 | DDR4 | DDR5 | SDRAM | NOR Flash | SRAM | SoC | CPU | Baseband
-"""
-
-GEMINI_EMCP_FOLLOWUP = """O chip com Part Number {pn} foi identificado como {chip_type} da marca {brand}.
-
-Preciso ESPECIFICAMENTE das capacidades:
-1. Quanto de RAM? (tipo LPDDR + GB)
-2. Quanto de NAND? (versão eMMC + GB)
-
-Busque em: preduo.com, censtry.com, serviceemmc.com, wolfchip.com, glochip.com, jotrin.com
-
-Responda APENAS com JSON válido:
-{{
-  "ram": "tipo e capacidade da RAM",
-  "nand": "versão eMMC e capacidade",
-  "device": "dispositivo que usa este chip (se souber)",
-  "source_url": "URL de onde veio a informação (se houver)",
-  "confidence": "high|medium|low",
-  "reasoning": "de onde vieram os dados"
-}}
-"""
-
-GEMINI_MODELS_FALLBACK = [
-    "gemini-2.5-pro",
-    "gemini-2.5-flash",
-]
-
-
-def _get_api_key() -> str:
-    from django.conf import settings
-    # Respeita o flag GEMINI_ENABLED — se False, retorna string vazia, o que faz
-    # _gemini_lookup() e _gemini_emcp_followup() retornarem None imediatamente.
-    if not getattr(settings, "GEMINI_ENABLED", False):
-        return ""
-    return getattr(settings, "GEMINI_API_KEY", "") or os.environ.get("GEMINI_API_KEY", "")
-
-
-def _extract_json_from_text(raw: str) -> dict | None:
-    if not raw:
-        return None
-    raw = re.sub(r"```(?:json)?\s*", "", raw)
-    raw = re.sub(r"```\s*", "", raw)
-    raw = raw.strip()
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError:
-        pass
-    start = raw.find("{")
-    if start == -1:
-        return None
-    depth = 0
-    for i, ch in enumerate(raw[start:], start):
-        if ch == "{":
-            depth += 1
-        elif ch == "}":
-            depth -= 1
-            if depth == 0:
-                try:
-                    return json.loads(raw[start:i + 1])
-                except json.JSONDecodeError:
-                    break
-    return None
-
-
-def _gemini_api_call(url: str, prompt: str, use_grounding: bool, timeout: int = 20) -> str | None:
-    payload: dict = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 800},
-    }
-    if use_grounding:
-        payload["tools"] = [{"google_search": {}}]
-    else:
-        payload["generationConfig"]["responseMimeType"] = "application/json"
-
-    try:
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode(),
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            data = json.loads(resp.read())
-        parts = []
-        for cand in data.get("candidates", []):
-            for p in cand.get("content", {}).get("parts", []):
-                if "text" in p:
-                    parts.append(p["text"])
-        return "".join(parts).strip() or None
-    except urllib.error.HTTPError as e:
-        if e.code in (400, 403):
-            raise
-        return None
-    except Exception:
-        return None
-
-
-def _gemini_lookup(pn: str, family_hint: str = "") -> dict | None:
-    """Consulta Gemini com Google Search grounding. Fallback sem grounding se necessário."""
-    api_key = _get_api_key()
-    if not api_key:
-        return None
-
-    hint_text = f"Contexto já identificado: {family_hint}\n" if family_hint else ""
-    prompt = GEMINI_PROMPT.format(pn=pn, family_hint=hint_text)
-
-    for model in GEMINI_MODELS_FALLBACK:
-        url = (
-            f"https://generativelanguage.googleapis.com/v1beta/models/"
-            f"{model}:generateContent?key={api_key}"
-        )
-        # Tentativa 1: com grounding
-        try:
-            raw = _gemini_api_call(url, prompt, use_grounding=True)
-            if raw:
-                result = _extract_json_from_text(raw)
-                if result and result.get("chip_type"):
-                    result["_grounded"] = True
-                    return result
-        except urllib.error.HTTPError as e:
-            if e.code not in (400, 403):
-                continue
-
-        # Tentativa 2: sem grounding
-        try:
-            raw = _gemini_api_call(url, prompt, use_grounding=False)
-            if raw:
-                result = _extract_json_from_text(raw)
-                if result and result.get("chip_type"):
-                    result["_grounded"] = False
-                    return result
-        except Exception:
-            pass
-
-    return None
-
-
-def _gemini_emcp_followup(pn: str, chip_type: str, brand: str) -> dict | None:
-    """Segundo chamado cirúrgico para eMCP sem capacidade RAM/NAND."""
-    api_key = _get_api_key()
-    if not api_key:
-        return None
-
-    prompt = GEMINI_EMCP_FOLLOWUP.format(pn=pn, chip_type=chip_type, brand=brand or "desconhecida")
-
-    for model in GEMINI_MODELS_FALLBACK:
-        url = (
-            f"https://generativelanguage.googleapis.com/v1beta/models/"
-            f"{model}:generateContent?key={api_key}"
-        )
-        for use_grounding in (True, False):
-            try:
-                raw = _gemini_api_call(url, prompt, use_grounding=use_grounding, timeout=20)
-                if raw:
-                    result = _extract_json_from_text(raw)
-                    if result and (
-                        _CAP_RE.search(str(result.get("ram") or "")) or
-                        _CAP_RE.search(str(result.get("nand") or ""))
-                    ):
-                        return result
-            except urllib.error.HTTPError as e:
-                if e.code in (400, 403):
-                    break
-            except Exception:
-                pass
-
-    return None
-
-
-def _specs_are_complete(specs: dict) -> bool:
-    """Gate de qualidade antes de persistir no banco."""
-    chip_type = (specs.get("chip_type") or "").lower().replace(" ", "")
-    if not chip_type:
-        return False
-    if chip_type in ("soc", "cpu", "baseband"):
-        return bool(specs.get("brand"))
-    if chip_type in ("emcp", "umcp"):
-        return bool(
-            _CAP_RE.search(str(specs.get("ram") or "")) and
-            _CAP_RE.search(str(specs.get("nand") or ""))
-        )
-    if chip_type in ("norflash", "sram"):
-        return bool(
-            _CAP_RE.search(str(specs.get("capacity") or "")) or
-            specs.get("interface")
-        )
-    return bool(_CAP_RE.search(str(specs.get("capacity") or "")))
-
-
-def _save_gemini_to_db(pn: str, specs: dict):
-    """Salva resultado do Gemini no banco com status='enriched'."""
-    try:
-        brand_name = specs.get("brand", "Desconhecido")
-        conf_raw   = specs.get("confidence", "low")
-        conf_map   = {"high": "ai_high", "medium": "ai_medium", "low": "ai_low"}
-        confidence = conf_map.get(conf_raw, "ai_low")
-
-        # get_or_create não aceita lookups (name__iexact) como campo de criação.
-        # Usamos filter().first() + create() para evitar FieldError em marcas novas.
-        brand = Brand.objects.filter(name__iexact=brand_name).first()
-        if not brand:
-            brand = Brand.objects.create(
-                name=brand_name,
-                code=brand_name.upper()[:10].replace(" ", ""),
-            )
-        # Uma única Source compartilhada para todos os resultados Gemini.
-        # Antes criava um registro por PN (url=f"gemini:{pn}"), gerando
-        # milhares de entradas "Gemini Live Search" idênticas no banco.
-        source, _ = Source.objects.get_or_create(
-            url="gemini:live-search",
-            defaults={"name": "Gemini Live Search", "src_type": "ai"}
-        )
-        family = _match_family(pn)
-
-        part, created = KnownPart.objects.get_or_create(
-            part_number=pn,
-            defaults={
-                "brand":      brand,
-                "family":     family,
-                "status":     "enriched",
-                "chip_type":  specs.get("chip_type") or "",
-                "emcp_ram":   specs.get("ram")       or "",
-                "emcp_nand":  specs.get("nand")      or "",
-                "capacity":   specs.get("capacity")  or "",
-                "interface":  specs.get("interface") or "",
-                "device":     specs.get("device")    or "",
-                "notes":      str(specs.get("reasoning") or ""),
-                "confidence": confidence,
-                "source":     source,
-                "source_url": f"gemini:{pn}",
-            }
-        )
-        if not created:
-            changed = False
-            updates = {
-                "chip_type": specs.get("chip_type"),
-                "capacity":  specs.get("capacity"),
-                "interface": specs.get("interface"),
-                "device":    specs.get("device"),
-                "emcp_ram":  specs.get("ram"),
-                "emcp_nand": specs.get("nand"),
-            }
-            for field, val in updates.items():
-                if val and not getattr(part, field):
-                    setattr(part, field, val)
-                    changed = True
-            if part.status == "raw":
-                part.status = "enriched"
-                changed = True
-            if changed:
-                part.save()
-        return part
-    except Exception:
-        logger.exception("Erro ao salvar resultado do Gemini no banco para PN=%s", pn)
-        return None
-
-
-def _persist_grammar_result(pn: str, fam, result: dict):
-    """
-    Persiste resultado completo da gramática no banco como KnownPart enriched.
-
-    Chamado apenas quando grammar_complete=True e pn_short=False.
-
-    Regra de confiança — não sobrescreve se a entrada existente tiver
-    confiança melhor que 'estimated':
-        confirmed > manual > distributor > ai_high > ai_medium > ai_low > estimated
-
-    Retorna o KnownPart salvo, ou None em caso de erro.
-    """
-    _CONF_PRIORITY = {
-        "confirmed": 7, "manual": 6, "distributor": 5,
-        "ai_high": 4, "ai_medium": 3, "ai_low": 2, "estimated": 1,
-    }
-    try:
-        from django.db import transaction
-
-        new_fields = {
-            "chip_type":  result.get("chip_type")  or "",
-            "subtype":    result.get("subtype")     or "",
-            "interface":  result.get("interface")   or "",
-            "emcp_ram":   result.get("emcp_ram")    or "",
-            "emcp_nand":  result.get("emcp_nand")   or "",
-            "capacity":   result.get("capacity")    or "",
-        }
-
-        part, created = KnownPart.objects.get_or_create(
-            part_number=pn,
-            defaults={
-                "brand":      fam.brand,
-                "family":     fam,
-                "status":     "enriched",
-                "confidence": "estimated",
-                "notes":      f"Auto-persistido pela gramática. Família: {fam.prefix}",
-                **new_fields,
-            },
-        )
-
-        if not created:
-            # Nunca sobrescreve entradas com confiança acima de 'estimated'
-            existing_priority = _CONF_PRIORITY.get(part.confidence, 0)
-            if existing_priority > _CONF_PRIORITY["estimated"]:
-                logger.debug(
-                    "_persist_grammar_result: PN=%s já tem confidence=%s — skip",
-                    pn, part.confidence,
-                )
-                return part
-
-            # Atualiza campos ainda vazios; promove status raw → enriched
-            changed = False
-            for field, val in new_fields.items():
-                if val and not getattr(part, field, ""):
-                    setattr(part, field, val)
-                    changed = True
-            if part.status == "raw":
-                part.status = "enriched"
-                changed = True
-            if changed:
-                with transaction.atomic():
-                    part.save()
-
-        return part
-
-    except Exception:
-        logger.exception("Erro ao persistir resultado da gramática PN=%s", pn)
-        return None
-
-
-def _build_result_from_gemini(pn: str, specs: dict, part) -> dict:
-    chip_type = specs.get("chip_type", "")
-    is_emcp   = chip_type in ("eMCP", "uMCP")
-    family    = _match_family(pn)
-    conf_map  = {"high": "ai_high", "medium": "ai_medium", "low": "ai_low"}
-
-    return {
-        "pn":            pn,
-        "known":         True,
-        "known_exact":   part is not None,
-        "chip_type":     chip_type,
-        "subtype":       specs.get("subtype", ""),
-        "interface":     specs.get("interface", ""),
-        "family_prefix": family.prefix if family else "",
-        "brand":         specs.get("brand", ""),
-        "is_emcp":       is_emcp,
-        "tip":           specs.get("reasoning", ""),
-        "reasoning":     [],
-        "doc_url":       _doc_url(family),
-        "capacity":      specs.get("capacity"),
-        "dram_density":  None,
-        "emcp_ram":      specs.get("ram"),
-        "emcp_nand":     specs.get("nand"),
-        "emcp_device":   specs.get("device") if is_emcp else None,
-        "emcp_source":   conf_map.get(specs.get("confidence", "low"), "ai_low"),
-        "device":        specs.get("device") if not is_emcp else None,
-        "confidence":    conf_map.get(specs.get("confidence", "low"), "ai_low"),
-        "source_url":    specs.get("source_url"),
-        "from_web":      True,
-        "gemini_found":  True,
-        "suffix_note":        None,
-        "remarked_flag":      False,
-        "fuzzy_suggestions":  [],
-        "classification_source": "Gemini",
-        "family_undocumented": not getattr(family, "is_documented", True) if family else False,
-    }
-
-
 # ── Helpers de logging ─────────────────────────────────────────────────────────
 
 def _log_search(pn: str, found: bool, source_used: str = ""):
@@ -1458,7 +1041,7 @@ def assess_profitability(result: dict) -> str:
     # ── eMCP / uMCP ──────────────────────────────────────────────────────────
     # uMCP: mesmas regras do eMCP (NAND ≥ cfg.emcp_min_nand_gb, RAM ≥ cfg.emcp_min_ram_gb).
     # is_emcp cobre ambos via ChipFamily; a checagem explícita do chip_type
-    # garante que resultados Gemini (que podem retornar "uMCP") também sejam avaliados.
+    # garante que chip_type="uMCP" (vindo do banco) também seja avaliado.
     if result.get("is_emcp") or chip_type.lower() in ("emcp", "umcp"):
         ram_str  = (result.get("emcp_ram")  or "").strip()
         nand_str = (result.get("emcp_nand") or "").strip()
@@ -1616,10 +1199,9 @@ def classify(pn_raw: str) -> dict:
     Classifica um Part Number.
 
     Fluxo:
-      1. Banco exato (enriched) → resultado completo
-      2. Gramática da família   → decodificação + Gemini se campos essenciais vazios
-      3. Gemini puro            → PN desconhecido
-      4. Fuzzy matching         → sugestões de digitação
+      1. Banco exato (confirmados) → resultado completo e verificado
+      2. Gramática da família      → decodificação posicional do PN
+      3. Fuzzy matching            → sugestões de digitação (PN desconhecido)
     """
     pn = pn_raw.upper().strip()
     pn = re.sub(r"[^A-Z0-9]", "", pn)
@@ -1629,9 +1211,8 @@ def classify(pn_raw: str) -> dict:
 
     # ── Detecta PN potencialmente truncado ──────────────────────────────────
     # Se a família tem pn_length definido e o PN digitado é mais curto, tratamos
-    # como "possivelmente truncado" e pulamos o lookup no DB por segurança.
-    # Isso evita que registros acidentais (ex: "KMDC" alucinado pelo Gemini com
-    # 64GB+4GB) sejam retornados enquanto o operador ainda está digitando.
+    # como "possivelmente truncado": usado adiante para avisar o operador (campo
+    # pn_incomplete) quando a gramática também não decodifica a capacidade.
     # Nota: pn_short != pn_incomplete. Um PN pode ser curto mas a gramática já
     # retornar resultado completo (ex: KLMCGUCTA/9 chars: capacidade em pn[3]).
     # O aviso visual só aparece quando o resultado da gramática também for parcial.
@@ -1640,25 +1221,21 @@ def classify(pn_raw: str) -> dict:
         fam_early and fam_early.pn_length and len(pn) < fam_early.pn_length
     )
 
-    # ── 1. Busca exata no banco ──────────────────────────────────────────────
-    # Normalmente pulada quando PN está visivelmente curto — evita acerto acidental
-    # em registros de baixa qualidade criados para PNs truncados (OCR parcial,
-    # alucinação Gemini, digitação incompleta).
-    #
-    # Exceção (BUG-8 FIX): quando pn_short=True, ainda tentamos o banco mas
-    # APENAS para confidence=confirmed/manual — PNs verificados pelo operador.
-    # Motivo: alguns chips físicos têm PN sem o sufixo de package (ex: H9HP16AECMMD
-    # = 12 chars, pn_length=14 por causa do sufixo -DAR; o decode usa só pn[0:8]).
-    # A busca é EXATA por part_number=pn → sem risco de falso positivo.
-    _db_qs = KnownPart.objects.select_related("family", "brand", "family__doc_page")
-    if pn_short:
-        _db_qs = _db_qs.filter(confidence__in=("confirmed", "manual"))
+    # ── 1. Busca exata no banco (confirmados) ────────────────────────────────
+    # Só registros confirmados (confidence ∈ confirmed/manual) são autoritativos —
+    # substitui o antigo gate status="enriched". Dados de distribuidor/estimados
+    # não aparecem aqui: caem na gramática (camada 2). A busca é EXATA por
+    # part_number=pn, então mesmo PNs curtos são seguros (BUG-8: cobre PNs sem o
+    # sufixo de package, ex: H9HP16AECMMD com pn_length=14 mas decode em pn[0:8]).
+    _db_qs = (
+        KnownPart.objects
+        .filter(confidence__in=_CONFIRMED_CONFIDENCE)
+        .select_related("family", "brand", "family__doc_page")
+    )
     try:
-        known = _db_qs.get(
-            part_number=pn, status="enriched"
-        )
+        known = _db_qs.get(part_number=pn)
         # Preferir ChipFamily pelo prefixo — mais confiável que o chip_type
-        # salvo pelo Gemini (que pode ter classificado errado, ex: uMCP como eMCP).
+        # salvo no registro (que pode estar errado, ex: uMCP rotulado como eMCP).
         fam = _match_family(pn) or known.family
         if fam:
             result = _result_from_known(pn, known, fam)
@@ -1703,7 +1280,7 @@ def classify(pn_raw: str) -> dict:
     # MultipleObjectsReturned: dois registros normalizam igual → salta silencioso.
     try:
         _norm_qs = (
-            _db_qs.filter(status="enriched")
+            _db_qs
             .annotate(
                 pn_norm=Replace(
                     Replace("part_number", Value("-"), Value("")),
@@ -1761,9 +1338,11 @@ def classify(pn_raw: str) -> dict:
     # gramática seria apenas desperdício de CPU + risco de resultado incorreto.
     if _FBGA_RE.match(pn):
         try:
-            known_fbga = KnownPart.objects.select_related(
+            known_fbga = KnownPart.objects.filter(
+                confidence__in=_CONFIRMED_CONFIDENCE
+            ).select_related(
                 "family", "brand", "family__doc_page"
-            ).get(fbga_code=pn, status="enriched")
+            ).get(fbga_code=pn)
             fam_fbga = _match_family(known_fbga.part_number) or known_fbga.family
             if fam_fbga:
                 result = _result_from_known(known_fbga.part_number, known_fbga, fam_fbga)
@@ -1817,9 +1396,9 @@ def classify(pn_raw: str) -> dict:
             # Estratégia: preferir registros com chip_type preenchido (registros
             # normalizados pelo fix_known_parts); só usar o "vazio" se todos forem vazios.
             logger.warning("FBGA ambíguo: múltiplos KnownParts com fbga_code=%s — preferindo chip_type preenchido", pn)
-            _fbga_qs = KnownPart.objects.select_related(
-                "family", "brand", "family__doc_page"
-            ).filter(fbga_code=pn, status="enriched")
+            _fbga_qs = KnownPart.objects.filter(
+                fbga_code=pn, confidence__in=_CONFIRMED_CONFIDENCE
+            ).select_related("family", "brand", "family__doc_page")
             known_fbga = _fbga_qs.exclude(chip_type="").first() or _fbga_qs.first()
             if known_fbga:
                 fam_fbga = _match_family(known_fbga.part_number) or known_fbga.family
@@ -1866,9 +1445,6 @@ def classify(pn_raw: str) -> dict:
                 "known":           False,
                 "fbga_input":      pn,
                 "fbga_unknown":    True,
-                "from_web":        False,
-                "gemini_found":    False,
-                "gemini_searched": False,
                 "fuzzy_suggestions": fbga_fuzzy,
                 "in_review_queue": True,
             }
@@ -1896,142 +1472,45 @@ def classify(pn_raw: str) -> dict:
             grammar_result["pn_incomplete"]       = True
             grammar_result["pn_length_expected"]  = fam.pn_length
 
-        # Decide se precisa do Gemini para completar
-        # PN com resultado incompleto e ainda curto nunca vai ao Gemini —
-        # não faz sentido enriquecer algo que o operador ainda está digitando.
-        missing_emcp = (not pn_incomplete) and not grammar_complete and fam.is_emcp
-        missing_cap  = (not pn_incomplete) and not grammar_complete and not fam.is_emcp
+        # Sem Gemini: a gramática é o resultado final da camada 2. PNs que a
+        # gramática não decodifica por completo permanecem parciais — o operador
+        # confirma manualmente, alimentando populate_*/import_*/fix_*.
 
-        _gemini_saved_now = False  # inicializa antes do bloco condicional
-
-        if missing_emcp or missing_cap:
-            hint = f"{fam.chip_type} {fam.subtype or ''} da família '{fam.prefix}'"
-            specs = _gemini_lookup(pn, family_hint=hint)
-
-            if specs is not None:
-                if not specs.get("chip_type"):
-                    specs["chip_type"] = fam.chip_type
-
-                # Segundo chamado cirúrgico para eMCP sem capacidade
-                chip_t = (specs.get("chip_type") or "").lower()
-                if chip_t in ("emcp", "umcp"):
-                    has_ram  = _CAP_RE.search(str(specs.get("ram") or ""))
-                    has_nand = _CAP_RE.search(str(specs.get("nand") or ""))
-                    if not has_ram or not has_nand:
-                        followup = _gemini_emcp_followup(
-                            pn, specs.get("chip_type", "eMCP"), specs.get("brand", "")
-                        )
-                        if followup:
-                            for key in ("ram", "nand", "device", "source_url"):
-                                if followup.get(key) and not specs.get(key):
-                                    specs[key] = followup[key]
-
-                # Salva no banco sempre que temos ao menos chip_type.
-                # Antes era limitado a _specs_are_complete, mas isso causava
-                # re-consulta ao Gemini em toda busca quando a resposta era parcial.
-                # Agora salvamos sempre — resultado incompleto é melhor que zero cache.
-                if specs.get("chip_type"):
-                    _gemini_saved_now = _save_gemini_to_db(pn, specs) is not None
-
-                # Mescla dados Gemini
-                if specs.get("capacity"):
-                    grammar_result["capacity"] = specs["capacity"]
-                if grammar_result.get("is_emcp"):
-                    if specs.get("ram"):
-                        grammar_result["emcp_ram"]  = specs["ram"]
-                    if specs.get("nand"):
-                        grammar_result["emcp_nand"] = specs["nand"]
-                    if specs.get("device"):
-                        grammar_result["emcp_device"] = specs["device"]
-                    grammar_result["emcp_source"] = "gemini"
-                else:
-                    if specs.get("device"):
-                        grammar_result["device"] = specs["device"]
-                    if specs.get("interface") and not grammar_result.get("interface"):
-                        grammar_result["interface"] = specs["interface"]
-
-                grammar_result["gemini_found"]  = True
-                grammar_result["known_exact"]   = True
-                grammar_result["classification_source"] = "Gramática + Gemini"
-            else:
-                grammar_result["gemini_searched"] = True
-                grammar_result["gemini_found"]    = False
-
-        # Double-check: compara gramática com banco se PN já existia como enriched
-        # ANTES desta execução. Se o Gemini acabou de criar o registro agora
-        # (_gemini_saved_now=True), não comparamos — os dados são os mesmos.
-        if not _gemini_saved_now:
-            try:
-                db_part = KnownPart.objects.get(part_number=pn, status="enriched")
-                if db_part.family:
-                    db_result = _result_from_known(pn, db_part, db_part.family)
-                    if _check_remarked(grammar_result, db_result):
-                        grammar_result["remarked_flag"] = True
-                        # BUG-1: antes usava capacity/dram_density, que são None para
-                        # eMCP/uMCP → exibia "gramática indica None, banco confirma None".
-                        # _remarked_summary() cobre emcp_nand/emcp_ram também.
-                        grammar_result["remarked_note"] = (
-                            f"⚠️ Atenção: gramática indica "
-                            f"{_remarked_summary(grammar_result)}, "
-                            f"banco confirma "
-                            f"{_remarked_summary(db_result)}. "
-                            f"Verificar possível chip remarked."
-                        )
-            except KnownPart.DoesNotExist:
-                pass
-
-        # ── Fila de revisão ───────────────────────────────────────────────────
-        # Todo PN buscado que ainda não tem registro enriched no banco vai para
-        # a fila de revisão (status=raw), independente de grammar_complete.
-        #
-        # Motivo da mudança (2026-05-14, era sem Gemini):
-        #   Antes: só enfileirava quando grammar_complete=False.
-        #   Problema: grammar_complete=True apenas significa que o _CAP_RE achou
-        #   um número nos campos — não garante que o tipo RAM esteja correto
-        #   (ex: KM3V6001CM marcado como grammar_complete=True com "RAM não mapeada 4GB",
-        #   mas o chip real é LPDDR4X 6GB). Sem Gemini, esses erros nunca apareciam
-        #   na fila e eram invisíveis para revisão manual.
-        #
-        # Comportamento correto: a fila é o principal mecanismo de rastreamento de
-        # PNs não confirmados. fix_known_parts + populate_samsung criam os registros
-        # enriched; a fila raw é visibilidade para o operador.
-        # PNs truncados (pn_short=True) continuam excluídos — não faz sentido
-        # enfileirar entrada incompleta que o operador ainda está digitando.
-        _in_review_queue = False
-        if not _gemini_saved_now and not pn_short:
-            try:
-                if not KnownPart.objects.filter(part_number=pn, status="enriched").exists():
-                    KnownPart.objects.get_or_create(
-                        part_number=pn,
-                        defaults={
-                            "status":    "raw",
-                            "brand":     fam.brand,
-                            "family":    fam,
-                            "chip_type": fam.chip_type or "",
-                            "notes": (
-                                f"Fila de revisão: família={fam.prefix}, "
-                                f"grammar_complete={grammar_complete}"
-                            ),
-                        },
+        # Double-check de chip remarked: se já existe um KnownPart para este PN
+        # (confirmados retornaram na camada 1, então aqui é registro NÃO confirmado
+        # — ex.: histórico de distribuidor) e a capacidade diverge da gramática,
+        # sinaliza possível remarcação — pista crítica no mercado de reciclagem.
+        try:
+            db_part = KnownPart.objects.get(part_number=pn)
+            if db_part.family:
+                db_result = _result_from_known(pn, db_part, db_part.family)
+                if _check_remarked(grammar_result, db_result):
+                    grammar_result["remarked_flag"] = True
+                    # BUG-1: _remarked_summary() cobre emcp_nand/emcp_ram também
+                    # (capacity/dram_density são None para eMCP/uMCP).
+                    grammar_result["remarked_note"] = (
+                        f"⚠️ Atenção: gramática indica "
+                        f"{_remarked_summary(grammar_result)}, "
+                        f"banco indica "
+                        f"{_remarked_summary(db_result)}. "
+                        f"Verificar possível chip remarked."
                     )
-                    _in_review_queue = True
-            except Exception:
-                logger.exception("Erro ao enfileirar PN=%s na fila de revisão", pn)
+        except KnownPart.DoesNotExist:
+            pass
 
+        # Sem fila de revisão: o antigo KnownPart status="raw" (criado a cada busca
+        # de PN não confirmado) foi removido junto com o campo status. PNs buscados
+        # ficam rastreados em SearchLog; PNs que o operador tenta lançar e não são
+        # confirmados vão para a fila de conferência do estoque (PendingEntry). O
+        # banco confirmado cresce só via populate_*/import_*/fix_* + aprovação no admin.
         grammar_result["grammar_complete"]  = grammar_complete
-        grammar_result["in_review_queue"]   = _in_review_queue
-        grammar_result["grammar_persisted"] = False  # mantido para compatibilidade
+        grammar_result["in_review_queue"]   = False
         grammar_result["profitable"] = assess_profitability(grammar_result)
 
-        # ── Approach 1: flag explícita de "não confirmado no banco" ──────────
-        # Ativa aviso visual no UI para o operador conferir digitação.
-        # Condição: chegamos à camada 2 (layer 1 / busca exata falhou) E o Gemini
-        # não acabou de salvar um novo chip confirmado agora (_gemini_saved_now=False).
-        # Se _gemini_saved_now=True → chip novo legítimo classificado pelo Gemini → sem aviso.
-        # Se _gemini_saved_now=False → gramática pura ou Gemini sem resultado → aviso ativo.
-        # Nota: known_exact pode ser True por modificação interna do Gemini (linha 1189),
-        # mas isso não equivale a "estava no banco antes desta chamada" — usamos _gemini_saved_now.
-        grammar_result["pn_not_in_db"] = not _gemini_saved_now
+        # Flag explícita de "não confirmado no banco" → aviso visual para o operador
+        # conferir a digitação. Chegamos à camada 2, logo a busca exata de
+        # confirmados (camada 1) falhou: este PN não está confirmado no banco.
+        grammar_result["pn_not_in_db"] = True
 
         # ── Approach 2: sugestões em gramática sem match exato ───────────────
         # Combina prefixo (PN incompleto) + fuzzy visual (typo).
@@ -2044,42 +1523,17 @@ def classify(pn_raw: str) -> dict:
         _log_search(pn, found=True, source_used="grammar")
         return grammar_result
 
-    # ── 3. Gemini puro (prefixo desconhecido) ────────────────────────────────
+    # ── 3. Prefixo desconhecido → sugestões (prefixo + fuzzy) ────────────────
+    # Nenhuma família bateu o prefixo: fabricante não catalogado ou leitura
+    # incorreta do PN. Loga em UnknownChip e oferece sugestões — prefixo (PN
+    # incompleto) primeiro, fuzzy visual (typo) depois — para o operador corrigir.
     _log_unknown(pn)
-    specs = _gemini_lookup(pn)
-
-    if specs and specs.get("chip_type"):
-        chip_t = (specs.get("chip_type") or "").lower()
-        if chip_t in ("emcp", "umcp"):
-            has_ram  = _CAP_RE.search(str(specs.get("ram") or ""))
-            has_nand = _CAP_RE.search(str(specs.get("nand") or ""))
-            if not has_ram or not has_nand:
-                followup = _gemini_emcp_followup(
-                    pn, specs.get("chip_type", "eMCP"), specs.get("brand", "")
-                )
-                if followup:
-                    for key in ("ram", "nand", "device", "source_url"):
-                        if followup.get(key) and not specs.get(key):
-                            specs[key] = followup[key]
-
-        part = _save_gemini_to_db(pn, specs) if specs.get("chip_type") else None
-        result = _build_result_from_gemini(pn, specs, part)
-        result["profitable"] = assess_profitability(result)
-        _log_search(pn, found=True, source_used="gemini")
-        return result
-
-    # ── 4. Prefixo + fuzzy como sugestão (prefixo desconhecido) ─────────────
-    # _log_unknown() já gravou em UnknownChip — família completamente desconhecida.
-    # _combined_suggestions: prefixo (PN incompleto) vem primeiro, fuzzy visual depois.
     suggs = _combined_suggestions(pn)
     _log_search(pn, found=False, source_used="not_found")
 
     return {
         "pn":               pn,
         "known":            False,
-        "from_web":         True,
-        "gemini_found":     False,
-        "gemini_searched":  True,
         "fuzzy_suggestions": suggs,
         "in_review_queue":  True,   # UnknownChip já logado por _log_unknown()
     }

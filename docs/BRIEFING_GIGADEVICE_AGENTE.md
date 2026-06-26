@@ -13,7 +13,7 @@ reciclagem/refurbishing (eMiner, Paraguai). O operador digita um Part Number
 (PN) lido a laser no chip e o sistema retorna: tipo, specs, e se é RENTÁVEL.
 
 **Dois pilares:**
-1. **Banco de PNs confirmados (`KnownPart`)** — fonte da verdade; só `status="enriched"` é visível ao engine.
+1. **Banco de PNs confirmados (`KnownPart`)** — fonte da verdade; o engine só trata um registro como autoritativo (vence a gramática) quando `confidence` ∈ (`confirmed`, `manual`). *(Não há mais campo `status`; foi removido em jun/2026.)*
 2. **Gramática (`ChipFamily` + `DecodeMap`)** — decodificação posicional para a cauda longa de PNs não confirmados.
 
 **Regras absolutas:**
@@ -32,7 +32,6 @@ reciclagem/refurbishing (eMiner, Paraguai). O operador digita um Part Number
 |---|---|
 | `chips/scripts/scrape_preduo.py` | Prefixo `("GD", "GigaDevice")` para detecção de marca |
 | `chips/management/commands/collect_pns.py` | `"GigaDevice": ["GD25Q", "GD25B", "GD5F1", "GD5F2"]` |
-| `chips/engine.py` (prompt Gemini — legado) | `"GIGADEVICE NOR (GD25): GD25Q128=128Mbit=16MB"` |
 | `scripts/test_fase2.py` | `("GD25Q64CSIG", "GigaDevice")` confirma detecção de marca |
 
 ### O que NÃO existe ainda
@@ -41,7 +40,7 @@ reciclagem/refurbishing (eMiner, Paraguai). O operador digita um Part Number
 - **Nenhum `KnownPart`** confirmado.
 - **Nenhum `DecodeMap`** nem regra de decodificação.
 
-A marca é reconhecida, mas qualquer PN GD cai imediatamente no Gemini (legado, desligado por padrão) e depois no fuzzy matching — sem classificação real.
+A marca é reconhecida, mas qualquer PN GD cai direto no fuzzy matching (sugestões por similaridade) — sem classificação real, porque não há família nem KnownPart.
 
 ---
 
@@ -267,7 +266,7 @@ Tier 1 verificada (datasheet GigaDevice ou DigiKey).
 - **Capacidade sempre em MB no WTC** (não Mbit, não GB para chips pequenos como estes): `capacity="16MB"` (para GD25Q128).
 - **`decode_cap_map` para GD25Q**: a variabilidade do código de capacidade (40, 80, 16, 32…) pode tornar o decode posicional frágil. Se o mapa ficar muito complexo, deixe `decode_cap_pos=None` e cubra via `KnownPart` confirmado os SKUs mais comuns.
 - **GD55 é a nova geração** (2Gb+) — raramente em reciclagem ainda (2026). Não priorize.
-- **Gemini está desligado por padrão** (`GEMINI_ENABLED=false`). Não construa nada em cima dele.
+- **Não há fallback de IA.** A classificação se apoia só em gramática + banco de PNs confirmados; sem família nem `KnownPart`, o PN GD não é classificado.
 
 ---
 

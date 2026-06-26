@@ -323,8 +323,6 @@ try:
         f"counts={counts}"
     )
     if created_part:
-        check("status = 'raw'",          created_part.status == "raw",
-              f"status={created_part.status}")
         check("confidence = 'distributor'", created_part.confidence == "distributor",
               f"confidence={created_part.confidence}")
         check("chip_type = 'eMMC'",      created_part.chip_type == "eMMC",
@@ -360,7 +358,6 @@ try:
         brand=brand_mic,
         part_number=TEST_PN_DEDUP,
         chip_type="eMMC",
-        status="enriched",
         confidence="confirmed",
         notes="Dado confirmado — NÃO sobrescrever",
     )
@@ -409,7 +406,6 @@ try:
         brand=brand_mic,
         part_number=TEST_PN_OVW,
         chip_type="",       # vazio — deve ser preenchido
-        status="raw",
         confidence="estimated",
     )
 

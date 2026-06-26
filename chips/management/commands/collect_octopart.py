@@ -365,7 +365,7 @@ def _save_to_db(
 
     CONFIDENCE_ORDER = {
         "confirmed": 0, "manual": 1, "distributor": 2,
-        "ai_high": 3, "ai_medium": 4, "ai_low": 5, "estimated": 6,
+        "estimated": 3,
     }
     MY_CONFIDENCE      = "distributor"
     MY_CONFIDENCE_RANK = CONFIDENCE_ORDER[MY_CONFIDENCE]
@@ -426,7 +426,6 @@ def _save_to_db(
                     fbga_code=fbga,
                     chip_type=ct,
                     subtype=sub,
-                    status="raw",
                     confidence=MY_CONFIDENCE,
                     source=octopart_src,
                     source_url=ds_url or f"https://octopart.com/search?q={pn}",

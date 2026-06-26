@@ -1,7 +1,7 @@
 """
 fix_micron_capacity.py — Preenche capacidade dos chips Micron sem capacity
 ==========================================================================
-Corrige os ~3.300 KnownParts Micron com status='enriched' e capacity vazia.
+Corrige os ~3.300 KnownParts Micron com capacity vazia.
 
 Esses registros foram criados pelo collect_micron_catalog com FBGA+PN corretos
 mas sem capacity, porque a decodificação não faz parte do pipeline de coleta.
@@ -275,7 +275,6 @@ class Command(BaseCommand):
         # Seleciona chips sem capacidade (ou todos se --overwrite)
         qs = KnownPart.objects.filter(
             brand__name="Micron",
-            status="enriched",
         ).exclude(
             fbga_code=""
         ).exclude(
@@ -288,7 +287,6 @@ class Command(BaseCommand):
             from django.db.models import Q
             qs = KnownPart.objects.filter(
                 brand__name="Micron",
-                status="enriched",
             ).exclude(
                 fbga_code=""
             ).exclude(

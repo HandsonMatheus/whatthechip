@@ -479,7 +479,7 @@ class Command(BaseCommand):
                 KnownPart.objects.filter(brand__name="Micron")
                 .only(
                     "id", "part_number", "density_gbit", "capacity",
-                    "interface", "notes", "chip_type", "subtype", "status",
+                    "interface", "notes", "chip_type", "subtype",
                 )
             )
 
@@ -623,7 +623,6 @@ class Command(BaseCommand):
                                 capacity=info["capacity"],
                                 interface=info["interface"],
                                 notes=info["notes"],
-                                status="enriched",
                                 confidence="confirmed",
                                 source=micron_source,
                                 source_url=src_url,

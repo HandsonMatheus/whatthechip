@@ -13,7 +13,8 @@ pip install playwright && playwright install chromium   # opcional, para scrapin
 
 ```bash
 # chipdocs/.env  (não commitar!)
-GEMINI_API_KEY=AIzaSy...sua_chave_aqui
+DJANGO_SECRET_KEY=uma-chave-secreta-longa-e-aleatoria
+# Banco (DATABASE_URL ou DB_NAME/DB_USER/DB_PASSWORD/DB_HOST/DB_PORT)
 ```
 
 ## 3. Rodar a migration
@@ -59,22 +60,22 @@ Inicie o servidor e teste na página inicial:
 - `KLM` → prefixo Samsung eMMC (camada 1, instantâneo)
 - `KMQ310006A` → Samsung eMCP com LPDDR3 1GB / eMMC 4GB / Galaxy J3/J5 (camada 2, banco)
 - `K4B4G16E` → Samsung DDR3 com densidade decodificada pela gramática (camada 2, gramática)
-- `H9TQ64A8MDAC` → SK Hynix eMCP via Gemini se não estiver no banco (camada 3)
+- `H9TQ64A8MDAC` → SK Hynix eMCP; se não estiver no banco, decodificado pela gramática (camada 2)
 
-## 7. Enriquecer os PNs raw (quando quiser)
+## 7. Confirmar specs de PNs (quando quiser)
+
+As specs entram no banco por **confirmação manual** (datasheet / DigiKey / Octopart),
+não por IA. Edite os comandos de pipeline e rode-os:
 
 ```bash
-cd scripts/
-
-# Enriquece Samsung (limit controla quantos PNs por rodada)
-python enrich_gemini.py --brand Samsung --limit 50
-
-# Com mais workers para acelerar (cuidado com rate limit da API)
-python enrich_gemini.py --brand Samsung --workers 3 --limit 200
-
-# Re-tentar os que falharam anteriormente
-python enrich_gemini.py --brand Samsung --retry-failed
+# Gabaritos curados (famílias + DecodeMaps + KnownParts confirmados)
+python manage.py populate_samsung
+python manage.py import_micron_catalog *_full-catalog.csv
+python manage.py fix_known_parts   # correções curadas (força confidence=confirmed)
 ```
+
+Pontualmente, dá para confirmar/editar um `KnownPart` direto no admin
+(`confidence` = `confirmed`/`manual` para vencer a gramática).
 
 ## 8. Coletar novos PNs (quando quiser expandir)
 

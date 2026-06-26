@@ -1,3 +1,10 @@
+> ⚠️ **DOCUMENTO HISTÓRICO (jun/2026).** O campo `KnownPart.status`
+> (raw/enriched/failed) e o gate `status="enriched"` descritos abaixo **foram
+> removidos**. O engine agora trata como autoritativo apenas `KnownPart` com
+> `confidence` ∈ (`confirmed`, `manual`) — ver `CLAUDE.md` §4 e
+> `docs/archive/2026-06-26-remocao-gemini-status.md`. Mantido só como registro do
+> raciocínio da época; **não aja com base nele sem confirmar no código**.
+
 # Investigação: Bug de Classificação — `fix_known_parts` não sobrescreve resultado da gramática
 
 **Data:** 2026-05-14  

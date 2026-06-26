@@ -67,11 +67,14 @@ chips/management/commands/fix_known_parts.py  ← seções de outras marcas (Sam
 8. **`emcp_ram` = tipo ANTES da capacidade.** `"LPDDR3 1GB"` — nunca `"1GB LPDDR3"`.
    O campo `emcp_nand` é só GB: `"8GB"`, `"16GB"`, sem prefixo de tipo.
 
-9. **Não rebaixe `confirmed`/`manual`.** Ao corrigir um campo, preserve
-   `confidence` e `status="enriched"`. Nunca mude para `"distributor"` ou `"estimated"`.
+9. **Não rebaixe `confirmed`/`manual`.** Ao corrigir um campo, preserve o
+   `confidence`. Nunca mude para `"distributor"` ou `"estimated"`.
 
-10. **`status="raw"` = invisível para o engine.** Chip com dados certos mas `status="raw"`
-    não é classificado. Sempre terminar com `status="enriched"` nos registros corrigidos.
+10. **Só `confidence` ∈ (`confirmed`, `manual`) é autoritativo para o engine.** Um
+    registro com `confidence="distributor"` ou `"estimated"` **não** vence a gramática:
+    o engine cai no decode posicional. Sempre terminar com `confidence="confirmed"`
+    (ou `"manual"`) nos registros corrigidos. *(O campo `status` foi removido em jun/2026;
+    a única pergunta é "o confidence é confirmed/manual?".)*
 
 ### 0.4 Hierarquia de fontes (imutável)
 
@@ -81,7 +84,7 @@ chips/management/commands/fix_known_parts.py  ← seções de outras marcas (Sam
 3. DigiKey (produto listado com specs)
 4. Octopart / Nexar  ← frequentemente inverte Gb/GB; sempre cruzar
 5. Distribuidor B2B rastreável (Puris, Win Source)
-6. IA externa (Gemini, GPT, outro Claude) ← ÚLTIMO RECURSO; verificar SEMPRE
+6. IA externa (qualquer LLM) ← ÚLTIMO RECURSO; nunca fonte primária; verificar SEMPRE
 ```
 
 Nunca use como fonte primária: AliExpress, catálogos genéricos, `part-name` da API FBGA,
@@ -399,7 +402,7 @@ python manage.py import_micron_catalog ddr3-sdram_full-catalog.csv --only-update
 # Adicionar via fix_known_parts.py (editar o arquivo, propor ao usuário rodar)
 # ou via admin Django: /admin/chips/knownpart/add/
 # Campos mínimos: part_number, brand, chip_type, subtype, confidence="confirmed",
-#                 status="enriched", + o campo de capacidade correto
+#                 + o campo de capacidade correto
 ```
 
 ### 9.4 Templates `fix_known_parts.py` por tipo Micron
@@ -416,7 +419,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "brand_name": "Micron",
         "chip_type":  "eMCP",
         "subtype":    "LPDDR3",      # geração RAM — SOMENTE a geração
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {
@@ -426,7 +428,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "emcp_nand":  "8GB",         # NAND em GB — sem prefixo de tipo
         "emcp_ram":   "LPDDR3 1GB",  # tipo ANTES da capacidade — SEMPRE
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "DigiKey: MT29TZZZ8D5BKFAH-125 LPDDR3 8Gbit(1GB). BUG-8: API dizia LPDDR2 — errada.",
 },
@@ -442,7 +443,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "brand_name": "Micron",
         "chip_type":  "LPDDR4",     # LPDDR standalone: chip_type = geração — NUNCA "RAM"
         "subtype":    "LPDDR4",
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {
@@ -451,7 +451,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "interface":  "",           # SEMPRE vazio para LPDDR standalone
         "capacity":   "4GB",        # GB do pacote completo (512M × 64bit ÷ 8 = 4GB)
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "Math: 512M × 64bit = 32Gbit ÷ 8 = 4GB LPDDR4. Micron FBGA API: D9VFC.",
 },
@@ -467,7 +466,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "brand_name": "Micron",
         "chip_type":  "RAM",         # DDR standalone: chip_type="RAM" (não "DDR3")
         "subtype":    "DDR3",
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {
@@ -478,7 +476,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "density_gbit": "2Gb",       # por die em Gb — campo para profitability
         "density_gb":   "256MB",
         "confidence":   "confirmed",
-        "status":       "enriched",
     },
     "reason": "Micron FBGA API: D9PRW → MT41J128M16JT-093:K, 2Gb DDR3 SDRAM x16.",
 },
@@ -494,7 +491,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "brand_name": "Micron",
         "chip_type":  "NAND Flash",
         "subtype":    "SLC NAND",   # célula — SOMENTE (SLC/MLC/TLC)
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {
@@ -503,7 +499,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "interface":  "Parallel NAND (8-bit)",
         "capacity":   "512MB",      # em bytes — "512MB" (4Gbit ÷ 8 = 512MB)
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "Micron FBGA: JW464 = MT29C4G48MAZAPAKD5IT. 4Gbit SLC NAND = 512MB. NÃO é eMCP.",
 },
@@ -518,7 +513,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "brand_name": "Micron",
         "chip_type":  "eMMC",
         "subtype":    "",            # eMMC standalone: subtype VAZIO
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {
@@ -527,7 +521,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "interface":  "eMMC 5.1",   # padrão/versão da interface
         "capacity":   "16GB",        # total em GB
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "Micron catálogo: MTFC16GAPALBH = 16GB eMMC 5.1.",
 },
@@ -544,7 +537,6 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
         "emcp_nand":  "8GB",
         "emcp_ram":   "LPDDR3 1GB",
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "Defesa-em-profundidade: garante chip_type/emcp_nand se fill_capacity não preencheu.",
 },
@@ -576,9 +568,9 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
    → script: scripts/collect_pns.py --brand Micron
    → NÃO roda no Render (produção sem Playwright)
 
-5. IA externa (Gemini, GPT)
+5. IA externa (qualquer LLM)
    → ÚLTIMO recurso; frequentemente erra capacidade e tipo
-   → confidence="ai_low" no máximo; sempre verificar depois
+   → nunca fonte primária; sempre verificar na fonte oficial antes de gravar
 ```
 
 **Nota sobre unidades na API Micron:**
@@ -601,7 +593,7 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
 
 **Como o engine trata:**
 1. Detecta padrão FBGA (`^[A-Z][A-Z0-9]{4}$`)
-2. Busca em `KnownPart.fbga_code` (status=enriched)
+2. Busca em `KnownPart.fbga_code`
 3. Se tem família → `_result_from_known(PN, kp, family)` — decode completo
 4. Se sem família → dict manual com `density_gbit`/`density_gb` do KnownPart
 5. Se desconhecido → enfileira em `UnknownChip` para enriquecimento noturno
@@ -627,7 +619,7 @@ print(kp.part_number, kp.chip_type, kp.subtype, kp.density_gbit, kp.capacity)
 | **`part-name` da API FBGA = fonte fraca para tipo de RAM** | `"LPDDR2"` na API pode ser LPDDR3 (BUG-8). O prefixo do PN define o tipo. |
 | **eMCP/uMCP: `capacity` deixar vazio** | Para MCP, `capacity=""`. Usar `emcp_nand` + `emcp_ram`. Preencher `capacity` gera bug `"68GB"`. |
 | **COMPONENT DENSITY do CSV = total NAND+RAM** | Para MCP, o CSV soma tudo em Gbit. Não usar como `capacity`. |
-| **`status="raw"` invisível para o engine** | Dados certos, chip não classificado. Promover para `enriched`. |
+| **Só `confidence` confirmed/manual é autoritativo** | Dados certos com `confidence="distributor"`/`"estimated"` perdem para a gramática. Promover para `confirmed`/`manual` para o banco vencer. (Não há mais campo `status`.) |
 | **`lru_cache` após `populate --overwrite`** | Engine continua servindo gramática antiga até reiniciar o servidor. |
 | **FBGA com duplicatas** | Engine prefere registro com `chip_type` preenchido (`.exclude(chip_type="").first()`). |
 | **`"por die"` duplicado no `val_secondary`** | Não colocar `"por die"` — engine já acrescenta. Resultado: `"por die por die"`. |
@@ -653,7 +645,7 @@ O comentário antigo dizia `pn[8]=NAND`. **ERRADO** — comprovado por 5 pontos 
 ### COMPONENT DENSITY do CSV para eMCP/uMCP não distingue NAND de RAM
 A Micron não separa NAND e RAM no CSV de eMCP/uMCP. Use a API FBGA ou o decode do MIC_MCP_CAP.
 
-### `confidence="distributor"` ou `"ai_*"` não sobrepõe a gramática
+### `confidence="distributor"` ou `"estimated"` não sobrepõe a gramática
 Só `confirmed` e `manual` vencem. Se o banco tem dado errado com `confidence="distributor"`,
 o engine usa a gramática (e ignora o banco). Não confie em dado de distribuidor/IA sem confirmar.
 
@@ -665,12 +657,14 @@ O engine usa `lru_cache` para `ChipFamily` e `DecodeMap`. O comando chama
 `clear_engine_cache()` no seu processo, mas o servidor web mantém cache antigo.
 **Sempre reiniciar após populate --overwrite** (regra de ouro #3 do CLAUDE.md).
 
-### `status="raw"` = invisível para o engine
-Chip com dados corretos mas `status="raw"` não é classificado. Promover para `enriched`:
+### Só `confidence` ∈ (confirmed, manual) torna o registro autoritativo
+Chip com dados corretos mas `confidence="distributor"`/`"estimated"` não vence a
+gramática — o engine cai no decode posicional. Promover para `confirmed`/`manual`
+(o campo `status` foi removido em jun/2026):
 ```bash
 python manage.py shell -c "
 from chips.models import KnownPart
-KnownPart.objects.filter(part_number='MT...').update(status='enriched')
+KnownPart.objects.filter(part_number='MT...').update(confidence='confirmed')
 "
 ```
 
@@ -729,7 +723,7 @@ print(json.dumps(r, indent=2, ensure_ascii=False))
 | 2026-06-19 | `dram_density` sempre null no path FBGA | `engine.py:~1600,1629` | FBGA paths agora leem `density_gbit`/`density_gb` do KnownPart |
 | 2026-06-19 | `density_gb` nunca gravado pelo importador | `import_micron_catalog.py` | Adicionado `density_gb = _density_to_capacity(density)` no info dict, `_maybe_update` e `create` |
 | 2026-06 | eMMC classificado como uMCP e vice-versa (BUG-3) | `fix_micron_mcp_classification.py` | Corrigido via source_url da API FBGA |
-| 2026-06 | engine ignorava gramática para eMCP com dado de distribuidor (BUG-6) | `engine.py` | Lógica `grammar_wins` corrigida — gramática completa vence `distributor`/`ai_*` |
+| 2026-06 | engine ignorava gramática para eMCP com dado de distribuidor (BUG-6) | `engine.py` | Lógica `grammar_wins` corrigida — gramática completa vence `distributor`/`estimated` |
 | 2026-06 | `subtype` não sincronizado após decode do gen map (ex: "LPDDR3" família vs "LPDDR2" decode) | `engine.py` | Adicionado sync `r["subtype"] = _decoded_gen` após `r["interface"] = ""` no bloco eMCP |
 | 2026-06-19 | **BUG-8**: MIC_TZZZ_GEN mapeava `'8'→LPDDR2` baseado em API Micron errada; chip é LPDDR3 | `populate_micron_mcp.py` + `fix_known_parts.py` | Corrigido: `'8'→LPDDR3`; fontes: datasheet oficial Micron (MT29TZZZ8D5JKEZB, NXP community) + DigiKey |
 | 2026-05 | `populate_micron_mcp.py` comentário dizia pn[8]=NAND | `populate_micron_mcp.py` | Corrigido: pn[8]=RAM, pn[10]=NAND (confirmado por 5 pontos de dados API) |

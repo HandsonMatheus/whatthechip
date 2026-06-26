@@ -5,7 +5,7 @@ Lista (SOMENTE LEITURA) os PNs de um lote com quantidade == --qty que ainda NÃO
 são confirmados no banco — checando o KnownPart AO VIVO (não o rótulo gravado no
 estoque, que fica defasado do bless_base). Agrupa por marca e grava um CSV.
 
-"Não confirmado" = sem KnownPart confirmed/manual enriched E o engine não devolve
+"Não confirmado" = sem KnownPart confirmed/manual E o engine não devolve
 classification_source == "banco de dados".
 
 Uso (DATABASE_URL apontando ao Render):
@@ -34,7 +34,7 @@ def _norm(s):
 
 def _is_confirmed(pn):
     kp = KnownPart.objects.filter(part_number=_norm(pn)).first()
-    if kp and kp.confidence in CONFIRMED_CONF and kp.status == "enriched":
+    if kp and kp.confidence in CONFIRMED_CONF:
         return True
     r = classify(pn) or {}
     return (r.get("classification_source") == "banco de dados"

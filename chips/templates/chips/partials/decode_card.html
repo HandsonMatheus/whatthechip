@@ -234,32 +234,7 @@
   {% endif %}
 </div>
 
-{% elif not result.gemini_searched and result.fuzzy_suggestions %}
-
-<!-- ── Chip não reconhecido — sem Gemini, mas com sugestões fuzzy ───────────── -->
-<div class="dc2-not-found">
-  <div class="dc2-not-found-title">
-    ⚠ Chip não reconhecido — veja sugestões abaixo
-  </div>
-  <div class="dc2-not-found-hint">
-    O PN digitado não foi identificado. Confira os caracteres — confusões comuns: <strong>0/O, 1/l, B/8, M/W</strong>.
-  </div>
-  <div style="margin-top:10px;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">VOCÊ QUIS DIZER?</div>
-    {% for sug in result.fuzzy_suggestions %}
-    <a href="#"
-       onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;"
-       style="display:block;padding:7px 4px;border-bottom:1px solid #e0e0e0;text-decoration:none;cursor:pointer;">
-      <span class="wtc-fuzzy-pn"
-            data-typed="{{ result.pn }}"
-            data-suggestion="{{ sug }}"
-            style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#0f62fe;">{{ sug }}</span>
-    </a>
-    {% endfor %}
-  </div>
-</div>
-
-{% elif result.gemini_searched and not result.gemini_found %}
+{% else %}
 
 <!-- ── Chip não reconhecido ────────────────────────────────────────────────── -->
 <div class="dc2-not-found">

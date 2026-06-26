@@ -30,7 +30,7 @@ def _confirm_as_knownpart(pend):
         KnownPart.objects.update_or_create(
             part_number=pend.part_number,
             defaults=dict(
-                brand=brand, family=family, status="enriched", confidence="manual",
+                brand=brand, family=family, confidence="manual",
                 chip_type=pend.chip_type or "", capacity=pend.capacity or "",
                 emcp_ram=pend.emcp_ram or "", emcp_nand=pend.emcp_nand or "",
                 interface=pend.interface or "",

@@ -60,8 +60,11 @@ de rentabilidade**.
    dados** (`migrate`, `populate_*`, `import_*`, `fix_*`, `purge_*`,
    `enrich_*`) devem ser **propostos e revisados**, mas **executados pelo
    usuário**. Claude **edita arquivos**; o usuário **roda** e confirma.
-2. **O engine só enxerga `KnownPart` com `status="enriched"`.** Um registro em
-   `status="raw"` é **invisível** para a classificação, mesmo com dados certos.
+2. **O engine só trata como autoritativo `KnownPart` com `confidence` ∈
+   (`confirmed`, `manual`).** Registros `distributor`/`estimated` não vencem a
+   gramática — caem na decodificação posicional (camada 2). O antigo campo
+   `status` (raw/enriched/failed) foi **removido** (jun/2026), assim como o gate
+   `status="enriched"`.
 3. **Depois de `populate_* --overwrite`, REINICIE o servidor.** O engine usa
    `lru_cache` para famílias e mapas (`chips/engine.py`). O comando chama
    `clear_engine_cache()` apenas no próprio processo — o servidor web continua
@@ -77,17 +80,20 @@ de rentabilidade**.
    que ser `None`. Caso contrário o engine produz texto Frankenstein
    ("tipo 'X' — consultar datasheet").
 6. **Só `confidence` `confirmed`/`manual` vence a gramática.** Dados de
-   `distributor` e de IA (`ai_*`) são frequentemente **errados** (capacidade/tipo
-   de RAM) — só complementam quando a gramática está incompleta. Veja
-   `_result_from_known` em `chips/engine.py`.
+   `distributor` são frequentemente **errados** (capacidade/tipo de RAM) — só
+   complementam quando a gramática está incompleta. Veja `_result_from_known`
+   em `chips/engine.py`. (Os níveis de IA `ai_*` foram removidos com o Gemini.)
 7. **Nunca delete famílias do `populate`.** Para desativar, use `active=False`
    no admin (ou no seed). Deletar quebra histórico e FKs.
-8. **`purge_enriched` é destrutivo** (apaga KnownParts de IA/scraping). Rode
-   **sempre** com `--dry-run` antes.
+8. **`purge_enriched` é destrutivo** (apaga KnownParts legados `ai_*`/`estimated`
+   e a antiga fila raw, invisíveis ao engine pós-remoção do status). É **dry-run
+   por padrão**; use `--commit` (grava backup JSON antes). É o passo de limpeza
+   pós-migração `0012`.
 9. **Nunca commite segredos.** `.env` é gitignored. Chaves vivem só no `.env`
    local e nas env vars do Render.
-10. **Gemini é legado / em remoção** (ver §4). Não construa nada novo em cima
-    dele; o núcleo é **banco + gramática**.
+10. **Gemini foi REMOVIDO** (jun/2026). Não há mais fallback de IA nem
+    enriquecimento automático: o núcleo é **banco confirmado + gramática**. As
+    specs entram por confirmação manual (populate_*/import_*/fix_* + admin).
 11. **Rentabilidade tem fonte ÚNICA: `assess_profitability`.** Nunca reimplemente
     regra de rentabilidade em outro lugar. O `is_dead_by_generation` (engine) e o
     gateway do estoque (`estoque/views.py`) **derivam** dela — ver §4 e
@@ -107,7 +113,6 @@ de rentabilidade**.
 | Servidor prod | **gunicorn** (`Procfile`) |
 | Deploy | **Render** (workspace **Hobby pago**: web + Postgres pagos, ~US$17/mês [jun/2026], 2 custom domains inclusos) — auto-deploy no push para `main` |
 | Export | **openpyxl** (estoque → `.xlsx`) |
-| IA (legado) | Google Gemini via `google-generativeai` — desligado por padrão |
 | Coleta (local) | `curl_cffi`, `playwright`, `pdfplumber`, Nexar/Octopart |
 
 Dependências: **`requirements.txt`** (ambiente local completo, com scrapers) e
@@ -131,20 +136,22 @@ pages/     → CMS simples de documentação (modelo Page, servido em /<slug>/)
 
 Ponto de entrada único: **`classify(pn)`**. Normaliza o PN e tenta, **em ordem**:
 
-1. **Banco exato** — `KnownPart` com `status="enriched"`. Se achar, `_result_from_known`
-   funde com a gramática. ⚠️ **Atenção à precedência real** (não é "banco > tudo"):
-   - `confidence` `confirmed`/`manual` → **banco vence** (verificado por humano);
-   - demais (`distributor`/`ai_*`/`estimated`) + gramática completa → **gramática vence**.
+1. **Banco exato (confirmados)** — `KnownPart` com `confidence` ∈ (`confirmed`,
+   `manual`). Substitui o antigo gate `status="enriched"` (campo removido em
+   jun/2026). Se achar, `_result_from_known` funde com a gramática. ⚠️ **Precedência
+   real** (não é "banco > tudo"):
+   - `confirmed`/`manual` → **banco vence** (verificado por humano);
+   - na camada 1 nada além de confirmed/manual aparece — `distributor`/`estimated`
+     caem direto na gramática (camada 2) e a gramática completa vence.
 2. **Lookup FBGA** — se o PN casa o padrão FBGA (`^[A-Z][A-Z0-9]{4}$`, ex.: `D9VFC`),
-   busca por `KnownPart.fbga_code`. É o código que o operador lê no chip Micron.
-   Desconhecido → enfileira em `UnknownChip` para resolução noturna.
+   busca por `KnownPart.fbga_code` (também restrito a confirmed/manual). É o código
+   que o operador lê no chip Micron. Desconhecido → enfileira em `UnknownChip`.
 3. **Gramática da família** — `_result_from_family`: decode posicional via
-   `ChipFamily` + `DecodeMap`. PNs não confirmados entram na **fila de revisão**
-   (`KnownPart status="raw"`).
-4. **Gemini (LEGADO)** — só roda se `GEMINI_ENABLED=true` (default **false**).
-   **Tratar como descontinuado.** Todo o caminho Gemini é no-op por padrão
-   (`_get_api_key()` retorna `""`).
-5. **Fuzzy matching** — sugestões por distância de Levenshtein para erro de digitação.
+   `ChipFamily` + `DecodeMap`. PNs não confirmados saem com `pn_not_in_db=True`.
+   **Não há mais fila de revisão raw** (o `KnownPart status="raw"` foi removido):
+   PNs buscados ficam em `SearchLog`; o que o operador tenta lançar e não é
+   confirmado vai para `PendingEntry` (fila de conferência do estoque).
+4. **Fuzzy matching** — sugestões por distância visual/Levenshtein para typo.
 
 Além disso: **`assess_profitability(result)`** aplica as regras comerciais
 (eMCP/uMCP, eMMC, UFS, LPDDR, DDR) e devolve `RENTÁVEL` / `NÃO RENTÁVEL` /
@@ -169,9 +176,10 @@ geração morta ao descarte **mesmo sem confirmação no banco** (rótulo distin
 `Source`, `SearchLog`, `UnknownChip`, `CorrectionRequest`, `ChipSubmission`.
 
 - **Ladder de confiança** (alta→baixa): `confirmed` > `manual` > `distributor` >
-  `ai_high` > `ai_medium` > `ai_low` > `estimated`.
-- **Status de `KnownPart`:** `raw` (coletado, sem specs) → `enriched` (utilizável)
-  / `failed`.
+  `estimated`. Só `confirmed`/`manual` são **autoritativos** (vencem a gramática);
+  os níveis de IA (`ai_*`) foram removidos junto com o Gemini.
+- **Sem campo `status`:** o antigo `raw/enriched/failed` foi **removido** (jun/2026).
+  Um KnownPart "existe e é confiável" quando `confidence` ∈ (`confirmed`, `manual`).
 - **`ChipFamily`** carrega a "anatomia" do PN: `decode_cap_pos/len/map`,
   `decode_gen_pos/map`, `decode_density_type` (`pc` usa `pn[3:5]`/`DRAM_PC`;
   `mobile` usa `pn[3]`/`DRAM_MOBILE` — **mutuamente exclusivos** com `cap_map`),
@@ -198,12 +206,12 @@ confunda os dois nem edite um esperando que o outro mude.
 ### Mapa de arquivos-chave
 
 ```
-chips/engine.py          → classify(), gramática, profitability, Gemini (legado)
+chips/engine.py          → classify(), gramática, profitability
 chips/models.py          → todo o modelo de dados + glossário nos docstrings
 chips/conventions.py     → canonical_gen(): FONTE ÚNICA da convenção de label (consumida pelo gateway)
 chips/admin.py           → workflows de triagem (ChipFamily, KnownPart, correções)
 chips/management/commands/→ pipeline de dados (populate/import/fix/collect) — §5
-core/settings.py         → config; flags GEMINI_ENABLED, DATABASE_URL, etc.
+core/settings.py         → config; DATABASE_URL, NEXAR_*, etc.
 core/settings_test.py    → SQLite em memória para testes
 estoque/                 → inventário por lote
 scripts/                 → coleta/enriquecimento OFFLINE (local-only) — §5
@@ -228,7 +236,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-### Testes (sempre com settings de teste — SQLite, Gemini off)
+### Testes (sempre com settings de teste — SQLite)
 
 ```bash
 python manage.py test chips --settings=core.settings_test
@@ -277,7 +285,6 @@ não inclui esses pacotes):
 
 ```bash
 python scripts/collect_pns.py --brand Samsung      # coleta PNs crus (default: Samsung!)
-python scripts/enrich_gemini.py --brand Samsung --limit 50 [--retry-failed]
 python scripts/nexar_validate.py --validate <PN>   # Octopart/Nexar
 python manage.py enrich_micron_fbga / lookup_fbga <FBGA> / fill_capacity_from_micron_api
 ```
@@ -303,7 +310,7 @@ Detalhes e armadilhas: **`DEPLOY_RENDER.md`**.
   estão. Mantenha o padrão existente.
 - **Variáveis de ambiente** (lidas em `core/settings.py` via `python-dotenv`):
   `DJANGO_SECRET_KEY`, `DEBUG`, `DATABASE_URL` (ou `DB_NAME/USER/PASSWORD/HOST/PORT`),
-  `RENDER_EXTERNAL_HOSTNAME`, `GEMINI_API_KEY`, `GEMINI_ENABLED`,
+  `RENDER_EXTERNAL_HOSTNAME`,
   `NEXAR_CLIENT_ID`/`NEXAR_CLIENT_SECRET`.
 - **Migrations:** toda mudança de modelo gera `makemigrations` + `migrate`.
   Nunca edite migrations já aplicadas em produção; crie uma nova.
@@ -365,11 +372,12 @@ Referência completa: **`docs/CONVENCAO_MICRON_ESTOQUE.md`**
 
 - **Cache velho:** esqueceu de reiniciar após `populate --overwrite` → engine
   serve gramática antiga. (Regra de ouro #3.)
-- **Registro invisível:** PN com dado certo mas `status="raw"` → engine ignora.
-  Promova para `enriched`. (Regra de ouro #2.)
+- **Registro não autoritativo:** PN com dado certo mas `confidence` fora de
+  (`confirmed`, `manual`) → o engine não o usa como autoridade (cai na gramática).
+  Promova a `confirmed`/`manual`. (Regra de ouro #2.)
 - **`fix_known_parts` que não "pega":** atualizar capacidade sem setar
-  `status="enriched"` + `confidence="confirmed"` deixa o registro perdendo para a
-  gramática. Histórico em **`INVESTIGACAO_ENGINE_STATUS_ENRICHED.md`**.
+  `confidence="confirmed"`/`"manual"` deixa o registro perdendo para a gramática.
+  (Antes o sintoma era `status="raw"`; o campo `status` foi removido.)
 - **Unidade Micron (Gb × GB):** no nome de peça MTFC, "G" é **Gbit**, não GB
   (64G = 8GB); densidade de eMCP/uMCP é total do pacote. Por isso
   `import_micron_catalog` **deixa `capacity=""`** para eMCP/uMCP (o engine decodifica).
@@ -384,7 +392,7 @@ Referência completa: **`docs/CONVENCAO_MICRON_ESTOQUE.md`**
   3.12 — senão o build no Render quebra. (Se o ambiente local tiver 6.0 instalado,
   rode `pip install -r requirements.txt` para alinhar em 5.2.15.)
 - **Scrapers são frágeis e local-only:** preduo/glochip estão atrás de Cloudflare
-  (exigem Playwright); `--brand` default é "Samsung" em `collect_pns`/`enrich_gemini`
+  (exigem Playwright); `--brand` default é "Samsung" em `collect_pns`
   — fácil raspar a marca errada por omissão.
 - **`confidence="estimated"`** (ex.: Wayback) fica oculto na UI de triagem até
   confirmação manual.
@@ -460,7 +468,9 @@ Referência completa: **`docs/CONVENCAO_MICRON_ESTOQUE.md`**
 - **remarked** — chip relabelado/falsificado; detectado por divergência gramática×banco.
 - **gramática** — decode posicional do PN pelas regras da `ChipFamily` + `DecodeMap`.
 - **gabarito** — o conjunto curado de famílias/mapas criado pelos `populate_*`.
-- **raw / enriched / failed** — estados de `KnownPart` (só `enriched` é usado pelo engine).
+- **confidence** — confiança do `KnownPart`: `confirmed` > `manual` > `distributor`
+  > `estimated`. Só `confirmed`/`manual` são autoritativos (vencem a gramática). O
+  antigo campo `status` (raw/enriched/failed) foi removido.
 - **destino / rentabilidade** — saída comercial da triagem (caixa física + RENTÁVEL?).
 
 ---
@@ -479,7 +489,9 @@ relevante quando a tarefa pedir:
 - **`PLANO_MICRON_FBGA.md`** — pipeline FBGA da Micron (estágios iniciais — parcialmente histórico; ver MICRON.md para estado atual).
 - **`AUDITORIA_SAMSUNG_2026.md`** / **`BRIEFING_DDR_SAMSUNG.md`** — gabarito Samsung,
   chaves de cap/gen, casos confirmados e descartados.
-- **`INVESTIGACAO_ENGINE_STATUS_ENRICHED.md`** — o bug do gatekeeper `status/confidence`.
+- **`INVESTIGACAO_ENGINE_STATUS_ENRICHED.md`** — **HISTÓRICO**: documenta o antigo
+  gatekeeper `status="enriched"`, removido em jun/2026 (o gate agora é `confidence`
+  ∈ confirmed/manual — ver §4). Mantido só como registro.
 - **`design_system.md`** (+ `design_system_preview.html`) — tema visual (IBM Carbon
   White), tokens CSS, componentes.
 - **`SETUP_CHIPS.md`** — passo a passo de povoamento inicial.

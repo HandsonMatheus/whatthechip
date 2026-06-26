@@ -187,7 +187,7 @@ DELAY = 2.0   # segundos entre requests
 # FILOSOFIA DO COLETOR:
 # A coleta deve ser AMPLA — o objetivo é não perder nenhum PN válido.
 # Identificar a família exata (KLMxxx = eMMC, KMRxxx = eMCP) é trabalho
-# do CLASSIFICADOR (engine.py) e do ENRIQUECEDOR (enrich_gemini.py).
+# do CLASSIFICADOR (engine.py).
 #
 # Aqui só perguntamos: "esse token parece ser um PN desta marca?"
 # Critérios: começa com o prefixo certo + tem pelo menos um dígito +
@@ -387,7 +387,7 @@ def extract_pns(text: str, brand: str) -> list[str]:
 
 _django_loaded = False
 _db_pns: set[str] = set()
-GOOD_CONFIDENCE = {"confirmed", "manual", "distributor", "ai_high"}
+GOOD_CONFIDENCE = {"confirmed", "manual", "distributor"}
 
 
 def load_db_pns():
@@ -3441,7 +3441,7 @@ def main():
     logging.info(f"   Estado salvo em        : scripts/state/{brand}_pns.json")
     logging.info(f"   Log em                 : scripts/logs/{brand}_collect.log")
     logging.info(f"\n   Próximo passo:")
-    logging.info(f"   python scripts/enrich_gemini.py --brand {brand} --limit 50")
+    logging.info(f"   (specs preenchidas por confirmação manual no admin)")
 
 
 if __name__ == "__main__":

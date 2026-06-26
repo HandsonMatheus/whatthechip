@@ -9,12 +9,10 @@ Hierarquia:
            DecodeMap  (tabelas de decodificação reutilizáveis entre famílias)
 
 Fluxo de confiança para KnownPart:
-    confirmed > manual > distributor > ai_high > ai_medium > ai_low > estimated
+    confirmed > manual > distributor > estimated
 
-Status de enriquecimento (KnownPart.status):
-    raw       — PN coletado, ainda sem dados de capacidade/tipo
-    enriched  — dados confirmados (por qualquer fonte)
-    failed    — enriquecimento tentado e sem resultado útil
+    Só confirmed/manual são autoritativos no engine (vencem a gramática). Não há
+    enriquecimento automático por IA — as specs vêm de confirmação manual.
 """
 
 from django.db import models
@@ -40,7 +38,6 @@ class Source(models.Model):
         ("manual",      "Manual"),
         ("scraper",     "Scraper"),
         ("distributor", "Distribuidor"),
-        ("ai",          "IA"),
         ("datasheet",   "Datasheet"),
     ]
     url      = models.TextField(blank=True, default="")
@@ -159,33 +156,24 @@ class DecodeMap(models.Model):
 
 class KnownPart(models.Model):
     """
-    Part Number conhecido — pode ser raw (só o código) ou enriched (com dados completos).
+    Part Number conhecido, com specs confirmadas por fonte humana/oficial.
 
-    status:
-        raw      — PN coletado pelo scraper, ainda sem dados de capacidade/tipo.
-                   Será enriquecido pelo enrich_gemini.py na próxima rodada.
-        enriched — tem pelo menos chip_type + (capacity ou emcp_ram/nand) preenchidos.
-        failed   — enriquecimento tentado, Gemini não encontrou dados confiáveis.
+    Autoridade:
+        Só registros com confidence em (confirmed, manual) vencem a gramática no
+        engine. distributor/estimated apenas complementam quando a gramática é
+        incompleta. Não há enriquecimento automático por IA.
 
     Double-check:
         Quando o engine decoda um PN pela gramática da família e também encontra
-        um KnownPart enriquecido, os dois resultados são comparados.
+        um KnownPart para o mesmo PN, os dois resultados são comparados.
         Divergência (ex: gramática diz DDR3 4Gb, banco diz DDR3 2Gb) é sinalizada
         como possível chip remarked — dado o contexto de reciclagem.
     """
 
-    STATUS_CHOICES = [
-        ("raw",      "⬜ Raw — sem enriquecimento"),
-        ("enriched", "✅ Enriquecido"),
-        ("failed",   "❌ Falha no enriquecimento"),
-    ]
     CONFIDENCE_CHOICES = [
         ("confirmed",   "✅ Confirmado"),
         ("manual",      "✏️  Manual"),
         ("distributor", "🏪 Distribuidor"),
-        ("ai_high",     "🤖 IA — Alta"),
-        ("ai_medium",   "🤖 IA — Média"),
-        ("ai_low",      "🤖 IA — Baixa"),
         ("estimated",   "~ Estimado"),
     ]
 
@@ -193,9 +181,6 @@ class KnownPart(models.Model):
     part_number  = models.TextField(unique=True, db_index=True)
     family       = models.ForeignKey(ChipFamily, on_delete=models.SET_NULL,
                                      null=True, blank=True, related_name="parts")
-
-    status       = models.CharField(max_length=20, choices=STATUS_CHOICES,
-                                    default="raw", db_index=True)
 
     chip_type    = models.TextField(blank=True, default="")
     subtype      = models.TextField(blank=True, default="")
@@ -235,16 +220,12 @@ class KnownPart(models.Model):
     def __str__(self):
         return self.part_number
 
-    @property
-    def is_enriched(self):
-        return self.status == "enriched"
-
 
 class SearchLog(models.Model):
     part_number = models.TextField()
     found       = models.BooleanField(default=False)
     source_used = models.TextField(blank=True, default="",
-                                   help_text="grammar | db_exact | gemini | not_found")
+                                   help_text="grammar | db_exact | db_fbga | not_found")
     searched_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -143,7 +143,7 @@ try:
     check(
         "decode_html('ZZZZZZZZZ') retorna HTML não-vazio",
         len(html_unk.strip()) > 10,
-        f"⚠️  Template não cobre resultado known=False, gemini_searched=False\n"
+        f"⚠️  Template não cobre resultado known=False (sem família)\n"
         f"         HTML retornado: {html_unk[:200]!r}"
     )
 

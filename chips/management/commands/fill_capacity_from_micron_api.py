@@ -447,7 +447,6 @@ class Command(BaseCommand):
         # ── Seleciona candidatos ──────────────────────────────────────────────
         qs = KnownPart.objects.filter(
             brand__name="Micron",
-            status="enriched",
         ).exclude(
             fbga_code=""
         ).exclude(
@@ -714,7 +713,6 @@ class Command(BaseCommand):
 
         qs = KnownPart.objects.filter(
             brand__name="Micron",
-            status="enriched",
             part_number__iregex=r'^MTFC',
         ).exclude(
             Q(capacity="") | Q(capacity__isnull=True)

@@ -26,7 +26,7 @@ ESTRATÉGIAS (executadas em sequência, da mais eficiente para a mais granular)
 4. WAYBACK CDX — Extrai PNs do índice do Wayback Machine (arquivo histórico)
    CDX API: web.archive.org/cdx para URLs de datasheets Micron 2012-2020
 
-Todos os resultados são salvos diretamente com status='enriched', confidence='confirmed'
+Todos os resultados são salvos diretamente com confidence='confirmed'
 (fonte: API oficial Micron), sem necessidade de passar pelo enrich_micron_fbga.
 
 ═══════════════════════════════════════════════════════════════════
@@ -675,8 +675,8 @@ def _save_results(
     """
     Salva no banco os chips descobertos.
 
-    - api_results (com FBGA): salva como status='enriched', confidence='confirmed'
-    - wayback_pns (só PN, sem FBGA): salva como status='raw', confidence='distributor'
+    - api_results (com FBGA): salva como confidence='confirmed'
+    - wayback_pns (só PN, sem FBGA): salva como confidence='distributor'
       para serem enriquecidos pelo enrich_micron_fbga depois.
     """
     from chips.models import KnownPart, Brand, Source
@@ -755,7 +755,6 @@ def _save_results(
                     fbga_code=fbga,
                     chip_type=chip_type,
                     subtype=subtype,
-                    status="enriched",
                     confidence="confirmed",
                     source=api_source,
                     source_url=item.get("source_url", MICRON_FBGA_SOURCE_URL),
@@ -784,7 +783,6 @@ def _save_results(
                     part_number=pn,
                     chip_type=chip_type,
                     subtype=subtype,
-                    status="raw",
                     confidence="distributor",
                     source=wayback_source,
                     source_url="https://web.archive.org",
@@ -966,7 +964,6 @@ class Command(BaseCommand):
                 db_fbgas = list(
                     KnownPart.objects.filter(
                         brand__name="Micron",
-                        status="enriched",
                     ).exclude(fbga_code="").exclude(fbga_code__isnull=True)
                     .values_list("fbga_code", flat=True)[:200]  # limita para não sobrecarregar
                 )

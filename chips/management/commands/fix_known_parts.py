@@ -29,7 +29,7 @@ from django.db import transaction
 #     "reason":  "<explicação da correção>",
 #   }
 #
-# Campos suportados: emcp_ram, emcp_nand, device, confidence, status
+# Campos suportados: emcp_ram, emcp_nand, device, confidence
 # ─────────────────────────────────────────────────────────────────────────────
 
 CORRECTIONS = [
@@ -67,7 +67,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -120,7 +119,6 @@ CORRECTIONS = [
             "source_url": "",    # limpar: era "gemini:KLUDG4U1EA" (resíduo Gemini antigo)
             "doc_url":    "",    # limpar: era "/fab-toshiba/" — KLUDG é Samsung, não Toshiba
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Família KLUDG estava cadastrada como Kioxia (erro em add_chip_families.py). "
@@ -128,7 +126,7 @@ CORRECTIONS = [
             "fix: capacity=128GB, interface=UFS 2.1, device apagado. "
             "Bugs de metadados (2026-05-26): doc_url='/fab-toshiba/' (errado — Samsung, não Toshiba); "
             "confidence='ai_high' e source_url='gemini:KLUDG4U1EA' — resíduos de run Gemini antigo. "
-            "confidence+status em fields (não só create_defaults): garante grammar_wins=False "
+            "confidence em fields (não só create_defaults): garante grammar_wins=False "
             "e sobrescreve valores de registros já existentes no DB. "
             "Família corrigida via populate_samsung --overwrite."
         ),
@@ -166,14 +164,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR5",
             "subtype":    "LPDDR5",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "8GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "PN de 7 chars: convenção de bancada — operador lê só a 1ª linha do laser (começa com K). "
@@ -264,7 +260,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -295,14 +290,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 16GB",
             "emcp_ram":   "LPDDR3 2GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "NAND corrigida: 8X era 8GB no mapa (ERRADO). KMR8X0001M-B608 = 16GB eMMC. "
@@ -328,7 +321,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -352,7 +344,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -385,20 +376,18 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 16GB",
             "emcp_ram":   "LPDDR3 2GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "cap_key '31' conflito (terceiro caso): KMQ310013B=1GB (físico), "
             "KMQ310006B=1.5GB (fabricante ✓), KMQ310013M=2GB (Alibaba: '16gb+16gb 32dram LPDDR3'). "
             "16Gb LPDDR3 ÷ 8 = 2GB. Mesmo padrão de KMR310001M (16Gb LPDDR3 = 2GB, Preduo ✓). "
-            "confidence+status em fields: necessário para atualizar registros existentes e "
+            "confidence em fields: necessário para atualizar registros existentes e "
             "garantir grammar_wins=False (gramática daria 1GB — errado)."
         ),
     },
@@ -416,7 +405,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -445,14 +433,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 32GB",
             "emcp_ram":   "LPDDR3 4GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "X6 base mapeado como 2GB (KM4X6001KM, Octopart). "
@@ -477,7 +463,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -485,7 +470,6 @@ CORRECTIONS = [
             "emcp_ram":   "LPDDR3 2GB",
             "device":     "Wileyfox Swift (2015), Lenovo P70-A",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "SAM_EMCP_CAP['82'] corrigido: era 1GB (sem âncora) → 2GB (16Gb LPDDR3). "
@@ -508,14 +492,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 16GB",
             "emcp_ram":   "LPDDR3 2GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "SAM_EMCP_CAP['82'] = 2GB (16Gb LPDDR3). "
@@ -544,7 +526,6 @@ CORRECTIONS = [
         "create_defaults": {
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
@@ -552,7 +533,6 @@ CORRECTIONS = [
             "emcp_ram":   "LPDDR3 2GB",
             "interface":  "eMMC+LPDDR3",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "SAM_EMCP_CAP['82'] = 16GB NAND + 2GB LPDDR3 (16Gb). "
@@ -582,7 +562,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -590,7 +569,6 @@ CORRECTIONS = [
             "emcp_ram":   "LPDDR3 512MB",
             "device":     "Aparelhos entry-level Samsung 2012-2014 (obsoleto)",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "BLOQUEIO DE GRAMÁTICA: SAM_EMCP_CAP['J2']=128GB+6GB ancorado por KMQJ2· moderno — ERRADO. "
@@ -618,7 +596,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -626,7 +603,6 @@ CORRECTIONS = [
             "emcp_ram":   "LPDDR3 512MB",
             "device":     "Aparelhos entry-level Samsung 2012-2014 (obsoleto)",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Mesmo bloqueio que KMFJ20007M: SAM_EMCP_CAP['J2']=128GB+6GB (âncora KMQJ2· moderno) — ERRADO. "
@@ -649,14 +625,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 4GB",
             "emcp_ram":   "LPDDR3 768MB",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Gramática CORRETA: SAM_EMCP_CAP['JW']=('4GB','768MB') → decode acerta. "
@@ -686,14 +660,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 16GB",
             "emcp_ram":   "LPDDR3 1GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "BLOQUEIO DE GRAMÁTICA: SAM_EMCP_CAP['E1']=16GB+2GB ancorado por KMQE10013M (KMQ moderno). "
@@ -721,14 +693,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 32GB",
             "emcp_ram":   "LPDDR3 3GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "X1 base mapeado como 2GB(16Gb) via KMQX10013MB (Octopart ✓). "
@@ -744,14 +714,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 32GB",
             "emcp_ram":   "LPDDR3 3GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Família KMR + cap_key X1: padrão confirmado = 3GB(24Gb), não 2GB(16Gb) da âncora KMQ. "
@@ -777,14 +745,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "emcp_nand": "eMMC 5.1 64GB",
             "emcp_ram":  "LPDDR3 4GB",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Chip físico eMiner (2026-06-20). pn_not_in_db=True. "
@@ -801,14 +767,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "emcp_nand": "eMMC 5.1 64GB",
             "emcp_ram":  "LPDDR3 4GB",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Variante B809 do KMRC10014M. "
@@ -824,14 +788,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "emcp_nand": "eMMC 5.1 64GB",
             "emcp_ram":  "LPDDR3 4GB",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Variante B809007 do KMRC10014M. "
@@ -858,7 +820,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -890,7 +851,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -899,7 +859,6 @@ CORRECTIONS = [
             "emcp_nand": "",
             "emcp_ram":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo Tier 1: K3QF7F70DM-QGCF = 24Gbit Samsung LPDDR3, 216ball ✓ (2026-06-17). "
@@ -921,14 +880,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "2GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K3QF3F30BM-AGCG(16 Gb) ✓. "
@@ -949,14 +906,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "4GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "PSG Samsung 1H 2017 (Tier 1): K3QF4F40BM-FGCF / K3QF4F40BM-AGCF = 32Gb = 4GB ✓. "
@@ -978,14 +933,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "4GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K3QF4F40CM-AGCF(32 Gb) ✓. "
@@ -1008,19 +961,17 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR4X + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 64GB",
             "emcp_ram":   "LPDDR4X 4GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor oficial (2026-05-25): KMDC6001DM-B625 = 32Gb LPDDR4X = 4GB. "
             "Corrigido de 3GB (24Gb) — valor anterior baseado em IA+padrão, sem fonte primária. "
-            "C6 corrigido para 4GB no SAM_EMCP_CAP. confidence+status em fields: "
+            "C6 corrigido para 4GB no SAM_EMCP_CAP. confidence em fields: "
             "garante grammar_wins=False para registros já existentes no banco."
         ),
     },
@@ -1036,19 +987,17 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR4X + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 64GB",
             "emcp_ram":   "LPDDR4X 4GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Octopart: KMDH6001DM-B422 = 64GB eMMC v5.1 + 32Gb(4GB) LPDDR4X-3733. "
             "H6=4GB consistente com SAM_EMCP_CAP (segunda âncora da chave, após KMRH60014A ✓). "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+            "confidence em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -1070,14 +1019,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR4X + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 128GB",
             "emcp_ram":   "LPDDR4X 4GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo (2026-05-26): KMDV6001DB-B625 = '128+32' → 128GB eMMC + 32Gb LPDDR4X = 4GB. "
@@ -1101,20 +1048,18 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR4X + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 32GB",
             "emcp_ram":   "LPDDR4X 3GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Octopart: KMDX60018M-B425 = 32GB eMMC 5.1 + 24Gb LPDDR4X-4266 → 24Gb÷8=3GB. "
             "Conflito shared key X6: SAM_EMCP_CAP base=2GB (KM4X6001KM ✓), KMD=3GB (exceção). "
             "Mesmo padrão de P6 (KMG=3GB vs KMD=4GB) — cap_key compartilhada, RAM diferente por família. "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+            "confidence em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -1128,7 +1073,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -1154,19 +1098,17 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 8GB",
             "emcp_ram":   "LPDDR3 1GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo B2B (2026-05-25): KMQ7X000SA-B315 = '8+8' → 8GB NAND + 8Gb LPDDR3 = 1GB. "
             "Corrigido de 1.5GB — valor anterior era inferência de die 6Gb (KMQ310006B), sem verificação. "
-            "confidence+status em fields: atualiza registro existente e garante grammar_wins=False."
+            "confidence em fields: atualiza registro existente e garante grammar_wins=False."
         ),
     },
 
@@ -1182,7 +1124,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR2 + eMMC (legado)",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -1211,7 +1152,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3/DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -1219,7 +1159,6 @@ CORRECTIONS = [
             "subtype":    "DDR3/DDR3L",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Octopart Tier 1: K4B4G1646B-HCK0 = 'DDR DRAM, 256MX16, 0.225NS, CMOS, PBGA96' ✓ (2026-06-17). "
@@ -1242,7 +1181,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3/DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -1251,7 +1189,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Chip físico confirmado na esteira (eMiner 2026-05-14). "
@@ -1275,7 +1212,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3/DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -1284,7 +1220,6 @@ CORRECTIONS = [
             "capacity":   "1GB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "AllDatasheet K4B8G1646Q-AGC2 = '8G-Bit DDP Q-die DDR3L SDRAM, 512Mx16, 1.2V/1.35V, 96-Pin FBGA'. "
@@ -1311,13 +1246,11 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "interface":  "x4",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Datasheets360 Tier 1: K4B2G0446C-HYH9 = 'DDR3L DRAM, 512MX4, CMOS, PBGA78 — Discontinued' ✓ (2026-06-17). "
@@ -1342,13 +1275,11 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "interface":  "x4",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Octopart Tier 1: K4B2G0446D-HYH9 = 'DDR DRAM, 512MX4, 0.255NS, CMOS, PBGA78' ✓ (2026-06-17). "
@@ -1377,13 +1308,11 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Octopart Tier 1: K4B2G1646Q-BCK0 = 'DDR3 DRAM, 128MX16, 0.225NS, CMOS, PBGA96' ✓ (2026-06-17). "
@@ -1407,14 +1336,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "MCP",
             "subtype":    "NOR Flash + SDRAM",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "128MB",
             "interface":  "NOR (async) + SDRAM",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "MCP K5W: NOR Flash 1Gb (128MB) + Mobile SDRAM. "
@@ -1442,14 +1369,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 64GB",
             "emcp_ram":   "LPDDR3 4GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Sistema mostrava LPDDR4/4X — ERRADO. SAM_EMCP_GEN R=LPDDR4/4X era âncora falsa. "
@@ -1471,14 +1396,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 64GB",
             "emcp_ram":   "LPDDR3 4GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo: KMRP60014M-B614 = '64+32 eMMC+LPDDR3' (64GB NAND + 32Gb÷8=4GB LPDDR3). "
@@ -1501,20 +1424,18 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 32GB",
             "emcp_ram":   "LPDDR3 3GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Puris: KMR21000BM-B809 = '32+24 221ball eMCP-D3' → 32GB NAND + 24Gb LPDDR3 = 3GB. "
             "SAM_EMCP_CAP '21' = 2GB (base KMQ310013B) — conflito de shared key, KMR21=3GB. "
             "Tipo corrigido pelo fix sistêmico R→LPDDR3 (2026-05-26). "
-            "confidence+status em fields: garante grammar_wins=False."
+            "confidence em fields: garante grammar_wins=False."
         ),
     },
 
@@ -1538,14 +1459,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "uMCP",
             "subtype":    "UFS 2.1 + LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "UFS 2.1 128GB",
             "emcp_ram":   "LPDDR4X 6GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo: KM2V8001CM-B707 = '128+48 254ball UFS+LPD4x' → 128GB UFS + 48Gb÷8=6GB LPDDR4X. "
@@ -1553,7 +1472,7 @@ CORRECTIONS = [
             "ssfkg.com: 'UFS 2.1 SAMSUNG' ✓. Samsung Global/EMEA: '4266Mbps' ✓. "
             "Sistema mostrava LPDDR5 (errado: mínimo LPDDR5 ≥ 6400 Mbps) e 4GB (errado: shared key V8). "
             "SAM_EMCP_CAP V8=4GB é âncora KM5V8001DM-B622 (32Gb) — KM2V8001CM é exceção com 48Gb=6GB. "
-            "confidence+status em fields: garante grammar_wins=False."
+            "confidence em fields: garante grammar_wins=False."
         ),
     },
 
@@ -1581,7 +1500,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR2 + eMMC (legado)",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -1589,7 +1507,6 @@ CORRECTIONS = [
             "emcp_ram":   "LPDDR2 1GB",
             "device":     "Samsung Galaxy Core i8262",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "eetgroup.com: KML7X000HM-B507 = '8GB+8GB, EMMC+LPDD' → 8GB eMMC + 8Gb LPDDR = 1GB. "
@@ -1599,7 +1516,7 @@ CORRECTIONS = [
             "⚠ LPDDR2 é inferência de era+SoC — sem fonte Tier 1 explícita para versão LPDDR. "
             "eMMC (NÃO UFS): eetgroup + emmc-ufs.com firmware page ✓. "
             "KML NÃO é uMCP UFS 3.1 + LPDDR5 — corrigido em populate_samsung (2026-05-27). "
-            "confidence+status em fields: garante grammar_wins=False."
+            "confidence em fields: garante grammar_wins=False."
         ),
     },
 
@@ -1621,14 +1538,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR2 + eMMC (legado)",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 8GB",
             "emcp_ram":   "LPDDR2 1GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "SAM_EMCP_CAP['7U'] = ('8GB', '1GB'): 8GB eMMC + 1GB LPDDR2. "
@@ -1639,7 +1554,7 @@ CORRECTIONS = [
             "Grammar bug observado: exibia 'LPDDR5 1GB' → cache servidor ou decode_gen_pos=None "
             "não efetivado no DB (L em SAM_EMCP_GEN='LPDDR5'). KnownPart confirmed vence. "
             "⚠ LPDDR2 = inferência era+SoC — sem fonte Tier 1 explícita para versão LPDDR. "
-            "confidence+status em fields: garante grammar_wins=False."
+            "confidence em fields: garante grammar_wins=False."
         ),
     },
 
@@ -1671,14 +1586,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR2 + eMMC (legado)",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 4GB",
             "emcp_ram":   "LPDDR2 1GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Puris (direto): KML5U000HM-B505 = '4+8 153ball eMCP-D1' categoria 'eMMC+LPDDR' ✓ "
@@ -1695,7 +1608,7 @@ CORRECTIONS = [
             "KnownPart confirmed vence. Correção do grammar em populate_samsung.py: "
             "SAM_EMCP_CAP['5U'] → '1GB' (requer populate_samsung --overwrite + reiniciar servidor). "
             "⚠ LPDDR2 = inferência era+SoC — sem fonte Tier 1 explícita para versão LPDDR. "
-            "confidence+status em fields: garante grammar_wins=False."
+            "confidence em fields: garante grammar_wins=False."
         ),
     },
 
@@ -1713,14 +1626,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "eMMC 5.1 16GB",
             "emcp_ram":   "LPDDR3 2GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo: KMR310001M-B611 = eMCP eMMC+LPDDR3, 16+16 (16GB NAND + 16Gb LPDDR3 = 2GB). "
@@ -1745,7 +1656,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR4X + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -1774,7 +1684,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -1782,7 +1691,6 @@ CORRECTIONS = [
             "emcp_ram":   "LPDDR3 2GB",
             "device":     "Moto G4 / Lenovo K5 / K6",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Confirmado na esteira eMiner (sufixo -B802, 2015-2016). "
@@ -1806,7 +1714,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR2 + eMMC (legado)",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -1839,7 +1746,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR2 + eMMC (legado)",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -1872,20 +1778,18 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "uMCP",
             "subtype":    "UFS 2.2 + LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "UFS 2.2 128GB",
             "emcp_ram":   "LPDDR4X 6GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Octopart (2026-05-25): KM2L9001CM-B518 = 128GB UFS2.2 + 48Gb LPDDR4X-4266 → 48Gb÷8=6GB. "
             "Subfamília KM2L (pn[2]='L') = UFS 2.2 + LPDDR4X — NÃO UFS 3.1/LPDDR5. "
             "Conflito cap_key 'L9': SAM_EMCP_CAP mapeia 8GB (base KM8L9001JM) — override pontual. "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes no banco."
+            "confidence em fields: garante grammar_wins=False para registros existentes no banco."
         ),
     },
 
@@ -1907,14 +1811,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "uMCP",
             "subtype":    "UFS 2.2 + LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "UFS 2.2 128GB",
             "emcp_ram":   "LPDDR4X 6GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-05-25): KM5L9000CM-B424 = "
@@ -1923,7 +1825,7 @@ CORRECTIONS = [
             "Conflito profundo: mesmo cap_key 'L9' na família KM5 dá RAM diferente por variante: "
             "KM5L9000CM (pn[7]='0') = 6GB; KM5L9001DM (pn[7]='1') = 4GB. "
             "Decode 2-char pn[3:5] insuficiente para família KM5L9 — cada PN é exceção pontual. "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+            "confidence em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -1947,14 +1849,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "uMCP",
             "subtype":    "UFS 2.2 + LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "UFS 2.2 128GB",
             "emcp_ram":   "LPDDR4X 4GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-05-25): KM5L9001DM-B424 = "
@@ -1962,7 +1862,7 @@ CORRECTIONS = [
             "Sistema mostrava 8GB — erro por herdar SAM_EMCP_CAP['L9']=8GB (base KM8L9001JM). "
             "Conflito cap_key 'L9': KM8=8GB (base ✓), KM2=6GB (exceção ✓), KM5=4GB (esta exceção). "
             "NÃO alterar SAM_EMCP_CAP — base KM8=8GB está correta. "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+            "confidence em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -1981,14 +1881,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "uMCP",
             "subtype":    "UFS 2.2 + LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "UFS 2.2 128GB",
             "emcp_ram":   "LPDDR4X 4GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-05-26): KM5L9001DA-B424 = "
@@ -1997,7 +1895,7 @@ CORRECTIONS = [
             "Sufixo 'DA' vs 'DM' (KM5L9001DM): variante de package, capacidade idêntica. "
             "Conflito cap_key 'L9': KM8=8GB (base ✓), KM2=6GB, KM5=4GB (esta exceção). "
             "NÃO alterar SAM_EMCP_CAP — base KM8=8GB está correta. "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+            "confidence em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -2021,7 +1919,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "UFS",
             "subtype":    "UFS 2.0 Samsung",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2029,7 +1926,6 @@ CORRECTIONS = [
             "interface":  "UFS 2.0",
             "device":     "Samsung Galaxy S6 / S6 Edge / S6 Edge Plus (2015)",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "UFS 2.0 confirmado por Samsung Semiconductor Global (KLUBG4G1CE-B0B1 = UFS 2.0) "
@@ -2037,7 +1933,7 @@ CORRECTIONS = [
             "Sistema mostrava UFS 3.1 — erro por ausência da família KLUBG (caía para KLU genérico). "
             "KLUBG adicionado ao populate_samsung.py. "
             "Device confirmado: Galaxy S6 / S6 Edge / S6 Edge Plus (2015). "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+            "confidence em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -2057,14 +1953,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "UFS",
             "subtype":    "UFS 2.0 Samsung",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "64GB",
             "interface":  "UFS 2.0",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Chip físico eMiner (2026-06-20). pn_not_in_db=True. "
@@ -2080,14 +1974,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "UFS",
             "subtype":    "UFS 2.0 Samsung",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "64GB",
             "interface":  "UFS 2.0",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Variante E0B1 do KLUCG8G1BD (chip em estoque eMiner). "
@@ -2102,14 +1994,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "UFS",
             "subtype":    "UFS 2.0 Samsung",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "64GB",
             "interface":  "UFS 2.0",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Variante B0B1 do KLUCG8G1BD. "
@@ -2133,7 +2023,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2195,7 +2084,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
@@ -2203,7 +2091,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4X",
             "interface":  "",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Chip físico eMiner (2026-06-20). PN de 7 chars — convenção de bancada (1ª linha laser). "
@@ -2237,14 +2124,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR2",
             "subtype":    "LPDDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "512MB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "K3PE família LPDDR2 adicionada ao grammar (2026-05-29). "
@@ -2269,14 +2154,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR2",
             "subtype":    "LPDDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "1GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "TechInsights DPR-1110-901: K3PE7E700B-XXC1 = '32nm 2X 4Gb Mobile LPDDR2 DRAM'. "
@@ -2304,7 +2187,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2312,7 +2194,6 @@ CORRECTIONS = [
             "interface":  "",
             "device":     "Samsung Galaxy Tab E (SM-T560 / SM-T560NU / SM-T567V), Galaxy S5 Mini (~2014-2015)",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "K4E2E304EA-AGCF = LPDDR3 1.5GB (12Gb ÷ 8). "
@@ -2335,14 +2216,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "2GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4E6E304EB-EGCG(16 Gb) ✓. "
@@ -2365,14 +2244,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "2GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4E6E304EC-EGCG(16 Gb) ✓. "
@@ -2395,14 +2272,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "2GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Octopart Tier 1: K4E6E304ED-EGCG = '16GBIT SDRAM LPDDR3 1066MHZ FBGA-178' ✓ (2026-06-17). "
@@ -2428,14 +2303,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "2GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4E6E304EB/EC/ED todos listados como '16Gb' LPDDR3 ✓. "
@@ -2460,7 +2333,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2490,7 +2362,6 @@ CORRECTIONS = [
             "interface":  "",
             "capacity":   "4GB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Correção de convenção (2026-06-19): subtype 'LPDDR3 Mobile' → 'LPDDR3'; "
@@ -2527,7 +2398,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
@@ -2535,7 +2405,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR3",
             "interface":  "",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Chip físico eMiner (2026-06-20). pn_not_in_db=True. "
@@ -2571,7 +2440,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2579,7 +2447,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "K3RG3G30MM-DGCH = 3GB LPDDR4. "
@@ -2608,7 +2475,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2618,7 +2484,6 @@ CORRECTIONS = [
             "device":     "Google Pixel XL (Snapdragon 821, 2016), LG G5 (Snapdragon 820, 2016)",
             "source_url": "https://www.ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "K3RG2G20BM-MGCJ = 4GB LPDDR4. "
@@ -2634,7 +2499,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2644,7 +2508,6 @@ CORRECTIONS = [
             "device":     "Google Pixel XL (Snapdragon 821, 2016), LG G5 (Snapdragon 820, 2016)",
             "source_url": "https://www.ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "PN completo como lido pelo scanner (sem hífen): K3RG2G20BM + sufixo 0G0J. "
@@ -2669,7 +2532,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2677,7 +2539,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
             "source_url": "https://octopart.com/part/samsung/K3RG2G20BM-CGCJTTN",
         },
         "reason": (
@@ -2694,7 +2555,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2702,7 +2562,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "K3RG2G20CA-MGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. "
@@ -2718,7 +2577,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2726,7 +2584,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "K3RG2G20CM-FGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. "
@@ -2742,7 +2599,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
@@ -2750,7 +2606,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "K3RG2G20CM-CGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. "
@@ -2780,7 +2635,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2788,7 +2642,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "PSG Samsung 1H 2017 (Tier 1): K3RG4G40MM-MGCJ = 24Gb = 3GB ✓. "
@@ -2804,7 +2657,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2812,7 +2664,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
             "source_url": "https://octopart.com/part/samsung/K3RG4G40MMMGCJ",
         },
         "reason": (
@@ -2830,7 +2681,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2838,7 +2688,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
             "source_url": "https://octopart.com/part/samsung/K3RG4G40MMMGCJT00E",
         },
         "reason": (
@@ -2863,7 +2712,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2871,7 +2719,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "PSG Samsung 1H 2017 (Tier 1): K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ = 32Gb = 4GB ✓. "
@@ -2894,7 +2741,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2902,7 +2748,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "PSG Samsung 1H 2017 (Tier 1): K3RG6G60MM-MGCJ = 48Gb = 6GB ✓. "
@@ -2918,7 +2763,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -2926,7 +2770,6 @@ CORRECTIONS = [
             "subtype":    "LPDDR4",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
             "source_url": "https://octopart.com/part/samsung/K3RG6G60MMMGCJ",
         },
         "reason": (
@@ -2961,14 +2804,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4",
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "3GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-05-26): "
@@ -2976,7 +2817,7 @@ CORRECTIONS = [
             "24Gb ÷ 8 = 3GB. Sistema mostrava 4GB — LPDDR4_CAP['HE'] estava como 32Gb (erro). "
             "K4FBE3D4HM-MGCJ = 32Gb (4GB) confirma: HE ≠ BE (densidades distintas). "
             "Fix sistêmico: LPDDR4_CAP['HE'] corrigido 4GB→3GB (populate_samsung.py). "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+            "confidence em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -3160,14 +3001,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "3GB",
             "interface":  "",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "PN de 7 chars — convenção de bancada eMiner (linha 1 do laser). "
@@ -3185,14 +3024,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "3GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-06-22): "
@@ -3208,14 +3045,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "6GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-06-22): "
@@ -3232,14 +3067,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "2GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-06-22): "
@@ -3256,14 +3089,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "3GB",
             "interface":  "",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Octopart (Tier 2): K4UHE3D4AB-MGCL = 'LPDDR4X-4266 X32' — Samsung. "
@@ -3281,14 +3112,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "3GB",
             "interface":  "",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "PN de 7 chars — convenção de bancada. "
@@ -3304,14 +3133,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "3GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-06-22): "
@@ -3327,14 +3154,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "3GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-06-22): "
@@ -3364,14 +3189,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR4X",
             "subtype":    "LPDDR4X",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "6GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-05-27): "
@@ -3380,7 +3203,7 @@ CORRECTIONS = [
             "LPDDR4_CAP['JE']='6GB'/'48Gb' adicionado em populate_samsung.py (2026-05-27). "
             "IA externa citou AliExpress/Shopee/Lazada como provas — fontes fabricadas; "
             "confirmação mantida exclusivamente via Samsung Semiconductor Global. "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+            "confidence em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -3396,7 +3219,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -3422,14 +3244,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Samsung",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "32GB",
             "interface":  "eMMC 5.1",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): KLMBG2JENB-B041 = 32GB eMMC 5.1, 153FBGA, MLC. "
@@ -3450,7 +3270,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3 + eMMC 5.1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -3490,14 +3309,12 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR1",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "emcp_nand":  "eMMC 4.x 4GB",
             "emcp_ram":   "LPDDR1 256MB",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Chip físico identificado na esteira eMiner (jun/2026). "
@@ -3516,14 +3333,12 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR1",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "emcp_nand":  "eMMC 4.x 4GB",
             "emcp_ram":   "LPDDR1 256MB",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Mesmas specs que H9DA4GH2GJAM — die gen B (pn[10]='B' = 3ª revisão de silício). "
@@ -3540,14 +3355,12 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR1",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "emcp_nand":  "eMMC 4.x 4GB",
             "emcp_ram":   "LPDDR1 256MB",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "PN com grade suffix 'CR' (Commercial, RoHS) — mesmo chip que H9DA4GH2GJAM. "
@@ -3564,14 +3377,12 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR1",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "emcp_nand":  "eMMC 4.x 4GB",
             "emcp_ram":   "LPDDR1 256MB",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "PN com grade suffix 'CR', die gen B — variante do H9DA4GH2GJAMCR. "
@@ -3618,7 +3429,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
@@ -3627,7 +3437,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Chip físico na esteira eMiner (jun/2026). PN 12-char = marcação laser 1ª linha. "
@@ -3649,7 +3458,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3658,7 +3466,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "ssfkg.com (B2B distribuidor): H9CKNNNBJTMPLR = 16Gb 168ball LPDDR3 SK Hynix ✓. "
@@ -3679,7 +3486,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3688,7 +3494,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo (tier-1 WTC): H9CKNNNBKTMRPR-NUH = 16Gbit SKhynix 256ball LPDDR3 ✓. "
@@ -3711,7 +3516,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3721,7 +3525,6 @@ CORRECTIONS = [
             "emcp_ram":   "",
             "device":     "Apple iPhone 6 (A1586, 2014)",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "iFixit iPhone 6 Teardown (set/2014, Tier-1 identificação física): "
@@ -3744,7 +3547,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3754,7 +3556,6 @@ CORRECTIONS = [
             "emcp_ram":   "",
             "device":     "Google Nexus 5 (LG, 2013)",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "iFixit Nexus 5 Teardown (2013, Tier-1 identificação física): "
@@ -3776,7 +3577,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3786,7 +3586,6 @@ CORRECTIONS = [
             "emcp_ram":   "",
             "device":     "Motorola Nexus 6 (Google, 2014)",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "iFixit Motorola Nexus 6 Teardown (2014, Tier-1 identificação física): "
@@ -3807,7 +3606,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3816,7 +3614,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo WP01020 (tier-1 WTC): H9CKNNNDATMUPR-NUH = 24Gbit SKhynix 256ball LPDDR3 ✓. "
@@ -3835,7 +3632,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3844,7 +3640,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo (tier-1 WTC): H9CKNNNDATMRPR-NUH = 24Gbit SKhynix 256ball LPDDR3 ✓. "
@@ -3863,7 +3658,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3872,7 +3666,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo (tier-1 WTC): H9CKNNNCPTMRPR-NUH/-NUM = 32Gbit SKhynix 256ball LPDDR3 ✓. "
@@ -3894,7 +3687,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3903,7 +3695,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo WP01025 (tier-1 WTC): H9CKNNNECTMUPR-NUH = 48Gbit SKhynix 256ball LPDDR3 ✓. "
@@ -3926,7 +3717,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3935,7 +3725,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "absunshine.com (B2B distribuidor): H9CCNNN8JTMLAR-NTM = LPDDR3 8G, "
@@ -3955,7 +3744,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3964,7 +3752,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo (tier-1 WTC): H9CCNNNBKTMLBR-NTD/-NUD = 16Gbit SKhynix 253ball LPDDR3 ✓. "
@@ -3983,7 +3770,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -3992,7 +3778,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo (tier-1 WTC): H9CCNNNBPTBLBR-NTD = 16Gbit SKhynix 253ball LPDDR3 ✓. "
@@ -4012,7 +3797,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4021,7 +3805,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo (tier-1 WTC): H9CCNNNCPTMLBR-NTD = 32Gbit SKhynix 253ball LPDDR3 ✓. "
@@ -4043,7 +3826,6 @@ CORRECTIONS = [
             "brand_name": "SK Hynix",
             "chip_type":  "LPDDR3",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4052,7 +3834,6 @@ CORRECTIONS = [
             "emcp_nand":  "",
             "emcp_ram":   "",
             "confidence": "distributor",
-            "status":     "enriched",
         },
         "reason": (
             "Preduo WP01836 (tier-1 WTC): H9CCNNNFAGMLLR-NUD = 64Gbit SKhynix 253ball LPDDR3 ✓. "
@@ -4096,7 +3877,6 @@ CORRECTIONS = [
             "brand_name": "SanDisk",
             "chip_type":  "eMMC",
             "subtype":    "eMMC iNAND (iNAND 7 Series)",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4124,7 +3904,6 @@ CORRECTIONS = [
             "brand_name": "SanDisk",
             "chip_type":  "eMMC",
             "subtype":    "eMMC iNAND (iNAND 7 Series)",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4163,7 +3942,6 @@ CORRECTIONS = [
             "brand_name": "SanDisk",
             "chip_type":  "eMMC",
             "subtype":    "eMMC iNAND Ultra",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4224,7 +4002,6 @@ CORRECTIONS = [
             "brand_name": "SanDisk",
             "chip_type":  "eMMC",
             "subtype":    "",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4256,7 +4033,6 @@ CORRECTIONS = [
             "brand_name": "SanDisk",
             "chip_type":  "eMMC",
             "subtype":    "",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4287,7 +4063,6 @@ CORRECTIONS = [
             "brand_name": "SanDisk",
             "chip_type":  "eMMC",
             "subtype":    "",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4318,7 +4093,6 @@ CORRECTIONS = [
             "brand_name": "SanDisk",
             "chip_type":  "eMMC",
             "subtype":    "",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4367,7 +4141,6 @@ CORRECTIONS = [
             "brand_name": "SanDisk",
             "chip_type":  "eMCP",
             "subtype":    "eMCP (eMMC + LPDDR3)",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4416,7 +4189,6 @@ CORRECTIONS = [
             "brand_name": "Kingston",
             "chip_type":  "eMCP",
             "subtype":    "eMCP Kingston",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -4460,14 +4232,12 @@ CORRECTIONS = [
             "brand_name": "Toshiba",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "16GB",
             "interface":  "eMMC 5.0",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Toshiba / Kioxia eMMC 5.0, 16GB, BGA153. "
@@ -4521,14 +4291,12 @@ CORRECTIONS = [
             "brand_name": "Toshiba",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "32GB",
             "interface":  "eMMC 5.1",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Toshiba / Kioxia eMMC 5.1, 32GB, BGA153 (VFBGA). "
@@ -4576,7 +4344,6 @@ CORRECTIONS = [
             "brand_name": "Toshiba",
             "chip_type":  "eMCP",
             "subtype":    "eMCP Toshiba (eMMC + LPDDR2)",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4623,7 +4390,6 @@ CORRECTIONS = [
             "brand_name": "Toshiba",
             "chip_type":  "eMCP",
             "subtype":    "eMCP Toshiba (eMMC + LPDDR2)",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -4671,7 +4437,6 @@ CORRECTIONS = [
             "brand_name": "Toshiba",
             "chip_type":  "DRAM",
             "subtype":    "SDR SDRAM",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {},
@@ -4705,14 +4470,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Samsung",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "8GB",
             "interface":  "eMMC 5.0",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Datasheet Samsung oficial (Alldatasheet/datasheet4u, 2026-05-26): "
@@ -4720,7 +4483,7 @@ CORRECTIONS = [
             "pn[6]='W' não mapeado → interface=eMMC genérico — incompleto. "
             "Fix sistêmico: 'W' adicionado ao SAM_EMMC_GEN como eMMC 5.0. "
             "IA afirmou HS400 — ERRADO: W=eMMC 5.0 usa HS200 (não HS400 que é 5.1). "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+            "confidence em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -4742,20 +4505,18 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Samsung",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "64GB",
             "interface":  "eMMC 5.1",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1, 2026-05-25): KLMCG2KCTA-B041 = eMMC 5.1, 64GB. "
             "pn[3]='C'=64GB correto. pn[6]='K' não mapeado → interface=eMMC (sem versão) — incompleto. "
             "Fix sistêmico: 'K' adicionado ao SAM_EMMC_GEN como eMMC 5.1. "
-            "confidence+status em fields: garante grammar_wins=False para registros existentes."
+            "confidence em fields: garante grammar_wins=False para registros existentes."
         ),
     },
 
@@ -4781,14 +4542,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Samsung",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "2GB",
             "interface":  "eMMC",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Chip físico confirmado na esteira eMiner (2026-06-20). "
@@ -4807,14 +4566,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Samsung",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "2GB",
             "interface":  "eMMC",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Variante B001 do KLM2G1HE3F. "
@@ -4844,14 +4601,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Samsung",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "16GB",
             "interface":  "eMMC 5.1",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Chip físico eMiner (2026-06-20). pn_not_in_db=True. "
@@ -4868,14 +4623,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Samsung",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "16GB",
             "interface":  "eMMC 5.1",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Variante A001 do KLMAG2GE4A (chip em estoque eMiner). "
@@ -4901,14 +4654,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Samsung",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "4GB",
             "interface":  "eMMC 4.5",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Datasheet Samsung oficial (Alldatasheet ID 1132357, Tier 1, Oct 2011): "
@@ -4934,14 +4685,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Samsung",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "4GB",
             "interface":  "eMMC 4.5",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Product Selection Guide 'Displays, Memory and Storage 2H 2014' "
@@ -4968,14 +4717,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Samsung",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
             "capacity":   "4GB",
             "interface":  "eMMC 4.5",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Chip físico confirmado na esteira eMiner (2026-06-20). "
@@ -5021,14 +4768,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR2 + eMMC (legado)",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "",   # bloqueado: sem fonte Tier 1-2 confirmada (2026-05-25)
             "emcp_ram":   "",   # bloqueado: idem
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Sistema mostrava 'eMMC 128GB + LPDDR2 6GB' — fisicamente impossível para 2011-2014. "
@@ -5036,7 +4781,7 @@ CORRECTIONS = [
             "Fix sistêmico: família KMN agora com decode_cap_pos=None (populate_samsung.py). "
             "Capacidade não confirmada em fonte Tier 1-2 após busca (2026-05-25) — bloqueada. "
             "IA estimou 8GB+1GB (Galaxy S Advance / S III mini era), mas sem atestação. "
-            "confidence+status em fields: garante grammar_wins=False — evita decode errado no banco. "
+            "confidence em fields: garante grammar_wins=False — evita decode errado no banco. "
             "Destino: Caixa Vermelha (LPDDR2 legado, sem liquidez em 2026)."
         ),
     },
@@ -5070,14 +4815,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR2 + eMMC (legado)",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "emcp_nand":  "",   # bloqueado: "5X" sem fonte Tier 1-2 confirmada (2026-05-26)
             "emcp_ram":   "",   # bloqueado: idem — "5U"→512MB é análogo mas não idêntico
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "KMN5X000ZM: Samsung eMCP LPDDR2 + eMMC, era 2011-2014. "
@@ -5085,7 +4828,7 @@ CORRECTIONS = [
             "IA estimou 4GB+512MB por analogia com '5U' (KMN5U000FM-B203 ✓). "
             "Conflito: populate_samsung.py linha 158 tinha '5X'→8GB+1GB (especulativo, KMQ). "
             "Sem fonte Tier 1-2 para KMN5X: capacidade bloqueada pela regra de ouro. "
-            "confidence+status em fields: garante grammar_wins=False. "
+            "confidence em fields: garante grammar_wins=False. "
             "Destino: Caixa Vermelha (LPDDR2 legado, sem liquidez em 2026)."
         ),
     },
@@ -5107,14 +4850,12 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "LPDDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
             "capacity":   "1GB",
             "interface":  "",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "AllDatasheet K4P8G304EQ-AGC2 = 'LPDDR2 SDRAM 8G-Bit 256Mx32 1.2V/1.8V 168-Pin FBGA'. "
@@ -5202,7 +4943,6 @@ CORRECTIONS = [
             "brand_name": "Micron",
             "chip_type":  "LPDDR4",   # standalone LPDDR → chip_type = geração (não "RAM")
             "subtype":    "LPDDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5211,7 +4951,6 @@ CORRECTIONS = [
             "interface":  "",
             "fbga_code":  "D9VFC",
             "confidence": "confirmed",
-            "status":     "enriched",
             "source_url": "https://octopart.com/mt53b512m64d4tx-053+wt%3ac+tr-micron-122342782",
         },
         "reason": (
@@ -5263,7 +5002,6 @@ CORRECTIONS = [
             "brand_name": "Micron",
             "chip_type":  "NAND Flash",
             "subtype":    "SLC NAND",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5272,7 +5010,6 @@ CORRECTIONS = [
             "interface":  "Parallel NAND (8-bit)",
             "fbga_code":  "JW464",
             "confidence": "confirmed",
-            "status":     "enriched",
             "notes": (
                 "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
                 "⚠ NÃO é eMCP/eMMC/UFS — NAND raw, sem controlador. "
@@ -5296,7 +5033,6 @@ CORRECTIONS = [
             "brand_name": "Micron",
             "chip_type":  "NAND Flash",
             "subtype":    "SLC NAND",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5305,7 +5041,6 @@ CORRECTIONS = [
             "interface":  "Parallel NAND (8-bit)",
             "fbga_code":  "JW454",
             "confidence": "confirmed",
-            "status":     "enriched",
             "notes": (
                 "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
                 "⚠ NÃO é eMCP/eMMC/UFS — NAND raw, sem controlador. "
@@ -5329,7 +5064,6 @@ CORRECTIONS = [
             "brand_name": "Micron",
             "chip_type":  "NAND Flash",
             "subtype":    "SLC NAND",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5338,7 +5072,6 @@ CORRECTIONS = [
             "interface":  "Parallel NAND (8-bit)",
             "fbga_code":  "JW699",
             "confidence": "confirmed",
-            "status":     "enriched",
             "notes": (
                 "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
                 "⚠ NÃO é eMCP/eMMC/UFS — NAND raw, sem controlador. "
@@ -5362,7 +5095,6 @@ CORRECTIONS = [
             "brand_name": "Micron",
             "chip_type":  "NAND Flash",
             "subtype":    "SLC NAND",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5371,7 +5103,6 @@ CORRECTIONS = [
             "interface":  "Parallel NAND (8-bit)",
             "fbga_code":  "JY454",
             "confidence": "confirmed",
-            "status":     "enriched",
             "notes": (
                 "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
                 "⚠ ES = Engineering Sample — amostra de engenharia, NÃO produção final. "
@@ -5408,7 +5139,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "NAND Flash",
             "subtype":    "SLC NAND",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5420,7 +5150,6 @@ CORRECTIONS = [
                           "(feature phone / embedded ~2008-2012). Sem controladora eMMC.",
             "source_url": "https://octopart.com/kf98g16q4x-beb0-samsung-52061167",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "KF98G16Q4X = Samsung K9 NAND Flash standalone. NÃO é Kingston Fury. "
@@ -5453,7 +5182,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR1",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
@@ -5462,7 +5190,6 @@ CORRECTIONS = [
             "capacity":   "64MB",
             "interface":  "DDR1",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung datasheet Rev 1.1 (Nov 2009): "
@@ -5482,7 +5209,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR1",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
@@ -5491,7 +5217,6 @@ CORRECTIONS = [
             "capacity":   "64MB",
             "interface":  "DDR1",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung datasheet Rev 1.1 (Nov 2009): "
@@ -5511,7 +5236,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR1",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
@@ -5520,7 +5244,6 @@ CORRECTIONS = [
             "capacity":   "64MB",
             "interface":  "DDR1",
             "confidence": "manual",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung datasheet Rev 1.1 (Nov 2009): "
@@ -5538,11 +5261,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR1", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR1", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR1",
-            "capacity": "32MB", "interface": "DDR1", "confidence": "confirmed", "status": "enriched",
+            "capacity": "32MB", "interface": "DDR1", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — deriva de K4H561638D-TCB3 (Octopart/Samsung ✓). 256Mbit ÷ 8 = 32MB/die. D-die, x16. gen=1 → NÃO RENTÁVEL."
@@ -5555,7 +5278,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR1",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5564,7 +5286,6 @@ CORRECTIONS = [
             "capacity":   "32MB",
             "interface":  "DDR1",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Octopart (Samsung Semiconductor): K4H561638D-TCB3 = '16Mx16, DDR400' ✓. "
@@ -5594,7 +5315,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5603,7 +5323,6 @@ CORRECTIONS = [
             "capacity":   "64MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4T51163QN(512 Mb) ✓. "
@@ -5621,7 +5340,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5630,7 +5348,6 @@ CORRECTIONS = [
             "capacity":   "64MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4T51163QN-BI(512 Mb) ✓. "
@@ -5646,7 +5363,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5655,7 +5371,6 @@ CORRECTIONS = [
             "capacity":   "64MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4T51163QN-BHF8(512 Mb) ✓. "
@@ -5671,7 +5386,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5680,7 +5394,6 @@ CORRECTIONS = [
             "capacity":   "64MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global USA: K4T51163QN-BFF8(512 Mb) ✓. "
@@ -5695,11 +5408,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR2", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR2", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR2",
-            "capacity": "64MB", "interface": "DDR2", "confidence": "confirmed", "status": "enriched",
+            "capacity": "64MB", "interface": "DDR2", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — deriva de K4T51083QN-BI (Samsung Semiconductor Global ✓). 512Mbit ÷ 8 = 64MB/die. x8 bus. gen=2 → NÃO RENTÁVEL."
@@ -5712,7 +5425,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5721,7 +5433,6 @@ CORRECTIONS = [
             "capacity":   "64MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4T51083QN-BI(512 Mb) ✓. "
@@ -5740,7 +5451,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5749,7 +5459,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4T1G084QJ(1 Gb) ✓. "
@@ -5764,11 +5473,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR2", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR2", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR2",
-            "capacity": "128MB", "interface": "DDR2", "confidence": "confirmed", "status": "enriched",
+            "capacity": "128MB", "interface": "DDR2", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — deriva de K4T1G083QJ-BI (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. x8 bus. gen=2 → NÃO RENTÁVEL."
@@ -5781,7 +5490,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5790,7 +5498,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4T1G083QJ-BI(1 Gb) ✓. "
@@ -5808,7 +5515,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5817,7 +5523,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4T1G164QJ(1 Gb) ✓. "
@@ -5833,11 +5538,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR2", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR2", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR2",
-            "capacity": "128MB", "interface": "DDR2", "confidence": "confirmed", "status": "enriched",
+            "capacity": "128MB", "interface": "DDR2", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — deriva de K4T1G163QJ-BI (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. x16 bus. gen=2 → NÃO RENTÁVEL."
@@ -5850,7 +5555,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5859,7 +5563,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4T1G163QJ-BI(1 Gb) ✓. "
@@ -5875,7 +5578,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5884,7 +5586,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4T1G164QJ-BHF8(1 Gb) ✓. "
@@ -5900,7 +5601,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR2",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5909,7 +5609,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "DDR2",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4T1G164QJ-BFF8(1 Gb) ✓. "
@@ -5944,7 +5643,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5953,7 +5651,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B4G1646E-BYMA(4 Gb) ✓. "
@@ -5971,7 +5668,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -5980,7 +5676,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B4G1646E-BYK0(4 Gb) ✓. "
@@ -5994,11 +5689,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR3L", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR3L", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR3L",
-            "capacity": "512MB", "interface": "x16", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "x16", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — deriva de K4B4G1646D-BYK0/BYNB/BCK0/BCNB (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die. D-die, x16."
@@ -6011,7 +5706,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6020,7 +5714,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B4G1646D-BYK0(4 Gb) ✓. "
@@ -6037,7 +5730,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6046,7 +5738,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global EMEA: K4B4G1646D-BYNB(4 Gb) ✓. "
@@ -6062,11 +5753,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR3L", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR3L", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR3L",
-            "capacity": "1GB", "interface": "x16", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "x16", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — deriva de K4B8G1646D-MYK0/MYMA/MMK0/MMMA (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die. D-die, x16."
@@ -6079,7 +5770,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6088,7 +5778,6 @@ CORRECTIONS = [
             "capacity":   "1GB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B8G1646D-MYK0(8 Gb) ✓. "
@@ -6105,7 +5794,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6114,7 +5802,6 @@ CORRECTIONS = [
             "capacity":   "1GB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B8G1646D-MYMA(8 Gb) ✓. "
@@ -6132,7 +5819,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6141,7 +5827,6 @@ CORRECTIONS = [
             "capacity":   "1GB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B8G1646D-MMK0(8 Gb) ✓. "
@@ -6159,7 +5844,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6168,7 +5852,6 @@ CORRECTIONS = [
             "capacity":   "1GB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B8G1646D-MMMA(8 Gb) ✓. "
@@ -6185,11 +5868,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR3L", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR3L", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR3L",
-            "capacity": "256MB", "interface": "x16", "confidence": "confirmed", "status": "enriched",
+            "capacity": "256MB", "interface": "x16", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — deriva de K4B2G1646F-BYMA/BYNB/BCK0/BCMA (Samsung Semiconductor Global ✓). 2Gbit ÷ 8 = 256MB/die. F-die, x16."
@@ -6202,7 +5885,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6211,7 +5893,6 @@ CORRECTIONS = [
             "capacity":   "256MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B2G1646F-BYMA(2 Gb) ✓. "
@@ -6227,7 +5908,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6236,7 +5916,6 @@ CORRECTIONS = [
             "capacity":   "256MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B2G1646F-BYNB(2 Gb) ✓. "
@@ -6252,11 +5931,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR3L", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR3L", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR3L",
-            "capacity": "512MB", "interface": "x8", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "x8", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — deriva de K4B4G0846D-BYK0/BYNB (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die. D-die, x8."
@@ -6269,7 +5948,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6278,7 +5956,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global USA: K4B4G0846D-BYK0(4 Gb) ✓. "
@@ -6294,7 +5971,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6303,7 +5979,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global EMEA: K4B4G0846D-BYNB(4 Gb) ✓. "
@@ -6317,11 +5992,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR3L", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR3L", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR3L",
-            "capacity": "256MB", "interface": "x8", "confidence": "confirmed", "status": "enriched",
+            "capacity": "256MB", "interface": "x8", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — deriva de K4B2G0846F-BYMA (Samsung Semiconductor Global ✓). 2Gbit ÷ 8 = 256MB/die. F-die, x8."
@@ -6334,7 +6009,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6343,7 +6017,6 @@ CORRECTIONS = [
             "capacity":   "256MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B2G0846F-BYMA(2 Gb) ✓. "
@@ -6359,11 +6032,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "DDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR3",
-            "capacity": "512MB", "interface": "x8", "confidence": "manual", "status": "enriched",
+            "capacity": "512MB", "interface": "x8", "confidence": "manual", 
         },
         "reason": (
             "Base PN — deriva de K4B4G0846E-BCK0/BCNB/BYK0/BYMA (Samsung Semiconductor Global ✓). "
@@ -6377,7 +6050,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6386,7 +6058,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B4G0846E-BCK0 ✓. "
@@ -6400,7 +6071,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6409,7 +6079,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B4G0846E-BCNB ✓. "
@@ -6423,7 +6092,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6432,7 +6100,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B4G0846E-BYK0 ✓. "
@@ -6446,7 +6113,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6455,7 +6121,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B4G0846E-BYMA ✓. "
@@ -6471,11 +6136,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "DDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR3",
-            "capacity": "1GB", "interface": "x8", "confidence": "manual", "status": "enriched",
+            "capacity": "1GB", "interface": "x8", "confidence": "manual", 
         },
         "reason": (
             "Base PN — deriva de K4B8G0846D-MCMA/MCNB/MCK0/MYK0 (Samsung Semiconductor Global ✓). "
@@ -6489,7 +6154,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6498,7 +6162,6 @@ CORRECTIONS = [
             "capacity":   "1GB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B8G0846D-MCMA ✓. "
@@ -6512,7 +6175,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6521,7 +6183,6 @@ CORRECTIONS = [
             "capacity":   "1GB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B8G0846D-MCNB ✓. "
@@ -6535,7 +6196,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6544,7 +6204,6 @@ CORRECTIONS = [
             "capacity":   "1GB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B8G0846D-MCK0 ✓. "
@@ -6558,7 +6217,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6567,7 +6225,6 @@ CORRECTIONS = [
             "capacity":   "1GB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B8G0846D-MYK0 ✓. "
@@ -6583,11 +6240,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "DDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR3",
-            "capacity": "128MB", "interface": "x8", "confidence": "manual", "status": "enriched",
+            "capacity": "128MB", "interface": "x8", "confidence": "manual", 
         },
         "reason": (
             "Base PN — deriva de K4B1G0846I-BCK0/BYK0/BYMA/BYNB (Samsung Semiconductor Global ✓). "
@@ -6601,7 +6258,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6610,7 +6266,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B1G0846I-BCK0 ✓. "
@@ -6624,7 +6279,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6633,7 +6287,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B1G0846I-BYK0 ✓. "
@@ -6647,7 +6300,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6656,7 +6308,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B1G0846I-BYMA ✓. "
@@ -6670,7 +6321,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6679,7 +6329,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "x8",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global (Tier 1): K4B1G0846I-BYNB ✓. "
@@ -6700,7 +6349,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6709,7 +6357,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B4G1646E-BCK0(4 Gb) ✓. "
@@ -6726,7 +6373,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6735,7 +6381,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B4G1646E-BCMA(4 Gb) ✓. "
@@ -6752,7 +6397,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6761,7 +6405,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B4G1646D-BCK0(4 Gb) ✓. "
@@ -6777,7 +6420,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6786,7 +6428,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B4G1646D-BCNB(4 Gb) ✓. "
@@ -6802,7 +6443,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6811,7 +6451,6 @@ CORRECTIONS = [
             "capacity":   "256MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B2G1646F-BCK0(2 Gb) ✓. "
@@ -6827,7 +6466,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6836,7 +6474,6 @@ CORRECTIONS = [
             "capacity":   "256MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B2G1646F-BCMA(2 Gb) ✓. "
@@ -6852,11 +6489,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "DDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "DDR3",
-            "capacity": "128MB", "interface": "x16", "confidence": "confirmed", "status": "enriched",
+            "capacity": "128MB", "interface": "x16", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — deriva de K4B1G1646I-BCK0 (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. I-die, x16. 128MB < 256MB limiar DDR3 → NÃO RENTÁVEL."
@@ -6869,7 +6506,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -6878,7 +6514,6 @@ CORRECTIONS = [
             "capacity":   "128MB",
             "interface":  "x16",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Samsung Semiconductor Global: K4B1G1646I-BCK0(1 Gb) ✓. "
@@ -6910,11 +6545,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — E-die, x8. Deriva de K4A4G085WE-BCPB/BCTD/BITD (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
@@ -6925,11 +6560,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G085WE-BCPB(4 Gb) ✓. "
@@ -6941,11 +6576,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G085WE-BCTD(4 Gb) ✓. "
@@ -6957,11 +6592,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G085WE-BITD(4 Gb) ✓. "
@@ -6973,11 +6608,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — F-die, x8. Deriva de K4A4G085WF-BCTD/BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
@@ -6988,11 +6623,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G085WF-BCTD(4 Gb) ✓. "
@@ -7004,11 +6639,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G085WF-BCWE(4 Gb) ✓. "
@@ -7020,11 +6655,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — G-die, x8. Deriva de K4A4G085WG-BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
@@ -7035,11 +6670,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G085WG-BCWE(4 Gb) ✓. "
@@ -7054,11 +6689,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — E-die, x16. Deriva de K4A4G165WE-BCRC/BCTD/BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
@@ -7069,11 +6704,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G165WE-BCRC(4 Gb) ✓. "
@@ -7085,11 +6720,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G165WE-BCTD(4 Gb) ✓. "
@@ -7101,11 +6736,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global USA: K4A4G165WE-BCWE(4 Gb) ✓. "
@@ -7117,11 +6752,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — F-die, x16. Deriva de K4A4G165WF-BCTD/BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
@@ -7132,11 +6767,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G165WF-BCTD(4 Gb) ✓. "
@@ -7148,11 +6783,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G165WF-BCWE(4 Gb) ✓. "
@@ -7164,11 +6799,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — G-die, x16. Deriva de K4A4G165WG-BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die."
@@ -7179,11 +6814,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "512MB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A4G165WG-BCWE(4 Gb) ✓. "
@@ -7200,11 +6835,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — B-die, x8. Deriva de K4A8G085WB-BCPB/BCRC/BCTD (Samsung Global + datasheet ✓). 8Gbit ÷ 8 = 1GB/die."
@@ -7215,11 +6850,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G085WB-BCPB(8 Gb) ✓. "
@@ -7233,11 +6868,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G085WB-BCRC(8 Gb) ✓. "
@@ -7249,11 +6884,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G085WB-BCTD(8 Gb) ✓. "
@@ -7265,11 +6900,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — C-die, x8. Deriva de K4A8G085WC-BCRC/BCTD/BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die."
@@ -7280,11 +6915,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G085WC-BCRC(8 Gb) ✓. "
@@ -7296,11 +6931,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G085WC-BCTD(8 Gb) ✓. "
@@ -7312,11 +6947,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G085WC-BCWE(8 Gb) ✓. "
@@ -7328,11 +6963,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — G-die, x8. Deriva de K4A8G085WG-BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die."
@@ -7343,11 +6978,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G085WG-BCWE(8 Gb) ✓. "
@@ -7362,11 +6997,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — B-die, x16. Deriva de K4A8G165WB-BCPB/BCRC/BITD (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die."
@@ -7377,11 +7012,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global EMEA: K4A8G165WB-BCPB(8 Gb) ✓. "
@@ -7393,11 +7028,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G165WB-BCRC(8 Gb) ✓. "
@@ -7409,11 +7044,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G165WB-BITD(8 Gb) ✓. "
@@ -7425,11 +7060,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — C-die, x16. Deriva de K4A8G165WC-BCRC/BCTD/BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die."
@@ -7440,11 +7075,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G165WC-BCRC(8 Gb) ✓. "
@@ -7456,11 +7091,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G165WC-BCTD(8 Gb) ✓. "
@@ -7472,11 +7107,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G165WC-BCWE(8 Gb) ✓. "
@@ -7488,11 +7123,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — G-die, x16. Deriva de K4A8G165WG-BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die."
@@ -7503,11 +7138,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "1GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4A8G165WG-BCWE(8 Gb) ✓. "
@@ -7523,11 +7158,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — A-die, x8. Deriva de K4AAG085WA-BCTD/BCWE (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
@@ -7538,11 +7173,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4AAG085WA-BCTD(16 Gb) ✓. "
@@ -7554,11 +7189,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4AAG085WA-BCWE(16 Gb) ✓. "
@@ -7570,11 +7205,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — C-die, x8. Deriva de K4AAG085WC-BCWE (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
@@ -7585,11 +7220,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4AAG085WC-BCWE(16 Gb) ✓. "
@@ -7604,11 +7239,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — A-die, x16. Deriva de K4AAG165WA-BCTD/BCWE (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
@@ -7619,11 +7254,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4AAG165WA-BCTD(16 Gb) ✓. "
@@ -7635,11 +7270,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4AAG165WA-BCWE(16 Gb) ✓. "
@@ -7651,11 +7286,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — B-die, x16. Deriva de K4AAG165WB-MCTD (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
@@ -7666,11 +7301,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR4",
-            "subtype": "DDR4", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR4", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR4", "subtype": "DDR4",
-            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR4", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4AAG165WB-MCTD(16 Gb) ✓. "
@@ -7698,11 +7333,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — B-die, x8. Deriva de K4RAH086VB-BCQK/BIQK/BIWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
@@ -7713,11 +7348,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global (populate_samsung.py ✓): K4RAH086VB-BCQK(16 Gb). "
@@ -7729,11 +7364,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global/EMEA: K4RAH086VB-BIQK(16 Gb) ✓. "
@@ -7745,11 +7380,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4RAH086VB-BIWM(16 Gb) ✓. "
@@ -7761,11 +7396,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — E-die, x8. Deriva de K4RAH086VE-BCWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
@@ -7776,11 +7411,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4RAH086VE-BCWM(16 Gb) ✓. "
@@ -7792,11 +7427,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — P-die, x8. Deriva de K4RAH086VP-BCWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
@@ -7807,11 +7442,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4RAH086VP-BCWM(16 Gb) ✓. "
@@ -7826,11 +7461,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — B-die, x16. Deriva de K4RAH165VB-BCQK/BCWM/BIQK/BIWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
@@ -7841,11 +7476,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4RAH165VB-BCQK(16 Gb) ✓. "
@@ -7857,11 +7492,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4RAH165VB-BCWM(16 Gb) ✓. "
@@ -7873,11 +7508,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4RAH165VB-BIQK(16 Gb) ✓. "
@@ -7889,11 +7524,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4RAH165VB-BIWM(16 Gb) ✓. "
@@ -7905,11 +7540,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — P-die, x16. Deriva de K4RAH165VP-BCWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die."
@@ -7920,11 +7555,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "2GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4RAH165VP-BCWM(16 Gb) ✓. "
@@ -7940,11 +7575,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — B-die, x8. Deriva de K4RBH046VM-BCCP/BCWM (Samsung Semiconductor Global ✓). 32Gbit ÷ 8 = 4GB/die."
@@ -7955,11 +7590,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4RBH046VM-BCCP(32 Gb) ✓. "
@@ -7971,11 +7606,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global USA: K4RBH046VM-BCWM(32 Gb) ✓. "
@@ -7997,11 +7632,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — C-die, x8. Deriva de K4RCH046VM-2CLP/2CCM (Samsung Semiconductor Global ✓). 32Gbit ÷ 8 = 4GB/die. ⚠ K4RC SEM gramática → cairia em K4R RDRAM sem esta entrada."
@@ -8012,11 +7647,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global: K4RCH046VM-2CLP(32 Gb) ✓. "
@@ -8031,11 +7666,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "DDR5",
-            "subtype": "DDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "DDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "DDR5", "subtype": "DDR5",
-            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", "status": "enriched",
+            "capacity": "4GB", "interface": "DDR5", "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global USA/EMEA: K4RCH046VM-2CCM(32 Gb) ✓. "
@@ -8068,7 +7703,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "MCP",
             "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -8079,7 +7713,6 @@ CORRECTIONS = [
                           "Sem controladora eMMC. Programadores BGA atuais incompatíveis. "
                           "Destino: moagem / recuperação de metais.",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Família K5 = Samsung Raw MCP pré-eMCP: NAND raw + mDDR1 sem controladora. "
@@ -8107,7 +7740,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "MCP",
             "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -8118,7 +7750,6 @@ CORRECTIONS = [
                           "Sem controladora eMMC. Programadores BGA atuais incompatíveis. "
                           "Destino: moagem / recuperação de metais.",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Datasheet Samsung K524G2GACB-A050 (Tier 1 direto, Rev 1.3, nov 2009): "
@@ -8144,7 +7775,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "MCP",
             "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -8155,7 +7785,6 @@ CORRECTIONS = [
                           "Sem controladora eMMC. Programadores BGA atuais incompatíveis. "
                           "Destino: moagem / recuperação de metais.",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Família K524G2G: die revision H (package -B050). "
@@ -8180,7 +7809,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "MCP",
             "subtype":    "Raw MCP — NAND 512MB + mDDR1 256MB",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -8191,7 +7819,6 @@ CORRECTIONS = [
                           "Sem controladora eMMC. Programadores BGA atuais incompatíveis. "
                           "Destino: moagem / recuperação de metais.",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "Família K524G2G: die revision I (package -B050). "
@@ -8212,7 +7839,6 @@ CORRECTIONS = [
             "brand_name": "Micron",
             "chip_type":  "NAND Flash",
             "subtype":    "SLC NAND",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -8221,7 +7847,6 @@ CORRECTIONS = [
             "interface":  "Parallel NAND (8-bit)",
             "fbga_code":  "JY464",
             "confidence": "confirmed",
-            "status":     "enriched",
             "notes": (
                 "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
                 "⚠ ES = Engineering Sample — amostra de engenharia, NÃO produção final. "
@@ -8272,12 +7897,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — GDDR3 Samsung 1Gb x32 (E-die). "
@@ -8292,12 +7917,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "K4J10324KE-BC14: 1Gb GDDR3 x32 (E-die). "
@@ -8311,12 +7936,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "K4J10324KE-HC14: 1Gb GDDR3 x32 (E-die). "
@@ -8329,12 +7954,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "K4J10324KE-HC1A: 1Gb GDDR3 x32 (E-die). "
@@ -8351,12 +7976,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — GDDR3 Samsung 1Gb x32 (D-die). "
@@ -8370,12 +7995,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "K4J10324QD-HC12: 1Gb GDDR3 x32 (D-die). "
@@ -8393,12 +8018,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "64MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — GDDR3 Samsung 512Mb x32 (H-die). "
@@ -8412,12 +8037,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "64MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "K4J52324QH-HJ1A: 512Mb GDDR3 x32 (H-die). "
@@ -8431,12 +8056,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "64MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "K4J52324QH-HJ08: 512Mb GDDR3 x32 (H-die). "
@@ -8454,12 +8079,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "32MB", "interface": "x32",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Base PN — GDDR3 Samsung 256Mb x32 (F-die). "
@@ -8474,12 +8099,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "32MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "K4J55323QF-GC16: 256Mb GDDR3 x32 (F-die). "
@@ -8492,12 +8117,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "32MB", "interface": "x32",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Base PN — GDDR3 Samsung 256Mb x32 (G-die / 8th gen). "
@@ -8510,12 +8135,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "32MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "K4J55323QG-BC14: 256Mb GDDR3 x32 (G-die). "
@@ -8543,12 +8168,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "128MB", "interface": "x16",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — gDDR3 Samsung 1Gb x16 (E-die). "
@@ -8561,12 +8186,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "128MB", "interface": "x16",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Octopart ✓ (Samsung): K4W1G1646E-HC12 = '1Gb gDDR3 SDRAM 1.5V 800MHz FBGA96'. "
@@ -8582,12 +8207,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "128MB", "interface": "x16",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Base PN — gDDR3 Samsung 1Gb x16 (D-die). "
@@ -8601,12 +8226,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "128MB", "interface": "x16",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Identificado em esquemático/teardown: ATI Radeon HD 4550 VRAM = K4W1G1646D-EC12. "
@@ -8621,12 +8246,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "256MB", "interface": "x16",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — gDDR3 Samsung 2Gb x16 (C-die). "
@@ -8639,12 +8264,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "256MB", "interface": "x16",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Identificado em esquemático Dell N4110 (linha +1.5V_GFX com rede de desacoplamento): "
@@ -8657,12 +8282,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR3", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "256MB", "interface": "x16",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Octopart ✓ (Samsung): K4W2G1646C-HC12 = '2Gb gDDR3 SDRAM 1.5V FBGA'. "
@@ -8679,12 +8304,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "512MB", "interface": "x16",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Chip gDDR3 4Gb x16 (Q-die) confirmado fisicamente em bancada eMiner (2026-06-19). "
@@ -8702,12 +8327,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "512MB", "interface": "x16",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Base PN — gDDR3 Samsung 4Gb x16 (B-die). "
@@ -8720,12 +8345,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "distributor",
+            "subtype": "GDDR3", "confidence": "distributor",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "512MB", "interface": "x16",
-            "confidence": "distributor", "status": "enriched",
+            "confidence": "distributor", 
             "source_url": "https://octopart.com/part/samsung/K4W4G1646B-HC11",
         },
         "reason": (
@@ -8740,12 +8365,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "distributor",
+            "subtype": "GDDR3", "confidence": "distributor",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "512MB", "interface": "x16",
-            "confidence": "distributor", "status": "enriched",
+            "confidence": "distributor", 
             "source_url": "https://octopart.com/part/samsung/K4W4G1646B-HC11",
         },
         "reason": (
@@ -8759,12 +8384,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "distributor",
+            "subtype": "GDDR3", "confidence": "distributor",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
             "capacity": "512MB", "interface": "x16",
-            "confidence": "distributor", "status": "enriched",
+            "confidence": "distributor", 
             "source_url": "https://octopart.com/part/samsung/K4W4G1646B-HC11",
         },
         "reason": (
@@ -8782,11 +8407,11 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR3", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR3", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR3",
-            "capacity": "512MB", "interface": "x16", "confidence": "manual", "status": "enriched",
+            "capacity": "512MB", "interface": "x16", "confidence": "manual", 
         },
         "reason": (
             "Base PN — deriva de K4W4G1646D-BC1A (Octopart ✓: GDDR3 256Mx16). "
@@ -8800,7 +8425,6 @@ CORRECTIONS = [
             "brand_name": "Samsung",
             "chip_type":  "RAM",
             "subtype":    "GDDR3",
-            "status":     "enriched",
             "confidence": "distributor",
         },
         "fields": {
@@ -8809,7 +8433,6 @@ CORRECTIONS = [
             "capacity":   "512MB",
             "interface":  "x16",
             "confidence": "distributor",
-            "status":     "enriched",
             "source_url": "https://octopart.com/k4w4g1646d-bc1a-samsung-70760918",
         },
         "reason": (
@@ -8839,12 +8462,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR2", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR2", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR2",
             "capacity": "64MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — Alldatasheet Samsung ID 125618 (Tier 1): "
@@ -8865,12 +8488,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR2", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR2", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR2",
             "capacity": "64MB", "interface": "x32",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Chip físico confirmado na esteira eMiner (2026-06-20). "
@@ -8910,12 +8533,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Alldatasheet Samsung ID 347889: K4G10325FE = 'Graphic Memory', Apr 2010 (Tier 1 ✓). "
@@ -8930,12 +8553,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR5", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Chip físico confirmado na esteira eMiner (2026-06-20). "
@@ -8950,12 +8573,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR5", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Variante de speed/temp grade do K4G10325FG. HC03 = freq. padrão / comercial. "
@@ -8969,12 +8592,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR5", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Variante de speed/temp grade do K4G10325FG. HC04 = speed grade intermediário. "
@@ -8988,12 +8611,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR5", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "128MB", "interface": "x32",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Variante de speed/temp grade do K4G10325FG. HC05 = speed grade mais alto. "
@@ -9009,12 +8632,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "256MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — GDDR5 Samsung 2Gb x32 (D-die). "
@@ -9028,12 +8651,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "256MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Octopart ✓ (Samsung): K4G20325FD-FC04 = '2Gb GDDR5 SDRAM'. "
@@ -9049,12 +8672,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "512MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — GDDR5 Samsung 4Gb x32 (E-die). "
@@ -9068,12 +8691,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "512MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4G41325FE-HC25(4 Gb). "
@@ -9086,12 +8709,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "512MB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global USA/CN ✓: K4G41325FE-HC28(4 Gb). "
@@ -9107,12 +8730,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — GDDR5 Samsung 8Gb x32 (B-die). "
@@ -9126,12 +8749,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4G80325FB-HC22(8 Gb). "
@@ -9144,12 +8767,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4G80325FB-HC25(8 Gb). "
@@ -9162,12 +8785,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4G80325FB-HC28(8 Gb). "
@@ -9183,12 +8806,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — GDDR5 Samsung 8Gb x32 (C-die). "
@@ -9202,12 +8825,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4G80325FC-HC22(8 Gb). "
@@ -9220,12 +8843,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR5", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR5", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR5",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4G80325FC-HC25(8 Gb). "
@@ -9254,12 +8877,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — GDDR6 Samsung 8Gb x32 (C-die). "
@@ -9272,12 +8895,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4Z80325BC-HC14(8 Gb). "
@@ -9290,12 +8913,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
             "source_url": "https://semiconductor.samsung.com/us/dram/gddr/gddr6/k4z80325bc-hc12",
         },
         "reason": (
@@ -9309,12 +8932,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "1GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
             "source_url": "https://semiconductor.samsung.com/dram/gddr/gddr6/k4z80325bc-hc16/",
         },
         "reason": (
@@ -9333,12 +8956,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "2GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Base PN — GDDR6 Samsung 16Gb x32 (B-die M-variant). "
@@ -9351,12 +8974,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "2GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4ZAF325BM-HC14(16 Gb). "
@@ -9369,12 +8992,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "2GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4ZAF325BM-HC16(16 Gb). "
@@ -9387,12 +9010,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "2GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4ZAF325BM-HC18(16 Gb). "
@@ -9405,12 +9028,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "2GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
         },
         "reason": (
             "Samsung Semiconductor Global ✓: K4ZAF325BM-SC14(16 Gb). "
@@ -9427,12 +9050,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "manual",
+            "subtype": "GDDR6", "confidence": "manual",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "2GB", "interface": "x32",
-            "confidence": "manual", "status": "enriched",
+            "confidence": "manual", 
         },
         "reason": (
             "Base PN — GDDR6 Samsung 16Gb x32 (B-die C-variant). "
@@ -9445,12 +9068,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "2GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
             "source_url": "https://semiconductor.samsung.com/dram/gddr/gddr6/k4zaf325bc-sc14/",
         },
         "reason": (
@@ -9464,12 +9087,12 @@ CORRECTIONS = [
         "create": True,
         "create_defaults": {
             "brand_name": "Samsung", "chip_type": "RAM",
-            "subtype": "GDDR6", "status": "enriched", "confidence": "confirmed",
+            "subtype": "GDDR6", "confidence": "confirmed",
         },
         "fields": {
             "chip_type": "RAM", "subtype": "GDDR6",
             "capacity": "2GB", "interface": "x32",
-            "confidence": "confirmed", "status": "enriched",
+            "confidence": "confirmed", 
             "source_url": "https://semiconductor.samsung.com/dram/gddr/gddr6/k4zaf325bc-sc16/",
         },
         "reason": (
@@ -9524,7 +9147,6 @@ CORRECTIONS = [
             "emcp_ram":   "LPDDR3 1GB",
             "subtype":    "LPDDR3",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "BUG-8: API Micron FBGA dizia LPDDR2 para chave 8D5 — ERRADO. "
@@ -9546,7 +9168,6 @@ CORRECTIONS = [
             "brand_name": "Micron",
             "chip_type":  "eMCP",
             "subtype":    "LPDDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9555,7 +9176,6 @@ CORRECTIONS = [
             "emcp_nand":  "4GB",
             "subtype":    "LPDDR3",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "BUG-8: mesma correção que MT29TZZZ8D5BKFAH. "
@@ -9584,7 +9204,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9594,7 +9213,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC128M16JR-EK = DDR3L SDRAM 2Gbit 128Mx16 1.35V 96-Pin TFBGA. EK = commercial 0–85°C.",
     },
@@ -9605,7 +9223,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9615,7 +9232,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC128M16JR-EKT = DDR3L 2Gbit 128Mx16 TFBGA96. T = Tape & Reel; mesmas specs de JR-EK.",
     },
@@ -9626,7 +9242,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9636,7 +9251,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC128M16JR-EKH = DDR3L 2Gbit 128Mx16 TFBGA96. H = Automotive -40°C a 125°C.",
     },
@@ -9647,7 +9261,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9657,7 +9270,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC128M16JR-EKI = DDR3L SDRAM 2Gbit 128Mx16 1.35V Automotive 96-Pin TFBGA.",
     },
@@ -9672,7 +9284,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9682,7 +9293,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC128M16IP-DI = DDR3L SDRAM 2Gbit 128Mx16 1.35V 96-Pin VFBGA. DI = Industrial -40°C a 85°C.",
     },
@@ -9693,7 +9303,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9703,7 +9312,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC128M16IP-DII = DDR3L SDRAM 2Gbit 128Mx16 1.35V Automotive 96-Pin VFBGA.",
     },
@@ -9718,7 +9326,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9728,7 +9335,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC128M16FP-DI = DDR3L Dram 128Mx16 0.225ns PBGA96. DI = Industrial.",
     },
@@ -9744,7 +9350,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9754,7 +9359,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-DI = DDR3L SDRAM 4Gbit 256Mx16 1.35V VFBGA96. DI = Industrial -40°C a 85°C.",
     },
@@ -9765,7 +9369,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9775,7 +9378,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-EK = DDR3L SDRAM 4Gbit 256Mx16 1.35V VFBGA96. EK = commercial 0–85°C.",
     },
@@ -9786,7 +9388,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9796,7 +9397,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-EKT = DDR3L 4Gbit 256Mx16 VFBGA96. T = Tape & Reel.",
     },
@@ -9807,7 +9407,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9817,7 +9416,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-DII = DDR3L 4Gbit 256Mx16 VFBGA96 Automotive Grade II.",
     },
@@ -9828,7 +9426,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9838,7 +9435,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-DI-TR = DDR3L 4Gbit 256Mx16 VFBGA96. Industrial, Tape & Reel.",
     },
@@ -9849,7 +9445,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9859,7 +9454,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CC256M16EP-DIH = DDR3L 4Gbit 256Mx16 VFBGA96. H = Automotive -40°C a 125°C.",
     },
@@ -9878,7 +9472,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9888,7 +9481,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya): NT5CB256M8FN-DI = DDR3 SDRAM 2Gbit 256Mx8 1.5V 78-Pin VFBGA. DI = Industrial. NT5CB = DDR3 standard 1.5V (≠ NT5CC = 1.35V).",
     },
@@ -9899,7 +9491,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9909,7 +9500,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya): NT5CB256M8FN-DII = DDR3 SDRAM 2Gbit 256Mx8 1.5V 78-Pin VFBGA. DII = Automotive Grade II.",
     },
@@ -9920,7 +9510,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9930,7 +9519,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya): NT5CB256M8BN-CG = DDR3 Dram 256Mx8 0.255ns PBGA78. DDR3 standard 1.5V. CG = commercial grade.",
     },
@@ -9948,7 +9536,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9958,7 +9545,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "PN base (sem sufixo) do NT5CC128M16JR — DDR3L 2Gbit 128Mx16 1.35V. Operador lê sem sufixo no chip. Specs = mesmas do grupo JR-EK/EKH/EKI/EKT.",
     },
@@ -9970,7 +9556,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -9980,7 +9565,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "PN base (sem sufixo) do NT5CC128M16IP — DDR3L 2Gbit 128Mx16 1.35V VFBGA96. Specs = mesmas do grupo IP-DI/DII.",
     },
@@ -9992,7 +9576,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10002,7 +9585,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "PN base (sem sufixo) do NT5CC128M16FP — DDR3L 2Gbit 128Mx16 PBGA96. Specs = mesmas do grupo FP-DI.",
     },
@@ -10014,7 +9596,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10024,7 +9605,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "PN base (sem sufixo) do NT5CC256M16EP — DDR3L 4Gbit 256Mx16 1.35V VFBGA96. Specs = mesmas do grupo EP-DI/EK/EKT/DII/DIH.",
     },
@@ -10036,7 +9616,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10046,7 +9625,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Alias curto: operador lê NT5CC256M16 sem o designador EP quando laser está parcial. Aponta para DDR3L 4Gbit 256Mx16 1.35V — mesmas specs de NT5CC256M16EP.",
     },
@@ -10058,7 +9636,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10068,7 +9645,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Alias curto: operador lê NT5CC128M16 sem o designador JR/IP/FP quando laser está parcial. Aponta para DDR3L 2Gbit 128Mx16 1.35V — mesmas specs de NT5CC128M16JR.",
     },
@@ -10080,7 +9656,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10090,7 +9665,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "PN base (sem sufixo) do NT5CB256M8 — DDR3 2Gbit 256Mx8 1.5V. NT5CB = DDR3 1.5V. Specs = mesmas do grupo FN-DI/DII e BN-CG.",
     },
@@ -10106,7 +9680,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10116,7 +9689,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "PN curto sem revisão (DP) — operador lê NT5CB256M16 quando o sufixo DP não é visível no laser. Specs = mesmas do NT5CB256M16DP: DDR3 1.5V 4Gbit 256Mx16.",
     },
@@ -10127,7 +9699,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10137,7 +9708,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "PN base (sem sufixo) do NT5CB256M16DP — DDR3 4Gbit 256Mx16 1.5V. Octopart (Nanya mfr page) ✓. 9 variantes encontradas.",
     },
@@ -10148,7 +9718,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10158,7 +9727,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CB256M16DP-DI = DDR3 Dram 256Mx16 PBGA96. DI = Industrial. DDR3 1.5V 4Gbit.",
     },
@@ -10169,7 +9737,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10179,7 +9746,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CB256M16DP-EK = DDR3 SDRAM 4Gbit 256Mx16 1.5V 96-Pin VFBGA. EK = commercial 0–85°C.",
     },
@@ -10190,7 +9756,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10200,7 +9765,6 @@ CORRECTIONS = [
             "capacity":     "512MB",
             "density_gbit": "4Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CB256M16DP-DII = DDR3 SDRAM 4Gbit 256Mx16 1.5V 96-Pin VFBGA. DII = Automotive Grade II.",
     },
@@ -10222,7 +9786,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10232,7 +9795,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "PN base (sem sufixo) NT5CB128M16 — DDR3 1.5V 2Gbit 128Mx16. Octopart (Nanya mfr page): 33 variantes confirmadas. Operador pode ler como NT5C128M16 quando 'B' está ilegível.",
     },
@@ -10245,7 +9807,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10255,7 +9816,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Alldatasheet (Nanya Technology Corporation): NT5CB128M16FP-DI = DDR3 SDRAM 2Gbit 128Mx16 1.5V. DI = Industrial grade (-40 to 95°C).",
     },
@@ -10266,7 +9826,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10276,7 +9835,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CB128M16FP-DII = DDR3 SDRAM 2Gbit 128Mx16 1.5V Automotive 96-Pin TFBGA. DII = Automotive Grade II (-40 to 105°C).",
     },
@@ -10287,7 +9845,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10297,7 +9854,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CB128M16FP-FL = DDR3 DRAM 128MX16 PBGA96. Variante comercial pacote PBGA.",
     },
@@ -10310,7 +9866,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10320,7 +9875,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Octopart (Nanya mfr page): NT5CB128M16IP-FL = DDR3 SDRAM 2Gbit 128Mx16 1.5V 96-Pin VFBGA.",
     },
@@ -10333,7 +9887,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10343,7 +9896,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Alldatasheet (Nanya Technology Corporation): NT5CB128M16JR = DDR3 2Gbit 128Mx16 1.5V. Revisão J (processo shrink, mesma organização FP).",
     },
@@ -10354,7 +9906,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10364,7 +9915,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Nanya DDR3 2Gbit 128Mx16 1.5V, revisão JR, grade Industrial (-40 to 95°C). Confirmado via datasheet Nanya Technology Corporation.",
     },
@@ -10375,7 +9925,6 @@ CORRECTIONS = [
             "brand_name": "Nanya",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10385,7 +9934,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "confirmed",
-            "status":       "enriched",
         },
         "reason": "Nanya DDR3 2Gbit 128Mx16 1.5V, revisão JR, EK = commercial (0–85°C), T = Tape & Reel. Confirmado via datasheet Nanya Technology Corporation.",
     },
@@ -10412,7 +9960,6 @@ CORRECTIONS = [
             "brand_name": "Micron",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10423,7 +9970,6 @@ CORRECTIONS = [
             "density_gbit": "4Gb",
             "fbga_code":    "D9SDD",
             "confidence":   "confirmed",
-            "status":       "enriched",
             "source_url":   "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41K256M16LY-107-N/7707573",
         },
         "reason": (
@@ -10446,7 +9992,6 @@ CORRECTIONS = [
             "brand_name": "Micron",
             "chip_type":  "RAM",
             "subtype":    "DDR3L",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10457,7 +10002,6 @@ CORRECTIONS = [
             "density_gbit": "4Gb",
             "fbga_code":    "D9PXV",
             "confidence":   "confirmed",
-            "status":       "enriched",
             "source_url":   "https://www.digikey.com/en/products/detail/micron-technology-inc/MT41K256M16HA-125-E/4251401",
         },
         "reason": (
@@ -10502,7 +10046,6 @@ CORRECTIONS = [
             "brand_name": "PieceMakers",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
@@ -10512,7 +10055,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "manual",
-            "status":       "enriched",
             "source_url":   "https://www.piecemakers.com.tw/en/product/standard-dram",
         },
         "reason": (
@@ -10536,7 +10078,6 @@ CORRECTIONS = [
             "brand_name": "PieceMakers",
             "chip_type":  "RAM",
             "subtype":    "DDR3",
-            "status":     "enriched",
             "confidence": "manual",
         },
         "fields": {
@@ -10546,7 +10087,6 @@ CORRECTIONS = [
             "capacity":     "256MB",
             "density_gbit": "2Gb",
             "confidence":   "manual",
-            "status":       "enriched",
             "source_url":   "https://www.piecemakers.com.tw/en/product/standard-dram",
         },
         "reason": (
@@ -10585,7 +10125,6 @@ CORRECTIONS = [
             "brand_name": "GigaDevice",
             "chip_type":  "RAM",
             "subtype":    "DDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10594,7 +10133,6 @@ CORRECTIONS = [
             "interface":  "x16",
             "capacity":   "512MB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "GigaDevice Datasheet DS-00808-GDQ2BFAA-Rev1.4: 4Gbit DDR4 SDRAM, 256Mb×16, FBGA-96, 1.2V. "
@@ -10609,7 +10147,6 @@ CORRECTIONS = [
             "brand_name": "GigaDevice",
             "chip_type":  "RAM",
             "subtype":    "DDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10618,7 +10155,6 @@ CORRECTIONS = [
             "interface":  "x16",
             "capacity":   "512MB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "GDQ2BFAA variante CE: Commercial temp (0-95°C), DDR4-2400. "
@@ -10632,7 +10168,6 @@ CORRECTIONS = [
             "brand_name": "GigaDevice",
             "chip_type":  "RAM",
             "subtype":    "DDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10641,7 +10176,6 @@ CORRECTIONS = [
             "interface":  "x16",
             "capacity":   "512MB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "GDQ2BFAA variante CQ: Commercial temp (0-95°C), DDR4-2666. "
@@ -10655,7 +10189,6 @@ CORRECTIONS = [
             "brand_name": "GigaDevice",
             "chip_type":  "RAM",
             "subtype":    "DDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10664,7 +10197,6 @@ CORRECTIONS = [
             "interface":  "x16",
             "capacity":   "512MB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "GDQ2BFAA variante CJ: Commercial temp (0-95°C), DDR4-3200. "
@@ -10678,7 +10210,6 @@ CORRECTIONS = [
             "brand_name": "GigaDevice",
             "chip_type":  "RAM",
             "subtype":    "DDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10687,7 +10218,6 @@ CORRECTIONS = [
             "interface":  "x16",
             "capacity":   "512MB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "GDQ2BFAA variante WQ: Wide temp (-40-95°C), DDR4-2666. "
@@ -10701,7 +10231,6 @@ CORRECTIONS = [
             "brand_name": "GigaDevice",
             "chip_type":  "RAM",
             "subtype":    "DDR4",
-            "status":     "enriched",
             "confidence": "confirmed",
         },
         "fields": {
@@ -10710,7 +10239,6 @@ CORRECTIONS = [
             "interface":  "x16",
             "capacity":   "512MB",
             "confidence": "confirmed",
-            "status":     "enriched",
         },
         "reason": (
             "GDQ2BFAA variante WJ: Wide temp (-40-95°C), DDR4-3200. "
@@ -10798,7 +10326,7 @@ class Command(BaseCommand):
                 fbga_fallback = fields.get("fbga_code", "") if obj is None else ""
                 if fbga_fallback:
                     fbga_qs = KnownPart.objects.filter(
-                        fbga_code=fbga_fallback, status="enriched"
+                        fbga_code=fbga_fallback
                     ).order_by("pk")  # pega o mais antigo (original do enrich_micron_fbga)
                     if fbga_qs.exists():
                         obj = fbga_qs.first()
@@ -10875,23 +10403,13 @@ class Command(BaseCommand):
                         setattr(obj, field, resolved)
 
             # Quando a entrada tem create_defaults (chips confirmados manualmente),
-            # garante que status e confidence sejam promovidos mesmo se o registro
-            # já existia como raw ou estimated.
-            #
-            # Cenário típico sem Gemini:
-            #   1. PN buscado antes do fix existir → cria registro raw (via fila de revisão)
-            #   2. fix_known_parts roda → encontra o raw → atualiza só os fields
-            #   3. status permanece "raw" → engine filtra status="enriched" → nunca usa o banco
-            #
-            # Sem este bloco, confidence fica em create_defaults (só usado na criação)
-            # e nunca é aplicado no update. O engine exige status=enriched para Camada 1.
+            # garante que a confidence seja promovida mesmo se o registro já existia
+            # com confiança menor (distributor/estimated). Sem isto, a confidence
+            # ficaria só em create_defaults (aplicada apenas na criação) e o engine
+            # nunca trataria o registro como autoridade (exige confirmed/manual).
             if do_create:
                 create_defs   = entry.get("create_defaults", {})
                 target_conf   = create_defs.get("confidence", "confirmed")
-                if obj.status != "enriched":
-                    changed_fields.append(("status", obj.status, "enriched"))
-                    if not dry:
-                        obj.status = "enriched"
                 if obj.confidence != target_conf:
                     changed_fields.append(("confidence", obj.confidence, target_conf))
                     if not dry:

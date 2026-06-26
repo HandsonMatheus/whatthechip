@@ -12,7 +12,7 @@ Cada linha do CSV representa um KnownPart:
 
 O comando NUNCA sobrescreve registros com confidence acima de "estimated".
 Essa garantia vem do filtro _SAFE_TO_UPDATE: apenas registros com
-confidence in ("estimated", "ai_low", "ai_medium", "ai_high", "distributor")
+confidence in ("estimated", "distributor")
 são atualizados. Registros "manual" ou "confirmed" existentes são preservados.
 
 Uso:
@@ -35,12 +35,9 @@ from django.db import transaction
 # Import PSG só atualiza registros com confiança abaixo de "confirmed"/"manual".
 _CONF_PRIORITY = {
     "estimated":   0,
-    "ai_low":      1,
-    "ai_medium":   2,
-    "ai_high":     3,
-    "distributor": 4,
-    "manual":      5,
-    "confirmed":   6,
+    "distributor": 1,
+    "manual":      2,
+    "confirmed":   3,
 }
 
 # Confidence máxima que pode ser sobrescrita por este import.
@@ -125,7 +122,7 @@ def _resolve_path(file_arg):
 def _load_csv(path):
     """Lê o CSV e retorna lista de dicts. Valida colunas obrigatórias."""
     required = {"pn", "chip_type", "subtype", "capacity", "interface",
-                "confidence", "status"}
+                "confidence"}
     with open(path, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         rows = list(reader)
@@ -201,7 +198,6 @@ def _import_row(row_dict, brand, source, dry, only_update, only_create, verbosit
     pkg_type    = (row_dict.get("package_type") or "").strip()
     notes_csv   = (row_dict.get("notes")       or "").strip()
     confidence  = (row_dict.get("confidence")  or "confirmed").strip()
-    status      = (row_dict.get("status")      or "enriched").strip()
     pn_raw      = (row_dict.get("pn_raw")      or pn).strip()
 
     # Monta nota composta com dados técnicos do PSG para referência futura
@@ -249,7 +245,6 @@ def _import_row(row_dict, brand, source, dry, only_update, only_create, verbosit
                         interface    = interface,
                         notes        = notes_final,
                         confidence   = confidence,
-                        status       = status,
                         source       = source,
                         source_url   = f"psg_2h2014:{pn_raw}",
                     )
@@ -303,11 +298,9 @@ def _import_row(row_dict, brand, source, dry, only_update, only_create, verbosit
     _set("interface",    interface)
     _set("family",       family)
 
-    # Sempre promove status/confidence se o CSV tem valor mais alto
+    # Promove a confidence se o CSV tem valor mais alto
     if new_prio > existing_prio:
         changed["confidence"] = confidence
-    if existing.status != "enriched" and status == "enriched":
-        changed["status"] = "enriched"
 
     # Atualiza source sempre que promovendo para confirmed
     if force_overwrite or existing.source is None:

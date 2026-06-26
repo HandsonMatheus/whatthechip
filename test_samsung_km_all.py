@@ -109,8 +109,6 @@ def fmt_result(r):
     src = "grammar"
     if r.get("known_exact"):
         src = "db_exact"
-    elif r.get("gemini_found"):
-        src = "gemini"
     elif not r.get("known"):
         src = "NOT_FOUND"
     parts.append(f"via={src}")

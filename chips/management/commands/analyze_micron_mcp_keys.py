@@ -336,11 +336,10 @@ class Command(BaseCommand):
         # Busca todos os KnownParts da família
         qs = KnownPart.objects.filter(
             part_number__startswith=prefix,
-            status="enriched",
         ).values("part_number", "fbga_code", "notes", "emcp_nand", "emcp_ram", "confidence")
 
         total = qs.count()
-        self.stdout.write(f"\n  KnownParts enriched: {total}")
+        self.stdout.write(f"\n  KnownParts no banco: {total}")
         if total == 0:
             self.stdout.write(self.style.WARNING(
                 f"  ⚠ Nenhum chip {prefix} no banco. "

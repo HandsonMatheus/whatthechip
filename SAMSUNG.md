@@ -90,8 +90,8 @@ chips/management/commands/fix_known_parts.py       ← seções de OUTRAS marcas
    → frequentemente inverte Gb/GB; sempre cruzar com Samsung Global
 4. Distribuidor B2B rastreável (SBiT, Puris, parceiros confirmados)
    → só como apoio; nunca rebaixa um "confirmed" com dado de distribuidor
-5. IA externa (Gemini, GPT, outro Claude)
-   → ÚLTIMO RECURSO — verificar SEMPRE antes de usar
+5. IA externa (qualquer LLM)
+   → ÚLTIMO RECURSO — verificar SEMPRE antes de usar; nunca como fonte primária
 ```
 
 Nunca usar como fonte primária: Flash64Box, fóruns asiáticos de reparo, WinSource
@@ -411,7 +411,7 @@ Posição `pn[3:5]`, 2 chars. Todos os eMCP/uMCP (KMQ, KMR, KMG, KM8…).
 |-------|------|-----|-------|
 | `D6` | 32GB | 3GB | — |
 | `E6` | 32GB | 3GB | alias D6 |
-| `G6` | 32GB | 3GB | Gemini |
+| `G6` | 32GB | 3GB | IA ext. ⚠️ aguarda Octopart |
 | `V6` | 32GB | 3GB | alias D6 |
 | `U6` | 64GB | 3GB | — |
 | `X6` | 32GB | 2GB | Octopart ✓ |
@@ -485,8 +485,8 @@ K4B, K4A, K4RA, K4X, K5D, K4W.
 | `AH` | 16Gb | 2GB |
 
 **Gap DDR5 alta densidade:** DRAM_PC topa em 16Gb (AH). Chips K4RA ≥ 32Gb
-(`BH`=32Gb, `CH`=64Gb, se existirem) vão para Gemini. Adicionar somente com PN
-confirmado por Octopart/datasheet.
+(`BH`=32Gb, `CH`=64Gb, se existirem) ainda não são cobertos pela gramática.
+Adicionar somente com PN confirmado por Octopart/datasheet.
 
 ### 4.6 DRAM_MOBILE
 Posição `pn[3]`, 1 char. Compartilhado (brand=None). Usado por K3, K3R, K3Q, K4P.
@@ -823,7 +823,6 @@ as chaves coincidem e o decode funciona corretamente.
         "brand_name": "Samsung",
         "chip_type":  "RAM",         # sempre "RAM" para DDR/GDDR
         "subtype":    "DDR3",        # SOMENTE a geração — sem bus width, tensão ou qualificadores
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {
@@ -832,7 +831,6 @@ as chaves coincidem e o decode funciona corretamente.
         "interface":  "x8",          # bus width do chip — "x8", "x16", "x4"
         "capacity":   "1GB",         # por die, em MB ou GB (nunca em Gbit)
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "Samsung Semiconductor Global: K4B8G0846D (8Gb DDR3) ✓. Fonte Tier 1.",
 },
@@ -854,7 +852,6 @@ as chaves coincidem e o decode funciona corretamente.
         "brand_name": "Samsung",
         "chip_type":  "LPDDR3",      # tipo LPDDR vai no chip_type (não "RAM")
         "subtype":    "LPDDR3",      # mesmo que chip_type
-        "status":     "enriched",
         "confidence": "confirmed",
     },
     "fields": {
@@ -863,7 +860,6 @@ as chaves coincidem e o decode funciona corretamente.
         "interface":  "",            # VAZIO para LPDDR standalone e eMCP — SEMPRE
         "capacity":   "4GB",
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "K4E_CAP: BE=4GB (32Gb) LPDDR3. Samsung Semiconductor Global ✓.",
 },
@@ -881,7 +877,6 @@ as chaves coincidem e o decode funciona corretamente.
         "interface":  "",
         "capacity":   "4GB",
         "confidence": "confirmed",
-        "status":     "enriched",
     },
     "reason": "Correção convenção 2026-06-19: subtype era 'LPDDR3 Mobile', interface era 'LPDDR3'.",
 },

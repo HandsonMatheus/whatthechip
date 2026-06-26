@@ -225,7 +225,7 @@ capacity   = "512MB"     # 4Gbit ÷ 8 = 512MB por die
 ### KnownPart confirmados (`fix_known_parts.py`)
 
 GDQ2BFAA (base) + variantes: GDQ2BFAA-CE, -CQ, -CJ, -WQ, -WJ.
-Todos: DDR4, ×16, 512MB, confidence=confirmed, status=enriched.
+Todos: DDR4, ×16, 512MB, confidence=confirmed.
 
 ---
 

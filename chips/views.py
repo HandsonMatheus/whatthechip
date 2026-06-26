@@ -22,9 +22,6 @@ _CONF_LABEL = {
     'manual':      '✏️ Manual',
     'distributor': '🏪 Distribuidor',
     'grammar':     '📐 Gramática',
-    'ai_high':     '🤖 IA — Alta',
-    'ai_medium':   '🤖 IA — Média',
-    'ai_low':      '🤖 IA — Baixa',
     'estimated':   '~ Estimado',
 }
 
@@ -115,10 +112,7 @@ def decode_html(request):
             _effective_conf(result), result.get("confidence", "")
         ),
         "confidence_key":      _effective_conf(result),
-        "show_source":         bool(
-            result.get("source_url") and
-            not result.get("source_url", "").startswith("gemini:")
-        ),
+        "show_source":         bool(result.get("source_url")),
         "family_undocumented": family_undocumented,
         "profitable":          profitable,
         "profitable_key":      profitable_key,
@@ -164,11 +158,10 @@ def report_error(request):
 def stats_api(request):
     """Estatísticas rápidas do banco — usadas na página inicial."""
     return JsonResponse({
-        "total_parts":   KnownPart.objects.count(),
-        "enriched":      KnownPart.objects.filter(status="enriched").count(),
-        "raw":           KnownPart.objects.filter(status="raw").count(),
+        "total_parts":    KnownPart.objects.count(),
+        "confirmed":      KnownPart.objects.filter(confidence__in=("confirmed", "manual")).count(),
         "total_searches": SearchLog.objects.count(),
-        "unknown_count": UnknownChip.objects.count(),
+        "unknown_count":  UnknownChip.objects.count(),
     })
 
 

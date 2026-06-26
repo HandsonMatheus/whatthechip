@@ -223,7 +223,7 @@ class Command(BaseCommand):
     help = (
         "Busca reversa: dado um código FBGA gravado no chip, consulta a API oficial "
         "da Micron para descobrir o Part Number e salva no banco com "
-        "confidence='confirmed', status='enriched'."
+        "confidence='confirmed'."
     )
 
     def add_arguments(self, parser):
@@ -388,7 +388,6 @@ class Command(BaseCommand):
             existing_pn = KnownPart.objects.filter(part_number=pn).first()
             if existing_pn and not existing_pn.fbga_code:
                 existing_pn.fbga_code   = fbga
-                existing_pn.status      = "enriched"
                 existing_pn.confidence  = "confirmed"
                 existing_pn.source      = micron_source
                 existing_pn.source_url  = r["source_url"]
@@ -409,7 +408,6 @@ class Command(BaseCommand):
                     fbga_code  = fbga,
                     chip_type  = r["chip_type"],
                     subtype    = r["subtype"],
-                    status     = "enriched",
                     confidence = "confirmed",
                     source     = micron_source,
                     source_url = r["source_url"],

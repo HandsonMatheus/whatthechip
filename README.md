@@ -10,12 +10,12 @@ Digite `KMQ310006A` e o sistema responde: *Samsung eMCP — LPDDR3 1GB + eMMC 4G
 
 **Documentação** — guias por fabricante (Samsung, SK Hynix, Micron, Elpida, Toshiba/KIOXIA, SanDisk/WD, Nanya, Kingston, Rayson, ISSI, GigaDevice) com tabelas de decodificação de Part Numbers (anatomy tables), metodologia de detecção de chips remarked e hierarquia de viabilidade comercial.
 
-**Engine de classificação** — ao digitar um PN na busca, o sistema roda 4 camadas em sequência:
+**Engine de classificação** — ao digitar um PN na busca, o sistema roda em sequência:
 
 1. **Prefixo** (client-side, instantâneo) — identifica fabricante e tipo pelo prefixo gravado no chip
-2. **Gramática** (server-side) — decodifica cada posição do PN usando as regras da família (ex: posição 3 = capacidade)
-3. **Banco de PNs** — confirma ou enriquece com dados que a gramática não consegue extrair (RAM+NAND de eMCPs, dispositivo compatível, confiança)
-4. **Gemini** (fallback) — para PNs sem família mapeada ou sem dados no banco
+2. **Banco de PNs confirmados** — um `KnownPart` com `confidence` ∈ (`confirmed`, `manual`) é autoritativo e vence a gramática
+3. **Gramática** (server-side) — decodifica cada posição do PN usando as regras da família (ex: posição 3 = capacidade) para a cauda longa de PNs ainda não confirmados
+4. **Fuzzy matching** (último recurso) — sugestões por similaridade para erros de digitação quando nada casa
 
 Se a gramática e o banco divergirem na capacidade, o sistema sinaliza automaticamente possível **chip remarked**.
 
@@ -26,7 +26,6 @@ Se a gramática e o banco divergirem na capacidade, o sistema sinaliza automatic
 - **Django 4.2** + **PostgreSQL**
 - **HTMX 2.0** — decode card server-rendered, sem SPA
 - **CKEditor 4** — edição de conteúdo das páginas de documentação via admin
-- **Gemini 2.5 Pro/Flash** — fallback de classificação com Google Search Grounding
 - **curl_cffi + Playwright** — scraping de catálogos de fabricantes para coleta de PNs
 
 ---
@@ -35,7 +34,6 @@ Se a gramática e o banco divergirem na capacidade, o sistema sinaliza automatic
 
 - Python 3.11+
 - PostgreSQL rodando localmente
-- Conta Google AI Studio com chave de API Gemini (para o fallback de classificação)
 
 ---
 
@@ -64,7 +62,6 @@ GRANT ALL PRIVILEGES ON DATABASE whatthechip TO wtc_user;
 ```bash
 # chipdocs/.env
 DJANGO_SECRET_KEY=uma-chave-secreta-longa-e-aleatoria
-GEMINI_API_KEY=sua-chave-do-google-ai-studio
 
 # Configuração do banco (ajuste conforme seu setup)
 DB_NAME=whatthechip
@@ -119,8 +116,7 @@ chipdocs/
 ├── core/                       ← settings.py, urls.py
 ├── templates/                  ← base.html (topbar, sidenav, dark mode, HTMX)
 ├── scripts/
-│   ├── collect_pns.py          ← Scraping de PNs de distribuidores e fabricantes
-│   └── enrich_gemini.py        ← Enriquecimento em batch via Gemini
+│   └── collect_pns.py          ← Scraping de PNs de distribuidores e fabricantes
 ├── _content/                   ← HTML fonte das páginas (index.html = homepage)
 ├── _template/                  ← CSS e JS base do site estático
 ├── setup.sh                    ← Script de ativação completo
@@ -138,9 +134,9 @@ python manage.py createsuperuser
 ```
 
 Principais seções:
-- **Chips → ChipFamilies** — famílias de chips com regras de decode posicional. Adicione `decode_cap_pos` e `decode_cap_map` para reduzir chamadas ao Gemini.
-- **Chips → KnownParts** — banco de PNs com status `raw` / `enriched` / `failed`. Use os filtros para ver a fila de enriquecimento.
-- **Chips → SearchLogs** — log de cada busca com a fonte usada (grammar, db_exact, gemini, not_found). Útil para medir cobertura.
+- **Chips → ChipFamilies** — famílias de chips com regras de decode posicional. Adicione `decode_cap_pos` e `decode_cap_map` para ampliar a cobertura da gramática.
+- **Chips → KnownParts** — banco de PNs confirmados. Um registro é autoritativo (vence a gramática) quando `confidence` ∈ (`confirmed`, `manual`). Use os filtros por `confidence` para ver o que ainda precisa de confirmação.
+- **Chips → SearchLogs** — log de cada busca com a fonte usada (grammar, db_exact, not_found). Útil para medir cobertura.
 - **Pages** — conteúdo editorial das páginas de documentação via CKEditor.
 
 ---
@@ -163,20 +159,25 @@ git add -A && git commit -m "frontend: ..." && git push
 git add -A && git commit -m "style: ..." && git push
 ```
 
-### Enriquecer PNs raw com Gemini
+### Confirmar specs de PNs
+
+As specs entram no banco por **confirmação manual** (datasheet / DigiKey / Octopart),
+não por IA. O fluxo é editar os comandos de pipeline e rodá-los:
 
 ```bash
-cd scripts/
+# Gabaritos curados por marca (famílias + DecodeMaps + KnownParts confirmados)
+python manage.py populate_samsung
+python manage.py populate_micron_mcp
 
-# Processa 50 PNs Samsung por rodada
-python enrich_gemini.py --brand Samsung --limit 50
+# Importadores de catálogo
+python manage.py import_micron_catalog *_full-catalog.csv
 
-# Mais workers para acelerar (cuidado com rate limit da API)
-python enrich_gemini.py --brand Samsung --workers 3 --limit 200
-
-# Re-tentar os que falharam
-python enrich_gemini.py --brand Samsung --retry-failed
+# Correções curadas (força confidence=confirmed)
+python manage.py fix_known_parts
 ```
+
+Pontualmente, dá para confirmar/editar um `KnownPart` direto no admin
+(`confidence` = `confirmed`/`manual` para vencer a gramática).
 
 ### Coletar novos PNs
 
@@ -210,10 +211,7 @@ python-dotenv>=1.0
 curl_cffi>=0.7
 playwright>=1.40
 tqdm>=4.0
-google-generativeai>=0.5
 ```
-
-Modelos Gemini ativos: `gemini-2.5-pro` (preferencial) e `gemini-2.5-flash` (fallback).
 
 ---
 

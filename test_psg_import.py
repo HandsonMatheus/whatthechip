@@ -105,8 +105,6 @@ def fmt_result(r):
         src = "db_exact"
     elif r.get("from_web") is False and not r.get("known_exact"):
         src = "grammar"
-    elif r.get("gemini_found"):
-        src = "gemini"
     elif not r.get("known"):
         src = "NOT_FOUND"
     if src:

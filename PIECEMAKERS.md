@@ -149,7 +149,9 @@ pn[3]="2" — possivelmente revisão ou voltagem. pn[4:6]="12" — possivelmente
    - `capacity` em MB (ex.: `"256MB"` para 2Gb)
    - `density_gbit` em Gb (ex.: `"2Gb"`)
    - `confidence="manual"` (se Tier 2) ou `"confirmed"` (se DigiKey/datasheet)
-   - `status="enriched"` ← **obrigatório** para o engine enxergar
+     ← **obrigatório** `confirmed`/`manual` para o engine tratar como autoritativo
+     (banco vence a gramática). Com `distributor`/`estimated` o engine usa o decode
+     posicional. *(Não há mais campo `status`; foi removido em jun/2026.)*
 
 ---
 

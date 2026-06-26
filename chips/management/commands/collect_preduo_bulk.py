@@ -123,7 +123,7 @@ def _save_to_db(
 
     CONFIDENCE_ORDER = {
         "confirmed": 0, "manual": 1, "distributor": 2,
-        "ai_high": 3, "ai_medium": 4, "ai_low": 5, "estimated": 6,
+        "estimated": 3,
     }
     MY_CONFIDENCE      = "distributor"
     MY_CONFIDENCE_RANK = CONFIDENCE_ORDER[MY_CONFIDENCE]
@@ -164,7 +164,6 @@ def _save_to_db(
                     part_number=pn,
                     chip_type=chip_type,
                     subtype=subtype,
-                    status="raw",
                     confidence=MY_CONFIDENCE,
                     source=preduo_src,
                     source_url=src_url,

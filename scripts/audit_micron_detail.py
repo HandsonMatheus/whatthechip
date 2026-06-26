@@ -20,7 +20,7 @@ print("=== SEM FBGA CODE (2 registros) ===")
 for kp in qs.filter(empty_q("fbga_code")):
     print(f"  id={kp.id}  PN={kp.part_number}")
     print(f"    chip_type={kp.chip_type}  subtype={kp.subtype}")
-    print(f"    status={kp.status}  confidence={kp.confidence}")
+    print(f"    confidence={kp.confidence}")
     print(f"    capacity={kp.capacity}  density={kp.density_gbit}")
     print(f"    source_url={kp.source_url}")
     print()
@@ -43,14 +43,10 @@ for kp in qs.filter(density_gbit="16GB"):
     print(f"    source_url={kp.source_url}")
     print()
 
-# ── 4. Os 2 registros raw/não-confirmed ──────────────────────────────────────
-print("=== STATUS RAW / CONFIDENCE NÃO-CONFIRMED ===")
-for kp in qs.exclude(status="enriched"):
-    print(f"  id={kp.id}  PN={kp.part_number}  status={kp.status}  confidence={kp.confidence}")
-    print(f"    chip_type={kp.chip_type}  subtype={kp.subtype}  fbga={kp.fbga_code}")
-    print()
-for kp in qs.exclude(confidence="confirmed"):
-    print(f"  id={kp.id}  PN={kp.part_number}  status={kp.status}  confidence={kp.confidence}")
+# ── 4. Registros NÃO confirmados (engine ignora — confidence != confirmed/manual) ──
+print("=== CONFIDENCE NÃO-CONFIRMED (engine ignora) ===")
+for kp in qs.exclude(confidence__in=("confirmed", "manual")):
+    print(f"  id={kp.id}  PN={kp.part_number}  confidence={kp.confidence}")
     print(f"    chip_type={kp.chip_type}  subtype={kp.subtype}  fbga={kp.fbga_code}")
     print()
 
