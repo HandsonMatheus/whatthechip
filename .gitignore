@@ -9,3 +9,7 @@ media/
 venv/
 .venv/
 chipid_data/
+
+# Dados sensíveis / artefatos de sync e limpeza (NÃO commitar)
+prod_data.json
+purge_enriched_backup_*.json

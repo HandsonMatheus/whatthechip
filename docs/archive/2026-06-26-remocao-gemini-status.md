@@ -70,6 +70,37 @@ python manage.py purge_enriched --commit  # apaga ai_*/estimated/fila raw (backu
 `purge_enriched` mantém `confirmed`/`manual` (e `distributor`, salvo
 `--include-distributor`). Backup JSON é gravado antes de apagar.
 
+## Correção do gate (mesma data) — regressão de reconhecimento
+
+A primeira versão estreitou o gate de visibilidade da camada 1 para
+`confidence ∈ (confirmed, manual)`. Isso escondeu os MUITOS registros que eram
+`status="enriched"` mas `confidence="distributor"`/`"estimated"` (imports de
+distribuidor Micron/Samsung, preduo/wayback, import_chipid, auto-persist antigo):
+eles deixaram de ser reconhecidos (`known_exact` virou `false`, caíam em gramática
+pura) — em todas as marcas.
+
+**Causa:** o antigo `status="enriched"` casava QUALQUER confidence desde que o
+registro tivesse dados; trocar por confidence-only foi estreito demais.
+
+**Correção (`chips/engine.py`, gate `_USABLE`):** um registro é *reconhecido* na
+camada 1 quando tem **specs reais** (capacity/emcp_ram/emcp_nand/density) **OU** é
+`confirmed`/`manual`. Placeholders vazios (a antiga fila raw) ficam de fora.
+**Visibilidade ≠ autoridade:** distribuidor/estimado com specs voltam a aparecer
+(`known_exact=True`), mas só `confirmed`/`manual` vencem a gramática completa
+(`_result_from_known` inalterado).
+
+**`purge_enriched` endurecido:** por padrão apaga só `ai_*` (Gemini) e `estimated`
+SEM specs (fila raw vazia). **Mantém** `distributor` e `estimated` COM specs (são
+dados usados pelo engine). `--include-estimated`/`--include-distributor` para nuke
+explícito. ⚠ Se você rodou a versão anterior do `purge_enriched --commit`, há um
+`purge_enriched_backup_*.json` para restaurar.
+
+**Diagnóstico:** `python manage.py diag_pn KMFN10012M SDIN7DU2-8G H9CKNNNDJTMP`
+mostra, por PN, o KnownPart no banco (confidence + specs), se o gate casa, e a
+saída do `classify()`.
+
 ## Testes
 
-`python manage.py test chips --settings=core.settings_test` → **53 testes OK**.
+`python manage.py test chips --settings=core.settings_test` → **54 testes OK**
+(inclui: distribuidor/estimado com specs reconhecidos mas gramática vence;
+placeholder vazio não reconhecido).

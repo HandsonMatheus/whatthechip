@@ -30,7 +30,7 @@ from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
-from django.db.models import CharField, Value
+from django.db.models import CharField, Q, Value
 from django.db.models.functions import Length, Replace
 
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, ProfitabilityConfig, SearchLog, Source, UnknownChip
@@ -122,13 +122,27 @@ def _visual_edit_distance(a: str, b: str) -> float:
 # evita que o operador seja direcionado a um PN estimado/distribuidor duvidoso.
 _SUGGESTION_CONFIDENCE = ("confirmed", "manual")
 
-# Níveis de confiança que o engine trata como AUTORITATIVOS: vencem a gramática
-# e entram no estoque como "confirmado". São os verificados por humano/datasheet.
-# Substitui o antigo gate status="enriched" — agora um KnownPart só é autoridade
-# se foi confirmado manualmente. Não há mais enriquecimento automático por IA, e
-# dados de distribuidor/estimados ficam invisíveis ao caminho confiável (caem na
-# gramática). Ver _result_from_known() para a precedência banco × gramática.
+# Níveis de confiança que VENCEM a gramática (autoridade / precedência). São os
+# verificados por humano/datasheet. Ver _result_from_known() (human_verified).
 _CONFIRMED_CONFIDENCE = ("confirmed", "manual")
+
+# Gate de VISIBILIDADE do banco — substitui fielmente o antigo status="enriched".
+# Um KnownPart entra na camada 1 (é reconhecido como registro do banco) quando
+# REPRESENTA UM CHIP REAL: tem alguma capacidade preenchida (capacity / emcp_ram /
+# emcp_nand / density_gbit), de QUALQUER confidence (confirmed, manual, distributor
+# ou estimated); OU é confirmed/manual (humano avalizou o PN mesmo sem capacidade).
+# Exclui placeholders vazios — a antiga "fila de revisão" raw, que tinha só
+# chip_type e nenhuma capacidade.
+#
+# ⚠ VISIBILIDADE ≠ PRECEDÊNCIA. Distribuidor/estimado COM specs voltam a ser
+# reconhecidos (known_exact=True), mas continuam SEM vencer a gramática completa:
+# quem sobrepõe o decode posicional é só confirmed/manual (_result_from_known).
+# Isto restaura o comportamento de quando o gate era status="enriched", que casava
+# qualquer confidence desde que o registro estivesse enriquecido com dados.
+_HAS_SPECS = (
+    ~Q(capacity="") | ~Q(emcp_ram="") | ~Q(emcp_nand="") | ~Q(density_gbit="")
+)
+_USABLE = _HAS_SPECS | Q(confidence__in=_CONFIRMED_CONFIDENCE)
 
 
 def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
@@ -1222,16 +1236,21 @@ def classify(pn_raw: str) -> dict:
     )
 
     # ── 1. Busca exata no banco (confirmados) ────────────────────────────────
-    # Só registros confirmados (confidence ∈ confirmed/manual) são autoritativos —
-    # substitui o antigo gate status="enriched". Dados de distribuidor/estimados
-    # não aparecem aqui: caem na gramática (camada 2). A busca é EXATA por
-    # part_number=pn, então mesmo PNs curtos são seguros (BUG-8: cobre PNs sem o
-    # sufixo de package, ex: H9HP16AECMMD com pn_length=14 mas decode em pn[0:8]).
+    # Registros UTILIZÁVEIS (com specs reais OU confirmados) — gate fiel ao antigo
+    # status="enriched". Distribuidor/estimado COM capacidade voltam a ser
+    # reconhecidos aqui (known_exact=True); a precedência segue em _result_from_known
+    # (só confirmed/manual vencem a gramática completa). Busca EXATA por part_number
+    # (BUG-8: cobre PNs sem sufixo de package, ex: H9HP16AECMMD).
     _db_qs = (
         KnownPart.objects
-        .filter(confidence__in=_CONFIRMED_CONFIDENCE)
+        .filter(_USABLE)
         .select_related("family", "brand", "family__doc_page")
     )
+    if pn_short:
+        # PN truncado (operador ainda digitando / sufixo de lote): aceita só
+        # confirmados (BUG-8) — evita casar registro de baixa confiança por
+        # part_number exato enquanto a entrada está incompleta.
+        _db_qs = _db_qs.filter(confidence__in=_CONFIRMED_CONFIDENCE)
     try:
         known = _db_qs.get(part_number=pn)
         # Preferir ChipFamily pelo prefixo — mais confiável que o chip_type
@@ -1339,7 +1358,7 @@ def classify(pn_raw: str) -> dict:
     if _FBGA_RE.match(pn):
         try:
             known_fbga = KnownPart.objects.filter(
-                confidence__in=_CONFIRMED_CONFIDENCE
+                _USABLE
             ).select_related(
                 "family", "brand", "family__doc_page"
             ).get(fbga_code=pn)
@@ -1397,7 +1416,7 @@ def classify(pn_raw: str) -> dict:
             # normalizados pelo fix_known_parts); só usar o "vazio" se todos forem vazios.
             logger.warning("FBGA ambíguo: múltiplos KnownParts com fbga_code=%s — preferindo chip_type preenchido", pn)
             _fbga_qs = KnownPart.objects.filter(
-                fbga_code=pn, confidence__in=_CONFIRMED_CONFIDENCE
+                _USABLE, fbga_code=pn
             ).select_related("family", "brand", "family__doc_page")
             known_fbga = _fbga_qs.exclude(chip_type="").first() or _fbga_qs.first()
             if known_fbga:

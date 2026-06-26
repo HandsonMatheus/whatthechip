@@ -60,11 +60,15 @@ de rentabilidade**.
    dados** (`migrate`, `populate_*`, `import_*`, `fix_*`, `purge_*`,
    `enrich_*`) devem ser **propostos e revisados**, mas **executados pelo
    usuário**. Claude **edita arquivos**; o usuário **roda** e confirma.
-2. **O engine só trata como autoritativo `KnownPart` com `confidence` ∈
-   (`confirmed`, `manual`).** Registros `distributor`/`estimated` não vencem a
-   gramática — caem na decodificação posicional (camada 2). O antigo campo
-   `status` (raw/enriched/failed) foi **removido** (jun/2026), assim como o gate
-   `status="enriched"`.
+2. **Visibilidade ≠ autoridade.** Um `KnownPart` é *reconhecido* na camada 1
+   (`known_exact=True`) quando tem **specs reais** (capacity/emcp_ram/emcp_nand/
+   density) **ou** é `confirmed`/`manual` — gate `_USABLE`, equivalente fiel ao
+   antigo `status="enriched"`. Mas *vencer a gramática* (autoridade) é só de
+   `confirmed`/`manual`; `distributor`/`estimated` são reconhecidos e complementam
+   decode incompleto, porém a **gramática completa prevalece** sobre eles. O campo
+   `status` (raw/enriched/failed) foi **removido** (jun/2026). ⚠️ Não estreite o
+   gate para "confidence ∈ confirmed/manual" — esconde os registros de
+   distribuidor/estimado com specs e quebra o reconhecimento em massa.
 3. **Depois de `populate_* --overwrite`, REINICIE o servidor.** O engine usa
    `lru_cache` para famílias e mapas (`chips/engine.py`). O comando chama
    `clear_engine_cache()` apenas no próprio processo — o servidor web continua
@@ -136,13 +140,13 @@ pages/     → CMS simples de documentação (modelo Page, servido em /<slug>/)
 
 Ponto de entrada único: **`classify(pn)`**. Normaliza o PN e tenta, **em ordem**:
 
-1. **Banco exato (confirmados)** — `KnownPart` com `confidence` ∈ (`confirmed`,
-   `manual`). Substitui o antigo gate `status="enriched"` (campo removido em
-   jun/2026). Se achar, `_result_from_known` funde com a gramática. ⚠️ **Precedência
-   real** (não é "banco > tudo"):
+1. **Banco exato (registro utilizável)** — `KnownPart` com **specs reais** ou
+   `confidence` ∈ (`confirmed`, `manual`) — gate `_USABLE` em `chips/engine.py`,
+   substituto fiel do antigo `status="enriched"` (campo removido em jun/2026). Se
+   achar, `_result_from_known` funde com a gramática. ⚠️ **Visibilidade ≠ autoridade:**
    - `confirmed`/`manual` → **banco vence** (verificado por humano);
-   - na camada 1 nada além de confirmed/manual aparece — `distributor`/`estimated`
-     caem direto na gramática (camada 2) e a gramática completa vence.
+   - `distributor`/`estimated` com specs → **reconhecidos** (`known_exact=True`),
+     mas a **gramática completa vence** o valor (só complementam decode incompleto).
 2. **Lookup FBGA** — se o PN casa o padrão FBGA (`^[A-Z][A-Z0-9]{4}$`, ex.: `D9VFC`),
    busca por `KnownPart.fbga_code` (também restrito a confirmed/manual). É o código
    que o operador lê no chip Micron. Desconhecido → enfileira em `UnknownChip`.
@@ -179,7 +183,8 @@ geração morta ao descarte **mesmo sem confirmação no banco** (rótulo distin
   `estimated`. Só `confirmed`/`manual` são **autoritativos** (vencem a gramática);
   os níveis de IA (`ai_*`) foram removidos junto com o Gemini.
 - **Sem campo `status`:** o antigo `raw/enriched/failed` foi **removido** (jun/2026).
-  Um KnownPart "existe e é confiável" quando `confidence` ∈ (`confirmed`, `manual`).
+  Visibilidade no engine (camada 1) = ter **specs reais** OU ser `confirmed`/`manual`
+  (gate `_USABLE`); **autoridade** sobre a gramática = só `confirmed`/`manual`.
 - **`ChipFamily`** carrega a "anatomia" do PN: `decode_cap_pos/len/map`,
   `decode_gen_pos/map`, `decode_density_type` (`pc` usa `pn[3:5]`/`DRAM_PC`;
   `mobile` usa `pn[3]`/`DRAM_MOBILE` — **mutuamente exclusivos** com `cap_map`),

@@ -3,26 +3,29 @@ purge_enriched.py
 =================
 Limpeza pós-remoção do Gemini e do campo status (jun/2026).
 
-Quando o gate do engine passou a ser confidence ∈ (confirmed, manual), os
-registros KnownPart abaixo ficaram INVISÍVEIS ao engine e viraram apenas ruído
-no banco. Este comando os apaga:
+⚠ IMPORTANTE — o gate do engine virou "registro com specs reais OU confirmed/manual"
+(equivalente fiel ao antigo status="enriched"). Portanto registros `distributor` e
+`estimated` QUE TÊM CAPACIDADE continuam sendo usados pelo engine — NÃO são lixo e
+NÃO devem ser apagados por padrão. Apagá-los reproduziria a regressão.
 
-  • ai_high / ai_medium / ai_low  → resultados antigos de IA (Gemini);
-  • estimated                     → estimativas e a antiga "fila de revisão" raw
-                                    (era criada a cada busca de PN não confirmado,
-                                    sempre com confidence=estimated).
+Por padrão este comando apaga só o que é comprovadamente inútil:
+  • ai_high / ai_medium / ai_low  → resultados antigos de IA (Gemini); E
+  • estimated SEM nenhuma capacidade → placeholders vazios da antiga "fila de
+    revisão" raw (tinham só chip_type, nenhuma spec).
+Também remove as Sources órfãs de IA/Gemini (src_type="ai" ou url "gemini:").
 
-Mantém SEMPRE confirmed e manual (a base de verdade). distributor é mantido por
-padrão (use --include-distributor para apagá-lo também). Também remove as Sources
-órfãs de IA/Gemini (src_type="ai" ou url começando com "gemini:").
+MANTÉM sempre: confirmed, manual, distributor, e estimated COM specs.
+
+Opt-ins explícitos (use com cautela):
+  --include-estimated     também apaga estimated COM specs
+  --include-distributor   também apaga distributor
 
 Reversível: por padrão grava um JSON de backup das linhas apagadas ANTES de apagar.
 
 Uso:
     python manage.py purge_enriched                       # DRY-RUN (só mostra)
-    python manage.py purge_enriched --commit              # apaga (grava backup antes)
+    python manage.py purge_enriched --commit              # apaga ai_* + fila raw vazia
     python manage.py purge_enriched --commit --include-distributor
-    python manage.py purge_enriched --commit --keep estimated   # poupa 'estimated'
     python manage.py purge_enriched --commit --no-backup
 
 Regra de ouro #1: ESCREVE no banco → dry-run por padrão; o usuário roda em produção.
@@ -33,16 +36,17 @@ import json
 from datetime import datetime
 
 from django.core.management.base import BaseCommand
-from django.db.models import Count
+from django.db.models import Count, Q
 
 
-# Níveis legados que deixaram de ser visíveis ao engine (gate = confirmed/manual).
-LEGACY_CONFIDENCE = ["ai_high", "ai_medium", "ai_low", "estimated"]
+AI_LEVELS = ["ai_high", "ai_medium", "ai_low"]
+# "Sem specs" = nenhuma capacidade preenchida (placeholder vazio da antiga fila raw).
+NO_SPECS = Q(capacity="") & Q(emcp_ram="") & Q(emcp_nand="") & Q(density_gbit="")
 
 
 class Command(BaseCommand):
-    help = ("Apaga KnownParts legados de IA/estimados (invisíveis ao engine após a "
-            "remoção do status) e Sources órfãs de Gemini. Dry-run por padrão.")
+    help = ("Apaga lixo legado: ai_* (Gemini) e estimated SEM specs (fila raw vazia). "
+            "Mantém confirmed/manual/distributor e estimated COM specs. Dry-run por padrão.")
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -50,12 +54,12 @@ class Command(BaseCommand):
             help="Aplica de fato. Sem isto é dry-run (não apaga nada).",
         )
         parser.add_argument(
-            "--include-distributor", action="store_true",
-            help="Também apaga confidence='distributor' (por padrão é mantido).",
+            "--include-estimated", action="store_true",
+            help="Também apaga estimated COM specs (⚠ são usados pelo engine).",
         )
         parser.add_argument(
-            "--keep", nargs="*", default=[], metavar="CONFIDENCE",
-            help="Níveis de confidence a preservar além de confirmed/manual.",
+            "--include-distributor", action="store_true",
+            help="Também apaga distributor (⚠ são usados pelo engine).",
         )
         parser.add_argument(
             "--backup", default="", metavar="PATH",
@@ -69,31 +73,43 @@ class Command(BaseCommand):
     def handle(self, *args, **opts):
         from chips.models import KnownPart, Source
 
-        # Monta o conjunto-alvo. confirmed/manual NUNCA entram (base de verdade).
-        targets = set(LEGACY_CONFIDENCE)
+        # Sempre: lixo de IA + placeholders vazios (estimated sem specs).
+        target = Q(confidence__in=AI_LEVELS) | (Q(confidence="estimated") & NO_SPECS)
+        if opts["include_estimated"]:
+            target |= Q(confidence="estimated")          # nuke estimated COM specs também
         if opts["include_distributor"]:
-            targets.add("distributor")
-        targets -= set(opts["keep"])
-        targets -= {"confirmed", "manual"}
+            target |= Q(confidence="distributor")
+        # confirmed/manual nunca entram em target — a base de verdade é intocável.
 
-        qs = KnownPart.objects.filter(confidence__in=targets)
+        qs = KnownPart.objects.filter(target)
         total = qs.count()
-        kept = KnownPart.objects.exclude(confidence__in=targets).count()
-        breakdown = qs.values("confidence").annotate(n=Count("id")).order_by("-n")
+        kept = KnownPart.objects.count() - total
 
-        # Sources órfãs de IA/Gemini (a "Gemini Live Search" e quaisquer src_type="ai").
-        ai_sources = Source.objects.filter(src_type="ai") | Source.objects.filter(
-            url__startswith="gemini:"
-        )
-        ai_sources = ai_sources.distinct()
+        # Breakdown legível: por confidence, separando estimated com/sem specs.
+        breakdown = []
+        for conf in AI_LEVELS:
+            n = qs.filter(confidence=conf).count()
+            if n:
+                breakdown.append((conf, n))
+        est_vazio = qs.filter(confidence="estimated").filter(NO_SPECS).count()
+        if est_vazio:
+            breakdown.append(("estimated (vazio)", est_vazio))
+        est_specs = qs.filter(confidence="estimated").exclude(NO_SPECS).count()
+        if est_specs:
+            breakdown.append(("estimated (COM specs ⚠)", est_specs))
+        dist = qs.filter(confidence="distributor").count()
+        if dist:
+            breakdown.append(("distributor ⚠", dist))
+
+        ai_sources = (Source.objects.filter(src_type="ai")
+                      | Source.objects.filter(url__startswith="gemini:")).distinct()
         ai_src_count = ai_sources.count()
 
         self.stdout.write("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        self.stdout.write(f"  Alvos (apagar)  : {sorted(targets)}")
-        self.stdout.write(f"  SERÃO MANTIDOS  : {kept}")
-        self.stdout.write(f"  SERÃO APAGADOS  : {total}")
-        for row in breakdown:
-            self.stdout.write(f"    {row['confidence']:14s} → {row['n']}")
+        self.stdout.write(f"  SERÃO MANTIDOS : {kept}  (confirmed/manual/distributor/estimated-com-specs)")
+        self.stdout.write(f"  SERÃO APAGADOS : {total}")
+        for label, n in breakdown:
+            self.stdout.write(f"    {label:26s} → {n}")
         self.stdout.write(f"  Sources IA/Gemini a remover: {ai_src_count}")
         self.stdout.write("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
 
@@ -106,7 +122,6 @@ class Command(BaseCommand):
                 "DRY-RUN — nada foi apagado. Rode com --commit para aplicar."))
             return
 
-        # Backup antes de apagar (reversibilidade)
         if not opts["no_backup"] and total:
             path = opts["backup"] or f"purge_enriched_backup_{datetime.now():%Y%m%d_%H%M%S}.json"
             rows = list(qs.values(

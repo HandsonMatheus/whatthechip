@@ -343,15 +343,16 @@ class EngineIntegrationTests(TestCase):
 
     # ── Gate de confiança: o coração da mudança ───────────────────────────────
 
-    def test_distribuidor_nao_e_autoritativo(self):
+    def test_distribuidor_com_specs_reconhecido_mas_gramatica_vence(self):
         """
-        Um KnownPart distributor NÃO vence a gramática: o engine ignora-o como
-        autoridade (não retorna na camada 1) e usa a gramática. Antes, o gate
-        era status="enriched" e qualquer enriquecido aparecia na camada 1.
+        Gate fiel ao antigo status="enriched": um KnownPart distributor COM specs
+        VOLTA a ser reconhecido na camada 1 (known_exact=True). Mas continua SEM
+        vencer a gramática completa — quem sobrepõe o decode é só confirmed/manual.
+        (Regressão corrigida: antes o gate confidence-only escondia esses registros.)
         """
         from chips.models import KnownPart
-        # 'KLMCG0016A' a gramática decoda capacity=64GB (pos3='C'). O registro
-        # distributor mente capacity=128GB — deve ser ignorado como autoridade.
+        # 'KLMCG0016A': a gramática decoda capacity=64GB (pos3='C'). O registro
+        # distributor diz 128GB — é reconhecido, mas a gramática completa prevalece.
         KnownPart.objects.create(
             brand=self.samsung, family=self.family_emmc,
             part_number='KLMCG0016A', chip_type='eMMC',
@@ -359,13 +360,13 @@ class EngineIntegrationTests(TestCase):
         )
         from chips.engine import classify
         result = classify('KLMCG0016A')
-        self.assertFalse(result.get('known_exact', False))   # não retornou na camada 1
-        self.assertEqual(result['capacity'], '64GB')          # gramática venceu (não 128GB)
-        self.assertTrue(result.get('pn_not_in_db'))           # marcado como não confirmado
+        self.assertTrue(result['known_exact'])               # reconhecido (visível)
+        self.assertEqual(result['capacity'], '64GB')          # gramática vence (não 128GB)
+        self.assertEqual(result['confidence'], 'distributor')
 
-    def test_estimated_nao_e_autoritativo(self):
-        """confidence='estimated' (ex.: cruft da antiga fila raw) é invisível ao
-        caminho autoritativo — cai na gramática."""
+    def test_estimated_com_specs_reconhecido(self):
+        """estimated COM specs também é reconhecido (gate = tem dados reais);
+        a gramática completa ainda vence o valor."""
         from chips.models import KnownPart
         KnownPart.objects.create(
             brand=self.samsung, family=self.family_emmc,
@@ -374,8 +375,24 @@ class EngineIntegrationTests(TestCase):
         )
         from chips.engine import classify
         result = classify('KLMBG0008A')   # pos3='B' → gramática 32GB
-        self.assertFalse(result.get('known_exact', False))
+        self.assertTrue(result['known_exact'])
         self.assertEqual(result['capacity'], '32GB')
+
+    def test_registro_vazio_sem_specs_nao_e_reconhecido(self):
+        """Placeholder vazio (chip_type, mas SEM capacidade — a antiga fila raw)
+        NÃO é reconhecido: cai na gramática. É o que o gate _USABLE exclui."""
+        from chips.models import KnownPart
+        KnownPart.objects.create(
+            brand=self.samsung, family=self.family_emmc,
+            part_number='KLMAG0007A', chip_type='eMMC',
+            capacity='', emcp_ram='', emcp_nand='', density_gbit='',
+            confidence='estimated',
+        )
+        from chips.engine import classify
+        result = classify('KLMAG0007A')   # pos3='A' → gramática 16GB
+        self.assertFalse(result.get('known_exact', False))
+        self.assertEqual(result['capacity'], '16GB')
+        self.assertTrue(result.get('pn_not_in_db'))
 
     def test_confirmado_sobrepoe_gramatica(self):
         """Registro confirmed com capacidade própria VENCE a gramática completa."""
