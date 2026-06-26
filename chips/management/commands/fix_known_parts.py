@@ -3583,6 +3583,486 @@ CORRECTIONS = [
     },
 
     # ══════════════════════════════════════════════════════════════════════════
+    # SK Hynix H9CK / H9CC — LPDDR3 standalone (jun/2026)
+    # ══════════════════════════════════════════════════════════════════════════
+    #
+    # H9CK = LPDDR3 standalone barramento x64 (256-ball)
+    # H9CC = LPDDR3 standalone barramento x32 (253-ball / 178-ball)
+    #
+    # Decode posicional (família H9CK e H9CC, gramática compartilhada HYX_LPDDR3_CAP):
+    #   pn[0:4] = prefixo  → "H9CK" ou "H9CC"
+    #   pn[4:7] = filler   → geralmente "NNN" (variável, não validar)
+    #   pn[7]   = chave de capacidade → HYX_LPDDR3_CAP
+    #               4=512MB(4Gbit)  8=1GB(8Gbit)  B=2GB(16Gbit)
+    #               D=3GB(24Gbit)   C=4GB(32Gbit)  E=6GB(48Gbit)  F=8GB(64Gbit)
+    #
+    # Fontes primárias:
+    #   Preduo.com — banco curado para mercado de reciclagem, tier-1 WTC
+    #   iFixit teardowns — identificação física em teardowns de dispositivos
+    #   absunshine.com / ssfkg.com — distribuidores B2B rastreáveis
+    #
+    # Observação sobre chaves E (6GB) e F (8GB):
+    #   Preduo confirma pacotes multi-die 48Gbit e 64Gbit circulando no mercado.
+    #   populate_hynix.py foi atualizado com E e F em HYX_LPDDR3_CAP (jun/2026).
+    #
+    # ── H9CKNNNBJTMP ─────────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x64 2GB. CHIP FÍSICO NA ESTEIRA eMiner (jun/2026).
+    # PN 12-char = leitura laser da primeira linha do chip físico.
+    # (ssfkg: H9CKNNNBJTMPLR = mesmo chip, PN completo 14-char, 16Gb 168ball ✓)
+    # Decode: pn[7]='B' → HYX_LPDDR3_CAP = 2GB (16Gbit ÷ 8) ✓
+    # Confidence=manual: chip físico + convergência gramática + ssfkg (B2B) ✓
+    {
+        "pn": "H9CKNNNBJTMP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "manual",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "manual",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Chip físico na esteira eMiner (jun/2026). PN 12-char = marcação laser 1ª linha. "
+            "pn[7]='B' → HYX_LPDDR3_CAP = 16Gbit ÷ 8 = 2GB LPDDR3 ✓. "
+            "ssfkg.com: H9CKNNNBJTMPLR = 16Gb 168ball LPDDR3 SK Hynix (B2B distribuidor) ✓. "
+            "Gramática, ssfkg e iFixit (B-key=2GB via Nexus 5/H9CKNNNBPTMRLR) convergem. "
+            "confidence=manual: chip físico + gramática + distribuidor B2B."
+        ),
+    },
+
+    # ── H9CKNNNBJTMPLR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x64 2GB. PN completo 14-char (sem sufixo ambiental).
+    # ssfkg.com: H9CKNNNBJTMPLR 16Gb 168ball LPDDR3 SK Hynix ✓
+    # Complementa H9CKNNNBJTMP (12-char) — cobre buscas com PN completo.
+    {
+        "pn": "H9CKNNNBJTMPLR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "ssfkg.com (B2B distribuidor): H9CKNNNBJTMPLR = 16Gb 168ball LPDDR3 SK Hynix ✓. "
+            "16Gbit ÷ 8 = 2GB. pn[7]='B' → HYX_LPDDR3_CAP = 2GB ✓. "
+            "PN completo (14-char) complementa H9CKNNNBJTMP (12-char, chip físico eMiner). "
+            "confidence=distributor: ssfkg B2B ✓."
+        ),
+    },
+
+    # ── H9CKNNNBKTMRPR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x64 2GB. Preduo 256ball, 16Gbit.
+    # Preduo: H9CKNNNBKTMRPR-NUH = 16Gbit SKhynix 256ball LPDDR3 ✓
+    # preduo.com/list/lpddr/lpddr3/256ball-lpddr3/
+    {
+        "pn": "H9CKNNNBKTMRPR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo (tier-1 WTC): H9CKNNNBKTMRPR-NUH = 16Gbit SKhynix 256ball LPDDR3 ✓. "
+            "16Gbit ÷ 8 = 2GB. pn[7]='B' → HYX_LPDDR3_CAP = 2GB ✓. "
+            "confidence=distributor: Preduo tier curado ✓."
+        ),
+    },
+
+    # ── H9CKNNN8KTMRWR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x64 1GB. iFixit iPhone 6 teardown, set/2014.
+    # iFixit: "H9CKNNN8KTMRWR-NTH (we presume it is 1 GB LPDDR3 RAM,
+    #           the same as in the iPhone 6 Plus)" — Step 15.
+    # ifixit.com/Teardown/iPhone+6+Teardown/29213
+    # Gramática confirma: pn[7]='8' → HYX_LPDDR3_CAP = 1GB (8Gbit ÷ 8) ✓
+    # iPhone 6 = 1GB RAM — universalmente confirmado.
+    {
+        "pn": "H9CKNNN8KTMRWR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "1GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "device":     "Apple iPhone 6 (A1586, 2014)",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "iFixit iPhone 6 Teardown (set/2014, Tier-1 identificação física): "
+            "'H9CKNNN8KTMRWR-NTH (we presume it is 1 GB LPDDR3 RAM)'. "
+            "pn[7]='8' → HYX_LPDDR3_CAP = 8Gbit ÷ 8 = 1GB ✓. "
+            "iPhone 6 = 1GB RAM confirmado universalmente. "
+            "confidence=distributor: iFixit física + gramática convergem (presume → não confirmed)."
+        ),
+    },
+
+    # ── H9CKNNNBPTMRLR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x64 2GB. iFixit Nexus 5 teardown (LG/Google, 2013).
+    # iFixit Nexus 5: H9CKNNNBPTMRLR-NTM = 2GB LPDDR3 ✓ (identificado fisicamente)
+    # ifixit.com/Teardown/Nexus+5+Teardown/19016
+    # Decode: pn[7]='B' → HYX_LPDDR3_CAP = 16Gbit ÷ 8 = 2GB ✓
+    {
+        "pn": "H9CKNNNBPTMRLR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "device":     "Google Nexus 5 (LG, 2013)",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "iFixit Nexus 5 Teardown (2013, Tier-1 identificação física): "
+            "H9CKNNNBPTMRLR-NTM = 2GB LPDDR3 SK Hynix ✓. "
+            "pn[7]='B' → HYX_LPDDR3_CAP = 16Gbit ÷ 8 = 2GB ✓. "
+            "confidence=distributor: iFixit físico ✓."
+        ),
+    },
+
+    # ── H9CKNNNDBTMTAR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x64 3GB. iFixit Motorola Nexus 6 teardown (2014).
+    # iFixit Nexus 6: H9CKNNNDBTMTAR = 24Gb LPDDR3 = 3GB ✓
+    # ifixit.com/Teardown/Motorola+Nexus+6+Teardown/30183
+    # Decode: pn[7]='D' → HYX_LPDDR3_CAP = 24Gbit ÷ 8 = 3GB ✓
+    {
+        "pn": "H9CKNNNDBTMTAR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "3GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "device":     "Motorola Nexus 6 (Google, 2014)",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "iFixit Motorola Nexus 6 Teardown (2014, Tier-1 identificação física): "
+            "H9CKNNNDBTMTAR = 24Gb LPDDR3 SK Hynix = 3GB ✓. "
+            "pn[7]='D' → HYX_LPDDR3_CAP = 24Gbit ÷ 8 = 3GB (densidade assimétrica) ✓. "
+            "confidence=distributor: iFixit físico ✓."
+        ),
+    },
+
+    # ── H9CKNNNDATMUPR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x64 3GB. Preduo WP01020, 256ball.
+    # Preduo: H9CKNNNDATMUPR-NUH = 24Gbit SKhynix 256ball LPDDR3 ✓
+    # preduo.com/product/lpddr/lpddr3/256ball-lpddr3/h9cknnndatmupr-nuh
+    {
+        "pn": "H9CKNNNDATMUPR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "3GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo WP01020 (tier-1 WTC): H9CKNNNDATMUPR-NUH = 24Gbit SKhynix 256ball LPDDR3 ✓. "
+            "24Gbit ÷ 8 = 3GB. pn[7]='D' → HYX_LPDDR3_CAP = 3GB ✓. "
+            "confidence=distributor: Preduo tier curado ✓."
+        ),
+    },
+
+    # ── H9CKNNNDATMRPR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x64 3GB. Preduo 256ball listing, 24Gbit.
+    # Preduo: H9CKNNNDATMRPR-NUH = 24Gbit SKhynix 256ball LPDDR3 ✓
+    {
+        "pn": "H9CKNNNDATMRPR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "3GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo (tier-1 WTC): H9CKNNNDATMRPR-NUH = 24Gbit SKhynix 256ball LPDDR3 ✓. "
+            "24Gbit ÷ 8 = 3GB. pn[7]='D' → HYX_LPDDR3_CAP = 3GB ✓. "
+            "confidence=distributor: Preduo tier curado ✓."
+        ),
+    },
+
+    # ── H9CKNNNCPTMRPR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x64 4GB. Preduo 256ball listing, 32Gbit.
+    # Preduo: H9CKNNNCPTMRPR-NUH / H9CKNNNCPTMRPR-NUM = 32Gbit SKhynix 256ball LPDDR3 ✓
+    {
+        "pn": "H9CKNNNCPTMRPR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo (tier-1 WTC): H9CKNNNCPTMRPR-NUH/-NUM = 32Gbit SKhynix 256ball LPDDR3 ✓. "
+            "32Gbit ÷ 8 = 4GB. pn[7]='C' → HYX_LPDDR3_CAP = 4GB ✓. "
+            "confidence=distributor: Preduo tier curado ✓."
+        ),
+    },
+
+    # ── H9CKNNNECTMUPR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x64 6GB. Preduo WP01025, 256ball, 48Gbit.
+    # Preduo: H9CKNNNECTMUPR-NUH = 48Gbit SKhynix 256ball LPDDR3 ✓
+    # preduo.com/product/lpddr/lpddr3/256ball-lpddr3/h9cknnnectmupr-nuh
+    # ⚠ Nova chave: pn[7]='E' → HYX_LPDDR3_CAP = 6GB (48Gbit ÷ 8)
+    #   populate_hynix.py atualizado com ("E", "6GB", "") em jun/2026.
+    {
+        "pn": "H9CKNNNECTMUPR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "6GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo WP01025 (tier-1 WTC): H9CKNNNECTMUPR-NUH = 48Gbit SKhynix 256ball LPDDR3 ✓. "
+            "48Gbit ÷ 8 = 6GB. pn[7]='E' → HYX_LPDDR3_CAP = 6GB (chave nova adicionada jun/2026). "
+            "Pacote multi-die (ex: 6×8Gbit die). Samsung K3QF0F00AM-FGCF (48Gbit) corrobora. "
+            "populate_hynix.py atualizado: ('E', '6GB', ''). confidence=distributor: Preduo ✓."
+        ),
+    },
+
+    # ── H9CCNNN8JTMLAR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x32 1GB. absunshine.com (B2B distribuidor europeu).
+    # absunshine: H9CCNNN8JTMLAR-NTM LPDDR3 8G — "256MX32 LPDDR3" — "FBGA-178"
+    #             "8Gb, DDP, 1Ch, 2CS" — 1.2V — 800 MBPS ✓
+    # absunshine.com/en/parts/H9CCNNN8JTMLAR-NTM-LPDDR3-8G-SK-HYNIX-4508008
+    # Decode: pn[7]='8' → HYX_LPDDR3_CAP = 8Gbit ÷ 8 = 1GB ✓ (x32 bus)
+    {
+        "pn": "H9CCNNN8JTMLAR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "1GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "absunshine.com (B2B distribuidor): H9CCNNN8JTMLAR-NTM = LPDDR3 8G, "
+            "256MX32 LPDDR3, FBGA-178, 8Gb DDP 1Ch 2CS, 1.2V, 800MBPS ✓. "
+            "8Gbit ÷ 8 = 1GB. pn[7]='8' → HYX_LPDDR3_CAP = 1GB ✓. "
+            "H9CC = x32 barramento (253/178-ball). confidence=distributor: absunshine B2B ✓."
+        ),
+    },
+
+    # ── H9CCNNNBKTMLBR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x32 2GB. Preduo 253ball listing, 16Gbit.
+    # Preduo: H9CCNNNBKTMLBR-NTD / H9CCNNNBKTMLBR-NUD = 16Gbit SKhynix 253ball LPDDR3 ✓
+    {
+        "pn": "H9CCNNNBKTMLBR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo (tier-1 WTC): H9CCNNNBKTMLBR-NTD/-NUD = 16Gbit SKhynix 253ball LPDDR3 ✓. "
+            "16Gbit ÷ 8 = 2GB. pn[7]='B' → HYX_LPDDR3_CAP = 2GB ✓. "
+            "H9CC = x32 barramento 253-ball. confidence=distributor: Preduo tier curado ✓."
+        ),
+    },
+
+    # ── H9CCNNNBPTBLBR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x32 2GB. Preduo 253ball listing, 16Gbit.
+    # Preduo: H9CCNNNBPTBLBR-NTD = 16Gbit SKhynix 253ball LPDDR3 ✓
+    {
+        "pn": "H9CCNNNBPTBLBR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "2GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo (tier-1 WTC): H9CCNNNBPTBLBR-NTD = 16Gbit SKhynix 253ball LPDDR3 ✓. "
+            "16Gbit ÷ 8 = 2GB. pn[7]='B' → HYX_LPDDR3_CAP = 2GB ✓. "
+            "H9CC = x32 barramento 253-ball. confidence=distributor: Preduo tier curado ✓."
+        ),
+    },
+
+    # ── H9CCNNNCPTMLBR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x32 4GB. Preduo 253ball, 32Gbit.
+    # Preduo: H9CCNNNCPTMLBR-NTD = 32Gbit SKhynix 253ball LPDDR3 ✓
+    # (produto relacionado na página H9CCNNNFAGMLLR-NUD, Preduo WP01836)
+    {
+        "pn": "H9CCNNNCPTMLBR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo (tier-1 WTC): H9CCNNNCPTMLBR-NTD = 32Gbit SKhynix 253ball LPDDR3 ✓. "
+            "32Gbit ÷ 8 = 4GB. pn[7]='C' → HYX_LPDDR3_CAP = 4GB ✓. "
+            "H9CC = x32 barramento 253-ball. confidence=distributor: Preduo tier curado ✓."
+        ),
+    },
+
+    # ── H9CCNNNFAGMLLR ───────────────────────────────────────────────────────
+    # SK Hynix LPDDR3 x32 8GB. Preduo WP01836, 253ball, 64Gbit.
+    # Preduo: H9CCNNNFAGMLLR-NUD = 64Gbit SKhynix 253ball LPDDR3 ✓
+    # preduo.com/product/lpddr/lpddr3/253ball-lpddr3/h9ccnnnfagmllr-nud
+    # ⚠ Nova chave: pn[7]='F' → HYX_LPDDR3_CAP = 8GB (64Gbit ÷ 8)
+    #   populate_hynix.py atualizado com ("F", "8GB", "") em jun/2026.
+    {
+        "pn": "H9CCNNNFAGMLLR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SK Hynix",
+            "chip_type":  "LPDDR3",
+            "subtype":    "LPDDR3",
+            "status":     "enriched",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":   "8GB",
+            "interface":  "",
+            "emcp_nand":  "",
+            "emcp_ram":   "",
+            "confidence": "distributor",
+            "status":     "enriched",
+        },
+        "reason": (
+            "Preduo WP01836 (tier-1 WTC): H9CCNNNFAGMLLR-NUD = 64Gbit SKhynix 253ball LPDDR3 ✓. "
+            "64Gbit ÷ 8 = 8GB. pn[7]='F' → HYX_LPDDR3_CAP = 8GB (chave nova adicionada jun/2026). "
+            "Pacote multi-die (ex: 8×8Gbit die, 253-ball). H9CC = x32 barramento. "
+            "populate_hynix.py atualizado: ('F', '8GB', ''). confidence=distributor: Preduo ✓."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
     # SanDisk eMMC puro (iNAND standalone) — verificados em Preduo + Octopart
     # ══════════════════════════════════════════════════════════════════════════
 
