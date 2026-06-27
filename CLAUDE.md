@@ -465,6 +465,17 @@ Referência completa: **`docs/CONVENCAO_MICRON_ESTOQUE.md`**
   5.0 >= threshold 2.0 → **RENTÁVEL** (errado). Chip revelador: K4E2E304EA (LPDDR3
   1.5GB Samsung). **Corrigido:** `_CAP_RE = re.compile(r"(\d+(?:\.\d+)?)\s*([TGMK])B")`.
   `_GBIT_RE` e `_CAP_NUM_RE` já tinham `(?:\.\d+)?` — só `_CAP_RE` estava vulnerável.
+- **Capacidade Micron LPDDR (MT5x) — o `D{N}` do PN NÃO multiplica densidade (2026-06-27):**
+  A fórmula oficial é `depth × width ÷ 8 = GB` — `depth × width` já é o dispositivo INTEIRO; o
+  sufixo `D2`/`D4`/`D8` é dies/canais no encapsulamento. O pipeline antigo (`fill_mt53b_density.py`,
+  REMOVIDO) fazia `× dies` e inflou ×N: `MT53E768M32D4` virou 12GB (24Gb×4) em vez de 3GB. Hoje o
+  engine decodifica via `ChipFamily.decode_density_type='micron'` (depth×width, sem dies). **Nomenclatura
+  oficial Micron: "52"=LPDDR3, "53"=LPDDR4 (MT53E=LPDDR4X) — `MT52L` é LPDDR3, não LPDDR4.** Regra
+  geral que isto ensinou: num FBGA `confidence="confirmed"`, o **ouro é só a IDENTIDADE** (PN↔FBGA da
+  API); `capacity`/`subtype`/`density` são calculados localmente e podem estar errados — **atestar
+  sempre em tier-1** (datasheet/DigiKey), nunca assumir. Ferramentas: `fix_micron_lpddr_specs` (normaliza
+  specs MT5x, guard de eMCP), `fix_micron_capacity --family lpddr` (capacity). Detalhes:
+  **`MICRON.md §5/§14/§15`** e o runbook **`docs/RUNBOOK_MICRON_DIES_FIX.md`**.
 
 ---
 

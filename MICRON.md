@@ -222,22 +222,52 @@ Não adicionar ao populate sem confirmar via `fill_capacity_from_micron_api` + `
 
 ## 5. Decode standalone LPDDR — família MT53x
 
-As famílias MT53B, MT53E, MT53D, MT52L **não têm decode posicional** no WhatTheChip.
-A capacidade é obtida por:
-1. FBGA code → `KnownPart.fbga_code` → `fill_capacity_from_micron_api`
-2. Manualmente via `fix_known_parts.py` para chips confirmados
+> **Atualizado 2026-06-27.** Estas famílias AGORA decodificam no engine — antes
+> eram "sem decode posicional" e dependiam só de FBGA/manual.
 
-**Regra matemática do PN** (não implementada no engine, mas útil para confirmar manualmente):
+A capacidade é decodificada pela FÓRMULA `depth × width ÷ 8` (nomenclatura JEDEC),
+via `ChipFamily.decode_density_type='micron'` no engine (`chips/engine.py`, bloco do
+`_result_from_family`). Configurado por DADO no `add_chip_families.py` — não é código
+por marca, é o mesmo padrão de `'pc'/'mobile'`. Cobre toda a cauda no `classify()`.
+
+**A capacidade TOTAL do dispositivo = profundidade × largura:**
 ```
-MT53B512M64D4TX → 512M × 64 bits = 32 Gbit ÷ 8 = 4GB  → vai em capacity="4GB"
-MT53E1G32D4NQ   → 1G × 32 bits   = 32 Gbit ÷ 8 = 4GB  → vai em capacity="4GB"
-MT53D768M32D4BD → 768M × 32 bits = 24 Gbit ÷ 8 = 3GB  → vai em capacity="3GB"
+MT53E768M32D4DT → 768M × 32 = 24 Gbit ÷ 8 = 3GB
+MT53E1G32D4NQ   → 1G × 32   = 32 Gbit ÷ 8 = 4GB
+MT53B512M64D4TX → 512M × 64 = 32 Gbit ÷ 8 = 4GB   (D9VFC confirmado Octopart)
+MT52L128M32D1EL → 128M × 32 = 4 Gbit  ÷ 8 = 512MB  (LPDDR3!)
 ```
 
-**MT53B vs MT53E — tensão diferente, INCOMPATÍVEIS:**
-- `MT53B` = LPDDR4, VDDQ 1.1V
-- `MT53E` = LPDDR4X, VDDQ 0.6V
-Não misturar no estoque. Separar fisicamente.
+⚠️ **O sufixo `D{N}` (D2/D4/D8) é configuração de DIES/CANAIS no encapsulamento —
+NÃO multiplica a densidade.** `depth × width` já é o dispositivo inteiro. Multiplicar
+por dies foi o **bug de dies** (§14, 2026-06-27): o `fill_mt53b_density.py` (REMOVIDO)
+calculava `× dies`, inflando ×N — MT53E768M32**D4** virava 12GB (24Gb×4) em vez de 3GB.
+Datasheet/DigiKey confirmam: total = `depth × width`, dies só aparece no encapsulamento.
+
+**Nomenclatura oficial Micron (atestada tier-1 — DigiKey/Newark/Micron, 2026-06-27):**
+
+| Prefixo | Geração | Obs |
+|---|---|---|
+| **MT52**x (MT52L, MT52H) | **LPDDR3** | "52" = LPDDR3 |
+| **MT53B / MT53D** | **LPDDR4** | VDDQ 1.1V |
+| **MT53E** | **LPDDR4X** | VDDQ 0.6V — INCOMPATÍVEL com MT53B/D, separar no estoque |
+| MT62F / MT63G | LPDDR5 / 5X | — |
+| MT42L | LPDDR2 | — |
+
+⚠️ **"52" = LPDDR3, "53" = LPDDR4.** `MT52L` é **LPDDR3** (NÃO LPDDR4 — erro comum,
+corrigido 2026-06-27 depois que o tier-1 pegou antes do bulk corromper o banco).
+
+**Ferramentas (rodar só com `--dry-run` primeiro; usuário aplica):**
+- `fix_micron_capacity --overwrite --family lpddr` → preenche/corrige `capacity` (fórmula sem dies).
+- `fix_micron_lpddr_specs` → normaliza os confirmados MT5x: recalcula `capacity`, seta
+  `chip_type`/`subtype` canônicos pelo prefixo (LPDDR3/LPDDR4/LPDDR4X) e limpa `density_gbit`/`density_gb`.
+  **Guard:** pula eMCP real (`emcp_nand`/`emcp_ram` não-vazios). Mantém `confidence`/`part_number`/`fbga_code`.
+- `chip_type`/`subtype` das famílias vêm de `add_chip_families --overwrite` (o engine usa o da família).
+
+**Princípio (causa raiz de tudo):** num registro FBGA `confidence="confirmed"`, o **ouro é só a
+IDENTIDADE** (PN ↔ FBGA, que veio da API oficial). `capacity`/`subtype`/`density` são **calculados
+localmente** e PODEM estar errados (foi o que aconteceu). Sempre atestar contra **tier-1**
+(datasheet/DigiKey/Octopart) — nunca confiar na gramática/suposição como verdade.
 
 ---
 
@@ -733,6 +763,8 @@ print(json.dumps(r, indent=2, ensure_ascii=False))
 | 2026-06-19 | MT53B512M64D4TX tinha `chip_type="RAM"` em vez de `"LPDDR4"` | `fix_known_parts.py` | Corrigido: LPDDR standalone deve ter `chip_type=geração`, não "RAM" genérico |
 | 2026-06-19 | MT29TZZZ8D5BKFAH sem `chip_type` e `emcp_nand` no bloco `fields` | `fix_known_parts.py` | Adicionados `chip_type="eMCP"` e `emcp_nand="8GB"` como defesa-em-profundidade |
 | 2026-06-19 | **MICRON.md §2 dizia MT29C = "eMCP LPDDR2"** | `MICRON.md` | ERRADO: MT29C é NAND Flash paralela industrial (TSOP1 48-pin, raw, sem RAM). Corrigido. |
+| 2026-06-27 | **Bug de dies — capacidade Micron LPDDR inflada ×N** | `scripts/fill_mt53b_density.py` (REMOVIDO) + dados | `fill_mt53b_density`/`fill_capacity_from_micron_api` calculavam `depth × width × **dies** ÷ 8` (D2→2×, D4→4×, D8→8×). Ex.: MT53E768M32D4 (D9WRQ) → 12GB em vez de 3GB; MT53E2G64D8 → 128GB em vez de 16GB. **Correto: `depth × width ÷ 8` (sem dies).** Fix: `decode_density_type='micron'` no engine + `fix_micron_lpddr_specs` para os dados gravados. Atestado tier-1 (6 PNs). Varredura dos 5507 PNs confirmou o bug confinado a MT53x. |
+| 2026-06-27 | **MT52L classificado como LPDDR4 (é LPDDR3)** | `add_chip_families.py` + `fix_micron_lpddr_specs.py` | Nomenclatura oficial Micron: **"52"=LPDDR3, "53"=LPDDR4**. MT52L é LPDDR3. PREFIX_GEN e família corrigidos LPDDR4→LPDDR3. Tier-1 (DigiKey/Newark: MT52L256M32 = 8Gbit LPDDR3) pegou antes do bulk corromper ~151 registros — lição: atestar geração em tier-1, não assumir. |
 
 ### Chips Micron confirmados individualmente
 
@@ -762,12 +794,40 @@ MT30AZZZ (uMCP LPDDR5)          ██████████100%   completo (c
 MT29TZZZ (eMCP LPDDR3)          ████████░░  80%   7 chaves sem dados API
 MT29C (NAND raw paralela)        █████████░  90%   5 FBGA confirmados; mais chegam
 MTFC (eMMC standalone)           █████░░░░░  50%   só via FBGA; sem decode posicional
-MT53B/E/D (LPDDR4/4X standalone) ███████░░░  70%   só via FBGA; decode math disponível
-MT41J/K (DDR3/3L standalone)     ███████░░░  70%   só via FBGA/CSV
-MT40A (DDR4 standalone)          ██░░░░░░░░  20%   família cadastrada; sem cobertura real
+MT53B/E/D (LPDDR4/4X standalone) █████████░  90%   decode no engine ✅ (micron); falta 251 PNs -DC
+MT41J/K (DDR3/3L standalone)     ███████░░░  70%   FBGA/CSV; fórmula funciona, falta flag micron
+MT40A (DDR4 standalone)          ███████░░░  70%   capacity OK no banco; falta flag micron no engine
 MT29F (NAND Flash raw)           ██░░░░░░░░  20%   família cadastrada; raramente aparece
-MT52L (LPDDR4 SDRAM)             ██░░░░░░░░  20%   família cadastrada; sem cobertura
+MT52L (LPDDR3 SDRAM)             █████████░  90%   decode no engine ✅; LPDDR3 (corrigido 2026-06-27)
+MT62F (LPDDR5 standalone)        ████████░░  80%   capacity OK (atestado, sem bug); falta flag micron
+MT63G (LPDDR5 1P3G48)            ███░░░░░░░  30%   formato abreviado; decode próprio pendente
 ```
+
+### Backlog do bug de dies (2026-06-27) — o que falta preencher na Micron
+
+> Contexto pra quem pegar: o bug de dies está **encerrado** (engine + dados, MT53x/MT52L,
+> atestado tier-1). Resta a cauda de COMPLETUDE/decode abaixo. Filosofia: **tier-1 manda**
+> (datasheet/DigiKey/Octopart), `depth × width ÷ 8` sem dies, e "confirmed" de FBGA é só a
+> identidade — atestar as specs derivadas.
+
+1. **251 PNs MT53E/MT52L em formato abreviado `-DC`** (ex.: `MT53E1BAD4DB-DC`, `MT52L2DALR-DC`,
+   `MT53E4DANQ-DC`). NÃO têm o bloco `[depth][M|G][width]` → `decode_density_type='micron'` não
+   decodifica (o `fix_micron_lpddr_specs` os pula, ver "sem decode"). **Tarefa:** mapear o código
+   abreviado (`1B`/`2D`/`4D`/`8D` = densidade?) OU resolver via FBGA/datasheet. Esses são a maior
+   lacuna de completude do MT53x.
+2. **Estender `decode_density_type='micron'` às DDR/LPDDR5** (a fórmula `depth × width` já vale —
+   atestada: MT40A1G16=2GB, MT41K128M16=256MB, MT62F1280M64=10GB, MT60B1536M16=3GB). Hoje só MT5x
+   LPDDR4/4X têm o flag. **Tarefa:** setar `decode_density_type='micron'` em MT40A, MT41J/K, MT47H,
+   MT42L, MT62F, MT63xx, MT60B no `add_chip_families` (1 linha cada). Confirmar geração tier-1 de
+   cada prefixo antes (MT40A=DDR4, MT41=DDR3, MT47H=DDR2, MT60B=DDR5, MT62/63=LPDDR5).
+3. **Vazios de completude (capacidade FALTANDO, não errada):** MT47H (~42 DDR2, 64MB), MT63G
+   (~60, formato `1P3G48`), e ~137 eMCP (MT29V/T/P/MT30A) decodáveis. Para os eMCP, rodar
+   `fix_micron_capacity --overwrite --family emcp` preenche.
+4. **Auditoria de correção do eMCP** (não foi atestado tier-1 ainda — só capacidade DRAM foi):
+   comparar `capacity`/`emcp_nand`/`emcp_ram` gravados vs decode `MIC_MCP_CAP` para MT29V/T/P/MT30A;
+   os legados MT29C/MT29G (sem DecodeMap) precisam datasheet caso-a-caso.
+5. **Famílias tiny fora do PREFIX_GEN** do `fix_micron_lpddr_specs`: MT52H (LPDDR3), MT53T —
+   verificar geração tier-1 e incluir se houver volume.
 
 ### Alta prioridade
 
