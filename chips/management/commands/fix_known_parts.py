@@ -1323,6 +1323,37 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K4B2G1646E ───────────────────────────────────────────────────────────
+    # Samsung DDR3 SDRAM (E-die). Família K4B.
+    # pn[3:5]="2G" → DRAM_PC → 2Gb = 256MB por die.
+    # pn[5:7]="16" → x16 bus width.
+    # E-die: revisão anterior ao F-die e Q-die. Usado em notebooks/desktops ~2011-2014.
+    # Sem variantes BY (DDR3L) listadas no Octopart — todas as variantes são DDR3 1.5V.
+    # Fontes Tier 1 (Octopart):
+    #   • K4B2G1646E-BCK0 = "DDR3 DRAM, 128MX16, CMOS, PBGA96" ✓ (múltiplos distribuidores)
+    #   • K4B2G1646E-BCH9 = "DDR3 Dram, 128MX16, 0.255NS, Cmos, PBGA96" ✓
+    #   • K4B2G1646E-BIH9 = "DDR3-1333 128Mx16 (2Gb) Ind" ✓ (industrial range)
+    {
+        "pn": "K4B2G1646E",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface":  "x16",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Octopart Tier 1: K4B2G1646E-BCK0 = 'DDR3 DRAM, 128MX16, CMOS, PBGA96' ✓ (2026-06-27). "
+            "K4B2G1646E-BCH9 = '128MX16, 0.255NS' ✓; K4B2G1646E-BIH9 = '128Mx16, Ind' ✓. "
+            "128MX16 = 128M×16b = 2Gbit = 256MB por die — confirma gramática (DRAM_PC['2G']). "
+            "Sem variantes BY (DDR3L) no Octopart — DDR3 1.5V. E-die, x16, PBGA96."
+        ),
+    },
+
     # ── K5W1G12ACM ───────────────────────────────────────────────────────────
     # MCP Samsung NOR Flash 1Gb (128MB) + Mobile SDRAM. Família K5W.
     # pn[3:5]="1G" → DRAM_PC → 1Gb = 128MB NOR. SDRAM não decodificável pelo PN.
