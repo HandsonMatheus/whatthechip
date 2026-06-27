@@ -1196,6 +1196,38 @@ CORRECTIONS = [
         ),
     },
 
+    # ── K4B4G1646Q ───────────────────────────────────────────────────────────
+    # Samsung DDR3L SDRAM (Q-die). Família K4B.
+    # pn[3:5]="4G" → DRAM_PC → 4Gb = 512MB por die. pn[5:7]="16" → x16 bus width.
+    # DDR3L (1.35V) — Q-die é exclusivamente DDR3L (não há variante DDR3 1.5V confirmada).
+    # Sufixo "HY" = DDR3L 1.35V (convenção H-era Samsung); "HC" = DDR3 1.5V (também na DB via PSG).
+    # Variantes HY/HC já no banco via import_samsung_psg; este entry cobre o base PN.
+    # Fonte Tier 1:
+    #   • Alldatasheet (datasheet Samsung): K4B4G1646Q = "4Gb Q-die DDR3L SDRAM Only x16
+    #     96FBGA with Lead-Free & Halogen-Free (RoHS compliant) 1.35V" ✓
+    #   • K4B4G1646Q-HYK0 = mesma descrição ✓ (também confirmado no Octopart com >46k unidades)
+    {
+        "pn": "K4B4G1646Q",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Samsung",
+            "chip_type":  "RAM",
+            "subtype":    "DDR3L",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "512MB",
+            "interface":  "x16",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Alldatasheet (datasheet Samsung) Tier 1: K4B4G1646Q = '4Gb Q-die DDR3L SDRAM "
+            "Only x16 96FBGA 1.35V' ✓ (2026-06-27). "
+            "K4B4G1646Q-HYK0 idem ✓; Octopart >46k unidades. "
+            "4Gb ÷ 8 = 512MB por die. DDR3L (1.35V). x16. Q-die."
+        ),
+    },
+
     # ── K4B8G1646Q ───────────────────────────────────────────────────────────
     # Samsung DDR3L SDRAM (Q-die). Família K4B.
     # pn[3:5]="8G" → DRAM_PC → 8Gb = 1GB por die. pn[5:7]="16" → x16 bus width.
