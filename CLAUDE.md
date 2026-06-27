@@ -491,6 +491,7 @@ relevante quando a tarefa pedir:
 - **`RENTABILIDADE.md`** — bíblia técnica completa do sistema de rentabilidade: `assess_profitability`, `is_dead_by_generation`, `ProfitabilityConfig`, gateway do estoque, todos os bugs corrigidos, limitações, regras invioláveis, checklist para novos chip_types. **Leia antes de tocar em qualquer código de rentabilidade.**
 - **`MICRON.md`** — bíblia técnica e de negócio da Micron: famílias, decode maps, convenção de campos, pipeline, fontes de dados, bugs corrigidos, lacunas.
 - **`PIECEMAKERS.md`** — bíblia técnica PieceMakers: anatomia do PN PMF, decode map PMF_DDR3_CAP, famílias, rentabilidade, fontes, armadilhas.
+- **`TOSHIBA-KIOXIA.md`** — bíblia técnica Toshiba / Kioxia: família THGBM (eMMC), decode maps THGBM_CAP/THGBM_GEN, eMCP TYC, famílias bloqueadas (KLUE/THGAF), armadilhas de sub-prefixo, gaps e roadmap. **Leia antes de tocar em `populate_toshiba.py` ou entradas Toshiba em `fix_known_parts.py`.**
 - **`FUZZY.md`** — bíblia técnica do sistema de sugestão inteligente de PNs: `_visual_edit_distance`, matriz de confusão visual, `_prefix_candidates`, `_combined_suggestions`, gate de confiança, frontend diff, tuning. **Leia antes de tocar nas funções `_fuzzy_*` / `_prefix_*` do engine.**
 - **`PLANO_MICRON_FBGA.md`** — pipeline FBGA da Micron (estágios iniciais — parcialmente histórico; ver MICRON.md para estado atual).
 - **`AUDITORIA_SAMSUNG_2026.md`** / **`BRIEFING_DDR_SAMSUNG.md`** — gabarito Samsung,

@@ -4107,6 +4107,482 @@ CORRECTIONS = [
     },
 
     # ══════════════════════════════════════════════════════════════════════════
+    # SanDisk iNAND 7232 (SDINADF4*) — eMMC 5.1 HS400 (2026-06-26)
+    # ══════════════════════════════════════════════════════════════════════════
+    #
+    # Família: iNAND 7232 (WD/SanDisk). Datasheet oficial: DOC-06397 Rev 1.13
+    # (Out 2015). Confirmado no Mouser (Tier 1): SDINADF4-16G, SDINADF4-64G,
+    # SDINADF4-16G-H, SDINADF4-64G-H. Avnet (Tier 1) lista SDINADF4-64G no Octopart.
+    # Especificação oficial: eMMC 5.1 HS400, TLC NAND, 16GB-128GB, -25°C a 85°C.
+    # RS Online (WD oficial): "iNAND 7232 · X3 TLC · 16GB-128GB · SDINADF4-##G".
+    # A gramática SDIN captura SDINADF4* como eMMC mas não decodifica capacidade
+    # (sufixo declarativo perde o hífen na normalização). create=True garante que
+    # cada PN com capacidade conhecida entre no banco via layer 1 (KnownPart exato).
+    # Dispositivos (serviceemmc.com): SDINADF4-32G → Huawei Honor V9;
+    # SDINADF4-64G → LG H961N / LG H960.
+    # Fonte Tier 1 datasheet: https://www.mouser.com/catalog/specsheets/SanDisk_01-12-2026_SDINADF4-16-128GB-H.pdf
+
+    # ── SDINADF4-16G (iNAND 7232 16GB) ──────────────────────────────────────
+    {
+        "pn": "SDINADF416G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Mouser Tier 1: SDINADF4-16G (SanDisk iNAND 7232 eMMC 5.1). "
+            "Datasheet oficial WD DOC-06397 Rev 1.13 — cobre 16GB-128GB. "
+            "TLC NAND, -25°C a 85°C, eMMC 5.1 HS400."
+        ),
+    },
+
+    # ── SDINADF4-32G (iNAND 7232 32GB) ──────────────────────────────────────
+    # PN do operador: SDINADF4-32G → normalizado SDINADF432G.
+    # Chip encontrado na esteira da eMiner (2026-06-26, INDETERMINADO → corrigido).
+    {
+        "pn": "SDINADF432G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Octopart Tier 2: SDINADF4-32G listado (múltiplos distribuidores). "
+            "Serviceemmc.com: SDINADF4-32G = Huawei Honor V9. "
+            "Datasheet DOC-06397 cobre 16GB-128GB — 32G está na faixa oficial. "
+            "Mouser não lista 32G diretamente → confidence=distributor."
+        ),
+    },
+
+    # ── SDINADF4-64G (iNAND 7232 64GB) ──────────────────────────────────────
+    {
+        "pn": "SDINADF464G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Mouser Tier 1: SDINADF4-64G (SanDisk iNAND 7232 eMMC 5.1, 64GB). "
+            "Avnet (Tier 1) lista no Octopart. Serviceemmc.com: LG H961N / LG H960."
+        ),
+    },
+
+    # ── SDINADF4-128G (iNAND 7232 128GB) ────────────────────────────────────
+    {
+        "pn": "SDINADF4128G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "128GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Octopart Tier 2: SDINADF4-128G listado (múltiplos distribuidores). "
+            "Datasheet DOC-06397 cobre até 128GB → capacidade oficial confirmada."
+        ),
+    },
+
+    # ── SDINADF4-16G-H (iNAND 7232 16GB, sufixo -H) ─────────────────────────
+    # Sufixo -H = versão com temperatura estendida; specs idênticos à base.
+    {
+        "pn": "SDINADF416GH",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Mouser Tier 1: SDINADF4-16G-H (SanDisk iNAND 7232, 16GB). "
+            "Sufixo -H = variante temperatura extendida; specs eMMC 5.1 idênticos."
+        ),
+    },
+
+    # ── SDINADF4-32G-H ───────────────────────────────────────────────────────
+    {
+        "pn": "SDINADF432GH",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Octopart Tier 2: SDINADF4-32G-H listado. Série iNAND 7232. "
+            "Specs idênticos ao SDINADF4-32G."
+        ),
+    },
+
+    # ── SDINADF4-64G-H ───────────────────────────────────────────────────────
+    {
+        "pn": "SDINADF464GH",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Mouser Tier 1: SDINADF4-64G-H (SanDisk iNAND 7232 eMMC 5.1, 64GB). "
+            "Datasheet Mouser: SanDisk_01-12-2026_SDINADF4-16-128GB-H.pdf."
+        ),
+    },
+
+    # ── SDINADF4-128G-H ──────────────────────────────────────────────────────
+    {
+        "pn": "SDINADF4128GH",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "128GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Octopart Tier 2: SDINADF4-128G-H listado. Série iNAND 7232, "
+            "máxima capacidade da família."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # SanDisk SDIN8DE2 — eMMC 4.51 HS200 (2026-06-26)
+    # ══════════════════════════════════════════════════════════════════════════
+    #
+    # iNAND comercial (mid-range). Interface eMMC 4.51 HS200 (não HS400).
+    # Confirmação Tier 1 via Mouser:
+    #   SDIN8DE2-8G-A  = "eMMC 8GB 4.51 HS200 Auto" (Mouser #467-SDIN8DE2-8G-A)
+    #   SDIN8DE2-4G-I  = "eMMC 4GB 4.51 HS200" (Mouser #467-SDIN8DE2-4G-I)
+    #   SDIN8DE2-16G   = listado no Mouser (NRND)
+    # Datasheet WD/SanDisk: "SanDisk Commercial Embedded Storage Solutions" (2 páginas).
+    # Package: TFBGA-153, 11.5×13×1.0mm. Temp: -25°C a +85°C.
+    # Sufixos de grade: sem sufixo=Consumer · -A=Automotive · -I=Industrial.
+    # PN na esteira da eMiner: SDIN8DE2-8G → normalizado SDIN8DE28G.
+    # NRND (Not Recommended for New Designs) — legacy mas presente na esteira.
+
+    # ── SDIN8DE2-8G (comercial) ───────────────────────────────────────────────
+    {
+        "pn": "SDIN8DE28G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "Mouser Tier 1: SDIN8DE2-8G-A (automotive variant) = 'eMMC 8GB 4.51 HS200 Auto'. "
+            "Mouser India lista SDIN8DE2-8G (consumer, sem sufixo). Avaq confirma o PN base. "
+            "Mesma die, mesma especificação de interface — grade de temperatura difere."
+        ),
+    },
+
+    # ── SDIN8DE2-8G-A (automotive) ────────────────────────────────────────────
+    {
+        "pn": "SDIN8DE28GA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "Mouser Tier 1 (Mouser #467-SDIN8DE2-8G-A): "
+            "'eMMC 8GB 4.51 HS200 Auto. eMMC WD/SD'. "
+            "Read: 120 MB/s, Write: 37 MB/s. TFBGA-153, 11.5×13mm. NRND."
+        ),
+    },
+
+    # ── SDIN8DE2-4G-I (industrial) ───────────────────────────────────────────
+    {
+        "pn": "SDIN8DE24GI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "4GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "Mouser Tier 1 (Mouser #467-SDIN8DE2-4G-I): "
+            "'eMMC 4GB 4.51 HS200'. Variante industrial (-I), mesma die do -8G."
+        ),
+    },
+
+    # ── SDIN8DE2-4G (comercial) ───────────────────────────────────────────────
+    {
+        "pn": "SDIN8DE24G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "4GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "FindChips + Veswin (Tier 3): SDIN8DE2-4G catalogado (múltiplos distribuidores). "
+            "Interface inferida da variante industrial SDIN8DE2-4G-I confirmada no Mouser."
+        ),
+    },
+
+    # ── SDIN8DE2-16G ──────────────────────────────────────────────────────────
+    {
+        "pn": "SDIN8DE216G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "Mouser Tier 1: SDIN8DE2-16G listado (NRND / obsoleto). "
+            "FindChips confirma disponibilidade histórica. "
+            "Interface inferida da família SDIN8DE2 (toda eMMC 4.51 HS200)."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # SanDisk SDIN5C2 — eMMC 4.41 (2026-06-26)
+    # ══════════════════════════════════════════════════════════════════════════
+    #
+    # Parte da família SDIN5 (5ª geração iNAND, X2 MLC NAND, 12×16mm).
+    # Confirmação TIER 1: datasheet oficial SanDisk doc# 80-36-03462 (Dec 2011),
+    #   título "SanDisk iNAND e.MMC 4.41 I/F — Released Data Sheet v1.4".
+    #   SDIN5C2-8G-L, 16G-L, 32G-L, 64G-L estão explicitamente na Tabela de ordering.
+    # Convenção de sufixos:
+    #   -D = pacote 11.5×13mm (menor) · -C = pacote 12×16mm (maior)
+    #   1 = X3 NAND · 2 = X2 NAND
+    #   -L = bandeja (tray) · sem sufixo = chip sem sufixo de embalagem
+    # PN na esteira: SDIN5C2-8G → normalizado SDIN5C28G (sem -L).
+    # eMMC 4.41 é o mesmo que JESD84-A441 (sucedido pelo 4.5 com HS200).
+
+    # ── SDIN5C2-8G (sem sufixo de embalagem) ─────────────────────────────────
+    {
+        "pn": "SDIN5C28G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "Datasheet oficial SanDisk doc# 80-36-03462 (v1.4, Dec 2011): "
+            "SDIN5C2-8G-L listado explicitamente (8GB, 12×16×1.0mm, X2 MLC, eMMC 4.41). "
+            "PN sem sufixo -L = mesmo chip sem marcação de embalagem."
+        ),
+    },
+
+    # ── SDIN5C2-8G-L (tray) ──────────────────────────────────────────────────
+    {
+        "pn": "SDIN5C28GL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "Datasheet oficial SanDisk doc# 80-36-03462 (v1.4, Dec 2011): "
+            "SDIN5C2-8G-L SKU explícito na tabela de ordering (p.32). "
+            "12×16×1.0mm, X2 MLC NAND, eMMC 4.41. Leitura sustentada: 40 MB/s."
+        ),
+    },
+
+    # ── SDIN5C2-16G-L ────────────────────────────────────────────────────────
+    {
+        "pn": "SDIN5C216GL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "Datasheet oficial SanDisk doc# 80-36-03462 (v1.4, Dec 2011): "
+            "SDIN5C2-16G-L SKU explícito na tabela de ordering. "
+            "12×16×1.0mm, X2 MLC, eMMC 4.41. Write: 20 MB/s, Read: 40 MB/s."
+        ),
+    },
+
+    # ── SDIN5C2-32G-L ────────────────────────────────────────────────────────
+    {
+        "pn": "SDIN5C232GL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "Datasheet oficial SanDisk doc# 80-36-03462 (v1.4, Dec 2011): "
+            "SDIN5C2-32G-L SKU explícito na tabela de ordering. "
+            "12×16×1.2mm, X2 MLC, eMMC 4.41."
+        ),
+    },
+
+    # ── SDIN5C2-64G-L ────────────────────────────────────────────────────────
+    {
+        "pn": "SDIN5C264GL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "Datasheet oficial SanDisk doc# 80-36-03462 (v1.4, Dec 2011): "
+            "SDIN5C2-64G-L SKU explícito na tabela de ordering. "
+            "12×16×1.4mm, X2 MLC, eMMC 4.41. Maior capacidade da família SDIN5C2."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # SanDisk SD5DH — eMMC legado era 2012-2013 (2026-06-26)
+    # ══════════════════════════════════════════════════════════════════════════
+    #
+    # Família sem gramática prévia — SD5DH não existia no populate_sandisk.py.
+    # create=True obrigatório: sem ChipFamily o engine retorna known=false.
+    # (Nova ChipFamily SD5DH adicionada ao populate_sandisk.py simultaneamente.)
+    # Confirmação: serviceemmc.com (Tier 3, múltiplos dispositivos Samsung).
+    # Die code: 24=24nm · A/C=revisão do die.
+    # Interface: eMMC 4.3/4.4 estimada pela era (2012-2013); sem Tier 1 para confirmação.
+    # Contexto: SDIN5D1 (SanDisk iNAND, Dec 2011) usa eMMC 4.41 — SD5DH é era similar.
+    # ⚠ Sem campo interface nos KnownParts — o ChipFamily gram. fornece o valor estimado.
+    # ⚠ Pesquisa exaustiva (2026-06-26): apenas 2 variantes existem (24C-4G e 24A-4G),
+    #    ambas 4GB. Sem variantes 8GB em nenhuma fonte (Tier 1–3, CH, ID). Família completa.
+
+    # ── SD5DH24C-4G (Samsung Galaxy Pocket Plus / Galaxy Fame) ──────────────
+    {
+        "pn": "SD5DH24C4G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity": "4GB",
+            "device":   "Samsung S5301 (Galaxy Pocket Plus) / S6810 (Galaxy Fame)",
+        },
+        "reason": (
+            "Serviceemmc.com + Jotrin (Tier 3, 2 fontes independentes): "
+            "SD5DH24C-4G = Samsung Galaxy Pocket Plus (GT-S5301) e Galaxy Fame (S6810). "
+            "Sufixo -4G = 4GB (convenção declarativa SanDisk). Era 2012-2013."
+        ),
+    },
+
+    # ── SD5DH24A-4G (Samsung Galaxy S Advance) ───────────────────────────────
+    {
+        "pn": "SD5DH24A4G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity": "4GB",
+            "device":   "Samsung S6802 (Galaxy S Advance)",
+        },
+        "reason": (
+            "Serviceemmc.com (Tier 3): SD5DH24A-4G = Samsung Galaxy S Advance (S6802). "
+            "Variante -A do mesmo die 24nm. Sufixo -4G = 4GB. Era 2012."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
     # SanDisk eMCP — verificados em fontes B2B (2026-05)
     # ══════════════════════════════════════════════════════════════════════════
 
@@ -4152,6 +4628,1205 @@ CORRECTIONS = [
             "Octopart: SDADF4AP-16G (PN irmão) confirmado como WD/SanDisk real. "
             "Preduo 221ball = exclusivamente eMMC+LPDDR3 → RAM é LPDDR3 (não LPDDR4). "
             "WD oficial não encontrado → confidence=distributor (não confirmed)."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # SanDisk iNAND — expansão Tier 1 (pesquisa 2026-06-26, Opus 4 extended thinking)
+    # ══════════════════════════════════════════════════════════════════════════
+    # 6 sub-agentes paralelos. Fontes: westerndigital.com/sandisk.com product briefs,
+    # Mouser Tier 1, Avnet, Arrow, Octopart, LCSC.
+    # ⚠ SDINB* corrigido: eMMC 5.1 (NÃO UFS) — product briefs PB01/PB02/PB04 oficiais.
+    #   ChipFamily SDINB corrigida em populate_sandisk.py na mesma data.
+    #
+    # Entradas agrupadas por linha de produto:
+    #   §A  SDIN7DP2/4  (eMMC 4.51, iNAND Extreme, BGA153)
+    #   §B  SDIN7DU2    (eMMC 4.41, iNAND Ultra — caps adicionais)
+    #   §C  SDIN8DE1    (eMMC 4.51 HS200, 8GB-only, BGA153)
+    #   §D  SDIN8DE4    (eMMC 4.51 HS200, alta cap., BGA153)
+    #   §E  SDIN9DS2    (eMMC 5.0 HS400, BGA153 11.5×13mm)
+    #   §F  SDIN9DW4    (eMMC 5.0 — cap. adicional 64GB)
+    #   §G  SDIN5D1/D2  (eMMC 4.41 X3/X2 MLC, BGA153 11.5×13mm)
+    #   §H  SDIN5C1     (eMMC 4.41 X3 MLC, BGA169 12×16mm)
+    #   §I  SDINBDG4    (eMMC 5.1 iNAND 7250 — corrigido de UFS)
+    #   §J  SDINBDD4    (eMMC 5.1 iNAND 7350 3D NAND — corrigido de UFS)
+    #   §K  SDINBDA4    (eMMC 5.1 iNAND 7550 SmartSLC — corrigido de UFS)
+    #   §L  SDINDDH4/6  (UFS 2.1 iNAND 8521 / IX EU312 — UFS real)
+    #   §M  SDINEDK4    (UFS 3.0 iNAND MC EU511)
+    #   §N  SDINFDK4    (UFS 3.1 iNAND MC EU551)
+    #   §O  SDINFDO4    (UFS 3.1 iNAND MC EU551 variante)
+    #   §P  SDINFDQ6    (UFS 3.1 automotivo iNAND AT EU552)
+    #   §Q  SDADF4AP    (eMCP LPDDR3 16GB+2GB)
+    #   §R  SDADA4DR    (eMCP LPDDR4 64GB+4GB)
+    # ──────────────────────────────────────────────────────────────────────────
+
+    # ─── §PREV: entradas pré-existentes com confidence=estimated e sem capacity,
+    #           ou com campos em formato legacy incorreto.
+    # Corrigidas aqui com campos completos para promover a known_exact=True
+    # e alinhar ao formato canônico atual.
+    # ─────────────────────────────────────────────────────────────────────────
+    # SDIN8DE2 -32G: irmãs -8G e -16G já distributor+capacity via sessão anterior;
+    #   -32G ficou como estimated sem capacity → não passa gate _USABLE.
+    # SDIN5C2 -16G: irmã -8G confirmed+capacity; -16G ficou sem capacity.
+    # SDADB48K16G: emcp_nand salvo como "eMMC 16GB" (formato legacy) — deve ser "16GB".
+    {
+        "pn": "SDIN8DE232G",
+        "create": False,    # já existe no banco como estimated — só atualiza
+        "fields": {
+            "chip_type":  "eMMC",
+            "confidence": "distributor",
+            "capacity":   "32GB",
+            "interface":  "eMMC 4.51",
+        },
+        "reason": (
+            "SDIN8DE2-32G — mesma família das -8G/-16G já distributor+capacity. "
+            "SanDisk Commercial Embedded Product Brief (Mouser). Atualiza confidence "
+            "de estimated→distributor e preenche capacity para passar gate _USABLE."
+        ),
+    },
+    {
+        "pn": "SDIN5C216G",
+        "create": False,    # já existe no banco como estimated — só atualiza
+        "fields": {
+            "chip_type":  "eMMC",
+            "confidence": "confirmed",
+            "capacity":   "16GB",
+            "interface":  "eMMC 4.41",
+        },
+        "reason": (
+            "SDIN5C2-16G X2 MLC BGA169 — mesma família da -8G já confirmed. "
+            "WD datasheet doc# 80-36-03433 V1.3 Dez/2010 + doc# 80-36-03462. "
+            "Atualiza confidence de estimated→confirmed e preenche capacity."
+        ),
+    },
+    {
+        "pn": "SDADB48K16G",
+        "create": False,    # já existe — corrige formato legacy de emcp_nand
+        "fields": {
+            "emcp_nand": "16GB",    # era "eMMC 16GB" (formato legacy incorreto)
+        },
+        "reason": (
+            "SDADB48K16G: emcp_nand estava salvo como 'eMMC 16GB' (formato legacy). "
+            "Convenção canônica: emcp_nand = apenas a capacidade ('16GB'). "
+            "O prefixo 'eMMC ' nunca faz parte do campo emcp_nand."
+        ),
+    },
+
+    # ─── §A: SDIN7DP2/4 — iNAND Extreme eMMC 4.51 (BGA153, 2014-2016) ────────
+    # Doc# 80-36-03494 "iNAND Extreme e.MMC 4.5 Product Brief".
+    # SanDisk usa "4.5" no marketing; JEDEC = eMMC 4.51.
+    # DP2 família: máx 8GB (sem -16G/-32G). DP4: começa em 16GB.
+    # ⚠ SDIN7DP4: ambiguidade BGA153 vs TFBGA-169 — verificar datasheet completo.
+    # Todos standalone eMMC. NOT eMCP (BGA153 = zero RAM).
+    {
+        "pn": "SDIN7DP24G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "4GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "Mouser Tier 1 (mouser.com/ProductDetail/SanDisk/SDIN7DP2-4G) + Octopart 153-FBGA. "
+            "Doc# 80-36-03494: iNAND Extreme eMMC 4.51; BGA153 11.5×13mm; standalone. NOT eMCP."
+        ),
+    },
+    {
+        "pn": "SDIN7DP28G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "Mouser Tier 1 (mouser.com/ProductDetail/SanDisk/SDIN7DP2-8G) + Octopart. "
+            "Doc# 80-36-03494. Família DP2 máx = 8GB. BGA153 11.5×13mm. NOT eMCP."
+        ),
+    },
+    {
+        "pn": "SDIN7DP416G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "Mouser Tier 1 (mouser.com/ProductDetail/SanDisk/SDIN7DP4-16G) + datasheet doc# 80-36-03494. "
+            "DP4 começa em 16GB. HTC One Max. ⚠ Package: descrições=BGA153, Octopart=TFBGA-169 — verificar."
+        ),
+    },
+    {
+        "pn": "SDIN7DP432G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "Mouser Tier 1 + datasheet PDF doc# 80-36-03494: SDIN7DP4-32G eMMC 4.51. "
+            "DP4 família 16/32GB (64G só Tier 3). ⚠ Package 153 vs 169 ball — pendente."
+        ),
+    },
+
+    # ─── §B: SDIN7DU2 — iNAND Ultra eMMC 4.41 (caps faltantes) ──────────────
+    # Doc# 80-36-03666. DB já tem SDIN7DU28G (-8G). -4G não encontrado.
+    {
+        "pn": "SDIN7DU216G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "Mouser Tier 1 (mouser.com/ProductDetail/SanDisk/SDIN7DU2-16G) + Octopart. "
+            "Doc# 80-36-03666: iNAND Ultra eMMC 4.41."
+        ),
+    },
+    {
+        "pn": "SDIN7DU232G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "Mouser Tier 1 (mouser.com/ProductDetail/SanDisk/SDIN7DU2-32G). "
+            "Doc# 80-36-03666: iNAND Ultra eMMC 4.41."
+        ),
+    },
+
+    # ─── §C: SDIN8DE1 — eMMC 4.51 HS200 BGA153 8GB-only (2013-2016) ──────────
+    # SanDisk Commercial Embedded Product Brief (Mouser-hosted, dez/2015).
+    # Família 8GB-only: sem -4G, sem -16G. -I = industrial (-25..85°C).
+    # Huawei Honor 4X usa SDIN8DE1-8G.
+    {
+        "pn": "SDIN8DE18G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "SanDisk Commercial Embedded Product Brief (Mouser Tier 1, dez/2015): "
+            "SDIN8DE1-8G eMMC 4.51 HS200 8GB; BGA153 11.5×13mm. "
+            "Família 8GB-only. Huawei Honor 4X. Standalone eMMC."
+        ),
+    },
+    {
+        "pn": "SDIN8DE18GI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "Mouser Tier 1 (mouser.com/ProductDetail/SanDisk/SDIN8DE1-8G-I): "
+            "eMMC 4.51 HS200 8GB Industrial (-25..85°C); BGA153. "
+            "-I = grade industrial; mesmos specs elétricos da variante base."
+        ),
+    },
+
+    # ─── §D: SDIN8DE4 — eMMC 4.51 HS200 BGA153 alta capacidade ───────────────
+    # Mesmo encapsulamento BGA153 que DE2, porém die de maior densidade (32/64GB).
+    # Standalone eMMC — NOT eMCP. HTC One E8 usa -32G.
+    {
+        "pn": "SDIN8DE432G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "SanDisk Commercial Embedded Product Brief (Mouser Tier 1, dez/2015) + Octopart: "
+            "SDIN8DE4-32G eMMC 4.51 HS200 32GB; BGA153. HTC One E8. NOT eMCP."
+        ),
+    },
+    {
+        "pn": "SDIN8DE464G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "eMMC 4.51",
+        },
+        "reason": (
+            "SanDisk Product Brief (Mouser Tier 1) + Octopart 512Gbit=64GB: "
+            "SDIN8DE4-64G eMMC 4.51 HS200 64GB; BGA153. NOT eMCP."
+        ),
+    },
+
+    # ─── §E: SDIN9DS2 — eMMC 5.0 HS400 BGA153 11.5×13mm (2015-2017) ──────────
+    # Família menor da gen-9. Irmã da SDIN9DW4 (12×16mm já no DB).
+    # SanDisk Product Brief (Mouser Tier 1, dez/2015). Sem -4G (família: 8→64GB).
+    {
+        "pn": "SDIN9DS28G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 5.0",
+        },
+        "reason": (
+            "SanDisk Commercial Embedded Product Brief (Mouser Tier 1): "
+            "SDIN9DS2-8G eMMC 5.0 HS400 8GB; BGA153 (Avnet). Família começa em 8GB."
+        ),
+    },
+    {
+        "pn": "SDIN9DS216G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 5.0",
+        },
+        "reason": (
+            "SanDisk Product Brief Tier 1: SDIN9DS2-16G eMMC 5.0 HS400 16GB; BGA153. "
+            "HTC Desire 630 (Rockchip AVL)."
+        ),
+    },
+    {
+        "pn": "SDIN9DS232G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 5.0",
+        },
+        "reason": (
+            "SanDisk Product Brief (Mouser Tier 1): SDIN9DS2-32G eMMC 5.0 HS400 32GB; BGA153."
+        ),
+    },
+    {
+        "pn": "SDIN9DS264G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "eMMC 5.0",
+        },
+        "reason": (
+            "SanDisk Product Brief Tier 1: SDIN9DS2-64G eMMC 5.0 HS400 64GB; BGA153."
+        ),
+    },
+
+    # ─── §F: SDIN9DW4 — capacidade adicional 64GB ─────────────────────────────
+    # DB já tem -16G e -32G. Datasheet 80-36-03680 Rev1.11 enumera: 16/32/64GB only.
+    # Família NÃO tem -4G nem -8G.
+    {
+        "pn": "SDIN9DW464G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "eMMC 5.0",
+        },
+        "reason": (
+            "Datasheet oficial SanDisk doc# 80-36-03680 Rev1.11 (Mouser-hosted): "
+            "SDIN9DW4-64G eMMC 5.0 HS400 64GB; 153-ball TFBGA 11.5×13mm. "
+            "Família: 16/32/64GB ONLY (sem -4G/-8G)."
+        ),
+    },
+
+    # ─── §G: SDIN5D1/D2 — eMMC 4.41 X3/X2 MLC BGA153 11.5×13mm (2011-2013) ──
+    # Doc# 80-36-03462 V1.4 Dez/2011. SDIN5D1=X3; SDIN5D2=X2.
+    # SKUs com sufixo -L (lead-free) normalizam ao mesmo pn_normalized.
+    # ⚠ SDIN5D1-2G (X2 em família X3): suspeito — não adicionado; verificar datasheet.
+    {
+        "pn": "SDIN5D14G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "4GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03462 V1.4 Dez/2011 (ordering table): "
+            "SDIN5D1-4G-L; BGA153 11.5×13mm; X3 MLC."
+        ),
+    },
+    {
+        "pn": "SDIN5D18G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03462: SDIN5D1-8G-L / -8G-DC; BGA153 11.5×13mm; X3 MLC."
+        ),
+    },
+    {
+        "pn": "SDIN5D116G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03462 rev1.4: SDIN5D1-16G-L; BGA153 11.5×13×1.2mm; X3 MLC."
+        ),
+    },
+    {
+        "pn": "SDIN5D24G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "4GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03462: SDIN5D2-4G-L; BGA153 11.5×13mm; X2 MLC."
+        ),
+    },
+    {
+        "pn": "SDIN5D28G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03462: SDIN5D2-8G-L; BGA153 11.5×13mm; X2 MLC."
+        ),
+    },
+    {
+        "pn": "SDIN5D216G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03462: SDIN5D2-16G-L; BGA153 11.5×13×1.2mm; X2 MLC."
+        ),
+    },
+
+    # ─── §H: SDIN5C1 — eMMC 4.41 X3 MLC BGA169 12×16mm (2010-2013) ──────────
+    # Doc# 80-36-03433 (V1.3 Dez/2010) + 80-36-03462. Elnec confirma FBGA169.
+    # Irmã X3 do SDIN5C2 (X2, já no banco).
+    {
+        "pn": "SDIN5C14G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "4GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03433 V1.3 Dez/2010: SDIN5C1-4G; BGA169 12×16mm; X3 MLC."
+        ),
+    },
+    {
+        "pn": "SDIN5C18G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03462 + Elnec (FBGA169 eMMC): SDIN5C1-8G-L; BGA169 12×16mm."
+        ),
+    },
+    {
+        "pn": "SDIN5C116G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03462 + Elnec (FBGA169): SDIN5C1-16G; BGA169 12×16mm; X3 MLC."
+        ),
+    },
+    {
+        "pn": "SDIN5C132G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03462: SDIN5C1-32G-L; BGA169 12×16mm; X3 MLC."
+        ),
+    },
+    {
+        "pn": "SDIN5C164G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "eMMC 4.41",
+        },
+        "reason": (
+            "WD datasheet doc# 80-36-03462: SDIN5C1-64G-L; BGA169 12×16×1.4mm; X3 MLC. "
+            "Maior cap. da família SDIN5C1."
+        ),
+    },
+
+    # ─── §I: SDINBDG4 — iNAND 7250 eMMC 5.1 HS400 (2017-2019) ───────────────
+    # ⚠ CORRIGIDO jun/2026: gramática dizia UFS — é eMMC 5.1.
+    # Product brief: PB02-iNAND-7250-US-EN-0817-02 (verical.com + sandisk.com).
+    # BGA153 11.5×13mm; X2 MLC. Samsung Galaxy M20 usa esta série.
+    {
+        "pn": "SDINBDG48G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "8GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief oficial SanDisk PB02-iNAND-7250-US-EN-0817-02: "
+            "SDINBDG4 iNAND 7250 eMMC 5.1 HS400 X2 MLC; 11.5×13×0.8mm. NOT UFS."
+        ),
+    },
+    {
+        "pn": "SDINBDG416G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "16GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief PB02-iNAND-7250 + sandisk.com mobile-eMMC page: "
+            "SDINBDG4-16G eMMC 5.1; 11.5×13mm. NOT UFS."
+        ),
+    },
+    {
+        "pn": "SDINBDG432G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief PB02-iNAND-7250: SDINBDG4-32G eMMC 5.1; 11.5×13×1.0mm. "
+            "Samsung Galaxy M20. NOT UFS."
+        ),
+    },
+    {
+        "pn": "SDINBDG464G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief PB02-iNAND-7250: SDINBDG4-64G eMMC 5.1; 11.5×13×1.2mm. NOT UFS."
+        ),
+    },
+
+    # ─── §J: SDINBDD4 — iNAND 7350 eMMC 5.1 3D NAND (2017-2020) ─────────────
+    # ⚠ CORRIGIDO jun/2026: eMMC 5.1 (NÃO UFS). Dupla confirmação independente.
+    # Product brief: PB01-iNAND-7350-US-EN-0217-01 (sandisk.com).
+    # 11.5×13mm; 3D NAND. Huawei Nova 2s usa -64G.
+    {
+        "pn": "SDINBDD432G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief oficial SanDisk PB01-iNAND-7350-US-EN-0217-01 (sandisk.com): "
+            "SDINBDD4 iNAND 7350 eMMC 5.1 3D NAND; 11.5×13×0.8mm. NOT UFS."
+        ),
+    },
+    {
+        "pn": "SDINBDD464G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief PB01-iNAND-7350: SDINBDD4-64G eMMC 5.1; 11.5×13×1.0mm. "
+            "Huawei Nova 2s (RNE-L21). NOT UFS."
+        ),
+    },
+    {
+        "pn": "SDINBDD4128G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "128GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief PB01-iNAND-7350: SDINBDD4-128G eMMC 5.1; 11.5×13×1.0mm. NOT UFS."
+        ),
+    },
+    {
+        "pn": "SDINBDD4256G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "256GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief PB01-iNAND-7350: SDINBDD4-256G eMMC 5.1 flagship; 11.5×13×1.2mm. NOT UFS."
+        ),
+    },
+
+    # ─── §K: SDINBDA4 — iNAND 7550 eMMC 5.1 Gen4 SmartSLC (2018-2021) ────────
+    # ⚠ CORRIGIDO jun/2026: eMMC 5.1 (NÃO UFS).
+    # Product brief: PB04-iNAND-7550-EN-US-1117-01 (Mouser Tier 1).
+    # 3D NAND Gen4 SmartSLC. Huawei Honor 8X usa -128G.
+    {
+        "pn": "SDINBDA432G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief WD PB04-iNAND-7550-EN-US-1117-01 (Mouser Tier 1): "
+            "SDINBDA4 iNAND 7550 eMMC 5.1 HS400 3D NAND Gen4 SmartSLC; 11.5×13×1.0mm. NOT UFS."
+        ),
+    },
+    {
+        "pn": "SDINBDA464G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief PB04-iNAND-7550: SDINBDA4-64G eMMC 5.1; 11.5×13mm. NOT UFS."
+        ),
+    },
+    {
+        "pn": "SDINBDA4128G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "128GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief PB04-iNAND-7550: SDINBDA4-128G eMMC 5.1. "
+            "Huawei Honor 8X. Tier-3 diz SLC — ignorar; official = SmartSLC. NOT UFS."
+        ),
+    },
+    {
+        "pn": "SDINBDA4256G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "256GB",
+            "interface": "eMMC 5.1",
+        },
+        "reason": (
+            "Product brief PB04-iNAND-7550: SDINBDA4-256G eMMC 5.1 mid/high-end. NOT UFS."
+        ),
+    },
+
+    # ─── §L: SDINDDH4/6 — UFS 2.1 iNAND 8521 / IX EU312 (2017-2019) ──────────
+    # UFS mobile real (não eMMC!). iNAND 8521, Gear3 2-lane; ~500MB/s read.
+    # Product brief: PB03-iNAND-8521-EN-US-1117-01 (Mouser Tier 1). TFBGA-153 11.5×13mm.
+    # SDINDDH6 = iNAND IX EU312 (industrial UFS 2.1, TLC, -25..85°C).
+    {
+        "pn": "SDINDDH432G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "32GB",
+            "interface": "UFS 2.1",
+        },
+        "reason": (
+            "Product brief PB03-iNAND-8521-EN-US-1117-01 (Mouser Tier 1): "
+            "SDINDDH4 iNAND 8521 UFS 2.1 Gear3 2-lane; TFBGA-153 11.5×13mm."
+        ),
+    },
+    {
+        "pn": "SDINDDH464G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "UFS 2.1",
+        },
+        "reason": (
+            "Product brief PB03-iNAND-8521 (Mouser Tier 1): SDINDDH4-64G UFS 2.1 Gear3; TFBGA-153."
+        ),
+    },
+    {
+        "pn": "SDINDDH4128G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "128GB",
+            "interface": "UFS 2.1",
+        },
+        "reason": (
+            "Product brief PB03-iNAND-8521 (Mouser Tier 1): SDINDDH4-128G UFS 2.1; ~500MB/s; TFBGA-153."
+        ),
+    },
+    {
+        "pn": "SDINDDH4256G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "256GB",
+            "interface": "UFS 2.1",
+        },
+        "reason": (
+            "Product brief PB03-iNAND-8521 (Mouser Tier 1): SDINDDH4-256G UFS 2.1 Gear3; TFBGA-153."
+        ),
+    },
+    {
+        "pn": "SDINDDH664GI",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "UFS 2.1",
+        },
+        "reason": (
+            "Mouser listing 467-SDINDDH6-64G-I: iNAND IX EU312 UFS 2.1 industrial; "
+            "TLC; -25..85°C. Spec table completa não capturada → distributor."
+        ),
+    },
+
+    # ─── §M: SDINEDK4 — UFS 3.0 iNAND MC EU511 (2020-2022) ───────────────────
+    # SanDisk PDP (sandisk.com) + WD product brief. Gear4 2-lane; SmartSLC Gen6.
+    {
+        "pn": "SDINEDK4128G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "128GB",
+            "interface": "UFS 3.0",
+        },
+        "reason": (
+            "SanDisk PDP (sandisk.com?sku=SDINEDK4-128G) + WD product brief (iNAND MC EU511): "
+            "UFS 3.0 Gear4 2-lane; SmartSLC Gen6; seq write ~800MB/s."
+        ),
+    },
+    {
+        "pn": "SDINEDK4256G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "256GB",
+            "interface": "UFS 3.0",
+        },
+        "reason": (
+            "SanDisk PDP (sandisk.com?sku=SDINEDK4-256G) + WD product brief: SDINEDK4-256G UFS 3.0."
+        ),
+    },
+    {
+        "pn": "SDINEDK4512G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "512GB",
+            "interface": "UFS 3.0",
+        },
+        "reason": (
+            "SanDisk PDP — família EU511 declarada 128–512GB; -512G via faixa, sem página por-SKU. "
+            "Confidence=distributor até confirmação de SKU individual."
+        ),
+    },
+
+    # ─── §N: SDINFDK4 — UFS 3.1 iNAND MC EU551 (2021-2023) ───────────────────
+    # SanDisk PDP + Octopart (Avnet + Arrow, authorized). WriteBooster 2ª geração.
+    {
+        "pn": "SDINFDK4128G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "128GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "SanDisk PDP (sandisk.com?sku=SDINFDK4-128G) + Octopart (Avnet/Arrow authorized): "
+            "iNAND MC EU551 UFS 3.1 Gear4; WriteBooster."
+        ),
+    },
+    {
+        "pn": "SDINFDK4256G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "256GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "SanDisk PDP + Octopart (Avnet/Arrow): SDINFDK4-256G UFS 3.1 EU551."
+        ),
+    },
+    {
+        "pn": "SDINFDK464G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "Octopart (Avnet+Arrow authorized) para -64G: iNAND MC EU551 UFS 3.1. "
+            "Página por-SKU não capturada → distributor."
+        ),
+    },
+    {
+        "pn": "SDINFDK4512G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "512GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "SanDisk PDP — família EU551 declarada até 512GB; -512G via faixa sem página por-SKU. "
+            "Distributor pendente confirmação individual."
+        ),
+    },
+
+    # ─── §O: SDINFDO4 — UFS 3.1 iNAND MC EU551 variante (2021-2023) ──────────
+    # Prefixo irmão do SDINFDK4 na mesma linha EU551. SanDisk PDP lista como Model Number.
+    {
+        "pn": "SDINFDO4128G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "128GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "SanDisk PDP (sandisk.com?sku=SDINFDO4-128G): UFS 3.1 EU551 variante."
+        ),
+    },
+    {
+        "pn": "SDINFDO4256G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "256GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "SanDisk PDP (sandisk.com?sku=SDINFDO4-256G): UFS 3.1 EU551 variante."
+        ),
+    },
+    {
+        "pn": "SDINFDO4512G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":  "512GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "SanDisk PDP (sandisk.com?sku=SDINFDO4-512G): UFS 3.1 EU551 variante 512GB."
+        ),
+    },
+
+    # ─── §P: SDINFDQ6 — UFS 3.1 automotivo iNAND AT EU552 ────────────────────
+    # Linha automotiva AEC. Sufixos -XA1/-ZA1 = automotive temperature grade.
+    # Menos comum em reciclagem de celulares; pode aparecer em e-waste automotivo.
+    # SanDisk automotive shop (sandisk.com/products/embedded-flash/automotive-inand-ufs-drives).
+    {
+        "pn": "SDINFDQ664GXA1",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "64GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "SanDisk automotive-UFS shop (sandisk.com): iNAND AT EU552 UFS 3.1; "
+            "-XA1 = automotive AEC grade. Confidence=distributor (shop listing, sem datasheet)."
+        ),
+    },
+    {
+        "pn": "SDINFDQ6128GZA1",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "128GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "SanDisk automotive shop: iNAND AT EU552 UFS 3.1; -ZA1 = automotive AEC grade."
+        ),
+    },
+    {
+        "pn": "SDINFDQ6256GZA1",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "256GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "SanDisk automotive shop: iNAND AT EU552 UFS 3.1 -ZA1 256GB."
+        ),
+    },
+    {
+        "pn": "SDINFDQ6512GZA1",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "UFS",
+            "subtype":    "",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "capacity":  "512GB",
+            "interface": "UFS 3.1",
+        },
+        "reason": (
+            "SanDisk automotive shop: iNAND AT EU552 UFS 3.1 -ZA1 512GB."
+        ),
+    },
+
+    # ─── §Q: SDADF4AP — eMCP LPDDR3 16GB+2GB (221-ball BGA) ──────────────────
+    # 16GB NAND + 2GB LPDDR3. 221-ball → LPDDR3 (regra WTC).
+    # Octopart Tier 2 + yoycart. Huawei DRA-LX2.
+    {
+        "pn": "SDADF4AP16G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR3",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "emcp_nand": "16GB",
+            "emcp_ram":  "LPDDR3 2GB",
+        },
+        "reason": (
+            "Octopart Tier 2 (3 distribuidores) + yoycart '16+2 221-ball 3rd gen'. "
+            "Huawei DRA-LX2. 221-ball → LPDDR3 (regra WTC). "
+            "RAM 2GB via ball count + yoycart; datasheet Tier 1 p/ RAM não encontrado → distributor."
+        ),
+    },
+
+    # ─── §R: SDADA4DR — eMCP LPDDR4 64GB+4GB (254-ball BGA) ──────────────────
+    # 64GB NAND + 4GB LPDDR4. LCSC C2830407 + JLCPCB BGA254 (Tier 2).
+    # ⚠ LPDDR4 vs LPDDR4X não resolvido — usando LPDDR4 como provisional.
+    {
+        "pn": "SDADA4DR64G",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMCP",
+            "subtype":    "LPDDR4",
+            "confidence": "distributor",
+        },
+        "fields": {
+            "emcp_nand": "64GB",
+            "emcp_ram":  "LPDDR4 4GB",
+        },
+        "reason": (
+            "LCSC C2830407 + JLCPCB BGA254 (Tier 2): SDADA4DR-64G eMCP 64+4; 254-ball → LPDDR4. "
+            "⚠ LPDDR4 vs LPDDR4X não resolvido — provisional LPDDR4; confirmar via DigiKey/datasheet. "
+            "Irmã de SDADA4CR-64G (skip, fontes Tier 3 apenas)."
         ),
     },
 
@@ -4309,6 +5984,536 @@ CORRECTIONS = [
         ),
     },
 
+    # ══════════════════════════════════════════════════════════════════════════
+    # TOSHIBA / KIOXIA eMMC THGBM — série confirmada por press releases Tier 1
+    # Fonte: kioxia.com press releases (2013, 2014, 2017) + product brief (2023)
+    # Todos com confidence=confirmed. Grammar THGBM decoda corretamente — estes
+    # creates promovem estimated→confirmed e colocam o PN no Layer 1 (mais rápido).
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── THGBM BG era (Toshiba 19nm 2nd gen, eMMC 5.0, lançamento 2013-10-31) ──
+    # Fonte: kioxia.com press release 2013-10-31 (Tier 1)
+    # URL: https://www.kioxia.com/en-jp/business/news/2013/20131031-1.html
+    # "four 64Gbit (equal to 8GB) NAND chips" → 4×8GB=32GB para BG8D4; 2×8GB=16GB para BG7D2
+    # Processo: 19nm second generation · Package: 153Ball FBGA
+    # pn[5]='B' → THGBM_GEN = eMMC 5.0 (B era = 2013, primeira geração com THGBM_CAP 7D2/8D4)
+
+    {
+        "pn": "THGBMBG7D2KBAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "16GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 19nm 2nd gen eMMC 5.0, 16GB, 153Ball FBGA 11.5×13×0.8mm. "
+            "kioxia.com press release 2013-10-31 (Tier 1): PN listado explicitamente na tabela. "
+            "pn[5]='B' → THGBM_GEN = eMMC 5.0 ✓. "
+            "pn[7:10]='7D2' → THGBM_CAP = 16GB (2 dies × 64Gbit/die = 128Gbit = 16GB) ✓. "
+            "pn[10]='K' = tier de qualidade específico da era BG (19nm 2nd gen). "
+            "PN solicitado pelo operador na esteira — promovido a confirmed via Tier 1."
+        ),
+    },
+
+    {
+        "pn": "THGBMBG8D4KBAIR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "32GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 19nm 2nd gen eMMC 5.0, 32GB, 153Ball FBGA 11.5×13×1.0mm. "
+            "kioxia.com press release 2013-10-31 (Tier 1): PN listado explicitamente. "
+            "'four 64Gbit (equal to 8GB) NAND chips' → 4×8GB = 32GB ✓. "
+            "pn[5]='B' → THGBM_GEN = eMMC 5.0 ✓. "
+            "pn[7:10]='8D4' → THGBM_CAP = 32GB (âncora Tier 1, upgrade de iiic.cc Tier 3). "
+            "pn[14]='R' = variante bin (11.5×13mm, igual ao sufixo dos 15nm Supreme)."
+        ),
+    },
+
+    # ── THGBM FG era (Toshiba 15nm, eMMC 5.0, lançamento 2014-10-02) ─────────
+    # Fonte: kioxia.com press release 2014-10-02 (Tier 1)
+    # URL: https://www.kioxia.com/en-jp/business/news/2014/20141002-1.html
+    # "world's smallest-class" — primeiro lote 15nm (26% menor que 19nm)
+    # Processo: 15nm · Interface: JEDEC e-MMC V5.0 HS-MMC · Package: 153Ball FBGA
+    # Categorias: Supreme (chips topo de linha), Premium (mid-range)
+    # pn[5]='F' → THGBM_GEN = eMMC 5.0
+
+    {
+        "pn": "THGBMFG6C1LBAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "8GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.0, 8GB Supreme, 11.5×13×0.8mm, BGA153. "
+            "kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. "
+            "pn[5]='F' → eMMC 5.0 ✓. pn[7:10]='6C1' → 8GB (64Gbit×1die=8GB) ✓. "
+            "Mass production: 2Q 2015."
+        ),
+    },
+
+    {
+        "pn": "THGBMFG7C2LBAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "16GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.0, 16GB Supreme, 11.5×13×0.8mm, BGA153. "
+            "kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. "
+            "pn[5]='F' → eMMC 5.0 ✓. pn[7:10]='7C2' → 16GB (128Gbit×2dies=16GB) ✓. "
+            "Mass production: 1Q 2015. Âncora Tier 1 para chave 7C2=16GB."
+        ),
+    },
+
+    {
+        "pn": "THGBMFG8C4LBAIR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "32GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.0, 32GB Supreme, 11.5×13×1.0mm, BGA153. "
+            "kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. "
+            "pn[5]='F' → eMMC 5.0 ✓. pn[7:10]='8C4' → 32GB (64Gbit×4dies=32GB) ✓. "
+            "Mesma chave 8C4 do THGBMHG8C4LBAIR/LBAU7 (era H). pn[14]='R' = Supreme 11.5×13mm."
+        ),
+    },
+
+    {
+        "pn": "THGBMFG8C2LBAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "32GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.0, 32GB Premium, 11.5×13×0.8mm, BGA153. "
+            "kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. "
+            "pn[5]='F' → eMMC 5.0 ✓. pn[7:10]='8C2' → 32GB (64Gbit×2dies×2... aguardar) "
+            "→ âncora Tier 1 da chave THGBM_CAP '8C2'=32GB (também confirmada pelo "
+            "THGBMUG8C2LBAIL no product brief 2023 Tier 1). "
+            "Diferença 8C4 vs 8C2: mesma cap, configuração de dies diferente."
+        ),
+    },
+
+    {
+        "pn": "THGBMFG9C8LBAIG",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "64GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.0, 64GB Supreme, 11.5×13×1.2mm, BGA153. "
+            "kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. "
+            "pn[5]='F' → eMMC 5.0 ✓. pn[7:10]='9C8' → 64GB (64Gbit×8dies=64GB) ✓. "
+            "pn[14]='G' = variante Supreme 11.5×13mm (64GB). Âncora Tier 1 para 9C8=64GB."
+        ),
+    },
+
+    {
+        "pn": "THGBMFG9C4LBAIR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "64GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.0, 64GB Premium, 11.5×13×1.0mm, BGA153. "
+            "kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. "
+            "pn[5]='F' → eMMC 5.0 ✓. pn[7:10]='9C4' → 64GB ← "
+            "âncora Tier 1 da NOVA chave THGBM_CAP '9C4'=64GB (adicionada a populate_toshiba.py). "
+            "Diferença 9C8 vs 9C4: mesma cap total, configuração de dies diferente."
+        ),
+    },
+
+    {
+        "pn": "THGBMFT0CBLBAIS",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "128GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.0, 128GB Supreme, 11.5×13×1.4mm, BGA153. "
+            "kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. "
+            "pn[5]='F' → eMMC 5.0 ✓. pn[7:10]='0CB' → 128GB ← "
+            "âncora Tier 1 da NOVA chave THGBM_CAP '0CB'=128GB (adicionada a populate_toshiba.py). "
+            "ATENÇÃO: pn[6]='T' (não 'G' como na maioria) — engine não lê pn[6], decode ok. "
+            "Mass production: 2Q 2015."
+        ),
+    },
+
+    # ── THGBM HG era industrial (Toshiba 15nm, eMMC 5.1, lançamento 2017-01-10) ─
+    # Fonte: americas.kioxia.com press release 2017-01-10 (Tier 1)
+    # URL: https://americas.kioxia.com/en-us/business/news/2017/memory-20170110-1.html
+    # "Upper Extended Industrial Temp. (U-version)" → -40°C to +105°C
+    # Interface: JEDEC e-MMC V5.1 · Package: 153Ball FBGA 11.5×13mm · Process: 15nm
+    # pn[5]='H' → THGBM_GEN = eMMC 5.1 · pn[13]='U' = industrial grade
+    # pn[14] ∈ {6, 7, 8} = extended temperature bin (-40°C to +105°C)
+
+    {
+        "pn": "THGBMHG6C1LBAU6",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "8GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.1 Industrial, 8GB, 11.5×13×0.8mm, BGA153. "
+            "americas.kioxia.com press release 2017-01-10 (Tier 1): PN listado na tabela. "
+            "pn[5]='H' → eMMC 5.1 ✓. pn[7:10]='6C1' → 8GB ✓. "
+            "pn[13]='U' = industrial grade. pn[14]='6' = upper extended temp (-40°C a +105°C). "
+            "Sub-prefixo THGBMHG estava em OBSOLETE_FAMILY_PREFIXES — esta entrada garante Layer 1."
+        ),
+    },
+
+    {
+        "pn": "THGBMHG7C2LBAU7",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "16GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.1 Industrial, 16GB, 11.5×13×1.0mm, BGA153. "
+            "americas.kioxia.com press release 2017-01-10 (Tier 1): PN listado na tabela. "
+            "pn[5]='H' → eMMC 5.1 ✓. pn[7:10]='7C2' → 16GB ✓. "
+            "pn[13]='U' = industrial. pn[14]='7' = extended temp (-40°C a +105°C)."
+        ),
+    },
+
+    {
+        "pn": "THGBMHG8C4LBAU7",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "32GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.1 Industrial, 32GB, 11.5×13×1.0mm, BGA153. "
+            "americas.kioxia.com press release 2017-01-10 (Tier 1): PN listado na tabela. "
+            "pn[5]='H' → eMMC 5.1 ✓. pn[7:10]='8C4' → 32GB ✓. "
+            "Variante industrial do THGBMHG8C4LBAIR: mesmo cap key 8C4, pn[13]=U, pn[14]=7 vs R."
+        ),
+    },
+
+    {
+        "pn": "THGBMHG9C8LBAU8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "64GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Toshiba 15nm eMMC 5.1 Industrial, 64GB, 11.5×13×1.2mm, BGA153. "
+            "americas.kioxia.com press release 2017-01-10 (Tier 1): PN listado na tabela. "
+            "pn[5]='H' → eMMC 5.1 ✓. pn[7:10]='9C8' → 64GB ✓. "
+            "Âncora Tier 1 para 9C8=64GB (upgrade de Mouser Tier 2 + THGBMJG9C8LBAU8)."
+        ),
+    },
+
+    # ── THGBM UG era consumer + JG era industrial (Kioxia product brief 2023) ─
+    # Fonte: Kioxia product brief PDF 2023 (americas.kioxia.com, Tier 1)
+    # URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf
+    # UG = consumer eMMC 5.1 (pn[5]='U'); JG = industrial eMMC 5.1 (pn[5]='J')
+    # pn[13]='I' (consumer UG); pn[13]='U' (industrial JG) com pn[14] ∈ {7,8}
+
+    {
+        "pn": "THGBMNG5D1LBAIT",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Kioxia eMMC 5.0, 4GB consumer, BGA153. "
+            "Kioxia product brief 2023 (Tier 1): PN listado na tabela consumer grade. "
+            "pn[5]='N' → eMMC 5.0 ✓. pn[7:10]='5D1' → 4GB ✓. "
+            "pn[14]='T' = package compacto 11×10mm. Âncora Tier 1 para N=eMMC 5.0 e 5D1=4GB."
+        ),
+    },
+
+    {
+        "pn": "THGBMTG5D1LBAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "4GB",
+            "interface":  "eMMC 5.0",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Kioxia eMMC 5.0, 4GB consumer, BGA153. "
+            "Kioxia product brief 2023 (Tier 1): PN listado na tabela consumer grade. "
+            "pn[5]='T' → eMMC 5.0 ✓. pn[7:10]='5D1' → 4GB ✓. "
+            "Âncora Tier 1 para T=eMMC 5.0 (upgrade de AIChipLink Tier 3)."
+        ),
+    },
+
+    {
+        "pn": "THGBMUG6C1LBAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "8GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 consumer, 8GB, BGA153. "
+            "Kioxia product brief 2023 (Tier 1): PN listado na tabela consumer grade. "
+            "pn[5]='U' → eMMC 5.1 ✓. pn[7:10]='6C1' → 8GB ✓. "
+            "Âncora Tier 1 para U=eMMC 5.1 (nova chave THGBM_GEN adicionada)."
+        ),
+    },
+
+    {
+        "pn": "THGBMUG7C1LBAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "16GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 consumer, 16GB, BGA153. "
+            "Kioxia product brief 2023 (Tier 1): PN listado na tabela consumer grade. "
+            "pn[5]='U' → eMMC 5.1 ✓. pn[7:10]='7C1' → 16GB ✓."
+        ),
+    },
+
+    {
+        "pn": "THGBMUG8C2LBAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "32GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 consumer, 32GB, BGA153. "
+            "Kioxia product brief 2023 (Tier 1): PN listado na tabela consumer grade. "
+            "pn[5]='U' → eMMC 5.1 ✓. pn[7:10]='8C2' → 32GB ← "
+            "âncora Tier 1 dupla: este PN (2023) + THGBMFG8C2LBAIL (2014). "
+            "Confirma nova chave THGBM_CAP '8C2'=32GB em dois processos diferentes (15nm e BiCS)."
+        ),
+    },
+
+    {
+        "pn": "THGBMJG6C1LBAU7",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "8GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 industrial, 8GB, 11.5×13×0.8mm, BGA153. "
+            "Kioxia product brief 2023 (Tier 1): PN listado na tabela industrial grade. "
+            "pn[5]='J' → eMMC 5.1 ✓. pn[7:10]='6C1' → 8GB ✓. "
+            "pn[13]='U' = industrial. pn[14]='7' = extended temp. "
+            "Âncora Tier 1 para J=eMMC 5.1 (upgrade de neven7.eu Tier 3)."
+        ),
+    },
+
+    {
+        "pn": "THGBMJG7C2LBAU8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "16GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 industrial, 16GB, 11.5×13×1.0mm, BGA153. "
+            "Kioxia product brief 2023 (Tier 1): PN listado na tabela industrial grade. "
+            "pn[5]='J' → eMMC 5.1 ✓. pn[7:10]='7C2' → 16GB ✓. "
+            "pn[13]='U' = industrial. pn[14]='8' = extended temp."
+        ),
+    },
+
+    {
+        "pn": "THGBMJG8C4LBAU8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "32GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 industrial, 32GB, 11.5×13×1.2mm, BGA153. "
+            "Kioxia product brief 2023 (Tier 1): PN listado na tabela industrial grade. "
+            "pn[5]='J' → eMMC 5.1 ✓. pn[7:10]='8C4' → 32GB ✓."
+        ),
+    },
+
+    {
+        "pn": "THGBMJG9C8LBAU8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "capacity":   "64GB",
+            "interface":  "eMMC 5.1",
+            "confidence": "confirmed",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 industrial, 64GB, BGA153. "
+            "Kioxia product brief 2023 (Tier 1): PN listado na tabela industrial grade. "
+            "pn[5]='J' → eMMC 5.1 ✓. pn[7:10]='9C8' → 64GB ✓. "
+            "Mouser Tier 2 também confirma este PN. Âncora dupla Tier 1+2 para 9C8=64GB."
+        ),
+    },
+
     # ── TYC0FH121638RA ───────────────────────────────────────────────────────
     # Toshiba eMCP — 4GB eMMC + 512MB LPDDR2. Package BGA-162.
     # Chip chegou na esteira sem classificação (engine não reconhece prefixo TYC).
@@ -4402,6 +6607,918 @@ CORRECTIONS = [
             "mehrinfo.net (título): 'Toshiba TYCOFH121626RA 4G' — 4GB confirmado para este PN. "
             "Cluster de lote: TYC0FH121597/1626/1638/1642/1645/1660RA todos BGA Specialized ICs (YIC+Allelco ✓). "
             "Família TYC sem ChipFamily gramatical — create=True garante classificação manual."
+        ),
+    },
+
+    # ── TYC0FH12162BRA ───────────────────────────────────────────────────────
+    # Toshiba eMCP — 4GB eMMC 4.5/4.51 + 512MB LPDDR2. Package BGA-162.
+    # Variante de lote do cluster TYC0FH12XXXXRA (pn[10:12]='2B').
+    #
+    # Attestation independente (2026-06-26) — regra de ouro aplicada:
+    #
+    # TIER 1 (kioxia.com / toshiba.semicon-storage.com):
+    #   ZERO resultados para qualquer PN TYC*. A família TYC* (~2012-2015)
+    #   não tem press releases digitais na Kioxia/Toshiba — predatam a era
+    #   de comunicados online. Ausência esperada e documentada na sessão anterior.
+    #
+    # TIER 2 (Octopart, OMO Electronic):
+    #   TYC0FH12162BRA NÃO encontrado em nenhuma base de distribuidor.
+    #   Prefixo TYC0FH12162 encontrado no OMO Electronic — apenas para
+    #   TYC0FH121626RA (3 variantes). O PN específico não está indexado.
+    #
+    # ANÁLISE ESTRUTURAL (base da inferência):
+    #   TYC0FH12 = prefixo comum de todo o cluster confirmado.
+    #   pn[3:5]='0F' → 4GB NAND (confirmado por contraste: TYC0GH = 8GB,
+    #     TYC0GH131619RA documentado na sessão anterior).
+    #   pn[5]='H' → LPDDR2 512MB (âncora: TYC0FH121638RA, Octopart Tier 2:
+    #     "4Gb LPDDR2 + 4GB EMCP device").
+    #   pn[8:12]='162B' → código de lote hexadecimal (mesmo range que '1626').
+    #   pn[12:14]='RA' → sufixo padrão do cluster.
+    #
+    # VEREDITO: specs inferidas por estrutura de PN — confidence="estimated".
+    #   Sem verificação direta em qualquer fonte (Tier 1/2/3). Uma sessão futura
+    #   deve tentar confirmar via Tier 2 quando o PN ficar indexado.
+    {
+        "pn": "TYC0FH12162BRA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMCP",
+            "subtype":    "eMCP Toshiba (eMMC + LPDDR2)",
+            "confidence": "estimated",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 4.5 4GB",
+            "emcp_ram":  "LPDDR2 512MB",
+        },
+        "reason": (
+            "Toshiba eMCP BGA-162, variante de lote do cluster TYC0FH12XXXXRA. "
+            "Tier 1 (kioxia.com/toshiba.semicon-storage.com): zero resultados para TYC* — família ~2012-2015 sem press releases digitais. "
+            "Tier 2 (Octopart) e Tier 3 (OMO): PN não indexado. "
+            "Inferência estrutural: pn[3:5]='0F'→4GB (contraste TYC0GH=8GB ✓); "
+            "pn[5]='H'→LPDDR2 512MB (âncora TYC0FH121638RA, Octopart Tier 2 ✓); "
+            "pn[8:12]='162B'→código de lote hex, mesmo range de '1626'. "
+            "confidence=estimated: specs por análise estrutural, sem fonte direta. "
+            "Família TYC sem ChipFamily gramatical — create=True garante classificação manual."
+        ),
+    },
+
+    # ── TYD0FH221627RA ───────────────────────────────────────────────────────
+    # Toshiba eMCP — 4GB eMMC 4.5 + 1GB LPDDR3. Package BGA-221.
+    # Família TYD: geração mais recente que TYC (LPDDR2/BGA-162), ~2015-2020.
+    #
+    # Attestation independente (2026-06-26) — regra de ouro aplicada:
+    #
+    # TIER 1 (kioxia.com / toshiba.semicon-storage.com):
+    #   Zero resultados para TYD*, TYC*, e eMCP Toshiba BGA-221 em geral.
+    #   Família predatada à era de comunicados digitais detalhados; ausência
+    #   esperada e documentada (padrão idêntico ao TYC, sessão anterior).
+    #
+    # TIER 2 (Octopart / DigiKey / Mouser):
+    #   TYD0FH221627RA NÃO encontrado em nenhuma base de distribuidor.
+    #   Octopart confirma família Toshiba "Low Power SDRAM And eMMC MCP" (tipo ✓,
+    #   sem specs de capacidade). Confirma que TYD* são chips eMCP combinados.
+    #
+    # TIER 3 (Preduo):
+    #   TYD0GH221651RA = eMCP LPDDR3, package 221ball, densidade "8+8"
+    #   (notação Preduo: NAND(GB)+RAM(Gb) → 8GB NAND + 8Gb = 1GB LPDDR3).
+    #   Âncora primária para identificação de TYD como LPDDR3/BGA-221.
+    #
+    # TIER 3 (findcomponents.net):
+    #   Cluster TYD0FH221*RA confirma ≥6 variantes de lote com:
+    #     pn[3:5]='0F' → 4GB NAND (contraste TYD0GH=8GB ✓)
+    #     pn[6:8]='22' → constante no cluster (confirma '22'=1GB LPDDR3 ✓)
+    #
+    # ANÁLISE ESTRUTURAL (base da inferência):
+    #   pn[3:5]='0F' → 4GB NAND  (TYD0GH=8GB como contraste Tier 3 ✓)
+    #   pn[5]='H'    → marcador de RAM (hipótese — consistente com TYC/TYD padrão)
+    #   pn[6:8]='22' → 1GB LPDDR3 (mesmo código que TYD0GH221651RA, âncora Preduo ✓)
+    #   pn[8:12]='1627' → código de lote (não encode specs — confirmado por cluster)
+    #   pn[12:14]='RA'  → sufixo de grade
+    #
+    # VEREDITO: specs inferidas por estrutura de PN + âncora Tier 3 — confidence="estimated".
+    #   Sem verificação direta em fonte Tier 1 ou Tier 2 para este PN específico.
+    #   Upgrade para "distributor" ou "confirmed" quando Octopart/DigiKey indexar o PN.
+    {
+        "pn": "TYD0FH221627RA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMCP",
+            "subtype":    "eMCP Toshiba (eMMC + LPDDR3)",
+            "confidence": "estimated",
+        },
+        "fields": {
+            "emcp_nand": "eMMC 4.5 4GB",
+            "emcp_ram":  "LPDDR3 1GB",
+        },
+        "reason": (
+            "Toshiba eMCP BGA-221, cluster TYD0FH221XXXXRA (pn[8:12]='1627' = código de lote). "
+            "Tier 1 (kioxia.com/toshiba.semicon-storage.com): zero resultados para TYD* — "
+            "família ~2015-2020 sem press releases digitais (padrão documentado). "
+            "Tier 2 (Octopart): confirma 'Low Power SDRAM And eMMC MCP' para família TYD "
+            "(tipo eMCP ✓, sem specs de capacidade para este PN). "
+            "Tier 3 (Preduo): TYD0GH221651RA = eMCP LPDDR3 221ball, densidade 8+8 "
+            "(8GB NAND + 8Gb = 1GB LPDDR3) — âncora principal para identificação TYD/LPDDR3. "
+            "Inferência estrutural: pn[3:5]='0F'→4GB NAND (contraste TYD0GH=8GB Preduo ✓); "
+            "pn[6:8]='22'→1GB LPDDR3 (mesmo código âncora TYD0GH221651RA ✓); "
+            "cluster findcomponents.net confirma ≥6 variantes TYD0FH221*RA com '22' fixo. "
+            "confidence=estimated: specs por análise estrutural/Tier 3, sem fonte direta Tier 1-2."
+        ),
+    },
+
+    # ════════════════════════════════════════════════════════════════════════════
+    # KIOXIA — UFS / eMMC TIER 1 (2026-06-26)
+    # 39 PNs confirmados em product briefs oficiais Kioxia:
+    #   • THGJF* UFS 3.1/4.0/4.1 (18 PNs) — kioxia.com UFS Brief Rev.3.0 (2025) + Rev.2.0 (2022)
+    #   • THGAF* UFS 2.1 consumer + automotive (11 PNs) — UFS Brief Rev.2.0 + Auto Brief Rev.2.0
+    #   • THGAM* eMMC 5.1 BiCS (6 PNs) — kioxia.com e-MMC Brief Rev.2.0 (2023)
+    #   • THGBMJG*BAB eMMC 5.1 automotive (4 PNs) — Auto Brief Rev.2.0 (2020)
+    # Todos confidence=confirmed, fontes Tier 1 (kioxia.com / americas.kioxia.com).
+    # URLs completas no campo "reason" de cada entrada.
+    # ════════════════════════════════════════════════════════════════════════════
+
+    # ─── THGJF: UFS Kioxia 3.1/4.0/4.1 (kioxia.com, UFS Brief Rev.3.0, 2025) ─
+
+    {
+        "pn": "THGJFPT0E18BAIP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 3.1",
+            "capacity":  "128GB",
+        },
+        "reason": (
+            "Kioxia UFS 3.1 128GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), "
+            "tabela 'Consumer Grade': THGJFPT0E18BAIP 128GB UFS 3.1. "
+            "URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFPT1E28BAIP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 3.1",
+            "capacity":  "256GB",
+        },
+        "reason": (
+            "Kioxia UFS 3.1 256GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), "
+            "tabela 'Consumer Grade': THGJFPT1E28BAIP 256GB UFS 3.1. "
+            "URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFPT2E48BAIP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 3.1",
+            "capacity":  "512GB",
+        },
+        "reason": (
+            "Kioxia UFS 3.1 512GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), "
+            "tabela 'Consumer Grade': THGJFPT2E48BAIP 512GB UFS 3.1. "
+            "URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFMT1E45BATV",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 4.0",
+            "capacity":  "256GB",
+        },
+        "reason": (
+            "Kioxia UFS 4.0 256GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), "
+            "tabela 'Consumer Grade': THGJFMT1E45BATV 256GB UFS 4.0. "
+            "URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFMT2E46BATV",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 4.0",
+            "capacity":  "512GB",
+        },
+        "reason": (
+            "Kioxia UFS 4.0 512GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), "
+            "tabela 'Consumer Grade': THGJFMT2E46BATV 512GB UFS 4.0. "
+            "URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFMT3E86BATZ",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 4.0",
+            "capacity":  "1TB",
+        },
+        "reason": (
+            "Kioxia UFS 4.0 1TB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), "
+            "tabela 'Consumer Grade': THGJFMT3E86BATZ 1TB UFS 4.0. "
+            "URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFRT1E45BATV",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 4.1",
+            "capacity":  "256GB",
+        },
+        "reason": (
+            "Kioxia UFS 4.1 256GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), "
+            "tabela 'Consumer Grade': THGJFRT1E45BATV 256GB UFS 4.1. "
+            "URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFRT2E48BATV",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 4.1",
+            "capacity":  "512GB",
+        },
+        "reason": (
+            "Kioxia UFS 4.1 512GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), "
+            "tabela 'Consumer Grade': THGJFRT2E48BATV 512GB UFS 4.1. "
+            "URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFRT3E88BATW",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 4.1",
+            "capacity":  "1TB",
+        },
+        "reason": (
+            "Kioxia UFS 4.1 1TB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), "
+            "tabela 'Consumer Grade': THGJFRT3E88BATW 1TB UFS 4.1. "
+            "URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+
+    # ─── THGJF + THGAF consumer (americas.kioxia.com, UFS Brief Rev.2.0, 2022) ─
+
+    {
+        "pn": "THGAF8G8T23BAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "32GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 32GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGAF8G8T23BAIL 32GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAF8G9T43BAIR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "64GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 64GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGAF8G9T43BAIR 64GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFAT0T44BAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 3.1",
+            "capacity":  "128GB",
+        },
+        "reason": (
+            "Kioxia UFS 3.1 128GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGJFAT0T44BAIL 128GB UFS 3.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFAT1T84BAIR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 3.1",
+            "capacity":  "256GB",
+        },
+        "reason": (
+            "Kioxia UFS 3.1 256GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGJFAT1T84BAIR 256GB UFS 3.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFGT1E45BAIP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 3.1",
+            "capacity":  "256GB",
+        },
+        "reason": (
+            "Kioxia UFS 3.1 256GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGJFGT1E45BAIP 256GB UFS 3.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFAT2T84BAIR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 3.1",
+            "capacity":  "512GB",
+        },
+        "reason": (
+            "Kioxia UFS 3.1 512GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGJFAT2T84BAIR 512GB UFS 3.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFGT2T85BAIU",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 3.1",
+            "capacity":  "512GB",
+        },
+        "reason": (
+            "Kioxia UFS 3.1 512GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGJFGT2T85BAIU 512GB UFS 3.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFHT3TB4BAIG",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 3.1",
+            "capacity":  "1TB",
+        },
+        "reason": (
+            "Kioxia UFS 3.1 1TB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGJFHT3TB4BAIG 1TB UFS 3.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFJT0E25BAIP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 4.0",
+            "capacity":  "128GB",
+        },
+        "reason": (
+            "Kioxia UFS 4.0 128GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGJFJT0E25BAIP 128GB UFS 4.0. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFJT1E45BATP",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 4.0",
+            "capacity":  "256GB",
+        },
+        "reason": (
+            "Kioxia UFS 4.0 256GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGJFJT1E45BATP 256GB UFS 4.0. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGJFJT2T85BAT0",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 4.0",
+            "capacity":  "512GB",
+        },
+        "reason": (
+            "Kioxia UFS 4.0 512GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), "
+            "tabela 'Consumer Grade': THGJFJT2T85BAT0 512GB UFS 4.0. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf."
+        ),
+    },
+
+    # ─── THGAF automotive (americas.kioxia.com, Automotive Brief Rev.2.0, 2020) ─
+    # AEC-Q100 Grade 2: -40°C a 105°C (Tc max 115°C). Dual-supply VCC+VCCQ2.
+    # Variantes B e E diferem só pelo pre-load máximo (100% na variante E).
+
+    {
+        "pn": "THGAF9G7L1LBAB7",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "16GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 16GB Automotive AEC-Q100 Grade 2. "
+            "Tier 1 (americas.kioxia.com): Automotive Managed Flash Solutions Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive UFS': THGAF9G7L1LBAB7 16GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAFBG8T13BAB7",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "32GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 32GB Automotive AEC-Q100 Grade 2. "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive UFS': THGAFBG8T13BAB7 32GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAFEG8T13BAB7",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "32GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 32GB Automotive AEC-Q100 Grade 2, variante E (pre-load 100%). "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive UFS': THGAFEG8T13BAB7 32GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAFBG9T23BAB8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "64GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 64GB Automotive AEC-Q100 Grade 2. "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive UFS': THGAFBG9T23BAB8 64GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAFEG9T23BAB8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "64GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 64GB Automotive AEC-Q100 Grade 2, variante E (pre-load 100%). "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive UFS': THGAFEG9T23BAB8 64GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAFBT0T43BAB8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "128GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 128GB Automotive AEC-Q100 Grade 2. "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive UFS': THGAFBT0T43BAB8 128GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAFET0T43BAB8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "128GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 128GB Automotive AEC-Q100 Grade 2, variante E (pre-load 100%). "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive UFS': THGAFET0T43BAB8 128GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAFBT1T83BAB5",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "256GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 256GB Automotive AEC-Q100 Grade 2. "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive UFS': THGAFBT1T83BAB5 256GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAFET1T83BAB5",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "UFS",
+            "subtype":    "UFS Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "UFS 2.1",
+            "capacity":  "256GB",
+        },
+        "reason": (
+            "Kioxia UFS 2.1 256GB Automotive AEC-Q100 Grade 2, variante E (pre-load 100%). "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive UFS': THGAFET1T83BAB5 256GB UFS 2.1. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+
+    # ─── THGAM: eMMC 5.1 BiCS Kioxia (americas.kioxia.com, e-MMC Brief Rev.2.0, 2023) ─
+    # Prefixo NOVO — não coberto pela gramática THGBM (pn[0:5]="THGAM" ≠ "THGBM").
+    # BGA-153. Série V: VG7=16GB, VG8=32GB, VG9=64GB, VT0=128GB.
+    # Série S: SG9=64GB, ST0=128GB.
+
+    {
+        "pn": "THGAMVG7T13BAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "eMMC 5.1",
+            "capacity":  "16GB",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 16GB. Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), "
+            "tabela 'Consumer Grade': THGAMVG7T13BAIL 16GB eMMC 5.1 BiCS FLASH 3D. "
+            "Prefixo THGAM — distinto de THGBM, não coberto pela gramática THGBM. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAMVG8T13BAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "eMMC 5.1",
+            "capacity":  "32GB",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 32GB. Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), "
+            "tabela 'Consumer Grade': THGAMVG8T13BAIL 32GB eMMC 5.1 BiCS FLASH 3D. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAMVG9T23BAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "eMMC 5.1",
+            "capacity":  "64GB",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 64GB. Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), "
+            "tabela 'Consumer Grade': THGAMVG9T23BAIL 64GB eMMC 5.1 BiCS FLASH 3D. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAMVT0T43BAIR",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "eMMC 5.1",
+            "capacity":  "128GB",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 128GB. Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), "
+            "tabela 'Consumer Grade': THGAMVT0T43BAIR 128GB eMMC 5.1 BiCS FLASH 3D. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAMSG9T24BAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "eMMC 5.1",
+            "capacity":  "64GB",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 64GB (série S). Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), "
+            "tabela 'Consumer Grade': THGAMSG9T24BAIL 64GB eMMC 5.1 BiCS FLASH 3D. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGAMST0T24BAIL",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Kioxia",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Kioxia",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "eMMC 5.1",
+            "capacity":  "128GB",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 128GB (série S). Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), "
+            "tabela 'Consumer Grade': THGAMST0T24BAIL 128GB eMMC 5.1 BiCS FLASH 3D. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf."
+        ),
+    },
+
+    # ─── THGBMJG automotive — variantes BAB (Automotive Brief Rev.2.0, 2020) ──
+    # Brand=Toshiba por consistência com BAU industriais já no banco.
+    # subtype="eMMC Toshiba/Kioxia MLC/TLC" — idem ao padrão da família THGBM.
+    # THGBM grammar decodifica estes PNs: pn[5]='J'→eMMC 5.1, pn[7:10]→capacidade.
+    # BAB7/BAB8 = automotive Grade 2 (-40°C a 105°C); BAU7/BAU8 = industrial existentes.
+
+    {
+        "pn": "THGBMJG6C1LBAB7",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "eMMC 5.1",
+            "capacity":  "8GB",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 8GB Automotive AEC-Q100 Grade 2. "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive e-MMC': THGBMJG6C1LBAB7 8GB eMMC 5.1 FG NAND. "
+            "Variante BAB7 vs BAU7 industrial (já no banco). Brand=Toshiba por consistência com BAU. "
+            "THGBM_GEN: pn[5]='J'→eMMC 5.1. THGBM_CAP: pn[7:10]='6C1'→8GB (Tier 1 ✓). "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGBMJG7C2LBAB8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "eMMC 5.1",
+            "capacity":  "16GB",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 16GB Automotive AEC-Q100 Grade 2. "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive e-MMC': THGBMJG7C2LBAB8 16GB eMMC 5.1. "
+            "Variante BAB8 vs BAU8 industrial. THGBM_CAP: pn[7:10]='7C2'→16GB. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGBMJG8C4LBAB8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "eMMC 5.1",
+            "capacity":  "32GB",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 32GB Automotive AEC-Q100 Grade 2. "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive e-MMC': THGBMJG8C4LBAB8 32GB eMMC 5.1. "
+            "Variante BAB8 vs BAU8 industrial. THGBM_CAP: pn[7:10]='8C4'→32GB. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
+        ),
+    },
+    {
+        "pn": "THGBMJG9C8LBAB8",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Toshiba",
+            "chip_type":  "eMMC",
+            "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "interface": "eMMC 5.1",
+            "capacity":  "64GB",
+        },
+        "reason": (
+            "Kioxia eMMC 5.1 64GB Automotive AEC-Q100 Grade 2. "
+            "Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), "
+            "tabela 'Automotive e-MMC': THGBMJG9C8LBAB8 64GB eMMC 5.1. "
+            "Variante BAB8 vs BAU8 industrial. THGBM_CAP: pn[7:10]='9C8'→64GB. "
+            "URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf."
         ),
     },
 

@@ -142,7 +142,7 @@ def _extract_gb(text: str) -> str:
 
 # "Gb" = gigabit (≠ "GB" gigabyte). Densidade DRAM por die.
 _GBIT_RE = re.compile(r'(\d+(?:\.\d+)?)\s*Gb\b')
-_CAP_BYTES_RE = re.compile(r'(\d+(?:\.\d+)?)\s*(GB|MB)\b', re.I)  # capacidade em bytes
+_CAP_BYTES_RE = re.compile(r'(\d+(?:\.\d+)?)\s*(TB|GB|MB)\b', re.I)  # capacidade em bytes (TB adicionado 2026-06-26)
 
 
 def _format_cap(text: str) -> str:
@@ -217,13 +217,16 @@ def _compute_destination(result: dict) -> tuple:
         return label, 'emcp'
 
     if 'ufs' in ct:
-        cap   = _extract_gb(result.get('capacity', ''))
-        label = f"UFS{cap}GB" if cap else 'UFS'
+        # _format_cap preserva a unidade original: "128GB"→"128GB", "1TB"→"1TB".
+        # Antes usava _extract_gb + "GB" hardcoded, o que produzia "UFS" (label vazio)
+        # para chips 1TB — _extract_gb só reconhecia GB, não TB (fix 2026-06-26).
+        cap   = _format_cap(result.get('capacity', ''))
+        label = f"UFS{cap}" if cap else 'UFS'
         return label, 'ufs'
 
     if 'emmc' in ct:
-        cap   = _extract_gb(result.get('capacity', ''))
-        label = f"EMMC{cap}GB" if cap else 'eMMC'
+        cap   = _format_cap(result.get('capacity', ''))
+        label = f"EMMC{cap}" if cap else 'eMMC'
         return label, 'emmc'
 
     # GDDR antes do bloco DDR — 'ddr' in 'gddr3' seria True (substring), causando

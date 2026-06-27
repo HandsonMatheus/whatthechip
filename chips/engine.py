@@ -366,7 +366,8 @@ EMCP_RAM_TYPES = {
 
 
 # ── Regex de capacidade (usada em múltiplos lugares) ──────────────────────────
-_CAP_RE = re.compile(r"(\d+)\s*([GMK])B", re.I)
+# T (terabyte) incluído a partir de 2026-06-26 para suportar UFS 1TB+ (Kioxia).
+_CAP_RE = re.compile(r"(\d+)\s*([TGMK])B", re.I)
 
 # ── Regex de detecção de código FBGA ─────────────────────────────────────────
 # Padrão Micron: 5 caracteres alfanuméricos, 2º char numérico.
@@ -883,6 +884,8 @@ def _extract_gib(text: str) -> float | None:
     if not m:
         return None
     val, unit = float(m.group(1)), m.group(2).upper()
+    if unit == "T":
+        return val * 1024  # TB → GB (ex: 1TB = 1024GB)
     if unit == "K":
         return val / 1024 / 1024
     if unit == "M":
@@ -1060,6 +1063,17 @@ def assess_profitability(result: dict) -> str:
         ram_str  = (result.get("emcp_ram")  or "").strip()
         nand_str = (result.get("emcp_nand") or "").strip()
 
+        # ── FIX 2026-06-26: geração LPDDR no subtype — famílias sem decode map ──
+        # Famílias "magras" (sem DecodeMap) têm ram_str="" mas o subtype da ChipFamily
+        # pode declarar a geração LPDDR (ex.: subtype="eMCP Toshiba LPDDR2 (legado)").
+        # Sem este bloco, o guard abaixo retornaria INDETERMINADO antes de checar a geração,
+        # mesmo quando o subtype já é suficiente para decidir NÃO RENTÁVEL por tipo.
+        # Chips afetados: TYC* (Toshiba eMCP LPDDR2, sem ChipFamily até 2026-06-26).
+        if not ram_str:
+            lpddr_gen_sub = _lpddr_generation(combined)
+            if lpddr_gen_sub is not None and lpddr_gen_sub < cfg.emcp_min_lpddr_gen:
+                return "NÃO RENTÁVEL"
+
         if not ram_str or not nand_str:
             return "INDETERMINADO"
 
@@ -1168,8 +1182,9 @@ def assess_profitability(result: dict) -> str:
     return "INDETERMINADO"
 
 
-# Números de capacidade/densidade (ex.: "16GB", "1.5GB", "512MB", "8Gb").
-_CAP_NUM_RE = re.compile(r"\d+(?:\.\d+)?\s*(?:GB|MB)\b", re.I)
+# Números de capacidade/densidade (ex.: "16GB", "1.5GB", "512MB", "8Gb", "1TB").
+# TB adicionado 2026-06-26 para suportar UFS 1TB+ (Kioxia THGJF*).
+_CAP_NUM_RE = re.compile(r"\d+(?:\.\d+)?\s*(?:TB|GB|MB)\b", re.I)
 
 
 def _strip_capacity(result: dict) -> dict:
