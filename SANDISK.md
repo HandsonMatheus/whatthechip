@@ -410,7 +410,7 @@ confirmado na esteira. Não existe outra forma de popular a capacidade automatic
         "brand_name": "SanDisk",
         "chip_type":  "eMMC",
         "subtype":    "",           # VAZIO para eMMC standalone — sempre
-        # status e confidence DEVEM estar aqui
+        # confidence DEVE estar aqui — NUNCA status (campo removido jun/2026)
         "confidence": "distributor",
     },
     "fields": {
@@ -662,10 +662,38 @@ não encoda a geração da RAM no PN. A geração é determinada pelo ball count
 SD7DP24C-4G e SD7DP24F-4G (Tier 3 múlt.). Aguardando confirmação independente:
 `SD7DP26A-4G` e `SD7DP41E-16G` (apenas 1 fonte Grandado — insuficiente).
 
-**eMMC SDIN — banco ainda raso:**
-Cada PN SanDisk que aparecer na esteira deve ser adicionado a `fix_known_parts.py`
-(create=True) com capacidade e versão de interface confirmadas por Octopart ou Preduo.
-Sub-séries prioritárias: `SDINADF4-*` (eMMC 5.1), `SDIN8DE4-*` (eMMC 5.0), `SDIN9DW4-*`.
+**✅ SDINADF4 (iNAND 7232) — CONCLUÍDO (2026-06-26):**
+8 PNs da família iNAND 7232 adicionados ao `fix_known_parts.py`. Tier 1 confirmado no Mouser
+e Avnet/Octopart. Datasheet oficial WD DOC-06397 Rev 1.13. Cobertos: 16G/32G/64G/128G e
+variantes -H. Interface: eMMC 5.1 HS400. NAND: TLC. Temp: -25°C a 85°C.
+Confidence=`confirmed` para 16G, 64G, 16GH, 64GH (Mouser Tier 1); `distributor` para 32G, 128G e H.
+
+**✅ SD5DH — CONCLUÍDO e FECHADO (2026-06-26):**
+Nova ChipFamily `SD5DH` adicionada ao `populate_sandisk.py`. 2 PNs em
+`fix_known_parts.py` (SD5DH24C4G e SD5DH24A4G). Era 2012-2013, eMMC 4.3/4.4 (estimada).
+Dispositivos: Samsung GT-S5301 (Galaxy Pocket Plus), S6810 (Galaxy Fame), S6802 (Galaxy S Advance).
+Interface sem Tier 1 — não adicionar campo `interface` sem datasheet oficial.
+**Pesquisa exaustiva (2026-06-26) confirmou:** apenas 2 variantes existem (24C-4G e 24A-4G),
+ambas 4GB. Sem variantes 8GB em nenhuma fonte (Mouser/DigiKey/Octopart/Tier 3/CH). Família mapeada.
+Contexto: SDIN5D1 (SanDisk iNAND, datasheet Dec 2011) usa eMMC 4.41 — era coincide com SD5DH.
+
+**✅ SDIN8DE2 — CONCLUÍDO (2026-06-26):**
+5 PNs adicionados ao `fix_known_parts.py` (4G, 4G-I, 8G, 8G-A, 16G).
+Interface **eMMC 4.51 HS200** — confirmado Mouser Tier 1 (SDIN8DE2-8G-A e SDIN8DE2-4G-I).
+Datasheet WD/SanDisk: "SanDisk Commercial Embedded Storage Solutions" (alldatasheet.com).
+Package: TFBGA-153, 11.5×13mm. NRND — legacy presente na esteira.
+Confidence: `confirmed` para -8G-A e -4G-I (Mouser direto); `distributor` para -8G, -4G, -16G.
+
+**✅ SDIN5C2 — CONCLUÍDO (2026-06-26):**
+5 PNs adicionados ao `fix_known_parts.py` (8G, 8G-L, 16G-L, 32G-L, 64G-L).
+Interface **eMMC 4.41** — confirmado pelo datasheet oficial SanDisk doc# 80-36-03462
+(v1.4, Dec 2011, "SanDisk iNAND e.MMC 4.41 I/F — Released Data Sheet").
+Todos os SKUs explícitos na tabela de ordering. Package: TFBGA-169, 12×16mm, X2 MLC NAND.
+Confidence: `confirmed` para todos (datasheet Tier 1).
+
+**eMMC SDIN — cobertura ampliada:**
+Sub-séries ainda não mapeadas: `SDIN5D*` (eMMC 4.41, 11.5×13mm), `SDIN7*` (eMMC 4.41/4.5).
+Quando aparecerem na esteira, adicionar via `fix_known_parts.py` com capacity + interface.
 
 **eMCP SDAD — ampliar cobertura:**
 `SDADF4AP-16G` (PN irmão de SDADB48K-16G, mesmo 16+2) é candidato próximo a confirmar.
@@ -715,23 +743,68 @@ cartões SD reimplantados — não confundir com chips embarcados).
 | 2026-06-26 | SD7DP28C8G | fix_known_parts: eMMC 5.1, 8GB, confidence=distributor | Jotrin + Censtry (Tier 3, múltiplas fontes) | Variante 8GB — não está no Octopart |
 | 2026-06-26 | SD7DP24C4G | fix_known_parts: eMMC 5.1, 4GB, confidence=distributor | Win Source + Veswin + Huawei Y330-U01 | Die code 24C confirmado |
 | 2026-06-26 | SD7DP24F4G | fix_known_parts: eMMC 5.1, 4GB, confidence=distributor | IC-Components + Jotrin + OMO + Grandado (4 fontes Tier 3) | Die code 24F confirmado |
+| 2026-06-26 | SD5DH | Nova ChipFamily em populate_sandisk.py (prefixo SD5DH, eMMC 4.3/4.4 est.) | serviceemmc.com + Jotrin (Tier 3) | Família completa: só 2 variantes 4GB existem |
+| 2026-06-26 | SD5DH24C4G | fix_known_parts: eMMC, 4GB, confidence=distributor | serviceemmc.com: Samsung GT-S5301 (Galaxy Pocket Plus) / S6810 (Galaxy Fame) | Die code 24C, 24nm |
+| 2026-06-26 | SD5DH24A4G | fix_known_parts: eMMC, 4GB, confidence=distributor | serviceemmc.com: Samsung S6802 (Galaxy S Advance) | Die code 24A, revisão do mesmo die 24nm |
+| 2026-06-26 | SDINADF416G | fix_known_parts: eMMC 5.1, 16GB, confidence=**confirmed** | Mouser Tier 1 + DOC-06397 (WD/SanDisk) | iNAND 7232 — primeiro confirmed da série |
+| 2026-06-26 | SDINADF432G | fix_known_parts: eMMC 5.1, 32GB, confidence=distributor | Octopart Tier 2 + serviceemmc.com (Honor V9) | PN do operador que mostrou INDETERMINADO |
+| 2026-06-26 | SDINADF464G | fix_known_parts: eMMC 5.1, 64GB, confidence=**confirmed** | Mouser + Avnet/Octopart Tier 1 (LG H961N/H960) | Maior disponibilidade de estoque |
+| 2026-06-26 | SDINADF4128G | fix_known_parts: eMMC 5.1, 128GB, confidence=distributor | Octopart Tier 2 + DOC-06397 range | Máxima capacidade da família |
+| 2026-06-26 | SDINADF416GH | fix_known_parts: eMMC 5.1, 16GB, confidence=**confirmed** | Mouser Tier 1 | Variante -H (temperatura estendida) |
+| 2026-06-26 | SDINADF432GH | fix_known_parts: eMMC 5.1, 32GB, confidence=distributor | Octopart Tier 2 | Variante -H do 32G |
+| 2026-06-26 | SDINADF464GH | fix_known_parts: eMMC 5.1, 64GB, confidence=**confirmed** | Mouser Tier 1 + datasheet PDF | Variante -H do 64G — mais documentado |
+| 2026-06-26 | SDINADF4128GH | fix_known_parts: eMMC 5.1, 128GB, confidence=distributor | Octopart Tier 2 | Variante -H do 128G |
+| 2026-06-26 | SDIN8DE28G | fix_known_parts: eMMC 4.51, 8GB, confidence=distributor | Mouser India + Avaq (PN base); Mouser confirma -8G-A | PN da esteira eMiner |
+| 2026-06-26 | **SDIN8DE28GA** | fix_known_parts: eMMC 4.51, 8GB, confidence=**confirmed** | **Mouser Tier 1** (#467-SDIN8DE2-8G-A) | Automotive variant — Tier 1 direto |
+| 2026-06-26 | **SDIN8DE24GI** | fix_known_parts: eMMC 4.51, 4GB, confidence=**confirmed** | **Mouser Tier 1** (#467-SDIN8DE2-4G-I) | Industrial variant — Tier 1 direto |
+| 2026-06-26 | SDIN8DE24G | fix_known_parts: eMMC 4.51, 4GB, confidence=distributor | FindChips + Veswin (Tier 3) | Variante consumer 4GB |
+| 2026-06-26 | SDIN8DE216G | fix_known_parts: eMMC 4.51, 16GB, confidence=distributor | Mouser (NRND/obsoleto) + FindChips | Máxima capacidade da família |
+| 2026-06-26 | **SDIN5C28G** | fix_known_parts: eMMC 4.41, 8GB, confidence=**confirmed** | **Datasheet SanDisk doc# 80-36-03462** (v1.4, Dec 2011) | PN da esteira eMiner — Tier 1 |
+| 2026-06-26 | **SDIN5C28GL** | fix_known_parts: eMMC 4.41, 8GB, confidence=**confirmed** | **Datasheet SanDisk doc# 80-36-03462** — SKU explícito | Variante -L (tray packaging) |
+| 2026-06-26 | **SDIN5C216GL** | fix_known_parts: eMMC 4.41, 16GB, confidence=**confirmed** | **Datasheet SanDisk doc# 80-36-03462** — SKU explícito | 12×16mm, X2 MLC |
+| 2026-06-26 | **SDIN5C232GL** | fix_known_parts: eMMC 4.41, 32GB, confidence=**confirmed** | **Datasheet SanDisk doc# 80-36-03462** — SKU explícito | 12×16×1.2mm |
+| 2026-06-26 | **SDIN5C264GL** | fix_known_parts: eMMC 4.41, 64GB, confidence=**confirmed** | **Datasheet SanDisk doc# 80-36-03462** — SKU explícito | Maior capacidade SDIN5C2 |
 
 ### Chips individuais confirmados (banco)
 
 | PN (normalizado) | Tipo | Capacidade | Fonte | Status |
 |------------------|------|-----------|-------|--------|
-| SDIN7DU28G | eMMC 4.41 | 8GB | Datasheet doc# 80-36-03666 + Octopart (11 distrib.) | ✅ enriched/distributor |
-| SDIN9DW416G | eMMC 5.0 | 16GB | Preduo + Octopart (7 distrib.) | ✅ enriched/distributor |
-| SDIN9DW432G | eMMC 5.0 | 32GB | Octopart + Preduo | ✅ enriched/distributor |
-| SDADB48K16G | eMCP | 16GB+LPDDR3 2GB | chinahao/eBay B2B + Preduo 221-ball | ✅ enriched/distributor |
-| SD7DP28C4G | eMMC 5.1* | 4GB | Octopart Tier 2 (5 distrib.) + Martview dispositivo | ✅ enriched/distributor |
-| SD7DP28C8G | eMMC 5.1* | 8GB | Jotrin + Censtry + Grandado (Tier 3) | ✅ enriched/distributor |
-| SD7DP24C4G | eMMC 5.1* | 4GB | Win Source + Veswin + Huawei Y330-U01 (Tier 3) | ✅ enriched/distributor |
-| SD7DP24F4G | eMMC 5.1* | 4GB | IC-Components + Jotrin + OMO + Grandado (Tier 3) | ✅ enriched/distributor |
+| SDIN7DU28G | eMMC 4.41 | 8GB | Datasheet doc# 80-36-03666 + Octopart (11 distrib.) | ✅ distributor |
+| SDIN9DW416G | eMMC 5.0 | 16GB | Preduo + Octopart (7 distrib.) | ✅ distributor |
+| SDIN9DW432G | eMMC 5.0 | 32GB | Octopart + Preduo | ✅ distributor |
+| SDADB48K16G | eMCP | 16GB+LPDDR3 2GB | chinahao/eBay B2B + Preduo 221-ball | ✅ distributor |
+| SD7DP28C4G | eMMC 5.1* | 4GB | Octopart Tier 2 (5 distrib.) + Martview | ✅ distributor |
+| SD7DP28C8G | eMMC 5.1* | 8GB | Jotrin + Censtry + Grandado (Tier 3) | ✅ distributor |
+| SD7DP24C4G | eMMC 5.1* | 4GB | Win Source + Veswin + Huawei Y330-U01 | ✅ distributor |
+| SD7DP24F4G | eMMC 5.1* | 4GB | IC-Components + Jotrin + OMO + Grandado | ✅ distributor |
+| SDIN8DE28G | eMMC 4.51 | 8GB | Mouser India + Avaq (PN base) + Mouser Tier 1 para -A | ✅ distributor |
+| **SDIN8DE28GA** | **eMMC 4.51** | **8GB** | **Mouser Tier 1** — "eMMC 8GB 4.51 HS200 Auto" | **✅ confirmed** |
+| **SDIN8DE24GI** | **eMMC 4.51** | **4GB** | **Mouser Tier 1** — "eMMC 4GB 4.51 HS200" | **✅ confirmed** |
+| SDIN8DE24G | eMMC 4.51 | 4GB | FindChips + Veswin (Tier 3) | ✅ distributor |
+| SDIN8DE216G | eMMC 4.51 | 16GB | Mouser (NRND) + FindChips | ✅ distributor |
+| **SDIN5C28G** | **eMMC 4.41** | **8GB** | **Datasheet SanDisk doc# 80-36-03462** (Tier 1) | **✅ confirmed** |
+| **SDIN5C28GL** | **eMMC 4.41** | **8GB** | **Datasheet SanDisk doc# 80-36-03462** (SKU explícito) | **✅ confirmed** |
+| **SDIN5C216GL** | **eMMC 4.41** | **16GB** | **Datasheet SanDisk doc# 80-36-03462** (SKU explícito) | **✅ confirmed** |
+| **SDIN5C232GL** | **eMMC 4.41** | **32GB** | **Datasheet SanDisk doc# 80-36-03462** (SKU explícito) | **✅ confirmed** |
+| **SDIN5C264GL** | **eMMC 4.41** | **64GB** | **Datasheet SanDisk doc# 80-36-03462** (SKU explícito) | **✅ confirmed** |
+| **SDINADF416G** | **eMMC 5.1** | **16GB** | **Mouser Tier 1 + DOC-06397** | **✅ confirmed** |
+| SDINADF432G | eMMC 5.1 | 32GB | Octopart Tier 2 + Honor V9 | ✅ distributor |
+| **SDINADF464G** | **eMMC 5.1** | **64GB** | **Mouser + Avnet/Octopart Tier 1** | **✅ confirmed** |
+| SDINADF4128G | eMMC 5.1 | 128GB | Octopart Tier 2 | ✅ distributor |
+| **SDINADF416GH** | **eMMC 5.1** | **16GB** | **Mouser Tier 1** | **✅ confirmed** |
+| SDINADF432GH | eMMC 5.1 | 32GB | Octopart Tier 2 | ✅ distributor |
+| **SDINADF464GH** | **eMMC 5.1** | **64GB** | **Mouser Tier 1 (datasheet PDF)** | **✅ confirmed** |
+| SDINADF4128GH | eMMC 5.1 | 128GB | Octopart Tier 2 | ✅ distributor |
+| SD5DH24C4G | eMMC 4.3/4.4† | 4GB | serviceemmc.com (GT-S5301 Galaxy Pocket Plus / S6810 Galaxy Fame) | ✅ distributor |
+| SD5DH24A4G | eMMC 4.3/4.4† | 4GB | serviceemmc.com (S6802 Galaxy S Advance) | ✅ distributor |
 
 > \* Interface "eMMC 5.1" herdada de `populate_sandisk.py`. Incerteza: a contraparte OEM SDIN7DP2
 > (Mouser Product Brief oficial, dez/2015) é eMMC **4.51**. Se fonte Tier 1 confirmar 4.51,
 > corrigir `populate_sandisk.py` e os registros acima.
+>
+> † Interface SD5DH estimada pela era (2012-2013). Sem datasheet Tier 1 confirmado para SD5DH.
+> Contexto: SDIN5D1 (SanDisk iNAND standard, datasheet Dec 2011) usa eMMC 4.41 — era coincide.
+> Não adicionar campo `interface` no banco até confirmar com datasheet oficial específico do SD5DH.
 
 ### Aguardando confirmação — NÃO adicionar sem fonte Tier 2+ independente
 

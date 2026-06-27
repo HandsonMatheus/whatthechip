@@ -4671,32 +4671,46 @@ CORRECTIONS = [
     # SDADB48K16G: emcp_nand salvo como "eMMC 16GB" (formato legacy) — deve ser "16GB".
     {
         "pn": "SDIN8DE232G",
-        "create": False,    # já existe no banco como estimated — só atualiza
+        "create": True,     # cria se não existe; atualiza se já existe
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "distributor",  # em create_defaults E fields (padrão do projeto)
+        },
         "fields": {
             "chip_type":  "eMMC",
-            "confidence": "distributor",
+            "confidence": "distributor",  # garante promoção estimated→distributor em registros existentes
             "capacity":   "32GB",
             "interface":  "eMMC 4.51",
         },
         "reason": (
             "SDIN8DE2-32G — mesma família das -8G/-16G já distributor+capacity. "
-            "SanDisk Commercial Embedded Product Brief (Mouser). Atualiza confidence "
-            "de estimated→distributor e preenche capacity para passar gate _USABLE."
+            "SanDisk Commercial Embedded Product Brief (Mouser). "
+            "confidence em fields + create_defaults: garante promoção estimated→distributor "
+            "e preenche capacity para passar gate _USABLE (known_exact=True)."
         ),
     },
     {
         "pn": "SDIN5C216G",
-        "create": False,    # já existe no banco como estimated — só atualiza
+        "create": True,     # cria se não existe; atualiza se já existe
+        "create_defaults": {
+            "brand_name": "SanDisk",
+            "chip_type":  "eMMC",
+            "subtype":    "",
+            "confidence": "confirmed",  # em create_defaults E fields (padrão do projeto)
+        },
         "fields": {
             "chip_type":  "eMMC",
-            "confidence": "confirmed",
+            "confidence": "confirmed",  # garante promoção estimated→confirmed em registros existentes
             "capacity":   "16GB",
             "interface":  "eMMC 4.41",
         },
         "reason": (
             "SDIN5C2-16G X2 MLC BGA169 — mesma família da -8G já confirmed. "
             "WD datasheet doc# 80-36-03433 V1.3 Dez/2010 + doc# 80-36-03462. "
-            "Atualiza confidence de estimated→confirmed e preenche capacity."
+            "confidence em fields + create_defaults: garante promoção estimated→confirmed "
+            "e preenche capacity para passar gate _USABLE (known_exact=True)."
         ),
     },
     {

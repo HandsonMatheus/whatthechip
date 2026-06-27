@@ -235,7 +235,8 @@ class Command(BaseCommand):
                     "eMMC SanDisk iNAND legado (SDIN...). Família mais comum na esteira. "
                     "Cobre múltiplas gerações: eMMC 4.5, 5.0 e 5.1. "
                     "Capacidade no sufixo após o traço: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB · -128G=128GB. "
-                    "Sub-famílias: SDINBDG / SDINBEG / SDINFEG = variantes UFS OEM (alta velocidade). "
+                    "Sub-famílias: SDINBDG4 / SDINBDD4 / SDINBDA4 = iNAND 7250/7350/7550 (eMMC 5.1). "
+                    "UFS real usa prefixos SDINDDH / SDINEDK / SDINFD (famílias distintas). "
                     "⚠ SDINB... (prefixo mais longo) tem prioridade — engine bate nele antes deste. "
                     "⚠ Sufixo OCR truncado → chip sem capacidade. "
                     "Confirmar via fix_known_parts por PN específico. "
@@ -243,40 +244,44 @@ class Command(BaseCommand):
                 ),
             ),
 
-            # ═══ iNAND UFS OEM (SDINB...) ═══════════════════════════════════
+            # ═══ iNAND eMMC 5.1 (SDINB...) ══════════════════════════════════
             #
-            # Sub-família SanDisk iNAND com interface UFS (Universal Flash Storage).
-            # Prefixo SDINB é mais longo que SDIN → priority=40 garante match primeiro.
+            # ⚠ CORRIGIDO jun/2026: SDINB* é eMMC 5.1, NÃO UFS.
+            #   Fontes primárias: product briefs oficiais SanDisk/WD
+            #     PB01-iNAND-7350 (SDINBDD4), PB02-iNAND-7250 (SDINBDG4),
+            #     PB04-iNAND-7550 (SDINBDA4).
+            #   Os verdadeiros UFS SanDisk usam prefixos SDINDDH / SDINEDK / SDINFD
+            #   (famílias próprias mais abaixo neste arquivo).
             #
-            # Variantes confirmadas em catálogos WD/B2B:
-            #   SDINBDG4 — UFS 2.1 (ex: SDINBDG4-128G = 128GB UFS 2.1)
-            #   SDINBEG4 — UFS 2.1 variante (ex: SDINBEG4-64G)
-            #   SDINBEG5 — UFS 3.0 variante
+            # Variantes confirmadas (eMMC 5.1 HS400):
+            #   SDINBDG4 — iNAND 7250  X2 MLC  (8..64GB)
+            #   SDINBDD4 — iNAND 7350  3D NAND (32..256GB)
+            #   SDINBDA4 — iNAND 7550  Gen4 SmartSLC (32..256GB)
+            #   SDINBEG4/5 — classificação pendente (BGA153 11.5×13mm)
             #
-            # Capacidade: sufixo declarativo (-64G, -128G, -256G).
-            # Interface UFS confirma: SDINB = armazenamento serial de alta velocidade.
-            #
-            # Fontes: catálogos WD/SanDisk + distribuidores B2B asiáticos ✓
+            # Capacidade: sufixo declarativo (-8G, -16G, -32G, -64G, -128G, -256G).
+            # Todos standalone eMMC — NOT eMCP (zero RAM).
+            # BGA153 11.5×13mm.
             #
             dict(
                 prefix="SDINB",
-                chip_type="UFS",
-                subtype="UFS standalone (iNAND OEM)",
-                interface="UFS 2.1 / 3.0",
+                chip_type="eMMC",
+                subtype="",
+                interface="eMMC 5.1",
                 is_emcp=False,
                 active=True,
-                priority=40,   # menor número = maior prioridade → bate antes do SDIN
+                priority=40,   # menor número = maior prioridade → bate antes do SDIN genérico (80)
                 pn_length=None,
                 decode_cap_pos=None, decode_cap_len=1, decode_cap_map="",
                 decode_gen_pos=None, decode_gen_len=1, decode_gen_map="",
                 tip=(
-                    "UFS SanDisk iNAND OEM (SDINB...). Interface serial de alta velocidade. "
-                    "Variantes confirmadas: SDINBDG4 (UFS 2.1) · SDINBEG4 (UFS 2.1) · SDINBEG5 (UFS 3.0). "
-                    "Capacidade no sufixo: -64G=64GB · -128G=128GB · -256G=256GB. "
-                    "⚠ Encapsulamento BGA pode ser visualmente idêntico ao eMMC — verificar prefixo. "
+                    "eMMC 5.1 SanDisk iNAND (SDINB...). HS400; BGA153 11.5×13mm. "
+                    "Sub-linhas: SDINBDG4=iNAND7250 · SDINBDD4=iNAND7350(3D) · SDINBDA4=iNAND7550(SmartSLC). "
+                    "Capacidade: -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB · -128G=128GB · -256G=256GB. "
+                    "⚠ NÃO é UFS — corrigido jun/2026 (product briefs PB01/PB02/PB04). "
                     "⚠ Prioridade 40: bate antes do SDIN genérico (priority=80). "
-                    "Confirmar interface e capacidade via fix_known_parts. "
-                    "Destino: bancada UFS (preço premium vs eMMC — não misturar)."
+                    "Confirmar capacidade via fix_known_parts por PN específico. "
+                    "Destino: bancada eMMC."
                 ),
             ),
 
@@ -369,6 +374,42 @@ class Command(BaseCommand):
                 ),
             ),
 
+            # ═══ eMMC SanDisk legado SD5DH (era 2012-2013) ════════════════════
+            #
+            # Família eMMC SanDisk de baixa capacidade, era 2012-2013.
+            # Prefixo SD5DH = SanDisk (SD) + produto 5ª geração / série (5) + DH.
+            # Die code: 24 = 24nm; letra A/C = revisão do die.
+            # Capacidade declarativa no sufixo: -4G=4GB · -8G=8GB.
+            #
+            # Dispositivos confirmados (serviceemmc.com, Tier 3):
+            #   SD5DH24C-4G → Samsung S5301 (Galaxy Pocket 2) / S6810 (Galaxy Fame)
+            #   SD5DH24A-4G → Samsung S6802 (Galaxy S Advance)
+            #
+            # Interface: eMMC 4.3 / 4.4 estimada pela era (2012-2013).
+            # ⚠ Sem datasheet Tier 1 confirmado para interface exata.
+            # ⚠ PNs específicos confirmados via fix_known_parts (create=True).
+            #   Família gramatical cobre variantes não mapeadas com chip_type correto.
+            #
+            dict(
+                prefix="SD5DH",
+                chip_type="eMMC",
+                subtype="",
+                interface="eMMC 4.3 / 4.4",
+                is_emcp=False,
+                active=True,
+                priority=30,
+                pn_length=None,
+                decode_cap_pos=None, decode_cap_len=1, decode_cap_map="",
+                decode_gen_pos=None, decode_gen_len=1, decode_gen_map="",
+                tip=(
+                    "eMMC SanDisk legado (SD5DH...). Era 2012-2013. Capacidade típica: 4GB-8GB. "
+                    "Die code: 24=24nm · A/C/F=revisão. Sufixo declarativo: -4G=4GB · -8G=8GB. "
+                    "Dispositivos: S5301 (Galaxy Pocket 2), S6810 (Galaxy Fame), S6802 (S Advance). "
+                    "⚠ Interface eMMC 4.3/4.4 estimada — sem datasheet Tier 1 confirmado. "
+                    "Confirmar capacidade via fix_known_parts por PN específico."
+                ),
+            ),
+
             # ═══ UFS standalone SDHQB ══════════════════════════════════════════
             #
             # UFS standalone SanDisk — prefixo SDHQB citado no fab-sandisk.html.
@@ -392,6 +433,92 @@ class Command(BaseCommand):
                     "⚠ PENDENTE: sem PN físico confirmado na esteira. "
                     "Confirmar capacidade e geração UFS via fix_known_parts. "
                     "Destino provisório: bancada UFS — preço premium vs eMMC."
+                ),
+            ),
+
+            # ═══ UFS 2.1 iNAND 8521 / IX EU312 (SDINDDH) ══════════════════════
+            #
+            # Linha UFS real SanDisk — confirmada por product brief PB03-iNAND-8521
+            # (Mouser Tier 1). Gear3 2-lane; ~500MB/s read; TFBGA-153 11.5×13mm.
+            # SDINDDH4 = iNAND 8521 (consumer); SDINDDH6 = iNAND IX EU312 (industrial).
+            # Capacidade: sufixo declarativo (-32G=32GB … -256G=256GB).
+            # Adicionado jun/2026 (corrigido do antigo SDINB=UFS que era incorreto).
+            #
+            dict(
+                prefix="SDINDDH",
+                chip_type="UFS",
+                subtype="",
+                interface="UFS 2.1",
+                is_emcp=False,
+                active=True,
+                priority=30,   # bate antes de SDINB (40) e SDIN (80)
+                pn_length=None,
+                decode_cap_pos=None, decode_cap_len=1, decode_cap_map="",
+                decode_gen_pos=None, decode_gen_len=1, decode_gen_map="",
+                tip=(
+                    "UFS 2.1 SanDisk iNAND 8521 / IX EU312 (SDINDDH...). "
+                    "Gear3 2-lane; ~500MB/s leitura; TFBGA-153 11.5×13mm. "
+                    "SDINDDH4=consumer · SDINDDH6=industrial (-25..85°C, TLC). "
+                    "Capacidade: -32G=32GB · -64G=64GB · -128G=128GB · -256G=256GB. "
+                    "Confirmar por PN específico via fix_known_parts. "
+                    "Destino: bancada UFS."
+                ),
+            ),
+
+            # ═══ UFS 3.0 iNAND MC EU511 (SDINEDK) ══════════════════════════════
+            #
+            # SanDisk iNAND Mobile Commerce EU511 — UFS 3.0 Gear4 2-lane.
+            # SmartSLC Gen6; seq write ~800MB/s. Confirmado via SanDisk PDP.
+            # TFBGA-153 (estimado — mesmo form factor). Capacidade: 128–512GB.
+            # Adicionado jun/2026 (pesquisa Opus 4 extended thinking).
+            #
+            dict(
+                prefix="SDINEDK",
+                chip_type="UFS",
+                subtype="",
+                interface="UFS 3.0",
+                is_emcp=False,
+                active=True,
+                priority=30,
+                pn_length=None,
+                decode_cap_pos=None, decode_cap_len=1, decode_cap_map="",
+                decode_gen_pos=None, decode_gen_len=1, decode_gen_map="",
+                tip=(
+                    "UFS 3.0 SanDisk iNAND MC EU511 (SDINEDK...). "
+                    "Gear4 2-lane; SmartSLC Gen6; ~800MB/s seq write. "
+                    "Capacidade: -128G=128GB · -256G=256GB · -512G=512GB. "
+                    "Confirmar por PN específico via fix_known_parts. "
+                    "Destino: bancada UFS (geração moderna — premium)."
+                ),
+            ),
+
+            # ═══ UFS 3.1 iNAND MC EU551 / AT EU552 (SDINFD) ═══════════════════
+            #
+            # Linha UFS 3.1 SanDisk — três prefixos sob a mesma família:
+            #   SDINFDK4  — iNAND MC EU551 consumer (Avnet/Arrow, Octopart Tier 2)
+            #   SDINFDO4  — iNAND MC EU551 variante (SanDisk PDP)
+            #   SDINFDQ6  — iNAND AT EU552 automotivo AEC-Q100 (-40..105°C)
+            # WriteBooster 2ª geração; Gear4. Capacidade: 64–512GB.
+            # Adicionado jun/2026 (pesquisa Opus 4 extended thinking).
+            #
+            dict(
+                prefix="SDINFD",
+                chip_type="UFS",
+                subtype="",
+                interface="UFS 3.1",
+                is_emcp=False,
+                active=True,
+                priority=30,
+                pn_length=None,
+                decode_cap_pos=None, decode_cap_len=1, decode_cap_map="",
+                decode_gen_pos=None, decode_gen_len=1, decode_gen_map="",
+                tip=(
+                    "UFS 3.1 SanDisk iNAND (SDINFD...). Gear4; WriteBooster 2ª geração. "
+                    "SDINFDK4=EU551 consumer · SDINFDO4=EU551 variante · SDINFDQ6=EU552 automotivo AEC. "
+                    "Capacidade: -64G=64GB · -128G=128GB · -256G=256GB · -512G=512GB. "
+                    "Sufixo automotivo: -XA1 / -ZA1 = AEC grade (-40..105°C). "
+                    "Confirmar por PN específico via fix_known_parts. "
+                    "Destino: bancada UFS (geração mais recente — maior valor)."
                 ),
             ),
 
