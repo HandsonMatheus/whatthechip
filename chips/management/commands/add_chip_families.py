@@ -180,14 +180,14 @@ FAMILIES = [
     {
         'brand_name': 'Micron',
         'prefix':     'MT52L',
-        'chip_type':  'LPDDR4',
-        'subtype':    'LPDDR4',
-        'interface':  'LPDDR4',
+        'chip_type':  'LPDDR3',
+        'subtype':    'LPDDR3',
+        'interface':  'LPDDR3',
         'is_emcp':    False,
         'priority':   50,
         'decode_density_type': 'micron',   # fórmula depth×width no engine (sem dies)
         'tip': (
-            'LPDDR4 mobile Micron. '
+            'LPDDR3 mobile Micron (nomenclatura: "52" = LPDDR3, atestado tier-1). '
             'Decode: profundidade × largura ÷ 8 = GB (o sufixo D{N} = dies NÃO multiplica). '
             'Ex: MT52L512M32D2PF-107 = 512M×32bit = 16Gb ÷ 8 = 2GB.'
         ),

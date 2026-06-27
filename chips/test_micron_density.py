@@ -86,3 +86,28 @@ class FixMicronLpddrSpecsCommandTests(TestCase):
         call_command("fix_micron_lpddr_specs")   # default: só confirmed/manual
         kp.refresh_from_db()
         self.assertEqual(kp.capacity, "16 GB")   # estimated não é tocado por padrão
+
+    def test_mt52l_e_lpddr3_nao_lpddr4(self):
+        # Nomenclatura Micron: "52" = LPDDR3 (tier-1). MT52L NÃO pode virar LPDDR4.
+        brand = Brand.objects.create(name="Micron", code="MIC")
+        kp = KnownPart.objects.create(
+            brand=brand, part_number="MT52L512M32D2PF-107 WT:B", fbga_code="AAAAA",
+            chip_type="LPDDR", subtype="LPDDR4", capacity="2 GB", confidence="confirmed",
+        )
+        call_command("fix_micron_lpddr_specs")
+        kp.refresh_from_db()
+        self.assertEqual(kp.chip_type, "LPDDR3")
+        self.assertEqual(kp.subtype, "LPDDR3")
+
+    def test_guard_emcp_real_nao_e_tocado(self):
+        # eMCP DE VERDADE (tem nand/ram) com prefixo MT53 NÃO pode ser reclassificado.
+        brand = Brand.objects.create(name="Micron", code="MIC")
+        kp = KnownPart.objects.create(
+            brand=brand, part_number="MT53D512M64D8HR-046 WT:B", fbga_code="BBBBB",
+            chip_type="eMCP", emcp_nand="eMMC 5.1 32GB", emcp_ram="LPDDR4 4GB",
+            confidence="confirmed",
+        )
+        call_command("fix_micron_lpddr_specs")
+        kp.refresh_from_db()
+        self.assertEqual(kp.chip_type, "eMCP")        # real eMCP → intacto
+        self.assertEqual(kp.emcp_nand, "eMMC 5.1 32GB")

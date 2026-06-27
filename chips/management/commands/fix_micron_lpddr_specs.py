@@ -32,12 +32,14 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 # Geração por prefixo de família = o chip_type/subtype canônico do LPDDR avulso.
-# MT53B/MT53D e MT52L = LPDDR4 (VDDQ 1.1V); MT53E = LPDDR4X (VDDQ 0.6V).
+# Nomenclatura OFICIAL Micron (atestada tier-1, DigiKey/Newark/Micron, 2026-06-27):
+#   "52 = Mobile LPDDR3"  →  MT52L = LPDDR3
+#   "53 = Mobile LPDDR4"  →  MT53B/MT53D = LPDDR4 (VDDQ 1.1V); MT53E = LPDDR4X (VDDQ 0.6V)
 PREFIX_GEN = {
     "MT53E": "LPDDR4X",
     "MT53B": "LPDDR4",
     "MT53D": "LPDDR4",
-    "MT52L": "LPDDR4",
+    "MT52L": "LPDDR3",
 }
 
 
@@ -77,11 +79,19 @@ class Command(BaseCommand):
         if not opts["all_confidence"]:
             qs = qs.filter(confidence__in=["confirmed", "manual"])
 
-        changed = skipped = nodecode = 0
+        changed = skipped = nodecode = emcp_skip = 0
         updates = []
         for kp in qs.order_by("part_number"):
             prefix, pn = _prefix_of(kp.part_number)
             if not prefix:
+                continue
+            # GUARD: nunca reclassificar um eMCP DE VERDADE (tem NAND+RAM) como LPDDR
+            # puro. KnownPart não tem is_emcp; a presença de emcp_nand/emcp_ram é o sinal.
+            # (Registros MT53x com chip_type='eMCP' mas nand/ram vazios são mislabel de
+            # LPDDR e DEVEM ser corrigidos — por isso o guard é por nand/ram, não chip_type.)
+            if kp.emcp_nand or kp.emcp_ram:
+                emcp_skip += 1
+                log(f"  ⏭ eMCP real (pulado): {kp.part_number} nand={kp.emcp_nand!r} ram={kp.emcp_ram!r}")
                 continue
             gen = PREFIX_GEN[prefix]
             cap = _decode_lpddr(pn)
@@ -113,7 +123,8 @@ class Command(BaseCommand):
                     KnownPart.objects.filter(pk=pk).update(**want)
 
         log(self.style.SUCCESS(
-            f"\n{'(dry-run) ' if dry else ''}corrigidos: {changed} | já ok: {skipped} | sem decode: {nodecode}"
+            f"\n{'(dry-run) ' if dry else ''}corrigidos: {changed} | já ok: {skipped} | "
+            f"sem decode: {nodecode} | eMCP pulados: {emcp_skip}"
         ))
         if not dry and changed:
             try:
