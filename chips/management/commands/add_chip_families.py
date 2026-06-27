@@ -180,8 +180,8 @@ FAMILIES = [
     {
         'brand_name': 'Micron',
         'prefix':     'MT52L',
-        'chip_type':  'RAM',
-        'subtype':    'LPDDR4 SDRAM',
+        'chip_type':  'LPDDR4',
+        'subtype':    'LPDDR4',
         'interface':  'LPDDR4',
         'is_emcp':    False,
         'priority':   50,
@@ -208,8 +208,8 @@ FAMILIES = [
     {
         'brand_name': 'Micron',
         'prefix':     'MT53B',
-        'chip_type':  'RAM',
-        'subtype':    'LPDDR4 standalone',
+        'chip_type':  'LPDDR4',
+        'subtype':    'LPDDR4',
         'interface':  'LPDDR4',
         'is_emcp':    False,
         'priority':   50,
@@ -227,8 +227,8 @@ FAMILIES = [
     {
         'brand_name': 'Micron',
         'prefix':     'MT53E',
-        'chip_type':  'RAM',
-        'subtype':    'LPDDR4X standalone',
+        'chip_type':  'LPDDR4X',
+        'subtype':    'LPDDR4X',
         'interface':  'LPDDR4X',
         'is_emcp':    False,
         'priority':   50,
@@ -244,8 +244,8 @@ FAMILIES = [
     {
         'brand_name': 'Micron',
         'prefix':     'MT53D',
-        'chip_type':  'RAM',
-        'subtype':    'LPDDR4 standalone',
+        'chip_type':  'LPDDR4',
+        'subtype':    'LPDDR4',
         'interface':  'LPDDR4',
         'is_emcp':    False,
         'priority':   50,

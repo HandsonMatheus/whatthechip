@@ -10,8 +10,9 @@ Rodar:
 """
 
 from django.test import TestCase
+from django.core.management import call_command
 
-from chips.models import Brand, ChipFamily
+from chips.models import Brand, ChipFamily, KnownPart
 from chips.engine import _result_from_family
 
 
@@ -22,8 +23,8 @@ class MicronDensityDecodeTests(TestCase):
     def setUpTestData(cls):
         cls.brand = Brand.objects.create(name="Micron", code="MIC")
         cls.fam = ChipFamily.objects.create(
-            brand=cls.brand, prefix="MT53E", chip_type="RAM",
-            subtype="LPDDR4X standalone", interface="LPDDR4X",
+            brand=cls.brand, prefix="MT53E", chip_type="LPDDR4X",
+            subtype="LPDDR4X", interface="LPDDR4X",
             is_emcp=False, decode_density_type="micron",
         )
 
@@ -46,3 +47,42 @@ class MicronDensityDecodeTests(TestCase):
         # MT53E128M32: 128M×32 = 4Gb = 512MB.
         r = _result_from_family("MT53E128M32D1XX", self.fam)
         self.assertEqual(r["capacity"], "512MB")
+
+
+class FixMicronLpddrSpecsCommandTests(TestCase):
+    """O bulk command recalcula specs congeladas (bug de dies) mantendo o ouro
+    (confidence/PN/fbga intactos)."""
+
+    def test_corrige_specs_bugadas_mantendo_confirmed(self):
+        brand = Brand.objects.create(name="Micron", code="MIC")
+        kp = KnownPart.objects.create(
+            brand=brand,
+            part_number="MT53E1G32D4NQ-046 WT:E",   # D9WLQ → 1G×32÷8 = 4GB
+            fbga_code="D9WLQ",
+            chip_type="RAM",          # errado (genérico)
+            subtype="LPDDR4X standalone",
+            capacity="16 GB",         # errado (bug de dies: ×4)
+            density_gbit="128",       # lixo do bug
+            confidence="confirmed",
+        )
+        call_command("fix_micron_lpddr_specs")
+        kp.refresh_from_db()
+        # campos derivados corrigidos
+        self.assertEqual(kp.capacity, "4 GB")
+        self.assertEqual(kp.chip_type, "LPDDR4X")
+        self.assertEqual(kp.subtype, "LPDDR4X")
+        self.assertEqual(kp.density_gbit, "")
+        # ouro intacto
+        self.assertEqual(kp.confidence, "confirmed")
+        self.assertEqual(kp.part_number, "MT53E1G32D4NQ-046 WT:E")
+        self.assertEqual(kp.fbga_code, "D9WLQ")
+
+    def test_idempotente_nao_toca_estimated(self):
+        brand = Brand.objects.create(name="Micron", code="MIC")
+        kp = KnownPart.objects.create(
+            brand=brand, part_number="MT53E1G32D4NQ-046 WT:E", fbga_code="ZZZZZ",
+            chip_type="RAM", capacity="16 GB", confidence="estimated",
+        )
+        call_command("fix_micron_lpddr_specs")   # default: só confirmed/manual
+        kp.refresh_from_db()
+        self.assertEqual(kp.capacity, "16 GB")   # estimated não é tocado por padrão
