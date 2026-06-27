@@ -50,23 +50,6 @@
     <a class="topnav__link{% if current_slug == 'index' %} is-active{% endif %}"
        href="{% url 'home' %}">Início</a>
 
-    <div class="topnav__dd" id="nav-dd-fab">
-      <button class="topnav__navbtn" type="button" aria-haspopup="true" aria-expanded="false">
-        Fabricantes <span class="caret" aria-hidden="true"></span>
-      </button>
-      <div class="topnav__dd-menu">
-        <a class="topnav__dd-item" href="{% url 'page' 'fab-samsung' %}">
-          Samsung <span class="topnav__dd-badge">● Ativo</span>
-        </a>
-        <a class="topnav__dd-item" href="{% url 'page' 'fab-hynix' %}">
-          SK Hynix <span class="topnav__dd-badge topnav__dd-badge--dev">◌ Em rev.</span>
-        </a>
-      </div>
-    </div>
-
-    <a class="topnav__link{% if current_slug == 'prefixos' %} is-active{% endif %}"
-       href="{% url 'page' 'prefixos' %}">Tabela rápida</a>
-
     <button class="topnav__navbtn" type="button" data-open-submit>Adicionar chip</button>
 
     <a class="topnav__link{% if current_slug == 'contato' %} is-active{% endif %}"
@@ -134,30 +117,6 @@
      FOOTER
      ════════════════════════════════════════════════════════ -->
 <footer class="foot">
-  <div class="foot__inner">
-    <div>
-      <div class="foot__brand">
-        <img src="{% static 'img/wtc-logo-dark.svg' %}" alt="WhatTheChip 什么芯片" />
-      </div>
-      <p class="foot__desc">
-        Decodificador de part numbers para memória móvel e armazenamento embarcado.
-        Banco de dados mantido pela comunidade — em breve disponível como SaaS para
-        fábricas e laboratórios de reciclagem.
-      </p>
-    </div>
-    <div>
-      <h6>Empresa</h6>
-      <a href="{% url 'page' 'contato' %}">Contato</a>
-      <a href="{% url 'page' 'prefixos' %}">Tabela rápida</a>
-      <a href="#" data-open-submit>Adicionar chip</a>
-      <a href="{% url 'login' %}">Entrar</a>
-    </div>
-    <div>
-      <h6>Fabricantes</h6>
-      <a href="{% url 'page' 'fab-samsung' %}">Samsung</a>
-      <a href="{% url 'page' 'fab-hynix' %}">SK Hynix</a>
-    </div>
-  </div>
   <div class="foot__bar">
     <span>© 2026 WhatTheChip · v0.5.0-beta</span>
   </div>
@@ -286,19 +245,6 @@
       if (!langWrap.contains(e.target)) {
         langWrap.classList.remove('is-open');
         langBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
-
-  // ── Dropdown Fabricantes (clique no mobile, hover no desktop) ──────────────
-  var ddFab = document.getElementById('nav-dd-fab');
-  if (ddFab) {
-    var ddBtn = ddFab.querySelector('.topnav__navbtn');
-    ddBtn.addEventListener('click', function (e) {
-      if (window.innerWidth <= 720) {
-        e.preventDefault();
-        var open = ddFab.classList.toggle('is-open');
-        ddBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
       }
     });
   }

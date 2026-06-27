@@ -6,7 +6,8 @@
      apenas os placeholders {{PREFIX_DATA}} e {{STAT_*}}.
      ══════════════════════════════════════════════════════ -->
 
-<!-- ── HERO — logo + barra de PN ── -->
+<!-- ── HERO + RESULTADO — cresce para empurrar a stats strip ao fundo ── -->
+<div class="hero-area">
 <section class="hero">
   <div class="hero__inner">
 
@@ -69,6 +70,7 @@
 
 <!-- ── RESULTADO (preenchido por JS) ── -->
 <div class="result-wrap" id="result-wrap"></div>
+</div><!-- /hero-area -->
 
 <!-- ── STATS STRIP ── -->
 <section class="stats">
@@ -359,8 +361,6 @@
       + '</div>'
       + '<footer class="result__foot">'
       + '<button type="button" class="danger" id="rp-submit" style="color:var(--cds-link-primary)">Enviar para análise →</button>'
-      + '<span class="sep">|</span>'
-      + '<a href="/prefixos/">Ver tabela rápida</a>'
       + '</footer>'
       + '</article>';
 

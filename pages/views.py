@@ -14,9 +14,9 @@ _INDEX_CONTENT_PATH = _CONTENT_DIR / "index.html"
 
 
 def _nav_pages():
-    # Apenas as páginas de marca e tabela rápida aparecem na navegação.
-    # Todas as páginas de documentação foram removidas do frontend.
-    return Page.objects.filter(slug__in=['fab-samsung', 'fab-hynix', 'prefixos']).order_by('order')
+    # Menus de fabricantes e tabela rápida foram removidos do frontend (jun/2026).
+    # Retorna queryset vazio — nenhuma página de conteúdo aparece na nav.
+    return Page.objects.none()
 
 
 def _fix_html_links(content):
