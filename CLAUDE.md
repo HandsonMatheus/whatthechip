@@ -458,6 +458,13 @@ Referência completa: **`docs/CONVENCAO_MICRON_ESTOQUE.md`**
   chip_type ao sistema, pergunte — "este tipo é NÃO RENTÁVEL independente de
   capacidade?". Se sim → bloco de tipos no topo de `assess_profitability`. Se é
   NÃO RENTÁVEL por geração → verificar geração ANTES de `_extract_gib` no bloco.
+- **`_CAP_RE` não suportava capacidades decimais → RENTÁVEL falso (2026-06-27):**
+  `_CAP_RE = re.compile(r"(\d+)\s*([TGMK])B")` — `\d+` sem `(?:\.\d+)?`. Para
+  `"1.5GB"`: re.search encontra `"5GB"` na posição 2 (o "." não é dígito, a engine
+  avança e casa `"5"` + `"GB"`) → retorna **5.0 GB** em vez de 1.5 GB. No bloco LPDDR,
+  5.0 >= threshold 2.0 → **RENTÁVEL** (errado). Chip revelador: K4E2E304EA (LPDDR3
+  1.5GB Samsung). **Corrigido:** `_CAP_RE = re.compile(r"(\d+(?:\.\d+)?)\s*([TGMK])B")`.
+  `_GBIT_RE` e `_CAP_NUM_RE` já tinham `(?:\.\d+)?` — só `_CAP_RE` estava vulnerável.
 
 ---
 

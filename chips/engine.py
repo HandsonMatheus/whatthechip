@@ -367,7 +367,11 @@ EMCP_RAM_TYPES = {
 
 # ── Regex de capacidade (usada em múltiplos lugares) ──────────────────────────
 # T (terabyte) incluído a partir de 2026-06-26 para suportar UFS 1TB+ (Kioxia).
-_CAP_RE = re.compile(r"(\d+)\s*([TGMK])B", re.I)
+# (?:\.\d+)? incluído em 2026-06-27 para suportar capacidades decimais (ex.: "1.5GB").
+# Sem isso, re.search("(\d+)\s*([TGMK])B", "1.5GB") casa "5GB" → retorna 5.0
+# em vez de 1.5, fazendo chips abaixo do threshold serem marcados RENTÁVEL.
+# Chip revelador: K4E2E304EA (LPDDR3 1.5GB Samsung) → extract_gib retornava 5.0.
+_CAP_RE = re.compile(r"(\d+(?:\.\d+)?)\s*([TGMK])B", re.I)
 
 # ── Regex de detecção de código FBGA ─────────────────────────────────────────
 # Padrão Micron: 5 caracteres alfanuméricos, 2º char numérico.
