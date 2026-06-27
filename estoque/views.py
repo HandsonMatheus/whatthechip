@@ -417,6 +417,10 @@ def lot_detail(request, lot_pk):
         'total_qty': total_qty,
         'q':         q,
         'tipo':      tipo,
+        'brands': [
+            'Samsung', 'SK Hynix', 'Micron', 'SanDisk',
+            'Toshiba', 'GigaDevice', 'PieceMakers',
+        ],
     }
 
     if request.headers.get('HX-Request'):

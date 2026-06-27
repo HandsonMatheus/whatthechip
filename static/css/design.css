@@ -693,6 +693,44 @@ footer.foot { flex-shrink: 0; }
 [data-theme="dark"] .result__undoc-warn-body { color: var(--gray-40); }
 
 /* =============================================================================
+   FOOTER — marcas suportadas
+   ============================================================================= */
+.foot__brands {
+  max-width: 1200px; margin: 0 auto;
+  padding: 14px 24px 12px;
+  border-bottom: 1px solid var(--gray-80);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0 4px;
+}
+.foot__brands-label {
+  font-size: 9px;
+  font-family: var(--wtc-mono);
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: #6f6f6f;
+  margin-right: 14px;
+  white-space: nowrap;
+}
+.foot__brands-item {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c6c6c6;
+  font-family: var(--wtc-sans);
+  letter-spacing: 0.2px;
+  padding: 2px 8px;
+}
+.foot__brands-sep {
+  display: inline-block;
+  width: 1px; height: 11px;
+  background: #393939;
+  vertical-align: middle;
+  margin: 0 2px;
+}
+
+/* =============================================================================
    STATS STRIP
    ============================================================================= */
 .stats {

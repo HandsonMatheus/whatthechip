@@ -1082,8 +1082,21 @@ table.est-table td { padding: var(--s5) var(--s5); }
     </div>
   </div>
 
-  {# ── RIGHT: estoque do lote ─────────────────────────────────── #}
-  <div style="flex:1 1 360px;min-width:0;background:#fff;border:1px solid #e0e0e0;display:flex;flex-direction:column;align-self:stretch;">
+  {# ── RIGHT: wrapper (brands strip + widget) ──────────────────── #}
+  <div style="flex:1 1 360px;min-width:0;display:flex;flex-direction:column;gap:10px;align-self:stretch;">
+
+    {# ── Marcas suportadas — solto acima do widget ── #}
+    <div style="padding:14px 16px;background:#f4f4f4;border:1px solid #e0e0e0;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6f6f6f;margin-bottom:10px;">Marcas suportadas</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        {% for brand in brands %}
+        <span style="font-size:11px;font-weight:700;color:#161616;padding:3px 10px;border:1px solid #c6c6c6;background:#fff;letter-spacing:0.02em;">{{ brand }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    {# ── Widget de estoque do lote ── #}
+    <div style="background:#fff;border:1px solid #e0e0e0;display:flex;flex-direction:column;flex:1;">
 
     <div style="padding:22px 20px 14px;border-bottom:1px solid #e0e0e0;">
       <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:16px;">
@@ -1130,7 +1143,9 @@ table.est-table td { padding: var(--s5) var(--s5); }
       </form>
       {% endif %}
     </div>
-  </div>
+    </div>{# /widget estoque #}
+
+  </div>{# /right wrapper #}
 
 </div>{# /duas colunas #}
 
