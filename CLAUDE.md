@@ -102,6 +102,13 @@ de rentabilidade**.
     regra de rentabilidade em outro lugar. O `is_dead_by_generation` (engine) e o
     gateway do estoque (`estoque/views.py`) **derivam** dela — ver §4 e
     `docs/CONTRATO_RENTABILIDADE_GATEWAY.md`.
+12. **Tipo tem fonte ÚNICA: `chips/chip_types.py` (convenção OPÇÃO 1, jun/2026).** A
+    geração da **DRAM discreta** vive no **`chip_type`** (`DDR3`, `LPDDR4X`, `GDDR5`,
+    `SDRAM`…), espelhada no `subtype`; **gerenciada** (eMMC/UFS/eMCP/uMCP/NAND) mantém o
+    `chip_type` (subtype = geração LPDDR / célula NAND / vazio). ❌ **NUNCA**
+    `chip_type="RAM"` nem `"DDR"` genérico. Engine, gateway, profitability e os
+    `populate_*` leem de `chip_types.py`; valide com `validate_convention` e migre
+    legado com `normalize_convention` (reversível). Ver §6 e `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.
 
 ---
 
@@ -213,7 +220,8 @@ confunda os dois nem edite um esperando que o outro mude.
 ```
 chips/engine.py          → classify(), gramática, profitability
 chips/models.py          → todo o modelo de dados + glossário nos docstrings
-chips/conventions.py     → canonical_gen(): FONTE ÚNICA da convenção de label (consumida pelo gateway)
+chips/chip_types.py      → FONTE ÚNICA do vocabulário de tipos (chip_type/subtype): canonical_chip_type(), profit_family(), label_kind() — consumida por engine, gateway e validate/normalize_convention
+chips/conventions.py     → canonical_gen(): fonte única do LABEL de geração (limpa o subtype; consumida pelo gateway)
 chips/admin.py           → workflows de triagem (ChipFamily, KnownPart, correções)
 chips/management/commands/→ pipeline de dados (populate/import/fix/collect) — §5
 core/settings.py         → config; DATABASE_URL, NEXAR_*, etc.
@@ -267,6 +275,8 @@ python manage.py import_micron_catalog *_full-catalog.csv   # CSVs Micron da rai
 python manage.py import_samsung_psg --all                   # CSVs em data/psg/
 python manage.py fix_known_parts           # correções curadas (força confirmed)
 python manage.py link_doc_pages / sync_index_page
+python manage.py validate_convention       # read-only: aponta registros fora da convenção (chip_types.py)
+python manage.py normalize_convention --commit   # migra chip_type legado ("RAM")→geração canônica (reversível via JSON)
 ```
 
 **Manutenção de estoque** (dry-run por padrão, reversíveis via JSON; rodar com
@@ -337,9 +347,17 @@ Detalhes e armadilhas: **`DEPLOY_RENDER.md`**.
 
 ### Convenção de campos → label da caixa física (estoque)
 
-O gateway `estoque/views.py::_compute_destination` escolhe o branch pelo `chip_type`
-e monta o label com os campos abaixo. **Alimente os campos certos; não mexa no gateway.**
-Modelo canônico: `JW464` (`SLC NAND 512MB`).
+> **⚠ CONVENÇÃO OPÇÃO 1 (endurecida 2026-06-29) — FONTE ÚNICA DE TIPOS:
+> `chips/chip_types.py`.** Para **DRAM discreta** (DDR/LPDDR/GDDR/SDRAM/RDRAM) a
+> **GERAÇÃO vai no `chip_type`** (`DDR3`, `LPDDR4X`, `GDDR5`, `SDRAM`…), **espelhada no
+> `subtype`** — ❌ **NUNCA** `chip_type="RAM"` nem `"DDR"` genérico. Memória **gerenciada**
+> (eMMC/UFS/eMCP/uMCP/NAND) mantém o `chip_type`. Razão: o `chip_type` é o **único** campo
+> de tipo que o `InventoryEntry` persiste — por isso ele carrega a geração. Validar com
+> `python manage.py validate_convention`; migrar legado com `normalize_convention`.
+
+O gateway `estoque/views.py::_compute_destination` escolhe o branch via
+`chip_types.py::label_kind(canonical_chip_type(chip_type, subtype))` e monta o label com
+os campos abaixo. **Alimente os campos certos; não mexa no gateway.** Modelo: `JW464` (`SLC NAND 512MB`).
 
 | Tipo | `chip_type` | `subtype` | Capacidade | Resultado |
 |---|---|---|---|---|
@@ -348,8 +366,8 @@ Modelo canônico: `JW464` (`SLC NAND 512MB`).
 | eMCP | `"eMCP"` | geração RAM (`"LPDDR3"`) | `emcp_nand` = `"16GB"`; `emcp_ram` = `"LPDDR3 1GB"` (tipo + GB) | `"EMCP16+1"` |
 | uMCP | `"uMCP"` | geração RAM | `emcp_nand`, `emcp_ram` | `"UMCP…+…"` |
 | UFS | `"UFS"` | — | `capacity` em GB | `"UFS128GB"` |
-| DDR/GDDR | `"RAM"` | geração (`"DDR3"`) | `density_gbit` = die em Gb | `"DDR3+8G"` |
-| LPDDR avulso | `"LPDDR{n}"` | geração (`"LPDDR4"`) | `capacity` = pacote em GB | `"LPDDR4+4GB"` |
+| DDR/GDDR/SDRAM/RDRAM | **a geração** `"DDR3"`/`"DDR4"`/`"GDDR5"`/`"SDRAM"`… | espelha o `chip_type` | `density_gbit` = die em Gb | `"DDR3+8G"` |
+| LPDDR avulso | **a geração** `"LPDDR4"`/`"LPDDR4X"`/`"LPDDR5"`… | espelha o `chip_type` | `capacity` = pacote em GB | `"LPDDR4+4GB"` |
 
 **Regras absolutas de campo:**
 - `subtype` = **SOMENTE** célula (NAND) ou geração (RAM) — nunca densidade, bus width, voltagem, "Mobile", "Multi-Channel", "paralela industrial"
@@ -358,7 +376,8 @@ Modelo canônico: `JW464` (`SLC NAND 512MB`).
 - `density_gbit` é o campo modelo do `KnownPart` para densidade DDR (em Gb); `dram_density` é campo calculado pelo engine — não confundir
 - Tudo que sobrar (temperatura, organização, variante, ECC) vai no `tip`/`notes`
 
-Referência completa: **`docs/CONVENCAO_MICRON_ESTOQUE.md`**
+Referência completa (todas as marcas, opção 1): **`docs/CONVENCAO_CAMPOS_ESTOQUE.md`**
++ a fonte única em código **`chips/chip_types.py`**. Específico da Micron: `docs/CONVENCAO_MICRON_ESTOQUE.md`.
 
 > **Label protegido por `canonical_gen` (2026-06-19) — FONTE ÚNICA da convenção.**
 > O label da caixa é montado em `estoque/views.py::_compute_destination`, que passa o

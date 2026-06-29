@@ -128,6 +128,13 @@ Chips SanDisk sem KnownPart no banco entram na gramática sem capacidade — ret
 
 ## 2. Convenção Canônica de Campos ⚠️ LEIA PRIMEIRO
 
+> **⚠ CONVENÇÃO DE TIPOS — OPÇÃO 1 (endurecida 2026-06-29). Fonte única: `chips/chip_types.py` + `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.**
+>
+> - **DRAM discreta (DDR / LPDDR / GDDR / SDRAM / RDRAM): a GERAÇÃO vai no `chip_type`** (`DDR3`, `DDR4`, `LPDDR4X`, `GDDR5`, `SDRAM`…), **espelhada no `subtype`**. ❌ NUNCA `chip_type="RAM"` nem `"DDR"` genérico.
+> - **Gerenciada** (`eMMC`/`UFS`/`eMCP`/`uMCP`/`NAND Flash`): `chip_type` como já é; `subtype` = geração LPDDR (eMCP/uMCP) · célula `SLC/MLC/TLC NAND` (NAND) · vazio (eMMC/UFS).
+> - **Unidade inviolável:** densidade do **die** em `Gb`; capacidade do **pacote** em `GB`.
+> - Legados (DDR1/2, LPDDR2, SDRAM, RDRAM, EDO DRAM) = sempre **NÃO RENTÁVEL**.
+
 ### 2.1 Tabela canônica por tipo de chip
 
 | Tipo de chip | `chip_type` | `subtype` | `interface` | Campo de tamanho |

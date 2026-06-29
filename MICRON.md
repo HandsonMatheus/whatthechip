@@ -279,7 +279,7 @@ O engine FBGA path lê esses campos para montar `dram_density`.
 
 **Exemplo verificado:** `D9PRW` → `MT41J128M16JT-093:K` → 2Gb DDR3 = 256MB
 ```
-chip_type    = "RAM"
+chip_type    = "DDR3"                     # opção 1: geração no chip_type — NUNCA "RAM"
 subtype      = "DDR3"
 dram_density = "2Gb = 256MB por die [✓]"
 capacity     = "256MB"
@@ -301,6 +301,13 @@ tip          = "800MHz (1600MTPS)"        # frequência → tip, não interface
 
 ### 7.0 Tabela canônica por tipo — valores a preencher
 
+> **⚠ CONVENÇÃO DE TIPOS — OPÇÃO 1 (endurecida 2026-06-29). Fonte única: `chips/chip_types.py` + `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.**
+>
+> - **DRAM discreta (DDR / LPDDR / GDDR / SDRAM / RDRAM): a GERAÇÃO vai no `chip_type`** (`DDR3`, `DDR4`, `LPDDR4X`, `GDDR5`, `SDRAM`…), **espelhada no `subtype`**. ❌ NUNCA `chip_type="RAM"` nem `"DDR"` genérico.
+> - **Gerenciada** (`eMMC`/`UFS`/`eMCP`/`uMCP`/`NAND Flash`): `chip_type` como já é; `subtype` = geração LPDDR (eMCP/uMCP) · célula `SLC/MLC/TLC NAND` (NAND) · vazio (eMMC/UFS).
+> - **Unidade inviolável:** densidade do **die** em `Gb`; capacidade do **pacote** em `GB`.
+> - Legados (DDR1/2, LPDDR2, SDRAM, RDRAM, EDO DRAM) = sempre **NÃO RENTÁVEL**.
+
 | Tipo Micron | `chip_type` | `subtype` | `interface` | Campo de capacidade |
 |---|---|---|---|---|
 | eMCP (MT29TZZZ, MT29VZZZ) | `"eMCP"` | geração RAM: `"LPDDR3"` / `"LPDDR4"` | `""` vazio | `emcp_nand` (GB) + `emcp_ram` (tipo + GB) |
@@ -310,9 +317,9 @@ tip          = "800MHz (1600MTPS)"        # frequência → tip, não interface
 | LPDDR4 standalone (MT53B) | `"LPDDR4"` | `"LPDDR4"` | `""` vazio | `capacity` em GB (`"4GB"`) |
 | LPDDR4X standalone (MT53E) | `"LPDDR4X"` | `"LPDDR4X"` | `""` vazio | `capacity` em GB |
 | LPDDR5 standalone | `"LPDDR5"` | `"LPDDR5"` | `""` vazio | `capacity` em GB |
-| DDR3 standalone (MT41J) | `"RAM"` | `"DDR3"` | `"x16"` / `"x8"` | `density_gbit` (Gb por die) |
-| DDR3L standalone (MT41K) | `"RAM"` | `"DDR3L"` | `"x16"` / `"x8"` | `density_gbit` (Gb por die) |
-| DDR4 standalone (MT40A) | `"RAM"` | `"DDR4"` | `"x16"` / `"x8"` | `density_gbit` (Gb por die) |
+| DDR3 standalone (MT41J) | `"DDR3"` | `"DDR3"` | `"x16"` / `"x8"` | `density_gbit` (Gb por die) |
+| DDR3L standalone (MT41K) | `"DDR3L"` | `"DDR3L"` | `"x16"` / `"x8"` | `density_gbit` (Gb por die) |
+| DDR4 standalone (MT40A) | `"DDR4"` | `"DDR4"` | `"x16"` / `"x8"` | `density_gbit` (Gb por die) |
 | NAND Flash raw (MT29C, MT29F) | `"NAND Flash"` | `"SLC NAND"` / `"MLC NAND"` / `"TLC NAND"` | `"Parallel NAND (8-bit)"` | `capacity` em bytes (`"512MB"`, `"4GB"`) |
 
 > **Regra absoluta do `subtype`:** só a geração (1–3 palavras). `"LPDDR3"` — nunca
@@ -339,7 +346,7 @@ tip          = "800MHz (1600MTPS)"        # frequência → tip, não interface
 
 | Campo | O que vai | O que NÃO vai |
 |-------|-----------|---------------|
-| `chip_type` | `RAM`, `eMMC`, `UFS`, `eMCP`, `uMCP`, `NAND` | specs, densidades, voltagem |
+| `chip_type` | DRAM discreta = a **geração** (`DDR3`, `DDR3L`, `DDR4`, `LPDDR3`, `LPDDR4`, `LPDDR4X`, `GDDR5`…); gerenciada = `eMMC`, `UFS`, `eMCP`, `uMCP`, `NAND Flash` | specs, densidades, voltagem, `RAM`/`DDR` genérico |
 | `subtype` | **só a geração**: `DDR3`, `DDR3L`, `LPDDR2`, `LPDDR3`, `LPDDR4`, `LPDDR4X`, `LPDDR5`, `DDR4` | densidade (`4Gb`), barramento (`x16`), voltagem, `SDRAM` |
 | `dram_density` | densidade do **die** em Gb: `"4Gb"`, `"2Gb"` (DDR/GDDR standalone) | bytes; capacidade de pacote |
 | `density_gbit` | mesmo que dram_density, campo no DB: `"2Gb"` | — |
@@ -494,12 +501,12 @@ Use estes blocos como modelo. Sempre incluir `fbga_code` quando conhecido.
     "create": True,
     "create_defaults": {
         "brand_name": "Micron",
-        "chip_type":  "RAM",         # DDR standalone: chip_type="RAM" (não "DDR3")
+        "chip_type":  "DDR3",        # opção 1: DDR discreto → chip_type = geração (NUNCA "RAM")
         "subtype":    "DDR3",
         "confidence": "confirmed",
     },
     "fields": {
-        "chip_type":    "RAM",
+        "chip_type":    "DDR3",
         "subtype":      "DDR3",
         "interface":    "x16",       # bus width do chip
         "capacity":     "256MB",     # por die: density_Gbit ÷ 8 = GB (2Gb ÷ 8 = 256MB)

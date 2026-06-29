@@ -31,6 +31,13 @@
 
 ## 2. Prefixos e famílias no WTC
 
+> **⚠ CONVENÇÃO DE TIPOS — OPÇÃO 1 (endurecida 2026-06-29). Fonte única: `chips/chip_types.py` + `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.**
+>
+> - **DRAM discreta (DDR / LPDDR / GDDR / SDRAM / RDRAM): a GERAÇÃO vai no `chip_type`** (`DDR3`, `DDR4`, `LPDDR4X`, `GDDR5`, `SDRAM`…), **espelhada no `subtype`**. ❌ NUNCA `chip_type="RAM"` nem `"DDR"` genérico.
+> - **Gerenciada** (`eMMC`/`UFS`/`eMCP`/`uMCP`/`NAND Flash`): `chip_type` como já é; `subtype` = geração LPDDR (eMCP/uMCP) · célula `SLC/MLC/TLC NAND` (NAND) · vazio (eMMC/UFS).
+> - **Unidade inviolável:** densidade do **die** em `Gb`; capacidade do **pacote** em `GB`.
+> - Legados (DDR1/2, LPDDR2, SDRAM, RDRAM, EDO DRAM) = sempre **NÃO RENTÁVEL**.
+
 | Prefixo | Família WTC | Tipo | Tensão | Obs |
 |---|---|---|---|---|
 | `PMF5xx` | `PMF5` | DDR3 | 1.5V | Decode posicional ativo |
@@ -144,7 +151,7 @@ pn[3]="2" — possivelmente revisão ou voltagem. pn[4:6]="12" — possivelmente
 2. Decodifique pn[4:6] para `capacity` (ver §4) e pn[7:9] para `interface`.
 3. Adicione entrada em `fix_known_parts.py` com:
    - `brand_name="PieceMakers"`
-   - `chip_type="RAM"`, `subtype="DDR3"` (ou `"DDR3L"` se pn[3]="4")
+   - `chip_type="DDR3"` (ou `"DDR3L"` se pn[3]="4"), `subtype` espelhando o `chip_type`
    - `interface="x8"` ou `"x16"`
    - `capacity` em MB (ex.: `"256MB"` para 2Gb)
    - `density_gbit` em Gb (ex.: `"2Gb"`)

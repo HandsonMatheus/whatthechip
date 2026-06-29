@@ -48,9 +48,11 @@ chips/management/commands/fix_known_parts.py       ← seções de OUTRAS marcas
 3. **Reiniciar o servidor após `populate_samsung --overwrite`.** O `lru_cache` do engine
    não invalida automaticamente no processo do servidor web.
 
-4. **`chip_type="RAM"` para todos os chips DDR/GDDR discretos** (K4H, K4T, K4B, K4A,
-   K4RA, K4J, K4G, K4Z, K4W…). Nunca `"DDR3"`, `"DDR"`, `"GDDR5"` no `chip_type`.
-   O gateway quebra se `chip_type` não for `"RAM"` para esses chips.
+4. **A GERAÇÃO vai no `chip_type` para todos os chips DDR/GDDR/SDRAM/RDRAM discretos**
+   (opção 1, 2026-06-29): K4H→`"DDR1"`, K4T→`"DDR2"`, K4B→`"DDR3"`/`"DDR3L"`,
+   K4A→`"DDR4"`, K4RA/K4RB→`"DDR5"`, K4S→`"SDRAM"`, K4R→`"RDRAM"`, K4J/K4W→`"GDDR3"`,
+   K4G→`"GDDR5"`, K4Z→`"GDDR6"`… **sempre espelhada no `subtype`**. ❌ NUNCA
+   `chip_type="RAM"` nem `"DDR"` genérico. Fonte única: `chips/chip_types.py`.
 
 5. **`subtype` = SOMENTE a geração — sem mais nada.** `"DDR3"` ✓. `"DDR3 PC DRAM 8Gb x8"`,
    `"LPDDR4X Mobile"`, `"GDDR3 Graphics"` ✗. Qualquer qualificador além da geração
@@ -128,6 +130,13 @@ de DRAM móvel, eMCP/uMCP, eMMC, UFS, DDR PC, GDDR e NAND Flash.
 
 ## 2. Convenção Canônica de Campos ⚠️ LEIA PRIMEIRO
 
+> **⚠ CONVENÇÃO DE TIPOS — OPÇÃO 1 (endurecida 2026-06-29). Fonte única: `chips/chip_types.py` + `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.**
+>
+> - **DRAM discreta (DDR / LPDDR / GDDR / SDRAM / RDRAM): a GERAÇÃO vai no `chip_type`** (`DDR3`, `DDR4`, `LPDDR4X`, `GDDR5`, `SDRAM`…), **espelhada no `subtype`**. ❌ NUNCA `chip_type="RAM"` nem `"DDR"` genérico.
+> - **Gerenciada** (`eMMC`/`UFS`/`eMCP`/`uMCP`/`NAND Flash`): `chip_type` como já é; `subtype` = geração LPDDR (eMCP/uMCP) · célula `SLC/MLC/TLC NAND` (NAND) · vazio (eMMC/UFS).
+> - **Unidade inviolável:** densidade do **die** em `Gb`; capacidade do **pacote** em `GB`.
+> - Legados (DDR1/2, LPDDR2, SDRAM, RDRAM, EDO DRAM) = sempre **NÃO RENTÁVEL**.
+
 > Estabelecida em 2026-06-19 após auditoria completa. Quebrar estas regras
 > produz labels errados no gateway de estoque.
 
@@ -135,16 +144,16 @@ de DRAM móvel, eMCP/uMCP, eMMC, UFS, DDR PC, GDDR e NAND Flash.
 
 | Tipo de chip | `chip_type` | `subtype` | `interface` | Campo de tamanho |
 |---|---|---|---|---|
-| DDR1 | `"RAM"` | `"DDR1"` | `"x8"` / `"x16"` / `"x4"` | `density_gbit` (Gb por die) |
-| DDR2 | `"RAM"` | `"DDR2"` | `"x8"` / `"x16"` / `"x4"` | `density_gbit` |
-| DDR3 | `"RAM"` | `"DDR3"` | `"x8"` / `"x16"` / `"x4"` | `density_gbit` |
-| DDR3L | `"RAM"` | `"DDR3L"` | `"x8"` / `"x16"` | `density_gbit` |
-| DDR4 | `"RAM"` | `"DDR4"` | `"x8"` / `"x16"` | `density_gbit` |
-| DDR5 | `"RAM"` | `"DDR5"` | `"x8"` / `"x16"` | `density_gbit` |
-| SDRAM / RDRAM | `"RAM"` | `"SDRAM"` / `"RDRAM"` | `"x8"` / `"x16"` | `density_gbit` |
-| GDDR3 / gDDR3 | `"RAM"` | `"GDDR3"` | `"x16"` | `density_gbit` |
-| GDDR5 | `"RAM"` | `"GDDR5"` | `"x8"` / `"x16"` | `density_gbit` |
-| GDDR6 | `"RAM"` | `"GDDR6"` | `"x8"` / `"x16"` | `density_gbit` |
+| DDR1 | `"DDR1"` | `"DDR1"` | `"x8"` / `"x16"` / `"x4"` | `density_gbit` (Gb por die) |
+| DDR2 | `"DDR2"` | `"DDR2"` | `"x8"` / `"x16"` / `"x4"` | `density_gbit` |
+| DDR3 | `"DDR3"` | `"DDR3"` | `"x8"` / `"x16"` / `"x4"` | `density_gbit` |
+| DDR3L | `"DDR3L"` | `"DDR3L"` | `"x8"` / `"x16"` | `density_gbit` |
+| DDR4 | `"DDR4"` | `"DDR4"` | `"x8"` / `"x16"` | `density_gbit` |
+| DDR5 | `"DDR5"` | `"DDR5"` | `"x8"` / `"x16"` | `density_gbit` |
+| SDRAM / RDRAM | `"SDRAM"` / `"RDRAM"` | `"SDRAM"` / `"RDRAM"` | `"x8"` / `"x16"` | `density_gbit` |
+| GDDR3 / gDDR3 | `"GDDR3"` | `"GDDR3"` | `"x16"` | `density_gbit` |
+| GDDR5 | `"GDDR5"` | `"GDDR5"` | `"x8"` / `"x16"` | `density_gbit` |
+| GDDR6 | `"GDDR6"` | `"GDDR6"` | `"x8"` / `"x16"` | `density_gbit` |
 | LPDDR1 | `"LPDDR1"` | `"LPDDR1"` | `""` (vazio) | `capacity` (GB, **do pacote**) |
 | LPDDR2 | `"LPDDR2"` | `"LPDDR2"` | `""` | `capacity` (GB, **do pacote**) |
 | LPDDR3 | `"LPDDR3"` | `"LPDDR3"` | `""` | `capacity` (GB, **do pacote**) |
@@ -199,7 +208,7 @@ O código em `estoque/views.py::_compute_destination` lê `chip_type` e `subtype
 o label da caixa física:
 
 ```
-Para chip_type "RAM" (DDR/GDDR):
+Para DDR/GDDR/SDRAM/RDRAM discretos (chip_type = a geração, ex.: "DDR3"):
   gen  = subtype  →  ex.: "DDR3"
   size = density_gbit  →  ex.: 8 (Gbit por die)
   label = f"{gen}+{size}G"  →  "DDR3+8G"
@@ -227,7 +236,7 @@ completamente errado. Use **somente** `"DDR3"`.
 
 | Campo | O que vai | O que NÃO vai |
 |-------|-----------|---------------|
-| `chip_type` | `"RAM"`, `"eMMC"`, `"UFS"`, `"eMCP"`, `"uMCP"`, `"NAND Flash"`, `"LPDDR4"` (geração, para LPDDR standalone) | specs, densidades, tensão, `"DDR3"`, `"DDR"` |
+| `chip_type` | a **geração** para DRAM discreta: `"DDR3"`, `"DDR4"`, `"DDR5"`, `"SDRAM"`, `"RDRAM"`, `"GDDR5"`, `"LPDDR4"` (LPDDR standalone); managed: `"eMMC"`, `"UFS"`, `"eMCP"`, `"uMCP"`, `"NAND Flash"` | specs, densidades, tensão, `"RAM"`, `"DDR"` genérico |
 | `subtype` | **só a geração**: `"DDR3"`, `"DDR3L"`, `"LPDDR4X"`, `"DDR5"`, `"GDDR6"`, `"SLC NAND"` | densidade (`"8Gb"`), barramento (`"x16"`), tensão (`"1.35V"`), qualificadores (`"Mobile"`, `"PC DRAM"`, `"Graphics"`, `"Multi-Channel"`) |
 | `interface` | bus width para DDR/GDDR: `"x8"`, `"x16"`, `"x4"`; versão para eMMC/UFS: `"eMMC 5.1"`, `"UFS 3.1"` | a geração de RAM (`"LPDDR4"`, `"DDR3"`) — nunca repetir aqui; `""` vazio para LPDDR/eMCP/uMCP |
 | `capacity` | capacidade total do **pacote** em bytes: `"512MB"`, `"4GB"`, `"16GB"` | gigabits; capacity de eMCP (usar `emcp_nand`/`emcp_ram`) |
@@ -598,15 +607,15 @@ Posição `pn[3:5]`, 2 chars. BGA NVMe SSD.
 
 | Prefixo | Tipo (`chip_type`) | `subtype` | Decode | Prioridade | Status |
 |---------|---------------------|-----------|--------|------------|--------|
-| K4S | `"RAM"` | `"SDRAM"` | DRAM_PC | 100 | ✅ Completo |
-| K4H | `"RAM"` | `"DDR1"` | DRAM_PC | 100 | ✅ Completo |
-| K4T | `"RAM"` | `"DDR2"` | DRAM_PC | 100 | ✅ Completo |
-| K4B | `"RAM"` | `"DDR3"` ou `"DDR3L"` | DRAM_PC | 100 | ✅ Completo |
-| K4A | `"RAM"` | `"DDR4"` | DRAM_PC | 100 | ✅ Completo |
-| K4RA | `"RAM"` | `"DDR5"` | DRAM_PC | 80 | ⚠️ Parcial (teto 16Gb) |
-| K4RB | `"RAM"` | `"DDR5"` | DRAM_PC | 80 | ⚠️ Parcial |
-| K4RCH | `"RAM"` | `"DDR5"` | nenhum | — | ❌ **SEM FAMÍLIA** — cai em K4R (RDRAM) |
-| K4R | `"RAM"` | `"RDRAM"` | RDRAM_CAP | 100 | ✅ Fallback Rambus |
+| K4S | `"SDRAM"` | `"SDRAM"` | DRAM_PC | 100 | ✅ Completo |
+| K4H | `"DDR1"` | `"DDR1"` | DRAM_PC | 100 | ✅ Completo |
+| K4T | `"DDR2"` | `"DDR2"` | DRAM_PC | 100 | ✅ Completo |
+| K4B | `"DDR3"` / `"DDR3L"` | `"DDR3"` ou `"DDR3L"` | DRAM_PC | 100 | ✅ Completo |
+| K4A | `"DDR4"` | `"DDR4"` | DRAM_PC | 100 | ✅ Completo |
+| K4RA | `"DDR5"` | `"DDR5"` | DRAM_PC | 80 | ⚠️ Parcial (teto 16Gb) |
+| K4RB | `"DDR5"` | `"DDR5"` | DRAM_PC | 80 | ⚠️ Parcial |
+| K4RCH | `"DDR5"` | `"DDR5"` | nenhum | — | ❌ **SEM FAMÍLIA** — cai em K4R (RDRAM) |
+| K4R | `"RDRAM"` | `"RDRAM"` | RDRAM_CAP | 100 | ✅ Fallback Rambus |
 
 > **K4RCH (DDR5 32Gb C-die):** Não tem família própria na gramática. Sem entradas
 > `confirmed` no `fix_known_parts`, aparece erroneamente como RDRAM. Entradas manuais
@@ -708,11 +717,11 @@ quando chip físico aparecer na esteira.
 
 | Prefixo | `chip_type` | `subtype` | Decode | Status |
 |---------|-------------|-----------|--------|--------|
-| K4N | `"RAM"` | `"GDDR2"` | nenhum | ℹ️ Routing (resíduo) |
-| K4J | `"RAM"` | `"GDDR3"` | nenhum | ✅ KnownParts (13 PNs, 2026-06-19) |
-| K4W | `"RAM"` | `"GDDR3"` | DRAM_PC | ✅ Adicionado 2026-05-09 |
-| K4G | `"RAM"` | `"GDDR5"` | nenhum | ❌ GAP IMPORTANTE — alto volume |
-| K4Z | `"RAM"` | `"GDDR6"` | nenhum | ❌ GAP IMPORTANTE — alto volume |
+| K4N | `"GDDR2"` | `"GDDR2"` | nenhum | ℹ️ Routing (resíduo) |
+| K4J | `"GDDR3"` | `"GDDR3"` | nenhum | ✅ KnownParts (13 PNs, 2026-06-19) |
+| K4W | `"GDDR3"` | `"GDDR3"` | DRAM_PC | ✅ Adicionado 2026-05-09 |
+| K4G | `"GDDR5"` | `"GDDR5"` | nenhum | ❌ GAP IMPORTANTE — alto volume |
+| K4Z | `"GDDR6"` | `"GDDR6"` | nenhum | ❌ GAP IMPORTANTE — alto volume |
 
 > **K4J — GDDR3 Samsung (~2005–2012):**
 > VRAM de GPUs ATI/AMD Radeon HD 4xxx/5xxx e Nvidia GeForce 9xxx/200. Usa refresh
@@ -821,12 +830,12 @@ as chaves coincidem e o decode funciona corretamente.
     "create": True,
     "create_defaults": {
         "brand_name": "Samsung",
-        "chip_type":  "RAM",         # sempre "RAM" para DDR/GDDR
+        "chip_type":  "DDR3",        # opção 1: a GERAÇÃO vai no chip_type (nunca "RAM")
         "subtype":    "DDR3",        # SOMENTE a geração — sem bus width, tensão ou qualificadores
         "confidence": "confirmed",
     },
     "fields": {
-        "chip_type":  "RAM",
+        "chip_type":  "DDR3",        # = a geração; espelha o subtype ("DDR4", "DDR5", "GDDR5"…)
         "subtype":    "DDR3",        # "DDR3", "DDR3L", "DDR4", "DDR5", "GDDR5"…
         "interface":  "x8",          # bus width do chip — "x8", "x16", "x4"
         "capacity":   "1GB",         # por die, em MB ou GB (nunca em Gbit)
@@ -963,13 +972,17 @@ interface deve ser o bus width ou vazio.
 
 Se você encontrar `interface="LPDDR*"` em qualquer arquivo, **é um bug** — corrija.
 
-### 8.2 chip_type="DDR" era errado
+### 8.2 chip_type genérico ("DDR"/"RAM") era errado — hoje a GERAÇÃO vai no chip_type
 
 **Antes de 2026-06-19:** fix_known_parts usava `chip_type="DDR"` para chips DDR discretos.
-**Corrigido:** 41 entradas (K4B x4, K4H DDR1, K4T DDR2) alteradas para `chip_type="RAM"`.
+**Etapa 2026-06-19:** 41 entradas (K4B x4, K4H DDR1, K4T DDR2) migradas de `chip_type="DDR"`
+para `chip_type="RAM"` (estado intermediário).
 
-O gateway de estoque precisa de `chip_type="RAM"` para montar o label correto.
-`chip_type="DDR"` não é reconhecido pelo gateway e produz label vazio/errado.
+> **⚠ SUPERSEDED pela opção 1 (2026-06-29):** o `chip_type` genérico `"RAM"` também foi
+> abandonado. Agora a **geração vai no `chip_type`** (`"DDR3"`, `"DDR4"`, `"DDR5"`, `"SDRAM"`,
+> `"RDRAM"`, `"GDDR5"`…), espelhada no `subtype`. Tanto `"DDR"` quanto `"RAM"` genéricos
+> são proibidos. O gateway monta o label a partir da geração no `chip_type`/`subtype`.
+> Fonte única: `chips/chip_types.py` + `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.
 
 ### 8.3 subtype verboso quebra o label do gateway
 
@@ -1222,7 +1235,7 @@ from chips.engine import classify; import json
 print(json.dumps(classify('KMQ8X000SA-B414'), indent=2, ensure_ascii=False))
 "
 
-# DDR3 — esperado: chip_type='RAM', subtype='DDR3', dram_density='8Gb = 1GB por die [~]'
+# DDR3 — esperado: chip_type='DDR3', subtype='DDR3', dram_density='8Gb = 1GB por die [~]'
 python manage.py shell -c "
 from chips.engine import classify; import json
 print(json.dumps(classify('K4B8G1646D'), indent=2, ensure_ascii=False))

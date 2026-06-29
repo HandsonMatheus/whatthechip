@@ -45,9 +45,10 @@ chips/management/commands/fix_known_parts.py       ← seções de OUTRAS marcas
 3. **Reiniciar o servidor após `populate_hynix --overwrite`.** O `lru_cache` do engine
    não invalida automaticamente no processo do servidor web.
 
-4. **`chip_type="RAM"` para todos os chips DDR/GDDR discretos** (HY5DU, HY5PS, H5PS,
-   H5TQ, H5TC, H5AN, H5A, H5C, H5RS…). Nunca `"DDR3"`, `"DDR"`, `"GDDR3"` no `chip_type`.
-   O gateway quebra se `chip_type` não for `"RAM"` para esses chips.
+4. **OPÇÃO 1 (2026-06-29): a GERAÇÃO vai no `chip_type` para todo DDR/GDDR discreto**
+   (HY5DU→`"DDR1"`, HY5PS/H5PS→`"DDR2"`, H5TQ→`"DDR3"`, H5TC→`"DDR3L"`, H5AN/H5A→`"DDR4"`,
+   H5C→`"DDR5"`, H5RS→`"GDDR3"`), **espelhada no `subtype`**. ❌ NUNCA mais `chip_type="RAM"`
+   nem `"DDR"` genérico. Fonte única: `chips/chip_types.py` + `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.
 
 5. **`subtype` = SOMENTE a geração — sem mais nada. Isso vale para `ChipFamily.subtype`
    (em `populate_hynix.py`) E para `KnownPart.subtype` (em `fix_known_parts.py` /
@@ -161,17 +162,24 @@ mais frequente depois da Samsung, com forte presença em LPDDR mobile e DDR PC.
 
 ## 2. Convenção Canônica de Campos ⚠️ LEIA PRIMEIRO
 
+> **⚠ CONVENÇÃO DE TIPOS — OPÇÃO 1 (endurecida 2026-06-29). Fonte única: `chips/chip_types.py` + `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.**
+>
+> - **DRAM discreta (DDR / LPDDR / GDDR / SDRAM / RDRAM): a GERAÇÃO vai no `chip_type`** (`DDR3`, `DDR4`, `LPDDR4X`, `GDDR5`, `SDRAM`…), **espelhada no `subtype`**. ❌ NUNCA `chip_type="RAM"` nem `"DDR"` genérico.
+> - **Gerenciada** (`eMMC`/`UFS`/`eMCP`/`uMCP`/`NAND Flash`): `chip_type` como já é; `subtype` = geração LPDDR (eMCP/uMCP) · célula `SLC/MLC/TLC NAND` (NAND) · vazio (eMMC/UFS).
+> - **Unidade inviolável:** densidade do **die** em `Gb`; capacidade do **pacote** em `GB`.
+> - Legados (DDR1/2, LPDDR2, SDRAM, RDRAM, EDO DRAM) = sempre **NÃO RENTÁVEL**.
+
 ### 2.1 Tabela canônica por tipo de chip
 
 | Tipo de chip | `chip_type` | `subtype` | `interface` | Campo de tamanho |
 |---|---|---|---|---|
-| DDR1 | `"RAM"` | `"DDR1"` | `"x8"` / `"x16"` / `"x4"` | `dram_density` (Gb por die) |
-| DDR2 | `"RAM"` | `"DDR2"` | `"x8"` / `"x16"` | `dram_density` |
-| DDR3 | `"RAM"` | `"DDR3"` | `"x8"` / `"x16"` / `"x4"` | `dram_density` |
-| DDR3L | `"RAM"` | `"DDR3L"` | `"x8"` / `"x16"` | `dram_density` |
-| DDR4 | `"RAM"` | `"DDR4"` | `"x8"` / `"x16"` / `"x4"` | `dram_density` |
-| DDR5 | `"RAM"` | `"DDR5"` | `"x8"` / `"x16"` | `dram_density` |
-| GDDR3 | `"RAM"` | `"GDDR3"` | `"x16"` | `dram_density` |
+| DDR1 | `"DDR1"` | `"DDR1"` | `"x8"` / `"x16"` / `"x4"` | `dram_density` (Gb por die) |
+| DDR2 | `"DDR2"` | `"DDR2"` | `"x8"` / `"x16"` | `dram_density` |
+| DDR3 | `"DDR3"` | `"DDR3"` | `"x8"` / `"x16"` / `"x4"` | `dram_density` |
+| DDR3L | `"DDR3L"` | `"DDR3L"` | `"x8"` / `"x16"` | `dram_density` |
+| DDR4 | `"DDR4"` | `"DDR4"` | `"x8"` / `"x16"` / `"x4"` | `dram_density` |
+| DDR5 | `"DDR5"` | `"DDR5"` | `"x8"` / `"x16"` | `dram_density` |
+| GDDR3 | `"GDDR3"` | `"GDDR3"` | `"x16"` | `dram_density` |
 | LPDDR1 | `"LPDDR1"` | `"LPDDR1"` | `""` (vazio) | `capacity` (bytes, pacote) |
 | LPDDR2 | `"LPDDR2"` | `"LPDDR2"` | `""` | `capacity` |
 | LPDDR3 | `"LPDDR3"` | `"LPDDR3"` | `""` | `capacity` |
@@ -249,7 +257,7 @@ UFS:  capacity="128GB" → label "UFS128GB"
 
 | Campo | O que vai | O que NÃO vai |
 |-------|-----------|---------------|
-| `chip_type` | `"RAM"` (DDR/GDDR) · `"eMMC"`, `"UFS"`, `"eMCP"`, `"uMCP"` · `"LPDDR4X"` etc. (LPDDR standalone) | specs, densidades, tensão, `"DDR3"`, `"DDR"`, `"NAND"` |
+| `chip_type` | **geração** (DDR/GDDR): `"DDR3"`, `"DDR4"`, `"DDR5"`, `"GDDR3"` · `"eMMC"`, `"UFS"`, `"eMCP"`, `"uMCP"` · `"LPDDR4X"` etc. (LPDDR standalone) | specs, densidades, tensão, `"RAM"`, `"DDR"` genérico, `"NAND"` |
 | `subtype` | **só a geração**: `"DDR3"`, `"DDR3L"`, `"LPDDR4X"`, `"DDR5"`, `"GDDR3"` | densidade (`"8Gb"`), barramento (`"x16"`), tensão (`"1.35V"`), qualificadores (`"Mobile"`, `"standalone"`, `"SDRAM"`, `"Graphics"`, `"PC DRAM"`) |
 | `interface` | bus tipo para DDR/GDDR: `"DDR3"`, `"DDR4"` · versão para eMMC/UFS: `"eMMC"`, `"UFS 3.1"` | a geração de RAM (`"LPDDR4"`) — nunca repetir aqui · `""` vazio para LPDDR/eMCP/uMCP |
 | `capacity` | capacidade total do **pacote** em bytes: `"512MB"`, `"4GB"`, `"128GB"` | gigabits · capacity de eMCP/uMCP (usar `emcp_nand`/`emcp_ram`) |
@@ -802,15 +810,15 @@ Chaves decimais `"25"`/`"51"` = 256Mbit/512Mbit (= 256MB/512MB); alfanuméricos 
 
 | Prefixo | `chip_type` | `subtype` | Decode | Prioridade | Status |
 |---------|-------------|-----------|--------|------------|--------|
-| HY5DU | `"RAM"` | `"DDR1"` | HYX_DDR1_CAP pn[5:7] | 60 | ✅ Completo |
-| HY5PS | `"RAM"` | `"DDR2"` | HYX_DDR2_HY5PS_CAP pn[5:7] | 60 | ✅ Completo |
-| H5PS | `"RAM"` | `"DDR2"` | HYX_DDR2_H5PS_CAP pn[4:6] | 55 | ✅ Completo |
-| H5TQ | `"RAM"` | `"DDR3"` | HYX_DDR3_CAP pn[4:6] | 55 | ✅ Completo |
-| H5TC | `"RAM"` | `"DDR3L"` | HYX_DDR3_CAP pn[4:6] | 55 | ✅ Completo |
-| H5AN | `"RAM"` | `"DDR4"` | HYX_DDR4_CAP pn[4:6] | 50 | ✅ Completo (teto AG=2GB) |
-| H5A | `"RAM"` | `"DDR4"` | HYX_DDR4_H5A_CAP pn[3:5] | 55 | ✅ Completo |
-| H5C | `"RAM"` | `"DDR5"` | HYX_DDR5_CAP pn[3:5] | 50 | ⚠️ Parcial (G6 pendente) |
-| H5RS | `"RAM"` | `"GDDR3"` | nenhum | 50 | ℹ️ Routing (sem decode cap) |
+| HY5DU | `"DDR1"` | `"DDR1"` | HYX_DDR1_CAP pn[5:7] | 60 | ✅ Completo |
+| HY5PS | `"DDR2"` | `"DDR2"` | HYX_DDR2_HY5PS_CAP pn[5:7] | 60 | ✅ Completo |
+| H5PS | `"DDR2"` | `"DDR2"` | HYX_DDR2_H5PS_CAP pn[4:6] | 55 | ✅ Completo |
+| H5TQ | `"DDR3"` | `"DDR3"` | HYX_DDR3_CAP pn[4:6] | 55 | ✅ Completo |
+| H5TC | `"DDR3L"` | `"DDR3L"` | HYX_DDR3_CAP pn[4:6] | 55 | ✅ Completo |
+| H5AN | `"DDR4"` | `"DDR4"` | HYX_DDR4_CAP pn[4:6] | 50 | ✅ Completo (teto AG=2GB) |
+| H5A | `"DDR4"` | `"DDR4"` | HYX_DDR4_H5A_CAP pn[3:5] | 55 | ✅ Completo |
+| H5C | `"DDR5"` | `"DDR5"` | HYX_DDR5_CAP pn[3:5] | 50 | ⚠️ Parcial (G6 pendente) |
+| H5RS | `"GDDR3"` | `"GDDR3"` | nenhum | 50 | ℹ️ Routing (sem decode cap) |
 
 > **H5AN vs H5A:** H5AN (priority=50) tem precedência sobre H5A (priority=55) porque o prefixo
 > mais longo H5AN é testado primeiro. Correto — todo `H5AN...` começa com `H5A`.
@@ -883,12 +891,12 @@ Chaves decimais `"25"`/`"51"` = 256Mbit/512Mbit (= 256MB/512MB); alfanuméricos 
     "create": True,
     "create_defaults": {
         "brand_name": "SK Hynix",
-        "chip_type":  "RAM",          # sempre "RAM" para DDR/GDDR
-        "subtype":    "DDR3",         # SÓ a geração — sem "SDRAM", sem qualificadores
+        "chip_type":  "DDR3",         # a GERAÇÃO vai no chip_type (Opção 1) — nunca "RAM"
+        "subtype":    "DDR3",         # espelha o chip_type — sem "SDRAM", sem qualificadores
         "confidence": "confirmed",
     },
     "fields": {
-        "chip_type":     "RAM",
+        "chip_type":     "DDR3",
         "subtype":       "DDR3",
         "interface":     "x16",       # bus WIDTH do chip — "x4", "x8", "x16"
                                       # lido de pn[6]: 4=x4, 6=x16, 8=x8
@@ -1031,14 +1039,14 @@ Os valores abaixo refletem a lógica do engine em `chips/engine.py`:
 | H9CK/H9CC LPDDR3 2GB | LPDDR3 | **RENTÁVEL** (checar) | Demanda moderada |
 | H9CK/H9CC LPDDR3 ≤1GB | LPDDR3 | **INDETERMINADO** | Verificar mercado |
 | H9TQ eMCP LPDDR3 32GB+ | eMCP | **RENTÁVEL** | Bancada eMCP LPDDR3 |
-| H5AN/H5A DDR4 | RAM | **RENTÁVEL** | Triagem DDR4 — boa liquidez |
-| H5C DDR5 | RAM | **RENTÁVEL** | Triagem DDR5 — premium |
-| H5TQ/H5TC DDR3 ≥2Gb | RAM | **RENTÁVEL** (checar limiar) | DDR3 ainda tem mercado |
-| H5TQ DDR3 1Gb (128MB) | RAM | **NÃO RENTÁVEL** | Resíduo |
+| H5AN/H5A DDR4 | DDR4 | **RENTÁVEL** | Triagem DDR4 — boa liquidez |
+| H5C DDR5 | DDR5 | **RENTÁVEL** | Triagem DDR5 — premium |
+| H5TQ/H5TC DDR3 ≥2Gb | DDR3 | **RENTÁVEL** (checar limiar) | DDR3 ainda tem mercado |
+| H5TQ DDR3 1Gb (128MB) | DDR3 | **NÃO RENTÁVEL** | Resíduo |
 | H9TK LPDDR2 standalone | LPDDR2 | **NÃO RENTÁVEL** / limiar | Geração quase morta |
 | H9TP/H9DP eMCP LPDDR2 | eMCP | **NÃO RENTÁVEL** | Resíduo — descarte |
-| H5PS/HY5PS DDR2 | RAM | **NÃO RENTÁVEL** | Geração morta |
-| HY5DU DDR1 | RAM | **NÃO RENTÁVEL** | Moagem/refino |
+| H5PS/HY5PS DDR2 | DDR2 | **NÃO RENTÁVEL** | Geração morta |
+| HY5DU DDR1 | DDR1 | **NÃO RENTÁVEL** | Moagem/refino |
 | HY5MS/H5MS LPDDR1 | LPDDR1 | **NÃO RENTÁVEL** | Refino de metais |
 | HN8T/H28U/H28S UFS | UFS | **RENTÁVEL** | Alta demanda |
 | H26M/H26T eMMC ≥16GB | eMMC | **RENTÁVEL** | Boa liquidez |
@@ -1356,7 +1364,7 @@ from chips.engine import classify; import json
 print(json.dumps(classify('H9HCNNNCPMML'), indent=2, ensure_ascii=False))
 "
 
-# DDR3 — esperado: chip_type='RAM', subtype='DDR3', dram_density='4Gb', capacity='512MB'
+# DDR3 — esperado: chip_type='DDR3', subtype='DDR3', dram_density='4Gb', capacity='512MB'
 python manage.py shell -c "
 from chips.engine import classify; import json
 print(json.dumps(classify('H5TQ4G63EFR'), indent=2, ensure_ascii=False))

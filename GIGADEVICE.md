@@ -24,6 +24,13 @@ Produtos relevantes para reciclagem:
 
 ## 2. Série GD25 — NOR Flash SPI
 
+> **⚠ CONVENÇÃO DE TIPOS — OPÇÃO 1 (endurecida 2026-06-29). Fonte única: `chips/chip_types.py` + `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.**
+>
+> - **DRAM discreta (DDR / LPDDR / GDDR / SDRAM / RDRAM): a GERAÇÃO vai no `chip_type`** (`DDR3`, `DDR4`, `LPDDR4X`, `GDDR5`, `SDRAM`…), **espelhada no `subtype`**. ❌ NUNCA `chip_type="RAM"` nem `"DDR"` genérico.
+> - **Gerenciada** (`eMMC`/`UFS`/`eMCP`/`uMCP`/`NAND Flash`): `chip_type` como já é; `subtype` = geração LPDDR (eMCP/uMCP) · célula `SLC/MLC/TLC NAND` (NAND) · vazio (eMMC/UFS).
+> - **Unidade inviolável:** densidade do **die** em `Gb`; capacidade do **pacote** em `GB`.
+> - Legados (DDR1/2, LPDDR2, SDRAM, RDRAM, EDO DRAM) = sempre **NÃO RENTÁVEL**.
+
 ### 2.1 Anatomia do PN
 
 ```
@@ -187,7 +194,7 @@ G D Q [densidade] [pacote] [org] [tensão] [revisão] - [temp][speed]
 ### 4.3 Campos WTC para DDR4 GDQ
 
 ```python
-chip_type  = "RAM"       # NÃO "DDR4" — convenção WTC para DRAM standalone
+chip_type  = "DDR4"      # OPÇÃO 1 (2026-06-29): geração no chip_type p/ DRAM discreta
 subtype    = "DDR4"
 interface  = "x16"       # apenas no KnownPart; família usa interface=""
 capacity   = "512MB"     # 4Gbit ÷ 8 = 512MB por die
@@ -215,7 +222,7 @@ capacity   = "512MB"     # 4Gbit ÷ 8 = 512MB por die
 
 | Prefixo | chip_type | subtype | Decode cap |
 |---|---|---|---|
-| GDQ | RAM | DDR4 | None (via KnownPart) |
+| GDQ | DDR4 | DDR4 | None (via KnownPart) |
 | GD25Q | NOR Flash | SPI NOR | None (código variável) |
 | GD25B | NOR Flash | SPI NOR | None (código variável) |
 | GD25LQ | NOR Flash | SPI NOR | None (código variável) |
