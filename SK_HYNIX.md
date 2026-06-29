@@ -1,6 +1,6 @@
 # SK_HYNIX.md — Bíblia Técnica e de Negócio
 **WhatTheChip — documento vivo de referência**
-Criado: 2026-06-19 | Atualizado: 2026-06-19
+Criado: 2026-06-19 | Atualizado: 2026-06-29
 > Leia antes de tocar em qualquer arquivo relacionado à SK Hynix.
 > Em conflito com qualquer outro doc, o **código é a fonte da verdade**
 > (`chips/engine.py`, `populate_hynix.py`).
@@ -78,6 +78,22 @@ chips/management/commands/fix_known_parts.py       ← seções de OUTRAS marcas
 11. **Não confie em dados de distribuidor ou IA sem verificação.** Jotrin, WinSource,
     catálogos de Shenzhen e IAs confundem Gb/GB, invertem primary/secondary e alucinam
     capacidades. Sempre cruzar com `product.skhynix.com`, Alldatasheet ou Octopart.
+
+12. **⚠️ Ouro = IDENTIDADE, não as specs derivadas. Atestar SEMPRE em tier-1.**
+    Lição transferida da Micron (ver `MICRON.md §5` e `CLAUDE.md §7`): num registro
+    `confidence="confirmed"`, o que está verificado é a **identidade** (o PN existe / o
+    laser-marking ⇄ PN é real). `capacity`, `subtype`, `dram_density` e geração são
+    **derivados** — de DecodeMap, de catálogo de distribuidor ou de inferência por prefixo
+    — e **podem estar errados mesmo num registro confirmado**. Antes de popular ou confiar
+    numa spec, atestar em fonte tier-1 (datasheet SK Hynix / `product.skhynix.com` / DigiKey).
+    **A gramática não é deus; a fonte tier-1 é.** Dois modos clássicos de falha que isso evita:
+    - **Geração por prefixo sem atestar** — assumir "prefixo X = LPDDR4" sem datasheet.
+      Foi exatamente o erro `MT52L = LPDDR4` na Micron (era LPDDR3, tier-1 pegou). Aqui:
+      H9DA é LPDDR1 e não LPDDR3 apesar do "H9D"; H5TQ=DDR3 1.5V vs H5TC=DDR3L 1.35V (§3.1).
+    - **Sufixo de dies/pacote interpretado como multiplicador de capacidade** — na SK Hynix
+      o decode é 100% por **DecodeMap** (tabela posicional curada), então o bug de dies da
+      Micron (`×N`) é estruturalmente impossível; mesmo assim, confira a chave do mapa contra
+      o datasheet ao adicionar uma nova capacidade, nunca extrapole por padrão numérico.
 
 ### 0.4 Hierarquia de fontes (imutável)
 
@@ -985,7 +1001,7 @@ Os limiares exatos vivem em `ProfitabilityConfig` (singleton no admin — editá
 |-------------------------------|---------|---------------------------|
 | `ddr_min_gen` | 3 | DDR1/DDR2 (gen < 3) → **NÃO RENTÁVEL** sempre. HY5DU, HY5PS, H5PS caem aqui. |
 | `ddr3_min_gbit` | 2.0 | DDR3 < 2 Gb (256MB/die) → **NÃO RENTÁVEL**. H5TQ com `51`=64MB, `1G`=128MB caem aqui. |
-| `ddr4plus_min_gbit` | 8.0 | ⚠️ **VERIFICAR no admin** — default 8.0 classifica DDR4 4Gb como NÃO RENTÁVEL incorretamente. Limiar correto confirmado: 1 Gb. |
+| `ddr4plus_min_gbit` | **1.0** | ✓ Já configurado em **1.0 Gb** no admin (verificado 2026-06-29). DDR4+ ≥1Gb (128MB/die) → rentável. NÃO reverter para 8.0 (classificaria DDR4 4Gb como NÃO RENTÁVEL erroneamente). |
 | `lpddr_min_gen` | 3 | LPDDR1/2 (gen < 3) → **NÃO RENTÁVEL**. H9TK, H9TP, H9DP caem aqui. |
 | `lpddr3_min_gb` | 2.0 | LPDDR3 < 2GB → **NÃO RENTÁVEL**. H9CC/H9CK com `4`=512MB, `8`=1GB caem aqui. |
 | `emmc_min_gb` | 16.0 | eMMC < 16GB → **NÃO RENTÁVEL**. H26M/H26T com `3`=4GB, `4`=8GB caem aqui. |
@@ -1098,64 +1114,42 @@ Antes de 2026-06-19, 11 famílias em `populate_hynix.py` usavam a geração como
 (ex.: `interface="LPDDR3"`). **Corrigido.** Se encontrar `interface="LPDDR*"` em qualquer
 arquivo de qualquer marca → é um bug, corrija.
 
-### 8.11 ⚠️ ChipFamily.subtype verboso em populate_hynix.py — BUG REAL, CORREÇÃO PENDENTE
+### 8.11 subtype no label — RESOLVIDO (canonical_gen + write-time já limpo)
 
-**A documentação anterior estava errada.** A afirmação de que `ChipFamily.subtype` verboso
-"não quebra" o gateway é **falsa** — verificado no código em 2026-06-19.
+> **Status (2026-06-29): RESOLVIDO em dois níveis.** Versões anteriores deste doc
+> descreviam um "BUG REAL, CORREÇÃO PENDENTE" de `ChipFamily.subtype` verboso vazando
+> para o label. Isso **não procede mais** — verificado no código.
 
-**O que acontece no engine:**
-Em `chips/engine.py`, a função `_result_from_family` (linha ~402) copia `fam.subtype`
-diretamente para o resultado quando a **gramática vence** (chip não confirmado no banco):
-```python
-result["subtype"] = fam.subtype   # _result_from_family, linha ~402
-```
+**Por que o label está protegido (defesa no ponto de consumo):**
+O gateway (`estoque/views.py`, linhas ~237/254/282) passa **todo** subtype por
+`chips/conventions.py::canonical_gen()` antes de montar o label. Essa função é a
+**FONTE ÚNICA** da convenção (mesma filosofia de `assess_profitability` / regra de ouro #11)
+e reduz qualquer subtype ao token canônico de geração por **whitelist**:
+`"LPDDR3 standalone"` → `"LPDDR3"`, `"DDR3 SDRAM"` → `"DDR3"`, `"LPDDR4X Multi-Channel"`
+→ `"LPDDR4X"`. Cobre **as duas vias** (banco confirmado e gramática) e é **retroativa** —
+sem reescrever o banco. É **fail-open**: token desconhecido passa intacto (nunca apaga o label).
 
-O gateway em `estoque/views.py` remove o sufixo `" SDRAM"` como caso especial — então
-`"DDR3 SDRAM"` vira `"DDR3"` **por sorte**. Mas `"LPDDR3 standalone"` **não** é limpo:
-→ label da caixa sai **`"LPDDR3 standalone+4G"`** em vez de `"LPDDR3+4G"` — truncado.
+**Por que o write-time também já está limpo:**
+Auditoria de `populate_hynix.py` (2026-06-29, `grep "subtype="`) confirma que **todas as
+34 famílias já usam o subtype canônico** — `H5TQ`=`"DDR3"`, `H5TC`=`"DDR3L"`, `H9CC`/`H9CK`
+=`"LPDDR3"`, `H9TQ`=`"LPDDR3"`, `H9HP`=`"LPDDR4X"`, etc. As strings verbosas ("DDR3 standalone",
+"LPDDR3 standalone") sobrevivem **apenas no campo `tip`** (texto descritivo do card de busca —
+não alimenta o label). Nada a corrigir no código.
 
-**Famílias afetadas em populate_hynix.py (correção necessária):**
+**Regra permanente (continua valendo):** escreva `subtype` = **só a geração/célula** (1–3
+palavras) no write-time — em `populate_hynix.py` (`ChipFamily.subtype`), `fix_known_parts.py`
+e `add_confirmed_part.py` (`KnownPart.subtype`). `canonical_gen` é cinto-e-suspensório, não
+licença para subtype sujo: o subtype **cru** ainda aparece no card de busca.
 
-| Família | subtype ATUAL (populate_hynix.py) | subtype CORRETO |
-|---------|----------------------------------|-----------------|
-| H5TQ | `"DDR3 SDRAM"` | `"DDR3"` |
-| H5TC | `"DDR3 SDRAM"` | `"DDR3L"` |
-| H5AN | `"DDR4 SDRAM"` | `"DDR4"` |
-| H5A | `"DDR4 SDRAM"` | `"DDR4"` |
-| H5C | `"DDR5 SDRAM"` | `"DDR5"` |
-| H9TK | `"LPDDR2 standalone"` | `"LPDDR2"` |
-| H9CC, H9CK | `"LPDDR3 standalone"` | `"LPDDR3"` |
-| H9HC | `"LPDDR4 standalone"` | `"LPDDR4"` |
-| H9HK, H9HCN | `"LPDDR4X standalone"` | `"LPDDR4X"` |
-| H54G | `"LPDDR4X standalone"` | `"LPDDR4X"` |
-| H9JK | `"LPDDR5/5X standalone"` | `"LPDDR5"` |
-| H58G | `"LPDDR5/5X standalone"` | `"LPDDR5"` |
-| H9TQ | `"eMCP LPDDR3"` | `"LPDDR3"` |
-| H9TP, H9DP | `"eMCP LPDDR2"` | `"LPDDR2"` |
-| H9HP | `"eMCP LPDDR4X"` | `"LPDDR4X"` |
-| H9HQ | `"uMCP LPDDR4X"` | `"LPDDR4X"` |
-| H9HR, H9RT | `"uMCP LPDDR5"` | `"LPDDR5"` |
-
-> Verificar os valores exatos com `grep "subtype=" populate_hynix.py` antes de editar,
-> pois o arquivo pode ter variações não listadas aqui.
-
-**Fluxo de correção (usuário executa):**
+**Verificação (se mexer em subtype):**
 ```bash
-# 1. Editar populate_hynix.py (Claude edita)
-# 2. Usuário roda:
-python manage.py populate_hynix --dry-run    # verificar saída
-python manage.py populate_hynix --overwrite  # aplicar
-# 3. REINICIAR o servidor — obrigatório (lru_cache)
-# 4. Verificar:
 python manage.py shell -c "
-from chips.engine import classify; import json
-r = classify('H9CCNNNCLTML')
-print(r.get('subtype'))  # deve ser 'LPDDR3', não 'LPDDR3 standalone'
+from chips.engine import classify
+print(classify('H9CCNNNCLTML').get('subtype'))   # 'LPDDR3' — limpo já na origem
+from chips.conventions import canonical_gen
+print(canonical_gen('LPDDR3 standalone'))        # 'LPDDR3' — defesa no label
 "
 ```
-
-**Nota para KnownPart:** em `fix_known_parts.py` e `add_confirmed_part.py`, o `subtype`
-já segue a convenção curta — o problema está **exclusivamente** em `populate_hynix.py`.
 
 ### 8.12 UFS e eMMC têm BGA-153 idêntico
 
@@ -1245,6 +1239,9 @@ LPDDR1 (H5MS, HY5MS)     ██████░░░░ 65%   HY5MS com 1 PN
 | 2026-06-19 | SKHYNIX.md → SK_HYNIX.md | Bíblia reescrita seguindo template PROMPT_NOVO_MD_MARCA | — | Arquivo anterior não seguia estrutura canônica |
 | 2026-06-25 | HYX_LPDDR3_CAP | Adicionadas chaves `E`=6GB (48Gbit) e `F`=8GB (64Gbit) | Preduo WP01025 e WP01836 tier-1 | Comentário "BLOQUEADO" anterior estava errado — multi-die confirmado |
 | 2026-06-25 | 15 chips H9CK/H9CC LPDDR3 | Adicionados em fix_known_parts.py | Preduo, iFixit, absunshine, ssfkg | H9CKNNNBJTMP chip físico na esteira eMiner; restantes distributor |
+| 2026-06-29 | §8.11 (doc) | "BUG REAL pendente" → **RESOLVIDO**: subtypes já canônicos no código + `canonical_gen` protege o label | Auditoria `grep subtype=` + `estoque/views.py` | Doc descrevia bug inexistente; risco de retrabalho/desconfiança |
+| 2026-06-29 | §0.3 (doc) | Regra de ouro #12: ouro=identidade, atestar specs em tier-1 | Lição Micron (MT52L, dies) | Endurecer disciplina para chat que vai popular PNs |
+| 2026-06-29 | §7 (doc) | `ddr4plus_min_gbit` marcado como já em 1.0 no admin | Admin Django (screenshot eMiner) | Aviso "verificar" obsoleto — já configurado |
 
 ### Chips confirmados individualmente (histórico)
 
