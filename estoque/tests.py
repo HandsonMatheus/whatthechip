@@ -63,8 +63,11 @@ class GatewayDestinationTests(TestCase):
         self.assertEqual([s['status'] for s in g['steps']], ['pass', 'pass', 'fail'])
 
     def test_confirmado_indeterminado_aprovado(self):
-        # NOR flash não tem regra de rentabilidade → INDETERMINADO → aprovado.
-        r = _result(chip_type='NOR', capacity='8GB', confidence='manual')
+        # Tipo de catálogo sem regra de rentabilidade → INDETERMINADO → aprovado
+        # (regra conservadora). Antes usava chip_type='NOR'; agora 'NOR' é
+        # reconhecido como NOR Flash = sucata (dead) pela fonte única
+        # (chips/chip_types.py), então usamos 'SoC', que é genuinamente INDETERMINADO.
+        r = _result(chip_type='SoC', capacity='8GB', confidence='manual')
         g = _compute_gateway(r, has_cap=True)
         self.assertEqual(g['destination'], 'aprovado')
         self.assertEqual(g['profitable'], 'INDETERMINADO')

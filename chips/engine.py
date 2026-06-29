@@ -34,6 +34,7 @@ from django.db.models import CharField, Q, Value
 from django.db.models.functions import Length, Replace
 
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, ProfitabilityConfig, SearchLog, Source, UnknownChip
+from .chip_types import canonical_chip_type, profit_family
 
 
 # ── Fuzzy matching ─────────────────────────────────────────────────────────────
@@ -946,14 +947,18 @@ def _lpddr_generation(text: str) -> int | None:
         LPDDR4 / LPDDR4X / LPDDR4/4X → 4
         LPDDR5 / LPDDR5X        → 5
     Retorna None se não encontrar nenhuma correspondência.
+
+    Usa findall() + max() (espelho de _ddr_generation): quando o chip_type genérico
+    "LPDDR" é concatenado ao subtype específico (combined="LPDDR LPDDR4"), o .search()
+    pegava o primeiro "LPDDR" (sem número → geração 1) e marcava um LPDDR4/4X como
+    LPDDR1 → sucata ERRADA. max() devolve a geração real. (Bug latente exposto pela
+    migração da convenção; gen no chip_type genérico envenenava a extração.)
     """
-    m = _LPDDR_GEN_RE.search(text or "")
-    if not m:
+    matches = _LPDDR_GEN_RE.findall(text or "")
+    if not matches:
         return None
-    gen_str = m.group(1)
-    if gen_str is None:
-        return 1  # "LPDDR" sem número → geração 1
-    return int(gen_str[0])  # pega só o primeiro dígito (LPDDR4X → 4)
+    gens = [1 if not g else int(g[0]) for g in matches]
+    return max(gens)
 
 
 def _extract_gbit(text: str) -> float | None:
@@ -1047,6 +1052,14 @@ def assess_profitability(result: dict) -> str:
     subtype   = (result.get("subtype")   or "").strip()
     combined  = f"{chip_type} {subtype}".upper()
 
+    # Despacho pela FONTE ÚNICA (chips/chip_types.py): resolve o token canônico do
+    # tipo e a família de rentabilidade. Substitui a SELEÇÃO de branch por substring
+    # — os INTERNOS de cada branch (extração de geração/capacidade via `combined`,
+    # limiares de ProfitabilityConfig) seguem idênticos. Comportamento preservado,
+    # provado pela rede de regressão (docs/PLANO_IMPLEMENTACAO_CONVENCAO.md §3/F3).
+    _canon = canonical_chip_type(chip_type, subtype)
+    _fam   = profit_family(_canon)
+
     # ── Tipos sempre NÃO RENTÁVEL (resíduo por tipo, não por capacidade) ─────
     # NAND Flash raw (MT29C, MT29F, K9*): sem controlador eMMC/UFS — resíduo industrial.
     # NOR Flash: memória de código read-only, sem mercado B2B de reciclagem.
@@ -1055,15 +1068,17 @@ def assess_profitability(result: dict) -> str:
     #   is_emcp=True → sem este guard, entraria no bloco eMCP mas retornaria INDETERMINADO
     #   quando a gramática não decodifica capacidade (placeholder "tipo 'T' — consultar datasheet").
     # is_dead_by_generation() retorna True automaticamente para estes tipos.
-    # ⚠ Adicionar novos tipos aqui só após confirmar chip_type em todos os populate_*.
-    if chip_type.lower() in ("nand flash", "nor flash", "mcp", "epop"):
+    # ⚠ Tipos "dead" agora vêm da FONTE ÚNICA (chips/chip_types.py): nand flash,
+    # nor flash, mcp, epop + sdram/rdram/edo dram (anteriores ao DDR1 → sucata).
+    # Adicionar um tipo dead = uma entrada no registro, não aqui.
+    if _fam == "dead":
         return "NÃO RENTÁVEL"
 
     # ── eMCP / uMCP ──────────────────────────────────────────────────────────
     # uMCP: mesmas regras do eMCP (NAND ≥ cfg.emcp_min_nand_gb, RAM ≥ cfg.emcp_min_ram_gb).
     # is_emcp cobre ambos via ChipFamily; a checagem explícita do chip_type
     # garante que chip_type="uMCP" (vindo do banco) também seja avaliado.
-    if result.get("is_emcp") or chip_type.lower() in ("emcp", "umcp"):
+    if result.get("is_emcp") or _fam == "emcp":
         ram_str  = (result.get("emcp_ram")  or "").strip()
         nand_str = (result.get("emcp_nand") or "").strip()
 
@@ -1108,21 +1123,21 @@ def assess_profitability(result: dict) -> str:
         return "RENTÁVEL"
 
     # ── eMMC standalone ──────────────────────────────────────────────────────
-    if chip_type == "eMMC":
+    if _fam == "emmc":
         cap_gb = _extract_gib(result.get("capacity") or "")
         if cap_gb is None:
             return "INDETERMINADO"
         return "RENTÁVEL" if cap_gb >= cfg.emmc_min_cap_gb - 0.01 else "NÃO RENTÁVEL"
 
     # ── UFS standalone ────────────────────────────────────────────────────────
-    if chip_type == "UFS":
+    if _fam == "ufs":
         cap_gb = _extract_gib(result.get("capacity") or "")
         if cap_gb is None:
             return "INDETERMINADO"
         return "RENTÁVEL" if cap_gb >= cfg.ufs_min_cap_gb - 0.01 else "NÃO RENTÁVEL"
 
     # ── LPDDR standalone ─────────────────────────────────────────────────────
-    if "LPDDR" in combined:
+    if _fam == "lpddr":
         lpddr_gen = _lpddr_generation(combined)
         if lpddr_gen is None:
             return "INDETERMINADO"
@@ -1152,7 +1167,7 @@ def assess_profitability(result: dict) -> str:
     # verificado ANTES do DDR para interceptar e tratar corretamente.
     # GDDR2 e abaixo (ou sem número de geração): NÃO RENTÁVEL.
     # GDDR3+: raro no fluxo — sem threshold de densidade definido → INDETERMINADO.
-    if "GDDR" in combined:
+    if _fam == "gddr":
         m = re.search(r'GDDR(\d+)', combined)
         gddr_gen = int(m.group(1)) if m else None
         if gddr_gen is None or gddr_gen < cfg.gddr_min_gen:
@@ -1164,7 +1179,7 @@ def assess_profitability(result: dict) -> str:
     #   2Gb = 256MB | 4Gb = 512MB | 8Gb = 1GB
     # Fonte primária: dram_density ("8Gb = 1GB por die [✓]") → extrai Gigabits.
     # Fallback: capacity em GB (KnownParts enriquecidos).
-    if "DDR" in combined:
+    if _fam == "ddr":
         ddr_gen = _ddr_generation(combined)
         if ddr_gen is None:
             return "INDETERMINADO"

@@ -26,6 +26,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from chips.conventions import canonical_gen
+from chips.chip_types import canonical_chip_type, generation_of, label_kind
 from chips.engine import assess_profitability, classify, is_dead_by_generation
 from chips.models import UnknownChip
 
@@ -203,20 +204,24 @@ def _compute_destination(result: dict) -> tuple:
     """
     chip_type = (result.get('chip_type') or '').strip()
     ct = chip_type.lower()
+    # Tipo de label da FONTE ÚNICA (chips/chip_types.py) + fallback de substring,
+    # que preserva casos legados (ex.: 'onenand' contém 'nand'). A GERAÇÃO do label
+    # vem de canonical_gen(subtype) com fallback no chip_type via generation_of.
+    kind = label_kind(canonical_chip_type(chip_type, result.get('subtype') or ''))
 
-    if 'umcp' in ct:
+    if kind == 'umcp' or 'umcp' in ct:
         nand  = _extract_gb(result.get('emcp_nand', ''))
         ram   = _extract_gb(result.get('emcp_ram', ''))
         label = f"UMCP{nand}+{ram}" if nand else 'uMCP'
         return label, 'umcp'
 
-    if 'emcp' in ct or result.get('is_emcp'):
+    if kind == 'emcp' or 'emcp' in ct or result.get('is_emcp'):
         nand  = _extract_gb(result.get('emcp_nand', ''))
         ram   = _extract_gb(result.get('emcp_ram', ''))
         label = f"EMCP{nand}+{ram}" if nand else 'eMCP'
         return label, 'emcp'
 
-    if 'ufs' in ct:
+    if kind == 'ufs' or 'ufs' in ct:
         # _format_cap preserva a unidade original: "128GB"→"128GB", "1TB"→"1TB".
         # Antes usava _extract_gb + "GB" hardcoded, o que produzia "UFS" (label vazio)
         # para chips 1TB — _extract_gb só reconhecia GB, não TB (fix 2026-06-26).
@@ -224,7 +229,7 @@ def _compute_destination(result: dict) -> tuple:
         label = f"UFS{cap}" if cap else 'UFS'
         return label, 'ufs'
 
-    if 'emmc' in ct:
+    if kind == 'emmc' or 'emmc' in ct:
         cap   = _format_cap(result.get('capacity', ''))
         label = f"EMMC{cap}" if cap else 'eMMC'
         return label, 'emmc'
@@ -233,13 +238,14 @@ def _compute_destination(result: dict) -> tuple:
     # falso-positivo. Samsung usa chip_type dedicado ("GDDR3"/"GDDR5"/etc.);
     # Hynix H5RS usa chip_type="RAM" com subtype="GDDR3" (coberto pelo elif).
     subtype_lower = (result.get('subtype') or '').lower()
-    if 'gddr' in ct or ('gddr' in subtype_lower and ct in ('ram', 'dram', 'sdram')):
-        gen  = canonical_gen(result.get('subtype') or '', chip_type) or chip_type.upper()
+    if kind == 'gddr' or 'gddr' in ct or ('gddr' in subtype_lower and ct in ('ram', 'dram', 'sdram')):
+        gen  = canonical_gen(result.get('subtype') or '', chip_type) \
+            or generation_of(chip_type, result.get('subtype') or '') or chip_type.upper()
         size = _density_g(result)
         label = f"{gen}+{size}G" if (gen and size) else (gen or 'GDDR')
         return label, 'gddr'
 
-    if 'lpddr' in ct or 'ddr' in ct or ct in ('ram', 'dram', 'sdram'):
+    if kind in ('lpddr', 'ddr', 'sdram') or 'lpddr' in ct or 'ddr' in ct or ct in ('ram', 'dram', 'sdram'):
         # Caixa de RAM = GERAÇÃO + DENSIDADE, no formato impresso na caixa física,
         # ex.: "DDR3+2G", "DDR4+4G", "LPDDR4+8GB". A geração vem de subtype (ex.: "DDR3",
         # "LPDDR4X") — campo específico para o tipo de RAM. `interface` é a config de
@@ -252,6 +258,7 @@ def _compute_destination(result: dict) -> tuple:
         # de forma retroativa, sem reescrever o banco. Fallback p/ interface se o
         # subtype estiver vazio (comportamento anterior preservado).
         gen = canonical_gen(result.get('subtype') or '', chip_type) \
+            or generation_of(chip_type, result.get('subtype') or '') \
             or (result.get('interface') or '').strip()
         # Tamanho da caixa depende do TIPO (unidade explícita no sufixo):
         #  • LPDDR (móvel) = pacote multi-die → CAPACIDADE do pacote em GB (4GB→"4GB");
@@ -275,7 +282,7 @@ def _compute_destination(result: dict) -> tuple:
         cat = 'lpddr' if ('lpddr' in ct or gen.upper().startswith('LPDDR')) else 'ddr'
         return label, cat
 
-    if 'nand' in ct:
+    if kind == 'nand' or 'nand' in ct:
         # Usa subtype como prefixo do rótulo (ex.: "SLC NAND") + capacidade na
         # unidade original (MB ou GB). _extract_gb só lê GB e perderia "512MB".
         # canonical_gen normaliza a célula: "SLC NAND paralela industrial" → "SLC NAND".
