@@ -423,6 +423,7 @@ class Command(BaseCommand):
             ("AG",  "16Gb",  "2GB"),
             ("AH",  "16Gb",  "2GB"),   # DDR5: K4RAH086VB-BCQK (16Gb x8) ✓
             ("BH",  "32Gb",  "4GB"),   # DDR5: K4RBH046VM-BCCP (32Gb) — Samsung semiconductor.com ✓
+            ("CH",  "32Gb",  "4GB"),   # DDR5: K4RCH046VM (32Gb C-die) — Samsung semiconductor.com ✓
             #                           # ⚠ 2026-05-09: "BG" e "CG" propostos por IA externa SEM PN confirmado.
             #                           # Padrão A→B hexadecimal é plausível mas regra de ouro impede mapear sem evidência.
             #                           # Adicionar BG/CG apenas quando chip físico com PN K4RBG.../K4RCG... aparecer.
@@ -838,6 +839,21 @@ class Command(BaseCommand):
                     "⚠ INCOMPATÍVEL com DDR4 — slot, tensão e protocolo diferentes. "
                     "NÃO misturar com K4A ou K4RA na bancada. "
                     "Destino: bancada reacondicional DDR5 (caixa separada — alta densidade)."
+                ),
+            ),
+            dict(
+                prefix="K4RC", chip_type="DDR5", subtype="DDR5",
+                interface="DDR5", decode_density_type="pc",
+                is_emcp=False, active=True, priority=80,
+                decode_cap_pos=3, decode_cap_len=2, decode_cap_map="DRAM_PC",
+                tip=(
+                    "DDR5 Samsung 32Gb C-die (2024+). "
+                    "K4RC: pn[3:5]=CH → 32Gb (4GB por die). "
+                    "PNs confirmados: K4RCH046VM, K4RCH046VM-2CLP (DDR5-6400), "
+                    "K4RCH046VM-2CCM (DDR5-5600) — Samsung semiconductor.com ✓. "
+                    "⚠ INCOMPATÍVEL com DDR4 — slot, tensão e protocolo diferentes. "
+                    "NÃO misturar com K4RA (A-die 16Gb) ou K4RB (B-die 32Gb) na bancada. "
+                    "Destino: bancada reacondicional DDR5 (caixa separada — C-die)."
                 ),
             ),
 
