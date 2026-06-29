@@ -8313,6 +8313,250 @@ CORRECTIONS = [
     },
 
     # ══════════════════════════════════════════════════════════════════════════
+    # MT29C4G48MAZAPAMC — SLC NAND Flash 512MB (variante de die MC das KD)
+    # Confirmado tier-1 (chat Micron 2026): igual às KD, die MC. NAND raw, sem RAM.
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── JW456 — MT29C4G48MAZAPAMC-5 IT ─────────────────────────────────────
+    {
+        "pn": "MT29C4G48MAZAPAMC5IT",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "NAND Flash",
+            "subtype":    "SLC NAND",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "NAND Flash",
+            "capacity":   "512MB",
+            "subtype":    "SLC NAND",
+            "interface":  "Parallel NAND (8-bit)",
+            "fbga_code":  "JW456",
+            "confidence": "confirmed",
+            "notes": (
+                "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp (-40°C/+85°C). "
+                "Variante de die MC (vs KD). NAO e eMCP/eMMC/UFS — NAND raw, sem "
+                "controlador. Destino: residuo/industrial. Variante -5 (50ns)."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=JW456",
+        },
+        "reason": (
+            "FBGA JW456 = MT29C4G48MAZAPAMC-5 IT (confirmado tier-1, chat Micron). "
+            "4 Gbit SLC NAND Flash / 8 = 512MB. Mesma familia das KD, die MC. NAO e eMCP."
+        ),
+    },
+
+    # ── JY456 — MT29C4G48MAZAPAMC-5 IT ES (Engineering Sample) ─────────────
+    {
+        "pn": "MT29C4G48MAZAPAMC5ITES",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "NAND Flash",
+            "subtype":    "SLC NAND",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "NAND Flash",
+            "capacity":   "512MB",
+            "subtype":    "SLC NAND",
+            "interface":  "Parallel NAND (8-bit)",
+            "fbga_code":  "JY456",
+            "confidence": "confirmed",
+            "notes": (
+                "4 Gbit SLC NAND Flash paralela (x8). ES = Engineering Sample (NAO "
+                "producao). Variante de die MC. NAO e eMCP — NAND raw. Variante -5 (50ns)."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=JY456",
+        },
+        "reason": (
+            "FBGA JY456 = MT29C4G48MAZAPAMC-5 IT ES (confirmado tier-1, chat Micron). "
+            "SLC NAND 512MB, die MC, Engineering Sample. NAO e eMCP."
+        ),
+    },
+
+    # ── JW455 — MT29C4G48MAZAPAMC-6 IT ─────────────────────────────────────
+    {
+        "pn": "MT29C4G48MAZAPAMC6IT",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "NAND Flash",
+            "subtype":    "SLC NAND",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "NAND Flash",
+            "capacity":   "512MB",
+            "subtype":    "SLC NAND",
+            "interface":  "Parallel NAND (8-bit)",
+            "fbga_code":  "JW455",
+            "confidence": "confirmed",
+            "notes": (
+                "4 Gbit SLC NAND Flash paralela (x8). Industrial Temp. Variante de die "
+                "MC (vs KD). NAO e eMCP — NAND raw. Variante -6 (60ns)."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=JW455",
+        },
+        "reason": (
+            "FBGA JW455 = MT29C4G48MAZAPAMC-6 IT (confirmado tier-1, chat Micron). "
+            "SLC NAND 512MB, die MC, variante -6. NAO e eMCP."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # MT42L384M32D3LP — LPDDR2 384M×32 = 12Gb = 1.5GB (confirmado tier-1)
+    # DigiKey/Micron: depth×width SEM multiplicar dies → 384M×32 = 12Gb / 8 = 1.5GB.
+    # LPDDR2 = geracao legada → NAO RENTAVEL. Capacidade do PACOTE em GB.
+    # ══════════════════════════════════════════════════════════════════════════
+
+    # ── D9RRD — MT42L384M32D3LP-18 WT:A ────────────────────────────────────
+    {
+        "pn": "MT42L384M32D3LP18WTA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "LPDDR2",
+            "subtype":    "LPDDR2",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "LPDDR2",
+            "capacity":   "1.5GB",
+            "subtype":    "LPDDR2",
+            "fbga_code":  "D9RRD",
+            "confidence": "confirmed",
+            "notes": (
+                "LPDDR2 Micron 12 Gbit = 1.5 GB de pacote (384M×32 / 8). Variante -18. "
+                "Confirmado tier-1 (DigiKey, chat Micron). Capacidade do PACOTE em GB "
+                "(nao densidade de die). LPDDR2 = legado → NAO RENTAVEL."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=D9RRD",
+        },
+        "reason": (
+            "FBGA D9RRD = MT42L384M32D3LP-18 WT:A. LPDDR2, 384M×32 = 12Gb / 8 = 1.5GB "
+            "(formula Micron depth×width). Confirmado tier-1."
+        ),
+    },
+
+    # ── Z9RRC — MT42L384M32D3LP-18 WT ES:A (Engineering Sample) ────────────
+    {
+        "pn": "MT42L384M32D3LP18WTESA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "LPDDR2",
+            "subtype":    "LPDDR2",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "LPDDR2",
+            "capacity":   "1.5GB",
+            "subtype":    "LPDDR2",
+            "fbga_code":  "Z9RRC",
+            "confidence": "confirmed",
+            "notes": (
+                "LPDDR2 Micron 1.5 GB (384M×32 / 8). Variante -18 ES = Engineering "
+                "Sample. Confirmado tier-1. LPDDR2 = legado → NAO RENTAVEL."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=Z9RRC",
+        },
+        "reason": (
+            "FBGA Z9RRC = MT42L384M32D3LP-18 WT ES:A. LPDDR2 1.5GB, Engineering Sample. "
+            "Confirmado tier-1."
+        ),
+    },
+
+    # ── D9RRB — MT42L384M32D3LP-25 WT:A ────────────────────────────────────
+    {
+        "pn": "MT42L384M32D3LP25WTA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "LPDDR2",
+            "subtype":    "LPDDR2",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "LPDDR2",
+            "capacity":   "1.5GB",
+            "subtype":    "LPDDR2",
+            "fbga_code":  "D9RRB",
+            "confidence": "confirmed",
+            "notes": (
+                "LPDDR2 Micron 1.5 GB (384M×32 / 8). Variante -25. Confirmado tier-1 "
+                "(DigiKey, chat Micron). LPDDR2 = legado → NAO RENTAVEL."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=D9RRB",
+        },
+        "reason": (
+            "FBGA D9RRB = MT42L384M32D3LP-25 WT:A. LPDDR2 1.5GB. Confirmado tier-1."
+        ),
+    },
+
+    # ── Z9RQZ — MT42L384M32D3LP-25 WT ES:A (Engineering Sample) ────────────
+    {
+        "pn": "MT42L384M32D3LP25WTESA",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "LPDDR2",
+            "subtype":    "LPDDR2",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":  "LPDDR2",
+            "capacity":   "1.5GB",
+            "subtype":    "LPDDR2",
+            "fbga_code":  "Z9RQZ",
+            "confidence": "confirmed",
+            "notes": (
+                "LPDDR2 Micron 1.5 GB (384M×32 / 8). Variante -25 ES = Engineering "
+                "Sample. Confirmado tier-1. LPDDR2 = legado → NAO RENTAVEL."
+            ),
+            "source_url": "https://www.micron.com/support/tools-and-utilities/fbga?fbga=Z9RQZ",
+        },
+        "reason": (
+            "FBGA Z9RQZ = MT42L384M32D3LP-25 WT ES:A. LPDDR2 1.5GB, Engineering Sample. "
+            "Confirmado tier-1."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # MT41K64M16TW — DDR3L 1Gb/die (64M×16). CORRIGE dois campos errados no banco:
+    # chip_type era "Flash" e fbga_code era "DDR3L" (valor invalido). Tier-1 Micron.
+    # chip_type="DDR3L" (geracao no chip_type, convencao opcao 1). 1Gb < 2Gb → sucata.
+    # ══════════════════════════════════════════════════════════════════════════
+    {
+        "pn": "MT41K64M16TW",
+        "create": True,
+        "create_defaults": {
+            "brand_name": "Micron",
+            "chip_type":  "DDR3L",
+            "subtype":    "DDR3L",
+            "confidence": "confirmed",
+        },
+        "fields": {
+            "chip_type":    "DDR3L",
+            "subtype":      "DDR3L",
+            "density_gbit": "1Gb",
+            "density_gb":   "128MB",
+            "fbga_code":    None,
+            "confidence":   "confirmed",
+            "notes": (
+                "DDR3L Micron 1 Gbit/die (64M×16). Corrige dados errados do banco: "
+                "chip_type era 'Flash' e fbga_code era 'DDR3L' (invalido). Confirmado "
+                "tier-1 (chat Micron). DDR3L = densidade de DIE em Gb. 1Gb < 2Gb → sucata."
+            ),
+        },
+        "reason": (
+            "MT41K64M16TW = DDR3L, 64M×16 = 1 Gbit/die. Banco tinha chip_type='Flash' e "
+            "fbga_code='DDR3L' (ambos errados). Confirmado tier-1 (chat Micron)."
+        ),
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
     # Samsung NAND Flash standalone — KF9 family (K9 series, legacy)
     # ══════════════════════════════════════════════════════════════════════════
 

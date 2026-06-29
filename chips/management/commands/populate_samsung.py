@@ -716,7 +716,7 @@ class Command(BaseCommand):
             # Velocidade no sufixo: TB0/TB3=DDR333, TCC/UCC=DDR400.
             # Destino: resíduo — obsoleto para reacondicional.
             dict(
-                prefix="K4H", chip_type="DDR", subtype="DDR1",
+                prefix="K4H", chip_type="DDR1", subtype="DDR1",
                 interface="", decode_density_type="pc",
                 is_emcp=False, active=True, priority=100,
                 tip=(
@@ -732,7 +732,7 @@ class Command(BaseCommand):
             # Largura: chars 6-7 (08=x8 DIMMs, 16=x16 embarcados).
             # Velocidade no sufixo: -CD5=DDR2-533, -CE6=DDR2-800, -CF7=DDR2-800 alt.
             dict(
-                prefix="K4T", chip_type="DDR", subtype="DDR2",
+                prefix="K4T", chip_type="DDR2", subtype="DDR2",
                 interface="", decode_density_type="pc",
                 is_emcp=False, active=True, priority=100,
                 tip=(
@@ -752,7 +752,7 @@ class Command(BaseCommand):
             # Destino por densidade: 1Gb(128MB)=resíduo · ≥2Gb(256MB)=checar demanda.
             #   Confirmado via K4B1G1646GBCK0 (Octopart: "1G-Bit 64Mx16 1.5V 96-Pin FBGA").
             dict(
-                prefix="K4B", chip_type="DDR", subtype="DDR3/DDR3L",
+                prefix="K4B", chip_type="DDR3", subtype="DDR3/DDR3L",
                 interface="DDR3", decode_density_type="pc",
                 suffix_rules="",
                 reasoning='["K → Samsung Memory", "4 → 4th-gen DRAM", '
@@ -953,7 +953,7 @@ class Command(BaseCommand):
             # para que o prefixo mais longo seja testado primeiro.
             # Sem decode de densidade: variabilidade alta. Chips K3 genéricos ficam sem capacidade — completar via fix_known_parts.
             dict(
-                prefix="K3", chip_type="RAM", subtype="LPDDR2 / LPDDR3 (legado)",
+                prefix="K3", chip_type="LPDDR", subtype="LPDDR2 / LPDDR3 (legado)",
                 interface="", decode_density_type="mobile",
                 is_emcp=False, active=True, priority=90,
                 reasoning='["K → Samsung Memory", "3 → 3rd-gen DRAM (LPDDR2/3)", '

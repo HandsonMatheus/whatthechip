@@ -71,7 +71,7 @@ FAMILIES = [
     {
         'brand_name': 'SK Hynix',
         'prefix':     'H5AN',
-        'chip_type':  'RAM',
+        'chip_type':  'DDR4',
         'subtype':    'DDR4 SDRAM',
         'interface':  'DDR4',
         'is_emcp':    False,
@@ -84,7 +84,7 @@ FAMILIES = [
     {
         'brand_name': 'SK Hynix',
         'prefix':     'H5TC',
-        'chip_type':  'RAM',
+        'chip_type':  'DDR3L',
         'subtype':    'DDR3L SDRAM',
         'interface':  'DDR3L',
         'is_emcp':    False,
@@ -94,7 +94,7 @@ FAMILIES = [
     {
         'brand_name': 'SK Hynix',
         'prefix':     'H54G',
-        'chip_type':  'RAM',
+        'chip_type':  'LPDDR4',
         'subtype':    'LPDDR4 SDRAM',
         'interface':  'LPDDR4',
         'is_emcp':    False,
@@ -124,7 +124,7 @@ FAMILIES = [
     {
         'brand_name': 'SK Hynix',
         'prefix':     'H9HCN',
-        'chip_type':  'RAM',
+        'chip_type':  'LPDDR4X',
         'subtype':    'LPDDR4X standalone',
         'interface':  'LPDDR4X',
         'is_emcp':    False,
@@ -157,7 +157,7 @@ FAMILIES = [
     {
         'brand_name': 'Micron',
         'prefix':     'MT40A',
-        'chip_type':  'RAM',
+        'chip_type':  'DDR4',
         'subtype':    'DDR4 SDRAM',
         'interface':  'DDR4',
         'is_emcp':    False,
@@ -170,7 +170,7 @@ FAMILIES = [
     {
         'brand_name': 'Micron',
         'prefix':     'MT41K',
-        'chip_type':  'RAM',
+        'chip_type':  'DDR3L',
         'subtype':    'DDR3L SDRAM',
         'interface':  'DDR3L',
         'is_emcp':    False,
@@ -195,7 +195,7 @@ FAMILIES = [
     {
         'brand_name': 'Micron',
         'prefix':     'MT29F',
-        'chip_type':  'NAND',
+        'chip_type':  'NAND Flash',
         'subtype':    'Raw NAND Flash',
         'interface':  'Async/ONFI',
         'is_emcp':    False,
@@ -348,7 +348,7 @@ FAMILIES = [
     {
         'brand_name': 'KIOXIA',
         'prefix':     'TH58',
-        'chip_type':  'NAND',
+        'chip_type':  'NAND Flash',
         'subtype':    'Raw NAND Flash (Toshiba)',
         'interface':  'Async/ONFI',
         'is_emcp':    False,
@@ -361,8 +361,8 @@ FAMILIES = [
     {
         'brand_name': 'Nanya',
         'prefix':     'NT5CC',
-        'chip_type':  'RAM',
-        'subtype':    'DDR3 SDRAM',
+        'chip_type':  'DDR3',
+        'subtype':    'DDR3',
         'interface':  'DDR3',
         'is_emcp':    False,
         'priority':   50,
@@ -375,8 +375,8 @@ FAMILIES = [
     {
         'brand_name': 'Nanya',
         'prefix':     'NT5AD',
-        'chip_type':  'RAM',
-        'subtype':    'DDR4 SDRAM',
+        'chip_type':  'DDR4',
+        'subtype':    'DDR4',
         'interface':  'DDR4',
         'is_emcp':    False,
         'priority':   50,
@@ -385,8 +385,8 @@ FAMILIES = [
     {
         'brand_name': 'Nanya',
         'prefix':     'NT5PA',
-        'chip_type':  'RAM',
-        'subtype':    'DDR3L SDRAM',
+        'chip_type':  'DDR3L',
+        'subtype':    'DDR3L',
         'interface':  'DDR3L',
         'is_emcp':    False,
         'priority':   50,
@@ -402,6 +402,7 @@ FAMILIES = [
         'brand_name': 'Kingston',
         'prefix':     'KVR',
         'chip_type':  'RAM',
+        'active':     False,  # Kingston ValueRAM = modulos DIMM, nao chip — bogus (ver memoria)
         'subtype':    'DDR',
         'interface':  'DDR / DDR2 / DDR3 / DDR4',
         'is_emcp':    False,
@@ -440,6 +441,7 @@ FAMILIES = [
         'brand_name': 'Kingston',
         'prefix':     'KF',
         'chip_type':  'RAM',
+        'active':     False,  # Kingston nao faz DRAM avulsa — KF e misread de Samsung (ver memoria)
         'subtype':    'DDR',
         'interface':  'DDR4 / DDR5',
         'is_emcp':    False,
@@ -454,6 +456,7 @@ FAMILIES = [
         'brand_name': 'Kingston',
         'prefix':     'ACR',
         'chip_type':  'RAM',
+        'active':     False,  # marking de modulo Kingston, nao chip avulso — bogus (ver memoria)
         'subtype':    'DDR',
         'interface':  'DDR3 / DDR4',
         'is_emcp':    False,
@@ -652,7 +655,7 @@ class Command(BaseCommand):
                     'is_emcp':     fam.get('is_emcp', False),
                     'tip':         fam.get('tip', ''),
                     'priority':    fam.get('priority', 100),
-                    'active':      True,
+                    'active':      fam.get('active', True),
                     # decode_density_type ('pc'/'mobile'/'micron'): ativa o decode de
                     # densidade/capacidade DRAM no engine. Default '' = sem decode.
                     'decode_density_type': fam.get('decode_density_type', ''),

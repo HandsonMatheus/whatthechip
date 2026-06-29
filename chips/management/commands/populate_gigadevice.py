@@ -166,7 +166,7 @@ class Command(BaseCommand):
             # JEDEC JESD-79-4 compliant. 256Mb×16 = 4Gbit por die.
             #
             dict(
-                prefix="GDQ", chip_type="RAM", subtype="DDR4",
+                prefix="GDQ", chip_type="DDR4", subtype="DDR4",
                 interface="",
                 is_emcp=False, active=True, priority=100,
                 pn_length=None,

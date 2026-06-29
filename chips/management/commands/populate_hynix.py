@@ -1264,7 +1264,7 @@ class Command(BaseCommand):
             # Progressão alfanumérica: 4G→8G→AG(16Gb)→BG(32Gb).
             #
             dict(
-                prefix="H5AN", chip_type="RAM", subtype="DDR4",
+                prefix="H5AN", chip_type="DDR4", subtype="DDR4",
                 interface="",
                 is_emcp=False, active=True, priority=50,  # prioridade > H5A (55) — prefixo mais longo vence
                 pn_length=None,
@@ -1279,7 +1279,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H5A", chip_type="RAM", subtype="DDR4",
+                prefix="H5A", chip_type="DDR4", subtype="DDR4",
                 interface="",
                 is_emcp=False, active=True, priority=55,  # menor prioridade — H5AN (50) bate primeiro
                 pn_length=None,
@@ -1302,7 +1302,7 @@ class Command(BaseCommand):
             # "GD" é a matriz assimétrica de 24Gb que viabiliza pentes de 24GB e 48GB.
             #
             dict(
-                prefix="H5C", chip_type="RAM", subtype="DDR5",
+                prefix="H5C", chip_type="DDR5", subtype="DDR5",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -1327,7 +1327,7 @@ class Command(BaseCommand):
             # Se cair sem cadastro → UnknownChip → sem aviso → risco de mistura com DDR3 PC.
             #
             dict(
-                prefix="H5RS", chip_type="RAM", subtype="GDDR3",
+                prefix="H5RS", chip_type="GDDR3", subtype="GDDR3",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -1578,7 +1578,7 @@ class Command(BaseCommand):
             # Mapa compartilhado HYX_DDR3_CAP — codificação idêntica.
             #
             dict(
-                prefix="H5TQ", chip_type="RAM", subtype="DDR3",
+                prefix="H5TQ", chip_type="DDR3", subtype="DDR3",
                 interface="",
                 is_emcp=False, active=True, priority=55,
                 pn_length=None,
@@ -1592,7 +1592,7 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                prefix="H5TC", chip_type="RAM", subtype="DDR3L",
+                prefix="H5TC", chip_type="DDR3L", subtype="DDR3L",
                 interface="",
                 is_emcp=False, active=True, priority=55,
                 pn_length=None,
@@ -1614,7 +1614,7 @@ class Command(BaseCommand):
             # Nova chave "1G" marca o teto desta nomenclatura.
             #
             dict(
-                prefix="HY5PS", chip_type="RAM", subtype="DDR2",
+                prefix="HY5PS", chip_type="DDR2", subtype="DDR2",
                 interface="",
                 is_emcp=False, active=True, priority=60,
                 pn_length=None,  # variável: arquiteturas x4/x8/x16 geram tamanhos diferentes
@@ -1636,7 +1636,7 @@ class Command(BaseCommand):
             # Âncora H5 estabelecida aqui — usada até DDR5.
             #
             dict(
-                prefix="H5PS", chip_type="RAM", subtype="DDR2",
+                prefix="H5PS", chip_type="DDR2", subtype="DDR2",
                 interface="",
                 is_emcp=False, active=True, priority=55,
                 pn_length=None,
@@ -1658,7 +1658,7 @@ class Command(BaseCommand):
             # Aparece em lotes de reciclagem B2B de PCs antigos, PDVs, servidores legados.
             #
             dict(
-                prefix="HY5DU", chip_type="RAM", subtype="DDR1",
+                prefix="HY5DU", chip_type="DDR1", subtype="DDR1",
                 interface="",
                 is_emcp=False, active=True, priority=60,
                 pn_length=None,  # comprimento variável: x4/x8/x16 geram tamanhos diferentes

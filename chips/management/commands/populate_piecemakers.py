@@ -196,7 +196,7 @@ class Command(BaseCommand):
             # Fontes: piecemakers.com.tw ✓ · glochip ✓ · Arty S7-50 (2Gb x16) ✓
             #
             dict(
-                prefix="PMF5", chip_type="RAM", subtype="DDR3",
+                prefix="PMF5", chip_type="DDR3", subtype="DDR3",
                 interface="",
                 is_emcp=False, active=True, priority=40,
                 pn_length=None,
@@ -221,7 +221,7 @@ class Command(BaseCommand):
             # PMF411816EBR-KAIN (2Gb, x16, 1.35V) — confirmado absunshine.com ✓.
             #
             dict(
-                prefix="PMF4", chip_type="RAM", subtype="DDR3L",
+                prefix="PMF4", chip_type="DDR3L", subtype="DDR3L",
                 interface="",
                 is_emcp=False, active=True, priority=40,
                 pn_length=None,
@@ -245,7 +245,7 @@ class Command(BaseCommand):
             # priority=70 (menor prioridade que PMF4/PMF5 que têm priority=40).
             #
             dict(
-                prefix="PMF", chip_type="RAM", subtype="DDR3",
+                prefix="PMF", chip_type="DDR3", subtype="DDR3",
                 interface="",
                 is_emcp=False, active=True, priority=70,
                 pn_length=None,
@@ -270,7 +270,7 @@ class Command(BaseCommand):
             # Fontes: piecemakers.com.tw ✓ · glochip ✓
             #
             dict(
-                prefix="PMA", chip_type="RAM", subtype="DDR4",
+                prefix="PMA", chip_type="DDR4", subtype="DDR4",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -297,7 +297,7 @@ class Command(BaseCommand):
             # Fonte: glochip (tabela completa) ✓
             #
             dict(
-                prefix="PME", chip_type="RAM", subtype="DDR2",
+                prefix="PME", chip_type="DDR2", subtype="DDR2",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -320,7 +320,7 @@ class Command(BaseCommand):
             # Fonte: glochip ✓ · piecemakers.com.tw ✓
             #
             dict(
-                prefix="PMD", chip_type="RAM", subtype="DDR1",
+                prefix="PMD", chip_type="DDR1", subtype="DDR1",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
@@ -340,7 +340,7 @@ class Command(BaseCommand):
             # Fonte: piecemakers.com.tw ✓ · glochip ✓
             #
             dict(
-                prefix="PMS", chip_type="RAM", subtype="SDRAM",
+                prefix="PMS", chip_type="SDRAM", subtype="SDRAM",
                 interface="",
                 is_emcp=False, active=True, priority=50,
                 pn_length=None,
