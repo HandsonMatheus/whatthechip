@@ -280,6 +280,20 @@ contra o **Postgres local** para exercitar o teste de gatilho que o SQLite pula.
 **Por quê.** Tirar a gramática de dentro do Python (607 KB de `fix_known_parts`, 148 KB de
 `populate_samsung`, a duplicação `add_chip_families`). **PoC = PieceMakers** (3 registros, limpo).
 
+> **✅ PoC FEITA e verificada (2026-06-30, branch `escalabilidade`).** (1) **`chips/knowledge/schema.py`**
+> — Pydantic v2, `extra="forbid"`, regras de ouro como validadores (exclusividade
+> `decode_density_type`×`decode_cap_map`; KM 3ª-pos-dígito → `decode_gen_pos` nulo; `confidence` no
+> vocabulário; referência de mapa tem que existir). (2) **`chips/knowledge/piecemakers.yaml`** — gerado
+> da saída real do `populate_piecemakers` (fidelidade por construção); famílias em bloco legível, mapas
+> em flow. (3) **`load_brands`** (SafeWriteCommand): lê o YAML → valida (portão) → upsert idêntico ao
+> `populate_*` → sobe `catalog_version`; dry-run padrão + `--commit`; erro amigável p/ arquivo/validação.
+> (4) **`PyYAML`+`pydantic`** em requirements*.txt. **Prova:** `LoadBrandsPiecemakersTests` mostra catálogo
+> **byte-a-byte idêntico** ao `populate_piecemakers` (brand+7 famílias+3 entradas de mapa) → como a
+> gramática é a mesma, `classify()` fica idêntico p/ **todo** PN (mais forte que o characterize, que só
+> amostra existentes). `KnowledgeSchemaTests` cobre os validadores. Suíte **124 OK**. ⚠ **populate_piecemakers
+> NÃO foi aposentado** (coexiste até validar no Postgres de produção — ver "Você roda"). `--csv`/`shared_maps`/
+> `--price-skeleton` ficam p/ quando uma marca precisar (PieceMakers não tem known_parts nem mapa compartilhado).
+
 **Eu crio/edito:**
 - **Schema Pydantic** (`chips/knowledge/schema.py`) espelhando `ChipFamily`/`DecodeMap`, com as
   **regras de ouro como validadores**: exclusividade `decode_density_type`×`decode_cap_map`;

@@ -4,6 +4,10 @@ Pillow>=10.0
 psycopg2-binary>=2.9
 django-pghistory>=3.9,<4  # auditoria do catálogo (passo 3); puxa django-pgtrigger (gatilhos Postgres)
 
+# Conhecimento por marca em YAML (passo 4): load_brands lê os .yaml e valida com Pydantic
+PyYAML>=6.0
+pydantic>=2,<3
+
 # Produção / deploy
 whitenoise>=6.5
 dj-database-url>=2.1

@@ -762,3 +762,105 @@ class PghistoryTrackingTests(TestCase):
         kp.chip_type = "UFS"
         kp.save()
         self.assertGreater(Event.objects.filter(pgh_obj_id=kp.pk).count(), antes)
+
+
+_FAM_FIELDS = [
+    "chip_type", "subtype", "interface", "is_emcp", "active", "priority", "pn_length",
+    "decode_cap_pos", "decode_cap_len", "decode_cap_map", "decode_gen_pos",
+    "decode_gen_map", "decode_gen_len", "decode_density_type", "suffix_rules",
+    "tip", "reasoning",
+]
+
+
+def _snapshot_piecemakers():
+    """Foto do catálogo PieceMakers no banco (brand + famílias + mapas), p/ comparar
+    o que o populate_piecemakers e o load_brands produzem."""
+    from chips.models import Brand, ChipFamily, DecodeMap
+    b = Brand.objects.get(code="PMK")
+    brand = (b.name, b.code, b.notes)
+    fams = {f.prefix: tuple(getattr(f, k) for k in _FAM_FIELDS)
+            for f in ChipFamily.objects.filter(brand=b)}
+    maps = {(m.map_name, m.char_key): (m.val_primary, m.val_secondary)
+            for m in DecodeMap.objects.filter(brand=b)}
+    return brand, fams, maps
+
+
+class LoadBrandsPiecemakersTests(TestCase):
+    """Passo 4: o load_brands (YAML+Pydantic) produz um catálogo IDÊNTICO ao
+    populate_piecemakers (código). É a prova de que migrar p/ YAML não muda nada."""
+
+    def test_load_brands_equivale_ao_populate(self):
+        from django.core.management import call_command
+        from chips.models import Brand, ChipFamily, DecodeMap
+
+        call_command("populate_piecemakers", verbosity=0)
+        snap_populate = _snapshot_piecemakers()
+
+        # zera a marca e reconstrói pelo YAML
+        ChipFamily.objects.filter(brand__code="PMK").delete()
+        DecodeMap.objects.filter(brand__code="PMK").delete()
+        Brand.objects.filter(code="PMK").delete()
+
+        call_command("load_brands", "--brand", "piecemakers", "--commit", verbosity=0)
+        snap_yaml = _snapshot_piecemakers()
+
+        self.assertEqual(snap_populate[0], snap_yaml[0], "Brand difere")
+        self.assertEqual(snap_populate[1], snap_yaml[1], "Famílias diferem")
+        self.assertEqual(snap_populate[2], snap_yaml[2], "DecodeMaps diferem")
+        # sanidade: realmente carregou as 7 famílias e o mapa de 3 entradas
+        self.assertEqual(len(snap_yaml[1]), 7)
+        self.assertEqual(len(snap_yaml[2]), 3)
+
+    def test_dry_run_nao_grava(self):
+        from django.core.management import call_command
+        from chips.models import Brand
+        call_command("load_brands", "--brand", "piecemakers", verbosity=0)  # sem --commit
+        self.assertFalse(Brand.objects.filter(code="PMK").exists())
+
+    def test_load_brands_sobe_catalog_version(self):
+        from django.core.management import call_command
+        from chips.models import CatalogVersion
+        v0 = CatalogVersion.current()
+        call_command("load_brands", "--brand", "piecemakers", "--commit", verbosity=0)
+        self.assertGreater(CatalogVersion.current(), v0)
+
+
+class KnowledgeSchemaTests(TestCase):
+    """Passo 4: o portão Pydantic — as regras de ouro são validadores executáveis."""
+
+    def test_density_type_e_cap_map_juntos_sao_rejeitados(self):
+        from pydantic import ValidationError
+        from chips.knowledge.schema import FamilySpec
+        with self.assertRaises(ValidationError):
+            FamilySpec(prefix="K4F", chip_type="RAM",
+                       decode_density_type="pc", decode_cap_map="ALGUM_MAPA")
+
+    def test_familia_km_com_digito_exige_gen_pos_nulo(self):
+        from pydantic import ValidationError
+        from chips.knowledge.schema import FamilySpec
+        with self.assertRaises(ValidationError):
+            FamilySpec(prefix="KM4", chip_type="eMCP", decode_gen_pos=3)
+        # sem gen_pos passa
+        FamilySpec(prefix="KM4", chip_type="eMCP")
+
+    def test_confidence_fora_do_vocabulario_e_rejeitado(self):
+        from pydantic import ValidationError
+        from chips.knowledge.schema import KnownPartSpec
+        with self.assertRaises(ValidationError):
+            KnownPartSpec(part_number="X", confidence="ai_guess")
+        KnownPartSpec(part_number="X", confidence="confirmed")  # válido
+
+    def test_familia_referenciando_mapa_inexistente_e_rejeitada(self):
+        from pydantic import ValidationError
+        from chips.knowledge.schema import BrandFile
+        with self.assertRaises(ValidationError):
+            BrandFile(brand={"name": "X", "code": "X"},
+                      maps={},
+                      families=[{"prefix": "PX", "chip_type": "DDR3",
+                                 "decode_cap_map": "NAO_EXISTE"}])
+
+    def test_campo_desconhecido_e_rejeitado(self):
+        from pydantic import ValidationError
+        from chips.knowledge.schema import FamilySpec
+        with self.assertRaises(ValidationError):
+            FamilySpec(prefix="PX", chip_type="DDR3", decode_capp_pos=4)  # typo de propósito

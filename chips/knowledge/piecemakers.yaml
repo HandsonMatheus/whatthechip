@@ -1,0 +1,139 @@
+# Conhecimento PieceMakers — fonte de dados do catálogo (passo 4).
+# Gerado da saída de populate_piecemakers (fidelidade por construção); daqui pra
+# frente é a FONTE: editar aqui, validar com Pydantic, carregar com load_brands.
+brand:
+  name: PieceMakers
+  code: PMK
+  notes: 'Taiwan (Hsinchu) · Fundada 2006 · Fabless DRAM design. Fundador: Tah-Kang Joseph Ting (>40 anos IC, >60 patentes). Produtos: SDR/DDR/DDR2/DDR3/DDR3L/DDR4, PSRAM, KGD. ISO 9001 e 14001. Representantes: China, Japão, França, Israel, Turquia. Site: piecemakers.com.tw'
+maps:
+  PMF_DDR3_CAP:
+  - ['10', 128MB, '']
+  - ['11', 256MB, '']
+  - ['12', 512MB, '']
+families:
+- prefix: PMF4
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: PMF_DDR3_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR3L SDRAM PieceMakers Technology, 1.35V low-voltage (PMF4xx). Mesma estrutura posicional do PMF5 (DDR3 1.5V); só a tensão difere. pn[4:6] = densidade: 10=1Gb(128MB) · 11=2Gb(256MB) · 12=4Gb(512MB). pn[7:9] = barramento: 08=x8 · 16=x16. pn[9] = revisão: B/C/D/E/F/G. Package: 96FBGA (x16) · 78FBGA (x8). Típico em notebooks e tablets que exigem baixa tensão. Rentabilidade: 1Gb → NÃO RENTÁVEL; 2Gb/4Gb → RENTÁVEL (DDR3L=DDR3).'
+  reasoning: ''
+- prefix: PMF5
+  chip_type: DDR3
+  subtype: DDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: PMF_DDR3_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR3 SDRAM PieceMakers Technology, 1.5V (PMF5xx). pn[4:6] = densidade: 10=1Gb(128MB) · 11=2Gb(256MB) · 12=4Gb(512MB). pn[7:9] = barramento: 08=x8 · 16=x16. pn[9] = revisão de silício: B/C/D/E/F/G. Package: 96FBGA (x16) · 78FBGA (x8). PMF511816EBR é drop-in compatível com Micron MT41K128M16XX-15E (Digilent Arty S7-50 ✓). Suporta 1.35V apesar de ser nominalmente 1.5V. Rentabilidade: 1Gb → NÃO RENTÁVEL; 2Gb/4Gb → RENTÁVEL (DDR3).'
+  reasoning: ''
+- prefix: PMA
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR4 SDRAM PieceMakers Technology (PMA). 1.2V. Catálogo atual: 4Gb x8 (PMA212508ABR) · 4Gb x16 (PMA212816ABR). Velocidades: 2133/2400/2666 Mbps. Package: 78FBGA (x8) · 96FBGA (x16). Decode posicional pendente — estrutura PN DDR4 não totalmente confirmada. Routing: classifica como DDR4 para bancada de triagem. Adicionar KnownPart via fix_known_parts para PNs confirmados. Rentabilidade: DDR4 qualquer densidade → RENTÁVEL (verifique ProfitabilityConfig).'
+  reasoning: ''
+- prefix: PMD
+  chip_type: DDR1
+  subtype: DDR1
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR SDRAM (DDR1) PieceMakers Technology (PMD). Geração MORTA → NÃO RENTÁVEL. PMD6xx = 1.8V · PMD7xx = 2.5V. Densidades: 64Mb/128Mb/256Mb/512Mb. Package: TSOPII (sufixo TR). DDR1 gen < 3 → NÃO RENTÁVEL. Destino: resíduo/moagem.'
+  reasoning: ''
+- prefix: PME
+  chip_type: DDR2
+  subtype: DDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR2 SDRAM PieceMakers Technology (PME). 1.8V. Geração MORTA → NÃO RENTÁVEL. Densidades: 128Mb/256Mb/512Mb/1Gb. Package: 60FBGA(x8) · 84FBGA(x16). Estrutura: PME[8][07=128Mb·08=256Mb·09=512Mb·10=1Gb][4][08/16][rev]BR. DDR2 gen < 3 → assess_profitability = NÃO RENTÁVEL. Destino: resíduo/moagem.'
+  reasoning: ''
+- prefix: PMS
+  chip_type: SDRAM
+  subtype: SDRAM
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'SDR SDRAM PieceMakers Technology (PMS). 3.3V. Geração MAIS ANTIGA → NÃO RENTÁVEL. Densidades: 16Mb/64Mb/128Mb. Package: TSOPII (sufixo TR). Destino: resíduo/moagem.'
+  reasoning: ''
+- prefix: PMF
+  chip_type: DDR3
+  subtype: DDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 70
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR3/DDR3L PieceMakers Technology — família genérica de fallback. Cobre PNs PMF não reconhecidos por PMF4 (DDR3L) ou PMF5 (DDR3). Sem decode posicional — verificar PN individualmente. Estrutura: PMF[volt][dens][8][bus][rev]BR-[suffix]. volt: 4=1.35V(DDR3L) · 5=1.5V(DDR3). dens: 10=1Gb · 11=2Gb · 12=4Gb. bus: 08=x8 · 16=x16.'
+  reasoning: ''
