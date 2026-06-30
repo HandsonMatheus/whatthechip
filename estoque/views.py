@@ -47,21 +47,61 @@ def _is_confirmed(result: dict) -> bool:
     )
 
 
+def _size_for_entry(result: dict) -> str:
+    """Tamanho a GRAVAR no estoque. `capacity` (bytes) tem prioridade; para DRAM
+    standalone (DDR/GDDR) a capacity vem vazia e o tamanho está em `dram_density`
+    ('2Gb = 256MB por die') — extraímos os bytes ('256MB') para não perder o dado.
+    Antes este tamanho era simplesmente perdido (estoque gravava vazio → 'None').
+    (Regex _CAP_BYTES_RE/_GBIT_RE definidos abaixo; resolvidos em tempo de chamada.)"""
+    cap = (result.get("capacity") or "").strip()
+    # 'None' (string) é lixo de catálogo (None do Python serializado) — trata como
+    # vazio para cair no fallback de densidade. Normaliza o espaço ('256 MB'→'256MB').
+    if cap and cap.lower() != "none":
+        return re.sub(r"\s+([KMGT]B)\b", r"\1", cap)
+    dd = result.get("dram_density") or ""
+    # ⚠ bytes têm 'B' MAIÚSCULO (MB/GB/TB); 'Gb' minúsculo é gigaBIT (densidade do
+    # die) — NÃO confundir. Por isso case-SENSITIVE (sem re.I): '2Gb = 256MB' → 256MB,
+    # nunca 2GB. (_CAP_BYTES_RE tem re.I e casaria 'Gb' como 'GB' — bug clássico 8×.)
+    m = re.search(r"(\d+(?:\.\d+)?)\s*([TGM]B)\b", dd)
+    if m:
+        return f"{m.group(1)}{m.group(2)}"
+    g = _GBIT_RE.search(dd)              # só 'XGb' (gigabit) → converte p/ bytes (1Gb = 128MB)
+    if g:
+        mb = float(g.group(1)) * 128
+        return f"{mb:g}MB" if mb < 1024 else f"{mb / 1024:g}GB"
+    return ""
+
+
+def _clean_interface(result: dict) -> str:
+    """`interface` no estoque = bus width (x16) ou versão (eMMC 5.1) — NUNCA a
+    geração (essa vive no chip_type/subtype/label). Remove a geração espelhada
+    (DDR3, LPDDR4X, GDDR5…) para o campo ficar CONSISTENTE entre os tipos (era a
+    origem do 'alguns espelham, outros não'). Não afeta o label da caixa, que usa
+    o `result` cru, não este campo gravado."""
+    ifc = (result.get("interface") or "").strip()
+    if ifc and re.fullmatch(r"(LP)?DDR\d[A-Z]?|GDDR\d", ifc, re.I):
+        return ""
+    return ifc
+
+
 def _snapshot(result: dict) -> dict:
-    """Campos de snapshot da classificação para PendingEntry/RejectedEntry.
+    """Snapshot da classificação para InventoryEntry/PendingEntry/RejectedEntry —
+    SEMPRE a partir do classify do SERVIDOR (nunca do POST do cliente).
 
     Coage None → '' porque os CharFields são NOT NULL com default ''. O
     classify() devolve None em emcp_ram/emcp_nand para chips que NÃO são eMCP
     (ex.: LPDDR2 avulso), e `.get(chave, '')` não cobre esse caso (a chave
-    existe com valor None) — daí o NotNullViolation no insert."""
+    existe com valor None) — daí o NotNullViolation no insert.
+    `capacity` captura a densidade DRAM via _size_for_entry; `interface` é limpa
+    da geração espelhada via _clean_interface."""
     return {
         "chip_type":             result.get("chip_type") or "",
         "brand":                 result.get("brand") or "",
-        "capacity":              result.get("capacity") or "",
+        "capacity":              _size_for_entry(result),
         "emcp_ram":              result.get("emcp_ram") or "",
         "emcp_nand":             result.get("emcp_nand") or "",
         "is_emcp":               bool(result.get("is_emcp")),
-        "interface":             result.get("interface") or "",
+        "interface":             _clean_interface(result),
         "classification_source": result.get("classification_source") or "",
         "confidence":            result.get("confidence") or "",
     }
@@ -611,17 +651,14 @@ def add_chip(request, lot_pk):
             'by_generation': False,
         })
 
-    defaults = {
-        'chip_type':             request.POST.get('chip_type', ''),
-        'brand':                 request.POST.get('brand', ''),
-        'capacity':              request.POST.get('capacity', ''),
-        'emcp_ram':              request.POST.get('emcp_ram', ''),
-        'emcp_nand':             request.POST.get('emcp_nand', ''),
-        'is_emcp':               request.POST.get('is_emcp') == 'true',
-        'interface':             request.POST.get('interface', ''),
-        'classification_source': request.POST.get('classification_source', ''),
-        'quantity':              qty,
-    }
+    # Grava SEMPRE a partir do classify do SERVIDOR (server_result), não do POST
+    # do cliente — fonte autoritativa, à prova de form forjado/defasado, e idêntica
+    # ao que PendingEntry/RejectedEntry já fazem (linhas acima). _snapshot captura a
+    # densidade DRAM em `capacity` (antes perdida → 'None') e limpa a geração do
+    # `interface`. `confidence` não existe no InventoryEntry (só em Pending/Rejected).
+    snap = _snapshot(server_result)
+    snap.pop('confidence', None)
+    defaults = {**snap, 'quantity': qty}
 
     entry, created = InventoryEntry.objects.get_or_create(
         lot=lot, part_number=pn, defaults=defaults,
