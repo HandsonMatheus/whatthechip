@@ -41,6 +41,9 @@ class SafeWriteCommand(BaseCommand):
         if (
             self.confirm_on_commit
             and options.get("commit")
+            # Só no uso REAL via linha de comando — nunca em call_command/testes
+            # (Django marca o caminho do CLI com _called_from_command_line).
+            and getattr(self, "_called_from_command_line", False)
             and getattr(sys.stdin, "isatty", lambda: False)()
         ):
             typed = input(

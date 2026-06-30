@@ -223,6 +223,21 @@ class AddChipHardBlockTests(TestCase):
         self.assertFalse(RejectedEntry.objects.filter(part_number='TESTOK16').exists())
 
     @patch('estoque.views.classify')
+    def test_intake_carimba_snapshot_catalog_version(self, mock_classify):
+        """Passo 2: a entrada no estoque carimba a edição ATUAL do catálogo (data de atualização)."""
+        from chips.models import CatalogVersion
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB',
+            classification_source='banco de dados', confidence='confirmed')
+        self.client.post(self.url, {
+            'pn': 'TESTVER01', 'qty': '1', 'has_cap': 'true',
+            'chip_type': 'eMMC', 'capacity': '16GB',
+            'classification_source': 'banco de dados'})
+        entry = InventoryEntry.objects.get(lot=self.lot, part_number='TESTVER01')
+        self.assertEqual(entry.snapshot_catalog_version, CatalogVersion.current())
+        self.assertGreaterEqual(entry.snapshot_catalog_version, 1)
+
+    @patch('estoque.views.classify')
     def test_nao_confirmado_vai_para_pending(self, mock_classify):
         mock_classify.return_value = _result(
             chip_type='eMMC', capacity='16GB',
@@ -252,3 +267,48 @@ class AddChipHardBlockTests(TestCase):
         self.assertEqual(rej.count(), 1)
         self.assertEqual(rej.first().rejection_reason, 'NÃO RENTÁVEL (geração)')
         self.assertFalse(UnknownChip.objects.filter(part_number='KMN5W000ZM').exists())
+
+
+class ResnapshotLoteTests(TestCase):
+    """Passo 2: o resnapshot_lote revalua as entradas DEFASADAS (catálogo melhorou)."""
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='op2', password='x')
+        self.lot = Lot.objects.create(number=77, operator=self.user)
+
+    @patch('chips.engine.classify')
+    def test_revalua_entrada_defasada(self, mock_classify):
+        from chips.models import CatalogVersion
+        from django.core.management import call_command
+        v0 = CatalogVersion.current()
+        e = InventoryEntry.objects.create(
+            lot=self.lot, part_number='MTSTALE1', chip_type='RAM', capacity='48GB',
+            snapshot_catalog_version=v0)
+        CatalogVersion.bump()                       # catálogo melhora → versão sobe
+        cur = CatalogVersion.current()
+        self.assertGreater(cur, v0)
+        mock_classify.return_value = {
+            'chip_type': 'LPDDR4', 'capacity': '6GB',
+            'classification_source': 'banco de dados'}
+        call_command('resnapshot_lote', '--lot', '77', '--commit')
+        e.refresh_from_db()
+        self.assertEqual(e.snapshot_catalog_version, cur)   # saiu da defasagem
+        self.assertEqual(e.capacity, '6GB')                 # 48GB → 6GB
+        self.assertEqual(e.chip_type, 'LPDDR4')
+
+    @patch('chips.engine.classify')
+    def test_nao_apaga_source_de_confirmado_sem_familia(self, mock_classify):
+        """JZ###: confirmado SEM família casada → classify não devolve Source, mas o
+        resnapshot deriva 'banco de dados' (não apaga o rótulo)."""
+        from chips.models import CatalogVersion
+        from django.core.management import call_command
+        v0 = CatalogVersion.current()
+        e = InventoryEntry.objects.create(
+            lot=self.lot, part_number='JZ109', chip_type='eMMC',
+            classification_source='banco de dados', snapshot_catalog_version=v0)
+        CatalogVersion.bump()
+        mock_classify.return_value = {
+            'chip_type': 'eMMC', 'confidence': 'confirmed', 'classification_source': ''}
+        call_command('resnapshot_lote', '--lot', '77', '--commit')
+        e.refresh_from_db()
+        self.assertEqual(e.classification_source, 'banco de dados')  # NÃO apagou
