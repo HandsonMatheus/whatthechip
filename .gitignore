@@ -1,15 +1,36 @@
+# ── Python ──────────────────────────────────────────────────────────────────
 __pycache__/
 *.pyc
 *.pyo
+
+# ── Django / banco ──────────────────────────────────────────────────────────
 db.sqlite3
+*.sqlite3
 staticfiles/
 media/
+
+# ── Ambiente ────────────────────────────────────────────────────────────────
 .env
-*.DS_Store
 venv/
 .venv/
-chipid_data/
 
-# Dados sensíveis / artefatos de sync e limpeza (NÃO commitar)
+# ── Sistema ─────────────────────────────────────────────────────────────────
+.DS_Store
+*.DS_Store
+.~lock.*#
+
+# ── Dados / artefatos locais (NÃO commitar) ─────────────────────────────────
+chipid_data/
 prod_data.json
+baseline*.json                  # rede de regressão (characterize_baseline)
+
+# Reverts e backups dos comandos dry-run/--revert (Problema 4.3c: nunca na raiz)
+*_revert.json
+*_revert.json.*
+*.bak
+*.done
 purge_enriched_backup_*.json
+
+# Planilhas de trabalho soltas na raiz
+/WTC_*.xlsx
+/precificacao_*.xlsx
