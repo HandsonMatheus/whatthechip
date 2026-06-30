@@ -43,10 +43,11 @@ from datetime import datetime, time
 from difflib import get_close_matches
 
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import CommandError
 from django.db import transaction
 from django.utils import timezone
 
+from core.safe_command import SafeWriteCommand
 from estoque.models import InventoryEntry, Lot
 
 DEFAULT_LOT = 39
@@ -59,7 +60,7 @@ def _revert_path(lot_number):
     return os.path.join(str(settings.BASE_DIR), f"clean_lote_{lot_number:03d}_revert.json")
 
 
-class Command(BaseCommand):
+class Command(SafeWriteCommand):
     help = "Remove entradas contaminadas (PNs novos não confirmados) de um lote. Dry-run por padrão."
 
     def add_arguments(self, parser):

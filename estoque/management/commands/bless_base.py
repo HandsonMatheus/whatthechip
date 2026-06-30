@@ -27,7 +27,7 @@ Uso (DATABASE_URL apontando ao Render — ver DEPLOY_RENDER.md):
     python manage.py bless_base                       # dry-run, lote 39
     python manage.py bless_base --lot 39 --since 2026-06-16
     python manage.py bless_base --all-lots            # toda a base, qualquer lote
-    python manage.py bless_base --commit              # aplica  (reinicie o servidor depois)
+    python manage.py bless_base --commit              # aplica
     python manage.py bless_base --revert              # desfaz o último --commit
 """
 
@@ -37,10 +37,11 @@ import re
 from datetime import datetime, time
 
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import CommandError
 from django.db import transaction
 from django.utils import timezone
 
+from core.safe_command import SafeWriteCommand
 from chips.models import Brand, KnownPart
 from estoque.models import InventoryEntry, Lot
 
@@ -58,7 +59,7 @@ PROTECTED_CONF = {"confirmed", "manual"}
 REVERT_LOG = os.path.join(str(settings.BASE_DIR), "bless_base_revert.json")
 
 
-class Command(BaseCommand):
+class Command(SafeWriteCommand):
     help = "Promove a base atual de estoque a KnownPart manual/enriched (ponte p/ o bloqueio). Dry-run por padrão."
 
     def add_arguments(self, parser):

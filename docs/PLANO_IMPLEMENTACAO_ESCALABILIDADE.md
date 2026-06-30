@@ -143,6 +143,19 @@ refletem sozinhos.
 
 ### 1C — Trava de banco + `bulk_update` + limpeza de resíduos
 
+> **🟡 PARCIAL — feito e verificado (2026-06-30, branch `escalabilidade`):** (a) **trava de banco-alvo**
+> = `core/safe_command.py::SafeWriteCommand` (imprime `⚠ BANCO-ALVO → name/host/port` antes de tudo; em
+> `--commit` interativo exige digitar o nome do banco), aplicada aos 3 comandos destrutivos do estoque
+> (`fix_pns`, `clean_lote`, `bless_base`) — onde o acidente aconteceu; (b) removida a dependência morta
+> `google-generativeai` do `requirements-render.txt`; (c) corrigida a nota obsoleta de restart no
+> `bless_base`. **Verificação:** banner aparece; **chips 81 OK + estoque 17 OK**.
+> **Falta (follow-up):** aplicar a `SafeWriteCommand` aos demais comandos de escrita (`refresh_lote`,
+> `reconcile_lote_039`, `populate_*`, `import_*`, `fix_known_parts`, `normalize_convention`); limpar os
+> dados `ai_high` (21 registros — comando que **você** roda) e o `reasoning` JSON inválido
+> (`08EMCP`/`16EMCP`); `bulk_update` no `normalize_convention`; e as demais mensagens "reinicie" obsoletas.
+> *(`settings.py` NÃO virou `env.db()` sem default: o dev local roda legitimamente sem `DATABASE_URL` — o
+> banner é a trava real, sem quebrar o local.)*
+
 **Por quê.** Sem `DATABASE_URL`, o `dj_database_url` **cai em silêncio** no localhost (foi o acidente).
 O `normalize_convention` roda linha-a-linha (~20 min). Há resíduos (`ai_high`, "usa Gemini", `status`).
 

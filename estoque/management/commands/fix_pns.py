@@ -37,8 +37,10 @@ import os
 import re
 
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import CommandError
 from django.db import transaction
+
+from core.safe_command import SafeWriteCommand
 from django.db.models import F
 from django.utils import timezone
 
@@ -85,7 +87,7 @@ def _snapshot(e):
     )
 
 
-class Command(BaseCommand):
+class Command(SafeWriteCommand):
     help = "Corrige PNs do estoque (merge/rename/refresh) a partir de um CSV errado,certo. Dry-run por padrão."
 
     def add_arguments(self, parser):
