@@ -96,9 +96,14 @@ python manage.py characterize_baseline --snapshot baseline_antes.json
 > banco, antes caía na gramática); backfill 6571/6571; diff 800 = IDÊNTICO (sem regressão — a busca nova é
 > **superconjunto** da antiga); **101 testes OK** (3 novos). **Medição:** 22 colisões (44 registros), todas
 > pares cru-vs-normalizado.
-> **PARTE 2 (próximo, fecha o passo 1):** comando `dedupe_known_parts` (funde as 22 colisões — sobrevive o
-> de maior confiança/specs; KnownPart **não tem FK de entrada**, então é só apagar o perdedor + log de
-> revert) + migração `0015` com a `UniqueConstraint(part_number_norm)`.
+> **✅ PARTE 2 FEITA e verificada (2026-06-30):** comando `dedupe_known_parts` (SafeWriteCommand, dry-run +
+> `--commit` + `--revert` em `var/reverts/`) fundiu as **22 colisões** mantendo o melhor (`_pick_best_known`,
+> mesmo critério do engine) e apagando o par (KnownPart **não tem FK de entrada** → seguro); migração `0015`
+> com a `UniqueConstraint(part_number_norm)`. **Verificação:** dedupe = **0 classificações alteradas**
+> (behavior-preserving — o engine já escolhia o sobrevivente); a constraint **impede** criar duplicata
+> (IntegrityError); 6571→6549 registros; **101 testes OK**. ⚠ **Ordem de execução:** `dedupe --commit`
+> ANTES do `migrate` da 0015 (a constraint falha se as colisões ainda existirem). ✅ **PASSO 1 COMPLETO**
+> (0 · 1A · 1B · 1C).
 
 **Por quê.** 3898 PNs (56%) têm `:`/`.` não canonizados; **1908 caem em "tipo vazio" na bancada**
 (o dado tem tipo, é a *busca* que erra — `docs/CARACTERIZACAO_BASELINE.md §4.1`). E o engine hoje

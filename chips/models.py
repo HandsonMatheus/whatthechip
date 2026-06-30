@@ -220,6 +220,12 @@ class KnownPart(models.Model):
         verbose_name = "Part Number Conhecido"
         verbose_name_plural = "Part Numbers Conhecidos"
         ordering = ["part_number"]
+        constraints = [
+            # Passo 1A (parte 2): a forma canônica do PN é ÚNICA — duplicata vira
+            # impossível no banco (sobrevive a bulk_create/.update()/admin/SQL cru).
+            models.UniqueConstraint(
+                fields=["part_number_norm"], name="uniq_knownpart_part_number_norm"),
+        ]
 
     def __str__(self):
         return self.part_number
