@@ -53,19 +53,25 @@ def _size_for_entry(result: dict) -> str:
     ('2Gb = 256MB por die') — extraímos os bytes ('256MB') para não perder o dado.
     Antes este tamanho era simplesmente perdido (estoque gravava vazio → 'None').
     (Regex _CAP_BYTES_RE/_GBIT_RE definidos abaixo; resolvidos em tempo de chamada.)"""
+    ct = (result.get("chip_type") or "").upper()
+    # DRAM discreta de 1 die (DDR/GDDR/SDRAM/RDRAM) → DENSIDADE em Gbit, formato '2G'
+    # (mesma convenção da etiqueta da caixa 'DDR3+2G'). _density_g lê de dram_density
+    # ou deriva da capacity em bytes — robusto aos dois jeitos de gravar no catálogo.
+    if (ct.startswith("DDR") or ct.startswith("GDDR") or ct in ("SDRAM", "RDRAM")) and "LPDDR" not in ct:
+        g = _density_g(result)
+        return f"{g}G" if g else ""
+    # LPDDR/eMMC/UFS (pacote) → CAPACIDADE em bytes (GB). 'None' (string) = lixo de
+    # catálogo → trata como vazio; normaliza o espaço ('256 MB'→'256MB').
     cap = (result.get("capacity") or "").strip()
-    # 'None' (string) é lixo de catálogo (None do Python serializado) — trata como
-    # vazio para cair no fallback de densidade. Normaliza o espaço ('256 MB'→'256MB').
     if cap and cap.lower() != "none":
         return re.sub(r"\s+([KMGT]B)\b", r"\1", cap)
+    # fallback raro: tamanho só em dram_density. bytes têm 'B' MAIÚSCULO; 'Gb' é gigaBIT —
+    # case-SENSITIVE (sem re.I) p/ não ler 'Gb' como 'GB' (bug clássico 8×).
     dd = result.get("dram_density") or ""
-    # ⚠ bytes têm 'B' MAIÚSCULO (MB/GB/TB); 'Gb' minúsculo é gigaBIT (densidade do
-    # die) — NÃO confundir. Por isso case-SENSITIVE (sem re.I): '2Gb = 256MB' → 256MB,
-    # nunca 2GB. (_CAP_BYTES_RE tem re.I e casaria 'Gb' como 'GB' — bug clássico 8×.)
     m = re.search(r"(\d+(?:\.\d+)?)\s*([TGM]B)\b", dd)
     if m:
         return f"{m.group(1)}{m.group(2)}"
-    g = _GBIT_RE.search(dd)              # só 'XGb' (gigabit) → converte p/ bytes (1Gb = 128MB)
+    g = _GBIT_RE.search(dd)
     if g:
         mb = float(g.group(1)) * 128
         return f"{mb:g}MB" if mb < 1024 else f"{mb / 1024:g}GB"
@@ -751,7 +757,7 @@ def export_xls(request, lot_pk):
             entry.interface or '—',
             entry.quantity,
             entry.classification_source or '—',
-            entry.last_updated.strftime('%d/%m/%Y %H:%M:%S') if entry.last_updated else '—',
+            timezone.localtime(entry.last_updated).strftime('%d/%m/%Y %H:%M:%S') if entry.last_updated else '—',
         ]
         for col_idx, value in enumerate(data, start=1):
             cell = ws.cell(row=row_idx, column=col_idx, value=value)
@@ -773,7 +779,7 @@ def export_xls(request, lot_pk):
     wb.save(buf)
     buf.seek(0)
 
-    filename = f'lote_{lot.number:03d}_{datetime.now().strftime("%Y%m%d_%H%M")}.xlsx'
+    filename = f'lote_{lot.number:03d}_{timezone.localtime(timezone.now()).strftime("%Y%m%d_%H%M")}.xlsx'
     response = HttpResponse(buf.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
