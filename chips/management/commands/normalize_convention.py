@@ -170,4 +170,4 @@ class Command(BaseCommand):
         path = "normalize_convention_revert.json"
         json.dump(revert_log, open(path, "w"), ensure_ascii=False, indent=0)
         self.stdout.write(f"\n✅ aplicado ({len(revert_log)} mudancas). Reversivel: {path}")
-        self.stdout.write("   ⚠ Reinicie o servidor (cache lru_cache do engine — regra de ouro #3).")
+        self.stdout.write("   ↻ O cache do engine recarrega sozinho (catalog_version, passo 1B).")

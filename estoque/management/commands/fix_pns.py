@@ -232,7 +232,6 @@ class Command(SafeWriteCommand):
             json.dump(log, fh, ensure_ascii=False, indent=2)
         self.stdout.write(self.style.SUCCESS(f"\n✅ {len(log['ops'])} correção(ões) aplicada(s)."))
         self.stdout.write(f"   Revert: {path}  ·  desfazer: python manage.py fix_pns --lot {opts['lot']} --revert")
-        self.stdout.write(self.style.WARNING("   Reinicie o servidor se rodou contra produção (cache do engine)."))
 
     # ── revert ──────────────────────────────────────────────────────────────────
 

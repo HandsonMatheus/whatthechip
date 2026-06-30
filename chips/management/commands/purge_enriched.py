@@ -35,8 +35,9 @@ Regra de ouro #3: após --commit, REINICIE o servidor (cache do engine).
 import json
 from datetime import datetime
 
-from django.core.management.base import BaseCommand
 from django.db.models import Count, Q
+
+from core.safe_command import SafeWriteCommand
 
 
 AI_LEVELS = ["ai_high", "ai_medium", "ai_low"]
@@ -44,7 +45,7 @@ AI_LEVELS = ["ai_high", "ai_medium", "ai_low"]
 NO_SPECS = Q(capacity="") & Q(emcp_ram="") & Q(emcp_nand="") & Q(density_gbit="")
 
 
-class Command(BaseCommand):
+class Command(SafeWriteCommand):
     help = ("Apaga lixo legado: ai_* (Gemini) e estimated SEM specs (fila raw vazia). "
             "Mantém confirmed/manual/distributor e estimated COM specs. Dry-run por padrão.")
 

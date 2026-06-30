@@ -25,7 +25,9 @@ import glob
 import json
 import re
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import CommandError
+
+from core.safe_command import SafeWriteCommand
 
 
 AI = {"ai_high", "ai_medium", "ai_low"}
@@ -38,7 +40,7 @@ def _has_specs(r):
     return bool(r.get("capacity") or r.get("emcp_ram") or r.get("emcp_nand") or r.get("density_gbit"))
 
 
-class Command(BaseCommand):
+class Command(SafeWriteCommand):
     help = "Restaura KnownParts de um backup do purge_enriched. Dry-run por padrão."
 
     def add_arguments(self, parser):

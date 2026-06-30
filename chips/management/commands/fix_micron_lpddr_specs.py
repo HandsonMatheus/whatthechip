@@ -130,6 +130,6 @@ class Command(BaseCommand):
             try:
                 from chips.engine import clear_engine_cache
                 clear_engine_cache()
-                log("  🗑  Cache do engine invalidado (reinicie o servidor — regra de ouro #3).")
+                log("  ↻ Cache do engine recarrega sozinho (catalog_version, passo 1B).")
             except Exception as e:
                 log(self.style.WARNING(f"  ⚠ cache não invalidado: {e}"))

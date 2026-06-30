@@ -33,10 +33,11 @@ import os
 from datetime import datetime
 
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import CommandError
 from django.db import transaction
 from django.utils import timezone
 
+from core.safe_command import SafeWriteCommand
 from estoque.models import InventoryEntry, Lot
 from estoque.reconcile_core import (
     LOTE,
@@ -49,7 +50,7 @@ from estoque.reconcile_core import (
 REVERT_LOG = os.path.join(str(settings.BASE_DIR), "reconcile_039_revert.json")
 
 
-class Command(BaseCommand):
+class Command(SafeWriteCommand):
     help = "Reconcilia o lote #039 somando a diferença em chips reais já existentes (sem PN inventado)."
 
     def add_arguments(self, parser):

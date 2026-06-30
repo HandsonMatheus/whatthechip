@@ -94,8 +94,7 @@ class PendingEntryAdmin(admin.ModelAdmin):
             moved += 1
         self.message_user(
             request,
-            f"{moved} chip(s) movido(s) para o estoque e confirmado(s) no banco. "
-            f"⚠ Reinicie o servidor para o engine enxergar os novos confirmados (regra de ouro #3).")
+            f"{moved} chip(s) movido(s) para o estoque e confirmado(s) no banco.")
 
     @admin.action(description="✗ Reprovar: descartar (typo / chip inexistente)")
     def reprovar(self, request, queryset):

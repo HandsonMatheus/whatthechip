@@ -23,10 +23,11 @@ import json
 import os
 
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import CommandError
 from django.db import transaction
 from django.utils import timezone
 
+from core.safe_command import SafeWriteCommand
 from chips.engine import classify
 from estoque.models import InventoryEntry, Lot
 
@@ -48,7 +49,7 @@ def _live_source(pn):
     return src
 
 
-class Command(BaseCommand):
+class Command(SafeWriteCommand):
     help = "Alinha a coluna Source (classification_source) das entradas do lote ao catálogo. Dry-run por padrão."
 
     def add_arguments(self, parser):
