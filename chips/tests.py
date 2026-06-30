@@ -690,3 +690,47 @@ class PartNumberNormLookupTests(TestCase):
         v0 = CatalogVersion.current()
         KnownPart.objects.create(brand=b, part_number="VERTEST1", chip_type="eMMC", confidence="confirmed")
         self.assertGreater(CatalogVersion.current(), v0)
+
+
+class DeployCatalogTests(TestCase):
+    """Passo 3: deploy_catalog encadeia os comandos de catálogo (na ordem) e sobe
+    o catalog_version no fim. Mocka call_command — não roda os populate_* de verdade."""
+
+    @patch('chips.management.commands.deploy_catalog.call_command')
+    def test_dry_run_nao_grava_nem_sobe_versao(self, mock_cc):
+        from chips.models import CatalogVersion
+        from django.core.management import call_command
+        v0 = CatalogVersion.current()
+        call_command('deploy_catalog')                       # dry-run (sem --commit)
+        chamados = [c.args[0] for c in mock_cc.call_args_list]
+        self.assertIn('populate_samsung', chamados)
+        # add_chip_families NÃO tem --dry-run → é PULADO no dry-run
+        self.assertNotIn('add_chip_families', chamados)
+        # todo sub-comando chamado no dry-run recebe dry_run=True
+        for c in mock_cc.call_args_list:
+            self.assertTrue(c.kwargs.get('dry_run'), f"{c.args[0]} sem dry_run")
+        self.assertEqual(CatalogVersion.current(), v0)        # NÃO sobe a versão
+
+    @patch('chips.management.commands.deploy_catalog.call_command')
+    def test_commit_roda_tudo_em_ordem_e_sobe_versao(self, mock_cc):
+        from chips.models import CatalogVersion
+        from django.core.management import call_command
+        v0 = CatalogVersion.current()
+        call_command('deploy_catalog', commit=True)
+        chamados = [c.args[0] for c in mock_cc.call_args_list]
+        self.assertEqual(chamados[0], 'populate_samsung')     # ordem canônica
+        self.assertEqual(chamados[-1], 'fix_known_parts')
+        self.assertIn('add_chip_families', chamados)          # roda no commit
+        kw = {c.args[0]: c.kwargs for c in mock_cc.call_args_list}
+        self.assertTrue(kw['populate_samsung'].get('overwrite'))
+        self.assertTrue(kw['import_samsung_psg'].get('all'))
+        self.assertEqual(CatalogVersion.current(), v0 + 1)    # sobe 1x no fim
+
+    @patch('chips.management.commands.deploy_catalog.call_command')
+    def test_nao_inclui_import_micron_catalog(self, mock_cc):
+        """CSVs *_full-catalog.csv NÃO são versionados → import_micron_catalog
+        quebraria no Render; não pode entrar no encadeamento."""
+        from django.core.management import call_command
+        call_command('deploy_catalog', commit=True)
+        chamados = [c.args[0] for c in mock_cc.call_args_list]
+        self.assertNotIn('import_micron_catalog', chamados)
