@@ -119,6 +119,13 @@ Servidos pela **WhiteNoise** com `CompressedManifestStaticFilesStorage`. O
 ## 6. Migrations e comandos de gestão
 
 - O **Build Command** roda `migrate` a cada deploy.
+  - **Auditoria do catálogo (passo 3, django-pghistory):** a migração `chips/0016`
+    cria as tabelas de evento + **gatilhos Postgres** nas 4 tabelas de catálogo
+    (`ChipFamily`/`DecodeMap`/`KnownPart`/`ProfitabilityConfig`). É **aditiva e
+    segura** (não reescreve dados) e **aplica sozinha no próximo deploy** via este
+    Build Command — não precisa de `render.yaml` nem de passo manual. Depois, o
+    histórico "quem mudou o quê" fica visível em **`/admin/` → seção Pghistory →
+    Events**. (No SQLite dos testes os gatilhos são no-op — ver `core/settings_test.py`.)
 - O Render free **não oferece shell interativo**. Para comandos pontuais
   (`createsuperuser`, `populate_*`, `fix_known_parts`), rode **localmente apontando
   para o banco do Render**:

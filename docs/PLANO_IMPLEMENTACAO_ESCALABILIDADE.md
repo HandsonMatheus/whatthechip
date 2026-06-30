@@ -243,24 +243,35 @@ o engine; aqui o foco é o estoque ler certo (o on-read não toca em `classify`)
 **Por quê.** O deploy de catálogo é uma cerimônia de 13+ comandos. E queremos **auditoria** (quem
 mudou o quê) no banco, não `*_revert.json` na raiz.
 
-**Eu crio/edito:**
-- **`deploy_catalog`** (comando): encadeia os sub-passos do catálogo via `call_command`, cada um
-  **idempotente** + **bulk** + seu próprio `atomic()`; imprime o **banner** de banco; `--dry-run`
-  padrão + `--commit`; **bumpa `catalog_version`** no fim. *(Inicialmente embrulha os `populate_*`;
-  após o passo 4, embrulha o `load_brands` — troca trivial.)*
-- **`django-pghistory`**: adicionar ao `requirements`; registrar as tabelas do **catálogo**
-  (`ChipFamily`, `DecodeMap`, `KnownPart`, `ProfitabilityConfig`) para rastreio; migração cria as
-  tabelas/gatilhos de evento. *(Preço não precisa — `PriceQuote` datado já é histórico.)*
-- `render.yaml`: `preDeployCommand: migrate` (schema aplica sozinho no deploy; comandos destrutivos
-  **não** vão no pre-deploy — são Render Shell).
+> **✅ FEITO e verificado (2026-06-30, branch `escalabilidade`).**
+> **3a — `deploy_catalog`** (`chips/management/commands/deploy_catalog.py`, SafeWriteCommand): encadeia
+> só os passos RODÁVEIS no Render, ordem canônica do CLAUDE.md §5 (`populate_*` `--overwrite` →
+> `add_chip_families` → `link_doc_pages` → `sync_index_page` → `import_samsung_psg --all` →
+> `fix_known_parts`), `--dry-run` padrão + `--commit`, banner de banco, **bumpa `catalog_version` no fim
+> (SUBSTITUI o "reinicie o servidor")**. ⚠ **EXCLUI `import_micron_catalog`** — os `*_full-catalog.csv`
+> NÃO são versionados → quebraria no Render. Lista `_STEPS` no topo; passo 4 troca por `load_brands`.
+> **3b — `django-pghistory` 3.9.x** (`@pghistory.track()` nas 4 tabelas de catálogo; `pgtrigger`+`pghistory`
+> em INSTALLED_APPS; `HistoryMiddleware`; migração `chips/0016` cria event models + gatilhos; em
+> `requirements*.txt`). No SQLite dos testes os gatilhos são no-op e o `HistoryMiddleware`/schema-editor
+> patch ficam **desligados** em `core/settings_test.py` (chamam `get_transaction_status` do psycopg).
+> Testes: `DeployCatalogTests` (3) + `PghistoryTrackingTests` (2, 1 só-Postgres pulado no SQLite). Suíte
+> **116 OK**. **`render.yaml` NÃO foi criado:** o **Build Command** do Render **já roda `migrate` a cada
+> deploy** (DEPLOY_RENDER.md §6) → o "automático no deploy" escolhido pelo dono já existe; a `0016` aplica
+> sozinha no próximo push (aditiva). Histórico visível em `/admin/` → Pghistory → Events.
 
-**Você roda:** `deploy_catalog --commit` no Render Shell (lê o banner, acompanha **um** log).
+**O que foi construído:**
+- **`deploy_catalog`** — composição em `_STEPS`; `add_chip_families` (sem `--dry-run`) é pulado no
+  dry-run e roda no `--commit`.
+- **`django-pghistory`** escopado ao catálogo; o "quem" vem do `HistoryMiddleware` (admin/web).
+- **Deploy:** sem `render.yaml` — `migrate` já roda no Build Command (decisão do dono = automático).
 
-**Verificação:** `characterize_baseline --diff` após um `deploy_catalog` (idêntico se não mudou
-catálogo). pghistory: editar um registro no admin → ver o evento registrado.
+**Você roda:** nada de infra novo; no próximo deploy a `0016` aplica sozinha. (Opcional: rodar a suíte
+contra o **Postgres local** para exercitar o teste de gatilho que o SQLite pula.)
 
-**Rollback:** pghistory é aditivo (reverter a migração o remove); `deploy_catalog` é idempotente
-(re-rodar).
+**Verificação:** suíte 116 OK; no Postgres, editar um `KnownPart` no admin → evento em
+`/admin/` Pghistory → Events. `characterize_baseline --diff` idêntico (pghistory não muda o `classify`).
+
+**Rollback:** pghistory é aditivo (reverter a `0016` o remove); `deploy_catalog` é idempotente (re-rodar).
 
 ---
 

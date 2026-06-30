@@ -4,6 +4,7 @@ Pillow>=10.0
 
 # ── Banco de dados ──────────────────────────────────────────────────────────────
 psycopg2-binary>=2.9
+django-pghistory>=3.9,<4   # auditoria do catálogo (passo 3); puxa django-pgtrigger (gatilhos Postgres)
 dj-database-url>=2.1        # Lê DATABASE_URL do Render automaticamente
 
 # ── Servidor de produção ────────────────────────────────────────────────────────

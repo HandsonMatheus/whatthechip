@@ -2,6 +2,7 @@
 Django==5.2.15          # LTS; fixado p/ paridade local↔Render. NÃO subir p/ 6.0 (exige Python 3.12+; runtime é 3.11)
 Pillow>=10.0
 psycopg2-binary>=2.9
+django-pghistory>=3.9,<4  # auditoria do catálogo (passo 3); puxa django-pgtrigger (gatilhos Postgres)
 
 # Produção / deploy
 whitenoise>=6.5

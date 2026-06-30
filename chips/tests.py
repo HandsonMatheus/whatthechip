@@ -734,3 +734,31 @@ class DeployCatalogTests(TestCase):
         call_command('deploy_catalog', commit=True)
         chamados = [c.args[0] for c in mock_cc.call_args_list]
         self.assertNotIn('import_micron_catalog', chamados)
+
+
+class PghistoryTrackingTests(TestCase):
+    """Passo 3b: auditoria do catálogo via django-pghistory. As 4 tabelas de
+    catálogo têm modelo de evento; no Postgres o gatilho grava um evento por
+    mudança (no SQLite o gatilho é no-op, então esse teste é pulado)."""
+
+    def test_existe_event_model_para_cada_tabela_de_catalogo(self):
+        from django.apps import apps
+        for nome in ("ChipFamilyEvent", "DecodeMapEvent",
+                     "KnownPartEvent", "ProfitabilityConfigEvent"):
+            self.assertIsNotNone(apps.get_model("chips", nome),
+                                 f"{nome} não foi gerado pelo @pghistory.track()")
+
+    def test_editar_knownpart_gera_evento_no_postgres(self):
+        from django.db import connection
+        if connection.vendor != "postgresql":
+            self.skipTest("gatilhos pghistory só existem no Postgres (testes usam SQLite)")
+        from django.apps import apps
+        from chips.models import Brand, KnownPart
+        Event = apps.get_model("chips", "KnownPartEvent")
+        b = Brand.objects.create(name="PG", code="PG")
+        kp = KnownPart.objects.create(brand=b, part_number="PGEVT1",
+                                      chip_type="eMMC", confidence="manual")
+        antes = Event.objects.filter(pgh_obj_id=kp.pk).count()
+        kp.chip_type = "UFS"
+        kp.save()
+        self.assertGreater(Event.objects.filter(pgh_obj_id=kp.pk).count(), antes)

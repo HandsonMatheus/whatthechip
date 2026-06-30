@@ -15,6 +15,7 @@ Fluxo de confiança para KnownPart:
     enriquecimento automático por IA — as specs vêm de confirmação manual.
 """
 
+import pghistory
 from django.db import models
 
 
@@ -53,6 +54,7 @@ class Source(models.Model):
         return f"{self.name} ({self.src_type})"
 
 
+@pghistory.track()  # auditoria (passo 3): snapshot do registro a cada mudança
 class ChipFamily(models.Model):
     """
     Família de chips identificada por um prefixo de PN.
@@ -127,6 +129,7 @@ class ChipFamily(models.Model):
         return f"{self.prefix} — {self.chip_type} ({self.brand.name})"
 
 
+@pghistory.track()  # auditoria (passo 3): snapshot do registro a cada mudança
 class DecodeMap(models.Model):
     """
     Tabela de decodificação: mapeia um caractere/código do PN para seu significado.
@@ -154,6 +157,7 @@ class DecodeMap(models.Model):
         return f"{self.map_name}[{self.char_key}] = {self.val_primary}"
 
 
+@pghistory.track()  # auditoria (passo 3): snapshot do registro a cada mudança
 class KnownPart(models.Model):
     """
     Part Number conhecido, com specs confirmadas por fonte humana/oficial.
@@ -355,6 +359,7 @@ class ChipSubmission(models.Model):
         return f"{self.part_number} ({self.get_status_display()})"
 
 
+@pghistory.track()  # auditoria (passo 3): snapshot do registro a cada mudança
 class ProfitabilityConfig(models.Model):
     """
     Regras de rentabilidade configuráveis pelo admin Django.

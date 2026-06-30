@@ -29,6 +29,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Auditoria do catálogo (passo 3): registra no banco quem mudou o quê nas
+    # tabelas de catálogo (gatilhos Postgres via pgtrigger). No SQLite dos testes
+    # os gatilhos são no-op (pgtrigger checa connection.vendor) — não quebra.
+    'pgtrigger',
+    'pghistory',
     'pages',
     'chips',
     'estoque',
@@ -46,6 +51,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # Captura o usuário autenticado no contexto do evento pghistory (o "quem"
+    # das mudanças via admin/web). Precisa vir DEPOIS do AuthenticationMiddleware.
+    'pghistory.middleware.HistoryMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
