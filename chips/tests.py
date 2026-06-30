@@ -663,3 +663,30 @@ class PartNumberNormLookupTests(TestCase):
         r = classify("zz99x1ita") or {}
         self.assertTrue(r.get("known"), "PN com separador deveria resolver via part_number_norm")
         self.assertEqual(r.get("chip_type"), "eMMC")
+
+    def test_constraint_bloqueia_norma_duplicada(self):
+        """1A-p2: a UniqueConstraint(part_number_norm) impede dois PNs que normalizam igual."""
+        from chips.models import Brand, KnownPart
+        from django.db import IntegrityError, transaction
+        b = Brand.objects.create(name="T", code="T")
+        KnownPart.objects.create(brand=b, part_number="AB12-CD", chip_type="eMMC", confidence="confirmed")
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                KnownPart.objects.create(brand=b, part_number="AB12CD", chip_type="eMMC", confidence="confirmed")
+
+    def test_pick_best_known_escolhe_o_melhor(self):
+        """1A: _pick_best_known prefere chip_type preenchido (mesmo com confiança menor)."""
+        from chips.models import Brand, KnownPart
+        from chips.engine import _pick_best_known
+        b = Brand.objects.create(name="T", code="T")
+        orfao = KnownPart.objects.create(brand=b, part_number="P1", chip_type="", confidence="confirmed")
+        cheio = KnownPart.objects.create(brand=b, part_number="P2", chip_type="eMMC", confidence="distributor")
+        self.assertEqual(_pick_best_known([orfao, cheio]).pk, cheio.pk)
+
+    def test_salvar_knownpart_sobe_catalog_version(self):
+        """Passo 2: criar/editar um KnownPart sobe o catalog_version (→ estoque defasa)."""
+        from chips.models import Brand, KnownPart, CatalogVersion
+        b = Brand.objects.create(name="T", code="T")
+        v0 = CatalogVersion.current()
+        KnownPart.objects.create(brand=b, part_number="VERTEST1", chip_type="eMMC", confidence="confirmed")
+        self.assertGreater(CatalogVersion.current(), v0)

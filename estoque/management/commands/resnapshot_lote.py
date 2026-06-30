@@ -52,6 +52,8 @@ class Command(SafeWriteCommand):
     def add_arguments(self, parser):
         parser.add_argument("--lot", type=int, help="Número do lote.")
         parser.add_argument("--all", action="store_true", help="Todos os lotes.")
+        parser.add_argument("--dry-run", action="store_true",
+                            help="Não grava — é o padrão (sem --commit). Aceito p/ ser explícito.")
         parser.add_argument("--commit", action="store_true")
         parser.add_argument("--revert", action="store_true")
 
@@ -105,7 +107,7 @@ class Command(SafeWriteCommand):
         if not changed:
             self.stdout.write(self.style.SUCCESS("Nada defasado — tudo na edição atual."))
             return
-        if not opts["commit"]:
+        if opts["dry_run"] or not opts["commit"]:
             self.stdout.write(self.style.WARNING(
                 f"\nDRY-RUN: {len(changed)} entrada(s) seriam atualizadas. --commit para gravar."))
             return

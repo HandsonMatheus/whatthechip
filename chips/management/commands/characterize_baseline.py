@@ -32,6 +32,7 @@ RODAR LOCAL sem o Postgres de produção (ver §Passo 0 do plano): carregue o
 """
 
 import json
+import os
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
@@ -88,6 +89,15 @@ class Command(BaseCommand):
     def handle(self, *args, **opts):
         if not opts["out"] and not opts["diff"]:
             raise CommandError("Use --out ARQUIVO (snapshot) OU --diff ARQUIVO (regressão).")
+
+        # Falha RÁPIDA: se o baseline do --diff não existe, avisa antes de caracterizar
+        # os milhares de PNs (50s) — não depois (era o erro do usuário em 2026-06-30).
+        if opts["diff"] and not os.path.exists(opts["diff"]):
+            raise CommandError(
+                f"Baseline não encontrado: {opts['diff']}\n"
+                f"   Gere o baseline ANTES da mudança que quer validar:\n"
+                f"       python manage.py characterize_baseline --out {opts['diff']}\n"
+                f"   e depois rode de novo com --diff {opts['diff']} para comparar.")
 
         from chips.models import KnownPart
 

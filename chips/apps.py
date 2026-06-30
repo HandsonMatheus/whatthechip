@@ -21,7 +21,11 @@ class ChipsConfig(AppConfig):
             except Exception:
                 pass  # tabela pode não existir durante o primeiro migrate
 
-        for _model in (m.ChipFamily, m.DecodeMap, m.ProfitabilityConfig):
+        # Passo 2 (atualização do estoque): KnownPart também sobe a versão — uma correção
+        # de PN marca as entradas do estoque como defasadas (snapshot_catalog_version <
+        # atual) para o resnapshot_lote/on-read revaluar. (Recarrega o cache de famílias/
+        # mapas à toa, mas é raro e barato.)
+        for _model in (m.ChipFamily, m.DecodeMap, m.ProfitabilityConfig, m.KnownPart):
             post_save.connect(_bump, sender=_model, weak=False,
                               dispatch_uid=f"wtc_bump_{_model.__name__}_save")
             post_delete.connect(_bump, sender=_model, weak=False,

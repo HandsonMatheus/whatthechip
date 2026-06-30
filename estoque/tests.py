@@ -312,3 +312,73 @@ class ResnapshotLoteTests(TestCase):
         call_command('resnapshot_lote', '--lot', '77', '--commit')
         e.refresh_from_db()
         self.assertEqual(e.classification_source, 'banco de dados')  # NÃO apagou
+
+    @patch('chips.engine.classify')
+    def test_dry_run_explicito_nao_grava(self, mock_classify):
+        """`--dry-run` (explícito) NÃO grava — mesmo com uma entrada defasada."""
+        from chips.models import CatalogVersion
+        from django.core.management import call_command
+        v0 = CatalogVersion.current()
+        e = InventoryEntry.objects.create(
+            lot=self.lot, part_number='MTDRY1', chip_type='RAM', capacity='48GB',
+            snapshot_catalog_version=v0)
+        CatalogVersion.bump()
+        mock_classify.return_value = {'chip_type': 'LPDDR4', 'capacity': '6GB'}
+        call_command('resnapshot_lote', '--lot', '77', '--dry-run')  # NÃO deve gravar
+        e.refresh_from_db()
+        self.assertEqual(e.capacity, '48GB')                  # intacto
+        self.assertEqual(e.snapshot_catalog_version, v0)      # ainda defasado
+
+
+class OnReadDisplayTests(TestCase):
+    """Passo 2: a TELA do estoque mostra o valor ATUAL (cálculo na leitura/on-read)
+    das entradas defasadas — sem gravar — e exibe a data de última atualização."""
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='op3', password='x')
+        self.client.force_login(self.user)
+        self.lot = Lot.objects.create(number=88, operator=self.user)
+
+    def _get_table(self):
+        resp = self.client.get(reverse('estoque:lot_detail', args=[self.lot.pk]))
+        self.assertEqual(resp.status_code, 200)
+        return resp.content.decode()
+
+    @patch('estoque.views.classify')
+    def test_onread_mostra_valor_atual_de_entrada_defasada(self, mock_classify):
+        """Catálogo melhorou desde o intake → a tela mostra o valor ATUAL, não o
+        snapshot velho — e NÃO persiste (quem grava é o resnapshot_lote)."""
+        from chips.models import CatalogVersion
+        v0 = CatalogVersion.current()
+        e = InventoryEntry.objects.create(
+            lot=self.lot, part_number='MTSTALE9', chip_type='RAM', capacity='48GB',
+            snapshot_catalog_version=v0)
+        CatalogVersion.bump()                       # catálogo melhora → entrada defasa
+        mock_classify.return_value = _result(
+            chip_type='LPDDR4', capacity='6GB', classification_source='banco de dados')
+
+        body = self._get_table()
+        self.assertIn('6GB', body)                  # valor ATUAL na tela
+        self.assertNotIn('48GB', body)              # o defasado não aparece
+
+        e.refresh_from_db()                         # banco INTACTO (on-read não grava)
+        self.assertEqual(e.capacity, '48GB')
+        self.assertEqual(e.snapshot_catalog_version, v0)
+
+    @patch('estoque.views.classify')
+    def test_onread_nao_recalcula_entrada_em_dia(self, mock_classify):
+        """Entrada já na versão atual do catálogo → nem chama o classify."""
+        from chips.models import CatalogVersion
+        InventoryEntry.objects.create(
+            lot=self.lot, part_number='MTFRESH9', chip_type='eMMC', capacity='16GB',
+            snapshot_catalog_version=CatalogVersion.current())
+        body = self._get_table()
+        mock_classify.assert_not_called()
+        self.assertIn('16GB', body)
+
+    def test_tabela_mostra_data_de_ultima_atualizacao(self):
+        from chips.models import CatalogVersion
+        InventoryEntry.objects.create(
+            lot=self.lot, part_number='MTDATE9', chip_type='eMMC', capacity='16GB',
+            snapshot_catalog_version=CatalogVersion.current())
+        self.assertIn('atualizado', self._get_table())

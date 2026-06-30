@@ -20,7 +20,7 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#da1e28" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>
       </button>
     </div>
-    <div style="font-size:12px;color:#6f6f6f;margin-top:5px;">{{ entry.brand|default:"—" }} · {{ entry.display_capacity }}</div>
+    <div style="font-size:12px;color:#6f6f6f;margin-top:5px;">{{ entry.brand|default:"—" }} · {{ entry.display_capacity }}{% if entry.last_updated %}<span style="color:#a8a8a8;"> · atualizado {{ entry.last_updated|date:"d/m/y H:i" }}</span>{% endif %}</div>
   </div>
   {% endfor %}
 {% else %}

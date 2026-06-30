@@ -23,7 +23,7 @@
 | **1A** | `normalize_pn` + unicidade | Acaba a classe de bug de PN duplicado (56% do banco) | 🟡 médio | M | 0 |
 | **1B** | `catalog_version` + cache | Acaba a regra "reinicie após populate" | 🟢 baixo | M | 0 |
 | **1C** | Trava de banco + `bulk_update` + limpeza | Impede o acidente localhost×prod; 20 min → seg; tira resíduos | 🟢 baixo | P | 0 |
-| **2** | Frescor do estoque | Estoque deixa de defasar; mostra o atual; histórico interno | 🟡 médio | M | 1B |
+| **2** | Atualização do estoque | Estoque deixa de defasar; mostra o atual + a data; histórico interno | 🟡 médio | M | 1B |
 | **3** | `deploy_catalog` + `pghistory` | 13 passos → 1 comando seguro; auditoria no banco | 🟡 médio | M | 1B, 1C |
 | **4** | Conhecimento → YAML | Tira a gramática do código (a alavanca grande) | 🔴 alto | G | 0, 1A, 1B |
 | **5** | Sistema de preço | Preço por categoria, editável pelo comprador | 🟡 médio | G | 4 |
@@ -70,7 +70,7 @@ O método já existe (`docs/CARACTERIZACAO_BASELINE.md`) mas foi rodado avulso �
 
 **Você roda:**
 ```
-# dump fresco da produção (Render Shell), se quiser atualizar o snapshot
+# dump recente da produção (Render Shell), se quiser atualizar o snapshot
 python manage.py dumpdata chips > prod_data.json
 python manage.py characterize_baseline --snapshot baseline_antes.json
 ```
@@ -198,30 +198,43 @@ a limpeza (os 21 `ai_high` mudam de `confidence` — diff esperado).
 
 ---
 
-## PASSO 2 — Frescor do estoque
+## PASSO 2 — Atualização do estoque
 
 **Por quê.** O `InventoryEntry` guarda um snapshot que **defasa** quando o engine melhora (Micron
-48GB→6GB). **Decisão do dono:** o frontend mostra o **valor atual**; o histórico fica interno.
+48GB→6GB). **Decisão do dono:** o frontend mostra o **valor atual + a data de última atualização**;
+o histórico fica interno.
 
-**Eu crio/edito:**
-- `InventoryEntry`: campos **`intake_at`** + **`intake_catalog_version`** (carimbados no lançamento,
-  **imutáveis**). O snapshot de hoje vira o "snapshot de entrada".
-- **On-read (frontend):** a lista do estoque calcula a classificação **atual** via
-  `_snapshot(classify(pn))` **só para as linhas visíveis** (paginadas), com atalho: se
-  `intake_catalog_version == catalog_version`, nem recalcula. Mostra o **atual** (opção *b*).
-- **`resnapshot_lote`** (comando): re-roda `_snapshot(classify(pn))` sobre um lote, **gated por
-  `catalog_version`** (só as entradas atrasadas), `bulk_update`, dry-run + `--commit` + `--revert`
-  (revert em **`var/reverts/`**, não na raiz). É o caminho **principal** (o on-read é fallback do
-  visível) — a tela nunca dispara N `classify()` síncronos.
-- Histórico de mudanças = `django-pghistory` na `InventoryEntry` (vem no passo 3).
+> **✅ FEITO e verificado (2026-06-30, branch `escalabilidade`).** (a) `InventoryEntry.snapshot_catalog_version`
+> carimbado no intake com `CatalogVersion.current()`; `KnownPart` também sobe o `catalog_version` (uma
+> correção de PN **defasa** as entradas do estoque). (b) **on-read** `estoque/views.py::_entries_for_display`
+> recalcula EM MEMÓRIA as linhas defasadas via `_current_snapshot` (= `_snapshot(classify(pn))` + rótulo
+> "banco de dados" para confirmado sem família casada), teto `_ONREAD_CAP=150` por render, **sem gravar**.
+> (c) **`resnapshot_lote`** (SafeWriteCommand): re-snapshot das entradas atrasadas, `bulk_update`,
+> dry-run/`--commit`/`--revert` em `var/reverts/`. (d) **data de última atualização** (`last_updated`) na
+> tabela. Testes: `OnReadDisplayTests` (3) + `ResnapshotLoteTests` (2) + `test_intake_carimba_snapshot_catalog_version`.
+> Suíte: estoque 23 + chips 87 = **110 OK**.
 
-**Você roda:** migração (campos de intake); **backfill proativo** dos lotes existentes via
-`resnapshot_lote --dry-run` → `--commit` no Render Shell (para o 1º leitor não pagar o pico).
+**Como ficou (o que foi construído):**
+- `InventoryEntry.snapshot_catalog_version` — a versão do catálogo no lançamento. Entrada **defasada**
+  = `snapshot_catalog_version < CatalogVersion.current()`. (Não há campo de intake imutável separado: o
+  histórico é o `django-pghistory` do passo 3.)
+- **On-read (tela):** `_entries_for_display(lot, q, tipo)` materializa as entradas e, **só para as
+  defasadas e até `_ONREAD_CAP=150` por render**, sobrescreve em memória os campos com
+  `_current_snapshot(pn)` — **nunca chama `save()`**. O que está em dia sai do banco sem custo.
+- **`resnapshot_lote`** (comando, caminho **principal** de persistência): re-roda o snapshot do
+  servidor sobre as entradas atrasadas do lote, `bulk_update`, dry-run + `--commit` + `--revert`
+  (revert em **`var/reverts/`**). A tela nunca dispara N `classify()` síncronos.
+- **Data** `last_updated` exibida na linha ("· atualizado dd/mm/aa HH:MM", fuso de Brasília).
 
-**Verificação:** abrir um lote e conferir os valores atuais; teste do atalho de versão. (O
-`characterize_baseline` cobre o engine; aqui o foco é o estoque ler certo.)
+**Você roda:** migração `0010_inventoryentry_snapshot_catalog_version`; **backfill proativo** dos lotes
+existentes via `resnapshot_lote --lot N --dry-run` → `--commit` no Render Shell (para o 1º leitor não
+pagar o pico). *(Já feito no lote 39: 359 entradas, JZ### preservado.)*
 
-**Rollback:** `resnapshot_lote --revert`; reverter a migração dos campos de intake.
+**Verificação:** `OnReadDisplayTests` (valor atual de entrada defasada **sem gravar**; o atalho de
+versão não recalcula o que está em dia; a data aparece) + suíte 110 OK. O `characterize_baseline` cobre
+o engine; aqui o foco é o estoque ler certo (o on-read não toca em `classify`).
+
+**Rollback:** `resnapshot_lote --revert`; reverter a migração `0010`.
 
 ---
 
@@ -299,15 +312,16 @@ jusante da rentabilidade. Desenho-base: `PRECIFICACAO.md`.
 - Models: **`PriceClass`** (`brand`, `chip_type`, `subtype`, `capacity_token`, numéricos, `active`),
   **`PriceQuote`** (FK, `price_usd`, `quote_date` = **data da última modificação**, `source`, `note`),
   **`PriceConfig`** (singleton: só **moeda** = USD; *opcional futuro:* custo de processamento + margem).
-  > **Sem "frescor" (decisão do dono, 2026-06-30):** descartamos os níveis fresco/envelhecendo/velho
-  > (com cor) do `PRECIFICACAO §6` — confunde mais que ajuda. Fica **só a data de última modificação**
-  > do preço, exibida no card. `PriceConfig` perde os campos de frescor (`fresh_max_days`/`aging_max_days`).
+  > **Só a data de última atualização (decisão do dono, 2026-06-30):** descartamos os antigos níveis
+  > com cor (fresco/envelhecendo/velho) do `PRECIFICACAO §6` — confundem mais que ajudam e o termo não
+  > traduz bem. Fica **só a data da última modificação** do preço, exibida no card. `PriceConfig` perde
+  > os campos de janela de tempo (`fresh_max_days`/`aging_max_days`).
 - **`price_key(result)`** — **uma** função canônica que monta o `capacity_token` (eMCP `"16+1"`,
   DDR `"8Gb"`) a partir do resultado do engine, reusando os helpers de `chip_types`/`_snapshot`
   (**não** o label da caixa).
 - **`resolve_price(result)`** — roda **só se RENTÁVEL**; **exato → senão "sem cotação"** (decisão do
-  dono: **sem interpolação**). Saída: `price_usd` + `quote_date` (última modificação) — **sem** nível
-  de frescor.
+  dono: **sem interpolação**). Saída: `price_usd` + `quote_date` (última modificação) — **só preço +
+  data**.
 - **Admin do comprador:** um painel com **TODOS os `PriceClass`** (com e sem preço juntos), edição
   in-place, permissão por grupo. **Sem fila separada.**
 - **`load_brands --price-skeleton`** — gera a lista completa de `PriceClass` do catálogo (todas as

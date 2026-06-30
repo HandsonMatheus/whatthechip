@@ -107,11 +107,11 @@ em ordem:
 4. **Ausente** — nada → `"SEM COTAÇÃO"`; sinaliza pro comprador cotar (fila tipo
    `UnknownChip`, mas de preço). `basis="ausente"`.
 
-Toda saída carrega **`quote_date` + nível de frescor (§6) + `basis`**.
+Toda saída carrega **`quote_date` (data da última atualização) + `basis`**.
 
 Exemplo no card de busca:
-`US$ 3,20 / un — cotado 24/06/2026 (fresco) — exato`
-`≈ US$ 2,80 / un — sem-marca — cotado 10/06 (envelhecendo)`
+`US$ 3,20 / un — cotado 24/06/2026 — exato`
+`≈ US$ 2,80 / un — sem-marca — cotado 10/06/2026`
 
 ---
 
@@ -122,7 +122,7 @@ PN → classify() → assess_profitability ──NÃO RENTÁVEL──▶ descart
                          │
                       RENTÁVEL
                          ▼
-                  resolve_price()  →  preço + data + frescor
+                  resolve_price()  →  preço + data
 ```
 
 Rentabilidade é o **portão**; preço é a **avaliação dos sobreviventes**. O preço
@@ -135,12 +135,13 @@ Rentabilidade é o **portão**; preço é a **avaliação dos sobreviventes**. O
 
 ---
 
-## 6. Frescor — `PriceConfig` (singleton, igual `ProfitabilityConfig`)
+## 6. Data da cotação — `PriceConfig` (singleton, igual `ProfitabilityConfig`)
 
-> **⛔ DESCARTADO pelo dono (2026-06-30) — ver `docs/PLANO_IMPLEMENTACAO_ESCALABILIDADE.md §5`.** Os
-> níveis de frescor (fresco/envelhecendo/velho, com cor) foram **removidos** — "confunde mais que
-> ajuda". Fica só a **`quote_date` (data da última modificação)** exibida no card. O `PriceConfig`
-> perde `fresh_max_days`/`aging_max_days`. O texto abaixo é histórico.
+> **⛔ NÍVEIS COM COR DESCARTADOS pelo dono (2026-06-30) — ver `docs/PLANO_IMPLEMENTACAO_ESCALABILIDADE.md §5`.**
+> Os antigos níveis (fresco/envelhecendo/velho, com cor) foram **removidos** — "confundem mais que
+> ajudam" e o termo não traduz bem entre idiomas. Fica só a **`quote_date` (data da última
+> atualização)** exibida no card. O `PriceConfig` perde `fresh_max_days`/`aging_max_days`. O texto
+> abaixo é histórico.
 
 Mostrar a **data** da cotação é o coração da UX: preço sem data é falsa precisão
 num mercado volátil. Níveis configuráveis no admin:

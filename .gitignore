@@ -22,7 +22,9 @@ venv/
 # ── Dados / artefatos locais (NÃO commitar) ─────────────────────────────────
 chipid_data/
 prod_data.json
-baseline*.json                  # rede de regressão (characterize_baseline)
+# rede de regressão (characterize_baseline) — comentário em linha própria:
+# o .gitignore NÃO aceita comentário inline (viraria parte do padrão e não casa nada)
+baseline*.json
 
 # Reverts e backups dos comandos dry-run/--revert (Problema 4.3c: nunca na raiz)
 *_revert.json

@@ -26,7 +26,7 @@ produção, use **seu método habitual** (um dos dois):
 
 ## Fase 0 — Pré-voo
 - [ ] Backup guardado **fora** do projeto (HD externo / nuvem).
-- [ ] (recomendado) Snapshot fresco do banco agora:
+- [ ] (recomendado) Snapshot recente do banco agora:
       `DATABASE_URL=<render> python manage.py dumpdata chips estoque > prod_pre_convencao.json`
 
 ## Fase 1 — Deploy do CÓDIGO

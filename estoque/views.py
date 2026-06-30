@@ -163,6 +163,47 @@ def _entries_qs(lot, q='', tipo=''):
     return qs.order_by('-last_updated')
 
 
+def _current_snapshot(pn: str) -> dict:
+    """Snapshot ATUAL do servidor para um PN: `_snapshot(classify(pn))` sem o
+    campo `confidence`, mais a derivação do rótulo "banco de dados" para um
+    confirmado SEM família casada (ex.: Micron JZ###) — igual ao
+    `resnapshot_lote`/`refresh_lote._live_source`. Devolve só os campos de
+    exibição (chip_type/brand/capacity/emcp_*/is_emcp/interface/Source)."""
+    r = classify(pn) or {}
+    snap = _snapshot(r)
+    snap.pop("confidence", None)
+    if not snap["classification_source"] and (
+            r.get("confidence") in ("confirmed", "manual") or r.get("known_exact")):
+        snap["classification_source"] = "banco de dados"
+    return snap
+
+
+#: Teto de recálculo SÍNCRONO por render do on-read. O caminho que persiste em
+#: massa é o `resnapshot_lote`; a tela só reconcilia o que estiver à vista, sem
+#: varrer o lote inteiro a cada abertura (problema 4.4 do BRIEFING_ESCALABILIDADE).
+_ONREAD_CAP = 150
+
+
+def _entries_for_display(lot, q='', tipo=''):
+    """Entradas do lote prontas para a TELA, com **cálculo na leitura** (on-read):
+    as DEFASADAS — `snapshot_catalog_version` menor que `CatalogVersion.current()`,
+    i.e. o catálogo melhorou desde que o chip foi lançado — são recalculadas EM
+    MEMÓRIA para mostrar o valor ATUAL, **sem gravar** (quem persiste é o
+    `resnapshot_lote`). Limita-se a `_ONREAD_CAP` recálculos por render para não
+    classificar o lote inteiro de forma síncrona. O que está em dia sai do banco
+    sem custo."""
+    from chips.models import CatalogVersion
+    cur = CatalogVersion.current()
+    entries = list(_entries_qs(lot, q, tipo))
+    recomputed = 0
+    for e in entries:
+        if e.snapshot_catalog_version < cur and recomputed < _ONREAD_CAP:
+            for k, v in _current_snapshot(e.part_number).items():
+                setattr(e, k, v)   # override em memória — NÃO chama e.save()
+            recomputed += 1
+    return entries
+
+
 def _get_lot(request, lot_pk):
     return get_object_or_404(Lot, pk=lot_pk, operator=request.user)
 
@@ -461,7 +502,7 @@ def lot_detail(request, lot_pk):
     q    = request.GET.get('q', '').strip()
     tipo = request.GET.get('tipo', '').strip()
 
-    entries   = _entries_qs(lot, q, tipo)
+    entries   = _entries_for_display(lot, q, tipo)
     total_qty = sum(e.quantity for e in entries)
 
     ctx = {
@@ -664,7 +705,9 @@ def add_chip(request, lot_pk):
     # `interface`. `confidence` não existe no InventoryEntry (só em Pending/Rejected).
     snap = _snapshot(server_result)
     snap.pop('confidence', None)
-    defaults = {**snap, 'quantity': qty}
+    # Passo 2: carimba a edição do catálogo do snapshot de intake (detecção de defasagem).
+    from chips.models import CatalogVersion
+    defaults = {**snap, 'quantity': qty, 'snapshot_catalog_version': CatalogVersion.current()}
 
     entry, created = InventoryEntry.objects.get_or_create(
         lot=lot, part_number=pn, defaults=defaults,
@@ -676,7 +719,7 @@ def add_chip(request, lot_pk):
             last_updated=timezone.now(),
         )
 
-    entries   = _entries_qs(lot)
+    entries   = _entries_for_display(lot)
     total_qty = sum(e.quantity for e in entries)
 
     response = render(request, 'estoque/partials/table_body.html', {
@@ -703,7 +746,7 @@ def remove_entry(request, lot_pk, pk):
     else:
         InventoryEntry.objects.filter(pk=entry.pk).update(quantity=F('quantity') - qty)
 
-    entries   = _entries_qs(lot)
+    entries   = _entries_for_display(lot)
     total_qty = sum(e.quantity for e in entries)
 
     return render(request, 'estoque/partials/table_body.html', {

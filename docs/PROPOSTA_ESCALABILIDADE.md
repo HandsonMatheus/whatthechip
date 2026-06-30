@@ -319,7 +319,7 @@ Este é o ponto com trade-off genuíno, então vou ser claro. Você guarda hoje 
 classificação no `InventoryEntry`. Quando o engine melhora (o fix dos "dies" da Micron mudou
 48GB→6GB), o snapshot não acompanha. As opções:
 
-- **Só calcular na leitura** (sem snapshot): sempre fresco, zero dívida — mas **perde a
+- **Só calcular na leitura** (sem snapshot): sempre atual, zero dívida — mas **perde a
   memória** do que foi decidido na entrada. Para um negócio de reciclagem que pode precisar
   *defender uma decisão comercial passada*, isso sozinho não serve.
 - **Só snapshot + refresh manual** (hoje): rápido de ler, mas defasa e vira dívida de
@@ -483,7 +483,7 @@ sem lucro é sucata, não tem preço").
 | A tabela de preços (marca × tipo × subtipo × capacidade → preço) | Modelos **`PriceClass`/`PriceQuote` no banco, editados no admin** (preço é operacional — ver abaixo). O **CSV + loader** serve só p/ o *bulk-import inicial* da sua planilha e atualizações em massa. |
 | `resolve_price()` escada (exato → interpolado → sem-marca → ausente) | **Lógica no engine, dado na tabela** — exatamente "dado é dado, lógica é no engine". A jusante de `assess_profitability`, sem reimplementar rentabilidade (Regra #11). |
 | Preço muda → estoque revalua | O **`catalog_version`** (já ampliado p/ `ProfitabilityConfig`) cobre também `PriceQuote`/`PriceConfig`: nova cotação → bump → on-read/`resnapshot` revalua só o afetado. |
-| `quote_date` + frescor (cotação é série temporal datada) | É o mesmo trade-off **snapshot × on-read** do §4.4 aplicado ao preço: congela o preço-de-entrada (auditoria) + mostra a cotação atual com a data na leitura. |
+| `quote_date` (cotação é série temporal datada) | É o mesmo trade-off **snapshot × on-read** do §4.4 aplicado ao preço: congela o preço-de-entrada (auditoria) + mostra a cotação atual com a data na leitura. |
 | Cotações sujas na planilha ("20-23rmb", "90rmb-110rmb") | O **portão Pydantic/CSV** rejeita preço não-numérico e exige número + data limpos — a validação melhora a higiene do dado de preço de graça. |
 | Chips sem preço | Mostram **"sem cotação"** (decisão do dono: **sem interpolação**). O comprador trabalha de **um painel só** com TODOS os tipos (a lista da planilha = `--price-skeleton`): vê o que tem e o que não tem preço de uma vez — **sem fila separada**. |
 
@@ -502,8 +502,8 @@ CSV/loader é só a ponte de *bulk-import* da planilha; a **fonte da verdade do 
 
 1. **"Preços flutuam muito, editável no admin."** ✅ `PriceQuote` é modelo Django → admin de graça. E
    como cada mudança é uma **cotação datada** (série temporal, `PRECIFICACAO §2`), "flutua muito" é
-   tratado de origem: novo preço = nova cotação com data; histórico preservado; o card mostra data +
-   cor de frescor. Salvar a cotação faz o `catalog_version` subir → o estoque revalua sozinho.
+   tratado de origem: novo preço = nova cotação com data; histórico preservado; o card mostra a **data
+   da última atualização**. Salvar a cotação faz o `catalog_version` subir → o estoque revalua sozinho.
 2. **"Comprador terá um admin interno para mudar preços."** ✅ Django admin tem **permissões por
    usuário/grupo** — o comprador ganha uma tela focada de "editar preços" (filtrada por marca/tipo),
    sem acesso ao resto. (Pode ser o admin nativo filtrado ou uma página HTMX simples sobre os mesmos
@@ -529,7 +529,7 @@ CSV/loader é só a ponte de *bulk-import* da planilha; a **fonte da verdade do 
    do `_snapshot`/`chip_types`, **não** o label da caixa (que colapsa o subtipo; o próprio
    `PRECIFICACAO §3` avisa: "o token da caixa ≠ a chave de preço").
 3. **Decidir snapshot × on-read do preço** (o mesmo do §4.4): recomendo **congelar o preço-de-entrada
-   para auditoria E mostrar a cotação atual on-read** com a data/frescor.
+   para auditoria E mostrar a cotação atual on-read** com a data de última atualização.
 
 **Sinergia de bônus:** depois do refactor, a **lista de categorias de preço pode ser GERADA do
 catálogo YAML** — um `load_brands --price-skeleton` que emite o CSV de preço vazio (todas as
@@ -595,7 +595,7 @@ Ordenada por **risco crescente**, cada passo provado pela **rede de regressão**
    `normalize_pn()` + `UniqueConstraint`; (4.4-cache) `catalog_version` + `lru_cache(version)`
    (subindo **também** com `ProfitabilityConfig` — Insight B); (4.3) trava de banco (`env.db()` sem
    default + banner) + `bulk_update`; (4.6) limpeza dos resíduos. Conserta dor já sentida.
-2. **Frescor do estoque (4.4)** com as **quatro condições de entrada** do chat de estoque
+2. **Atualização do estoque (4.4)** com as **quatro condições de entrada** do chat de estoque
    (lote-primeiro + on-read só do visível; carimbo cobrindo rentabilidade; congelar o destino de
    entrada; backfill proativo). Depende do `catalog_version` do passo 1.
 3. **Operacional (4.3):** o **`deploy_catalog` num comando** (Render Shell, `django-pghistory`).
@@ -678,7 +678,7 @@ Ordenada por **risco crescente**, cada passo provado pela **rede de regressão**
 - django-environ — falhar se faltar `DATABASE_URL`: https://django-environ.readthedocs.io/en/latest/quickstart.html
 - Krzysztof Żuraw — gunicorn + lru_cache (cache por-processo): https://krzysztofzuraw.com/blog/2017/gunicorn-and-lru-cache-pitfall/
 
-**Frescor / normalização / cache**
+**Atualização do estoque / normalização / cache**
 - Django 5.2 — `UniqueConstraint` / campos customizados / cache: https://docs.djangoproject.com/en/5.2/ref/models/constraints/ · https://docs.djangoproject.com/en/5.2/howto/custom-model-fields/ · https://docs.djangoproject.com/en/5.2/topics/cache/
 - Postgres — colunas geradas (exigência IMMUTABLE): https://www.postgresql.org/docs/current/ddl-generated-columns.html
 - DHH/37signals — expiração de cache por chave (geracional): https://signalvnoise.com/posts/3113-how-key-based-cache-expiration-works

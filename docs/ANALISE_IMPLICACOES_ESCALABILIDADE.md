@@ -187,8 +187,8 @@ converter Python→YAML depois é mecânico.
 ### 3.7 Identificação de chips em tempo real — **igual ou melhor**
 - O `classify()` **não muda** em nenhum degrau — mesma velocidade, mesma lógica, lê as mesmas
   tabelas. `catalog_version` + cache por versão = mesma velocidade na RAM **+ resultado sempre
-  fresco + sem reinício manual**. O caminho de tempo real lê do cache → latência inalterada.
-- *Veredito:* desempenho igual ou melhor; resultados mais frescos (some o risco de servir
+  atual + sem reinício manual**. O caminho de tempo real lê do cache → latência inalterada.
+- *Veredito:* desempenho igual ou melhor; resultados sempre atuais (some o risco de servir
   gramática velha após um `populate`).
 
 ---

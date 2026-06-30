@@ -74,6 +74,9 @@ class InventoryEntry(models.Model):
     is_emcp     = models.BooleanField(default=False, verbose_name='É eMCP/uMCP')
     interface   = models.CharField(max_length=100, blank=True, default='', verbose_name='Interface')
     classification_source = models.CharField(max_length=50, blank=True, default='', verbose_name='Fonte')
+    # Passo 2: edição do catálogo sob a qual este snapshot foi calculado. Se for <
+    # CatalogVersion.current(), a entrada está DEFASADA (resnapshot_lote/on-read revaluam).
+    snapshot_catalog_version = models.IntegerField(default=0, verbose_name='Versão do snapshot')
 
     quantity     = models.PositiveIntegerField(default=1, verbose_name='Quantidade')
     added_at     = models.DateTimeField(auto_now_add=True, verbose_name='Adicionado em')

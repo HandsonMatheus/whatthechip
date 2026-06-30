@@ -95,7 +95,7 @@ código espalhado — para o resto do sistema.**
 ### 2.1 Os três sistemas adjacentes que pesam nas decisões
 
 Quem for decidir a arquitetura precisa entender três peças que conversam com o catálogo —
-porque decisões como **frescor do estoque** (4.4) e **multi-tenant** dependem delas.
+porque decisões como **atualização do estoque** (4.4) e **multi-tenant** dependem delas.
 
 **(a) A convenção de tipos (`chips/chip_types.py`) — o MODELO PROVADO.** Foi o trabalho
 desta sessão. A regra ("opção 1"): para **DRAM discreta** (DDR/LPDDR/GDDR/SDRAM) a **geração
@@ -247,7 +247,7 @@ estoque **não atualiza sozinho** — tivemos que rodar `fix_pns` no lote 39 par
 reclassificação manual. Com muitos tenants e muitos lotes, isso não fecha.
 
 **Direção possível (a discutir, tem trade-off):** classificar **on-read** (o engine como
-fonte única, sem snapshot persistido) — sempre fresco, mas custa CPU por exibição; ou um
+fonte única, sem snapshot persistido) — sempre atual, mas custa CPU por exibição; ou um
 **refresh barato/agendado**; ou um **cache invalidável** por mudança de catálogo. Pergunta
 para o mercado: *snapshot vs. cálculo-na-leitura para dados derivados que mudam quando a
 regra muda — qual padrão, considerando performance e multi-tenant?*
@@ -361,7 +361,7 @@ pesquisar e decidir:
    com rede de regressão garantindo comportamento idêntico.
 3. **Operacional:** (4.3) **deploy num comando** (+ `bulk_update`, trava de banco, reverts
    organizados) e (4.6) **limpeza dos resíduos**.
-4. **Frescor:** (4.4) decidir e implementar o modelo de classificação do estoque.
+4. **Atualização do estoque:** (4.4) decidir e implementar o modelo de classificação do estoque.
 5. **Depois, outro chat:** multi-tenancy.
 
 ---
