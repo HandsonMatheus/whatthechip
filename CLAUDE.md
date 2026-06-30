@@ -379,6 +379,17 @@ os campos abaixo. **Alimente os campos certos; não mexa no gateway.** Modelo: `
 Referência completa (todas as marcas, opção 1): **`docs/CONVENCAO_CAMPOS_ESTOQUE.md`**
 + a fonte única em código **`chips/chip_types.py`**. Específico da Micron: `docs/CONVENCAO_MICRON_ESTOQUE.md`.
 
+> **O estoque é um SNAPSHOT — gravado do classify do SERVIDOR (jun/2026).** A entrada
+> `InventoryEntry` vem de `estoque/views.py::_snapshot(server_result)`, **nunca do POST do
+> cliente** (era bug: capacidade DDR virava `None`). Derivados: `capacity` por
+> `_size_for_entry` (DDR/GDDR/SDRAM/RDRAM = **densidade em Gbit `2G`/`4G`/`8G`**, igual à
+> caixa; LPDDR/eMMC/UFS = pacote em **GB**; eMCP/uMCP usam `emcp_*`; ignora a string
+> `'None'`; **case-sensitive `Gb`≠`GB`**); `interface` por `_clean_interface` (tira a
+> geração espelhada — só bus width/versão). O `export_xls` converte o timestamp p/ Brasília
+> (`timezone.localtime`). **Como é snapshot, defasa quando o engine melhora** → re-snapshot
+> o lote (backfill: re-rodar `_snapshot` sobre as entradas). É o problema 4.4 do
+> `docs/BRIEFING_ESCALABILIDADE.md` (solução definitiva = cálculo on-read).
+
 > **Label protegido por `canonical_gen` (2026-06-19) — FONTE ÚNICA da convenção.**
 > O label da caixa é montado em `estoque/views.py::_compute_destination`, que passa o
 > `subtype` por `chips/conventions.py::canonical_gen()`. Ela reduz qualquer subtype ao
