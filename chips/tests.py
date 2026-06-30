@@ -592,3 +592,38 @@ class ProfitabilityTests(TestCase):
             'is_emcp': True, 'chip_type': 'eMCP',
             'emcp_ram': 'LPDDR4 3GB', 'emcp_nand': 'eMMC 5.1 32GB',
         }))
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PASSO 1B — catalog_version + cache por versão (auto-invalidação, sem restart)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class CatalogVersionTests(TestCase):
+    """Prova que mudar a gramática sobe o carimbo e o engine recarrega SOZINHO —
+    sem `clear_engine_cache()` manual nem reinício (acaba a regra de ouro #3)."""
+
+    def test_criar_familia_sobe_versao_e_recarrega_cache(self):
+        from chips.models import Brand, ChipFamily, CatalogVersion
+        from chips.engine import _get_all_families, _catalog_version, clear_engine_cache
+
+        clear_engine_cache()
+        brand = Brand.objects.create(name="TesteCV", code="TCV")
+        v0 = _catalog_version()
+        n0 = len(_get_all_families())          # popula o cache na versão v0
+
+        # Criar uma família dispara o sinal post_save → CatalogVersion.bump()
+        ChipFamily.objects.create(brand=brand, prefix="ZZZQ", chip_type="eMMC")
+
+        v1 = _catalog_version()
+        self.assertGreater(v1, v0, "o sinal deveria ter subido o catalog_version")
+
+        # SEM clear manual: a nova versão é cache-miss → recarrega do banco
+        n1 = len(_get_all_families())
+        self.assertEqual(n1, n0 + 1, "a família nova deve aparecer sem restart")
+
+    def test_bump_e_current_sao_consistentes(self):
+        from chips.models import CatalogVersion
+        a = CatalogVersion.current()
+        b = CatalogVersion.bump()
+        self.assertEqual(b, a + 1)
+        self.assertEqual(CatalogVersion.current(), b)

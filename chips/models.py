@@ -442,3 +442,44 @@ class ProfitabilityConfig(models.Model):
         """Retorna a configuração ativa (singleton pk=1). Cria com defaults se não existir."""
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class CatalogVersion(models.Model):
+    """
+    Carimbo de edição do catálogo (singleton, sempre pk=1).
+
+    Sobe (`bump()`) sempre que a GRAMÁTICA muda (`ChipFamily`/`DecodeMap`) ou os
+    limiares de rentabilidade (`ProfitabilityConfig`) — via sinais em
+    `chips/apps.py`. O engine usa esse número como CHAVE do cache em memória
+    (`chips/engine.py`): quando ele muda, cada worker do gunicorn recarrega o
+    catálogo SOZINHO na leitura seguinte → **acaba a regra "reinicie após
+    populate"** (regra de ouro #3).
+
+    É consultado na leitura (1 SELECT barato por classify). Ver
+    docs/PLANO_IMPLEMENTACAO_ESCALABILIDADE.md §Passo 1B (Insight B da proposta).
+    """
+    id         = models.PositiveSmallIntegerField(primary_key=True, default=1)
+    version    = models.BigIntegerField(default=1)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name        = "Versão do Catálogo"
+        verbose_name_plural = "Versão do Catálogo"
+
+    def __str__(self):
+        return f"catalog_version = {self.version}"
+
+    @classmethod
+    def current(cls) -> int:
+        """Edição atual (int). NÃO cria a linha; devolve 1 se ainda não existe."""
+        v = cls.objects.filter(pk=1).values_list("version", flat=True).first()
+        return v if v is not None else 1
+
+    @classmethod
+    def bump(cls) -> int:
+        """Incrementa a edição (atômico via F()). Cria a linha na 1ª vez."""
+        from django.db.models import F
+        n = cls.objects.filter(pk=1).update(version=F("version") + 1)
+        if not n:  # linha ainda não existe
+            cls.objects.get_or_create(pk=1, defaults={"version": 2})
+        return cls.current()

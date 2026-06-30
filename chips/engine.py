@@ -263,28 +263,40 @@ def _fuzzy_fbga_candidates(pn: str, threshold: int = 2) -> list:
     return [c for _, c in matches[:5]]
 
 
-# ── Mapa de decodificação ──────────────────────────────────────────────────────
+# ── Carimbo de edição do catálogo (cache POR VERSÃO) ──────────────────────────
 #
-# lru_cache: os mapas de decodificação (SAM_EMCP_CAP, SAM_EMCP_GEN, etc.) mudam
-# só quando populate_samsung é executado. Cache em memória elimina um SELECT por
-# mapa por classificação. Limpar com _load_decode_map.cache_clear() após populate.
+# O cache do engine é keyed no `catalog_version` (chips/models.py::CatalogVersion).
+# Quando a gramática muda (populate_*/admin), o carimbo sobe (sinais em apps.py) e
+# cada worker do gunicorn recarrega o catálogo SOZINHO na leitura seguinte — sem
+# reinício. (Antes: `lru_cache` sem argumento → a chave nunca mudava, e o servidor
+# servia gramática velha até reiniciar — a antiga "regra de ouro #3".)
 
-@lru_cache(maxsize=None)
-def _load_decode_map(map_name: str) -> dict:
+def _catalog_version() -> int:
+    """Edição atual do catálogo. Fallback 0 se a tabela ainda não existe (durante
+    o primeiro migrate / em testes antes da migração)."""
+    try:
+        from .models import CatalogVersion
+        return CatalogVersion.current()
+    except Exception:
+        return 0
+
+
+# ── Mapa de decodificação ──────────────────────────────────────────────────────
+@lru_cache(maxsize=512)
+def _decode_map_for_version(version: int, map_name: str) -> dict:
     rows = DecodeMap.objects.filter(map_name=map_name).values("char_key", "val_primary", "val_secondary")
     return {r["char_key"]: (r["val_primary"], r["val_secondary"]) for r in rows}
 
 
-# ── Match de família ──────────────────────────────────────────────────────────
-#
-# lru_cache: ChipFamily muda só em operações administrativas (populate_samsung,
-# admin). Cache elimina SELECT + iteração Python em todo classify(). A lista é
-# carregada uma vez e reutilizada enquanto o processo estiver ativo.
-# Limpar com _get_all_families.cache_clear() após alterações no banco.
+def _load_decode_map(map_name: str) -> dict:
+    """Mapa de decodificação (cacheado por edição do catálogo)."""
+    return _decode_map_for_version(_catalog_version(), map_name)
 
-@lru_cache(maxsize=1)
-def _get_all_families() -> list:
-    """Carrega todas as famílias ativas, ordenadas por prioridade e comprimento."""
+
+# ── Match de família ──────────────────────────────────────────────────────────
+@lru_cache(maxsize=8)
+def _families_for_version(version: int) -> list:
+    """Famílias ativas, ordenadas por prioridade e comprimento (cache por versão)."""
     return list(
         ChipFamily.objects
         .filter(active=True)
@@ -292,6 +304,11 @@ def _get_all_families() -> list:
         .order_by("priority", "-prefix_len")
         .select_related("doc_page")
     )
+
+
+def _get_all_families() -> list:
+    """Todas as famílias ativas, ordenadas (cacheado por edição do catálogo)."""
+    return _families_for_version(_catalog_version())
 
 
 def _match_family(pn: str):
@@ -303,9 +320,11 @@ def _match_family(pn: str):
 
 
 def clear_engine_cache():
-    """Invalida os caches em memória do engine. Chamar após populate_samsung."""
-    _load_decode_map.cache_clear()
-    _get_all_families.cache_clear()
+    """Invalida os caches em memória do engine. (Hoje o carimbo `catalog_version`
+    já auto-invalida em todos os workers; mantido para os populate_* existentes e
+    para os testes.)"""
+    _decode_map_for_version.cache_clear()
+    _families_for_version.cache_clear()
 
 
 # ── URL da documentação ────────────────────────────────────────────────────────

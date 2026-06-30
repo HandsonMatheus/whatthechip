@@ -113,6 +113,16 @@ depois a migração aplica a restrição.
 
 ### 1B — `catalog_version` + cache por versão
 
+> **✅ IMPLEMENTADO e verificado (2026-06-30, branch `escalabilidade`).** Arquivos: `chips/models.py`
+> (model `CatalogVersion` singleton), `chips/engine.py` (cache keyed em `_catalog_version()`),
+> `chips/apps.py` (sinais `post_save`/`post_delete` em `ChipFamily`/`DecodeMap`/`ProfitabilityConfig`
+> → `bump()`), migração `0013_catalogversion`, testes em `chips/tests.py`. **Verificação:** regressão
+> `characterize_baseline --diff` = **IDÊNTICO** (800 PNs); 2 testes novos (mudar família sobe a versão
+> e o engine recarrega **sem** restart); **suíte `chips` = 81 testes OK**. *Pendente p/ o deploy:*
+> atualizar a regra de ouro #3 do `CLAUDE.md` + as mensagens "reinicie o servidor" dos `populate_*`
+> (ficam obsoletas quando subir à `main`). Bump explícito nos comandos de escrita em massa entra no
+> passo 4; KnownPart→bump entra no passo 2.
+
 **Por quê.** O `_get_all_families()` é cacheado **sem chave de versão** → após `populate`, o servidor
 serve gramática velha até reiniciar (regra de ouro #3). Cada worker do gunicorn tem seu cache.
 
@@ -431,10 +441,15 @@ Depois 2 (estoque) e 4 (YAML, devagar). 5 (preço) fecha o que você vai constru
 
 ## Princípio de "pronto" (Definition of Done por passo)
 
+> **Convenção de testes do dono (2026-06-30):** testar **TUDO** durante e ao fim de cada passo —
+> provar que nada quebrou, que os chips classificam certo e o output está correto **em TODAS as
+> marcas** — e **entregar ao dono um conjunto de testes** para ele rodar no **frontend/terminal**.
+
 Um passo só está **pronto** quando: (1) o dry-run foi revisado; (2) o `--commit` rodou no banco
-certo (banner conferido); (3) `characterize_baseline --diff` mostra **só** o esperado; (4) o
-rollback está testado (sabemos desfazer); (5) os docs afetados (`CLAUDE.md`, bíblias) foram
-atualizados. Sem os cinco, não passamos para o próximo.
+certo (banner conferido); (3) **`characterize_baseline --diff` (regressão de TODAS as marcas) mostra
+só o esperado**, + unit tests passando; (4) o rollback está testado (sabemos desfazer); (5) os docs
+afetados (`CLAUDE.md`, bíblias) foram atualizados; (6) **entreguei ao dono os testes de frontend/
+terminal** do passo. Sem os seis, não passamos para o próximo.
 
 ---
 
