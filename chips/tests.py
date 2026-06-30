@@ -735,6 +735,19 @@ class DeployCatalogTests(TestCase):
         chamados = [c.args[0] for c in mock_cc.call_args_list]
         self.assertNotIn('import_micron_catalog', chamados)
 
+    @patch('chips.management.commands.deploy_catalog.call_command')
+    def test_piecemakers_via_load_brands_nao_populate(self, mock_cc):
+        """PieceMakers foi migrada p/ YAML (passo 4): o deploy usa load_brands,
+        não o populate_piecemakers (aposentado)."""
+        from django.core.management import call_command
+        call_command('deploy_catalog', commit=True)
+        chamados = [c.args[0] for c in mock_cc.call_args_list]
+        self.assertNotIn('populate_piecemakers', chamados)     # aposentado
+        self.assertIn('load_brands', chamados)
+        kw = {c.args[0]: c.kwargs for c in mock_cc.call_args_list}
+        self.assertEqual(kw['load_brands'].get('brand'), 'piecemakers')
+        self.assertTrue(kw['load_brands'].get('commit'))       # grava de verdade no --commit
+
 
 class PghistoryTrackingTests(TestCase):
     """Passo 3b: auditoria do catálogo via django-pghistory. As 4 tabelas de
@@ -772,44 +785,47 @@ _FAM_FIELDS = [
 ]
 
 
-def _snapshot_piecemakers():
-    """Foto do catálogo PieceMakers no banco (brand + famílias + mapas), p/ comparar
-    o que o populate_piecemakers e o load_brands produzem."""
-    from chips.models import Brand, ChipFamily, DecodeMap
-    b = Brand.objects.get(code="PMK")
-    brand = (b.name, b.code, b.notes)
-    fams = {f.prefix: tuple(getattr(f, k) for k in _FAM_FIELDS)
-            for f in ChipFamily.objects.filter(brand=b)}
-    maps = {(m.map_name, m.char_key): (m.val_primary, m.val_secondary)
-            for m in DecodeMap.objects.filter(brand=b)}
-    return brand, fams, maps
-
-
 class LoadBrandsPiecemakersTests(TestCase):
-    """Passo 4: o load_brands (YAML+Pydantic) produz um catálogo IDÊNTICO ao
-    populate_piecemakers (código). É a prova de que migrar p/ YAML não muda nada."""
+    """Passo 4: o load_brands carrega chips/knowledge/piecemakers.yaml FIELMENTE
+    (cada família/mapa do YAML vira o registro certo no banco). A equivalência ao
+    antigo populate_piecemakers foi provada na migração (characterize --diff IDÊNTICO
+    nos 6549 PNs do Postgres, 2026-06-30); o populate foi aposentado e o YAML é a fonte."""
 
-    def test_load_brands_equivale_ao_populate(self):
+    def _spec(self):
+        import os
+        import yaml
+        from django.conf import settings
+        from chips.knowledge.schema import BrandFile
+        path = os.path.join(settings.BASE_DIR, "chips", "knowledge", "piecemakers.yaml")
+        with open(path, encoding="utf-8") as fh:
+            return BrandFile(**yaml.safe_load(fh))
+
+    def test_carrega_o_yaml_fielmente(self):
         from django.core.management import call_command
         from chips.models import Brand, ChipFamily, DecodeMap
-
-        call_command("populate_piecemakers", verbosity=0)
-        snap_populate = _snapshot_piecemakers()
-
-        # zera a marca e reconstrói pelo YAML
-        ChipFamily.objects.filter(brand__code="PMK").delete()
-        DecodeMap.objects.filter(brand__code="PMK").delete()
-        Brand.objects.filter(code="PMK").delete()
-
         call_command("load_brands", "--brand", "piecemakers", "--commit", verbosity=0)
-        snap_yaml = _snapshot_piecemakers()
+        spec = self._spec()
 
-        self.assertEqual(snap_populate[0], snap_yaml[0], "Brand difere")
-        self.assertEqual(snap_populate[1], snap_yaml[1], "Famílias diferem")
-        self.assertEqual(snap_populate[2], snap_yaml[2], "DecodeMaps diferem")
-        # sanidade: realmente carregou as 7 famílias e o mapa de 3 entradas
-        self.assertEqual(len(snap_yaml[1]), 7)
-        self.assertEqual(len(snap_yaml[2]), 3)
+        b = Brand.objects.get(code=spec.brand.code)
+        self.assertEqual((b.name, b.notes), (spec.brand.name, spec.brand.notes))
+
+        # cada família do YAML existe com TODOS os campos batendo com o schema validado
+        self.assertEqual(ChipFamily.objects.filter(brand=b).count(), len(spec.families))
+        for fs in spec.families:
+            fam = ChipFamily.objects.get(prefix=fs.prefix)
+            self.assertEqual(fam.brand_id, b.id)
+            for campo in _FAM_FIELDS:
+                self.assertEqual(getattr(fam, campo), getattr(fs, campo),
+                                 f"{fs.prefix}.{campo}")
+
+        # cada entrada de mapa do YAML existe
+        total = sum(len(v) for v in spec.maps.values())
+        self.assertEqual(DecodeMap.objects.filter(brand=b).count(), total)
+        for map_name, entries in spec.maps.items():
+            for e in entries:
+                dm = DecodeMap.objects.get(brand=b, map_name=map_name, char_key=e.char_key)
+                self.assertEqual((dm.val_primary, dm.val_secondary),
+                                 (e.val_primary, e.val_secondary))
 
     def test_dry_run_nao_grava(self):
         from django.core.management import call_command

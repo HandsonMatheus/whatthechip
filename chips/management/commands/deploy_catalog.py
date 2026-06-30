@@ -35,22 +35,24 @@ from django.core.management import call_command
 from core.safe_command import SafeWriteCommand
 
 # (nome_do_comando, kwargs_no_commit, suporta_--dry-run)
+# (comando, kwargs no --commit, kwargs no dry-run [ou None se o passo não tem dry-run])
 # A ordem é a canônica do CLAUDE.md §5. Só comandos rodáveis no Render.
 _STEPS = [
-    ("populate_samsung",     {"overwrite": True}, True),
-    ("populate_hynix",       {"overwrite": True}, True),
-    ("populate_micron_mcp",  {"overwrite": True}, True),
-    ("populate_kingston",    {"overwrite": True}, True),
-    ("populate_sandisk",     {"overwrite": True}, True),
-    ("populate_toshiba",     {"overwrite": True}, True),
-    ("populate_rayson",      {"overwrite": True}, True),
-    ("populate_piecemakers", {"overwrite": True}, True),
-    ("populate_gigadevice",  {"overwrite": True}, True),
-    ("add_chip_families",    {},                  False),  # sem --dry-run: só roda no --commit
-    ("link_doc_pages",       {},                  True),
-    ("sync_index_page",      {},                  True),
-    ("import_samsung_psg",   {"all": True},       True),   # data/psg/*.csv são versionados
-    ("fix_known_parts",      {},                  True),
+    ("populate_samsung",     {"overwrite": True}, {"dry_run": True}),
+    ("populate_hynix",       {"overwrite": True}, {"dry_run": True}),
+    ("populate_micron_mcp",  {"overwrite": True}, {"dry_run": True}),
+    ("populate_kingston",    {"overwrite": True}, {"dry_run": True}),
+    ("populate_sandisk",     {"overwrite": True}, {"dry_run": True}),
+    ("populate_toshiba",     {"overwrite": True}, {"dry_run": True}),
+    ("populate_rayson",      {"overwrite": True}, {"dry_run": True}),
+    # PieceMakers migrada p/ YAML (passo 4): load_brands no lugar do populate_piecemakers.
+    ("load_brands", {"brand": "piecemakers", "commit": True}, {"brand": "piecemakers", "dry_run": True}),
+    ("populate_gigadevice",  {"overwrite": True}, {"dry_run": True}),
+    ("add_chip_families",    {},                  None),   # sem --dry-run: só roda no --commit
+    ("link_doc_pages",       {},                  {"dry_run": True}),
+    ("sync_index_page",      {},                  {"dry_run": True}),
+    ("import_samsung_psg",   {"all": True}, {"all": True, "dry_run": True}),  # data/psg/*.csv versionados
+    ("fix_known_parts",      {},                  {"dry_run": True}),
 ]
 
 
@@ -69,14 +71,14 @@ class Command(SafeWriteCommand):
             f"\n=== deploy_catalog — {modo} === {len(_STEPS)} passos\n"))
 
         executados, pulados = 0, 0
-        for i, (name, commit_kwargs, supports_dry) in enumerate(_STEPS, 1):
+        for i, (name, commit_kwargs, dry_kwargs) in enumerate(_STEPS, 1):
             if commit:
                 self.stdout.write(self.style.HTTP_INFO(f"[{i}/{len(_STEPS)}] {name} {commit_kwargs or ''}"))
                 call_command(name, **commit_kwargs)
                 executados += 1
-            elif supports_dry:
-                self.stdout.write(self.style.HTTP_INFO(f"[{i}/{len(_STEPS)}] {name} --dry-run"))
-                call_command(name, dry_run=True)
+            elif dry_kwargs is not None:
+                self.stdout.write(self.style.HTTP_INFO(f"[{i}/{len(_STEPS)}] {name} (dry-run)"))
+                call_command(name, **dry_kwargs)
                 executados += 1
             else:
                 self.stdout.write(self.style.WARNING(

@@ -4,6 +4,14 @@
 > anatomia do PN, famílias, mapas de decode, rentabilidade, armadilhas.
 > Para regras gerais do WTC, consulte `CLAUDE.md`.
 
+> **⚙️ MIGRADA PARA YAML (passo 4, 2026-06-30) — FONTE = `chips/knowledge/piecemakers.yaml`.**
+> O conhecimento da PieceMakers (Brand + `PMF_DDR3_CAP` + 7 famílias) agora vive em
+> `chips/knowledge/piecemakers.yaml`, validado pelo portão Pydantic (`chips/knowledge/schema.py`) e
+> carregado por **`python manage.py load_brands --brand piecemakers`**. O antigo `populate_piecemakers.py`
+> foi **APOSENTADO** (equivalência provada: `characterize_baseline --diff` IDÊNTICO nos 6549 PNs do
+> Postgres). **Para editar a gramática PieceMakers, edite o YAML** — não há mais comando Python. O
+> conteúdo técnico abaixo (anatomia do PN, densidades, fontes) continua válido.
+
 ---
 
 ## 1. Quem é PieceMakers Technology
