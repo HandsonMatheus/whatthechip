@@ -88,6 +88,18 @@ python manage.py characterize_baseline --snapshot baseline_antes.json
 
 ### 1A — `normalize_pn` + coluna normalizada + unicidade
 
+> **🟡 PARTE 1 FEITA e verificada (2026-06-30, branch `escalabilidade`):** `chips/normalize.py`
+> (`normalize_pn` = NFKC + maiúsc + só A-Z0-9); coluna `KnownPart.part_number_norm` + `save()` que a
+> preenche; migração `0014` (coluna + **backfill** em massa); engine usa `normalize_pn(input)` e busca por
+> **`part_number_norm`** + `_pick_best_known` (substitui o fallback frágil de `Replace` e o "salta
+> silencioso"). **Verificação:** PNs com `:`/`-`/espaço **resnoolvem** (ex.: `MT40A1G16KD-062E ES:D` →
+> banco, antes caía na gramática); backfill 6571/6571; diff 800 = IDÊNTICO (sem regressão — a busca nova é
+> **superconjunto** da antiga); **101 testes OK** (3 novos). **Medição:** 22 colisões (44 registros), todas
+> pares cru-vs-normalizado.
+> **PARTE 2 (próximo, fecha o passo 1):** comando `dedupe_known_parts` (funde as 22 colisões — sobrevive o
+> de maior confiança/specs; KnownPart **não tem FK de entrada**, então é só apagar o perdedor + log de
+> revert) + migração `0015` com a `UniqueConstraint(part_number_norm)`.
+
 **Por quê.** 3898 PNs (56%) têm `:`/`.` não canonizados; **1908 caem em "tipo vazio" na bancada**
 (o dado tem tipo, é a *busca* que erra — `docs/CARACTERIZACAO_BASELINE.md §4.1`). E o engine hoje
 "salta silencioso" quando dois PNs normalizam igual.

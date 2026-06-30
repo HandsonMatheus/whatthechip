@@ -179,6 +179,10 @@ class KnownPart(models.Model):
 
     brand        = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="parts")
     part_number  = models.TextField(unique=True, db_index=True)
+    part_number_norm = models.TextField(
+        blank=True, default="", db_index=True,
+        help_text="Forma canônica do PN (normalize_pn: NFKC + maiúsc + só A-Z0-9). "
+                  "Preenchida no save(); é a CHAVE de busca do engine (passo 1A).")
     family       = models.ForeignKey(ChipFamily, on_delete=models.SET_NULL,
                                      null=True, blank=True, related_name="parts")
 
@@ -219,6 +223,14 @@ class KnownPart(models.Model):
 
     def __str__(self):
         return self.part_number
+
+    def save(self, *args, **kwargs):
+        # Passo 1A: a forma canônica é SEMPRE derivada do part_number no write-time,
+        # para a busca do engine não falhar por `:`/`.`/hífen e para a unicidade
+        # (UniqueConstraint em part_number_norm, parte 2) impedir duplicatas.
+        from chips.normalize import normalize_pn
+        self.part_number_norm = normalize_pn(self.part_number)
+        super().save(*args, **kwargs)
 
 
 class SearchLog(models.Model):

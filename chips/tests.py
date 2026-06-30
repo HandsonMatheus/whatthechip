@@ -627,3 +627,39 @@ class CatalogVersionTests(TestCase):
         b = CatalogVersion.bump()
         self.assertEqual(b, a + 1)
         self.assertEqual(CatalogVersion.current(), b)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PASSO 1A — normalize_pn + busca por part_number_norm (acaba o PN não-encontrado)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class NormalizePnTests(SimpleTestCase):
+    def test_remove_separadores_e_maiuscula(self):
+        from chips.normalize import normalize_pn
+        self.assertEqual(normalize_pn("mt29c4g48-5 it:a"), "MT29C4G485ITA")
+        self.assertEqual(normalize_pn("K4B4G1646D-BYK0"), "K4B4G1646DBYK0")
+        self.assertEqual(normalize_pn("MT40A1G16KD-062E ES:D"), "MT40A1G16KD062EESD")
+        self.assertEqual(normalize_pn(""), "")
+        self.assertEqual(normalize_pn(None), "")
+
+
+class PartNumberNormLookupTests(TestCase):
+    def test_save_preenche_norm(self):
+        from chips.models import Brand, KnownPart
+        b = Brand.objects.create(name="T", code="T")
+        kp = KnownPart.objects.create(brand=b, part_number="ZZ99X-1 IT:A",
+                                      chip_type="eMMC", capacity="16GB", confidence="confirmed")
+        self.assertEqual(kp.part_number_norm, "ZZ99X1ITA")
+
+    def test_busca_resolve_pn_com_separador(self):
+        """Um PN salvo COM separador (`-`/espaço/`:`) é encontrado mesmo digitado
+        sem eles — o bug que deixava ~1908 PNs em 'tipo vazio' na bancada."""
+        from chips.models import Brand, KnownPart
+        from chips.engine import classify, clear_engine_cache
+        clear_engine_cache()
+        b = Brand.objects.create(name="T", code="T")
+        KnownPart.objects.create(brand=b, part_number="ZZ99X-1 IT:A",
+                                 chip_type="eMMC", capacity="16GB", confidence="confirmed")
+        r = classify("zz99x1ita") or {}
+        self.assertTrue(r.get("known"), "PN com separador deveria resolver via part_number_norm")
+        self.assertEqual(r.get("chip_type"), "eMMC")

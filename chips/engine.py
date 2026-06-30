@@ -35,6 +35,7 @@ from django.db.models.functions import Length, Replace
 
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, ProfitabilityConfig, SearchLog, Source, UnknownChip
 from .chip_types import canonical_chip_type, profit_family
+from .normalize import normalize_pn
 
 
 # ── Fuzzy matching ─────────────────────────────────────────────────────────────
@@ -1261,6 +1262,19 @@ def is_dead_by_generation(result: dict) -> bool:
 
 # ── Ponto de entrada público ───────────────────────────────────────────────────
 
+def _pick_best_known(candidates: list):
+    """Dentre KnownParts com o mesmo part_number_norm, escolhe o melhor: chip_type
+    preenchido > escada de confiança (confirmed>manual>distributor>estimated) > mais
+    recente. (Pós-dedupe da parte 2 há sempre ≤1; aqui resolve as colisões cruas
+    restantes sem o antigo 'salta silencioso' do MultipleObjectsReturned.)"""
+    _rank = {"confirmed": 3, "manual": 2, "distributor": 1, "estimated": 0}
+    return max(candidates, key=lambda k: (
+        bool(k.chip_type),
+        _rank.get(k.confidence, -1),
+        k.last_updated or k.added_at,
+    ))
+
+
 def classify(pn_raw: str) -> dict:
     """
     Classifica um Part Number.
@@ -1270,8 +1284,7 @@ def classify(pn_raw: str) -> dict:
       2. Gramática da família      → decodificação posicional do PN
       3. Fuzzy matching            → sugestões de digitação (PN desconhecido)
     """
-    pn = pn_raw.upper().strip()
-    pn = re.sub(r"[^A-Z0-9]", "", pn)
+    pn = normalize_pn(pn_raw)
 
     if not pn:
         return {"pn": pn_raw, "known": False, "error": "PN inválido"}
@@ -1343,25 +1356,16 @@ def classify(pn_raw: str) -> dict:
     except KnownPart.DoesNotExist:
         pass
 
-    # ── 1a′. Fallback normalizado — part_number com hífen/espaço no banco ───
-    # O engine normaliza o input (re.sub r"[^A-Z0-9]") antes do lookup, mas
-    # registros criados antes dessa convenção podem ter sido salvos COM hífen
-    # (ex: "K4B4G1646E-BYMA" vs input normalizado "K4B4G1646EBYMA").
-    # Tenta de novo removendo separadores do lado do banco via Replace.
-    # Só roda quando o lookup exato falhou — sem custo no caminho normal.
-    # MultipleObjectsReturned: dois registros normalizam igual → salta silencioso.
-    try:
-        _norm_qs = (
-            _db_qs
-            .annotate(
-                pn_norm=Replace(
-                    Replace("part_number", Value("-"), Value("")),
-                    Value(" "), Value(""),
-                    output_field=CharField(),
-                )
-            )
-        )
-        known = _norm_qs.get(pn_norm=pn)
+    # ── 1a′. Fallback por part_number_norm (passo 1A) ───────────────────────
+    # A busca exata por part_number falha para registros salvos COM separador
+    # (`-`/espaço/`:`/`.`). A coluna `part_number_norm` (normalize_pn no write-time)
+    # casa todos de uma vez, sem o Replace em runtime — e sem o bug dos `:`/`.` que
+    # deixava ~1908 PNs em "tipo vazio" na bancada. Pode haver >1 candidato enquanto
+    # as duplicatas não forem deduplicadas (parte 2): escolhe o melhor por
+    # _pick_best_known (chip_type preenchido > confiança > mais recente).
+    _norm_candidates = list(_db_qs.filter(part_number_norm=pn))
+    if _norm_candidates:
+        known = _pick_best_known(_norm_candidates)
         fam = _match_family(pn) or known.family
         if fam:
             result = _result_from_known(pn, known, fam)
@@ -1393,8 +1397,6 @@ def classify(pn_raw: str) -> dict:
         result["profitable"] = assess_profitability(result)
         _log_search(pn, found=True, source_used="db_exact")
         return result
-    except (KnownPart.DoesNotExist, KnownPart.MultipleObjectsReturned):
-        pass  # Continua para FBGA lookup e gramática
 
     # ── 1b. FBGA lookup ─────────────────────────────────────────────────────
     # Código FBGA (ex: D9VFC) gravado a laser no chip pela Micron.
