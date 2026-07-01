@@ -64,14 +64,16 @@ class Command(BaseCommand):
         from chips.models import KnownPart
         from chips.management.commands.fix_known_parts import CORRECTIONS
 
-        # 1. PN normalizado → reason (proveniência curada)
+        # 1. entradas: (raw_pn, norm_pn, fbga, reason) — p/ os MESMOS fallbacks do fix_known_parts
         def _norm(pn):
             return _re.sub(r"[^A-Z0-9]", "", pn.upper())
-        pn2reason = {}
+        entradas = []
         for entry in CORRECTIONS:
-            pn2reason[_norm(entry["pn"])] = entry.get("reason", "")
-        alvo_pns = set(pn2reason)
-        self.stdout.write(f"PNs curados no fix_known_parts: {len(alvo_pns)}")
+            raw = entry["pn"].upper()
+            fbga = ((entry.get("fields") or {}).get("fbga_code", "")
+                    or (entry.get("create_defaults") or {}).get("fbga_code", ""))
+            entradas.append((raw, _norm(raw), fbga, entry.get("reason", "")))
+        self.stdout.write(f"PNs curados no fix_known_parts: {len(entradas)}")
 
         # 2. mapa brand.name → slug do yaml (robusto: lê o brand.name de cada arquivo)
         name2slug = {}
@@ -84,35 +86,49 @@ class Command(BaseCommand):
             if nome:
                 name2slug[nome] = fn[:-5]
 
-        # 3. dumpa o estado ATUAL do KnownPart de cada PN alvo, agrupado por marca
+        # 3. acha o KnownPart de cada entrada (fallback: PN normalizado → PN cru → fbga_code),
+        #    dumpa o estado ATUAL, agrupa por marca. Fiel: usa o part_number COMO ESTÁ no banco.
         por_marca = {}          # slug → list[dict]
-        achados = ausentes = sem_marca = 0
-        for kp in (KnownPart.objects.filter(part_number__in=alvo_pns)
-                   .select_related("brand")):
-            achados += 1
+        vistos = set()          # pks já capturados (evita duplicar por 2 entradas → 1 registro)
+        nao_achados = []
+        sem_marca = 0
+        for raw, norm, fbga, reason in entradas:
+            kp = (KnownPart.objects.filter(part_number=norm).select_related("brand").first()
+                  or KnownPart.objects.filter(part_number=raw).select_related("brand").first()
+                  or (KnownPart.objects.filter(fbga_code=fbga).select_related("brand").order_by("pk").first()
+                      if fbga else None))
+            if not kp:
+                nao_achados.append(raw)
+                continue
+            if kp.pk in vistos:
+                continue
+            vistos.add(kp.pk)
             slug = name2slug.get(kp.brand.name if kp.brand else None)
             if not slug:
                 sem_marca += 1
                 self.stdout.write(self.style.WARNING(
-                    f"  ⚠ {kp.part_number}: marca {kp.brand.name if kp.brand else None!r} "
-                    f"sem yaml — pulado."))
+                    f"  ⚠ {kp.part_number}: marca {kp.brand.name if kp.brand else None!r} sem yaml — pulado."))
                 continue
             rec = {"part_number": kp.part_number}
             for f in _DUMP_FIELDS:
                 rec[f] = getattr(kp, f)
             # proveniência: mescla a reason curada no notes (sem perder o notes do banco)
-            reason = pn2reason.get(kp.part_number, "")
             db_notes = (rec.get("notes") or "").strip()
             if reason and reason not in db_notes:
                 rec["notes"] = (f"{db_notes} | {reason}" if db_notes else reason)
             por_marca.setdefault(slug, []).append(rec)
-        ausentes = len(alvo_pns) - achados
 
+        achados = sum(len(v) for v in por_marca.values())
         self.stdout.write(
-            f"KnownParts achados no banco: {achados} · ausentes: {ausentes} · "
-            f"sem yaml de marca: {sem_marca}")
+            f"KnownParts achados: {achados} · NÃO achados: {len(nao_achados)} · sem yaml de marca: {sem_marca}")
         for slug in sorted(por_marca):
             self.stdout.write(f"  {slug}: {len(por_marca[slug])} known_parts")
+        if nao_achados:
+            self.stdout.write(self.style.WARNING(
+                f"\n⚠ {len(nao_achados)} PN(s) NÃO achados (nem por PN cru/fbga) — provavelmente limpezas "
+                f"no-op de um registro que nunca existiu (obsoletas, nada a migrar):"))
+            for pn in nao_achados:
+                self.stdout.write(f"    {pn}")
 
         if not opts["write"]:
             self.stdout.write(self.style.WARNING("\n⚠  DRY-RUN — nada gravado. Use --write."))
