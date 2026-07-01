@@ -1,0 +1,268 @@
+# Conhecimento Micron — fonte do catálogo (passo 4). Gerado do CÓDIGO ATUAL
+# (populate_micron_mcp + add_chip_families) — completo (populate + famílias magras). NUNCA do prod_data (defasado).
+brand:
+  name: Micron
+  code: MIC
+  notes: Micron Technology · Boise, Idaho · Fundada 1978
+maps:
+  MIC_MCP_CAP:
+  - [4D4, 4GB, 512MB]
+  - [5D6, 16GB, 2GB]
+  - [7D8, 64GB, 3GB]
+  - [8D4, 4GB, 1GB]
+  - [8D5, 8GB, 1GB]
+  - [8D6, 16GB, 1GB]
+  - [AD8, 64GB, 4GB]
+  - [AD9, 128GB, 4GB]
+  - [BD8, 64GB, 6GB]
+  - [BD9, 128GB, 6GB]
+  - [BDA, 256GB, 6GB]
+  - [CD9, 128GB, 8GB]
+  - [CDA, 256GB, 8GB]
+  - [CDB, 512GB, 8GB]
+  - [DDA, 256GB, 12GB]
+  - [DDB, 512GB, 12GB]
+  - [EDA, 256GB, 16GB]
+  - [EDB, 512GB, 16GB]
+  MIC_TZZZ_GEN:
+  - ['4', LPDDR3, '']
+  - ['5', LPDDR3, '']
+  - ['7', LPDDR3, '']
+  - ['8', LPDDR3, '']
+  - ['9', LPDDR3, '']
+  - [A, LPDDR3, '']
+families:
+- prefix: MT29F
+  chip_type: NAND Flash
+  subtype: Raw NAND Flash
+  interface: Async/ONFI
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: NAND Flash raw Micron. Encontrado em SSDs, cartões de memória e equipamentos industriais.
+  reasoning: ''
+- prefix: MT29P
+  chip_type: eMCP
+  subtype: eMCP (eMMC + LPDDR)
+  interface: eMMC + LPDDR
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Micron série MT29P. Mesmo esquema de decode do MT29T. Bloco após "ZZZ": 1° char=NAND Gbit, 3° char=DRAM Gbit. Ex: MT29PZZZ4D4BKESK → 4=32Gb NAND (4GB) / 4=4Gb DRAM (512MB). Destino: bancada eMCP.'
+  reasoning: ''
+- prefix: MT29T
+  chip_type: eMCP
+  subtype: eMCP (eMMC + LPDDR)
+  interface: eMMC + LPDDR
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Micron série MT29T. NAND + RAM no mesmo encapsulamento. Decode: bloco após "ZZZ" — 1° char=NAND, 3° char=DRAM (em Gbit). Ex: MT29TZZZ8D5BKFAH → 8=64Gb NAND (8GB) / 5=8Gb DRAM (1GB). Destino: bancada eMCP.'
+  reasoning: ''
+- prefix: MT29TZZZ
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: eMMC 5.0
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 8
+  decode_cap_len: 3
+  decode_cap_map: MIC_MCP_CAP
+  decode_gen_pos: 8
+  decode_gen_map: MIC_TZZZ_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '💡 Micron eMCP LPDDR3 (geração anterior ao MT29VZZZ). Prefixo fixo MT29TZZZ (8 chars). TODA a família é LPDDR3 — Gen A e Gen B. RAM: pn[8] via MIC_TZZZ_GEN — dígito=LPDDR3 (Gen A), letra=LPDDR3 (Gen B). Capacidade: pn[8:11] via MIC_MCP_CAP. Ex Gen A: ''8D5'' → eMMC 5.0 8GB + LPDDR3 1GB. Ex Gen B: ''AD8'' → eMMC 5.0 64GB + LPDDR3 4GB. Verificar interface real antes de rotear — pode ser eMMC 4.5 ou 5.0.'
+  reasoning: '["MT → Micron Technology", "29 → MCP série (NAND+RAM combinados)", "TZZZ → bloco fixo família MCP Gen1/2 (anterior ao VZZZ)", "Gen B: pn[8]=RAM code (letra), pn[9:11]=NAND code — igual ao MT29VZZZ", "Gen A: pn[8]=NAND code (dígito), pn[9:11]=DRAM code — chave ex: 8D5=8GB NAND+1GB LPDDR3", "RAM: MIC_TZZZ_GEN — toda família TZZZ é LPDDR3 (BUG-8 corrigido 2026-06-19)", "Dispositivos típicos: 2014-2018 (Qualcomm MSM8909, MT6737)"]'
+- prefix: MT29VZZZ
+  chip_type: eMCP
+  subtype: LPDDR4
+  interface: eMMC 5.1
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 8
+  decode_cap_len: 3
+  decode_cap_map: MIC_MCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '💡 Micron eMCP/uMCP LPDDR4. Prefixo fixo MT29VZZZ (8 chars). Capacidade: pn[8:11] via MIC_MCP_CAP — pos 8=RAM (7=3GB · A=4GB · B=6GB · C=8GB · D=12GB · E=16GB), pos 9-10=NAND (D8=64GB · D9=128GB · DA=256GB · DB=512GB). Ex: AD8 → eMMC 5.1 64GB + LPDDR4 4GB. Destino: bancada eMCP — verificar se UFS ou eMMC antes de rotear.'
+  reasoning: '["MT → Micron Technology", "29 → MCP série (NAND+RAM combinados)", "VZZZ → bloco fixo identificador da família MCP moderna", "pn[8] → código de densidade RAM (A=4GB, B=6GB, C=8GB…)", "pn[9:11] → código de capacidade NAND (D8=64GB, D9=128GB, DA=256GB, DB=512GB)", "Solução compacta para smartphones mid-range"]'
+- prefix: MT30AZZZ
+  chip_type: uMCP
+  subtype: LPDDR5
+  interface: UFS 3.1
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 8
+  decode_cap_len: 3
+  decode_cap_map: MIC_MCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '💡 Micron uMCP LPDDR5 + UFS 3.1 (geração mais recente). Prefixo fixo MT30AZZZ (8 chars). Capacidade: pn[8:11] via MIC_MCP_CAP — pos 8=RAM (B=6GB · C=8GB · D=12GB · E=16GB), pos 9-10=NAND (D9=128GB · DA=256GB · DB=512GB). Ex: CDA → UFS 3.1 256GB + LPDDR5 8GB. Destino: bancada uMCP premium — chipset flagship.'
+  reasoning: '["MT → Micron Technology", "30 → MCP UFS série (geração 3.x)", "AZZZ → bloco fixo identificador da família uMCP LPDDR5", "pn[8] → código de densidade RAM (B=6GB, C=8GB, D=12GB, E=16GB)", "pn[9:11] → código de capacidade NAND (D9=128GB, DA=256GB, DB=512GB)", "Interface UFS 3.1 (~2400 MB/s sequencial)"]'
+- prefix: MT40A
+  chip_type: DDR4
+  subtype: DDR4 SDRAM
+  interface: DDR4
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR4 SDRAM Micron para desktops/servidores. Ex: MT40A512M16TB-062E = 512M×16bit = 8Gb.'
+  reasoning: ''
+- prefix: MT41K
+  chip_type: DDR3L
+  subtype: DDR3L SDRAM
+  interface: DDR3L
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: DDR3L SDRAM Micron. Geração anterior ao MT40A.
+  reasoning: ''
+- prefix: MT52L
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  interface: LPDDR3
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: micron
+  suffix_rules: ''
+  tip: 'LPDDR3 mobile Micron (nomenclatura: "52" = LPDDR3, atestado tier-1). Decode: profundidade × largura ÷ 8 = GB (o sufixo D{N} = dies NÃO multiplica). Ex: MT52L512M32D2PF-107 = 512M×32bit = 16Gb ÷ 8 = 2GB.'
+  reasoning: ''
+- prefix: MT53B
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  interface: LPDDR4
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: micron
+  suffix_rules: ''
+  tip: 'LPDDR4 standalone Micron (MT53B — VDDQ 1.1V). RAM pura, zero NAND. ⚠ Diferente do MT53E (LPDDR4X, 0.6V) — tensão incompatível entre os dois. Decode: bloco [Profundidade][Largura] após o prefixo — multiplicar ÷ 8 = GB (o sufixo D{N} = dies NÃO multiplica). Ex: MT53B512M64D4TX → 512M×64bit = 32Gb ÷ 8 = 4GB LPDDR4. FBGA code D9VFC. Isolamento ESD obrigatório — chip de alto valor.'
+  reasoning: ''
+- prefix: MT53D
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  interface: LPDDR4
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: micron
+  suffix_rules: ''
+  tip: 'LPDDR4 standalone Micron. RAM pura, zero NAND. Decode: bloco [Profundidade][Largura], ÷ 8 = GB (o sufixo D{N} = dies NÃO multiplica). Ex: MT53D768M32D4BD → 768M×32bit = 24Gb ÷ 8 = 3GB; MT53D384M32D2NQ → 384M×32 = 12Gb ÷ 8 = 1.5GB.'
+  reasoning: ''
+- prefix: MT53E
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  interface: LPDDR4X
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: micron
+  suffix_rules: ''
+  tip: 'LPDDR4X standalone Micron. RAM pura, zero NAND. Decode: bloco [Profundidade][Largura] no PN — Profundidade × Largura bits ÷ 8 = GB (o sufixo D{N} = dies NÃO multiplica). Ex: MT53E1G32D4NQ → 1G×32bit = 32Gb ÷ 8 = 4GB; MT53E768M32D4DT → 768M×32 = 24Gb ÷ 8 = 3GB. Isolamento ESD obrigatório — chip de alto valor.'
+  reasoning: ''
+- prefix: MTFC
+  chip_type: eMMC
+  subtype: eMMC standalone
+  interface: eMMC 5.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMMC standalone Micron. MT = Micron Technology, FC = Flash Controller. Ex: MTFC4GACAAAM-1M = 4GB eMMC.'
+  reasoning: ''

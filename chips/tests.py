@@ -923,6 +923,22 @@ _SD_GOLDEN = {  # SanDisk: famílias MAGRAS — chip_type por prefixo; capacidad
     "SDINFDO4":    ("UFS", "", "", "", "", "INDETERMINADO"),
     "SDINFDQ6":    ("UFS", "", "", "", "", "INDETERMINADO"),
 }
+_MIC_GOLDEN = {  # Micron: gramática do populate_micron_mcp (MCP) + add_chip_families (DDR/LPDDR/NAND/eMMC).
+    # DDR4/DDR3L são magras (cap vem das KnownParts → INDETERMINADO); LPDDR (MT52L/MT53) decodifica capacidade.
+    "MT40A1G16Z42BWC1":     ("DDR4",  "",      "", "", "",               "INDETERMINADO"),
+    "MT40A4G4Z42BWC1":      ("DDR4",  "",      "", "", "",               "INDETERMINADO"),
+    "MT41K64M16TW-107":     ("DDR3L", "",      "", "", "",               "INDETERMINADO"),
+    "MT52L1G32D4PG-107":    ("LPDDR3",  "4GB",   "", "", "32Gb total [✓]", "RENTÁVEL"),
+    "MT53B512M64D4TX":      ("LPDDR4",  "4GB",   "", "", "32Gb total [✓]", "RENTÁVEL"),
+    "MT53B1024M32D4NQ-062": ("LPDDR4",  "4GB",   "", "", "32Gb total [✓]", "RENTÁVEL"),
+    "MT53E128M16D1DS-046":  ("LPDDR4X", "256MB", "", "", "2Gb total [✓]",  "NÃO RENTÁVEL"),  # fix MT53 dies
+    "MT53D1024M32D4DT-046": ("LPDDR4",  "4GB",   "", "", "32Gb total [✓]", "RENTÁVEL"),
+    "MTFC128GAPALNS-AIT":   ("eMMC",  "",      "", "", "",               "INDETERMINADO"),
+    "MT29TZZZ8D5":          ("eMCP", "", "eMMC 5.0 8GB",  "LPDDR3 1GB", "", "RENTÁVEL"),
+    "MT29VZZZAD8":          ("eMCP", "", "eMMC 5.1 64GB", "LPDDR4 4GB", "", "RENTÁVEL"),
+    "MT30AZZZBD9":          ("uMCP", "", "UFS 3.1 128GB", "LPDDR5 6GB", "", "RENTÁVEL"),
+    "MT29PZZZ4D4BKESK":     ("eMCP", "", "eMMC ⚠ cap. não mapeada", "LPDDR ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+}
 
 
 class LoadBrandsPiecemakersTests(TestCase):
@@ -1019,6 +1035,23 @@ class SanDiskLoadBrandsTests(TestCase):
         call_command("load_brands", "--brand", "sandisk", "--commit", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _SD_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+
+class MicronLoadBrandsTests(TestCase):
+    """Passo 4: Micron migrada p/ YAML — 13 famílias (3 MCP do populate_micron_mcp +
+    10 do add_chip_families: DDR/LPDDR/NAND/eMMC). Fidelidade + identificação de todos
+    os PNs conhecidos (golden da gramática atual: LPDDR/MCP decodificam, DDR magras)."""
+
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "micron")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "micron", "--commit", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
+        for pn, esperado in _MIC_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
