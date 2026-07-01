@@ -85,6 +85,10 @@ class Command(BaseCommand):
         parser.add_argument("--diff", help="Compara o estado atual com este baseline JSON.")
         parser.add_argument("--limit", type=int, default=0,
                             help="Caracteriza só os N primeiros PNs (para teste rápido).")
+        parser.add_argument("--summary", action="store_true",
+                            help="Com --diff: agrega TODAS as mudanças por campo e por "
+                                 "transição distinta (old→new), sem truncar. Prova compacta "
+                                 "de que só os campos esperados mudaram.")
 
     def handle(self, *args, **opts):
         if not opts["out"] and not opts["diff"]:
@@ -153,6 +157,28 @@ class Command(BaseCommand):
             f"  alterados: {self.style.WARNING(str(len(changed)))}  ·  "
             f"adicionados: {self.style.SUCCESS(str(len(added)))}  ·  "
             f"removidos: {self.style.ERROR(str(len(removed)))}")
+
+        # ── modo --summary: agrega TODAS as mudanças (prova completa, sem truncar) ──
+        if opts["summary"]:
+            from collections import Counter
+            by_field = Counter()
+            transitions: dict[str, Counter] = {}
+            for _pn, deltas in changed:
+                for k, (a, b) in deltas.items():
+                    by_field[k] += 1
+                    transitions.setdefault(k, Counter())[f"{a!r} → {b!r}"] += 1
+            self.stdout.write("\n── mudanças por CAMPO (todas as %d) ──" % len(changed))
+            for field, n in by_field.most_common():
+                self.stdout.write(f"  {n:6d}  {field}")
+            self.stdout.write("\n── transições DISTINTAS por campo (old → new) ──")
+            for field, _ in by_field.most_common():
+                self.stdout.write(f"  [{field}]")
+                trs = transitions[field].most_common()
+                for t, n in trs[:50]:
+                    self.stdout.write(f"     {n:6d} ×  {t}")
+                if len(trs) > 50:
+                    self.stdout.write(f"     ... (+{len(trs) - 50} transições distintas)")
+            return
 
         for pn, deltas in changed[:200]:
             campos = "; ".join(f"{k}: {a!r}→{b!r}" for k, (a, b) in sorted(deltas.items()))
