@@ -40,14 +40,16 @@ from core.safe_command import SafeWriteCommand
 _STEPS = [
     ("populate_samsung",     {"overwrite": True}, {"dry_run": True}),
     ("populate_hynix",       {"overwrite": True}, {"dry_run": True}),
-    ("populate_toshiba",     {"overwrite": True}, {"dry_run": True}),
     # Marcas migradas p/ YAML (passo 4): load_brands no lugar dos populate_* aposentados.
+    # (populate_toshiba criava Toshiba E Kioxia → 2 load_brands.)
     ("load_brands", {"brand": "piecemakers", "commit": True}, {"brand": "piecemakers", "dry_run": True}),
     ("load_brands", {"brand": "gigadevice", "commit": True}, {"brand": "gigadevice", "dry_run": True}),
     ("load_brands", {"brand": "rayson", "commit": True}, {"brand": "rayson", "dry_run": True}),
     ("load_brands", {"brand": "kingston", "commit": True}, {"brand": "kingston", "dry_run": True}),
     ("load_brands", {"brand": "sandisk", "commit": True}, {"brand": "sandisk", "dry_run": True}),
     ("load_brands", {"brand": "micron", "commit": True}, {"brand": "micron", "dry_run": True}),
+    ("load_brands", {"brand": "toshiba", "commit": True}, {"brand": "toshiba", "dry_run": True}),
+    ("load_brands", {"brand": "kioxia", "commit": True}, {"brand": "kioxia", "dry_run": True}),
     ("add_chip_families",    {},                  None),   # sem --dry-run: só roda no --commit
     ("link_doc_pages",       {},                  {"dry_run": True}),
     ("sync_index_page",      {},                  {"dry_run": True}),
