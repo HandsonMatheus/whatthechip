@@ -1,0 +1,152 @@
+# Conhecimento Kioxia — fonte do catálogo (passo 4). Gerado do CÓDIGO ATUAL
+# (populate_toshiba + add_chip_families) — completo. NUNCA do prod_data (defasado).
+brand:
+  name: Kioxia
+  code: KIO
+  notes: 'Japão · Ex-divisão de Memória Toshiba, renomeada em 2019. Fab BiCS4/5/6 TLC NAND. Prefixo UFS stand-alone: KLUE (verificar kioxia.com antes de cadastrar).'
+maps: {}
+families:
+- prefix: KMEYH
+  chip_type: eMMC
+  subtype: eMMC (KIOXIA)
+  interface: eMMC 5.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: eMMC com branding KIOXIA (pós-2019). Substitui a linha THGB em produtos mais recentes.
+  reasoning: ''
+- prefix: THGAF
+  chip_type: UFS
+  subtype: UFS Kioxia
+  interface: UFS 2.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 15
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS 2.1 Kioxia (era de transição Toshiba→Kioxia, ~2017-2022). Família sem decode gramatical — capacity/specs dependem de KnownPart confirmado. Capacidades: 16GB → 256GB (consumer + automotive Grade 2 AEC-Q100). Fonte Tier 1: Kioxia UFS Product Brief Rev.2.0 (2022) + Automotive Brief (2020). 11 PNs confirmados em fix_known_parts.py. Distinguir de THGJF* (UFS 3.1/4.0/4.1, geração mais nova).'
+  reasoning: '["THGAF = UFS 2.1 Toshiba/Kioxia (~2017-2022) — confirmado kioxia.com Tier 1", "Silkscreen físico: Toshiba (pré-2019) ou KIOXIA (pós-2019) — mesmo PN", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional", "Fonte: Kioxia UFS Product Brief Rev.2.0 (2022) + Automotive Brief Rev.2.0 (2020)"]'
+- prefix: THGAM
+  chip_type: eMMC
+  subtype: eMMC Kioxia
+  interface: eMMC 5.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 15
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMMC 5.1 BiCS FLASH Kioxia — prefixo novo, distinto de THGBM. NÃO coberto pela gramática THGBM (prefixo 5-char diferente). Família sem decode gramatical — capacity/specs dependem de KnownPart confirmado. Capacidades: 16GB, 32GB, 64GB, 128GB. Todos RENTÁVEIS. Package BGA-153. Série V: VG7=16GB · VG8=32GB · VG9=64GB · VT0=128GB. Série S: SG9=64GB · ST0=128GB. Fonte Tier 1: Kioxia e-MMC Product Brief Rev.2.0 (2023). 6 PNs confirmados em fix_known_parts.py. NÃO confundir com THGBM* (eMMC legado Toshiba/Kioxia, decodificado pela gramática).'
+  reasoning: '["THGAM = prefixo eMMC 5.1 BiCS Kioxia novo (≠ THGBM) — confirmado kioxia.com Tier 1", "pn[5]: série — V=consumer standard · S=consumer slim? (inferido, não decodificado)", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional", "Fonte: Kioxia e-MMC Product Brief Rev.2.0 (2023) americas.kioxia.com Tier 1 ✓"]'
+- prefix: THGBMFG
+  chip_type: eMMC
+  subtype: eMMC (Toshiba/KIOXIA)
+  interface: eMMC 5.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMMC Toshiba/KIOXIA série THGBMFG (geração anterior ao MHG). Mesmo esquema de decode: par após THGBM = [geração][densidade]. G7=128Gb=16GB. Ex: THGBMFG7C2L → G7 = 128Gb = 16GB eMMC ✓ (Toshiba PN Guide). Destino: bancada eMMC.'
+  reasoning: ''
+- prefix: THGBMHG
+  chip_type: eMMC
+  subtype: eMMC (Toshiba/KIOXIA)
+  interface: eMMC 5.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMMC Toshiba/KIOXIA série THGBMHG (BiCS NAND). THG = Toshiba NAND Group. Decode: par alfanumérico após THGBM = [geração][densidade]. Mapa de densidade: G7=128Gb=16GB · G8=256Gb=32GB. Ex: THGBMHG8C4LBAIR → G8 = 256Gb = 32GB eMMC 5.1 ✓ (SK Hynix PN Guide + manifesto). Destino: bancada eMMC.'
+  reasoning: ''
+- prefix: THGJF
+  chip_type: UFS
+  subtype: UFS Kioxia
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 15
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS Kioxia nova geração: UFS 3.1 / 4.0 / 4.1 (2020–2025). Família sem decode gramatical — capacity/specs dependem de KnownPart confirmado. Capacidades: 128GB, 256GB, 512GB, 1TB. Todos RENTÁVEIS. Fonte Tier 1: Kioxia UFS Product Brief Rev.3.0 (2025) + Rev.2.0 (2022). 18 PNs consumer grade confirmados em fix_known_parts.py. Distinguir de THGAF* (UFS 2.1, geração anterior).'
+  reasoning: '["THGJF = prefixo UFS Kioxia pós-2019 (confirmado kioxia.com Tier 1)", "pn[5]: sub-geração — P=3.1 · M=4.0 · R=4.1 · G/H=3.1 · J=4.0 (inferido, não decodificado)", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional", "Fonte: Kioxia UFS Product Brief Rev.3.0 (2025) kioxia.com Tier 1 ✓"]'
+- prefix: THGJFBT
+  chip_type: eMMC
+  subtype: eMMC (Toshiba)
+  interface: eMMC 5.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: eMMC Toshiba — geração BG NAND. Encontrado em tablets e smartphones mid-range.
+  reasoning: ''
+- prefix: TH58
+  chip_type: NAND Flash
+  subtype: Raw NAND Flash (Toshiba)
+  interface: Async/ONFI
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: NAND Flash raw Toshiba. Prefixo TH58 cobre várias gerações (SLC, MLC, TLC).
+  reasoning: ''

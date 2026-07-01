@@ -939,6 +939,20 @@ _MIC_GOLDEN = {  # Micron: gramática do populate_micron_mcp (MCP) + add_chip_fa
     "MT30AZZZBD9":          ("uMCP", "", "UFS 3.1 128GB", "LPDDR5 6GB", "", "RENTÁVEL"),
     "MT29PZZZ4D4BKESK":     ("eMCP", "", "eMMC ⚠ cap. não mapeada", "LPDDR ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
 }
+_TK_GOLDEN = {  # Toshiba + Kioxia carregadas JUNTAS (THGBMFG/THGBMHG=Kioxia são prefixos + longos que
+    # THGBM=Toshiba → a classificação depende das duas). Magras (eMMC/eMCP/UFS por prefixo, INDETERMINADO),
+    # exceto THGBM (Toshiba) que decodifica capacidade.
+    "THGBMBG7D2KBAIL": ("eMMC", "16GB", "", "", "", "RENTÁVEL"),   # Toshiba THGBM (decodifica cap)
+    "TYC0FH121638RA":  ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "tipo 'C' — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),  # Toshiba TYC
+    "TYD0FH221627RA":  ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR4X ⚠ cap. não mapeada", "", "INDETERMINADO"),  # Toshiba TYD
+    "THGBMFG7C2LBAIL": ("eMMC", "", "", "", "", "INDETERMINADO"),  # Kioxia THGBMFG
+    "THGBMHG8C4LBAIR": ("eMMC", "", "", "", "", "INDETERMINADO"),  # Kioxia THGBMHG
+    "THGAF8G8T23BAIL": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGAF
+    "THGAMVG7T13BAIL": ("eMMC", "", "", "", "", "INDETERMINADO"),  # Kioxia THGAM
+    "THGJFPT0E18BAIP": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGJF
+}
 
 
 class LoadBrandsPiecemakersTests(TestCase):
@@ -1052,6 +1066,27 @@ class MicronLoadBrandsTests(TestCase):
         call_command("load_brands", "--brand", "micron", "--commit", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _MIC_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+
+class ToshibaKioxiaLoadBrandsTests(TestCase):
+    """Passo 4: populate_toshiba cria DUAS marcas — Toshiba (THGBM/TYC/TYD) e Kioxia
+    (a memória virou Kioxia). Fidelidade de cada YAML + identificação de todos os PNs
+    com AS DUAS carregadas (THGBMFG/HG=Kioxia são prefixos + longos que THGBM=Toshiba)."""
+
+    def test_toshiba_yaml_fiel(self):
+        _carrega_marca_e_confere_fidelidade(self, "toshiba")
+
+    def test_kioxia_yaml_fiel(self):
+        _carrega_marca_e_confere_fidelidade(self, "kioxia")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "toshiba", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "kioxia", "--commit", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
+        for pn, esperado in _TK_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
