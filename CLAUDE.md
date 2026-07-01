@@ -57,9 +57,9 @@ de rentabilidade**.
 ## 2. Regras de ouro (leia sempre — quebrar isto quebra o produto)
 
 1. **O banco de produção não está acessível ao agente.** Comandos que **alteram
-   dados** (`migrate`, `populate_*`, `import_*`, `fix_*`, `purge_*`,
-   `enrich_*`) devem ser **propostos e revisados**, mas **executados pelo
-   usuário**. Claude **edita arquivos**; o usuário **roda** e confirma.
+   dados** (`migrate`, `load_brands --commit`, `import_*`, `merge_*`,
+   `normalize_convention`, `purge_*`) devem ser **propostos e revisados**, mas **executados pelo
+   usuário**. Claude **edita arquivos** (yaml/código); o usuário **roda** e confirma.
 2. **Visibilidade ≠ autoridade.** Um `KnownPart` é *reconhecido* na camada 1
    (`known_exact=True`) quando tem **specs reais** (capacity/emcp_ram/emcp_nand/
    density) **ou** é `confirmed`/`manual` — gate `_USABLE`, equivalente fiel ao
@@ -69,10 +69,10 @@ de rentabilidade**.
    `status` (raw/enriched/failed) foi **removido** (jun/2026). ⚠️ Não estreite o
    gate para "confidence ∈ confirmed/manual" — esconde os registros de
    distribuidor/estimado com specs e quebra o reconhecimento em massa.
-3. **Depois de `populate_* --overwrite`, REINICIE o servidor.** O engine usa
-   `lru_cache` para famílias e mapas (`chips/engine.py`). O comando chama
-   `clear_engine_cache()` apenas no próprio processo — o servidor web continua
-   servindo o cache antigo até reiniciar.
+3. **Cache do engine recarrega SOZINHO via `catalog_version` — não precisa reiniciar.** O engine
+   usa `lru_cache` chaveado por `catalog_version`; `load_brands --commit` (e as migrações de dados)
+   sobem a versão e todo worker recarrega famílias/mapas na próxima query (passo 1B). Isto
+   SUBSTITUIU o antigo "reinicie o servidor após `populate_* --overwrite`".
 4. **`DecodeMap` — não inverta `val_primary`/`val_secondary`.** Cada mapa tem seu
    padrão, **siga as linhas já existentes dele**: em mapas de **capacidade**,
    `val_primary` é a capacidade legível (ex.: `16GB`; em eMCP `val_primary`=NAND,
@@ -97,7 +97,8 @@ de rentabilidade**.
    local e nas env vars do Render.
 10. **Gemini foi REMOVIDO** (jun/2026). Não há mais fallback de IA nem
     enriquecimento automático: o núcleo é **banco confirmado + gramática**. As
-    specs entram por confirmação manual (populate_*/import_*/fix_* + admin).
+    specs entram por confirmação manual nos yamls (`known_parts`) via `load_brands`,
+    complementadas por `import_*` + admin.
 11. **Rentabilidade tem fonte ÚNICA: `assess_profitability`.** Nunca reimplemente
     regra de rentabilidade em outro lugar. O `is_dead_by_generation` (engine) e o
     gateway do estoque (`estoque/views.py`) **derivam** dela — ver §4 e
@@ -106,9 +107,9 @@ de rentabilidade**.
     geração da **DRAM discreta** vive no **`chip_type`** (`DDR3`, `LPDDR4X`, `GDDR5`,
     `SDRAM`…), espelhada no `subtype`; **gerenciada** (eMMC/UFS/eMCP/uMCP/NAND) mantém o
     `chip_type` (subtype = geração LPDDR / célula NAND / vazio). ❌ **NUNCA**
-    `chip_type="RAM"` nem `"DDR"` genérico. Engine, gateway, profitability e os
-    `populate_*` leem de `chip_types.py`; valide com `validate_convention` e migre
-    legado com `normalize_convention` (reversível). Ver §6 e `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.
+    `chip_type="RAM"` nem `"DDR"` genérico. Engine, gateway, profitability e o **portão do
+    `load_brands`** (schema Pydantic) leem de `chip_types.py`; valide com `validate_convention`
+    e migre legado com `normalize_convention` (reversível). Ver §6 e `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.
 
 ---
 
@@ -299,9 +300,11 @@ python scripts/nexar_validate.py --validate <PN>   # Octopart/Nexar
 python manage.py enrich_micron_fbga / lookup_fbga <FBGA> / fill_capacity_from_micron_api
 ```
 
-Ordem típica (DB vazio → populado): `migrate` → `populate_*` (+`--overwrite`) →
-`link_doc_pages`/`sync_index_page` → `import_*` → `fix_known_parts` → coleta →
-enriquecimento → **reiniciar servidor**.
+Ordem típica (DB vazio → populado), encadeada pelo **`deploy_catalog`**: `migrate` →
+`load_brands` (as 10 marcas — grava gramática + known_parts dos yamls) → `link_doc_pages`/
+`sync_index_page` → `import_*` (PSG etc., complementam) → (coleta/enriquecimento local, se houver).
+O `catalog_version` sobe no fim e o cache recarrega sozinho (sem reiniciar). **Nada de `populate_*`,
+`add_chip_families` nem `fix_known_parts` — aposentados; o conhecimento é YAML.**
 
 ### Deploy (Render)
 
@@ -405,9 +408,10 @@ Referência completa (todas as marcas, opção 1): **`docs/CONVENCAO_CAMPOS_ESTO
 - **Registro não autoritativo:** PN com dado certo mas `confidence` fora de
   (`confirmed`, `manual`) → o engine não o usa como autoridade (cai na gramática).
   Promova a `confirmed`/`manual`. (Regra de ouro #2.)
-- **`fix_known_parts` que não "pega":** atualizar capacidade sem setar
-  `confidence="confirmed"`/`"manual"` deixa o registro perdendo para a gramática.
-  (Antes o sintoma era `status="raw"`; o campo `status` foi removido.)
+- **`known_part` do yaml que não "pega":** preencher capacidade sem `confidence: confirmed`/`manual`
+  deixa o registro perdendo para a gramática (só complementa decode incompleto). Ponha
+  `confidence: confirmed` com fonte Tier-1 na `notes`. (Antes o sintoma era `status="raw"`; o campo
+  `status` foi removido.)
 - **Unidade Micron (Gb × GB):** no nome de peça MTFC, "G" é **Gbit**, não GB
   (64G = 8GB); densidade de eMCP/uMCP é total do pacote. Por isso
   `import_micron_catalog` **deixa `capacity=""`** para eMCP/uMCP (o engine decodifica).
@@ -515,7 +519,8 @@ Referência completa (todas as marcas, opção 1): **`docs/CONVENCAO_CAMPOS_ESTO
   o operador lê, não o PN completo.
 - **remarked** — chip relabelado/falsificado; detectado por divergência gramática×banco.
 - **gramática** — decode posicional do PN pelas regras da `ChipFamily` + `DecodeMap`.
-- **gabarito** — o conjunto curado de famílias/mapas criado pelos `populate_*`.
+- **gabarito** — o conjunto curado de famílias/mapas definido nos `chips/knowledge/<marca>.yaml`
+  e carregado por `load_brands`.
 - **confidence** — confiança do `KnownPart`: `confirmed` > `manual` > `distributor`
   > `estimated`. Só `confirmed`/`manual` são autoritativos (vencem a gramática). O
   antigo campo `status` (raw/enriched/failed) foi removido.
@@ -539,7 +544,7 @@ relevante quando a tarefa pedir:
 - **`RENTABILIDADE.md`** — bíblia técnica completa do sistema de rentabilidade: `assess_profitability`, `is_dead_by_generation`, `ProfitabilityConfig`, gateway do estoque, todos os bugs corrigidos, limitações, regras invioláveis, checklist para novos chip_types. **Leia antes de tocar em qualquer código de rentabilidade.**
 - **`MICRON.md`** — bíblia técnica e de negócio da Micron: famílias, decode maps, convenção de campos, pipeline, fontes de dados, bugs corrigidos, lacunas.
 - **`PIECEMAKERS.md`** — bíblia técnica PieceMakers: anatomia do PN PMF, decode map PMF_DDR3_CAP, famílias, rentabilidade, fontes, armadilhas.
-- **`TOSHIBA-KIOXIA.md`** — bíblia técnica Toshiba / Kioxia: família THGBM (eMMC), decode maps THGBM_CAP/THGBM_GEN, eMCP TYC, famílias bloqueadas (KLUE/THGAF), armadilhas de sub-prefixo, gaps e roadmap. **CONSOLIDAÇÃO (2026-07-01):** Toshiba + Kioxia + KIOXIA(dup) viraram UMA marca **`Toshiba-Kioxia`** (code TXK) — mesma empresa (rename out/2019), em `chips/knowledge/toshiba-kioxia.yaml` (11 famílias). Fusão via `merge_toshiba_kioxia` (reversível). **Leia antes de tocar em entradas Toshiba-Kioxia em `fix_known_parts.py`** (brand_name já = 'Toshiba-Kioxia').
+- **`TOSHIBA-KIOXIA.md`** — bíblia técnica Toshiba / Kioxia: família THGBM (eMMC), decode maps THGBM_CAP/THGBM_GEN, eMCP TYC, famílias bloqueadas (KLUE/THGAF), armadilhas de sub-prefixo, gaps e roadmap. **CONSOLIDAÇÃO (2026-07-01):** Toshiba + Kioxia + KIOXIA(dup) viraram UMA marca **`Toshiba-Kioxia`** (code TXK) — mesma empresa (rename out/2019), em `chips/knowledge/toshiba-kioxia.yaml` (11 famílias). Fusão via `merge_toshiba_kioxia` (reversível). **Para adicionar/corrigir chip Toshiba-Kioxia, edite `chips/knowledge/toshiba-kioxia.yaml`** (ver `CONTRATO_AUTORIA_YAML.md`).
 - **`FUZZY.md`** — bíblia técnica do sistema de sugestão inteligente de PNs: `_visual_edit_distance`, matriz de confusão visual, `_prefix_candidates`, `_combined_suggestions`, gate de confiança, frontend diff, tuning. **Leia antes de tocar nas funções `_fuzzy_*` / `_prefix_*` do engine.**
 - **`PLANO_MICRON_FBGA.md`** — pipeline FBGA da Micron (estágios iniciais — parcialmente histórico; ver MICRON.md para estado atual).
 - **`AUDITORIA_SAMSUNG_2026.md`** / **`BRIEFING_DDR_SAMSUNG.md`** — gabarito Samsung,
