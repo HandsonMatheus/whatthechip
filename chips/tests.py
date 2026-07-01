@@ -794,12 +794,13 @@ _FAM_FIELDS = [
 
 def _ident(pn):
     """Resumo de identificação de um PN pelo engine: (chip_type, capacity,
-    dram_density, rentabilidade). É o que o teste de 'TODOS os PNs' congela como
-    verdade — a marca tem que identificar cada PN sempre igual."""
+    emcp_nand, emcp_ram, dram_density, rentabilidade). É o que o teste de 'TODOS
+    os PNs' congela — a marca tem que identificar cada PN sempre igual. Inclui os
+    campos de eMCP (NAND+RAM) p/ cobrir marcas como a Kingston."""
     from chips.engine import classify, assess_profitability
     r = classify(pn) or {}
-    return (r.get("chip_type") or "", r.get("capacity") or "",
-            r.get("dram_density") or "", assess_profitability(r))
+    return (r.get("chip_type") or "", r.get("capacity") or "", r.get("emcp_nand") or "",
+            r.get("emcp_ram") or "", r.get("dram_density") or "", assess_profitability(r))
 
 
 def _carrega_marca_e_confere_fidelidade(tc, slug):
@@ -832,59 +833,75 @@ def _carrega_marca_e_confere_fidelidade(tc, slug):
             tc.assertEqual((dm.val_primary, dm.val_secondary), (e.val_primary, e.val_secondary))
 
 
-# ── Goldens de identificação (chip_type, capacity, dram_density, rentabilidade) ──
-# Congelados da gramática validada: PieceMakers conferida vs PIECEMAKERS.md; GigaDevice
-# capturada da gramática populate_gigadevice ANTES de aposentá-la. Cada marca deve
-# identificar TODOS os seus PNs conhecidos SEMPRE assim (regra do dono, 2026-06-30).
+# ── Goldens de id: (chip_type, capacity, emcp_nand, emcp_ram, dram_density, rentabilidade) ──
+# Congelados da gramática validada (populate ANTES de aposentá-la; conferidos vs docs). Cada marca
+# deve identificar TODOS os seus PNs conhecidos SEMPRE assim (regra do dono, 2026-06-30).
 _PMK_GOLDEN = {
-    "PMF510816DBR":     ("DDR3",  "128MB", "", "NÃO RENTÁVEL"),  # 1Gb/die → < 2Gb → descarta
-    "PMF511808EBR":     ("DDR3",  "256MB", "", "RENTÁVEL"),      # 2Gb x8
-    "PMF511816EBR":     ("DDR3",  "256MB", "", "RENTÁVEL"),      # 2Gb x16 (KnownPart em prod)
-    "PMF512816CBR":     ("DDR3",  "512MB", "", "RENTÁVEL"),      # 4Gb
-    "PMF411816EBR":     ("DDR3L", "256MB", "", "RENTÁVEL"),      # DDR3L 2Gb (=DDR3)
-    "PMA212508ABR":     ("DDR4",  "",      "", "INDETERMINADO"), # DDR4 s/ decode de cap → KnownPart resolve
-    "PMA212816ABR":     ("DDR4",  "",      "", "INDETERMINADO"),
-    "PMF511816EBRKADN": ("DDR3",  "256MB", "", "RENTÁVEL"),      # variante -KADN do 2Gb
+    "PMF510816DBR":     ("DDR3",  "128MB", "", "", "", "NÃO RENTÁVEL"),  # 1Gb/die → < 2Gb → descarta
+    "PMF511808EBR":     ("DDR3",  "256MB", "", "", "", "RENTÁVEL"),      # 2Gb x8
+    "PMF511816EBR":     ("DDR3",  "256MB", "", "", "", "RENTÁVEL"),      # 2Gb x16 (KnownPart em prod)
+    "PMF512816CBR":     ("DDR3",  "512MB", "", "", "", "RENTÁVEL"),      # 4Gb
+    "PMF411816EBR":     ("DDR3L", "256MB", "", "", "", "RENTÁVEL"),      # DDR3L 2Gb (=DDR3)
+    "PMA212508ABR":     ("DDR4",  "",      "", "", "", "INDETERMINADO"), # DDR4 s/ decode → KnownPart resolve
+    "PMA212816ABR":     ("DDR4",  "",      "", "", "", "INDETERMINADO"),
+    "PMF511816EBRKADN": ("DDR3",  "256MB", "", "", "", "RENTÁVEL"),      # variante -KADN do 2Gb
 }
 _GIGA_GOLDEN = {
-    "GD5F1GQ4UBYIG": ("NAND Flash", "128MB", "", "NÃO RENTÁVEL"),  # SPI NAND 1Gb
-    "GD5F1GQ5UEYIG": ("NAND Flash", "128MB", "", "NÃO RENTÁVEL"),
-    "GD5F2GQ4UBYIG": ("NAND Flash", "256MB", "", "NÃO RENTÁVEL"),  # 2Gb
-    "GD5F2GQ5UEYIG": ("NAND Flash", "256MB", "", "NÃO RENTÁVEL"),
-    "GD5F4GQ4UBYIG": ("NAND Flash", "512MB", "", "NÃO RENTÁVEL"),  # 4Gb
-    "GD5F8GQ4UBYIG": ("NAND Flash", "1GB",   "", "NÃO RENTÁVEL"),  # 8Gb
-    "GDQ26FAA":   ("DDR4", "", "", "INDETERMINADO"),
-    "GDQ2BFAA":   ("DDR4", "", "", "INDETERMINADO"),
-    "GDQ2BFAACE": ("DDR4", "", "", "INDETERMINADO"),  # KnownParts em prod
-    "GDQ2BFAACJ": ("DDR4", "", "", "INDETERMINADO"),
-    "GDQ2BFAACQ": ("DDR4", "", "", "INDETERMINADO"),
-    "GDQ2BFAAWJ": ("DDR4", "", "", "INDETERMINADO"),
-    "GDQ2BFAAWQ": ("DDR4", "", "", "INDETERMINADO"),
-    "GD25Q128":     ("NOR Flash", "", "", "NÃO RENTÁVEL"),  # SPI NOR (geração morta p/ reciclagem)
-    "GD25Q128ESIG": ("NOR Flash", "", "", "NÃO RENTÁVEL"),
-    "GD25Q64CSIG":  ("NOR Flash", "", "", "NÃO RENTÁVEL"),
+    "GD5F1GQ4UBYIG": ("NAND Flash", "128MB", "", "", "", "NÃO RENTÁVEL"),  # SPI NAND 1Gb
+    "GD5F1GQ5UEYIG": ("NAND Flash", "128MB", "", "", "", "NÃO RENTÁVEL"),
+    "GD5F2GQ4UBYIG": ("NAND Flash", "256MB", "", "", "", "NÃO RENTÁVEL"),  # 2Gb
+    "GD5F2GQ5UEYIG": ("NAND Flash", "256MB", "", "", "", "NÃO RENTÁVEL"),
+    "GD5F4GQ4UBYIG": ("NAND Flash", "512MB", "", "", "", "NÃO RENTÁVEL"),  # 4Gb
+    "GD5F8GQ4UBYIG": ("NAND Flash", "1GB",   "", "", "", "NÃO RENTÁVEL"),  # 8Gb
+    "GDQ26FAA":   ("DDR4", "", "", "", "", "INDETERMINADO"),
+    "GDQ2BFAA":   ("DDR4", "", "", "", "", "INDETERMINADO"),
+    "GDQ2BFAACE": ("DDR4", "", "", "", "", "INDETERMINADO"),  # KnownParts em prod
+    "GDQ2BFAACJ": ("DDR4", "", "", "", "", "INDETERMINADO"),
+    "GDQ2BFAACQ": ("DDR4", "", "", "", "", "INDETERMINADO"),
+    "GDQ2BFAAWJ": ("DDR4", "", "", "", "", "INDETERMINADO"),
+    "GDQ2BFAAWQ": ("DDR4", "", "", "", "", "INDETERMINADO"),
+    "GD25Q128":     ("NOR Flash", "", "", "", "", "NÃO RENTÁVEL"),  # SPI NOR (geração morta p/ reciclagem)
+    "GD25Q128ESIG": ("NOR Flash", "", "", "", "", "NÃO RENTÁVEL"),
+    "GD25Q64CSIG":  ("NOR Flash", "", "", "", "", "NÃO RENTÁVEL"),
 }
 _RAY_GOLDEN = {
-    "RS1G32LF4D2BDS":   ("LPDDR4", "4GB", "", "RENTÁVEL"),
-    "RS1G32LO4D2BDS":   ("LPDDR4", "4GB", "", "RENTÁVEL"),
-    "RS1G32LV4D2BDS":   ("LPDDR4", "4GB", "", "RENTÁVEL"),
-    "RS256M32LD3D1LMZ": ("LPDDR3", "1GB", "", "NÃO RENTÁVEL"),  # 1GB LPDDR3 < limiar
-    "RS256M32LZ4":      ("LPDDR4", "1GB", "", "RENTÁVEL"),      # 1GB LPDDR4 (geração nova)
-    "RS2G32LF4D4BDT":   ("LPDDR4", "8GB", "", "RENTÁVEL"),
-    "RS2G32LV4D4BDT":   ("LPDDR4", "8GB", "", "RENTÁVEL"),
-    "RS512M32LD3D2LMZ": ("LPDDR3", "2GB", "", "RENTÁVEL"),
-    "RS512M32LM4D2BDS": ("LPDDR4", "2GB", "", "RENTÁVEL"),
-    "RS512M32LO4D1BDS": ("LPDDR4", "2GB", "", "RENTÁVEL"),
-    "RS70B08G3S03F":    ("eMMC", "8GB",   "", "RENTÁVEL"),
-    "RS70B08G4S":       ("eMMC", "8GB",   "", "RENTÁVEL"),
-    "RS70B16G4S06F":    ("eMMC", "16GB",  "", "RENTÁVEL"),
-    "RS70B16G4S10F":    ("eMMC", "16GB",  "", "RENTÁVEL"),
-    "RS70B16G4S15G":    ("eMMC", "16GB",  "", "RENTÁVEL"),
-    "RS70B32G4S15G":    ("eMMC", "32GB",  "", "RENTÁVEL"),
-    "RS70B64G4S16G":    ("eMMC", "64GB",  "", "RENTÁVEL"),
-    "RS70BT7G4S16G":    ("eMMC", "128GB", "", "RENTÁVEL"),
-    "RS512M32LO4":      ("LPDDR4", "2GB", "", "RENTÁVEL"),  # KnownPart em prod
-    "RS512M32LZ4":      ("LPDDR4", "2GB", "", "RENTÁVEL"),  # KnownPart em prod
+    "RS1G32LF4D2BDS":   ("LPDDR4", "4GB", "", "", "", "RENTÁVEL"),
+    "RS1G32LO4D2BDS":   ("LPDDR4", "4GB", "", "", "", "RENTÁVEL"),
+    "RS1G32LV4D2BDS":   ("LPDDR4", "4GB", "", "", "", "RENTÁVEL"),
+    "RS256M32LD3D1LMZ": ("LPDDR3", "1GB", "", "", "", "NÃO RENTÁVEL"),  # 1GB LPDDR3 < limiar
+    "RS256M32LZ4":      ("LPDDR4", "1GB", "", "", "", "RENTÁVEL"),      # 1GB LPDDR4 (geração nova)
+    "RS2G32LF4D4BDT":   ("LPDDR4", "8GB", "", "", "", "RENTÁVEL"),
+    "RS2G32LV4D4BDT":   ("LPDDR4", "8GB", "", "", "", "RENTÁVEL"),
+    "RS512M32LD3D2LMZ": ("LPDDR3", "2GB", "", "", "", "RENTÁVEL"),
+    "RS512M32LM4D2BDS": ("LPDDR4", "2GB", "", "", "", "RENTÁVEL"),
+    "RS512M32LO4D1BDS": ("LPDDR4", "2GB", "", "", "", "RENTÁVEL"),
+    "RS70B08G3S03F":    ("eMMC", "8GB",   "", "", "", "RENTÁVEL"),
+    "RS70B08G4S":       ("eMMC", "8GB",   "", "", "", "RENTÁVEL"),
+    "RS70B16G4S06F":    ("eMMC", "16GB",  "", "", "", "RENTÁVEL"),
+    "RS70B16G4S10F":    ("eMMC", "16GB",  "", "", "", "RENTÁVEL"),
+    "RS70B16G4S15G":    ("eMMC", "16GB",  "", "", "", "RENTÁVEL"),
+    "RS70B32G4S15G":    ("eMMC", "32GB",  "", "", "", "RENTÁVEL"),
+    "RS70B64G4S16G":    ("eMMC", "64GB",  "", "", "", "RENTÁVEL"),
+    "RS70BT7G4S16G":    ("eMMC", "128GB", "", "", "", "RENTÁVEL"),
+    "RS512M32LO4":      ("LPDDR4", "2GB", "", "", "", "RENTÁVEL"),  # KnownPart em prod
+    "RS512M32LZ4":      ("LPDDR4", "2GB", "", "", "", "RENTÁVEL"),  # KnownPart em prod
+}
+_KST_GOLDEN = {  # eMCP: specs em emcp_nand/emcp_ram; rentab pela RAM (512MB→descarta, 1GB+→rentável)
+    "04EMCP04-NL2DM627": ("eMCP", "", "eMMC 5.0 4GB",  "LPDDR3 512MB", "", "NÃO RENTÁVEL"),
+    "04EMCP04-NL3DM627": ("eMCP", "", "eMMC 5.0 4GB",  "LPDDR3 512MB", "", "NÃO RENTÁVEL"),
+    "08EMCP04-NL2DT227": ("eMCP", "", "eMMC 5.0 8GB",  "LPDDR3 512MB", "", "NÃO RENTÁVEL"),
+    "08EMCP04-NL3DT227": ("eMCP", "", "eMMC 5.0 8GB",  "LPDDR3 512MB", "", "NÃO RENTÁVEL"),
+    "08EMCP08-NL2DT227": ("eMCP", "", "eMMC 5.0 8GB",  "LPDDR3 1GB",   "", "RENTÁVEL"),
+    "08EMCP08-NL3DT227": ("eMCP", "", "eMMC 5.0 8GB",  "LPDDR3 1GB",   "", "RENTÁVEL"),
+    "16EMCP08-NL3DTB28": ("eMCP", "", "eMMC 5.1 16GB", "LPDDR3 1GB",   "", "RENTÁVEL"),
+    "16EMCP16-EL3GTB29": ("eMCP", "", "eMMC 5.1 16GB", "LPDDR3 2GB",   "", "RENTÁVEL"),
+    "32EMCP16-EL3GTB29": ("eMCP", "", "eMMC 5.1 32GB", "LPDDR3 2GB",   "", "RENTÁVEL"),
+    "32EMCP16-NL3DTB29": ("eMCP", "", "eMMC 5.1 32GB", "LPDDR3 2GB",   "", "RENTÁVEL"),
+    "32EMCP24-EL3JTB29": ("eMCP", "", "eMMC 5.1 32GB", "LPDDR3 3GB",   "", "RENTÁVEL"),
+    "64EMCP24-EL3JTA29": ("eMCP", "", "eMMC 5.1 64GB", "LPDDR3 3GB",   "", "RENTÁVEL"),
+    "64EMCP32-EL3HTA29": ("eMCP", "", "eMMC 5.1 64GB", "LPDDR3 4GB",   "", "RENTÁVEL"),
+    "08EMCP08NL3DT227":  ("eMCP", "", "eMMC 5.0 8GB",  "LPDDR3 1GB",   "", "RENTÁVEL"),  # forma normalizada
+    "16EMCP08NL3DTB28":  ("eMCP", "", "eMMC 5.1 16GB", "LPDDR3 1GB",   "", "RENTÁVEL"),
 }
 
 
@@ -947,6 +964,24 @@ class RaysonLoadBrandsTests(TestCase):
         call_command("load_brands", "--brand", "rayson", "--commit", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _RAY_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+
+class KingstonLoadBrandsTests(TestCase):
+    """Passo 4: Kingston migrada p/ YAML (5 famílias eMCP: 04/08/16/32/64). Fidelidade +
+    identificação de TODOS os PNs eMCP conhecidos (golden da gramática populate_kingston;
+    NAND+RAM decodificados, rentabilidade pela RAM). O KnownPart NAND KF98G16Q4X fica fora
+    (não tem família — é resolvido pelo banco em prod, não pela gramática)."""
+
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "kingston")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "kingston", "--commit", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
+        for pn, esperado in _KST_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
