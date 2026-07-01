@@ -6,182 +6,470 @@ brand:
   notes: Coreia do Sul · Fundada 1983 (era Hyundai Electronics)
 maps:
   HYX_DDR1_CAP:
-  - ['12', 64MB, '']
-  - ['28', 16MB, '']
-  - ['56', 32MB, '']
-  - ['64', 8MB, '']
+  - - '12'
+    - 64MB
+    - ''
+  - - '28'
+    - 16MB
+    - ''
+  - - '56'
+    - 32MB
+    - ''
+  - - '64'
+    - 8MB
+    - ''
   HYX_DDR2_H5PS_CAP:
-  - [1G, 128MB, '']
-  - ['25', 32MB, '']
-  - [2G, 256MB, '']
-  - ['51', 64MB, '']
+  - - 1G
+    - 128MB
+    - ''
+  - - '25'
+    - 32MB
+    - ''
+  - - 2G
+    - 256MB
+    - ''
+  - - '51'
+    - 64MB
+    - ''
   HYX_DDR2_HY5PS_CAP:
-  - ['12', 64MB, '']
-  - [1G, 128MB, '']
-  - ['56', 32MB, '']
+  - - '12'
+    - 64MB
+    - ''
+  - - 1G
+    - 128MB
+    - ''
+  - - '56'
+    - 32MB
+    - ''
   HYX_DDR3_CAP:
-  - [1G, 128MB, '']
-  - [2G, 256MB, '']
-  - [4G, 512MB, '']
-  - ['51', 64MB, '']
-  - [8G, 1GB, '']
+  - - 1G
+    - 128MB
+    - ''
+  - - 2G
+    - 256MB
+    - ''
+  - - 4G
+    - 512MB
+    - ''
+  - - '51'
+    - 64MB
+    - ''
+  - - 8G
+    - 1GB
+    - ''
   HYX_DDR4_CAP:
-  - [4G, 512MB, '']
-  - [8G, 1GB, '']
-  - [AG, 2GB, '']
+  - - 4G
+    - 512MB
+    - ''
+  - - 8G
+    - 1GB
+    - ''
+  - - AG
+    - 2GB
+    - ''
   HYX_DDR4_H5A_CAP:
-  - [G3, 1GB, '']
-  - [G4, 2GB, '']
-  - [G5, 4GB, '']
-  - [G6, 8GB, '']
+  - - G3
+    - 1GB
+    - ''
+  - - G4
+    - 2GB
+    - ''
+  - - G5
+    - 4GB
+    - ''
+  - - G6
+    - 8GB
+    - ''
   HYX_DDR5_CAP:
-  - [G4, 2GB, '']
-  - [G5, 4GB, '']
-  - [GD, 3GB, '']
+  - - G4
+    - 2GB
+    - ''
+  - - G5
+    - 4GB
+    - ''
+  - - GD
+    - 3GB
+    - ''
   HYX_EMCP_NAND_CAP:
-  - ['16', 16GB, '']
-  - ['17', 16GB, '']
-  - ['26', 32GB, '']
-  - ['27', 32GB, '']
-  - ['32', 4GB, '']
-  - ['52', 64GB, '']
-  - ['64', 8GB, '']
-  - ['65', 8GB, '']
+  - - '16'
+    - 16GB
+    - ''
+  - - '17'
+    - 16GB
+    - ''
+  - - '26'
+    - 32GB
+    - ''
+  - - '27'
+    - 32GB
+    - ''
+  - - '32'
+    - 4GB
+    - ''
+  - - '52'
+    - 64GB
+    - ''
+  - - '64'
+    - 8GB
+    - ''
+  - - '65'
+    - 8GB
+    - ''
   HYX_EMMC_CAP:
-  - ['3', 4GB, '']
-  - ['4', 8GB, '']
-  - ['5', 16GB, '']
-  - ['6', 32GB, '']
-  - ['7', 64GB, '']
-  - ['8', 128GB, '']
+  - - '3'
+    - 4GB
+    - ''
+  - - '4'
+    - 8GB
+    - ''
+  - - '5'
+    - 16GB
+    - ''
+  - - '6'
+    - 32GB
+    - ''
+  - - '7'
+    - 64GB
+    - ''
+  - - '8'
+    - 128GB
+    - ''
   HYX_H28S_CAP:
-  - ['8', 128GB, '']
-  - ['9', 256GB, '']
+  - - '8'
+    - 128GB
+    - ''
+  - - '9'
+    - 256GB
+    - ''
   HYX_H28U_CAP:
-  - ['6', 32GB, '']
-  - ['7', 64GB, '']
-  - ['8', 128GB, '']
+  - - '6'
+    - 32GB
+    - ''
+  - - '7'
+    - 64GB
+    - ''
+  - - '8'
+    - 128GB
+    - ''
   HYX_H9DA_NAND_CAP:
-  - ['1', 1GB, '']
-  - ['2', 2GB, '']
-  - ['4', 4GB, '']
+  - - '1'
+    - 1GB
+    - ''
+  - - '2'
+    - 2GB
+    - ''
+  - - '4'
+    - 4GB
+    - ''
   HYX_H9DA_RAM_CAP:
-  - [1G, LPDDR1 1GB, '']
-  - ['25', LPDDR1 256MB, '']
-  - [2G, LPDDR1 256MB, '']
-  - [4J, LPDDR1 512MB, '']
-  - ['51', LPDDR1 512MB, '']
+  - - 1G
+    - LPDDR1 1GB
+    - ''
+  - - '25'
+    - LPDDR1 256MB
+    - ''
+  - - 2G
+    - LPDDR1 256MB
+    - ''
+  - - 4J
+    - LPDDR1 512MB
+    - ''
+  - - '51'
+    - LPDDR1 512MB
+    - ''
   HYX_H9D_NAND_CAP:
-  - ['32', 4GB, '']
-  - ['64', 8GB, '']
-  - [AG, 16GB, '']
+  - - '32'
+    - 4GB
+    - ''
+  - - '64'
+    - 8GB
+    - ''
+  - - AG
+    - 16GB
+    - ''
   HYX_H9D_RAM_CAP:
-  - ['2', LPDDR2 256MB, '']
-  - ['3', LPDDR2 1GB, '']
-  - ['4', LPDDR2 512MB, '']
-  - ['8', LPDDR2 1GB, '']
+  - - '2'
+    - LPDDR2 256MB
+    - ''
+  - - '3'
+    - LPDDR2 1GB
+    - ''
+  - - '4'
+    - LPDDR2 512MB
+    - ''
+  - - '8'
+    - LPDDR2 1GB
+    - ''
   HYX_H9HP_NAND_CAP:
-  - ['16', 128GB, '']
-  - ['27', 32GB, '']
-  - ['52', 64GB, '']
-  - ['53', 64GB, '']
+  - - '16'
+    - 128GB
+    - ''
+  - - '27'
+    - 32GB
+    - ''
+  - - '52'
+    - 64GB
+    - ''
+  - - '53'
+    - 64GB
+    - ''
   HYX_H9HQ_NAND_CAP:
-  - ['15', 128GB, '']
-  - ['16', 128GB, '']
-  - ['21', 256GB, '']
-  - ['53', 64GB, '']
-  - ['54', 64GB, '']
+  - - '15'
+    - 128GB
+    - ''
+  - - '16'
+    - 128GB
+    - ''
+  - - '21'
+    - 256GB
+    - ''
+  - - '53'
+    - 64GB
+    - ''
+  - - '54'
+    - 64GB
+    - ''
   HYX_H9HR_NAND_CAP:
-  - ['15', 128GB, '']
-  - ['21', 256GB, '']
+  - - '15'
+    - 128GB
+    - ''
+  - - '21'
+    - 256GB
+    - ''
   HYX_H9HR_RAM_CAP:
-  - [JF, LPDDR5 8GB, '']
+  - - JF
+    - LPDDR5 8GB
+    - ''
   HYX_H9RT_NAND_CAP:
-  - [0G, 128GB, '']
-  - [1G, 256GB, '']
-  - [2G, 512GB, '']
+  - - 0G
+    - 128GB
+    - ''
+  - - 1G
+    - 256GB
+    - ''
+  - - 2G
+    - 512GB
+    - ''
   HYX_H9RT_RAM_CAP:
-  - [6A, LPDDR5 8GB, '']
-  - [6M, LPDDR5 8GB, '']
-  - [7M, LPDDR5 16GB, '']
-  - [GA, LPDDR5 12GB, '']
+  - - 6A
+    - LPDDR5 8GB
+    - ''
+  - - 6M
+    - LPDDR5 8GB
+    - ''
+  - - 7M
+    - LPDDR5 16GB
+    - ''
+  - - GA
+    - LPDDR5 12GB
+    - ''
   HYX_H9TP_RAM_CAP:
-  - [A4, LPDDR2 512MB, '']
-  - [A8, LPDDR2 1GB, '']
-  - [AB, LPDDR2 2GB, '']
+  - - A4
+    - LPDDR2 512MB
+    - ''
+  - - A8
+    - LPDDR2 1GB
+    - ''
+  - - AB
+    - LPDDR2 2GB
+    - ''
   HYX_H9TQ_RAM_CAP:
-  - [A6, LPDDR3 768MB, '']
-  - [A8, LPDDR3 1GB, '']
-  - [AA, LPDDR3 2GB, '']
-  - [AB, LPDDR3 2GB, '']
-  - [AC, LPDDR3 4GB, '']
-  - [AD, LPDDR3 3GB, '']
+  - - A6
+    - LPDDR3 768MB
+    - ''
+  - - A8
+    - LPDDR3 1GB
+    - ''
+  - - AA
+    - LPDDR3 2GB
+    - ''
+  - - AB
+    - LPDDR3 2GB
+    - ''
+  - - AC
+    - LPDDR3 4GB
+    - ''
+  - - AD
+    - LPDDR3 3GB
+    - ''
   HYX_HN8_CAP:
-  - ['03', 128GB, '']
-  - ['05', 128GB, '']
-  - ['06', 128GB, '']
-  - ['15', 256GB, '']
-  - ['16', 256GB, '']
-  - ['25', 512GB, '']
-  - ['35', 1TB, '']
-  - ['96', 64GB, '']
+  - - '03'
+    - 128GB
+    - ''
+  - - '05'
+    - 128GB
+    - ''
+  - - '06'
+    - 128GB
+    - ''
+  - - '15'
+    - 256GB
+    - ''
+  - - '16'
+    - 256GB
+    - ''
+  - - '25'
+    - 512GB
+    - ''
+  - - '35'
+    - 1TB
+    - ''
+  - - '96'
+    - 64GB
+    - ''
   HYX_LPDDR1_H5MS_CAP:
-  - [1G, 128MB, '']
-  - ['25', 32MB, '']
-  - [2G, 256MB, '']
-  - ['51', 64MB, '']
+  - - 1G
+    - 128MB
+    - ''
+  - - '25'
+    - 32MB
+    - ''
+  - - 2G
+    - 256MB
+    - ''
+  - - '51'
+    - 64MB
+    - ''
   HYX_LPDDR1_HY5MS_CAP:
-  - [7B, 64MB, '']
+  - - 7B
+    - 64MB
+    - ''
   HYX_LPDDR2_CAP:
-  - ['1', 128MB, '']
-  - ['2', 256MB, '']
-  - ['4', 512MB, '']
-  - ['8', 1GB, '']
-  - [A, 2GB, '']
-  - [B, 2GB, '']
+  - - '1'
+    - 128MB
+    - ''
+  - - '2'
+    - 256MB
+    - ''
+  - - '4'
+    - 512MB
+    - ''
+  - - '8'
+    - 1GB
+    - ''
+  - - A
+    - 2GB
+    - ''
+  - - B
+    - 2GB
+    - ''
   HYX_LPDDR3_CAP:
-  - ['4', 512MB, '']
-  - ['8', 1GB, '']
-  - [B, 2GB, '']
-  - [C, 4GB, '']
-  - [D, 3GB, '']
-  - [E, 6GB, '']
-  - [F, 8GB, '']
+  - - '4'
+    - 512MB
+    - ''
+  - - '8'
+    - 1GB
+    - ''
+  - - B
+    - 2GB
+    - ''
+  - - C
+    - 4GB
+    - ''
+  - - D
+    - 3GB
+    - ''
+  - - E
+    - 6GB
+    - ''
+  - - F
+    - 8GB
+    - ''
   HYX_LPDDR4X_H54G_CAP:
-  - ['2', 512MB, '']
-  - ['3', 1GB, '']
-  - ['4', 2GB, '']
-  - ['5', 4GB, '']
-  - ['6', 8GB, '']
-  - [A, 2GB, '']
-  - [C, 3GB, '']
-  - [E, 4GB, '']
-  - [G, 6GB, '']
-  - [J, 8GB, '']
+  - - '2'
+    - 512MB
+    - ''
+  - - '3'
+    - 1GB
+    - ''
+  - - '4'
+    - 2GB
+    - ''
+  - - '5'
+    - 4GB
+    - ''
+  - - '6'
+    - 8GB
+    - ''
+  - - A
+    - 2GB
+    - ''
+  - - C
+    - 3GB
+    - ''
+  - - E
+    - 4GB
+    - ''
+  - - G
+    - 6GB
+    - ''
+  - - J
+    - 8GB
+    - ''
   HYX_LPDDR4X_RAM_CAP:
-  - [AC, LPDDR4X 4GB, '']
-  - [AD, LPDDR4X 3GB, '']
-  - [AE, LPDDR4X 6GB, '']
-  - [AF, LPDDR4X 8GB, '']
+  - - AC
+    - LPDDR4X 4GB
+    - ''
+  - - AD
+    - LPDDR4X 3GB
+    - ''
+  - - AE
+    - LPDDR4X 6GB
+    - ''
+  - - AF
+    - LPDDR4X 8GB
+    - ''
   HYX_LPDDR4_H9HC_CAP:
-  - ['4', 512MB, '']
-  - ['8', 1GB, '']
-  - [B, 2GB, '']
-  - [C, 4GB, '']
-  - [D, 3GB, '']
-  - [E, 6GB, '']
-  - [F, 8GB, '']
+  - - '4'
+    - 512MB
+    - ''
+  - - '8'
+    - 1GB
+    - ''
+  - - B
+    - 2GB
+    - ''
+  - - C
+    - 4GB
+    - ''
+  - - D
+    - 3GB
+    - ''
+  - - E
+    - 6GB
+    - ''
+  - - F
+    - 8GB
+    - ''
   HYX_LPDDR5_H58G_CAP:
-  - ['5', 4GB, '']
-  - ['6', 8GB, '']
-  - ['7', 16GB, '']
-  - [D, 3GB, '']
-  - [E, 6GB, '']
-  - [G, 12GB, '']
-  - [U, 18GB, '']
+  - - '5'
+    - 4GB
+    - ''
+  - - '6'
+    - 8GB
+    - ''
+  - - '7'
+    - 16GB
+    - ''
+  - - D
+    - 3GB
+    - ''
+  - - E
+    - 6GB
+    - ''
+  - - G
+    - 12GB
+    - ''
+  - - U
+    - 18GB
+    - ''
   HYX_LPDDR5_H9JK_CAP:
-  - [F, 8GB, '']
-  - [H, 12GB, '']
+  - - F
+    - 8GB
+    - ''
+  - - H
+    - 12GB
+    - ''
 families:
 - prefix: H9HCN
   chip_type: LPDDR4X
@@ -831,3 +1119,130 @@ families:
   suffix_rules: ''
   tip: 'DRAM DDR2 standalone Hynix, era de transição (HY5PS). Geração pré-SK Hynix — nomenclatura herdada do DDR1 com tensão 1.8V. pn[5:7] = densidade: 56=32MB · 12=64MB · 1G=128MB por chip. ⚠ Chaves ''56'' e ''12'' idênticas ao DDR1 HY5DU — diferenciar pelo prefixo HY5PS. ⚠ Valor em MB por chip — módulos combinam múltiplos chips. Destino: triagem DDR2 — slot 240-pin, tensão 1.8V.'
   reasoning: ''
+known_parts:
+- part_number: H9CCNNN8JTMLAR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 1GB
+  notes: 'absunshine.com (B2B distribuidor): H9CCNNN8JTMLAR-NTM = LPDDR3 8G, 256MX32 LPDDR3, FBGA-178, 8Gb DDP 1Ch 2CS, 1.2V, 800MBPS ✓. 8Gbit ÷ 8 = 1GB. pn[7]=''8'' → HYX_LPDDR3_CAP = 1GB ✓. H9CC = x32 barramento (253/178-ball). confidence=distributor: absunshine B2B ✓.'
+  confidence: distributor
+- part_number: H9CCNNNBKTMLBR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 2GB
+  notes: 'Preduo (tier-1 WTC): H9CCNNNBKTMLBR-NTD/-NUD = 16Gbit SKhynix 253ball LPDDR3 ✓. 16Gbit ÷ 8 = 2GB. pn[7]=''B'' → HYX_LPDDR3_CAP = 2GB ✓. H9CC = x32 barramento 253-ball. confidence=distributor: Preduo tier curado ✓.'
+  confidence: distributor
+- part_number: H9CCNNNBPTBLBR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 2GB
+  notes: 'Preduo (tier-1 WTC): H9CCNNNBPTBLBR-NTD = 16Gbit SKhynix 253ball LPDDR3 ✓. 16Gbit ÷ 8 = 2GB. pn[7]=''B'' → HYX_LPDDR3_CAP = 2GB ✓. H9CC = x32 barramento 253-ball. confidence=distributor: Preduo tier curado ✓.'
+  confidence: distributor
+- part_number: H9CCNNNCPTMLBR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 4GB
+  notes: 'Preduo (tier-1 WTC): H9CCNNNCPTMLBR-NTD = 32Gbit SKhynix 253ball LPDDR3 ✓. 32Gbit ÷ 8 = 4GB. pn[7]=''C'' → HYX_LPDDR3_CAP = 4GB ✓. H9CC = x32 barramento 253-ball. confidence=distributor: Preduo tier curado ✓.'
+  confidence: distributor
+- part_number: H9CCNNNFAGMLLR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 8GB
+  notes: 'Preduo WP01836 (tier-1 WTC): H9CCNNNFAGMLLR-NUD = 64Gbit SKhynix 253ball LPDDR3 ✓. 64Gbit ÷ 8 = 8GB. pn[7]=''F'' → HYX_LPDDR3_CAP = 8GB (chave nova adicionada jun/2026). Pacote multi-die (ex: 8×8Gbit die, 253-ball). H9CC = x32 barramento. populate_hynix.py atualizado: (''F'', ''8GB'', ''''). confidence=distributor: Preduo ✓.'
+  confidence: distributor
+- part_number: H9CKNNN8KTMRWR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 1GB
+  device: Apple iPhone 6 (A1586, 2014)
+  notes: 'iFixit iPhone 6 Teardown (set/2014, Tier-1 identificação física): ''H9CKNNN8KTMRWR-NTH (we presume it is 1 GB LPDDR3 RAM)''. pn[7]=''8'' → HYX_LPDDR3_CAP = 8Gbit ÷ 8 = 1GB ✓. iPhone 6 = 1GB RAM confirmado universalmente. confidence=distributor: iFixit física + gramática convergem (presume → não confirmed).'
+  confidence: distributor
+- part_number: H9CKNNNBJTMP
+  chip_type: LPDDR3
+  capacity: 2GB
+  notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | Chip físico na esteira eMiner (jun/2026). PN 12-char = marcação laser 1ª linha. pn[7]=''B'' → HYX_LPDDR3_CAP = 16Gbit ÷ 8 = 2GB LPDDR3 ✓. ssfkg.com: H9CKNNNBJTMPLR = 16Gb 168ball LPDDR3 SK Hynix (B2B distribuidor) ✓. Gramática, ssfkg e iFixit (B-key=2GB via Nexus 5/H9CKNNNBPTMRLR) convergem. confidence=manual: chip físico + gramática + distribuidor B2B.'
+  confidence: manual
+- part_number: H9CKNNNBJTMPLR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 2GB
+  notes: 'ssfkg.com (B2B distribuidor): H9CKNNNBJTMPLR = 16Gb 168ball LPDDR3 SK Hynix ✓. 16Gbit ÷ 8 = 2GB. pn[7]=''B'' → HYX_LPDDR3_CAP = 2GB ✓. PN completo (14-char) complementa H9CKNNNBJTMP (12-char, chip físico eMiner). confidence=distributor: ssfkg B2B ✓.'
+  confidence: distributor
+- part_number: H9CKNNNBKTMRPR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 2GB
+  notes: 'Preduo (tier-1 WTC): H9CKNNNBKTMRPR-NUH = 16Gbit SKhynix 256ball LPDDR3 ✓. 16Gbit ÷ 8 = 2GB. pn[7]=''B'' → HYX_LPDDR3_CAP = 2GB ✓. confidence=distributor: Preduo tier curado ✓.'
+  confidence: distributor
+- part_number: H9CKNNNBPTMRLR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 2GB
+  device: Google Nexus 5 (LG, 2013)
+  notes: 'iFixit Nexus 5 Teardown (2013, Tier-1 identificação física): H9CKNNNBPTMRLR-NTM = 2GB LPDDR3 SK Hynix ✓. pn[7]=''B'' → HYX_LPDDR3_CAP = 16Gbit ÷ 8 = 2GB ✓. confidence=distributor: iFixit físico ✓.'
+  confidence: distributor
+- part_number: H9CKNNNCPTMRPR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 4GB
+  notes: 'Preduo (tier-1 WTC): H9CKNNNCPTMRPR-NUH/-NUM = 32Gbit SKhynix 256ball LPDDR3 ✓. 32Gbit ÷ 8 = 4GB. pn[7]=''C'' → HYX_LPDDR3_CAP = 4GB ✓. confidence=distributor: Preduo tier curado ✓.'
+  confidence: distributor
+- part_number: H9CKNNNDATMRPR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 3GB
+  notes: 'Preduo (tier-1 WTC): H9CKNNNDATMRPR-NUH = 24Gbit SKhynix 256ball LPDDR3 ✓. 24Gbit ÷ 8 = 3GB. pn[7]=''D'' → HYX_LPDDR3_CAP = 3GB ✓. confidence=distributor: Preduo tier curado ✓.'
+  confidence: distributor
+- part_number: H9CKNNNDATMUPR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 3GB
+  notes: 'Preduo WP01020 (tier-1 WTC): H9CKNNNDATMUPR-NUH = 24Gbit SKhynix 256ball LPDDR3 ✓. 24Gbit ÷ 8 = 3GB. pn[7]=''D'' → HYX_LPDDR3_CAP = 3GB ✓. confidence=distributor: Preduo tier curado ✓.'
+  confidence: distributor
+- part_number: H9CKNNNDBTMTAR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 3GB
+  device: Motorola Nexus 6 (Google, 2014)
+  notes: 'iFixit Motorola Nexus 6 Teardown (2014, Tier-1 identificação física): H9CKNNNDBTMTAR = 24Gb LPDDR3 SK Hynix = 3GB ✓. pn[7]=''D'' → HYX_LPDDR3_CAP = 24Gbit ÷ 8 = 3GB (densidade assimétrica) ✓. confidence=distributor: iFixit físico ✓.'
+  confidence: distributor
+- part_number: H9CKNNNECTMUPR
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 6GB
+  notes: 'Preduo WP01025 (tier-1 WTC): H9CKNNNECTMUPR-NUH = 48Gbit SKhynix 256ball LPDDR3 ✓. 48Gbit ÷ 8 = 6GB. pn[7]=''E'' → HYX_LPDDR3_CAP = 6GB (chave nova adicionada jun/2026). Pacote multi-die (ex: 6×8Gbit die). Samsung K3QF0F00AM-FGCF (48Gbit) corrobora. populate_hynix.py atualizado: (''E'', ''6GB'', ''''). confidence=distributor: Preduo ✓.'
+  confidence: distributor
+- part_number: H9DA4GH2GJAM
+  chip_type: eMCP
+  subtype: LPDDR1
+  emcp_ram: LPDDR1 256MB
+  emcp_nand: eMMC 4.x 4GB
+  notes: 'Chip físico identificado na esteira eMiner (jun/2026). Preduo.com (tier-1): H9DA = família ''137ball eMMC+LPD1'' (LPDDR1, NÃO LPDDR3). Notação Preduo ''4+4'' (H9DA4VH4JJMMCR) = 4GB NAND + 4Gb(512MB) LPDDR1. pn[7:9]=''2G'' → 2Gb = 256MB LPDDR1 (Gb, não GB). Decode H9DA: pn[4]=''4''→4GB NAND · pn[7:9]=''2G''→LPDDR1 256MB ✓. Sufixo ''-4EM'' confirma eMMC 4.x. Die gen A (pn[10]=''A''). Confidence=manual: chip físico + Preduo tier-1 convergem.'
+  confidence: manual
+- part_number: H9DA4GH2GJAMCR
+  chip_type: eMCP
+  subtype: LPDDR1
+  emcp_ram: LPDDR1 256MB
+  emcp_nand: eMMC 4.x 4GB
+  notes: 'PN com grade suffix ''CR'' (Commercial, RoHS) — mesmo chip que H9DA4GH2GJAM. Citado em Alibaba: ''H9da4gh2gjamcr Memory Emcp 4+2 Flash H9da4gh2gjamcr-4em''. Preduo.com (tier-1): H9DA = LPDDR1 (NÃO LPDDR3). pn[7:9]=''2G'' → 2Gb = 256MB LPDDR1. Die gen A · 4GB eMMC 4.x + 256MB LPDDR1. Confidence=manual: chip físico + Preduo tier-1 + gramática convergem.'
+  confidence: manual
+- part_number: H9DA4GH2GJBM
+  chip_type: eMCP
+  subtype: LPDDR1
+  emcp_ram: LPDDR1 256MB
+  emcp_nand: eMMC 4.x 4GB
+  notes: 'Mesmas specs que H9DA4GH2GJAM — die gen B (pn[10]=''B'' = 3ª revisão de silício). PN físico que originou a pesquisa da família H9DA (esteira eMiner, jun/2026). Preduo.com (tier-1): H9DA = ''137ball eMMC+LPD1'' → LPDDR1, NÃO LPDDR3. pn[7:9]=''2G'' → 2Gb = 256MB LPDDR1. 4GB eMMC 4.x + 256MB LPDDR1. Confidence=manual: chip físico em mãos + Preduo tier-1 ✓.'
+  confidence: manual
+- part_number: H9DA4GH2GJBMCR
+  chip_type: eMCP
+  subtype: LPDDR1
+  emcp_ram: LPDDR1 256MB
+  emcp_nand: eMMC 4.x 4GB
+  notes: 'PN com grade suffix ''CR'', die gen B — variante do H9DA4GH2GJAMCR. Rastreado em listas ariat-tech / ic-components (B2B). Die gen B = 3ª revisão de silício; specs idênticas à variante die gen A. Preduo.com (tier-1): H9DA = LPDDR1 (NÃO LPDDR3). 4GB eMMC 4.x + 256MB LPDDR1. Confidence=manual: família confirmada fisicamente.'
+  confidence: manual
+- part_number: H9TQ64AAETAC
+  chip_type: eMCP
+  emcp_ram: LPDDR3 2GB
+  emcp_nand: eMMC 5.1 8GB
+  notes: 'Fila de revisão: família=H9TQ, grammar_complete=True | Chip físico confirmado na esteira (eMiner 2026-05-13). H9TQ64: 64=8GB NAND (HYX_EMCP_NAND_CAP ✓). AA=LPDDR3 2GB (HYX_H9TQ_RAM_CAP ✓). PN já era âncora da chave AA no populate_hynix — agora com confirmação física.'
+  confidence: confirmed

@@ -60,3 +60,292 @@ families:
   suffix_rules: ''
   tip: DDR3L Nanya, variante low-voltage do NT5CC. Comum em notebooks.
   reasoning: ''
+known_parts:
+- part_number: NT5CB128M16
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'PN base (sem sufixo) NT5CB128M16 — DDR3 1.5V 2Gbit 128Mx16. Octopart (Nanya mfr page): 33 variantes confirmadas. Operador pode ler como NT5C128M16 quando ''B'' está ilegível.'
+  confidence: confirmed
+- part_number: NT5CB128M16FPDI
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Alldatasheet (Nanya Technology Corporation): NT5CB128M16FP-DI = DDR3 SDRAM 2Gbit 128Mx16 1.5V. DI = Industrial grade (-40 to 95°C).'
+  confidence: confirmed
+- part_number: NT5CB128M16FPDII
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CB128M16FP-DII = DDR3 SDRAM 2Gbit 128Mx16 1.5V Automotive 96-Pin TFBGA. DII = Automotive Grade II (-40 to 105°C).'
+  confidence: confirmed
+- part_number: NT5CB128M16FPFL
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CB128M16FP-FL = DDR3 DRAM 128MX16 PBGA96. Variante comercial pacote PBGA.'
+  confidence: confirmed
+- part_number: NT5CB128M16IPFL
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CB128M16IP-FL = DDR3 SDRAM 2Gbit 128Mx16 1.5V 96-Pin VFBGA.'
+  confidence: confirmed
+- part_number: NT5CB128M16JR
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Alldatasheet (Nanya Technology Corporation): NT5CB128M16JR = DDR3 2Gbit 128Mx16 1.5V. Revisão J (processo shrink, mesma organização FP).'
+  confidence: confirmed
+- part_number: NT5CB128M16JRDI
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: Nanya DDR3 2Gbit 128Mx16 1.5V, revisão JR, grade Industrial (-40 to 95°C). Confirmado via datasheet Nanya Technology Corporation.
+  confidence: confirmed
+- part_number: NT5CB128M16JREKT
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: Nanya DDR3 2Gbit 128Mx16 1.5V, revisão JR, EK = commercial (0–85°C), T = Tape & Reel. Confirmado via datasheet Nanya Technology Corporation.
+  confidence: confirmed
+- part_number: NT5CB256M16
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'PN curto sem revisão (DP) — operador lê NT5CB256M16 quando o sufixo DP não é visível no laser. Specs = mesmas do NT5CB256M16DP: DDR3 1.5V 4Gbit 256Mx16.'
+  confidence: confirmed
+- part_number: NT5CB256M16DP
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: PN base (sem sufixo) do NT5CB256M16DP — DDR3 4Gbit 256Mx16 1.5V. Octopart (Nanya mfr page) ✓. 9 variantes encontradas.
+  confidence: confirmed
+- part_number: NT5CB256M16DPDI
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CB256M16DP-DI = DDR3 Dram 256Mx16 PBGA96. DI = Industrial. DDR3 1.5V 4Gbit.'
+  confidence: confirmed
+- part_number: NT5CB256M16DPDII
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CB256M16DP-DII = DDR3 SDRAM 4Gbit 256Mx16 1.5V 96-Pin VFBGA. DII = Automotive Grade II.'
+  confidence: confirmed
+- part_number: NT5CB256M16DPEK
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CB256M16DP-EK = DDR3 SDRAM 4Gbit 256Mx16 1.5V 96-Pin VFBGA. EK = commercial 0–85°C.'
+  confidence: confirmed
+- part_number: NT5CB256M8
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x8
+  notes: PN base (sem sufixo) do NT5CB256M8 — DDR3 2Gbit 256Mx8 1.5V. NT5CB = DDR3 1.5V. Specs = mesmas do grupo FN-DI/DII e BN-CG.
+  confidence: confirmed
+- part_number: NT5CB256M8BNCG
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x8
+  notes: 'Octopart (Nanya): NT5CB256M8BN-CG = DDR3 Dram 256Mx8 0.255ns PBGA78. DDR3 standard 1.5V. CG = commercial grade.'
+  confidence: confirmed
+- part_number: NT5CB256M8FNDI
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x8
+  notes: 'Octopart (Nanya): NT5CB256M8FN-DI = DDR3 SDRAM 2Gbit 256Mx8 1.5V 78-Pin VFBGA. DI = Industrial. NT5CB = DDR3 standard 1.5V (≠ NT5CC = 1.35V).'
+  confidence: confirmed
+- part_number: NT5CB256M8FNDII
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x8
+  notes: 'Octopart (Nanya): NT5CB256M8FN-DII = DDR3 SDRAM 2Gbit 256Mx8 1.5V 78-Pin VFBGA. DII = Automotive Grade II.'
+  confidence: confirmed
+- part_number: NT5CC128M16
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Alias curto: operador lê NT5CC128M16 sem o designador JR/IP/FP quando laser está parcial. Aponta para DDR3L 2Gbit 128Mx16 1.35V — mesmas specs de NT5CC128M16JR.'
+  confidence: confirmed
+- part_number: NT5CC128M16FP
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: PN base (sem sufixo) do NT5CC128M16FP — DDR3L 2Gbit 128Mx16 PBGA96. Specs = mesmas do grupo FP-DI.
+  confidence: confirmed
+- part_number: NT5CC128M16FPDI
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC128M16FP-DI = DDR3L Dram 128Mx16 0.225ns PBGA96. DI = Industrial.'
+  confidence: confirmed
+- part_number: NT5CC128M16IP
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: PN base (sem sufixo) do NT5CC128M16IP — DDR3L 2Gbit 128Mx16 1.35V VFBGA96. Specs = mesmas do grupo IP-DI/DII.
+  confidence: confirmed
+- part_number: NT5CC128M16IPDI
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC128M16IP-DI = DDR3L SDRAM 2Gbit 128Mx16 1.35V 96-Pin VFBGA. DI = Industrial -40°C a 85°C.'
+  confidence: confirmed
+- part_number: NT5CC128M16IPDII
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC128M16IP-DII = DDR3L SDRAM 2Gbit 128Mx16 1.35V Automotive 96-Pin VFBGA.'
+  confidence: confirmed
+- part_number: NT5CC128M16JR
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Fila de revisão: família=NT5CC, grammar_complete=False | PN base (sem sufixo) do NT5CC128M16JR — DDR3L 2Gbit 128Mx16 1.35V. Operador lê sem sufixo no chip. Specs = mesmas do grupo JR-EK/EKH/EKI/EKT.'
+  confidence: confirmed
+- part_number: NT5CC128M16JREK
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC128M16JR-EK = DDR3L SDRAM 2Gbit 128Mx16 1.35V 96-Pin TFBGA. EK = commercial 0–85°C.'
+  confidence: confirmed
+- part_number: NT5CC128M16JREKH
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC128M16JR-EKH = DDR3L 2Gbit 128Mx16 TFBGA96. H = Automotive -40°C a 125°C.'
+  confidence: confirmed
+- part_number: NT5CC128M16JREKI
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC128M16JR-EKI = DDR3L SDRAM 2Gbit 128Mx16 1.35V Automotive 96-Pin TFBGA.'
+  confidence: confirmed
+- part_number: NT5CC128M16JREKT
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  density_gbit: 2Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC128M16JR-EKT = DDR3L 2Gbit 128Mx16 TFBGA96. T = Tape & Reel; mesmas specs de JR-EK.'
+  confidence: confirmed
+- part_number: NT5CC256M16
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'Alias curto: operador lê NT5CC256M16 sem o designador EP quando laser está parcial. Aponta para DDR3L 4Gbit 256Mx16 1.35V — mesmas specs de NT5CC256M16EP.'
+  confidence: confirmed
+- part_number: NT5CC256M16EP
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: PN base (sem sufixo) do NT5CC256M16EP — DDR3L 4Gbit 256Mx16 1.35V VFBGA96. Specs = mesmas do grupo EP-DI/EK/EKT/DII/DIH.
+  confidence: confirmed
+- part_number: NT5CC256M16EPDI
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC256M16EP-DI = DDR3L SDRAM 4Gbit 256Mx16 1.35V VFBGA96. DI = Industrial -40°C a 85°C.'
+  confidence: confirmed
+- part_number: NT5CC256M16EPDIH
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC256M16EP-DIH = DDR3L 4Gbit 256Mx16 VFBGA96. H = Automotive -40°C a 125°C.'
+  confidence: confirmed
+- part_number: NT5CC256M16EPDII
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC256M16EP-DII = DDR3L 4Gbit 256Mx16 VFBGA96 Automotive Grade II.'
+  confidence: confirmed
+- part_number: NT5CC256M16EPDITR
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC256M16EP-DI-TR = DDR3L 4Gbit 256Mx16 VFBGA96. Industrial, Tape & Reel.'
+  confidence: confirmed
+- part_number: NT5CC256M16EPEK
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC256M16EP-EK = DDR3L SDRAM 4Gbit 256Mx16 1.35V VFBGA96. EK = commercial 0–85°C.'
+  confidence: confirmed
+- part_number: NT5CC256M16EPEKT
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  density_gbit: 4Gb
+  interface: x16
+  notes: 'Octopart (Nanya mfr page): NT5CC256M16EP-EKT = DDR3L 4Gbit 256Mx16 VFBGA96. T = Tape & Reel.'
+  confidence: confirmed

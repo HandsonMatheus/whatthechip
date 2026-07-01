@@ -6,10 +6,18 @@ brand:
   notes: China · Fundada 2005 (兆易创新 / Zhaoyi Innovation)
 maps:
   GD5F_NAND_CAP:
-  - ['1', 128MB, '']
-  - ['2', 256MB, '']
-  - ['4', 512MB, '']
-  - ['8', 1GB, '']
+  - - '1'
+    - 128MB
+    - ''
+  - - '2'
+    - 256MB
+    - ''
+  - - '4'
+    - 512MB
+    - ''
+  - - '8'
+    - 1GB
+    - ''
 families:
 - prefix: GD25LB
   chip_type: NOR Flash
@@ -119,3 +127,46 @@ families:
   suffix_rules: ''
   tip: 'DDR4 SDRAM GigaDevice (GDQ), 1.2V, FBGA-96. JEDEC JESD-79-4. Anatomia: pn[3]=densidade (''2''=4Gbit=512MB), pn[4]=pacote (''B''=FBGA-96), pn[5]=org (''F''=×16), sufixo C/W=temp + E/Q/J=speed (2400/2666/3200). ⚠ pn[4]=''B'' facilmente lido como ''6'' no laser: ''GDQ26FAA'' = ''GDQ2BFAA'' mal lido — confirmar PN com datasheet físico. Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 (gigadevice.com) ✓. Destino: triagem DDR4 — slot 288-pin, 1.2V.'
   reasoning: ''
+known_parts:
+- part_number: GDQ2BFAA
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: x16
+  notes: 'GigaDevice Datasheet DS-00808-GDQ2BFAA-Rev1.4: 4Gbit DDR4 SDRAM, 256Mb×16, FBGA-96, 1.2V. JEDEC JESD-79-4 compliant. Fonte Tier 1: LCSC C2937367 + datasheet oficial GigaDevice ✓. ⚠ GDQ26FAA = provável misread de GDQ2BFAA (pn[4]=''B'' lido como ''6'' no laser).'
+  confidence: confirmed
+- part_number: GDQ2BFAACE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: x16
+  notes: 'GDQ2BFAA variante CE: Commercial temp (0-95°C), DDR4-2400. Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 + LCSC C2937367 ✓.'
+  confidence: confirmed
+- part_number: GDQ2BFAACJ
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: x16
+  notes: 'GDQ2BFAA variante CJ: Commercial temp (0-95°C), DDR4-3200. Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 ✓.'
+  confidence: confirmed
+- part_number: GDQ2BFAACQ
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: x16
+  notes: 'GDQ2BFAA variante CQ: Commercial temp (0-95°C), DDR4-2666. Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 ✓.'
+  confidence: confirmed
+- part_number: GDQ2BFAAWJ
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: x16
+  notes: 'GDQ2BFAA variante WJ: Wide temp (-40-95°C), DDR4-3200. Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 ✓.'
+  confidence: confirmed
+- part_number: GDQ2BFAAWQ
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: x16
+  notes: 'GDQ2BFAA variante WQ: Wide temp (-40-95°C), DDR4-2666. Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 ✓.'
+  confidence: confirmed

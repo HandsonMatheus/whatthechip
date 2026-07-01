@@ -8,192 +8,536 @@ brand:
   notes: Coreia do Sul · Fundada 1969
 maps:
   DRAM_MOBILE:
-  - ['1', 1Gb, 128MB]
-  - ['2', 2Gb, 256MB]
-  - ['4', 4Gb, 512MB]
-  - ['6', 6Gb, 768MB]
-  - ['8', 8Gb, 1GB]
-  - [B, 12Gb, 1.5GB]
-  - [F, 16Gb, 2GB]
-  - [G, 16Gb, 2GB]
-  - [H, 32Gb, 4GB]
-  - [P, 512Mb, 64MB]
+  - - '1'
+    - 1Gb
+    - 128MB
+  - - '2'
+    - 2Gb
+    - 256MB
+  - - '4'
+    - 4Gb
+    - 512MB
+  - - '6'
+    - 6Gb
+    - 768MB
+  - - '8'
+    - 8Gb
+    - 1GB
+  - - B
+    - 12Gb
+    - 1.5GB
+  - - F
+    - 16Gb
+    - 2GB
+  - - G
+    - 16Gb
+    - 2GB
+  - - H
+    - 32Gb
+    - 4GB
+  - - P
+    - 512Mb
+    - 64MB
   DRAM_PC:
-  - [1G, 1Gb, 128MB]
-  - ['28', 128Mb, 16MB]
-  - [2G, 2Gb, 256MB]
-  - [4G, 4Gb, 512MB]
-  - ['51', 512Mb, 64MB]
-  - ['56', 256Mb, 32MB]
-  - ['64', 64Mb, 8MB]
-  - [8G, 8Gb, 1GB]
-  - [AG, 16Gb, 2GB]
-  - [AH, 16Gb, 2GB]
-  - [BH, 32Gb, 4GB]
-  - [CH, 32Gb, 4GB]
+  - - 1G
+    - 1Gb
+    - 128MB
+  - - '28'
+    - 128Mb
+    - 16MB
+  - - 2G
+    - 2Gb
+    - 256MB
+  - - 4G
+    - 4Gb
+    - 512MB
+  - - '51'
+    - 512Mb
+    - 64MB
+  - - '56'
+    - 256Mb
+    - 32MB
+  - - '64'
+    - 64Mb
+    - 8MB
+  - - 8G
+    - 8Gb
+    - 1GB
+  - - AG
+    - 16Gb
+    - 2GB
+  - - AH
+    - 16Gb
+    - 2GB
+  - - BH
+    - 32Gb
+    - 4GB
+  - - CH
+    - 32Gb
+    - 4GB
   K3PE_CAP:
-  - [0E, 2GB, 16Gbit DDP (2× 8Gb ou 512Mx32) — K3PE0E000x. Galaxy flagship (~2012-2013). Resíduo.]
-  - [4E, 512MB, 4Gbit SDP (128Mx32) — K3PE4E400x. Galaxy entry (~2011-2012). Resíduo.]
-  - [7E, 1GB, 8Gbit DDP (2× 4Gb) — K3PE7E700x. Galaxy mid-range (~2011-2012). Resíduo.]
-  - [8E, 1GB, '8Gbit DDP — K3PE8E800M, die alternativo de 7E. Mesma densidade. Resíduo.']
+  - - 0E
+    - 2GB
+    - 16Gbit DDP (2× 8Gb ou 512Mx32) — K3PE0E000x. Galaxy flagship (~2012-2013). Resíduo.
+  - - 4E
+    - 512MB
+    - 4Gbit SDP (128Mx32) — K3PE4E400x. Galaxy entry (~2011-2012). Resíduo.
+  - - 7E
+    - 1GB
+    - 8Gbit DDP (2× 4Gb) — K3PE7E700x. Galaxy mid-range (~2011-2012). Resíduo.
+  - - 8E
+    - 1GB
+    - 8Gbit DDP — K3PE8E800M, die alternativo de 7E. Mesma densidade. Resíduo.
   K3QF_CAP:
-  - ['1', 1GB, '8Gb — 1× 8Gb die. Ex: K3QF1F10DMAGCE000 (Octopart). Resíduo.']
-  - ['2', 2GB, '16Gb — 2× 8Gb die. Ex: K3QF2F20EM. Reacondicional seletivo.']
-  - ['3', 2GB, '16Gb — revisão de die (NÃO é 3GB). Ex: K3QF3F30BM-AGCG (Samsung.com ✓). Reacondicional seletivo.']
-  - ['4', 4GB, '32Gb — Ex: K3QF4F40BM-FGCF / K3QF4F40BM-AGCF (PSG 1H 2017 ✓). Reacondicional seletivo.']
-  - ['5', 1.5GB, '12Gb — 2× 6Gb die. Ex: K3QF5F50MM (Galaxy S5 Mini, Exynos 3470 ✓). Reacondicional seletivo.']
-  - ['6', 3GB, '24Gb — Ex: K3QF6F60AM-FGCF / K3QF6F60MM (PSG 1H 2017 + PSG 2H 2014 ✓). Reacondicional seletivo.']
-  - ['7', 3GB, '24Gb — 4× 6Gb die. Ex: K3QF7F70DM-QGCE (Note 3, Samsung PR 3GB LPDDR3 ✓). Reacondicional seletivo.']
-  - [A, 8GB, 64Gb — K3QFAFA0CM-AGCF (Samsung Semiconductor Global ✓ 2026-05-28). Geração C. Novo key — não existia no mapa anterior.]
+  - - '1'
+    - 1GB
+    - '8Gb — 1× 8Gb die. Ex: K3QF1F10DMAGCE000 (Octopart). Resíduo.'
+  - - '2'
+    - 2GB
+    - '16Gb — 2× 8Gb die. Ex: K3QF2F20EM. Reacondicional seletivo.'
+  - - '3'
+    - 2GB
+    - '16Gb — revisão de die (NÃO é 3GB). Ex: K3QF3F30BM-AGCG (Samsung.com ✓). Reacondicional seletivo.'
+  - - '4'
+    - 4GB
+    - '32Gb — Ex: K3QF4F40BM-FGCF / K3QF4F40BM-AGCF (PSG 1H 2017 ✓). Reacondicional seletivo.'
+  - - '5'
+    - 1.5GB
+    - '12Gb — 2× 6Gb die. Ex: K3QF5F50MM (Galaxy S5 Mini, Exynos 3470 ✓). Reacondicional seletivo.'
+  - - '6'
+    - 3GB
+    - '24Gb — Ex: K3QF6F60AM-FGCF / K3QF6F60MM (PSG 1H 2017 + PSG 2H 2014 ✓). Reacondicional seletivo.'
+  - - '7'
+    - 3GB
+    - '24Gb — 4× 6Gb die. Ex: K3QF7F70DM-QGCE (Note 3, Samsung PR 3GB LPDDR3 ✓). Reacondicional seletivo.'
+  - - A
+    - 8GB
+    - 64Gb — K3QFAFA0CM-AGCF (Samsung Semiconductor Global ✓ 2026-05-28). Geração C. Novo key — não existia no mapa anterior.
   K3RG_CAP:
-  - [2G, 4GB, 32Gb — K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ (PSG 1H 2017 ✓).]
-  - [3G, 3GB, '24Gb — K3RG3G30MM-DGCH (iFixit Galaxy S6 Teardown 2015 ✓). Mesma capacidade que 4G, die diferente.']
-  - [4G, 3GB, 24Gb — K3RG4G40MM-MGCJ (PSG 1H 2017 ✓).]
-  - [6G, 6GB, 48Gb — K3RG6G60MM-MGCJ (PSG 1H 2017 ✓).]
+  - - 2G
+    - 4GB
+    - 32Gb — K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ (PSG 1H 2017 ✓).
+  - - 3G
+    - 3GB
+    - 24Gb — K3RG3G30MM-DGCH (iFixit Galaxy S6 Teardown 2015 ✓). Mesma capacidade que 4G, die diferente.
+  - - 4G
+    - 3GB
+    - 24Gb — K3RG4G40MM-MGCJ (PSG 1H 2017 ✓).
+  - - 6G
+    - 6GB
+    - 48Gb — K3RG6G60MM-MGCJ (PSG 1H 2017 ✓).
   K4E_CAP:
-  - [2E, 1.5GB, '12Gb — Galaxy Tab E / S5 Mini (~2014-2015). Sem liquidez B2B atual. K4E2E304EA-AGCF: Kynix/Worldway ✓. K4E2E304EE-AGCE: Alldatasheet Samsung PSG ✓ (2026-05-29). Galaxy Tab E SM-T560 = 1.5GB RAM confirmado — GSMarena/Icecat ✓. Chave também presente em LPDDR4_CAP (confirmado por datasheet Samsung).']
-  - [6E, 2GB, 16Gb — Galaxy mid-range (~2014-2016).]
-  - [8E, 1GB, 8Gb — Galaxy entry (~2013). Sem liquidez B2B atual.]
-  - [BE, 4GB, 32Gb — Galaxy flagship (~2015). Alta demanda residual.]
-  - [FE, 3GB, 24Gb — Galaxy Note 3 / S5 (~2013-2014). Raro.]
-  - [HE, 3GB, '24Gb — alias FE: mesmo densidade, die alternativo. K4EHE304EC-AGCF — Puris B2B ✓. Galaxy Tab A SM-P585 (Exynos 7870).']
+  - - 2E
+    - 1.5GB
+    - '12Gb — Galaxy Tab E / S5 Mini (~2014-2015). Sem liquidez B2B atual. K4E2E304EA-AGCF: Kynix/Worldway ✓. K4E2E304EE-AGCE: Alldatasheet Samsung PSG ✓ (2026-05-29). Galaxy Tab E SM-T560 = 1.5GB RAM confirmado — GSMarena/Icecat ✓. Chave também presente em LPDDR4_CAP (confirmado por datasheet Samsung).'
+  - - 6E
+    - 2GB
+    - 16Gb — Galaxy mid-range (~2014-2016).
+  - - 8E
+    - 1GB
+    - 8Gb — Galaxy entry (~2013). Sem liquidez B2B atual.
+  - - BE
+    - 4GB
+    - 32Gb — Galaxy flagship (~2015). Alta demanda residual.
+  - - FE
+    - 3GB
+    - 24Gb — Galaxy Note 3 / S5 (~2013-2014). Raro.
+  - - HE
+    - 3GB
+    - '24Gb — alias FE: mesmo densidade, die alternativo. K4EHE304EC-AGCF — Puris B2B ✓. Galaxy Tab A SM-P585 (Exynos 7870).'
   KUS_CAP:
-  - ['02', 128GB, '']
-  - ['03', 256GB, '']
-  - ['04', 512GB, '']
+  - - '02'
+    - 128GB
+    - ''
+  - - '03'
+    - 256GB
+    - ''
+  - - '04'
+    - 512GB
+    - ''
   LPDDR4_CAP:
-  - [2E, 1.5GB, 12Gb]
-  - [4E, 512MB, 4Gb]
-  - [6E, 2GB, 16Gb]
-  - [7E, 3GB, 24Gb]
-  - [8E, 1GB, 8Gb]
-  - [BE, 4GB, 32Gb]
-  - [CE, 8GB, 64Gb]
-  - [H5, 4GB, 32Gb]
-  - [H6, 4GB, 32Gb]
-  - [H7, 8GB, 64Gb]
-  - [HD, 16GB, 128Gb]
-  - [HE, 3GB, 24Gb]
-  - [JE, 6GB, 48Gb]
+  - - 2E
+    - 1.5GB
+    - 12Gb
+  - - 4E
+    - 512MB
+    - 4Gb
+  - - 6E
+    - 2GB
+    - 16Gb
+  - - 7E
+    - 3GB
+    - 24Gb
+  - - 8E
+    - 1GB
+    - 8Gb
+  - - BE
+    - 4GB
+    - 32Gb
+  - - CE
+    - 8GB
+    - 64Gb
+  - - H5
+    - 4GB
+    - 32Gb
+  - - H6
+    - 4GB
+    - 32Gb
+  - - H7
+    - 8GB
+    - 64Gb
+  - - HD
+    - 16GB
+    - 128Gb
+  - - HE
+    - 3GB
+    - 24Gb
+  - - JE
+    - 6GB
+    - 48Gb
   LPDDR5_CAP:
-  - [1L, 4GB, '32Gb — K3KL1L10GM-JGCT (Samsung Global ✓ 2026-05-28). ⚠ CORRIGIDO: era 8GB/64Gb (bug distribuidor).']
-  - [2K, 6GB, 48Gb — K3LK2K20BM-BGCN (Samsung Global ✓).]
-  - [2L, 6GB, 48Gb — K3KL2L20DM (Samsung Global ✓ 2026-05-28).]
-  - [3K, 8GB, 64Gb — K3LK3K30EM-BGCN (Samsung Global ✓).]
-  - [3L, 8GB, 64Gb — K3KL3L30CM-BGCU (Samsung Global ✓).]
-  - [4K, 12GB, '96Gb — ex: K3LK4K40CM (Galaxy S20 Ultra; Octopart: 12GB ✓). K3LK4K40CM-JFCP Samsung Global ✓.']
-  - [4L, 12GB, '96Gb — K3KL4L40DM-BGCU (Samsung Global ✓ ''96 Gb''). ⚠ CORRIGIDO 2026-05-27: era 16GB/128Gb (bug distribuidor).']
-  - [5L, 16GB, 128Gb — K3KL5L50DM-BGCU (Samsung Global ✓).]
-  - [6K, 16GB, 128Gb — K3LK6K60BM-JGCP (Samsung Global ✓).]
-  - [6L, 2GB, '16Gb — K3KL6L60GM (Samsung Global ✓ 2026-05-28). Wearable/ultra-compact, 7500 Mbps.']
-  - [7K, 8GB, '64Gb — ex: K3LK7K70BM-BGCP (Galaxy S22; Octopart: 64Gb ✓)']
-  - [7L, 3GB, 24Gb — K3KL7L70DM (Samsung Global ✓ 2026-05-28).]
-  - [8L, 4GB, '32Gb — ex: K3KL8L80EMMGCU (Octopart: 1GX32 ✓)']
-  - [9L, 2GB, '16Gb — ex: K3KL9L90DMMGCU (Octopart: 512MX32 ✓)']
-  - [BK, 4GB, '32Gb — ex: K3LKBKB0BMMGCP (Octopart: 1GX32 ✓)']
-  - [CK, 8GB, 64Gb — K3LKCKC0BM-MFCP (Samsung Global ✓). Variante de empilhamento alternativo.]
-  - [DK, 18GB, 144Gb — K3LKDKD0CM-BGCP (Samsung Global ✓). Flagship 2022+.]
-  - [DL, 6GB, 48Gb — K3KLDLD0FM-MUCV (Samsung Global ✓ 2026-05-28). Gen FM/EM. VDDQ=0.5V. Processo diferente do 2L (mesma capacidade).]
+  - - 1L
+    - 4GB
+    - '32Gb — K3KL1L10GM-JGCT (Samsung Global ✓ 2026-05-28). ⚠ CORRIGIDO: era 8GB/64Gb (bug distribuidor).'
+  - - 2K
+    - 6GB
+    - 48Gb — K3LK2K20BM-BGCN (Samsung Global ✓).
+  - - 2L
+    - 6GB
+    - 48Gb — K3KL2L20DM (Samsung Global ✓ 2026-05-28).
+  - - 3K
+    - 8GB
+    - 64Gb — K3LK3K30EM-BGCN (Samsung Global ✓).
+  - - 3L
+    - 8GB
+    - 64Gb — K3KL3L30CM-BGCU (Samsung Global ✓).
+  - - 4K
+    - 12GB
+    - '96Gb — ex: K3LK4K40CM (Galaxy S20 Ultra; Octopart: 12GB ✓). K3LK4K40CM-JFCP Samsung Global ✓.'
+  - - 4L
+    - 12GB
+    - '96Gb — K3KL4L40DM-BGCU (Samsung Global ✓ ''96 Gb''). ⚠ CORRIGIDO 2026-05-27: era 16GB/128Gb (bug distribuidor).'
+  - - 5L
+    - 16GB
+    - 128Gb — K3KL5L50DM-BGCU (Samsung Global ✓).
+  - - 6K
+    - 16GB
+    - 128Gb — K3LK6K60BM-JGCP (Samsung Global ✓).
+  - - 6L
+    - 2GB
+    - 16Gb — K3KL6L60GM (Samsung Global ✓ 2026-05-28). Wearable/ultra-compact, 7500 Mbps.
+  - - 7K
+    - 8GB
+    - '64Gb — ex: K3LK7K70BM-BGCP (Galaxy S22; Octopart: 64Gb ✓)'
+  - - 7L
+    - 3GB
+    - 24Gb — K3KL7L70DM (Samsung Global ✓ 2026-05-28).
+  - - 8L
+    - 4GB
+    - '32Gb — ex: K3KL8L80EMMGCU (Octopart: 1GX32 ✓)'
+  - - 9L
+    - 2GB
+    - '16Gb — ex: K3KL9L90DMMGCU (Octopart: 512MX32 ✓)'
+  - - BK
+    - 4GB
+    - '32Gb — ex: K3LKBKB0BMMGCP (Octopart: 1GX32 ✓)'
+  - - CK
+    - 8GB
+    - 64Gb — K3LKCKC0BM-MFCP (Samsung Global ✓). Variante de empilhamento alternativo.
+  - - DK
+    - 18GB
+    - 144Gb — K3LKDKD0CM-BGCP (Samsung Global ✓). Flagship 2022+.
+  - - DL
+    - 6GB
+    - 48Gb — K3KLDLD0FM-MUCV (Samsung Global ✓ 2026-05-28). Gen FM/EM. VDDQ=0.5V. Processo diferente do 2L (mesma capacidade).
   NAND_FLASH_CAP:
-  - [1G, 1Gb, 128MB]
-  - [2G, 2Gb, 256MB]
-  - [4G, 4Gb, 512MB]
-  - [8G, 8Gb, 1GB]
-  - [AG, 16Gb, 2GB]
-  - [BG, 32Gb, 4GB]
-  - [CG, 64Gb, 8GB]
-  - [DG, 128Gb, 16GB]
+  - - 1G
+    - 1Gb
+    - 128MB
+  - - 2G
+    - 2Gb
+    - 256MB
+  - - 4G
+    - 4Gb
+    - 512MB
+  - - 8G
+    - 8Gb
+    - 1GB
+  - - AG
+    - 16Gb
+    - 2GB
+  - - BG
+    - 32Gb
+    - 4GB
+  - - CG
+    - 64Gb
+    - 8GB
+  - - DG
+    - 128Gb
+    - 16GB
   RDRAM_CAP:
-  - ['27', 128Mb, 8Mx16 (x16 org)]
-  - ['44', 144Mb, 16Mx9 por canal]
-  - ['76', 576Mb, 64Mx9 por canal]
-  - ['88', 288Mb, 32Mx9 por canal]
+  - - '27'
+    - 128Mb
+    - 8Mx16 (x16 org)
+  - - '44'
+    - 144Mb
+    - 16Mx9 por canal
+  - - '76'
+    - 576Mb
+    - 64Mx9 por canal
+  - - '88'
+    - 288Mb
+    - 32Mx9 por canal
   SAM_EMCP_CAP:
-  - ['11', 4GB, 512MB]
-  - ['21', 32GB, 2GB]
-  - ['31', 16GB, 1GB]
-  - [3W, 16GB, 512MB]
-  - ['41', 32GB, 4GB]
-  - [4Z, 32GB, 2GB]
-  - [5U, 4GB, 1GB]
-  - ['72', 8GB, 1GB]
-  - [7U, 8GB, 1GB]
-  - [7X, 8GB, 1GB]
-  - ['82', 16GB, 2GB]
-  - [8X, 16GB, 1GB]
-  - [BT, 16GB, 2GB]
-  - [C1, 64GB, 4GB]
-  - [C6, 64GB, 4GB]
-  - [C7, 64GB, 4GB]
-  - [D6, 32GB, 3GB]
-  - [E1, 16GB, 2GB]
-  - [E6, 16GB, 2GB]
-  - [F8, 256GB, 12GB]
-  - [F9, 256GB, 8GB]
-  - [G9, 128GB, 8GB]
-  - [GD, 32GB, 3GB]
-  - [H6, 64GB, 4GB]
-  - [H7, 64GB, 4GB]
-  - [H8, 64GB, 3GB]
-  - [H9, 32GB, 2GB]
-  - [IS, 16GB, 1GB]
-  - [J2, 128GB, 6GB]
-  - [JS, 4GB, 512MB]
-  - [JW, 4GB, 768MB]
-  - [K6, 128GB, 8GB]
-  - [L9, 128GB, 8GB]
-  - [LL, 4GB, 1GB]
-  - [M4, 128GB, 4GB]
-  - [N1, 8GB, 1GB]
-  - [N6, 8GB, 1GB]
-  - [NW, 8GB, 1GB]
-  - [NX, 8GB, 1GB]
-  - [P5, 256GB, 8GB]
-  - [P6, 64GB, 4GB]
-  - [P8, 64GB, 4GB]
-  - [P9, 64GB, 4GB]
-  - [S9, 256GB, 8GB]
-  - [TU, 16GB, 1GB]
-  - [V6, 128GB, 4GB]
-  - [V7, 128GB, 8GB]
-  - [V8, 128GB, 4GB]
-  - [V9, 128GB, 8GB]
-  - [W7, 32GB, 3GB]
-  - [W8, 32GB, 4GB]
-  - [X1, 32GB, 2GB]
-  - [X6, 32GB, 2GB]
+  - - '11'
+    - 4GB
+    - 512MB
+  - - '21'
+    - 32GB
+    - 2GB
+  - - '31'
+    - 16GB
+    - 1GB
+  - - 3W
+    - 16GB
+    - 512MB
+  - - '41'
+    - 32GB
+    - 4GB
+  - - 4Z
+    - 32GB
+    - 2GB
+  - - 5U
+    - 4GB
+    - 1GB
+  - - '72'
+    - 8GB
+    - 1GB
+  - - 7U
+    - 8GB
+    - 1GB
+  - - 7X
+    - 8GB
+    - 1GB
+  - - '82'
+    - 16GB
+    - 2GB
+  - - 8X
+    - 16GB
+    - 1GB
+  - - BT
+    - 16GB
+    - 2GB
+  - - C1
+    - 64GB
+    - 4GB
+  - - C6
+    - 64GB
+    - 4GB
+  - - C7
+    - 64GB
+    - 4GB
+  - - D6
+    - 32GB
+    - 3GB
+  - - E1
+    - 16GB
+    - 2GB
+  - - E6
+    - 16GB
+    - 2GB
+  - - F8
+    - 256GB
+    - 12GB
+  - - F9
+    - 256GB
+    - 8GB
+  - - G9
+    - 128GB
+    - 8GB
+  - - GD
+    - 32GB
+    - 3GB
+  - - H6
+    - 64GB
+    - 4GB
+  - - H7
+    - 64GB
+    - 4GB
+  - - H8
+    - 64GB
+    - 3GB
+  - - H9
+    - 32GB
+    - 2GB
+  - - IS
+    - 16GB
+    - 1GB
+  - - J2
+    - 128GB
+    - 6GB
+  - - JS
+    - 4GB
+    - 512MB
+  - - JW
+    - 4GB
+    - 768MB
+  - - K6
+    - 128GB
+    - 8GB
+  - - L9
+    - 128GB
+    - 8GB
+  - - LL
+    - 4GB
+    - 1GB
+  - - M4
+    - 128GB
+    - 4GB
+  - - N1
+    - 8GB
+    - 1GB
+  - - N6
+    - 8GB
+    - 1GB
+  - - NW
+    - 8GB
+    - 1GB
+  - - NX
+    - 8GB
+    - 1GB
+  - - P5
+    - 256GB
+    - 8GB
+  - - P6
+    - 64GB
+    - 4GB
+  - - P8
+    - 64GB
+    - 4GB
+  - - P9
+    - 64GB
+    - 4GB
+  - - S9
+    - 256GB
+    - 8GB
+  - - TU
+    - 16GB
+    - 1GB
+  - - V6
+    - 128GB
+    - 4GB
+  - - V7
+    - 128GB
+    - 8GB
+  - - V8
+    - 128GB
+    - 4GB
+  - - V9
+    - 128GB
+    - 8GB
+  - - W7
+    - 32GB
+    - 3GB
+  - - W8
+    - 32GB
+    - 4GB
+  - - X1
+    - 32GB
+    - 2GB
+  - - X6
+    - 32GB
+    - 2GB
   SAM_EMCP_GEN:
-  - [D, LPDDR4X, '']
-  - [F, LPDDR3, '']
-  - [G, LPDDR3, '']
-  - [J, LPDDR2, '']
-  - [K, LPDDR2, '']
-  - [L, LPDDR5, '']
-  - [N, LPDDR2, '']
-  - [Q, LPDDR3, '']
-  - [R, LPDDR3, '']
-  - [S, LPDDR4X, '']
-  - [V, LPDDR5/5X, '']
+  - - D
+    - LPDDR4X
+    - ''
+  - - F
+    - LPDDR3
+    - ''
+  - - G
+    - LPDDR3
+    - ''
+  - - J
+    - LPDDR2
+    - ''
+  - - K
+    - LPDDR2
+    - ''
+  - - L
+    - LPDDR5
+    - ''
+  - - N
+    - LPDDR2
+    - ''
+  - - Q
+    - LPDDR3
+    - ''
+  - - R
+    - LPDDR3
+    - ''
+  - - S
+    - LPDDR4X
+    - ''
+  - - V
+    - LPDDR5/5X
+    - ''
   SAM_EMMC_GEN:
-  - [E, eMMC 5.0, '']
-  - [F, eMMC 4.5, '']
-  - [G, eMMC 5.1, '']
-  - [J, eMMC 5.1, '']
-  - [K, eMMC 5.1, '']
-  - [R, eMMC 5.1, '']
-  - [U, eMMC 5.1, '']
-  - [W, eMMC 5.0, '']
+  - - E
+    - eMMC 5.0
+    - ''
+  - - F
+    - eMMC 4.5
+    - ''
+  - - G
+    - eMMC 5.1
+    - ''
+  - - J
+    - eMMC 5.1
+    - ''
+  - - K
+    - eMMC 5.1
+    - ''
+  - - R
+    - eMMC 5.1
+    - ''
+  - - U
+    - eMMC 5.1
+    - ''
+  - - W
+    - eMMC 5.0
+    - ''
   SAM_FLASH_CAP:
-  - ['2', 2GB, '']
-  - ['4', 4GB, '']
-  - ['8', 8GB, '']
-  - [A, 16GB, '']
-  - [B, 32GB, '']
-  - [C, 64GB, '']
-  - [D, 128GB, '']
-  - [E, 256GB, '']
-  - [F, 512GB, '']
-  - [G, 1TB, '']
+  - - '2'
+    - 2GB
+    - ''
+  - - '4'
+    - 4GB
+    - ''
+  - - '8'
+    - 8GB
+    - ''
+  - - A
+    - 16GB
+    - ''
+  - - B
+    - 32GB
+    - ''
+  - - C
+    - 64GB
+    - ''
+  - - D
+    - 128GB
+    - ''
+  - - E
+    - 256GB
+    - ''
+  - - F
+    - 512GB
+    - ''
+  - - G
+    - 1TB
+    - ''
 families:
 - prefix: K3
   chip_type: LPDDR2
@@ -1761,3 +2105,2609 @@ families:
   suffix_rules: ''
   tip: 'ISOCELL — módulo de câmera Samsung. Destino: bancada reacondicional Sensores.'
   reasoning: ''
+known_parts:
+- part_number: K3LK2K20CM
+  chip_type: LPDDR5
+  subtype: LPDDR5
+  capacity: 6GB
+  density_gbit: '48'
+  density_gb: '6'
+  interface: LPDDR5
+  notes: 'V=0.5V/1.05V | speed=6400Mbps | 200-ball FBGA | LPDDR5 6GB Samsung. Gen CM 6400Mbps. LPDDR5_CAP 2K=6GB (48Gb). pn[3:5]=2K. Nova base 2026. Confirmado Samsung Semiconductor Global. | Samsung PSG 2H 2014 | subtype ''LPDDR5 6GB'' → ''LPDDR5''. k3lk_v2.csv 2K=6GB (48Gb). Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3LK2K20CMJFCP
+  confidence: confirmed
+- part_number: K3LK3K3
+  chip_type: LPDDR5
+  capacity: 8GB
+  notes: 'Fila de revisão: família=K3LK, grammar_complete=True | PN de 7 chars: convenção de bancada — operador lê só a 1ª linha do laser (começa com K). pn[4:6]=''3K'' → LPDDR5_CAP[''3K'']=8GB (confirmado via Samsung Semiconductor Global 2026-05-27). Família K3LK = LPDDR5 (VDDQ=0.9V); K3KL = LPDDR5X (0.5V) — sockets incompatíveis. Confirmado pelo operador (2026-06-18). RENTÁVEL.'
+  confidence: confirmed
+- part_number: K3LK3K30EM
+  chip_type: LPDDR5
+  subtype: LPDDR5
+  capacity: 8GB
+  density_gbit: '64'
+  density_gb: '8'
+  interface: LPDDR5
+  notes: 'V=0.5V/1.05V | speed=6400Mbps | 200-ball FBGA | LPDDR5 8GB Samsung. Gen EM. LPDDR5_CAP 3K=8GB (64Gb). pn[3:5]=3K. Sufixo CGCN. Confirmado Samsung Semiconductor Global. | Samsung PSG 2H 2014 | subtype ''LPDDR5 8GB'' → ''LPDDR5''. k3lk_v2.csv 3K=8GB gen EM (64Gb). Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3LK3K30EMCGCN
+  confidence: confirmed
+- part_number: K3LK4K40BM
+  chip_type: LPDDR5
+  subtype: LPDDR5
+  capacity: 12GB
+  density_gbit: '96'
+  density_gb: '12'
+  interface: LPDDR5
+  notes: 'V=0.5V/1.05V | speed=5500Mbps | 200-ball FBGA | LPDDR5 12GB Samsung 5500Mbps. LPDDR5_CAP 4K=12GB (96Gb). pn[3:5]=4K. Sufixo BGCN. Confirmado Samsung Semiconductor Global. | Samsung PSG 2H 2014 | subtype ''LPDDR5 12GB'' → ''LPDDR5''. k3lk_v2.csv 4K=12GB (96Gb). Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3LK4K40BMBGCN
+  confidence: confirmed
+- part_number: K3LK4K40CM
+  chip_type: LPDDR5
+  subtype: LPDDR5
+  capacity: 12GB
+  density_gbit: '96'
+  density_gb: '12'
+  interface: LPDDR5
+  notes: 'V=0.5V/1.05V | speed=6400Mbps | 200-ball FBGA | LPDDR5 12GB Samsung 6400Mbps. Gen CM. pn[3:5]=4K. Sufixo JHCP. Confirmado Samsung Semiconductor Global. | Samsung PSG 2H 2014 | subtype ''LPDDR5 12GB'' → ''LPDDR5''. k3lk_v2.csv 4K=12GB gen CM (96Gb). Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3LK4K40CMJHCP
+  confidence: confirmed
+- part_number: K3LK6K60BM
+  chip_type: LPDDR5
+  subtype: LPDDR5
+  capacity: 16GB
+  density_gbit: '128'
+  density_gb: '16'
+  interface: LPDDR5
+  notes: 'V=0.5V/1.05V | speed=5500Mbps | 200-ball FBGA | LPDDR5 16GB Samsung 5500Mbps. LPDDR5_CAP 6K=16GB (128Gb). pn[3:5]=6K. Sufixo BGCP. Confirmado Samsung Semiconductor Global. | Samsung PSG 2H 2014 | subtype ''LPDDR5 16GB'' → ''LPDDR5''. k3lk_v2.csv 6K=16GB (128Gb). Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3LK6K60BMBGCP
+  confidence: confirmed
+- part_number: K3LK7K70BM
+  chip_type: LPDDR5
+  subtype: LPDDR5
+  capacity: 8GB
+  density_gbit: '64'
+  density_gb: '8'
+  interface: LPDDR5
+  notes: 'V=0.5V/1.05V | speed=5500Mbps | 200-ball FBGA | LPDDR5 8GB Samsung 5500Mbps. Gen BM variante 7K. pn[3:5]=7K. Sufixo BGCP. Confirmado Samsung Semiconductor Global. | Samsung PSG 2H 2014 | subtype ''LPDDR5 8GB'' → ''LPDDR5''. k3lk_v2.csv 7K=8GB (64Gb). Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3LK7K70BMBGCP
+  confidence: confirmed
+- part_number: K3LKCKC0BM
+  chip_type: LPDDR5
+  subtype: LPDDR5
+  capacity: 8GB
+  density_gbit: '64'
+  density_gb: '8'
+  interface: LPDDR5
+  notes: 'V=0.5V/1.05V | speed=6400Mbps | 200-ball FBGA | LPDDR5 8GB Samsung. Gen BM 6400Mbps. LPDDR5_CAP CK=8GB (64Gb). pn[3:5]=CK. Sufixo MGCP. Confirmado Samsung Semiconductor Global. | Samsung PSG 2H 2014 | subtype ''LPDDR5 8GB'' → ''LPDDR5''. k3lk_v2.csv CK=8GB (64Gb). Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3LKCKC0BMMGCP
+  confidence: confirmed
+- part_number: K3PE0E00QMBGC2
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  capacity: 2GB
+  density_gbit: 16Gb
+  density_gb: 2GB
+  interface: LPDDR2
+  notes: 'org=2CH x32 | V=1.8V/1.2V | speed=1066Mbps | 216-ball FBGA | 12x12mm | PoP, QDP. K3=multi-channel PoP | Samsung PSG 2H 2014 | subtype ''LPDDR2 Mobile'' → ''LPDDR2''. PSG 2H 2014 2CH QDP 2GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3PE0E00QM-BGC2
+  confidence: confirmed
+- part_number: K3PE0E00QMCGC2
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  capacity: 2GB
+  density_gbit: 16Gb
+  density_gb: 2GB
+  interface: LPDDR2
+  notes: 'org=2CH x32 | V=1.8V/1.2V | speed=1066Mbps | 220-ball FBGA | 14x14mm | PoP, QDP. K3=multi-channel PoP | Samsung PSG 2H 2014 | subtype ''LPDDR2 Mobile'' → ''LPDDR2''. PSG 2H 2014 2CH QDP 2GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3PE0E00QM-CGC2
+  confidence: confirmed
+- part_number: K3PE4E400A
+  chip_type: LPDDR2
+  capacity: 512MB
+  notes: 'Fila de revisão: família=K3PE, grammar_complete=False | K3PE família LPDDR2 adicionada ao grammar (2026-05-29). K3PE4E400A-XGC1: harddiskdirect ''128Mx32 LPDDR2'' → 4Gbit÷8=512MB ✓. Octopart: K3PE4E400A-XGC0, 3 distribuidores ✓. cap_key ''4E'' adicionado ao K3PE_CAP em populate_samsung.py.'
+  confidence: confirmed
+- part_number: K3PE7E700B
+  chip_type: LPDDR2
+  subtype: LPDDR2 Mobile
+  capacity: 1GB
+  notes: 'TechInsights DPR-1110-901: K3PE7E700B-XXC1 = ''32nm 2X 4Gb Mobile LPDDR2 DRAM''. DDP: 4Gb/die × 2 = 8Gb = 1GB. Jotrin + Veswin: listados ✓ (2026-05-29). cap_key ''7E'' adicionado ao K3PE_CAP → 8Gbit=1GB.'
+  confidence: confirmed
+- part_number: K3PE7E70QMBGC2
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR2
+  notes: 'org=2CH x32 | V=1.8V/1.2V | speed=1066Mbps | 216-ball FBGA | 12x12mm | PoP, DDP. K3=multi-channel PoP | Samsung PSG 2H 2014 | subtype ''LPDDR2 Mobile'' → ''LPDDR2''. PSG 2H 2014 2CH DDP 1GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3PE7E70QM-BGC2
+  confidence: confirmed
+- part_number: K3PE7E70QMCGC2
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR2
+  notes: 'org=2CH x32 | V=1.8V/1.2V | speed=1066Mbps | 220-ball FBGA | 14x14mm | PoP, DDP. K3=multi-channel PoP | Samsung PSG 2H 2014 | subtype ''LPDDR2 Mobile'' → ''LPDDR2''. PSG 2H 2014 2CH DDP 1GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3PE7E70QM-CGC2
+  confidence: confirmed
+- part_number: K3QF2F20DA
+  chip_type: LPDDR3
+  subtype: LPDDR3 Mobile
+  capacity: 2GB
+  notes: Gramática correta (K3QF, pn[4]='2'=16Gb÷8=2GB). Confirmado por distribuidores globais Win Source e Veswin (sufixo -QGCF). Fix promove de estimated para confirmed, retira da fila de revisão.
+  confidence: confirmed
+- part_number: K3QF3F30BM
+  chip_type: LPDDR3
+  capacity: 2GB
+  notes: 'Fila de revisão: família=K3QF, grammar_complete=True | Samsung Semiconductor Global (Tier 1): K3QF3F30BM-AGCG(16 Gb) ✓. 16Gb ÷ 8 = 2GB. pn[4]=''3'' → K3QF_CAP[''3'']=2GB. ⚠ chave ''3'' ≠ 3GB — é revisão de die (16Gb total = 2GB como ''2''). confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: confirmed
+- part_number: K3QF4F40BM
+  chip_type: LPDDR3
+  subtype: LPDDR3 Mobile
+  capacity: 4GB
+  notes: 'PSG Samsung 1H 2017 (Tier 1): K3QF4F40BM-FGCF / K3QF4F40BM-AGCF = 32Gb = 4GB ✓. 32Gb ÷ 8 = 4GB. pn[4]=''4'' → K3QF_CAP[''4'']=4GB. confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: confirmed
+- part_number: K3QF4F40CM
+  chip_type: LPDDR3
+  subtype: LPDDR3 Mobile
+  capacity: 4GB
+  notes: 'Samsung Semiconductor Global (Tier 1): K3QF4F40CM-AGCF(32 Gb) ✓. 32Gb ÷ 8 = 4GB. pn[4]=''4'' → K3QF_CAP[''4'']=4GB. Revisão posterior de K3QF4F40BM (mesma densidade 32Gb). confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: confirmed
+- part_number: K3QF5F50MM
+  chip_type: LPDDR3
+  capacity: 1.5GB
+  device: Samsung Galaxy S5 Mini (SM-G800F/H, Exynos 3470)
+  notes: 'Fila de revisão: família=K3QF, grammar_complete=False | Chip físico confirmado na esteira (eMiner 2026-05-13). K3QF5: 12Gb = 2×6Gb die = 1.5GB LPDDR3. Chave ''5'' adicionada ao K3QF_CAP. RAM standalone PoP — sem NAND. Destino: resíduo (baixo valor B2B).'
+  confidence: confirmed
+- part_number: K3QF7F70DM
+  chip_type: LPDDR3
+  capacity: 3GB
+  notes: 'Fila de revisão: família=K3QF, grammar_complete=True | Preduo Tier 1: K3QF7F70DM-QGCF = 24Gbit Samsung LPDDR3, 216ball ✓ (2026-06-17). K3QF_CAP[''7''] = 3GB = 4×6Gb die = 24Gbit ÷ 8 = 3GB. Gramática acertou na íntegra. RAM standalone PoP — sem NAND. confidence=confirmed: grammar_wins=False.'
+  confidence: confirmed
+- part_number: K3RG2G2
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  notes: 'Fila de revisão: família=K3RG, grammar_complete=True | PSG Samsung 1H 2017 (Tier 1): K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ = 32Gb = 4GB ✓. PN 7 chars: convenção de bancada — operador lê só a 1ª linha do laser. Cobre variantes CA (366-ball) e CM (432-ball) — mesma capacidade 4GB. pn[4:6]=''2G'' → K3RG_CAP[''2G'']=4GB. confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: confirmed
+- part_number: K3RG2G20BM
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  device: Google Pixel XL (Snapdragon 821, 2016), LG G5 (Snapdragon 820, 2016)
+  notes: 'K3RG2G20BM-MGCJ = 4GB LPDDR4. iFixit Google Pixel XL teardown ✓ + iFixit LG G5 teardown ✓ (2026-05-29). pn[4:6]=''2G'' → K3RG_CAP → 32Gbit ÷ 8 = 4GB. Grammar correto. confidence=confirmed: garante grammar_wins=False → banco de dados.'
+  source_url: https://www.ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237
+  confidence: confirmed
+- part_number: K3RG2G20BM0G0J
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  device: Google Pixel XL (Snapdragon 821, 2016), LG G5 (Snapdragon 820, 2016)
+  notes: 'Fila de revisão: família=K3RG, grammar_complete=True | PN completo como lido pelo scanner (sem hífen): K3RG2G20BM + sufixo 0G0J. Mesma base K3RG2G20BM confirmada por iFixit Pixel XL + LG G5 teardowns ✓ (2026-05-29). pn[4:6]=''2G'' → 4GB LPDDR4. confidence=confirmed: banco de dados.'
+  source_url: https://www.ifixit.com/Teardown/Google+Pixel+XL+Teardown/71237
+  confidence: confirmed
+- part_number: K3RG2G20BMCGCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  emcp_ram: None
+  emcp_nand: None
+  notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | K3RG2G20BM-CGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. Octopart: K3RG2G20BM-CGCJTTN = LPDDR4-3733 (32Gb), Win Source 20 units ✓. pn[4:6]=''2G'' → K3RG_CAP=''4GB''. Mesma base BM confirmada por iFixit Pixel XL + LG G5. Adicionado 2026-06-19.'
+  source_url: https://octopart.com/part/samsung/K3RG2G20BM-CGCJTTN
+  confidence: confirmed
+- part_number: K3RG2G20CAMGCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  notes: 'org=4CH x16 | V=1.8V/1.1V/1.1V | speed=3733Mbps | 366-ball FBGA | 15x15mm | QDP. K3RG=LPDDR4 4CH. 32Gb total. CS (Customer Sample). | Samsung PSG 2H 2014 | K3RG2G20CA-MGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. PSG Samsung 1H 2017 (Tier 1): K3RG2G20CA-MGCJ = 32Gb = 4GB ✓. pn[4:6]=''2G'' → K3RG_CAP=''4GB''. Die CA, 366-ball. Adicionado 2026-06-19.'
+  source_url: psg_2h2014:K3RG2G20CA-MGCJ
+  confidence: confirmed
+- part_number: K3RG2G20CMCGCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  notes: 'K3RG2G20CM-CGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. Octopart: Samsung part registrado, sem distribuidores ativos. Die CM (cf. K3RG2G20CM-FGCJ PSG 1H 2017 ✓) + sufixo CGCJ (cf. K3RG2G20BM-CGCJ Octopart ✓). confidence=manual: parte Samsung reconhecida, sem estoque distribuidor confirmado. Adicionado 2026-06-19.'
+  confidence: manual
+- part_number: K3RG2G20CMFGCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  notes: 'org=4CH x16 | V=1.8V/1.1V/1.1V | speed=3733Mbps | 432-ball FBGA | 15x15mm | QDP. K3RG=LPDDR4 4CH. 32Gb total. ES (Engineering Sample). 432-ball. | Samsung PSG 2H 2014 | K3RG2G20CM-FGCJ (scanner sem hífen): LPDDR4 Samsung 4GB. PSG Samsung 1H 2017 (Tier 1): K3RG2G20CM-FGCJ = 32Gb = 4GB ✓. pn[4:6]=''2G'' → K3RG_CAP=''4GB''. Die CM, 432-ball. Adicionado 2026-06-19.'
+  source_url: psg_2h2014:K3RG2G20CM-FGCJ
+  confidence: confirmed
+- part_number: K3RG3G3
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 3GB
+  notes: 'Fila de revisão: família=K3R, grammar_complete=True | K3RG3G30MM-DGCH = 3GB LPDDR4. iFixit Galaxy S6 Teardown (2015), Step 10: ''Samsung K3RG3G30MM-DGCH 3 GB LPDDR4 RAM'' ✓. PN de 7 chars: convenção de bancada — operador lê só a 1ª linha do laser. pn[4:6]=''3G'' → K3RG_CAP[''3G'']=3GB (24Gb, mesma capacidade que ''4G'', die diferente). K3RG_CAP atualizado em populate_samsung.py (2026-06-18). confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: confirmed
+- part_number: K3RG4G4
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 3GB
+  notes: 'PSG Samsung 1H 2017 (Tier 1): K3RG4G40MM-MGCJ = 24Gb = 3GB ✓. PN 7 chars: convenção de bancada — operador lê só a 1ª linha do laser. pn[4:6]=''4G'' → K3RG_CAP[''4G'']=3GB. confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: confirmed
+- part_number: K3RG4G40MMMGCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 3GB
+  density_gbit: 24Gb
+  density_gb: 3GB
+  notes: 'org=4CH x16 | V=1.8V/1.1V/1.1V | speed=3733Mbps | 366-ball FBGA | 15x15mm | DDP. K3RG=LPDDR4 4CH multi-channel (≠K3R=LPDDR3). 24Gb total. | Samsung PSG 2H 2014 | K3RG4G40MM-MGCJ (scanner sem hífen): LPDDR4 Samsung 3GB. Octopart: Worldway 42,485 units ✓. PSG Samsung 1H 2017 (Tier 1): K3RG4G40MM-MGCJ = 24Gb = 3GB ✓. pn[4:6]=''4G'' → K3RG_CAP=''3GB''. PN completo — complementa K3RG4G4 (7-char). Adicionado 2026-06-19.'
+  source_url: https://octopart.com/part/samsung/K3RG4G40MMMGCJ
+  confidence: confirmed
+- part_number: K3RG4G40MMMGCJT00E
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 3GB
+  notes: 'K3RG4G40MM-MGCJT00E: variante de embalagem do K3RG4G40MMMGCJ. Octopart: Win Source 20 units + Worldway 49,696 units ✓. pn[4:6]=''4G'' → K3RG_CAP=''3GB'' = 24Gb. Sufixo T00E = código de embalagem Samsung (Tape + customer code). Adicionado 2026-06-19.'
+  source_url: https://octopart.com/part/samsung/K3RG4G40MMMGCJT00E
+  confidence: confirmed
+- part_number: K3RG6G6
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 6GB
+  notes: 'PSG Samsung 1H 2017 (Tier 1): K3RG6G60MM-MGCJ = 48Gb = 6GB ✓. PN 7 chars: convenção de bancada — operador lê só a 1ª linha do laser. pn[4:6]=''6G'' → K3RG_CAP[''6G'']=6GB. confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: confirmed
+- part_number: K3RG6G60MMMGCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 6GB
+  density_gbit: 48Gb
+  density_gb: 6GB
+  notes: 'org=4CH x16 | V=1.8V/1.1V/1.1V | speed=3733Mbps | 366-ball FBGA | 15x15mm | QDP. K3RG=LPDDR4 4CH. 48Gb total. | Samsung PSG 2H 2014 | K3RG6G60MM-MGCJ (scanner sem hífen): LPDDR4 Samsung 6GB. Octopart: Samsung part ✓ (K3RG6G60MMMGCJ). PSG Samsung 1H 2017 (Tier 1): K3RG6G60MM-MGCJ = 48Gb = 6GB ✓. pn[4:6]=''6G'' → K3RG_CAP=''6GB''. PN completo — complementa K3RG6G6 (7-char). Adicionado 2026-06-19.'
+  source_url: https://octopart.com/part/samsung/K3RG6G60MMMGCJ
+  confidence: confirmed
+- part_number: K3UH5H50AM
+  chip_type: LPDDR4X
+  subtype: LPDDR4X Multi-Channel
+  capacity: 4GB
+  notes: 'Samsung Semiconductor + ssfkg: K3UH5H50AM = 32Gb LPDDR4X (556FBGA). 32Gb ÷ 8 = 4GB. H5 adicionado ao LPDDR4_CAP como alias de BE/HE/H6. IA inicialmente afirmou 2GB (16Gb) — refutado por fontes primárias.'
+  confidence: confirmed
+- part_number: K3UH5H50MMNGCJ
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  interface: LPDDR4X
+  notes: 'org=4CH x16 | V=1.8V/1.1V/0.6V | speed=3733Mbps | 366-ball FBGA | 12x12.7mm | DDP. K3UH=LPDDR4X 4CH. 32Gb total. CS (Customer Sample). VDDQ=0.6V. | Samsung PSG 2H 2014 | subtype ''LPDDR4X Multi-Channel'' → ''LPDDR4X''. PSG 1H 2017. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3UH5H50MM-NGCJ
+  confidence: confirmed
+- part_number: K3UH6H6
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 6GB
+  notes: 'Fila de revisão: família=K3U, grammar_complete=True | Chip físico eMiner (2026-06-20). PN de 7 chars — convenção de bancada (1ª linha laser). PN completo = K3UH6H60AM-NGCJ (ou variantes AM/BM). ⚠ Grammar decodifica H6→4GB (ERRADO para K3UH multi-channel). Samsung PSG 1H 2017: K3UH6H60AM-NGCJ = 48Gb = 6GB ✓. Samsung Global: K3UH6H60AM-THCL / K3UH6H60BM-EGCL / K3UH6H60BM-AGCL = 6GB ✓. confidence=manual: âncoras confirmed no banco; PN truncado = convenção de bancada.'
+  confidence: manual
+- part_number: K3UH6H60AMNGCJ
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 6GB
+  density_gbit: 48Gb
+  density_gb: 6GB
+  interface: LPDDR4X
+  notes: 'org=4CH x16 | V=1.8V/1.1V/0.6V | speed=3733Mbps | 366-ball FBGA | 12x12.7mm | QDP. K3UH=LPDDR4X 4CH. 48Gb total. VDDQ=0.6V. | Samsung PSG 2H 2014 | subtype ''LPDDR4X Multi-Channel'' → ''LPDDR4X''. PSG 1H 2017. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3UH6H60AM-NGCJ
+  confidence: confirmed
+- part_number: K3UH6H60AMTHCL
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 6GB
+  density_gbit: 48Gb
+  density_gb: 6GB
+  interface: LPDDR4X
+  notes: 'org=4CH x16 | V=1.8V/1.1V/0.6V | 12x12.7mm | QDP. LPDDR4X 4CH multi-channel. K3UH=4CH (≠K4U=2CH). 48Gb=6GB. ⚠ EXCEÇÃO: grammar decodifica H6→4GB (ERRADO). DB vence. Cf. PSG 1H 2017: K3UH6H60AM-NGCJ. | Samsung PSG 2H 2014 | subtype ''LPDDR4X Multi-Channel'' → ''LPDDR4X''. Samsung Global 2017-2020. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3UH6H60AM-THCL
+  confidence: confirmed
+- part_number: K3UH6H60BMAGCL
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 6GB
+  density_gbit: 48Gb
+  density_gb: 6GB
+  interface: LPDDR4X
+  notes: 'org=4CH x16 | V=1.8V/1.1V/0.6V | 12x12.7mm | QDP. LPDDR4X 4CH multi-channel. Rev B (gen B). 48Gb=6GB. ⚠ EXCEÇÃO: grammar decodifica H6→4GB (ERRADO). DB vence. | Samsung PSG 2H 2014 | subtype ''LPDDR4X Multi-Channel'' → ''LPDDR4X''. Samsung Global 2017-2020. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3UH6H60BM-AGCL
+  confidence: confirmed
+- part_number: K3UH6H60BMEGCL
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 6GB
+  density_gbit: 48Gb
+  density_gb: 6GB
+  interface: LPDDR4X
+  notes: 'org=4CH x16 | V=1.8V/1.1V/0.6V | 12x12.7mm | QDP. LPDDR4X 4CH multi-channel. Rev B (gen B). 48Gb=6GB. ⚠ EXCEÇÃO: grammar decodifica H6→4GB (ERRADO). DB vence. | Samsung PSG 2H 2014 | subtype ''LPDDR4X Multi-Channel'' → ''LPDDR4X''. Samsung Global 2017-2020. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K3UH6H60BM-EGCL
+  confidence: confirmed
+- part_number: K4A4G085WE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: Base PN — E-die, x8. Deriva de K4A4G085WE-BCPB/BCTD/BITD (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die.
+  confidence: confirmed
+- part_number: K4A4G085WEBCPB
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G085WE-BCPB(4 Gb) ✓. E-die, x8, DDR4-2133 (BCPB). 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G085WEBCTD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G085WE-BCTD(4 Gb) ✓. E-die, x8, DDR4-2666 (BCTD). 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G085WEBITD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G085WE-BITD(4 Gb) ✓. E-die, x8, DDR4-2666. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G085WF
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: Base PN — F-die, x8. Deriva de K4A4G085WF-BCTD/BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die.
+  confidence: confirmed
+- part_number: K4A4G085WFBCTD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G085WF-BCTD(4 Gb) ✓. F-die, x8, DDR4-2666 (BCTD). 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G085WFBCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G085WF-BCWE(4 Gb) ✓. F-die, x8, DDR4-3200 (BCWE). 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G085WG
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: Base PN — G-die, x8. Deriva de K4A4G085WG-BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die.
+  confidence: confirmed
+- part_number: K4A4G085WGBCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G085WG-BCWE(4 Gb) ✓. G-die, x8, DDR4-3200 (BCWE). 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G165WE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: Base PN — E-die, x16. Deriva de K4A4G165WE-BCRC/BCTD/BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die.
+  confidence: confirmed
+- part_number: K4A4G165WEBCRC
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G165WE-BCRC(4 Gb) ✓. E-die, x16, DDR4-2400 (BCRC). 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G165WEBCTD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G165WE-BCTD(4 Gb) ✓. E-die, x16, DDR4-2666. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G165WEBCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global USA: K4A4G165WE-BCWE(4 Gb) ✓. E-die, x16, DDR4-3200. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G165WF
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: Base PN — F-die, x16. Deriva de K4A4G165WF-BCTD/BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die.
+  confidence: confirmed
+- part_number: K4A4G165WFBCTD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G165WF-BCTD(4 Gb) ✓. F-die, x16, DDR4-2666. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G165WFBCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G165WF-BCWE(4 Gb) ✓. F-die, x16, DDR4-3200. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A4G165WG
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: Base PN — G-die, x16. Deriva de K4A4G165WG-BCWE (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die.
+  confidence: confirmed
+- part_number: K4A4G165WGBCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 512MB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A4G165WG-BCWE(4 Gb) ✓. G-die, x16, DDR4-3200. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4A8G085WB
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: Base PN — B-die, x8. Deriva de K4A8G085WB-BCPB/BCRC/BCTD (Samsung Global + datasheet ✓). 8Gbit ÷ 8 = 1GB/die.
+  confidence: confirmed
+- part_number: K4A8G085WBBCPB
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: DDR4
+  notes: 'org=1Gx8 | V=1.2V | speed=PBMbps | 78-ball FBGA | Lead Free & Halogen Free. 2Q''15 production | Samsung PSG 2H 2014 | Samsung Semiconductor Global: K4A8G085WB-BCPB(8 Gb) ✓. Datasheet Samsung (download.semiconductor.samsung.com) ✓: ''8Gb B-die DDR4 SDRAM, 512Mx8, 1.2V''. B-die, x8, DDR4-2133. 8Gbit ÷ 8 = 1GB/die.'
+  source_url: psg_2h2014:K4A8G085WB-BCPB
+  confidence: confirmed
+- part_number: K4A8G085WBBCRC
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: DDR4
+  notes: 'org=1Gx8 | V=1.2V | speed=RCMbps | 78-ball FBGA | Lead Free & Halogen Free. 2Q''15 production | Samsung PSG 2H 2014 | Samsung Semiconductor Global: K4A8G085WB-BCRC(8 Gb) ✓. B-die, x8, DDR4-2400. 8Gbit ÷ 8 = 1GB/die.'
+  source_url: psg_2h2014:K4A8G085WB-BCRC
+  confidence: confirmed
+- part_number: K4A8G085WBBCTD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G085WB-BCTD(8 Gb) ✓. B-die, x8, DDR4-2666. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G085WC
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: Base PN — C-die, x8. Deriva de K4A8G085WC-BCRC/BCTD/BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die.
+  confidence: confirmed
+- part_number: K4A8G085WCBCRC
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G085WC-BCRC(8 Gb) ✓. C-die, x8, DDR4-2400. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G085WCBCTD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G085WC-BCTD(8 Gb) ✓. C-die, x8, DDR4-2666. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G085WCBCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G085WC-BCWE(8 Gb) ✓. C-die, x8, DDR4-3200. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G085WG
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: Base PN — G-die, x8. Deriva de K4A8G085WG-BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die.
+  confidence: confirmed
+- part_number: K4A8G085WGBCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G085WG-BCWE(8 Gb) ✓. G-die, x8, DDR4-3200. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G165WB
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: Base PN — B-die, x16. Deriva de K4A8G165WB-BCPB/BCRC/BITD (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die.
+  confidence: confirmed
+- part_number: K4A8G165WBBCPB
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global EMEA: K4A8G165WB-BCPB(8 Gb) ✓. B-die, x16, DDR4-2133. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G165WBBCRC
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G165WB-BCRC(8 Gb) ✓. B-die, x16, DDR4-2400. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G165WBBITD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G165WB-BITD(8 Gb) ✓. B-die, x16, DDR4-2666. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G165WC
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: Base PN — C-die, x16. Deriva de K4A8G165WC-BCRC/BCTD/BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die.
+  confidence: confirmed
+- part_number: K4A8G165WCBCRC
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G165WC-BCRC(8 Gb) ✓. C-die, x16, DDR4-2400. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G165WCBCTD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G165WC-BCTD(8 Gb) ✓. C-die, x16, DDR4-2666. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G165WCBCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G165WC-BCWE(8 Gb) ✓. C-die, x16, DDR4-3200. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4A8G165WG
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: Base PN — G-die, x16. Deriva de K4A8G165WG-BCWE (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die.
+  confidence: confirmed
+- part_number: K4A8G165WGBCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 1GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4A8G165WG-BCWE(8 Gb) ✓. G-die, x16, DDR4-3200. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4AAG085WA
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 2GB
+  interface: DDR4
+  notes: Base PN — A-die, x8. Deriva de K4AAG085WA-BCTD/BCWE (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die.
+  confidence: confirmed
+- part_number: K4AAG085WABCTD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 2GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4AAG085WA-BCTD(16 Gb) ✓. A-die, x8, DDR4-2666. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4AAG085WABCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 2GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4AAG085WA-BCWE(16 Gb) ✓. A-die, x8, DDR4-3200. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4AAG085WC
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 2GB
+  interface: DDR4
+  notes: Base PN — C-die, x8. Deriva de K4AAG085WC-BCWE (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die.
+  confidence: confirmed
+- part_number: K4AAG085WCBCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 2GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4AAG085WC-BCWE(16 Gb) ✓. C-die, x8, DDR4-3200. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4AAG165WA
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 2GB
+  interface: DDR4
+  notes: Base PN — A-die, x16. Deriva de K4AAG165WA-BCTD/BCWE (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die.
+  confidence: confirmed
+- part_number: K4AAG165WABCTD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 2GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4AAG165WA-BCTD(16 Gb) ✓. A-die, x16, DDR4-2666. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4AAG165WABCWE
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 2GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4AAG165WA-BCWE(16 Gb) ✓. A-die, x16, DDR4-3200. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4AAG165WB
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 2GB
+  interface: DDR4
+  notes: Base PN — B-die, x16. Deriva de K4AAG165WB-MCTD (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die.
+  confidence: confirmed
+- part_number: K4AAG165WBMCTD
+  chip_type: DDR4
+  subtype: DDR4
+  capacity: 2GB
+  interface: DDR4
+  notes: 'Samsung Semiconductor Global: K4AAG165WB-MCTD(16 Gb) ✓. B-die, x16, DDR4-2666 (MCTD = grau especial). 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4B1G0846I
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 128MB
+  interface: x8
+  notes: Base PN — deriva de K4B1G0846I-BCK0/BYK0/BYMA/BYNB (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. I-die, x8. Tem variantes DDR3 (BC) e DDR3L (BY).
+  confidence: manual
+- part_number: K4B1G0846IBCK0
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 128MB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B1G0846I-BCK0 ✓. BC = DDR3 1.5V. x8 bus width. I-die. 1Gbit ÷ 8 = 128MB/die.'
+  confidence: confirmed
+- part_number: K4B1G0846IBYK0
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 128MB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B1G0846I-BYK0 ✓. BY = DDR3L 1.35V/1.5V dual. x8 bus width. I-die. 1Gbit ÷ 8 = 128MB/die.'
+  confidence: confirmed
+- part_number: K4B1G0846IBYMA
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 128MB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B1G0846I-BYMA ✓. BY = DDR3L 1.35V/1.5V dual. MA = package. I-die. 1Gbit ÷ 8 = 128MB/die.'
+  confidence: confirmed
+- part_number: K4B1G0846IBYNB
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 128MB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B1G0846I-BYNB ✓. BY = DDR3L 1.35V/1.5V dual. NB = narrow body package. I-die. 1Gbit ÷ 8 = 128MB/die.'
+  confidence: confirmed
+- part_number: K4B1G1646I
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 128MB
+  interface: x16
+  notes: Base PN — deriva de K4B1G1646I-BCK0 (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. I-die, x16. 128MB < 256MB limiar DDR3 → NÃO RENTÁVEL.
+  confidence: confirmed
+- part_number: K4B1G1646IBCK0
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 128MB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B1G1646I-BCK0(1 Gb) ✓. BC = DDR3 1.5V. I-die. 1Gbit ÷ 8 = 128MB/die. 128MB < 256MB limiar DDR3 → NÃO RENTÁVEL (assess_profitability).'
+  confidence: confirmed
+- part_number: K4B2G0446C
+  chip_type: DDR3
+  interface: x4
+  notes: 'Fila de revisão: família=K4B, grammar_complete=True | Datasheets360 Tier 1: K4B2G0446C-HYH9 = ''DDR3L DRAM, 512MX4, CMOS, PBGA78 — Discontinued'' ✓ (2026-06-17). 512MX4 = 512M×4b = 2Gbit = 256MB por die — confirma gramática (DRAM_PC[''2G'']). pn[5:7]=''04'' = x4 bus width (não está no mapa DRAM_PC atual); chip para servidor RDIMM/LRDIMM ECC. DDR3L (1.35V nativo, retrocompat. 1.5V) — mais preciso que DDR3/DDR3L genérico. Gramática correta em tipo e densidade; fix promove estimated→confirmed.'
+  confidence: confirmed
+- part_number: K4B2G0446D
+  chip_type: DDR3
+  interface: x4
+  notes: 'Fila de revisão: família=K4B, grammar_complete=True | Octopart Tier 1: K4B2G0446D-HYH9 = ''DDR DRAM, 512MX4, 0.255NS, CMOS, PBGA78'' ✓ (2026-06-17). 512MX4 = 2Gbit = 256MB por die — confirma gramática (DRAM_PC[''2G'']). D-die: revisão de silício atualizada do C-die (K4B2G0446C); especificação elétrica idêntica. pn[5:7]=''04'' = x4 bus width — chip para servidor RDIMM/LRDIMM ECC. DDR3L (1.35V, retrocompat. 1.5V). Gramática correta em tipo e densidade.'
+  confidence: confirmed
+- part_number: K4B2G0846F
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  interface: x8
+  notes: Base PN — deriva de K4B2G0846F-BYMA (Samsung Semiconductor Global ✓). 2Gbit ÷ 8 = 256MB/die. F-die, x8.
+  confidence: confirmed
+- part_number: K4B2G0846FBYMA
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  interface: x8
+  notes: 'Samsung Semiconductor Global: K4B2G0846F-BYMA(2 Gb) ✓. BY = DDR3L 1.35V/1.5V dual. x8 bus width. F-die. 2Gbit ÷ 8 = 256MB/die.'
+  confidence: confirmed
+- part_number: K4B2G1646E
+  chip_type: DDR3
+  subtype: DDR3
+  interface: x16
+  notes: 'Octopart Tier 1: K4B2G1646E-BCK0 = ''DDR3 DRAM, 128MX16, CMOS, PBGA96'' ✓ (2026-06-27). K4B2G1646E-BCH9 = ''128MX16, 0.255NS'' ✓; K4B2G1646E-BIH9 = ''128Mx16, Ind'' ✓. 128MX16 = 128M×16b = 2Gbit = 256MB por die — confirma gramática (DRAM_PC[''2G'']). Sem variantes BY (DDR3L) no Octopart — DDR3 1.5V. E-die, x16, PBGA96.'
+  confidence: confirmed
+- part_number: K4B2G1646F
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  interface: x16
+  notes: Base PN — deriva de K4B2G1646F-BYMA/BYNB/BCK0/BCMA (Samsung Semiconductor Global ✓). 2Gbit ÷ 8 = 256MB/die. F-die, x16.
+  confidence: confirmed
+- part_number: K4B2G1646FBCK0
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B2G1646F-BCK0(2 Gb) ✓. BC = DDR3 1.5V. F-die. 2Gbit ÷ 8 = 256MB/die.'
+  confidence: confirmed
+- part_number: K4B2G1646FBCMA
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 256MB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B2G1646F-BCMA(2 Gb) ✓. BC = DDR3 1.5V. F-die. 2Gbit ÷ 8 = 256MB/die.'
+  confidence: confirmed
+- part_number: K4B2G1646FBYMA
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B2G1646F-BYMA(2 Gb) ✓. BY = DDR3L 1.35V/1.5V dual. F-die. 2Gbit ÷ 8 = 256MB/die.'
+  confidence: confirmed
+- part_number: K4B2G1646FBYNB
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 256MB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B2G1646F-BYNB(2 Gb) ✓. BY = DDR3L 1.35V/1.5V dual. F-die, NB package. 2Gbit ÷ 8 = 256MB/die.'
+  confidence: confirmed
+- part_number: K4B2G1646Q
+  chip_type: DDR3
+  subtype: DDR3
+  interface: x16
+  notes: 'Octopart Tier 1: K4B2G1646Q-BCK0 = ''DDR3 DRAM, 128MX16, 0.225NS, CMOS, PBGA96'' ✓ (2026-06-17). 26 resultados consistentes. 128MX16 = 128M×16b = 2Gbit = 256MB por die — confirma gramática (DRAM_PC[''2G'']). pn[5:7]=''16'' = x16 (em mapa). Q-die (high-perf Samsung DDR3). PBGA96. DDR3 (1.5V). NOTA: IA forneceu ''256MX16'' para este PN (errado — dado era do K4B4G1646B). Gramática completa e correta; fix promove estimated→confirmed.'
+  confidence: confirmed
+- part_number: K4B4G0846D
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  interface: x8
+  notes: Base PN — deriva de K4B4G0846D-BYK0/BYNB (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die. D-die, x8.
+  confidence: confirmed
+- part_number: K4B4G0846DBYK0
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  density_gbit: 4Gb
+  density_gb: 512MB
+  interface: x8
+  notes: 'org=512Mx8 | V=1.35V | speed=K0Mbps | 78-ball FBGA | 7.5x11mm | Flip Chip | Samsung PSG 2H 2014 | Samsung Semiconductor Global USA: K4B4G0846D-BYK0(4 Gb) ✓. BY = DDR3L 1.35V/1.5V dual. x8 bus width. D-die. 4Gbit ÷ 8 = 512MB/die.'
+  source_url: psg_2h2014:K4B4G0846D-BYK0
+  confidence: confirmed
+- part_number: K4B4G0846DBYNB
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  interface: x8
+  notes: 'Samsung Semiconductor Global EMEA: K4B4G0846D-BYNB(4 Gb) ✓. BY = DDR3L 1.35V/1.5V dual. x8 bus width. D-die. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4B4G0846E
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  interface: x8
+  notes: 'Fila de revisão: família=K4B, grammar_complete=True | Base PN — deriva de K4B4G0846E-BCK0/BCNB/BYK0/BYMA (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die. E-die, x8. Tem variantes DDR3 (BC) e DDR3L (BY).'
+  confidence: manual
+- part_number: K4B4G0846EBCK0
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B4G0846E-BCK0 ✓. BC = DDR3 1.5V. x8 bus width. E-die. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4B4G0846EBCNB
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B4G0846E-BCNB ✓. BC = DDR3 1.5V. NB = narrow body package. E-die. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4B4G0846EBYK0
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B4G0846E-BYK0 ✓. BY = DDR3L 1.35V/1.5V dual. x8 bus width. E-die. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4B4G0846EBYMA
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B4G0846E-BYMA ✓. BY = DDR3L 1.35V/1.5V dual. MA = package. E-die. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4B4G1646B
+  chip_type: DDR3
+  subtype: DDR3/DDR3L
+  interface: x16
+  notes: 'Fila de revisão: família=K4B, grammar_complete=True | Octopart Tier 1: K4B4G1646B-HCK0 = ''DDR DRAM, 256MX16, 0.225NS, CMOS, PBGA96'' ✓ (2026-06-17). 256MX16 = 256M×16b = 4Gbit = 512MB por die — confirma gramática (DRAM_PC[''4G''], [✓]). pn[5:7]=''16'' = x16 bus width (em mapa). B-die, PBGA96. DDR3 embarcado (x16). Gramática completa e correta.'
+  confidence: confirmed
+- part_number: K4B4G1646D
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  interface: x16
+  notes: 'Fila de revisão: família=K4B, grammar_complete=True | Base PN — deriva de K4B4G1646D-BYK0/BYNB/BCK0/BCNB (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die. D-die, x16.'
+  confidence: confirmed
+- part_number: K4B4G1646DBCK0
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  density_gbit: 4Gb
+  density_gb: 512MB
+  interface: x16
+  notes: 'org=256Mx16 | V=1.35V | speed=K0Mbps | 96-ball FBGA | 7.5x13.3mm | Flip Chip. PSG lista sob seção ''4Gb 1.35V'' | Samsung PSG 2H 2014 | Samsung Semiconductor Global: K4B4G1646D-BCK0(4 Gb) ✓. BC = DDR3 1.5V. D-die. 4Gbit ÷ 8 = 512MB/die.'
+  source_url: psg_2h2014:K4B4G1646D-BCK0
+  confidence: confirmed
+- part_number: K4B4G1646DBCNB
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  density_gbit: 4Gb
+  density_gb: 512MB
+  interface: x16
+  notes: 'org=256Mx16 | V=1.35V | speed=NBMbps | 96-ball FBGA | 7.5x13.3mm | Flip Chip. PSG lista sob seção ''4Gb 1.35V'' | Samsung PSG 2H 2014 | Samsung Semiconductor Global: K4B4G1646D-BCNB(4 Gb) ✓. BC = DDR3 1.5V. D-die, NB package. 4Gbit ÷ 8 = 512MB/die.'
+  source_url: psg_2h2014:K4B4G1646D-BCNB
+  confidence: confirmed
+- part_number: K4B4G1646DBYK0
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  density_gbit: 4Gb
+  density_gb: 512MB
+  interface: x16
+  notes: 'org=256Mx16 | V=1.35V | speed=K0Mbps | 96-ball FBGA | 7.5x13.3mm | Flip Chip | Samsung PSG 2H 2014 | Samsung Semiconductor Global: K4B4G1646D-BYK0(4 Gb) ✓. BY = DDR3L 1.35V/1.5V dual. D-die. 4Gbit ÷ 8 = 512MB/die.'
+  source_url: psg_2h2014:K4B4G1646D-BYK0
+  confidence: confirmed
+- part_number: K4B4G1646DBYNB
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  interface: x16
+  notes: 'Samsung Semiconductor Global EMEA: K4B4G1646D-BYNB(4 Gb) ✓. BY = DDR3L 1.35V/1.5V dual. D-die, NB package. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4B4G1646E
+  chip_type: DDR3
+  subtype: DDR3/DDR3L
+  capacity: 512MB
+  interface: x16
+  notes: 'Fila de revisão: família=K4B, grammar_complete=True | Chip físico confirmado na esteira (eMiner 2026-05-14). K4B: DDR3. pn[3:5]=''4G'' → 4Gb = 512MB por die. pn[5:7]=''16'' → x16.'
+  confidence: confirmed
+- part_number: K4B4G1646EBCK0
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B4G1646E-BCK0(4 Gb) ✓. BC = DDR3 1.5V. Datasheet Samsung DS_K4B4G1646E-BC_Rev101-0.pdf ''4Gb E-die DDR3 SDRAM x16'' ✓. E-die. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4B4G1646EBCMA
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 512MB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B4G1646E-BCMA(4 Gb) ✓. BC = DDR3 1.5V (alldatasheet: ''DDR3 SDRAM 4Gbit 256Mx16 at 1.5V'') ✓. E-die. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4B4G1646EBYK0
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B4G1646E-BYK0(4 Gb) ✓. BY = DDR3L 1.35V/1.5V dual. E-die. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4B4G1646EBYMA
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B4G1646E-BYMA(4 Gb) ✓. JLCPCB (cita Samsung): ''DDR3L SDRAM 4Gbit 256Mx16 1.35V/1.5V'' ✓. BY = DDR3L dual voltage. Datasheet Samsung DS_K4B4G1646E_BY_M_Rev1_11-0.pdf ✓. 4Gbit ÷ 8 = 512MB/die.'
+  confidence: confirmed
+- part_number: K4B4G1646Q
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 512MB
+  interface: x16
+  notes: 'Alldatasheet (datasheet Samsung) Tier 1: K4B4G1646Q = ''4Gb Q-die DDR3L SDRAM Only x16 96FBGA 1.35V'' ✓ (2026-06-27). K4B4G1646Q-HYK0 idem ✓; Octopart >46k unidades. 4Gb ÷ 8 = 512MB por die. DDR3L (1.35V). x16. Q-die.'
+  confidence: confirmed
+- part_number: K4B8G0846D
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 1GB
+  interface: x8
+  notes: Base PN — deriva de K4B8G0846D-MCMA/MCNB/MCK0/MYK0 (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die. D-die, x8. Tem variantes DDR3 (MC) e DDR3L (MY).
+  confidence: manual
+- part_number: K4B8G0846DMCK0
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 1GB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B8G0846D-MCK0 ✓. MC = DDR3 1.5V. K0 = speed grade. D-die. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4B8G0846DMCMA
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 1GB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B8G0846D-MCMA ✓. MC = DDR3 1.5V (sufixo para 8Gb). MA = package. D-die. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4B8G0846DMCNB
+  chip_type: DDR3
+  subtype: DDR3
+  capacity: 1GB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B8G0846D-MCNB ✓. MC = DDR3 1.5V. NB = narrow body package. D-die. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4B8G0846DMYK0
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 1GB
+  interface: x8
+  notes: 'Samsung Semiconductor Global (Tier 1): K4B8G0846D-MYK0 ✓. MY = DDR3L 1.35V (sufixo para 8Gb DDR3L). D-die. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4B8G1646D
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 1GB
+  interface: x16
+  notes: Base PN — deriva de K4B8G1646D-MYK0/MYMA/MMK0/MMMA (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die. D-die, x16.
+  confidence: confirmed
+- part_number: K4B8G1646DMMK0
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 1GB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B8G1646D-MMK0(8 Gb) ✓. harddiskdirect: ''DDR3-1600MHz 512Mx16 Ind 1.35V DRAM'' ✓. MM = DDR3L Industrial (temp. estendida). 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4B8G1646DMMMA
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 1GB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B8G1646D-MMMA(8 Gb) ✓. Xecor (cita Samsung): ''DDR3L SDRAM 8Gbit 512Mx16 1.35V/1.5V'' ✓. MM = DDR3L Industrial. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4B8G1646DMYK0
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 1GB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B8G1646D-MYK0(8 Gb) ✓. harddiskdirect: ''Samsung DDR3-1600MHz 512Mx16 (8GB) 1.35V DRAM'' ✓. MY = DDR3L 1.35V. D-die. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4B8G1646DMYMA
+  chip_type: DDR3L
+  subtype: DDR3L
+  capacity: 1GB
+  interface: x16
+  notes: 'Samsung Semiconductor Global: K4B8G1646D-MYMA(8 Gb) ✓. MY = DDR3L 1.35V. D-die, MA package. 8Gbit ÷ 8 = 1GB/die.'
+  confidence: confirmed
+- part_number: K4B8G1646Q
+  chip_type: DDR3
+  subtype: DDR3/DDR3L
+  capacity: 1GB
+  interface: x16
+  notes: 'Fila de revisão: família=K4B, grammar_complete=True | AllDatasheet K4B8G1646Q-AGC2 = ''8G-Bit DDP Q-die DDR3L SDRAM, 512Mx16, 1.2V/1.35V, 96-Pin FBGA''. pn[3:5]=''8G'' → DRAM_PC → 8Gb = 1GB ✓. pn[5:7]=''16'' → x16. DDP (Dual Die Package): 2× 4Gb die = 8Gb total = 1GB. DDR3L (1.35V) confirmado — distinção de DDR3 (1.5V) preservada no campo interface. Destino: resíduo — 1GB DDR3L embarcado sem liquidez B2B em 2026.'
+  confidence: confirmed
+- part_number: K4E2E304EA
+  chip_type: LPDDR3
+  capacity: 1.5GB
+  device: Samsung Galaxy Tab E (SM-T560 / SM-T560NU / SM-T567V), Galaxy S5 Mini (~2014-2015)
+  notes: 'Fila de revisão: família=K4E, grammar_complete=False | K4E2E304EA-AGCF = LPDDR3 1.5GB (12Gb ÷ 8). Kynix + Worldway ✓. Alldatasheet Samsung PSG (K4E2E304EE-AGCE) ✓. Galaxy Tab E SM-T560 = 1.5GB RAM — GSMarena/Icecat ✓ (2026-05-29). Chave ''2E'' adicionada ao K4E_CAP. confidence=confirmed: garante grammar_wins=False.'
+  confidence: confirmed
+- part_number: K4E6E304EB
+  chip_type: LPDDR3
+  subtype: LPDDR3 Mobile
+  capacity: 2GB
+  notes: 'Samsung Semiconductor Global (Tier 1): K4E6E304EB-EGCG(16 Gb) ✓. 16Gb ÷ 8 = 2GB. pn[3:5]=''6E'' → K4E_CAP[''6E'']=2GB. Die revision EB (1ª revisão da série K4E6E304). confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: confirmed
+- part_number: K4E6E304EC
+  chip_type: LPDDR3
+  subtype: LPDDR3 Mobile
+  capacity: 2GB
+  notes: 'Samsung Semiconductor Global (Tier 1): K4E6E304EC-EGCG(16 Gb) ✓. 16Gb ÷ 8 = 2GB. pn[3:5]=''6E'' → K4E_CAP[''6E'']=2GB. Die revision EC (2ª revisão da série K4E6E304). confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: confirmed
+- part_number: K4E6E304ED
+  chip_type: LPDDR3
+  capacity: 2GB
+  notes: 'Fila de revisão: família=K4E, grammar_complete=True | Octopart Tier 1: K4E6E304ED-EGCG = ''16GBIT SDRAM LPDDR3 1066MHZ FBGA-178'' ✓ (2026-06-17). 16Gbit ÷ 8 = 2GB — confirma K4E_CAP[''6E'']=2GB (gramática [✓]). LPDDR3 standalone, FBGA-178. confidence=confirmed: grammar_wins=False.'
+  confidence: confirmed
+- part_number: K4E6E304EE
+  chip_type: LPDDR3
+  capacity: 2GB
+  notes: 'Fila de revisão: família=K4E, grammar_complete=True | Samsung Semiconductor Global (Tier 1): K4E6E304EB/EC/ED todos listados como ''16Gb'' LPDDR3 ✓. K4E6E304ED confirmado 2GB LPDDR3 via Octopart Tier 1 (2026-06-17). Datasheet Samsung (via datasheet4u): K4E6E304EE = ''16Gb QDP LPDDR3 SDRAM'' ✓. pn[3:5]=''6E'' → K4E_CAP[''6E'']=2GB (gramática [✓]). Die revision EE (5ª revisão) não altera capacidade — padrão Samsung. confidence=confirmed: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: confirmed
+- part_number: K4EBE304EB
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 4GB
+  notes: 'Correção de convenção (2026-06-19): subtype ''LPDDR3 Mobile'' → ''LPDDR3''; interface ''LPDDR3'' → '''' (vazio — bus width não aplicável a LPDDR standalone). PN base artificial — não recriar. BE=4GB conforme K4E_CAP.'
+  confidence: confirmed
+- part_number: K4EBE304EBEGCF
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  interface: LPDDR3
+  notes: 'org=1CH x32 | V=1.8V/1.2V | speed=1866Mbps | 178-ball FBGA | 11x11.5mm | QDP (Quad Die). 32Gb = 4GB LPDDR3 standalone. | Samsung PSG 2H 2014 | subtype ''LPDDR3 Mobile'' → ''LPDDR3''. PSG 1H 2017 confirma LPDDR3 standalone 4GB (BE=4GB, gen B 1866Mbps, 178-ball FBGA). Regra CLAUDE.md: subtype=só geração, nunca qualificador Mobile/PC/Multi-Channel.'
+  source_url: psg_2h2014:K4EBE304EB-EGCF
+  confidence: confirmed
+- part_number: K4EBE304ECEGCF
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  capacity: 4GB
+  notes: 'Fila de revisão: família=K4E, grammar_complete=True | Chip físico eMiner (2026-06-20). pn_not_in_db=True. LPDDR3 4GB Samsung standalone. pn[3:5]=''BE'' → K4E_CAP=4GB (32Gb) ✓. Âncora Tier 1: K4EBE304ECEGCG = confirmed Samsung Semiconductor Global (lpddr3.csv: LPDDR3 4GB, 178-ball FBGA, 1866MHz, 11x11.5mm). ECEGCF difere de ECEGCG apenas no último char — F vs G (speed/package grade). confidence=manual: chip físico + âncora Samsung Global no banco.'
+  confidence: manual
+- part_number: K4EHE304EC
+  chip_type: LPDDR3
+  subtype: LPDDR3 Mobile
+  capacity: 3GB
+  device: Samsung Galaxy Tab A SM-P585 (2016)
+  notes: 'Puris B2B: K4EHE304EC-AGCF = 24Gbit LPDDR3 (168ball) → 24Gb÷8=3GB. HE = alias de FE no mapa K4E_CAP (mesmo 24Gb, die alternativo). Dispositivo: Galaxy Tab A SM-P585 / Exynos 7870.'
+  confidence: confirmed
+- part_number: K4F6E304HBMGCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 2GB
+  density_gbit: 16Gb
+  density_gb: 2GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | speed=3733Mbps | 200-ball FBGA | 10x15mm | DDP. LPDDR4 standalone. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. PSG 1H 2017. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F6E304HB-MGCJ
+  confidence: confirmed
+- part_number: K4F6E3S4HMGFCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 2GB
+  density_gbit: 16Gb
+  density_gb: 2GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F6E3S4HM-GFCL
+  confidence: confirmed
+- part_number: K4F6E3S4HMGHCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 2GB
+  density_gbit: 16Gb
+  density_gb: 2GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F6E3S4HM-GHCL
+  confidence: confirmed
+- part_number: K4F6E3S4HMGUCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 2GB
+  density_gbit: 16Gb
+  density_gb: 2GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F6E3S4HM-GUCL
+  confidence: confirmed
+- part_number: K4F6E3S4HMMGCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 2GB
+  density_gbit: 16Gb
+  density_gb: 2GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F6E3S4HM-MGCJ
+  confidence: confirmed
+- part_number: K4F6E3S4HMTFCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 2GB
+  density_gbit: 16Gb
+  density_gb: 2GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F6E3S4HM-TFCL
+  confidence: confirmed
+- part_number: K4F6E3S4HMTHCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 2GB
+  density_gbit: 16Gb
+  density_gb: 2GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S DDP 2GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F6E3S4HM-THCL
+  confidence: confirmed
+- part_number: K4F8E304HBMGCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | speed=3733Mbps | 200-ball FBGA | 10x15mm | SDP. LPDDR4 standalone. Tensão I/O 1.1V. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. PSG 1H 2017. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F8E304HB-MGCJ
+  confidence: confirmed
+- part_number: K4F8E3S4HBMFCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | SDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. Rev B. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S SDP 1GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F8E3S4HB-MFCJ
+  confidence: confirmed
+- part_number: K4F8E3S4HBMHCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | SDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. Rev B. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S SDP 1GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F8E3S4HB-MHCJ
+  confidence: confirmed
+- part_number: K4F8E3S4HDGFCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | SDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. Rev D. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S Rev D SDP 1GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F8E3S4HD-GFCL
+  confidence: confirmed
+- part_number: K4F8E3S4HDGHCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | SDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. Rev D. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S Rev D SDP 1GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F8E3S4HD-GHCL
+  confidence: confirmed
+- part_number: K4F8E3S4HDGUCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | SDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. Rev D. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S Rev D SDP 1GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F8E3S4HD-GUCL
+  confidence: confirmed
+- part_number: K4F8E3S4HDMGCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | SDP. 2nd-gen 10nm-class (gen S). LPDDR4 standalone. Rev D. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen S Rev D SDP 1GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4F8E3S4HD-MGCL
+  confidence: confirmed
+- part_number: K4FBE3D4HBKFCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | QDP. 3rd-gen 10nm-class (gen D). Rev B. 32Gb=4GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D Rev B QDP 4GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FBE3D4HB-KFCL
+  confidence: confirmed
+- part_number: K4FBE3D4HBKHCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | QDP. 3rd-gen 10nm-class (gen D). Rev B. 32Gb=4GB. Flagship 2018+. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D Rev B QDP 4GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FBE3D4HB-KHCL
+  confidence: confirmed
+- part_number: K4FBE3D4HBKUCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | QDP. 3rd-gen 10nm-class (gen D). Rev B. 32Gb=4GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D Rev B QDP 4GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FBE3D4HB-KUCL
+  confidence: confirmed
+- part_number: K4FBE3D4HMGFCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | QDP. 3rd-gen 10nm-class (gen D). 32Gb=4GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FBE3D4HM-GFCL
+  confidence: confirmed
+- part_number: K4FBE3D4HMGHCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | QDP. 3rd-gen 10nm-class (gen D). 32Gb=4GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FBE3D4HM-GHCL
+  confidence: confirmed
+- part_number: K4FBE3D4HMGUCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | QDP. 3rd-gen 10nm-class (gen D). 32Gb=4GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FBE3D4HM-GUCL
+  confidence: confirmed
+- part_number: K4FBE3D4HMTHCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | QDP. 3rd-gen 10nm-class (gen D). 32Gb=4GB. Flagship 2018+. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FBE3D4HM-THCL
+  confidence: confirmed
+- part_number: K4FBE3D4HMTUCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 4GB
+  density_gbit: 32Gb
+  density_gb: 4GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | QDP. 3rd-gen 10nm-class (gen D). 32Gb=4GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D QDP 4GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FBE3D4HM-TUCL
+  confidence: confirmed
+- part_number: K4FHE3D
+  chip_type: LPDDR4
+  capacity: 3GB
+  notes: 'Fila de revisão: família=K4F, grammar_complete=True | Samsung Semiconductor Global (Tier 1, 2026-05-26): K4FHE3D4HM-MHCJ = ''(24 Gb)'' LPDDR4; K4FHE3D4HA-THCL = ''(24Gb)''. 24Gb ÷ 8 = 3GB. Sistema mostrava 4GB — LPDDR4_CAP[''HE''] estava como 32Gb (erro). K4FBE3D4HM-MGCJ = 32Gb (4GB) confirma: HE ≠ BE (densidades distintas). Fix sistêmico: LPDDR4_CAP[''HE''] corrigido 4GB→3GB (populate_samsung.py). confidence em fields: garante grammar_wins=False para registros existentes.'
+  confidence: confirmed
+- part_number: K4FHE3D4HAGFCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 3GB
+  density_gbit: 24Gb
+  density_gb: 3GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 3rd-gen 10nm-class (gen D). Rev A. 24Gb=3GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D Rev A DDP 3GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FHE3D4HA-GFCL
+  confidence: confirmed
+- part_number: K4FHE3D4HATFCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 3GB
+  density_gbit: 24Gb
+  density_gb: 3GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 3rd-gen 10nm-class (gen D). Rev A. 24Gb=3GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D Rev A DDP 3GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FHE3D4HA-TFCL
+  confidence: confirmed
+- part_number: K4FHE3D4HATHCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 3GB
+  density_gbit: 24Gb
+  density_gb: 3GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 3rd-gen 10nm-class (gen D). Rev A. 24Gb=3GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D Rev A DDP 3GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FHE3D4HA-THCL
+  confidence: confirmed
+- part_number: K4FHE3D4HATUCL
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 3GB
+  density_gbit: 24Gb
+  density_gb: 3GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 3rd-gen 10nm-class (gen D). Rev A. 24Gb=3GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D Rev A DDP 3GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FHE3D4HA-TUCL
+  confidence: confirmed
+- part_number: K4FHE3D4HMMFCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 3GB
+  density_gbit: 24Gb
+  density_gb: 3GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | speed=3733Mbps | 200-ball FBGA | 10x15mm | DDP. LPDDR4 standalone. 24Gb=3GB. | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. PSG 1H 2017. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FHE3D4HM-MFCJ
+  confidence: confirmed
+- part_number: K4FHE3D4HMMHCJ
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  capacity: 3GB
+  density_gbit: 24Gb
+  density_gb: 3GB
+  interface: LPDDR4
+  notes: 'org=2CH x16 | V=1.8V/1.1V/1.1V | DDP. 3rd-gen 10nm-class (gen D). 24Gb=3GB. ⚠ NÃO confundir com K4FBE3D4 (32Gb=4GB). | Samsung PSG 2H 2014 | subtype ''LPDDR4 Mobile'' → ''LPDDR4''. Samsung Global gen D DDP 3GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4FHE3D4HM-MHCJ
+  confidence: confirmed
+- part_number: K4G10325FE
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 128MB
+  interface: x32
+  notes: 'Alldatasheet Samsung ID 347889: K4G10325FE = ''Graphic Memory'', Apr 2010 (Tier 1 ✓). 1Gbit ÷ 8 = 128MB/die. Bus x32 (32M×32). E-die, 170-ball FBGA, 1.5V. chip_type=RAM/subtype=GDDR5 faz override da gramática (grammar retorna chip_type=''GDDR5'' que antes do fix engine.py 2026-06-20 causava INDETERMINADO). Gramática K4G: pn[3]=''1'' não mapeado em DRAM_MOBILE → banco vence.'
+  confidence: confirmed
+- part_number: K4G10325FG
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 128MB
+  interface: x32
+  notes: 'Fila de revisão: família=K4G, grammar_complete=False | Chip físico confirmado na esteira eMiner (2026-06-20). Família K4G10325 ancorada em K4G10325FE (Alldatasheet ID 347889, Tier 1 ✓). G-die: mesma densidade e bus que E-die (1Gb, x32, 128MB). pn_not_in_db=true + INDETERMINADO resolvidos. confidence=manual: chip físico presente; datasheet específico do FG não encontrado.'
+  confidence: manual
+- part_number: K4G10325FGHC03
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 128MB
+  interface: x32
+  notes: 'Variante de speed/temp grade do K4G10325FG. HC03 = freq. padrão / comercial. 1Gb GDDR5, x32, 128MB. Fonte: web search + distribuidor. confidence=manual: família confirmada (K4G10325FE Tier 1 ✓); variante HC03 sem datasheet Tier 1 próprio.'
+  confidence: manual
+- part_number: K4G10325FGHC04
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 128MB
+  interface: x32
+  notes: 'Variante de speed/temp grade do K4G10325FG. HC04 = speed grade intermediário. 1Gb GDDR5, x32, 128MB. Fonte: web search + distribuidor. confidence=manual: família confirmada (K4G10325FE Tier 1 ✓); variante HC04 sem datasheet Tier 1 próprio.'
+  confidence: manual
+- part_number: K4G10325FGHC05
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 128MB
+  interface: x32
+  notes: 'Variante de speed/temp grade do K4G10325FG. HC05 = speed grade mais alto. 1Gb GDDR5, x32, 128MB. Fonte: web search + Censtry (distribuidor). confidence=manual: família confirmada (K4G10325FE Tier 1 ✓); variante HC05 sem datasheet Tier 1 próprio.'
+  confidence: manual
+- part_number: K4G20325FD
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 256MB
+  interface: x32
+  notes: 'Base PN — GDDR5 Samsung 2Gb x32 (D-die). Deriva de K4G20325FD-FC04 (Octopart ✓: ''2Gb GDDR5 SDRAM''). 2Gbit ÷ 8 = 256MB/die. Bus x32 (64M×32). Gramática K4G: pn[3]=''2'' via DRAM_MOBILE → 2Gb (256MB) ✓.'
+  confidence: confirmed
+- part_number: K4G20325FDFC04
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 256MB
+  interface: x32
+  notes: 'Octopart ✓ (Samsung): K4G20325FD-FC04 = ''2Gb GDDR5 SDRAM''. D-die, x32, 2Gbit ÷ 8 = 256MB. FC04 = speed/temp grade. Usado em GPUs de baixo perfil / integrado discreto (~2012-2015).'
+  confidence: confirmed
+- part_number: K4G41325FE
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 512MB
+  interface: x32
+  notes: 'Fila de revisão: família=K4G, grammar_complete=False | Base PN — GDDR5 Samsung 4Gb x32 (E-die). Deriva de K4G41325FE-HC25/HC28 (Samsung Semiconductor Global ✓). 4Gbit ÷ 8 = 512MB/die. Bus x32 (128M×32). Gramática K4G: pn[3]=''4'' via DRAM_MOBILE → 4Gb (512MB) ✓.'
+  confidence: confirmed
+- part_number: K4G41325FEHC25
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 512MB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4G41325FE-HC25(4 Gb). E-die, x32, 4Gbit ÷ 8 = 512MB. HC25 = speed/temp grade. Usado em AMD RX 470 / RX 570 (4GB) e Nvidia GTX 1050 Ti.'
+  confidence: confirmed
+- part_number: K4G41325FEHC28
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 512MB
+  interface: x32
+  notes: 'Samsung Semiconductor Global USA/CN ✓: K4G41325FE-HC28(4 Gb). E-die, x32, 4Gbit ÷ 8 = 512MB. HC28 = speed/temp grade (frequência superior). Usado em AMD RX 480 4GB e Nvidia GTX 1060 3GB (configs selecionados).'
+  confidence: confirmed
+- part_number: K4G80325FB
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 1GB
+  interface: x32
+  notes: 'Fila de revisão: família=K4G, grammar_complete=False | Base PN — GDDR5 Samsung 8Gb x32 (B-die). Deriva de K4G80325FB-HC22/HC25/HC28 (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die. Bus x32 (256M×32). Gramática K4G: pn[3]=''8'' via DRAM_MOBILE → 8Gb (1GB) ✓.'
+  confidence: confirmed
+- part_number: K4G80325FBHC22
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 1GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4G80325FB-HC22(8 Gb). B-die, x32, 8Gbit ÷ 8 = 1GB. HC22 = speed/temp grade. Usado em AMD RX 480 8GB (8 chips × 1GB = 8GB VRAM).'
+  confidence: confirmed
+- part_number: K4G80325FBHC25
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 1GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4G80325FB-HC25(8 Gb). B-die, x32, 8Gbit ÷ 8 = 1GB. HC25 = speed/temp grade. Usado em Nvidia GTX 1060 6GB (6 chips × 1GB) e GTX 1070 8GB.'
+  confidence: confirmed
+- part_number: K4G80325FBHC28
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 1GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4G80325FB-HC28(8 Gb). B-die, x32, 8Gbit ÷ 8 = 1GB. HC28 = speed/temp grade (frequência superior). Usado em AMD RX 580 8GB (8 chips × 1GB) e configs GTX 1080.'
+  confidence: confirmed
+- part_number: K4G80325FC
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 1GB
+  interface: x32
+  notes: 'Base PN — GDDR5 Samsung 8Gb x32 (C-die). Deriva de K4G80325FC-HC22/HC25 (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die. C-die: revisão posterior do B-die, specs idênticos. Gramática K4G: pn[3]=''8'' via DRAM_MOBILE → 8Gb (1GB) ✓.'
+  confidence: confirmed
+- part_number: K4G80325FCHC22
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 1GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4G80325FC-HC22(8 Gb). C-die, x32, 8Gbit ÷ 8 = 1GB. HC22 = speed/temp grade. Revisão C do K4G80325FB-HC22 — compatível em reparo de GPU.'
+  confidence: confirmed
+- part_number: K4G80325FCHC25
+  chip_type: GDDR5
+  subtype: GDDR5
+  capacity: 1GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4G80325FC-HC25(8 Gb). C-die, x32, 8Gbit ÷ 8 = 1GB. HC25 = speed/temp grade. Revisão C do K4G80325FB-HC25 — compatível em reparo de GPU.'
+  confidence: confirmed
+- part_number: K4H510438G
+  chip_type: DDR1
+  subtype: DDR1
+  capacity: 64MB
+  interface: DDR1
+  notes: 'Samsung datasheet Rev 1.1 (Nov 2009): ''DDR SDRAM K4H510438G'' — ''128M×4, 4 banks, DDR266/333/400''. 512Mbit ÷ 8 = 64MB/die. G-die, x4 bus (servidor/ECC). chip_type=''DDR'' + subtype=''DDR1'' → gen=1 < 3 → NÃO RENTÁVEL. Destino: moagem / recuperação de metais.'
+  confidence: manual
+- part_number: K4H510838G
+  chip_type: DDR1
+  subtype: DDR1
+  capacity: 64MB
+  interface: DDR1
+  notes: 'Samsung datasheet Rev 1.1 (Nov 2009): ''DDR SDRAM K4H510838G'' — ''64M×8, 4 banks, DDR266/333/400''. 512Mbit ÷ 8 = 64MB/die. G-die, x8 bus (desktop/laptop comum). chip_type=''DDR'' + subtype=''DDR1'' → gen=1 < 3 → NÃO RENTÁVEL. Destino: moagem / recuperação de metais.'
+  confidence: manual
+- part_number: K4H511638G
+  chip_type: DDR1
+  subtype: DDR1
+  capacity: 64MB
+  interface: DDR1
+  notes: 'Samsung datasheet Rev 1.1 (Nov 2009): ''DDR SDRAM K4H511638G'' — ''32M×16, 4 banks, DDR266/333/400''. 512Mbit ÷ 8 = 64MB/die. G-die, x16 bus (SO-DIMM/embarcado). chip_type=''DDR'' + subtype=''DDR1'' → gen=1 < 3 → NÃO RENTÁVEL. Destino: moagem / recuperação de metais.'
+  confidence: manual
+- part_number: K4H561638D
+  chip_type: DDR1
+  subtype: DDR1
+  capacity: 32MB
+  interface: DDR1
+  notes: Base PN — deriva de K4H561638D-TCB3 (Octopart/Samsung ✓). 256Mbit ÷ 8 = 32MB/die. D-die, x16. gen=1 → NÃO RENTÁVEL.
+  confidence: confirmed
+- part_number: K4H561638DTCB3
+  chip_type: DDR1
+  subtype: DDR1
+  capacity: 32MB
+  interface: DDR1
+  notes: 'Octopart (Samsung Semiconductor): K4H561638D-TCB3 = ''16Mx16, DDR400'' ✓. 256Mbit ÷ 8 = 32MB/die. D-die, x16 bus. chip_type=''DDR'' + subtype=''DDR1'' → gen=1 < 3 → NÃO RENTÁVEL. Destino: moagem / recuperação de metais.'
+  confidence: confirmed
+- part_number: K4J10324KE
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 128MB
+  interface: x32
+  notes: 'Fila de revisão: família=K4J, grammar_complete=False | Base PN — GDDR3 Samsung 1Gb x32 (E-die). Samsung Consumer Memory Product Guide Abr. 2010 ✓: pn[3:5]=''10'' → 1Gb, 8K/32ms; pn[5:7]=''32'' → x32; pn[8]=''K'' → POD_18 1.8V. 1Gbit ÷ 8 = 128MB/die. Densidade ''10'' é GDDR3-específico — NÃO é ''1G'' do DRAM_PC. assess_profitability: INDETERMINADO (BUG lookbehind). Destino: GPU repair.'
+  confidence: confirmed
+- part_number: K4J10324KEBC14
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 128MB
+  interface: x32
+  notes: 'K4J10324KE-BC14: 1Gb GDDR3 x32 (E-die). BC14 = FBGA Lead-free, Commercial temp, 700MHz bin. Alldatasheet ref #347919 (Samsung) ✓ · Datasheets.com (Samsung) ✓ (2026-06-19). Uso: ATI Radeon HD 4870 (8× 128MB = 512MB VRAM total).'
+  confidence: confirmed
+- part_number: K4J10324KEHC14
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 128MB
+  interface: x32
+  notes: 'K4J10324KE-HC14: 1Gb GDDR3 x32 (E-die). HC14 = FBGA Lead-free & Halogen-free, Commercial temp, 700MHz bin. Datasheets.com (Samsung Electronics) ✓ · Jotrin Electronics ✓ (2026-06-19).'
+  confidence: confirmed
+- part_number: K4J10324KEHC1A
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 128MB
+  interface: x32
+  notes: 'K4J10324KE-HC1A: 1Gb GDDR3 x32 (E-die). HC1A = FBGA Lead-free & Halogen-free, Commercial temp, 500MHz bin. Variante de menor velocidade do HC14. Samsung Product Guide ✓ (2026-06-19).'
+  confidence: confirmed
+- part_number: K4J10324QD
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 128MB
+  interface: x32
+  notes: Base PN — GDDR3 Samsung 1Gb x32 (D-die). pn[8]='Q' (SSTL_18); pn[9]='D' (5th gen). Samsung Consumer Memory Product Guide Abr. 2010 ✓. 1Gbit ÷ 8 = 128MB/die.
+  confidence: confirmed
+- part_number: K4J10324QDHC12
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 128MB
+  interface: x32
+  notes: 'K4J10324QD-HC12: 1Gb GDDR3 x32 (D-die). HC12 = FBGA LF&HF, Commercial, 600MHz. Jotrin Electronics (Samsung) ✓ (2026-06-19).'
+  confidence: confirmed
+- part_number: K4J52324QH
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 64MB
+  interface: x32
+  notes: Base PN — GDDR3 Samsung 512Mb x32 (H-die). pn[3:5]='52' → 512Mb, 8K/32ms (GDDR3-specific, ≠ '51' do DRAM_PC). Samsung Consumer Memory Product Guide Abr. 2010 ✓. 512Mbit ÷ 8 = 64MB/die. Bus x32 (16M×32).
+  confidence: confirmed
+- part_number: K4J52324QHHJ08
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 64MB
+  interface: x32
+  notes: 'K4J52324QH-HJ08: 512Mb GDDR3 x32 (H-die). Octopart datasheet PDF: ''Rev 1.0 May 2008 512M GDDR3 SDRAM'' ✓ (2026-06-19). HJ08 = FBGA LF&HF, Industrial, 400MHz bin.'
+  confidence: confirmed
+- part_number: K4J52324QHHJ1A
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 64MB
+  interface: x32
+  notes: 'K4J52324QH-HJ1A: 512Mb GDDR3 x32 (H-die). Octopart (Samsung, 61-page datasheet) ✓ (2026-06-19): https://octopart.com/k4j52324qhhj1a-samsung-128262552. 512Mbit ÷ 8 = 64MB. HJ1A = FBGA LF&HF, Industrial temp, 500MHz.'
+  confidence: confirmed
+- part_number: K4J55323QF
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 32MB
+  interface: x32
+  notes: 'Base PN — GDDR3 Samsung 256Mb x32 (F-die). pn[3:5]=''55'' → 256Mb (GDDR3-specific). Alldatasheet: K4J55323QF-GC16 listado como ''256Mbit GDDR3 SDRAM'' ✓. 256Mbit ÷ 8 = 32MB/die. Geração: F-die (7th gen). Raro na bancada — GPUs muito antigas (~2005-2007).'
+  confidence: manual
+- part_number: K4J55323QFGC16
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 32MB
+  interface: x32
+  notes: 'K4J55323QF-GC16: 256Mb GDDR3 x32 (F-die). Alldatasheet ref #94366 (Samsung): 256Mbit GDDR3 SDRAM ✓ (2026-06-19). GC16 = FBGA LF, Commercial, 800MHz.'
+  confidence: confirmed
+- part_number: K4J55323QG
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 32MB
+  interface: x32
+  notes: Base PN — GDDR3 Samsung 256Mb x32 (G-die / 8th gen). Deriva de K4J55323QG-BC14 (Alldatasheet Samsung ✓). 256Mbit ÷ 8 = 32MB. G-die = geração posterior ao QF.
+  confidence: manual
+- part_number: K4J55323QGBC14
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 32MB
+  interface: x32
+  notes: 'K4J55323QG-BC14: 256Mb GDDR3 x32 (G-die). Alldatasheet ref #135660 (Samsung) ✓ (2026-06-19). BC14 = FBGA LF, Commercial, 700MHz.'
+  confidence: confirmed
+- part_number: K4N51163Q7
+  chip_type: GDDR2
+  subtype: GDDR2
+  capacity: 64MB
+  interface: x32
+  notes: 'Fila de revisão: família=K4N, grammar_complete=False | Chip físico confirmado na esteira eMiner (2026-06-20). Família K4N51163Q*: base K4N51163QC-ZC = ''512Mbit gDDR2 SDRAM'' (Alldatasheet Samsung ID 125618, Tier 1 ✓). Q7 = variante de speed/die grade sem datasheet Tier 1 próprio. 512Mbit ÷ 8 = 64MB, bus x32 (16Mx32). confidence=manual: chip físico presente, base da família confirmada. NÃO RENTÁVEL: GDDR2 geração obsoleta (~2004-2008).'
+  confidence: manual
+- part_number: K4N51163QC
+  chip_type: GDDR2
+  subtype: GDDR2
+  capacity: 64MB
+  interface: x32
+  notes: 'Base PN — Alldatasheet Samsung ID 125618 (Tier 1): K4N51163QC-ZC = ''512Mbit gDDR2 SDRAM'', 64 páginas ✓ (2026-06-20). 512Mbit ÷ 8 = 64MB. Organização 16Mx32 → bus x32. Geração GDDR2 obsoleta. chip_type=''RAM'' + subtype=''GDDR2'': alinha com convenção GDDR do WTC (K4J/K4W). Override do chip_type=''GDDR2'' da gramática K4N — que não casa regex DDR. NÃO RENTÁVEL: sem mercado de reparo GDDR2 em 2026.'
+  confidence: confirmed
+- part_number: K4P2E304EQAGC2
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  capacity: 1.5GB
+  density_gbit: 12Gb
+  density_gb: 1.5GB
+  interface: LPDDR2
+  notes: 'org=1CH x32 | V=1.8V/1.2V | speed=1066Mbps | 168-ball FBGA | 12x12mm | PoP, TDP (Triple Die Package) | Samsung PSG 2H 2014 | subtype ''LPDDR2 Mobile'' → ''LPDDR2''. PSG 2H 2014 TDP 1.5GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4P2E304EQ-AGC2
+  confidence: confirmed
+- part_number: K4P4G324EQAGC2
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  capacity: 512MB
+  density_gbit: 4Gb
+  density_gb: 512MB
+  interface: LPDDR2
+  notes: 'org=1CH x32 | V=1.8V/1.2V | speed=1066Mbps | 168-ball FBGA | 12x12mm | PoP, SDP | Samsung PSG 2H 2014 | subtype ''LPDDR2 Mobile'' → ''LPDDR2''. PSG 2H 2014 SDP 512MB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4P4G324EQ-AGC2
+  confidence: confirmed
+- part_number: K4P4G324EQFGC2
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  capacity: 512MB
+  density_gbit: 4Gb
+  density_gb: 512MB
+  interface: LPDDR2
+  notes: 'org=1CH x32 | V=1.8V/1.2V | speed=1066Mbps | 134-ball FBGA | 11x11.5mm | SDP | Samsung PSG 2H 2014 | subtype ''LPDDR2 Mobile'' → ''LPDDR2''. PSG 2H 2014 SDP 512MB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4P4G324EQ-FGC2
+  confidence: confirmed
+- part_number: K4P8G304EQ
+  chip_type: LPDDR2
+  capacity: 1GB
+  notes: 'Fila de revisão: família=K4P, grammar_complete=True | AllDatasheet K4P8G304EQ-AGC2 = ''LPDDR2 SDRAM 8G-Bit 256Mx32 1.2V/1.8V 168-Pin FBGA''. 8Gb ÷ 8 = 1GB. K4P = LPDDR2 Mobile Samsung (P = LPDDR2, confirmado família K4P). Destino: fluxo de resíduo — LPDDR2 obsoleto, sem liquidez B2B (~2010-2015).'
+  confidence: confirmed
+- part_number: K4P8G304EQAGC2
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR2
+  notes: 'org=1CH x32 | V=1.8V/1.2V | speed=1066Mbps | 168-ball FBGA | 12x12mm | PoP, DDP | Samsung PSG 2H 2014 | subtype ''LPDDR2 Mobile'' → ''LPDDR2''. PSG 2H 2014 DDP 1GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4P8G304EQ-AGC2
+  confidence: confirmed
+- part_number: K4P8G304EQPGC2
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  capacity: 1GB
+  density_gbit: 8Gb
+  density_gb: 1GB
+  interface: LPDDR2
+  notes: 'org=1CH x32 | V=1.8V/1.2V | speed=1066Mbps | 216-ball FBGA | 12x12mm | PoP, DDP | Samsung PSG 2H 2014 | subtype ''LPDDR2 Mobile'' → ''LPDDR2''. PSG 2H 2014 DDP 1GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4P8G304EQ-PGC2
+  confidence: confirmed
+- part_number: K4PAG304EQAGC2
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  capacity: 2GB
+  density_gbit: 16Gb
+  density_gb: 2GB
+  interface: LPDDR2
+  notes: 'org=1CH x32 | V=1.8V/1.2V | speed=1066Mbps | 168-ball FBGA | 12x12mm | PoP, QDP (Quad Die Package) | Samsung PSG 2H 2014 | subtype ''LPDDR2 Mobile'' → ''LPDDR2''. PSG 2H 2014 QDP 2GB. Regra CLAUDE.md: subtype=só geração.'
+  source_url: psg_2h2014:K4PAG304EQ-AGC2
+  confidence: confirmed
+- part_number: K4RAH086VB
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: Base PN — B-die, x8. Deriva de K4RAH086VB-BCQK/BIQK/BIWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die.
+  confidence: confirmed
+- part_number: K4RAH086VBBCQK
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global (populate_samsung.py ✓): K4RAH086VB-BCQK(16 Gb). B-die, x8, DDR5-4800 (BCQK). 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4RAH086VBBIQK
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global/EMEA: K4RAH086VB-BIQK(16 Gb) ✓. B-die, x8, DDR5-4800. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4RAH086VBBIWM
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global: K4RAH086VB-BIWM(16 Gb) ✓. B-die, x8, DDR5-5600. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4RAH086VE
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: Base PN — E-die, x8. Deriva de K4RAH086VE-BCWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die.
+  confidence: confirmed
+- part_number: K4RAH086VEBCWM
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global: K4RAH086VE-BCWM(16 Gb) ✓. E-die, x8, DDR5-5600. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4RAH086VP
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: Base PN — P-die, x8. Deriva de K4RAH086VP-BCWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die.
+  confidence: confirmed
+- part_number: K4RAH086VPBCWM
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global: K4RAH086VP-BCWM(16 Gb) ✓. P-die, x8, DDR5-5600. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4RAH165VB
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: Base PN — B-die, x16. Deriva de K4RAH165VB-BCQK/BCWM/BIQK/BIWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die.
+  confidence: confirmed
+- part_number: K4RAH165VBBCQK
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global: K4RAH165VB-BCQK(16 Gb) ✓. B-die, x16, DDR5-4800. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4RAH165VBBCWM
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global: K4RAH165VB-BCWM(16 Gb) ✓. B-die, x16, DDR5-5600. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4RAH165VBBIQK
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global: K4RAH165VB-BIQK(16 Gb) ✓. B-die, x16, DDR5-4800. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4RAH165VBBIWM
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global: K4RAH165VB-BIWM(16 Gb) ✓. B-die, x16, DDR5-5600. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4RAH165VP
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: Base PN — P-die, x16. Deriva de K4RAH165VP-BCWM (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die.
+  confidence: confirmed
+- part_number: K4RAH165VPBCWM
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 2GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global: K4RAH165VP-BCWM(16 Gb) ✓. P-die, x16, DDR5-5600. 16Gbit ÷ 8 = 2GB/die.'
+  confidence: confirmed
+- part_number: K4RBH046VM
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 4GB
+  interface: DDR5
+  notes: Base PN — B-die, x8. Deriva de K4RBH046VM-BCCP/BCWM (Samsung Semiconductor Global ✓). 32Gbit ÷ 8 = 4GB/die.
+  confidence: confirmed
+- part_number: K4RBH046VMBCCP
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 4GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global: K4RBH046VM-BCCP(32 Gb) ✓. B-die, x8. 32Gbit ÷ 8 = 4GB/die. DDR5 alta densidade.'
+  confidence: confirmed
+- part_number: K4RBH046VMBCWM
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 4GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global USA: K4RBH046VM-BCWM(32 Gb) ✓. B-die, x8, DDR5-5600. 32Gbit ÷ 8 = 4GB/die.'
+  confidence: confirmed
+- part_number: K4RCH046VM
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 4GB
+  interface: DDR5
+  notes: Base PN — C-die, x8. Deriva de K4RCH046VM-2CLP/2CCM (Samsung Semiconductor Global ✓). 32Gbit ÷ 8 = 4GB/die. ⚠ K4RC SEM gramática → cairia em K4R RDRAM sem esta entrada.
+  confidence: confirmed
+- part_number: K4RCH046VM2CCM
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 4GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global USA/EMEA: K4RCH046VM-2CCM(32 Gb) ✓. Uvation (cita Samsung): ''DDR5 32 Gb DIMM'' ✓. C-die, x8, DDR5-5600 (2CCM). 32Gbit ÷ 8 = 4GB/die. ⚠ CRÍTICO: K4RC SEM gramática → cairia em K4R RDRAM sem esta entrada.'
+  confidence: confirmed
+- part_number: K4RCH046VM2CLP
+  chip_type: DDR5
+  subtype: DDR5
+  capacity: 4GB
+  interface: DDR5
+  notes: 'Samsung Semiconductor Global: K4RCH046VM-2CLP(32 Gb) ✓. Uvation (cita Samsung): ''DDR5 32 Gb DIMM'' ✓. C-die (nova revisão vs K4RBH B-die), x8, DDR5-6400 (2CLP). 32Gbit ÷ 8 = 4GB/die. ⚠ CRÍTICO: K4RC SEM gramática → cairia em K4R RDRAM sem esta entrada.'
+  confidence: confirmed
+- part_number: K4T1G083QJ
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 128MB
+  interface: DDR2
+  notes: Base PN — deriva de K4T1G083QJ-BI (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. x8 bus. gen=2 → NÃO RENTÁVEL.
+  confidence: confirmed
+- part_number: K4T1G083QJBI
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 128MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global: K4T1G083QJ-BI(1 Gb) ✓. 1Gbit ÷ 8 = 128MB/die. x8 bus. NÃO RENTÁVEL (gen=2).'
+  confidence: confirmed
+- part_number: K4T1G084QJ
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 128MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global: K4T1G084QJ(1 Gb) ✓. Samsung datasheet DS_K4T1G08_16_4QJ-B_Rev1_0-1.pdf (download.semiconductor.samsung.com) ✓. 1Gbit ÷ 8 = 128MB/die. x8 bus. NÃO RENTÁVEL (gen=2). Destino: moagem.'
+  confidence: confirmed
+- part_number: K4T1G163QJ
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 128MB
+  interface: DDR2
+  notes: Base PN — deriva de K4T1G163QJ-BI (Samsung Semiconductor Global ✓). 1Gbit ÷ 8 = 128MB/die. x16 bus. gen=2 → NÃO RENTÁVEL.
+  confidence: confirmed
+- part_number: K4T1G163QJBI
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 128MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global: K4T1G163QJ-BI(1 Gb) ✓. 1Gbit ÷ 8 = 128MB/die. x16 bus. NÃO RENTÁVEL (gen=2).'
+  confidence: confirmed
+- part_number: K4T1G164QJ
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 128MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global: K4T1G164QJ(1 Gb) ✓. Samsung datasheet DS_K4T1G08_16_4QJ-B_Rev1_0-1.pdf ✓. 1Gbit ÷ 8 = 128MB/die. x16 bus (SO-DIMM/laptop). NÃO RENTÁVEL (gen=2). Destino: moagem.'
+  confidence: confirmed
+- part_number: K4T1G164QJBFF8
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 128MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global: K4T1G164QJ-BFF8(1 Gb) ✓. 1Gbit ÷ 8 = 128MB/die. x16 bus. NÃO RENTÁVEL (gen=2).'
+  confidence: confirmed
+- part_number: K4T1G164QJBHF8
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 128MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global: K4T1G164QJ-BHF8(1 Gb) ✓. 1Gbit ÷ 8 = 128MB/die. x16 bus. NÃO RENTÁVEL (gen=2).'
+  confidence: confirmed
+- part_number: K4T51083QN
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 64MB
+  interface: DDR2
+  notes: Base PN — deriva de K4T51083QN-BI (Samsung Semiconductor Global ✓). 512Mbit ÷ 8 = 64MB/die. x8 bus. gen=2 → NÃO RENTÁVEL.
+  confidence: confirmed
+- part_number: K4T51083QNBI
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 64MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global: K4T51083QN-BI(512 Mb) ✓. 512Mbit ÷ 8 = 64MB/die. x8 bus (DIMMs de servidor/desktop). NÃO RENTÁVEL (gen=2). Destino: moagem.'
+  confidence: confirmed
+- part_number: K4T51163QN
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 64MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global: K4T51163QN(512 Mb) ✓. 512Mbit ÷ 8 = 64MB/die. x16 bus. chip_type=''DDR'' + subtype=''DDR2'' → gen=2 < 3 → NÃO RENTÁVEL. Destino: moagem / recuperação de metais.'
+  confidence: confirmed
+- part_number: K4T51163QNBFF8
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 64MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global USA: K4T51163QN-BFF8(512 Mb) ✓. 512Mbit ÷ 8 = 64MB/die. x16 bus. NÃO RENTÁVEL (gen=2).'
+  confidence: confirmed
+- part_number: K4T51163QNBHF8
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 64MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global: K4T51163QN-BHF8(512 Mb) ✓. 512Mbit ÷ 8 = 64MB/die. x16 bus. NÃO RENTÁVEL (gen=2).'
+  confidence: confirmed
+- part_number: K4T51163QNBI
+  chip_type: DDR2
+  subtype: DDR2
+  capacity: 64MB
+  interface: DDR2
+  notes: 'Samsung Semiconductor Global: K4T51163QN-BI(512 Mb) ✓. 512Mbit ÷ 8 = 64MB/die. x16 bus. NÃO RENTÁVEL (gen=2).'
+  confidence: confirmed
+- part_number: K4UHE3D
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 3GB
+  notes: 'PN de 7 chars — convenção de bancada eMiner (linha 1 do laser). Samsung Semiconductor Global (Tier 1): K4UHE3D4AA-GFCL(24 Gb) ✓. HE = 24Gb ÷ 8 = 3GB (decode standard LPDDR4_CAP). Variantes GHCL (6GB) e GUCL (2GB) existem mas são configs especiais; leitura de 7 chars não permite distinguir: capacity=3GB é o standard. confidence=manual: densidade âncora confirmada Samsung Global.'
+  confidence: manual
+- part_number: K4UHE3D4AAGFCL
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 3GB
+  notes: 'Samsung Semiconductor Global (Tier 1, 2026-06-22): semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3d4aa-gfcl/ → título: ''K4UHE3D4AA-GFCL(24 Gb)'' ✓. 24Gb ÷ 8 = 3GB. FBGA-200. EOL.'
+  confidence: confirmed
+- part_number: K4UHE3D4AAGHCL
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 6GB
+  notes: 'Samsung Semiconductor Global (Tier 1, 2026-06-22): semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3d4aa-ghcl/ → título: ''K4UHE3D4AA-GHCL(48 Gb)'' ✓. 48Gb ÷ 8 = 6GB. ⚠ Gramática decode HE→3GB (ERRADO para este PN). Banco confirmed VENCE: capacity=6GB. FBGA-200. EOL.'
+  confidence: confirmed
+- part_number: K4UHE3D4AAGUCL
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 2GB
+  notes: 'Samsung Semiconductor Global (Tier 1, 2026-06-22): semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3d4aa-gucl/ → título: ''K4UHE3D4AA-GUCL(16 Gb)'' ✓. 16Gb ÷ 8 = 2GB. ⚠ Gramática decode HE→3GB (ERRADO para este PN). Banco confirmed VENCE: capacity=2GB. FBGA-200. EOL.'
+  confidence: confirmed
+- part_number: K4UHE3D4ABMGCL
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 3GB
+  notes: 'Octopart (Tier 2): K4UHE3D4AB-MGCL = ''LPDDR4X-4266 X32'' — Samsung. Win Source (9.800 un) + Worldway Electronics (46.406 un). ⚠ Octopart descreve ''(24GB)'' = erro de distribuidor (= 24Gb = 3GB). Cross-validado: HE = 24Gb = 3GB (Samsung Global, K4UHE3D4AA-GFCL Rev AA). Rev B (4AB) = mesma densidade Rev A, ajuste de processo. confidence=manual.'
+  confidence: manual
+- part_number: K4UHE3S
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 3GB
+  notes: 'PN de 7 chars — convenção de bancada. Samsung Semiconductor Global (Tier 1): K4UHE3S4AA-KUCL(24 Gb) e KHCL(24 Gb) ✓. HE = 24Gb ÷ 8 = 3GB. ''S'' = die node diferente de ''D'' (3rd-gen 10nm). confidence=manual.'
+  confidence: manual
+- part_number: K4UHE3S4AAKHCL
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 3GB
+  notes: 'Samsung Semiconductor Global (Tier 1, 2026-06-22): semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3s4aa-khcl/ → título: ''K4UHE3S4AA-KHCL(24 Gb)'' ✓. 24Gb ÷ 8 = 3GB. LPDDR4X. EOL.'
+  confidence: confirmed
+- part_number: K4UHE3S4AAKUCL
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  capacity: 3GB
+  notes: 'Samsung Semiconductor Global (Tier 1, 2026-06-22): semiconductor.samsung.com/dram/lpddr/lpddr4x/k4uhe3s4aa-kucl/ → título: ''K4UHE3S4AA-KUCL(24 Gb)'' ✓. 24Gb ÷ 8 = 3GB. LPDDR4X. EOL.'
+  confidence: confirmed
+- part_number: K4UJE3T
+  chip_type: LPDDR4X
+  capacity: 6GB
+  notes: 'Fila de revisão: família=K4U, grammar_complete=False | Samsung Semiconductor Global (Tier 1, 2026-05-27): K4UJE3Q4AA-TFCL(48 Gb) e K4UJE3Q4AA-THCL(48 Gb) — página oficial semiconductor.samsung.com ✓. JE = 48Gb → 48÷8 = 6GB. Família K4U = LPDDR4X 0.6V. LPDDR4_CAP[''JE'']=''6GB''/''48Gb'' adicionado em populate_samsung.py (2026-05-27). IA externa citou AliExpress/Shopee/Lazada como provas — fontes fabricadas; confirmação mantida exclusivamente via Samsung Semiconductor Global. confidence em fields: garante grammar_wins=False para registros existentes.'
+  confidence: confirmed
+- part_number: K4W1G1646D
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 128MB
+  interface: x16
+  notes: 'Base PN — gDDR3 Samsung 1Gb x16 (D-die). Deriva de K4W1G1646D-EC12 (identificado em esquemático ATI Radeon HD 4550). 1Gbit ÷ 8 = 128MB/die. D-die anterior ao E-die, specs idênticos. Gramática K4W: pn[3:5]=''1G'' via DRAM_PC ✓.'
+  confidence: manual
+- part_number: K4W1G1646DEC12
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 128MB
+  interface: x16
+  notes: 'Identificado em esquemático/teardown: ATI Radeon HD 4550 VRAM = K4W1G1646D-EC12. D-die, 1Gb (128MB), x16, 1.5V. EC12 = speed/temp grade. Specs funcionais idênticos ao E-die K4W1G1646E-HC12 (Octopart ✓).'
+  confidence: manual
+- part_number: K4W1G1646E
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 128MB
+  interface: x16
+  notes: 'Base PN — gDDR3 Samsung 1Gb x16 (E-die). Deriva de K4W1G1646E-HC12 (Octopart ✓: ''1Gb gDDR3 SDRAM 1.5V 800MHz FBGA96''). 1Gbit ÷ 8 = 128MB/die. Bus x16 (64M×16). Gramática K4W: pn[3:5]=''1G'' via DRAM_PC ✓.'
+  confidence: confirmed
+- part_number: K4W1G1646EHC12
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 128MB
+  interface: x16
+  notes: 'Octopart ✓ (Samsung): K4W1G1646E-HC12 = ''1Gb gDDR3 SDRAM 1.5V 800MHz FBGA96''. E-die, x16 bus. 1Gbit ÷ 8 = 128MB. HC12 = speed/temp grade. VRAM de GPUs de entrada Samsung/ATI/Nvidia (~2009-2012).'
+  confidence: confirmed
+- part_number: K4W2G1646C
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 256MB
+  interface: x16
+  notes: 'Base PN — gDDR3 Samsung 2Gb x16 (C-die). Deriva de K4W2G1646C-HC12 (Octopart ✓). 2Gbit ÷ 8 = 256MB/die. Bus x16 (128M×16). Gramática K4W: pn[3:5]=''2G'' via DRAM_PC ✓.'
+  confidence: confirmed
+- part_number: K4W2G1646CHC11
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 256MB
+  interface: x16
+  notes: 'Identificado em esquemático Dell N4110 (linha +1.5V_GFX com rede de desacoplamento): VRAM = K4W2G1646C-HC11. C-die, 2Gb (256MB), x16. HC11 = grade anterior ao HC12 (Octopart ✓). Specs funcionais idênticos.'
+  confidence: manual
+- part_number: K4W2G1646CHC12
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 256MB
+  interface: x16
+  notes: 'Octopart ✓ (Samsung): K4W2G1646C-HC12 = ''2Gb gDDR3 SDRAM 1.5V FBGA''. C-die, x16, 2Gbit ÷ 8 = 256MB. HC12 = speed/temp grade. Usado em notebooks com vídeo discreto Samsung/Dell/HP (~2010-2013).'
+  confidence: confirmed
+- part_number: K4W4G1646B
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 512MB
+  interface: x16
+  notes: 'Fila de revisão: família=K4W, grammar_complete=True | Base PN — gDDR3 Samsung 4Gb x16 (B-die). Deriva de K4W4G1646B-HC11 (Octopart ✓: ''GDDR3 256MX16''). 4Gbit ÷ 8 = 512MB/die. Bus x16. Gramática K4W: pn[3:5]=''4G'' via DRAM_PC ✓.'
+  confidence: manual
+- part_number: K4W4G1646BHC11
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 512MB
+  interface: x16
+  notes: 'Octopart ✓ (Samsung): K4W4G1646B-HC11 = ''GDDR3 256MX16''. B-die, x16, 4Gbit ÷ 8 = 512MB. HC11 = speed/temp grade. Amplo estoque ativo em múltiplos distribuidores (Win Source 1.3k, ICPartonline 25k, Antdic 29k, Run Hong 7k). VRAM de GPUs de entrada/notebooks (~2010-2014).'
+  source_url: https://octopart.com/part/samsung/K4W4G1646B-HC11
+  confidence: distributor
+- part_number: K4W4G1646BHC12
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 512MB
+  interface: x16
+  notes: 'Octopart (Samsung): K4W4G1646B-HC12 listado (''GDDR3 256MX16''). B-die, x16, 4Gbit ÷ 8 = 512MB. HC12 = speed grade. Specs idênticos ao HC11. source_url aponta ao HC11 (página Octopart mais completa).'
+  source_url: https://octopart.com/part/samsung/K4W4G1646B-HC11
+  confidence: distributor
+- part_number: K4W4G1646BHC1A
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 512MB
+  interface: x16
+  notes: 'Octopart (Samsung): K4W4G1646B-HC1A listado, sem estoque ativo. B-die, x16, 4Gbit ÷ 8 = 512MB. HC1A = variante de speed/temp grade. Specs funcionais idênticos ao HC11.'
+  source_url: https://octopart.com/part/samsung/K4W4G1646B-HC11
+  confidence: distributor
+- part_number: K4W4G1646D
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 512MB
+  interface: x16
+  notes: 'Fila de revisão: família=K4W, grammar_complete=True | Base PN — deriva de K4W4G1646D-BC1A (Octopart ✓: GDDR3 256Mx16). 4Gbit ÷ 8 = 512MB/die. D-die, x16. chip_type=''RAM'', subtype=''GDDR3'' por convenção GDDR.'
+  confidence: manual
+- part_number: K4W4G1646DBC1A
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 512MB
+  interface: x16
+  notes: 'Octopart (Samsung): K4W4G1646D-BC1A confirmado como GDDR3 256Mx16 ✓. D-die, x16, 4Gbit ÷ 8 = 512MB. BC1A = variante de speed/temp grade.'
+  source_url: https://octopart.com/k4w4g1646d-bc1a-samsung-70760918
+  confidence: distributor
+- part_number: K4W4G1646Q
+  chip_type: GDDR3
+  subtype: GDDR3
+  capacity: 512MB
+  interface: x16
+  notes: 'Fila de revisão: família=K4W, grammar_complete=True | Chip gDDR3 4Gb x16 (Q-die) confirmado fisicamente em bancada eMiner (2026-06-19). Sem PN K4W4G1646Q confirmado via Samsung Semiconductor Global ou Octopart. 4Gbit ÷ 8 = 512MB/die. Gramática K4W: pn[3:5]=''4G'' → DRAM_PC → 4Gb (512MB) ✓. confidence=manual: chip físico presente, sem URL Tier 1 para Q-die.'
+  confidence: manual
+- part_number: K4Z80325BC
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 1GB
+  interface: x32
+  notes: Base PN — GDDR6 Samsung 8Gb x32 (C-die). Deriva de K4Z80325BC-HC14 (Samsung Semiconductor Global ✓). 8Gbit ÷ 8 = 1GB/die. Bus x32. pn[3:5]='80' = código densidade 8Gb.
+  confidence: confirmed
+- part_number: K4Z80325BCHC12
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 1GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4Z80325BC-HC12(8 Gb). C-die, x32, 8Gbit ÷ 8 = 1GB. HC12 = 12 Gbps speed grade. Variante de frequência inferior ao HC14 — GPUs entry-to-mid com 8GB VRAM.'
+  source_url: https://semiconductor.samsung.com/us/dram/gddr/gddr6/k4z80325bc-hc12
+  confidence: confirmed
+- part_number: K4Z80325BCHC14
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 1GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4Z80325BC-HC14(8 Gb). C-die, x32, 8Gbit ÷ 8 = 1GB. HC14 = 14 Gbps speed grade. pn[3:5]=''80'' → 8Gb GDDR6. Usado em GPUs mid-range com 8GB VRAM.'
+  confidence: confirmed
+- part_number: K4Z80325BCHC16
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 1GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4Z80325BC-HC16(8 Gb). C-die, x32, 8Gbit ÷ 8 = 1GB. HC16 = 16 Gbps speed grade. Variante de alta frequência — GPUs mid-range com 8GB VRAM de maior desempenho.'
+  source_url: https://semiconductor.samsung.com/dram/gddr/gddr6/k4z80325bc-hc16/
+  confidence: confirmed
+- part_number: K4ZAF325BC
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 2GB
+  interface: x32
+  notes: Base PN — GDDR6 Samsung 16Gb x32 (B-die C-variant). Deriva de K4ZAF325BC-SC14/SC16 (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die. Bus x32. C-variant distinto do BM (M-variant).
+  confidence: manual
+- part_number: K4ZAF325BCSC14
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 2GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4ZAF325BC-SC14(16 Gb). B-die C-variant, x32, 16Gbit ÷ 8 = 2GB. SC14 = 14 Gbps grade. Distinto do K4ZAF325BM-SC14 (M-variant). pn[3:5]=''AF'' = 16Gb GDDR6.'
+  source_url: https://semiconductor.samsung.com/dram/gddr/gddr6/k4zaf325bc-sc14/
+  confidence: confirmed
+- part_number: K4ZAF325BCSC16
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 2GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4ZAF325BC-SC16(16 Gb). B-die C-variant, x32, 16Gbit ÷ 8 = 2GB. SC16 = 16 Gbps grade. pn[3:5]=''AF'' = código densidade 16Gb GDDR6.'
+  source_url: https://semiconductor.samsung.com/dram/gddr/gddr6/k4zaf325bc-sc16/
+  confidence: confirmed
+- part_number: K4ZAF325BM
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 2GB
+  interface: x32
+  notes: Base PN — GDDR6 Samsung 16Gb x32 (B-die M-variant). Deriva de K4ZAF325BM-HC14/HC16/HC18/SC14 (Samsung Semiconductor Global ✓). 16Gbit ÷ 8 = 2GB/die. Bus x32. pn[3:5]='AF' = código densidade 16Gb GDDR6.
+  confidence: confirmed
+- part_number: K4ZAF325BMHC14
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 2GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4ZAF325BM-HC14(16 Gb). B-die M-variant, x32, 16Gbit ÷ 8 = 2GB. HC14 = 14 Gbps speed grade. Usado em Nvidia RTX 2070 Super (8 chips × 2GB = 8GB VRAM).'
+  confidence: confirmed
+- part_number: K4ZAF325BMHC16
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 2GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4ZAF325BM-HC16(16 Gb). B-die M-variant, x32, 16Gbit ÷ 8 = 2GB. HC16 = 16 Gbps speed grade. Usado em Nvidia RTX 3070 8GB (8 chips × 2GB) e RTX 3080 10GB.'
+  confidence: confirmed
+- part_number: K4ZAF325BMHC18
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 2GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4ZAF325BM-HC18(16 Gb). B-die M-variant, x32, 16Gbit ÷ 8 = 2GB. HC18 = 18 Gbps speed grade. Usado em Nvidia RTX 3080 12GB e RTX 3090 (12 chips × 2GB = 24GB VRAM).'
+  confidence: confirmed
+- part_number: K4ZAF325BMSC14
+  chip_type: GDDR6
+  subtype: GDDR6
+  capacity: 2GB
+  interface: x32
+  notes: 'Samsung Semiconductor Global ✓: K4ZAF325BM-SC14(16 Gb). B-die M-variant, x32, 16Gbit ÷ 8 = 2GB. SC14 = variante de temp/grade 14 Gbps. Configs de workstation / servidor.'
+  confidence: confirmed
+- part_number: K524G2GACB
+  chip_type: MCP
+  subtype: Raw MCP — NAND 512MB + mDDR1 256MB
+  capacity: NAND 512MB + mDDR1 256MB
+  device: 'SUCATA — Raw MCP Samsung legado (feature phone ~2004-2009). Sem controladora eMMC. Programadores BGA atuais incompatíveis. Destino: moagem / recuperação de metais.'
+  notes: 'Fila de revisão: família=K5, grammar_complete=False | Datasheet Samsung K524G2GACB-A050 (Tier 1 direto, Rev 1.3, nov 2009): ''MCP MEMORY'' — ''4,096M Bit for 4Gb NAND Flash'' + ''2Gbit Mobile DDR'' ✓. 4Gbit NAND ÷8=512MB; 2Gbit mDDR1 ÷8=256MB. Package: -A050 = 137-ball FBGA 10.5×13×1.2mm (pitch 0.8mm). chip_type=''MCP'' → assess_profitability retorna ''NÃO RENTÁVEL'' (engine.py). Operador: descartar para moagem — sem controladora, sem liquidez B2B.'
+  confidence: confirmed
+- part_number: K524G2GACH
+  chip_type: MCP
+  subtype: Raw MCP — NAND 512MB + mDDR1 256MB
+  capacity: NAND 512MB + mDDR1 256MB
+  device: 'SUCATA — Raw MCP Samsung legado (feature phone ~2004-2009). Sem controladora eMMC. Programadores BGA atuais incompatíveis. Destino: moagem / recuperação de metais.'
+  notes: 'Fila de revisão: família=K5, grammar_complete=False | Família K524G2G: die revision H (package -B050). Apogeeweb (cita datasheet Samsung): K524G2GACH-B050 = ''512MB NAND + 256M MDDR400 FBGA'' ✓. Specs idênticos ao K524G2GACB (datasheet Samsung K524G2GACB-A050, Rev 1.3). Die revision (B→H) não altera capacidade — padrão Samsung. chip_type=''MCP'' → assess_profitability retorna ''NÃO RENTÁVEL'' (engine.py). Operador: descartar para moagem — sem controladora, sem liquidez B2B.'
+  confidence: confirmed
+- part_number: K524G2GACI
+  chip_type: MCP
+  subtype: Raw MCP — NAND 512MB + mDDR1 256MB
+  capacity: NAND 512MB + mDDR1 256MB
+  device: 'SUCATA — Raw MCP Samsung legado (feature phone ~2004-2009). Sem controladora eMMC. Programadores BGA atuais incompatíveis. Destino: moagem / recuperação de metais.'
+  notes: 'Família K524G2G: die revision I (package -B050). Samsung MemoryLink (portal oficial Samsung): K524G2GACI-B050 = ''NAND based MCP'' ✓. Jotrin / Ariat-Tech: ''512MB NAND + 256MB MDDR400 FBGA'' ✓. Specs idênticos ao K524G2GACB (datasheet Samsung K524G2GACB-A050, Rev 1.3). Die revision (B→I) não altera capacidade — padrão Samsung. chip_type=''MCP'' → assess_profitability retorna ''NÃO RENTÁVEL'' (engine.py). Operador: descartar para moagem — sem controladora, sem liquidez B2B.'
+  confidence: confirmed
+- part_number: K524G2GACJ
+  chip_type: MCP
+  subtype: Raw MCP — NAND 512MB + mDDR1 256MB
+  capacity: NAND 512MB + mDDR1 256MB
+  device: 'SUCATA — Raw MCP Samsung legado (feature phone ~2004-2008). Sem controladora eMMC. Programadores BGA atuais incompatíveis. Destino: moagem / recuperação de metais.'
+  notes: 'Fila de revisão: família=K5, grammar_complete=False | Família K5 = Samsung Raw MCP pré-eMCP: NAND raw + mDDR1 sem controladora. K524G2GACJ = 4Gbit NAND (÷8=512MB) + 2Gbit mDDR1 (÷8=256MB). Octopart: K524G2GACJ-B050, 5 distribuidores ✓ (2026-05-29). Datasheet K524G2GACB-A050: ''4Gbit NAND Flash + 2Gbit Mobile DDR'' ✓. chip_type=''MCP'' → assess_profitability retorna ''NÃO RENTÁVEL'' (engine.py). Operador deve descartar imediatamente para moagem — sem liquidez B2B.'
+  confidence: confirmed
+- part_number: K5W1G12ACM
+  chip_type: NOR Flash
+  capacity: 128MB
+  interface: NOR (async) + SDRAM
+  notes: 'Fila de revisão: família=K5, grammar_complete=False | MCP K5W: NOR Flash 1Gb (128MB) + Mobile SDRAM. pn[3:5]=''1G'' → DRAM_PC → 1Gb = 128MB NOR. Censtry + Ciiva confirmam chip real. Feature phone ~2006-2010. Destino: resíduo — sem liquidez B2B.'
+  confidence: confirmed
+- part_number: KLM2G1HE3F
+  chip_type: eMMC
+  capacity: 2GB
+  interface: eMMC
+  notes: 'Fila de revisão: família=KLM, grammar_complete=True | Chip físico confirmado na esteira eMiner (2026-06-20). Octopart: KLM2G1HE3F-B001 = ''2GB eMMC NAND Flash'', Samsung, datasheet 6p. Rockchip eMMC Support List v1.06 (2012-02-02, Tier 1): lista explicitamente ''KLM2G1HE3F-B001'' na adição de compatibilidade. pn[3]=''2''=2GB (SAM_FLASH_CAP ✓); pn[6]=''H'' não mapeado em SAM_EMMC_GEN (interface=''eMMC'' genérico — geração não confirmada por Tier 1). Era: 2012, 20nm, 52MHz. pn_not_in_db=true resolvido.'
+  confidence: manual
+- part_number: KLM2G1HE3FB001
+  chip_type: eMMC
+  subtype: eMMC Samsung
+  capacity: 2GB
+  interface: eMMC
+  notes: 'Variante B001 do KLM2G1HE3F. Octopart: KLM2G1HE3F-B001 = ''2GB eMMC'', Samsung, 153-FBGA (Tier 2 ✓). Rockchip eMMC Support List v1.06 (2012-02-02, Tier 1): PN completo explicitamente nomeado na compatibilidade. Specs: 2GB, eMMC genérico, era 2012. confidence=manual: Rockchip list (Tier 1) + Octopart (Tier 2); sem leitura direta de datasheet Samsung.'
+  confidence: manual
+- part_number: KLM4G1FE3B
+  chip_type: eMMC
+  capacity: 4GB
+  interface: eMMC 4.5
+  notes: 'Fila de revisão: família=KLM, grammar_complete=True | Datasheet Samsung oficial (Alldatasheet ID 1132357, Tier 1, Oct 2011): KLMxGxFE3B-x00x = ''e.MMC 4.41 Specification compatibility'', 4GB, BGA153, MLC. pn[3]=''4''=4GB (SAM_FLASH_CAP ✓), pn[6]=''F''=eMMC 4.5 (SAM_EMMC_GEN ✓). e.MMC 4.41 e eMMC 4.5 são a mesma spec (JESD84-A441). Fix promove de estimated para confirmed, retira da fila de revisão.'
+  confidence: confirmed
+- part_number: KLM4G1FEPD
+  chip_type: eMMC
+  subtype: eMMC 5.0
+  capacity: 4GB
+  interface: eMMC 4.5
+  notes: 'V=3.3V/1.8V | speed=R:TBD W:TBD MB/sMbps | 153-ball FBGA | 11.0x10.0mm | Base PN sem bucket code. Sampling Q1''15. IOPS R/W:TBD. High-Performance eMMC | Samsung PSG 2H 2014 | Samsung Product Selection Guide ''Displays, Memory and Storage 2H 2014'' (Alldatasheet ID 1425778, Tier 1): KLM4G1FEPD-B031 = 4GB eMMC 4.5, BGA153, MLC. pn[3]=''4''=4GB (SAM_FLASH_CAP ✓), pn[6]=''F''=eMMC 4.5 (SAM_EMMC_GEN ✓). Fix promove de estimated para confirmed, retira da fila de revisão.'
+  source_url: psg_2h2014:KLM4G1FEPD
+  confidence: confirmed
+- part_number: KLM4G1FETE
+  chip_type: eMMC
+  capacity: 4GB
+  interface: eMMC 4.5
+  notes: 'Fila de revisão: família=KLM, grammar_complete=True | Chip físico confirmado na esteira eMiner (2026-06-20). Gramática correta: pn[3]=''4''=4GB (SAM_FLASH_CAP ✓), pn[6]=''F''=eMMC 4.5 (SAM_EMMC_GEN ✓). Sem datasheet Tier 1 específico para variante FETE (FE3B e FEPD confirmados — ver acima). confidence=manual (chip físico verificado; datasheet não encontrado em Alldatasheet). Fix retira da fila de revisão.'
+  confidence: manual
+- part_number: KLM8G1WEMB
+  chip_type: eMMC
+  capacity: 8GB
+  interface: eMMC 5.0
+  notes: 'Fila de revisão: família=KLM, grammar_complete=True | Datasheet Samsung oficial (Alldatasheet/datasheet4u, 2026-05-26): KLM8G1WEMB-B031 = ''e.MMC 5.0 Specification compatibility'', 64Gbit = 8GB. pn[6]=''W'' não mapeado → interface=eMMC genérico — incompleto. Fix sistêmico: ''W'' adicionado ao SAM_EMMC_GEN como eMMC 5.0. IA afirmou HS400 — ERRADO: W=eMMC 5.0 usa HS200 (não HS400 que é 5.1). confidence em fields: garante grammar_wins=False para registros existentes.'
+  confidence: confirmed
+- part_number: KLMAG2GE4A
+  chip_type: eMMC
+  capacity: 16GB
+  interface: eMMC 5.1
+  notes: 'Fila de revisão: família=KLM, grammar_complete=True | Chip físico eMiner (2026-06-20). pn_not_in_db=True. Samsung eMMC 5.1 16GB (21NM MLC). pn[3]=''A''=16GB; pn[6]=''G''=eMMC 5.1 (SAM_EMMC_GEN ✓). Âncora: KLMAG2GEND (Samsung Semiconductor Global, confirmed, eMMC 5.1 16GB). Octopart: KLMAG2GE4A-A001 = ''16GB Movinand Flash 21NM'', Samsung (Tier 2 ✓). confidence=manual: Octopart Tier 2 + âncora Samsung Global no banco.'
+  confidence: manual
+- part_number: KLMAG2GE4AA001
+  chip_type: eMMC
+  subtype: eMMC Samsung
+  capacity: 16GB
+  interface: eMMC 5.1
+  notes: 'Variante A001 do KLMAG2GE4A (chip em estoque eMiner). Octopart (Samsung): KLMAG2GE4A-A001 = ''16GB Movinand Flash 21NM'', Samsung (Tier 2 ✓). eMMC 5.1 16GB (21NM MLC). A001 = bucket code padrão Samsung. confidence=manual: Octopart Tier 2 + âncora KLMAG2GEND (Samsung Global).'
+  confidence: manual
+- part_number: KLMBG2JENB
+  chip_type: eMMC
+  capacity: 32GB
+  interface: eMMC 5.1
+  notes: 'Fila de revisão: família=KLM, grammar_complete=True | Samsung Semiconductor Global (Tier 1): KLMBG2JENB-B041 = 32GB eMMC 5.1, 153FBGA, MLC. Gramática correta: pn[3]=B=32GB, pn[6]=J=eMMC 5.1. Fix promove de estimated para confirmed, retira da fila de revisão.'
+  confidence: confirmed
+- part_number: KLMCG2KCTA
+  chip_type: eMMC
+  capacity: 64GB
+  interface: eMMC 5.1
+  notes: 'Fila de revisão: família=KLM, grammar_complete=True | Samsung Semiconductor Global (Tier 1, 2026-05-25): KLMCG2KCTA-B041 = eMMC 5.1, 64GB. pn[3]=''C''=64GB correto. pn[6]=''K'' não mapeado → interface=eMMC (sem versão) — incompleto. Fix sistêmico: ''K'' adicionado ao SAM_EMMC_GEN como eMMC 5.1. confidence em fields: garante grammar_wins=False para registros existentes.'
+  confidence: confirmed
+- part_number: KLUBG4G1BD
+  chip_type: UFS
+  capacity: 32GB
+  interface: UFS 2.0
+  device: Samsung Galaxy S6 / S6 Edge / S6 Edge Plus (2015)
+  notes: 'Fila de revisão: família=KLU, grammar_complete=True | UFS 2.0 confirmado por Samsung Semiconductor Global (KLUBG4G1CE-B0B1 = UFS 2.0) e múltiplas fontes Tier 2: eBay (BGA153, UFS 2.0), AnandTech (S6 = primeiro UFS 2.0). Sistema mostrava UFS 3.1 — erro por ausência da família KLUBG (caía para KLU genérico). KLUBG adicionado ao populate_samsung.py. Device confirmado: Galaxy S6 / S6 Edge / S6 Edge Plus (2015). confidence em fields: garante grammar_wins=False para registros existentes.'
+  confidence: confirmed
+- part_number: KLUCG8G1BD
+  chip_type: UFS
+  capacity: 64GB
+  interface: UFS 2.0
+  notes: 'Fila de revisão: família=KLUCG, grammar_complete=True | Chip físico eMiner (2026-06-20). pn_not_in_db=True. Samsung UFS 2.0 64GB. KLUCG família: C=64GB (SAM_FLASH_CAP ✓), pn[6]=G → UFS 2.0. Octopart: KLUCG8G1BD-E0B1 e KLUCG8G1BD-B0B1 = ''Universal Flash storage'', Samsung (Tier 2 ✓). confidence=manual: chip físico + Octopart Tier 2 sem datasheet Samsung direto.'
+  confidence: manual
+- part_number: KLUCG8G1BDB0B1
+  chip_type: UFS
+  subtype: UFS 2.0 Samsung
+  capacity: 64GB
+  interface: UFS 2.0
+  notes: 'Variante B0B1 do KLUCG8G1BD. Octopart (Samsung): KLUCG8G1BD-B0B1 = ''Universal Flash storage'' (Tier 2 ✓). UFS 2.0 64GB Samsung. confidence=manual: Octopart Tier 2.'
+  confidence: manual
+- part_number: KLUCG8G1BDE0B1
+  chip_type: UFS
+  subtype: UFS 2.0 Samsung
+  capacity: 64GB
+  interface: UFS 2.0
+  notes: 'Variante E0B1 do KLUCG8G1BD (chip em estoque eMiner). Octopart (Samsung): KLUCG8G1BD-E0B1 = ''Universal Flash storage'' (Tier 2 ✓). UFS 2.0 64GB Samsung. confidence=manual: Octopart Tier 2.'
+  confidence: manual
+- part_number: KLUDG4U1EA
+  chip_type: UFS
+  capacity: 128GB
+  interface: UFS 2.1
+  notes: 'The part number KLUDG4U1EA-B0C1 is identified as a Samsung Universal Flash Storage (UFS) 2.1 controller. Multiple sources confirm it is a Samsung product with a capacity of 128GB and an UFS 2.1 interface. It is designed for mobile devices, including smartphones, tablets, laptops, and automotive applications. | Família KLUDG estava cadastrada como Kioxia (erro em add_chip_families.py). KLUDG é Samsung UFS 2.1: K=Samsung, L=NAND, U=UFS, D=128GB, pn[6]=U→UFS 2.1. fix: capacity=128GB, interface=UFS 2.1, device apagado. Bugs de metadados (2026-05-26): doc_url=''/fab-toshiba/'' (errado — Samsung, não Toshiba); confidence=''ai_high'' e source_url=''gemini:KLUDG4U1EA'' — resíduos de run Gemini antigo. confidence em fields (não só create_defaults): garante grammar_wins=False e sobrescreve valores de registros já existentes no DB. Família corrigida via populate_samsung --overwrite.'
+  confidence: confirmed
+- part_number: KM2L9001CM
+  chip_type: uMCP
+  emcp_ram: LPDDR4X 6GB
+  emcp_nand: UFS 2.2 128GB
+  notes: 'Fila de revisão: família=KM2, grammar_complete=True | Octopart (2026-05-25): KM2L9001CM-B518 = 128GB UFS2.2 + 48Gb LPDDR4X-4266 → 48Gb÷8=6GB. Subfamília KM2L (pn[2]=''L'') = UFS 2.2 + LPDDR4X — NÃO UFS 3.1/LPDDR5. Conflito cap_key ''L9'': SAM_EMCP_CAP mapeia 8GB (base KM8L9001JM) — override pontual. confidence em fields: garante grammar_wins=False para registros existentes no banco.'
+  confidence: confirmed
+- part_number: KM2V8001CM
+  chip_type: uMCP
+  emcp_ram: LPDDR4X 6GB
+  emcp_nand: UFS 2.1 128GB
+  notes: 'Fila de revisão: família=KM2, grammar_complete=True | Preduo: KM2V8001CM-B707 = ''128+48 254ball UFS+LPD4x'' → 128GB UFS + 48Gb÷8=6GB LPDDR4X. Amazon: ''KM2V8001CM-6G-4266Mbps'' → 6GB, 4266Mbps = LPDDR4X-4266 ✓. ssfkg.com: ''UFS 2.1 SAMSUNG'' ✓. Samsung Global/EMEA: ''4266Mbps'' ✓. Sistema mostrava LPDDR5 (errado: mínimo LPDDR5 ≥ 6400 Mbps) e 4GB (errado: shared key V8). SAM_EMCP_CAP V8=4GB é âncora KM5V8001DM-B622 (32Gb) — KM2V8001CM é exceção com 48Gb=6GB. confidence em fields: garante grammar_wins=False.'
+  confidence: confirmed
+- part_number: KM3V6001CM
+  chip_type: eMCP
+  subtype: LPDDR4X + eMMC 5.1
+  emcp_ram: LPDDR4X 6GB
+  emcp_nand: eMMC 5.1 128GB
+  notes: 'Catálogos ECtronics/Ovaga (lote B705/B075): 48Gb LPDDR4X ÷ 8 = 6GB, 128GB eMMC 5.1. SAM_EMCP_CAP V6 val_secondary=4GB (base outro chip) — exceção pontual. SAM_EMCP_GEN não mapeia dígitos (pos 2=''3'') → gramática produz ''RAM não mapeada''. Família KM3V não cadastrada; pego pelo fallback genérico KM.'
+  confidence: confirmed
+- part_number: KM5L9000CM
+  chip_type: uMCP
+  emcp_ram: LPDDR4X 6GB
+  emcp_nand: UFS 2.2 128GB
+  notes: 'Fila de revisão: família=KM5, grammar_complete=True | Samsung Semiconductor Global (Tier 1, 2026-05-25): KM5L9000CM-B424 = 128GB UFS 2.2 + 48Gb LPDDR4X-4266 → 48Gb÷8=6GB. Sistema mostrava 8GB — erro por herdar SAM_EMCP_CAP[''L9'']=8GB (base KM8L9001JM). Conflito profundo: mesmo cap_key ''L9'' na família KM5 dá RAM diferente por variante: KM5L9000CM (pn[7]=''0'') = 6GB; KM5L9001DM (pn[7]=''1'') = 4GB. Decode 2-char pn[3:5] insuficiente para família KM5L9 — cada PN é exceção pontual. confidence em fields: garante grammar_wins=False para registros existentes.'
+  confidence: confirmed
+- part_number: KM5L9001DA
+  chip_type: uMCP
+  emcp_ram: LPDDR4X 4GB
+  emcp_nand: UFS 2.2 128GB
+  notes: 'Fila de revisão: família=KM5, grammar_complete=True | Samsung Semiconductor Global (Tier 1, 2026-05-26): KM5L9001DA-B424 = 128GB UFS 2.2 + 32Gb LPDDR4X-4266 → 32Gb÷8=4GB, 254 FBGA. Sistema mostrava 8GB — erro por herdar SAM_EMCP_CAP[''L9'']=8GB (base KM8L9001JM). Sufixo ''DA'' vs ''DM'' (KM5L9001DM): variante de package, capacidade idêntica. Conflito cap_key ''L9'': KM8=8GB (base ✓), KM2=6GB, KM5=4GB (esta exceção). NÃO alterar SAM_EMCP_CAP — base KM8=8GB está correta. confidence em fields: garante grammar_wins=False para registros existentes.'
+  confidence: confirmed
+- part_number: KM5L9001DM
+  chip_type: uMCP
+  emcp_ram: LPDDR4X 4GB
+  emcp_nand: UFS 2.2 128GB
+  notes: 'Fila de revisão: família=KM5, grammar_complete=True | Samsung Semiconductor Global (Tier 1, 2026-05-25): KM5L9001DM-B424 = 128GB UFS 2.2 + 32Gb LPDDR4X-4266 → 32Gb÷8=4GB. Sistema mostrava 8GB — erro por herdar SAM_EMCP_CAP[''L9'']=8GB (base KM8L9001JM). Conflito cap_key ''L9'': KM8=8GB (base ✓), KM2=6GB (exceção ✓), KM5=4GB (esta exceção). NÃO alterar SAM_EMCP_CAP — base KM8=8GB está correta. confidence em fields: garante grammar_wins=False para registros existentes.'
+  confidence: confirmed
+- part_number: KM8V8001JM
+  chip_type: uMCP
+  subtype: LPDDR4X + UFS 2.1
+  capacity: 128GB
+  emcp_ram: LPDDR4X 4GB
+  emcp_nand: UFS 128GB
+  interface: UFS 2.1
+  notes: 'Multiple sources confirm the part number KM8V8001JM-B813 (a variant of KM8V8001JM) is a Samsung uMCP combining 128GB UFS 2.1 storage and 64Gb (8GB) LPDDR4X memory. | V8 corrigido: era 128GB+8GB (AI sem confirmação). Fabricante (KM5V8001DM-B622): 32Gb LPDDR4X ÷ 8 = 4GB. Cap_key V8 compartilhado no SAM_EMCP_CAP — ambos os chips são 4GB.'
+  source_url: psg_2h2014:KM8V8001JM-B813
+  confidence: confirmed
+- part_number: KMDC6001DM
+  chip_type: eMCP
+  emcp_ram: LPDDR4X 4GB
+  emcp_nand: eMMC 5.1 64GB
+  notes: 'Fila de revisão: família=KMD, grammar_complete=False | Samsung Semiconductor oficial (2026-05-25): KMDC6001DM-B625 = 32Gb LPDDR4X = 4GB. Corrigido de 3GB (24Gb) — valor anterior baseado em IA+padrão, sem fonte primária. C6 corrigido para 4GB no SAM_EMCP_CAP. confidence em fields: garante grammar_wins=False para registros já existentes no banco.'
+  confidence: confirmed
+- part_number: KMDH6001DM
+  chip_type: eMCP
+  subtype: LPDDR4X + eMMC 5.1
+  emcp_ram: LPDDR4X 4GB
+  emcp_nand: eMMC 5.1 64GB
+  notes: 'Octopart: KMDH6001DM-B422 = 64GB eMMC v5.1 + 32Gb(4GB) LPDDR4X-3733. H6=4GB consistente com SAM_EMCP_CAP (segunda âncora da chave, após KMRH60014A ✓). confidence em fields: garante grammar_wins=False para registros existentes.'
+  confidence: confirmed
+- part_number: KMDP6001DA
+  chip_type: eMCP
+  subtype: LPDDR4X + eMMC 5.1
+  capacity: 64GB
+  emcp_ram: LPDDR4X 4GB
+  interface: eMMC 5.1
+  notes: 'Fila de revisão: família=KMD, grammar_complete=True | RAM corrigida: 32Gb ÷ 8 = 4GB (era 6GB do distribuidor Censtry). Device apagado: ''Galaxy MX6432'' é código interno Samsung, não celular.'
+  source_url: psg_2h2014:KMDP6001DA-B425
+  confidence: confirmed
+- part_number: KMDV6001DB
+  chip_type: eMCP
+  emcp_ram: LPDDR4X 4GB
+  emcp_nand: eMMC 5.1 128GB
+  notes: 'Fila de revisão: família=KMD, grammar_complete=True | Preduo (2026-05-26): KMDV6001DB-B625 = ''128+32'' → 128GB eMMC + 32Gb LPDDR4X = 4GB. Segunda âncora da chave V6 (primeira: KMDV6001DA-B620 Octopart ✓). Revisão A→B = package revision, capacidade idêntica. Gramática acertou via V6=128GB+4GB. Fix promove de estimated para confirmed.'
+  confidence: confirmed
+- part_number: KMDX60018M
+  chip_type: eMCP
+  emcp_ram: LPDDR4X 3GB
+  emcp_nand: eMMC 5.1 32GB
+  notes: 'Fila de revisão: família=KMD, grammar_complete=True | Octopart: KMDX60018M-B425 = 32GB eMMC 5.1 + 24Gb LPDDR4X-4266 → 24Gb÷8=3GB. Conflito shared key X6: SAM_EMCP_CAP base=2GB (KM4X6001KM ✓), KMD=3GB (exceção). Mesmo padrão de P6 (KMG=3GB vs KMD=4GB) — cap_key compartilhada, RAM diferente por família. confidence em fields: garante grammar_wins=False para registros existentes.'
+  confidence: confirmed
+- part_number: KMF820012M
+  chip_type: eMCP
+  emcp_ram: LPDDR3 2GB
+  emcp_nand: eMMC 5.1 16GB
+  interface: eMMC+LPDDR3
+  notes: 'Fila de revisão: família=KMF, grammar_complete=True | SAM_EMCP_CAP[''82''] = 16GB NAND + 2GB LPDDR3 (16Gb). Chave ''82'' consistente entre famílias: KMR820001M-B609 (Preduo+Puris ✓ 2026-05-29) e KMQ820013M-B419 (Preduo ✓ 2026-06-17). Sem divergência KMF/KMQ/KMR para ''82'' (contraste com ''E1'' onde KMF≠KMQ). SEM FONTE TIER 1 DIRETA — confirmado pelo operador (2026-06-18). confidence=manual: grammar_wins=False. Necessário para entrada no estoque.'
+  confidence: manual
+- part_number: KMFE10012M
+  chip_type: eMCP
+  emcp_ram: LPDDR3 1GB
+  emcp_nand: eMMC 5.1 16GB
+  notes: 'Fila de revisão: família=KMF, grammar_complete=True | BLOQUEIO DE GRAMÁTICA: SAM_EMCP_CAP[''E1'']=16GB+2GB ancorado por KMQE10013M (KMQ moderno). Família KMF usa mesma chave ''E1'' mas com 1GB LPDDR3 (8Gbit) — conflito cross-família. Gramática acerta NAND (16GB ✓) mas erra RAM (2GB em vez de 1GB). Preduo Tier 1: KMFE10012M-B214 = ''16+8'' ✓ (2026-06-17). Puris Tier 1: ''16+8 221ball eMCP-D3 Samsung'' ✓ (2026-06-17). Mesma chave ''E6'' tem problema idêntico (KMFE60012A/M=1GB vs SAM_EMCP_CAP[''E6'']=2GB). confidence=confirmed: garante grammar_wins=False → fonte = banco de dados.'
+  confidence: confirmed
+- part_number: KMFJ20005A
+  chip_type: eMCP
+  emcp_ram: LPDDR3 512MB
+  emcp_nand: eMMC 4GB
+  device: Aparelhos entry-level Samsung 2012-2014 (obsoleto)
+  notes: 'Fila de revisão: família=KMF, grammar_complete=True | Mesmo bloqueio que KMFJ20007M: SAM_EMCP_CAP[''J2'']=128GB+6GB (âncora KMQJ2· moderno) — ERRADO. Revisão de die diferente (''5A'' vs ''7M''), capacidade idêntica. SEM FONTE TIER 1 — confirmado pelo operador (2026-06-17): 4GB eMMC + 512MB LPDDR3. NÃO RENTÁVEL = moagem.'
+  confidence: confirmed
+- part_number: KMFJ20007M
+  chip_type: eMCP
+  emcp_ram: LPDDR3 512MB
+  emcp_nand: eMMC 4GB
+  device: Aparelhos entry-level Samsung 2012-2014 (obsoleto)
+  notes: 'Fila de revisão: família=KMF, grammar_complete=True | BLOQUEIO DE GRAMÁTICA: SAM_EMCP_CAP[''J2'']=128GB+6GB ancorado por KMQJ2· moderno — ERRADO. KMFJ20007M-B214 é chip de 2012-2014, 128GB impossível para a era. Mesmo conflito cross-era já resolvido em KMN (populate_samsung.py, decode_cap_pos=None). Consenso não-Tier-1: 4GB NAND (Jotrin, mercado); 512MB RAM (analogia H9TQ32A4 SKhynix 4+4). SEM FONTE TIER 1 para este PN — confirmar se aparecer Preduo/Octopart futuramente. Confirmado pelo operador (2026-06-17). NÃO RENTÁVEL = moagem.'
+  confidence: confirmed
+- part_number: KMFJW0007M
+  chip_type: eMCP
+  subtype: LPDDR3 + eMMC 5.1
+  emcp_ram: LPDDR3 768MB
+  emcp_nand: eMMC 5.1 4GB
+  notes: 'Gramática CORRETA: SAM_EMCP_CAP[''JW'']=(''4GB'',''768MB'') → decode acerta. Sem fonte Tier 1 (Samsung Global vazio; Preduo/Octopart não indexam). confidence=manual: chip físico confirmado pelo operador eMiner (2026-06-25). NÃO RENTÁVEL = moagem.'
+  confidence: manual
+- part_number: KMGD6001BM
+  chip_type: eMCP
+  subtype: LPDDR3 + eMMC 5.1
+  emcp_ram: LPDDR3 3GB
+  emcp_nand: eMMC 5.1 32GB
+  notes: 'Chip físico confirmado na esteira (eMiner 2026-05-13). KMG = eMCP eMMC 5.1 + LPDDR3 (datasheet KMGP6001BM confirma). D6 = 32GB + 3GB LPDDR3. create=True: raw_in_db=False no debug — não existia no banco.'
+  confidence: confirmed
+- part_number: KMGP6001BM
+  chip_type: eMCP
+  subtype: LPDDR3 + eMMC 5.1
+  emcp_ram: LPDDR3 3GB
+  emcp_nand: eMMC 5.1 64GB
+  notes: 'P6 no SAM_EMCP_CAP = 4GB (base KMDP6001DA-B425, família KMD/LPDDR4X). KMG é LPDDR3: P6 para KMG = 64GB eMMC + 24Gb LPDDR3 → 24Gb÷8=3GB. Datasheet KMGP6001BM confirma. create=True: sem Gemini, chip não entra no banco sozinho.'
+  confidence: confirmed
+- part_number: KMKLL000UN
+  chip_type: eMCP
+  subtype: LPDDR2 + eMMC (legado)
+  emcp_ram: LPDDR2 1GB
+  emcp_nand: eMMC 4GB
+  device: HTC EVO 3D (2011)
+  notes: 'Teardown GlobalSpec/Electronics360 (Ago/2011) HTC EVO 3D: KMKLL000UM-B406 documentado como ''4GB eMMC NAND + 1GB Mobile DDR''. KMKLL000UN = variante de lote do mesmo chip base. LL adicionado ao SAM_EMCP_CAP com 4GB+1GB. Destino: resíduo.'
+  confidence: confirmed
+- part_number: KML5U000HM
+  chip_type: eMCP
+  subtype: LPDDR2 + eMMC (legado)
+  emcp_ram: LPDDR2 1GB
+  emcp_nand: eMMC 4GB
+  notes: 'Puris (direto): KML5U000HM-B505 = ''4+8 153ball eMCP-D1'' categoria ''eMMC+LPDDR'' ✓ (puris.net/archives/2716, 2026-06-19). ''4'' = 4GB eMMC NAND (SAM_EMCP_CAP[''5U''][0]=''4GB''); ''8'' = 8Gbit = 1GB LPDDR (Puris usa GB para NAND, Gbit para LPDDR). Cross-família Tier 1 — Octopart/Avnet: KMK5U000VM-B309 = ''4Gx8 eMMC Flash + 256Mx32 LPDDR2 DRAM'' → 4GB eMMC + 8Gbit = 1GB LPDDR2 ✓ (mesma chave ''5U'' → mesma tabela SAM_EMCP_CAP; Worldway 40864u, Win Source 1040u). LPDDR2: mesma era e família que KML7X/KML7U (Exynos 4212, ~2013-2015); LPDDR1 obsoleto desde 2012. ⚠ SAM_EMCP_CAP[''5U'']=512MB na gramática é INCORRETO (Jotrin Tier 3: ''4Gb'' = die único, não pacote completo 256Mx32). KnownPart confirmed vence. Correção do grammar em populate_samsung.py: SAM_EMCP_CAP[''5U''] → ''1GB'' (requer populate_samsung --overwrite + reiniciar servidor). ⚠ LPDDR2 = inferência era+SoC — sem fonte Tier 1 explícita para versão LPDDR. confidence em fields: garante grammar_wins=False.'
+  confidence: confirmed
+- part_number: KML7U000HM
+  chip_type: eMCP
+  emcp_ram: LPDDR2 1GB
+  emcp_nand: eMMC 8GB
+  notes: 'Fila de revisão: família=KML, grammar_complete=True | SAM_EMCP_CAP[''7U''] = (''8GB'', ''1GB''): 8GB eMMC + 1GB LPDDR2. Cross-família confirmado: Octopart KMK7U000VM-B309 = ''eMCP 8GB eMMC + LPDDR2 1GB'' ✓ (Win Source 2279u, ICPartonline 10050u, SHENGYU 9855u, YIC 48830u — 2026-06-19). LPDDR2: mesma era e família que KML7X000HM (Exynos 4212, ~2013-2015); LPDDR1 obsoleto desde 2012; LPDDR5 impossível nessa era. Grammar bug observado: exibia ''LPDDR5 1GB'' → cache servidor ou decode_gen_pos=None não efetivado no DB (L em SAM_EMCP_GEN=''LPDDR5''). KnownPart confirmed vence. ⚠ LPDDR2 = inferência era+SoC — sem fonte Tier 1 explícita para versão LPDDR. confidence em fields: garante grammar_wins=False.'
+  confidence: confirmed
+- part_number: KML7X000HM
+  chip_type: uMCP
+  emcp_ram: LPDDR2 1GB
+  emcp_nand: eMMC 8GB
+  device: Samsung Galaxy Core i8262
+  notes: 'Fila de revisão: família=KML, grammar_complete=True | eetgroup.com: KML7X000HM-B507 = ''8GB+8GB, EMMC+LPDD'' → 8GB eMMC + 8Gb LPDDR = 1GB. LPDDR version: Puris categoria ''eMMC+LPDDR'' (sem número) — ambíguo. LPDDR2 adotado: Exynos 4212 (Galaxy Core i8262) suporta LPDDR2; LPDDR1 obsoleto em smartphones desde 2012; era 2013-2015 = KMJ/KMN = LPDDR2. ⚠ LPDDR2 é inferência de era+SoC — sem fonte Tier 1 explícita para versão LPDDR. eMMC (NÃO UFS): eetgroup + emmc-ufs.com firmware page ✓. KML NÃO é uMCP UFS 3.1 + LPDDR5 — corrigido em populate_samsung (2026-05-27). confidence em fields: garante grammar_wins=False.'
+  confidence: confirmed
+- part_number: KMMLL000QM
+  chip_type: eMCP
+  subtype: LPDDR2 + eMMC (legado)
+  emcp_ram: LPDDR2 768MB
+  emcp_nand: eMMC 4GB
+  device: HTC Sensation (2011)
+  notes: 'Samsung fabricou eMCP 4GB + 768MB LPDDR2 (6Gb die, 30nm) para HTC Sensation. Fonte: Samsung/Design-Reuse: ''256MB, 512MB ou 768MB LPDDR2'' explicitamente listados. Chave LL compartilhada com KMK (1GB) — conflito de shared key. KMM sem família gramatical ativa: create=True obrigatório.'
+  confidence: confirmed
+- part_number: KMN5X000ZM
+  chip_type: eMCP
+  notes: 'Fila de revisão: família=KMN, grammar_complete=True | KMN5X000ZM: Samsung eMCP LPDDR2 + eMMC, era 2011-2014. pn[3:5]=''5X'' ausente do SAM_EMCP_CAP; família KMN tem decode_cap_pos=None. IA estimou 4GB+512MB por analogia com ''5U'' (KMN5U000FM-B203 ✓). Conflito: populate_samsung.py linha 158 tinha ''5X''→8GB+1GB (especulativo, KMQ). Sem fonte Tier 1-2 para KMN5X: capacidade bloqueada pela regra de ouro. confidence em fields: garante grammar_wins=False. Destino: Caixa Vermelha (LPDDR2 legado, sem liquidez em 2026).'
+  confidence: confirmed
+- part_number: KMNJ2000ZM
+  chip_type: eMCP
+  notes: 'Fila de revisão: família=KMN, grammar_complete=True | Sistema mostrava ''eMMC 128GB + LPDDR2 6GB'' — fisicamente impossível para 2011-2014. Causa: KMN decode pn[3:5]=''J2'' → SAM_EMCP_CAP moderna (128GB+6GB âncora KMQJ2·). Fix sistêmico: família KMN agora com decode_cap_pos=None (populate_samsung.py). Capacidade não confirmada em fonte Tier 1-2 após busca (2026-05-25) — bloqueada. IA estimou 8GB+1GB (Galaxy S Advance / S III mini era), mas sem atestação. confidence em fields: garante grammar_wins=False — evita decode errado no banco. Destino: Caixa Vermelha (LPDDR2 legado, sem liquidez em 2026).'
+  confidence: confirmed
+- part_number: KMQ310006A
+  chip_type: eMCP
+  emcp_ram: LPDDR3 1.5GB
+  emcp_nand: eMMC 5.1 16GB
+  device: Samsung Galaxy J3 (SM-J327A)
+  notes: 'Fila de revisão: família=KMQ, grammar_complete=True | cap_key ''31'' conflito: KMQ310013B=1GB vs KMQ310006*=1.5GB (mesmo pn[3:5]). KMQ310006A = revisão A do mesmo die 12Gb LPDDR3 do KMQ310006B. samsungparts.com KMQ310006B-B419: ''16Gb+12'' = 12Gb÷8=1.5GB LPDDR3 (Galaxy J3 SM-J327A). Revisão A compartilha o mesmo die — capacidade idêntica ao B confirmado. Detectado em estoque eMiner 2026-05-28 (pn_not_in_db=True, gramática retornava 1GB). create=True: cria registro no banco se ainda não existir.'
+  confidence: confirmed
+- part_number: KMQ310006B
+  chip_type: eMCP
+  subtype: LPDDR3 + eMMC 5.1
+  emcp_ram: LPDDR3 1.5GB
+  emcp_nand: eMMC 5.1 16GB
+  device: Samsung Galaxy J3 (SM-J327A)
+  notes: 'cap_key ''31'' conflito: KMQ310013B=1GB vs KMQ310006B=1.5GB (mesmo pn[3:5]). samsungparts.com KMQ310006B-B419: ''16Gb+12'' = 12Gb÷8=1.5GB LPDDR3. Galaxy J3 SM-J327A service manual confirma 1.5GB. Fonte fabricante ✓. create=True: cria registro no banco se ainda não existir.'
+  confidence: confirmed
+- part_number: KMQ310013M
+  chip_type: eMCP
+  emcp_ram: LPDDR3 2GB
+  emcp_nand: eMMC 5.1 16GB
+  notes: 'Fila de revisão: família=KMQ, grammar_complete=True | cap_key ''31'' conflito (terceiro caso): KMQ310013B=1GB (físico), KMQ310006B=1.5GB (fabricante ✓), KMQ310013M=2GB (Alibaba: ''16gb+16gb 32dram LPDDR3''). 16Gb LPDDR3 ÷ 8 = 2GB. Mesmo padrão de KMR310001M (16Gb LPDDR3 = 2GB, Preduo ✓). confidence em fields: necessário para atualizar registros existentes e garantir grammar_wins=False (gramática daria 1GB — errado).'
+  confidence: confirmed
+- part_number: KMQ7X000SA
+  chip_type: eMCP
+  emcp_ram: LPDDR3 1GB
+  emcp_nand: eMMC 5.1 8GB
+  notes: 'Fila de revisão: família=KMQ, grammar_complete=False | Preduo B2B (2026-05-25): KMQ7X000SA-B315 = ''8+8'' → 8GB NAND + 8Gb LPDDR3 = 1GB. Corrigido de 1.5GB — valor anterior era inferência de die 6Gb (KMQ310006B), sem verificação. confidence em fields: atualiza registro existente e garante grammar_wins=False.'
+  confidence: confirmed
+- part_number: KMQ820013M
+  chip_type: eMCP
+  emcp_ram: LPDDR3 2GB
+  emcp_nand: eMMC 5.1 16GB
+  notes: 'Fila de revisão: família=KMQ, grammar_complete=True | SAM_EMCP_CAP[''82''] = 2GB (16Gb LPDDR3). Preduo: KMQ820013M-B419 = ''16+16'' ✓ (2026-06-17). Mesma chave ''82'' confirmada em KMR820001M (Preduo+Puris ✓ 2026-05-29). Não há divergência KMQ/KMR para a chave ''82'' — ambos = 2GB. confidence=confirmed: garante grammar_wins=False → fonte = banco de dados.'
+  confidence: confirmed
+- part_number: KMQD60013M
+  chip_type: eMCP
+  emcp_ram: LPDDR3 3GB
+  emcp_nand: eMMC 5.1 32GB
+  notes: 'Fila de revisão: família=KMQ, grammar_complete=True | Chip físico confirmado na esteira (eMiner 2026-05-13). D6 = 32GB eMMC 5.1 + 3GB LPDDR3. create=True: cria registro confirmado se ainda não existir no banco.'
+  confidence: confirmed
+- part_number: KMQN10006B
+  chip_type: eMCP
+  emcp_ram: LPDDR3 1GB
+  emcp_nand: eMMC 5.1 8GB
+  notes: 'Fila de revisão: família=KMQ, grammar_complete=True | Chip físico confirmado na esteira (eMiner 2026-05-13). N1 = 8GB eMMC 5.1 + 1GB LPDDR3. Segunda confirmação física (KMFN10012A-B214 era a primeira).'
+  confidence: confirmed
+- part_number: KMR21000BM
+  chip_type: eMCP
+  emcp_ram: LPDDR3 3GB
+  emcp_nand: eMMC 5.1 32GB
+  notes: 'Fila de revisão: família=KMR, grammar_complete=True | Puris: KMR21000BM-B809 = ''32+24 221ball eMCP-D3'' → 32GB NAND + 24Gb LPDDR3 = 3GB. SAM_EMCP_CAP ''21'' = 2GB (base KMQ310013B) — conflito de shared key, KMR21=3GB. Tipo corrigido pelo fix sistêmico R→LPDDR3 (2026-05-26). confidence em fields: garante grammar_wins=False.'
+  confidence: confirmed
+- part_number: KMR310001M
+  chip_type: eMCP
+  subtype: LPDDR3 + eMMC 5.1
+  emcp_ram: LPDDR3 2GB
+  emcp_nand: eMMC 5.1 16GB
+  notes: 'Preduo: KMR310001M-B611 = eMCP eMMC+LPDDR3, 16+16 (16GB NAND + 16Gb LPDDR3 = 2GB). Conflito cap_key ''31'': mapa base = 1GB (KMQ310013B ✓) — KMR310001M tem 2GB (16Gb÷8). 2026-05-26: conflito com SAM_EMCP_GEN removido (R=LPDDR3 restaurado no mapa global).'
+  confidence: confirmed
+- part_number: KMR4Z0001M
+  chip_type: eMCP
+  subtype: LPDDR3 + eMMC 5.1
+  emcp_ram: LPDDR3 2GB
+  emcp_nand: eMMC 5.1 32GB
+  device: Moto G4 / Lenovo K5 / K6
+  notes: 'Confirmado na esteira eMiner (sufixo -B802, 2015-2016). cap_key 4Z = 32GB NAND + 2GB RAM (acerto da gramática). Dispositivos: Moto G4 / Lenovo K5 / K6 (LPDDR3 2GB). 2026-05-26: conflito com SAM_EMCP_GEN removido (R=LPDDR3 restaurado).'
+  confidence: confirmed
+- part_number: KMR820001M
+  chip_type: eMCP
+  emcp_ram: LPDDR3 2GB
+  emcp_nand: eMMC 5.1 16GB
+  device: Wileyfox Swift (2015), Lenovo P70-A
+  notes: 'Fila de revisão: família=KMR, grammar_complete=True | SAM_EMCP_CAP[''82''] corrigido: era 1GB (sem âncora) → 2GB (16Gb LPDDR3). Preduo: KMR820001M-B609 = ''16+16'' ✓. Puris: ''16+16 221ball eMCP-D3'' ✓ (2026-05-29). Wileyfox Swift (Snapdragon 410) = 16GB + 2GB RAM — chip soldado: KMR820001M-B609 ✓. confidence=confirmed: garante grammar_wins=False → fonte = banco de dados.'
+  confidence: confirmed
+- part_number: KMR8X0001M
+  chip_type: eMCP
+  subtype: LPDDR4/4X + eMMC 5.1
+  emcp_ram: LPDDR3 2GB
+  emcp_nand: eMMC 5.1 16GB
+  notes: 'NAND corrigida: 8X era 8GB no mapa (ERRADO). KMR8X0001M-B608 = 16GB eMMC. RAM corrigida: 16Gb ÷ 8 = 2GB (mapa usa 1GB como base KMQ8X — divergência de família). KMQ8X000SA-B414 (1GB) e KMR8X0001M (2GB) confirmados em B2B (SBiT). 2026-05-26: RAM tipo corrigido LPDDR4/4X→LPDDR3 (KMR=LPDDR3, SAM_EMCP_GEN corrigido).'
+  confidence: confirmed
+- part_number: KMRC10014M
+  chip_type: eMCP
+  emcp_ram: LPDDR3 4GB
+  emcp_nand: eMMC 5.1 64GB
+  notes: 'Fila de revisão: família=KMR, grammar_complete=True | Chip físico eMiner (2026-06-20). pn_not_in_db=True. Samsung eMCP LPDDR3 4GB + eMMC 5.1 64GB. Octopart (Samsung): KMRC10014M-B809 listado por múltiplos distribuidores (Tier 2 ✓). Grammar decodifica C1→64GB NAND + 4GB LPDDR3 (SAM_EMCP_CAP ✓). KMR=LPDDR3 (SAM_EMCP_GEN). confidence=manual: Octopart Tier 2 + chip físico.'
+  confidence: manual
+- part_number: KMRC10014MB809
+  chip_type: eMCP
+  subtype: LPDDR3
+  emcp_ram: LPDDR3 4GB
+  emcp_nand: eMMC 5.1 64GB
+  notes: 'Variante B809 do KMRC10014M. Octopart (Samsung): KMRC10014M-B809 = múltiplos distribuidores (Tier 2 ✓). Specs: eMCP 64GB eMMC 5.1 + 4GB LPDDR3. KMR=LPDDR3 (SAM_EMCP_GEN ✓). confidence=manual: Octopart Tier 2 sem datasheet Samsung direto.'
+  confidence: manual
+- part_number: KMRC10014MB809007
+  chip_type: eMCP
+  subtype: LPDDR3
+  emcp_ram: LPDDR3 4GB
+  emcp_nand: eMMC 5.1 64GB
+  notes: 'Variante B809007 do KMRC10014M. Octopart (Samsung): KMRC10014M-B809007 = ''eMCP 64GB eMMC + 4GB(32Gb) LPDDR3'' ✓ (Tier 2). 32Gb LPDDR3 ÷ 8 = 4GB ✓. Fonte mais detalhada da família — specs explícitas. confidence=manual: Octopart Tier 2 sem datasheet Samsung direto.'
+  confidence: manual
+- part_number: KMRH60014A
+  chip_type: eMCP
+  emcp_ram: LPDDR3 4GB
+  emcp_nand: eMMC 5.1 64GB
+  notes: 'Fila de revisão: família=KMR, grammar_complete=True | Sistema mostrava LPDDR4/4X — ERRADO. SAM_EMCP_GEN R=LPDDR4/4X era âncora falsa. Preduo (/emmc-lpddr3/), Censtry, cpuprocessorchip (''EMCP D3 LPDDR3-1866MHz''), Octopart (''QDP LPDDR3'') confirmam LPDDR3 (2026-05-26). cap_key H6: 64GB NAND + 32Gb÷8=4GB RAM. Fix sistêmico: R→LPDDR3 no gen map.'
+  confidence: confirmed
+- part_number: KMRP60014M
+  chip_type: eMCP
+  emcp_ram: LPDDR3 4GB
+  emcp_nand: eMMC 5.1 64GB
+  notes: 'Fila de revisão: família=KMR, grammar_complete=True | Preduo: KMRP60014M-B614 = ''64+32 eMMC+LPDDR3'' (64GB NAND + 32Gb÷8=4GB LPDDR3). Samsung Semiconductor Global: 1866 Mbps → velocidade LPDDR3. Tipo estava LPDDR4/4X — corrigido pelo fix sistêmico R→LPDDR3 (2026-05-26). Cap_key P6 = 64GB+4GB correto (mesma chave que KMDP6001DA, 2026-05-09 ✓).'
+  confidence: confirmed
+- part_number: KMRX1000BM
+  chip_type: eMCP
+  emcp_ram: LPDDR3 3GB
+  emcp_nand: eMMC 5.1 32GB
+  notes: 'Fila de revisão: família=KMR, grammar_complete=True | X1 base mapeado como 2GB(16Gb) via KMQX10013MB (Octopart ✓). KMRX1000BM-B614T07 = 32GB eMMC + 3GB(24Gb) LPDDR3 — Octopart ✓ + UFI Box ✓ (2026-05-29). Divergência de família no shared cap_key X1: KMQX1→2GB(16Gb), KMRX1→3GB(24Gb). Padrão recorrente KMR: usa die LPDDR3 maior que base KMQ no mesmo cap_key.'
+  confidence: confirmed
+- part_number: KMRX10014M
+  chip_type: eMCP
+  emcp_ram: LPDDR3 3GB
+  emcp_nand: eMMC 5.1 32GB
+  notes: 'Fila de revisão: família=KMR, grammar_complete=True | Família KMR + cap_key X1: padrão confirmado = 3GB(24Gb), não 2GB(16Gb) da âncora KMQ. KMRX1000BM-B614T07 (mesmo cap_key, mesma família) = 3GB — Octopart ✓ + UFI Box ✓ (2026-05-29). 2GB do grammar é ativamente errado (âncora KMQX10013MB, família KMQ ≠ KMR). confidence=confirmed: humano revisou e corrigiu — necessário para grammar_wins=False no engine. (engine: grammar_wins = grammar_complete AND NOT human_verified; human_verified requer confirmed/manual)'
+  confidence: confirmed
+- part_number: KMRX60014M
+  chip_type: eMCP
+  subtype: LPDDR4/4X + eMMC 5.1
+  emcp_ram: LPDDR3 4GB
+  emcp_nand: eMMC 5.1 32GB
+  notes: 'X6 base mapeado como 2GB (KM4X6001KM, Octopart). KMRX60014M-B614 = 32GB eMMC 5.1 + 32Gb LPDDR3 → 32Gb÷8=4GB. Divergência de família no shared cap_key X6: KM4X6→2GB, KMRX6→4GB. 2026-05-26: RAM tipo corrigido LPDDR4/4X→LPDDR3 (Preduo /emmc-lpddr3/ ✓; SAM_EMCP_GEN R=LPDDR3 restaurado).'
+  confidence: confirmed
+- part_number: KMV3W000LW
+  chip_type: eMCP
+  emcp_ram: LPDDR2 512MB
+  emcp_nand: eMMC 16GB
+  notes: 'Fila de revisão: família=KMV, grammar_complete=False | Chip físico confirmado na esteira (eMiner 2026-05-13). 3W adicionado ao SAM_EMCP_CAP: 16GB eMMC + 4Gbit LPDDR2 = 512MB. KMV3 = eMCP legado Galaxy S4 era. Tip corrigido: KMV2/KMV3 não são flagship.'
+  confidence: confirmed
