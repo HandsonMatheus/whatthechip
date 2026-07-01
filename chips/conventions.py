@@ -44,6 +44,15 @@ _RAM_GEN_RE = re.compile(
 _NAND_CELL_RE = re.compile(r"(SLC|MLC|TLC|QLC)\s*NAND", re.I)
 
 
+def is_ram_generation(text: str) -> bool:
+    """True se `text` é PURAMENTE um token de geração de RAM (DDR4, LPDDR4X, GDDR5,
+    SDRAM…) — nada mais. Usado pelo portão do load_brands (passo 4) para barrar a
+    geração no campo `interface` (que deve ser largura de barramento x8/x16 ou vazio).
+    'x16' → False; 'DDR4' → True; 'eMMC 5.1' → False; 'DDR4 x16' → False (não é puro)."""
+    t = (text or "").strip()
+    return bool(t) and bool(_RAM_GEN_RE.fullmatch(t))
+
+
 def canonical_gen(subtype: str, chip_type: str = "") -> str:
     """
     Reduz `subtype` ao token canônico de geração/célula para o label da caixa.

@@ -101,6 +101,41 @@ class FamilySpec(BaseModel):
                 f"decode_gen_pos deve ser nulo (regra de ouro #5).")
         return self
 
+    @model_validator(mode="after")
+    def _convencao_de_campos(self):
+        """PORTÃO DA CONVENÇÃO (passo 4) — o data contract que impede marca de sujar
+        o dado. Normaliza os campos usando AS MESMAS funções canônicas do engine
+        (`chip_types.py`/`conventions.py` = fonte única), então o dado ARMAZENADO fica
+        igual ao que o engine mostra (mata a divergência stored≠output por construção),
+        e REJEITA o ambíguo com erro acionável (não tolera silenciosamente — crítica ao
+        princípio de Postel). As `_convencao_de_campos` mecânicas são reversíveis/audit-
+        áveis via pghistory (passo 3b)."""
+        from chips.chip_types import GENERIC_TYPES, canonical_chip_type, spec_for
+        from chips.conventions import canonical_gen, is_ram_generation
+
+        # 1. chip_type → token canônico. Se ATIVA e não resolver a um tipo específico
+        #    (fica genérico 'RAM'/'DDR' ou desconhecido) → REJEITA (força a correção).
+        canon = canonical_chip_type(self.chip_type, self.subtype)
+        if self.active and (canon in GENERIC_TYPES or spec_for(canon) is None):
+            raise ValueError(
+                f"família '{self.prefix}': chip_type '{self.chip_type}' não resolve a um "
+                f"tipo/geração canônico (subtype '{self.subtype}'). Ponha a geração "
+                f"(DDR3/LPDDR4X/eMMC/eMCP/UFS/NAND Flash…) no chip_type ou no subtype. "
+                f"(Módulo/tipo-lixo? marque active=false.)")
+        if spec_for(canon) is not None and canon not in GENERIC_TYPES:
+            self.chip_type = canon   # ex.: ('RAM','DDR3 SDRAM') → 'DDR3'
+
+        # 2. subtype → token canônico (só a geração/célula; sem 'standalone', '+ eMMC',
+        #    'SDRAM', qualificadores). Ex.: 'LPDDR3 + eMMC'→'LPDDR3'; 'DDR4 SDRAM'→'DDR4'.
+        if self.subtype:
+            self.subtype = canonical_gen(self.subtype, self.chip_type)
+
+        # 3. interface NÃO carrega geração de RAM (é largura de barramento x8/x16 ou vazio).
+        if is_ram_generation(self.interface):
+            self.interface = ""
+
+        return self
+
 
 class KnownPartSpec(BaseModel):
     """Espelha os campos editáveis de `KnownPart`. brand/family/source (FKs) e

@@ -1171,3 +1171,35 @@ class KnowledgeSchemaTests(TestCase):
         from chips.knowledge.schema import FamilySpec
         with self.assertRaises(ValidationError):
             FamilySpec(prefix="PX", chip_type="DDR3", decode_capp_pos=4)  # typo de propósito
+
+    # ── PORTÃO DA CONVENÇÃO (passo 4): normaliza o mecânico, rejeita o ambíguo ──
+
+    def test_chip_type_generico_com_subtype_vira_geracao(self):
+        from chips.knowledge.schema import FamilySpec
+        f = FamilySpec(prefix="NT5CC", chip_type="RAM", subtype="DDR3 SDRAM")
+        self.assertEqual(f.chip_type, "DDR3")   # 'RAM' + 'DDR3 SDRAM' → 'DDR3'
+        self.assertEqual(f.subtype, "DDR3")     # subtype limpo
+
+    def test_subtype_verboso_e_limpo(self):
+        from chips.knowledge.schema import FamilySpec
+        f = FamilySpec(prefix="H9TQ", chip_type="eMCP", subtype="LPDDR3 + eMMC")
+        self.assertEqual(f.subtype, "LPDDR3")   # sem '+ eMMC'
+        self.assertEqual(f.chip_type, "eMCP")   # gerenciada: chip_type manda
+
+    def test_interface_com_geracao_e_limpa(self):
+        from chips.knowledge.schema import FamilySpec
+        f = FamilySpec(prefix="H5AN", chip_type="DDR4", subtype="DDR4", interface="DDR4")
+        self.assertEqual(f.interface, "")       # interface não carrega geração
+        g = FamilySpec(prefix="K4B", chip_type="DDR3", interface="x16")
+        self.assertEqual(g.interface, "x16")    # largura de barramento fica
+
+    def test_ativa_com_tipo_generico_irreducivel_e_rejeitada(self):
+        from pydantic import ValidationError
+        from chips.knowledge.schema import FamilySpec
+        with self.assertRaises(ValidationError):
+            FamilySpec(prefix="KVR", chip_type="RAM", subtype="DDR", active=True)  # multi-geração
+
+    def test_inativa_com_tipo_generico_e_permitida(self):
+        from chips.knowledge.schema import FamilySpec
+        f = FamilySpec(prefix="KVR", chip_type="RAM", subtype="DDR", active=False)  # módulo bogus
+        self.assertFalse(f.active)              # soft-delete passa (não classifica)
