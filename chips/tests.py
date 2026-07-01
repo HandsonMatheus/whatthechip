@@ -703,7 +703,7 @@ class DeployCatalogTests(TestCase):
         v0 = CatalogVersion.current()
         call_command('deploy_catalog')                       # dry-run (sem --commit)
         chamados = [c.args[0] for c in mock_cc.call_args_list]
-        self.assertIn('populate_samsung', chamados)
+        self.assertIn('load_brands', chamados)               # Samsung + demais marcas via load_brands
         # add_chip_families NÃO tem --dry-run → é PULADO no dry-run
         self.assertNotIn('add_chip_families', chamados)
         # todo sub-comando chamado no dry-run recebe dry_run=True
@@ -718,11 +718,12 @@ class DeployCatalogTests(TestCase):
         v0 = CatalogVersion.current()
         call_command('deploy_catalog', commit=True)
         chamados = [c.args[0] for c in mock_cc.call_args_list]
-        self.assertEqual(chamados[0], 'populate_samsung')     # ordem canônica
+        self.assertEqual(chamados[0], 'load_brands')          # 1º: load_brands samsung (mapas globais)
+        self.assertEqual(mock_cc.call_args_list[0].kwargs.get('brand'), 'samsung')
         self.assertEqual(chamados[-1], 'fix_known_parts')
         self.assertIn('add_chip_families', chamados)          # roda no commit
         kw = {c.args[0]: c.kwargs for c in mock_cc.call_args_list}
-        self.assertTrue(kw['populate_samsung'].get('overwrite'))
+        self.assertNotIn('populate_samsung', chamados)        # aposentado → load_brands samsung
         self.assertTrue(kw['import_samsung_psg'].get('all'))
         self.assertEqual(CatalogVersion.current(), v0 + 1)    # sobe 1x no fim
 
@@ -744,13 +745,13 @@ class DeployCatalogTests(TestCase):
         chamados = [c.args[0] for c in mock_cc.call_args_list]
         for pop in ('populate_piecemakers', 'populate_gigadevice', 'populate_rayson',
                     'populate_kingston', 'populate_sandisk', 'populate_micron_mcp',
-                    'populate_toshiba', 'populate_hynix'):
+                    'populate_toshiba', 'populate_hynix', 'populate_samsung'):
             self.assertNotIn(pop, chamados)                    # aposentados
         # cada marca migrada passa por load_brands, gravando (commit=True)
         brands_load = [c.kwargs.get('brand') for c in mock_cc.call_args_list
                        if c.args[0] == 'load_brands']
-        for marca in ('piecemakers', 'gigadevice', 'rayson', 'kingston', 'sandisk', 'micron',
-                      'toshiba', 'kioxia', 'hynix'):
+        for marca in ('samsung', 'piecemakers', 'gigadevice', 'rayson', 'kingston', 'sandisk',
+                      'micron', 'toshiba', 'kioxia', 'hynix'):
             self.assertIn(marca, brands_load)
         for c in mock_cc.call_args_list:
             if c.args[0] == 'load_brands':
@@ -826,11 +827,15 @@ def _carrega_marca_e_confere_fidelidade(tc, slug):
         tc.assertEqual(fam.brand_id, b.id)
         for campo in _FAM_FIELDS:
             tc.assertEqual(getattr(fam, campo), getattr(fs, campo), f"{slug}:{fs.prefix}.{campo}")
+    from chips.management.commands.load_brands import _GLOBAL_MAPS
     total = sum(len(v) for v in spec.maps.values())
-    tc.assertEqual(DecodeMap.objects.filter(brand=b).count(), total)
+    # mapas universais (DRAM_PC/DRAM_MOBILE) são gravados com brand=None, não brand=b
+    n_global = sum(len(spec.maps.get(m, [])) for m in _GLOBAL_MAPS)
+    tc.assertEqual(DecodeMap.objects.filter(brand=b).count(), total - n_global)
     for map_name, entries in spec.maps.items():
+        map_brand = None if map_name in _GLOBAL_MAPS else b
         for e in entries:
-            dm = DecodeMap.objects.get(brand=b, map_name=map_name, char_key=e.char_key)
+            dm = DecodeMap.objects.get(brand=map_brand, map_name=map_name, char_key=e.char_key)
             tc.assertEqual((dm.val_primary, dm.val_secondary), (e.val_primary, e.val_secondary))
 
 
@@ -980,6 +985,147 @@ _HYX_GOLDEN = {  # SK Hynix: 36 famílias (populate_hynix + add_chip_families). 
     "HY5PS121621CFP-25": ("DDR2", "64MB", "", "", "", "NÃO RENTÁVEL"),
 }
 
+
+# Samsung — GABARITO MESTRE: 87 famílias (populate_samsung + add_chip_families), 15 mapas.
+# Golden = populate + O PORTÃO REAL (FamilySpec) aplicado (K4R fix; genérico 'LPDDR'→'LPDDR2';
+# multi-geração 'LPDDR4X/5X'→'LPDDR4X'). Cobre TODAS as 87 famílias; alguns PNs são sintéticos
+# (construídos p/ famílias legadas sem PN documentado). Prova que o yaml reproduz gate(populate).
+_SAM_GOLDEN = {
+    'K31G1646DBCK': ('LPDDR2', '', '', '', '16Gb = 2GB por die [✓]', 'NÃO RENTÁVEL'),
+    'K3KL7L70DM': ('LPDDR5X', '3GB', '', '', '', 'RENTÁVEL'),
+    'K3KL8L80EM': ('LPDDR5X', '4GB', '', '', '', 'RENTÁVEL'),
+    'K3L1G1646DBC': ('LPDDR5X', '', '', '', '', 'INDETERMINADO'),
+    'K3LK3K3': ('LPDDR5', '8GB', '', '', '', 'RENTÁVEL'),
+    'K3LK3K30EM': ('LPDDR5', '8GB', '', '', '', 'RENTÁVEL'),
+    'K3MF8F80DM': ('LPDDR3', '', '', '', '', 'INDETERMINADO'),
+    'K3MF9F90MM': ('LPDDR3', '', '', '', '', 'INDETERMINADO'),
+    'K3PE0E000A': ('LPDDR2', '2GB', '', '', '', 'NÃO RENTÁVEL'),
+    'K3PE7E700B': ('LPDDR2', '1GB', '', '', '', 'NÃO RENTÁVEL'),
+    'K3Q2G30PC': ('LPDDR3', '', '', '', '2Gb = 256MB por die [~]', 'RENTÁVEL'),
+    'K3Q8F30MB': ('LPDDR3', '', '', '', '8Gb = 1GB por die [✓]', 'RENTÁVEL'),
+    'K3QF3F30': ('LPDDR3', '2GB', '', '', '', 'RENTÁVEL'),
+    'K3QFAFA0CM': ('LPDDR3', '8GB', '', '', '', 'RENTÁVEL'),
+    'K3R1G1646DBC': ('LPDDR3', '', '', '', '1Gb = 128MB por die [~]', 'NÃO RENTÁVEL'),
+    'K3RG2G2': ('LPDDR4', '4GB', '', '', '', 'RENTÁVEL'),
+    'K3RG6G6': ('LPDDR4', '6GB', '', '', '', 'RENTÁVEL'),
+    'K3UH6H6': ('LPDDR4X', '4GB', '', '', '', 'RENTÁVEL'),
+    'K3UH6H60': ('LPDDR4X', '4GB', '', '', '', 'RENTÁVEL'),
+    'K4AAG085W': ('DDR4', '', '', '', '16Gb = 2GB por die [~]', 'RENTÁVEL'),
+    'K4AAG165W': ('DDR4', '', '', '', '16Gb = 2GB por die [~]', 'RENTÁVEL'),
+    'K4B2G1646F': ('DDR3', '', '', '', '2Gb = 256MB por die [~]', 'RENTÁVEL'),
+    'K4B8G0846D': ('DDR3', '', '', '', '8Gb = 1GB por die [✓]', 'RENTÁVEL'),
+    'K4E6E304': ('LPDDR3', '2GB', '', '', '', 'RENTÁVEL'),
+    'K4EBE304': ('LPDDR3', '4GB', '', '', '', 'RENTÁVEL'),
+    'K4FHE30': ('LPDDR4', '3GB', '', '', '', 'RENTÁVEL'),
+    'K4FHE3D': ('LPDDR4', '3GB', '', '', '', 'RENTÁVEL'),
+    'K4G10325': ('GDDR5', '', '', '', '1Gb = 128MB por die [~]', 'INDETERMINADO'),
+    'K4G80325FB': ('GDDR5', '', '', '', '8Gb = 1GB por die [✓]', 'INDETERMINADO'),
+    'K4H510438G': ('DDR1', '', '', '', '512Mb = 64MB por die [~]', 'NÃO RENTÁVEL'),
+    'K4H560838D': ('DDR1', '', '', '', '256Mb = 32MB por die [~]', 'NÃO RENTÁVEL'),
+    'K4J10324KE': ('GDDR3', '', '', '', '', 'INDETERMINADO'),
+    'K4J55323QF': ('GDDR3', '', '', '', '', 'INDETERMINADO'),
+    'K4M1G1646DBC': ('LPDDR1', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K4N51163': ('GDDR2', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K4N51163Q': ('GDDR2', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K4P2G304EB': ('LPDDR2', '', '', '', '2Gb = 256MB por die [~]', 'NÃO RENTÁVEL'),
+    'K4P4G324EB': ('LPDDR2', '', '', '', '4Gb = 512MB por die [✓]', 'NÃO RENTÁVEL'),
+    'K4R271669F': ('RDRAM', '128Mb', '', '', '', 'NÃO RENTÁVEL'),
+    'K4R441669E': ('RDRAM', '144Mb', '', '', '', 'NÃO RENTÁVEL'),
+    'K4RAH086V': ('DDR5', '', '', '', '16Gb = 2GB por die [~]', 'RENTÁVEL'),
+    'K4RAH165V': ('DDR5', '', '', '', '16Gb = 2GB por die [~]', 'RENTÁVEL'),
+    'K4RBH046V': ('DDR5', '', '', '', '32Gb = 4GB por die [~]', 'RENTÁVEL'),
+    'K4RBH046VM': ('DDR5', '', '', '', '32Gb = 4GB por die [~]', 'RENTÁVEL'),
+    'K4RCH046V': ('DDR5', '', '', '', '32Gb = 4GB por die [~]', 'RENTÁVEL'),
+    'K4RCH046VM': ('DDR5', '', '', '', '32Gb = 4GB por die [~]', 'RENTÁVEL'),
+    'K4S641632H': ('SDRAM', '', '', '', '64Mb = 8MB por die [✓]', 'NÃO RENTÁVEL'),
+    'K4T1G083QJ': ('DDR2', '', '', '', '1Gb = 128MB por die [~]', 'NÃO RENTÁVEL'),
+    'K4T1G084QJ': ('DDR2', '', '', '', '1Gb = 128MB por die [~]', 'NÃO RENTÁVEL'),
+    'K4UHE3D': ('LPDDR4X', '3GB', '', '', '', 'RENTÁVEL'),
+    'K4UHE3S': ('LPDDR4X', '3GB', '', '', '', 'RENTÁVEL'),
+    'K4W4G1646': ('GDDR3', '', '', '', '4Gb = 512MB por die [✓]', 'INDETERMINADO'),
+    'K4W4G1646D': ('GDDR3', '', '', '', '4Gb = 512MB por die [✓]', 'INDETERMINADO'),
+    'K4XXXXXX': ('LPDDR1', '', '', '', "Código 'XX' não mapeado — consultar datasheet", 'NÃO RENTÁVEL'),
+    'K4XXXXXX-BCPB': ('LPDDR1', '', '', '', "Código 'XX' não mapeado — consultar datasheet", 'NÃO RENTÁVEL'),
+    'K4ZAF325B': ('GDDR6', '', '', '', '', 'INDETERMINADO'),
+    'K4ZAF325BC': ('GDDR6', '', '', '', '', 'INDETERMINADO'),
+    'K524G2G': ('NOR Flash', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K524G2GACJ': ('NOR Flash', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K5D1G12ACD': ('OneNAND', '1Gb', '', '', '', 'INDETERMINADO'),
+    'K5L2731': ('MCP', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K5L5563': ('MCP', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K5N1229ACC-BQ12': ('MCP', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K5W1G12ACM': ('MCP', '1Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K5W1G12ACM-BL60TNO': ('MCP', '1Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K71G1646DBCK': ('SRAM', '', '', '', '', 'INDETERMINADO'),
+    'K81G1646DBCK': ('NOR Flash', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K9C1G1646DBC': ('NAND Flash', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K9F2G08U0B': ('NAND Flash', '2Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K9F4G08U0D': ('NAND Flash', '4Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K9GAG08U0E': ('NAND Flash', '16Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K9GBG08U0A': ('NAND Flash', '32Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K9H1G1646DBC': ('NAND Flash', '1Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K9HDG08U5A': ('NAND Flash', '', '', '', '', 'NÃO RENTÁVEL'),
+    'K9K8G08U0A': ('NAND Flash', '8Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K9LCG08U1A': ('NAND Flash', '64Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K9W1G1646DBC': ('NAND Flash', '1Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K9X1G1646DBC': ('NAND Flash', '1Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'K9Z1G1646DBC': ('NAND Flash', '1Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'KAT1G1646DBC': ('ePoP', '', 'eMMC ⚠ cap. não mapeada', "tipo 'T' — consultar datasheet ⚠ cap. não mapeada", '', 'NÃO RENTÁVEL'),
+    'KF91G1646DBC': ('NAND Flash', '', '', '', '', 'NÃO RENTÁVEL'),
+    'KLMCG2KETM': ('eMMC', '64GB', '', '', '', 'RENTÁVEL'),
+    'KLMCG2UCTA': ('eMMC', '64GB', '', '', '', 'RENTÁVEL'),
+    'KLU1G1646D': ('UFS', '', '', '', '', 'INDETERMINADO'),
+    'KLUBG4G1CE': ('UFS', '32GB', '', '', '', 'RENTÁVEL'),
+    'KLUBG4G1ZF': ('UFS', '32GB', '', '', '', 'RENTÁVEL'),
+    'KLUCG2U1DC': ('UFS', '64GB', '', '', '', 'RENTÁVEL'),
+    'KLUCG4J1ED': ('UFS', '64GB', '', '', '', 'RENTÁVEL'),
+    'KLUDG2R1DE': ('UFS', '128GB', '', '', '', 'RENTÁVEL'),
+    'KLUDG4UHGC': ('UFS', '128GB', '', '', '', 'RENTÁVEL'),
+    'KLUEG4RHHF': ('UFS', '256GB', '', '', '', 'RENTÁVEL'),
+    'KLUEG8U1EM': ('UFS', '256GB', '', '', '', 'RENTÁVEL'),
+    'KLUFG8RHKF': ('UFS', '512GB', '', '', '', 'RENTÁVEL'),
+    'KLUFG8RHYE': ('UFS', '512GB', '', '', '', 'RENTÁVEL'),
+    'KLUGGAR1FA': ('UFS', '1TB', '', '', '', 'RENTÁVEL'),
+    'KLUGGARHUF': ('UFS', '1TB', '', '', '', 'RENTÁVEL'),
+    'KM11G1646D': ('uMCP', '', 'UFS 4.0 ⚠ cap. não mapeada', 'LPDDR5X ⚠ cap. não mapeada', '', 'INDETERMINADO'),
+    'KM2H7001CM': ('uMCP', '', 'UFS 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KM2L9001CM': ('uMCP', '', 'UFS 2.2 128GB', 'LPDDR4X 8GB', '', 'RENTÁVEL'),
+    'KM2P8001CM': ('uMCP', '', 'UFS 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KM2P9001CM': ('uMCP', '', 'UFS 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KM2V8001CM': ('uMCP', '', 'UFS 128GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KM3H6001CA': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KM3P6001CM': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KM41G1646D': ('eMCP', '', 'eMMC 5.1 ⚠ cap. não mapeada', 'LPDDR4 ⚠ cap. não mapeada', '', 'INDETERMINADO'),
+    'KM5C7001DM': ('uMCP', '', 'UFS 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KM5P9001DM': ('uMCP', '', 'UFS 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KM6E3S4AM0': ('eMCP', '', 'eMMC ⚠ cap. não mapeada', 'RAM não mapeada — consultar datasheet ⚠ cap. não mapeada', '', 'INDETERMINADO'),
+    'KM8F8001JM': ('uMCP', '', 'UFS 256GB', 'LPDDR4X 12GB', '', 'RENTÁVEL'),
+    'KM8V8001LM': ('uMCP', '', 'UFS 128GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KMAG9001PM': ('uMCP', '', 'UFS 3.1 128GB', "tipo 'A' — consultar datasheet 8GB", '', 'INDETERMINADO'),
+    'KMAS9001PM': ('uMCP', '', 'UFS 3.1 256GB', "tipo 'A' — consultar datasheet 8GB", '', 'INDETERMINADO'),
+    'KMDH6001DA': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KMDP60018M': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR4X 4GB', '', 'RENTÁVEL'),
+    'KMFE60012M': ('eMCP', '', 'eMMC 5.1 16GB', 'LPDDR3 2GB', '', 'RENTÁVEL'),
+    'KMFN60012M': ('eMCP', '', 'eMMC 5.1 8GB', 'LPDDR3 1GB', '', 'RENTÁVEL'),
+    'KMGP6001BA': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR3 4GB', '', 'RENTÁVEL'),
+    'KMGP6001BM': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR3 4GB', '', 'RENTÁVEL'),
+    'KMJ1G1646D': ('eMCP', '', 'eMMC ⚠ cap. não mapeada', 'LPDDR2 ⚠ cap. não mapeada', '', 'NÃO RENTÁVEL'),
+    'KMK1G1646D': ('eMCP', '', 'eMMC ⚠ cap. não mapeada', 'LPDDR2 ⚠ cap. não mapeada', '', 'NÃO RENTÁVEL'),
+    'KML1G1646D': ('eMCP', '', 'eMMC ⚠ cap. não mapeada', 'LPDDR5 ⚠ cap. não mapeada', '', 'INDETERMINADO'),
+    'KMN1G1646D': ('eMCP', '', 'eMMC ⚠ cap. não mapeada', 'LPDDR2 ⚠ cap. não mapeada', '', 'NÃO RENTÁVEL'),
+    'KMQE60013B': ('eMCP', '', 'eMMC 5.1 16GB', 'LPDDR3 2GB', '', 'RENTÁVEL'),
+    'KMQX60013A': ('eMCP', '', 'eMMC 5.1 32GB', 'LPDDR3 2GB', '', 'RENTÁVEL'),
+    'KMRP60014M': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR3 4GB', '', 'RENTÁVEL'),
+    'KMS1G1646D': ('eMCP', '', 'eMMC ⚠ cap. não mapeada', 'LPDDR1 ⚠ cap. não mapeada', '', 'NÃO RENTÁVEL'),
+    'KMV1G1646D': ('eMCP', '', 'eMMC ⚠ cap. não mapeada', 'LPDDR2 (legado) ⚠ cap. não mapeada', '', 'NÃO RENTÁVEL'),
+    'KUS1G1646DBC': ('BGA SSD', '', '', '', '', 'INDETERMINADO'),
+    'S2A1G1646DBC': ('PMIC', '', '', '', '', 'INDETERMINADO'),
+    'S2D1G1646DBC': ('PMIC', '', '', '', '', 'INDETERMINADO'),
+    'S2M1G1646DBC': ('PMIC', '', '', '', '', 'INDETERMINADO'),
+    'S5E8895': ('SoC', '', '', '', '', 'INDETERMINADO'),
+    'S5E9825': ('SoC', '', '', '', '', 'INDETERMINADO'),
+    'S5K1G1646DBC': ('Sensor', '', '', '', '', 'INDETERMINADO'),
+}
 
 class LoadBrandsPiecemakersTests(TestCase):
     """Passo 4: PieceMakers carregada de chips/knowledge/piecemakers.yaml. Fidelidade
@@ -1131,6 +1277,33 @@ class HynixLoadBrandsTests(TestCase):
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _HYX_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+class SamsungLoadBrandsTests(TestCase):
+    """Passo 4: Samsung — o GABARITO MESTRE (87 famílias, 15 mapas). Fidelidade (yaml→banco, com
+    DRAM_PC/DRAM_MOBILE globais brand=None) + identificação das 87 famílias. Inclui o fix do bug
+    K4R (density_type+cap_map juntos → só density; capacity Gb-em-GB removido, igual ao K4A)."""
+
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "samsung")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "samsung", "--commit", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
+        for pn, esperado in _SAM_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+    def test_mapas_globais_ficam_brand_none(self):
+        """DRAM_PC/DRAM_MOBILE são universais → brand=None (drop-in fiel ao populate, sem duplicata)."""
+        from django.core.management import call_command
+        from chips.models import DecodeMap
+        call_command("load_brands", "--brand", "samsung", "--commit", verbosity=0)
+        for m in ("DRAM_PC", "DRAM_MOBILE"):
+            self.assertTrue(DecodeMap.objects.filter(map_name=m, brand__isnull=True).exists(), m)
+            self.assertFalse(DecodeMap.objects.filter(map_name=m, brand__isnull=False).exists(),
+                             f"{m} não deveria ter brand (universal)")
+
 
 
 class KnowledgeSchemaTests(TestCase):

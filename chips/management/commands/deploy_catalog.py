@@ -38,9 +38,10 @@ from core.safe_command import SafeWriteCommand
 # (comando, kwargs no --commit, kwargs no dry-run [ou None se o passo não tem dry-run])
 # A ordem é a canônica do CLAUDE.md §5. Só comandos rodáveis no Render.
 _STEPS = [
-    ("populate_samsung",     {"overwrite": True}, {"dry_run": True}),
     # Marcas migradas p/ YAML (passo 4): load_brands no lugar dos populate_* aposentados.
-    # (populate_toshiba criava Toshiba E Kioxia → 2 load_brands.)
+    # (populate_toshiba criava Toshiba E Kioxia → 2 load_brands.) Samsung 1ª: define os mapas
+    # GLOBAIS DRAM_PC/DRAM_MOBILE (brand=None) que a densidade dela usa.
+    ("load_brands", {"brand": "samsung", "commit": True}, {"brand": "samsung", "dry_run": True}),
     ("load_brands", {"brand": "piecemakers", "commit": True}, {"brand": "piecemakers", "dry_run": True}),
     ("load_brands", {"brand": "gigadevice", "commit": True}, {"brand": "gigadevice", "dry_run": True}),
     ("load_brands", {"brand": "rayson", "commit": True}, {"brand": "rayson", "dry_run": True}),

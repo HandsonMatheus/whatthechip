@@ -127,7 +127,13 @@ class FamilySpec(BaseModel):
 
         # 2. subtype → token canônico (só a geração/célula; sem 'standalone', '+ eMMC',
         #    'SDRAM', qualificadores). Ex.: 'LPDDR3 + eMMC'→'LPDDR3'; 'DDR4 SDRAM'→'DDR4'.
-        if self.subtype:
+        #    EXCEÇÃO: categoria 'catalog' (NOR/OneNAND/MCP/ePoP/SoC/PMIC/SRAM/…) tem subtype
+        #    DESCRITIVO — o chip_type MANDA (chip_types.py::_TYPE_WINS_CATS). Normalizar
+        #    mutilaria a descrição (MCP 'NOR Flash + SDRAM'→'SDRAM'; ePoP 'eMMC + LPDDR
+        #    Empilhado'→'LPDDR') sem ganho: o label dessas não usa o subtype. Então pula.
+        _spec = spec_for(self.chip_type)
+        _descritivo = _spec is not None and _spec.category == "catalog"
+        if self.subtype and not _descritivo:
             self.subtype = canonical_gen(self.subtype, self.chip_type)
 
         # 3. interface NÃO carrega geração de RAM (é largura de barramento x8/x16 ou vazio).

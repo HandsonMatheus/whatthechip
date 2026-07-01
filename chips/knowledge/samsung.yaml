@@ -1,0 +1,1763 @@
+# Conhecimento Samsung — fonte do catálogo (passo 4). Gerado do CÓDIGO ATUAL
+# (populate_samsung + add_chip_families) — completo. NUNCA do prod_data (defasado).
+# DRAM_PC/DRAM_MOBILE são mapas GLOBAIS (brand=None no load): só a Samsung usa densidade.
+# K4RA/K4RB/K4RC: decode_cap_map removido (fix do bug Gb-em-capacity; igual K4A).
+brand:
+  name: Samsung
+  code: SAM
+  notes: Coreia do Sul · Fundada 1969
+maps:
+  DRAM_MOBILE:
+  - ['1', 1Gb, 128MB]
+  - ['2', 2Gb, 256MB]
+  - ['4', 4Gb, 512MB]
+  - ['6', 6Gb, 768MB]
+  - ['8', 8Gb, 1GB]
+  - [B, 12Gb, 1.5GB]
+  - [F, 16Gb, 2GB]
+  - [G, 16Gb, 2GB]
+  - [H, 32Gb, 4GB]
+  - [P, 512Mb, 64MB]
+  DRAM_PC:
+  - [1G, 1Gb, 128MB]
+  - ['28', 128Mb, 16MB]
+  - [2G, 2Gb, 256MB]
+  - [4G, 4Gb, 512MB]
+  - ['51', 512Mb, 64MB]
+  - ['56', 256Mb, 32MB]
+  - ['64', 64Mb, 8MB]
+  - [8G, 8Gb, 1GB]
+  - [AG, 16Gb, 2GB]
+  - [AH, 16Gb, 2GB]
+  - [BH, 32Gb, 4GB]
+  - [CH, 32Gb, 4GB]
+  K3PE_CAP:
+  - [0E, 2GB, 16Gbit DDP (2× 8Gb ou 512Mx32) — K3PE0E000x. Galaxy flagship (~2012-2013). Resíduo.]
+  - [4E, 512MB, 4Gbit SDP (128Mx32) — K3PE4E400x. Galaxy entry (~2011-2012). Resíduo.]
+  - [7E, 1GB, 8Gbit DDP (2× 4Gb) — K3PE7E700x. Galaxy mid-range (~2011-2012). Resíduo.]
+  - [8E, 1GB, '8Gbit DDP — K3PE8E800M, die alternativo de 7E. Mesma densidade. Resíduo.']
+  K3QF_CAP:
+  - ['1', 1GB, '8Gb — 1× 8Gb die. Ex: K3QF1F10DMAGCE000 (Octopart). Resíduo.']
+  - ['2', 2GB, '16Gb — 2× 8Gb die. Ex: K3QF2F20EM. Reacondicional seletivo.']
+  - ['3', 2GB, '16Gb — revisão de die (NÃO é 3GB). Ex: K3QF3F30BM-AGCG (Samsung.com ✓). Reacondicional seletivo.']
+  - ['4', 4GB, '32Gb — Ex: K3QF4F40BM-FGCF / K3QF4F40BM-AGCF (PSG 1H 2017 ✓). Reacondicional seletivo.']
+  - ['5', 1.5GB, '12Gb — 2× 6Gb die. Ex: K3QF5F50MM (Galaxy S5 Mini, Exynos 3470 ✓). Reacondicional seletivo.']
+  - ['6', 3GB, '24Gb — Ex: K3QF6F60AM-FGCF / K3QF6F60MM (PSG 1H 2017 + PSG 2H 2014 ✓). Reacondicional seletivo.']
+  - ['7', 3GB, '24Gb — 4× 6Gb die. Ex: K3QF7F70DM-QGCE (Note 3, Samsung PR 3GB LPDDR3 ✓). Reacondicional seletivo.']
+  - [A, 8GB, 64Gb — K3QFAFA0CM-AGCF (Samsung Semiconductor Global ✓ 2026-05-28). Geração C. Novo key — não existia no mapa anterior.]
+  K3RG_CAP:
+  - [2G, 4GB, 32Gb — K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ (PSG 1H 2017 ✓).]
+  - [3G, 3GB, '24Gb — K3RG3G30MM-DGCH (iFixit Galaxy S6 Teardown 2015 ✓). Mesma capacidade que 4G, die diferente.']
+  - [4G, 3GB, 24Gb — K3RG4G40MM-MGCJ (PSG 1H 2017 ✓).]
+  - [6G, 6GB, 48Gb — K3RG6G60MM-MGCJ (PSG 1H 2017 ✓).]
+  K4E_CAP:
+  - [2E, 1.5GB, '12Gb — Galaxy Tab E / S5 Mini (~2014-2015). Sem liquidez B2B atual. K4E2E304EA-AGCF: Kynix/Worldway ✓. K4E2E304EE-AGCE: Alldatasheet Samsung PSG ✓ (2026-05-29). Galaxy Tab E SM-T560 = 1.5GB RAM confirmado — GSMarena/Icecat ✓. Chave também presente em LPDDR4_CAP (confirmado por datasheet Samsung).']
+  - [6E, 2GB, 16Gb — Galaxy mid-range (~2014-2016).]
+  - [8E, 1GB, 8Gb — Galaxy entry (~2013). Sem liquidez B2B atual.]
+  - [BE, 4GB, 32Gb — Galaxy flagship (~2015). Alta demanda residual.]
+  - [FE, 3GB, 24Gb — Galaxy Note 3 / S5 (~2013-2014). Raro.]
+  - [HE, 3GB, '24Gb — alias FE: mesmo densidade, die alternativo. K4EHE304EC-AGCF — Puris B2B ✓. Galaxy Tab A SM-P585 (Exynos 7870).']
+  KUS_CAP:
+  - ['02', 128GB, '']
+  - ['03', 256GB, '']
+  - ['04', 512GB, '']
+  LPDDR4_CAP:
+  - [2E, 1.5GB, 12Gb]
+  - [4E, 512MB, 4Gb]
+  - [6E, 2GB, 16Gb]
+  - [7E, 3GB, 24Gb]
+  - [8E, 1GB, 8Gb]
+  - [BE, 4GB, 32Gb]
+  - [CE, 8GB, 64Gb]
+  - [H5, 4GB, 32Gb]
+  - [H6, 4GB, 32Gb]
+  - [H7, 8GB, 64Gb]
+  - [HD, 16GB, 128Gb]
+  - [HE, 3GB, 24Gb]
+  - [JE, 6GB, 48Gb]
+  LPDDR5_CAP:
+  - [1L, 4GB, '32Gb — K3KL1L10GM-JGCT (Samsung Global ✓ 2026-05-28). ⚠ CORRIGIDO: era 8GB/64Gb (bug distribuidor).']
+  - [2K, 6GB, 48Gb — K3LK2K20BM-BGCN (Samsung Global ✓).]
+  - [2L, 6GB, 48Gb — K3KL2L20DM (Samsung Global ✓ 2026-05-28).]
+  - [3K, 8GB, 64Gb — K3LK3K30EM-BGCN (Samsung Global ✓).]
+  - [3L, 8GB, 64Gb — K3KL3L30CM-BGCU (Samsung Global ✓).]
+  - [4K, 12GB, '96Gb — ex: K3LK4K40CM (Galaxy S20 Ultra; Octopart: 12GB ✓). K3LK4K40CM-JFCP Samsung Global ✓.']
+  - [4L, 12GB, '96Gb — K3KL4L40DM-BGCU (Samsung Global ✓ ''96 Gb''). ⚠ CORRIGIDO 2026-05-27: era 16GB/128Gb (bug distribuidor).']
+  - [5L, 16GB, 128Gb — K3KL5L50DM-BGCU (Samsung Global ✓).]
+  - [6K, 16GB, 128Gb — K3LK6K60BM-JGCP (Samsung Global ✓).]
+  - [6L, 2GB, '16Gb — K3KL6L60GM (Samsung Global ✓ 2026-05-28). Wearable/ultra-compact, 7500 Mbps.']
+  - [7K, 8GB, '64Gb — ex: K3LK7K70BM-BGCP (Galaxy S22; Octopart: 64Gb ✓)']
+  - [7L, 3GB, 24Gb — K3KL7L70DM (Samsung Global ✓ 2026-05-28).]
+  - [8L, 4GB, '32Gb — ex: K3KL8L80EMMGCU (Octopart: 1GX32 ✓)']
+  - [9L, 2GB, '16Gb — ex: K3KL9L90DMMGCU (Octopart: 512MX32 ✓)']
+  - [BK, 4GB, '32Gb — ex: K3LKBKB0BMMGCP (Octopart: 1GX32 ✓)']
+  - [CK, 8GB, 64Gb — K3LKCKC0BM-MFCP (Samsung Global ✓). Variante de empilhamento alternativo.]
+  - [DK, 18GB, 144Gb — K3LKDKD0CM-BGCP (Samsung Global ✓). Flagship 2022+.]
+  - [DL, 6GB, 48Gb — K3KLDLD0FM-MUCV (Samsung Global ✓ 2026-05-28). Gen FM/EM. VDDQ=0.5V. Processo diferente do 2L (mesma capacidade).]
+  NAND_FLASH_CAP:
+  - [1G, 1Gb, 128MB]
+  - [2G, 2Gb, 256MB]
+  - [4G, 4Gb, 512MB]
+  - [8G, 8Gb, 1GB]
+  - [AG, 16Gb, 2GB]
+  - [BG, 32Gb, 4GB]
+  - [CG, 64Gb, 8GB]
+  - [DG, 128Gb, 16GB]
+  RDRAM_CAP:
+  - ['27', 128Mb, 8Mx16 (x16 org)]
+  - ['44', 144Mb, 16Mx9 por canal]
+  - ['76', 576Mb, 64Mx9 por canal]
+  - ['88', 288Mb, 32Mx9 por canal]
+  SAM_EMCP_CAP:
+  - ['11', 4GB, 512MB]
+  - ['21', 32GB, 2GB]
+  - ['31', 16GB, 1GB]
+  - [3W, 16GB, 512MB]
+  - ['41', 32GB, 4GB]
+  - [4Z, 32GB, 2GB]
+  - [5U, 4GB, 1GB]
+  - ['72', 8GB, 1GB]
+  - [7U, 8GB, 1GB]
+  - [7X, 8GB, 1GB]
+  - ['82', 16GB, 2GB]
+  - [8X, 16GB, 1GB]
+  - [BT, 16GB, 2GB]
+  - [C1, 64GB, 4GB]
+  - [C6, 64GB, 4GB]
+  - [C7, 64GB, 4GB]
+  - [D6, 32GB, 3GB]
+  - [E1, 16GB, 2GB]
+  - [E6, 16GB, 2GB]
+  - [F8, 256GB, 12GB]
+  - [F9, 256GB, 8GB]
+  - [G9, 128GB, 8GB]
+  - [GD, 32GB, 3GB]
+  - [H6, 64GB, 4GB]
+  - [H7, 64GB, 4GB]
+  - [H8, 64GB, 3GB]
+  - [H9, 32GB, 2GB]
+  - [IS, 16GB, 1GB]
+  - [J2, 128GB, 6GB]
+  - [JS, 4GB, 512MB]
+  - [JW, 4GB, 768MB]
+  - [K6, 128GB, 8GB]
+  - [L9, 128GB, 8GB]
+  - [LL, 4GB, 1GB]
+  - [M4, 128GB, 4GB]
+  - [N1, 8GB, 1GB]
+  - [N6, 8GB, 1GB]
+  - [NW, 8GB, 1GB]
+  - [NX, 8GB, 1GB]
+  - [P5, 256GB, 8GB]
+  - [P6, 64GB, 4GB]
+  - [P8, 64GB, 4GB]
+  - [P9, 64GB, 4GB]
+  - [S9, 256GB, 8GB]
+  - [TU, 16GB, 1GB]
+  - [V6, 128GB, 4GB]
+  - [V7, 128GB, 8GB]
+  - [V8, 128GB, 4GB]
+  - [V9, 128GB, 8GB]
+  - [W7, 32GB, 3GB]
+  - [W8, 32GB, 4GB]
+  - [X1, 32GB, 2GB]
+  - [X6, 32GB, 2GB]
+  SAM_EMCP_GEN:
+  - [D, LPDDR4X, '']
+  - [F, LPDDR3, '']
+  - [G, LPDDR3, '']
+  - [J, LPDDR2, '']
+  - [K, LPDDR2, '']
+  - [L, LPDDR5, '']
+  - [N, LPDDR2, '']
+  - [Q, LPDDR3, '']
+  - [R, LPDDR3, '']
+  - [S, LPDDR4X, '']
+  - [V, LPDDR5/5X, '']
+  SAM_EMMC_GEN:
+  - [E, eMMC 5.0, '']
+  - [F, eMMC 4.5, '']
+  - [G, eMMC 5.1, '']
+  - [J, eMMC 5.1, '']
+  - [K, eMMC 5.1, '']
+  - [R, eMMC 5.1, '']
+  - [U, eMMC 5.1, '']
+  - [W, eMMC 5.0, '']
+  SAM_FLASH_CAP:
+  - ['2', 2GB, '']
+  - ['4', 4GB, '']
+  - ['8', 8GB, '']
+  - [A, 16GB, '']
+  - [B, 32GB, '']
+  - [C, 64GB, '']
+  - [D, 128GB, '']
+  - [E, 256GB, '']
+  - [F, 512GB, '']
+  - [G, 1TB, '']
+families:
+- prefix: K3
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 90
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: mobile
+  suffix_rules: ''
+  tip: '💡 K3 = LPDDR2/3 legado. ATENÇÃO: K3U=LPDDR4X e K3L=LPDDR5 têm regras próprias. K3 genérico cobre K3R e K3Q (LPDDR3). Destino: bancada reacondicional mobile.'
+  reasoning: '["K → Samsung Memory", "3 → 3rd-gen DRAM (LPDDR2/3)", "K3R/K3Q → LPDDR3 séries comuns", "Velocidade: até 2133 Mbps (LPDDR3E)", "NÃO confundir com K3U (LPDDR4X) ou K3L (LPDDR5)"]'
+- prefix: K3KL
+  chip_type: LPDDR5X
+  subtype: LPDDR5X
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: LPDDR5_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR5X Samsung (K3KL). VDDQ=0.5V — RISCO DE QUEIMA no socket de LPDDR5 (VDDQ=0.9V). ⚠ CORRIGIDO 2026-05-27: era classificado como LPDDR5 — ERRADO. Samsung Global categoriza K3KL em /lpddr5x/ (K3LK vai para /lpddr5/). Velocidade: até 8533 Mbps (gen DM/EM/FM). Flagships Samsung (Galaxy S22+ S23 S24). Densidade em pn[4:6] → LPDDR5_CAP: 6L/9L=2GB · 1L/8L=4GB · 7L=3GB · 2L/DL=6GB · 3L=8GB · 4L=12GB · 5L=16GB. Gerações pn[8]: DM (2021-22) · CM/EM (2022-23) · FM (2023+). Exemplos Samsung Global: K3KL3L30CM-BGCT (8GB) · K3KL4L40FM-BGCV (12GB) · K3KL5L50DM-BGCU (16GB) · K3KLDLD0FM-MUCV (6GB DL). Destino: bancada reacondicional MOBILE. Verificar VDDQ antes de inserir no jig.'
+  reasoning: ''
+- prefix: K3L
+  chip_type: LPDDR5X
+  subtype: LPDDR5X
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 60
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: LPDDR5_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR5X Samsung (família K3L). Velocidade: até 8533 Mbps. VDDQ=0.5V — socket incompatível com LPDDR5 (0.9V). Densidade em pn[4:6] → LPDDR5_CAP. Destino: bancada reacondicional MOBILE. Tolerância zero para envio a resíduo.'
+  reasoning: ''
+- prefix: K3LK
+  chip_type: LPDDR5
+  subtype: LPDDR5
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: LPDDR5_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR5 Samsung (K3LK). VDDQ=0.9V típico. ⚠ CORRIGIDO 2026-05-27: era classificado como LPDDR5X — ERRADO. Samsung Global categoriza K3LK em /lpddr5/ (não /lpddr5x/). K3KL=LPDDR5X (VDDQ=0.5V) — NÃO confundir sockets: incompatíveis, risco de queima. Ambas corrigidas 2026-05-27. Velocidade: até 6400 Mbps. Flagships Samsung (Galaxy S21, S22, S23, S24). Densidade em pn[4:6] → LPDDR5_CAP: BK=4GB · 7K/CK/3K=8GB · 4K=12GB · 6K/DK=16-18GB. Exemplos Samsung Global: K3LKBKB0BM (4GB) · K3LK7K70BM (8GB) · K3LK4K40CM (12GB) · K3LKDKD0CM (18GB). Destino: bancada reacondicional MOBILE. Verificar subtype antes de inserir no jig.'
+  reasoning: ''
+- prefix: K3MF
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR3 Multi-Channel Samsung (K3MF). K3=multi-channel PoP · M=geração interna · F=LPDDR3. Pacote grande: 504-ball 15×15mm — dual-channel (2CH x32). Exemplos PSG 2H 2014: K3MF8F80DM (2GB) · K3MF9F90MM (3GB). ⚠ NÃO confundir com K3QF (também LPDDR3 multi-channel, prefixo K3Q). ⚠ decode_density_type='''' — pn[3]=''F'' via DRAM_MOBILE erraria K3MF9=3GB. Destino: bancada reacondicional mobile (PoP LPDDR3 — checar demanda).'
+  reasoning: ''
+- prefix: K3PE
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 35
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: K3PE_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR2 Samsung (K3PE) — standalone (~2011-2013) e multi-channel PoP (~2013-2014). K3=multi-channel PoP · P=LPDDR2 · E=geração. Capacidade: pn[4:6] → 4E=512MB · 7E/8E=1GB · 0E=2GB. 533MHz / 1066 Mbps. VDD 1.8V / VDDQ 1.2V. Organização x32. Exemplos standalone: K3PE4E400A (512MB), K3PE7E700B (1GB), K3PE0E000A (2GB). Exemplos PoP PSG 2H 2014: K3PE7E70QM (1GB, 216/220-ball) · K3PE0E00QM (2GB). ⚠ LPDDR2: sem liquidez B2B em 2026 → NÃO RENTÁVEL (moagem/refino). ⚠ NÃO confundir com K4P (LPDDR2 single-channel, sem PoP).'
+  reasoning: ''
+- prefix: K3Q
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: mobile
+  suffix_rules: ''
+  tip: 'LPDDR3 Samsung (~2013–2017). Q = LPDDR3. Tensão: 1.2V. Velocidade: até 2133 Mbps. Densidade: pn[3] → 2=2Gb(256MB) · 4=4Gb(512MB) · 8=8Gb(1GB) · G=16Gb(2GB). ⚠ K3QF... (pn[3]=''F''): decodificado pela sub-família K3QF — pn[4] define o total. Exemplos: K3Q2G30PC (256MB), K3Q8F30MB (1GB), K3QF2F20EM (2GB), K3QF1F10DM (1GB). 2GB (G): reacondicional seletivo — checar demanda B2B antes. Destino: bancada reacondicional mobile.'
+  reasoning: ''
+- prefix: K3QF
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: K3QF_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR3 Samsung alta-densidade (K3QF). pn[4] = código de capacidade: 1=1GB · 2=2GB · 3=2GB (revisão die) · 5=1.5GB · 7=3GB · 4=4GB. ⚠ chave ''3'' ≠ 3GB — é 16Gb/2GB como a chave ''2'' (mudança de revisão interna, não densidade). ⚠ chaves ''5'' e ''7'' usam dies de 6Gb (não 8Gb): 5=2×6Gb=12Gb=1.5GB · 7=4×6Gb=24Gb=3GB. ⚠ 1GB (K3QF1...): sem liquidez B2B atual. Destino: resíduo. 1.5GB (K3QF5..., Galaxy S5 Mini Exynos): reacondicional seletivo. 2GB (K3QF2/K3QF3...): reacondicional seletivo. 3GB (K3QF7..., Galaxy Note 3): reacondicional seletivo — checar demanda. 4GB (K3QF4..., Octopart ✓): reacondicional seletivo. Para K3QFx com x não mapeado: consultar Octopart/datasheet.'
+  reasoning: ''
+- prefix: K3R
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: mobile
+  suffix_rules: ''
+  tip: 'LPDDR3 Samsung (K3R). Velocidade: até 2133 Mbps. Tensão: 1.2V. Densidade: pn[3] → G=16Gb(2GB) · H=32Gb(4GB). Destino: bancada reacondicional mobile.'
+  reasoning: ''
+- prefix: K3RG
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: K3RG_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR4 Multi-Channel Samsung (K3RG). Tensão I/O: 1.1V. Configuração: 4CH x16 = 64-bit total — encapsulamento multi-die. Capacidade pn[4:6] → K3RG_CAP: 4G=3GB · 3G=3GB · 2G=4GB · 6G=6GB. Exemplos: K3RG4G40MM (3GB, PSG 1H 2017 ✓) · K3RG3G30MM-DGCH (3GB, Galaxy S6 iFixit ✓) · K3RG2G20CA/CM (4GB, 366/432-ball) · K3RG6G60MM (6GB, 366-ball). ⚠ NÃO confundir com K3R (LPDDR3) — K3RG é LPDDR4. ⚠ NÃO misturar soquetes com K3U/K3UH (LPDDR4X, 0.6V). Destino: bancada reacondicional mobile (2016+ era).'
+  reasoning: ''
+- prefix: K3U
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: LPDDR4_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR4X Multi-Channel Samsung. Tensão I/O: 0.6V. RAM pura — sem componente Flash. Capacidade: pn[3:5] → HE=3GB · BE/H5/H6=4GB · CE/H7=8GB · HD=16GB (mais comuns nesta família). ⚠ HE=3GB (24Gb) — NÃO confundir com BE=4GB (32Gb). Exemplos confirmados: K3UH5H50AM-AGCL (H5=32Gb=4GB, Samsung oficial ✓) · K3UH7H70MM-TFCL (H7=8GB). ⚠ NÃO misturar soquetes com K4F (LPDDR4, 1.1V) — tensão diferente. Destino: bancada reacondicional mobile.'
+  reasoning: ''
+- prefix: K4A
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: pc
+  suffix_rules: ''
+  tip: 'DDR4 Samsung (2014–presente). A = DDR4 (1.2V). Densidade: pn[3:5] → 4G=4Gb(512MB) · 8G=8Gb(1GB) · AG/AH=16Gb(2GB). Largura: pn[5:7] → 04=x4 · 08=x8 · 16=x16. Velocidade: sufixo BCPB=DDR4-2133 · BCRC=DDR4-2400 · BCTD=DDR4-2666 · BCWE=DDR4-3200. Destino: bancada reacondicional — alta liquidez B2B para upgrades corporativos e notebooks. Prioridade crescente por densidade: 512MB < 1GB < 2GB por die.'
+  reasoning: '["K → Samsung Memory", "4 → 4th-gen DRAM", "A → DDR4 (1.2V)", "Densidade: pn[3:5] via DRAM_PC — 4G=4Gb(512MB) · 8G=8Gb(1GB) · AG/AH=16Gb(2GB)", "Largura: pn[5:7] — 04=x4 · 08=x8 · 16=x16", "Velocidade: sufixo BCPB=DDR4-2133 · BCRC=DDR4-2400 · BCTD=DDR4-2666 · BCWE=DDR4-3200"]'
+- prefix: K4B
+  chip_type: DDR3
+  subtype: DDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: pc
+  suffix_rules: ''
+  tip: 'DDR3/DDR3L Samsung (2007–2016). B = DDR3. Densidade: pn[3:5] → 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB). Largura: pn[5:7] → 08=x8 · 16=x16. Tensão: sufixo BC=DDR3 1.5V · BY=DDR3L 1.35V. ⚠ NÃO misturar DDR3 com DDR3L na bancada. Destino por densidade: 1Gb (128MB) → resíduo (moagem/refino — sem liquidez B2B em 2026); ≥2Gb (256MB+) → checar demanda antes de reacondicionar.'
+  reasoning: '["K → Samsung Memory", "4 → 4th-gen DRAM", "B → DDR3 (inclui DDR3L — distinção pela tensão do sufixo)", "Densidade: pn[3:5] via DRAM_PC — 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB)", "Largura: pn[5:7] — 08=x8 (DIMMs/SO-DIMM) · 16=x16 (embarcados)", "Tensão: sufixo BC=DDR3 1.5V | BY=DDR3L 1.35V — NÃO misturar na bancada"]'
+- prefix: K4E
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: K4E_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR3 Samsung standalone (~2013–2016). E = LPDDR3 (sufixo de geração). RAM pura — sem componente Flash. Capacidade: pn[3:5] → 2E=1.5GB · 8E=1GB · 6E=2GB · FE=3GB · HE=3GB · BE=4GB. ⚠ FE e HE são aliases de 3GB (24Gb) — die diferente, mesma densidade. ⚠ 1.5GB (2E): Galaxy Tab E SM-T560 / S5 Mini — sem liquidez B2B atual → resíduo. ⚠ 1GB (8E): sem liquidez B2B atual → resíduo (moagem/refino). 2GB / 3GB / 4GB: avaliar demanda — bancada reacondicional mobile.'
+  reasoning: ''
+- prefix: K4F
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: LPDDR4_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR4 Samsung. Tensão I/O: 1.1V. RAM pura — sem componente Flash. Capacidade: pn[3:5] → 4E=512MB · 8E=1GB · 6E=2GB · 7E/HE=3GB · BE/H5/H6=4GB · JE=6GB · CE/H7=8GB · HD=16GB. ⚠ HE=3GB (24Gb) — NÃO confundir com BE=4GB (32Gb). ⚠ JE=6GB (48Gb) — Samsung Semiconductor Global ✓ (confirmado 2026-05-27). ⚠ 512MB e 1GB: sem liquidez B2B → resíduo (moagem/refino). 2GB+: bancada reacondicional mobile. ⚠ NÃO misturar soquetes com K4U/K3U (LPDDR4X, 0.6V) — tensão diferente.'
+  reasoning: ''
+- prefix: K4G
+  chip_type: GDDR5
+  subtype: GDDR5
+  interface: x32
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: mobile
+  suffix_rules: ''
+  tip: 'GDDR5/GDDR5X Samsung — VRAM dedicada em GPUs discretas (~2012-2020). G = GDDR5; densidade: pn[3] via DRAM_MOBILE: ''2''=2Gb(256MB) · ''4''=4Gb(512MB) · ''8''=8Gb(1GB). Bus: x32 (sempre). GDDR5X: mesmo prefixo K4G, velocidade superior (14–16 Gbps vs 7–9 Gbps GDDR5). PNs confirmados: K4G41325FE (4Gb·RX470/480·GTX1050) · K4G80325FB/FC (8Gb·RX580·GTX1060/1070) · K4G20325FD (2Gb·GPUs antigos). assess_profitability: RENTÁVEL (GDDR não casa regex DDR por lookbehind). Destino: bancada reacondicional GPU.'
+  reasoning: ''
+- prefix: K4H
+  chip_type: DDR1
+  subtype: DDR1
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: pc
+  suffix_rules: ''
+  tip: 'DDR1 Samsung (2001–2007). H = DDR1 (2.5V). Densidade: chars 4-5 do PN (28=128Mb, 56=256Mb, 51=512Mb, 1G=1Gb). Largura: chars 6-7 (04=x4, 08=x8, 16=x16). Velocidade no sufixo: -TB0/-TA2=DDR266, -TB3=DDR333, -TCC/-UCC=DDR400. Destino: fluxo de resíduo (moagem/refino). NÃO enviar para reacondicional.'
+  reasoning: ''
+- prefix: K4J
+  chip_type: GDDR3
+  subtype: GDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'GDDR3. Destino: bancada reacondicional GPU.'
+  reasoning: ''
+- prefix: K4M
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ LPDDR1 / Mobile DDR Samsung (obsoleto, ~2004–2010). M = LPDDR1. Teto de capacidade incompatível com B2B atual. Destino: fluxo de resíduo (moagem/refino). NÃO enviar para reacondicional.'
+  reasoning: ''
+- prefix: K4N
+  chip_type: GDDR2
+  subtype: GDDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'GDDR2 (obsoleto). Destino: resíduo.'
+  reasoning: ''
+- prefix: K4P
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: mobile
+  suffix_rules: ''
+  tip: '⚠ LPDDR2 Samsung (obsoleto, ~2010–2015). P = LPDDR2. RAM pura — sem componente Flash. Densidade: pn[3] → 2=2Gb(256MB) · 4=4Gb(512MB) · 8=8Gb(1GB). Exemplos: K4P2G304EB (2Gb), K4P4G324EB (4Gb). Arquitetura 100% obsoleta para B2B atual — independente da capacidade. Destino: fluxo de resíduo (moagem/refino). NÃO enviar para reacondicional.'
+  reasoning: ''
+- prefix: K4R
+  chip_type: RDRAM
+  subtype: RDRAM
+  interface: Rambus Channel
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: RDRAM_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'RDRAM Samsung / Rambus DRAM (1999–2003). ⚠ NÃO confundir com DDR5 (K4RA): K4R + NÚMERO = RDRAM, K4R + LETRA = DDR5. Barramento Rambus 18-bit (16-bit dados + 2-bit ECC). Densidade: chars 4-5 do PN (27=128Mb, 44=144Mb, 88=288Mb, 76=576Mb). Presente em: PlayStation 2, Pentium 4 primeiros (RDRIMM). OBSOLETO — destino: fluxo de resíduo (moagem/refino).'
+  reasoning: ''
+- prefix: K4RA
+  chip_type: DDR5
+  subtype: DDR5
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: pc
+  suffix_rules: ''
+  tip: 'DDR5 Samsung 16Gb (2021–presente). K4RA: pn[3:5]=AH → 16Gb (2GB por die). Largura: pn[5:7] (08=x8, 16=x16, 46=x4). Velocidade no sufixo: -BCQK=DDR5-4800 MT/s. PNs confirmados: K4RAH086VB-BCQK (x8), K4RAH165VB-BCQK (x16). ⚠ INCOMPATÍVEL com DDR4 — slot, tensão e protocolo diferentes. NÃO misturar com K4A na bancada. Destino: bancada reacondicional DDR5 (caixa separada).'
+  reasoning: ''
+- prefix: K4RB
+  chip_type: DDR5
+  subtype: DDR5
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: pc
+  suffix_rules: ''
+  tip: 'DDR5 Samsung 32Gb (2023+). K4RB: pn[3:5]=BH → 32Gb (4GB por die). PNs confirmados: K4RBH046VM-BCCP, K4RBH046VM-BCWM (Samsung semiconductor.com ✓). ⚠ INCOMPATÍVEL com DDR4 — slot, tensão e protocolo diferentes. NÃO misturar com K4A ou K4RA na bancada. Destino: bancada reacondicional DDR5 (caixa separada — alta densidade).'
+  reasoning: ''
+- prefix: K4RC
+  chip_type: DDR5
+  subtype: DDR5
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: pc
+  suffix_rules: ''
+  tip: 'DDR5 Samsung 32Gb C-die (2024+). K4RC: pn[3:5]=CH → 32Gb (4GB por die). PNs confirmados: K4RCH046VM, K4RCH046VM-2CLP (DDR5-6400), K4RCH046VM-2CCM (DDR5-5600) — Samsung semiconductor.com ✓. ⚠ INCOMPATÍVEL com DDR4 — slot, tensão e protocolo diferentes. NÃO misturar com K4RA (A-die 16Gb) ou K4RB (B-die 32Gb) na bancada. Destino: bancada reacondicional DDR5 (caixa separada — C-die).'
+  reasoning: ''
+- prefix: K4S
+  chip_type: SDRAM
+  subtype: PC-66/100/133
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: pc
+  suffix_rules: ''
+  tip: 'SDRAM Samsung (obsoleto, 1998–2004). S = Synchronous DRAM. Densidade: chars 4-5 do PN (64=64Mb, 28=128Mb, 56=256Mb, 51=512Mb). Velocidade no sufixo: TC1H=PC-100 10ns, TC75=PC-133 7.5ns, TC70=PC-133 7.0ns. Destino: fluxo de resíduo (moagem/refino). NÃO enviar para reacondicional.'
+  reasoning: ''
+- prefix: K4T
+  chip_type: DDR2
+  subtype: DDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: pc
+  suffix_rules: ''
+  tip: 'DDR2 Samsung (2004–2010). T = DDR2 (1.8V). Densidade: chars 4-5 do PN (51=512Mb, 1G=1Gb, 2G=2Gb). Largura: chars 6-7 (08=x8 DIMMs, 16=x16 embarcados). Velocidade no sufixo: -CD5=DDR2-533, -CE6=DDR2-667, -CF7=DDR2-800. OBSOLETO — destino: fluxo de resíduo (moagem/refino). NÃO enviar para reacondicional.'
+  reasoning: ''
+- prefix: K4U
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: LPDDR4_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR4X Samsung. Tensão I/O: 0.6V. RAM pura — sem componente Flash. Capacidade: pn[3:5] → 4E=512MB · 8E=1GB · 6E=2GB · 7E/HE=3GB · BE/H5/H6=4GB · JE=6GB · CE/H7=8GB · HD=16GB. ⚠ HE=3GB (24Gb) — NÃO confundir com BE=4GB (32Gb). ⚠ JE=6GB (48Gb) — Samsung Semiconductor Global ✓ (confirmado 2026-05-27). ⚠ 512MB e 1GB: sem liquidez B2B → resíduo (moagem/refino). 2GB+: bancada reacondicional mobile. ⚠ NÃO misturar soquetes com K4F (LPDDR4, 1.1V) — tensão diferente.'
+  reasoning: ''
+- prefix: K4W
+  chip_type: GDDR3
+  subtype: GDDR3
+  interface: x16
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: pc
+  suffix_rules: ''
+  tip: 'gDDR3 Samsung (Graphics DDR3) — VRAM dedicada em GPUs de entrada e notebooks com vídeo discreto soldado (~2008-2013). W = gDDR3; NÃO confundir com K4B (DDR3 de sistema). Densidade: pn[3:5] → DRAM_PC: 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB). Bus: x16. 1.5V (timing/empacotamento GDDR, NÃO trocar com DDR3 sistema). PNs confirmados: K4W1G1646D-EC12 (1Gb·ATI Radeon HD 4550) · K4W1G1646E-HC12 (1Gb·Octopart ✓) · K4W2G1646C-HC11 (2Gb·Dell N4110 VRAM) · K4W2G1646C-HC12 (2Gb·Octopart ✓) · K4W4G1646Q (4Gb·eMiner bancada). Destino: bancada reacondicional GPU (junto com K4J/K4G).'
+  reasoning: ''
+- prefix: K4X
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: pc
+  suffix_rules: ''
+  tip: '⚠ LPDDR1 / Mobile DDR Samsung (obsoleto, ~2004–2010). X = Mobile DDR (primeira geração LPDDR). Densidade: pn[3:5] → 51=512Mb(64MB) · 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB). Teto de 512MB — incompatível com qualquer demanda B2B atual. Destino: fluxo de resíduo (moagem/refino). NÃO enviar para reacondicional.'
+  reasoning: ''
+- prefix: K4Z
+  chip_type: GDDR6
+  subtype: GDDR6
+  interface: x32
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'GDDR6/GDDR6X Samsung — VRAM de alta velocidade em GPUs modernas (~2018-presente). Z = GDDR6; densidade em pn[3:5]: ''80''=8Gb(1GB) · ''AF''=16Gb(2GB). Bus: x32. Sem decode automático de densidade — cobertura via KnownParts. PNs confirmados: K4Z80325BC-HC14 (8Gb·GPUs mid-range) · K4ZAF325BM-HC14/HC16/HC18/SC14 (16Gb·RTX 20xx/30xx). assess_profitability: RENTÁVEL. Destino: bancada reacondicional GPU.'
+  reasoning: ''
+- prefix: K5
+  chip_type: NOR Flash
+  subtype: Samsung NOR Flash
+  interface: NOR
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'NOR Flash Samsung (K5). Subfamílias comuns na esteira: K5W=NOR+SDRAM · K5L=NOR+UtRAM · K5N=NOR+PSRAM · K5D=OneNAND. Todos são chips da era feature phone (~2003-2012). ⚠ Destino: Caixa Vermelha — sem liquidez B2B em 2026.'
+  reasoning: ''
+- prefix: K5D
+  chip_type: OneNAND
+  subtype: Samsung OneNAND Flash
+  interface: NOR (async)
+  is_emcp: false
+  active: true
+  priority: 60
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: DRAM_PC
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'OneNAND Samsung — NAND Flash com interface NOR-compatível. Chip monolítico: NÃO separar componentes, NÃO confundir com MCP NOR+SRAM. Capacidade típica: 128MB (1Gb) a 1GB (8Gb). Era: 2005–2012. Destino: fluxo de resíduo (moagem/refino). Sem liquidez B2B.'
+  reasoning: ''
+- prefix: K5L
+  chip_type: MCP
+  subtype: NOR Flash + UtRAM (legado)
+  interface: NOR (async) + SRAM
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'MCP Samsung NOR + UtRAM (micro SRAM) — era feature phone (~2003-2010). NOR Flash (código/boot) + UtRAM (SRAM ultra-fino de baixo consumo). Exemplos confirmados: K5L2731=128Mb NOR+32Mb UtRAM, K5L5563=256Mb NOR+64Mb UtRAM. ⚠ Destino: Caixa Vermelha — sem liquidez B2B. Moagem/refino.'
+  reasoning: ''
+- prefix: K5N
+  chip_type: MCP
+  subtype: NOR Flash + PSRAM (legado)
+  interface: NOR (async) + PSRAM
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'MCP Samsung NOR + PSRAM (Pseudo-SRAM) — era feature phone (~2004-2011). NOR Flash (código/boot) + PSRAM (DRAM com interface SRAM). ⚠ Destino: Caixa Vermelha — sem liquidez B2B. Moagem/refino.'
+  reasoning: ''
+- prefix: K5W
+  chip_type: MCP
+  subtype: NOR Flash + SDRAM
+  interface: NOR (async) + SDRAM
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: DRAM_PC
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'MCP Samsung NOR + Mobile SDRAM — era feature phone (~2005-2012). NOR Flash (código/boot) + SDRAM (RAM de trabalho) num único BGA. Capacidade exibida = NOR Flash (pn[3:5]). SDRAM não decodificável pelo PN. Aparelhos: Nokia S60/S40, Sony-Ericsson, Samsung proprietary. ⚠ Destino: Caixa Vermelha — sem liquidez B2B. Moagem/refino.'
+  reasoning: ''
+- prefix: K7
+  chip_type: SRAM
+  subtype: Samsung SRAM
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'SRAM Samsung (K7). Memória estática legado — redes, DSP, embarcado (anos 90/2000). Sem liquidez B2B para recondicionamento mobile. Destino: fluxo de resíduo (moagem/refino).'
+  reasoning: ''
+- prefix: K8
+  chip_type: NOR Flash
+  subtype: Samsung Mask ROM
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: Mask ROM / NOR Flash Samsung. Verificar demanda.
+  reasoning: ''
+- prefix: K9C
+  chip_type: NAND Flash
+  subtype: SLC NAND
+  interface: NAND (x8/x16)
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: NAND Flash Samsung SLC série C, tensão 1.8V. Usado em câmeras e PDAs.
+  reasoning: ''
+- prefix: K9F
+  chip_type: NAND Flash
+  subtype: SLC NAND
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: NAND_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'K9F = Samsung NAND Flash SLC. Alta durabilidade (~100K ciclos P/E). Densidade: pn[3:5] → 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB). Destino: bancada reacondicional Flash.'
+  reasoning: ''
+- prefix: K9G
+  chip_type: NAND Flash
+  subtype: MLC NAND
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: NAND_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'K9G = Samsung NAND Flash MLC. Densidade: pn[3:5] → AG=16Gb(2GB) · BG=32Gb(4GB). Destino: bancada reacondicional Flash.'
+  reasoning: ''
+- prefix: K9H
+  chip_type: NAND Flash
+  subtype: MLC NAND
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: NAND_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'K9H = Samsung NAND Flash MLC Large Page. Densidade: pn[3:5] → DG=128Gb(16GB) e anteriores via NAND_FLASH_CAP. Destino: bancada reacondicional Flash.'
+  reasoning: ''
+- prefix: K9HDG
+  chip_type: NAND Flash
+  subtype: MLC NAND
+  interface: NAND (x8)
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'NAND Flash Samsung série HD (alta densidade, MLC). Ex: K9HDG08U5M-LCB0 = 16GB MLC NAND, pacote LGA. Usado em TVs Samsung e monitores.'
+  reasoning: ''
+- prefix: K9K
+  chip_type: NAND Flash
+  subtype: MLC NAND
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: NAND_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'K9K = Samsung NAND Flash (SLC/MLC misto). Densidade: pn[3:5] → 8G=8Gb(1GB) e outras via NAND_FLASH_CAP. Destino: bancada reacondicional Flash.'
+  reasoning: ''
+- prefix: K9L
+  chip_type: NAND Flash
+  subtype: TLC NAND
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: NAND_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'K9L = Samsung NAND Flash MLC/TLC. Custo reduzido. Densidade: pn[3:5] → CG=64Gb(8GB) e outras via NAND_FLASH_CAP. Destino: bancada reacondicional Flash.'
+  reasoning: ''
+- prefix: K9W
+  chip_type: NAND Flash
+  subtype: SLC NAND
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: NAND_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'K9W = Samsung NAND Flash SLC industrial/white label. Densidade: pn[3:5] → NAND_FLASH_CAP (1G=128MB · 2G=256MB · 4G=512MB · 8G=1GB). Destino: bancada reacondicional Flash.'
+  reasoning: ''
+- prefix: K9X
+  chip_type: NAND Flash
+  subtype: MLC NAND
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: NAND_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'K9X = Samsung NAND Flash MLC expandido. Densidade: pn[3:5] → NAND_FLASH_CAP. Destino: bancada reacondicional Flash.'
+  reasoning: ''
+- prefix: K9Z
+  chip_type: NAND Flash
+  subtype: TLC NAND
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: NAND_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'K9Z = Samsung NAND Flash MLC/TLC variante especial. Densidade: pn[3:5] → NAND_FLASH_CAP. Destino: bancada reacondicional Flash.'
+  reasoning: ''
+- prefix: KAT
+  chip_type: ePoP
+  subtype: eMMC + LPDDR Empilhado
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'ePoP (Package-on-Package): montado sobre o SoC. Sockets especiais na bancada. Destino: reacondicional (NÃO enviar para resíduo).'
+  reasoning: ''
+- prefix: KF9
+  chip_type: NAND Flash
+  subtype: NAND Flash — K9 series (legado, standalone)
+  interface: NAND (raw)
+  is_emcp: false
+  active: true
+  priority: 70
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'Samsung NAND Flash standalone — série K9 (legacy). KF9 = Samsung, família NAND Flash pré-eMMC. Densidade: 8G=8Gbit(1GB), 4G=4Gbit(512MB). Barramento: 16=x16. Sem controladora eMMC. Era: feature phone / embedded (~2005-2012). ⚠ NÃO É Kingston Fury (que usa KF+DDR com "/" no PN). Destino: sucata / aplicações industriais específicas.'
+  reasoning: ''
+- prefix: KLM
+  chip_type: eMMC
+  subtype: eMMC Samsung
+  interface: eMMC
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 1
+  decode_cap_map: SAM_FLASH_CAP
+  decode_gen_pos: 6
+  decode_gen_map: SAM_EMMC_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMMC Samsung — armazenamento Flash puro, sem RAM embutida. Geração automática: pn[6] → F=eMMC 4.5 | E/W=eMMC 5.0 | J/K=eMMC 5.1. ⚠ Separe por geração na bancada: 5.1 (J/K) vale ~15-25% a mais que 4.5 (F). Capacidade: pn[3] → 4=4GB · 8=8GB · A=16GB · B=32GB · C=64GB · D=128GB · E=256GB · F=512GB · G=1TB. Tipo NAND: pn[5] → 4=MLC · 8=TLC (TLC = maioria dos volumes modernos). Pacote: BGA153 ou BGA169 — verificar grid inferior. Destino: bancada reacondicional Flash eMMC (separar por geração).'
+  reasoning: ''
+- prefix: KLU
+  chip_type: UFS
+  subtype: UFS Samsung
+  interface: UFS 3.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 1
+  decode_cap_map: SAM_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS Samsung — armazenamento Flash puro, sem RAM embutida. Interface serial Full-Duplex (vs eMMC paralelo) — NUNCA usar socket de eMMC. Capacidade: pn[3] → B=32GB, C=64GB, D=128GB, E=256GB, F=512GB, G=1TB. Versão UFS: pn[6] → V=UFS 3.1 (~2100 MB/s), U=UFS 2.1/3.0. NAND: pn[4] → G=TLC (maioria dos volumes modernos). Pacote: BGA153 (maioria) ou BGA254 (UFS 4.0 alta densidade). Fisicamente idêntico ao eMMC KLM — única distinção: código a laser. Destino: bancada reacondicional Flash UFS.'
+  reasoning: ''
+- prefix: KLUBG
+  chip_type: UFS
+  subtype: UFS 2.0 Samsung
+  interface: UFS 2.0
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 1
+  decode_cap_map: SAM_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS 2.0 Samsung — armazenamento Flash standalone, 1ª geração UFS. K=Samsung, L=NAND, U=UFS, B=32GB. Presente no Galaxy S6 / S6 Edge / S6 Edge Plus (2015). Interface UFS — NUNCA usar socket de eMMC (BGA153, mesmo footprint físico que eMMC). Velocidade: ~700 MB/s (leitura teórica UFS 2.0). Destino: bancada reacondicional Flash UFS (valor comercial: lote legacy).'
+  reasoning: ''
+- prefix: KLUCG
+  chip_type: UFS
+  subtype: UFS 2.0 Samsung
+  interface: UFS 2.0
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 1
+  decode_cap_map: SAM_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS 2.0 Samsung — armazenamento Flash standalone. K=Samsung, L=NAND, U=UFS, C=64GB. Capacidade: pn[3] → B=32GB, C=64GB. Destino: bancada reacondicional Flash UFS.'
+  reasoning: ''
+- prefix: KLUDG
+  chip_type: UFS
+  subtype: UFS 2.1 Samsung
+  interface: UFS 2.1
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 1
+  decode_cap_map: SAM_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS 2.1 Samsung — armazenamento Flash standalone. ⚠ NÃO confundir com Kioxia: KLU é linha Samsung (K=Samsung, L=NAND, U=UFS). Capacidade: pn[3] → B=32GB, C=64GB, D=128GB, E=256GB, F=512GB, G=1TB. pn[6]=''U'' confirma UFS 2.1/3.0 (vs V=UFS 3.1). Interface UFS — NUNCA usar socket de eMMC. Fisicamente similar ao KLM (eMMC) — única distinção: código a laser. Destino: bancada reacondicional Flash UFS.'
+  reasoning: ''
+- prefix: KLUEG
+  chip_type: UFS
+  subtype: UFS 3.1 Samsung
+  interface: UFS 3.1
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 1
+  decode_cap_map: SAM_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS 3.1 Samsung — 256GB standalone (K=Samsung, L=NAND, U=UFS, E=256GB). Sufixos UHY/UHD = UFS 3.1. Presente em Samsung Galaxy S21/S22/S23 256GB. ⚠ Variante legado: KLUEG8U1EM = UFS 2.1 (PSG 1H 2017 — KnownPart confirmado). ⚠ Variante UFS 4.0: KLUEG4RHHD/F/HF (2023+) — KnownPart confirmado. Capacidade: pn[3] → E=256GB (SAM_FLASH_CAP). Destino: bancada reacondicional Flash UFS alta capacidade.'
+  reasoning: ''
+- prefix: KLUFG
+  chip_type: UFS
+  subtype: UFS 3.1 Samsung
+  interface: UFS 3.1
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 1
+  decode_cap_map: SAM_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS 3.1 Samsung — armazenamento Flash standalone, alta performance. K=Samsung, L=NAND, U=UFS, F=UFS 3.1 (~2100 MB/s). Capacidade: pn[3] → C=64GB, D=128GB, E=256GB, F=512GB, G=1TB. Presente em flagships e mid-range premium (2020+). Destino: bancada reacondicional Flash UFS.'
+  reasoning: ''
+- prefix: KLUGG
+  chip_type: UFS
+  subtype: UFS Samsung (1TB)
+  interface: UFS
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 1
+  decode_cap_map: SAM_FLASH_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'Samsung UFS 1TB standalone — família KLUGG abrange UFS 3.0 e 4.0+. K=Samsung, L=NAND, U=UFS, G=1TB (SAM_FLASH_CAP). ⚠ Versão UFS exata (3.0/4.0/4.1) determinada pelo KnownPart — não confiar no grammar. Sem esta entrada o engine caia para KLU genérico (pn_length=10 não bate). Destino: bancada reacondicional Flash UFS alta capacidade (valor premium).'
+  reasoning: ''
+- prefix: KM
+  chip_type: eMCP
+  subtype: embedded Multi-Chip Package (LPDDR + eMMC)
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 90
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: 2
+  decode_gen_map: SAM_EMCP_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '💡 KM = eMCP Samsung — RAM LPDDR + eMMC no mesmo package. 3ª letra = tipo RAM: J/K=LPDDR2 · Q/F/N=LPDDR3 · R=LPDDR4/4X · S=LPDDR4X. uMCPs modernos (D/G/L/V): UFS+LPDDR, classificados por prefixo específico. Capacidade: posições 4-5 do PN (ex: X1=32GB+2GB, H6=64GB+4GB). Destino: bancada reacondicional eMCP.'
+  reasoning: '["K → Samsung Memory", "M → Multi-Chip Package (RAM+NAND combinados)", "3ª letra → tipo RAM: J/K=LPDDR2 · Q/F/N=LPDDR3 · R=LPDDR4/4X · S=LPDDR4X", "Solução compacta para smartphones entry/mid", "NÃO tente separar os componentes — chip monolítico"]'
+- prefix: KM1
+  chip_type: uMCP
+  subtype: LPDDR5X
+  interface: UFS 4.0
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ uMCP Samsung linha numérica KM1 — chip ULTRA-PREMIUM. Interface UFS 4.0 (~4200 MB/s) + LPDDR5X — geração mais recente (2023+). Presente em flagships Galaxy S23/S24. Capacidade: pn[3:5] → mapa SAM_EMCP_CAP. Valor comercial MUITO ELEVADO — NÃO enviar para resíduo ou eMMC. ATENÇÃO OCR: ''1'' confundido com ''I'' nesses PNs — conferir PN físico. Destino: bancada reacondicional uMCP (Premium Tier 1).'
+  reasoning: ''
+- prefix: KM2
+  chip_type: uMCP
+  subtype: LPDDR4X
+  interface: UFS
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ uMCP Samsung linha numérica KM2 — chip PREMIUM. NÃO eMMC. Subfamílias: KM2L=UFS 2.2+LPDDR4X (coberto pela família KM2L com priority=35). KM2V=UFS 2.1+LPDDR4X (CORRIGIDO 2026-05-27: era LPDDR5 — ERRADO).   Âncora: KM2V8001CM-B707 = 128GB UFS 2.1 + 48Gb÷8=6GB LPDDR4X-4266 ✓.   Speed 4266 Mbps confirma LPDDR4X (LPDDR5 mínimo ≥ 6400 Mbps). KM2F=alta capacidade — verificar via fix_known_parts. ⚠ cap_key V8: KM2V8001CM=6GB (48Gb) vs KM5/KM8 V8=4GB (32Gb) — shared key conflict. Se o PN começa com KM2L, família KM2L (priority=35) tem precedência. Capacidade: pn[3:5] → SAM_EMCP_CAP (atenção a conflitos de shared key). Valor comercial ELEVADO — NÃO enviar para resíduo ou eMMC. ATENÇÃO OCR: ''1'' confundido com ''I'' — conferir PN físico. Destino: bancada reacondicional uMCP (Premium).'
+  reasoning: ''
+- prefix: KM2L
+  chip_type: uMCP
+  subtype: LPDDR4X
+  interface: UFS 2.2
+  is_emcp: true
+  active: true
+  priority: 35
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'uMCP Samsung KM2L — INTERMEDIÁRIO. Interface UFS 2.2 (~1200 MB/s) + LPDDR4X — NÃO é UFS 3.1/LPDDR5. pn[2]=''L'' identifica esta subfamília (L = UFS 2.2 + LPDDR4X). Presente em mid-range/upper-mid Galaxy e Android de terceiros (2021-2023). Capacidade: pn[3:5] → SAM_EMCP_CAP. ⚠ Atenção ao cap_key ''L9'': mapa base = 8GB RAM (KM8); KM2L9001CM usa 6GB — confirmar via fix_known_parts. Valor comercial ELEVADO mas inferior a KM2V (UFS 3.1 + LPDDR5). ATENÇÃO OCR: ''1'' confundido com ''I'' — conferir PN físico no chip. Destino: bancada reacondicional uMCP (Intermediário/Alta liquidez).'
+  reasoning: ''
+- prefix: KM2P
+  chip_type: uMCP
+  subtype: LPDDR4X
+  interface: UFS
+  is_emcp: true
+  active: true
+  priority: 38
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'uMCP Samsung KM2P — 64GB UFS 2.1/2.2 + LPDDR4X-4266. pn[3]=''P'' identifica 64GB storage (vs KM2L=128GB, KM2V=128GB). Confirmado: KM2P8001CM-B518 = 64GB UFS2.1 + 6GB LPDDR4X ✓.   KM2P9001CM-B518 = 64GB UFS2.2 + 6GB LPDDR4X ✓. ⚠ cap_key P8→4GB e P9→4GB no mapa base (âncora KM5P); KM2P usa 6GB — corrigir via fix_known_parts. Valor comercial ELEVADO — NÃO enviar para resíduo. Destino: bancada reacondicional uMCP (Intermediário).'
+  reasoning: ''
+- prefix: KM3H
+  chip_type: eMCP
+  subtype: LPDDR4X
+  interface: eMMC 5.1
+  is_emcp: true
+  active: true
+  priority: 38
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Samsung LPDDR4X-3733 + eMMC 5.1 (família KM3H — variante velocidade). K=Samsung · M=MCP · 3=geração numérica · H=LPDDR4X 3733 Mbps (vs P=4266 Mbps). Confirmado: KM3H6001CA-B515 = 64GB eMMC 5.1 + 48Gb÷8=6GB LPDDR4X-3733 ✓. ⚠ cap_key pn[3:5]=''H6'' → SAM_EMCP_CAP = 64GB+4GB (âncora KMD); KM3H6001CA tem 6GB RAM — exceção: corrigir via fix_known_parts. Status 2022+: geração nova — aparição crescente prevista no mercado secundário. Destino: bancada reacondicional eMCP.'
+  reasoning: ''
+- prefix: KM3P
+  chip_type: eMCP
+  subtype: LPDDR4X
+  interface: eMMC 5.1
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Samsung LPDDR4X + eMMC 5.1 (família KM3P, geração 2022+). K=Samsung · M=MCP · 3=geração numérica · P=LPDDR4X. Confirmado: KM3P6001CM-B517 = 64GB eMMC 5.1 + 48Gb÷8=6GB LPDDR4X (Glochip/Indasina ✓). ⚠ cap_key pn[3:5]=''P6'' → SAM_EMCP_CAP = 64GB+4GB (âncora KMD); KM3P6001CM tem 6GB RAM — exceção: corrigir via fix_known_parts. Status 2022+: Sample → aparição crescente prevista. Destino: bancada reacondicional eMCP.'
+  reasoning: ''
+- prefix: KM4
+  chip_type: eMCP
+  subtype: LPDDR4
+  interface: eMMC 5.1
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Samsung LPDDR4 + eMMC 5.1. KM4 = linha eMCP onde ''4'' na 3ª posição indica LPDDR4 (não confundir com a letra R=LPDDR4/4X das séries KMR). Capacidade: pn[3:5] → mapa SAM_EMCP_CAP (ex: X6=32GB+2GB). Dispositivos: smartphones mid-range Samsung e OEMs (~2018-2021). Destino: bancada reacondicional eMCP.'
+  reasoning: ''
+- prefix: KM5
+  chip_type: uMCP
+  subtype: LPDDR4X
+  interface: UFS
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ uMCP Samsung linha numérica KM5 — chip PREMIUM. Interface UFS (NÃO eMMC). RAM: LPDDR4X ou LPDDR5X. Alta densidade — valor comercial elevado. Capacidade: pn[3:5] → mapa SAM_EMCP_CAP. ATENÇÃO OCR: mesma família de KM8, mesma regra: conferir PN físico no chip antes de registrar. Destino: bancada reacondicional uMCP (Premium).'
+  reasoning: ''
+- prefix: KM8
+  chip_type: uMCP
+  subtype: LPDDR4X
+  interface: UFS
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ uMCP Samsung linha numérica KM8 — chip PREMIUM. Interface UFS (NÃO eMMC). RAM: LPDDR4X ou LPDDR5X. Capacidade: pn[3:5] → mapa SAM_EMCP_CAP (ex: V8=128GB+4GB, F9=256GB+8GB). ATENÇÃO OCR: robôs confundem ''1'' com ''I'' nesses PNs — ex: KM8V700IJA na tela pode ser KM8V7001JA no chip físico. Conferir o PN diretamente na peça antes de registrar. Destino: bancada reacondicional uMCP (Premium).'
+  reasoning: ''
+- prefix: KMAG
+  chip_type: uMCP
+  subtype: LPDDR5
+  interface: UFS 3.1
+  is_emcp: true
+  active: true
+  priority: 38
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ uMCP Samsung KMAG — FLAGSHIP. UFS 3.1 (~2400 MB/s) + LPDDR5-6400. Confirmado: KMAG9001PM-B814 = 128GB UFS 3.1 + 64Gb÷8=8GB LPDDR5 ✓. 297-ball FBGA. SAM_EMCP_CAP G9=128GB+8GB. ⚠ VDDQ=0.6V (LPDDR5 — diferente do LPDDR4X). NÃO confundir na bancada. Destinado a flagships Galaxy 2022+. Valor comercial MUITO ELEVADO. Destino: bancada reacondicional uMCP (Flagship Tier).'
+  reasoning: ''
+- prefix: KMAS
+  chip_type: uMCP
+  subtype: LPDDR5
+  interface: UFS 3.1
+  is_emcp: true
+  active: true
+  priority: 38
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ uMCP Samsung KMAS — FLAGSHIP 256GB. UFS 3.1 (~2400 MB/s) + LPDDR5-6400. Confirmado: KMAS9001PM-BC02 = 256GB UFS 3.1 + 64Gb÷8=8GB LPDDR5 ✓. 297-ball FBGA. SAM_EMCP_CAP S9=256GB+8GB. Sufixo -BC02 (geração C, mais nova). ⚠ VDDQ=0.6V (LPDDR5). NÃO confundir KMAS com KMDX (eMCP LPDDR4X). Destinado a flagships Galaxy 2022+. Valor comercial MUITO ELEVADO. Destino: bancada reacondicional uMCP (Flagship Tier).'
+  reasoning: ''
+- prefix: KMD
+  chip_type: eMCP
+  subtype: LPDDR4X
+  interface: eMMC 5.1
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: 2
+  decode_gen_map: SAM_EMCP_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Samsung LPDDR4X + eMMC 5.1. D = LPDDR4X (Galaxy A12, A22, A32 — entrada/mid-range 2020-2022). NÃO confundir com uMCPs KMG/KML que usam UFS. Destino: bancada reacondicional eMCP.'
+  reasoning: ''
+- prefix: KMF
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: eMMC 5.1
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: 2
+  decode_gen_map: SAM_EMCP_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Samsung LPDDR3 + eMMC 5.1. F = LPDDR3. Capacidade: pn[3:5] → mapa SAM_EMCP_CAP — range amplo (8GB a 128GB+). ⚠ Se o PN escaneado tiver mais de 10 chars, os últimos dígitos são código de lote do operador (ex: -B213, AB213) — não fazem parte do PN do chip. Destino: bancada reacondicional eMCP.'
+  reasoning: ''
+- prefix: KMG
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: eMMC 5.1
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Samsung LPDDR3 + eMMC 5.1 — linha legacy, ~2016-2019. G = LPDDR3 (via EMCP_RAM_TYPES fallback — decode_gen_pos=None por design). Capacidade: pn[3:5] → SAM_EMCP_CAP (ex: D6=32GB+3GB, P6=64GB+3GB). Interface eMMC 5.1 — NÃO confundir com uMCP KML/KM5 que usam UFS. Destino: bancada reacondicional eMCP.'
+  reasoning: ''
+- prefix: KMJ
+  chip_type: eMCP
+  subtype: LPDDR2
+  interface: eMMC
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: 2
+  decode_gen_map: SAM_EMCP_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ eMCP Samsung LPDDR2 legado (~2013-2015). J = LPDDR2. Capacidade típica: 8GB eMMC + 1GB RAM — sem valor comercial atual. NÃO enviar para bancada reacondicional eMCP premium. Destino: Fluxo de Resíduo (Caixa Vermelha).'
+  reasoning: ''
+- prefix: KMK
+  chip_type: eMCP
+  subtype: LPDDR2
+  interface: eMMC
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: 2
+  decode_gen_map: SAM_EMCP_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ eMCP Samsung LPDDR2 legado (~2010-2012). K = LPDDR2. Capacidade típica: 8GB eMMC + 1GB RAM — sem valor comercial atual. NÃO enviar para bancada reacondicional eMCP premium. Destino: Fluxo de Resíduo (Caixa Vermelha).'
+  reasoning: ''
+- prefix: KML
+  chip_type: eMCP
+  subtype: LPDDR2
+  interface: eMMC
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ eMCP Samsung LPDDR2 + eMMC legado (~2013-2015). NÃO confundir com uMCP moderno: KML NÃO usa UFS 3.1 + LPDDR5 (erro corrigido 2026-05-27). Puris: KML5U000HM-B505 = ''4+8 eMCP-D1'' (D1 = tier legado Puris, ≠ LPDDR1). LPDDR2 inferido: era 2013-2015 + Exynos 4212 compatível com LPDDR2. Galaxy S21 Exynos usa KM8-series (KM8V8001LM-B813), NÃO KML. Capacidade: pn[3:5] → SAM_EMCP_CAP (ex: 5U=4GB+1GB, 7X=8GB+1GB). Destino: legado — valor comercial baixo, apenas reacondicional entry-level.'
+  reasoning: ''
+- prefix: KMN
+  chip_type: eMCP
+  subtype: LPDDR2
+  interface: eMMC
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: null
+  decode_cap_len: 0
+  decode_cap_map: ''
+  decode_gen_pos: 2
+  decode_gen_map: SAM_EMCP_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Samsung LPDDR2 + eMMC (~2011-2014). N = LPDDR2. Família entry-level legada. Baixa liquidez em 2026. Destino: Fluxo de Resíduo (Caixa Vermelha).'
+  reasoning: ''
+- prefix: KMQ
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: eMMC 5.1
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: 2
+  decode_gen_map: SAM_EMCP_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Samsung LPDDR3 + eMMC 5.1. Q = LPDDR3. Família de maior volume na esteira (~2015-2019). Dispositivos: Galaxy J-series, A-series entrada e mid-range. Destino: bancada reacondicional eMCP.'
+  reasoning: ''
+- prefix: KMR
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: eMMC 5.1
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: 2
+  decode_gen_map: SAM_EMCP_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Samsung LPDDR3 + eMMC 5.1. R = LPDDR3 (2026-05-26: corrigido de LPDDR4/4X — âncora anterior era falsa). Exemplos: KMRH60014A (64GB+4GB LPDDR3-1866), KMRX60014M (32GB+4GB LPDDR3). Destino: reacondicional eMCP.'
+  reasoning: ''
+- prefix: KMS
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: eMMC
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Samsung LPDDR1 + eMMC — família LEGADO (~2012-2013). Chips típicos: 4GB NAND + 512MB RAM (LPDDR1). Exemplo: KMSJS000KM = Galaxy Centura (SCH-S738C, 2013). Pinout incompatível com sockets modernos de bancada. ⚑ DESTINO: Caixa Vermelha — resíduo eletrônico. Sem viabilidade comercial.'
+  reasoning: ''
+- prefix: KMV
+  chip_type: eMCP
+  subtype: LPDDR2
+  interface: eMMC
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ KMV LEGADO — eMCP LPDDR2 + eMMC (~2010-2013). Toda a família KMV (incluindo KMV2.../KMV3...) é eMCP da era Galaxy S3/S4. NÃO confundir com KM2V/KM3V (flagship 2022+ — dígito ANTES do V). Dispositivos: Galaxy S3 Mini (KMVYL000LM — 8GB+1GB), Galaxy S4 era (KMV3W — 16GB+512MB). LPDDR2 sem liquidez comercial em 2026. Destino: Fluxo de Resíduo (Caixa Vermelha).'
+  reasoning: ''
+- prefix: KUS
+  chip_type: BGA SSD
+  subtype: NVMe PCIe BGA
+  interface: PCIe Gen3
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: KUS_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'BGA NVMe SSD Samsung PM971 — capacidades: 02=128GB, 03=256GB, 04=512GB. Série encerra em 512GB (PM971). 1TB+ usa outras famílias (PM991). JAMAIS misturar com eMMC ou UFS. Destino: reacondicional BGA SSD (Premium).'
+  reasoning: ''
+- prefix: S2A
+  chip_type: PMIC
+  subtype: Samsung PMIC
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: PMIC Samsung. Bancada reacondicional PMIC.
+  reasoning: ''
+- prefix: S2D
+  chip_type: PMIC
+  subtype: Samsung PMIC
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: PMIC Samsung. Bancada reacondicional PMIC.
+  reasoning: ''
+- prefix: S2M
+  chip_type: PMIC
+  subtype: Samsung PMIC
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: PMIC Samsung (gerenciamento de energia). Bancada reacondicional PMIC.
+  reasoning: ''
+- prefix: S5E
+  chip_type: SoC
+  subtype: Exynos CPU
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'Exynos SoC Samsung. Destino: bancada reacondicional SoC.'
+  reasoning: ''
+- prefix: S5K
+  chip_type: Sensor
+  subtype: ISOCELL Camera
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'ISOCELL — módulo de câmera Samsung. Destino: bancada reacondicional Sensores.'
+  reasoning: ''

@@ -34,6 +34,14 @@ from core.safe_command import SafeWriteCommand
 
 _KNOWLEDGE_DIR = os.path.join(settings.BASE_DIR, "chips", "knowledge")
 
+# Mapas de densidade UNIVERSAIS (brand=None): o engine os lê por `map_name` sem filtrar
+# marca (chips/engine.py::_decode_map_for_version), e são consumidos por `decode_density_type`
+# — hoje SÓ a Samsung usa, mas a semântica é global. Criá-los com brand=<marca> geraria linha
+# duplicada (o populate_samsung os criava com brand=None) e violaria o drop-in fiel. Mantidos
+# globais aqui: get_or_create(brand=None) reusa a linha existente no prod. (Os dois nomes são os
+# mesmos hard-coded no engine, então esta lista é o par fiel — não uma heurística frágil.)
+_GLOBAL_MAPS = frozenset({"DRAM_PC", "DRAM_MOBILE"})
+
 # Campos do YAML → ChipFamily (a brand é FK, vem do contexto; doc_page/is_documented
 # ficam no default, igual aos populate_*).
 _FAMILY_FIELDS = [
@@ -120,9 +128,11 @@ class Command(SafeWriteCommand):
         from chips.models import DecodeMap
         n = 0
         for map_name, entries in maps.items():
+            # mapas universais de densidade ficam com brand=None (drop-in fiel; ver _GLOBAL_MAPS)
+            map_brand = None if map_name in _GLOBAL_MAPS else brand
             for e in entries:
                 obj, created = DecodeMap.objects.get_or_create(
-                    map_name=map_name, char_key=e.char_key, brand=brand,
+                    map_name=map_name, char_key=e.char_key, brand=map_brand,
                     defaults={"val_primary": e.val_primary, "val_secondary": e.val_secondary})
                 if not created and (obj.val_primary != e.val_primary
                                     or obj.val_secondary != e.val_secondary):
