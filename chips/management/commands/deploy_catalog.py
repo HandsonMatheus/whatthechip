@@ -9,7 +9,7 @@ Encadeia, na ordem canônica (CLAUDE.md §5), os comandos de catálogo que são
 **rodáveis no Render** (código puro ou com dados versionados), cada um já
 idempotente e com seu próprio `atomic()`:
 
-    populate_* (--overwrite)  →  add_chip_families  →  link_doc_pages  →
+    load_brands (todas as 11 marcas)  →  link_doc_pages  →
     sync_index_page  →  import_samsung_psg (--all)  →  fix_known_parts
 
 e, no fim, **sobe o `catalog_version`** — o que **substitui o antigo "reinicie o
@@ -51,7 +51,10 @@ _STEPS = [
     ("load_brands", {"brand": "toshiba", "commit": True}, {"brand": "toshiba", "dry_run": True}),
     ("load_brands", {"brand": "kioxia", "commit": True}, {"brand": "kioxia", "dry_run": True}),
     ("load_brands", {"brand": "hynix", "commit": True}, {"brand": "hynix", "dry_run": True}),
-    ("add_chip_families",    {},                  None),   # sem --dry-run: só roda no --commit
+    ("load_brands", {"brand": "nanya", "commit": True}, {"brand": "nanya", "dry_run": True}),
+    # add_chip_families APOSENTADO (2026-07-01): suas 39 famílias agora vivem nos yamls das marcas
+    # (Nanya→nanya.yaml, Kingston KVR/KF/ACR/EMCP→kingston.yaml, o resto já estava). Eliminou o
+    # brand duplicado 'KIOXIA' (maiúsculo) que ele criava.
     ("link_doc_pages",       {},                  {"dry_run": True}),
     ("sync_index_page",      {},                  {"dry_run": True}),
     ("import_samsung_psg",   {"all": True}, {"all": True, "dry_run": True}),  # data/psg/*.csv versionados

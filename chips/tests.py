@@ -704,7 +704,7 @@ class DeployCatalogTests(TestCase):
         call_command('deploy_catalog')                       # dry-run (sem --commit)
         chamados = [c.args[0] for c in mock_cc.call_args_list]
         self.assertIn('load_brands', chamados)               # Samsung + demais marcas via load_brands
-        # add_chip_families NÃO tem --dry-run → é PULADO no dry-run
+        # add_chip_families foi APOSENTADO (famílias migradas p/ yamls) → não está mais nos passos
         self.assertNotIn('add_chip_families', chamados)
         # todo sub-comando chamado no dry-run recebe dry_run=True
         for c in mock_cc.call_args_list:
@@ -721,7 +721,7 @@ class DeployCatalogTests(TestCase):
         self.assertEqual(chamados[0], 'load_brands')          # 1º: load_brands samsung (mapas globais)
         self.assertEqual(mock_cc.call_args_list[0].kwargs.get('brand'), 'samsung')
         self.assertEqual(chamados[-1], 'fix_known_parts')
-        self.assertIn('add_chip_families', chamados)          # roda no commit
+        self.assertNotIn('add_chip_families', chamados)       # APOSENTADO — famílias migradas p/ yamls
         kw = {c.args[0]: c.kwargs for c in mock_cc.call_args_list}
         self.assertNotIn('populate_samsung', chamados)        # aposentado → load_brands samsung
         self.assertTrue(kw['import_samsung_psg'].get('all'))
@@ -751,7 +751,7 @@ class DeployCatalogTests(TestCase):
         brands_load = [c.kwargs.get('brand') for c in mock_cc.call_args_list
                        if c.args[0] == 'load_brands']
         for marca in ('samsung', 'piecemakers', 'gigadevice', 'rayson', 'kingston', 'sandisk',
-                      'micron', 'toshiba', 'kioxia', 'hynix'):
+                      'micron', 'toshiba', 'kioxia', 'hynix', 'nanya'):
             self.assertIn(marca, brands_load)
         for c in mock_cc.call_args_list:
             if c.args[0] == 'load_brands':
@@ -1127,6 +1127,18 @@ _SAM_GOLDEN = {
     'S5K1G1646DBC': ('Sensor', '', '', '', '', 'INDETERMINADO'),
 }
 
+_NANYA_GOLDEN = {  # Nanya: 3 famílias DDR MAGRAS (add_chip_families, única fonte) — tipo pelo prefixo,
+    # capacidade vem das KnownParts (aqui a gramática dá só o tipo → INDETERMINADO). brand code='NANYA' (prod).
+    'NT5CC256M16DP-DI': ('DDR3', '', '', '', '', 'INDETERMINADO'),
+    'NT5CC128M16JR-EK': ('DDR3', '', '', '', '', 'INDETERMINADO'),
+    'NT5CC512M8JR':     ('DDR3', '', '', '', '', 'INDETERMINADO'),
+    'NT5AD256M16D4-JC': ('DDR4', '', '', '', '', 'INDETERMINADO'),
+    'NT5AD512M8-JC':    ('DDR4', '', '', '', '', 'INDETERMINADO'),
+    'NT5PA256M16DP':    ('DDR3L', '', '', '', '', 'INDETERMINADO'),
+    'NT5PA128M16FP':    ('DDR3L', '', '', '', '', 'INDETERMINADO'),
+}
+
+
 class LoadBrandsPiecemakersTests(TestCase):
     """Passo 4: PieceMakers carregada de chips/knowledge/piecemakers.yaml. Fidelidade
     (YAML→banco) + identificação de TODOS os PNs conhecidos. (Equivalência ao antigo
@@ -1304,6 +1316,23 @@ class SamsungLoadBrandsTests(TestCase):
             self.assertFalse(DecodeMap.objects.filter(map_name=m, brand__isnull=False).exists(),
                              f"{m} não deveria ter brand (universal)")
 
+
+
+class NanyaLoadBrandsTests(TestCase):
+    """Passo 4: Nanya migrada p/ YAML (add_chip_families era a única fonte). 3 famílias DDR magras
+    (NT5CC=DDR3, NT5AD=DDR4, NT5PA=DDR3L; capacidade das KnownParts). Fecha a aposentadoria do
+    add_chip_families junto com os módulos Kingston (KVR/KF/ACR active=False + EMCP)."""
+
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "nanya")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "nanya", "--commit", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
+        for pn, esperado in _NANYA_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
 class KnowledgeSchemaTests(TestCase):

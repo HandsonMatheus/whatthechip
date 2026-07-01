@@ -1,10 +1,9 @@
-# Conhecimento Kingston — fonte do catálogo (passo 4). Gerado da saída de
-# populate_kingston (fidelidade por construção); editar AQUI, validar c/ Pydantic, load_brands.
-# NOTA: 'reasoning' das famílias EMCP é prosa (não JSON) — herdado do populate; corrigir aqui é trivial agora.
+# Conhecimento Kingston — passo 4. Gerado de populate_kingston (5 eMCP) + add_chip_families (KVR/KF/ACR
+# módulos DIMM bogus active=False + EMCP genérico). NOTA: reasoning EMCP é prosa herdada; trivial corrigir aqui.
 brand:
   name: Kingston
   code: KST
-  notes: EUA · Fundada 1987 · eMCP linha descontinuada (substituída por eMMC+LPDDR separados)
+  notes: ''
 maps:
   KST_EMCP_NAND_CAP:
   - ['04', 4GB, '']
@@ -109,3 +108,75 @@ families:
   suffix_rules: ''
   tip: 'eMCP Kingston 64GB eMMC 5.1 (64EMCP). Chip combinado eMMC + RAM — topo da linha. pn[0:2] = capacidade NAND: 64=64GB. pn[6:8] = capacidade RAM: 24=3GB LPDDR3 · 32=4GB LPDDR3. ⚠ Teto da linha Kingston eMCP — 128GB não confirmado em nenhuma fonte. ⚠ Todos os PNs 64GB usam sufixo EL3 (nova revisão) — sem NL2/NL3. Ex: 64EMCP24-EL3JTA29 = eMMC 5.1 64GB + LPDDR3 3GB ✓ Ex: 64EMCP32-EL3HTA29 = eMMC 5.1 64GB + LPDDR3 4GB ✓ Origem: smartphones premium 2018–2020. Destino: bancada eMCP — componente de alto valor, prioridade na triagem.'
   reasoning: 'Prefixo positional Kingston eMCP 64GB. pn[0:2]=''64'' casa com KST_EMCP_NAND_CAP → 64GB NAND. pn[6:8] casa com KST_EMCP_RAM_CAP → RAM (24=3GB ou 32=4GB). Fonte: Puris.net B2B ✓ (64EMCP24-EL3JTA29 · 64EMCP32-EL3HTA29). Teto confirmado da linha Kingston eMCP — sem 128GB em nenhuma fonte verificável. EL3=nova revisão package LPDDR3 — sem variante NL2/NL3 nesta capacidade.'
+- prefix: ACR
+  chip_type: RAM
+  subtype: DDR
+  interface: DDR3 / DDR4
+  is_emcp: false
+  active: false
+  priority: 80
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: Módulo RAM Kingston série Action (mercado OEM/notebook). Prefixo ACR.
+  reasoning: ''
+- prefix: EMCP
+  chip_type: eMCP
+  subtype: eMCP (Kingston)
+  interface: eMMC + LPDDR
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Kingston. Chip combinado eMMC + RAM. Decode direto: prefixo numérico = capacidade eMMC em GB. Dígitos após "EMCP" = RAM em Gbit → dividir por 8 para GB. Ex: 16EMCP08-NL3DTB28 → 16GB eMMC + 08Gb÷8=1GB RAM. Ex: 04EMCP04-NL2AS100 → 4GB eMMC + 04Gb÷8=512MB RAM. Destino: bancada eMCP.'
+  reasoning: ''
+- prefix: KF
+  chip_type: RAM
+  subtype: DDR
+  interface: DDR4 / DDR5
+  is_emcp: false
+  active: false
+  priority: 80
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'Módulo Kingston Fury (linha gaming). KF = Kingston Fury. Ex: KF436C16BB/8 = Fury Black DDR4-3600, CL16, 8GB.'
+  reasoning: ''
+- prefix: KVR
+  chip_type: RAM
+  subtype: DDR
+  interface: DDR / DDR2 / DDR3 / DDR4
+  is_emcp: false
+  active: false
+  priority: 80
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'Módulo ValueRAM Kingston. KVR[velocidade][latência][largura]x[capacidade]. Ex: KVR32N22S8/8 = DDR4-3200, CL22, SO-DIMM, 8GB.'
+  reasoning: ''

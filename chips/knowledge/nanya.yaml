@@ -1,0 +1,62 @@
+# Conhecimento Nanya — passo 4. Gerado do add_chip_families (única fonte; brand vem do import_chipid,
+# code='NANYA' igual ao prod). 3 famílias DDR MAGRAS (sem decode de capacidade — vem das KnownParts).
+brand:
+  name: Nanya
+  code: NANYA
+  notes: ''
+maps: {}
+families:
+- prefix: NT5AD
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: DDR4 SDRAM Nanya. Geração posterior ao NT5CC.
+  reasoning: ''
+- prefix: NT5CC
+  chip_type: DDR3
+  subtype: DDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR3 SDRAM Nanya. NT5CC = Nanya DDR3. Ex: NT5CC256M16DP-DI = 256M×16bit = 4Gb DDR3.'
+  reasoning: ''
+- prefix: NT5PA
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: DDR3L Nanya, variante low-voltage do NT5CC. Comum em notebooks.
+  reasoning: ''
