@@ -751,7 +751,7 @@ class DeployCatalogTests(TestCase):
         brands_load = [c.kwargs.get('brand') for c in mock_cc.call_args_list
                        if c.args[0] == 'load_brands']
         for marca in ('samsung', 'piecemakers', 'gigadevice', 'rayson', 'kingston', 'sandisk',
-                      'micron', 'toshiba', 'kioxia', 'hynix', 'nanya'):
+                      'micron', 'toshiba-kioxia', 'hynix', 'nanya'):
             self.assertIn(marca, brands_load)
         for c in mock_cc.call_args_list:
             if c.args[0] == 'load_brands':
@@ -1254,21 +1254,18 @@ class MicronLoadBrandsTests(TestCase):
 
 
 class ToshibaKioxiaLoadBrandsTests(TestCase):
-    """Passo 4: populate_toshiba cria DUAS marcas — Toshiba (THGBM/TYC/TYD) e Kioxia
-    (a memória virou Kioxia). Fidelidade de cada YAML + identificação de todos os PNs
-    com AS DUAS carregadas (THGBMFG/HG=Kioxia são prefixos + longos que THGBM=Toshiba)."""
+    """Passo 4: Toshiba + Kioxia CONSOLIDADAS numa marca única 'Toshiba-Kioxia' (2026-07-01).
+    Mesma empresa (Toshiba Memory → Kioxia out/2019, mesmo esquema de PN). 11 famílias
+    (THGBM/TYC/TYD + THGBMFG/HG, THGAF/AM, THGJF/JFBT, KMEYH, TH58) num só yaml. A identificação
+    é idêntica à de antes da fusão (a marca não entra no _ident) — o _TK_GOLDEN não muda."""
 
-    def test_toshiba_yaml_fiel(self):
-        _carrega_marca_e_confere_fidelidade(self, "toshiba")
-
-    def test_kioxia_yaml_fiel(self):
-        _carrega_marca_e_confere_fidelidade(self, "kioxia")
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "toshiba-kioxia")
 
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "toshiba", "--commit", verbosity=0)
-        call_command("load_brands", "--brand", "kioxia", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "toshiba-kioxia", "--commit", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _TK_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1333,6 +1330,56 @@ class NanyaLoadBrandsTests(TestCase):
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _NANYA_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+
+class MergeToshibaKioxiaTests(TestCase):
+    """Consolidação Toshiba+Kioxia+KIOXIA → Toshiba-Kioxia (comando merge_toshiba_kioxia):
+    move KnownParts (brand.on_delete=CASCADE → mover ANTES de deletar), apaga famílias dup +
+    brands antigos, REVERSÍVEL. Simula o prod: 3 brands, família THGBMHG duplicada, e o
+    KnownPart confirmado ÚNICO sob 'KIOXIA' (THGBMHG8C4LBAIR) que não pode se perder."""
+
+    def setUp(self):
+        from chips.models import Brand, ChipFamily, KnownPart
+        tos = Brand.objects.create(name="Toshiba", code="TOS")
+        kio = Brand.objects.create(name="Kioxia", code="KIO")
+        kmai = Brand.objects.create(name="KIOXIA", code="KIOXIA")   # duplicado (add_chip_families antigo)
+        f_thgbm = ChipFamily.objects.create(brand=tos, prefix="THGBM", chip_type="eMMC", active=True)
+        f_hg = ChipFamily.objects.create(brand=kio, prefix="THGBMHG", chip_type="eMMC", active=True)
+        f_hg_dup = ChipFamily.objects.create(brand=kmai, prefix="THGBMHG", chip_type="eMMC", active=True)
+        KnownPart.objects.create(part_number="THGBM4G5D2", brand=tos, family=f_thgbm, confidence="confirmed")
+        KnownPart.objects.create(part_number="THGBMHG7C1", brand=kio, family=f_hg, confidence="confirmed")
+        KnownPart.objects.create(part_number="THGBMHG8C4LBAIR", brand=kmai, family=f_hg_dup, confidence="confirmed")
+
+    def _cria_alvo(self):
+        from django.core.management import call_command
+        call_command("load_brands", "--brand", "toshiba-kioxia", "--commit", verbosity=0)
+
+    def _bk(self, nome):
+        import os, tempfile
+        return os.path.join(tempfile.gettempdir(), nome)
+
+    def test_merge_move_tudo_e_apaga_antigos(self):
+        from django.core.management import call_command
+        from chips.models import Brand, KnownPart
+        self._cria_alvo()
+        call_command("merge_toshiba_kioxia", commit=True, backup=self._bk("bk1.json"), verbosity=0)
+        self.assertFalse(Brand.objects.filter(name__in=["Toshiba", "Kioxia", "KIOXIA"]).exists())
+        tk = Brand.objects.get(name="Toshiba-Kioxia")
+        for pn in ("THGBM4G5D2", "THGBMHG7C1", "THGBMHG8C4LBAIR"):   # nada se perdeu
+            self.assertEqual(KnownPart.objects.get(part_number=pn).brand, tk, pn)
+        kp = KnownPart.objects.get(part_number="THGBMHG8C4LBAIR")    # re-apontado à família do alvo
+        self.assertEqual((kp.family.prefix, kp.family.brand), ("THGBMHG", tk))
+
+    def test_revert_restaura(self):
+        from django.core.management import call_command
+        from chips.models import Brand, KnownPart
+        self._cria_alvo()
+        bk = self._bk("bk2.json")
+        call_command("merge_toshiba_kioxia", commit=True, backup=bk, verbosity=0)
+        call_command("merge_toshiba_kioxia", revert=bk, verbosity=0)
+        for name in ("Toshiba", "Kioxia", "KIOXIA"):
+            self.assertTrue(Brand.objects.filter(name=name).exists(), name)
+        self.assertEqual(KnownPart.objects.get(part_number="THGBMHG8C4LBAIR").brand.name, "KIOXIA")
 
 
 class KnowledgeSchemaTests(TestCase):

@@ -5981,7 +5981,7 @@ CORRECTIONS = [
         "pn": "THGBMFG7C1LBAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6040,7 +6040,7 @@ CORRECTIONS = [
         "pn": "THGBMHG8C4LBAIR",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6079,7 +6079,7 @@ CORRECTIONS = [
         "pn": "THGBMBG7D2KBAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6103,7 +6103,7 @@ CORRECTIONS = [
         "pn": "THGBMBG8D4KBAIR",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6135,7 +6135,7 @@ CORRECTIONS = [
         "pn": "THGBMFG6C1LBAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6157,7 +6157,7 @@ CORRECTIONS = [
         "pn": "THGBMFG7C2LBAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6179,7 +6179,7 @@ CORRECTIONS = [
         "pn": "THGBMFG8C4LBAIR",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6201,7 +6201,7 @@ CORRECTIONS = [
         "pn": "THGBMFG8C2LBAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6225,7 +6225,7 @@ CORRECTIONS = [
         "pn": "THGBMFG9C8LBAIG",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6247,7 +6247,7 @@ CORRECTIONS = [
         "pn": "THGBMFG9C4LBAIR",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6270,7 +6270,7 @@ CORRECTIONS = [
         "pn": "THGBMFT0CBLBAIS",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6302,7 +6302,7 @@ CORRECTIONS = [
         "pn": "THGBMHG6C1LBAU6",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6325,7 +6325,7 @@ CORRECTIONS = [
         "pn": "THGBMHG7C2LBAU7",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6347,7 +6347,7 @@ CORRECTIONS = [
         "pn": "THGBMHG8C4LBAU7",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6369,7 +6369,7 @@ CORRECTIONS = [
         "pn": "THGBMHG9C8LBAU8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6397,7 +6397,7 @@ CORRECTIONS = [
         "pn": "THGBMNG5D1LBAIT",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6419,7 +6419,7 @@ CORRECTIONS = [
         "pn": "THGBMTG5D1LBAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6441,7 +6441,7 @@ CORRECTIONS = [
         "pn": "THGBMUG6C1LBAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6463,7 +6463,7 @@ CORRECTIONS = [
         "pn": "THGBMUG7C1LBAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6484,7 +6484,7 @@ CORRECTIONS = [
         "pn": "THGBMUG8C2LBAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6507,7 +6507,7 @@ CORRECTIONS = [
         "pn": "THGBMJG6C1LBAU7",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6530,7 +6530,7 @@ CORRECTIONS = [
         "pn": "THGBMJG7C2LBAU8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6552,7 +6552,7 @@ CORRECTIONS = [
         "pn": "THGBMJG8C4LBAU8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6573,7 +6573,7 @@ CORRECTIONS = [
         "pn": "THGBMJG9C8LBAU8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -6623,7 +6623,7 @@ CORRECTIONS = [
         "pn": "TYC0FH121638RA",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMCP",
             "subtype":    "eMCP Toshiba (eMMC + LPDDR2)",
             "confidence": "distributor",
@@ -6669,7 +6669,7 @@ CORRECTIONS = [
         "pn": "TYC0FH121626RA",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMCP",
             "subtype":    "eMCP Toshiba (eMMC + LPDDR2)",
             "confidence": "distributor",
@@ -6719,7 +6719,7 @@ CORRECTIONS = [
         "pn": "TYC0FH12162BRA",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMCP",
             "subtype":    "eMCP Toshiba (eMMC + LPDDR2)",
             "confidence": "estimated",
@@ -6780,7 +6780,7 @@ CORRECTIONS = [
         "pn": "TYD0FH221627RA",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMCP",
             "subtype":    "eMCP Toshiba (eMMC + LPDDR3)",
             "confidence": "estimated",
@@ -6821,7 +6821,7 @@ CORRECTIONS = [
         "pn": "THGJFPT0E18BAIP",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -6840,7 +6840,7 @@ CORRECTIONS = [
         "pn": "THGJFPT1E28BAIP",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -6859,7 +6859,7 @@ CORRECTIONS = [
         "pn": "THGJFPT2E48BAIP",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -6878,7 +6878,7 @@ CORRECTIONS = [
         "pn": "THGJFMT1E45BATV",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -6897,7 +6897,7 @@ CORRECTIONS = [
         "pn": "THGJFMT2E46BATV",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -6916,7 +6916,7 @@ CORRECTIONS = [
         "pn": "THGJFMT3E86BATZ",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -6935,7 +6935,7 @@ CORRECTIONS = [
         "pn": "THGJFRT1E45BATV",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -6954,7 +6954,7 @@ CORRECTIONS = [
         "pn": "THGJFRT2E48BATV",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -6973,7 +6973,7 @@ CORRECTIONS = [
         "pn": "THGJFRT3E88BATW",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -6995,7 +6995,7 @@ CORRECTIONS = [
         "pn": "THGAF8G8T23BAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7014,7 +7014,7 @@ CORRECTIONS = [
         "pn": "THGAF8G9T43BAIR",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7033,7 +7033,7 @@ CORRECTIONS = [
         "pn": "THGJFAT0T44BAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7052,7 +7052,7 @@ CORRECTIONS = [
         "pn": "THGJFAT1T84BAIR",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7071,7 +7071,7 @@ CORRECTIONS = [
         "pn": "THGJFGT1E45BAIP",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7090,7 +7090,7 @@ CORRECTIONS = [
         "pn": "THGJFAT2T84BAIR",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7109,7 +7109,7 @@ CORRECTIONS = [
         "pn": "THGJFGT2T85BAIU",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7128,7 +7128,7 @@ CORRECTIONS = [
         "pn": "THGJFHT3TB4BAIG",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7147,7 +7147,7 @@ CORRECTIONS = [
         "pn": "THGJFJT0E25BAIP",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7166,7 +7166,7 @@ CORRECTIONS = [
         "pn": "THGJFJT1E45BATP",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7185,7 +7185,7 @@ CORRECTIONS = [
         "pn": "THGJFJT2T85BAT0",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7209,7 +7209,7 @@ CORRECTIONS = [
         "pn": "THGAF9G7L1LBAB7",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7229,7 +7229,7 @@ CORRECTIONS = [
         "pn": "THGAFBG8T13BAB7",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7249,7 +7249,7 @@ CORRECTIONS = [
         "pn": "THGAFEG8T13BAB7",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7269,7 +7269,7 @@ CORRECTIONS = [
         "pn": "THGAFBG9T23BAB8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7289,7 +7289,7 @@ CORRECTIONS = [
         "pn": "THGAFEG9T23BAB8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7309,7 +7309,7 @@ CORRECTIONS = [
         "pn": "THGAFBT0T43BAB8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7329,7 +7329,7 @@ CORRECTIONS = [
         "pn": "THGAFET0T43BAB8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7349,7 +7349,7 @@ CORRECTIONS = [
         "pn": "THGAFBT1T83BAB5",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7369,7 +7369,7 @@ CORRECTIONS = [
         "pn": "THGAFET1T83BAB5",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "UFS",
             "subtype":    "UFS Kioxia",
             "confidence": "confirmed",
@@ -7395,7 +7395,7 @@ CORRECTIONS = [
         "pn": "THGAMVG7T13BAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Kioxia",
             "confidence": "confirmed",
@@ -7415,7 +7415,7 @@ CORRECTIONS = [
         "pn": "THGAMVG8T13BAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Kioxia",
             "confidence": "confirmed",
@@ -7434,7 +7434,7 @@ CORRECTIONS = [
         "pn": "THGAMVG9T23BAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Kioxia",
             "confidence": "confirmed",
@@ -7453,7 +7453,7 @@ CORRECTIONS = [
         "pn": "THGAMVT0T43BAIR",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Kioxia",
             "confidence": "confirmed",
@@ -7472,7 +7472,7 @@ CORRECTIONS = [
         "pn": "THGAMSG9T24BAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Kioxia",
             "confidence": "confirmed",
@@ -7491,7 +7491,7 @@ CORRECTIONS = [
         "pn": "THGAMST0T24BAIL",
         "create": True,
         "create_defaults": {
-            "brand_name": "Kioxia",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Kioxia",
             "confidence": "confirmed",
@@ -7517,7 +7517,7 @@ CORRECTIONS = [
         "pn": "THGBMJG6C1LBAB7",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -7539,7 +7539,7 @@ CORRECTIONS = [
         "pn": "THGBMJG7C2LBAB8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -7560,7 +7560,7 @@ CORRECTIONS = [
         "pn": "THGBMJG8C4LBAB8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -7581,7 +7581,7 @@ CORRECTIONS = [
         "pn": "THGBMJG9C8LBAB8",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "eMMC",
             "subtype":    "eMMC Toshiba/Kioxia MLC/TLC",
             "confidence": "confirmed",
@@ -7628,7 +7628,7 @@ CORRECTIONS = [
         "pn": "TY890A111229KC",
         "create": True,
         "create_defaults": {
-            "brand_name": "Toshiba",
+            "brand_name": "Toshiba-Kioxia",
             "chip_type":  "DRAM",
             "subtype":    "SDR SDRAM",
             "confidence": "distributor",

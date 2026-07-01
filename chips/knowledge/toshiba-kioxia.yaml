@@ -1,11 +1,89 @@
-# Conhecimento Kioxia — fonte do catálogo (passo 4). Gerado do CÓDIGO ATUAL
-# (populate_toshiba + add_chip_families) — completo. NUNCA do prod_data (defasado).
+# Conhecimento Toshiba-Kioxia — passo 4. FUSÃO de toshiba.yaml + kioxia.yaml (mesma empresa; Toshiba→Kioxia
+# out/2019). Marca única code=TXK. Toshiba=THGBM/TYC/TYD (com mapas THGBM_CAP/GEN); Kioxia=famílias magras
+# THGBMFG/HG, THGAF/AM, THGJF/JFBT, KMEYH, TH58 (specs das KnownParts). Sem overlap de prefixo/mapa.
 brand:
-  name: Kioxia
-  code: KIO
-  notes: 'Japão · Ex-divisão de Memória Toshiba, renomeada em 2019. Fab BiCS4/5/6 TLC NAND. Prefixo UFS stand-alone: KLUE (verificar kioxia.com antes de cadastrar).'
-maps: {}
+  name: Toshiba-Kioxia
+  code: TXK
+  notes: 'Japão · Divisão de Memória Toshiba, renomeada KIOXIA em out/2019 — MESMA empresa, mesmas fábricas e mesmo esquema de PN (THGBM coexiste nas duas eras). Chips pré-2019 gravados ''TOSHIBA'', pós-2019 ''KIOXIA''. Consolidados numa marca única (2026-07-01): antes eram 3 brands (Toshiba/Kioxia/KIOXIA-dup), o que criava ambiguidade de prefixo e duplicação. Não muda triagem (mesmas specs/destino).'
+maps:
+  THGBM_CAP:
+  - [0CB, 128GB, '']
+  - [4D1, 2GB, '']
+  - [5D1, 4GB, '']
+  - [5D2, 8GB, '']
+  - [6C1, 8GB, '']
+  - [6D1, 8GB, '']
+  - [7C1, 16GB, '']
+  - [7C2, 16GB, '']
+  - [7D2, 16GB, '']
+  - [8C2, 32GB, '']
+  - [8C4, 32GB, '']
+  - [8D4, 32GB, '']
+  - [9C4, 64GB, '']
+  - [9C8, 64GB, '']
+  THGBM_GEN:
+  - [B, eMMC 5.0, '']
+  - [F, eMMC 5.0, '']
+  - [H, eMMC 5.1, '']
+  - [J, eMMC 5.1, '']
+  - [N, eMMC 5.0, '']
+  - [T, eMMC 5.0, '']
+  - [U, eMMC 5.1, '']
 families:
+- prefix: THGBM
+  chip_type: eMMC
+  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  interface: eMMC
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 15
+  decode_cap_pos: 7
+  decode_cap_len: 3
+  decode_cap_map: THGBM_CAP
+  decode_gen_pos: 5
+  decode_gen_map: THGBM_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMMC Toshiba / Kioxia — armazenamento Flash puro, sem RAM embutida. Prefixo THGBM cobre chips pré-2019 (Toshiba) e pós-2019 (Kioxia). Geração automática: pn[5] → N/T/F/B=eMMC 5.0 | H/J/U=eMMC 5.1. ⚠ Separe por geração: 5.1 (H/J/U) vale ~15-25% a mais que 5.0 (N/T/F/B). Capacidade: pn[7:10] → chave 3-chars → THGBM_CAP: 5D1=4GB · 5D2=8GB · 6C1=8GB · 6D1=8GB · 7C1=16GB · 7C2=16GB · 7D2=16GB · 8C2=32GB · 8C4=32GB · 8D4=32GB · 9C4=64GB · 9C8=64GB · 0CB=128GB. ⚠ Chaves não mapeadas (ex: 4D4, 6A2, 8D2) ficam com capacity=null — confirmar via Octopart/distribuidor e adicionar ao THGBM_CAP. Pacote: BGA153 (11.5×13mm). Interface paralela eMMC — NUNCA confundir com socket UFS (THGJF/THGAF/KLUE). Destino: bancada reacondicional Flash eMMC (separar por geração).'
+  reasoning: '["T=Toshiba · H=NAND tipo H · G=geração G · B=bus 8-bit · M=mobile", "pn[5]: código de geração NAND — N/T/F/B=eMMC 5.0 · H/J/U=eMMC 5.1", "pn[6]=G: constante identificadora de processo (sem decode)", "pn[7:10]: chave composta 3-chars → capacidade total (ver THGBM_CAP)", "pn[7]: densidade/die — 5=32Gb(4GB) · 6=64Gb(8GB) · 7=128Gb(16GB) · 8=64Gb(8GB) · 9=64Gb(8GB)", "pn[8]: tipo de stack — C/D/A/J/K (sem impacto na capacidade total)", "pn[9]: número de dies — 1/2/4/8", "pn[10]: tier de qualidade (L/K/E/J) — sem decode de capacidade", "pn[11:13]=BA: package BGA153", "pn[13]: I/O voltage — I=1.8V · U=dual-voltage 1.8/3.3V"]'
+- prefix: TYC
+  chip_type: eMCP
+  subtype: LPDDR2
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Toshiba legado: eMMC 4.5 + LPDDR2, package BGA-162. Família sem decode gramatical — capacity/specs dependem de KnownPart manual. Rentabilidade: sempre NÃO RENTÁVEL (LPDDR2 abaixo do threshold). Subprefixos: TYC0F*=4GB NAND · TYC0G*=8GB NAND. RAM: LPDDR2 512MB em todos os exemplos confirmados. Cluster de lote: TYC0FH12[XXXX]RA = mesmas specs, só lote diferente. Distinguir de TYD* (LPDDR3, BGA-221) — família magra ativa, ver bloco TYD.'
+  reasoning: '["TYC = Toshiba eMCP LPDDR2 legado (TYD = LPDDR3/BGA-221)", "pn[3:5]: capacidade NAND — 0F=4GB · 0G=8GB (Tier 2-3, sem Tier 1)", "pn[5]: provavelmente sub-geração RAM — H=LPDDR2 512MB (não confirmado Tier 1)", "pn[8:12]: código de lote/batch — não encode specs (confirmado cluster Tier 2)", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional"]'
+- prefix: TYD
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Toshiba: eMMC 4.5 + LPDDR3, package BGA-221 (mais novo que TYC/BGA-162). Família sem decode gramatical — capacity/specs dependem de KnownPart manual. Rentabilidade: depende da capacidade (LPDDR3 ≥ threshold → RENTÁVEL; sem specs → INDETERMINADO). Subprefixos: TYD0F*=4GB NAND · TYD0G*=8GB NAND (Preduo Tier 3 ✓). RAM: pn[6:8]=''22''→1GB LPDDR3 (âncora TYD0GH221651RA, Preduo Tier 3 ✓). Cluster de lote: TYD0FH221[XXXX]RA = mesmas specs, só lote diferente. Distinguir de TYC* (LPDDR2, BGA-162) — geração mais antiga e NÃO RENTÁVEL.'
+  reasoning: '["TYD = Toshiba eMCP LPDDR3/BGA-221 (~2015-2020) — geração seguinte ao TYC/LPDDR2/BGA-162", "pn[3:5]: capacidade NAND — 0F=4GB · 0G=8GB (Preduo Tier 3 ✓)", "pn[5]=H: marcador de RAM (hipótese — consistente com TYC; sem Tier 1)", "pn[6:8]: código RAM — 22=1GB LPDDR3 (âncora TYD0GH221651RA, Preduo Tier 3 ✓)", "pn[8:12]: código de lote/batch — não encode specs (ex.: 1627, 1651)", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional", "Fonte: Preduo Tier 3 (TYD0GH221651RA=8+8 eMMC+LPDDR3 221ball) + Octopart Tier 2 (tipo SDRAM+eMMC MCP ✓)"]'
 - prefix: KMEYH
   chip_type: eMMC
   subtype: eMMC (KIOXIA)

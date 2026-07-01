@@ -48,8 +48,7 @@ _STEPS = [
     ("load_brands", {"brand": "kingston", "commit": True}, {"brand": "kingston", "dry_run": True}),
     ("load_brands", {"brand": "sandisk", "commit": True}, {"brand": "sandisk", "dry_run": True}),
     ("load_brands", {"brand": "micron", "commit": True}, {"brand": "micron", "dry_run": True}),
-    ("load_brands", {"brand": "toshiba", "commit": True}, {"brand": "toshiba", "dry_run": True}),
-    ("load_brands", {"brand": "kioxia", "commit": True}, {"brand": "kioxia", "dry_run": True}),
+    ("load_brands", {"brand": "toshiba-kioxia", "commit": True}, {"brand": "toshiba-kioxia", "dry_run": True}),
     ("load_brands", {"brand": "hynix", "commit": True}, {"brand": "hynix", "dry_run": True}),
     ("load_brands", {"brand": "nanya", "commit": True}, {"brand": "nanya", "dry_run": True}),
     # add_chip_families APOSENTADO (2026-07-01): suas 39 famílias agora vivem nos yamls das marcas

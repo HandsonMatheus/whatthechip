@@ -91,8 +91,8 @@ BRAND_PREFIX_MAP: list[tuple[str, str]] = [
     ("MT6", "MediaTek"), ("MT8", "MediaTek"),
     # Micron
     ("MT",  "Micron"), ("NW", "Micron"), ("D9", "Micron"),
-    # KIOXIA / Toshiba Memory
-    ("TH",  "KIOXIA"), ("TC", "KIOXIA"),
+    # Toshiba-Kioxia (Toshiba Memory → renomeada Kioxia out/2019 — marca consolidada)
+    ("TH",  "Toshiba-Kioxia"), ("TC", "Toshiba-Kioxia"),
     # Elpida
     ("EB",  "Elpida"), ("ED", "Elpida"),
     # Nanya
@@ -113,7 +113,7 @@ BRAND_CODE_MAP: dict[str, str] = {
     "Samsung":    "SAM",
     "SK Hynix":   "HYN",
     "Micron":     "MIC",
-    "KIOXIA":     "KIO",
+    "Toshiba-Kioxia": "TXK",
     "Elpida":     "ELP",
     "Nanya":      "NAN",
     "Kingston":   "KNG",
