@@ -73,7 +73,11 @@ def home(request):
         return f"{n:,}".replace(",", " ")
 
     content = content.replace('{{STAT_PARTS}}',    _fmt(KnownPart.objects.count()))
-    content = content.replace('{{STAT_BRANDS}}',   _fmt(Brand.objects.count()))
+    # marcas SUPORTADAS = as que têm pelo menos uma família (classificam algo). Exclui
+    # marcas-fantasma vazias (ex.: 'AMD (Xilinx)', 'Elpida') criadas por scrapers/imports
+    # que inflavam o número. É o nº de yamls em chips/knowledge/ (10 em jul/2026).
+    content = content.replace('{{STAT_BRANDS}}',
+                              _fmt(Brand.objects.filter(families__isnull=False).distinct().count()))
     content = content.replace('{{STAT_FAMILIES}}', _fmt(prefix_count))
     content = content.replace('{{STAT_SEARCHES}}', _fmt(SearchLog.objects.count()))
 
