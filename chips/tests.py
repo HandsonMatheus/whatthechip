@@ -745,12 +745,12 @@ class DeployCatalogTests(TestCase):
         self.assertNotIn('populate_piecemakers', chamados)     # aposentados
         self.assertNotIn('populate_gigadevice', chamados)
         self.assertNotIn('populate_rayson', chamados)
+        self.assertNotIn('populate_kingston', chamados)
         # cada marca migrada passa por load_brands, gravando (commit=True)
         brands_load = [c.kwargs.get('brand') for c in mock_cc.call_args_list
                        if c.args[0] == 'load_brands']
-        self.assertIn('piecemakers', brands_load)
-        self.assertIn('gigadevice', brands_load)
-        self.assertIn('rayson', brands_load)
+        for marca in ('piecemakers', 'gigadevice', 'rayson', 'kingston'):
+            self.assertIn(marca, brands_load)
         for c in mock_cc.call_args_list:
             if c.args[0] == 'load_brands':
                 self.assertTrue(c.kwargs.get('commit'))        # grava de verdade no --commit
