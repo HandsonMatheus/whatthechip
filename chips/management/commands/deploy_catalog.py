@@ -45,9 +45,9 @@ _STEPS = [
     ("populate_sandisk",     {"overwrite": True}, {"dry_run": True}),
     ("populate_toshiba",     {"overwrite": True}, {"dry_run": True}),
     ("populate_rayson",      {"overwrite": True}, {"dry_run": True}),
-    # PieceMakers migrada p/ YAML (passo 4): load_brands no lugar do populate_piecemakers.
+    # Marcas migradas p/ YAML (passo 4): load_brands no lugar dos populate_* aposentados.
     ("load_brands", {"brand": "piecemakers", "commit": True}, {"brand": "piecemakers", "dry_run": True}),
-    ("populate_gigadevice",  {"overwrite": True}, {"dry_run": True}),
+    ("load_brands", {"brand": "gigadevice", "commit": True}, {"brand": "gigadevice", "dry_run": True}),
     ("add_chip_families",    {},                  None),   # sem --dry-run: só roda no --commit
     ("link_doc_pages",       {},                  {"dry_run": True}),
     ("sync_index_page",      {},                  {"dry_run": True}),

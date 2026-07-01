@@ -736,17 +736,22 @@ class DeployCatalogTests(TestCase):
         self.assertNotIn('import_micron_catalog', chamados)
 
     @patch('chips.management.commands.deploy_catalog.call_command')
-    def test_piecemakers_via_load_brands_nao_populate(self, mock_cc):
-        """PieceMakers foi migrada p/ YAML (passo 4): o deploy usa load_brands,
-        não o populate_piecemakers (aposentado)."""
+    def test_marcas_migradas_via_load_brands(self, mock_cc):
+        """Marcas migradas p/ YAML (passo 4): o deploy usa load_brands, não os
+        populate_* aposentados (PieceMakers, GigaDevice)."""
         from django.core.management import call_command
         call_command('deploy_catalog', commit=True)
         chamados = [c.args[0] for c in mock_cc.call_args_list]
-        self.assertNotIn('populate_piecemakers', chamados)     # aposentado
-        self.assertIn('load_brands', chamados)
-        kw = {c.args[0]: c.kwargs for c in mock_cc.call_args_list}
-        self.assertEqual(kw['load_brands'].get('brand'), 'piecemakers')
-        self.assertTrue(kw['load_brands'].get('commit'))       # grava de verdade no --commit
+        self.assertNotIn('populate_piecemakers', chamados)     # aposentados
+        self.assertNotIn('populate_gigadevice', chamados)
+        # cada marca migrada passa por load_brands, gravando (commit=True)
+        brands_load = [c.kwargs.get('brand') for c in mock_cc.call_args_list
+                       if c.args[0] == 'load_brands']
+        self.assertIn('piecemakers', brands_load)
+        self.assertIn('gigadevice', brands_load)
+        for c in mock_cc.call_args_list:
+            if c.args[0] == 'load_brands':
+                self.assertTrue(c.kwargs.get('commit'))        # grava de verdade no --commit
 
 
 class PghistoryTrackingTests(TestCase):
