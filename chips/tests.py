@@ -1382,6 +1382,57 @@ class MergeToshibaKioxiaTests(TestCase):
         self.assertEqual(KnownPart.objects.get(part_number="THGBMHG8C4LBAIR").brand.name, "KIOXIA")
 
 
+class KnownPartsLoadTests(TestCase):
+    """Migração da AUTORIDADE (fix_known_parts → YAML known_parts): o loader cria os
+    KnownParts e eles VENCEM a gramática (confirmed/manual). Round-trip dump→load provado
+    IDÊNTICO no sandbox (541 PNs); aqui o núcleo + regressão do bug density_gbit."""
+
+    def _load(self, data):
+        from chips.knowledge.schema import BrandFile
+        from chips.management.commands.load_brands import Command
+        from chips.models import Brand, CatalogVersion
+        from chips.engine import clear_engine_cache
+        spec = BrandFile(**data)
+        brand, _ = Brand.objects.get_or_create(
+            name=spec.brand.name, defaults={"code": spec.brand.code})
+        cmd = Command()
+        cmd._upsert_maps(brand, spec.maps)
+        cmd._upsert_families(brand, spec.families)
+        cmd._upsert_known_parts(brand, spec.known_parts)
+        CatalogVersion.bump()
+        clear_engine_cache()
+        return brand
+
+    def test_known_part_confirmado_vence_gramatica(self):
+        from chips.engine import classify
+        self._load({
+            "brand": {"name": "TesteKP", "code": "TKP"},
+            "maps": {"ZZC": [{"char_key": "1G", "val_primary": "128MB", "val_secondary": ""}]},
+            "families": [{"prefix": "ZZ", "chip_type": "DDR3", "subtype": "DDR3",
+                          "decode_cap_pos": 2, "decode_cap_len": 2, "decode_cap_map": "ZZC"}],
+            "known_parts": [{"part_number": "ZZ1G0000", "chip_type": "DDR4", "capacity": "512MB",
+                             "confidence": "confirmed"}],
+        })
+        r = classify("ZZ1G0000") or {}
+        # o known_part confirmado VENCE a gramática nas SPECS: capacity 512MB (não os 128MB
+        # que a gramática decodificaria). O chip_type segue a FAMÍLIA (merge _result_from_known).
+        self.assertEqual(r.get("capacity"), "512MB")
+        self.assertTrue(r.get("known_exact"))
+        self.assertEqual(r.get("confidence"), "confirmed")
+
+    def test_fidelidade_e_density_gbit_string(self):
+        # regressão: KnownPartSpec.density_gbit era Optional[int]; o modelo é TextField NOT NULL
+        from chips.models import KnownPart
+        self._load({
+            "brand": {"name": "TesteDG", "code": "TDG"},
+            "known_parts": [{"part_number": "DG1", "chip_type": "DDR4", "density_gbit": "8Gb",
+                             "emcp_ram": "LPDDR4X 4GB", "confidence": "manual", "notes": "fonte X"}],
+        })
+        kp = KnownPart.objects.get(part_number="DG1")
+        self.assertEqual((kp.density_gbit, kp.emcp_ram, kp.confidence, kp.notes),
+                         ("8Gb", "LPDDR4X 4GB", "manual", "fonte X"))
+
+
 class KnowledgeSchemaTests(TestCase):
     """Passo 4: o portão Pydantic — as regras de ouro são validadores executáveis."""
 

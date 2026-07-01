@@ -152,8 +152,8 @@ class KnownPartSpec(BaseModel):
     chip_type: str = ""
     subtype: str = ""
     capacity: str = ""
-    density_gbit: Optional[int] = None
-    density_gb: Optional[float] = None
+    density_gbit: str = ""   # TextField no modelo (ex.: "4Gb"), NOT NULL default="" — não Optional[int]
+    density_gb: str = ""     # idem (ex.: "512MB")
     emcp_ram: str = ""
     emcp_nand: str = ""
     interface: str = ""
