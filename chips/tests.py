@@ -862,6 +862,28 @@ _GIGA_GOLDEN = {
     "GD25Q128ESIG": ("NOR Flash", "", "", "NÃO RENTÁVEL"),
     "GD25Q64CSIG":  ("NOR Flash", "", "", "NÃO RENTÁVEL"),
 }
+_RAY_GOLDEN = {
+    "RS1G32LF4D2BDS":   ("LPDDR4", "4GB", "", "RENTÁVEL"),
+    "RS1G32LO4D2BDS":   ("LPDDR4", "4GB", "", "RENTÁVEL"),
+    "RS1G32LV4D2BDS":   ("LPDDR4", "4GB", "", "RENTÁVEL"),
+    "RS256M32LD3D1LMZ": ("LPDDR3", "1GB", "", "NÃO RENTÁVEL"),  # 1GB LPDDR3 < limiar
+    "RS256M32LZ4":      ("LPDDR4", "1GB", "", "RENTÁVEL"),      # 1GB LPDDR4 (geração nova)
+    "RS2G32LF4D4BDT":   ("LPDDR4", "8GB", "", "RENTÁVEL"),
+    "RS2G32LV4D4BDT":   ("LPDDR4", "8GB", "", "RENTÁVEL"),
+    "RS512M32LD3D2LMZ": ("LPDDR3", "2GB", "", "RENTÁVEL"),
+    "RS512M32LM4D2BDS": ("LPDDR4", "2GB", "", "RENTÁVEL"),
+    "RS512M32LO4D1BDS": ("LPDDR4", "2GB", "", "RENTÁVEL"),
+    "RS70B08G3S03F":    ("eMMC", "8GB",   "", "RENTÁVEL"),
+    "RS70B08G4S":       ("eMMC", "8GB",   "", "RENTÁVEL"),
+    "RS70B16G4S06F":    ("eMMC", "16GB",  "", "RENTÁVEL"),
+    "RS70B16G4S10F":    ("eMMC", "16GB",  "", "RENTÁVEL"),
+    "RS70B16G4S15G":    ("eMMC", "16GB",  "", "RENTÁVEL"),
+    "RS70B32G4S15G":    ("eMMC", "32GB",  "", "RENTÁVEL"),
+    "RS70B64G4S16G":    ("eMMC", "64GB",  "", "RENTÁVEL"),
+    "RS70BT7G4S16G":    ("eMMC", "128GB", "", "RENTÁVEL"),
+    "RS512M32LO4":      ("LPDDR4", "2GB", "", "RENTÁVEL"),  # KnownPart em prod
+    "RS512M32LZ4":      ("LPDDR4", "2GB", "", "RENTÁVEL"),  # KnownPart em prod
+}
 
 
 class LoadBrandsPiecemakersTests(TestCase):
@@ -907,6 +929,22 @@ class GigaDeviceLoadBrandsTests(TestCase):
         call_command("load_brands", "--brand", "gigadevice", "--commit", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _GIGA_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+
+class RaysonLoadBrandsTests(TestCase):
+    """Passo 4: Rayson migrada p/ YAML (LPDDR3/LPDDR4 + eMMC). Fidelidade +
+    identificação de TODOS os PNs conhecidos (golden da gramática populate_rayson)."""
+
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "rayson")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "rayson", "--commit", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
+        for pn, esperado in _RAY_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
