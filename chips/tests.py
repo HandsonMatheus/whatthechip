@@ -1413,6 +1413,16 @@ class KnownPartsLoadTests(TestCase):
         self.assertEqual((kp.density_gbit, kp.emcp_ram, kp.confidence, kp.notes),
                          ("8Gb", "LPDDR4X 4GB", "manual", "fonte X"))
 
+    def test_portao_da_convencao_nos_known_parts(self):
+        # fase 1b: o MESMO data contract da gramática aplicado à autoridade
+        from chips.knowledge.schema import KnownPartSpec
+        kp = KnownPartSpec(part_number="X", chip_type="LPDDR3", subtype="LPDDR3 Mobile",
+                           interface="LPDDR3", capacity="None", emcp_nand="None")
+        self.assertEqual(kp.subtype, "LPDDR3")   # 'LPDDR3 Mobile' → canônico
+        self.assertEqual(kp.interface, "")       # geração fora do interface (largura/vazio)
+        self.assertEqual(kp.capacity, "")        # lixo 'None' → vazio
+        self.assertEqual(kp.emcp_nand, "")
+
 
 class KnowledgeSchemaTests(TestCase):
     """Passo 4: o portão Pydantic — as regras de ouro são validadores executáveis."""

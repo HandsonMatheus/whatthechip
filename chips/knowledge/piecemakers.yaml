@@ -7,15 +7,9 @@ brand:
   notes: 'Taiwan (Hsinchu) · Fundada 2006 · Fabless DRAM design. Fundador: Tah-Kang Joseph Ting (>40 anos IC, >60 patentes). Produtos: SDR/DDR/DDR2/DDR3/DDR3L/DDR4, PSRAM, KGD. ISO 9001 e 14001. Representantes: China, Japão, França, Israel, Turquia. Site: piecemakers.com.tw'
 maps:
   PMF_DDR3_CAP:
-  - - '10'
-    - 128MB
-    - ''
-  - - '11'
-    - 256MB
-    - ''
-  - - '12'
-    - 512MB
-    - ''
+  - ['10', 128MB, '']
+  - ['11', 256MB, '']
+  - ['12', 512MB, '']
 families:
 - prefix: PMF4
   chip_type: DDR3L

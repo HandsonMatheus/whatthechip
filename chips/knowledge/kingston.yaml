@@ -6,37 +6,17 @@ brand:
   notes: ''
 maps:
   KST_EMCP_NAND_CAP:
-  - - '04'
-    - 4GB
-    - ''
-  - - 08
-    - 8GB
-    - ''
-  - - '16'
-    - 16GB
-    - ''
-  - - '32'
-    - 32GB
-    - ''
-  - - '64'
-    - 64GB
-    - ''
+  - ['04', 4GB, '']
+  - [08, 8GB, '']
+  - ['16', 16GB, '']
+  - ['32', 32GB, '']
+  - ['64', 64GB, '']
   KST_EMCP_RAM_CAP:
-  - - '04'
-    - LPDDR3 512MB
-    - ''
-  - - 08
-    - LPDDR3 1GB
-    - ''
-  - - '16'
-    - LPDDR3 2GB
-    - ''
-  - - '24'
-    - LPDDR3 3GB
-    - ''
-  - - '32'
-    - LPDDR3 4GB
-    - ''
+  - ['04', LPDDR3 512MB, '']
+  - [08, LPDDR3 1GB, '']
+  - ['16', LPDDR3 2GB, '']
+  - ['24', LPDDR3 3GB, '']
+  - ['32', LPDDR3 4GB, '']
 families:
 - prefix: 04EMCP
   chip_type: eMCP
@@ -203,7 +183,6 @@ families:
 known_parts:
 - part_number: 16EMCP08NL3DTB28
   chip_type: eMCP
-  capacity: None
   emcp_ram: LPDDR3 1GB
   emcp_nand: eMMC 5.1 16GB
   notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | Chip físico confirmado na esteira (eMiner 2026-05-25). Puris.net B2B: 16EMCP08-NL3DTB28 = 16GB eMMC 5.1 (HS400) + 8Gb LPDDR3 → 1GB. NL3=LPDDR3 verificado em 6 PNs cruzados da família Kingston eMCP. IA errou PN comparativo: ''32EMCP16-NL3DTB29'' não existe (real: EL3GTB29). Alerta arquitetural: prefixo ''EMCP'' não casa via startswith — populate_kingston.py deve usar prefixos ''16EMCP'', ''08EMCP'' etc.'

@@ -6,79 +6,31 @@ brand:
   notes: Micron Technology · Boise, Idaho · Fundada 1978
 maps:
   MIC_MCP_CAP:
-  - - 4D4
-    - 4GB
-    - 512MB
-  - - 5D6
-    - 16GB
-    - 2GB
-  - - 7D8
-    - 64GB
-    - 3GB
-  - - 8D4
-    - 4GB
-    - 1GB
-  - - 8D5
-    - 8GB
-    - 1GB
-  - - 8D6
-    - 16GB
-    - 1GB
-  - - AD8
-    - 64GB
-    - 4GB
-  - - AD9
-    - 128GB
-    - 4GB
-  - - BD8
-    - 64GB
-    - 6GB
-  - - BD9
-    - 128GB
-    - 6GB
-  - - BDA
-    - 256GB
-    - 6GB
-  - - CD9
-    - 128GB
-    - 8GB
-  - - CDA
-    - 256GB
-    - 8GB
-  - - CDB
-    - 512GB
-    - 8GB
-  - - DDA
-    - 256GB
-    - 12GB
-  - - DDB
-    - 512GB
-    - 12GB
-  - - EDA
-    - 256GB
-    - 16GB
-  - - EDB
-    - 512GB
-    - 16GB
+  - [4D4, 4GB, 512MB]
+  - [5D6, 16GB, 2GB]
+  - [7D8, 64GB, 3GB]
+  - [8D4, 4GB, 1GB]
+  - [8D5, 8GB, 1GB]
+  - [8D6, 16GB, 1GB]
+  - [AD8, 64GB, 4GB]
+  - [AD9, 128GB, 4GB]
+  - [BD8, 64GB, 6GB]
+  - [BD9, 128GB, 6GB]
+  - [BDA, 256GB, 6GB]
+  - [CD9, 128GB, 8GB]
+  - [CDA, 256GB, 8GB]
+  - [CDB, 512GB, 8GB]
+  - [DDA, 256GB, 12GB]
+  - [DDB, 512GB, 12GB]
+  - [EDA, 256GB, 16GB]
+  - [EDB, 512GB, 16GB]
   MIC_TZZZ_GEN:
-  - - '4'
-    - LPDDR3
-    - ''
-  - - '5'
-    - LPDDR3
-    - ''
-  - - '7'
-    - LPDDR3
-    - ''
-  - - '8'
-    - LPDDR3
-    - ''
-  - - '9'
-    - LPDDR3
-    - ''
-  - - A
-    - LPDDR3
-    - ''
+  - ['4', LPDDR3, '']
+  - ['5', LPDDR3, '']
+  - ['7', LPDDR3, '']
+  - ['8', LPDDR3, '']
+  - ['9', LPDDR3, '']
+  - [A, LPDDR3, '']
 families:
 - prefix: MT29F
   chip_type: NAND Flash

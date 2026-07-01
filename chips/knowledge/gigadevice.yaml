@@ -6,18 +6,10 @@ brand:
   notes: China · Fundada 2005 (兆易创新 / Zhaoyi Innovation)
 maps:
   GD5F_NAND_CAP:
-  - - '1'
-    - 128MB
-    - ''
-  - - '2'
-    - 256MB
-    - ''
-  - - '4'
-    - 512MB
-    - ''
-  - - '8'
-    - 1GB
-    - ''
+  - ['1', 128MB, '']
+  - ['2', 256MB, '']
+  - ['4', 512MB, '']
+  - ['8', 1GB, '']
 families:
 - prefix: GD25LB
   chip_type: NOR Flash

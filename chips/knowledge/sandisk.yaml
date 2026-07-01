@@ -250,7 +250,6 @@ known_parts:
   confidence: distributor
 - part_number: SDADB48K-16G
   chip_type: eMCP
-  capacity: None
   emcp_ram: LPDDR3 2GB
   emcp_nand: eMMC 16GB
   notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | B2B wholesale (yoycart, chinahao, eBay): SDADB48K-16G = 16+2 EMCP 221ball SanDisk. Octopart: SDADF4AP-16G (PN irmão) confirmado como WD/SanDisk real. Preduo 221ball = exclusivamente eMMC+LPDDR3 → RAM é LPDDR3 (não LPDDR4). WD oficial não encontrado → confidence=distributor (não confirmed).'
@@ -391,8 +390,6 @@ known_parts:
 - part_number: SDIN7DU2-8G
   chip_type: eMMC
   capacity: 8GB
-  emcp_ram: None
-  emcp_nand: None
   interface: eMMC 4.5 / 5.0 / 5.1
   notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | Octopart: 11 distribuidores ativos. Datasheet SanDisk oficial (doc# 80-36-03666): ''Ultra e.MMC 4.41 I/F Released Data Sheet V1.2 May 2012'' → eMMC 4.41 ✓. Package: 153-Pin TFBGA. Capacidade -8G = 8GB (64Gbit ÷ 8). Zero RAM.'
   confidence: manual
@@ -495,16 +492,12 @@ known_parts:
 - part_number: SDIN9DW4-16G
   chip_type: eMMC
   capacity: 16GB
-  emcp_ram: None
-  emcp_nand: None
   interface: eMMC 4.5 / 5.0 / 5.1
   notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | Preduo: SDIN9DW4-16G → categoria eMMC 5.0, 16GB, BGA, SanDisk ✓. Octopart: 7 distribuidores ativos, categoria Flash (sem RAM). Mouser: listagem ativa (tier-1). Família SDIN9DW4 todas sem RAM (-16G, -32G, -64G, -128G). WD oficial não consultado diretamente → confidence=distributor.'
   confidence: manual
 - part_number: SDIN9DW4-32G
   chip_type: eMMC
   capacity: 32GB
-  emcp_ram: None
-  emcp_nand: None
   interface: eMMC 4.5 / 5.0 / 5.1
   notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | Mesma família SDIN9DW4 de SDIN9DW4-16G (eMMC 5.0 Preduo+Octopart ✓). Octopart: link direto do usuário. Preduo: /emmc/emmc-5-0/sdin9dw4-32g ✓. Package: 153FBGA 11.5×13×1. Sufixo -32G = 32GB. Zero RAM.'
   confidence: manual

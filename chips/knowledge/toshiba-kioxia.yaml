@@ -7,70 +7,28 @@ brand:
   notes: 'Japão · Divisão de Memória Toshiba, renomeada KIOXIA em out/2019 — MESMA empresa, mesmas fábricas e mesmo esquema de PN (THGBM coexiste nas duas eras). Chips pré-2019 gravados ''TOSHIBA'', pós-2019 ''KIOXIA''. Consolidados numa marca única (2026-07-01): antes eram 3 brands (Toshiba/Kioxia/KIOXIA-dup), o que criava ambiguidade de prefixo e duplicação. Não muda triagem (mesmas specs/destino).'
 maps:
   THGBM_CAP:
-  - - 0CB
-    - 128GB
-    - ''
-  - - 4D1
-    - 2GB
-    - ''
-  - - 5D1
-    - 4GB
-    - ''
-  - - 5D2
-    - 8GB
-    - ''
-  - - 6C1
-    - 8GB
-    - ''
-  - - 6D1
-    - 8GB
-    - ''
-  - - 7C1
-    - 16GB
-    - ''
-  - - 7C2
-    - 16GB
-    - ''
-  - - 7D2
-    - 16GB
-    - ''
-  - - 8C2
-    - 32GB
-    - ''
-  - - 8C4
-    - 32GB
-    - ''
-  - - 8D4
-    - 32GB
-    - ''
-  - - 9C4
-    - 64GB
-    - ''
-  - - 9C8
-    - 64GB
-    - ''
+  - [0CB, 128GB, '']
+  - [4D1, 2GB, '']
+  - [5D1, 4GB, '']
+  - [5D2, 8GB, '']
+  - [6C1, 8GB, '']
+  - [6D1, 8GB, '']
+  - [7C1, 16GB, '']
+  - [7C2, 16GB, '']
+  - [7D2, 16GB, '']
+  - [8C2, 32GB, '']
+  - [8C4, 32GB, '']
+  - [8D4, 32GB, '']
+  - [9C4, 64GB, '']
+  - [9C8, 64GB, '']
   THGBM_GEN:
-  - - B
-    - eMMC 5.0
-    - ''
-  - - F
-    - eMMC 5.0
-    - ''
-  - - H
-    - eMMC 5.1
-    - ''
-  - - J
-    - eMMC 5.1
-    - ''
-  - - N
-    - eMMC 5.0
-    - ''
-  - - T
-    - eMMC 5.0
-    - ''
-  - - U
-    - eMMC 5.1
-    - ''
+  - [B, eMMC 5.0, '']
+  - [F, eMMC 5.0, '']
+  - [H, eMMC 5.1, '']
+  - [J, eMMC 5.1, '']
+  - [N, eMMC 5.0, '']
+  - [T, eMMC 5.0, '']
+  - [U, eMMC 5.1, '']
 families:
 - prefix: THGBM
   chip_type: eMMC
@@ -420,8 +378,6 @@ known_parts:
 - part_number: THGBMFG7C2LBAIL
   chip_type: eMMC
   capacity: 16GB
-  emcp_ram: None
-  emcp_nand: None
   interface: eMMC 5.0
   notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | Toshiba 15nm eMMC 5.0, 16GB Supreme, 11.5×13×0.8mm, BGA153. kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. pn[5]=''F'' → eMMC 5.0 ✓. pn[7:10]=''7C2'' → 16GB (128Gbit×2dies=16GB) ✓. Mass production: 1Q 2015. Âncora Tier 1 para chave 7C2=16GB.'
   confidence: confirmed
@@ -713,33 +669,33 @@ known_parts:
   confidence: confirmed
 - part_number: TY890A111229KC
   chip_type: SDRAM
-  subtype: Mobile SDR SDRAM (Toshiba)
+  subtype: SDRAM
   notes: 'Toshiba Mobile SDR SDRAM, BGA. Família TY890A confirmada por iFixit PS Vita Teardown (2012, Step 11): TY890A111222KA identificada como ''Mobile SDR SDRAM'' no modem 3G do PS Vita. NÃO é eMMC nem eMCP — IA externa errou ao classificar como ''Provável eMCP''. Capacidade da variante 111229KC não confirmada em fonte Tier 2 — campo vazio.'
   confidence: distributor
 - part_number: TYC0FH121626RA
   chip_type: eMCP
-  subtype: eMCP Toshiba (eMMC + LPDDR2)
+  subtype: LPDDR2
   emcp_ram: LPDDR2 512MB
   emcp_nand: eMMC 4.5 4GB
   notes: 'Toshiba eMCP BGA-162, variante de lote de TYC0FH121638RA (posições 10-11: 26 vs 38). Âncora: TYC0FH121638RA (Octopart Tier 2): ''4Gb LPDDR2 + 4GB EMCP device, MMC v4.5/v4.51''. mehrinfo.net (título): ''Toshiba TYCOFH121626RA 4G'' — 4GB confirmado para este PN. Cluster de lote: TYC0FH121597/1626/1638/1642/1645/1660RA todos BGA Specialized ICs (YIC+Allelco ✓). Família TYC sem ChipFamily gramatical — create=True garante classificação manual.'
   confidence: distributor
 - part_number: TYC0FH12162BRA
   chip_type: eMCP
-  subtype: eMCP Toshiba (eMMC + LPDDR2)
+  subtype: LPDDR2
   emcp_ram: LPDDR2 512MB
   emcp_nand: eMMC 4.5 4GB
   notes: 'Toshiba eMCP BGA-162, variante de lote do cluster TYC0FH12XXXXRA. Tier 1 (kioxia.com/toshiba.semicon-storage.com): zero resultados para TYC* — família ~2012-2015 sem press releases digitais. Tier 2 (Octopart) e Tier 3 (OMO): PN não indexado. Inferência estrutural: pn[3:5]=''0F''→4GB (contraste TYC0GH=8GB ✓); pn[5]=''H''→LPDDR2 512MB (âncora TYC0FH121638RA, Octopart Tier 2 ✓); pn[8:12]=''162B''→código de lote hex, mesmo range de ''1626''. confidence=estimated: specs por análise estrutural, sem fonte direta. Família TYC sem ChipFamily gramatical — create=True garante classificação manual.'
   confidence: estimated
 - part_number: TYC0FH121638RA
   chip_type: eMCP
-  subtype: eMCP Toshiba (eMMC + LPDDR2)
+  subtype: LPDDR2
   emcp_ram: LPDDR2 512MB
   emcp_nand: eMMC 4.5 4GB
   notes: 'Toshiba eMCP BGA-162. Octopart: ''4Gb LPDDR2 + 4GB EMCP device'' → 4GB eMMC + 512MB LPDDR2 (4Gb÷8). gsmbdshop: ''4GB EMMC GOOD NAND''. Jotrin + YIC Electronics: chip real ✓. eMMC: MMC v4.5/v4.51 (Octopart). IA externa alegou v4.41 — ERRADO, refutado. Família TYC sem ChipFamily gramatical — create=True garante classificação manual.'
   confidence: distributor
 - part_number: TYD0FH221627RA
   chip_type: eMCP
-  subtype: eMCP Toshiba (eMMC + LPDDR3)
+  subtype: LPDDR3
   emcp_ram: LPDDR3 1GB
   emcp_nand: eMMC 4.5 4GB
   notes: 'Toshiba eMCP BGA-221, cluster TYD0FH221XXXXRA (pn[8:12]=''1627'' = código de lote). Tier 1 (kioxia.com/toshiba.semicon-storage.com): zero resultados para TYD* — família ~2015-2020 sem press releases digitais (padrão documentado). Tier 2 (Octopart): confirma ''Low Power SDRAM And eMMC MCP'' para família TYD (tipo eMCP ✓, sem specs de capacidade para este PN). Tier 3 (Preduo): TYD0GH221651RA = eMCP LPDDR3 221ball, densidade 8+8 (8GB NAND + 8Gb = 1GB LPDDR3) — âncora principal para identificação TYD/LPDDR3. Inferência estrutural: pn[3:5]=''0F''→4GB NAND (contraste TYD0GH=8GB Preduo ✓); pn[6:8]=''22''→1GB LPDDR3 (mesmo código âncora TYD0GH221651RA ✓); cluster findcomponents.net confirma ≥6 variantes TYD0FH221*RA com ''22'' fixo. confidence=estimated: specs por análise estrutural/Tier 3, sem fonte direta Tier 1-2.'
