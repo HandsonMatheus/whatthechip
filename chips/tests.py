@@ -903,6 +903,27 @@ _KST_GOLDEN = {  # eMCP: specs em emcp_nand/emcp_ram; rentab pela RAM (512MB→d
     "08EMCP08NL3DT227":  ("eMCP", "", "eMMC 5.0 8GB",  "LPDDR3 1GB",   "", "RENTÁVEL"),  # forma normalizada
     "16EMCP08NL3DTB28":  ("eMCP", "", "eMMC 5.1 16GB", "LPDDR3 1GB",   "", "RENTÁVEL"),
 }
+_SD_GOLDEN = {  # SanDisk: famílias MAGRAS — chip_type por prefixo; capacidade vem das KnownParts,
+    # então a gramática sozinha dá INDETERMINADO. O teste congela o TIPO por família.
+    "SD5DH24A4G":  ("eMMC", "", "", "", "", "INDETERMINADO"),
+    "SD7DP24C4G":  ("eMMC", "", "", "", "", "INDETERMINADO"),
+    "SDADA4DR64G": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                    "tipo 'A' — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),
+    "SDADB48K16G": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                    "tipo 'A' — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),
+    "SDIN5C116G":  ("eMMC", "", "", "", "", "INDETERMINADO"),
+    "SDIN5C14G":   ("eMMC", "", "", "", "", "INDETERMINADO"),
+    "SDIN5C18G":   ("eMMC", "", "", "", "", "INDETERMINADO"),
+    "SDINBAG":     ("eMMC", "", "", "", "", "INDETERMINADO"),
+    "SDINBDG4":    ("eMMC", "", "", "", "", "INDETERMINADO"),
+    "SDINBEG4":    ("eMMC", "", "", "", "", "INDETERMINADO"),
+    "SDINDDH4":    ("UFS", "", "", "", "", "INDETERMINADO"),
+    "SDINDDH6":    ("UFS", "", "", "", "", "INDETERMINADO"),
+    "SDINEDK":     ("UFS", "", "", "", "", "INDETERMINADO"),
+    "SDINFDK4":    ("UFS", "", "", "", "", "INDETERMINADO"),
+    "SDINFDO4":    ("UFS", "", "", "", "", "INDETERMINADO"),
+    "SDINFDQ6":    ("UFS", "", "", "", "", "INDETERMINADO"),
+}
 
 
 class LoadBrandsPiecemakersTests(TestCase):
@@ -982,6 +1003,23 @@ class KingstonLoadBrandsTests(TestCase):
         call_command("load_brands", "--brand", "kingston", "--commit", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _KST_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+
+class SanDiskLoadBrandsTests(TestCase):
+    """Passo 4: SanDisk migrada p/ YAML (11 famílias MAGRAS — eMMC/eMCP/UFS por prefixo,
+    sem decode de capacidade; a capacidade vem das KnownParts). Fidelidade + identificação
+    do TIPO de todos os PNs conhecidos (golden da gramática populate_sandisk)."""
+
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "sandisk")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "sandisk", "--commit", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
+        for pn, esperado in _SD_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
