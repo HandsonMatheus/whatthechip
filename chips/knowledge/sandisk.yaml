@@ -134,7 +134,7 @@ families:
   reasoning: ''
 - prefix: SDEM
   chip_type: eMCP
-  subtype: eMCP (eMMC + LPDDR3/LPDDR4)
+  subtype: LPDDR3
   interface: eMMC + LPDDR3/LPDDR4
   is_emcp: true
   active: true

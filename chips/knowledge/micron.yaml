@@ -142,8 +142,8 @@ families:
   reasoning: '["MT → Micron Technology", "30 → MCP UFS série (geração 3.x)", "AZZZ → bloco fixo identificador da família uMCP LPDDR5", "pn[8] → código de densidade RAM (B=6GB, C=8GB, D=12GB, E=16GB)", "pn[9:11] → código de capacidade NAND (D9=128GB, DA=256GB, DB=512GB)", "Interface UFS 3.1 (~2400 MB/s sequencial)"]'
 - prefix: MT40A
   chip_type: DDR4
-  subtype: DDR4 SDRAM
-  interface: DDR4
+  subtype: DDR4
+  interface: ''
   is_emcp: false
   active: true
   priority: 50
@@ -160,8 +160,8 @@ families:
   reasoning: ''
 - prefix: MT41K
   chip_type: DDR3L
-  subtype: DDR3L SDRAM
-  interface: DDR3L
+  subtype: DDR3L
+  interface: ''
   is_emcp: false
   active: true
   priority: 50
@@ -179,7 +179,7 @@ families:
 - prefix: MT52L
   chip_type: LPDDR3
   subtype: LPDDR3
-  interface: LPDDR3
+  interface: ''
   is_emcp: false
   active: true
   priority: 50
@@ -197,7 +197,7 @@ families:
 - prefix: MT53B
   chip_type: LPDDR4
   subtype: LPDDR4
-  interface: LPDDR4
+  interface: ''
   is_emcp: false
   active: true
   priority: 50
@@ -215,7 +215,7 @@ families:
 - prefix: MT53D
   chip_type: LPDDR4
   subtype: LPDDR4
-  interface: LPDDR4
+  interface: ''
   is_emcp: false
   active: true
   priority: 50
@@ -233,7 +233,7 @@ families:
 - prefix: MT53E
   chip_type: LPDDR4X
   subtype: LPDDR4X
-  interface: LPDDR4X
+  interface: ''
   is_emcp: false
   active: true
   priority: 50

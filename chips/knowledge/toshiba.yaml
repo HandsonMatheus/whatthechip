@@ -49,7 +49,7 @@ families:
   reasoning: '["T=Toshiba · H=NAND tipo H · G=geração G · B=bus 8-bit · M=mobile", "pn[5]: código de geração NAND — N/T/F/B=eMMC 5.0 · H/J/U=eMMC 5.1", "pn[6]=G: constante identificadora de processo (sem decode)", "pn[7:10]: chave composta 3-chars → capacidade total (ver THGBM_CAP)", "pn[7]: densidade/die — 5=32Gb(4GB) · 6=64Gb(8GB) · 7=128Gb(16GB) · 8=64Gb(8GB) · 9=64Gb(8GB)", "pn[8]: tipo de stack — C/D/A/J/K (sem impacto na capacidade total)", "pn[9]: número de dies — 1/2/4/8", "pn[10]: tier de qualidade (L/K/E/J) — sem decode de capacidade", "pn[11:13]=BA: package BGA153", "pn[13]: I/O voltage — I=1.8V · U=dual-voltage 1.8/3.3V"]'
 - prefix: TYC
   chip_type: eMCP
-  subtype: eMCP Toshiba LPDDR2 (legado)
+  subtype: LPDDR2
   interface: ''
   is_emcp: true
   active: true
@@ -67,7 +67,7 @@ families:
   reasoning: '["TYC = Toshiba eMCP LPDDR2 legado (TYD = LPDDR3/BGA-221)", "pn[3:5]: capacidade NAND — 0F=4GB · 0G=8GB (Tier 2-3, sem Tier 1)", "pn[5]: provavelmente sub-geração RAM — H=LPDDR2 512MB (não confirmado Tier 1)", "pn[8:12]: código de lote/batch — não encode specs (confirmado cluster Tier 2)", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional"]'
 - prefix: TYD
   chip_type: eMCP
-  subtype: eMCP Toshiba LPDDR3 (BGA-221)
+  subtype: LPDDR3
   interface: ''
   is_emcp: true
   active: true

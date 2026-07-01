@@ -743,13 +743,14 @@ class DeployCatalogTests(TestCase):
         call_command('deploy_catalog', commit=True)
         chamados = [c.args[0] for c in mock_cc.call_args_list]
         for pop in ('populate_piecemakers', 'populate_gigadevice', 'populate_rayson',
-                    'populate_kingston', 'populate_sandisk', 'populate_micron_mcp', 'populate_toshiba'):
+                    'populate_kingston', 'populate_sandisk', 'populate_micron_mcp',
+                    'populate_toshiba', 'populate_hynix'):
             self.assertNotIn(pop, chamados)                    # aposentados
         # cada marca migrada passa por load_brands, gravando (commit=True)
         brands_load = [c.kwargs.get('brand') for c in mock_cc.call_args_list
                        if c.args[0] == 'load_brands']
         for marca in ('piecemakers', 'gigadevice', 'rayson', 'kingston', 'sandisk', 'micron',
-                      'toshiba', 'kioxia'):
+                      'toshiba', 'kioxia', 'hynix'):
             self.assertIn(marca, brands_load)
         for c in mock_cc.call_args_list:
             if c.args[0] == 'load_brands':

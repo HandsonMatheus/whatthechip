@@ -20,7 +20,7 @@ maps:
 families:
 - prefix: RS1G32L
   chip_type: LPDDR4
-  subtype: LPDDR4/4X
+  subtype: LPDDR4
   interface: ''
   is_emcp: false
   active: true
@@ -56,7 +56,7 @@ families:
   reasoning: ''
 - prefix: RS2G32L
   chip_type: LPDDR4
-  subtype: LPDDR4/4X
+  subtype: LPDDR4
   interface: ''
   is_emcp: false
   active: true
@@ -182,7 +182,7 @@ families:
   reasoning: ''
 - prefix: RS256M32L
   chip_type: LPDDR4
-  subtype: LPDDR4/4X
+  subtype: LPDDR4
   interface: ''
   is_emcp: false
   active: true
@@ -200,7 +200,7 @@ families:
   reasoning: ''
 - prefix: RS512M32L
   chip_type: LPDDR4
-  subtype: LPDDR4/4X
+  subtype: LPDDR4
   interface: ''
   is_emcp: false
   active: true

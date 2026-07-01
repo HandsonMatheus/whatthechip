@@ -269,7 +269,7 @@ python manage.py populate_samsung          # gabarito mestre (famílias + Decode
 python manage.py populate_hynix
 python manage.py populate_micron_mcp
 python manage.py populate_kingston / populate_sandisk / populate_toshiba / populate_rayson
-python manage.py load_brands --brand piecemakers   # Marcas MIGRADAS p/ YAML (passo 4): piecemakers, gigadevice, rayson, kingston, sandisk, micron, toshiba, kioxia. Lê chips/knowledge/<marca>.yaml, valida c/ Pydantic, sobe catalog_version. (populate_* dessas marcas APOSENTADOS; populate_toshiba criava Toshiba+Kioxia.) Dry-run padrão; --commit grava. ⚠ YAML = GRAMÁTICA (famílias+mapas); KnownParts continuam via import/fix_known_parts.
+python manage.py load_brands --brand piecemakers   # Marcas MIGRADAS p/ YAML (passo 4): piecemakers, gigadevice, rayson, kingston, sandisk, micron, toshiba, kioxia, hynix. Lê chips/knowledge/<marca>.yaml, valida c/ Pydantic (o schema é o DATA CONTRACT: normaliza chip_type/subtype/interface à convenção canônica e rejeita ativo-genérico), sobe catalog_version. (populate_* dessas marcas APOSENTADOS; populate_toshiba criava Toshiba+Kioxia.) Dry-run padrão; --commit grava. ⚠ YAML = GRAMÁTICA (famílias+mapas); KnownParts continuam via import/fix_known_parts.
 python manage.py add_chip_families         # famílias "magras" p/ outras marcas
 python manage.py import_micron_catalog *_full-catalog.csv   # CSVs Micron da raiz
 python manage.py import_samsung_psg --all                   # CSVs em data/psg/
