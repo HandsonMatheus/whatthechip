@@ -28,7 +28,7 @@ from django.views.decorators.http import require_POST
 from chips.conventions import canonical_gen
 from chips.chip_types import canonical_chip_type, generation_of, label_kind
 from chips.engine import assess_profitability, classify, is_dead_by_generation
-from chips.models import UnknownChip
+from chips.models import UnknownChip, Brand
 
 from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
 
@@ -511,10 +511,11 @@ def lot_detail(request, lot_pk):
         'total_qty': total_qty,
         'q':         q,
         'tipo':      tipo,
-        'brands': [
-            'Samsung', 'SK Hynix', 'Micron', 'SanDisk',
-            'Toshiba', 'GigaDevice', 'PieceMakers',
-        ],
+        # Marcas SUPORTADAS = as que têm família (classificam algo), direto do banco —
+        # antes era lista hardcoded de 7 (com 'Toshiba' e sem Nanya/Kingston/Rayson).
+        # Agora auto-atualiza: as 10 marcas dos yamls, Toshiba-Kioxia unificada, sem fantasmas.
+        'brands': list(Brand.objects.filter(families__isnull=False)
+                       .order_by('name').values_list('name', flat=True).distinct()),
     }
 
     if request.headers.get('HX-Request'):
