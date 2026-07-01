@@ -954,6 +954,30 @@ _TK_GOLDEN = {  # Toshiba + Kioxia carregadas JUNTAS (THGBMFG/THGBMHG=Kioxia sã
     "THGAMVG7T13BAIL": ("eMMC", "", "", "", "", "INDETERMINADO"),  # Kioxia THGAM
     "THGJFPT0E18BAIP": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGJF
 }
+_HYX_GOLDEN = {  # SK Hynix: 36 famílias (populate_hynix + add_chip_families). Cobre DDR1-5, LPDDR2-4X, eMMC, eMCP, UFS.
+    "H26M74002HMR":      ("eMMC", "64GB",  "", "", "", "RENTÁVEL"),
+    "H26T87001CMR":      ("eMMC", "128GB", "", "", "", "RENTÁVEL"),
+    "H28U88301AMR":      ("UFS",  "128GB", "", "", "", "RENTÁVEL"),
+    "H54GE6CYRB":        ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),
+    "H5AN8G8NAFR-UHC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
+    "H5AN8G8NAFR-VKC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
+    "H5CG48MEBDX014N":   ("DDR5", "2GB",  "", "", "", "RENTÁVEL"),
+    "H5PS1G83EFR-S6C":   ("DDR2", "128MB", "", "", "", "NÃO RENTÁVEL"),
+    "H5TC4G83CFR-PBA":   ("DDR3L", "512MB", "", "", "", "RENTÁVEL"),
+    "H5TQ2G63GFR":       ("DDR3", "256MB", "", "", "", "RENTÁVEL"),
+    "H9CCNNNCLTML":      ("LPDDR3", "4GB", "", "", "", "RENTÁVEL"),
+    "H9CKNNNBJTMP":      ("LPDDR3", "2GB", "", "", "", "RENTÁVEL"),
+    "H9DA4GH2GJAM":      ("eMCP", "", "eMMC 4.x 4GB", "LPDDR1 256MB", "", "NÃO RENTÁVEL"),
+    "H9DP32A4JJBC":      ("eMCP", "", "eMMC 4GB", "LPDDR2 512MB", "", "NÃO RENTÁVEL"),
+    "H9HCNNNCPMAL":      ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),
+    "H9HCNNNECMML":      ("LPDDR4X", "6GB", "", "", "", "RENTÁVEL"),
+    "H9HP16AECMMD":      ("eMCP", "", "eMMC 5.1 128GB", "LPDDR4X 6GB", "", "RENTÁVEL"),
+    "H9TKNNN8JDAP":      ("LPDDR2", "1GB", "", "", "", "NÃO RENTÁVEL"),
+    "H9TQ64A8GTCC":      ("eMCP", "", "eMMC 5.x 8GB", "LPDDR3 1GB", "", "RENTÁVEL"),
+    "HN8T05BZGR":        ("UFS", "128GB", "", "", "", "RENTÁVEL"),
+    "HY5DU281622ET-25":  ("DDR1", "16MB", "", "", "", "NÃO RENTÁVEL"),
+    "HY5PS121621CFP-25": ("DDR2", "64MB", "", "", "", "NÃO RENTÁVEL"),
+}
 
 
 class LoadBrandsPiecemakersTests(TestCase):
@@ -1088,6 +1112,23 @@ class ToshibaKioxiaLoadBrandsTests(TestCase):
         call_command("load_brands", "--brand", "kioxia", "--commit", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _TK_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+
+class HynixLoadBrandsTests(TestCase):
+    """Passo 4: SK Hynix migrada p/ YAML — 36 famílias (populate_hynix + add_chip_families).
+    Fidelidade + identificação de todos os PNs conhecidos (golden cobre DDR1-5, LPDDR2-4X,
+    eMMC, eMCP, UFS; 14 famílias sem KnownPart ficam provadas só pela fidelidade)."""
+
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "hynix")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "hynix", "--commit", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
+        for pn, esperado in _HYX_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 

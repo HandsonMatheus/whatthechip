@@ -1,0 +1,833 @@
+# Conhecimento SK Hynix — fonte do catálogo (passo 4). Gerado do CÓDIGO ATUAL
+# (populate_hynix + add_chip_families) — completo. NUNCA do prod_data (defasado).
+brand:
+  name: SK Hynix
+  code: HYX
+  notes: Coreia do Sul · Fundada 1983 (era Hyundai Electronics)
+maps:
+  HYX_DDR1_CAP:
+  - ['12', 64MB, '']
+  - ['28', 16MB, '']
+  - ['56', 32MB, '']
+  - ['64', 8MB, '']
+  HYX_DDR2_H5PS_CAP:
+  - [1G, 128MB, '']
+  - ['25', 32MB, '']
+  - [2G, 256MB, '']
+  - ['51', 64MB, '']
+  HYX_DDR2_HY5PS_CAP:
+  - ['12', 64MB, '']
+  - [1G, 128MB, '']
+  - ['56', 32MB, '']
+  HYX_DDR3_CAP:
+  - [1G, 128MB, '']
+  - [2G, 256MB, '']
+  - [4G, 512MB, '']
+  - ['51', 64MB, '']
+  - [8G, 1GB, '']
+  HYX_DDR4_CAP:
+  - [4G, 512MB, '']
+  - [8G, 1GB, '']
+  - [AG, 2GB, '']
+  HYX_DDR4_H5A_CAP:
+  - [G3, 1GB, '']
+  - [G4, 2GB, '']
+  - [G5, 4GB, '']
+  - [G6, 8GB, '']
+  HYX_DDR5_CAP:
+  - [G4, 2GB, '']
+  - [G5, 4GB, '']
+  - [GD, 3GB, '']
+  HYX_EMCP_NAND_CAP:
+  - ['16', 16GB, '']
+  - ['17', 16GB, '']
+  - ['26', 32GB, '']
+  - ['27', 32GB, '']
+  - ['32', 4GB, '']
+  - ['52', 64GB, '']
+  - ['64', 8GB, '']
+  - ['65', 8GB, '']
+  HYX_EMMC_CAP:
+  - ['3', 4GB, '']
+  - ['4', 8GB, '']
+  - ['5', 16GB, '']
+  - ['6', 32GB, '']
+  - ['7', 64GB, '']
+  - ['8', 128GB, '']
+  HYX_H28S_CAP:
+  - ['8', 128GB, '']
+  - ['9', 256GB, '']
+  HYX_H28U_CAP:
+  - ['6', 32GB, '']
+  - ['7', 64GB, '']
+  - ['8', 128GB, '']
+  HYX_H9DA_NAND_CAP:
+  - ['1', 1GB, '']
+  - ['2', 2GB, '']
+  - ['4', 4GB, '']
+  HYX_H9DA_RAM_CAP:
+  - [1G, LPDDR1 1GB, '']
+  - ['25', LPDDR1 256MB, '']
+  - [2G, LPDDR1 256MB, '']
+  - [4J, LPDDR1 512MB, '']
+  - ['51', LPDDR1 512MB, '']
+  HYX_H9D_NAND_CAP:
+  - ['32', 4GB, '']
+  - ['64', 8GB, '']
+  - [AG, 16GB, '']
+  HYX_H9D_RAM_CAP:
+  - ['2', LPDDR2 256MB, '']
+  - ['3', LPDDR2 1GB, '']
+  - ['4', LPDDR2 512MB, '']
+  - ['8', LPDDR2 1GB, '']
+  HYX_H9HP_NAND_CAP:
+  - ['16', 128GB, '']
+  - ['27', 32GB, '']
+  - ['52', 64GB, '']
+  - ['53', 64GB, '']
+  HYX_H9HQ_NAND_CAP:
+  - ['15', 128GB, '']
+  - ['16', 128GB, '']
+  - ['21', 256GB, '']
+  - ['53', 64GB, '']
+  - ['54', 64GB, '']
+  HYX_H9HR_NAND_CAP:
+  - ['15', 128GB, '']
+  - ['21', 256GB, '']
+  HYX_H9HR_RAM_CAP:
+  - [JF, LPDDR5 8GB, '']
+  HYX_H9RT_NAND_CAP:
+  - [0G, 128GB, '']
+  - [1G, 256GB, '']
+  - [2G, 512GB, '']
+  HYX_H9RT_RAM_CAP:
+  - [6A, LPDDR5 8GB, '']
+  - [6M, LPDDR5 8GB, '']
+  - [7M, LPDDR5 16GB, '']
+  - [GA, LPDDR5 12GB, '']
+  HYX_H9TP_RAM_CAP:
+  - [A4, LPDDR2 512MB, '']
+  - [A8, LPDDR2 1GB, '']
+  - [AB, LPDDR2 2GB, '']
+  HYX_H9TQ_RAM_CAP:
+  - [A6, LPDDR3 768MB, '']
+  - [A8, LPDDR3 1GB, '']
+  - [AA, LPDDR3 2GB, '']
+  - [AB, LPDDR3 2GB, '']
+  - [AC, LPDDR3 4GB, '']
+  - [AD, LPDDR3 3GB, '']
+  HYX_HN8_CAP:
+  - ['03', 128GB, '']
+  - ['05', 128GB, '']
+  - ['06', 128GB, '']
+  - ['15', 256GB, '']
+  - ['16', 256GB, '']
+  - ['25', 512GB, '']
+  - ['35', 1TB, '']
+  - ['96', 64GB, '']
+  HYX_LPDDR1_H5MS_CAP:
+  - [1G, 128MB, '']
+  - ['25', 32MB, '']
+  - [2G, 256MB, '']
+  - ['51', 64MB, '']
+  HYX_LPDDR1_HY5MS_CAP:
+  - [7B, 64MB, '']
+  HYX_LPDDR2_CAP:
+  - ['1', 128MB, '']
+  - ['2', 256MB, '']
+  - ['4', 512MB, '']
+  - ['8', 1GB, '']
+  - [A, 2GB, '']
+  - [B, 2GB, '']
+  HYX_LPDDR3_CAP:
+  - ['4', 512MB, '']
+  - ['8', 1GB, '']
+  - [B, 2GB, '']
+  - [C, 4GB, '']
+  - [D, 3GB, '']
+  - [E, 6GB, '']
+  - [F, 8GB, '']
+  HYX_LPDDR4X_H54G_CAP:
+  - ['2', 512MB, '']
+  - ['3', 1GB, '']
+  - ['4', 2GB, '']
+  - ['5', 4GB, '']
+  - ['6', 8GB, '']
+  - [A, 2GB, '']
+  - [C, 3GB, '']
+  - [E, 4GB, '']
+  - [G, 6GB, '']
+  - [J, 8GB, '']
+  HYX_LPDDR4X_RAM_CAP:
+  - [AC, LPDDR4X 4GB, '']
+  - [AD, LPDDR4X 3GB, '']
+  - [AE, LPDDR4X 6GB, '']
+  - [AF, LPDDR4X 8GB, '']
+  HYX_LPDDR4_H9HC_CAP:
+  - ['4', 512MB, '']
+  - ['8', 1GB, '']
+  - [B, 2GB, '']
+  - [C, 4GB, '']
+  - [D, 3GB, '']
+  - [E, 6GB, '']
+  - [F, 8GB, '']
+  HYX_LPDDR5_H58G_CAP:
+  - ['5', 4GB, '']
+  - ['6', 8GB, '']
+  - ['7', 16GB, '']
+  - [D, 3GB, '']
+  - [E, 6GB, '']
+  - [G, 12GB, '']
+  - [U, 18GB, '']
+  HYX_LPDDR5_H9JK_CAP:
+  - [F, 8GB, '']
+  - [H, 12GB, '']
+families:
+- prefix: H9HCN
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: 7
+  decode_cap_len: 1
+  decode_cap_map: HYX_LPDDR4_H9HC_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR4X standalone SK Hynix, Era 1 (H9HCN). RAM pura — zero NAND. H9H=Mobile DRAM standalone · C=LPDDR4X bus · NNN=sem flash embarcado. pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB · E=6GB · F=8GB por chip. ⚠ ''C'' em H9HCN (pos 3) = barramento LPDDR4X (VDDQ 0.6V), NÃO é capacidade. ⚠ NÃO é UFS — protocolo é RAM volátil, incompatível com soquete de armazenamento. ⚠ Encapsulamento 200FBGA — isolamento ESD obrigatório. Ex: H9HCNNNECMML = 6GB LPDDR4X ✓ (SK Hynix PN Guide + manifesto aduaneiro). Origem: smartphones flagship e tablets premium 2016-2020. Destino: bancada LPDDR4X — silício de alto valor, prioridade na triagem.'
+  reasoning: ''
+- prefix: H9TP
+  chip_type: eMCP
+  subtype: LPDDR2
+  interface: eMMC 4.x + LPDDR2
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 12
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_EMCP_NAND_CAP
+  decode_gen_pos: 6
+  decode_gen_map: HYX_H9TP_RAM_CAP
+  decode_gen_len: 2
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP SK Hynix com LPDDR2 (H9TP). Chip combinado eMMC + RAM, geração anterior ao H9TQ. pn[4:6] = capacidade NAND (mesmo mapa H9TQ): 32=4GB · 64=8GB. pn[6:8] = capacidade RAM: A4=512MB · A8=1GB · AB=2GB. ⚠ H9TP usa LPDDR2, NÃO LPDDR4 — referências antigas a ''LPDDR4'' são incorretas. ⚠ Diferente do H9DP: H9TP usa RAM de 2 chars em pn[6:8]; H9DP usa 1 char em pn[7]. Ex: H9TP32A4GDCC = 4GB NAND + 512MB LPDDR2 (Elnec, absunshine ✓). Ex: H9TP64A8JDAC = 8GB NAND + 1GB LPDDR2 (Elnec ✓). Destino: bancada eMCP legado.'
+  reasoning: ''
+- prefix: H26M
+  chip_type: eMMC
+  subtype: ''
+  interface: eMMC 5.x
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 12
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: HYX_EMMC_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMMC SK Hynix (H26M). Chip de armazenamento standalone — sem RAM embutida. pn[4] = capacidade: 3=4GB · 4=8GB · 5=16GB · 6=32GB · 7=64GB · 8=128GB. ⚠ ''H26M64...'' = 32GB (NÃO 64GB) — o ''6'' é o código de capacidade, o ''4'' é organização interna. Pacote FBGA-153, 11.5×13mm. Destino: bancada reacondicional eMMC.'
+  reasoning: ''
+- prefix: H26T
+  chip_type: eMMC
+  subtype: ''
+  interface: eMMC 5.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 12
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: HYX_EMMC_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMMC SK Hynix 3D NAND geração avançada (H26T). Usa processo 3D-V4 com dies de 256Gb — geração mais recente que H26M. pn[4] = capacidade (mesmo mapa do H26M): 8=128GB confirmado (H26T87001CMR, SK Hynix oficial). Pacote FBGA-153, 11.5×13mm. Destino: bancada reacondicional eMMC.'
+  reasoning: ''
+- prefix: H28M
+  chip_type: eMMC
+  subtype: ''
+  interface: eMMC
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 12
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: HYX_EMMC_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ FAMÍLIA SEM DOCUMENTAÇÃO PÚBLICA. O prefixo H28M não consta em nenhum catálogo oficial SK Hynix, datasheet, Octopart ou distribuidor verificável (pesquisa exaustiva: zero resultados). Decode de capacidade por ANALOGIA ESTRUTURAL com H26M (eMMC) — pn[4]: 3=4GB · 4=8GB · 5=16GB · 6=32GB · 7=64GB · 8=128GB. Hipóteses: misprint de fábrica (H26M→H28M) ou OEM com datasheet sob NDA. Confiança: BAIXA. Verificar na bancada antes de classificar para reacondicionamento.'
+  reasoning: ''
+- prefix: H28S
+  chip_type: UFS
+  subtype: ''
+  interface: UFS 2.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 12
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: HYX_H28S_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS standalone SK Hynix, alta densidade legada (H28S). Família identificada via brokers B2B — pouca documentação pública ocidental. Cobre as densidades mais altas da era UFS 2.1 legada: 128GB e 256GB. ⚠⚠ ATENÇÃO: encapsulamento BGA-153 IDÊNTICO ao eMMC — NÃO inserir no socket eMMC. Protocolo UFS incompatível com eMMC. pn[4] = capacidade: 8=128GB · 9=256GB. Ex: H28S8Q302CMR = 128GB UFS 2.1 ✓ · H28S9O302BMR = 256GB UFS 2.1 ✓ Destino: bancada UFS dedicada. Confirmar protocolo ANTES do contato físico.'
+  reasoning: ''
+- prefix: H28U
+  chip_type: UFS
+  subtype: ''
+  interface: UFS 2.0/2.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 12
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: HYX_H28U_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS standalone SK Hynix, era de transição (H28U). ⚠⚠ ATENÇÃO: encapsulamento BGA-153 IDÊNTICO ao eMMC H26M — NÃO inserir no socket eMMC. Interface UFS, protocolo incompatível com eMMC. pn[4] = capacidade: 6=32GB · 7=64GB · 8=128GB. Destino: bancada UFS dedicada. Confirmar protocolo ANTES do contato físico.'
+  reasoning: ''
+- prefix: H54G
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: HYX_LPDDR4X_H54G_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR4X standalone SK Hynix, Era 2 nomenclatura H5 (H54G). DRAM móvel puro. pn[4] = densidade — dois sistemas coexistem: NUMÉRICO: 2=512MB · 3=1GB · 4=2GB · 5=4GB · 6=8GB. ALFABÉTICO (die-revision + fracionados): A=2GB · C=3GB · E=4GB · G=6GB · J=8GB. pn[5] = organização de banco (6 ou 8) — NÃO é capacidade, ignorar. Ex (numérico): H54G56CYRB-X247 = 4GB (TechInsights HP Spectre ✓). Ex (alfabético): H54GE6CYRB-X252 = 4GB (Helio G80/G85, broker B2B SEA ✓). Origem: smartphones 2019-2023, tablets modernos. Destino: triagem LPDDR4X — altíssima demanda no mercado de recondicionamento.'
+  reasoning: ''
+- prefix: H58G
+  chip_type: LPDDR5
+  subtype: LPDDR5
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: HYX_LPDDR5_H58G_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR5/LPDDR5X standalone SK Hynix, Era 2 (H58G). DRAM móvel topo de linha. pn[4] = densidade: D=3GB · 5=4GB · E=6GB · 6=8GB · G=12GB · 7=16GB · U=18GB por chip. ⚠ Padrão de chaves: números=simétricas (32/64/128Gb), letras=assimétricas (24/48/96Gb). ⚠ pn[5] = organização de banco (6, 7 ou 8) — NÃO é capacidade. ⚠ Piso em D=3GB — chave abaixo disso indica OCR falho ou chip remarcado. ⚠ LPDDR5T (turbo): usa o mesmo prefixo H58G e as mesmas chaves de capacidade — nenhuma entrada adicional necessária. ⚠ 24GB (192Gbit) BLOQUEADO — chave desconhecida, aguardar PN físico em bancada. Origem: flagships e tablets premium 2022+. Destino: triagem LPDDR5/5X/5T — componente de altíssimo valor, prioridade máxima.'
+  reasoning: ''
+- prefix: H5AN
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_DDR4_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DRAM DDR4 standalone SK Hynix, Era 1 pré-2020 (H5AN), 1.2V. pn[4:6] = densidade: 4G=512MB · 8G=1GB · AG=2GB por chip. ⚠ Teto Era 1: AG=16Gb (2GB). Chips de 32Gb+ pertencem à Era 2 (H5A). ⚠ Progressão alfanumérica: A=16Gb (não existe ''BG'' nesta família). Cobre desktop, notebook, servidor (RDIMM/ECC com 3DS TSV) e industrial. Destino: triagem DDR4 — slot 288-pin, 1.2V.'
+  reasoning: ''
+- prefix: H5C
+  chip_type: DDR5
+  subtype: DDR5
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: HYX_DDR5_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DRAM DDR5 standalone SK Hynix (H5C). Geração atual de alta performance. pn[3:5] = densidade: G4=2GB · GD=3GB · G5=4GB por chip. ⚠ DDR5 extinguiu baixas densidades — piso em 16Gb (G4=2GB). ⚠ ''GD'' = 3GB assimétrico (24Gbit): origem dos pentes DDR5 ''estranhos'' de 24GB e 48GB. ⚠ Chave menor que G4: falha de OCR ou chip remarcado — encaminhar triagem manual. ⚠ ''G6'' (64Gbit) previsto no JEDEC mas sem PN físico confirmado — vai para Gemini. Cobre comercial (16GB/32GB), workstation e servidor RDIMM de altíssima densidade. Destino: triagem DDR5 — slot 288-pin, tensão gerenciada por PMIC interno.'
+  reasoning: ''
+- prefix: H5RS
+  chip_type: GDDR3
+  subtype: GDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '🚨 ATENÇÃO: Este chip é GDDR3 — memória gráfica (H5RS). NÃO É DDR3 de PC. Estrutura elétrica completamente diferente. Origem: placas de vídeo (GPUs) ou consoles antigos. ⚠ NÃO misturar com lote DDR3 (H5TQ/H5TC) — incompatíveis e com mercados distintos. Destino: separar para lote de memória gráfica GDDR3.'
+  reasoning: ''
+- prefix: H9CC
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 7
+  decode_cap_len: 1
+  decode_cap_map: HYX_LPDDR3_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR3 standalone SK Hynix, barramento x32 (H9CC). DRAM móvel puro. pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB por chip. ⚠ Preenchimento pn[4:7] variável (NNN ou outro) — não validar, fatiar pn[7] direto. ⚠ ''D''=3GB é assimétrico (24Gbit) — chip dos smartphones com exatamente 3GB de RAM. ⚠ Teto confirmado: C=4GB. LPDDR3 não escala para 6GB ou 8GB. Origem: smartphones premium e ultrabooks soldados 2013-2017. Destino: triagem LPDDR3 — alta demanda no mercado de recondicionamento.'
+  reasoning: ''
+- prefix: H9CK
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 7
+  decode_cap_len: 1
+  decode_cap_map: HYX_LPDDR3_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR3 standalone SK Hynix, barramento x64 (H9CK). DRAM móvel puro. pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB por chip. ⚠ Preenchimento pn[4:7] variável (NNN ou outro) — não validar, fatiar pn[7] direto. ⚠ ''D''=3GB assimétrico · ''C''=4GB teto confirmado. ⚠ x64: largura de barramento dupla vs H9CC — mesma capacidade, throughput maior. Origem: smartphones premium e ultrabooks soldados 2013-2017. Destino: triagem LPDDR3 — alta demanda no mercado de recondicionamento.'
+  reasoning: ''
+- prefix: H9DA
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: eMMC 4.x + LPDDR1
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 12
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: HYX_H9DA_NAND_CAP
+  decode_gen_pos: 7
+  decode_gen_map: HYX_H9DA_RAM_CAP
+  decode_gen_len: 2
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP SK Hynix LPDDR1 geração legada (H9DA). Chip combinado eMMC 4.x + LPDDR1. Nomenclatura anterior ao H9TP/H9TQ — decode posicional DIFERENTE de toda a linha H9Tx. Preduo.com (tier-1) confirma H9DA = eMMC+LPDDR1 (categoria ''137ball eMMC+LPD1''). pn[4] = capacidade NAND (1 char): 1=1GB · 2=2GB · 4=4GB. pn[7:9] = capacidade RAM LPDDR1 (2 chars): 25=256MB · 51=512MB · 2G=256MB · 4J=512MB. ⚠ ''X+Y'' na notação Preduo usa Gb para RAM: ''4+4'' = 4GB NAND + 4Gb(512MB) LPDDR1. pn[5:7]=''GH'' fixo (filler) — apenas pn[4] e pn[7:9] carregam capacidade. pn[10] = die gen (A=2ª · B=3ª · C=4ª); sufixo ''-4EM'' = eMMC 4.x eMCP. ⚠ Não compartilha DecodeMap com H9TQ/H9TP/H9DP — esquema completamente diferente. ⚠ Componente OBSOLETO para reuso comercial — eMMC 4.x + LPDDR1, era 2012-2015. Ex: H9DA4GH2GJAM = 4GB eMMC + 256MB LPDDR1 (pn[7:9]=''2G''→2Gb=256MB). Ex: H9DA4VH4JJMMCR = 4GB eMMC + 512MB LPDDR1 (Preduo ''4+4'', 4Gb=512MB). Destino: bancada eMCP legado / REFINO DE METAIS se sem demanda.'
+  reasoning: ''
+- prefix: H9DP
+  chip_type: eMCP
+  subtype: LPDDR2
+  interface: eMMC + LPDDR2
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 12
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_H9D_NAND_CAP
+  decode_gen_pos: 7
+  decode_gen_map: HYX_H9D_RAM_CAP
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP SK Hynix família H9D com LPDDR2 (H9DP). Chip combinado eMMC + RAM. pn[4:6] = capacidade NAND: 32=4GB · 64=8GB · AG=16GB. pn[7] = capacidade RAM (1 char): 2=256MB · 4=512MB · 8=1GB · 3=1GB. ⚠ RAM usa 1 char em pn[7] (não 2) — pn[6]=''A'' é código de controlador fixo, ignorar. ⚠ ''8'' e ''3'' resultam ambos em 1GB — organização de barramento diferente, mesma capacidade. ⚠ Mapa NAND próprio (HYX_H9D_NAND_CAP): ''AG''=16GB não existe no mapa H9TQ/H9TP. Ex: H9DPAGA3JJMC = 16GB eMMC + 1GB LPDDR2 ✓ Ex: H9DP64A8JJMC = 8GB eMMC + 1GB LPDDR2 ✓ Ex: H9DP32A4JJAC = 4GB eMMC + 512MB LPDDR2 ✓ Componente OBSOLETO para reuso — Destino: REFINO DE METAIS.'
+  reasoning: ''
+- prefix: H9HP
+  chip_type: eMCP
+  subtype: LPDDR4X
+  interface: eMMC 5.1 + LPDDR4X
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_H9HP_NAND_CAP
+  decode_gen_pos: 6
+  decode_gen_map: HYX_LPDDR4X_RAM_CAP
+  decode_gen_len: 2
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP SK Hynix com LPDDR4X (H9HP). Chip combinado eMMC 5.1 + RAM de alta velocidade. pn[4:6] = capacidade NAND: 16=128GB · 27=32GB · 52/53=64GB. pn[6:8] = capacidade RAM: AC=4GB · AD=3GB · AE=6GB · AF=8GB. ⚠ ''16'' aqui é 128GB (NÃO 16GB como no H9TQ) — mapas NAND não são compartilhados. ⚠ AC=4GB e AD=3GB (não invertido — padrão SK Hynix eMCP LPDDR4X). Ex: H9HP53ACPMMDAR-KMM = 64GB eMMC + 4GB LPDDR4X ✓ Ex: H9HP16AECMMDAR-KMM = 128GB eMMC + 6GB LPDDR4X ✓ Destino: bancada eMCP premium (requer equipamento LPDDR4X).'
+  reasoning: ''
+- prefix: H9HQ
+  chip_type: uMCP
+  subtype: LPDDR4X
+  interface: UFS 2.1 + LPDDR4X
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_H9HQ_NAND_CAP
+  decode_gen_pos: 6
+  decode_gen_map: HYX_LPDDR4X_RAM_CAP
+  decode_gen_len: 2
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'uMCP SK Hynix com LPDDR4X (H9HQ). Chip combinado UFS 2.1 + RAM — geração premium. pn[4:6] = capacidade NAND: 15/16=128GB · 21=256GB · 53/54=64GB. pn[6:8] = capacidade RAM: AC=4GB · AD=3GB · AE=6GB · AF=8GB (mapa compartilhado com H9HP). ⚠ UFS (não eMMC): requer bancada UFS dedicada — incompatível com equipamento eMMC. ⚠ Sem 32GB na linha H9HQ — UFS+LPDDR4X é segmento premium, base é 64GB. Ex: H9HQ15ACPMADAR-KEM = 128GB UFS + 4GB LPDDR4X ✓ Ex: H9HQ21AECMADAR-KEM = 256GB UFS + 6GB LPDDR4X ✓ Destino: bancada uMCP/UFS (equipamento específico obrigatório).'
+  reasoning: ''
+- prefix: H9HR
+  chip_type: uMCP
+  subtype: LPDDR5
+  interface: UFS + LPDDR5
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_H9HR_NAND_CAP
+  decode_gen_pos: 6
+  decode_gen_map: HYX_H9HR_RAM_CAP
+  decode_gen_len: 2
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'uMCP SK Hynix com LPDDR5 (H9HR). Chip combinado UFS + RAM de última geração. pn[4:6] = capacidade NAND: 15=128GB · 21=256GB. pn[6:8] = capacidade RAM: JF=8GB LPDDR5. ⚠ Código RAM começa com ''J'' (não ''A'' como H9HP/H9HQ) — esquemas incompatíveis. ⚠ Chip de alta geração: verificar suporte do equipamento antes de tentar reballing. Ex: H9HR15JFA3MEVR-K6M = 128GB UFS + 8GB LPDDR5 ✓ (B2B) Ex: H9HR21JFA3MEVR-K6M = 256GB UFS + 8GB LPDDR5 ✓ (B2B) Destino: bancada uMCP LPDDR5 (equipamento de última geração).'
+  reasoning: ''
+- prefix: H9JK
+  chip_type: LPDDR5
+  subtype: LPDDR5
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 7
+  decode_cap_len: 1
+  decode_cap_map: HYX_LPDDR5_H9JK_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR5 standalone SK Hynix, Era 1 (H9JK). DRAM móvel de altíssima performance. pn[7] = densidade: F=8GB · H=12GB por chip. ⚠ Apenas 2 densidades confirmadas nesta nomenclatura — geração de transição. ⚠ Preenchimento pn[4:7] variável — fatiar pn[7] direto, não validar filler. Origem: flagships 2021-2022, primeiros dispositivos com LPDDR5. Destino: triagem LPDDR5 — componente de altíssimo valor, prioridade máxima.'
+  reasoning: ''
+- prefix: H9RT
+  chip_type: uMCP
+  subtype: LPDDR5
+  interface: UFS + LPDDR5
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_H9RT_NAND_CAP
+  decode_gen_pos: 6
+  decode_gen_map: HYX_H9RT_RAM_CAP
+  decode_gen_len: 2
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'uMCP SK Hynix LPDDR5 de alta geração (H9RT). Família premium — UFS + LPDDR5. pn[4:6] = capacidade NAND: 0G=128GB · 1G=256GB · 2G=512GB. pn[6:8] = capacidade RAM: 6A/6M=8GB · GA=12GB · 7M=16GB (LPDDR5). ⚠ Esquema de codificação NAND diferente de todas as outras famílias SK Hynix: usa ''dígito+G'' — nunca confundir pn[4] isolado com capacidade. ⚠ Código RAM: 1º char = densidade bruta do die (6=64Gb, G=96Gb, 7=128Gb); 2º char = revisão de silício (A/M) — não altera capacidade total. Ex: H9RT2G6M65X028N = 512GB UFS + 8GB LPDDR5 ✓ Ex: H9RT1G7M75X069  = 256GB UFS + 16GB LPDDR5 ✓ Destino: bancada uMCP LPDDR5 de última geração — componente de altíssimo valor.'
+  reasoning: ''
+- prefix: H9TK
+  chip_type: LPDDR2
+  subtype: LPDDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 7
+  decode_cap_len: 1
+  decode_cap_map: HYX_LPDDR2_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR2 standalone SK Hynix (H9TK). DRAM móvel puro — sem flash acoplado. pn[7] = densidade: 1=128MB · 2=256MB · 4=512MB · 8=1GB · A/B=2GB por chip. ⚠ Preenchimento pn[4:7] pode ser ''NNN'' ou ''MMM'' — ambos válidos, decode idêntico. ⚠ Não confundir com H9TQ (eMCP LPDDR3) ou H9TP (eMCP LPDDR2) — esses têm flash. ⚠ Teto confirmado: B=2GB. Leitura acima disso → triagem manual. Origem: wearables pioneiros, smartphones intermediários 2010-2014, tablets legados. Destino: triagem LPDDR2 — verificar demanda do mercado antes de encaminhar.'
+  reasoning: ''
+- prefix: H9TQ
+  chip_type: eMCP
+  subtype: LPDDR3
+  interface: eMMC 5.x + LPDDR3
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 12
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_EMCP_NAND_CAP
+  decode_gen_pos: 6
+  decode_gen_map: HYX_H9TQ_RAM_CAP
+  decode_gen_len: 2
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP SK Hynix com LPDDR3 (H9TQ). Chip combinado eMMC + RAM. pn[4:6] = capacidade NAND: 16/17=16GB · 26/27=32GB · 52=64GB · 64/65=8GB. pn[6:8] = capacidade RAM: A6=768MB · A8=1GB · AA/AB=2GB · AC=4GB · AD=3GB. ⚠ AC=4GB e AD=3GB (não invertido — ordem não é alfabética por tamanho). ⚠ Dois códigos NAND para mesma capacidade são normais: organização interna diferente. Ex: H9TQ52ACLT = 64GB NAND + 4GB LPDDR3. Destino: bancada eMCP (requer reballing + programação eMMC + LPDDR).'
+  reasoning: ''
+- prefix: HKMAG
+  chip_type: UFS
+  subtype: UFS 2.1
+  interface: UFS 2.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: UFS 2.1 SK Hynix. Encontrado em smartphones premium a partir de 2018.
+  reasoning: ''
+- prefix: HN8G
+  chip_type: UFS
+  subtype: ''
+  interface: UFS 2.2
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_HN8_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS standalone SK Hynix, revisão 64GB 4D NAND (HN8G). Variante específica de 64GB dentro da família HN8 — mesmo mapa de capacidade do HN8T. ⚠⚠ ATENÇÃO: BGA-153 idêntico ao eMMC — NÃO inserir no socket eMMC. pn[4:6] = capacidade: 96=64GB. Ex: HN8G962EHKX037 = 64GB UFS 2.2 ✓ Destino: bancada UFS dedicada.'
+  reasoning: ''
+- prefix: HN8T
+  chip_type: UFS
+  subtype: ''
+  interface: UFS 2.1/2.2/3.1
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_HN8_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS standalone SK Hynix, família HN8T — cobre UFS 2.1 Automotivo, 2.2, 3.1 e 4.0. 4D NAND: 176 camadas (UFS 2.x/3.1) e 238 camadas (UFS 4.0). ⚠⚠ ATENÇÃO: BGA-153 idêntico ao eMMC — NÃO inserir no socket eMMC. pn[4:6] = capacidade: 03/05/06=128GB · 15/16=256GB · 25=512GB · 35=1TB. Pares com mesma capacidade (ex: 05 e 06 = ambos 128GB) são revisões de die — normais. Linha automotiva (UD310A/UD210A): mesmo prefixo e decode — motor já cobre. Ex: HN8T15DEHKX075 = 256GB UFS 3.1 · HN8T15DJHQX109N = 256GB UFS 2.1 Automotivo ✓ Ex: HN8T35DZHKX079 = 1TB UFS 3.1 ✓ Destino: bancada UFS dedicada — verificar versão do protocolo (2.x vs 3.1 vs 4.0).'
+  reasoning: ''
+- prefix: H5A
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: HYX_DDR4_H5A_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DRAM DDR4 standalone SK Hynix, Era 2 pós-2020 (H5A), 1.2V. Prefixo encurtado: ''N'' removido (todo DDR4 é 1.2V por padrão). pn[3:5] = densidade: G3=1GB · G4=2GB · G5=4GB · G6=8GB por chip. ⚠ Ordem invertida vs. Era 1: ''G'' vem antes do índice (G3, G4...) não depois (4G, AG). ⚠ G5=4GB é o monolítico real de 32Gb — geração mais densa do DDR4. ⚠ Chips 3DS TSV empilhados (servidores): sufixo de empilhamento ignorado pelo motor. Destino: triagem DDR4 — slot 288-pin, 1.2V.'
+  reasoning: ''
+- prefix: H5PS
+  chip_type: DDR2
+  subtype: DDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_DDR2_H5PS_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DRAM DDR2 standalone SK Hynix, nomenclatura moderna (H5PS). Âncora H5 estabelecida aqui — padrão que persiste até DDR5. pn[4:6] = densidade: 25=32MB · 51=64MB · 1G=128MB · 2G=256MB por chip. ⚠ Prefixo 4 chars — fatiamento em pn[4:6], diferente do HY5PS (pn[5:7]). ⚠ Teto DDR2 confirmado: 2G=256MB. ''4G'' não foi escalado nesta nomenclatura. Destino: triagem DDR2 — slot 240-pin, tensão 1.8V.'
+  reasoning: ''
+- prefix: H5TC
+  chip_type: DDR3L
+  subtype: DDR3L
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_DDR3_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DRAM DDR3L standalone SK Hynix, low voltage 1.35V (H5TC). DDR3L é compatível com slots DDR3 padrão, mas opera a 1.35V. pn[4:6] = densidade: 51=64MB · 1G=128MB · 2G=256MB · 4G=512MB · 8G=1GB por chip. ⚠ Teto físico DDR3: 8Gb (1GB) por chip — mesmo limite do H5TQ. ⚠ Verificar suporte do slot à tensão 1.35V antes de testar. Destino: triagem DDR3L — slot 240-pin, preferência por equipamento 1.35V.'
+  reasoning: ''
+- prefix: H5TQ
+  chip_type: DDR3
+  subtype: DDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_DDR3_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DRAM DDR3 standalone SK Hynix, tensão padrão 1.5V (H5TQ). pn[4:6] = densidade: 51=64MB · 1G=128MB · 2G=256MB · 4G=512MB · 8G=1GB por chip. ⚠ Teto físico DDR3: 8Gb (1GB) por chip. Módulos de 16GB usam múltiplos chips. ⚠ Não confundir com DDR3L (H5TC) — tensão diferente, slot igual. Destino: triagem DDR3 — slot 240-pin, 1.5V.'
+  reasoning: ''
+- prefix: H9HC
+  chip_type: LPDDR4
+  subtype: LPDDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: null
+  decode_cap_pos: 7
+  decode_cap_len: 1
+  decode_cap_map: HYX_LPDDR4_H9HC_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR4/LPDDR4X standalone SK Hynix, Era 1 barramento x32 (H9HC). DRAM móvel puro. pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB · F=8GB por chip. ⚠ ''D''=3GB assimétrico (24Gbit) — smartphones que não precisavam de 4GB. ⚠ Preenchimento pn[4:7] variável — fatiar pn[7] direto, não validar filler. ⚠ H9HCN (prefixo 5 chars) tem prioridade sobre este prefixo de 4 chars. Origem: smartphones e tablets premium 2016-2020. Destino: triagem LPDDR4 — alto valor no mercado de recondicionamento.'
+  reasoning: ''
+- prefix: H9HK
+  chip_type: LPDDR4X
+  subtype: LPDDR4X
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: null
+  decode_cap_pos: 7
+  decode_cap_len: 1
+  decode_cap_map: HYX_LPDDR4_H9HC_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR4/LPDDR4X standalone SK Hynix, Era 1 barramento x64 (H9HK). DRAM móvel puro. Variante dual-channel do H9HC — maior largura de banda para processadores exigentes. pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB · E=6GB · F=8GB por chip. ⚠ ''D''=3GB assimétrico — H9HKNNNDGUMUBR-NLHR ✓ (OMO Electronic). ⚠ Mapa de capacidade idêntico ao H9HC — C=4GB confirmado em ambos os prefixos. ⚠ Preenchimento pn[4:7] variável — fatiar pn[7] direto. Origem: smartphones premium com arquitetura dual-channel 2016-2020. Destino: triagem LPDDR4 — alto valor no mercado de recondicionamento.'
+  reasoning: ''
+- prefix: H5MS
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 60
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 2
+  decode_cap_map: HYX_LPDDR1_H5MS_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR1 standalone SK Hynix, nomenclatura estabilizada (H5MS), 1.8V. pn[4:6] = densidade: 25=32MB · 51=64MB · 1G=128MB · 2G=256MB por chip. ⚠ ''25'' e ''51'' representam ''256Mbit'' e ''512Mbit'' — decode fixo de 2 chars. ⚠ Esquema de codificação DIFERENTE do HY5MS — mapas não são compartilhados. ⚠ Componente OBSOLETO para reuso comercial. Origem: PDAs, primeiros smartphones, roteadores portáteis legados. Destino: esteira de REFINO DE METAIS — não encaminhar para bancada de recondicionamento.'
+  reasoning: ''
+- prefix: HY5DU
+  chip_type: DDR1
+  subtype: DDR1
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 60
+  pn_length: null
+  decode_cap_pos: 5
+  decode_cap_len: 2
+  decode_cap_map: HYX_DDR1_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DRAM DDR1 standalone Hynix (HY5DU) — geração pré-SK Hynix. Chip de memória volátil avulso, 2.5V, interface DDR1. pn[5:7] = densidade: 64=8MB · 28=16MB · 56=32MB · 12=64MB por chip. ⚠ Valor em MB por chip — módulos combinam múltiplos chips para capacidade total. ⚠ Limite superior arquitetônico: 512Mbit (64MB). Não existe HY5DU com 1Gb. ⚠ Aparece em equipamentos industriais legados: PDVs, servidores antigos, automação, roteadores. Destino: triagem DDR1 — verificar encaixe slot 184-pin antes de testar.'
+  reasoning: ''
+- prefix: HY5MS
+  chip_type: LPDDR1
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 60
+  pn_length: null
+  decode_cap_pos: 5
+  decode_cap_len: 2
+  decode_cap_map: HYX_LPDDR1_HY5MS_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR1 standalone Hynix, primeira nomenclatura mobile (HY5MS), 1.8V. Geração pré-SK Hynix. Esquema de codificação DIFERENTE do H5MS. pn[5:7] = densidade confirmada: 7B=64MB (HY5MS7B2BLFP-H — Octopart ✓). ⚠ Demais capacidades sem PN físico rastreado — vão para Gemini. ⚠ Componente OBSOLETO para reuso comercial. Origem: PDAs, dispositivos embarcados legados, primeiros smartphones. Destino: esteira de REFINO DE METAIS — não encaminhar para bancada de recondicionamento.'
+  reasoning: ''
+- prefix: HY5PS
+  chip_type: DDR2
+  subtype: DDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 60
+  pn_length: null
+  decode_cap_pos: 5
+  decode_cap_len: 2
+  decode_cap_map: HYX_DDR2_HY5PS_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DRAM DDR2 standalone Hynix, era de transição (HY5PS). Geração pré-SK Hynix — nomenclatura herdada do DDR1 com tensão 1.8V. pn[5:7] = densidade: 56=32MB · 12=64MB · 1G=128MB por chip. ⚠ Chaves ''56'' e ''12'' idênticas ao DDR1 HY5DU — diferenciar pelo prefixo HY5PS. ⚠ Valor em MB por chip — módulos combinam múltiplos chips. Destino: triagem DDR2 — slot 240-pin, tensão 1.8V.'
+  reasoning: ''
