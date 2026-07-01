@@ -93,7 +93,11 @@ class Command(BaseCommand):
         nao_achados = []
         sem_marca = 0
         for raw, norm, fbga, reason in entradas:
-            kp = (KnownPart.objects.filter(part_number=norm).select_related("brand").first()
+            # busca por part_number_norm (a forma normalizada que o ENGINE usa) — pega os
+            # registros guardados com hífen/espaço (ex.: 'SDIN9DW4-16G' → norm 'SDIN9DW416G').
+            # Depois cai pra part_number exato e fbga_code (fallbacks do fix_known_parts).
+            kp = (KnownPart.objects.filter(part_number_norm=norm).select_related("brand").first()
+                  or KnownPart.objects.filter(part_number=norm).select_related("brand").first()
                   or KnownPart.objects.filter(part_number=raw).select_related("brand").first()
                   or (KnownPart.objects.filter(fbga_code=fbga).select_related("brand").order_by("pk").first()
                       if fbga else None))
