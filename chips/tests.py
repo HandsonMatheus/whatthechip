@@ -785,47 +785,95 @@ _FAM_FIELDS = [
 ]
 
 
-class LoadBrandsPiecemakersTests(TestCase):
-    """Passo 4: o load_brands carrega chips/knowledge/piecemakers.yaml FIELMENTE
-    (cada família/mapa do YAML vira o registro certo no banco). A equivalência ao
-    antigo populate_piecemakers foi provada na migração (characterize --diff IDÊNTICO
-    nos 6549 PNs do Postgres, 2026-06-30); o populate foi aposentado e o YAML é a fonte."""
+def _ident(pn):
+    """Resumo de identificação de um PN pelo engine: (chip_type, capacity,
+    dram_density, rentabilidade). É o que o teste de 'TODOS os PNs' congela como
+    verdade — a marca tem que identificar cada PN sempre igual."""
+    from chips.engine import classify, assess_profitability
+    r = classify(pn) or {}
+    return (r.get("chip_type") or "", r.get("capacity") or "",
+            r.get("dram_density") or "", assess_profitability(r))
 
-    def _spec(self):
-        import os
-        import yaml
-        from django.conf import settings
-        from chips.knowledge.schema import BrandFile
-        path = os.path.join(settings.BASE_DIR, "chips", "knowledge", "piecemakers.yaml")
-        with open(path, encoding="utf-8") as fh:
-            return BrandFile(**yaml.safe_load(fh))
+
+def _carrega_marca_e_confere_fidelidade(tc, slug):
+    """Carrega chips/knowledge/<slug>.yaml via load_brands e confere que cada
+    família/mapa do YAML virou o registro certo no banco (fidelidade YAML→banco)."""
+    import os
+    import yaml
+    from django.conf import settings
+    from django.core.management import call_command
+    from chips.knowledge.schema import BrandFile
+    from chips.models import Brand, ChipFamily, DecodeMap
+    path = os.path.join(settings.BASE_DIR, "chips", "knowledge", f"{slug}.yaml")
+    with open(path, encoding="utf-8") as fh:
+        spec = BrandFile(**yaml.safe_load(fh))
+    call_command("load_brands", "--brand", slug, "--commit", verbosity=0)
+
+    b = Brand.objects.get(code=spec.brand.code)
+    tc.assertEqual((b.name, b.notes), (spec.brand.name, spec.brand.notes))
+    tc.assertEqual(ChipFamily.objects.filter(brand=b).count(), len(spec.families))
+    for fs in spec.families:
+        fam = ChipFamily.objects.get(prefix=fs.prefix)
+        tc.assertEqual(fam.brand_id, b.id)
+        for campo in _FAM_FIELDS:
+            tc.assertEqual(getattr(fam, campo), getattr(fs, campo), f"{slug}:{fs.prefix}.{campo}")
+    total = sum(len(v) for v in spec.maps.values())
+    tc.assertEqual(DecodeMap.objects.filter(brand=b).count(), total)
+    for map_name, entries in spec.maps.items():
+        for e in entries:
+            dm = DecodeMap.objects.get(brand=b, map_name=map_name, char_key=e.char_key)
+            tc.assertEqual((dm.val_primary, dm.val_secondary), (e.val_primary, e.val_secondary))
+
+
+# ── Goldens de identificação (chip_type, capacity, dram_density, rentabilidade) ──
+# Congelados da gramática validada: PieceMakers conferida vs PIECEMAKERS.md; GigaDevice
+# capturada da gramática populate_gigadevice ANTES de aposentá-la. Cada marca deve
+# identificar TODOS os seus PNs conhecidos SEMPRE assim (regra do dono, 2026-06-30).
+_PMK_GOLDEN = {
+    "PMF510816DBR":     ("DDR3",  "128MB", "", "NÃO RENTÁVEL"),  # 1Gb/die → < 2Gb → descarta
+    "PMF511808EBR":     ("DDR3",  "256MB", "", "RENTÁVEL"),      # 2Gb x8
+    "PMF511816EBR":     ("DDR3",  "256MB", "", "RENTÁVEL"),      # 2Gb x16 (KnownPart em prod)
+    "PMF512816CBR":     ("DDR3",  "512MB", "", "RENTÁVEL"),      # 4Gb
+    "PMF411816EBR":     ("DDR3L", "256MB", "", "RENTÁVEL"),      # DDR3L 2Gb (=DDR3)
+    "PMA212508ABR":     ("DDR4",  "",      "", "INDETERMINADO"), # DDR4 s/ decode de cap → KnownPart resolve
+    "PMA212816ABR":     ("DDR4",  "",      "", "INDETERMINADO"),
+    "PMF511816EBRKADN": ("DDR3",  "256MB", "", "RENTÁVEL"),      # variante -KADN do 2Gb
+}
+_GIGA_GOLDEN = {
+    "GD5F1GQ4UBYIG": ("NAND Flash", "128MB", "", "NÃO RENTÁVEL"),  # SPI NAND 1Gb
+    "GD5F1GQ5UEYIG": ("NAND Flash", "128MB", "", "NÃO RENTÁVEL"),
+    "GD5F2GQ4UBYIG": ("NAND Flash", "256MB", "", "NÃO RENTÁVEL"),  # 2Gb
+    "GD5F2GQ5UEYIG": ("NAND Flash", "256MB", "", "NÃO RENTÁVEL"),
+    "GD5F4GQ4UBYIG": ("NAND Flash", "512MB", "", "NÃO RENTÁVEL"),  # 4Gb
+    "GD5F8GQ4UBYIG": ("NAND Flash", "1GB",   "", "NÃO RENTÁVEL"),  # 8Gb
+    "GDQ26FAA":   ("DDR4", "", "", "INDETERMINADO"),
+    "GDQ2BFAA":   ("DDR4", "", "", "INDETERMINADO"),
+    "GDQ2BFAACE": ("DDR4", "", "", "INDETERMINADO"),  # KnownParts em prod
+    "GDQ2BFAACJ": ("DDR4", "", "", "INDETERMINADO"),
+    "GDQ2BFAACQ": ("DDR4", "", "", "INDETERMINADO"),
+    "GDQ2BFAAWJ": ("DDR4", "", "", "INDETERMINADO"),
+    "GDQ2BFAAWQ": ("DDR4", "", "", "INDETERMINADO"),
+    "GD25Q128":     ("NOR Flash", "", "", "NÃO RENTÁVEL"),  # SPI NOR (geração morta p/ reciclagem)
+    "GD25Q128ESIG": ("NOR Flash", "", "", "NÃO RENTÁVEL"),
+    "GD25Q64CSIG":  ("NOR Flash", "", "", "NÃO RENTÁVEL"),
+}
+
+
+class LoadBrandsPiecemakersTests(TestCase):
+    """Passo 4: PieceMakers carregada de chips/knowledge/piecemakers.yaml. Fidelidade
+    (YAML→banco) + identificação de TODOS os PNs conhecidos. (Equivalência ao antigo
+    populate_piecemakers já provada em prod: characterize --diff IDÊNTICO nos 6549 PNs.)"""
 
     def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "piecemakers")
+
+    def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
-        from chips.models import Brand, ChipFamily, DecodeMap
+        from chips.engine import clear_engine_cache
         call_command("load_brands", "--brand", "piecemakers", "--commit", verbosity=0)
-        spec = self._spec()
-
-        b = Brand.objects.get(code=spec.brand.code)
-        self.assertEqual((b.name, b.notes), (spec.brand.name, spec.brand.notes))
-
-        # cada família do YAML existe com TODOS os campos batendo com o schema validado
-        self.assertEqual(ChipFamily.objects.filter(brand=b).count(), len(spec.families))
-        for fs in spec.families:
-            fam = ChipFamily.objects.get(prefix=fs.prefix)
-            self.assertEqual(fam.brand_id, b.id)
-            for campo in _FAM_FIELDS:
-                self.assertEqual(getattr(fam, campo), getattr(fs, campo),
-                                 f"{fs.prefix}.{campo}")
-
-        # cada entrada de mapa do YAML existe
-        total = sum(len(v) for v in spec.maps.values())
-        self.assertEqual(DecodeMap.objects.filter(brand=b).count(), total)
-        for map_name, entries in spec.maps.items():
-            for e in entries:
-                dm = DecodeMap.objects.get(brand=b, map_name=map_name, char_key=e.char_key)
-                self.assertEqual((dm.val_primary, dm.val_secondary),
-                                 (e.val_primary, e.val_secondary))
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
+        for pn, esperado in _PMK_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
     def test_dry_run_nao_grava(self):
         from django.core.management import call_command
@@ -839,6 +887,22 @@ class LoadBrandsPiecemakersTests(TestCase):
         v0 = CatalogVersion.current()
         call_command("load_brands", "--brand", "piecemakers", "--commit", verbosity=0)
         self.assertGreater(CatalogVersion.current(), v0)
+
+
+class GigaDeviceLoadBrandsTests(TestCase):
+    """Passo 4: GigaDevice migrada p/ YAML. Fidelidade + identificação de TODOS os PNs
+    conhecidos (golden capturado da gramática populate_gigadevice antes de aposentá-la)."""
+
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "gigadevice")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "gigadevice", "--commit", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
+        for pn, esperado in _GIGA_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
 class KnowledgeSchemaTests(TestCase):

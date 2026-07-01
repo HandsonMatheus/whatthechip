@@ -1,0 +1,121 @@
+# Conhecimento GigaDevice — fonte do catálogo (passo 4). Gerado da saída de
+# populate_gigadevice (fidelidade por construção); editar AQUI, validar c/ Pydantic, load_brands.
+brand:
+  name: GigaDevice
+  code: GGD
+  notes: China · Fundada 2005 (兆易创新 / Zhaoyi Innovation)
+maps:
+  GD5F_NAND_CAP:
+  - ['1', 128MB, '']
+  - ['2', 256MB, '']
+  - ['4', 512MB, '']
+  - ['8', 1GB, '']
+families:
+- prefix: GD25LB
+  chip_type: NOR Flash
+  subtype: SPI NOR
+  interface: SPI
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'NOR Flash SPI 1.8V GigaDevice, série GD25LB (Low Voltage Enhanced Quad SPI). ''L'' = low voltage 1.8V. ''B'' = Enhanced (4I/O por padrão, como GD25B). Geração mais nova que GD25LQ; mesma faixa de capacidades e aplicações. Rentabilidade: NÃO RENTÁVEL em geral. ⚠ Mesmas armadilhas de capacidade: 40=4Mbit · 80=8Mbit. Fonte: gigadevice.com/product/flash/spi-nor-flash ✓.'
+  reasoning: ''
+- prefix: GD25LQ
+  chip_type: NOR Flash
+  subtype: SPI NOR
+  interface: SPI
+  is_emcp: false
+  active: true
+  priority: 80
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'NOR Flash SPI 1.8V GigaDevice, série GD25LQ (Low Voltage Quad SPI). ''L'' = low voltage — tensão de operação 1.8V (vs 3.3V do GD25Q). Uso: dispositivos móveis, IoT, sistemas embarcados de baixa tensão. Rentabilidade: NÃO RENTÁVEL em geral. ⚠ Mesmas armadilhas de capacidade que GD25Q/GD25B: 40=4Mbit · 80=8Mbit — nunca assumir valor literal do código de capacidade. Fonte: gigadevice.com/product/flash/spi-nor-flash ✓.'
+  reasoning: ''
+- prefix: GD25B
+  chip_type: NOR Flash
+  subtype: SPI NOR
+  interface: SPI
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'NOR Flash SPI 3.3V GigaDevice, série GD25B (Enhanced Quad SPI — 4I/O por padrão). Evolução do GD25Q; mesma gama de capacidades e aplicações. Rentabilidade: NÃO RENTÁVEL em geral (commodity de baixo valor). ⚠ Mesmas armadilhas de capacidade que GD25Q: 40=4Mbit · 80=8Mbit · 16=16Mbit — ''40'' NÃO É 40Mbit. Verificar datasheet GigaDevice antes de qualquer decode manual. Fonte: gigadevice.com/product/flash/spi-nor-flash ✓.'
+  reasoning: ''
+- prefix: GD25Q
+  chip_type: NOR Flash
+  subtype: SPI NOR
+  interface: SPI
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'NOR Flash SPI 3.3V GigaDevice, série GD25Q (Quad SPI). Uso típico: BIOS de placa-mãe, firmware de roteadores e periféricos. Rentabilidade: NÃO RENTÁVEL em geral (commodity de baixo valor). ⚠ CÓDIGO DE CAPACIDADE NÃO LINEAR — não confiar em decode posicional: 40=4Mbit (0,5MB) · 80=8Mbit (1MB) · 16=16Mbit (2MB) · 32=32Mbit (4MB) · 64=64Mbit (8MB) · 128=128Mbit (16MB) · 256=256Mbit (32MB). ''40'' NÃO É 40Mbit — é 4Mbit. Sempre verificar datasheet GigaDevice. Capacidade sempre em MB no WTC (Mbit ÷ 8). Fonte: gigadevice.com/product/flash/spi-nor-flash ✓.'
+  reasoning: ''
+- prefix: GD5F
+  chip_type: NAND Flash
+  subtype: SPI NAND
+  interface: SPI
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: GD5F_NAND_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'NAND Flash SPI GigaDevice, série GD5F. Interface SPI/QSPI (não ONFI/paralela). pn[4]=densidade: ''1''=1Gbit (128MB) · ''2''=2Gbit (256MB) · ''4''=4Gbit (512MB) · ''8''=8Gbit (1GB). pn[5:7]=série: GQ4 (Gen1) · GQ5 (Gen2) · GM9 (Gen3 — ECC embutido no chip). ⚠ NÃO confundir com GD25 (NOR Flash) — tipos de chip totalmente distintos. ⚠ NÃO é ONFI/Toggle: protocolo SPI-like, não barramento paralelo. Rentabilidade: verificar com operador (maior valor potencial que NOR Flash). Fontes: DigiKey + datasheets oficiais GigaDevice ✓.'
+  reasoning: ''
+- prefix: GDQ
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 100
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR4 SDRAM GigaDevice (GDQ), 1.2V, FBGA-96. JEDEC JESD-79-4. Anatomia: pn[3]=densidade (''2''=4Gbit=512MB), pn[4]=pacote (''B''=FBGA-96), pn[5]=org (''F''=×16), sufixo C/W=temp + E/Q/J=speed (2400/2666/3200). ⚠ pn[4]=''B'' facilmente lido como ''6'' no laser: ''GDQ26FAA'' = ''GDQ2BFAA'' mal lido — confirmar PN com datasheet físico. Fonte Tier 1: DS-00808-GDQ2BFAA-Rev1.4 (gigadevice.com) ✓. Destino: triagem DDR4 — slot 288-pin, 1.2V.'
+  reasoning: ''
