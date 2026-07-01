@@ -10,7 +10,7 @@ Encadeia, na ordem canônica (CLAUDE.md §5), os comandos de catálogo que são
 idempotente e com seu próprio `atomic()`:
 
     load_brands (todas as 11 marcas)  →  link_doc_pages  →
-    sync_index_page  →  import_samsung_psg (--all)  →  fix_known_parts
+    sync_index_page  →  import_samsung_psg (--all)   [known_parts já vêm dos yamls via load_brands]
 
 e, no fim, **sobe o `catalog_version`** — o que **substitui o antigo "reinicie o
 servidor após populate"** (regra de ouro #3): o engine recarrega o cache sozinho
@@ -57,7 +57,9 @@ _STEPS = [
     ("link_doc_pages",       {},                  {"dry_run": True}),
     ("sync_index_page",      {},                  {"dry_run": True}),
     ("import_samsung_psg",   {"all": True}, {"all": True, "dry_run": True}),  # data/psg/*.csv versionados
-    ("fix_known_parts",      {},                  {"dry_run": True}),
+    # fix_known_parts APOSENTADO (2026-07-01): a autoridade (596 KnownParts confirmed/manual) migrou p/
+    # `known_parts` nos yamls das marcas (carregada pelo load_brands, antes dos imports que respeitam
+    # confirmed/manual). Ver dump_known_parts no histórico git. As 3 no-op obsoletas foram descartadas.
 ]
 
 

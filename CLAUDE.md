@@ -265,10 +265,10 @@ sobe o Django e checa a saída de `classify(pn)`.
 `--dry-run` / `--overwrite`):
 
 ```bash
-python manage.py load_brands --brand samsung   # TODA a gramática é YAML agora (passo 4 COMPLETO, 10 marcas: samsung, piecemakers, gigadevice, rayson, kingston, sandisk, micron, toshiba-kioxia, hynix, nanya). Lê chips/knowledge/<marca>.yaml, valida c/ Pydantic (o schema é o DATA CONTRACT: normaliza chip_type/subtype/interface à convenção canônica e rejeita ativo-genérico), sobe catalog_version. NÃO resta NENHUM populate_* nem add_chip_families (todos aposentados/removidos). Samsung 1ª: define os mapas GLOBAIS DRAM_PC/DRAM_MOBILE (brand=None). Dry-run padrão; --commit grava. ⚠ YAML = GRAMÁTICA (famílias+mapas); KnownParts continuam via import/fix_known_parts.
+python manage.py load_brands --brand samsung   # TODA a gramática é YAML agora (passo 4 COMPLETO, 10 marcas: samsung, piecemakers, gigadevice, rayson, kingston, sandisk, micron, toshiba-kioxia, hynix, nanya). Lê chips/knowledge/<marca>.yaml, valida c/ Pydantic (o schema é o DATA CONTRACT: normaliza chip_type/subtype/interface à convenção canônica e rejeita ativo-genérico), sobe catalog_version. NÃO resta NENHUM populate_* nem add_chip_families (todos aposentados/removidos). Samsung 1ª: define os mapas GLOBAIS DRAM_PC/DRAM_MOBILE (brand=None). Dry-run padrão; --commit grava. ⚠ YAML = GRAMÁTICA (famílias+mapas) + KNOWN_PARTS (a AUTORIDADE — 596 confirmed/manual migrados do fix_known_parts em jul/2026, dumpados p/ os yamls). `--skip-known-parts` carrega só a gramática (testes). Os imports (PSG) complementam. NÃO resta populate_*, add_chip_families NEM fix_known_parts.
 python manage.py import_micron_catalog *_full-catalog.csv   # CSVs Micron da raiz
 python manage.py import_samsung_psg --all                   # CSVs em data/psg/
-python manage.py fix_known_parts           # correções curadas (força confirmed)
+# fix_known_parts APOSENTADO (jul/2026): a autoridade (596 KnownParts) virou `known_parts` nos yamls das marcas, carregada pelo load_brands. (Migrado via dump_known_parts, ambos no histórico git.)
 python manage.py link_doc_pages / sync_index_page
 python manage.py validate_convention       # read-only: aponta registros fora da convenção (chip_types.py)
 python manage.py normalize_convention --commit   # migra chip_type legado ("RAM")→geração canônica (reversível via JSON)

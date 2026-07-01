@@ -264,29 +264,9 @@ class NoGeminiNoStatusTests(SimpleTestCase):
         self.assertNotIn("ai", dict(Source.SOURCE_TYPES).keys())
 
 
-class FixKnownPartsEntriesTests(SimpleTestCase):
-    """
-    Guarda de CI contra reintrodução de campos removidos nas entradas curadas do
-    fix_known_parts. Um `create_defaults` com uma chave que não é campo do modelo
-    (ex.: o 'status' removido em jun/2026) faz KnownPart(**defaults) estourar
-    TypeError e a criação do chip falhar. Este teste pega isso no CI, antes de ir
-    pro ar — para qualquer marca que siga um template antigo.
-    """
-
-    def test_create_defaults_sem_campos_invalidos(self):
-        from chips.management.commands.fix_known_parts import CORRECTIONS
-        from chips.models import KnownPart
-        valid = {f.name for f in KnownPart._meta.get_fields()} | {"brand_name"}
-        offenders = []
-        for e in CORRECTIONS:
-            pn = e.get("pn", "?")
-            for k in (e.get("create_defaults") or {}):
-                if k not in valid:
-                    offenders.append(f"{pn}: create_defaults['{k}']")
-        self.assertEqual(
-            offenders, [],
-            f"Campos inválidos em create_defaults (modelo não tem mais esses campos): {offenders}",
-        )
+# fix_known_parts APOSENTADO (2026-07-01) — a guarda de CI das entradas (FixKnownPartsEntriesTests)
+# saiu junto; o equivalente pros known_parts YAML é o `extra="forbid"` do KnownPartSpec (rejeita
+# campo desconhecido no portão Pydantic). Ver KnownPartsLoadTests.
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -720,8 +700,9 @@ class DeployCatalogTests(TestCase):
         chamados = [c.args[0] for c in mock_cc.call_args_list]
         self.assertEqual(chamados[0], 'load_brands')          # 1º: load_brands samsung (mapas globais)
         self.assertEqual(mock_cc.call_args_list[0].kwargs.get('brand'), 'samsung')
-        self.assertEqual(chamados[-1], 'fix_known_parts')
+        self.assertEqual(chamados[-1], 'import_samsung_psg')  # último passo (fix_known_parts APOSENTADO)
         self.assertNotIn('add_chip_families', chamados)       # APOSENTADO — famílias migradas p/ yamls
+        self.assertNotIn('fix_known_parts', chamados)         # APOSENTADO — autoridade nos known_parts dos yamls
         kw = {c.args[0]: c.kwargs for c in mock_cc.call_args_list}
         self.assertNotIn('populate_samsung', chamados)        # aposentado → load_brands samsung
         self.assertTrue(kw['import_samsung_psg'].get('all'))
@@ -817,7 +798,7 @@ def _carrega_marca_e_confere_fidelidade(tc, slug):
     path = os.path.join(settings.BASE_DIR, "chips", "knowledge", f"{slug}.yaml")
     with open(path, encoding="utf-8") as fh:
         spec = BrandFile(**yaml.safe_load(fh))
-    call_command("load_brands", "--brand", slug, "--commit", verbosity=0)
+    call_command("load_brands", "--brand", slug, "--commit", "--skip-known-parts", verbosity=0)
 
     b = Brand.objects.get(code=spec.brand.code)
     tc.assertEqual((b.name, b.notes), (spec.brand.name, spec.brand.notes))
@@ -1150,7 +1131,7 @@ class LoadBrandsPiecemakersTests(TestCase):
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "piecemakers", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "piecemakers", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _PMK_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1165,7 +1146,7 @@ class LoadBrandsPiecemakersTests(TestCase):
         from django.core.management import call_command
         from chips.models import CatalogVersion
         v0 = CatalogVersion.current()
-        call_command("load_brands", "--brand", "piecemakers", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "piecemakers", "--commit", "--skip-known-parts", verbosity=0)
         self.assertGreater(CatalogVersion.current(), v0)
 
 
@@ -1179,7 +1160,7 @@ class GigaDeviceLoadBrandsTests(TestCase):
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "gigadevice", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "gigadevice", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _GIGA_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1195,7 +1176,7 @@ class RaysonLoadBrandsTests(TestCase):
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "rayson", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "rayson", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _RAY_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1213,7 +1194,7 @@ class KingstonLoadBrandsTests(TestCase):
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "kingston", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "kingston", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _KST_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1230,7 +1211,7 @@ class SanDiskLoadBrandsTests(TestCase):
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "sandisk", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "sandisk", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _SD_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1247,7 +1228,7 @@ class MicronLoadBrandsTests(TestCase):
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "micron", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "micron", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _MIC_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1265,7 +1246,7 @@ class ToshibaKioxiaLoadBrandsTests(TestCase):
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "toshiba-kioxia", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "toshiba-kioxia", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _TK_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1282,7 +1263,7 @@ class HynixLoadBrandsTests(TestCase):
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "hynix", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "hynix", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _HYX_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1298,7 +1279,7 @@ class SamsungLoadBrandsTests(TestCase):
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "samsung", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "samsung", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _SAM_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1307,7 +1288,7 @@ class SamsungLoadBrandsTests(TestCase):
         """DRAM_PC/DRAM_MOBILE são universais → brand=None (drop-in fiel ao populate, sem duplicata)."""
         from django.core.management import call_command
         from chips.models import DecodeMap
-        call_command("load_brands", "--brand", "samsung", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "samsung", "--commit", "--skip-known-parts", verbosity=0)
         for m in ("DRAM_PC", "DRAM_MOBILE"):
             self.assertTrue(DecodeMap.objects.filter(map_name=m, brand__isnull=True).exists(), m)
             self.assertFalse(DecodeMap.objects.filter(map_name=m, brand__isnull=False).exists(),
@@ -1326,7 +1307,7 @@ class NanyaLoadBrandsTests(TestCase):
     def test_identifica_todos_os_pns(self):
         from django.core.management import call_command
         from chips.engine import clear_engine_cache
-        call_command("load_brands", "--brand", "nanya", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "nanya", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _NANYA_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
@@ -1352,7 +1333,7 @@ class MergeToshibaKioxiaTests(TestCase):
 
     def _cria_alvo(self):
         from django.core.management import call_command
-        call_command("load_brands", "--brand", "toshiba-kioxia", "--commit", verbosity=0)
+        call_command("load_brands", "--brand", "toshiba-kioxia", "--commit", "--skip-known-parts", verbosity=0)
 
     def _bk(self, nome):
         import os, tempfile

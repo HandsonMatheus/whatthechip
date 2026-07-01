@@ -67,6 +67,9 @@ class Command(SafeWriteCommand):
         parser.add_argument("--dry-run", action="store_true",
                             help="Só valida e mostra — não grava (é o padrão sem --commit).")
         parser.add_argument("--commit", action="store_true", help="Grava de verdade.")
+        parser.add_argument("--skip-known-parts", action="store_true",
+                            help="Carrega só a GRAMÁTICA (famílias+mapas), pula os known_parts. Usado "
+                                 "nos testes de gramática (a autoridade/known_parts tem teste próprio).")
 
     def handle(self, *args, **opts):
         import yaml
@@ -105,7 +108,7 @@ class Command(SafeWriteCommand):
             brand = self._upsert_brand(spec.brand)
             n_maps = self._upsert_maps(brand, spec.maps)
             n_fams = self._upsert_families(brand, spec.families)
-            n_kp = self._upsert_known_parts(brand, spec.known_parts)
+            n_kp = 0 if opts.get("skip_known_parts") else self._upsert_known_parts(brand, spec.known_parts)
 
         from chips.models import CatalogVersion
         nova = CatalogVersion.bump()
