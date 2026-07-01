@@ -1,3 +1,12 @@
+> ⚠️ **ATUALIZADO 2026-07 — O CONHECIMENTO AGORA É YAML.** A bíblia técnica abaixo
+> (decode, bugs, fontes Tier-1) continua válida como REFERÊNCIA, mas o conhecimento VIVO
+> mora em **`chips/knowledge/toshiba-kioxia.yaml`**, carregado por `load_brands`. Para **adicionar ou
+> corrigir um chip, edite o yaml** seguindo o **`CONTRATO_AUTORIA_YAML.md`** — NÃO edite
+> Python. Menções abaixo a `populate_*` / `add_chip_families` / `fix_known_parts` são
+> **HISTÓRICAS** (aposentados jul/2026; nenhum existe mais — o yaml é a fonte da verdade).
+
+---
+
 # TOSHIBA-KIOXIA.md — Bíblia Técnica e de Negócio
 **WhatTheChip — documento vivo de referência**
 Criado: 2026-06-26 | Atualizado: 2026-06-26 (sessão 4 — 39 PNs Kioxia Tier 1; ChipFamilies THGAM/THGJF/THGAF; fix TB engine+estoque)

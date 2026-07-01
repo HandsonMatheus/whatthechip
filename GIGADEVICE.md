@@ -1,3 +1,12 @@
+> ⚠️ **ATUALIZADO 2026-07 — O CONHECIMENTO AGORA É YAML.** A bíblia técnica abaixo
+> (decode, bugs, fontes Tier-1) continua válida como REFERÊNCIA, mas o conhecimento VIVO
+> mora em **`chips/knowledge/gigadevice.yaml`**, carregado por `load_brands`. Para **adicionar ou
+> corrigir um chip, edite o yaml** seguindo o **`CONTRATO_AUTORIA_YAML.md`** — NÃO edite
+> Python. Menções abaixo a `populate_*` / `add_chip_families` / `fix_known_parts` são
+> **HISTÓRICAS** (aposentados jul/2026; nenhum existe mais — o yaml é a fonte da verdade).
+
+---
+
 # GIGADEVICE.md — Referência técnica GigaDevice (WhatTheChip)
 
 > Leia sob demanda quando trabalhar com PNs GigaDevice (prefixos GD25, GD5F, GDQ).

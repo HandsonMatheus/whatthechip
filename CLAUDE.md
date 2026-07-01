@@ -528,6 +528,11 @@ Referência completa (todas as marcas, opção 1): **`docs/CONVENCAO_CAMPOS_ESTO
 Estes docs já existem na raiz. **Não duplique o conteúdo deles aqui** — abra o
 relevante quando a tarefa pedir:
 
+- **`CONTRATO_AUTORIA_YAML.md`** — **o contrato de autoria** (data contract) que os chats de marca
+  seguem pra escrever `chips/knowledge/<marca>.yaml`: estrutura, convenção (o portão), workflow
+  `load_brands`, formato dos known_parts, hierarquia de fontes, checklist. Leia antes de popular
+  uma marca. Cada `.md` de marca (SAMSUNG.md, SK_HYNIX.md, …, NANYA/KINGSTON/RAYSON) tem um banner
+  no topo apontando pro yaml + este contrato (as refs a populate_*/fix_known_parts nelas são históricas).
 - **`README.md`** — visão geral e setup original.
 - **`HANDOFF.md`** — decisões de arquitetura, histórico e correções (BUG-1…BUG-6).
 - **`DEPLOY_RENDER.md`** — deploy, env vars, armadilhas de produção.
