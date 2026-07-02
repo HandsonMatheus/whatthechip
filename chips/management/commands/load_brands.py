@@ -149,6 +149,12 @@ class Command(SafeWriteCommand):
         n = 0
         for f in families:
             fam = ChipFamily.objects.filter(prefix=f.prefix).first() or ChipFamily(prefix=f.prefix)
+            # Guard cross-brand: um prefixo é único GLOBAL e pertence a UMA marca. Se já
+            # existe sob outra, é erro — não reatribui em silêncio (evita o clobber entre marcas).
+            if fam.pk and fam.brand_id and fam.brand_id != brand.id:
+                raise CommandError(
+                    f"prefixo '{f.prefix}' já pertence à marca '{fam.brand.name}' — não pode "
+                    f"ser declarado por '{brand.name}'. Prefixos são únicos globais.")
             fam.brand = brand
             for k in _FAMILY_FIELDS:
                 setattr(fam, k, getattr(f, k))

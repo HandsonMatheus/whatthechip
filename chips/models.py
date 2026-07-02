@@ -68,7 +68,7 @@ class ChipFamily(models.Model):
     Permite que o resultado de busca inclua um link direto para a documentação.
     """
     brand               = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="families")
-    prefix              = models.TextField(db_index=True, help_text="Prefixo do PN, ex: KLM, K4B, H5AN")
+    prefix              = models.TextField(db_index=True, help_text="Prefixo do PN, ex: KLM, K4B, H5AN. Único GLOBAL (constraint em Meta): um prefixo pertence a uma marca só; o engine casa PN→família por prefixo.")
     chip_type           = models.TextField(help_text="Ex: eMMC, RAM, eMCP, UFS")
     subtype             = models.TextField(blank=True, default="", help_text="Ex: DDR3 SDRAM, LPDDR4X")
     interface           = models.TextField(blank=True, default="")
@@ -124,6 +124,13 @@ class ChipFamily(models.Model):
         verbose_name = "Família de Chip"
         verbose_name_plural = "Famílias de Chips"
         ordering = ["priority", "prefix"]
+        constraints = [
+            # Prefixo é único GLOBAL (backstop do portão): o engine casa PN→família por
+            # prefixo, então um prefixo pertence a UMA marca só. UniqueConstraint em Meta
+            # (e NÃO `unique=True` no campo) de propósito — assim não é espelhado no event
+            # table do pghistory, que é append-only (várias linhas, mesmo prefixo).
+            models.UniqueConstraint(fields=["prefix"], name="uniq_chipfamily_prefix"),
+        ]
 
     def __str__(self):
         return f"{self.prefix} — {self.chip_type} ({self.brand.name})"

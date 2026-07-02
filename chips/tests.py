@@ -230,6 +230,22 @@ class SchemaDedupTests(SimpleTestCase):
         self.assertEqual(len(bf.families), 2)
 
 
+class LoaderCrossBrandGuardTests(TestCase):
+    """Backstop cross-brand: um prefixo pertence a UMA marca. Uma 2ª marca declarando o
+    mesmo prefixo é rejeitada pelo loader (não sobrescreve a família da outra em silêncio)."""
+
+    def test_prefixo_de_outra_marca_rejeita(self):
+        from chips.models import Brand, ChipFamily
+        from chips.knowledge.schema import FamilySpec
+        from chips.management.commands.load_brands import Command
+        from django.core.management.base import CommandError
+        a = Brand.objects.create(name="MarcaA", code="MA")
+        ChipFamily.objects.create(brand=a, prefix="ZZZQ", chip_type="DDR4")
+        b = Brand.objects.create(name="MarcaB", code="MB")
+        with self.assertRaises(CommandError):
+            Command()._upsert_families(b, [FamilySpec(prefix="ZZZQ", chip_type="DDR3")])
+
+
 class NoGeminiNoStatusTests(SimpleTestCase):
     """
     Prova de remoção: Gemini e o campo status sumiram de verdade.
@@ -1315,56 +1331,6 @@ class NanyaLoadBrandsTests(TestCase):
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _NANYA_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
-
-
-class MergeToshibaKioxiaTests(TestCase):
-    """Consolidação Toshiba+Kioxia+KIOXIA → Toshiba-Kioxia (comando merge_toshiba_kioxia):
-    move KnownParts (brand.on_delete=CASCADE → mover ANTES de deletar), apaga famílias dup +
-    brands antigos, REVERSÍVEL. Simula o prod: 3 brands, família THGBMHG duplicada, e o
-    KnownPart confirmado ÚNICO sob 'KIOXIA' (THGBMHG8C4LBAIR) que não pode se perder."""
-
-    def setUp(self):
-        from chips.models import Brand, ChipFamily, KnownPart
-        tos = Brand.objects.create(name="Toshiba", code="TOS")
-        kio = Brand.objects.create(name="Kioxia", code="KIO")
-        kmai = Brand.objects.create(name="KIOXIA", code="KIOXIA")   # duplicado (add_chip_families antigo)
-        f_thgbm = ChipFamily.objects.create(brand=tos, prefix="THGBM", chip_type="eMMC", active=True)
-        f_hg = ChipFamily.objects.create(brand=kio, prefix="THGBMHG", chip_type="eMMC", active=True)
-        f_hg_dup = ChipFamily.objects.create(brand=kmai, prefix="THGBMHG", chip_type="eMMC", active=True)
-        KnownPart.objects.create(part_number="THGBM4G5D2", brand=tos, family=f_thgbm, confidence="confirmed")
-        KnownPart.objects.create(part_number="THGBMHG7C1", brand=kio, family=f_hg, confidence="confirmed")
-        KnownPart.objects.create(part_number="THGBMHG8C4LBAIR", brand=kmai, family=f_hg_dup, confidence="confirmed")
-
-    def _cria_alvo(self):
-        from django.core.management import call_command
-        call_command("load_brands", "--brand", "toshiba-kioxia", "--commit", "--skip-known-parts", verbosity=0)
-
-    def _bk(self, nome):
-        import os, tempfile
-        return os.path.join(tempfile.gettempdir(), nome)
-
-    def test_merge_move_tudo_e_apaga_antigos(self):
-        from django.core.management import call_command
-        from chips.models import Brand, KnownPart
-        self._cria_alvo()
-        call_command("merge_toshiba_kioxia", commit=True, backup=self._bk("bk1.json"), verbosity=0)
-        self.assertFalse(Brand.objects.filter(name__in=["Toshiba", "Kioxia", "KIOXIA"]).exists())
-        tk = Brand.objects.get(name="Toshiba-Kioxia")
-        for pn in ("THGBM4G5D2", "THGBMHG7C1", "THGBMHG8C4LBAIR"):   # nada se perdeu
-            self.assertEqual(KnownPart.objects.get(part_number=pn).brand, tk, pn)
-        kp = KnownPart.objects.get(part_number="THGBMHG8C4LBAIR")    # re-apontado à família do alvo
-        self.assertEqual((kp.family.prefix, kp.family.brand), ("THGBMHG", tk))
-
-    def test_revert_restaura(self):
-        from django.core.management import call_command
-        from chips.models import Brand, KnownPart
-        self._cria_alvo()
-        bk = self._bk("bk2.json")
-        call_command("merge_toshiba_kioxia", commit=True, backup=bk, verbosity=0)
-        call_command("merge_toshiba_kioxia", revert=bk, verbosity=0)
-        for name in ("Toshiba", "Kioxia", "KIOXIA"):
-            self.assertTrue(Brand.objects.filter(name=name).exists(), name)
-        self.assertEqual(KnownPart.objects.get(part_number="THGBMHG8C4LBAIR").brand.name, "KIOXIA")
 
 
 class KnownPartsLoadTests(TestCase):

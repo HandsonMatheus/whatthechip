@@ -20,8 +20,8 @@ na **`toshiba-kioxia.yaml`** (11 famílias + mapas THGBM_CAP/GEN).
 
 Toshiba e Kioxia são a **MESMA empresa** — a divisão de memória da Toshiba foi **renomeada KIOXIA em
 out/2019** (mesmas fábricas, mesmo esquema de PN). O WTC tinha 3 brands (Toshiba / Kioxia / KIOXIA-dup),
-gerando ambiguidade de prefixo → foram **fundidos numa marca única `Toshiba-Kioxia`** (via
-`merge_toshiba_kioxia`, reversível).
+gerando ambiguidade de prefixo → foram **fundidos numa marca única `Toshiba-Kioxia`** (consolidação
+concluída em jul/2026).
 
 - Chips **pré-2019** têm silkscreen **"TOSHIBA"**; **pós-2019**, **"KIOXIA"** — mesmo fabricante, **mesmo PN** (THGBM coexiste nas duas eras).
 - No banco, `brand_name="Toshiba-Kioxia"` pra **todos** (THGBM/TYC/TYD/TH58 antigos E THGAM/THGJF/THGAF novos). **Não** há mais distinção de brand por prefixo, nem criar família duplicada por era.
