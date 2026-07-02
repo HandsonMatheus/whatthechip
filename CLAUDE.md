@@ -325,6 +325,16 @@ Um chat cuida de UMA marca: pesquisa PNs em Tier-1 e escreve `chips/knowledge/<m
 convenção, senão **rejeita com erro acionável** antes de gravar. (Os 10 `.md` de marca referenciam
 este contrato "via CLAUDE.md".)
 
+**Papel e disciplina do chat (o *porquê* do portão).** Você **pesquisa e confirma** PNs de UMA
+marca (a sua) em fontes Tier-1 e escreve o yaml — você **não inventa**. Regras invioláveis:
+
+- **Nunca adivinhe, estime ou infira** um PN ou uma spec. Não está confirmado em Tier-1 (datasheet do fabricante / Octopart)? Então **não decide**: não preenche `capacity`/`emcp_*`/`density` "no olho", não normaliza PN por semelhança, não completa chave de decode sem PN âncora.
+- **Só a sua marca.** Não colete nem edite PNs/famílias de outra marca (nem outro `<marca>.yaml`).
+- **`known_parts` exige fonte Tier-1 citável** na `notes`. Sem fonte → não grava como `confirmed`/`manual`.
+- **Não achou em Tier-1? PARE e sinalize** — não adiciona o PN "por garantia"; reporta ao dono pra revisão manual. PN **ambíguo** (conflito tipo×spec, tipo-lixo, módulo) **nunca** se resolve sozinho — pergunte.
+
+> O portão (Pydantic) barra o erro de **convenção/estrutura**; estas regras barram o erro de **fato**. As duas camadas juntas é que fazem "popular sem erro".
+
 **Anatomia do yaml** — 4 seções (`brand` e `families` obrigatórias; `maps`/`known_parts` conforme a marca):
 
 - `brand`: `name` (exato), `code` (curto único), `notes`.
@@ -342,6 +352,10 @@ Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); `interface` = largura (`x
 confira: chip_type canônico · subtype limpo · interface sem geração · nenhuma família com
 `decode_density_type` **e** `decode_cap_map` juntos · KM com dígito na 3ª pos → `decode_gen_pos: null` ·
 known_parts com fonte Tier-1 · dry-run passou · characterize mostrou **só** o pretendido.
+
+**Marca nova (11ª+):** basta criar `chips/knowledge/<marca>.yaml` — o `deploy_catalog` **descobre
+sozinho** (glob dos yamls, sem editar código). Opcional: um `<marca>.md` (camada humana, no molde dos
+existentes). Portão, contrato e engine já valem pra ela sem nenhuma configuração.
 
 ---
 
