@@ -313,10 +313,39 @@ não usam `cd`). Config vive no **dashboard do Render** (não há `render.yaml`)
 - **Armadilhas:** `DEBUG` default `True` (garanta `False`); **Django 6.0 exige Python 3.12+** — não
   suba o Django sem subir o `runtime.txt` (hoje 3.11.9) senão o build quebra; pin do Django idêntico
   em `requirements.txt` e `requirements-render.txt`; se estourar conexões Postgres, ative **PgBouncer**
-  (§7); cold start no free; alteração feita **direto no banco** (via `DATABASE_URL` local) só reflete na
-  prod após deploy/restart (regra de ouro #3).
+  (§7); cold start no free; edição **RAW** no banco (sem subir `catalog_version`) só reflete após
+  restart — mas `load_brands --commit` sobe a versão e reflete **na hora** (regra de ouro #3).
 - **Sem shell interativo no Render:** comandos pontuais (`createsuperuser`, `deploy_catalog`, `import_*`)
   rodam **localmente apontando `DATABASE_URL` ao Render** — sempre com revisão do dono.
+
+### Atualizar o catálogo em produção (o comando que se roda ao adicionar chips)
+
+**Sempre que chips novos entram** (você ou o chat da marca editam `chips/knowledge/<marca>.yaml`), pra
+levar do local até a produção — **por marca**, um `load_brands` pra cada marca tocada:
+
+**1. Local — valida e testa:**
+
+```bash
+python manage.py load_brands --brand <marca>            # dry-run = o PORTÃO valida (nada grava)
+python manage.py load_brands --brand <marca> --commit   # grava no banco LOCAL + sobe catalog_version
+python manage.py runserver                              # confere os PNs na busca
+```
+
+**2. Produção — publica (2 passos):**
+
+```bash
+# a) versiona o yaml no repo (push em main → Render redeploy o CÓDIGO):
+git add chips/knowledge/<marca>.yaml && git commit -m "catalog: <marca> +PNs" && git push origin main
+# b) grava no banco de PROD, rodando LOCALMENTE com o DATABASE_URL do Render:
+export DATABASE_URL="postgresql://…@…render.com:5432/…"   # pega no dashboard do Render — é SEGREDO
+python manage.py load_brands --brand <marca> --commit
+```
+
+- **Reflete NA HORA, sem restart:** o `--commit` sobe o `catalog_version`; os workers de prod recarregam o catálogo na próxima busca (regra de ouro #3). Não precisa redeploy/restart pra o PN aparecer.
+- **NÃO existe shell interativo do Render nesse fluxo** — o comando roda **no seu PC** apontando `DATABASE_URL` ao Postgres do Render. Esse `DATABASE_URL` tem a senha → é **segredo**: quem roda é o dono; o chat da marca **ensina o passo**, não usa a URL.
+- **Só o passo (a) [push] não faz o PN aparecer em prod** — o redeploy do código roda `migrate`+`collectstatic`, mas **não** roda `load_brands`. É o passo (b) que popula o banco de prod. (Os dois: (a) versiona, (b) publica no banco.)
+- **Pré-requisito (só na 1ª vez):** o sistema novo (branch `escalabilidade`) precisa **já estar no ar em prod** — é o primeiro deploy, com runbook próprio. Enquanto ele não acontece, o `load_brands` só roda no **local**; a prod ainda está no sistema antigo.
+- **Micron:** a cobertura de massa dela vem também de `import_micron_catalog *_full-catalog.csv` (local-only, CSVs não versionados) — rode à parte, localmente, ao atualizar a Micron.
 
 ### Contrato de autoria do YAML (o que um chat de marca segue)
 
