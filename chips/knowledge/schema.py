@@ -194,6 +194,27 @@ class KnownPartSpec(BaseModel):
         return self
 
 
+def _reject_duplicates(items, key, rotulo, raw=None):
+    """PORTÃO DE UNICIDADE (data contract) — rejeita duplicatas numa coleção do YAML.
+    `key(item)` extrai a CHAVE CANÔNICA (ex.: `normalize_pn` no PN, pra pegar variação
+    de formato — `MT29C-5 IT` == `MT29C5IT`); `raw(item)` (opcional) mostra o
+    identificador cru na mensagem. Reporta TODAS as colisões de uma vez (não para na
+    1ª), com mensagem acionável — no dry-run, ANTES de tocar o banco. É o `unique` do
+    dbt aplicado no boundary."""
+    grupos: Dict[str, list] = {}
+    for it in items:
+        grupos.setdefault(key(it), []).append(it)
+    dups = {k: g for k, g in grupos.items() if len(g) > 1}
+    if not dups:
+        return
+    partes = [
+        (f"{rotulo} '{k}' ← {len(g)} entradas: {', '.join(raw(it) for it in g)}"
+         if raw else f"{rotulo} '{k}' aparece {len(g)}×")
+        for k, g in dups.items()
+    ]
+    raise ValueError("duplicata(s) na mesma marca: " + "; ".join(partes))
+
+
 class BrandFile(BaseModel):
     """O arquivo inteiro de uma marca: `chips/knowledge/<marca>.yaml`."""
     model_config = ConfigDict(extra="forbid")
@@ -212,4 +233,18 @@ class BrandFile(BaseModel):
                     raise ValueError(
                         f"família '{f.prefix}' referencia o mapa '{ref}', que não está "
                         f"definido em 'maps' (definidos: {sorted(nomes) or 'nenhum'}).")
+        return self
+
+    @model_validator(mode="after")
+    def _sem_duplicatas(self):
+        """Cada coleção tem uma CHAVE ÚNICA declarada; o portão a força no dry-run,
+        canonicalizada (PN via `normalize_pn` → pega variação de formato) e exaustiva.
+        Fecha o gap do last-wins silencioso e do IntegrityError tardio no --commit."""
+        from chips.normalize import normalize_pn
+        _reject_duplicates(self.families, lambda f: f.prefix.strip().upper(),
+                           "família (prefix)")
+        _reject_duplicates(self.known_parts, lambda k: normalize_pn(k.part_number),
+                           "known_part (PN normalizado)", raw=lambda k: k.part_number)
+        for nome, entradas in self.maps.items():
+            _reject_duplicates(entradas, lambda e: e.char_key, f"mapa '{nome}' char_key")
         return self

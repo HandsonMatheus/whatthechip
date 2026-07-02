@@ -187,6 +187,49 @@ class NormalizeTests(SimpleTestCase):
                     self.assertIn('error', result)
 
 
+class SchemaDedupTests(SimpleTestCase):
+    """Portão de unicidade (data contract): duplicatas na MESMA marca são rejeitadas
+    no dry-run, antes do banco. Chave canônica — PN via normalize_pn (pega variação
+    de formato). Reporta todas as colisões."""
+
+    def _bf(self, **kw):
+        from chips.knowledge.schema import BrandFile
+        return BrandFile(brand={"name": "T", "code": "T"}, **kw)
+
+    def test_prefix_duplicado_rejeita(self):
+        from pydantic import ValidationError
+        with self.assertRaises(ValidationError):
+            self._bf(families=[{"prefix": "K4A", "chip_type": "DDR4"},
+                               {"prefix": "K4A", "chip_type": "DDR3"}])
+
+    def test_pn_duplicado_exato_rejeita(self):
+        from pydantic import ValidationError
+        with self.assertRaises(ValidationError):
+            self._bf(known_parts=[{"part_number": "K4A8G165WC"},
+                                  {"part_number": "K4A8G165WC"}])
+
+    def test_pn_duplicado_por_normalizacao_rejeita(self):
+        """Variação de formato que normaliza igual também é duplicata (entity resolution)."""
+        from pydantic import ValidationError
+        with self.assertRaises(ValidationError):
+            self._bf(known_parts=[{"part_number": "MT29C4G48-5 IT"},
+                                  {"part_number": "MT29C4G485IT"}])
+
+    def test_char_key_duplicado_no_mapa_rejeita(self):
+        from pydantic import ValidationError
+        with self.assertRaises(ValidationError):
+            self._bf(maps={"X": [["11", "256MB", ""], ["11", "512MB", ""]]})
+
+    def test_sem_duplicatas_passa(self):
+        bf = self._bf(
+            families=[{"prefix": "K4A", "chip_type": "DDR4"},
+                      {"prefix": "K4B", "chip_type": "DDR3"}],
+            known_parts=[{"part_number": "K4A8G165WC"}, {"part_number": "K4B8G165WC"}],
+            maps={"X": [["11", "256MB", ""], ["12", "512MB", ""]]},
+        )
+        self.assertEqual(len(bf.families), 2)
+
+
 class NoGeminiNoStatusTests(SimpleTestCase):
     """
     Prova de remoção: Gemini e o campo status sumiram de verdade.
