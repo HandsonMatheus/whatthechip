@@ -1,5 +1,6 @@
-# Conhecimento GigaDevice — fonte do catálogo (passo 4). Gerado da saída de
-# populate_gigadevice (fidelidade por construção); editar AQUI, validar c/ Pydantic, load_brands.
+# Conhecimento GigaDevice — FONTE do catálogo (gramática + known_parts).
+# Editar aqui, validar no portão (load_brands --brand gigadevice, dry-run) e gravar
+# com --commit. Convenção e formato dos campos: CONTRATO_AUTORIA_YAML.md.
 brand:
   name: GigaDevice
   code: GGD

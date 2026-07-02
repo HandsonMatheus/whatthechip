@@ -1,5 +1,5 @@
-# Conhecimento Nanya — passo 4. Gerado do add_chip_families (única fonte; brand vem do import_chipid,
-# code='NANYA' igual ao prod). 3 famílias DDR MAGRAS (sem decode de capacidade — vem das KnownParts).
+# Conhecimento Nanya — FONTE do catálogo. 3 famílias DDR magras (sem decode de capacidade — a capacidade
+# vem dos known_parts). Editar aqui, validar no portão (load_brands --brand nanya, dry-run), gravar com --commit.
 brand:
   name: Nanya
   code: NANYA
@@ -25,8 +25,8 @@ families:
   tip: DDR4 SDRAM Nanya. Geração posterior ao NT5CC.
   reasoning: ''
 - prefix: NT5CC
-  chip_type: DDR3
-  subtype: DDR3
+  chip_type: DDR3L
+  subtype: DDR3L
   interface: ''
   is_emcp: false
   active: true
@@ -40,7 +40,7 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'DDR3 SDRAM Nanya. NT5CC = Nanya DDR3. Ex: NT5CC256M16DP-DI = 256M×16bit = 4Gb DDR3.'
+  tip: 'DDR3L SDRAM Nanya (1.35V). NT5CC = Nanya DDR3L — ≠ NT5CB (DDR3 1.5V). Ex: NT5CC256M16EP-DI = 256M×16bit = 4Gb DDR3L.'
   reasoning: ''
 - prefix: NT5PA
   chip_type: DDR3L
@@ -251,7 +251,7 @@ known_parts:
   capacity: 256MB
   density_gbit: 2Gb
   interface: x16
-  notes: 'Fila de revisão: família=NT5CC, grammar_complete=False | PN base (sem sufixo) do NT5CC128M16JR — DDR3L 2Gbit 128Mx16 1.35V. Operador lê sem sufixo no chip. Specs = mesmas do grupo JR-EK/EKH/EKI/EKT.'
+  notes: 'PN base (sem sufixo) do NT5CC128M16JR — DDR3L 2Gbit 128Mx16 1.35V. Operador lê sem sufixo no chip. Specs = mesmas do grupo JR-EK/EKH/EKI/EKT.'
   confidence: confirmed
 - part_number: NT5CC128M16JREK
   chip_type: DDR3L

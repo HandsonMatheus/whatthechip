@@ -1,8 +1,9 @@
 """
 Comando Django para exportar o conteúdo do banco de volta para _content/*.html.
 
-Fecha o gap do fluxo:
-    CKEditor → PostgreSQL → [este comando] → _content/ → build.py → docs/ → GitHub Pages
+Versiona o conteúdo do CMS: exporta as páginas editadas no admin
+(CKEditor → PostgreSQL) de volta para _content/*.html — o backup versionado
+que o import_content relê para semear o banco.
 
 Uso:
     python manage.py export_content
@@ -10,9 +11,8 @@ Uso:
     python manage.py export_content --dry-run                # mostra o que seria exportado
     python manage.py export_content --force                  # sobrescreve sem confirmar diff
 
-Após exportar, rode:
-    python build.py
-    git add docs/ _content/
+Após exportar, versione:
+    git add _content/
     git commit -m "content: atualiza páginas"
     git push
 """
@@ -137,7 +137,6 @@ class Command(BaseCommand):
             if exported:
                 self.stdout.write('')
                 self.stdout.write('  Próximos passos:')
-                self.stdout.write('    python build.py')
-                self.stdout.write('    git add _content/ docs/')
+                self.stdout.write('    git add _content/')
                 self.stdout.write('    git commit -m "content: atualiza páginas"')
                 self.stdout.write('    git push')

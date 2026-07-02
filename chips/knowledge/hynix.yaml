@@ -1,5 +1,5 @@
-# Conhecimento SK Hynix — fonte do catálogo (passo 4). Gerado do CÓDIGO ATUAL
-# (populate_hynix + add_chip_families) — completo. NUNCA do prod_data (defasado).
+# Conhecimento SK Hynix — FONTE do catálogo (gramática + known_parts). Editar aqui, validar no portão
+# (load_brands --brand hynix, dry-run), gravar com --commit. Convenção e formato: CONTRATO_AUTORIA_YAML.md.
 brand:
   name: SK Hynix
   code: HYX
@@ -599,10 +599,10 @@ families:
   reasoning: ''
 - prefix: HKMAG
   chip_type: UFS
-  subtype: UFS 2.1
+  subtype: ''
   interface: UFS 2.1
   is_emcp: false
-  active: true
+  active: false
   priority: 50
   pn_length: null
   decode_cap_pos: null
@@ -613,7 +613,7 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: UFS 2.1 SK Hynix. Encontrado em smartphones premium a partir de 2018.
+  tip: 'BOGUS/lixo — prefixo HKMAG não existe na SK Hynix (pesquisa jul/2026; UFS reais: H28U/H28S/HN8T/HN8G). DESATIVADA; não reativar.'
   reasoning: ''
 - prefix: HN8G
   chip_type: UFS
@@ -860,7 +860,7 @@ known_parts:
   chip_type: LPDDR3
   subtype: LPDDR3
   capacity: 8GB
-  notes: 'Preduo WP01836 (tier-1 WTC): H9CCNNNFAGMLLR-NUD = 64Gbit SKhynix 253ball LPDDR3 ✓. 64Gbit ÷ 8 = 8GB. pn[7]=''F'' → HYX_LPDDR3_CAP = 8GB (chave nova adicionada jun/2026). Pacote multi-die (ex: 8×8Gbit die, 253-ball). H9CC = x32 barramento. populate_hynix.py atualizado: (''F'', ''8GB'', ''''). confidence=distributor: Preduo ✓.'
+  notes: 'Preduo WP01836 (tier-1 WTC): H9CCNNNFAGMLLR-NUD = 64Gbit SKhynix 253ball LPDDR3 ✓. 64Gbit ÷ 8 = 8GB. pn[7]=''F'' → HYX_LPDDR3_CAP = 8GB (chave nova adicionada jun/2026). Pacote multi-die (ex: 8×8Gbit die, 253-ball). H9CC = x32 barramento. confidence=distributor: Preduo ✓.'
   confidence: distributor
 - part_number: H9CKNNN8KTMRWR
   chip_type: LPDDR3
@@ -922,7 +922,7 @@ known_parts:
   chip_type: LPDDR3
   subtype: LPDDR3
   capacity: 6GB
-  notes: 'Preduo WP01025 (tier-1 WTC): H9CKNNNECTMUPR-NUH = 48Gbit SKhynix 256ball LPDDR3 ✓. 48Gbit ÷ 8 = 6GB. pn[7]=''E'' → HYX_LPDDR3_CAP = 6GB (chave nova adicionada jun/2026). Pacote multi-die (ex: 6×8Gbit die). Samsung K3QF0F00AM-FGCF (48Gbit) corrobora. populate_hynix.py atualizado: (''E'', ''6GB'', ''''). confidence=distributor: Preduo ✓.'
+  notes: 'Preduo WP01025 (tier-1 WTC): H9CKNNNECTMUPR-NUH = 48Gbit SKhynix 256ball LPDDR3 ✓. 48Gbit ÷ 8 = 6GB. pn[7]=''E'' → HYX_LPDDR3_CAP = 6GB (chave nova adicionada jun/2026). Pacote multi-die (ex: 6×8Gbit die). Samsung K3QF0F00AM-FGCF (48Gbit) corrobora. confidence=distributor: Preduo ✓.'
   confidence: distributor
 - part_number: H9DA4GH2GJAM
   chip_type: eMCP
@@ -956,5 +956,5 @@ known_parts:
   chip_type: eMCP
   emcp_ram: LPDDR3 2GB
   emcp_nand: eMMC 5.1 8GB
-  notes: 'Fila de revisão: família=H9TQ, grammar_complete=True | Chip físico confirmado na esteira (eMiner 2026-05-13). H9TQ64: 64=8GB NAND (HYX_EMCP_NAND_CAP ✓). AA=LPDDR3 2GB (HYX_H9TQ_RAM_CAP ✓). PN já era âncora da chave AA no populate_hynix — agora com confirmação física.'
+  notes: 'Chip físico confirmado na esteira (eMiner 2026-05-13). H9TQ64: 64=8GB NAND (HYX_EMCP_NAND_CAP ✓). AA=LPDDR3 2GB (HYX_H9TQ_RAM_CAP ✓). PN já era âncora da chave AA na gramática — agora com confirmação física.'
   confidence: confirmed

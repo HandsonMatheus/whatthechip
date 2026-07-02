@@ -1,5 +1,7 @@
-# Conhecimento Micron — fonte do catálogo (passo 4). Gerado do CÓDIGO ATUAL
-# (populate_micron_mcp + add_chip_families) — completo (populate + famílias magras). NUNCA do prod_data (defasado).
+# Conhecimento Micron — FONTE do catálogo (gramática + known_parts curados). A cobertura de massa
+# (DDR/eMMC do CSV, specs FBGA) vem de comandos LOCAIS que complementam: import_micron_catalog,
+# fill_capacity_from_micron_api, fix_micron_*. Editar aqui, validar no portão (load_brands --brand
+# micron, dry-run), gravar com --commit. Convenção e formato: CONTRATO_AUTORIA_YAML.md.
 brand:
   name: Micron
   code: MIC
@@ -34,7 +36,7 @@ maps:
 families:
 - prefix: MT29F
   chip_type: NAND Flash
-  subtype: Raw NAND Flash
+  subtype: ''
   interface: Async/ONFI
   is_emcp: false
   active: true
@@ -52,7 +54,7 @@ families:
   reasoning: ''
 - prefix: MT29P
   chip_type: eMCP
-  subtype: eMCP (eMMC + LPDDR)
+  subtype: LPDDR2
   interface: eMMC + LPDDR
   is_emcp: true
   active: true
@@ -70,7 +72,7 @@ families:
   reasoning: ''
 - prefix: MT29T
   chip_type: eMCP
-  subtype: eMCP (eMMC + LPDDR)
+  subtype: LPDDR3
   interface: eMMC + LPDDR
   is_emcp: true
   active: true
@@ -250,7 +252,7 @@ families:
   reasoning: ''
 - prefix: MTFC
   chip_type: eMMC
-  subtype: eMMC standalone
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -344,7 +346,7 @@ known_parts:
   subtype: LPDDR3
   emcp_ram: LPDDR3 1GB
   emcp_nand: 4GB
-  notes: 'BUG-8: mesma correção que MT29TZZZ8D5BKFAH. Chave 8D4 = 4GB NAND + 1GB LPDDR3. API dizia LPDDR2 — família TZZZ é LPDDR3 uniformemente. create=True: registro pode não existir (pipeline FBGA só cria sob demanda).'
+  notes: 'BUG-8: mesma correção que MT29TZZZ8D5BKFAH. Chave 8D4 = 4GB NAND + 1GB LPDDR3. API dizia LPDDR2 — família TZZZ é LPDDR3 uniformemente.'
   confidence: confirmed
 - part_number: MT41K256M16HA125E
   chip_type: DDR3L
@@ -412,6 +414,6 @@ known_parts:
   subtype: LPDDR4
   capacity: 4GB
   fbga_code: D9VFC
-  notes: 'FBGA D9VFC (Micron cross-reference) = MT53B512M64D4TX. Octopart: 32Gb 512M×64bit ÷ 8 = 4GB LPDDR4. VDDQ 1.1V (≠ MT53E LPDDR4X 0.6V). Família MT53B adicionada em add_chip_families.py. Chip obsoleto, comum em flagships Android 2017-2019 (velocidade 1866MHz / 3733MT/s).'
+  notes: 'FBGA D9VFC (Micron cross-reference) = MT53B512M64D4TX. Octopart: 32Gb 512M×64bit ÷ 8 = 4GB LPDDR4. VDDQ 1.1V (≠ MT53E LPDDR4X 0.6V). Família MT53B (LPDDR4 standalone) no yaml. Chip obsoleto, comum em flagships Android 2017-2019 (velocidade 1866MHz / 3733MT/s).'
   source_url: https://octopart.com/mt53b512m64d4tx-053+wt%3ac+tr-micron-122342782
   confidence: confirmed

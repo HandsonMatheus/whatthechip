@@ -925,18 +925,18 @@ _MIC_GOLDEN = {  # Micron: gramática do populate_micron_mcp (MCP) + add_chip_fa
     "MT29TZZZ8D5":          ("eMCP", "", "eMMC 5.0 8GB",  "LPDDR3 1GB", "", "RENTÁVEL"),
     "MT29VZZZAD8":          ("eMCP", "", "eMMC 5.1 64GB", "LPDDR4 4GB", "", "RENTÁVEL"),
     "MT30AZZZBD9":          ("uMCP", "", "UFS 3.1 128GB", "LPDDR5 6GB", "", "RENTÁVEL"),
-    "MT29PZZZ4D4BKESK":     ("eMCP", "", "eMMC ⚠ cap. não mapeada", "LPDDR ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+    "MT29PZZZ4D4BKESK":     ("eMCP", "", "eMMC ⚠ cap. não mapeada", "LPDDR2 ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),  # MT29P subtype LPDDR2 (canônico) → emcp_ram mais preciso
 }
-_TK_GOLDEN = {  # Toshiba + Kioxia carregadas JUNTAS (THGBMFG/THGBMHG=Kioxia são prefixos + longos que
-    # THGBM=Toshiba → a classificação depende das duas). Magras (eMMC/eMCP/UFS por prefixo, INDETERMINADO),
-    # exceto THGBM (Toshiba) que decodifica capacidade.
+_TK_GOLDEN = {  # Toshiba-Kioxia (marca única). THGBMFG/THGBMHG DESATIVADAS (active:false, 2026-07) —
+    # eram magras que interceptavam o THGBM; agora o THGBM decodifica os THGBMxx posicionalmente. Demais
+    # magras (eMCP/UFS por prefixo) = INDETERMINADO na gramática; THGBM decodifica capacidade.
     "THGBMBG7D2KBAIL": ("eMMC", "16GB", "", "", "", "RENTÁVEL"),   # Toshiba THGBM (decodifica cap)
     "TYC0FH121638RA":  ("eMCP", "", "eMMC ⚠ cap. não mapeada",
                         "tipo 'C' — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),  # Toshiba TYC
     "TYD0FH221627RA":  ("eMCP", "", "eMMC ⚠ cap. não mapeada",
                         "LPDDR4X ⚠ cap. não mapeada", "", "INDETERMINADO"),  # Toshiba TYD
-    "THGBMFG7C2LBAIL": ("eMMC", "", "", "", "", "INDETERMINADO"),  # Kioxia THGBMFG
-    "THGBMHG8C4LBAIR": ("eMMC", "", "", "", "", "INDETERMINADO"),  # Kioxia THGBMHG
+    "THGBMFG7C2LBAIL": ("eMMC", "16GB", "", "", "", "RENTÁVEL"),   # THGBMFG desativada → THGBM decodifica (F=5.0, 7C2=16GB)
+    "THGBMHG8C4LBAIR": ("eMMC", "32GB", "", "", "", "RENTÁVEL"),   # THGBMHG desativada → THGBM decodifica (H=5.1, 8C4=32GB)
     "THGAF8G8T23BAIL": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGAF
     "THGAMVG7T13BAIL": ("eMMC", "", "", "", "", "INDETERMINADO"),  # Kioxia THGAM
     "THGJFPT0E18BAIP": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGJF
@@ -1108,11 +1108,11 @@ _SAM_GOLDEN = {
     'S5K1G1646DBC': ('Sensor', '', '', '', '', 'INDETERMINADO'),
 }
 
-_NANYA_GOLDEN = {  # Nanya: 3 famílias DDR MAGRAS (add_chip_families, única fonte) — tipo pelo prefixo,
-    # capacidade vem das KnownParts (aqui a gramática dá só o tipo → INDETERMINADO). brand code='NANYA' (prod).
-    'NT5CC256M16DP-DI': ('DDR3', '', '', '', '', 'INDETERMINADO'),
-    'NT5CC128M16JR-EK': ('DDR3', '', '', '', '', 'INDETERMINADO'),
-    'NT5CC512M8JR':     ('DDR3', '', '', '', '', 'INDETERMINADO'),
+_NANYA_GOLDEN = {  # Nanya: 3 famílias DDR magras — tipo pelo prefixo, capacidade vem das KnownParts
+    # (a gramática dá só o tipo → INDETERMINADO). ⚠ NT5CC=DDR3L (1.35V), não DDR3 (corrigido jul/2026; NT5CB=DDR3).
+    'NT5CC256M16DP-DI': ('DDR3L', '', '', '', '', 'INDETERMINADO'),
+    'NT5CC128M16JR-EK': ('DDR3L', '', '', '', '', 'INDETERMINADO'),
+    'NT5CC512M8JR':     ('DDR3L', '', '', '', '', 'INDETERMINADO'),
     'NT5AD256M16D4-JC': ('DDR4', '', '', '', '', 'INDETERMINADO'),
     'NT5AD512M8-JC':    ('DDR4', '', '', '', '', 'INDETERMINADO'),
     'NT5PA256M16DP':    ('DDR3L', '', '', '', '', 'INDETERMINADO'),
@@ -1237,8 +1237,8 @@ class MicronLoadBrandsTests(TestCase):
 class ToshibaKioxiaLoadBrandsTests(TestCase):
     """Passo 4: Toshiba + Kioxia CONSOLIDADAS numa marca única 'Toshiba-Kioxia' (2026-07-01).
     Mesma empresa (Toshiba Memory → Kioxia out/2019, mesmo esquema de PN). 11 famílias
-    (THGBM/TYC/TYD + THGBMFG/HG, THGAF/AM, THGJF/JFBT, KMEYH, TH58) num só yaml. A identificação
-    é idêntica à de antes da fusão (a marca não entra no _ident) — o _TK_GOLDEN não muda."""
+    (THGBM/TYC/TYD + THGBMFG/HG, THGAF/AM, THGJF/JFBT, KMEYH, TH58) num só yaml. THGBMFG/THGBMHG/KMEYH
+    DESATIVADAS (bug/lixo, 2026-07): com THGBMFG/HG off, o THGBM decodifica os THGBMxx (golden atualizado)."""
 
     def test_carrega_o_yaml_fielmente(self):
         _carrega_marca_e_confere_fidelidade(self, "toshiba-kioxia")
@@ -1297,9 +1297,8 @@ class SamsungLoadBrandsTests(TestCase):
 
 
 class NanyaLoadBrandsTests(TestCase):
-    """Passo 4: Nanya migrada p/ YAML (add_chip_families era a única fonte). 3 famílias DDR magras
-    (NT5CC=DDR3, NT5AD=DDR4, NT5PA=DDR3L; capacidade das KnownParts). Fecha a aposentadoria do
-    add_chip_families junto com os módulos Kingston (KVR/KF/ACR active=False + EMCP)."""
+    """Passo 4: Nanya no YAML. 3 famílias DDR magras (NT5CC=DDR3L 1.35V — ≠ NT5CB DDR3; NT5AD=DDR4,
+    NT5PA=DDR3L; capacidade das KnownParts)."""
 
     def test_carrega_o_yaml_fielmente(self):
         _carrega_marca_e_confere_fidelidade(self, "nanya")

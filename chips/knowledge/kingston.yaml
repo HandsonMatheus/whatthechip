@@ -1,5 +1,5 @@
-# Conhecimento Kingston — passo 4. Gerado de populate_kingston (5 eMCP) + add_chip_families (KVR/KF/ACR
-# módulos DIMM bogus active=False + EMCP genérico). NOTA: reasoning EMCP é prosa herdada; trivial corrigir aqui.
+# Conhecimento Kingston — FONTE do catálogo. eMCP embarcado (famílias numéricas + genérica) + módulos DIMM
+# bogus desativados (KVR/KF/ACR). Editar aqui, validar no portão (load_brands --brand kingston, dry-run), --commit.
 brand:
   name: Kingston
   code: KST
@@ -20,7 +20,7 @@ maps:
 families:
 - prefix: 04EMCP
   chip_type: eMCP
-  subtype: eMCP Kingston
+  subtype: LPDDR3
   interface: eMMC 5.0
   is_emcp: true
   active: true
@@ -35,10 +35,10 @@ families:
   decode_density_type: ''
   suffix_rules: ''
   tip: 'eMCP Kingston 4GB eMMC 5.0 (04EMCP). Chip combinado eMMC + RAM. pn[0:2] = capacidade NAND: 04=4GB. pn[6:8] = capacidade RAM: 04=512MB. ⚠ Dois variantes: NL2 (LPDDR2, 162ball) e NL3 (LPDDR3, 221ball). O mapa padrão retorna LPDDR3 — verificar sufixo NL2/NL3 visualmente. PNs confirmados: 04EMCP04-NL2DM627 (LPDDR2) · 04EMCP04-NL3DM627 (LPDDR3). Geração mais antiga Kingston eMCP — smartphones de entrada 2013–2015. Destino: bancada eMCP legado.'
-  reasoning: 'Prefixo positional Kingston eMCP 4GB. pn[0:2]=''04'' casa com KST_EMCP_NAND_CAP → 4GB NAND. pn[6:8] casa com KST_EMCP_RAM_CAP → RAM. Fonte: Puris.net B2B ✓ (04EMCP04-NL2DM627 · 04EMCP04-NL3DM627). ⚠ NL2=LPDDR2 e NL3=LPDDR3 — mapa assume LPDDR3; NL2 → fix_known_parts.'
+  reasoning: 'Prefixo positional Kingston eMCP 4GB. pn[0:2]=''04'' casa com KST_EMCP_NAND_CAP → 4GB NAND. pn[6:8] casa com KST_EMCP_RAM_CAP → RAM. Fonte: Puris.net B2B ✓ (04EMCP04-NL2DM627 · 04EMCP04-NL3DM627). ⚠ NL2=LPDDR2 e NL3=LPDDR3 — mapa assume LPDDR3; NL2 confirmado por known_part.'
 - prefix: 08EMCP
   chip_type: eMCP
-  subtype: eMCP Kingston
+  subtype: LPDDR3
   interface: eMMC 5.0
   is_emcp: true
   active: true
@@ -53,10 +53,10 @@ families:
   decode_density_type: ''
   suffix_rules: ''
   tip: 'eMCP Kingston 8GB eMMC 5.0 (08EMCP). Chip combinado eMMC + RAM. pn[0:2] = capacidade NAND: 08=8GB. pn[6:8] = capacidade RAM: 04=512MB · 08=1GB. ⚠ Dois variantes: NL2 (LPDDR2, 162ball) e NL3 (LPDDR3, 221ball). O mapa padrão retorna LPDDR3 — verificar sufixo NL2/NL3 visualmente. PNs confirmados: 08EMCP04-NL2DT227 · 08EMCP08-NL2DT227 (LPDDR2) · 08EMCP04-NL3DT227 · 08EMCP08-NL3DT227 (LPDDR3). Destino: bancada eMCP legado.'
-  reasoning: 'Prefixo positional Kingston eMCP 8GB. pn[0:2]=''08'' casa com KST_EMCP_NAND_CAP → 8GB NAND. pn[6:8] casa com KST_EMCP_RAM_CAP → RAM (04=512MB ou 08=1GB). Fonte: Puris.net B2B ✓ (4 PNs confirmados). ⚠ NL2=LPDDR2 e NL3=LPDDR3 — mapa assume LPDDR3; NL2 → fix_known_parts.'
+  reasoning: 'Prefixo positional Kingston eMCP 8GB. pn[0:2]=''08'' casa com KST_EMCP_NAND_CAP → 8GB NAND. pn[6:8] casa com KST_EMCP_RAM_CAP → RAM (04=512MB ou 08=1GB). Fonte: Puris.net B2B ✓ (4 PNs confirmados). ⚠ NL2=LPDDR2 e NL3=LPDDR3 — mapa assume LPDDR3; NL2 confirmado por known_part.'
 - prefix: 16EMCP
   chip_type: eMCP
-  subtype: eMCP Kingston
+  subtype: LPDDR3
   interface: eMMC 5.1
   is_emcp: true
   active: true
@@ -74,7 +74,7 @@ families:
   reasoning: 'Prefixo positional Kingston eMCP 16GB. pn[0:2]=''16'' casa com KST_EMCP_NAND_CAP → 16GB NAND. pn[6:8] casa com KST_EMCP_RAM_CAP → RAM (08=1GB ou 16=2GB). Fonte: chip físico 16EMCP08-NL3DTB28 confirmado na esteira (eMiner 2026-05-25) ✓ Puris.net B2B confirma: 16GB eMMC 5.1 (HS400) + 8Gb LPDDR3 → 1GB RAM. 16EMCP16-EL3GTB29: 16GB eMMC 5.1 + 16Gb LPDDR3 → 2GB RAM (Puris.net ✓). NL3=LPDDR3 verificado em 6 PNs cruzados da família Kingston eMCP.'
 - prefix: 32EMCP
   chip_type: eMCP
-  subtype: eMCP Kingston
+  subtype: LPDDR3
   interface: eMMC 5.1
   is_emcp: true
   active: true
@@ -92,7 +92,7 @@ families:
   reasoning: 'Prefixo positional Kingston eMCP 32GB. pn[0:2]=''32'' casa com KST_EMCP_NAND_CAP → 32GB NAND. pn[6:8] casa com KST_EMCP_RAM_CAP → RAM (16=2GB ou 24=3GB). Fonte: Puris.net B2B ✓ (32EMCP16-EL3GTB29 · 32EMCP24-EL3JTB29). ⚠ ERRO DE IA DOCUMENTADO: ''32EMCP16-NL3DTB29'' NÃO EXISTE. IA inventou sufixo; PN real é ''32EMCP16-EL3GTB29'' (Puris.net ✓). EL3=nova revisão LPDDR3 package — sem variante NL3 ou NL2 nesta capacidade.'
 - prefix: 64EMCP
   chip_type: eMCP
-  subtype: eMCP Kingston
+  subtype: LPDDR3
   interface: eMMC 5.1
   is_emcp: true
   active: true
@@ -128,7 +128,7 @@ families:
   reasoning: ''
 - prefix: EMCP
   chip_type: eMCP
-  subtype: eMCP (Kingston)
+  subtype: LPDDR3
   interface: eMMC + LPDDR
   is_emcp: true
   active: true
@@ -185,14 +185,5 @@ known_parts:
   chip_type: eMCP
   emcp_ram: LPDDR3 1GB
   emcp_nand: eMMC 5.1 16GB
-  notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | Chip físico confirmado na esteira (eMiner 2026-05-25). Puris.net B2B: 16EMCP08-NL3DTB28 = 16GB eMMC 5.1 (HS400) + 8Gb LPDDR3 → 1GB. NL3=LPDDR3 verificado em 6 PNs cruzados da família Kingston eMCP. IA errou PN comparativo: ''32EMCP16-NL3DTB29'' não existe (real: EL3GTB29). Alerta arquitetural: prefixo ''EMCP'' não casa via startswith — populate_kingston.py deve usar prefixos ''16EMCP'', ''08EMCP'' etc.'
-  confidence: confirmed
-- part_number: KF98G16Q4X
-  chip_type: NAND Flash
-  subtype: SLC NAND
-  capacity: 1GB
-  interface: x16
-  device: SUCATA / uso industrial específico — Samsung NAND Flash standalone legado (feature phone / embedded ~2008-2012). Sem controladora eMMC.
-  notes: 'Fila de revisão: família=KF, grammar_complete=False | KF98G16Q4X = Samsung K9 NAND Flash standalone. NÃO é Kingston Fury. Conflito de prefixo KF: Kingston (DDR módulos) vs Samsung (NAND Flash). Octopart: KF98G16Q4X-BEB0, 6 distribuidores, Samsung ✓ (2026-05-29). Elnec: FBGA63, K9 naming table → 8G=8Gbit(1GB), x16 bus ✓. Família KF9 adicionada em add_chip_families.py (priority=70 < Kingston KF priority=80). create=True: chip não existia no banco (grammar retornava Kingston por erro de prefixo).'
-  source_url: https://octopart.com/kf98g16q4x-beb0-samsung-52061167
+  notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | Chip físico confirmado na esteira (eMiner 2026-05-25). Puris.net B2B: 16EMCP08-NL3DTB28 = 16GB eMMC 5.1 (HS400) + 8Gb LPDDR3 → 1GB. NL3=LPDDR3 verificado em 6 PNs cruzados da família Kingston eMCP. IA errou PN comparativo: ''32EMCP16-NL3DTB29'' não existe (real: EL3GTB29). Alerta arquitetural: prefixo ''EMCP'' não casa via startswith — a gramática usa prefixos ''16EMCP'', ''08EMCP'' etc.'
   confidence: confirmed

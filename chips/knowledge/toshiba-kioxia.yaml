@@ -1,6 +1,7 @@
-# Conhecimento Toshiba-Kioxia — passo 4. FUSÃO de toshiba.yaml + kioxia.yaml (mesma empresa; Toshiba→Kioxia
-# out/2019). Marca única code=TXK. Toshiba=THGBM/TYC/TYD (com mapas THGBM_CAP/GEN); Kioxia=famílias magras
-# THGBMFG/HG, THGAF/AM, THGJF/JFBT, KMEYH, TH58 (specs das KnownParts). Sem overlap de prefixo/mapa.
+# Conhecimento Toshiba-Kioxia — FONTE do catálogo (gramática + known_parts). UMA marca (code TXK):
+# mesma empresa (Toshiba→Kioxia out/2019). THGBM tem decode (mapas THGBM_CAP/GEN); as demais famílias
+# são magras (specs dos known_parts). Editar aqui, validar no portão (load_brands --brand toshiba-kioxia,
+# dry-run), gravar com --commit. Convenção e formato: CONTRATO_AUTORIA_YAML.md.
 brand:
   name: Toshiba-Kioxia
   code: TXK
@@ -32,7 +33,7 @@ maps:
 families:
 - prefix: THGBM
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   interface: eMMC
   is_emcp: false
   active: true
@@ -86,10 +87,10 @@ families:
   reasoning: '["TYD = Toshiba eMCP LPDDR3/BGA-221 (~2015-2020) — geração seguinte ao TYC/LPDDR2/BGA-162", "pn[3:5]: capacidade NAND — 0F=4GB · 0G=8GB (Preduo Tier 3 ✓)", "pn[5]=H: marcador de RAM (hipótese — consistente com TYC; sem Tier 1)", "pn[6:8]: código RAM — 22=1GB LPDDR3 (âncora TYD0GH221651RA, Preduo Tier 3 ✓)", "pn[8:12]: código de lote/batch — não encode specs (ex.: 1627, 1651)", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional", "Fonte: Preduo Tier 3 (TYD0GH221651RA=8+8 eMMC+LPDDR3 221ball) + Octopart Tier 2 (tipo SDRAM+eMMC MCP ✓)"]'
 - prefix: KMEYH
   chip_type: eMMC
-  subtype: eMMC (KIOXIA)
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
-  active: true
+  active: false
   priority: 50
   pn_length: null
   decode_cap_pos: null
@@ -100,11 +101,11 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: eMMC com branding KIOXIA (pós-2019). Substitui a linha THGB em produtos mais recentes.
+  tip: 'BOGUS/lixo — prefixo inválido (KM não é Kioxia). DESATIVADA em jul/2026; não reativar.'
   reasoning: ''
 - prefix: THGAF
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   interface: UFS 2.1
   is_emcp: false
   active: true
@@ -118,11 +119,11 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'UFS 2.1 Kioxia (era de transição Toshiba→Kioxia, ~2017-2022). Família sem decode gramatical — capacity/specs dependem de KnownPart confirmado. Capacidades: 16GB → 256GB (consumer + automotive Grade 2 AEC-Q100). Fonte Tier 1: Kioxia UFS Product Brief Rev.2.0 (2022) + Automotive Brief (2020). 11 PNs confirmados em fix_known_parts.py. Distinguir de THGJF* (UFS 3.1/4.0/4.1, geração mais nova).'
+  tip: 'UFS 2.1 Kioxia (era de transição Toshiba→Kioxia, ~2017-2022). Família sem decode gramatical — capacity/specs dependem de KnownPart confirmado. Capacidades: 16GB → 256GB (consumer + automotive Grade 2 AEC-Q100). Fonte Tier 1: Kioxia UFS Product Brief Rev.2.0 (2022) + Automotive Brief (2020). 11 PNs confirmados nos known_parts. Distinguir de THGJF* (UFS 3.1/4.0/4.1, geração mais nova).'
   reasoning: '["THGAF = UFS 2.1 Toshiba/Kioxia (~2017-2022) — confirmado kioxia.com Tier 1", "Silkscreen físico: Toshiba (pré-2019) ou KIOXIA (pós-2019) — mesmo PN", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional", "Fonte: Kioxia UFS Product Brief Rev.2.0 (2022) + Automotive Brief Rev.2.0 (2020)"]'
 - prefix: THGAM
   chip_type: eMMC
-  subtype: eMMC Kioxia
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -136,14 +137,14 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC 5.1 BiCS FLASH Kioxia — prefixo novo, distinto de THGBM. NÃO coberto pela gramática THGBM (prefixo 5-char diferente). Família sem decode gramatical — capacity/specs dependem de KnownPart confirmado. Capacidades: 16GB, 32GB, 64GB, 128GB. Todos RENTÁVEIS. Package BGA-153. Série V: VG7=16GB · VG8=32GB · VG9=64GB · VT0=128GB. Série S: SG9=64GB · ST0=128GB. Fonte Tier 1: Kioxia e-MMC Product Brief Rev.2.0 (2023). 6 PNs confirmados em fix_known_parts.py. NÃO confundir com THGBM* (eMMC legado Toshiba/Kioxia, decodificado pela gramática).'
+  tip: 'eMMC 5.1 BiCS FLASH Kioxia — prefixo novo, distinto de THGBM. NÃO coberto pela gramática THGBM (prefixo 5-char diferente). Família sem decode gramatical — capacity/specs dependem de KnownPart confirmado. Capacidades: 16GB, 32GB, 64GB, 128GB. Todos RENTÁVEIS. Package BGA-153. Série V: VG7=16GB · VG8=32GB · VG9=64GB · VT0=128GB. Série S: SG9=64GB · ST0=128GB. Fonte Tier 1: Kioxia e-MMC Product Brief Rev.2.0 (2023). 6 PNs confirmados nos known_parts. NÃO confundir com THGBM* (eMMC legado Toshiba/Kioxia, decodificado pela gramática).'
   reasoning: '["THGAM = prefixo eMMC 5.1 BiCS Kioxia novo (≠ THGBM) — confirmado kioxia.com Tier 1", "pn[5]: série — V=consumer standard · S=consumer slim? (inferido, não decodificado)", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional", "Fonte: Kioxia e-MMC Product Brief Rev.2.0 (2023) americas.kioxia.com Tier 1 ✓"]'
 - prefix: THGBMFG
   chip_type: eMMC
-  subtype: eMMC (Toshiba/KIOXIA)
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
-  active: true
+  active: false
   priority: 50
   pn_length: null
   decode_cap_pos: null
@@ -158,10 +159,10 @@ families:
   reasoning: ''
 - prefix: THGBMHG
   chip_type: eMMC
-  subtype: eMMC (Toshiba/KIOXIA)
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
-  active: true
+  active: false
   priority: 50
   pn_length: null
   decode_cap_pos: null
@@ -176,7 +177,7 @@ families:
   reasoning: ''
 - prefix: THGJF
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   interface: ''
   is_emcp: false
   active: true
@@ -190,11 +191,11 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'UFS Kioxia nova geração: UFS 3.1 / 4.0 / 4.1 (2020–2025). Família sem decode gramatical — capacity/specs dependem de KnownPart confirmado. Capacidades: 128GB, 256GB, 512GB, 1TB. Todos RENTÁVEIS. Fonte Tier 1: Kioxia UFS Product Brief Rev.3.0 (2025) + Rev.2.0 (2022). 18 PNs consumer grade confirmados em fix_known_parts.py. Distinguir de THGAF* (UFS 2.1, geração anterior).'
+  tip: 'UFS Kioxia nova geração: UFS 3.1 / 4.0 / 4.1 (2020–2025). Família sem decode gramatical — capacity/specs dependem de KnownPart confirmado. Capacidades: 128GB, 256GB, 512GB, 1TB. Todos RENTÁVEIS. Fonte Tier 1: Kioxia UFS Product Brief Rev.3.0 (2025) + Rev.2.0 (2022). 18 PNs consumer grade confirmados nos known_parts. Distinguir de THGAF* (UFS 2.1, geração anterior).'
   reasoning: '["THGJF = prefixo UFS Kioxia pós-2019 (confirmado kioxia.com Tier 1)", "pn[5]: sub-geração — P=3.1 · M=4.0 · R=4.1 · G/H=3.1 · J=4.0 (inferido, não decodificado)", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional", "Fonte: Kioxia UFS Product Brief Rev.3.0 (2025) kioxia.com Tier 1 ✓"]'
 - prefix: THGJFBT
   chip_type: eMMC
-  subtype: eMMC (Toshiba)
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -212,7 +213,7 @@ families:
   reasoning: ''
 - prefix: TH58
   chip_type: NAND Flash
-  subtype: Raw NAND Flash (Toshiba)
+  subtype: ''
   interface: Async/ONFI
   is_emcp: false
   active: true
@@ -231,140 +232,140 @@ families:
 known_parts:
 - part_number: THGAF8G8T23BAIL
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 32GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 32GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGAF8G8T23BAIL 32GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAF8G9T43BAIR
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 64GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 64GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGAF8G9T43BAIR 64GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAF9G7L1LBAB7
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 16GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 16GB Automotive AEC-Q100 Grade 2. Tier 1 (americas.kioxia.com): Automotive Managed Flash Solutions Product Brief Rev.2.0 (2020), tabela ''Automotive UFS'': THGAF9G7L1LBAB7 16GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAFBG8T13BAB7
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 32GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 32GB Automotive AEC-Q100 Grade 2. Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive UFS'': THGAFBG8T13BAB7 32GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAFBG9T23BAB8
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 64GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 64GB Automotive AEC-Q100 Grade 2. Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive UFS'': THGAFBG9T23BAB8 64GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAFBT0T43BAB8
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 128GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 128GB Automotive AEC-Q100 Grade 2. Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive UFS'': THGAFBT0T43BAB8 128GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAFBT1T83BAB5
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 256GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 256GB Automotive AEC-Q100 Grade 2. Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive UFS'': THGAFBT1T83BAB5 256GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAFEG8T13BAB7
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 32GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 32GB Automotive AEC-Q100 Grade 2, variante E (pre-load 100%). Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive UFS'': THGAFEG8T13BAB7 32GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAFEG9T23BAB8
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 64GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 64GB Automotive AEC-Q100 Grade 2, variante E (pre-load 100%). Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive UFS'': THGAFEG9T23BAB8 64GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAFET0T43BAB8
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 128GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 128GB Automotive AEC-Q100 Grade 2, variante E (pre-load 100%). Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive UFS'': THGAFET0T43BAB8 128GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAFET1T83BAB5
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 256GB
   interface: UFS 2.1
   notes: 'Kioxia UFS 2.1 256GB Automotive AEC-Q100 Grade 2, variante E (pre-load 100%). Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive UFS'': THGAFET1T83BAB5 256GB UFS 2.1. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAMSG9T24BAIL
   chip_type: eMMC
-  subtype: eMMC Kioxia
+  subtype: ''
   capacity: 64GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 64GB (série S). Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), tabela ''Consumer Grade'': THGAMSG9T24BAIL 64GB eMMC 5.1 BiCS FLASH 3D. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAMST0T24BAIL
   chip_type: eMMC
-  subtype: eMMC Kioxia
+  subtype: ''
   capacity: 128GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 128GB (série S). Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), tabela ''Consumer Grade'': THGAMST0T24BAIL 128GB eMMC 5.1 BiCS FLASH 3D. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAMVG7T13BAIL
   chip_type: eMMC
-  subtype: eMMC Kioxia
+  subtype: ''
   capacity: 16GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 16GB. Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), tabela ''Consumer Grade'': THGAMVG7T13BAIL 16GB eMMC 5.1 BiCS FLASH 3D. Prefixo THGAM — distinto de THGBM, não coberto pela gramática THGBM. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAMVG8T13BAIL
   chip_type: eMMC
-  subtype: eMMC Kioxia
+  subtype: ''
   capacity: 32GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 32GB. Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), tabela ''Consumer Grade'': THGAMVG8T13BAIL 32GB eMMC 5.1 BiCS FLASH 3D. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAMVG9T23BAIL
   chip_type: eMMC
-  subtype: eMMC Kioxia
+  subtype: ''
   capacity: 64GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 64GB. Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), tabela ''Consumer Grade'': THGAMVG9T23BAIL 64GB eMMC 5.1 BiCS FLASH 3D. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGAMVT0T43BAIR
   chip_type: eMMC
-  subtype: eMMC Kioxia
+  subtype: ''
   capacity: 128GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 128GB. Tier 1 (americas.kioxia.com): e-MMC Product Brief Rev.2.0 (2023), tabela ''Consumer Grade'': THGAMVT0T43BAIR 128GB eMMC 5.1 BiCS FLASH 3D. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_e-MMC_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGBMBG7D2KBAIL
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 16GB
   interface: eMMC 5.0
   notes: 'Toshiba 19nm 2nd gen eMMC 5.0, 16GB, 153Ball FBGA 11.5×13×0.8mm. kioxia.com press release 2013-10-31 (Tier 1): PN listado explicitamente na tabela. pn[5]=''B'' → THGBM_GEN = eMMC 5.0 ✓. pn[7:10]=''7D2'' → THGBM_CAP = 16GB (2 dies × 64Gbit/die = 128Gbit = 16GB) ✓. pn[10]=''K'' = tier de qualidade específico da era BG (19nm 2nd gen). PN solicitado pelo operador na esteira — promovido a confirmed via Tier 1.'
   confidence: confirmed
 - part_number: THGBMBG8D4KBAIR
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 32GB
   interface: eMMC 5.0
   notes: 'Toshiba 19nm 2nd gen eMMC 5.0, 32GB, 153Ball FBGA 11.5×13×1.0mm. kioxia.com press release 2013-10-31 (Tier 1): PN listado explicitamente. ''four 64Gbit (equal to 8GB) NAND chips'' → 4×8GB = 32GB ✓. pn[5]=''B'' → THGBM_GEN = eMMC 5.0 ✓. pn[7:10]=''8D4'' → THGBM_CAP = 32GB (âncora Tier 1, upgrade de iiic.cc Tier 3). pn[14]=''R'' = variante bin (11.5×13mm, igual ao sufixo dos 15nm Supreme).'
   confidence: confirmed
 - part_number: THGBMFG6C1LBAIL
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 8GB
   interface: eMMC 5.0
   notes: 'Toshiba 15nm eMMC 5.0, 8GB Supreme, 11.5×13×0.8mm, BGA153. kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. pn[5]=''F'' → eMMC 5.0 ✓. pn[7:10]=''6C1'' → 8GB (64Gbit×1die=8GB) ✓. Mass production: 2Q 2015.'
@@ -373,7 +374,7 @@ known_parts:
   chip_type: eMMC
   capacity: 16GB
   interface: eMMC 5.0
-  notes: 'Fila de revisão: família=THGBM, grammar_complete=True | Toshiba / Kioxia eMMC 5.0, 16GB, BGA153. Mouser / Kioxia America (Tier 1): listagem ativa ✓. Octopart (Tier 2, 11 distribuidores): ''128G-bit 153-Pin FBGA'' → 128Gb÷8=16GB ✓. pn[5]=''F'' → eMMC 5.0 (confirmado via THGBMFG7C2LBAIL, Puris /emmc-5-0/ ✓). Grammar já decoda corretamente — create=True promove estimated→confirmed. IA externa alegou profitable=RENTÁVEL errado — REFUTADO: regra atual = eMMC ≥ 8GB, sem distinção de versão.'
+  notes: 'Toshiba / Kioxia eMMC 5.0, 16GB, BGA153. Mouser / Kioxia America (Tier 1): listagem ativa ✓. Octopart (Tier 2, 11 distribuidores): ''128G-bit 153-Pin FBGA'' → 128Gb÷8=16GB ✓. pn[5]=''F'' → eMMC 5.0 (confirmado via THGBMFG7C2LBAIL, Puris /emmc-5-0/ ✓). IA externa alegou profitable=RENTÁVEL errado — REFUTADO: regra atual = eMMC ≥ 8GB, sem distinção de versão.'
   confidence: confirmed
 - part_number: THGBMFG7C2LBAIL
   chip_type: eMMC
@@ -383,49 +384,49 @@ known_parts:
   confidence: confirmed
 - part_number: THGBMFG8C2LBAIL
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 32GB
   interface: eMMC 5.0
   notes: 'Toshiba 15nm eMMC 5.0, 32GB Premium, 11.5×13×0.8mm, BGA153. kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. pn[5]=''F'' → eMMC 5.0 ✓. pn[7:10]=''8C2'' → 32GB (64Gbit×2dies×2... aguardar) → âncora Tier 1 da chave THGBM_CAP ''8C2''=32GB (também confirmada pelo THGBMUG8C2LBAIL no product brief 2023 Tier 1). Diferença 8C4 vs 8C2: mesma cap, configuração de dies diferente.'
   confidence: confirmed
 - part_number: THGBMFG8C4LBAIR
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 32GB
   interface: eMMC 5.0
   notes: 'Toshiba 15nm eMMC 5.0, 32GB Supreme, 11.5×13×1.0mm, BGA153. kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. pn[5]=''F'' → eMMC 5.0 ✓. pn[7:10]=''8C4'' → 32GB (64Gbit×4dies=32GB) ✓. Mesma chave 8C4 do THGBMHG8C4LBAIR/LBAU7 (era H). pn[14]=''R'' = Supreme 11.5×13mm.'
   confidence: confirmed
 - part_number: THGBMFG9C4LBAIR
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 64GB
   interface: eMMC 5.0
-  notes: 'Toshiba 15nm eMMC 5.0, 64GB Premium, 11.5×13×1.0mm, BGA153. kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. pn[5]=''F'' → eMMC 5.0 ✓. pn[7:10]=''9C4'' → 64GB ← âncora Tier 1 da NOVA chave THGBM_CAP ''9C4''=64GB (adicionada a populate_toshiba.py). Diferença 9C8 vs 9C4: mesma cap total, configuração de dies diferente.'
+  notes: 'Toshiba 15nm eMMC 5.0, 64GB Premium, 11.5×13×1.0mm, BGA153. kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. pn[5]=''F'' → eMMC 5.0 ✓. pn[7:10]=''9C4'' → 64GB ← âncora Tier 1 da NOVA chave THGBM_CAP ''9C4''=64GB (adicionada ao mapa THGBM_CAP). Diferença 9C8 vs 9C4: mesma cap total, configuração de dies diferente.'
   confidence: confirmed
 - part_number: THGBMFG9C8LBAIG
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 64GB
   interface: eMMC 5.0
   notes: 'Toshiba 15nm eMMC 5.0, 64GB Supreme, 11.5×13×1.2mm, BGA153. kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. pn[5]=''F'' → eMMC 5.0 ✓. pn[7:10]=''9C8'' → 64GB (64Gbit×8dies=64GB) ✓. pn[14]=''G'' = variante Supreme 11.5×13mm (64GB). Âncora Tier 1 para 9C8=64GB.'
   confidence: confirmed
 - part_number: THGBMFT0CBLBAIS
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 128GB
   interface: eMMC 5.0
-  notes: 'Toshiba 15nm eMMC 5.0, 128GB Supreme, 11.5×13×1.4mm, BGA153. kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. pn[5]=''F'' → eMMC 5.0 ✓. pn[7:10]=''0CB'' → 128GB ← âncora Tier 1 da NOVA chave THGBM_CAP ''0CB''=128GB (adicionada a populate_toshiba.py). ATENÇÃO: pn[6]=''T'' (não ''G'' como na maioria) — engine não lê pn[6], decode ok. Mass production: 2Q 2015.'
+  notes: 'Toshiba 15nm eMMC 5.0, 128GB Supreme, 11.5×13×1.4mm, BGA153. kioxia.com press release 2014-10-02 (Tier 1): PN listado na tabela. pn[5]=''F'' → eMMC 5.0 ✓. pn[7:10]=''0CB'' → 128GB ← âncora Tier 1 da NOVA chave THGBM_CAP ''0CB''=128GB (adicionada ao mapa THGBM_CAP). ATENÇÃO: pn[6]=''T'' (não ''G'' como na maioria) — engine não lê pn[6], decode ok. Mass production: 2Q 2015.'
   confidence: confirmed
 - part_number: THGBMHG6C1LBAU6
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 8GB
   interface: eMMC 5.1
-  notes: 'Toshiba 15nm eMMC 5.1 Industrial, 8GB, 11.5×13×0.8mm, BGA153. americas.kioxia.com press release 2017-01-10 (Tier 1): PN listado na tabela. pn[5]=''H'' → eMMC 5.1 ✓. pn[7:10]=''6C1'' → 8GB ✓. pn[13]=''U'' = industrial grade. pn[14]=''6'' = upper extended temp (-40°C a +105°C). Sub-prefixo THGBMHG estava em OBSOLETE_FAMILY_PREFIXES — esta entrada garante Layer 1.'
+  notes: 'Toshiba 15nm eMMC 5.1 Industrial, 8GB, 11.5×13×0.8mm, BGA153. americas.kioxia.com press release 2017-01-10 (Tier 1): PN listado na tabela. pn[5]=''H'' → eMMC 5.1 ✓. pn[7:10]=''6C1'' → 8GB ✓. pn[13]=''U'' = industrial grade. pn[14]=''6'' = upper extended temp (-40°C a +105°C). Sub-prefixo THGBMHG (agora desativada) — esta entrada (known_part) garante o reconhecimento.'
   confidence: confirmed
 - part_number: THGBMHG7C2LBAU7
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 16GB
   interface: eMMC 5.1
   notes: 'Toshiba 15nm eMMC 5.1 Industrial, 16GB, 11.5×13×1.0mm, BGA153. americas.kioxia.com press release 2017-01-10 (Tier 1): PN listado na tabela. pn[5]=''H'' → eMMC 5.1 ✓. pn[7:10]=''7C2'' → 16GB ✓. pn[13]=''U'' = industrial. pn[14]=''7'' = extended temp (-40°C a +105°C).'
@@ -434,235 +435,235 @@ known_parts:
   chip_type: eMMC
   capacity: 32GB
   interface: eMMC 5.1
-  notes: 'Fila de revisão: família=THGBMHG, grammar_complete=False | Toshiba / Kioxia eMMC 5.1, 32GB, BGA153 (VFBGA). Octopart (Tier 2, PN exato): ''Flash Card 32G-byte 3.3V Embedded MMC 153-Pin VFBGA'' → 32GB ✓. pn[5]=''H'' → THGBM_GEN = eMMC 5.1 (âncora Lisleapex Tier 3 + chip físico). pn[7:10]=''8C4'' → THGBM_CAP = 32GB (âncora Lisleapex Tier 3, promovida Tier 2 com este PN). Causa do ''desconhecido'': sub-prefixo THGBMHG (len=7) interceptava THGBM (len=5) sem decode maps. Fix estrutural: `manage.py populate_toshiba --overwrite` (deleta THGBMHG). IA externa alegou sufixo R causou falha — REFUTADO: decoder só lê pn[5] e pn[7:10].'
+  notes: 'Toshiba / Kioxia eMMC 5.1, 32GB, BGA153 (VFBGA). Octopart (Tier 2, PN exato): ''Flash Card 32G-byte 3.3V Embedded MMC 153-Pin VFBGA'' → 32GB ✓. pn[5]=''H'' → THGBM_GEN = eMMC 5.1 (âncora Lisleapex Tier 3 + chip físico). pn[7:10]=''8C4'' → THGBM_CAP = 32GB (âncora Lisleapex Tier 3, promovida Tier 2 com este PN). Causa do ''desconhecido'': sub-prefixo THGBMHG (len=7) interceptava THGBM (len=5) sem decode maps. Fix: THGBMHG desativada (active:false) para o THGBM decodificar. IA externa alegou sufixo R causou falha — REFUTADO: decoder só lê pn[5] e pn[7:10].'
   confidence: confirmed
 - part_number: THGBMHG8C4LBAU7
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 32GB
   interface: eMMC 5.1
   notes: 'Toshiba 15nm eMMC 5.1 Industrial, 32GB, 11.5×13×1.0mm, BGA153. americas.kioxia.com press release 2017-01-10 (Tier 1): PN listado na tabela. pn[5]=''H'' → eMMC 5.1 ✓. pn[7:10]=''8C4'' → 32GB ✓. Variante industrial do THGBMHG8C4LBAIR: mesmo cap key 8C4, pn[13]=U, pn[14]=7 vs R.'
   confidence: confirmed
 - part_number: THGBMHG9C8LBAU8
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 64GB
   interface: eMMC 5.1
   notes: 'Toshiba 15nm eMMC 5.1 Industrial, 64GB, 11.5×13×1.2mm, BGA153. americas.kioxia.com press release 2017-01-10 (Tier 1): PN listado na tabela. pn[5]=''H'' → eMMC 5.1 ✓. pn[7:10]=''9C8'' → 64GB ✓. Âncora Tier 1 para 9C8=64GB (upgrade de Mouser Tier 2 + THGBMJG9C8LBAU8).'
   confidence: confirmed
 - part_number: THGBMJG6C1LBAB7
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 8GB
   interface: eMMC 5.1
-  notes: 'Kioxia eMMC 5.1 8GB Automotive AEC-Q100 Grade 2. Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive e-MMC'': THGBMJG6C1LBAB7 8GB eMMC 5.1 FG NAND. Variante BAB7 vs BAU7 industrial (já no banco). Brand=Toshiba por consistência com BAU. THGBM_GEN: pn[5]=''J''→eMMC 5.1. THGBM_CAP: pn[7:10]=''6C1''→8GB (Tier 1 ✓). URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
+  notes: 'Kioxia eMMC 5.1 8GB Automotive AEC-Q100 Grade 2. Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive e-MMC'': THGBMJG6C1LBAB7 8GB eMMC 5.1 FG NAND. Variante BAB7 vs BAU7 industrial (já no banco). THGBM_GEN: pn[5]=''J''→eMMC 5.1. THGBM_CAP: pn[7:10]=''6C1''→8GB (Tier 1 ✓). URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGBMJG6C1LBAU7
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 8GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 industrial, 8GB, 11.5×13×0.8mm, BGA153. Kioxia product brief 2023 (Tier 1): PN listado na tabela industrial grade. pn[5]=''J'' → eMMC 5.1 ✓. pn[7:10]=''6C1'' → 8GB ✓. pn[13]=''U'' = industrial. pn[14]=''7'' = extended temp. Âncora Tier 1 para J=eMMC 5.1 (upgrade de neven7.eu Tier 3).'
   confidence: confirmed
 - part_number: THGBMJG7C2LBAB8
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 16GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 16GB Automotive AEC-Q100 Grade 2. Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive e-MMC'': THGBMJG7C2LBAB8 16GB eMMC 5.1. Variante BAB8 vs BAU8 industrial. THGBM_CAP: pn[7:10]=''7C2''→16GB. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGBMJG7C2LBAU8
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 16GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 industrial, 16GB, 11.5×13×1.0mm, BGA153. Kioxia product brief 2023 (Tier 1): PN listado na tabela industrial grade. pn[5]=''J'' → eMMC 5.1 ✓. pn[7:10]=''7C2'' → 16GB ✓. pn[13]=''U'' = industrial. pn[14]=''8'' = extended temp.'
   confidence: confirmed
 - part_number: THGBMJG8C4LBAB8
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 32GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 32GB Automotive AEC-Q100 Grade 2. Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive e-MMC'': THGBMJG8C4LBAB8 32GB eMMC 5.1. Variante BAB8 vs BAU8 industrial. THGBM_CAP: pn[7:10]=''8C4''→32GB. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGBMJG8C4LBAU8
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 32GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 industrial, 32GB, 11.5×13×1.2mm, BGA153. Kioxia product brief 2023 (Tier 1): PN listado na tabela industrial grade. pn[5]=''J'' → eMMC 5.1 ✓. pn[7:10]=''8C4'' → 32GB ✓.'
   confidence: confirmed
 - part_number: THGBMJG9C8LBAB8
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 64GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 64GB Automotive AEC-Q100 Grade 2. Tier 1 (americas.kioxia.com): Automotive Product Brief Rev.2.0 (2020), tabela ''Automotive e-MMC'': THGBMJG9C8LBAB8 64GB eMMC 5.1. Variante BAB8 vs BAU8 industrial. THGBM_CAP: pn[7:10]=''9C8''→64GB. URL: https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGBMJG9C8LBAU8
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 64GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 industrial, 64GB, BGA153. Kioxia product brief 2023 (Tier 1): PN listado na tabela industrial grade. pn[5]=''J'' → eMMC 5.1 ✓. pn[7:10]=''9C8'' → 64GB ✓. Mouser Tier 2 também confirma este PN. Âncora dupla Tier 1+2 para 9C8=64GB.'
   confidence: confirmed
 - part_number: THGBMNG5D1LBAIT
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 4GB
   interface: eMMC 5.0
   notes: 'Kioxia eMMC 5.0, 4GB consumer, BGA153. Kioxia product brief 2023 (Tier 1): PN listado na tabela consumer grade. pn[5]=''N'' → eMMC 5.0 ✓. pn[7:10]=''5D1'' → 4GB ✓. pn[14]=''T'' = package compacto 11×10mm. Âncora Tier 1 para N=eMMC 5.0 e 5D1=4GB.'
   confidence: confirmed
 - part_number: THGBMTG5D1LBAIL
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 4GB
   interface: eMMC 5.0
   notes: 'Kioxia eMMC 5.0, 4GB consumer, BGA153. Kioxia product brief 2023 (Tier 1): PN listado na tabela consumer grade. pn[5]=''T'' → eMMC 5.0 ✓. pn[7:10]=''5D1'' → 4GB ✓. Âncora Tier 1 para T=eMMC 5.0 (upgrade de AIChipLink Tier 3).'
   confidence: confirmed
 - part_number: THGBMUG6C1LBAIL
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 8GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 consumer, 8GB, BGA153. Kioxia product brief 2023 (Tier 1): PN listado na tabela consumer grade. pn[5]=''U'' → eMMC 5.1 ✓. pn[7:10]=''6C1'' → 8GB ✓. Âncora Tier 1 para U=eMMC 5.1 (nova chave THGBM_GEN adicionada).'
   confidence: confirmed
 - part_number: THGBMUG7C1LBAIL
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 16GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 consumer, 16GB, BGA153. Kioxia product brief 2023 (Tier 1): PN listado na tabela consumer grade. pn[5]=''U'' → eMMC 5.1 ✓. pn[7:10]=''7C1'' → 16GB ✓.'
   confidence: confirmed
 - part_number: THGBMUG8C2LBAIL
   chip_type: eMMC
-  subtype: eMMC Toshiba/Kioxia MLC/TLC
+  subtype: ''
   capacity: 32GB
   interface: eMMC 5.1
   notes: 'Kioxia eMMC 5.1 consumer, 32GB, BGA153. Kioxia product brief 2023 (Tier 1): PN listado na tabela consumer grade. pn[5]=''U'' → eMMC 5.1 ✓. pn[7:10]=''8C2'' → 32GB ← âncora Tier 1 dupla: este PN (2023) + THGBMFG8C2LBAIL (2014). Confirma nova chave THGBM_CAP ''8C2''=32GB em dois processos diferentes (15nm e BiCS).'
   confidence: confirmed
 - part_number: THGJFAT0T44BAIL
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 128GB
   interface: UFS 3.1
   notes: 'Kioxia UFS 3.1 128GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGJFAT0T44BAIL 128GB UFS 3.1. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFAT1T84BAIR
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 256GB
   interface: UFS 3.1
   notes: 'Kioxia UFS 3.1 256GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGJFAT1T84BAIR 256GB UFS 3.1. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFAT2T84BAIR
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 512GB
   interface: UFS 3.1
   notes: 'Kioxia UFS 3.1 512GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGJFAT2T84BAIR 512GB UFS 3.1. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFGT1E45BAIP
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 256GB
   interface: UFS 3.1
   notes: 'Kioxia UFS 3.1 256GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGJFGT1E45BAIP 256GB UFS 3.1. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFGT2T85BAIU
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 512GB
   interface: UFS 3.1
   notes: 'Kioxia UFS 3.1 512GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGJFGT2T85BAIU 512GB UFS 3.1. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFHT3TB4BAIG
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 1TB
   interface: UFS 3.1
   notes: 'Kioxia UFS 3.1 1TB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGJFHT3TB4BAIG 1TB UFS 3.1. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFJT0E25BAIP
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 128GB
   interface: UFS 4.0
   notes: 'Kioxia UFS 4.0 128GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGJFJT0E25BAIP 128GB UFS 4.0. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFJT1E45BATP
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 256GB
   interface: UFS 4.0
   notes: 'Kioxia UFS 4.0 256GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGJFJT1E45BATP 256GB UFS 4.0. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFJT2T85BAT0
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 512GB
   interface: UFS 4.0
   notes: 'Kioxia UFS 4.0 512GB. Tier 1 (americas.kioxia.com): UFS Product Brief Rev.2.0 (2022), tabela ''Consumer Grade'': THGJFJT2T85BAT0 512GB UFS 4.0. URL: https://americas.kioxia.com/content/dam/kioxia/en-us/business/application/iot/asset/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFMT1E45BATV
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 256GB
   interface: UFS 4.0
   notes: 'Kioxia UFS 4.0 256GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), tabela ''Consumer Grade'': THGJFMT1E45BATV 256GB UFS 4.0. URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFMT2E46BATV
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 512GB
   interface: UFS 4.0
   notes: 'Kioxia UFS 4.0 512GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), tabela ''Consumer Grade'': THGJFMT2E46BATV 512GB UFS 4.0. URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFMT3E86BATZ
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 1TB
   interface: UFS 4.0
   notes: 'Kioxia UFS 4.0 1TB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), tabela ''Consumer Grade'': THGJFMT3E86BATZ 1TB UFS 4.0. URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFPT0E18BAIP
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 128GB
   interface: UFS 3.1
   notes: 'Kioxia UFS 3.1 128GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), tabela ''Consumer Grade'': THGJFPT0E18BAIP 128GB UFS 3.1. URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFPT1E28BAIP
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 256GB
   interface: UFS 3.1
   notes: 'Kioxia UFS 3.1 256GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), tabela ''Consumer Grade'': THGJFPT1E28BAIP 256GB UFS 3.1. URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFPT2E48BAIP
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 512GB
   interface: UFS 3.1
   notes: 'Kioxia UFS 3.1 512GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), tabela ''Consumer Grade'': THGJFPT2E48BAIP 512GB UFS 3.1. URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFRT1E45BATV
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 256GB
   interface: UFS 4.1
   notes: 'Kioxia UFS 4.1 256GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), tabela ''Consumer Grade'': THGJFRT1E45BATV 256GB UFS 4.1. URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFRT2E48BATV
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 512GB
   interface: UFS 4.1
   notes: 'Kioxia UFS 4.1 512GB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), tabela ''Consumer Grade'': THGJFRT2E48BATV 512GB UFS 4.1. URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf.'
   confidence: confirmed
 - part_number: THGJFRT3E88BATW
   chip_type: UFS
-  subtype: UFS Kioxia
+  subtype: ''
   capacity: 1TB
   interface: UFS 4.1
   notes: 'Kioxia UFS 4.1 1TB. Tier 1 (www.kioxia.com): UFS Product Brief Rev.3.0 (2025), tabela ''Consumer Grade'': THGJFRT3E88BATW 1TB UFS 4.1. URL: https://www.kioxia.com/content/dam/kioxia/shared/business/memory/mlc-nand/asset/productbrief/KIOXIA_UFS_Product_Brief.pdf.'
@@ -677,21 +678,21 @@ known_parts:
   subtype: LPDDR2
   emcp_ram: LPDDR2 512MB
   emcp_nand: eMMC 4.5 4GB
-  notes: 'Toshiba eMCP BGA-162, variante de lote de TYC0FH121638RA (posições 10-11: 26 vs 38). Âncora: TYC0FH121638RA (Octopart Tier 2): ''4Gb LPDDR2 + 4GB EMCP device, MMC v4.5/v4.51''. mehrinfo.net (título): ''Toshiba TYCOFH121626RA 4G'' — 4GB confirmado para este PN. Cluster de lote: TYC0FH121597/1626/1638/1642/1645/1660RA todos BGA Specialized ICs (YIC+Allelco ✓). Família TYC sem ChipFamily gramatical — create=True garante classificação manual.'
+  notes: 'Toshiba eMCP BGA-162, variante de lote de TYC0FH121638RA (posições 10-11: 26 vs 38). Âncora: TYC0FH121638RA (Octopart Tier 2): ''4Gb LPDDR2 + 4GB EMCP device, MMC v4.5/v4.51''. mehrinfo.net (título): ''Toshiba TYCOFH121626RA 4G'' — 4GB confirmado para este PN. Cluster de lote: TYC0FH121597/1626/1638/1642/1645/1660RA todos BGA Specialized ICs (YIC+Allelco ✓). Família TYC sem decode gramatical — specs vêm do known_part.'
   confidence: distributor
 - part_number: TYC0FH12162BRA
   chip_type: eMCP
   subtype: LPDDR2
   emcp_ram: LPDDR2 512MB
   emcp_nand: eMMC 4.5 4GB
-  notes: 'Toshiba eMCP BGA-162, variante de lote do cluster TYC0FH12XXXXRA. Tier 1 (kioxia.com/toshiba.semicon-storage.com): zero resultados para TYC* — família ~2012-2015 sem press releases digitais. Tier 2 (Octopart) e Tier 3 (OMO): PN não indexado. Inferência estrutural: pn[3:5]=''0F''→4GB (contraste TYC0GH=8GB ✓); pn[5]=''H''→LPDDR2 512MB (âncora TYC0FH121638RA, Octopart Tier 2 ✓); pn[8:12]=''162B''→código de lote hex, mesmo range de ''1626''. confidence=estimated: specs por análise estrutural, sem fonte direta. Família TYC sem ChipFamily gramatical — create=True garante classificação manual.'
+  notes: 'Toshiba eMCP BGA-162, variante de lote do cluster TYC0FH12XXXXRA. Tier 1 (kioxia.com/toshiba.semicon-storage.com): zero resultados para TYC* — família ~2012-2015 sem press releases digitais. Tier 2 (Octopart) e Tier 3 (OMO): PN não indexado. Inferência estrutural: pn[3:5]=''0F''→4GB (contraste TYC0GH=8GB ✓); pn[5]=''H''→LPDDR2 512MB (âncora TYC0FH121638RA, Octopart Tier 2 ✓); pn[8:12]=''162B''→código de lote hex, mesmo range de ''1626''. confidence=estimated: specs por análise estrutural, sem fonte direta. Família TYC sem decode gramatical — specs vêm do known_part.'
   confidence: estimated
 - part_number: TYC0FH121638RA
   chip_type: eMCP
   subtype: LPDDR2
   emcp_ram: LPDDR2 512MB
   emcp_nand: eMMC 4.5 4GB
-  notes: 'Toshiba eMCP BGA-162. Octopart: ''4Gb LPDDR2 + 4GB EMCP device'' → 4GB eMMC + 512MB LPDDR2 (4Gb÷8). gsmbdshop: ''4GB EMMC GOOD NAND''. Jotrin + YIC Electronics: chip real ✓. eMMC: MMC v4.5/v4.51 (Octopart). IA externa alegou v4.41 — ERRADO, refutado. Família TYC sem ChipFamily gramatical — create=True garante classificação manual.'
+  notes: 'Toshiba eMCP BGA-162. Octopart: ''4Gb LPDDR2 + 4GB EMCP device'' → 4GB eMMC + 512MB LPDDR2 (4Gb÷8). gsmbdshop: ''4GB EMMC GOOD NAND''. Jotrin + YIC Electronics: chip real ✓. eMMC: MMC v4.5/v4.51 (Octopart). IA externa alegou v4.41 — ERRADO, refutado. Família TYC sem decode gramatical — specs vêm do known_part.'
   confidence: distributor
 - part_number: TYD0FH221627RA
   chip_type: eMCP

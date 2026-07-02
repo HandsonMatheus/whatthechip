@@ -1,5 +1,5 @@
-# Conhecimento Rayson — fonte do catálogo (passo 4). Gerado da saída de
-# populate_rayson (fidelidade por construção); editar AQUI, validar c/ Pydantic, load_brands.
+# Conhecimento Rayson — FONTE do catálogo (LPDDR3/4 + eMMC RS70B; chip de baixo custo → lote budget).
+# Editar aqui, validar no portão (load_brands --brand rayson, dry-run), gravar com --commit.
 brand:
   name: Rayson
   code: RAY
@@ -92,7 +92,7 @@ families:
   reasoning: ''
 - prefix: RS70B08G
   chip_type: eMMC
-  subtype: eMMC 5.1 8GB
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -110,7 +110,7 @@ families:
   reasoning: ''
 - prefix: RS70B16G
   chip_type: eMMC
-  subtype: eMMC 5.1 16GB
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -128,7 +128,7 @@ families:
   reasoning: ''
 - prefix: RS70B32G
   chip_type: eMMC
-  subtype: eMMC 5.1 32GB
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -146,7 +146,7 @@ families:
   reasoning: ''
 - prefix: RS70B64G
   chip_type: eMMC
-  subtype: eMMC 5.1 64GB
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -164,7 +164,7 @@ families:
   reasoning: ''
 - prefix: RS70BT7G
   chip_type: eMMC
-  subtype: eMMC 5.1 128GB
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -218,7 +218,7 @@ families:
   reasoning: ''
 - prefix: RS70B
   chip_type: eMMC
-  subtype: eMMC Rayson (capacidade a identificar)
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -232,5 +232,5 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC Rayson — prefixo RS70B genérico. Capacidade não decodificada automaticamente (PN fora do mapa atual). Leia os caracteres 6-7 do PN para a capacidade: 08G=8GB · 16G=16GB · 32G=32GB · 64G=64GB · T7G=128GB. Se for nova capacidade (ex: 4GB, 256GB): reportar para adicionar ao populate_rayson.py. ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
+  tip: 'eMMC Rayson — prefixo RS70B genérico. Capacidade não decodificada automaticamente (PN fora do mapa atual). Leia os caracteres 6-7 do PN para a capacidade: 08G=8GB · 16G=16GB · 32G=32GB · 64G=64GB · T7G=128GB. Se for nova capacidade (ex: 4GB, 256GB): adicionar ao mapa RAY_EMMC_CAP no yaml. ⚠ RAYSON — chip de baixo custo. Segregar em LOTE RAYSON/BUDGET. NÃO misturar com Samsung / SK Hynix / Micron. Sem mercado de reacondicionamento em celular ou notebook premium.'
   reasoning: ''

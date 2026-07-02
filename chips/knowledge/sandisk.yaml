@@ -1,5 +1,6 @@
-# Conhecimento SanDisk — fonte do catálogo (passo 4). Gerado da saída de populate_sandisk
-# (fidelidade por construção). Famílias 'magras' (chip_type por prefixo; capacidade vem das KnownParts).
+# Conhecimento SanDisk — FONTE do catálogo (gramática + known_parts).
+# Famílias 'magras': chip_type por prefixo; capacidade vem dos known_parts confirmados.
+# Editar aqui, validar no portão (load_brands --brand sandisk, dry-run), gravar com --commit. Ver CONTRATO_AUTORIA_YAML.md.
 brand:
   name: SanDisk
   code: SDK
@@ -22,7 +23,7 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC SanDisk legado (SD5DH...). Era 2012-2013. Capacidade típica: 4GB-8GB. Die code: 24=24nm · A/C/F=revisão. Sufixo declarativo: -4G=4GB · -8G=8GB. Dispositivos: S5301 (Galaxy Pocket 2), S6810 (Galaxy Fame), S6802 (S Advance). ⚠ Interface eMMC 4.3/4.4 estimada — sem datasheet Tier 1 confirmado. Confirmar capacidade via fix_known_parts por PN específico.'
+  tip: 'eMMC SanDisk legado (SD5DH...). Era 2012-2013. Capacidade típica: 4GB-8GB. Die code: 24=24nm · A/C/F=revisão. Sufixo declarativo: -4G=4GB · -8G=8GB. Dispositivos: S5301 (Galaxy Pocket 2), S6810 (Galaxy Fame), S6802 (S Advance). ⚠ Interface eMMC 4.3/4.4 estimada — sem datasheet Tier 1 confirmado. Confirmar capacidade via known_parts por PN específico.'
   reasoning: ''
 - prefix: SDINDDH
   chip_type: UFS
@@ -40,7 +41,7 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'UFS 2.1 SanDisk iNAND 8521 / IX EU312 (SDINDDH...). Gear3 2-lane; ~500MB/s leitura; TFBGA-153 11.5×13mm. SDINDDH4=consumer · SDINDDH6=industrial (-25..85°C, TLC). Capacidade: -32G=32GB · -64G=64GB · -128G=128GB · -256G=256GB. Confirmar por PN específico via fix_known_parts. Destino: bancada UFS.'
+  tip: 'UFS 2.1 SanDisk iNAND 8521 / IX EU312 (SDINDDH...). Gear3 2-lane; ~500MB/s leitura; TFBGA-153 11.5×13mm. SDINDDH4=consumer · SDINDDH6=industrial (-25..85°C, TLC). Capacidade: -32G=32GB · -64G=64GB · -128G=128GB · -256G=256GB. Confirmar por PN específico via known_parts. Destino: bancada UFS.'
   reasoning: ''
 - prefix: SDINEDK
   chip_type: UFS
@@ -58,7 +59,7 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'UFS 3.0 SanDisk iNAND MC EU511 (SDINEDK...). Gear4 2-lane; SmartSLC Gen6; ~800MB/s seq write. Capacidade: -128G=128GB · -256G=256GB · -512G=512GB. Confirmar por PN específico via fix_known_parts. Destino: bancada UFS (geração moderna — premium).'
+  tip: 'UFS 3.0 SanDisk iNAND MC EU511 (SDINEDK...). Gear4 2-lane; SmartSLC Gen6; ~800MB/s seq write. Capacidade: -128G=128GB · -256G=256GB · -512G=512GB. Confirmar por PN específico via known_parts. Destino: bancada UFS (geração moderna — premium).'
   reasoning: ''
 - prefix: SDINFD
   chip_type: UFS
@@ -76,7 +77,7 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'UFS 3.1 SanDisk iNAND (SDINFD...). Gear4; WriteBooster 2ª geração. SDINFDK4=EU551 consumer · SDINFDO4=EU551 variante · SDINFDQ6=EU552 automotivo AEC. Capacidade: -64G=64GB · -128G=128GB · -256G=256GB · -512G=512GB. Sufixo automotivo: -XA1 / -ZA1 = AEC grade (-40..105°C). Confirmar por PN específico via fix_known_parts. Destino: bancada UFS (geração mais recente — maior valor).'
+  tip: 'UFS 3.1 SanDisk iNAND (SDINFD...). Gear4; WriteBooster 2ª geração. SDINFDK4=EU551 consumer · SDINFDO4=EU551 variante · SDINFDQ6=EU552 automotivo AEC. Capacidade: -64G=64GB · -128G=128GB · -256G=256GB · -512G=512GB. Sufixo automotivo: -XA1 / -ZA1 = AEC grade (-40..105°C). Confirmar por PN específico via known_parts. Destino: bancada UFS (geração mais recente — maior valor).'
   reasoning: ''
 - prefix: SDINB
   chip_type: eMMC
@@ -94,11 +95,11 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC 5.1 SanDisk iNAND (SDINB...). HS400; BGA153 11.5×13mm. Sub-linhas: SDINBDG4=iNAND7250 · SDINBDD4=iNAND7350(3D) · SDINBDA4=iNAND7550(SmartSLC). Capacidade: -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB · -128G=128GB · -256G=256GB. ⚠ NÃO é UFS — corrigido jun/2026 (product briefs PB01/PB02/PB04). ⚠ Prioridade 40: bate antes do SDIN genérico (priority=80). Confirmar capacidade via fix_known_parts por PN específico. Destino: bancada eMMC.'
+  tip: 'eMMC 5.1 SanDisk iNAND (SDINB...). HS400; BGA153 11.5×13mm. Sub-linhas: SDINBDG4=iNAND7250 · SDINBDD4=iNAND7350(3D) · SDINBDA4=iNAND7550(SmartSLC). Capacidade: -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB · -128G=128GB · -256G=256GB. ⚠ NÃO é UFS — corrigido jun/2026 (product briefs PB01/PB02/PB04). ⚠ Prioridade 40: bate antes do SDIN genérico (priority=80). Confirmar capacidade via known_parts por PN específico. Destino: bancada eMMC.'
   reasoning: ''
 - prefix: SD7DP
   chip_type: eMMC
-  subtype: eMMC standalone (iNAND 7 Series)
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -112,12 +113,12 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC SanDisk iNAND 7 Series (SD7DP). eMMC 5.1 standalone — sem RAM. Capacidade declarada no sufixo após o traço: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB. Die code intermediário (ex: 24C, 25F) identifica o processo WD — não é capacidade. ⚠ Sufixo truncado pelo OCR → chip aparece sem capacidade. Usar fix_known_parts por PN específico para confirmar capacidade. Fonte: Western Digital datasheet (westerndigital.com) ✓. Destino: bancada eMMC.'
+  tip: 'eMMC SanDisk iNAND 7 Series (SD7DP). eMMC 5.1 standalone — sem RAM. Capacidade declarada no sufixo após o traço: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB. Die code intermediário (ex: 24C, 25F) identifica o processo WD — não é capacidade. ⚠ Sufixo truncado pelo OCR → chip aparece sem capacidade. Usar known_parts por PN específico para confirmar capacidade. Fonte: Western Digital datasheet (westerndigital.com) ✓. Destino: bancada eMMC.'
   reasoning: ''
 - prefix: SDAD
   chip_type: eMCP
-  subtype: eMCP (eMMC + LPDDR)
-  interface: eMMC + LPDDR
+  subtype: LPDDR3
+  interface: ''
   is_emcp: true
   active: true
   priority: 50
@@ -130,12 +131,12 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP SanDisk variante SDAD. Híbrido eMMC + LPDDR. ⚠ PENDENTE: sem PN físico confirmado na esteira. Confirmar via fix_known_parts (create=True) com emcp_nand e emcp_ram. Destino provisório: bancada eMCP — aguardar confirmação.'
+  tip: 'eMCP SanDisk variante SDAD. Híbrido eMMC + LPDDR. ⚠ PENDENTE: sem PN físico confirmado na esteira. Confirmar nos known_parts (com emcp_nand e emcp_ram). Destino provisório: bancada eMCP — aguardar confirmação.'
   reasoning: ''
 - prefix: SDEM
   chip_type: eMCP
   subtype: LPDDR3
-  interface: eMMC + LPDDR3/LPDDR4
+  interface: ''
   is_emcp: true
   active: true
   priority: 50
@@ -148,11 +149,11 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP SanDisk (SDEM...). Híbrido eMMC + RAM LPDDR3 ou LPDDR4. BGA retangular maior que os eMMC standalone. Capacidade: sufixo declarativo — verificar física do chip. ⚠ PENDENTE: sem PN físico confirmado na esteira. Confirmar via fix_known_parts (create=True) com emcp_nand e emcp_ram. Destino provisório: bancada eMCP — aguardar confirmação de capacidade.'
+  tip: 'eMCP SanDisk (SDEM...). Híbrido eMMC + RAM LPDDR3 ou LPDDR4. BGA retangular maior que os eMMC standalone. Capacidade: sufixo declarativo — verificar física do chip. ⚠ PENDENTE: sem PN físico confirmado na esteira. Confirmar nos known_parts (com emcp_nand e emcp_ram). Destino provisório: bancada eMCP — aguardar confirmação de capacidade.'
   reasoning: ''
 - prefix: SDHQB
   chip_type: UFS
-  subtype: UFS standalone
+  subtype: ''
   interface: UFS 2.1 / 3.1
   is_emcp: false
   active: true
@@ -166,11 +167,11 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'UFS standalone SanDisk (SDHQB...). Armazenamento serial alta velocidade. ⚠ PENDENTE: sem PN físico confirmado na esteira. Confirmar capacidade e geração UFS via fix_known_parts. Destino provisório: bancada UFS — preço premium vs eMMC.'
+  tip: 'UFS standalone SanDisk (SDHQB...). Armazenamento serial alta velocidade. ⚠ PENDENTE: sem PN físico confirmado na esteira. Confirmar capacidade e geração UFS via known_parts. Destino provisório: bancada UFS — preço premium vs eMMC.'
   reasoning: ''
 - prefix: SDMAG
   chip_type: eMMC
-  subtype: eMMC iNAND (variante MAG)
+  subtype: ''
   interface: eMMC 5.1
   is_emcp: false
   active: true
@@ -184,11 +185,11 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC SanDisk iNAND variante SDMAG. Capacidade no sufixo: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB. ⚠ PENDENTE: sem confirmação física na esteira ainda. Confirmar capacidade e geração via fix_known_parts quando PN real aparecer. Destino provisório: bancada eMMC — aguardar confirmação.'
+  tip: 'eMMC SanDisk iNAND variante SDMAG. Capacidade no sufixo: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB. ⚠ PENDENTE: sem confirmação física na esteira ainda. Confirmar capacidade e geração via known_parts quando PN real aparecer. Destino provisório: bancada eMMC — aguardar confirmação.'
   reasoning: ''
 - prefix: SDIN
   chip_type: eMMC
-  subtype: eMMC iNAND (legado)
+  subtype: ''
   interface: eMMC 4.5 / 5.0 / 5.1
   is_emcp: false
   active: true
@@ -202,7 +203,7 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC SanDisk iNAND legado (SDIN...). Família mais comum na esteira. Cobre múltiplas gerações: eMMC 4.5, 5.0 e 5.1. Capacidade no sufixo após o traço: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB · -128G=128GB. Sub-famílias: SDINBDG4 / SDINBDD4 / SDINBDA4 = iNAND 7250/7350/7550 (eMMC 5.1). UFS real usa prefixos SDINDDH / SDINEDK / SDINFD (famílias distintas). ⚠ SDINB... (prefixo mais longo) tem prioridade — engine bate nele antes deste. ⚠ Sufixo OCR truncado → chip sem capacidade. Confirmar via fix_known_parts por PN específico. Destino: bancada eMMC (verificar geração antes de precificar).'
+  tip: 'eMMC SanDisk iNAND legado (SDIN...). Família mais comum na esteira. Cobre múltiplas gerações: eMMC 4.5, 5.0 e 5.1. Capacidade no sufixo após o traço: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB · -128G=128GB. Sub-famílias: SDINBDG4 / SDINBDD4 / SDINBDA4 = iNAND 7250/7350/7550 (eMMC 5.1). UFS real usa prefixos SDINDDH / SDINEDK / SDINFD (famílias distintas). ⚠ SDINB... (prefixo mais longo) tem prioridade — engine bate nele antes deste. ⚠ Sufixo OCR truncado → chip sem capacidade. Confirmar via known_parts por PN específico. Destino: bancada eMMC (verificar geração antes de precificar).'
   reasoning: ''
 known_parts:
 - part_number: SD5DH24A4G
@@ -295,7 +296,7 @@ known_parts:
   chip_type: eMMC
   capacity: 16GB
   interface: eMMC 4.41
-  notes: 'SDIN5C2-16G X2 MLC BGA169 — mesma família da -8G já confirmed. WD datasheet doc# 80-36-03433 V1.3 Dez/2010 + doc# 80-36-03462. confidence em fields + create_defaults: garante promoção estimated→confirmed e preenche capacity para passar gate _USABLE (known_exact=True).'
+  notes: 'SDIN5C2-16G X2 MLC BGA169 — mesma família da -8G já confirmed. WD datasheet doc# 80-36-03433 V1.3 Dez/2010 + doc# 80-36-03462.'
   confidence: confirmed
 - part_number: SDIN5C216GL
   chip_type: eMMC
@@ -427,7 +428,7 @@ known_parts:
   chip_type: eMMC
   capacity: 32GB
   interface: eMMC 4.51
-  notes: 'SDIN8DE2-32G — mesma família das -8G/-16G já distributor+capacity. SanDisk Commercial Embedded Product Brief (Mouser). confidence em fields + create_defaults: garante promoção estimated→distributor e preenche capacity para passar gate _USABLE (known_exact=True).'
+  notes: 'SDIN8DE2-32G — mesma família das -8G/-16G já distributor+capacity. SanDisk Commercial Embedded Product Brief (Mouser).'
   confidence: distributor
 - part_number: SDIN8DE24G
   chip_type: eMMC

@@ -101,15 +101,14 @@ de rentabilidade**.
     complementadas por `import_*` + admin.
 11. **Rentabilidade tem fonte ÚNICA: `assess_profitability`.** Nunca reimplemente
     regra de rentabilidade em outro lugar. O `is_dead_by_generation` (engine) e o
-    gateway do estoque (`estoque/views.py`) **derivam** dela — ver §4 e
-    `docs/CONTRATO_RENTABILIDADE_GATEWAY.md`.
+    gateway do estoque (`estoque/views.py`) **derivam** dela — ver §4 e **`RENTABILIDADE.md`**.
 12. **Tipo tem fonte ÚNICA: `chips/chip_types.py` (convenção OPÇÃO 1, jun/2026).** A
     geração da **DRAM discreta** vive no **`chip_type`** (`DDR3`, `LPDDR4X`, `GDDR5`,
     `SDRAM`…), espelhada no `subtype`; **gerenciada** (eMMC/UFS/eMCP/uMCP/NAND) mantém o
     `chip_type` (subtype = geração LPDDR / célula NAND / vazio). ❌ **NUNCA**
     `chip_type="RAM"` nem `"DDR"` genérico. Engine, gateway, profitability e o **portão do
     `load_brands`** (schema Pydantic) leem de `chip_types.py`; valide com `validate_convention`
-    e migre legado com `normalize_convention` (reversível). Ver §6 e `docs/CONVENCAO_CAMPOS_ESTOQUE.md`.
+    e migre legado com `normalize_convention` (reversível). Ver §6 (convenção completa) e `chips/chip_types.py`.
 
 ---
 
@@ -179,8 +178,7 @@ legado, NOR/K5…) e fica sempre em sincronia com a rentabilidade. O **gateway d
 triagem do estoque** (`estoque/views.py::_compute_gateway`) consome os dois:
 rentabilidade decide APROVADO/REPROVADO, e `is_dead_by_generation` manda chip de
 geração morta ao descarte **mesmo sem confirmação no banco** (rótulo distinto +
-`RejectedEntry` de auditoria). Contrato completo:
-**`docs/CONTRATO_RENTABILIDADE_GATEWAY.md`**.
+`RejectedEntry` de auditoria). Contrato completo: **`RENTABILIDADE.md`**.
 
 ### Modelos — `chips/models.py`
 
@@ -208,13 +206,6 @@ geração morta ao descarte **mesmo sem confirmação no banco** (rótulo distin
 - **`pages/views.py`** + `core/urls.py` → home `/` e páginas `/<slug>/`
   (a rota slug é a **última** — captura tudo).
 - **Auth:** login em `/login/`, sem cadastro público; `LOGIN_REDIRECT_URL=/estoque/`.
-
-### Site estático separado — `build.py` (atenção: NÃO é o app Django)
-
-`python3 build.py` gera um site estático em `docs/` a partir de `_content/` +
-`_template/` (publicável no GitHub Pages). É a versão **standalone/legada** da
-documentação; a versão "viva" servida pelo Django é o app **`pages`**. Não
-confunda os dois nem edite um esperando que o outro mude.
 
 ### Mapa de arquivos-chave
 
@@ -276,11 +267,11 @@ python manage.py normalize_convention --commit   # migra chip_type legado ("RAM"
 ```
 
 **Manutenção de estoque** (dry-run por padrão, reversíveis via JSON; rodar com
-`DATABASE_URL` apontando ao Render — ver `docs/archive/2026-06-16-limpeza-e-bloqueio-estoque.md`):
+`DATABASE_URL` apontando ao Render):
 
 ```bash
 python manage.py clean_lote --lot 39 --since 2026-06-16   # remove PNs novos NÃO confirmados (typos/contaminação); --keep, --commit, --revert
-python manage.py bless_base --lot 39 --since 2026-06-16    # promove a base lançada antes do corte a KnownPart manual/enriched; --commit, --revert
+python manage.py bless_base --lot 39 --since 2026-06-16    # promove a base lançada antes do corte a KnownPart confidence=manual; --commit, --revert
 python manage.py audit_targets --file correcoes.csv        # read-only: status (CONFIRMADO/GRAMATICA/NAO-VISIVEL/AUSENTE) de cada PN destino
 python manage.py fix_pns --lot 39 --file correcoes.csv     # corrige PNs (merge/rename/refresh) via CSV errado,certo; reavalia estado a cada passo; --commit, --revert
 ```
@@ -288,7 +279,8 @@ python manage.py fix_pns --lot 39 --file correcoes.csv     # corrige PNs (merge/
 > O bloqueio **"só confirmados"** em `estoque/views.py::add_chip` barra PN não
 > confirmado: vai para `PendingEntry` (fila em `/admin/estoque/pendingentry/`,
 > ações Aprovar/Reprovar) em vez do estoque. `bless_base` é a ponte para não
-> travar reposição dos comuns. Reinicie o servidor após `bless_base --commit`.
+> travar reposição dos comuns. Cada KnownPart salvo dispara o bump de `catalog_version`
+> (signal em `chips/apps.py`) → o engine recarrega sozinho, **sem reiniciar**.
 
 **Somente local** (precisam de `playwright`/`curl_cffi`/`pdfplumber` ou chaves de
 API — **não** rodam no Render: a imagem de produção (`requirements-render.txt`)
@@ -308,11 +300,51 @@ O `catalog_version` sobe no fim e o cache recarrega sozinho (sem reiniciar). **N
 
 ### Deploy (Render)
 
-**Repositório:** `github.com/HandsonMatheus/whatthechip` (remote `origin`). Push
-para `main` dispara o **deploy automático no Render**. `Procfile`: `web: gunicorn
-core.wsgi --bind 0.0.0.0:$PORT`. Render injeta `DATABASE_URL` e
-`RENDER_EXTERNAL_HOSTNAME`. `collectstatic` + WhiteNoise servem os estáticos.
-Detalhes e armadilhas: **`DEPLOY_RENDER.md`**.
+**Repositório:** `github.com/HandsonMatheus/whatthechip` (remote `origin`); **push em `main` →
+deploy automático**. A raiz do repo **É** o projeto Django (sem subpasta `chipdocs/`; os comandos
+não usam `cd`). Config vive no **dashboard do Render** (não há `render.yaml`):
+
+- **Build Command:** `pip install -r requirements-render.txt && python manage.py migrate && python manage.py collectstatic --noinput`
+- **Start:** `gunicorn core.wsgi --bind 0.0.0.0:$PORT` (`Procfile`).
+- **Env vars lidas por `core/settings.py`:** `DATABASE_URL` (Render injeta ao conectar o Postgres) ·
+  **`DJANGO_SECRET_KEY`** (obrigatória — o fallback é inseguro, só dev) · **`DEBUG=False`** (⚠ o
+  default do código é `True`) · `RENDER_EXTERNAL_HOSTNAME` (automática, já em `ALLOWED_HOSTS`).
+  `NEXAR_*` **não** é necessária no Render (só scripts locais).
+- **Estáticos:** WhiteNoise (`CompressedManifestStaticFilesStorage`); `collectstatic` roda no build → `staticfiles/`. Sem nginx.
+- **Migrations rodam no build.** A `chips/0016` (pghistory) cria tabelas de evento + gatilhos Postgres
+  nas 4 tabelas de catálogo — **aditiva e segura, aplica sozinha** no deploy; histórico em `/admin/` → Pghistory → Events.
+- **Armadilhas:** `DEBUG` default `True` (garanta `False`); **Django 6.0 exige Python 3.12+** — não
+  suba o Django sem subir o `runtime.txt` (hoje 3.11.9) senão o build quebra; pin do Django idêntico
+  em `requirements.txt` e `requirements-render.txt`; se estourar conexões Postgres, ative **PgBouncer**
+  (§7); cold start no free; alteração feita **direto no banco** (via `DATABASE_URL` local) só reflete na
+  prod após deploy/restart (regra de ouro #3).
+- **Sem shell interativo no Render:** comandos pontuais (`createsuperuser`, `deploy_catalog`, `import_*`)
+  rodam **localmente apontando `DATABASE_URL` ao Render** — sempre com revisão do dono.
+
+### Contrato de autoria do YAML (o que um chat de marca segue)
+
+Um chat cuida de UMA marca: pesquisa PNs em Tier-1 e escreve `chips/knowledge/<marca>.yaml`. O
+**portão** (validação Pydantic no `load_brands` dry-run) é o *data contract* — aceita se seguir a
+convenção, senão **rejeita com erro acionável** antes de gravar. (Os 10 `.md` de marca referenciam
+este contrato "via CLAUDE.md".)
+
+**Anatomia do yaml** — 4 seções (`brand` e `families` obrigatórias; `maps`/`known_parts` conforme a marca):
+
+- `brand`: `name` (exato), `code` (curto único), `notes`.
+- `maps`: tabelas `[chave, val_primary, val_secondary]` reusáveis (regra de primary/secondary por tipo de mapa — regra de ouro #4).
+- `families`: a **GRAMÁTICA** posicional — `prefix`, `chip_type`/`subtype`/`interface`, `priority`, `pn_length`, `is_emcp`, `active`, `decode_cap_*`/`decode_gen_*`/`decode_density_type`, `suffix_rules`.
+- `known_parts`: a **AUTORIDADE** — PNs confirmados que **vencem** a gramática (só `confidence` confirmed/manual).
+
+**Convenção que o portão força** (idêntica a §6): `chip_type` canônico (geração pra DRAM discreta;
+❌ nunca `RAM`/`DDR` genérico em família **ativa** → rejeita); `subtype` = só geração/célula (sem
+Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); `interface` = largura (`x8`/`x16`) ou vazio;
+`emcp_ram` = `'LPDDR{n} {cap}GB'` (tipo **antes**); `known_parts.notes` = a **fonte Tier-1** (proveniência).
+
+**Fluxo + checklist:** `load_brands --brand <marca>` (dry-run = portão) → `--commit` (grava, sobe
+`catalog_version`) → `characterize_baseline --diff` (prova que só mudou o pretendido). Antes de commitar,
+confira: chip_type canônico · subtype limpo · interface sem geração · nenhuma família com
+`decode_density_type` **e** `decode_cap_map` juntos · KM com dígito na 3ª pos → `decode_gen_pos: null` ·
+known_parts com fonte Tier-1 · dry-run passou · characterize mostrou **só** o pretendido.
 
 ---
 
@@ -327,7 +359,9 @@ Detalhes e armadilhas: **`DEPLOY_RENDER.md`**.
   `NEXAR_CLIENT_ID`/`NEXAR_CLIENT_SECRET`.
 - **Migrations:** toda mudança de modelo gera `makemigrations` + `migrate`.
   Nunca edite migrations já aplicadas em produção; crie uma nova.
-- **Mudou a gramática (populate/admin)?** Reinicie o servidor (regra de ouro #3).
+- **Mudou a gramática (`load_brands --commit` ou admin)?** O `catalog_version` sobe
+  (loader bumpa explícito; admin via signal `post_save`) e o engine recarrega sozinho —
+  **sem reiniciar** (regra de ouro #3).
 - **Estilo de código:** siga os padrões já presentes nos arquivos vizinhos
   (PEP 8, docstrings explicativos com o *porquê*). Não recrie um "linter humano"
   aqui — espelhe o código existente.
@@ -374,8 +408,7 @@ os campos abaixo. **Alimente os campos certos; não mexa no gateway.** Modelo: `
 - `density_gbit` é o campo modelo do `KnownPart` para densidade DDR (em Gb); `dram_density` é campo calculado pelo engine — não confundir
 - Tudo que sobrar (temperatura, organização, variante, ECC) vai no `tip`/`notes`
 
-Referência completa (todas as marcas, opção 1): **`docs/CONVENCAO_CAMPOS_ESTOQUE.md`**
-+ a fonte única em código **`chips/chip_types.py`**. Específico da Micron: `docs/CONVENCAO_MICRON_ESTOQUE.md`.
+Fonte única em código: **`chips/chip_types.py`** (a convenção completa está resumida acima). Específico da Micron: **`MICRON.md`**.
 
 > **O estoque é um SNAPSHOT — gravado do classify do SERVIDOR (jun/2026).** A entrada
 > `InventoryEntry` vem de `estoque/views.py::_snapshot(server_result)`, **nunca do POST do
@@ -385,8 +418,7 @@ Referência completa (todas as marcas, opção 1): **`docs/CONVENCAO_CAMPOS_ESTO
 > `'None'`; **case-sensitive `Gb`≠`GB`**); `interface` por `_clean_interface` (tira a
 > geração espelhada — só bus width/versão). O `export_xls` converte o timestamp p/ Brasília
 > (`timezone.localtime`). **Como é snapshot, defasa quando o engine melhora** → re-snapshot
-> o lote (backfill: re-rodar `_snapshot` sobre as entradas). É o problema 4.4 do
-> `docs/BRIEFING_ESCALABILIDADE.md` (solução definitiva = cálculo on-read).
+> o lote (backfill: re-rodar `_snapshot` sobre as entradas). Solução definitiva = cálculo on-read.
 
 > **Label protegido por `canonical_gen` (2026-06-19) — FONTE ÚNICA da convenção.**
 > O label da caixa é montado em `estoque/views.py::_compute_destination`, que passa o
@@ -403,8 +435,9 @@ Referência completa (todas as marcas, opção 1): **`docs/CONVENCAO_CAMPOS_ESTO
 
 ## 7. Armadilhas comuns (o que costuma quebrar)
 
-- **Cache velho:** esqueceu de reiniciar após `populate --overwrite` → engine
-  serve gramática antiga. (Regra de ouro #3.)
+- **Cache velho:** uma escrita em massa na gramática que **não** sobe o `catalog_version`
+  → o engine serve famílias/mapas antigos. `load_brands --commit` bumpa explícito e o admin
+  bumpa via signal, então na prática só quebra se alguém gravar em bulk por fora. (Regra de ouro #3.)
 - **Registro não autoritativo:** PN com dado certo mas `confidence` fora de
   (`confirmed`, `manual`) → o engine não o usa como autoridade (cai na gramática).
   Promova a `confirmed`/`manual`. (Regra de ouro #2.)
@@ -503,8 +536,7 @@ Referência completa (todas as marcas, opção 1): **`docs/CONVENCAO_CAMPOS_ESTO
   geral que isto ensinou: num FBGA `confidence="confirmed"`, o **ouro é só a IDENTIDADE** (PN↔FBGA da
   API); `capacity`/`subtype`/`density` são calculados localmente e podem estar errados — **atestar
   sempre em tier-1** (datasheet/DigiKey), nunca assumir. Ferramentas: `fix_micron_lpddr_specs` (normaliza
-  specs MT5x, guard de eMCP), `fix_micron_capacity --family lpddr` (capacity). Detalhes:
-  **`MICRON.md §5/§14/§15`** e o runbook **`docs/RUNBOOK_MICRON_DIES_FIX.md`**.
+  specs MT5x, guard de eMCP), `fix_micron_capacity --family lpddr` (capacity). Detalhes: **`MICRON.md`**.
 
 ---
 
@@ -533,36 +565,16 @@ Referência completa (todas as marcas, opção 1): **`docs/CONVENCAO_CAMPOS_ESTO
 Estes docs já existem na raiz. **Não duplique o conteúdo deles aqui** — abra o
 relevante quando a tarefa pedir:
 
-- **`CONTRATO_AUTORIA_YAML.md`** — **o contrato de autoria** (data contract) que os chats de marca
-  seguem pra escrever `chips/knowledge/<marca>.yaml`: estrutura, convenção (o portão), workflow
-  `load_brands`, formato dos known_parts, hierarquia de fontes, checklist. Leia antes de popular
-  uma marca. Cada `.md` de marca (SAMSUNG.md, SK_HYNIX.md, …, NANYA/KINGSTON/RAYSON) tem um banner
-  no topo apontando pro yaml + este contrato (as refs a populate_*/fix_known_parts nelas são históricas).
-- **`README.md`** — visão geral e setup original.
-- **`HANDOFF.md`** — decisões de arquitetura, histórico e correções (BUG-1…BUG-6).
-- **`DEPLOY_RENDER.md`** — deploy, env vars, armadilhas de produção.
+- **`README.md`** — visão geral e setup. O **contrato de autoria do yaml** (que os `.md` de marca citam "via CLAUDE.md") está no **§5** acima.
 - **`RENTABILIDADE.md`** — bíblia técnica completa do sistema de rentabilidade: `assess_profitability`, `is_dead_by_generation`, `ProfitabilityConfig`, gateway do estoque, todos os bugs corrigidos, limitações, regras invioláveis, checklist para novos chip_types. **Leia antes de tocar em qualquer código de rentabilidade.**
 - **`MICRON.md`** — bíblia técnica e de negócio da Micron: famílias, decode maps, convenção de campos, pipeline, fontes de dados, bugs corrigidos, lacunas.
 - **`PIECEMAKERS.md`** — bíblia técnica PieceMakers: anatomia do PN PMF, decode map PMF_DDR3_CAP, famílias, rentabilidade, fontes, armadilhas.
-- **`TOSHIBA-KIOXIA.md`** — bíblia técnica Toshiba / Kioxia: família THGBM (eMMC), decode maps THGBM_CAP/THGBM_GEN, eMCP TYC, famílias bloqueadas (KLUE/THGAF), armadilhas de sub-prefixo, gaps e roadmap. **CONSOLIDAÇÃO (2026-07-01):** Toshiba + Kioxia + KIOXIA(dup) viraram UMA marca **`Toshiba-Kioxia`** (code TXK) — mesma empresa (rename out/2019), em `chips/knowledge/toshiba-kioxia.yaml` (11 famílias). Fusão via `merge_toshiba_kioxia` (reversível). **Para adicionar/corrigir chip Toshiba-Kioxia, edite `chips/knowledge/toshiba-kioxia.yaml`** (ver `CONTRATO_AUTORIA_YAML.md`).
+- **`TOSHIBA-KIOXIA.md`** — bíblia técnica Toshiba / Kioxia: família THGBM (eMMC), decode maps THGBM_CAP/THGBM_GEN, eMCP TYC, famílias bloqueadas (KLUE/THGAF), armadilhas de sub-prefixo, gaps e roadmap. **CONSOLIDAÇÃO (2026-07-01):** Toshiba + Kioxia + KIOXIA(dup) viraram UMA marca **`Toshiba-Kioxia`** (code TXK) — mesma empresa (rename out/2019), em `chips/knowledge/toshiba-kioxia.yaml` (11 famílias). Fusão via `merge_toshiba_kioxia` (reversível). **Para adicionar/corrigir chip Toshiba-Kioxia, edite `chips/knowledge/toshiba-kioxia.yaml`** (contrato de autoria em §5).
 - **`FUZZY.md`** — bíblia técnica do sistema de sugestão inteligente de PNs: `_visual_edit_distance`, matriz de confusão visual, `_prefix_candidates`, `_combined_suggestions`, gate de confiança, frontend diff, tuning. **Leia antes de tocar nas funções `_fuzzy_*` / `_prefix_*` do engine.**
-- **`PLANO_MICRON_FBGA.md`** — pipeline FBGA da Micron (estágios iniciais — parcialmente histórico; ver MICRON.md para estado atual).
-- **`AUDITORIA_SAMSUNG_2026.md`** / **`BRIEFING_DDR_SAMSUNG.md`** — gabarito Samsung,
-  chaves de cap/gen, casos confirmados e descartados.
-- **`INVESTIGACAO_ENGINE_STATUS_ENRICHED.md`** — **HISTÓRICO**: documenta o antigo
-  gatekeeper `status="enriched"`, removido em jun/2026 (o gate agora é `confidence`
-  ∈ confirmed/manual — ver §4). Mantido só como registro.
-- **`design_system.md`** (+ `design_system_preview.html`) — tema visual (IBM Carbon
-  White), tokens CSS, componentes.
-- **`SETUP_CHIPS.md`** — passo a passo de povoamento inicial.
-- **`docs/CONVENCAO_MICRON_ESTOQUE.md`** — convenção canônica de campos por tipo de chip
-  (NAND / eMMC / eMCP / UFS / DDR / LPDDR) e como cada campo alimenta o label da caixa física.
-  Modelo de referência: `JW464`. Leia ao adicionar qualquer novo PN Micron.
 
-> ⚠️ **Notas de sessão antigas foram movidas para `docs/archive/`**
-> (`NEXT_CHAT.md`, `BRIEFING_PROXIMO_CHAT.md`, `PROMPT_SESSAO_REFINAMENTO.md`).
-> São **históricas** e podem estar desatualizadas (ex.: status do Gemini). **O
-> código é a fonte da verdade**; confirme em `chips/engine.py` / `core/settings.py`.
+> ⚠️ **Não há mais `docs/archive/` nem notas de sessão** (removidas na limpeza v1.0.0-beta,
+> jul/2026). Handoff/histórico vive no git e no chat, não em arquivo solto. **O código é a
+> fonte da verdade**; confirme em `chips/engine.py` / `core/settings.py`.
 
 ---
 
@@ -571,14 +583,11 @@ relevante quando a tarefa pedir:
 - **`CLAUDE.md` é o índice canônico de onboarding.** Ao aprender algo durável
   (uma regra que evita um bug, um comando novo, uma decisão de arquitetura),
   **atualize a seção certa aqui** — não crie um documento novo solto na raiz.
-- **Não crie `NEXT_CHAT.md` / `BRIEFING_*` na raiz.** Para handoff de fim de
-  sessão, salve em **`docs/archive/`** com data no nome
-  (ex.: `docs/archive/2026-06-14-handoff.md`) e um cabeçalho marcando-o como
-  histórico.
-- **`docs/archive/` é histórico, não fonte da verdade.** Não aja com base nele
-  sem confirmar no código.
-- **Decisões de arquitetura duradouras** vão para **`HANDOFF.md`** (já existe),
-  não numa nota de sessão nova.
+- **Não crie arquivos de nota de sessão** (tipo `NEXT_CHAT` / `BRIEFING_*` / handoffs datados).
+  De `.md` de projeto só existem **README + CLAUDE + os 10 de marca** (política v1.0.0-beta,
+  jul/2026). Handoff de fim de sessão vai no git/PR e no chat — nunca em arquivo novo na raiz.
+- **Decisões de arquitetura duradouras** vão para a seção certa do próprio **`CLAUDE.md`**
+  (o hub) ou pro `.md` da marca — nunca num doc solto.
 - **Em qualquer conflito entre documentos, o código vence**
   (`chips/engine.py`, `core/settings.py`).
 

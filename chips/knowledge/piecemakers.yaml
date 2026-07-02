@@ -1,6 +1,6 @@
-# Conhecimento PieceMakers — fonte de dados do catálogo (passo 4).
-# Gerado da saída de populate_piecemakers (fidelidade por construção); daqui pra
-# frente é a FONTE: editar aqui, validar com Pydantic, carregar com load_brands.
+# Conhecimento PieceMakers — FONTE do catálogo (gramática + known_parts).
+# Editar aqui, validar no portão (load_brands --brand piecemakers, dry-run) e gravar
+# com --commit. Convenção e formato dos campos: CONTRATO_AUTORIA_YAML.md.
 brand:
   name: PieceMakers
   code: PMK
@@ -63,7 +63,7 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'DDR4 SDRAM PieceMakers Technology (PMA). 1.2V. Catálogo atual: 4Gb x8 (PMA212508ABR) · 4Gb x16 (PMA212816ABR). Velocidades: 2133/2400/2666 Mbps. Package: 78FBGA (x8) · 96FBGA (x16). Decode posicional pendente — estrutura PN DDR4 não totalmente confirmada. Routing: classifica como DDR4 para bancada de triagem. Adicionar KnownPart via fix_known_parts para PNs confirmados. Rentabilidade: DDR4 qualquer densidade → RENTÁVEL (verifique ProfitabilityConfig).'
+  tip: 'DDR4 SDRAM PieceMakers Technology (PMA). 1.2V. Catálogo atual: 4Gb x8 (PMA212508ABR) · 4Gb x16 (PMA212816ABR). Velocidades: 2133/2400/2666 Mbps. Package: 78FBGA (x8) · 96FBGA (x16). Decode posicional pendente — estrutura PN DDR4 não totalmente confirmada. Routing: classifica como DDR4 para bancada de triagem. Rentabilidade: DDR4 qualquer densidade → RENTÁVEL (verifique ProfitabilityConfig).'
   reasoning: ''
 - prefix: PMD
   chip_type: DDR1

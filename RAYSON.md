@@ -2,13 +2,14 @@
 
 > ⚠️ **O CONHECIMENTO É YAML.** As famílias e PNs confirmados da Rayson vivem em
 > **`chips/knowledge/rayson.yaml`**, carregado por `load_brands`. Para **adicionar ou corrigir
-> um chip, edite o yaml** seguindo o **`CONTRATO_AUTORIA_YAML.md`** — NÃO edite Python.
+> um chip, edite o yaml** seguindo o contrato de autoria — NÃO edite Python.
+> **`CLAUDE.md`** é o único `.md` cross-marca mantido (convenção, comandos e o contrato estão lá).
 
 ## Visão geral
 
 **Rayson HI-TECH (SZ) Co., Ltd.** — Shenzhen, China, fundada 2016 (também 晶存科技). Fabricante
 de memória de **baixo custo** (LPDDR3/4/4X/5, eMMC, UFS, eMCP, MCP). Prefixo principal: **`RS`**.
-Brand `code` no yaml.
+Brand `code = RAY`.
 
 ⚠ **Destino na reciclagem:** produtos Rayson **não são aceitos como substitutos** de
 Samsung/Hynix/Micron no B2B premium → **lote segregado Rayson/budget**. Registre isso no
@@ -28,4 +29,4 @@ Samsung/Hynix/Micron no B2B premium → **lote segregado Rayson/budget**. Regist
 Rayson tem datasheets em **rayson-tech.com** (Tier-1) — confirme capacidade/geração ali e
 adicione em `known_parts` (`confidence: confirmed`, fonte em `notes`). LPDDR4/4X: cuide da
 distinção 4 vs 4X (o portão reduz `LPDDR4/4X`→`LPDDR4` no subtype; a geração exata do chip
-específico vem da KnownPart). Ver o **`CONTRATO_AUTORIA_YAML.md`**.
+específico vem da KnownPart). O formato dos campos está no contrato de autoria (referenciado no CLAUDE.md).

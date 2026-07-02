@@ -2,7 +2,9 @@
 
 > ⚠️ **O CONHECIMENTO É YAML.** As famílias e PNs confirmados da Nanya vivem em
 > **`chips/knowledge/nanya.yaml`**, carregado por `load_brands`. Para **adicionar ou corrigir
-> um chip, edite o yaml** seguindo o **`CONTRATO_AUTORIA_YAML.md`** — NÃO edite Python.
+> um chip, edite o yaml** seguindo o contrato de autoria — NÃO edite Python.
+> **`CLAUDE.md`** é o único `.md` cross-marca mantido — convenção, comandos e o contrato de
+> autoria estão referenciados lá.
 
 ## Visão geral
 
@@ -19,15 +21,16 @@ KnownParts** confirmadas (a gramática não decodifica capacidade posicionalment
 
 | Prefixo | chip_type | Nota |
 |---|---|---|
-| `NT5CC` | DDR3 | Ex.: `NT5CC256M16DP-DI` = 256M×16 = 4Gb DDR3 |
-| `NT5AD` | DDR4 | Geração posterior ao NT5CC |
-| `NT5PA` | DDR3L | Variante low-voltage do NT5CC (notebooks) |
+| `NT5CC` | **DDR3L** (1.35V) | Ex.: `NT5CC256M16EP-DI` = 256M×16 = 4Gb DDR3L |
+| `NT5AD` | DDR4 | Geração posterior |
+| `NT5PA` | DDR3L | Variante low-voltage (notebooks) |
 
-**36 known_parts** confirmados (a maioria NT5CC, via Octopart — página do fabricante Nanya).
+⚠ **NT5CB ≠ NT5CC** — `NT5CB` (sem família própria; só em known_parts) = **DDR3 1.5V**; `NT5CC` = **DDR3L
+1.35V**. Não confundir. Os known_parts confirmados (via Octopart / datasheet Nanya) vivem no yaml.
 
 ## Como popular
 
 Pesquise o PN em **Octopart / datasheet Nanya (nanya.com.tw)**, confirme densidade × largura
 (`128Mx16 = 2Gbit`, etc.) e adicione em `known_parts` com `confidence: confirmed` e a fonte em
-`notes`. Anatomia típica: `NT5[geração][densidade][organização]-[velocidade/temp]`. Ver o
-**`CONTRATO_AUTORIA_YAML.md` §6** pro formato dos campos.
+`notes`. Anatomia típica: `NT5[geração][densidade][organização]-[velocidade/temp]`. O formato dos
+campos está no contrato de autoria (referenciado no CLAUDE.md).

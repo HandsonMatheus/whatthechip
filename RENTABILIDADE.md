@@ -3,8 +3,8 @@
 > Bíblia técnica completa do sistema de avaliação de rentabilidade.
 > Leia este documento inteiro antes de tocar em qualquer código relacionado
 > a `assess_profitability`, `is_dead_by_generation`, `ProfitabilityConfig`
-> ou no gateway do estoque. Ele substitui `CONTRATO_RENTABILIDADE_GATEWAY.md`
-> como referência canônica — aquele é um briefing histórico; este é o estado atual.
+> ou no gateway do estoque. É a **fonte única** (referência canônica) do contrato
+> rentabilidade↔gateway.
 
 ---
 
@@ -683,9 +683,5 @@ print(is_dead_by_generation(result))  # False (por capacidade, não geração)
 
 ## 13. Relação com outros documentos
 
-- **`CLAUDE.md §7`** — Armadilhas: lista os bugs corrigidos com contexto de sessão
-- **`docs/CONTRATO_RENTABILIDADE_GATEWAY.md`** — briefing histórico do contrato
-  gateway × rentabilidade (2026-05); estado atual está aqui
-- **`HANDOFF.md`** — decisões de arquitetura gerais
-- **`chips/engine.py`** — código é a fonte da verdade; confirme aqui em caso
-  de conflito com este documento
+- **`CLAUDE.md`** — hub do projeto: regras de ouro, arquitetura, convenção, comandos.
+- **`chips/engine.py`** — o código é a fonte da verdade; em conflito com este doc, o código vence.

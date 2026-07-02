@@ -9,7 +9,7 @@ Encadeia, na ordem canônica (CLAUDE.md §5), os comandos de catálogo que são
 **rodáveis no Render** (código puro ou com dados versionados), cada um já
 idempotente e com seu próprio `atomic()`:
 
-    load_brands (todas as 11 marcas)  →  link_doc_pages  →
+    load_brands (todas as 10 marcas)  →  link_doc_pages  →
     sync_index_page  →  import_samsung_psg (--all)   [known_parts já vêm dos yamls via load_brands]
 
 e, no fim, **sobe o `catalog_version`** — o que **substitui o antigo "reinicie o
