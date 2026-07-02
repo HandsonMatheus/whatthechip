@@ -1062,7 +1062,6 @@ a.pr-row:visited { color: inherit; }
   overflow: hidden;
   text-align: left;
 }
-.dc2-card--remarked { border-left-color: var(--warning); }
 
 /* Barra de status */
 .dc2-status {
@@ -1169,7 +1168,7 @@ a.pr-row:visited { color: inherit; }
   line-height: 1.25;
 }
 
-/* Alerta remarked */
+/* Alerta (aviso genérico) */
 .dc2-alert {
   margin: 0 var(--s5) var(--s4) var(--s5);
   padding: var(--s3) var(--s4);
@@ -1186,7 +1185,7 @@ a.pr-row:visited { color: inherit; }
 /* Card modifier: borda laranja/amarela no lado esquerdo */
 .dc2-card--undoc { border-left-color: var(--warning); }
 
-/* Status bar — laranja, mesmo padrão visual do remarked */
+/* Status bar — laranja (aviso) */
 .dc2-status--undoc {
   background: var(--warning-bg);
   color: var(--warning);
@@ -1394,7 +1393,6 @@ a.pr-row:visited { color: inherit; }
   border-left: 4px solid var(--ok-bd);
   text-align: left;
 }
-.dc-card.dc-remarked { background: var(--warn-bg); border-left-color: var(--warn-bd); }
 .dc-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
 .dc-brand {
   font-size: 10px; font-weight: 700; font-family: var(--font-mono);
@@ -2182,12 +2180,10 @@ ol.steps li::before {
 [data-theme="dark"] .dc2-spec-col { background: var(--surface); }
 [data-theme="dark"] .dc2-specs { background: var(--border-subtle); }
 [data-theme="dark"] .dc2-status { background: rgba(66,190,101,.12); }
-[data-theme="dark"] .dc2-card--remarked .dc2-status { background: rgba(241,194,27,.10); }
 [data-theme="dark"] .dc2-spec-label { color: var(--interactive); }
 
 /* Decode card v1 (compat) */
 [data-theme="dark"] .dc-card { background: var(--ok-bg); }
-[data-theme="dark"] .dc-card.dc-remarked { background: var(--warn-bg); }
 
 /* Tabelas */
 [data-theme="dark"] table { background: var(--surface); border-color: var(--border-subtle); }

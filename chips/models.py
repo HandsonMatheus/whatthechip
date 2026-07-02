@@ -166,12 +166,6 @@ class KnownPart(models.Model):
         Só registros com confidence em (confirmed, manual) vencem a gramática no
         engine. distributor/estimated apenas complementam quando a gramática é
         incompleta. Não há enriquecimento automático por IA.
-
-    Double-check:
-        Quando o engine decoda um PN pela gramática da família e também encontra
-        um KnownPart para o mesmo PN, os dois resultados são comparados.
-        Divergência (ex: gramática diz DDR3 4Gb, banco diz DDR3 2Gb) é sinalizada
-        como possível chip remarked — dado o contexto de reciclagem.
     """
 
     CONFIDENCE_CHOICES = [

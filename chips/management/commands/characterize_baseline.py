@@ -60,7 +60,6 @@ def _characterize_one(pn: str) -> dict:
         "is_emcp":               bool(r.get("is_emcp")),
         "classification_source": r.get("classification_source") or "",
         "confidence":            r.get("confidence") or "",
-        "remarked_flag":         bool(r.get("remarked_flag")),
         "profitable":            assess_profitability(r),
         "is_dead":               bool(is_dead_by_generation(r)),
     }

@@ -57,7 +57,6 @@ def search_api(request):
           "is_emcp": false,
           "confidence": "estimated",
           "doc_url": "/fab-samsung/",
-          "remarked_flag": false,
           ...
         }
     """

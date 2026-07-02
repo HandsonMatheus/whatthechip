@@ -44,9 +44,6 @@ de rentabilidade**.
 
 ### Valor diferenciado
 
-- **Detecção de chip *remarked* (remarcado/falsificado):** se gramática e banco
-  divergem na capacidade (> 0.1 GB), o sistema levanta a flag `remarked_flag` —
-  crítico no mercado de reciclagem, cheio de chips relabelados.
 - **Crescimento colaborativo:** quando um PN não é encontrado, o usuário pode
   enviá-lo (com foto) via "Adicionar chip" (`ChipSubmission`) ou reportar erros
   (`CorrectionRequest`). Buscas e desconhecidos são logados (`SearchLog`,
@@ -549,7 +546,6 @@ Fonte única em código: **`chips/chip_types.py`** (a convenção completa está
   **GDDR / gDDR3** — memória de GPU (não confundir com DDR).
 - **FBGA code** — ID físico de 5 caracteres gravado a laser (ex.: `D9VFC`); é o que
   o operador lê, não o PN completo.
-- **remarked** — chip relabelado/falsificado; detectado por divergência gramática×banco.
 - **gramática** — decode posicional do PN pelas regras da `ChipFamily` + `DecodeMap`.
 - **gabarito** — o conjunto curado de famílias/mapas definido nos `chips/knowledge/<marca>.yaml`
   e carregado por `load_brands`.

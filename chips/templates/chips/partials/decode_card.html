@@ -1,15 +1,11 @@
 {% if result.known %}
-<div class="dc2-card{% if result.remarked_flag %} dc2-card--remarked{% endif %}{% if family_undocumented %} dc2-card--undoc{% endif %}" data-pn="{{ result.pn }}" data-debug="{{ result_json }}">
+<div class="dc2-card{% if family_undocumented %} dc2-card--undoc{% endif %}" data-pn="{{ result.pn }}" data-debug="{{ result_json }}">
 
   <!-- ── Barra de status ─────────────────────────────────────────────────── -->
   {% if result.pn_incomplete %}
   <div class="dc2-status dc2-status--wait">
     ⌛ PN incompleto — continue digitando
     {% if result.pn_length_expected %}<span class="dc2-status-detail">(esperado: {{ result.pn_length_expected }} caracteres)</span>{% endif %}
-  </div>
-  {% elif result.remarked_flag %}
-  <div class="dc2-status dc2-status--warn">
-    ⚠ Possível chip remarked
   </div>
   {% elif result.pn_not_in_db %}
   <div class="dc2-status dc2-status--warn">
@@ -41,13 +37,6 @@
     <span class="dc2-brand-tag">{{ result.brand }}</span>
     {% endif %}
   </div>
-
-  <!-- ── Aviso remarked ──────────────────────────────────────────────────── -->
-  {% if result.remarked_flag %}
-  <div class="dc2-alert">
-    ⚠ {{ result.remarked_note|default:"Verificar autenticidade na bancada — marcação pode ser falsa." }}
-  </div>
-  {% endif %}
 
   <!-- ── Bloco família sem documentação pública ────────────────────────── -->
   {% if family_undocumented or "sem documentação" in result.subtype %}

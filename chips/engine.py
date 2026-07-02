@@ -17,9 +17,6 @@ Fonte da verdade:
     (populate_*/import_*/fix_* + revisão no admin), nunca de IA. O antigo
     campo KnownPart.status (raw/enriched) e o fallback Gemini foram removidos.
 
-Double-check:
-    Quando o banco confirmado E a gramática têm resultados, eles são comparados.
-    Divergência de capacidade é sinalizada como possível chip remarked.
 """
 
 import json
@@ -459,7 +456,6 @@ def _result_from_family(pn: str, fam) -> dict:
         "source_url":         None,
         "from_web":           False,
         "suffix_note":        None,
-        "remarked_flag":      False,
         "fuzzy_suggestions":  [],
         "classification_source": "gramática",
         # Família sem documentação pública verificável (ex: H28M).
@@ -878,29 +874,6 @@ def _result_from_known(pn: str, known, fam) -> dict:
     return r
 
 
-# ── Double-check: detecta possível remarked ───────────────────────────────────
-
-def _remarked_summary(r: dict) -> str:
-    """
-    Formata uma string legível com os valores de capacidade do resultado,
-    cobrindo tanto chips standalone (capacity, dram_density) quanto
-    eMCP/uMCP (emcp_nand, emcp_ram).
-
-    Usado em remarked_note para que o operador saiba qual campo divergiu.
-    Ex: "NAND: eMMC 5.1 64GB · RAM: LPDDR4/4X 4GB"
-    """
-    parts = []
-    if r.get("emcp_nand"):
-        parts.append(f"NAND: {r['emcp_nand']}")
-    if r.get("emcp_ram"):
-        parts.append(f"RAM: {r['emcp_ram']}")
-    if r.get("capacity"):
-        parts.append(r["capacity"])
-    if r.get("dram_density"):
-        parts.append(r["dram_density"])
-    return " · ".join(parts) if parts else "N/A"
-
-
 def _extract_gib(text: str) -> float | None:
     """Extrai capacidade em GB a partir de string como '4GB', '512MB'."""
     if not text:
@@ -916,28 +889,6 @@ def _extract_gib(text: str) -> float | None:
     if unit == "M":
         return val / 1024
     return val  # GB
-
-
-def _check_remarked(grammar_result: dict, db_result: dict) -> bool:
-    """
-    Retorna True se gramática e banco divergem em capacidade — sinal de possível remarked.
-    Só compara campos preenchidos em ambos.
-
-    Compara tanto campos de chip standalone (capacity, dram_density) quanto
-    campos de eMCP/uMCP (emcp_nand, emcp_ram) — anteriormente eMCPs eram
-    invisíveis para esta função, o que desativava o alerta de remarked para
-    a maioria dos chips Samsung no mercado de reciclagem.
-    """
-    for field in ("capacity", "dram_density", "emcp_nand", "emcp_ram"):
-        g_val = grammar_result.get(field)
-        d_val = db_result.get(field)
-        if not g_val or not d_val:
-            continue
-        g_cap = _extract_gib(str(g_val))
-        d_cap = _extract_gib(str(d_val))
-        if g_cap and d_cap and abs(g_cap - d_cap) > 0.1:
-            return True
-    return False
 
 
 # ── Helpers de logging ─────────────────────────────────────────────────────────
@@ -1343,7 +1294,6 @@ def classify(pn_raw: str) -> dict:
                 "reasoning":    [],
                 "from_web":     False,
                 "doc_url":      None,
-                "remarked_flag":     False,
                 "fuzzy_suggestions": [],
                 "interface":         known.interface,
                 "family_prefix":     "",
@@ -1388,7 +1338,6 @@ def classify(pn_raw: str) -> dict:
                 "reasoning":    [],
                 "from_web":     False,
                 "doc_url":      None,
-                "remarked_flag":     False,
                 "fuzzy_suggestions": [],
                 "interface":         known.interface,
                 "family_prefix":     "",
@@ -1439,7 +1388,6 @@ def classify(pn_raw: str) -> dict:
                     "reasoning":     [],
                     "from_web":      False,
                     "doc_url":       None,
-                    "remarked_flag":      False,
                     "fuzzy_suggestions":  [],
                     "interface":          known_fbga.interface,
                     "family_prefix":      "",
@@ -1484,7 +1432,7 @@ def classify(pn_raw: str) -> dict:
                     "device": known_fbga.device, "confidence": known_fbga.confidence,
                     "source_url": known_fbga.source_url, "is_emcp": bool(known_fbga.emcp_ram),
                     "tip": known_fbga.notes or "", "reasoning": [], "from_web": False,
-                    "doc_url": None, "remarked_flag": False, "fuzzy_suggestions": [],
+                    "doc_url": None, "fuzzy_suggestions": [],
                     "interface": known_fbga.interface, "family_prefix": "",
                     "family_undocumented": False, "suffix_note": None,
                     "dram_density": (
@@ -1549,28 +1497,6 @@ def classify(pn_raw: str) -> dict:
         # Sem Gemini: a gramática é o resultado final da camada 2. PNs que a
         # gramática não decodifica por completo permanecem parciais — o operador
         # confirma manualmente, alimentando populate_*/import_*/fix_*.
-
-        # Double-check de chip remarked: se já existe um KnownPart para este PN
-        # (confirmados retornaram na camada 1, então aqui é registro NÃO confirmado
-        # — ex.: histórico de distribuidor) e a capacidade diverge da gramática,
-        # sinaliza possível remarcação — pista crítica no mercado de reciclagem.
-        try:
-            db_part = KnownPart.objects.get(part_number=pn)
-            if db_part.family:
-                db_result = _result_from_known(pn, db_part, db_part.family)
-                if _check_remarked(grammar_result, db_result):
-                    grammar_result["remarked_flag"] = True
-                    # BUG-1: _remarked_summary() cobre emcp_nand/emcp_ram também
-                    # (capacity/dram_density são None para eMCP/uMCP).
-                    grammar_result["remarked_note"] = (
-                        f"⚠️ Atenção: gramática indica "
-                        f"{_remarked_summary(grammar_result)}, "
-                        f"banco indica "
-                        f"{_remarked_summary(db_result)}. "
-                        f"Verificar possível chip remarked."
-                    )
-        except KnownPart.DoesNotExist:
-            pass
 
         # Sem fila de revisão: o antigo KnownPart status="raw" (criado a cada busca
         # de PN não confirmado) foi removido junto com o campo status. PNs buscados

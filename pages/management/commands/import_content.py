@@ -11,11 +11,6 @@ from pages.models import Page
 
 PAGES = [
     {'file': 'index',         'title': 'Apresentação',                    'nav': 'Início',              'order':  1, 'section': 'Apresentação'},
-    {'file': 'aprender',      'title': '1.1 O que você vai aprender',     'nav': '1.1 O que vai aprender', 'order': 2, 'section': 'Apresentação'},
-    {'file': 'o-que-e-chip',  'title': '1.2 O que é um Chip',            'nav': '1.2 O que é um Chip', 'order':  3, 'section': 'Apresentação'},
-    {'file': 'evolucao',      'title': '1.3 Evolução: do pino à esfera', 'nav': '1.3 Evolução',         'order':  4, 'section': 'Apresentação'},
-    {'file': 'metodologia',   'title': '1.4 Metodologia de Identificação','nav': '1.4 Metodologia',     'order':  5, 'section': 'Apresentação'},
-    {'file': 'tipos',         'title': '1.5 Tipos de Chip',               'nav': '1.5 Tipos de Chip',   'order':  6, 'section': 'Apresentação'},
     {'file': 'fabricantes',   'title': '2. Identificação por Fabricante', 'nav': '2. Fabricantes',       'order': 10, 'section': 'Conteúdo'},
     {'file': 'fab-samsung',   'title': '2.1 Samsung',                     'nav': '2.1 Samsung',          'order': 11, 'section': 'Conteúdo'},
     {'file': 'fab-hynix',     'title': '2.2 SK Hynix',                   'nav': '2.2 SK Hynix',         'order': 12, 'section': 'Conteúdo'},
@@ -28,11 +23,6 @@ PAGES = [
     {'file': 'fab-rayson',    'title': '2.9 Rayson',                      'nav': '2.9 Rayson',           'order': 19, 'section': 'Conteúdo'},
     {'file': 'fab-issi',      'title': '2.10 ISSI',                       'nav': '2.10 ISSI',            'order': 20, 'section': 'Conteúdo'},
     {'file': 'fab-gigadevice','title': '2.11 GigaDevice',                 'nav': '2.11 GigaDevice',      'order': 21, 'section': 'Conteúdo'},
-    {'file': 'prefixos',      'title': '3. Tabela Rápida de Prefixos',    'nav': '3. Prefixos',          'order': 30, 'section': 'Conteúdo'},
-    {'file': 'remarked',      'title': '4. Chips Remarked / Counterfeit', 'nav': '4. Remarked',          'order': 40, 'section': 'Conteúdo'},
-    {'file': 'viabilidade',   'title': '5. Hierarquia de Viabilidade',    'nav': '5. Viabilidade',       'order': 50, 'section': 'Conteúdo'},
-    {'file': 'soc',           'title': '6. CPUs / SoCs',                  'nav': '6. CPUs / SoCs',       'order': 60, 'section': 'Conteúdo'},
-    {'file': 'encerramento',  'title': 'Encerramento',                    'nav': 'Encerramento',         'order': 70, 'section': 'Conteúdo'},
     {'file': 'contato',       'title': 'Contato',                         'nav': 'Contato',              'order': 80, 'section': 'Conteúdo'},
 ]
 

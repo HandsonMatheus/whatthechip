@@ -18,9 +18,8 @@ bancada lê o código gravado a laser num chip recuperado, digita na busca, e o 
 3. **Gramática da família** — decodifica cada posição do PN pelas regras da `ChipFamily` + `DecodeMap`, cobrindo a cauda longa de PNs ainda não confirmados.
 4. **Fuzzy matching** — sugestões por similaridade visual para erros de digitação, quando nada casa.
 
-Se a gramática e o banco divergem na capacidade, o sistema levanta a flag **remarked** (chip
-relabelado / falsificado) — crítico num mercado cheio de chips relabelados. Em paralelo,
-`assess_profitability` aplica as regras comerciais e devolve o veredito de rentabilidade.
+Em paralelo, `assess_profitability` aplica as regras comerciais (por tipo, geração e capacidade)
+e devolve o veredito de rentabilidade.
 
 Digite um PN como `KMQ310006A` e o card devolve, em tempo real: fabricante, tipo, capacidade
 (NAND + RAM nos eMCPs), nível de confiança, link para a documentação da família e o veredito de

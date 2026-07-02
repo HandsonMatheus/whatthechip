@@ -268,7 +268,6 @@
   function renderResult(d) {
     _lastData = d;
     var ts = new Date().toISOString().replace('T', ' ').slice(11, 19);
-    var remarked = !!d.remarked_flag;
     var undoc   = !!d.family_undocumented;
     var eConf = effectiveConf(d);
 
@@ -312,12 +311,12 @@
       grid = cellHtml('NAND', d.emcp_nand, '', 'em')
            + cellHtml('RAM', d.emcp_ram, '', 'em')
            + cellHtml('Dispositivo', d.emcp_device || d.device, '')
-           + cellHtml('Interface', d.interface, '', remarked ? 'warn' : '');
+           + cellHtml('Interface', d.interface, '');
     } else {
       grid = cellHtml('Densidade', d.dram_density, '', 'em')
            + cellHtml('Interface', d.interface, '')
            + cellHtml('Capacidade', d.capacity, '')
-           + cellHtml('Confiança', CONF_LABEL[eConf] || d.confidence, '', remarked ? 'warn' : '');
+           + cellHtml('Confiança', CONF_LABEL[eConf] || d.confidence, '');
     }
 
     // Rodapé
@@ -337,7 +336,6 @@
       + '</footer>';
 
     var articleClass = 'result'
-      + (remarked ? ' result--warn' : '')
       + (undoc    ? ' result--undoc' : '');
     resultWrap.innerHTML = '<article class="' + articleClass + '">'
       + head + undocWarn + '<div class="result__grid">' + grid + '</div>' + foot + '</article>';

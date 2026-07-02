@@ -1465,10 +1465,6 @@ table.est-table td { padding: var(--s5) var(--s5); }
     if (d.is_emcp) {
       lines.push('emcp_source:   ' + (d.emcp_source || '—'));
     }
-    lines.push('remarked_flag: ' + !!d.remarked_flag);
-    if (d.remarked_note) {
-      lines.push('remarked_note: ' + d.remarked_note);
-    }
     lines.push('doc_url:       ' + (d.doc_url    || '—'));
     lines.push('source_url:    ' + (d.source_url || '—'));
     if (d.fuzzy_suggestions && d.fuzzy_suggestions.length) {

@@ -137,46 +137,8 @@ class DecodeLenTests(SimpleTestCase):
         self.assertEqual(r['emcp_source'], 'parcial (gramática)')
 
 
-class CheckRemarkedTests(SimpleTestCase):
-    """Testa a detecção de chips remarked (divergência de capacidade)."""
-
-    def _check(self, grammar_val, db_val):
-        from chips.engine import _check_remarked
-        return _check_remarked(
-            {'capacity': grammar_val},
-            {'capacity': db_val},
-        )
-
-    def test_mesma_capacidade_nao_e_remarked(self):
-        self.assertFalse(self._check('4GB', '4GB'))
-
-    def test_capacidades_diferentes_e_remarked(self):
-        self.assertTrue(self._check('4GB', '2GB'))
-
-    def test_campos_vazios_nao_e_remarked(self):
-        """Sem dados em um dos lados não há base para comparar."""
-        self.assertFalse(self._check(None, '4GB'))
-        self.assertFalse(self._check('4GB', None))
-        self.assertFalse(self._check('', ''))
-
-    def test_mesma_capacidade_mb(self):
-        self.assertFalse(self._check('512MB', '512MB'))
-
-    def test_capacidades_mb_diferentes(self):
-        self.assertTrue(self._check('512MB', '256MB'))
-
-    def test_dram_density_field(self):
-        """_check_remarked também compara dram_density."""
-        from chips.engine import _check_remarked
-        result = _check_remarked(
-            {'dram_density': '4Gb = 512MB por die [✓]'},
-            {'dram_density': '2Gb = 256MB por die [✓]'},
-        )
-        self.assertTrue(result)
-
-
 class ExtractGibTests(SimpleTestCase):
-    """Testa extração de capacidade em GB para comparação de remarked."""
+    """Testa extração de capacidade em GB (usada pela rentabilidade)."""
 
     def _gib(self, text):
         from chips.engine import _extract_gib
