@@ -871,6 +871,27 @@ class SubmitKnownPartsTests(TestCase):
         finally:
             os.unlink(path)
 
+    def test_submit_nao_rebaixa_pn_ja_aprovado(self):
+        import os
+        from django.core.management import call_command
+        from chips.models import Brand, KnownPart
+        b, _ = Brand.objects.get_or_create(name="SubB3", code="SUBB3")
+        KnownPart.objects.create(part_number="SUBB3LIVE", brand=b, chip_type="eMMC",
+                                 capacity="64GB", confidence="confirmed", review_status="approved")
+        path = self._write('brand: "SubB3"\n'
+                           'known_parts:\n'
+                           '  - part_number: "SUBB3LIVE"\n'
+                           '    chip_type: "eMMC"\n'
+                           '    capacity: "128GB"\n'
+                           '    confidence: confirmed\n')
+        try:
+            call_command("submit_known_parts", path, commit=True)
+        finally:
+            os.unlink(path)
+        kp = KnownPart.objects.get(part_number="SUBB3LIVE")
+        self.assertEqual(kp.review_status, "approved", "não pode rebaixar um PN live")
+        self.assertEqual(kp.capacity, "64GB", "não pode sobrescrever o dado live")
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PASSO 1A — normalize_pn + busca por part_number_norm (acaba o PN não-encontrado)

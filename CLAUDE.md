@@ -59,9 +59,11 @@ de rentabilidade**.
    usuário**. Claude **edita arquivos** (yaml/código); o usuário **roda** e confirma.
    1b. **O BANCO DE PRODUÇÃO É A FONTE DA VERDADE do catálogo VIVO — ele só cresce,
    nunca se reconstrói do git.** Os `known_parts` entram todo dia (busca do operador,
-   `import_*`, enriquecimento FBGA via API, admin) e hoje passam de 6 mil. **Git/yamls
-   = gramática + seed curado + código** — para dar partida num banco VAZIO e versionar
-   as *regras*; **NÃO** são o catálogo (só cobrem ~900 dos 6 mil). Consequências
+   `import_*`, enriquecimento FBGA via API, submissão+aprovação) e hoje passam de 6 mil.
+   **Git/yamls = GRAMÁTICA + código** (Opção 2, jul/2026: os `known_parts` **saíram dos
+   yamls** — vivem no banco, com revisão in-DB; ver regra 2b). Bootstrap de banco VAZIO
+   usa `seed_known_parts.json` (dump curado ~600, só dev/CI, gap-fill, **nunca**
+   re-sincronizado). O git **NÃO** é o catálogo (o banco tem 6 mil+). Consequências
    **invioláveis**: **(a)** deploy é **ADITIVO** — migrations aditivas + upsert de
    gramática/seed; **nunca** apaga/reconstrói `known_parts` (confirmei: nem
    `deploy_catalog` nem `purge_enriched` tocam confirmed/manual). **(b)** Migrar pra
@@ -83,7 +85,19 @@ de rentabilidade**.
    decode incompleto, porém a **gramática completa prevalece** sobre eles. O campo
    `status` (raw/enriched/failed) foi **removido** (jun/2026). ⚠️ Não estreite o
    gate para "confidence ∈ confirmed/manual" — esconde os registros de
-   distribuidor/estimado com specs e quebra o reconhecimento em massa.
+   distribuidor/estimado com specs e quebra o reconhecimento em massa. **(Opção 2:
+   `_USABLE &= review_status='approved'` — só aprovado é visível; ver 2b.)**
+   2b. **`known_parts` são NATIVOS DO BANCO com revisão in-DB (Opção 2, jul/2026).** A
+   autoridade não mora mais no yaml — mora no banco. **Só `review_status='approved'` é
+   visível/autoritativo no engine.** **TRAVA de escrita:** um AGENTE só grava known_part
+   via **`submit_known_parts <arquivo> --commit`** (entra `submitted`, oculto) → o dono
+   **aprova no admin** (fila `review_status`; **four-eyes**: quem submete ≠ quem aprova).
+   É **PROIBIDO** escrever o banco direto (shell/ORM/admin ad-hoc) — o `submit` é o único
+   caminho que passa pelo **portão**. A **gramática** continua via yaml/PR (`load_brands`).
+   Pipelines de máquina (`import_*`/`enrich_*`/`bless_base`) gravam `approved` direto
+   (fontes confiáveis). O **portão vive no MODELO** (`KnownPart.clean()`/`save()` +
+   `CheckConstraint`s de confidence/review_status/four-eyes) → cobre **TODO** write, não
+   só o yaml. Ver `chips/knowledge/convention.py` (normalização, fonte única).
 3. **Cache do engine recarrega SOZINHO via `catalog_version` — não precisa reiniciar.** O engine
    usa `lru_cache` chaveado por `catalog_version`; `load_brands --commit` (e as migrações de dados)
    sobem a versão e todo worker recarrega famílias/mapas na próxima query (passo 1B). Isto
@@ -272,10 +286,10 @@ sobe o Django e checa a saída de `classify(pn)`.
 `--dry-run` / `--overwrite`):
 
 ```bash
-python manage.py load_brands --brand samsung   # TODA a gramática é YAML agora (passo 4 COMPLETO, 10 marcas: samsung, piecemakers, gigadevice, rayson, kingston, sandisk, micron, toshiba-kioxia, hynix, nanya). Lê chips/knowledge/<marca>.yaml, valida c/ Pydantic (o schema é o DATA CONTRACT: normaliza chip_type/subtype/interface à convenção canônica e rejeita ativo-genérico), sobe catalog_version. NÃO resta NENHUM populate_* nem add_chip_families (todos aposentados/removidos). Samsung 1ª: define os mapas GLOBAIS DRAM_PC/DRAM_MOBILE (brand=None). Dry-run padrão; --commit grava. ⚠ YAML = GRAMÁTICA (famílias+mapas) + KNOWN_PARTS (a AUTORIDADE — 596 confirmed/manual migrados do fix_known_parts em jul/2026, dumpados p/ os yamls). `--skip-known-parts` carrega só a gramática (testes). Os imports (PSG) complementam. NÃO resta populate_*, add_chip_families NEM fix_known_parts.
-python manage.py import_micron_catalog *_full-catalog.csv   # CSVs Micron da raiz
+python manage.py load_brands --brand samsung   # carrega a GRAMÁTICA da marca (famílias+mapas) do chips/knowledge/<marca>.yaml (10 marcas). Valida c/ Pydantic (DATA CONTRACT: normaliza chip_type/subtype/interface, rejeita ativo-genérico), sobe catalog_version. Samsung 1ª: mapas GLOBAIS DRAM_PC/DRAM_MOBILE (brand=None). Dry-run padrão; --commit grava. ⚠ Opção 2 (jul/2026): o YAML tem SÓ GRAMÁTICA — os known_parts SAÍRAM (vivem no banco, regra 2b). load_brands é ADITIVO (upsert), nunca apaga known_parts existentes. NÃO resta populate_*/add_chip_families/fix_known_parts.
+python manage.py submit_known_parts <arquivo>.yaml   # AUTORIDADE (Opção 2): submete known_parts pelo portão → review_status='submitted' (oculto) → dono aprova no admin. É o canal do chat de marca (substitui a autoria via yaml). --commit grava; --user <username> (four-eyes).
+python manage.py import_micron_catalog *_full-catalog.csv   # CSVs Micron da raiz (pipeline de máquina → grava approved)
 python manage.py import_samsung_psg --all                   # CSVs em data/psg/
-# fix_known_parts APOSENTADO (jul/2026): a autoridade (596 KnownParts) virou `known_parts` nos yamls das marcas, carregada pelo load_brands. (Migrado via dump_known_parts, ambos no histórico git.)
 python manage.py link_doc_pages / sync_index_page
 python manage.py validate_convention       # read-only: aponta registros fora da convenção (chip_types.py)
 python manage.py normalize_convention --commit   # migra chip_type legado ("RAM")→geração canônica (reversível via JSON)

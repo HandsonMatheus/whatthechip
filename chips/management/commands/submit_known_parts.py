@@ -93,11 +93,16 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING("DRY-RUN — nada gravado. Use --commit para submeter."))
             return
 
-        criados = 0
+        criados, pulados = 0, []
         with transaction.atomic():
             for s in specs:
-                obj = (KnownPart.objects.filter(part_number=s.part_number).first()
-                       or KnownPart(part_number=s.part_number))
+                existente = KnownPart.objects.filter(part_number=s.part_number).first()
+                # NUNCA rebaixar um PN já APROVADO/live pra 'submitted' (tiraria do ar).
+                # Correção de PN aprovado é decisão explícita no admin, não via submit.
+                if existente and existente.review_status == "approved":
+                    pulados.append(s.part_number)
+                    continue
+                obj = existente or KnownPart(part_number=s.part_number)
                 obj.brand = brand
                 for k in _FIELDS:
                     setattr(obj, k, getattr(s, k))
@@ -108,3 +113,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f"✓ {criados} submetido(s) como 'submitted'. Aprove em /admin/chips/knownpart/ "
             f"(filtro review_status → Submetido)."))
+        if pulados:
+            self.stdout.write(self.style.WARNING(
+                f"⚠ {len(pulados)} PN(s) já APROVADO(s)/live foram PULADOS (não rebaixo pra submitted): "
+                f"{', '.join(pulados[:10])}. Para alterar um PN aprovado, use o admin."))

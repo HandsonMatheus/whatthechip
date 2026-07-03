@@ -33,6 +33,7 @@ class Command(BaseCommand):
     def handle(self, *args, **opts):
         from chips.models import KnownPart, ChipFamily, Brand, CatalogVersion
         from chips.normalize import normalize_pn
+        from chips.knowledge.convention import apply_kp_convention
 
         commit = opts["commit"]
         rows = json.load(open(opts["json_file"], encoding="utf-8"))
@@ -75,6 +76,7 @@ class Command(BaseCommand):
                            family=match_family(pnn),
                            confidence=r.get("confidence") or "confirmed",
                            **{f: (r.get(f) or "") for f in _FIELDS})
+            apply_kp_convention(kp)   # bulk_create pula o clean() → normaliza aqui (subtype/interface/'None')
             novos.append(kp)
             criados += 1
 
