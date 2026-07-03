@@ -383,6 +383,11 @@ python manage.py load_brands --brand <marca> --commit
 
 ### Contrato de autoria (o que um chat de marca segue) — Opção 2
 
+> **📖 GUIA COMPLETO OBRIGATÓRIO: [`AUTORIA.md`](AUTORIA.md).** É o passo a passo inteiro
+> (as duas trilhas, o **teste-golden** por família, o **handshake** de rentabilidade, todas as
+> travas e onde vivem no código, o checklist e a publicação). **Um chat de marca lê o `AUTORIA.md`
+> inteiro ANTES de adicionar PNs.** Este §5 é o resumo executivo.
+
 Um chat cuida de UMA marca e tem **DUAS trilhas**, que escrevem em lugares diferentes:
 
 - **Trilha A — GRAMÁTICA** (famílias + mapas): edita `chips/knowledge/<marca>.yaml` → `load_brands`
@@ -423,8 +428,10 @@ Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); `interface` = largura (`x
 - [ ] Só mexi na MINHA marca (yaml e/ou submissão); não toquei em mapa global de outra.
 - [ ] Nada inventado/estimado; todo known_part com **fonte Tier-1 na `notes`**; ambíguo → perguntei.
 - [ ] Gramática: `load_brands --brand X` (dry-run/portão) passou · nenhuma família com `decode_density_type` **e** `decode_cap_map` juntos · KM com dígito na 3ª pos → `decode_gen_pos: null`.
-- [ ] Known_parts: `submit_known_parts <arq>` (dry-run = portão) passou.
-- [ ] `characterize_baseline --diff` mostrou **só** o pretendido (+ rodei o teste dedicado da marca, se houver).
+- [ ] **Família nova → GOLDEN:** entreguei PNs âncora + saída esperada (tipo/subtipo/capacidade/**rentabilidade**) no `_<MARCA>_GOLDEN` do `chips/tests.py`. É a prova de que a família nova decodifica certo (o `characterize` não valida PN novo).
+- [ ] **Tipo novo → HANDSHAKE:** o `RentabilidadeHandshakeTests` passa (declarei a regra de rentabilidade do tipo em `chip_types.py`/`assess_profitability`; nenhum tipo comercial em INDETERMINADO).
+- [ ] Known_parts: `submit_known_parts <arq>` (dry-run = portão) passou; cada um com **fonte Tier-1 na `notes`**.
+- [ ] **A suíte inteira verde:** `python manage.py test chips estoque --settings=core.settings_test` (roda golden + handshake + portão) · `characterize_baseline --diff` mostrou **só** o pretendido.
 - [ ] Entreguei as saídas ao dono. **Banco local atualizado** (migrate + gramática em dia) antes de testar.
 
 **Publicar (o DONO faz, apontando `DATABASE_URL` ao prod — é segredo):** gramática = `git push` (versiona) **+**
@@ -652,7 +659,8 @@ Fonte única em código: **`chips/chip_types.py`** (a convenção completa está
 Estes docs já existem na raiz. **Não duplique o conteúdo deles aqui** — abra o
 relevante quando a tarefa pedir:
 
-- **`README.md`** — visão geral e setup. O **contrato de autoria do yaml** (que os `.md` de marca citam "via CLAUDE.md") está no **§5** acima.
+- **`README.md`** — visão geral e setup. O **contrato de autoria** resumido está no **§5** acima.
+- **`AUTORIA.md`** — ⭐ **o processo OBRIGATÓRIO de um chat de marca para adicionar PNs**, de ponta a ponta: as duas trilhas (gramática/known_parts), o **teste-golden** por família, o **handshake** de rentabilidade, a tabela completa "classe de erro → trava", o checklist de handoff, a publicação, e o que NÃO é automatizável (fato → revisão humana). **Um chat de marca lê este arquivo inteiro antes de adicionar PNs.**
 - **`RENTABILIDADE.md`** — bíblia técnica completa do sistema de rentabilidade: `assess_profitability`, `is_dead_by_generation`, `ProfitabilityConfig`, gateway do estoque, todos os bugs corrigidos, limitações, regras invioláveis, checklist para novos chip_types. **Leia antes de tocar em qualquer código de rentabilidade.**
 - **`MICRON.md`** — bíblia técnica e de negócio da Micron: famílias, decode maps, convenção de campos, pipeline, fontes de dados, bugs corrigidos, lacunas.
 - **`PIECEMAKERS.md`** — bíblia técnica PieceMakers: anatomia do PN PMF, decode map PMF_DDR3_CAP, famílias, rentabilidade, fontes, armadilhas.
@@ -671,7 +679,8 @@ relevante quando a tarefa pedir:
   (uma regra que evita um bug, um comando novo, uma decisão de arquitetura),
   **atualize a seção certa aqui** — não crie um documento novo solto na raiz.
 - **Não crie arquivos de nota de sessão** (tipo `NEXT_CHAT` / `BRIEFING_*` / handoffs datados).
-  De `.md` de projeto só existem **README + CLAUDE + os 10 de marca** (política v1.0.0-beta,
+  De `.md` de projeto existem: **README + CLAUDE + os 10 de marca + AUTORIA + RENTABILIDADE +
+  MICRON/PIECEMAKERS/TOSHIBA-KIOXIA + FUZZY** (bíblias técnicas permanentes; política v1.0.0-beta,
   jul/2026). Handoff de fim de sessão vai no git/PR e no chat — nunca em arquivo novo na raiz.
 - **Decisões de arquitetura duradouras** vão para a seção certa do próprio **`CLAUDE.md`**
   (o hub) ou pro `.md` da marca — nunca num doc solto.
