@@ -696,6 +696,134 @@ class GuardCatalogTests(TestCase):
         self.assertEqual(CatalogVersion.current_row().max_known_parts, 0)
 
 
+class KnownPartModelGateTests(TestCase):
+    """Opção 2 / Fase 1: o portão de convenção + vocabulário roda no clean()/save() do
+    MODELO → cobre TODO caminho de escrita (admin, bless_base, imports, restore, API),
+    não só o load_brands. Antes, só o portão Pydantic (caminho YAML) validava."""
+
+    def _brand(self):
+        from chips.models import Brand
+        b, _ = Brand.objects.get_or_create(name="GateB", code="GATEB")
+        return b
+
+    def test_save_normaliza_subtype_em_qualquer_caminho(self):
+        from chips.models import KnownPart
+        kp = KnownPart.objects.create(part_number="GATE001", brand=self._brand(),
+                                      chip_type="DDR4", subtype="DDR4 SDRAM", confidence="confirmed")
+        kp.refresh_from_db()
+        self.assertEqual(kp.subtype, "DDR4", "canonical_gen tem que rodar no save()")
+
+    def test_save_limpa_string_None(self):
+        from chips.models import KnownPart
+        kp = KnownPart.objects.create(part_number="GATE002", brand=self._brand(),
+                                      capacity="None", emcp_ram="none", confidence="manual")
+        kp.refresh_from_db()
+        self.assertEqual((kp.capacity, kp.emcp_ram), ("", ""))
+
+    def test_save_interface_nao_carrega_geracao_ram(self):
+        from chips.models import KnownPart
+        kp = KnownPart.objects.create(part_number="GATE003", brand=self._brand(),
+                                      chip_type="LPDDR4", interface="LPDDR4", confidence="confirmed")
+        kp.refresh_from_db()
+        self.assertEqual(kp.interface, "")
+
+    def test_save_rejeita_confidence_fora_do_vocabulario(self):
+        from chips.models import KnownPart
+        from django.core.exceptions import ValidationError
+        with self.assertRaises(ValidationError):
+            KnownPart.objects.create(part_number="GATE004", brand=self._brand(), confidence="chute")
+
+    def test_checkconstraint_bloqueia_confidence_no_banco(self):
+        # .update() pula save()/clean() → a CheckConstraint do BANCO é a última linha de
+        # defesa (sobrevive a bulk/SQL cru/admin), fechando o buraco do write não-validado.
+        from chips.models import KnownPart
+        from django.db import IntegrityError, transaction
+        kp = KnownPart.objects.create(part_number="GATE005", brand=self._brand(), confidence="confirmed")
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                KnownPart.objects.filter(pk=kp.pk).update(confidence="lixo")
+
+    def test_portao_pydantic_e_modelo_usam_a_mesma_fonte(self):
+        # Consistência: a normalização do YAML (Pydantic) e a do modelo dão o MESMO subtype.
+        from chips.knowledge.convention import apply_kp_convention
+        from chips.models import KnownPart
+
+        class _Tmp:
+            chip_type, subtype, interface = "DDR3", "DDR3 SDRAM", ""
+            capacity = emcp_ram = emcp_nand = density_gbit = density_gb = ""
+        via_funcao = apply_kp_convention(_Tmp()).subtype
+        kp = KnownPart.objects.create(part_number="GATE006", brand=self._brand(),
+                                      chip_type="DDR3", subtype="DDR3 SDRAM", confidence="confirmed")
+        kp.refresh_from_db()
+        self.assertEqual(via_funcao, kp.subtype)   # ambos → "DDR3"
+
+
+class ReviewLayerTests(TestCase):
+    """Opção 2 / Fase 2: só review_status='approved' é visível/autoritativo no engine;
+    o maker-checker (four-eyes) barra auto-aprovação (no clean E na constraint do banco)."""
+
+    def _fam(self):
+        from chips.models import Brand, ChipFamily
+        b, _ = Brand.objects.get_or_create(name="RevB", code="REVB")
+        fam, _ = ChipFamily.objects.get_or_create(brand=b, prefix="REVX", defaults={"chip_type": "eMMC"})
+        return b, fam
+
+    def test_submitted_nao_e_visivel_no_engine(self):
+        from chips.models import KnownPart
+        from chips.engine import classify, clear_engine_cache
+        b, fam = self._fam()
+        KnownPart.objects.create(part_number="REVX0001", brand=b, family=fam, chip_type="eMMC",
+                                 capacity="64GB", confidence="confirmed", review_status="submitted")
+        clear_engine_cache()
+        self.assertFalse(classify("REVX0001").get("known_exact"),
+                         "submitted não pode ser reconhecido como registro do banco")
+
+    def test_approved_e_visivel_no_engine(self):
+        from chips.models import KnownPart
+        from chips.engine import classify, clear_engine_cache
+        b, fam = self._fam()
+        KnownPart.objects.create(part_number="REVX0002", brand=b, family=fam, chip_type="eMMC",
+                                 capacity="64GB", confidence="confirmed", review_status="approved")
+        clear_engine_cache()
+        r = classify("REVX0002")
+        self.assertTrue(r.get("known_exact"))
+        self.assertEqual(r.get("capacity"), "64GB")
+
+    def test_four_eyes_clean_barra_auto_aprovacao(self):
+        from django.contrib.auth import get_user_model
+        from django.core.exceptions import ValidationError
+        from chips.models import KnownPart
+        b, _ = self._fam()
+        u = get_user_model().objects.create(username="steward1")
+        with self.assertRaises(ValidationError):
+            KnownPart.objects.create(part_number="REVX0003", brand=b, confidence="confirmed",
+                                     review_status="approved", submitted_by=u, approved_by=u)
+
+    def test_four_eyes_constraint_no_banco(self):
+        from django.contrib.auth import get_user_model
+        from django.db import IntegrityError, transaction
+        from chips.models import KnownPart
+        b, _ = self._fam()
+        u = get_user_model().objects.create(username="steward2")
+        kp = KnownPart.objects.create(part_number="REVX0004", brand=b, confidence="confirmed",
+                                      review_status="submitted", submitted_by=u)
+        with self.assertRaises(IntegrityError):   # .update() pula o clean → constraint do banco barra
+            with transaction.atomic():
+                KnownPart.objects.filter(pk=kp.pk).update(review_status="approved", approved_by=u)
+
+    def test_aprovacao_por_outro_usuario_ok(self):
+        from django.contrib.auth import get_user_model
+        from chips.models import KnownPart
+        b, _ = self._fam()
+        U = get_user_model()
+        sub = U.objects.create(username="sub"); app = U.objects.create(username="app")
+        kp = KnownPart.objects.create(part_number="REVX0005", brand=b, confidence="confirmed",
+                                      review_status="submitted", submitted_by=sub)
+        kp.review_status = "approved"; kp.approved_by = app; kp.save()   # ≠ submitter → ok
+        kp.refresh_from_db()
+        self.assertEqual(kp.review_status, "approved")
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # PASSO 1A — normalize_pn + busca por part_number_norm (acaba o PN não-encontrado)
 # ═══════════════════════════════════════════════════════════════════════════════

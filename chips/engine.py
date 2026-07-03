@@ -141,7 +141,11 @@ _CONFIRMED_CONFIDENCE = ("confirmed", "manual")
 _HAS_SPECS = (
     ~Q(capacity="") | ~Q(emcp_ram="") | ~Q(emcp_nand="") | ~Q(density_gbit="")
 )
-_USABLE = _HAS_SPECS | Q(confidence__in=_CONFIRMED_CONFIDENCE)
+# Opção 2 — revisão in-DB: SÓ registros 'approved' são visíveis/autoritativos. Rascunho/
+# submetido/reprovado/obsoleto ficam ocultos do engine. Legado + pipelines de máquina têm
+# review_status='approved' por default → comportamento idêntico ao de antes desta camada.
+_APPROVED = Q(review_status="approved")
+_USABLE = (_HAS_SPECS | Q(confidence__in=_CONFIRMED_CONFIDENCE)) & _APPROVED
 
 
 def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
@@ -150,7 +154,7 @@ def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
     """
     all_parts = (
         KnownPart.objects
-        .filter(confidence__in=_SUGGESTION_CONFIDENCE)
+        .filter(confidence__in=_SUGGESTION_CONFIDENCE, review_status="approved")
         .values_list("part_number", flat=True)
     )
     matches = []
@@ -168,7 +172,7 @@ def _fuzzy_candidates(pn: str, threshold: int = 2) -> list:
     parts_by_pn = {
         p.part_number: p
         for p in KnownPart.objects
-            .filter(part_number__in=top_pns, confidence__in=_SUGGESTION_CONFIDENCE)
+            .filter(part_number__in=top_pns, confidence__in=_SUGGESTION_CONFIDENCE, review_status="approved")
             .select_related("brand", "family")
     }
     return [parts_by_pn[c] for _, c in matches[:5] if c in parts_by_pn]
@@ -195,6 +199,7 @@ def _prefix_candidates(pn: str, min_prefix_len: int = 7) -> list:
         KnownPart.objects
         .filter(
             confidence__in=_SUGGESTION_CONFIDENCE,
+            review_status="approved",
             part_number__startswith=pn,
         )
         .exclude(part_number=pn)
@@ -245,7 +250,7 @@ def _fuzzy_fbga_candidates(pn: str, threshold: int = 2) -> list:
     """
     all_fbga = (
         KnownPart.objects
-        .filter(confidence__in=_SUGGESTION_CONFIDENCE)
+        .filter(confidence__in=_SUGGESTION_CONFIDENCE, review_status="approved")
         .exclude(fbga_code__isnull=True)
         .exclude(fbga_code="")
         .values_list("fbga_code", flat=True)

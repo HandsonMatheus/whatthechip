@@ -24,9 +24,9 @@ from typing import Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 
-# Vocabulário de confiança (CLAUDE.md §8). Só confirmed/manual vencem a gramática;
-# os de IA (ai_*) foram removidos com o Gemini.
-_CONFIDENCE = {"confirmed", "manual", "distributor", "estimated"}
+# Vocabulário de confiança (CLAUDE.md §8) — FONTE ÚNICA em chips/knowledge/convention.py
+# (compartilhada com o clean() do modelo). Só confirmed/manual vencem a gramática.
+from chips.knowledge.convention import CONFIDENCE_VOCAB as _CONFIDENCE
 
 
 class BrandSpec(BaseModel):
@@ -173,25 +173,12 @@ class KnownPartSpec(BaseModel):
 
     @model_validator(mode="after")
     def _convencao_kp(self):
-        """PORTÃO DA CONVENÇÃO nos known_parts (fase 1b) — o MESMO data contract da
-        gramática, aplicado à autoridade: subtype/interface canônicos + limpa o lixo
-        'None'. NÃO rejeita (known_part é ponto de dado, não família com active). O
-        chip_type do known_part não entra no classify (vem da família no merge), então
-        não mexe nele. Mantém a autoridade convention-clean, consistente com as famílias."""
-        from chips.chip_types import spec_for
-        from chips.conventions import canonical_gen, is_ram_generation
-        # 1. valores 'None' string (lixo de importador) → vazio (o engine já os ignora)
-        for f in ("capacity", "emcp_ram", "emcp_nand", "density_gbit", "density_gb", "interface"):
-            if getattr(self, f) in ("None", "none", "NONE"):
-                setattr(self, f, "")
-        # 2. subtype → token canônico (exceto catalog, cujo subtype é descritivo)
-        _sp = spec_for(self.chip_type)
-        if self.subtype and not (_sp is not None and _sp.category == "catalog"):
-            self.subtype = canonical_gen(self.subtype, self.chip_type)
-        # 3. interface NÃO carrega geração de RAM (largura de barramento ou vazio)
-        if is_ram_generation(self.interface):
-            self.interface = ""
-        return self
+        """PORTÃO DA CONVENÇÃO nos known_parts — delega à FONTE ÚNICA
+        (`chips/knowledge/convention.py::apply_kp_convention`), a mesma que o `clean()`
+        do modelo usa. Assim o dado do YAML e o de qualquer outro caminho de escrita
+        ficam normalizados igual. NÃO rejeita (known_part é ponto de dado)."""
+        from chips.knowledge.convention import apply_kp_convention
+        return apply_kp_convention(self)
 
 
 def _reject_duplicates(items, key, rotulo, raw=None):

@@ -16,6 +16,7 @@ Fluxo de confiança para KnownPart:
 """
 
 import pghistory
+from django.conf import settings
 from django.db import models
 
 
@@ -182,6 +183,19 @@ class KnownPart(models.Model):
         ("estimated",   "~ Estimado"),
     ]
 
+    # Opção 2 — ciclo de revisão IN-DB (maker-checker). `confidence` = quão confiável é o
+    # dado (autoridade sobre a gramática); `review_status` = estado no fluxo de revisão
+    # (ortogonais). Só 'approved' é VISÍVEL/autoritativo no engine. default='approved':
+    # existentes (backfill automático do AddField) e pipelines de máquina (confiáveis)
+    # entram aprovados; contribuição de agente/humano entra 'submitted' e o dono aprova.
+    REVIEW_STATUS_CHOICES = [
+        ("draft",     "📝 Rascunho"),
+        ("submitted", "📤 Submetido (aguardando revisão)"),
+        ("approved",  "✅ Aprovado"),
+        ("rejected",  "✗ Reprovado"),
+        ("obsolete",  "🗑 Obsoleto"),
+    ]
+
     brand        = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="parts")
     part_number  = models.TextField(unique=True, db_index=True)
     part_number_norm = models.TextField(
@@ -221,6 +235,20 @@ class KnownPart(models.Model):
     added_at     = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
+    # Opção 2 — revisão in-DB (maker-checker). Ver REVIEW_STATUS_CHOICES acima.
+    review_status = models.CharField(
+        max_length=20, choices=REVIEW_STATUS_CHOICES, default="approved", db_index=True,
+        help_text="Estado no fluxo de revisão. Só 'approved' é visível/autoritativo no engine.")
+    submitted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="known_parts_submitted",
+        help_text="Quem submeteu (agente/humano). NULL = pipeline de máquina / seed / legado.")
+    approved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="known_parts_approved",
+        help_text="Quem aprovou. Tem que ser ≠ do submitter (four-eyes).")
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+
     class Meta:
         verbose_name = "Part Number Conhecido"
         verbose_name_plural = "Part Numbers Conhecidos"
@@ -230,10 +258,47 @@ class KnownPart(models.Model):
             # impossível no banco (sobrevive a bulk_create/.update()/admin/SQL cru).
             models.UniqueConstraint(
                 fields=["part_number_norm"], name="uniq_knownpart_part_number_norm"),
+            # Opção 2: confidence SEMPRE no vocabulário, garantido no banco (sobrevive
+            # a bulk_create/SQL cru/admin). Espelha o clean() na camada de dados.
+            models.CheckConstraint(
+                condition=models.Q(confidence__in=["confirmed", "manual", "distributor", "estimated"]),
+                name="knownpart_confidence_vocab"),
+            models.CheckConstraint(
+                condition=models.Q(review_status__in=["draft", "submitted", "approved", "rejected", "obsolete"]),
+                name="knownpart_review_status_vocab"),
+            # Four-eyes (Opção 2): um registro APROVADO com submitter definido não pode ter
+            # sido aprovado pelo MESMO usuário (segregação de funções). Máquina/legado têm
+            # submitted_by NULL → aprovação do sistema, isentos.
+            models.CheckConstraint(
+                condition=~(
+                    models.Q(review_status="approved")
+                    & models.Q(submitted_by__isnull=False)
+                    & models.Q(approved_by=models.F("submitted_by"))
+                ),
+                name="knownpart_four_eyes"),
         ]
 
     def __str__(self):
         return self.part_number
+
+    def clean(self):
+        """PORTÃO no MODELO (Opção 2) — roda via `full_clean()` no `save()`, então cobre
+        TODO caminho de escrita (admin, bless_base, imports, enrich, restore, API), não só
+        o `load_brands`. Normaliza os campos à convenção canônica (fonte única em
+        `chips/knowledge/convention.py`, a MESMA do portão Pydantic) e rejeita `confidence`
+        fora do vocabulário. As regras de AUTORIA (proveniência, four-eyes) vivem no
+        boundary de submissão / na revisão in-DB, não aqui (não quebrar re-save de legado)."""
+        from django.core.exceptions import ValidationError
+        from chips.knowledge.convention import apply_kp_convention, CONFIDENCE_VOCAB
+        apply_kp_convention(self)
+        if self.confidence not in CONFIDENCE_VOCAB:
+            raise ValidationError({"confidence":
+                f"confidence '{self.confidence}' inválido — use um de {sorted(CONFIDENCE_VOCAB)}."})
+        # Four-eyes (Opção 2): erro amigável antes da CheckConstraint do banco.
+        if (self.review_status == "approved" and self.submitted_by_id
+                and self.approved_by_id == self.submitted_by_id):
+            raise ValidationError({"approved_by":
+                "four-eyes: quem submeteu um registro não pode ser quem o aprova."})
 
     def save(self, *args, **kwargs):
         # Passo 1A: a forma canônica é SEMPRE derivada do part_number no write-time,
@@ -241,6 +306,10 @@ class KnownPart(models.Model):
         # (UniqueConstraint em part_number_norm, parte 2) impedir duplicatas.
         from chips.normalize import normalize_pn
         self.part_number_norm = normalize_pn(self.part_number)
+        # Opção 2: valida+normaliza em TODO save (convenção + vocabulário de confidence).
+        # validate_unique/constraints OFF: o BANCO já garante (UniqueConstraint +
+        # CheckConstraint) e evita queries extras por save; o clean() faz o trabalho.
+        self.full_clean(validate_unique=False, validate_constraints=False)
         super().save(*args, **kwargs)
 
 

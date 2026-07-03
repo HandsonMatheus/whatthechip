@@ -110,12 +110,13 @@ class DecodeMapAdmin(admin.ModelAdmin):
 class KnownPartAdmin(admin.ModelAdmin):
     list_display  = (
         "part_number", "fbga_code", "brand", "chip_type",
-        "capacity_display", "device", "confidence", "last_updated"
+        "capacity_display", "device", "confidence", "review_status", "last_updated"
     )
-    list_filter   = ("brand", "chip_type", "confidence")
+    list_filter   = ("review_status", "brand", "chip_type", "confidence")
     search_fields = ("part_number", "fbga_code", "device", "chip_type")
-    readonly_fields = ("added_at", "last_updated")
+    readonly_fields = ("added_at", "last_updated", "submitted_by", "approved_by", "reviewed_at")
     list_per_page = 50
+    actions = ("aprovar_selecionados", "reprovar_selecionados")
 
     fieldsets = (
         ("Identificação", {
@@ -128,6 +129,11 @@ class KnownPartAdmin(admin.ModelAdmin):
             "fields": ("emcp_ram", "emcp_nand"),
             "classes": ("collapse",),
         }),
+        ("Revisão (Opção 2)", {
+            "fields": ("review_status", "submitted_by", "approved_by", "reviewed_at"),
+            "description": "Só 'approved' é visível/autoritativo no engine. Use as ações "
+                           "da lista para aprovar/reprovar (aplicam four-eyes + carimbam quem/quando).",
+        }),
         ("Contexto", {
             "fields": ("device", "notes", "added_at", "last_updated"),
             "classes": ("collapse",),
@@ -139,6 +145,35 @@ class KnownPartAdmin(admin.ModelAdmin):
             return f"RAM: {obj.emcp_ram} / NAND: {obj.emcp_nand}"
         return obj.capacity or obj.density_gbit or "—"
     capacity_display.short_description = "Capacidade"
+
+    @admin.action(description="✅ Aprovar selecionados (fila de revisão)")
+    def aprovar_selecionados(self, request, queryset):
+        aprovados = barrados = 0
+        for kp in queryset:
+            # four-eyes: não pode aprovar o que você mesmo submeteu
+            if kp.submitted_by_id and kp.submitted_by_id == request.user.id:
+                barrados += 1
+                continue
+            kp.review_status = "approved"
+            kp.approved_by = request.user
+            kp.reviewed_at = timezone.now()
+            kp.save()   # dispara clean() + bump do catalog_version → fica visível na hora
+            aprovados += 1
+        msg = f"{aprovados} aprovado(s)."
+        if barrados:
+            msg += f" {barrados} barrado(s) por four-eyes (você foi quem submeteu)."
+        self.message_user(request, msg)
+
+    @admin.action(description="✗ Reprovar selecionados")
+    def reprovar_selecionados(self, request, queryset):
+        n = 0
+        for kp in queryset:
+            kp.review_status = "rejected"
+            kp.approved_by = request.user
+            kp.reviewed_at = timezone.now()
+            kp.save()
+            n += 1
+        self.message_user(request, f"{n} reprovado(s) — ocultos do engine.")
 
 
 @admin.register(SearchLog)
