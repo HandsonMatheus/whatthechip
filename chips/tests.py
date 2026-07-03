@@ -659,6 +659,35 @@ class ProfitabilityTests(TestCase):
 # PASSO 1B — catalog_version + cache por versão (auto-invalidação, sem restart)
 # ═══════════════════════════════════════════════════════════════════════════════
 
+class RentabilidadeHandshakeTests(TestCase):
+    """F3 — HANDSHAKE de rentabilidade (a espinha do 'até o destino comercial').
+
+    Garante que NENHUM chip_type COMERCIAL (com caixa física) caia em INDETERMINADO
+    quando tem specs saudáveis. Um tipo/geração NOVO adicionado a chip_types.py sem
+    regra em assess_profitability → cai em INDETERMINADO → este teste FALHA, forçando
+    o autor a declarar a regra (ou marcar o tipo como não-comercial). Este teste, se
+    existisse, teria pegado o bug do GDDR3+ (era comercial e retornava INDETERMINADO).
+    É também o guard do PREÇO: sem veredito de rentabilidade não há faixa de preço."""
+
+    def test_todo_tipo_comercial_tem_veredito_definitivo(self):
+        from chips.chip_types import CHIP_TYPES
+        from chips.engine import assess_profitability
+        # specs GENEROSAS: garantem que um INDETERMINADO é falta de REGRA, não de capacidade.
+        healthy = {'capacity': '256GB', 'dram_density': '16Gb = 2GB por die',
+                   'emcp_ram': 'LPDDR5 8GB', 'emcp_nand': 'eMMC 5.1 256GB'}
+        falhas = []
+        for tok, spec in CHIP_TYPES.items():
+            if spec.generic or not spec.commercial:
+                continue   # genéricos e não-comerciais (catálogo) podem ser INDETERMINADO
+            r = {'chip_type': tok, 'subtype': tok, 'is_emcp': spec.is_emcp, **healthy}
+            if assess_profitability(r) == 'INDETERMINADO':
+                falhas.append(tok)
+        self.assertEqual(
+            falhas, [],
+            f"tipo(s) COMERCIAL(is) caindo em INDETERMINADO com specs saudáveis (falta regra "
+            f"em assess_profitability, ou marque commercial=False em chip_types.py): {falhas}")
+
+
 class CatalogVersionTests(TestCase):
     """Prova que mudar a gramática sobe o carimbo e o engine recarrega SOZINHO —
     sem `clear_engine_cache()` manual nem reinício (acaba a regra de ouro #3)."""
