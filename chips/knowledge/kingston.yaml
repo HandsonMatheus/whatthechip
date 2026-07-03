@@ -180,10 +180,10 @@ families:
   suffix_rules: ''
   tip: 'Módulo ValueRAM Kingston. KVR[velocidade][latência][largura]x[capacidade]. Ex: KVR32N22S8/8 = DDR4-3200, CL22, SO-DIMM, 8GB.'
   reasoning: ''
-known_parts:
-- part_number: 16EMCP08NL3DTB28
-  chip_type: eMCP
-  emcp_ram: LPDDR3 1GB
-  emcp_nand: eMMC 5.1 16GB
-  notes: 'Avalizado pela base do operador (carga inicial) via bless_base em 2026-06-16. | Chip físico confirmado na esteira (eMiner 2026-05-25). Puris.net B2B: 16EMCP08-NL3DTB28 = 16GB eMMC 5.1 (HS400) + 8Gb LPDDR3 → 1GB. NL3=LPDDR3 verificado em 6 PNs cruzados da família Kingston eMCP. IA errou PN comparativo: ''32EMCP16-NL3DTB29'' não existe (real: EL3GTB29). Alerta arquitetural: prefixo ''EMCP'' não casa via startswith — a gramática usa prefixos ''16EMCP'', ''08EMCP'' etc.'
-  confidence: confirmed
+
+# ─────────────────────────────────────────────────────────────────────────────
+# known_parts: MIGRADOS PARA O BANCO (fonte da verdade — Opção 2, jul/2026).
+# Este yaml carrega SÓ a GRAMÁTICA (famílias + mapas). A AUTORIDADE (known_parts)
+# vive no banco, com revisão in-DB. Autoria: `submit_known_parts <arquivo> --commit`
+# → aprovação no admin (fila review_status). Bootstrap de banco vazio: seed_known_parts.json.
+# ─────────────────────────────────────────────────────────────────────────────

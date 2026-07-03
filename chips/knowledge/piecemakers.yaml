@@ -137,22 +137,10 @@ families:
   suffix_rules: ''
   tip: 'DDR3/DDR3L PieceMakers Technology — família genérica de fallback. Cobre PNs PMF não reconhecidos por PMF4 (DDR3L) ou PMF5 (DDR3). Sem decode posicional — verificar PN individualmente. Estrutura: PMF[volt][dens][8][bus][rev]BR-[suffix]. volt: 4=1.35V(DDR3L) · 5=1.5V(DDR3). dens: 10=1Gb · 11=2Gb · 12=4Gb. bus: 08=x8 · 16=x16.'
   reasoning: ''
-known_parts:
-- part_number: PMF511816EBR
-  chip_type: DDR3
-  subtype: DDR3
-  capacity: 256MB
-  density_gbit: 2Gb
-  interface: x16
-  notes: 'PMF511816EBR: PieceMakers DDR3 2Gbit (128Mx16), 1.5V, 96-FBGA. Decode: pn[4:6]=''11''=2Gb(256MB), pn[7:9]=''16''=x16, pn[3]=''5''=DDR3 1.5V. Fontes: piecemakers.com.tw ✓ (catálogo DDR3, 2Gb confirmado) + element14.com (hrishi98 2022-06-01): usado na Digilent Arty S7-50 como drop-in do Micron MT41K128M16XX-15E + glochip DDR3 table ✓. Confiança ''manual'' (não há DigiKey/datasheet Tier 1 diretamente acessível).'
-  source_url: https://www.piecemakers.com.tw/en/product/standard-dram
-  confidence: manual
-- part_number: PMF511816EBRKADN
-  chip_type: DDR3
-  subtype: DDR3
-  capacity: 256MB
-  density_gbit: 2Gb
-  interface: x16
-  notes: 'PMF511816EBR-KADN: variante do PMF511816EBR com sufixo KADN (speed/temperature grade). Specs idênticas: DDR3 2Gbit x16 256MB 1.5V 96-FBGA. PN reportado pelo operador WTC na esteira de reciclagem (2026-06-20). element14.com (hrishi98 2022-06-01) cita este PN exato como drop-in do Micron MT41K128M16XX-15E na Digilent Arty S7-50 ✓.'
-  source_url: https://www.piecemakers.com.tw/en/product/standard-dram
-  confidence: manual
+
+# ─────────────────────────────────────────────────────────────────────────────
+# known_parts: MIGRADOS PARA O BANCO (fonte da verdade — Opção 2, jul/2026).
+# Este yaml carrega SÓ a GRAMÁTICA (famílias + mapas). A AUTORIDADE (known_parts)
+# vive no banco, com revisão in-DB. Autoria: `submit_known_parts <arquivo> --commit`
+# → aprovação no admin (fila review_status). Bootstrap de banco vazio: seed_known_parts.json.
+# ─────────────────────────────────────────────────────────────────────────────

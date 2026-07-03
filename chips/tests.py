@@ -824,6 +824,54 @@ class ReviewLayerTests(TestCase):
         self.assertEqual(kp.review_status, "approved")
 
 
+class SubmitKnownPartsTests(TestCase):
+    """Opção 2 / Fase 3: submit_known_parts grava como 'submitted' (oculto) pelo portão."""
+
+    def _write(self, texto):
+        import tempfile
+        f = tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False, encoding="utf-8")
+        f.write(texto); f.close()
+        return f.name
+
+    def test_submit_cria_submitted_e_oculto_ate_aprovar(self):
+        import os
+        from django.core.management import call_command
+        from django.contrib.auth import get_user_model
+        from chips.models import Brand, KnownPart
+        from chips.engine import classify, clear_engine_cache
+        Brand.objects.get_or_create(name="SubB", code="SUBB")
+        get_user_model().objects.create(username="chat_subb")
+        path = self._write('brand: "SubB"\n'
+                           'known_parts:\n'
+                           '  - part_number: "SUBB0001"\n'
+                           '    chip_type: "eMMC"\n'
+                           '    capacity: "64GB"\n'
+                           '    confidence: confirmed\n'
+                           '    notes: "datasheet X"\n')
+        try:
+            call_command("submit_known_parts", path, commit=True, user="chat_subb")
+        finally:
+            os.unlink(path)
+        kp = KnownPart.objects.get(part_number="SUBB0001")
+        self.assertEqual(kp.review_status, "submitted")
+        self.assertEqual(kp.submitted_by.username, "chat_subb")
+        clear_engine_cache()
+        self.assertFalse(classify("SUBB0001").get("known_exact"), "submitted não pode ser visível")
+
+    def test_portao_rejeita_confidence_invalido(self):
+        import os
+        from django.core.management import call_command
+        from django.core.management.base import CommandError
+        from chips.models import Brand
+        Brand.objects.get_or_create(name="SubB2", code="SUBB2")
+        path = self._write('brand: "SubB2"\nknown_parts:\n  - part_number: "X1"\n    confidence: lixo\n')
+        try:
+            with self.assertRaises(CommandError):
+                call_command("submit_known_parts", path, commit=True)
+        finally:
+            os.unlink(path)
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # PASSO 1A — normalize_pn + busca por part_number_norm (acaba o PN não-encontrado)
 # ═══════════════════════════════════════════════════════════════════════════════
