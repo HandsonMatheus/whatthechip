@@ -630,6 +630,72 @@ class CatalogVersionTests(TestCase):
         self.assertEqual(CatalogVersion.current(), b)
 
 
+class GuardCatalogTests(TestCase):
+    """Tripwire contra perda silenciosa do catálogo vivo (incidente jul/2026)."""
+
+    def _n_known_parts(self, n):
+        from chips.models import Brand, KnownPart
+        b, _ = Brand.objects.get_or_create(name="GC", code="GC")
+        base = KnownPart.objects.count()  # offset → PNs únicos entre lotes
+        for i in range(base, base + n):
+            KnownPart.objects.create(part_number=f"GCPART{i:04d}", brand=b,
+                                     confidence="confirmed", capacity="8GB")
+
+    def _run(self, **kw):
+        from io import StringIO
+        from django.core.management import call_command
+        out, err = StringIO(), StringIO()
+        code = 0
+        try:
+            call_command("guard_catalog", stdout=out, stderr=err, **kw)
+        except SystemExit as e:
+            code = e.code
+        return code, out.getvalue(), err.getvalue()
+
+    def test_crescimento_atualiza_high_water(self):
+        from chips.models import CatalogVersion
+        self._n_known_parts(100)
+        code, out, _ = self._run()
+        self.assertEqual(code, 0)
+        self.assertEqual(CatalogVersion.current_row().max_known_parts, 100)
+        # cresceu mais → high-water sobe
+        self._n_known_parts_more = self._n_known_parts(50)
+        code, _, _ = self._run()
+        self.assertEqual(code, 0)
+        self.assertEqual(CatalogVersion.current_row().max_known_parts, 150)
+
+    def test_queda_grande_dispara_alarme_e_falha(self):
+        from chips.models import CatalogVersion, KnownPart
+        self._n_known_parts(100)
+        self._run()  # high-water = 100
+        # simula a perda: apaga 90%
+        ids = list(KnownPart.objects.values_list("id", flat=True)[:90])
+        KnownPart.objects.filter(id__in=ids).delete()
+        code, _, err = self._run()
+        self.assertEqual(code, 1, "queda de 90% tem que FALHAR")
+        self.assertIn("ALARME", err)
+        # o high-water NÃO é rebaixado por uma queda
+        self.assertEqual(CatalogVersion.current_row().max_known_parts, 100)
+
+    def test_queda_pequena_dentro_da_tolerancia_nao_falha(self):
+        from chips.models import KnownPart
+        self._n_known_parts(100)
+        self._run()  # high-water = 100
+        ids = list(KnownPart.objects.values_list("id", flat=True)[:5])
+        KnownPart.objects.filter(id__in=ids).delete()  # −5% (≤ 10%)
+        code, out, _ = self._run()
+        self.assertEqual(code, 0, "queda de 5% está dentro da tolerância")
+
+    def test_reset_rebaixa_o_high_water(self):
+        from chips.models import CatalogVersion, KnownPart
+        self._n_known_parts(100)
+        self._run()
+        KnownPart.objects.all().delete()
+        code, _, _ = self._run(reset=True)
+        self.assertEqual(code, 0)
+        self.assertEqual(CatalogVersion.current_row().max_known_parts, 0)
+
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # PASSO 1A — normalize_pn + busca por part_number_norm (acaba o PN não-encontrado)
 # ═══════════════════════════════════════════════════════════════════════════════

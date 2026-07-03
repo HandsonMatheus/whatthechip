@@ -57,6 +57,24 @@ de rentabilidade**.
    dados** (`migrate`, `load_brands --commit`, `import_*`, `merge_*`,
    `normalize_convention`, `purge_*`) devem ser **propostos e revisados**, mas **executados pelo
    usuário**. Claude **edita arquivos** (yaml/código); o usuário **roda** e confirma.
+   1b. **O BANCO DE PRODUÇÃO É A FONTE DA VERDADE do catálogo VIVO — ele só cresce,
+   nunca se reconstrói do git.** Os `known_parts` entram todo dia (busca do operador,
+   `import_*`, enriquecimento FBGA via API, admin) e hoje passam de 6 mil. **Git/yamls
+   = gramática + seed curado + código** — para dar partida num banco VAZIO e versionar
+   as *regras*; **NÃO** são o catálogo (só cobrem ~900 dos 6 mil). Consequências
+   **invioláveis**: **(a)** deploy é **ADITIVO** — migrations aditivas + upsert de
+   gramática/seed; **nunca** apaga/reconstrói `known_parts` (confirmei: nem
+   `deploy_catalog` nem `purge_enriched` tocam confirmed/manual). **(b)** Migrar pra
+   ambiente novo = **levar o banco existente adiante** (dump→restore, ou apontar o
+   código novo ao banco atual) — **JAMAIS** "sobe banco vazio + `deploy_catalog`" (foi
+   o que perdeu 5.900 `known_parts` no 1º deploy da escalabilidade, jul/2026: o prod
+   novo só recebeu o seed dos yamls). **(c)** Antes de **qualquer** operação destrutiva
+   (`purge_*`, `dedupe_*`, swap de banco): **backup fresco (Render Export) + revisão do
+   dono**, obrigatório. **(d)** A rede é o **backup diário** (Render Export + PITR 3 dias);
+   recuperação = `restore_known_parts <dump>.json` (gap-fill, provado em ~15 min). **(e)**
+   Trava automática: rode **`guard_catalog`** depois de todo deploy (e/ou agendado) — ele
+   guarda o high-water mark de `known_parts` e **falha com alarme** se a contagem
+   despencar (>10%), pegando a perda silenciosa sem depender de ninguém perceber.
 2. **Visibilidade ≠ autoridade.** Um `KnownPart` é *reconhecido* na camada 1
    (`known_exact=True`) quando tem **specs reais** (capacity/emcp_ram/emcp_nand/
    density) **ou** é `confirmed`/`manual` — gate `_USABLE`, equivalente fiel ao
@@ -261,6 +279,8 @@ python manage.py import_samsung_psg --all                   # CSVs em data/psg/
 python manage.py link_doc_pages / sync_index_page
 python manage.py validate_convention       # read-only: aponta registros fora da convenção (chip_types.py)
 python manage.py normalize_convention --commit   # migra chip_type legado ("RAM")→geração canônica (reversível via JSON)
+python manage.py guard_catalog             # TRIPWIRE: roda DEPOIS de todo deploy — falha com alarme se o nº de known_parts despencar (>10% do high-water). Read-only exceto o bump do high-water. `--reset` só após queda legítima e revisada. Ver regra de ouro §2.1b.
+python manage.py restore_known_parts <dump>.json   # RECUPERAÇÃO: gap-fill de known_parts a partir de um dump/backup (cria só os que faltam, mapeia marca, religa família por prefixo; --commit). É o procedimento pós-incidente de perda.
 ```
 
 **Manutenção de estoque** (dry-run por padrão, reversíveis via JSON; rodar com

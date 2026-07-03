@@ -485,6 +485,10 @@ class CatalogVersion(models.Model):
     id         = models.PositiveSmallIntegerField(primary_key=True, default=1)
     version    = models.BigIntegerField(default=1)
     updated_at = models.DateTimeField(auto_now=True)
+    # High-water mark do catálogo VIVO: o maior nº de KnownParts já visto. Só sobe.
+    # A tripwire `guard_catalog` compara a contagem atual contra ele e GRITA se
+    # despencou (perda silenciosa — ver o incidente de jul/2026 em CLAUDE.md §2).
+    max_known_parts = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name        = "Versão do Catálogo"
@@ -498,6 +502,13 @@ class CatalogVersion(models.Model):
         """Edição atual (int). NÃO cria a linha; devolve 1 se ainda não existe."""
         v = cls.objects.filter(pk=1).values_list("version", flat=True).first()
         return v if v is not None else 1
+
+    @classmethod
+    def current_row(cls):
+        """A linha singleton (pk=1), criando-a se ainda não existe. Use quando
+        precisar LER/GRAVAR campos além do `version` (ex.: `max_known_parts`)."""
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
 
     @classmethod
     def bump(cls) -> int:
