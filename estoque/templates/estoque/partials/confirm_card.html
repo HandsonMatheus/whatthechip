@@ -16,6 +16,8 @@
           <div style="width:36px;height:36px;border-radius:50%;background:#198038;color:#fff;border:2px solid #198038;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;position:relative;z-index:1;">✓</div>
         {% elif step.status == 'fail' %}
           <div style="width:36px;height:36px;border-radius:50%;background:#da1e28;color:#fff;border:2px solid #da1e28;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;position:relative;z-index:1;">✗</div>
+        {% elif step.status == 'warn' %}
+          <div style="width:36px;height:36px;border-radius:50%;background:#ff832b;color:#fff;border:2px solid #ff832b;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;position:relative;z-index:1;">?</div>
         {% else %}
           <div style="width:36px;height:36px;border-radius:50%;background:#fff;color:#a8a8a8;border:2px solid #e0e0e0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;position:relative;z-index:1;font-family:'IBM Plex Mono',monospace;">{{ forloop.counter }}</div>
         {% endif %}
@@ -24,6 +26,8 @@
           <div style="font-size:12px;font-weight:600;color:#198038;">sim</div>
         {% elif step.status == 'fail' %}
           <div style="font-size:12px;font-weight:600;color:#da1e28;">não</div>
+        {% elif step.status == 'warn' %}
+          <div style="font-size:12px;font-weight:600;color:#ff832b;">indeterminado</div>
         {% else %}
           <div style="font-size:12px;font-weight:600;color:#a8a8a8;">—</div>
         {% endif %}

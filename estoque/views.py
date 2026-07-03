@@ -464,10 +464,13 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
         steps[2].update(status='fail', detail='Não rentável')
         return _out('reprovado', profitable)
 
-    steps[2].update(
-        status='pass',
-        detail='Rentável' if profitable == 'RENTÁVEL' else 'Indeterminado (aprovado)',
-    )
+    # RENTÁVEL = verde "sim". INDETERMINADO ENTRA no estoque (regra conservadora), mas
+    # NÃO é um "sim" confiante — ganha estado próprio ('warn'/âmbar) pra não mentir ao
+    # operador (bug: antes recebia status='pass' e o frontend mostrava "Rentável: sim").
+    if profitable == 'RENTÁVEL':
+        steps[2].update(status='pass', detail='Rentável')
+    else:
+        steps[2].update(status='warn', detail='Indeterminado (não avaliado)')
     return _out('aprovado', profitable)
 
 

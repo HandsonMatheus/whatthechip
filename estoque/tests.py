@@ -69,10 +69,12 @@ class GatewayDestinationTests(TestCase):
         # (chips/chip_types.py), então usamos 'SoC', que é genuinamente INDETERMINADO.
         r = _result(chip_type='SoC', capacity='8GB', confidence='manual')
         g = _compute_gateway(r, has_cap=True)
-        self.assertEqual(g['destination'], 'aprovado')
+        self.assertEqual(g['destination'], 'aprovado')       # entra no estoque (conservador)
         self.assertEqual(g['profitable'], 'INDETERMINADO')
         self.assertEqual(g['profitable_key'], 'indeterminado')
-        self.assertEqual([s['status'] for s in g['steps']], ['pass', 'pass', 'pass'])
+        # F1b: o 3º passo NÃO é 'pass' (verde "sim") — é 'warn' (âmbar "indeterminado").
+        # Antes mostrava "Rentável: sim" mentiroso num chip não avaliado.
+        self.assertEqual([s['status'] for s in g['steps']], ['pass', 'pass', 'warn'])
 
     def test_nao_confirmado_vai_para_fila(self):
         # Mesmo sendo eMMC 16GB (rentável), a fonte falha antes da rentabilidade.

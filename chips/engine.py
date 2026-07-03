@@ -1017,7 +1017,7 @@ def assess_profitability(result: dict) -> str:
 
         GDDR standalone (GPU memory):
             - GDDR2 ou inferior       → NÃO RENTÁVEL
-            - GDDR3+: sem threshold de densidade definido → INDETERMINADO (raro no fluxo)
+            - GDDR3+: < cfg.gddr_min_gbit Gb/die → NÃO RENTÁVEL; ≥ → RENTÁVEL
 
         Outros tipos (SoC, SDRAM puro, etc.):
             → INDETERMINADO
@@ -1148,7 +1148,16 @@ def assess_profitability(result: dict) -> str:
         gddr_gen = int(m.group(1)) if m else None
         if gddr_gen is None or gddr_gen < cfg.gddr_min_gen:
             return "NÃO RENTÁVEL"
-        return "INDETERMINADO"
+        # GDDR3+: RENTÁVEL se densidade ≥ cfg.gddr_min_gbit (Gb por die). Espelho do
+        # bloco DDR — fonte primária dram_density ("4Gb = 512MB por die"), fallback GB.
+        min_gbit = cfg.gddr_min_gbit
+        gbit = _extract_gbit(result.get("dram_density") or "")
+        if gbit is not None:
+            return "RENTÁVEL" if gbit >= min_gbit - 0.01 else "NÃO RENTÁVEL"
+        cap_gb = _extract_gib(result.get("capacity") or "")
+        if cap_gb is None:
+            return "INDETERMINADO"
+        return "RENTÁVEL" if cap_gb >= min_gbit * 0.125 - 0.01 else "NÃO RENTÁVEL"
 
     # ── DDR standalone ────────────────────────────────────────────────────────
     # Threshold em Gigabits (não Gigabytes): DDR3 ≥ cfg.ddr3_min_gbit; DDR4+ ≥ cfg.ddr4plus_min_gbit.
