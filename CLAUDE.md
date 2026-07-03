@@ -381,44 +381,58 @@ python manage.py load_brands --brand <marca> --commit
 - **Pré-requisito (só na 1ª vez):** o sistema novo (branch `escalabilidade`) precisa **já estar no ar em prod** — é o primeiro deploy, com runbook próprio. Enquanto ele não acontece, o `load_brands` só roda no **local**; a prod ainda está no sistema antigo.
 - **Micron:** a cobertura de massa dela vem também de `import_micron_catalog *_full-catalog.csv` (local-only, CSVs não versionados) — rode à parte, localmente, ao atualizar a Micron.
 
-### Contrato de autoria do YAML (o que um chat de marca segue)
+### Contrato de autoria (o que um chat de marca segue) — Opção 2
 
-Um chat cuida de UMA marca: pesquisa PNs em Tier-1 e escreve `chips/knowledge/<marca>.yaml`. O
-**portão** (validação Pydantic no `load_brands` dry-run) é o *data contract* — aceita se seguir a
-convenção, senão **rejeita com erro acionável** antes de gravar. (Os 10 `.md` de marca referenciam
-este contrato "via CLAUDE.md".)
+Um chat cuida de UMA marca e tem **DUAS trilhas**, que escrevem em lugares diferentes:
 
-**Papel e disciplina do chat (o *porquê* do portão).** Você **pesquisa e confirma** PNs de UMA
-marca (a sua) em fontes Tier-1 e escreve o yaml — você **não inventa**. Regras invioláveis:
+- **Trilha A — GRAMÁTICA** (famílias + mapas): edita `chips/knowledge/<marca>.yaml` → `load_brands`
+  (dry-run = portão) → **commit no git / PR** → o dono roda `--commit`. Reconstruível, versionada.
+- **Trilha B — KNOWN_PARTS** (autoridade): pesquisa Tier-1 → escreve um arquivo de submissão →
+  `submit_known_parts <arquivo> --commit` (grava `review_status='submitted'`, **oculto**) → o dono
+  **aprova no admin** (fila `review_status`, four-eyes). O known_part vive no **banco**, não no yaml.
 
-- **Nunca adivinhe, estime ou infira** um PN ou uma spec. Não está confirmado em Tier-1 (datasheet do fabricante / Octopart)? Então **não decide**: não preenche `capacity`/`emcp_*`/`density` "no olho", não normaliza PN por semelhança, não completa chave de decode sem PN âncora.
-- **Só a sua marca.** Não colete nem edite PNs/famílias de outra marca (nem outro `<marca>.yaml`).
-- **`known_parts` exige fonte Tier-1 citável** na `notes`. Sem fonte → não grava como `confirmed`/`manual`.
-- **Não achou em Tier-1? PARE e sinalize** — não adiciona o PN "por garantia"; reporta ao dono pra revisão manual. PN **ambíguo** (conflito tipo×spec, tipo-lixo, módulo) **nunca** se resolve sozinho — pergunte.
+> **⚠ TRAVA DE ESCRITA (inviolável).** Um agente **só** escreve catálogo por esses dois canais
+> (yaml→`load_brands` p/ gramática; `submit_known_parts`→aprovação p/ known_parts). É **PROIBIDO**
+> escrever o banco direto (shell/ORM/admin ad-hoc/import) — só esses canais passam pelo **portão**.
+> As pipelines de máquina (`import_*`/`enrich_*`/`bless_base`) são operação do **dono**, não do chat.
 
-> O portão (Pydantic) barra o erro de **convenção/estrutura**; estas regras barram o erro de **fato**. As duas camadas juntas é que fazem "popular sem erro".
+**Papel e disciplina (o *porquê* do portão).** Você **pesquisa e confirma** PNs de UMA marca (a sua)
+em fontes Tier-1 e escreve — você **não inventa**. Regras invioláveis:
 
-**Anatomia do yaml** — 4 seções (`brand` e `families` obrigatórias; `maps`/`known_parts` conforme a marca):
+- **Nunca adivinhe, estime ou infira** PN ou spec. Não confirmado em **Tier-1** (datasheet do fabricante = ouro; Octopart = secundário; distribuidor **NÃO** é Tier-1 — confunde Gb/GB)? Então **não decide**: não preenche `capacity`/`emcp_*`/`density` "no olho", não normaliza PN por semelhança, não completa chave de decode sem PN âncora.
+- **Só a sua marca.** Não colete nem edite PNs/famílias/mapas de outra marca. **Nunca** toque em mapa GLOBAL de outra marca (`DRAM_PC`/`DRAM_MOBILE`, dono = Samsung).
+- **`known_parts` exige fonte Tier-1 citável na `notes`.** Sem fonte → não submete como `confirmed`/`manual` (o `submit` avisa, o revisor exige).
+- **Não achou em Tier-1? PARE e sinalize.** Não adiciona "por garantia". PN **ambíguo** (conflito tipo×spec, tipo-lixo, módulo) **nunca** se resolve sozinho — pergunte ao dono.
+
+> O portão (Pydantic + `clean()` do modelo) barra o erro de **convenção/estrutura**; estas regras
+> barram o erro de **fato**. A revisão humana do dono (aprovação in-DB) é o filtro final de veracidade.
+
+**Anatomia do yaml (SÓ GRAMÁTICA agora)** — 3 seções (`brand` e `families` obrigatórias; `maps` conforme a marca):
 
 - `brand`: `name` (exato), `code` (curto único), `notes`.
-- `maps`: tabelas `[chave, val_primary, val_secondary]` reusáveis (regra de primary/secondary por tipo de mapa — regra de ouro #4).
+- `maps`: tabelas `[chave, val_primary, val_secondary]` reusáveis (regra de primary/secondary por tipo — regra de ouro #4).
 - `families`: a **GRAMÁTICA** posicional — `prefix`, `chip_type`/`subtype`/`interface`, `priority`, `pn_length`, `is_emcp`, `active`, `decode_cap_*`/`decode_gen_*`/`decode_density_type`, `suffix_rules`.
-- `known_parts`: a **AUTORIDADE** — PNs confirmados que **vencem** a gramática (só `confidence` confirmed/manual).
+- **`known_parts` NÃO vai mais no yaml** (Opção 2) — vão pelo `submit_known_parts` (arquivo de submissão de mesma forma: `part_number` + specs + `confidence` + `notes` com a fonte Tier-1).
 
 **Convenção que o portão força** (idêntica a §6): `chip_type` canônico (geração pra DRAM discreta;
 ❌ nunca `RAM`/`DDR` genérico em família **ativa** → rejeita); `subtype` = só geração/célula (sem
 Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); `interface` = largura (`x8`/`x16`) ou vazio;
-`emcp_ram` = `'LPDDR{n} {cap}GB'` (tipo **antes**); `known_parts.notes` = a **fonte Tier-1** (proveniência).
+`emcp_ram` = `'LPDDR{n} {cap}GB'` (tipo **antes**).
 
-**Fluxo + checklist:** `load_brands --brand <marca>` (dry-run = portão) → `--commit` (grava, sobe
-`catalog_version`) → `characterize_baseline --diff` (prova que só mudou o pretendido). Antes de commitar,
-confira: chip_type canônico · subtype limpo · interface sem geração · nenhuma família com
-`decode_density_type` **e** `decode_cap_map` juntos · KM com dígito na 3ª pos → `decode_gen_pos: null` ·
-known_parts com fonte Tier-1 · dry-run passou · characterize mostrou **só** o pretendido.
+**Checklist de handoff (rode LOCAL; NÃO toque em prod — quem publica é o dono):**
+- [ ] Só mexi na MINHA marca (yaml e/ou submissão); não toquei em mapa global de outra.
+- [ ] Nada inventado/estimado; todo known_part com **fonte Tier-1 na `notes`**; ambíguo → perguntei.
+- [ ] Gramática: `load_brands --brand X` (dry-run/portão) passou · nenhuma família com `decode_density_type` **e** `decode_cap_map` juntos · KM com dígito na 3ª pos → `decode_gen_pos: null`.
+- [ ] Known_parts: `submit_known_parts <arq>` (dry-run = portão) passou.
+- [ ] `characterize_baseline --diff` mostrou **só** o pretendido (+ rodei o teste dedicado da marca, se houver).
+- [ ] Entreguei as saídas ao dono. **Banco local atualizado** (migrate + gramática em dia) antes de testar.
 
-**Marca nova (11ª+):** basta criar `chips/knowledge/<marca>.yaml` — o `deploy_catalog` **descobre
-sozinho** (glob dos yamls, sem editar código). Opcional: um `<marca>.md` (camada humana, no molde dos
-existentes). Portão, contrato e engine já valem pra ela sem nenhuma configuração.
+**Publicar (o DONO faz, apontando `DATABASE_URL` ao prod — é segredo):** gramática = `git push` (versiona) **+**
+`load_brands --brand X --commit` (grava no banco de prod, aditivo, sobe `catalog_version`); known_parts =
+`submit_known_parts --commit` + **aprovar no admin**. Depois: `guard_catalog`. Reflete na hora, sem restart.
+
+**Marca nova (11ª+):** basta criar `chips/knowledge/<marca>.yaml` (só gramática) — o `deploy_catalog`
+**descobre sozinho** (glob). Opcional: um `<marca>.md` (camada humana). Portão, contrato e engine já valem pra ela.
 
 ---
 
