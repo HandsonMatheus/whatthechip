@@ -41,6 +41,9 @@ _KNOWLEDGE_DIR = os.path.join(settings.BASE_DIR, "chips", "knowledge")
 # globais aqui: get_or_create(brand=None) reusa a linha existente no prod. (Os dois nomes são os
 # mesmos hard-coded no engine, então esta lista é o par fiel — não uma heurística frágil.)
 _GLOBAL_MAPS = frozenset({"DRAM_PC", "DRAM_MOBILE"})
+# DONO dos mapas globais: só o yaml da Samsung pode DEFINI-los (brand=None afeta TODAS as
+# marcas). Outra marca só REFERENCIA. Guard cross-brand — espelho do guard de prefixo.
+_GLOBAL_MAP_OWNER = "samsung"
 
 # Campos do YAML → ChipFamily (a brand é FK, vem do contexto; doc_page/is_documented
 # ficam no default, igual aos populate_*).
@@ -93,6 +96,27 @@ class Command(SafeWriteCommand):
                 f"   - {'.'.join(str(p) for p in err['loc'])}: {err['msg']}"
                 for err in e.errors())
             raise CommandError(f"{path} reprovou na validação:\n{linhas}")
+
+        # ── GUARD DE MAPA GLOBAL (F2/D): só a Samsung define DRAM_PC/DRAM_MOBILE ──
+        # (brand=None → densidade universal). Outra marca definindo = sobrescreveria a
+        # densidade de TODAS. Referenciar é OK; redefinir, não.
+        if opts["brand"].lower() != _GLOBAL_MAP_OWNER:
+            intrusos = sorted(m for m in spec.maps if m in _GLOBAL_MAPS)
+            if intrusos:
+                raise CommandError(
+                    f"mapa(s) global(is) {intrusos} pertencem à Samsung (densidade universal, "
+                    f"brand=None). '{opts['brand']}' não pode DEFINI-los — só referenciar. "
+                    f"Se precisa de valores próprios, crie um mapa da sua marca (outro nome).")
+
+        # ── ADVISORY (F2/F): reasoning = fonte/justificativa da regra de decode ──
+        # Recomendado por família, NÃO obrigatório (90% do legado não tem → hard-reject
+        # rejeitaria quase tudo). Surface o gap p/ famílias novas.
+        sem_reasoning = [f.prefix for f in spec.families if not (f.reasoning or "").strip()]
+        if sem_reasoning:
+            self.stdout.write(self.style.WARNING(
+                f"  ⚠ {len(sem_reasoning)} família(s) SEM reasoning (fonte Tier-1 da regra de "
+                f"decode) — recomendado em famílias NOVAS: {', '.join(sem_reasoning[:8])}"
+                f"{'…' if len(sem_reasoning) > 8 else ''}"))
 
         self.stdout.write(self.style.MIGRATE_HEADING(
             f"\n{spec.brand.name}: {sum(len(v) for v in spec.maps.values())} entrada(s) de mapa, "

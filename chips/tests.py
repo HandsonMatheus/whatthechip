@@ -230,6 +230,53 @@ class SchemaDedupTests(SimpleTestCase):
         self.assertEqual(len(bf.families), 2)
 
 
+class SchemaStructureTests(SimpleTestCase):
+    """F2/E: validadores ESTRUTURAIS do decode no portão (0 violações no legado → hard)."""
+
+    def _fam(self, **kw):
+        from chips.knowledge.schema import FamilySpec
+        return FamilySpec(**{"prefix": "XX", "chip_type": "DDR4", **kw})
+
+    def test_cap_pos_sem_map_nem_density_rejeita(self):
+        from pydantic import ValidationError
+        with self.assertRaises(ValidationError):
+            self._fam(decode_cap_pos=3)   # não há como decodificar capacidade
+
+    def test_cap_pos_com_density_type_passa(self):
+        self._fam(decode_cap_pos=3, decode_density_type="pc")   # density_type basta
+
+    def test_cap_pos_alem_do_pn_length_rejeita(self):
+        from pydantic import ValidationError
+        with self.assertRaises(ValidationError):
+            self._fam(decode_cap_pos=8, decode_cap_len=2, decode_cap_map="M", pn_length=9)  # 8+2>9
+
+    def test_gen_pos_alem_do_pn_length_rejeita(self):
+        from pydantic import ValidationError
+        with self.assertRaises(ValidationError):
+            self._fam(decode_gen_pos=10, decode_gen_map="G", pn_length=9)   # 10+1>9
+
+
+class GlobalMapGuardTests(TestCase):
+    """F2/D: só a Samsung define DRAM_PC/DRAM_MOBILE (mapa global brand=None). Outra
+    marca definindo sobrescreveria a densidade de TODAS → load_brands recusa."""
+
+    def test_marca_nao_samsung_com_mapa_global_recusa(self):
+        import os
+        from django.core.management import call_command
+        from django.core.management.base import CommandError
+        from chips.management.commands.load_brands import _KNOWLEDGE_DIR
+        path = os.path.join(_KNOWLEDGE_DIR, "_guardtest.yaml")
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write('brand: {name: GuardT, code: GT}\n'
+                     'maps:\n  DRAM_PC: [["11", "2Gb", "256MB"]]\n'
+                     'families: [{prefix: GTX, chip_type: DDR4}]\n')
+        try:
+            with self.assertRaises(CommandError):
+                call_command("load_brands", "--brand", "_guardtest", verbosity=0)
+        finally:
+            os.unlink(path)
+
+
 class LoaderCrossBrandGuardTests(TestCase):
     """Backstop cross-brand: um prefixo pertence a UMA marca. Uma 2ª marca declarando o
     mesmo prefixo é rejeitada pelo loader (não sobrescreve a família da outra em silêncio)."""

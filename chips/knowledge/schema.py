@@ -102,6 +102,31 @@ class FamilySpec(BaseModel):
         return self
 
     @model_validator(mode="after")
+    def _estrutura_decode(self):
+        """VALIDADORES ESTRUTURAIS do decode (F2/E) — pegam o erro que a convenção não
+        pega: chave de decode que não decodifica ou posição fora do PN (falha silenciosa/
+        placeholder no runtime). 0 violações nas famílias reais → seguro como hard-reject."""
+        # cap_pos precisa de um jeito de decodificar: cap_map OU density_type.
+        if (self.decode_cap_pos is not None and not self.decode_cap_map
+                and not self.decode_density_type):
+            raise ValueError(
+                f"família '{self.prefix}': decode_cap_pos={self.decode_cap_pos} setado, mas SEM "
+                f"decode_cap_map nem decode_density_type — não há como decodificar capacidade.")
+        # posições (pos+len) têm que caber no PN, quando pn_length é conhecido.
+        if self.pn_length:
+            if (self.decode_cap_pos is not None
+                    and self.decode_cap_pos + self.decode_cap_len > self.pn_length):
+                raise ValueError(
+                    f"família '{self.prefix}': decode_cap_pos+len "
+                    f"({self.decode_cap_pos}+{self.decode_cap_len}) passa do pn_length ({self.pn_length}).")
+            if (self.decode_gen_pos is not None
+                    and self.decode_gen_pos + self.decode_gen_len > self.pn_length):
+                raise ValueError(
+                    f"família '{self.prefix}': decode_gen_pos+len "
+                    f"({self.decode_gen_pos}+{self.decode_gen_len}) passa do pn_length ({self.pn_length}).")
+        return self
+
+    @model_validator(mode="after")
     def _convencao_de_campos(self):
         """PORTÃO DA CONVENÇÃO (passo 4) — o data contract que impede marca de sujar
         o dado. Normaliza os campos usando AS MESMAS funções canônicas do engine
