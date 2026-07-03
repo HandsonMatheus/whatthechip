@@ -157,8 +157,10 @@ def report_error(request):
 def stats_api(request):
     """Estatísticas rápidas do banco — usadas na página inicial."""
     return JsonResponse({
-        "total_parts":    KnownPart.objects.count(),
-        "confirmed":      KnownPart.objects.filter(confidence__in=("confirmed", "manual")).count(),
+        # Opção 2: só conta o catálogo VISÍVEL (approved) — submitted/rejected não são catálogo.
+        "total_parts":    KnownPart.objects.filter(review_status="approved").count(),
+        "confirmed":      KnownPart.objects.filter(review_status="approved",
+                                                   confidence__in=("confirmed", "manual")).count(),
         "total_searches": SearchLog.objects.count(),
         "unknown_count":  UnknownChip.objects.count(),
     })
