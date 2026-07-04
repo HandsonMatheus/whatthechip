@@ -35,10 +35,12 @@
 
 > Um agente **só** escreve catálogo por **dois canais**, e ambos passam pelo **portão**:
 > - **GRAMÁTICA** (famílias + mapas): edita o yaml → `load_brands` (dry-run = portão) → PR.
-> - **KNOWN_PARTS** (autoridade): `submit_known_parts <arquivo> --commit` → `submitted` (oculto) →
->   o **dono aprova** no admin.
+> - **KNOWN_PARTS** (autoridade): o chat **valida** (`submit_known_parts <arquivo>` dry-run = portão) e
+>   **entrega o arquivo**; o **DONO roda o `--commit`** (grava `submitted`, oculto) e **aprova**. Por quê:
+>   o chat roda num sandbox **isolado** que **não alcança** o banco do dono (sem túnel de rede), e a
+>   **regra de ouro #1** manda o commit ser do dono (existe por causa do incidente dos 5.900).
 >
-> É **PROIBIDO** escrever o banco direto (shell/ORM/admin ad-hoc/import). As pipelines de máquina
+> É **PROIBIDO** escrever o banco direto (shell/ORM/admin ad-hoc/import) e escrever em **prod**. As pipelines de máquina
 > (`import_*`/`enrich_*`/`bless_base`) são operação do **dono**, não do chat. Por quê: o portão
 > vive no **modelo** (`KnownPart.clean()`/`save()` + `CheckConstraint`s) — todo write passa por ele,
 > mas escrever "por fora" é a única forma de burlar, então é proibido por contrato.
@@ -117,11 +119,16 @@ confirmed/manual). Na Opção 2, ele vive no **banco**, não no yaml.
 **Fluxo:**
 1. Pesquisa Tier-1 → escreve um arquivo de submissão (mesma forma: `part_number` + specs +
    `confidence` + **`notes` com a fonte Tier-1**).
-2. `python manage.py submit_known_parts <arquivo>` (dry-run = portão) → `--commit` grava como
-   **`review_status='submitted'`** (OCULTO do engine).
-3. O **dono aprova** no admin (`/admin/chips/knownpart/`, filtro review_status → Submetido). A
+2. O chat **valida**: `submit_known_parts <arquivo>` (dry-run = portão) + confere numa base de teste
+   própria (a suíte golden). **Entrega o ARQUIVO** validado ao dono — o chat NÃO roda o `--commit`.
+3. O **DONO roda o `--commit`** na máquina dele: `submit_known_parts <arquivo> --commit --user <id-do-chat>`
+   → grava `submitted` (oculto). Por quê é o dono: o sandbox do chat é **isolado**, não alcança o banco
+   do dono (sem rede); e a **regra de ouro #1** manda o commit ser do dono (incidente dos 5.900).
+   ⚠ `--user` = um usuário que **representa o chat** (ex.: `samsung-chat`), **≠ do dono** — senão o
+   four-eyes barra na aprovação. (No teste local dá pra rodar sem `--user`: fica isento.)
+4. O **dono aprova** no admin (`/admin/chips/knownpart/`, filtro review_status → Submetido). A
    aprovação aplica **four-eyes** (quem submete ≠ quem aprova) e carimba quem/quando.
-4. Só depois de aprovado o PN fica **visível/autoritativo**.
+5. Só depois de aprovado o PN fica **visível/autoritativo**.
 
 **Travas embutidas:** o mesmo portão da convenção roda no `clean()` do modelo; `confidence` sem fonte
 Tier-1 → o `submit` avisa e o revisor exige; PN já aprovado **não é rebaixado** por uma re-submissão
@@ -158,9 +165,11 @@ Tier-1 → o `submit` avisa e o revisor exige; PN já aprovado **não é rebaixa
 - [ ] **Família nova:** entreguei **PNs âncora no golden** (tipo/subtipo/capacidade/rentabilidade).
 - [ ] **Tipo novo:** o **handshake** passa (declarei a regra de rentabilidade).
 - [ ] `characterize_baseline --diff` mostrou **só** o pretendido; rodei o teste dedicado da marca.
-- [ ] **Known_parts:** `submit_known_parts <arq>` (dry-run) passou; cada um com **fonte Tier-1 na `notes`**.
+- [ ] **Known_parts:** cada um com **fonte Tier-1 na `notes`**; `submit_known_parts <arq>` (dry-run = portão)
+      passou. Entrego o **ARQUIVO validado** ao dono (ele roda o `--commit` + aprova — sandbox isolado + regra #1).
+- [ ] **A suíte inteira verde:** `python manage.py test chips estoque --settings=core.settings_test`.
 - [ ] Banco local atualizado (`migrate` + gramática em dia) antes de testar.
-- [ ] Entreguei as saídas ao dono. **Não toquei em prod.**
+- [ ] Entreguei ao dono: o **arquivo de submissão** (known_parts) e/ou o **diff do yaml + golden** (gramática), + as saídas dos testes. **Não toquei no banco do dono nem em prod.**
 
 ---
 

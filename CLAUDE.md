@@ -392,9 +392,10 @@ Um chat cuida de UMA marca e tem **DUAS trilhas**, que escrevem em lugares difer
 
 - **Trilha A — GRAMÁTICA** (famílias + mapas): edita `chips/knowledge/<marca>.yaml` → `load_brands`
   (dry-run = portão) → **commit no git / PR** → o dono roda `--commit`. Reconstruível, versionada.
-- **Trilha B — KNOWN_PARTS** (autoridade): pesquisa Tier-1 → escreve um arquivo de submissão →
-  `submit_known_parts <arquivo> --commit` (grava `review_status='submitted'`, **oculto**) → o dono
-  **aprova no admin** (fila `review_status`, four-eyes). O known_part vive no **banco**, não no yaml.
+- **Trilha B — KNOWN_PARTS** (autoridade): pesquisa Tier-1 → arquivo de submissão → o chat **valida**
+  (`submit_known_parts <arquivo>` dry-run = portão) e **entrega o arquivo**; o **DONO roda o `--commit`**
+  (`--user <id-do-chat>` ≠ dono, p/ four-eyes) → grava `submitted` (oculto) → **aprova no admin**. O chat
+  NÃO roda o commit: sandbox isolado não alcança o banco do dono + regra de ouro #1. Known_part vive no banco.
 
 > **⚠ TRAVA DE ESCRITA (inviolável).** Um agente **só** escreve catálogo por esses dois canais
 > (yaml→`load_brands` p/ gramática; `submit_known_parts`→aprovação p/ known_parts). É **PROIBIDO**
@@ -430,7 +431,7 @@ Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); `interface` = largura (`x
 - [ ] Gramática: `load_brands --brand X` (dry-run/portão) passou · nenhuma família com `decode_density_type` **e** `decode_cap_map` juntos · KM com dígito na 3ª pos → `decode_gen_pos: null`.
 - [ ] **Família nova → GOLDEN:** entreguei PNs âncora + saída esperada (tipo/subtipo/capacidade/**rentabilidade**) no `_<MARCA>_GOLDEN` do `chips/tests.py`. É a prova de que a família nova decodifica certo (o `characterize` não valida PN novo).
 - [ ] **Tipo novo → HANDSHAKE:** o `RentabilidadeHandshakeTests` passa (declarei a regra de rentabilidade do tipo em `chip_types.py`/`assess_profitability`; nenhum tipo comercial em INDETERMINADO).
-- [ ] Known_parts: `submit_known_parts <arq>` (dry-run = portão) passou; cada um com **fonte Tier-1 na `notes`**.
+- [ ] Known_parts: `submit_known_parts <arq>` (dry-run = portão) passou; cada um com **fonte Tier-1 na `notes`**; entrego o **arquivo validado** ao dono (ele roda o `--commit` + aprova — sandbox isolado + regra #1).
 - [ ] **A suíte inteira verde:** `python manage.py test chips estoque --settings=core.settings_test` (roda golden + handshake + portão) · `characterize_baseline --diff` mostrou **só** o pretendido.
 - [ ] Entreguei as saídas ao dono. **Banco local atualizado** (migrate + gramática em dia) antes de testar.
 
