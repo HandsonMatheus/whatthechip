@@ -1,11 +1,11 @@
-> ⚠️ **O CONHECIMENTO É YAML** (desde jul/2026). As famílias, decode maps e PNs confirmados da
-> SK Hynix vivem em **`chips/knowledge/hynix.yaml`**, carregado por `load_brands`. Para **adicionar
-> ou corrigir um chip, edite o yaml** seguindo o contrato de autoria (via `CLAUDE.md`).
+> ⚠️ **DUAS TRILHAS (Opção 2, jul/2026).** A **GRAMÁTICA** da SK Hynix (famílias + decode maps) vive em
+> **`chips/knowledge/hynix.yaml`** (via `load_brands`). Os **known_parts** (PNs confirmados = autoridade)
+> **NÃO ficam mais no yaml** — vivem no **banco**, submetidos por `submit_known_parts` e **aprovados pelo
+> dono** no admin (four-eyes). **Processo obrigatório completo — LEIA: `AUTORIA.md`** (índice: `CLAUDE.md §5`).
 >
-> **Este `.md` é a camada humana** — NÃO reproduz os dados do yaml (decode key→valor, inventário de
-> famílias, listas de known_parts): esses **vivem só no yaml** (se duplicados aqui, apodrecem). Aqui
-> ficam: **convenções, anatomia do PN, armadilhas, rentabilidade, fontes, o *porquê*** e ponteiros.
-> Índice de comandos do projeto: **CLAUDE.md §5**.
+> **Este `.md` é a camada humana** — NÃO reproduz os dados (decode key→valor, inventário de famílias):
+> esses vivem no **yaml** (gramática) e no **banco** (known_parts). Aqui ficam: **convenções, anatomia do
+> PN, armadilhas, rentabilidade, fontes, o *porquê*** e ponteiros.
 
 ---
 
@@ -25,13 +25,16 @@ Na bancada da eMiner é a **2ª marca mais frequente**, forte em LPDDR mobile e 
 ### 0.1 Onde vive o conhecimento
 
 ```
-chips/knowledge/hynix.yaml   ← gramática (famílias + decode maps) + known_parts confirmados
-CLAUDE.md                    ← hub mantido: convenção, comandos, arquitetura + aponta pro contrato de autoria
+chips/knowledge/hynix.yaml   ← GRAMÁTICA (famílias + decode maps). SÓ isso (Opção 2).
+banco (submit_known_parts→aprovação)   ← known_parts confirmados = autoridade (não no yaml)
+AUTORIA.md / CLAUDE.md §5     ← o processo OBRIGATÓRIO das duas trilhas + convenção + comandos
 ```
 
-Para adicionar/corrigir: **edite o yaml**, valide no portão (`load_brands --brand hynix`, dry-run),
-grave com `--commit`. **NÃO tocar sem revisão do usuário:** `chips/engine.py`, `estoque/views.py`
-(globais), yamls de outras marcas.
+**Duas trilhas** (detalhe em `AUTORIA.md`): **gramática** (família/mapa) → edita o yaml → `load_brands
+--brand hynix` (dry-run = portão) → o **dono** roda `--commit`. **known_parts** (autoridade) →
+`submit_known_parts` (dry-run) → o **dono** roda `--commit` + **aprova no admin**. ⚠ **Família nova → PN-âncora
+no golden é OBRIGATÓRIO** (`GoldenObrigatorioTests` falha sem). **NÃO tocar sem revisão:** `chips/engine.py`,
+`estoque/views.py` (globais), yamls/known_parts de outras marcas, mapas globais (`DRAM_PC`/`DRAM_MOBILE`, dono = Samsung).
 
 ### 0.2 Regras de ouro — nunca violar
 
@@ -181,7 +184,8 @@ Preduo. Tier 3: OMO, brokers. **Evitar p/ capacidade:** HardDiskDirect ("(8GB)" 
 - **2026-06-27 (Micron):** lição transferida (regra #9) — `MT52L=LPDDR4` era LPDDR3; o tier-1 pegou antes do bulk corromper. Geração por prefixo sem atestar é o modo de falha nº1.
 - **2026-06-29:** subtypes já canônicos no código + `canonical_gen` protege o label (não é mais "bug pendente").
 
-> Provenância por-PN e o inventário de chaves vivem nos `known_parts`/`maps` do **`hynix.yaml`**.
+> O inventário de chaves/mapas vive no **`hynix.yaml`** (gramática); os **known_parts** confirmados
+> (com a proveniência Tier-1 nas `notes`) vivem no **banco** (Opção 2), submetidos via `submit_known_parts`.
 > Tudo que é cross-marca (comandos, convenção, rentabilidade, arquitetura) está no **CLAUDE.md** — o
 > único `.md` mantido, e é quem aponta pro contrato de autoria do yaml.
 

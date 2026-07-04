@@ -429,7 +429,7 @@ Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); `interface` = largura (`x
 - [ ] Só mexi na MINHA marca (yaml e/ou submissão); não toquei em mapa global de outra.
 - [ ] Nada inventado/estimado; todo known_part com **fonte Tier-1 na `notes`**; ambíguo → perguntei.
 - [ ] Gramática: `load_brands --brand X` (dry-run/portão) passou · nenhuma família com `decode_density_type` **e** `decode_cap_map` juntos · KM com dígito na 3ª pos → `decode_gen_pos: null`.
-- [ ] **Família nova → GOLDEN:** entreguei PNs âncora + saída esperada (tipo/subtipo/capacidade/**rentabilidade**) no `_<MARCA>_GOLDEN` do `chips/tests.py`. É a prova de que a família nova decodifica certo (o `characterize` não valida PN novo).
+- [ ] **Família nova → GOLDEN (OBRIGATÓRIO, testado):** entreguei PNs âncora + saída esperada (tipo/subtipo/capacidade/**rentabilidade**) no `_<MARCA>_GOLDEN` do `chips/tests.py`. É a prova de que a família nova decodifica certo (o `characterize` não valida PN novo). ⚠ `GoldenObrigatorioTests` **FALHA** se família de prefixo novo não tiver âncora — não é opcional.
 - [ ] **Tipo novo → HANDSHAKE:** o `RentabilidadeHandshakeTests` passa (declarei a regra de rentabilidade do tipo em `chip_types.py`/`assess_profitability`; nenhum tipo comercial em INDETERMINADO).
 - [ ] Known_parts: `submit_known_parts <arq>` (dry-run = portão) passou; cada um com **fonte Tier-1 na `notes`**; entrego o **arquivo validado** ao dono (ele roda o `--commit` + aprova — sandbox isolado + regra #1).
 - [ ] **A suíte inteira verde:** `python manage.py test chips estoque --settings=core.settings_test` (roda golden + handshake + portão) · `characterize_baseline --diff` mostrou **só** o pretendido.
