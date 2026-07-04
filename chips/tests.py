@@ -688,6 +688,77 @@ class RentabilidadeHandshakeTests(TestCase):
             f"em assess_profitability, ou marque commercial=False em chip_types.py): {falhas}")
 
 
+# ── Golden OBRIGATÓRIO pra família NOVA (jul/2026) ───────────────────────────────
+# Prefixos das 188 famílias ATIVAS que já existiam quando a regra entrou. São
+# GRANDFATHERED (provadas em prod → não exigem golden retroativo). QUALQUER família de
+# prefixo NOVO (fora daqui) precisa de ≥1 PN-âncora num `_<MARCA>_GOLDEN`, senão o
+# GoldenObrigatorioTests falha — força o chat a PROVAR o decode da família nova (o
+# `characterize` não valida PN novo). Ao dar golden a uma grandfathered, pode tirá-la daqui.
+_FAMILIES_GRANDFATHERED = frozenset({
+    "04EMCP", "08EMCP", "16EMCP", "32EMCP", "64EMCP", "EMCP", "GD25B", "GD25LB", "GD25LQ",
+    "GD25Q", "GD5F", "GDQ", "H26M", "H26T", "H28M", "H28S", "H28U", "H54G", "H58G", "H5A",
+    "H5AN", "H5C", "H5MS", "H5PS", "H5RS", "H5TC", "H5TQ", "H9CC", "H9CK", "H9DA", "H9DP",
+    "H9HC", "H9HCN", "H9HK", "H9HP", "H9HQ", "H9HR", "H9JK", "H9RT", "H9TK", "H9TP", "H9TQ",
+    "HN8G", "HN8T", "HY5DU", "HY5MS", "HY5PS", "K3", "K3KL", "K3L", "K3LK", "K3MF", "K3PE",
+    "K3Q", "K3QF", "K3R", "K3RG", "K3U", "K4A", "K4B", "K4E", "K4F", "K4G", "K4H", "K4J",
+    "K4M", "K4N", "K4P", "K4R", "K4RA", "K4RB", "K4RC", "K4S", "K4T", "K4U", "K4W", "K4X",
+    "K4Z", "K5", "K5D", "K5L", "K5N", "K5W", "K7", "K8", "K9C", "K9F", "K9G", "K9H", "K9HDG",
+    "K9K", "K9L", "K9W", "K9X", "K9Z", "KAT", "KF9", "KLM", "KLU", "KLUBG", "KLUCG", "KLUDG",
+    "KLUEG", "KLUFG", "KLUGG", "KM", "KM1", "KM2", "KM2L", "KM2P", "KM3H", "KM3P", "KM4",
+    "KM5", "KM8", "KMAG", "KMAS", "KMD", "KMF", "KMG", "KMJ", "KMK", "KML", "KMN", "KMQ",
+    "KMR", "KMS", "KMV", "KUS", "MT29F", "MT29P", "MT29T", "MT29TZZZ", "MT29VZZZ", "MT30AZZZ",
+    "MT40A", "MT41K", "MT52L", "MT53B", "MT53D", "MT53E", "MTFC", "NT5AD", "NT5CC", "NT5PA",
+    "PMA", "PMD", "PME", "PMF", "PMF4", "PMF5", "PMS", "RS1G32L", "RS256M32L", "RS256M32LD3",
+    "RS2G32L", "RS512M32L", "RS512M32LD3", "RS70B", "RS70B08G", "RS70B16G", "RS70B32G",
+    "RS70B64G", "RS70BT7G", "S2A", "S2D", "S2M", "S5E", "S5K", "SD5DH", "SD7DP", "SDAD",
+    "SDEM", "SDHQB", "SDIN", "SDINB", "SDINDDH", "SDINEDK", "SDINFD", "SDMAG", "TH58", "THGAF",
+    "THGAM", "THGBM", "THGJF", "THGJFBT", "TYC", "TYD",
+})
+
+
+class GoldenObrigatorioTests(SimpleTestCase):
+    """F3+ — GOLDEN OBRIGATÓRIO: família NOVA (prefixo fora do baseline grandfathered)
+    tem que ter PN-âncora num `_<MARCA>_GOLDEN`. É a última trava — sem ela, uma família
+    nova entra sem prova de que decodifica certo. Grandfather as 188 atuais; enforce as novas."""
+
+    def _golden_pns(self):
+        import chips.tests as t
+        pns = set()
+        for name, val in vars(t).items():
+            if name.endswith("_GOLDEN") and isinstance(val, dict):
+                pns.update(str(k).upper() for k in val)
+        return pns
+
+    def _active_families(self):
+        import glob, os, yaml
+        from chips.management.commands.load_brands import _KNOWLEDGE_DIR
+        fams = {}
+        for f in glob.glob(os.path.join(_KNOWLEDGE_DIR, "*.yaml")):
+            doc = yaml.safe_load(open(f, encoding="utf-8")) or {}
+            for fam in doc.get("families") or []:
+                if fam.get("active", True) and fam.get("prefix"):
+                    fams[fam["prefix"]] = os.path.basename(f)
+        return fams
+
+    def test_familia_nova_exige_ancora_no_golden(self):
+        golden = self._golden_pns()
+        faltando = []
+        for prefix, brand in sorted(self._active_families().items()):
+            if prefix in _FAMILIES_GRANDFATHERED:
+                continue
+            if not any(pn.startswith(prefix.upper()) for pn in golden):
+                faltando.append(f"{prefix} ({brand})")
+        self.assertEqual(faltando, [],
+            "família(s) NOVA(s) SEM PN-âncora no _<MARCA>_GOLDEN de chips/tests.py — adicione a "
+            f"âncora + saída esperada (é a prova de que a família decodifica certo): {faltando}")
+
+    def test_mecanismo_pega_familia_nova_sem_golden(self):
+        # sanity: prova que a trava REALMENTE pega um prefixo novo sem cobertura.
+        golden = {"K4W4G1646Q"}                       # só cobre K4W
+        self.assertFalse(any(pn.startswith("WB25Q") for pn in golden),
+                         "a trava tem que NÃO achar cobertura pra uma família nova WB25Q")
+
+
 class CatalogVersionTests(TestCase):
     """Prova que mudar a gramática sobe o carimbo e o engine recarrega SOZINHO —
     sem `clear_engine_cache()` manual nem reinício (acaba a regra de ouro #3)."""

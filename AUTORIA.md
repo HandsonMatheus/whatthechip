@@ -88,9 +88,10 @@ Por que é insubstituível:
   `priority`), a âncora da outra família muda de resposta → o golden dela **falha** e aponta o culpado.
 - **Já é price-ready:** a linha guarda a **rentabilidade**, que é a chave da futura faixa de preço.
 
-> ⚠ **Enforcement:** hoje o golden EXISTE e roda por marca (`test_identifica_todos_os_pns`), e é
-> **exigido no handoff** (o dono não aprova família nova sem âncora). A trava AUTOMÁTICA que faz o
-> teste **falhar** se uma família nova não tiver âncora é a última blindagem a implementar.
+> ✅ **Enforcement AUTOMÁTICO (jul/2026):** `GoldenObrigatorioTests` **falha** se uma família de
+> **prefixo NOVO** (fora do baseline `_FAMILIES_GRANDFATHERED`, as 188 famílias que já existiam)
+> entrar **sem** PN-âncora num `_<MARCA>_GOLDEN`. As 188 atuais são grandfathered (provadas em prod);
+> **toda família nova** tem que trazer o golden — não é mais só disciplina, a suíte trava.
 
 ### 3.4 O HANDSHAKE de rentabilidade — nenhum chip fica sem decisão comercial
 Um teste (`RentabilidadeHandshakeTests`) garante que **nenhum `chip_type` comercial cai em
