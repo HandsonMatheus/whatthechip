@@ -226,6 +226,32 @@ geração morta ao descarte **mesmo sem confirmação no banco** (rótulo distin
   `suffix_rules`, `pn_length`, `priority`, `active`, `is_emcp`.
 - **`ChipFamily.doc_page`** liga a família a uma página de documentação (`pages.Page`).
 
+**Três camadas — schema COMPARTILHADO, lógica GENÉRICA, dado POR-MARCA (não confundir).**
+Uma dúvida recorrente: "cada marca tem um campo/mapa próprio de eMCP — isso não é má
+prática?" Não. A separação é de propósito:
+- **Campo do modelo (schema) = compartilhado.** Existe **um** `emcp_ram`, **um**
+  `emcp_nand`, **um** `capacity` no `KnownPart`, usados por TODAS as marcas. Não há
+  `emcp_ram_samsung`. (Um sistema de preço/rentabilidade lê esses campos normalizados
+  e vale pra qualquer marca — igual `assess_profitability`.)
+- **Lógica do engine = genérica.** Zero `if` por marca no decode: um caminho único lê
+  `decode_cap_map`/`decode_gen_map` de qualquer família (o único trecho Samsung-específico
+  é o fallback legado `EMCP_RAM_TYPES`, isolado e escopado).
+- **Mapa de decode (`DecodeMap`) = por-marca, e OBRIGATÓRIO ser assim.** A nomenclatura
+  de densidade de cada fabricante colide: o código `64` = **8GB** na SK Hynix mas **64GB**
+  na Kingston; `32` = 4GB (Hynix) vs 32GB (Kingston). Fundir num mapa global daria erro
+  catastrófico. Por isso `DecodeMap` é keyed `(map_name, char_key, brand)` — cada marca tem
+  suas tabelas (prefixo `SAM_`/`HYX_`/… é só legibilidade; a FK `brand` é que separa). A
+  exceção são `DRAM_PC`/`DRAM_MOBILE` (`brand=None`, globais) porque a JEDEC padronizou os
+  códigos de DRAM — o único caso onde compartilhar é correto.
+- **eMCP: NAND e RAM em mapas SEPARADOS, RAM por geração** (padrão Kingston/SK Hynix; a
+  Samsung foi alinhada em jul/2026 — bug X6). O NAND é generation-independent (mesma chave =
+  mesmo NAND em qualquer geração), então `SAM_EMCP_NAND` é compartilhado entre as famílias
+  Samsung; a RAM NÃO é (X6=3GB em LPDDR4X, 2GB em LPDDR4), então mora em `SAM_EMCP_RAM_<gen>`
+  (um por geração), com `val_secondary` vazio no NAND map forçando o engine a pegar a RAM do
+  `decode_gen_map`. Grammar EXATA: só chaves com fonte Tier-1 entram no RAM map (código sem
+  confirmação → RAM "não mapeada", NAND ainda decodifica). Ver `SAM_EMCP_RAM_L4X` (KMD) e
+  `SAM_EMCP_RAM_L3` (KMG) em `chips/knowledge/samsung.yaml`.
+
 ### Camada web
 
 - **`chips/views.py`** → `/chips/search/` (JSON), `/chips/decode/` (parcial HTMX),
