@@ -1523,6 +1523,7 @@ _HYX_GOLDEN = {  # SK Hynix: 36 famílias (populate_hynix + add_chip_families). 
     "H9HP16AECMMD":      ("eMCP", "", "eMMC 5.1 128GB", "LPDDR4X 6GB", "", "RENTÁVEL"),
     "H9TKNNN8JDAP":      ("LPDDR2", "1GB", "", "", "", "NÃO RENTÁVEL"),
     "H9TQ64A8GTCC":      ("eMCP", "", "eMMC 5.x 8GB", "LPDDR3 1GB", "", "RENTÁVEL"),
+    "H9TQ64AAETMCUR-KUM": ("eMCP", "", "eMMC 5.x 8GB", "LPDDR3 1.5GB", "", "RENTÁVEL"),  # AA=1.5GB (12Gb) ≠ AB=2GB — WinSource 2026-07-06, ver hynix.yaml
     "HN8T05BZGR":        ("UFS", "128GB", "", "", "", "RENTÁVEL"),
     "HY5DU281622ET-25":  ("DDR1", "16MB", "", "", "", "NÃO RENTÁVEL"),
     "HY5PS121621CFP-25": ("DDR2", "64MB", "", "", "", "NÃO RENTÁVEL"),

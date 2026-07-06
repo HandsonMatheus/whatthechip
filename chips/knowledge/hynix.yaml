@@ -112,7 +112,7 @@ maps:
   HYX_H9TQ_RAM_CAP:
   - [A6, LPDDR3 768MB, '']
   - [A8, LPDDR3 1GB, '']
-  - [AA, LPDDR3 2GB, '']
+  - [AA, LPDDR3 1.5GB, '']
   - [AB, LPDDR3 2GB, '']
   - [AC, LPDDR3 4GB, '']
   - [AD, LPDDR3 3GB, '']
@@ -595,7 +595,7 @@ families:
   decode_gen_len: 2
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP SK Hynix com LPDDR3 (H9TQ). Chip combinado eMMC + RAM. pn[4:6] = capacidade NAND: 16/17=16GB · 26/27=32GB · 52=64GB · 64/65=8GB. pn[6:8] = capacidade RAM: A6=768MB · A8=1GB · AA/AB=2GB · AC=4GB · AD=3GB. ⚠ AC=4GB e AD=3GB (não invertido — ordem não é alfabética por tamanho). ⚠ Dois códigos NAND para mesma capacidade são normais: organização interna diferente. Ex: H9TQ52ACLT = 64GB NAND + 4GB LPDDR3. Destino: bancada eMCP (requer reballing + programação eMMC + LPDDR).'
+  tip: 'eMCP SK Hynix com LPDDR3 (H9TQ). Chip combinado eMMC + RAM. pn[4:6] = capacidade NAND: 16/17=16GB · 26/27=32GB · 52=64GB · 64/65=8GB. pn[6:8] = capacidade RAM: A6=768MB · A8=1GB · AA=1.5GB · AB=2GB · AC=4GB · AD=3GB. ⚠ AA≠AB — não são sinônimos: AA=1.5GB (12Gbit, assimétrico, só existe emparelhado com NAND 64) é distinto de AB=2GB (16Gbit, emparelhado com NAND 17 e 64). Corrigido 2026-07-06: WinSource confirmou H9TQ64AAETMCUR-KUM = eMCP 8GB eMMC5.1 + 12Gb LPDDR3-1866; AB confirmado 2x independente (H9TQ17ABJTMCUR-KUM e H9TQ64ABJTMCUR-KUM, ambos 16Gb). ⚠ AC=4GB e AD=3GB (não invertido — ordem não é alfabética por tamanho). ⚠ Dois códigos NAND para mesma capacidade são normais: organização interna diferente. Ex: H9TQ52ACLT = 64GB NAND + 4GB LPDDR3. Destino: bancada eMCP (requer reballing + programação eMMC + LPDDR).'
   reasoning: ''
 - prefix: HKMAG
   chip_type: UFS
