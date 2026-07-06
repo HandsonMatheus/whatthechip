@@ -281,6 +281,14 @@ maps:
   - [L9001, 128GB, 4GB]
   - [V8001, 128GB, 4GB]
   - [C7001, 64GB, 4GB]
+  # KM8 (uMCP LPDDR4X + UFS): mesma estrutura do KM5 (chave longa pn[3:8], len=5).
+  #   ⚠ PROVA VIVA do por-família: V8001 = 4GB no KM5 mas 8GB no KM8 (mesmo código, família
+  #   diferente) — por isso mapas separados. Fontes arbitradas pelo dono: V8001=128+64Gb(8GB)
+  #   (Octopart/AIChipLink/Lisleapex, 4 fontes) · F9001=256+64Gb(8GB) (Octopart "256GB UFS2.2+64Gb").
+  #   F8001/V9001/B8001 ainda sem densidade no Octopart (pre-ordered/client-side) → "não mapeada".
+  SAM_EMCP_CAP_KM8:
+  - [V8001, 128GB, 8GB]
+  - [F9001, 256GB, 8GB]
   SAM_EMMC_GEN:
   - [E, eMMC 5.0, '']
   - [F, eMMC 4.5, '']
@@ -1517,15 +1525,15 @@ families:
   priority: 40
   pn_length: 10
   decode_cap_pos: 3
-  decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
+  decode_cap_len: 5
+  decode_cap_map: SAM_EMCP_CAP_KM8
   decode_gen_pos: null
   decode_gen_map: ''
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: '⚠ uMCP Samsung linha numérica KM8 — chip PREMIUM. Interface UFS (NÃO eMMC). RAM: LPDDR4X ou LPDDR5X. Capacidade: pn[3:5] → mapa SAM_EMCP_CAP (ex: V8=128GB+4GB, F9=256GB+8GB). ATENÇÃO OCR: robôs confundem ''1'' com ''I'' nesses PNs — ex: KM8V700IJA na tela pode ser KM8V7001JA no chip físico. Conferir o PN diretamente na peça antes de registrar. Destino: bancada reacondicional uMCP (Premium).'
-  reasoning: ''
+  tip: '⚠ uMCP Samsung linha numérica KM8 — chip PREMIUM. Interface UFS (NÃO eMMC), RAM LPDDR4X. DECODE (corrigido 2026-07-04, bug X6/L9): mapa COMBINADO próprio SAM_EMCP_CAP_KM8, chave LONGA pn[3:8] (len=5), dígito → decode_gen_pos=null. ⚠ V8001 = 8GB no KM8 (mas 4GB no KM5 — mesmo código, mapa próprio). Só códigos Tier-1 confirmados pelo dono (Octopart/Samsung): V8001=128+8GB, F9001=256+8GB. F8001/V9001 ainda sem densidade confirmada → "não mapeada". Preduo é broker (não confiar sozinho). ATENÇÃO OCR: robôs confundem ''1'' com ''I'' — conferir PN na peça. Destino: bancada reacondicional uMCP (Premium).'
+  reasoning: '["K → Samsung Memory", "M → Managed (MCP)", "8 → família KM8 uMCP (pn[2] dígito)", "pn[3:8] → densidade NAND+RAM (chave longa): V8001=128GB+8GB, F9001=256GB+8GB", "Fonte Tier-1 arbitrada pelo dono: Octopart (V8001=128+64Gb=8GB, F9001=256+64Gb=8GB) + AIChipLink"]'
 - prefix: KMAG
   chip_type: uMCP
   subtype: LPDDR5
