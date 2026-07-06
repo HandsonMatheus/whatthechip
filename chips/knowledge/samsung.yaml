@@ -174,6 +174,80 @@ maps:
   - [R, LPDDR3, '']
   - [S, LPDDR4X, '']
   - [V, LPDDR5/5X, '']
+  # ── eMCP/uMCP NAND — capacidade eMMC/UFS do pacote (keyed pn[3:5]) ─────────
+  # INDEPENDENTE de geração de RAM: a mesma chave de 2 chars dá o MESMO NAND em
+  # qualquer família (X6=32GB em KMD LPDDR4X, KMG LPDDR3 e KM4 LPDDR4). Por isso
+  # é compartilhado. A capacidade da RAM NÃO é generation-independent (X6=3GB em
+  # LPDDR4X mas 2GB em LPDDR4) → mora nos mapas SAM_EMCP_RAM_<gen>, um por geração
+  # (bug X6 corrigido 2026-07-04). val_secondary VAZIO de propósito: força o
+  # engine a pegar a RAM do decode_gen_map (padrão SK Hynix), nunca do NAND map.
+  SAM_EMCP_NAND:
+  - ['11', 4GB, '']
+  - ['21', 32GB, '']
+  - ['31', 16GB, '']
+  - [3W, 16GB, '']
+  - ['41', 32GB, '']
+  - [4Z, 32GB, '']
+  - [5U, 4GB, '']
+  - ['72', 8GB, '']
+  - [7U, 8GB, '']
+  - [7X, 8GB, '']
+  - ['82', 16GB, '']
+  - [8X, 16GB, '']
+  - [BT, 16GB, '']
+  - [C1, 64GB, '']
+  - [C6, 64GB, '']
+  - [C7, 64GB, '']
+  - [D6, 32GB, '']
+  - [E1, 16GB, '']
+  - [E6, 16GB, '']
+  - [F8, 256GB, '']
+  - [F9, 256GB, '']
+  - [G9, 128GB, '']
+  - [GD, 32GB, '']
+  - [H6, 64GB, '']
+  - [H7, 64GB, '']
+  - [H8, 64GB, '']
+  - [H9, 32GB, '']
+  - [IS, 16GB, '']
+  - [J2, 128GB, '']
+  - [JS, 4GB, '']
+  - [JW, 4GB, '']
+  - [K6, 128GB, '']
+  - [L9, 128GB, '']
+  - [LL, 4GB, '']
+  - [M4, 128GB, '']
+  - [N1, 8GB, '']
+  - [N6, 8GB, '']
+  - [NW, 8GB, '']
+  - [NX, 8GB, '']
+  - [P5, 256GB, '']
+  - [P6, 64GB, '']
+  - [P8, 64GB, '']
+  - [P9, 64GB, '']
+  - [S9, 256GB, '']
+  - [TU, 16GB, '']
+  - [V6, 128GB, '']
+  - [V7, 128GB, '']
+  - [V8, 128GB, '']
+  - [V9, 128GB, '']
+  - [W7, 32GB, '']
+  - [W8, 32GB, '']
+  - [X1, 32GB, '']
+  - [X6, 32GB, '']
+  # ── eMCP RAM LPDDR4X — tipo+capacidade da RAM (keyed pn[3:5], padrão SK Hynix)
+  # SÓ chaves com fonte Tier-1 confirmada — grammar EXATA, jamais aproximada. A
+  # RAM vem embutida (val_primary "LPDDR4X <cap>") e o engine usa direto como
+  # emcp_ram. 32GB-NAND (D6/X6)→3GB · 64GB-NAND (P6/H6)→4GB. Fontes: KMDX60018M-B425
+  # (página oficial Samsung Semiconductor: "24Gb=3GB LPDDR4X"), KMDD60018M/KMDP6001DA
+  # (Octopart/distribuidores concordantes), KMDH6001DA/KMDP60018M (golden pré-existente).
+  # Código sem confirmação → RAM sai "não mapeada" (o NAND ainda decodifica pelo
+  # SAM_EMCP_NAND). O mapa CRESCE conforme confirmamos mais densidades LPDDR4X.
+  SAM_EMCP_RAM_L4X:
+  - [D6, LPDDR4X 3GB, '']
+  - [H6, LPDDR4X 4GB, '']
+  - [P6, LPDDR4X 4GB, '']
+  - [X6, LPDDR4X 3GB, '']
   SAM_EMMC_GEN:
   - [E, eMMC 5.0, '']
   - [F, eMMC 4.5, '']
@@ -1465,14 +1539,14 @@ families:
   pn_length: 10
   decode_cap_pos: 3
   decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
-  decode_gen_pos: 2
-  decode_gen_map: SAM_EMCP_GEN
-  decode_gen_len: 1
+  decode_cap_map: SAM_EMCP_NAND
+  decode_gen_pos: 3
+  decode_gen_map: SAM_EMCP_RAM_L4X
+  decode_gen_len: 2
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP Samsung LPDDR4X + eMMC 5.1. D = LPDDR4X (Galaxy A12, A22, A32 — entrada/mid-range 2020-2022). NÃO confundir com uMCPs KMG/KML que usam UFS. Destino: bancada reacondicional eMCP.'
-  reasoning: ''
+  tip: 'eMCP Samsung LPDDR4X + eMMC 5.1. D = LPDDR4X (Galaxy A12, A22, A32 — entrada/mid-range 2020-2022). NÃO confundir com uMCPs KMG/KML que usam UFS. DECODE (corrigido 2026-07-04, bug X6): NAND por pn[3:5]→SAM_EMCP_NAND; RAM por pn[3:5]→SAM_EMCP_RAM_L4X (exata, só chaves LPDDR4X confirmadas: D6/X6=3GB, P6/H6=4GB). Não usa mais o SAM_EMCP_CAP compartilhado (misturava RAM de LPDDR4/LPDDR3). Destino: bancada reacondicional eMCP.'
+  reasoning: '["K → Samsung Memory", "M → Managed (MCP)", "D → LPDDR4X (SAM_EMCP_GEN)", "pn[3:5] → densidade: 1º char = NAND (D/X=32GB, P/H=64GB), par → RAM LPDDR4X (X6/D6=24Gb=3GB, P6/H6=32Gb=4GB)", "Fonte Tier-1: página oficial Samsung KMDX60018M-B425 = 32GB eMMC5.1 + 24Gb LPDDR4X"]'
 - prefix: KMF
   chip_type: eMCP
   subtype: LPDDR3
