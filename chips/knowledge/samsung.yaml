@@ -289,6 +289,23 @@ maps:
   SAM_EMCP_CAP_KM8:
   - [V8001, 128GB, 8GB]
   - [F9001, 256GB, 8GB]
+  # KM2 / KM2L / KM2P (uMCP LPDDR4X + UFS): chave longa pn[3:8]. TODOS confirmados = 6GB de
+  #   RAM (NAND varia 64/128/256GB). Fontes Tier-1: páginas oficiais Samsung (km2v8001cm-b707,
+  #   km2v7001cm-b706, km2p8001cm-b518, km2p9001cm-b518) + Octopart (H7001/B8001/L9001) —
+  #   todas "…+48Gb LPDDR4X"=6GB. ⚠ V8001 = 6GB aqui, mas 4GB no KM5 e 8GB no KM8 (mesmo código,
+  #   3 famílias, 3 RAMs → prova do por-família). Goldens antigos (H7/V8/P8/P9=4GB, L9=8GB) eram
+  #   TODOS do mapa compartilhado e ERRADOS. KM2L/KM2P são prefixos de 4 chars (famílias próprias).
+  SAM_EMCP_CAP_KM2:
+  - [H7001, 64GB, 6GB]
+  - [Q7001, 128GB, 6GB]
+  - [V7001, 128GB, 6GB]
+  - [V8001, 128GB, 6GB]
+  - [B8001, 256GB, 6GB]
+  SAM_EMCP_CAP_KM2L:
+  - [L9001, 128GB, 6GB]
+  SAM_EMCP_CAP_KM2P:
+  - [P8001, 64GB, 6GB]
+  - [P9001, 64GB, 6GB]
   SAM_EMMC_GEN:
   - [E, eMMC 5.0, '']
   - [F, eMMC 4.5, '']
@@ -1399,8 +1416,8 @@ families:
   priority: 40
   pn_length: 10
   decode_cap_pos: 3
-  decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
+  decode_cap_len: 5
+  decode_cap_map: SAM_EMCP_CAP_KM2
   decode_gen_pos: null
   decode_gen_map: ''
   decode_gen_len: 1
@@ -1417,8 +1434,8 @@ families:
   priority: 35
   pn_length: 10
   decode_cap_pos: 3
-  decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
+  decode_cap_len: 5
+  decode_cap_map: SAM_EMCP_CAP_KM2L
   decode_gen_pos: null
   decode_gen_map: ''
   decode_gen_len: 1
@@ -1435,8 +1452,8 @@ families:
   priority: 38
   pn_length: 10
   decode_cap_pos: 3
-  decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
+  decode_cap_len: 5
+  decode_cap_map: SAM_EMCP_CAP_KM2P
   decode_gen_pos: null
   decode_gen_map: ''
   decode_gen_len: 1
