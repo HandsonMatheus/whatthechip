@@ -838,6 +838,21 @@ class AuditKnownPartsTests(TestCase):
         self.assertIn("READ-ONLY", out)
         self.assertEqual(KnownPart.objects.get(part_number="KMGX6001BA").emcp_ram, antes)
 
+    def test_empty_lista_confirmado_sem_spec(self):
+        from chips.models import KnownPart
+        sam = self._load_sam()
+        # confirmado SEM spec própria (identity-only) — deve aparecer
+        KnownPart.objects.create(part_number="KMDZ9999XM", brand=sam, confidence="confirmed",
+                                 review_status="approved", chip_type="eMCP")
+        # confirmado COM spec (emcp_ram/nand) — NÃO deve aparecer (campos discretos vazios é normal)
+        KnownPart.objects.create(part_number="KMDX60018M", brand=sam, confidence="confirmed",
+                                 review_status="approved", chip_type="eMCP", subtype="LPDDR4X",
+                                 emcp_nand="eMMC 5.1 32GB", emcp_ram="LPDDR4X 3GB")
+        out = self._run("--brand", "samsung", "--empty")
+        self.assertIn("SEM SPEC PRÓPRIA", out)
+        self.assertIn("KMDZ9999XM", out)       # identity-only → listado
+        self.assertNotIn("KMDX60018M", out)    # tem emcp_ram/nand → não listado
+
 
 class CorrectKnownPartsTests(TestCase):
     """correct_known_parts (par de escrita do audit): dry-run NÃO grava; --commit

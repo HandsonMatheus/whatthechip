@@ -79,8 +79,13 @@ class Command(BaseCommand):
                             help="Níveis a auditar (default: confirmed,manual).")
         parser.add_argument("--out", default="", help="Grava CSV das divergências (p/ a etapa de correção).")
         parser.add_argument("--list", type=int, default=0, help="Máximo de linhas a mostrar (0=todas).")
+        parser.add_argument("--empty", action="store_true",
+                            help="Modo alternativo: lista confirmados/manual SEM spec própria (identity-only, "
+                                 "dependem 100%% da gramática). Checa emcp_ram/emcp_nand (eMCP) ou capacity/density.")
 
     def handle(self, *args, **o):
+        if o.get("empty"):
+            return self._audit_empty(o)
         confs = tuple(c.strip() for c in o["confidence"].split(",") if c.strip())
         fam_prefixes = {f.strip().upper() for f in o["family"].split(",") if f.strip()}
 
@@ -162,3 +167,55 @@ class Command(BaseCommand):
                 cw.writerow(["part_number", "family", "field", "db_value", "grammar_value", "confidence"])
                 cw.writerows(rows)
             w(f"CSV gravado: {o['out']} ({len(rows)} linha(s)) — insumo da correção.")
+
+    # ────────────────────────────────────────────────────────────────────
+    def _audit_empty(self, o):
+        """Lista known_parts confirmed/manual SEM spec própria (identity-only) — dependem 100%
+        da gramática, o que INVERTE a hierarquia (confirmed devia carregar o próprio dado)."""
+        from collections import Counter
+        w = self.stdout.write
+        confs = tuple(c.strip() for c in o["confidence"].split(",") if c.strip())
+        fam_prefixes = {f.strip().upper() for f in o["family"].split(",") if f.strip()}
+        qs = KnownPart.objects.all()
+        if confs:
+            qs = qs.filter(confidence__in=confs)
+        if o["brand"]:
+            qs = qs.filter(brand__name__iexact=o["brand"])
+
+        rows, total = [], 0
+        by_family = Counter()
+        for kp in qs.select_related("family", "brand").iterator():
+            fam = _match_family(kp.part_number) or kp.family
+            prefix = fam.prefix if fam else (kp.chip_type or "?")
+            if fam_prefixes and prefix.upper() not in fam_prefixes:
+                continue
+            total += 1
+            emcp_like = (fam.is_emcp if fam else False) or (kp.chip_type or "").lower() in ("emcp", "umcp")
+            if emcp_like:
+                empty = not ((kp.emcp_ram or "").strip() or (kp.emcp_nand or "").strip())
+            else:
+                empty = not ((kp.capacity or "").strip() or (kp.density_gbit or "").strip())
+            if empty:
+                origem = (kp.source_url or (kp.notes or "").replace("\n", " ")).strip()[:38]
+                rows.append((kp.part_number, prefix, kp.confidence, kp.chip_type or "—", origem))
+                by_family[prefix] += 1
+
+        w("")
+        w(f"Confirmados/manual auditados: {total}  ·  SEM SPEC PRÓPRIA (identity-only): {len(rows)}")
+        if by_family:
+            top = sorted(by_family.items(), key=lambda kv: -kv[1])[:20]
+            w("Por família (top): " + " · ".join(f"{k}={v}" for k, v in top))
+        w("")
+        if rows:
+            limit = o["list"] or 40
+            w(f"{'PN':18} {'FAMÍLIA':8} {'conf':10} {'tipo':8} origem")
+            w("-" * 84)
+            for r in rows[:limit]:
+                w(f"{r[0]:18} {r[1]:8} {r[2]:10} {r[3]:8} {r[4]}")
+            if len(rows) > limit:
+                w(f"... (+{len(rows) - limit} — use --list 0 p/ ver todas)")
+        else:
+            w("✓ Nenhum confirmado sem spec própria — todos carregam o próprio dado.")
+        w("")
+        w("READ-ONLY. Confirmado sem spec própria = empresta da gramática (hierarquia invertida). "
+          "Fix: backfill nas famílias verificadas + regra no portão.")
