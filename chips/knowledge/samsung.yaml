@@ -269,6 +269,18 @@ maps:
   #   decode_cap (não o split NAND+RAM). O tipo (LPDDR4X) vem do subtype. Mesma exatidão.
   SAM_EMCP_CAP_KM4:
   - [X6, 32GB, 2GB]
+  # KM5 (uMCP LPDDR4X + UFS): chave LONGA pn[3:8] (decode_cap_len=5). Por quê: a RAM
+  #   depende do pn[7], fora do pn[3:5] — KM5L900**0** = 6GB vs KM5L900**1** = 4GB (mesmo
+  #   "L9"). A chave de 5 chars (L9000 vs L9001) desambigua. NÃO é caso especial de uMCP —
+  #   é só afinar decode_cap_len (campo por-família), mesmo padrão combinado do KM4.
+  #   Fontes Tier-1 arbitradas pelo dono: L9000/L9001 = Samsung Global; V8001/C7001 = Octopart
+  #   ("128GB+32Gb"=4GB / "64GB+32Gb"=4GB). ⚠ Preduo dava V8001=6GB — ERRADO (broker não confiável).
+  #   Código sem confirmação → "não mapeada" (cresce conforme o dono confirma no Octopart).
+  SAM_EMCP_CAP_KM5:
+  - [L9000, 128GB, 6GB]
+  - [L9001, 128GB, 4GB]
+  - [V8001, 128GB, 4GB]
+  - [C7001, 64GB, 4GB]
   SAM_EMMC_GEN:
   - [E, eMMC 5.0, '']
   - [F, eMMC 4.5, '']
@@ -1487,15 +1499,15 @@ families:
   priority: 40
   pn_length: 10
   decode_cap_pos: 3
-  decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
+  decode_cap_len: 5
+  decode_cap_map: SAM_EMCP_CAP_KM5
   decode_gen_pos: null
   decode_gen_map: ''
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: '⚠ uMCP Samsung linha numérica KM5 — chip PREMIUM. Interface UFS (NÃO eMMC). RAM: LPDDR4X ou LPDDR5X. Alta densidade — valor comercial elevado. Capacidade: pn[3:5] → mapa SAM_EMCP_CAP. ATENÇÃO OCR: mesma família de KM8, mesma regra: conferir PN físico no chip antes de registrar. Destino: bancada reacondicional uMCP (Premium).'
-  reasoning: ''
+  tip: '⚠ uMCP Samsung linha numérica KM5 — chip PREMIUM. Interface UFS (NÃO eMMC), RAM LPDDR4X. DECODE (corrigido 2026-07-04, bug X6/L9): mapa COMBINADO próprio SAM_EMCP_CAP_KM5 [chave→NAND+RAM] via decode_cap, chave LONGA pn[3:8] (len=5) porque a RAM depende do pn[7] (L900**0**=6GB vs L900**1**=4GB). KM5 é família de dígito → decode_gen_pos=null (regra #5), tipo vem do subtype. Só códigos Tier-1 confirmados pelo dono (Octopart/Samsung) — Preduo é broker não confiável (dava V8001=6GB, real 4GB). ATENÇÃO OCR: mesma família de KM8, conferir PN físico. Destino: bancada reacondicional uMCP (Premium).'
+  reasoning: '["K → Samsung Memory", "M → Managed (MCP)", "5 → família KM5 uMCP (pn[2] dígito)", "pn[3:8] → densidade NAND+RAM (chave longa: L9000=128GB+6GB, L9001=128GB+4GB, V8001=128GB+4GB, C7001=64GB+4GB)", "Fonte Tier-1 arbitrada pelo dono: Samsung Global (L9) + Octopart (V8/C7)"]'
 - prefix: KM8
   chip_type: uMCP
   subtype: LPDDR4X
