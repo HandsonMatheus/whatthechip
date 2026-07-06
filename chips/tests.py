@@ -790,6 +790,55 @@ class CatalogVersionTests(TestCase):
         self.assertEqual(CatalogVersion.current(), b)
 
 
+class AuditKnownPartsTests(TestCase):
+    """audit_known_parts (read-only): marca known_part confirmado cujo spec DIVERGE da
+    gramática corrigida (stale), IGNORA o que bate, e nunca escreve. É o comando que
+    lista os registros a corrigir no banco depois de um fix de gramática (bug X6 etc.)."""
+
+    def _run(self, *args):
+        from io import StringIO
+        from django.core.management import call_command
+        out = StringIO()
+        call_command("audit_known_parts", *args, stdout=out)
+        return out.getvalue()
+
+    def _load_sam(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        from chips.models import Brand
+        call_command("load_brands", "--brand", "samsung", "--commit", "--skip-known-parts", verbosity=0)
+        clear_engine_cache()
+        return Brand.objects.get(name="Samsung")
+
+    def test_marca_stale_ignora_correto(self):
+        from chips.models import KnownPart
+        sam = self._load_sam()
+        # stale: a gramática KMG X6 = LPDDR3 3GB, mas o banco tem 2GB (valor antigo, assado)
+        KnownPart.objects.create(part_number="KMGX6001BA", brand=sam, confidence="confirmed",
+                                 review_status="approved", chip_type="eMCP", subtype="LPDDR3",
+                                 emcp_nand="eMMC 5.1 32GB", emcp_ram="LPDDR3 2GB")
+        # correto: bate com a gramática (KMD X6 = LPDDR4X 3GB) → NÃO deve ser marcado
+        KnownPart.objects.create(part_number="KMDX60018M", brand=sam, confidence="confirmed",
+                                 review_status="approved", chip_type="eMCP", subtype="LPDDR4X",
+                                 emcp_nand="eMMC 5.1 32GB", emcp_ram="LPDDR4X 3GB")
+        out = self._run("--brand", "samsung", "--family", "KMG,KMD")
+        self.assertIn("KMGX6001BA", out)       # stale → marcado
+        self.assertIn("LPDDR3 3GB", out)       # mostra o valor da gramática
+        self.assertNotIn("KMDX60018M", out)    # correto → NÃO marcado
+        self.assertIn("DIVERGENTES: 1", out)
+
+    def test_read_only_nao_escreve(self):
+        from chips.models import KnownPart
+        sam = self._load_sam()
+        KnownPart.objects.create(part_number="KMGX6001BA", brand=sam, confidence="confirmed",
+                                 review_status="approved", chip_type="eMCP", subtype="LPDDR3",
+                                 emcp_nand="eMMC 5.1 32GB", emcp_ram="LPDDR3 2GB")
+        antes = KnownPart.objects.get(part_number="KMGX6001BA").emcp_ram
+        out = self._run("--family", "KMG")
+        self.assertIn("READ-ONLY", out)
+        self.assertEqual(KnownPart.objects.get(part_number="KMGX6001BA").emcp_ram, antes)
+
+
 class GuardCatalogTests(TestCase):
     """Tripwire contra perda silenciosa do catálogo vivo (incidente jul/2026)."""
 
