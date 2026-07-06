@@ -263,6 +263,15 @@ maps:
   - [D6, LPDDR3 3GB, '']
   - [P6, LPDDR3 3GB, '']
   - [X6, LPDDR3 3GB, '']
+  # KMAG / KMAS (uMCP LPDDR5 UFS 3.1, flagship): famílias de LETRA (pn[2]='A') → split como KMD/KMG.
+  #   decode_gen (pn[3:5]) → RAM "LPDDR5 <cap>"; NAND compartilhado (SAM_EMCP_NAND G9=128/S9=256).
+  #   Corrige o Frankenstein antigo ("tipo 'A' — consultar datasheet"). Fonte: KMAG9001PM-B814
+  #   (128GB + 64Gb=8GB) / KMAS9001PM-BC02 (256GB + 64Gb=8GB) — confirmados pelo dono (win-source) +
+  #   tips + mapa compartilhado. ⚠ win-source é distribuidor: se surgir Octopart divergente, reavaliar.
+  SAM_EMCP_RAM_KMAG:
+  - [G9, LPDDR5 8GB, '']
+  SAM_EMCP_RAM_KMAS:
+  - [S9, LPDDR5 8GB, '']
   # KM4 (LPDDR4X — CORRIGIDO de LPDDR4, era erro no yaml): X6 = 32GB NAND + 2GB (16Gb).
   #   Fonte: KM4X6001KM-B321 (Preduo spec table: Type eMCP, Sub-Type eMMC+LPDDR4x,
   #   Density 32+16; página oficial Samsung: 16Gb LPDDR4X 0.6V). ⚠ MESMA geração do KMD
@@ -1564,10 +1573,10 @@ families:
   pn_length: 10
   decode_cap_pos: 3
   decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
-  decode_gen_pos: null
-  decode_gen_map: ''
-  decode_gen_len: 1
+  decode_cap_map: SAM_EMCP_NAND
+  decode_gen_pos: 3
+  decode_gen_map: SAM_EMCP_RAM_KMAG
+  decode_gen_len: 2
   decode_density_type: ''
   suffix_rules: ''
   tip: '⚠ uMCP Samsung KMAG — FLAGSHIP. UFS 3.1 (~2400 MB/s) + LPDDR5-6400. Confirmado: KMAG9001PM-B814 = 128GB UFS 3.1 + 64Gb÷8=8GB LPDDR5 ✓. 297-ball FBGA. SAM_EMCP_CAP G9=128GB+8GB. ⚠ VDDQ=0.6V (LPDDR5 — diferente do LPDDR4X). NÃO confundir na bancada. Destinado a flagships Galaxy 2022+. Valor comercial MUITO ELEVADO. Destino: bancada reacondicional uMCP (Flagship Tier).'
@@ -1582,10 +1591,10 @@ families:
   pn_length: 10
   decode_cap_pos: 3
   decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
-  decode_gen_pos: null
-  decode_gen_map: ''
-  decode_gen_len: 1
+  decode_cap_map: SAM_EMCP_NAND
+  decode_gen_pos: 3
+  decode_gen_map: SAM_EMCP_RAM_KMAS
+  decode_gen_len: 2
   decode_density_type: ''
   suffix_rules: ''
   tip: '⚠ uMCP Samsung KMAS — FLAGSHIP 256GB. UFS 3.1 (~2400 MB/s) + LPDDR5-6400. Confirmado: KMAS9001PM-BC02 = 256GB UFS 3.1 + 64Gb÷8=8GB LPDDR5 ✓. 297-ball FBGA. SAM_EMCP_CAP S9=256GB+8GB. Sufixo -BC02 (geração C, mais nova). ⚠ VDDQ=0.6V (LPDDR5). NÃO confundir KMAS com KMDX (eMCP LPDDR4X). Destinado a flagships Galaxy 2022+. Valor comercial MUITO ELEVADO. Destino: bancada reacondicional uMCP (Flagship Tier).'
