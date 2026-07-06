@@ -243,14 +243,19 @@ prática?" Não. A separação é de propósito:
   suas tabelas (prefixo `SAM_`/`HYX_`/… é só legibilidade; a FK `brand` é que separa). A
   exceção são `DRAM_PC`/`DRAM_MOBILE` (`brand=None`, globais) porque a JEDEC padronizou os
   códigos de DRAM — o único caso onde compartilhar é correto.
-- **eMCP: NAND e RAM em mapas SEPARADOS, RAM por geração** (padrão Kingston/SK Hynix; a
-  Samsung foi alinhada em jul/2026 — bug X6). O NAND é generation-independent (mesma chave =
-  mesmo NAND em qualquer geração), então `SAM_EMCP_NAND` é compartilhado entre as famílias
-  Samsung; a RAM NÃO é (X6=3GB em LPDDR4X, 2GB em LPDDR4), então mora em `SAM_EMCP_RAM_<gen>`
-  (um por geração), com `val_secondary` vazio no NAND map forçando o engine a pegar a RAM do
-  `decode_gen_map`. Grammar EXATA: só chaves com fonte Tier-1 entram no RAM map (código sem
-  confirmação → RAM "não mapeada", NAND ainda decodifica). Ver `SAM_EMCP_RAM_L4X` (KMD) e
-  `SAM_EMCP_RAM_L3` (KMG) em `chips/knowledge/samsung.yaml`.
+- **eMCP: RAM decodificada POR-FAMÍLIA (não por geração), NAND compartilhado** (padrão SK Hynix;
+  Samsung alinhada jul/2026 — bug X6). O NAND é family/generation-independent (mesma chave = mesmo
+  NAND em qualquer família: X6=32GB em KMD/KMG/KM4), então `SAM_EMCP_NAND` é compartilhado. A RAM
+  NÃO: **famílias da MESMA geração divergem no mesmo código** (KMD e KM4 são ambos LPDDR4X mas X6 =
+  3GB vs 2GB — a RAM depende da família, o `pn[2]`, não só da densidade). Logo, **um mapa de RAM por
+  família = zero ambiguidade**. Dois formatos, conforme a estrutura da família:
+  - **Famílias de LETRA** (KMD, KMG…): SPLIT — `decode_cap`→`SAM_EMCP_NAND` (NAND, `val_secondary`
+    vazio) + `decode_gen`→`SAM_EMCP_RAM_<FAM>` (RAM "LPDDR<g> <cap>" embutida). Ex: `SAM_EMCP_RAM_KMD`, `SAM_EMCP_RAM_KMG`.
+  - **Famílias de DÍGITO** (KM4, KM5…): a regra de ouro #5 proíbe `decode_gen` no dígito `pn[2]`,
+    então COMBINADO — `decode_cap`→`SAM_EMCP_CAP_<FAM>` `[chave, NAND, RAM]`; o tipo vem do `subtype`.
+    Ex: `SAM_EMCP_CAP_KM4`.
+  Grammar EXATA nos dois: só chaves com fonte Tier-1 (código sem confirmação → RAM "não mapeada",
+  NAND ainda decodifica quando compartilhado). Ver `chips/knowledge/samsung.yaml`.
 
 ### Camada web
 
