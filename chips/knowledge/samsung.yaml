@@ -309,6 +309,15 @@ maps:
   SAM_EMCP_CAP_KM2P:
   - [P8001, 64GB, 6GB]
   - [P9001, 64GB, 6GB]
+  # KM3H / KM3P (eMCP LPDDR4X, geração 2022+): chave pn[3:5]. AMBOS = 64GB + 6GB (48Gb LPDDR4X).
+  #   ⚠ H6/P6 = 6GB no KM3H/KM3P mas 4GB no KMD (mesmo código LPDDR4X — per-família de novo).
+  #   Fontes Tier-1: KM3H6001CA/CM-B515 (página oficial Samsung USA + "64+48" Alibaba/Puris),
+  #   KM3P6001CM-B517 (página Samsung + Puris/Lisleapex). Goldens antigos (4GB, "âncora KMD" do
+  #   mapa compartilhado) eram errados p/ KM3; as tips da família já documentavam 6GB.
+  SAM_EMCP_CAP_KM3H:
+  - [H6, 64GB, 6GB]
+  SAM_EMCP_CAP_KM3P:
+  - [P6, 64GB, 6GB]
   SAM_EMMC_GEN:
   - [E, eMMC 5.0, '']
   - [F, eMMC 4.5, '']
@@ -1474,7 +1483,7 @@ families:
   pn_length: 10
   decode_cap_pos: 3
   decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
+  decode_cap_map: SAM_EMCP_CAP_KM3H
   decode_gen_pos: null
   decode_gen_map: ''
   decode_gen_len: 1
@@ -1492,7 +1501,7 @@ families:
   pn_length: 10
   decode_cap_pos: 3
   decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
+  decode_cap_map: SAM_EMCP_CAP_KM3P
   decode_gen_pos: null
   decode_gen_map: ''
   decode_gen_len: 1
