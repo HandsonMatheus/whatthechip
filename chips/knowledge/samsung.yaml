@@ -248,6 +248,15 @@ maps:
   - [H6, LPDDR4X 4GB, '']
   - [P6, LPDDR4X 4GB, '']
   - [X6, LPDDR4X 3GB, '']
+  # ── eMCP RAM LPDDR3 — mesmo padrão do L4X, por geração (bug X6, 2026-07-04) ─
+  # 32GB-NAND (D6/X6)→3GB · 64GB-NAND (P6)→4GB. Fontes: KMGD6001BM-B421 (datasheet
+  # oficial Samsung, Jan/2017: "32GB eMMC + 24Gb LPDDR3"=3GB), KMGX6001BA/BM-B514
+  # (distribuidores + rótulo "32+24 D3 LPDDR3"), KMGP6001BM-B514 (página oficial
+  # Samsung + golden pré-existente). Código sem confirmação → RAM "não mapeada".
+  SAM_EMCP_RAM_L3:
+  - [D6, LPDDR3 3GB, '']
+  - [P6, LPDDR3 4GB, '']
+  - [X6, LPDDR3 3GB, '']
   SAM_EMMC_GEN:
   - [E, eMMC 5.0, '']
   - [F, eMMC 4.5, '']
@@ -1575,14 +1584,14 @@ families:
   pn_length: 10
   decode_cap_pos: 3
   decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
-  decode_gen_pos: null
-  decode_gen_map: ''
-  decode_gen_len: 1
+  decode_cap_map: SAM_EMCP_NAND
+  decode_gen_pos: 3
+  decode_gen_map: SAM_EMCP_RAM_L3
+  decode_gen_len: 2
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP Samsung LPDDR3 + eMMC 5.1 — linha legacy, ~2016-2019. G = LPDDR3 (via EMCP_RAM_TYPES fallback — decode_gen_pos=None por design). Capacidade: pn[3:5] → SAM_EMCP_CAP (ex: D6=32GB+3GB, P6=64GB+3GB). Interface eMMC 5.1 — NÃO confundir com uMCP KML/KM5 que usam UFS. Destino: bancada reacondicional eMCP.'
-  reasoning: ''
+  tip: 'eMCP Samsung LPDDR3 + eMMC 5.1 — linha legacy, ~2016-2019. DECODE (corrigido 2026-07-04, bug X6): NAND por pn[3:5]→SAM_EMCP_NAND; RAM por pn[3:5]→SAM_EMCP_RAM_L3 (exata, só chaves LPDDR3 confirmadas: D6/X6=3GB, P6=4GB). Não usa mais o SAM_EMCP_CAP compartilhado (dava X6=2GB, era LPDDR4). Interface eMMC 5.1 — NÃO confundir com uMCP KML/KM5 que usam UFS. Destino: bancada reacondicional eMCP.'
+  reasoning: '["K → Samsung Memory", "M → Managed (MCP)", "G → LPDDR3 (geração da família)", "pn[3:5] → densidade: NAND (D/X=32GB, P=64GB) + RAM LPDDR3 (X6/D6=24Gb=3GB, P6=32Gb=4GB)", "Fonte Tier-1: datasheet oficial Samsung KMGD6001BM-B421 (Jan/2017) = 32GB eMMC + 24Gb LPDDR3"]'
 - prefix: KMJ
   chip_type: eMCP
   subtype: LPDDR2
