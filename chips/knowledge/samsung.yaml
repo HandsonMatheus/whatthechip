@@ -253,12 +253,15 @@ maps:
   - [H6, LPDDR4X 4GB, '']
   - [P6, LPDDR4X 4GB, '']
   - [X6, LPDDR4X 3GB, '']
-  # KMG (LPDDR3): 32GB-NAND (D6/X6)→3GB · 64GB-NAND (P6)→4GB. Fontes: KMGD6001BM-B421
-  #   (datasheet oficial Samsung Jan/2017: 32GB eMMC + 24Gb LPDDR3=3GB), KMGX6001BA/BM-B514
-  #   (distribuidores + rótulo "32+24 D3 LPDDR3"), KMGP6001BM-B514 (página Samsung + golden).
+  # KMG (LPDDR3): TODOS os códigos confirmados → 3GB (24Gb LPDDR3); só o NAND varia. Fontes Tier-1:
+  #   KMGD6001BM-B421 (datasheet Samsung Jan/2017: 32GB eMMC + 24Gb=3GB), KMGP6001BM-B514 (página
+  #   oficial Samsung: 64GB + 24Gb=3GB), KMGX6001BA/BM (distribuidores "32+24 D3 LPDDR3").
+  #   ⚠ P6 = 3GB no KMG (LPDDR3) mas 4GB no KMD (LPDDR4X) — mesmo código, per-família de novo.
+  #   CORRIGIDO 2026-07-04 via audit_known_parts: P6 estava 4GB (herdado do golden congelado do
+  #   mapa compartilhado, ERRADO); o banco confirmado (3GB) e a página Samsung pegaram o erro.
   SAM_EMCP_RAM_KMG:
   - [D6, LPDDR3 3GB, '']
-  - [P6, LPDDR3 4GB, '']
+  - [P6, LPDDR3 3GB, '']
   - [X6, LPDDR3 3GB, '']
   # KM4 (LPDDR4X — CORRIGIDO de LPDDR4, era erro no yaml): X6 = 32GB NAND + 2GB (16Gb).
   #   Fonte: KM4X6001KM-B321 (Preduo spec table: Type eMCP, Sub-Type eMMC+LPDDR4x,
