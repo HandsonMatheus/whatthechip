@@ -839,6 +839,60 @@ class AuditKnownPartsTests(TestCase):
         self.assertEqual(KnownPart.objects.get(part_number="KMGX6001BA").emcp_ram, antes)
 
 
+class CorrectKnownPartsTests(TestCase):
+    """correct_known_parts (par de escrita do audit): dry-run NÃO grava; --commit
+    corrige stale→gramática pelo portão + backup; --revert desfaz; --exclude pula."""
+
+    def _sam(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        from chips.models import Brand
+        call_command("load_brands", "--brand", "samsung", "--commit", "--skip-known-parts", verbosity=0)
+        clear_engine_cache()
+        return Brand.objects.get(name="Samsung")
+
+    def _stale_kmg(self, sam):
+        from chips.models import KnownPart
+        # gramática KMG X6 = LPDDR3 3GB; gravo 2GB (stale)
+        return KnownPart.objects.create(part_number="KMGX6001BA", brand=sam, confidence="confirmed",
+                                        review_status="approved", chip_type="eMCP", subtype="LPDDR3",
+                                        emcp_nand="eMMC 5.1 32GB", emcp_ram="LPDDR3 2GB")
+
+    def test_dry_run_nao_grava(self):
+        from io import StringIO
+        from django.core.management import call_command
+        from chips.models import KnownPart
+        self._stale_kmg(self._sam())
+        out = StringIO()
+        call_command("correct_known_parts", "--family", "KMG", stdout=out)
+        self.assertIn("DRY-RUN", out.getvalue())
+        self.assertEqual(KnownPart.objects.get(part_number="KMGX6001BA").emcp_ram, "LPDDR3 2GB")
+
+    def test_commit_corrige_e_revert_desfaz(self):
+        import tempfile, os
+        from django.core.management import call_command
+        from chips.models import KnownPart
+        self._stale_kmg(self._sam())
+        bkp = tempfile.mktemp(suffix=".json")
+        call_command("correct_known_parts", "--family", "KMG", "--commit", "--backup", bkp, verbosity=0)
+        self.assertEqual(KnownPart.objects.get(part_number="KMGX6001BA").emcp_ram, "LPDDR3 3GB")  # corrigido
+        self.assertTrue(os.path.exists(bkp))
+        call_command("correct_known_parts", "--revert", bkp, verbosity=0)
+        self.assertEqual(KnownPart.objects.get(part_number="KMGX6001BA").emcp_ram, "LPDDR3 2GB")  # revertido
+        os.unlink(bkp)
+
+    def test_exclude_pula_pn(self):
+        from io import StringIO
+        from django.core.management import call_command
+        from chips.models import KnownPart
+        self._stale_kmg(self._sam())
+        out = StringIO()
+        call_command("correct_known_parts", "--family", "KMG", "--exclude", "KMGX6001BA",
+                     "--commit", stdout=out)
+        self.assertIn("Nada a corrigir", out.getvalue())
+        self.assertEqual(KnownPart.objects.get(part_number="KMGX6001BA").emcp_ram, "LPDDR3 2GB")
+
+
 class GuardCatalogTests(TestCase):
     """Tripwire contra perda silenciosa do catálogo vivo (incidente jul/2026)."""
 
