@@ -297,6 +297,13 @@ class Price(models.Model):
                 name='price_min_lte_max',
                 condition=Q(price_min__isnull=True) | Q(price_max__isnull=True)
                           | Q(price_min__lte=F('price_max'))),
+            # PREÇO FIXO (decisão do dono, 2026-07-07): faixa DESATIVADA —
+            # cotado exige min == max. As duas colunas ficam (representação
+            # interna reversível); reativar faixa = remover esta trava + a
+            # regra no clean() (migração 0005 achatou as faixas no ponto médio).
+            models.CheckConstraint(
+                name='price_fixed_only',
+                condition=~Q(status=STATUS_QUOTED) | Q(price_min=F('price_max'))),
             # quoted ⇒ tem valor; no_buy/unquoted ⇒ NÃO tem valor (nunca 0).
             models.CheckConstraint(
                 name='price_quoted_has_value',
@@ -338,9 +345,10 @@ class Price(models.Model):
         # Espelho amigável das CheckConstraints (mensagem melhor que IntegrityError).
         if self.status == STATUS_QUOTED:
             if self.price_min is None or self.price_max is None:
-                errors['price_min'] = 'Cotado exige USD mín. e máx. (iguais se preço único).'
-            elif self.price_min > self.price_max:
-                errors['price_min'] = 'USD mín. não pode exceder o máx.'
+                errors['price_min'] = 'Cotado exige o preço em USD.'
+            elif self.price_min != self.price_max:
+                errors['price_min'] = ('Preço é FIXO (decisão 2026-07-07): não há '
+                                       'faixa — informe UM valor (mín = máx).')
         else:
             if self.price_min is not None or self.price_max is not None:
                 errors['status'] = ('Sem-preço (não compra / aguardando) não '

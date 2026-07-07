@@ -806,19 +806,46 @@ git commit -m "pricing F6: dashboard /partner/ — a UMA PÁGINA do comprador (G
 git push origin main
 ```
 
+### 12.9-bis DECISÃO: PREÇO FIXO — faixa desativada (dono, 2026-07-07; suíte 283/283)
+
+O dono revisou o v1: **um preço só, sem variação** ("para deixar o sistema mais
+simples"). A faixa min/max existia porque a planilha REAL do Wuquan tinha
+faixas ("90-110" RMB) e o prompt original mandava encodá-las (regra 3) — mas a
+simplicidade venceu. Implementação REVERSÍVEL:
+
+- **Schema fica** (`price_min`/`price_max` como representação interna) — o que
+  muda é a TRAVA: migração `0005_fixed_price` **achata as faixas existentes no
+  ponto médio** (ROUND_HALF_UP, centavos) e adiciona a CheckConstraint
+  `price_fixed_only` (cotado ⇒ min = max); o `clean()` dá a mensagem amigável.
+  **Reativar faixa = remover trava + regra do clean()** (sem migração de dados).
+- **Import:** faixa da planilha → ponto médio (ex.: "90-110" RMB → ¥100 →
+  US$ 15.00). Conflito eMCP continua sendo detectado (mids diferentes ≠).
+- **UI/displays:** partner grid com UM campo "Preço US$"; card da busca, JS da
+  home e valoração do lote sem "min–max/méd." — só o valor. `value()`/cenários
+  do engine seguem existindo mas colapsam (min = max); `LotPricing` mantém as 3
+  colunas (iguais) por compatibilidade.
+- **Nota (Q2 do dono, registrada):** eMCP/uMCP precificar por NAND+geração
+  (RAM fora da chave) é REGRA DO COMPRADOR (Instructions da planilha + regra 2
+  do prompt), confirmada nos dados: 31 combos colapsaram sem nenhum conflito.
+
+⚠ Rodar `sync_index_page` de novo (o JS da home mudou).
+
 ### 12.9 Polimento do /partner/ (2026-07-07, pedido do dono; suíte 283/283)
 
 - **Header = padrão do painel interno:** o `partner_base.html` replica o Carbon
   UI shell escuro do `base_estoque.html` (mesmas classes/tokens `.wtc-header__*`,
-  logo, zonas com borda, crachá "Comprador 买家", Sair vermelho). Rótulos-chave
-  bilíngues PT+中文 (o comprador é chinês).
-- **Câmbio USD→CNY de REFERÊNCIA no topo:** client-side (open.er-api.com,
-  fallback frankfurter.app; sem chave; cache 1h no sessionStorage; em falha a
+  logo, zonas com borda, crachá "Comprador", Sair vermelho). Copy revisada pelo
+  dono (2026-07-07): **só PT** (sem 中文); nav do topo e sidebar = "Início".
+- **Câmbio RMB→USD de REFERÊNCIA no topo:** exibe `1 ¥ ≈ US$ 0.xxx` (a API
+  devolve USD→CNY; mostramos o INVERSO — é como o comprador pensa). Client-side
+  (open.er-api.com, fallback frankfurter.app; sem chave; cache 1h; em falha a
   zona não aparece). ⚠ Exibição apenas — **nenhum cálculo usa esse número**
-  (USD é a moeda canônica, princípio #3): é bússola pro comprador chinês.
-- **Sidebar de marcas em todas as páginas:** `_lists_with_stats(buyer)` alimenta
-  a navegação (Resumo + cada marca + Genérica, com badge de pendências e item
-  ativo). A home virou o **Resumo**: 3 KPIs (aguardando / velhas / cotadas) +
+  (USD é a moeda canônica, princípio #3).
+- **Sidebar "Seus preços por marca" em todas as páginas:**
+  `_lists_with_stats(buyer)` alimenta a navegação (Início + cada marca +
+  "Outras marcas" — o nome partner-facing da lista genérica — com badge de
+  pendências e item ativo). A home = "Bem-vindo, {comprador}": 3 KPIs
+  ("Chips sem cotação" / "Cotações com mais de N dias" / "Chips cotados") +
   a tabela-panorama de todas as marcas.
 - **Datas das cotações do import:** o dono pediu todas as cotadas em
   05/07/2026 — comando (dono roda; `.update()` em massa ainda dispara o

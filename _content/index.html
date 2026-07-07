@@ -345,10 +345,8 @@
         priceBlock += '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">'
           + '<span style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.04em;">💰 ' + escHtml(p.buyer) + '</span>';
         if (p.status === 'PRICED') {
-          var val = p.is_range ? ('US$ ' + p.min + '–' + p.max) : ('US$ ' + p.min);
-          priceBlock += '<span style="font-size:16px;font-weight:800;color:#1d6b2f;">' + (p.is_stale ? '≈ ' : '') + escHtml(val) + '</span>'
+          priceBlock += '<span style="font-size:16px;font-weight:800;color:#1d6b2f;">' + (p.is_stale ? '≈ ' : '') + 'US$ ' + escHtml(p.min) + '</span>'
             + '<span style="font-size:11px;color:#557a5e;">'
-            + (p.is_range ? 'méd. US$ ' + escHtml(p.mid) + ' · ' : '')
             + (p.quote_date ? 'cotado ' + escHtml(p.quote_date) : 'referência (sem data)')
             + ' · ' + escHtml(p.via) + '</span>';
         } else if (p.status === 'NO_BUY') {

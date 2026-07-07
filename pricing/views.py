@@ -183,18 +183,17 @@ def partner_save(request, list_pk):
         messages.error(request, 'Linha inválida — recarregue a página.')
         return redirect('pricing:partner_list', list_pk=pl.pk)
 
+    # PREÇO FIXO (decisão 2026-07-07): UM valor só — internamente min = max.
     no_buy = bool(request.POST.get('no_buy'))
-    mn_raw = (request.POST.get('price_min') or '').strip().replace(',', '.')
-    mx_raw = (request.POST.get('price_max') or '').strip().replace(',', '.')
+    raw = (request.POST.get('price') or '').strip().replace(',', '.')
 
     if no_buy:
         status, mn, mx, qd = STATUS_NO_BUY, None, None, None
-    elif not mn_raw and not mx_raw:
+    elif not raw:
         status, mn, mx, qd = STATUS_UNQUOTED, None, None, None
     else:
         try:
-            mn = Decimal(mn_raw or mx_raw)
-            mx = Decimal(mx_raw or mn_raw)
+            mn = mx = Decimal(raw)
         except InvalidOperation:
             messages.error(request, 'Preço ilegível — use números (ex.: 13.50).')
             return redirect('pricing:partner_list', list_pk=pl.pk)

@@ -53,9 +53,10 @@ class PriceGateTests(TestCase):
         p = self._price()
         self.assertEqual(p.company_id, self.company.pk)   # denormalizada da lista
         self.assertFalse(p.is_range)
-        faixa = self._price(kind='emcp', gen='LPDDR4X', tier_value=Decimal('64'),
-                            price_min=Decimal('13.50'), price_max=Decimal('16.50'))
-        self.assertTrue(faixa.is_range)
+        # PREÇO FIXO (decisão 2026-07-07): FAIXA é rejeitada pelo portão.
+        with self.assertRaises(ValidationError):
+            self._price(kind='emcp', gen='LPDDR4X', tier_value=Decimal('64'),
+                        price_min=Decimal('13.50'), price_max=Decimal('16.50'))
 
     def test_kind_x_unidade_erra_e_rejeitado(self):
         with self.assertRaises(ValidationError):
@@ -283,8 +284,9 @@ class ImportPriceXlsxTests(TestCase):
                          (Decimal('6.00'), Decimal('6.00')))   # 40 RMB × 0.15
         self.assertEqual(str(emmc.quote_date), '2026-06-29')
         emcp = P.get(kind='emcp')                              # 64+4 e 64+3 → UMA linha
+        # faixa "90-110" RMB → ponto médio 100 × 0.15 = 15.00 (preço FIXO)
         self.assertEqual((emcp.price_min, emcp.price_max),
-                         (Decimal('13.50'), Decimal('16.50')))
+                         (Decimal('15.00'), Decimal('15.00')))
         self.assertEqual(P.get(kind='gddr').status, STATUS_NO_BUY)
         self.assertEqual(P.get(kind='ufs').status, STATUS_UNQUOTED)
         # Normalização de marca: Toshiba/Kioxia → Toshiba-Kioxia.
@@ -368,9 +370,10 @@ class PriceGoldenTests(TestCase):
                 price_max=Decimal(str(mx)) if mx is not None else None,
                 quote_date=qd)
 
-        # Samsung (valores da planilha real):
+        # Samsung (valores da planilha real; faixa 13.50–16.50 achatada no
+        # ponto médio 15.00 — preço FIXO, decisão 2026-07-07):
         row(cls.l_samsung, 'emmc', '', 64, 'GB', '6.00', '6.00', qd=hoje)
-        row(cls.l_samsung, 'emcp', 'LPDDR4X', 64, 'GB', '13.50', '16.50')  # sem data → ≈
+        row(cls.l_samsung, 'emcp', 'LPDDR4X', 64, 'GB', '15.00', '15.00')  # sem data → ≈
         row(cls.l_samsung, 'lpddr', 'LPDDR4', 4, 'GB', '3.75', '3.75', qd=hoje)
         row(cls.l_samsung, 'lpddr', 'LPDDR4X', 4, 'GB', '2.55', '2.55', qd=hoje)
         row(cls.l_samsung, 'ddr', 'DDR3L', 4, 'Gb', '0.60', '0.60', qd=hoje)
@@ -398,16 +401,14 @@ class PriceGoldenTests(TestCase):
         self.assertFalse(q.is_stale)
         self.assertEqual(q.via, 'marca')
 
-    def test_emcp_faixa_cenarios_e_ram_fora_da_chave(self):
+    def test_emcp_preco_fixo_e_ram_fora_da_chave(self):
         q = self._price(chip_type='eMCP', subtype='LPDDR4X', brand='Samsung',
                         nand_gb=64.0, ram_gb=4.0, ram_gen='LPDDR4X')
         self.assertEqual(q.status, 'PRICED')
-        self.assertTrue(q.is_range)
+        self.assertFalse(q.is_range)                     # preço FIXO (2026-07-07)
         self.assertTrue(q.is_stale)                      # linha sem quote_date → ≈
-        self.assertEqual(q.value('low'), Decimal('13.50'))
-        self.assertEqual(q.value('mid'), Decimal('15.00'))
-        self.assertEqual(q.value('high'), Decimal('16.50'))
-        # RAM 3GB vs 4GB: MESMA faixa, MESMO preço (regra do comprador).
+        self.assertEqual(q.value(), Decimal('15.00'))
+        # RAM 3GB vs 4GB: MESMA faixa de NAND, MESMO preço (regra do comprador).
         q3 = self._price(chip_type='eMCP', subtype='LPDDR4X', brand='Samsung',
                          nand_gb=64.0, ram_gb=3.0, ram_gen='LPDDR4X')
         self.assertEqual(q3.price_min, q.price_min)
@@ -748,7 +749,8 @@ class PartnerDashboardTests(TestCase):
         self.client.force_login(self.partner)
         resp = self.client.get('/partner/')
         self.assertContains(resp, 'Wuquan P6')
-        self.assertContains(resp, 'Aguardando sua cotação')
+        self.assertContains(resp, 'Chips sem cotação')
+        self.assertContains(resp, 'Bem-vindo')
 
     def test_lancadeira_redireciona_parceiro_para_o_partner(self):
         self.client.force_login(self.partner)
@@ -769,11 +771,11 @@ class PartnerDashboardTests(TestCase):
         self.client.force_login(self.partner)
         url = f'/partner/save/{self.l_sk.pk}/'
         key = dict(kind='emmc', gen='', tier_value='64', tier_unit='GB')
-        # 1) sobrescrever herdada com faixa → linha PRÓPRIA quoted, data=hoje
-        self.client.post(url, {**key, 'price_min': '5.50', 'price_max': '6.50'})
+        # 1) sobrescrever herdada com preço FIXO → linha PRÓPRIA quoted, data=hoje
+        self.client.post(url, {**key, 'price': '5.50'})
         own = Price.all_companies.get(price_list=self.l_sk, kind='emmc')
         self.assertEqual((own.price_min, own.price_max),
-                         (Decimal('5.50'), Decimal('6.50')))
+                         (Decimal('5.50'), Decimal('5.50')))
         self.assertEqual(own.status, STATUS_QUOTED)
         self.assertEqual(own.quote_date, date.today())
         self.assertEqual(own.updated_by, self.partner)       # gravado, não exibido
@@ -792,9 +794,9 @@ class PartnerDashboardTests(TestCase):
         url = f'/partner/save/{self.l_samsung.pk}/'
         antes = Price.all_companies.get(price_list=self.l_samsung, kind='emmc')
         resp = self.client.post(url, dict(kind='emmc', gen='', tier_value='64',
-                                          tier_unit='GB', price_min='9.00',
-                                          price_max='2.00'), follow=True)
-        self.assertContains(resp, 'não pode exceder')        # msg do portão
+                                          tier_unit='GB', price='abc'),
+                                follow=True)
+        self.assertContains(resp, 'Preço ilegível')
         depois = Price.all_companies.get(price_list=self.l_samsung, kind='emmc')
         self.assertEqual(depois.price_min, antes.price_min)  # intacto
 
@@ -804,8 +806,7 @@ class PartnerDashboardTests(TestCase):
             self.client.get(f'/partner/lists/{self.l_samsung.pk}/').status_code, 404)
         resp = self.client.post(f'/partner/save/{self.l_samsung.pk}/',
                                 dict(kind='emmc', gen='', tier_value='64',
-                                     tier_unit='GB', price_min='1.00',
-                                     price_max='1.00'))
+                                     tier_unit='GB', price='1.00'))
         self.assertEqual(resp.status_code, 404)
         row = Price.all_companies.get(price_list=self.l_samsung, kind='emmc')
         self.assertEqual(row.price_min, Decimal('6.00'))     # intocado

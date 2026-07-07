@@ -1,12 +1,12 @@
 {% extends "pricing/partner_base.html" %}
-{% block title %}Minhas listas{% endblock %}
+{% block title %}Início{% endblock %}
 {% block content %}
 
-<h1 style="font-weight:300;font-size:28px;margin:0 0 18px;">Resumo <span style="color:#8d8d8d;">总览</span></h1>
+<h1 style="font-weight:300;font-size:28px;margin:0 0 18px;">Bem-vindo, <strong style="font-weight:600;">{{ buyer.name }}</strong></h1>
 
 <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px;">
   <div class="ptn-kpi">
-    <span style="font-size:12px;color:#6f6f6f;">Aguardando sua cotação 待报价</span>
+    <span style="font-size:12px;color:#6f6f6f;">Chips sem cotação</span>
     <b style="color:{% if pending %}#8a6d00{% else %}#198038{% endif %};">{{ pending }}</b>
   </div>
   <div class="ptn-kpi">
@@ -14,7 +14,7 @@
     <b style="color:{% if stale %}#8a6d00{% else %}#198038{% endif %};">{{ stale }}</b>
   </div>
   <div class="ptn-kpi">
-    <span style="font-size:12px;color:#6f6f6f;">Preços cotados 已报价</span>
+    <span style="font-size:12px;color:#6f6f6f;">Chips cotados</span>
     <b style="color:#161616;">{{ quoted }}</b>
   </div>
 </div>
@@ -27,8 +27,8 @@
     <tbody>
       {% for pl in lists %}
       <tr>
-        <td style="font-weight:600;">{% if pl.brand %}{{ pl.brand.name }}{% else %}Genérica (marcas sem lista){% endif %}</td>
-        <td>{% if pl.inherits_from %}{% if pl.inherits_from.brand %}{{ pl.inherits_from.brand.name }}{% else %}Genérica{% endif %}{% else %}—{% endif %}</td>
+        <td style="font-weight:600;">{% if pl.brand %}{{ pl.brand.name }}{% else %}Outras marcas{% endif %}</td>
+        <td>{% if pl.inherits_from %}{% if pl.inherits_from.brand %}{{ pl.inherits_from.brand.name }}{% else %}Outras marcas{% endif %}{% else %}—{% endif %}</td>
         <td>{{ pl.stats.total }}</td>
         <td>{% if pl.stats.pending %}<span class="ptn-tag ptn-tag--pending">{{ pl.stats.pending }}</span>{% else %}—{% endif %}</td>
         <td><a href="{% url 'pricing:partner_list' pl.pk %}" style="color:#0f62fe;font-weight:600;">Editar →</a></td>

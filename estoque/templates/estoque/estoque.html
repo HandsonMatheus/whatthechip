@@ -1059,7 +1059,6 @@ table.est-table td { padding: var(--s5) var(--s5); }
   <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;{% if not forloop.last %}margin-bottom:8px;{% endif %}">
     <span style="font-size:13px;font-weight:700;color:#1d6b2f;">{{ v.buyer.name }}</span>
     <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#1d6b2f;">US$ {{ v.total_mid }}</span>
-    <span style="font-size:12px;color:#557a5e;">faixa US$ {{ v.total_low }}–{{ v.total_high }}</span>
     <span style="font-size:12px;color:#557a5e;">cobertura {{ v.coverage_units|floatformat:0 }}% ({{ v.priced_units }}/{{ v.total_units }} unid.)</span>
     {% if v.frozen %}<span style="font-size:11px;color:#6f6f6f;">🔒 {{ v.created_at|date:"d/m/Y H:i" }}</span>{% endif %}
   </div>

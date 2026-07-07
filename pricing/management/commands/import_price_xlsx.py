@@ -92,7 +92,10 @@ class Command(BaseCommand):
     # ── Parsing ──────────────────────────────────────────────────────────────
 
     def _parse_rmb(self, raw):
-        """Coluna F → (status, rmb_min, rmb_max) ou None (malformada)."""
+        """Coluna F → (status, rmb_min, rmb_max) ou None (malformada).
+
+        PREÇO FIXO (decisão 2026-07-07): faixa da planilha ("90-110") é
+        ACHATADA no ponto médio — o sistema não guarda variação."""
         s = _clean(raw)
         if not s:
             return STATUS_UNQUOTED, None, None
@@ -105,9 +108,8 @@ class Command(BaseCommand):
         m = _RANGE_RE.match(s)
         if m:
             lo, hi = Decimal(m.group(1)), Decimal(m.group(2))
-            if lo > hi:
-                lo, hi = hi, lo
-            return STATUS_QUOTED, lo, hi
+            mid = (lo + hi) / 2
+            return STATUS_QUOTED, mid, mid
         return None
 
     def _parse_tier(self, kind: str, raw):
