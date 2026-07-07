@@ -86,6 +86,13 @@ STATUS_CHOICES = [
 ]
 
 
+def valid_gen(kind: str, gen: str) -> bool:
+    """A geração casa a forma canônica exigida pelo kind? (fonte única — o
+    portão do modelo e o pricing/engine leem a MESMA regra)."""
+    rule = _GEN_RULE.get(kind)
+    return bool(rule and rule.match(gen or ''))
+
+
 @pghistory.track()  # auditoria: criar/desativar comprador é evento comercial
 class Buyer(models.Model):
     """O comprador de chips (ex.: Wuquan). Dono das listas de preço."""

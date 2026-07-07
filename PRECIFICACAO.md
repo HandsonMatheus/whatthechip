@@ -5,8 +5,8 @@
 > partir do `PROMPT_PRECOS.md` e da planilha `wuquanprices.xlsx` (comprador Wuquan).
 > A fundação (`PLANO_MULTITENANT.md`, T1–T4) está construída e em produção — a
 > precificação roda em cima dela. **Ver §12 (diário de execução)** para o que já
-> existe e o runbook de validação de cada fase. **F2 CONSTRUÍDA (2026-07-07,
-> suíte 256/256)** — próxima fase: **F3** (`price()`/`price_lot()` + goldens).
+> existe e o runbook de validação de cada fase. **F2 e F3 CONSTRUÍDAS
+> (2026-07-07, suíte 266/266)** — próxima fase: **F4** (`import_price_xlsx`).
 > Quando implementado, este arquivo vira a **bíblia técnica do sistema de preços**
 > (mesmo papel do `RENTABILIDADE.md` para rentabilidade). A aba `Instructions` da
 > planilha já aponta para este documento.
@@ -367,7 +367,7 @@ numéricos para máquina".
 | **F0 ✅** (2026-07-07) | `_attach_numeric_specs` no engine + testes (§8 e §12) | suíte 239 OK no agente; characterize diff + suíte no ambiente do dono = runbook §12 |
 | **F1 (=T1)** | **ENTREGUE PELO PROJETO MULTI-TENANT** (sessão dedicada, `PLANO_MULTITENANT.md` T1/T2): `Company`+`Branch`+`Membership` (admin/gerente/operador), redirect por papel, numeração de lote atômica | checklist de handoff (§15 de lá) completo |
 | **F2 ✅** (2026-07-07) | app `pricing/`: modelos §3 + migrations (0001 + 0002-RLS) + pghistory + admin básico (§12.3) | suíte 256 OK no agente; migrate + testes Postgres no dono = runbook §12.3 |
-| **F3** | `price()`/`price_lot()` + golden de preço (âncoras por kind: eMMC 64GB Samsung=$6, eMCP faixa, DDR3L, LPDDR4 vs 4X≠, genérico→NO_KEY, herança genérica→Nanya, no_buy GDDR) + teste de ciclo/override | suíte verde |
+| **F3 ✅** (2026-07-07) | `pricing/engine.py`: `price()`/`price_lot()` + goldens com os números da planilha real (§12.4) | suíte 266 OK no agente; runbook §12.4 |
 | **F4** | `import_price_xlsx` + fixture de teste + **dry-run na planilha real** (dono roda o `--commit` local) | relatório do dry-run revisado pelo dono |
 | **F5** | preço no card de busca (gate por papel admin) | suíte verde · teste do gate por papel |
 | **F6** | dashboard `/partner/` (§7.1: listas, herdados, unquoted, permissões) | teste de isolamento entre buyers |
@@ -560,6 +560,54 @@ git push origin main                        # build roda o migrate em prod (0001
 python manage.py guard_catalog              # hábito pós-deploy (DATABASE_URL do prod)
 ```
 
-**Próxima fase: F3** — `price(result, buyer)` / `price_lot()` em
-`pricing/engine.py` + goldens de preço (§5 e §9). Sem migração; consome o
-vocabulário do models e os campos numéricos da F0.
+### 12.4 F3 — construída em 2026-07-07 (suíte 266/266 no agente)
+
+**O que existe (`pricing/engine.py` — sem migração, código puro):**
+
+- **`derive_price_key(result)`:** a chave (kind, gen, tier, unidade) derivada da
+  saída normalizada do classify — `label_kind(canonical_chip_type(...))` +
+  `ram_gen`/`cap_gb`/`nand_gb`/`density_gbit_num` da F0. Genérico (`DDR`/`LPDDR`
+  sem número), tipo fora do mercado, capacidade/geração ausente → `NO_KEY` com
+  motivo. **eMCP/uMCP: RAM fora da chave** (regra do comprador, provada em golden).
+- **`price(result, buyer) → PriceQuote`:** resolução em cadeia (marca → herança
+  da marca → genérica → herança da genérica; linha própria vence), 1 query pros
+  candidatos; statuses `PRICED/NO_BUY/UNQUOTED/NO_KEY/NO_ROW/NO_LIST` + motivo;
+  `value(low|mid|high)` (mid = ponto médio, ROUND_HALF_UP em centavos);
+  `is_stale` (sem `quote_date` ou > `staleness_days`); proveniência (`via` +
+  `source_list`).
+- **`price_lot(lot, buyer) → LotPricingReport`:** ON-READ (re-classifica cada PN
+  — catálogo vivo, nunca o snapshot), totais nos 3 cenários, cobertura por
+  linhas e por unidades, sem-preço com motivo. Nada persiste (congelamento = F8).
+- **Goldens (10 testes novos, números REAIS da planilha):** eMMC 64GB Samsung =
+  $6 · eMCP LPDDR4X 64GB = 13.50–16.50 com cenários e RAM 3vs4 no mesmo preço ·
+  LPDDR4 $3.75 ≠ LPDDR4X $2.55 · DDR3L não cai em DDR3 (e override da genérica
+  sobre a Nanya provado) · GDDR5 `NO_BUY` · UFS `UNQUOTED` · 24GB `NO_ROW` ·
+  genérico/NAND/sem-capacidade `NO_KEY` · cadeia inteira (SK herda Samsung;
+  Rayson própria; Rayson→genérica→Nanya; marca desconhecida→Nanya) · staleness
+  por data · `NO_LIST` · relatório de lote (cobertura 10/15 unidades, total $60).
+
+**Decisões/descobertas da F3 (registro):**
+1. **Escopo:** `price()` consulta via `all_companies` FILTRADO pelo `buyer` — o
+   buyer é o parâmetro de autorização (quem o obtém já passou por caminho
+   escopado). `price_lot` exige escopo ativo (`lot.entries` é fail-closed).
+2. **⚠ Para a F6 (dashboard `/partner/`):** conta de parceiro NÃO tem Membership
+   → o middleware não emite GUC → **sob RLS, as queries do parceiro leriam 0
+   linhas**. A F6 precisa emitir `app.company_id` da empresa do Buyer no fluxo
+   do parceiro (extensão do middleware ou do gate `PartnerRequired`).
+3. `Decimal.normalize()` sozinho imprime notação científica (`64.0`→`6.4E+1`) —
+   mensagens usam `:f`.
+
+**Runbook do dono (F3 — só código, sem migração):**
+
+```bash
+python manage.py test pricing --settings=core.settings_test      # 27 esperados
+python manage.py test chips estoque tenancy pricing --settings=core.settings_test   # 266
+git add pricing/ PRECIFICACAO.md
+git commit -m "pricing F3: price()/price_lot() — chave, herança, cenários, staleness, goldens"
+git push origin main
+```
+
+**Próxima fase: F4** — `import_price_xlsx <arquivo> --buyer wuquan` (§6):
+dry-run default, normalização de marca, RMB→USD Decimal, colapso eMCP por
+faixa com validação de conflito, 3 estados, relatório. Depois dela o dono roda
+o import real da `wuquanprices.xlsx` e o sistema nasce com os preços vivos.
