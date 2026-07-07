@@ -806,6 +806,35 @@ git commit -m "pricing F6: dashboard /partner/ — a UMA PÁGINA do comprador (G
 git push origin main
 ```
 
+### 12.9 Polimento do /partner/ (2026-07-07, pedido do dono; suíte 283/283)
+
+- **Header = padrão do painel interno:** o `partner_base.html` replica o Carbon
+  UI shell escuro do `base_estoque.html` (mesmas classes/tokens `.wtc-header__*`,
+  logo, zonas com borda, crachá "Comprador 买家", Sair vermelho). Rótulos-chave
+  bilíngues PT+中文 (o comprador é chinês).
+- **Câmbio USD→CNY de REFERÊNCIA no topo:** client-side (open.er-api.com,
+  fallback frankfurter.app; sem chave; cache 1h no sessionStorage; em falha a
+  zona não aparece). ⚠ Exibição apenas — **nenhum cálculo usa esse número**
+  (USD é a moeda canônica, princípio #3): é bússola pro comprador chinês.
+- **Sidebar de marcas em todas as páginas:** `_lists_with_stats(buyer)` alimenta
+  a navegação (Resumo + cada marca + Genérica, com badge de pendências e item
+  ativo). A home virou o **Resumo**: 3 KPIs (aguardando / velhas / cotadas) +
+  a tabela-panorama de todas as marcas.
+- **Datas das cotações do import:** o dono pediu todas as cotadas em
+  05/07/2026 — comando (dono roda; `.update()` em massa ainda dispara o
+  pghistory, que é gatilho de banco):
+
+```bash
+python manage.py shell -c "
+from datetime import date
+from tenancy.models import Company
+from tenancy.scope import company_scope
+from pricing.models import Price, STATUS_QUOTED
+with company_scope(Company.objects.get(slug='eminer')):
+    n = Price.objects.filter(status=STATUS_QUOTED).update(quote_date=date(2026, 7, 5))
+    print('cotações datadas em 05/07/2026:', n)"
+```
+
 **Próxima e ÚLTIMA fase: F7** — dobrar o durável no `CLAUDE.md` (§4: app
 pricing/fonte única do preço; §5: comandos `import_price_xlsx`; §6: convenção
 "preço = admin + parceiro") e promover este arquivo de plano a **bíblia

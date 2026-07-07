@@ -2,16 +2,20 @@
 {% block title %}Minhas listas{% endblock %}
 {% block content %}
 
-<h1 style="font-weight:300;font-size:28px;margin:0 0 18px;">Suas tabelas de preço</h1>
+<h1 style="font-weight:300;font-size:28px;margin:0 0 18px;">Resumo <span style="color:#8d8d8d;">总览</span></h1>
 
 <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px;">
   <div class="ptn-kpi">
-    <span style="font-size:12px;color:#6f6f6f;">Aguardando sua cotação</span>
+    <span style="font-size:12px;color:#6f6f6f;">Aguardando sua cotação 待报价</span>
     <b style="color:{% if pending %}#8a6d00{% else %}#198038{% endif %};">{{ pending }}</b>
   </div>
   <div class="ptn-kpi">
     <span style="font-size:12px;color:#6f6f6f;">Cotações com mais de {{ staleness_days }} dias</span>
     <b style="color:{% if stale %}#8a6d00{% else %}#198038{% endif %};">{{ stale }}</b>
+  </div>
+  <div class="ptn-kpi">
+    <span style="font-size:12px;color:#6f6f6f;">Preços cotados 已报价</span>
+    <b style="color:#161616;">{{ quoted }}</b>
   </div>
 </div>
 

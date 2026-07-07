@@ -69,31 +69,44 @@ def _stale_cutoff():
     return date.today() - timedelta(days=PricingConfig.get_config().staleness_days)
 
 
-@partner_required
-def partner_home(request):
-    """Home do parceiro: pendências primeiro (é o que mata a planilha)."""
-    buyer = request.buyer
+def _lists_with_stats(buyer):
+    """Listas do comprador com contagens (total/pendentes) — alimenta a SIDEBAR
+    de navegação (todas as páginas) e a tabela-resumo da home."""
     lists = list(PriceList.all_companies.filter(buyer=buyer, active=True)
-                 .select_related('brand', 'inherits_from__brand'))
-    rows = Price.all_companies.filter(price_list__buyer=buyer)
-
-    cutoff = _stale_cutoff()
-    pending = rows.filter(status=STATUS_UNQUOTED).count()
-    stale = (rows.filter(status=STATUS_QUOTED, quote_date__isnull=True).count()
-             + rows.filter(status=STATUS_QUOTED, quote_date__lt=cutoff).count())
-
+                 .select_related('brand', 'inherits_from__brand')
+                 .order_by('brand__name'))
     per_list = {}
-    for r in rows.values('price_list_id', 'status'):
+    for r in (Price.all_companies.filter(price_list__buyer=buyer)
+              .values('price_list_id', 'status')):
         d = per_list.setdefault(r['price_list_id'], {'total': 0, 'pending': 0})
         d['total'] += 1
         if r['status'] == STATUS_UNQUOTED:
             d['pending'] += 1
     for pl in lists:
         pl.stats = per_list.get(pl.pk, {'total': 0, 'pending': 0})
+    # Genérica por último (a sidebar lista marcas primeiro).
+    lists.sort(key=lambda pl: (pl.brand_id is None,
+                               pl.brand.name if pl.brand_id else ''))
+    return lists
+
+
+@partner_required
+def partner_home(request):
+    """Home do parceiro: o RESUMO — pendências primeiro (mata a planilha) e a
+    situação geral de todas as marcas de uma olhada."""
+    buyer = request.buyer
+    lists = _lists_with_stats(buyer)
+    rows = Price.all_companies.filter(price_list__buyer=buyer)
+
+    cutoff = _stale_cutoff()
+    pending = rows.filter(status=STATUS_UNQUOTED).count()
+    stale = (rows.filter(status=STATUS_QUOTED, quote_date__isnull=True).count()
+             + rows.filter(status=STATUS_QUOTED, quote_date__lt=cutoff).count())
+    quoted = rows.filter(status=STATUS_QUOTED).count()
 
     return render(request, 'pricing/partner_home.html', {
-        'buyer': buyer, 'lists': lists,
-        'pending': pending, 'stale': stale,
+        'buyer': buyer, 'lists': lists, 'nav_lists': lists, 'active_pk': None,
+        'pending': pending, 'stale': stale, 'quoted': quoted,
         'staleness_days': PricingConfig.get_config().staleness_days,
     })
 
@@ -144,6 +157,7 @@ def partner_list(request, list_pk):
 
     return render(request, 'pricing/partner_list.html', {
         'buyer': request.buyer, 'price_list': pl, 'rows': rows,
+        'nav_lists': _lists_with_stats(request.buyer), 'active_pk': pl.pk,
     })
 
 

@@ -1,26 +1,96 @@
 {% comment %}
-  Base do dashboard do COMPRADOR (F6 — PRECIFICACAO §7.1). Standalone de
-  propósito: o parceiro não compartilha o chrome do app da empresa (nada de
-  lotes/estoque no header dele). CSS puro inline (convenção do projeto).
+  Base do dashboard do COMPRADOR (F6 — PRECIFICACAO §7.1).
+
+  Design: MESMO padrão do painel interno da empresa (base_estoque.html —
+  Carbon UI shell escuro: header 56px #161616, marca à esquerda, nav com
+  sublinha azul, zonas separadas por borda #393939, conteúdo claro). As
+  classes .wtc-header__* são cópia fiel dos tokens de lá.
+
+  Extras do parceiro:
+    · Câmbio USD→CNY de REFERÊNCIA no topo (JS client-side, ver bloco no fim —
+      exibição apenas; NENHUM cálculo do sistema usa esse número: USD é a
+      moeda canônica, princípio #3 do plano).
+    · Sidebar com todas as marcas (nav_lists vem das views) + pendências.
+
   ⚠ NUNCA exibir updated_by/last_updated aqui — auditoria é só do admin (§7).
-{% endcomment %}<!DOCTYPE html>
+{% endcomment %}{% load static %}<!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
   <title>{% block title %}Preços{% endblock %} · WhatTheChip</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
   <style>
-    * { box-sizing: border-box; }
-    body { margin:0; font-family:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
-           background:#f4f4f4; color:#161616; }
-    .ptn-header { display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-                  background:#161616; color:#fff; padding:14px 24px; }
-    .ptn-header a { color:#78a9ff; text-decoration:none; font-weight:600; }
-    .ptn-brand { font-weight:700; letter-spacing:.02em; }
-    .ptn-buyer { font-family:'IBM Plex Mono',monospace; font-size:13px;
-                 background:#393939; padding:3px 10px; border-radius:4px; }
-    .ptn-main { max-width:1080px; margin:0 auto; padding:26px 24px 60px; }
+    /* ═══ Shell idêntico ao painel interno (base_estoque.html) ═══ */
+    * , *::before, *::after { box-sizing: border-box; }
+    body { margin:0; background:#f4f4f4; color:#161616; min-height:100vh;
+           display:flex; flex-direction:column;
+           font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
+           -webkit-font-smoothing:antialiased; }
+
+    .wtc-header { height:56px; background:#161616; display:flex; align-items:center;
+                  position:sticky; top:0; z-index:40; }
+    .wtc-header__brand { display:flex; align-items:center; height:100%; padding:0 20px;
+                         border-right:1px solid #393939; text-decoration:none; flex:none; }
+    .wtc-header__brand img { height:26px; width:auto; display:block; }
+    .wtc-header__nav { display:flex; align-items:center; gap:8px; height:100%;
+                       padding:0 16px; color:#c6c6c6; font-size:14px; font-weight:500;
+                       text-decoration:none; border-bottom:3px solid transparent;
+                       border-top:3px solid transparent; }
+    .wtc-header__nav:hover { background:#262626; color:#f4f4f4; }
+    .wtc-header__nav--active { color:#fff; font-weight:600; border-bottom-color:#0f62fe; }
+    .wtc-header__spacer { flex:1; }
+    .wtc-header__org { display:flex; align-items:center; gap:10px; height:100%;
+                       padding:0 16px; border-left:1px solid #393939; }
+    .wtc-header__org-txt { display:flex; flex-direction:column; line-height:1.2; }
+    .wtc-header__org-name { color:#f4f4f4; font-size:13px; font-weight:600; white-space:nowrap; }
+    .wtc-header__org-branch { color:#8d8d8d; font-size:11px; white-space:nowrap; }
+    .wtc-header__who { display:flex; align-items:center; gap:8px; height:100%;
+                       padding:0 16px; border-left:1px solid #393939; }
+    .wtc-header__role { font-size:10px; font-weight:700; letter-spacing:0.08em;
+                        text-transform:uppercase; color:#78a9ff; border:1px solid #33539b;
+                        padding:2px 7px; white-space:nowrap; }
+    .wtc-header__actions { display:flex; align-items:center; gap:6px; height:100%;
+                           padding:0 12px 0 16px; border-left:1px solid #393939; }
+    .wtc-header__btn { display:flex; align-items:center; gap:6px; height:36px;
+                       padding:0 14px; color:#f4f4f4; font-size:14px;
+                       border:1px solid #525252; background:transparent; cursor:pointer;
+                       white-space:nowrap; flex:none; text-decoration:none; font-family:inherit; }
+    .wtc-header__btn:hover { background:#262626; }
+    .wtc-header__btn--logout { color:#ff8389; }
+
+    /* Câmbio de referência (zona própria, estilo "org") */
+    .wtc-header__fx { display:none; align-items:center; gap:8px; height:100%;
+                      padding:0 16px; border-left:1px solid #393939; }
+    .wtc-header__fx-val { font-family:'IBM Plex Mono',monospace; color:#f4f4f4;
+                          font-size:13px; font-weight:600; white-space:nowrap; }
+    .wtc-header__fx-note { color:#8d8d8d; font-size:10px; line-height:1.2; }
+
+    /* Layout com SIDEBAR de marcas */
+    .wtc-work { max-width:1340px; width:100%; margin:0 auto; padding:24px; flex:1;
+                display:flex; gap:22px; align-items:flex-start; }
+    .wtc-work a, .wtc-work a:visited { color:#0f62fe; }
+    .ptn-side { flex:none; width:230px; background:#fff; border:1px solid #e0e0e0;
+                position:sticky; top:80px; }
+    .ptn-side__title { font-size:11px; font-weight:700; letter-spacing:.08em;
+                       text-transform:uppercase; color:#6f6f6f;
+                       padding:14px 16px 8px; }
+    .ptn-side__link { display:flex; align-items:center; gap:8px; padding:9px 16px;
+                      font-size:14px; color:#161616 !important; text-decoration:none;
+                      border-left:3px solid transparent; }
+    .ptn-side__link:hover { background:#f4f4f4; }
+    .ptn-side__link--active { border-left-color:#0f62fe; background:#edf5ff;
+                              font-weight:600; }
+    .ptn-side__badge { margin-left:auto; font-size:11px; font-weight:700;
+                       background:#fff1c2; color:#8a6d00; border-radius:10px;
+                       padding:1px 8px; }
+    .ptn-content { flex:1; min-width:0; }
+
+    /* Componentes das páginas */
     .ptn-msg { padding:12px 16px; margin-bottom:14px; border-left:4px solid;
                background:#fff; font-size:14px; }
     .ptn-msg--success { border-color:#198038; }
@@ -48,20 +118,65 @@
     .ptn-kpi { display:inline-flex; flex-direction:column; gap:4px; padding:16px 22px;
                background:#fff; border:1px solid #e0e0e0; min-width:170px; }
     .ptn-kpi b { font-size:30px; font-family:'IBM Plex Mono',monospace; }
+
+    @media (max-width: 860px) {
+      .wtc-work { flex-direction:column; }
+      .ptn-side { width:100%; position:static; }
+      .wtc-header__fx { display:none !important; }
+      .wtc-header__who { display:none; }
+    }
   </style>
 </head>
 <body>
-  <header class="ptn-header">
-    <span class="ptn-brand">WhatTheChip · Preços</span>
-    <span class="ptn-buyer">{{ buyer.name }}</span>
-    <span style="flex:1"></span>
-    <a href="{% url 'pricing:partner_home' %}">Início</a>
+
+<header class="wtc-header">
+  <a href="{% url 'pricing:partner_home' %}" class="wtc-header__brand">
+    <img src="{% static 'img/wtc-logo-dark.svg' %}" alt="WhatTheChip 什么芯片">
+  </a>
+
+  <a href="{% url 'pricing:partner_home' %}"
+     class="wtc-header__nav{% if not active_pk %} wtc-header__nav--active{% endif %}">
+    价格 · Minhas tabelas
+  </a>
+
+  <span class="wtc-header__spacer"></span>
+
+  {# Câmbio USD→CNY de REFERÊNCIA (client-side; escondido até carregar). #}
+  <div class="wtc-header__fx" id="wtc-fx" title="Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre em USD.">
+    <span class="wtc-header__fx-val" id="wtc-fx-val"></span>
+    <span class="wtc-header__fx-note">câmbio de<br>referência 参考汇率</span>
+  </div>
+
+  <div class="wtc-header__who">
+    <div class="wtc-header__org-txt">
+      <span class="wtc-header__org-name">{{ buyer.name }}</span>
+    </div>
+    <span class="wtc-header__role">Comprador 买家</span>
+  </div>
+
+  <div class="wtc-header__actions">
     <form method="post" action="{% url 'logout' %}" style="margin:0;">
       {% csrf_token %}
-      <button type="submit" class="ptn-btn ptn-btn--ghost" style="color:#fff;border-color:#8d8d8d;background:transparent;">Sair</button>
+      <button type="submit" class="wtc-header__btn wtc-header__btn--logout">Sair</button>
     </form>
-  </header>
-  <main class="ptn-main">
+  </div>
+</header>
+
+<div class="wtc-work">
+  <aside class="ptn-side">
+    <div class="ptn-side__title">Suas tabelas 价格表</div>
+    <a href="{% url 'pricing:partner_home' %}"
+       class="ptn-side__link{% if not active_pk %} ptn-side__link--active{% endif %}">📊 Resumo</a>
+    {% for pl in nav_lists %}
+    <a href="{% url 'pricing:partner_list' pl.pk %}"
+       class="ptn-side__link{% if active_pk == pl.pk %} ptn-side__link--active{% endif %}">
+      {% if pl.brand %}{{ pl.brand.name }}{% else %}Genérica{% endif %}
+      {% if pl.stats.pending %}<span class="ptn-side__badge">{{ pl.stats.pending }}</span>{% endif %}
+    </a>
+    {% endfor %}
+  </aside>
+
+  <main class="ptn-content">
     {% if messages %}
       {% for m in messages %}
         <div class="ptn-msg ptn-msg--{{ m.tags }}">{{ m }}</div>
@@ -69,5 +184,42 @@
     {% endif %}
     {% block content %}{% endblock %}
   </main>
+</div>
+
+<script>
+/* Câmbio USD→CNY de referência (exibição APENAS — nenhum cálculo usa isto).
+   Fonte primária: open.er-api.com (sem chave, CORS ok); fallback: frankfurter.
+   Cache de 1h no sessionStorage; em falha, a zona simplesmente não aparece. */
+(function () {
+  var box = document.getElementById('wtc-fx'),
+      val = document.getElementById('wtc-fx-val');
+  if (!box || !val) return;
+  function show(rate) {
+    if (!rate || !isFinite(rate)) return;
+    val.textContent = '1 USD ≈ ¥ ' + Number(rate).toFixed(2);
+    box.style.display = 'flex';
+  }
+  try {
+    var cached = JSON.parse(sessionStorage.getItem('wtc_fx_cny') || 'null');
+    if (cached && (Date.now() - cached.t) < 3600e3) { show(cached.r); return; }
+  } catch (e) {}
+  function keep(rate) {
+    try { sessionStorage.setItem('wtc_fx_cny', JSON.stringify({ r: rate, t: Date.now() })); } catch (e) {}
+    show(rate);
+  }
+  fetch('https://open.er-api.com/v6/latest/USD')
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d && d.rates && d.rates.CNY) keep(d.rates.CNY);
+      else throw new Error('sem CNY');
+    })
+    .catch(function () {
+      fetch('https://api.frankfurter.app/latest?from=USD&to=CNY')
+        .then(function (r) { return r.json(); })
+        .then(function (d) { if (d && d.rates && d.rates.CNY) keep(d.rates.CNY); })
+        .catch(function () {});
+    });
+})();
+</script>
 </body>
 </html>
