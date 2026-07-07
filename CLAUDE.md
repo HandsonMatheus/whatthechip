@@ -500,10 +500,13 @@ Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); `interface` = largura (`x
   Importadores **nunca** rebaixam um registro `confirmed`/`manual`.
 - **Não confie em dado de distribuidor ou IA** sem verificação por datasheet/Octopart
   (confundem Gb/GB, invertem primary/secondary, alucinam capacidade).
-- **Tenancy (T1–T3, jul/2026 — contrato: PRECIFICACAO §10; execução/bíblia: PLANO_MULTITENANT.md).**
-  Catálogo = GLOBAL; estoque = POR-EMPRESA **(T3 aplicada: Lot/Entry/Pending/Rejected têm
+- **Tenancy (T1–T4, jul/2026 — contrato: PRECIFICACAO §10; execução/bíblia: PLANO_MULTITENANT.md).**
+  Catálogo = GLOBAL; estoque = POR-EMPRESA **(T3: Lot/Entry/Pending/Rejected têm
   `company` NOT NULL, manager padrão fail-closed `CompanyScopedManager`, numeração
-  `unique (company, number)`)**. **Toda tabela nova exige decisão explícita de tenancy** —
+  `unique (company, number)`; T4: RLS+FORCE no Postgres — policies leem os GUCs
+  `app.company_id`/`app.platform` que o TenancyMiddleware emite transaction-local;
+  `manage.py shell` em tabela de estoque devolve 0 linhas sem `company_scope(...)` —
+  é o fail-closed do banco, não bug)**. **Toda tabela nova exige decisão explícita de tenancy** —
   o teste `TenancyDeclarationTests` (estoque/tests.py) FALHA se um modelo novo não estiver
   na lista GLOBAL nem escopado. View de estoque usa `@role_required('operator'|'manager')`
   (`tenancy/access.py`) — nunca só `@login_required`; esconder botão no template NUNCA é a

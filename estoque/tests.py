@@ -679,7 +679,10 @@ class LotNumberRaceTests(TransactionTestCase):
         def worker():
             try:
                 barrier.wait()
-                lot = Lot.open_for_company(company, user)
+                # company_scope (T4): além do contextvar, seta o GUC do RLS na
+                # conexão DESTA thread — com FORCE RLS o insert seria rejeitado.
+                with company_scope(company):
+                    lot = Lot.open_for_company(company, user)
                 numbers.append(lot.number)
             except Exception as exc:                  # IntegrityError incluso
                 errors.append(exc)
@@ -792,6 +795,74 @@ class TenancyHandshakeTests(TestCase):
         self.assertNotIn('lote da eMiner', body)
         painel = self.client.get(reverse('painel')).content.decode()
         self.assertNotIn('lote da eMiner', painel)
+
+
+class RLSHandshakeTests(TransactionTestCase):
+    """T4 (§12.1) — handshake da CAMADA B: prova por SQL CRU que o Postgres
+    filtra sozinho (RLS + FORCE), sem confiar em nenhuma linha de Python.
+    É o teste que remove a confiança no código: query bugada não cruza empresa.
+
+    ⚠ Postgres-only (no SQLite as policies nem existem; a Camada A cobre lá):
+
+        python manage.py test estoque.tests.RLSHandshakeTests
+    """
+
+    @skipUnless(connection.vendor == 'postgresql', 'RLS é Postgres-only')
+    def test_sql_cru_respeita_o_rls(self):
+        User = get_user_model()
+        a = Company.objects.create(name='RlsA', slug='rlsa')
+        b = Company.objects.create(name='RlsB', slug='rlsb')
+        ua = User.objects.create_user('rls_ua')
+        ub = User.objects.create_user('rls_ub')
+        with company_scope(a):
+            lot_a = Lot.open_for_company(a, ua, 'lote RLS A')
+            InventoryEntry.objects.create(lot=lot_a, part_number='RLSPN_A')
+        with company_scope(b):
+            lot_b = Lot.open_for_company(b, ub, 'lote RLS B')
+
+        def _clear_gucs():
+            with connection.cursor() as c:
+                c.execute("SELECT set_config('app.company_id', '', false)")
+                c.execute("SELECT set_config('app.platform', '', false)")
+        self.addCleanup(_clear_gucs)
+        _clear_gucs()
+
+        with connection.cursor() as cur:
+            # 1) SEM GUC → FORCE RLS vale até para o dono da tabela: 0 linhas.
+            cur.execute('SELECT count(*) FROM estoque_lot')
+            self.assertEqual(cur.fetchone()[0], 0)
+            cur.execute('SELECT count(*) FROM estoque_inventoryentry')
+            self.assertEqual(cur.fetchone()[0], 0)
+
+            # 2) GUC da empresa A → SÓ as linhas da A; a da B "não existe"
+            #    nem pedindo explicitamente por WHERE.
+            cur.execute("SELECT set_config('app.company_id', %s, false)",
+                        [str(a.pk)])
+            cur.execute('SELECT company_id FROM estoque_lot')
+            self.assertEqual([r[0] for r in cur.fetchall()], [a.pk])
+            cur.execute('SELECT count(*) FROM estoque_lot WHERE company_id = %s',
+                        [b.pk])
+            self.assertEqual(cur.fetchone()[0], 0)
+
+            # 3) Escrita cruzada barrada NO BANCO: insert com company da B sob
+            #    o GUC da A viola o WITH CHECK da policy.
+            from django.db import Error as DBError
+            with self.assertRaises(DBError):
+                cur.execute(
+                    "INSERT INTO estoque_rejectedentry "
+                    "(lot_id, part_number, quantity, chip_type, brand, capacity,"
+                    " emcp_ram, emcp_nand, is_emcp, interface,"
+                    " classification_source, confidence, rejection_reason,"
+                    " operator_id, created_at, company_id) "
+                    "VALUES (%s, 'HACK', 1, '', '', '', '', '', false, '', '',"
+                    " '', 'X', %s, now(), %s)",
+                    [lot_b.pk, ub.pk, b.pk])
+
+            # 4) GUC de plataforma → enxerga as duas (Django admin/superuser).
+            cur.execute("SELECT set_config('app.company_id', '', false)")
+            cur.execute("SELECT set_config('app.platform', '1', false)")
+            cur.execute('SELECT count(*) FROM estoque_lot')
+            self.assertEqual(cur.fetchone()[0], 2)
 
 
 class TenancyDeclarationTests(TestCase):

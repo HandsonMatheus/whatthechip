@@ -88,9 +88,12 @@ class Command(BaseCommand):
 
         # ── 3. Seed do contador de lote (ajuste da T2, antecipado) ───────────
         # all_companies: comando de plataforma (T3) — olha só os lotes DESTA
-        # empresa (pós-backfill 0012 todos têm company).
-        max_lot = (Lot.all_companies.filter(company=company)
-                   .aggregate(Max('number'))['number__max'])
+        # empresa (pós-backfill 0012 todos têm company). company_scope (T4):
+        # com RLS+FORCE, sem o GUC a query leria ZERO linhas e o seed falharia.
+        from tenancy.scope import company_scope
+        with company_scope(company):
+            max_lot = (Lot.all_companies.filter(company=company)
+                       .aggregate(Max('number'))['number__max'])
         if max_lot is not None and max_lot > company.last_lot_number:
             self._log(f'Contador de lote: last_lot_number {company.last_lot_number} '
                       f'→ {max_lot} (max atual)')

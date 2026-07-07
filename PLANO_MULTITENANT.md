@@ -1,12 +1,11 @@
 # PLANO_MULTITENANT.md — WhatTheChip multi-empresa (documento de projeto)
 
-> **Status: T1 + T2 + T3 CONSTRUÍDAS (2026-07-06).** T1/T2 validadas no local
-> (O3 provado no Postgres; bootstrap local feito). **T3 (isolamento do estoque
-> por empresa) construída na mesma sessão** — gatilho: o dono criou a 2ª empresa
-> de teste e viu os lotes compartilhados, exatamente o cenário que a T3 fecha.
-> Suíte 230/230 verde com o **handshake de tenancy (O4, Camada A)** + ensaio do
-> deploy de produção (banco legado → migrate → backfill ✔). Pendente: dono rodar
-> `migrate` local, e o deploy em produção. **Ver §16 (diário de execução).**
+> **Status: T1 + T2 + T3 + T4 CONSTRUÍDAS (2026-07-06, sessão dedicada).**
+> T1–T3 validadas no local do dono (O3 no Postgres; migrate + backfill feitos;
+> handshake Camada A verde). **T4 (RLS) construída em seguida** — suíte 231/231;
+> falta o dono rodar `migrate` (0014 liga o RLS) + `RLSHandshakeTests` no
+> Postgres, e o deploy em produção. Restam T5 (fila no app) e T6 (onboarding)
+> antes do 2º cliente real logar. **Ver §16 (diário de execução).**
 > **Este é o documento-guia de uma SESSÃO DEDICADA de implementação.** Quando o
 > projeto terminar, a precificação (`PRECIFICACAO.md`) começa em cima da fundação
 > construída aqui (a F1 de lá **é** a T1 daqui).
@@ -363,7 +362,7 @@ Notas de execução (revisão 2026-07-06):
 | **T1** | app `tenancy/`: `Company`+`Branch`+`Membership` (§5.1) + middleware/contextvar + mixins de papel + navegação por papel + redirect + **backfill eMiner** (empresa #1, usuários atuais → papéis definidos pelo dono) + pghistory | O1 e O2 provados: testes de permissão por papel (403), redirect, suíte verde, characterize diff=0; operador real da eMiner não nota diferença (exceto o que deixou de ver indevidamente) | ✅ **construída 2026-07-06** (§16) — falta o dono rodar migrate+backfill |
 | **T2** | Numeração de lote atômica (§7): contador `select_for_update` + teste de corrida (o `unique (company, number)` completo fica pra T3; na T2, com 1 empresa, o contador já elimina a corrida) | O3: teste multi-thread verde; zero mudança de comportamento visível | ✅ **construída 2026-07-06** (§16) — prova da corrida roda no Postgres do dono |
 | **T3** | Retrofit do estoque (§5.2): colunas nullable → backfill → NOT NULL + `unique (company, number)` + índices; managers `CompanyScopedManager` em Lot/Entry/Pending/Rejected; comandos de estoque ganham `--company` | handshake de tenancy via ORM (§12); export/telas todos escopados; suíte estoque verde | ✅ **construída 2026-07-06** (§16) — gatilho antecipado: 2ª empresa de teste criada pelo dono |
-| **T4** | RLS (§6.2): policies + FORCE + `SET LOCAL` no middleware + policies nas tabelas pghistory + decisão BYPASSRLS p/ comandos | handshake via **SQL cru**: conexão da app sem GUC → 0 linhas; com GUC da empresa A → só linhas de A | logo após T3 |
+| **T4** | RLS (§6.2): policies + FORCE + `SET LOCAL` no middleware + policies nas tabelas pghistory + decisão BYPASSRLS p/ comandos | handshake via **SQL cru**: conexão da app sem GUC → 0 linhas; com GUC da empresa A → só linhas de A | ✅ **construída 2026-07-06** (§16) — prova no Postgres do dono |
 | **T5** | UI de gerente no app: fila PendingEntry (aprovar/reprovar), abrir/fechar lote, export — esvazia o Django admin de operação de empresa | testes de view por papel; Django admin sem uso operacional por não-plataforma | com T3/T4 |
 | **T6** | Onboarding: tela/fluxo de plataforma "criar empresa + primeiro admin (+ filiais)"; roteiro documentado | O5: empresa de teste criada em < 5 min sem tocar código | antes do 2º cliente logar |
 
@@ -605,6 +604,43 @@ nome EXATO "eMiner") → `guard_catalog`.
 **Próximo:** T4 (RLS — Camada B: policies + FORCE + SET LOCAL no middleware,
 lembrando a correção do §6.2: o atomic externo é do TenancyMiddleware) e
 T5/T6 (fila no app + onboarding) antes do 2º cliente REAL logar.
+
+### T4 — construída em 2026-07-06 (mesma sessão; suíte 231/231 verde)
+
+**Camada B: nem query bugada cruza empresa — o Postgres filtra sozinho.**
+
+- **Migração `estoque/0014_t4_rls`** (RunPython Postgres-only, reversível):
+  `ENABLE` + **`FORCE`** ROW LEVEL SECURITY + policy `tenant_isolation` nas 4
+  tabelas. Policy: `company_id = NULLIF(current_setting('app.company_id',
+  true), '')::int OR current_setting('app.platform', true) = '1'`. GUC ausente
+  → NULL → **zero linhas** (fail-closed no banco). `app.platform='1'` é o
+  caminho da PLATAFORMA (superuser/Django admin enxerga tudo — §8); resolve a
+  armadilha "FORCE também filtra o dono da tabela".
+- **`TenancyMiddleware`** agora abre o **`transaction.atomic()` externo** da
+  request (a correção §6.2 — `ATOMIC_REQUESTS` não serviria) e emite os GUCs
+  **transaction-local** (`set_config(..., local=True)` ≡ `SET LOCAL`,
+  PgBouncer-safe): `app.company_id` do vínculo + `app.platform` p/ superuser.
+  Anônimo → nenhum GUC → RLS devolve zero linhas de estoque. No SQLite dos
+  testes: sem atomic, sem GUC (não há RLS lá; a Camada A cobre).
+- **`company_scope()` e `scope_command_to_company()`** também setam o GUC
+  (sessão, com restauração) — comandos, shell e testes sob Postgres continuam
+  funcionando; o `bootstrap_tenancy` (seed) e o teste de corrida foram
+  escopados. ⚠ Consequência desejada: **`manage.py shell` ad-hoc em tabela de
+  estoque devolve 0 linhas** até você entrar num `company_scope(...)` — é o
+  fail-closed da Camada B funcionando, não um bug.
+- **`RLSHandshakeTests`** (Postgres-only; skip no SQLite): por **SQL cru** —
+  sem GUC → 0 linhas; GUC da A → só linhas da A (WHERE pela B devolve 0);
+  INSERT cross-company viola o WITH CHECK; GUC de plataforma → vê as duas.
+- **Pendência declarada:** tabelas de EVENTO pghistory de estoque não existem
+  (estoque não é rastreado) — se um dia forem rastreadas, as policies entram
+  junto (armadilha §6.2.3 continua mapeada). BYPASSRLS não foi necessário:
+  data-migration futura usa `app.platform` ou `company_scope`.
+
+**Runbook do dono (T4):** local → `python manage.py migrate` (0014 liga o RLS)
+→ `python manage.py test estoque.tests.RLSHandshakeTests` (prova Camada B) →
+re-rodar `estoque.tests.LotNumberRaceTests` (corrida sob RLS) → smoke com as
+duas empresas + Django admin (superuser vê tudo). Produção: mesma coisa via
+push (build migra); backup antes, `guard_catalog` depois.
 
 ### T1.1 — polimentos pós-validação (2026-07-06, suíte 224/224 verde)
 

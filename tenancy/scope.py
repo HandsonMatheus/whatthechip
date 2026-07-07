@@ -71,6 +71,18 @@ def reset_current_company(token) -> None:
     _current_company_id.reset(token)
 
 
+def _set_guc(cursor, name: str, value: str, local: bool = False) -> None:
+    """Seta um GUC do Postgres (a variável que as policies de RLS leem — T4).
+    ``set_config(..., local=True)`` == SET LOCAL (morre no fim da transação —
+    o único modo seguro com PgBouncer em transaction mode)."""
+    cursor.execute('SELECT set_config(%s, %s, %s)', [name, value, local])
+
+
+def _read_guc(cursor, name: str) -> str | None:
+    cursor.execute("SELECT current_setting(%s, true)", [name])
+    return cursor.fetchone()[0]
+
+
 @contextmanager
 def company_scope(company):
     """Escopo explícito para comandos/jobs/testes.
@@ -79,13 +91,28 @@ def company_scope(company):
 
         with company_scope(eminer):
             export_lotes()   # managers escopados enxergam SÓ a eminer
+
+    T4: além do contextvar (Camada A), seta o GUC ``app.company_id`` da conexão
+    (Camada B — sem ele, com RLS+FORCE ativos, até o dono da tabela lê ZERO
+    linhas). Sessão-level com restauração no exit; no SQLite é no-op.
     """
+    from django.db import connection
+
     cid = getattr(company, 'pk', company)
     token = _current_company_id.set(cid)
+    use_guc = connection.vendor == 'postgresql'
+    guc_prev = None
+    if use_guc:
+        with connection.cursor() as cur:
+            guc_prev = _read_guc(cur, 'app.company_id')
+            _set_guc(cur, 'app.company_id', '' if cid is None else str(cid))
     try:
         yield cid
     finally:
         _current_company_id.reset(token)
+        if use_guc:
+            with connection.cursor() as cur:
+                _set_guc(cur, 'app.company_id', guc_prev or '')
 
 
 def scope_command_to_company(slug=None, stdout=None):
@@ -113,6 +140,12 @@ def scope_command_to_company(slug=None, stdout=None):
                 'Há 0 ou 2+ empresas ativas — identifique com --company <slug>.')
         company = active[0]
     set_current_company(company.pk)
+    # T4: comando roda FORA do middleware → seta o GUC do RLS na sessão da
+    # conexão do processo (sem ele, com FORCE RLS, as queries leem 0 linhas).
+    from django.db import connection
+    if connection.vendor == 'postgresql':
+        with connection.cursor() as cur:
+            _set_guc(cur, 'app.company_id', str(company.pk))
     if stdout is not None:
         stdout.write(f'Escopo de empresa: {company.name} (slug={company.slug})')
     return company
