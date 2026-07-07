@@ -15,6 +15,9 @@ urlpatterns = [
     # Auth (login/logout — sem cadastro público)
     path('login/',  auth_views.LoginView.as_view(),  name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    # Dashboard do COMPRADOR (F6 — PRECIFICACAO §7.1): rota em inglês, conta
+    # externa via Buyer.users (a lançadeira /painel/ redireciona parceiro p/ cá).
+    path('partner/', include('pricing.urls', namespace='pricing')),
     # i18n: set_language (POST) grava o idioma escolhido no cookie/sessão e
     # redireciona de volta. Alimenta o seletor do topo. ANTES da rota <slug>.
     path('i18n/', include('django.conf.urls.i18n')),

@@ -5,11 +5,11 @@
 > partir do `PROMPT_PRECOS.md` e da planilha `wuquanprices.xlsx` (comprador Wuquan).
 > A fundação (`PLANO_MULTITENANT.md`, T1–T4) está construída e em produção — a
 > precificação roda em cima dela. **Ver §12 (diário de execução)** para o que já
-> existe e o runbook de validação de cada fase. **F2–F5 + F5-bis + F8
-> CONSTRUÍDAS (2026-07-07, suíte 277/277). Import REAL gravado no local: 314
-> preços, planilha APOSENTADA. Preço vivo na home (JS), na bancada do lote e
-> valoração congelada no fechamento.** Restam: **F6** (dashboard `/partner/`)
-> e **F7** (docs no CLAUDE.md).
+> existe e o runbook de validação de cada fase. **F2–F6 + F8 CONSTRUÍDAS
+> (2026-07-07, suíte 283/283). Import REAL gravado: 314 preços, planilha
+> APOSENTADA. Preço vivo na home, na bancada e no lote; dashboard do comprador
+> em `/partner/` no ar.** Resta: **F7** (dobrar docs no CLAUDE.md e promover
+> este arquivo a bíblia).
 > Quando implementado, este arquivo vira a **bíblia técnica do sistema de preços**
 > (mesmo papel do `RENTABILIDADE.md` para rentabilidade). A aba `Instructions` da
 > planilha já aponta para este documento.
@@ -373,7 +373,7 @@ numéricos para máquina".
 | **F3 ✅** (2026-07-07) | `pricing/engine.py`: `price()`/`price_lot()` + goldens com os números da planilha real (§12.4) | suíte 266 OK no agente; runbook §12.4 |
 | **F4 ✅** (2026-07-07) | `import_price_xlsx` + testes + **dry-run E commit validados na planilha real** no sandbox (314 preços; §12.5) | dono roda dry-run + `--commit` no banco dele = runbook §12.5 |
 | **F5 ✅** (2026-07-07) | preço no card de busca, gate por papel admin (§12.6) | suíte 273 OK · `PriceCardGateTests` (admin vê; gerente/operador/anônimo não) |
-| **F6** | dashboard `/partner/` (§7.1: listas, herdados, unquoted, permissões) | teste de isolamento entre buyers |
+| **F6 ✅** (2026-07-07) | dashboard `/partner/` (§7.1 e §12.8: home com pendências/staleness, grid com herdados, save com portão, GUC do parceiro, lançadeira) | suíte 283 OK · `PartnerDashboardTests` (gate, isolamento entre buyers, auditoria invisível) |
 | **F7** | docs: este arquivo atualizado p/ bíblia + seção no CLAUDE.md (§4 e §5: comandos) | — |
 | **F8 ✅** (2026-07-07, antecipada a pedido do dono) | preço na bancada do lote (admin) + valoração on-read no lote + `LotPricing` congela no fechamento (§12.7). Export com preço: fora por ora (vazaria ao gerente) | suíte 277 OK · `BenchAndLotPricingTests` |
 
@@ -754,7 +754,59 @@ git push origin main
 #   sync_index_page (home nova) → import_price_xlsx (se ainda não rodou) → guard_catalog
 ```
 
-**Próxima fase: F6** — dashboard `/partner/` (§7.1): a "UMA PÁGINA" do
-comprador, herdados acinzentados, células amarelas, sem auditoria visível.
-⚠ Lembrar da descoberta do §12.4: o fluxo do parceiro precisa emitir o GUC
-`app.company_id` da empresa do Buyer (parceiro não tem Membership).
+### 12.8 F6 — construída em 2026-07-07 (suíte 283/283)
+
+**O dashboard do comprador está no ar — a planilha morreu de vez (§1.10).**
+
+- **`pricing/views.py` + `pricing/urls.py` em `/partner/`:** `partner_home`
+  (KPIs: aguardando cotação + cotações velhas; tabela de listas com pendências),
+  `partner_list` (grid espelhando a planilha: linhas próprias editáveis,
+  **herdadas acinzentadas** com a origem — salvar numa herdada cria a linha
+  própria/override, §4) e `partner_save` (semântica da planilha: USD preenchido
+  → cotado com `quote_date`=hoje; "não compro" → NO; vazio → aguardando;
+  `updated_by` GRAVADO mas jamais exibido — §7). Sem HTMX de propósito:
+  formulários simples + PRG.
+- **`partner_required` resolve o GUC do parceiro (a descoberta do §12.4):**
+  conta de comprador não tem Membership → o middleware não emite
+  `app.company_id` → sob RLS leria 0 linhas. O decorator roda a view inteira
+  dentro de `company_scope(buyer.company)` (contextvar + GUC com restauração).
+  Autorização em 3 camadas: vínculo `Buyer.users` (gate) + posse por queryset
+  (lista alheia = 404) + RLS.
+- **Lançadeira:** `tenancy/access.py::role_required` agora, no caso
+  "sem Membership", verifica o vínculo de comprador e redireciona para
+  `/partner/` (em vez de 403) — parceiro que cai em `/painel/` ou qualquer rota
+  de estoque é levado pro lugar dele. Import lazy (tenancy ≠ dependente de
+  pricing no load).
+- **Templates standalone** (`partner_base/home/list.html`): o parceiro não vê o
+  chrome da empresa. ⚠ Lição de HTML: `<form>` dentro de `<tr>` envolvendo
+  `<td>` é inválido (o browser ejeta o form) — o padrão certo é o `<form>` no
+  último `<td>` + inputs com atributo `form="fN"`. E inputs `type=number`
+  precisam de `{% localize off %}` (l10n pt-br poria vírgula no value).
+- **`PartnerDashboardTests` (6):** gate (anônimo→login, membro→403,
+  parceiro→200), lançadeira, herdado+override, os 3 estados no save com data e
+  `updated_by`, erro do portão não grava, e **isolamento entre compradores**
+  (lista alheia 404 no GET e no POST).
+
+**Runbook do dono (F6 — só código, sem migração):**
+
+```bash
+python manage.py test chips estoque tenancy pricing --settings=core.settings_test   # 283
+python manage.py runserver
+# smoke do parceiro:
+#   1. admin Django → Compradores → Wuquan → vincular uma conta de teste em "users"
+#      (conta SEM Membership — ex.: criar usuária "wuquan_teste")
+#   2. logar como wuquan_teste → /login/ → cai em /partner/ (lançadeira)
+#   3. home: KPI "Aguardando sua cotação" (os 81 unquoted do import)
+#   4. abrir a lista SK Hynix → linhas próprias + (se configurar herança) herdadas cinzas
+#   5. preencher um USD → Salvar → tag "cotado <hoje>"; conferir no admin que
+#      updated_by/last_updated foram gravados (e que o parceiro NÃO os vê)
+#   6. logar como operador → /partner/ → 403
+git add pricing/ tenancy/access.py core/urls.py PRECIFICACAO.md
+git commit -m "pricing F6: dashboard /partner/ — a UMA PÁGINA do comprador (GUC, herança, portão)"
+git push origin main
+```
+
+**Próxima e ÚLTIMA fase: F7** — dobrar o durável no `CLAUDE.md` (§4: app
+pricing/fonte única do preço; §5: comandos `import_price_xlsx`; §6: convenção
+"preço = admin + parceiro") e promover este arquivo de plano a **bíblia
+técnica** do sistema de preços.

@@ -702,6 +702,115 @@ class BenchAndLotPricingTests(TestCase):
             self.assertContains(resp, 'US$ 30')                 # 5 × $6
 
 
+class PartnerDashboardTests(TestCase):
+    """F6 — /partner/: gate do parceiro, lançadeira, herdados, save e isolamento.
+    Auditoria (updated_by/last_updated) GRAVADA mas NUNCA exibida (§7)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from tenancy.models import Membership
+        cls.company = Company.objects.create(name='P6Co', slug='p6co')
+        cls.buyer = Buyer.all_companies.create(company=cls.company,
+                                               name='Wuquan P6', slug='wuquan-p6')
+        samsung = Brand.objects.create(name='Samsung P6', code='SAMP6')
+        sk = Brand.objects.create(name='SK Hynix P6', code='SKP6')
+        cls.l_samsung = PriceList.all_companies.create(buyer=cls.buyer, brand=samsung)
+        cls.l_sk = PriceList.all_companies.create(buyer=cls.buyer, brand=sk,
+                                                  inherits_from=cls.l_samsung)
+        Price.all_companies.create(
+            price_list=cls.l_samsung, kind='emmc', gen='', tier_value=Decimal('64'),
+            tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('6.00'), price_max=Decimal('6.00'))
+        Price.all_companies.create(
+            price_list=cls.l_samsung, kind='ufs', gen='', tier_value=Decimal('256'),
+            tier_unit='GB', status=STATUS_UNQUOTED)
+
+        User = get_user_model()
+        cls.partner = User.objects.create_user('parceiro_p6')
+        cls.buyer.users.add(cls.partner)
+        cls.operator = User.objects.create_user('operador_p6')
+        Membership.objects.create(user=cls.operator, company=cls.company,
+                                  role='operator')
+        # Comprador de OUTRA empresa (isolamento):
+        other_co = Company.objects.create(name='P6Outra', slug='p6outra')
+        cls.other_buyer = Buyer.all_companies.create(
+            company=other_co, name='Outro P6', slug='outro-p6')
+        cls.other_partner = User.objects.create_user('parceiro_outro_p6')
+        cls.other_buyer.users.add(cls.other_partner)
+
+    def test_gate_parceiro_membro_e_anonimo(self):
+        resp = self.client.get('/partner/')
+        self.assertEqual(resp.status_code, 302)              # anônimo → login
+        self.assertIn('/login/', resp['Location'])
+        self.client.force_login(self.operator)
+        self.assertEqual(self.client.get('/partner/').status_code, 403)
+        self.client.logout()
+        self.client.force_login(self.partner)
+        resp = self.client.get('/partner/')
+        self.assertContains(resp, 'Wuquan P6')
+        self.assertContains(resp, 'Aguardando sua cotação')
+
+    def test_lancadeira_redireciona_parceiro_para_o_partner(self):
+        self.client.force_login(self.partner)
+        resp = self.client.get('/painel/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['Location'], '/partner/')
+
+    def test_lista_mostra_propria_e_herdada_sem_auditoria(self):
+        self.client.force_login(self.partner)
+        resp = self.client.get(f'/partner/lists/{self.l_sk.pk}/')
+        self.assertContains(resp, 'herdado de Samsung P6')   # linha da Samsung, cinza
+        self.assertContains(resp, 'Sobrescrever')
+        self.assertContains(resp, '6.00')                    # value unlocalized
+        self.assertNotContains(resp, 'Atualizado')           # auditoria invisível
+        self.assertNotContains(resp, 'parceiro_p6')
+
+    def test_save_cota_no_buy_e_volta_a_aguardando(self):
+        self.client.force_login(self.partner)
+        url = f'/partner/save/{self.l_sk.pk}/'
+        key = dict(kind='emmc', gen='', tier_value='64', tier_unit='GB')
+        # 1) sobrescrever herdada com faixa → linha PRÓPRIA quoted, data=hoje
+        self.client.post(url, {**key, 'price_min': '5.50', 'price_max': '6.50'})
+        own = Price.all_companies.get(price_list=self.l_sk, kind='emmc')
+        self.assertEqual((own.price_min, own.price_max),
+                         (Decimal('5.50'), Decimal('6.50')))
+        self.assertEqual(own.status, STATUS_QUOTED)
+        self.assertEqual(own.quote_date, date.today())
+        self.assertEqual(own.updated_by, self.partner)       # gravado, não exibido
+        # 2) não compro → limpa valores
+        self.client.post(url, {**key, 'no_buy': 'on'})
+        own.refresh_from_db()
+        self.assertEqual(own.status, STATUS_NO_BUY)
+        self.assertIsNone(own.price_min)
+        # 3) vazio → aguardando
+        self.client.post(url, {**key})
+        own.refresh_from_db()
+        self.assertEqual(own.status, STATUS_UNQUOTED)
+
+    def test_save_invalido_nao_grava(self):
+        self.client.force_login(self.partner)
+        url = f'/partner/save/{self.l_samsung.pk}/'
+        antes = Price.all_companies.get(price_list=self.l_samsung, kind='emmc')
+        resp = self.client.post(url, dict(kind='emmc', gen='', tier_value='64',
+                                          tier_unit='GB', price_min='9.00',
+                                          price_max='2.00'), follow=True)
+        self.assertContains(resp, 'não pode exceder')        # msg do portão
+        depois = Price.all_companies.get(price_list=self.l_samsung, kind='emmc')
+        self.assertEqual(depois.price_min, antes.price_min)  # intacto
+
+    def test_isolamento_entre_compradores(self):
+        self.client.force_login(self.other_partner)
+        self.assertEqual(
+            self.client.get(f'/partner/lists/{self.l_samsung.pk}/').status_code, 404)
+        resp = self.client.post(f'/partner/save/{self.l_samsung.pk}/',
+                                dict(kind='emmc', gen='', tier_value='64',
+                                     tier_unit='GB', price_min='1.00',
+                                     price_max='1.00'))
+        self.assertEqual(resp.status_code, 404)
+        row = Price.all_companies.get(price_list=self.l_samsung, kind='emmc')
+        self.assertEqual(row.price_min, Decimal('6.00'))     # intocado
+
+
 class PricingRLSTests(TransactionTestCase):
     """Camada B no pricing (espelho do estoque.RLSHandshakeTests): SQL CRU
     respeita as policies das tabelas de preço — nem query bugada cruza empresa.

@@ -1,0 +1,73 @@
+{% comment %}
+  Base do dashboard do COMPRADOR (F6 — PRECIFICACAO §7.1). Standalone de
+  propósito: o parceiro não compartilha o chrome do app da empresa (nada de
+  lotes/estoque no header dele). CSS puro inline (convenção do projeto).
+  ⚠ NUNCA exibir updated_by/last_updated aqui — auditoria é só do admin (§7).
+{% endcomment %}<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>{% block title %}Preços{% endblock %} · WhatTheChip</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+           background:#f4f4f4; color:#161616; }
+    .ptn-header { display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+                  background:#161616; color:#fff; padding:14px 24px; }
+    .ptn-header a { color:#78a9ff; text-decoration:none; font-weight:600; }
+    .ptn-brand { font-weight:700; letter-spacing:.02em; }
+    .ptn-buyer { font-family:'IBM Plex Mono',monospace; font-size:13px;
+                 background:#393939; padding:3px 10px; border-radius:4px; }
+    .ptn-main { max-width:1080px; margin:0 auto; padding:26px 24px 60px; }
+    .ptn-msg { padding:12px 16px; margin-bottom:14px; border-left:4px solid;
+               background:#fff; font-size:14px; }
+    .ptn-msg--success { border-color:#198038; }
+    .ptn-msg--error   { border-color:#da1e28; }
+    .ptn-card { background:#fff; border:1px solid #e0e0e0; padding:20px 22px;
+                margin-bottom:18px; }
+    table.ptn-table { width:100%; border-collapse:collapse; background:#fff; }
+    .ptn-table th { text-align:left; font-size:11px; letter-spacing:.08em;
+                    text-transform:uppercase; color:#6f6f6f; padding:10px 10px;
+                    border-bottom:2px solid #e0e0e0; }
+    .ptn-table td { padding:8px 10px; border-bottom:1px solid #eee;
+                    font-size:14px; vertical-align:middle; }
+    .ptn-row--inherited td { background:#fafafa; color:#8d8d8d; }
+    .ptn-tag { display:inline-block; font-size:11px; font-weight:700;
+               padding:2px 8px; border-radius:10px; }
+    .ptn-tag--pending  { background:#fff1c2; color:#8a6d00; }
+    .ptn-tag--nobuy    { background:#ffd7d9; color:#a2191f; }
+    .ptn-tag--quoted   { background:#defbe6; color:#0e6027; }
+    .ptn-tag--inherited{ background:#e8e8e8; color:#525252; }
+    .ptn-input { width:88px; padding:6px 8px; border:1px solid #8d8d8d;
+                 font-family:'IBM Plex Mono',monospace; font-size:14px; }
+    .ptn-btn { padding:7px 14px; border:none; background:#0f62fe; color:#fff;
+               font-weight:600; font-size:13px; cursor:pointer; }
+    .ptn-btn--ghost { background:#fff; color:#161616; border:1px solid #8d8d8d; }
+    .ptn-kpi { display:inline-flex; flex-direction:column; gap:4px; padding:16px 22px;
+               background:#fff; border:1px solid #e0e0e0; min-width:170px; }
+    .ptn-kpi b { font-size:30px; font-family:'IBM Plex Mono',monospace; }
+  </style>
+</head>
+<body>
+  <header class="ptn-header">
+    <span class="ptn-brand">WhatTheChip · Preços</span>
+    <span class="ptn-buyer">{{ buyer.name }}</span>
+    <span style="flex:1"></span>
+    <a href="{% url 'pricing:partner_home' %}">Início</a>
+    <form method="post" action="{% url 'logout' %}" style="margin:0;">
+      {% csrf_token %}
+      <button type="submit" class="ptn-btn ptn-btn--ghost" style="color:#fff;border-color:#8d8d8d;background:transparent;">Sair</button>
+    </form>
+  </header>
+  <main class="ptn-main">
+    {% if messages %}
+      {% for m in messages %}
+        <div class="ptn-msg ptn-msg--{{ m.tags }}">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

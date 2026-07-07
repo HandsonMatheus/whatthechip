@@ -40,6 +40,20 @@ def role_required(min_role: str):
                 return redirect_to_login(request.get_full_path())
             membership = getattr(request, 'membership', None)
             if membership is None:
+                # F6 (PRECIFICACAO §7.1): conta de COMPRADOR é externa — o
+                # vínculo é Buyer.users, não Membership. Em vez de 403, a
+                # lançadeira (/painel/) e qualquer rota de estoque mandam o
+                # parceiro pro dashboard DELE. Import lazy: tenancy não
+                # depende do pricing no load do app.
+                try:
+                    from pricing.models import Buyer
+                    _e_comprador = Buyer.all_companies.filter(
+                        users=request.user, active=True).exists()
+                except Exception:
+                    _e_comprador = False
+                if _e_comprador:
+                    from django.shortcuts import redirect
+                    return redirect('/partner/')
                 raise PermissionDenied(
                     'Sua conta não está vinculada a nenhuma empresa ativa. '
                     'Fale com o administrador.')
