@@ -195,6 +195,131 @@ class PricingPghistoryTests(TestCase):
         self.assertGreaterEqual(Ev.objects.filter(pgh_obj=p.pk).count(), 2)
 
 
+class ImportPriceXlsxTests(TestCase):
+    """F4 — o import da planilha do comprador: dry-run, conversão RMB→USD,
+    colapso eMCP, 3 estados, normalização de marca, idempotência e conflito."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company = Company.objects.create(name='ImpCo', slug='imp-f4')
+        Brand.objects.create(name='Samsung', code='SAM4')
+        Brand.objects.create(name='Toshiba-Kioxia', code='TXK4')
+        Brand.objects.create(name='Rayson', code='RSN4')
+
+    def _make_xlsx(self, conflict=False, unknown_brand=False):
+        import openpyxl
+        import tempfile
+        wb = openpyxl.Workbook()
+        wb.remove(wb.active)
+
+        def sheet(name, rows):
+            ws = wb.create_sheet(name)
+            ws['A1'] = f'{name} — chip sell price (per unit)'
+            ws['A2'], ws['B2'] = 'Exchange rate  1 RMB =', 0.15
+            ws.append(['Brand', 'Type', 'Subtype', 'Capacity', 'Price (USD)',
+                       '★Price (RMB)', '★Quote date', 'Source', 'Notes'])
+            for r in rows:
+                ws.append(r)
+
+        sheet('Samsung', [
+            ['Samsung', 'eMMC', '—', '64GB', None, 40, '2026-06-29 06:57:36', 'mercado', ''],
+            ['Samsung', 'eMCP', 'LPDDR4X', '64+4', None, '90-110', None, '', ''],
+            ['Samsung', 'eMCP', 'LPDDR4X', '64+3', None,
+             '100-120' if conflict else '90-110', None, '', ''],
+            # combo VAZIO na mesma faixa: cotado vence célula-por-preencher
+            # (caso real da aba SK Hynix — NÃO é conflito):
+            ['Samsung', 'eMCP', 'LPDDR4X', '64+6', None, None, None, '', ''],
+            ['Samsung', 'GDDR', 'GDDR5', '8Gb', None, 'NO', None, '', ''],
+            ['Samsung', 'UFS', '—', '256GB', None, None, None, '', ''],
+            ['Samsung', 'DDR', 'DDR3', '2GB', None, 3, None, '', ''],  # unidade ERRADA → pulada
+        ])
+        sheet('Toshiba Kioxia', [
+            ['Toshiba/Kioxia', 'eMMC', '—', '16GB', None, 15, None, '', ''],
+        ])
+        sheet('Other Brands', [
+            ['', 'LPDDR', 'LPDDR4', '2GB', None, 13, None, '', ''],
+            ['Rayson', 'eMMC', '—', '8GB', None, 10, None, '', ''],
+        ])
+        if unknown_brand:
+            sheet('Marswell', [['Marswell', 'eMMC', '—', '8GB', None, 10, None, '', '']])
+        ws = wb.create_sheet('Instructions')
+        ws['A1'] = 'regras'
+
+        f = tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False)
+        wb.save(f.name)
+        return f.name
+
+    def _run(self, path, commit=False):
+        from io import StringIO
+        from django.core.management import call_command
+        from tenancy.scope import set_current_company
+        out = StringIO()
+        try:
+            call_command('import_price_xlsx', path, buyer='wuquan',
+                         commit=commit, stdout=out)
+        finally:
+            # scope_command_to_company seta o contextvar do PROCESSO (em uso
+            # real o comando termina e o processo morre); no runner de testes
+            # ele vazaria para o teste seguinte — reset explícito.
+            set_current_company(None)
+        return out.getvalue()
+
+    def test_dry_run_nao_grava_nada(self):
+        out = self._run(self._make_xlsx())
+        self.assertIn('DRY-RUN', out)
+        self.assertIn('pulada', out)                       # DDR com GB (unidade errada)
+        self.assertEqual(Buyer.all_companies.count(), 0)
+        self.assertEqual(Price.all_companies.count(), 0)
+
+    def test_commit_grava_converte_e_colapsa(self):
+        out = self._run(self._make_xlsx(), commit=True)
+        self.assertIn('COMMIT', out)
+        buyer = Buyer.all_companies.get(slug='wuquan')
+        self.assertEqual(buyer.company, self.company)
+
+        P = Price.all_companies
+        emmc = P.get(kind='emmc', tier_value=Decimal('64'))
+        self.assertEqual((emmc.price_min, emmc.price_max),
+                         (Decimal('6.00'), Decimal('6.00')))   # 40 RMB × 0.15
+        self.assertEqual(str(emmc.quote_date), '2026-06-29')
+        emcp = P.get(kind='emcp')                              # 64+4 e 64+3 → UMA linha
+        self.assertEqual((emcp.price_min, emcp.price_max),
+                         (Decimal('13.50'), Decimal('16.50')))
+        self.assertEqual(P.get(kind='gddr').status, STATUS_NO_BUY)
+        self.assertEqual(P.get(kind='ufs').status, STATUS_UNQUOTED)
+        # Normalização de marca: Toshiba/Kioxia → Toshiba-Kioxia.
+        toshiba = P.get(kind='emmc', tier_value=Decimal('16'))
+        self.assertEqual(toshiba.price_list.brand.name, 'Toshiba-Kioxia')
+        # Other Brands: linha sem marca → lista GENÉRICA; Rayson → lista própria.
+        generica = P.get(kind='lpddr')
+        self.assertIsNone(generica.price_list.brand)
+        self.assertEqual(generica.price_min, Decimal('1.95'))  # 13 × 0.15
+        rayson = P.get(kind='emmc', tier_value=Decimal('8'))
+        self.assertEqual(rayson.price_list.brand.name, 'Rayson')
+        # A linha DDR de unidade errada não entrou:
+        self.assertEqual(P.filter(kind='ddr').count(), 0)
+
+    def test_idempotente_re_rodar_nao_duplica(self):
+        path = self._make_xlsx()
+        self._run(path, commit=True)
+        antes = Price.all_companies.count()
+        out = self._run(path, commit=True)
+        self.assertEqual(Price.all_companies.count(), antes)
+        self.assertIn('criados: 0', out)
+
+    def test_conflito_emcp_aborta_sem_gravar(self):
+        from django.core.management.base import CommandError
+        with self.assertRaises(CommandError):
+            self._run(self._make_xlsx(conflict=True), commit=True)
+        self.assertEqual(Price.all_companies.count(), 0)
+
+    def test_marca_desconhecida_aborta(self):
+        from django.core.management.base import CommandError
+        with self.assertRaises(CommandError):
+            self._run(self._make_xlsx(unknown_brand=True), commit=True)
+        self.assertEqual(Price.all_companies.count(), 0)
+
+
 def _r(**kw):
     """Dict no formato que o classify() emite (com as specs numéricas da F0)."""
     base = dict(chip_type='', subtype='', brand='', capacity=None,

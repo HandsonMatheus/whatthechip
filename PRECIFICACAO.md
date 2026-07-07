@@ -5,8 +5,9 @@
 > partir do `PROMPT_PRECOS.md` e da planilha `wuquanprices.xlsx` (comprador Wuquan).
 > A fundação (`PLANO_MULTITENANT.md`, T1–T4) está construída e em produção — a
 > precificação roda em cima dela. **Ver §12 (diário de execução)** para o que já
-> existe e o runbook de validação de cada fase. **F2 e F3 CONSTRUÍDAS
-> (2026-07-07, suíte 266/266)** — próxima fase: **F4** (`import_price_xlsx`).
+> existe e o runbook de validação de cada fase. **F2, F3 e F4 CONSTRUÍDAS
+> (2026-07-07, suíte 271/271; import validado contra a planilha REAL: 314
+> preços, zero conflitos)** — próxima fase: **F5** (preço no card de busca).
 > Quando implementado, este arquivo vira a **bíblia técnica do sistema de preços**
 > (mesmo papel do `RENTABILIDADE.md` para rentabilidade). A aba `Instructions` da
 > planilha já aponta para este documento.
@@ -368,7 +369,7 @@ numéricos para máquina".
 | **F1 (=T1)** | **ENTREGUE PELO PROJETO MULTI-TENANT** (sessão dedicada, `PLANO_MULTITENANT.md` T1/T2): `Company`+`Branch`+`Membership` (admin/gerente/operador), redirect por papel, numeração de lote atômica | checklist de handoff (§15 de lá) completo |
 | **F2 ✅** (2026-07-07) | app `pricing/`: modelos §3 + migrations (0001 + 0002-RLS) + pghistory + admin básico (§12.3) | suíte 256 OK no agente; migrate + testes Postgres no dono = runbook §12.3 |
 | **F3 ✅** (2026-07-07) | `pricing/engine.py`: `price()`/`price_lot()` + goldens com os números da planilha real (§12.4) | suíte 266 OK no agente; runbook §12.4 |
-| **F4** | `import_price_xlsx` + fixture de teste + **dry-run na planilha real** (dono roda o `--commit` local) | relatório do dry-run revisado pelo dono |
+| **F4 ✅** (2026-07-07) | `import_price_xlsx` + testes + **dry-run E commit validados na planilha real** no sandbox (314 preços; §12.5) | dono roda dry-run + `--commit` no banco dele = runbook §12.5 |
 | **F5** | preço no card de busca (gate por papel admin) | suíte verde · teste do gate por papel |
 | **F6** | dashboard `/partner/` (§7.1: listas, herdados, unquoted, permissões) | teste de isolamento entre buyers |
 | **F7** | docs: este arquivo atualizado p/ bíblia + seção no CLAUDE.md (§4 e §5: comandos) | — |
@@ -607,7 +608,50 @@ git commit -m "pricing F3: price()/price_lot() — chave, herança, cenários, s
 git push origin main
 ```
 
-**Próxima fase: F4** — `import_price_xlsx <arquivo> --buyer wuquan` (§6):
-dry-run default, normalização de marca, RMB→USD Decimal, colapso eMCP por
-faixa com validação de conflito, 3 estados, relatório. Depois dela o dono roda
-o import real da `wuquanprices.xlsx` e o sistema nasce com os preços vivos.
+### 12.5 F4 — construída em 2026-07-07 (suíte 271/271; validada na planilha REAL)
+
+**O que existe:** `pricing/management/commands/import_price_xlsx.py` — todas as
+regras do §6 encodadas (normalização de marca com aliases Toshiba; câmbio da B2
+por aba, RMB→USD Decimal ROUND_HALF_UP; faixa/`NO`/vazio → 3 estados; colapso
+eMCP por faixa; coluna A vazia herda a aba, marca na coluna A ganha lista
+própria; upsert idempotente pela chave; `Instructions`/`Sheet1` ignoradas;
+linha malformada = pulada com motivo; conflito/câmbio-ausente/marca-sem-cadastro
+= ABORTA sem gravar; escopo via `scope_command_to_company`). +5 testes com
+fixture xlsx gerada em memória.
+
+**Prova de fogo no sandbox (banco descartável):** dry-run e `--commit` contra a
+`wuquanprices.xlsx` REAL → **314 preços** (227 cotadas · 6 não-compra · 81
+aguardando · 31 combos eMCP colapsados · 9 listas · zero conflitos) e o ciclo
+completo funcionando: `price()` devolveu eMMC Samsung 64GB = **$6.00**, eMCP SK
+LPDDR4X 64GB = **13.50–16.50** (mid 15.00), DDR4 8Gb Nanya = **$1.50** — os
+números exatos da planilha.
+
+**Refino descoberto na planilha real:** a aba SK tem combos VAZIOS na mesma
+faixa de combos cotados (64+4 cotado, 64+6 vazio). O colapso agora aplica
+"informação vence ausência" (cotado > não-compra > vazio); **conflito de
+verdade** = cotado×cotado divergente ou cotado×NO — esses continuam abortando.
+
+**Runbook do dono (F4):**
+
+```bash
+# local:
+python manage.py test pricing --settings=core.settings_test                  # 32 esperados
+python manage.py test chips estoque tenancy pricing --settings=core.settings_test  # 271
+python manage.py import_price_xlsx wuquanprices.xlsx --buyer wuquan          # DRY-RUN: revisar
+python manage.py import_price_xlsx wuquanprices.xlsx --buyer wuquan --commit # grava LOCAL
+# admin local: Listas de preços → configurar herança do Wuquan:
+#   · lista GENÉRICA  → herda de → Nanya      (o "curinga" DRAM, agora dado)
+#   (SK importou linhas próprias — espelho fica a critério futuro)
+git add pricing/ PRECIFICACAO.md
+git commit -m "pricing F4: import_price_xlsx — a planilha vira banco (e se aposenta)"
+git push origin main
+# produção (a noite do deploy): backup Render Export →
+export DATABASE_URL="postgresql://…render.com…"
+python manage.py import_price_xlsx wuquanprices.xlsx --buyer wuquan          # dry-run em prod
+python manage.py import_price_xlsx wuquanprices.xlsx --buyer wuquan --commit
+python manage.py guard_catalog
+```
+
+**Próxima fase: F5** — preço no card de busca `/chips/`, gate por papel ADMIN
+(`tenancy.access`; gerente/operador seguem sem ver preço). Pequena: uma chamada
+a `price()` na view + bloco no template.
