@@ -43,11 +43,21 @@ _KIND_ORDER = {k: i for i, (k, _) in enumerate(KIND_CHOICES)}
 _KIND_LABEL = dict(KIND_CHOICES)
 
 
+def _unseen_decisions(buyer):
+    """🔔 Decisões (aprovado/rejeitado) que o parceiro ainda não viu."""
+    return PriceChangeRequest.all_companies.filter(
+        price__price_list__buyer=buyer,
+        review_status__in=(PriceChangeRequest.REVIEW_APPROVED,
+                           PriceChangeRequest.REVIEW_REJECTED),
+        seen_by_partner=False)
+
+
 def partner_required(view_func):
     """Gate do parceiro: login + vínculo `Buyer.users` ativo (v1: o primeiro).
 
     Roda a view sob `company_scope(buyer.company)` — Camada A (contextvar) e
-    Camada B (GUC do RLS) valem para a request inteira do parceiro."""
+    Camada B (GUC do RLS) valem para a request inteira do parceiro. Também
+    anexa `request.partner_unseen` (badge 🔔 em toda página do parceiro)."""
     @wraps(view_func)
     def _wrapped(request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -61,7 +71,9 @@ def partner_required(view_func):
         request.buyer = buyer
         if buyer.company_id:
             with company_scope(buyer.company):
+                request.partner_unseen = _unseen_decisions(buyer).count()
                 return view_func(request, *args, **kwargs)
+        request.partner_unseen = _unseen_decisions(buyer).count()
         return view_func(request, *args, **kwargs)   # comprador de plataforma (futuro)
     return _wrapped
 
@@ -151,6 +163,36 @@ def partner_list(request, list_pk):
         'f_kind': f_kind, 'f_state': f_state,
         'kind_choices': KIND_CHOICES, 'state_choices': STATUS_CHOICES,
         'nav_lists': _lists_with_stats(request.buyer), 'active_pk': pl.pk,
+    })
+
+
+@partner_required
+def partner_notifications(request):
+    """🔔 As decisões do WhatTheChip sobre os pedidos do comprador (aprovado/
+    rejeitado), mais recentes primeiro. Abrir a página marca tudo como visto
+    (zera o badge). Sem nome de revisor — a decisão é 'do WhatTheChip'."""
+    buyer = request.buyer
+    itens = list(
+        PriceChangeRequest.all_companies
+        .filter(price__price_list__buyer=buyer,
+                review_status__in=(PriceChangeRequest.REVIEW_APPROVED,
+                                   PriceChangeRequest.REVIEW_REJECTED))
+        .select_related('price__price_list__brand')
+        .order_by('-reviewed_at')[:50])
+    for it in itens:
+        p = it.price
+        marca = (p.price_list.brand.name if p.price_list.brand_id
+                 else 'Outras marcas')
+        faixa = f'{p.tier_value.normalize():f}{p.tier_unit}'
+        it.resumo = f'{marca} · {_KIND_LABEL.get(p.kind, p.kind)} ' \
+                    f'{p.gen + " " if p.gen else ""}{faixa}'
+        it.novo = (f'US$ {it.new_price}' if it.new_status == STATUS_QUOTED
+                   else dict(STATUS_CHOICES).get(it.new_status, it.new_status))
+
+    _unseen_decisions(buyer).update(seen_by_partner=True)   # zera o badge
+    return render(request, 'pricing/partner_notifications.html', {
+        'buyer': buyer, 'itens': itens,
+        'nav_lists': _lists_with_stats(buyer), 'active_pk': 'notifications',
     })
 
 

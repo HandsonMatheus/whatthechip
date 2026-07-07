@@ -830,6 +830,24 @@ simplicidade venceu. Implementação REVERSÍVEL:
 
 ⚠ Rodar `sync_index_page` de novo (o JS da home mudou).
 
+### 12.12 🔔 Notificações do parceiro (dono, 2026-07-07; suíte 286/286)
+
+Fechando o ciclo da moderação: o comprador fica sabendo da decisão.
+
+- **Sem modelo novo:** o feed são os próprios `PriceChangeRequest` decididos
+  (aprovado/rejeitado) + o campo `seen_by_partner` (migração 0009). Um usuário
+  do comprador abrir a página = o comprador viu (v1).
+- **Botão 🔔 Notificações** no header do /partner/ (toda página), com bolha
+  vermelha de não-lidas — a contagem é anexada pelo `partner_required`
+  (`request.partner_unseen`, calculada dentro do `company_scope`).
+- **`/partner/notifications/`**: as últimas 50 decisões (✔ Aprovado / ✘
+  Rejeitado, chip, mudança pedida, quando) — abrir a página zera o badge. Sem
+  nome de revisor (a decisão é "do WhatTheChip"; auditoria interna segue só no
+  admin).
+
+**Runbook:** `migrate` (0009) → suíte (286) → smoke: aprovar/rejeitar no admin
+→ badge aparece pro parceiro → abrir 🔔 zera.
+
 ### 12.11 MODERAÇÃO das mudanças do comprador (dono, 2026-07-07; suíte 286/286)
 
 **Feature-chave de alinhamento: NADA que o comprador edita vale na hora.**

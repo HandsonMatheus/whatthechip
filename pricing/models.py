@@ -481,6 +481,10 @@ class PriceChangeRequest(models.Model):
                                     on_delete=models.SET_NULL, null=True, blank=True,
                                     related_name='+', verbose_name='Revisado por')
     reviewed_at = models.DateTimeField(null=True, blank=True, verbose_name='Revisado em')
+    #: 🔔 Notificações do parceiro: decisão (aprovado/rejeitado) ainda não vista
+    #: no /partner/notifications/. Marcado True quando o parceiro abre a página
+    #: (um usuário do comprador vê = o comprador viu — v1).
+    seen_by_partner = models.BooleanField(default=False, verbose_name='Visto pelo parceiro')
 
     objects       = CompanyScopedManager()
     all_companies = models.Manager()

@@ -1,0 +1,37 @@
+{% extends "pricing/partner_base.html" %}
+{% block title %}Notificações{% endblock %}
+{% block content %}
+
+<h1 style="font-weight:300;font-size:28px;margin:0 0 6px;">Notificações</h1>
+<p style="font-size:13px;color:#6f6f6f;margin:0 0 18px;">
+  As decisões do WhatTheChip sobre as suas mudanças de preço — aprovadas passam
+  a valer na hora; rejeitadas mantêm o valor anterior.
+</p>
+
+<div class="ptn-card" style="padding:0;">
+  <table class="ptn-table">
+    <thead>
+      <tr><th>Decisão</th><th>Chip</th><th>Mudança pedida</th><th>Decidido em</th></tr>
+    </thead>
+    <tbody>
+      {% for it in itens %}
+      <tr>
+        <td>
+          {% if it.review_status == 'approved' %}
+            <span class="ptn-tag ptn-tag--quoted">✔ Aprovado</span>
+          {% else %}
+            <span class="ptn-tag ptn-tag--nobuy">✘ Rejeitado</span>
+          {% endif %}
+        </td>
+        <td style="font-weight:600;">{{ it.resumo }}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;">{{ it.novo }}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#525252;">{{ it.reviewed_at|date:"d/m/y H:i" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" style="color:#6f6f6f;padding:18px;">Nenhuma decisão ainda — suas mudanças enviadas aparecem aqui quando forem revisadas.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

@@ -903,6 +903,18 @@ class PartnerDashboardTests(TestCase):
         self.assertFalse(PriceChangeRequest.all_companies.filter(
             price=row, review_status='pending').exists())
 
+        # 6) 🔔 NOTIFICAÇÕES: as 2 decisões (aprovada + rejeitada) viram badge…
+        resp = self.client.get('/partner/')
+        self.assertContains(resp, 'Notificações')
+        self.assertEqual(resp.wsgi_request.partner_unseen, 2)
+        # …a página lista as decisões e ZERA o badge ao abrir:
+        resp = self.client.get('/partner/notifications/')
+        self.assertContains(resp, '✔ Aprovado')
+        self.assertContains(resp, '✘ Rejeitado')
+        self.assertContains(resp, 'US$ 5.75')
+        resp = self.client.get('/partner/')
+        self.assertEqual(resp.wsgi_request.partner_unseen, 0)
+
     def test_save_invalido_nao_grava(self):
         self.client.force_login(self.partner)
         url = f'/partner/save/{self.l_samsung.pk}/'
