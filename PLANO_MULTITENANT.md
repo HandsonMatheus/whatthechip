@@ -635,6 +635,16 @@ T5/T6 (fila no app + onboarding) antes do 2º cliente REAL logar.
   (estoque não é rastreado) — se um dia forem rastreadas, as policies entram
   junto (armadilha §6.2.3 continua mapeada). BYPASSRLS não foi necessário:
   data-migration futura usa `app.platform` ou `company_scope`.
+- **Armadilha §6.2.1 CONFIRMADA na prática (2026-07-06):** o dev local conecta
+  como role **SUPERUSER** (usuário da máquina) → RLS é bypassado por completo,
+  até com FORCE — o 1º run do handshake achou 2 linhas sem GUC. O
+  `RLSHandshakeTests` agora detecta `rolsuper` e troca para um role de
+  sondagem sem-super (membro do role original) durante as asserções, então a
+  prova vale mesmo no dev. Consequências: em DEV a proteção efetiva é a
+  Camada A (manager fail-closed) — o RLS local só "morde" se você criar um
+  role não-super para a app; em PROD (Render) o role da app NÃO é superuser
+  e o RLS vale integralmente. A regra do plano segue: a app nunca deve
+  conectar como super.
 
 **Runbook do dono (T4):** local → `python manage.py migrate` (0014 liga o RLS)
 → `python manage.py test estoque.tests.RLSHandshakeTests` (prova Camada B) →
