@@ -79,10 +79,14 @@ _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
 }
 
 STATUS_QUOTED, STATUS_NO_BUY, STATUS_UNQUOTED = 'quoted', 'no_buy', 'unquoted'
+STATUS_NOT_MADE = 'not_made'
 STATUS_CHOICES = [
     (STATUS_QUOTED,   'Cotado'),
-    (STATUS_NO_BUY,   'Não compra'),         # o "NO" da planilha
-    (STATUS_UNQUOTED, 'Aguardando cotação'), # a "célula amarela"
+    (STATUS_UNQUOTED, 'Não cotado'),         # a "célula amarela" (aguardando)
+    (STATUS_NOT_MADE, 'Não fabricado'),      # a marca não produz este combo
+                                             # (grid unificado, dono 2026-07-07)
+    (STATUS_NO_BUY,   'Não compro'),         # o "NO" da planilha: FABRICA, mas
+                                             # o comprador não quer (≠ not_made)
 ]
 
 
@@ -287,7 +291,8 @@ class Price(models.Model):
                                    condition=Q(kind__in=sorted(KINDS))),
             models.CheckConstraint(
                 name='price_status_vocab',
-                condition=Q(status__in=[STATUS_QUOTED, STATUS_NO_BUY, STATUS_UNQUOTED])),
+                condition=Q(status__in=[STATUS_QUOTED, STATUS_NO_BUY,
+                                        STATUS_UNQUOTED, STATUS_NOT_MADE])),
             models.CheckConstraint(name='price_tier_unit_vocab',
                                    condition=Q(tier_unit__in=[UNIT_GB, UNIT_GBIT])),
             models.CheckConstraint(name='price_tier_positive',
@@ -351,8 +356,8 @@ class Price(models.Model):
                                        'faixa — informe UM valor (mín = máx).')
         else:
             if self.price_min is not None or self.price_max is not None:
-                errors['status'] = ('Sem-preço (não compra / aguardando) não '
-                                    'carrega valor — limpe os campos USD.')
+                errors['status'] = ('Sem-preço (não cotado / não fabricado / '
+                                    'não compro) não carrega valor — limpe o USD.')
         if errors:
             raise ValidationError(errors)
 
@@ -431,6 +436,122 @@ class LotPricing(models.Model):
             self.company_id = self.lot.company_id      # herda do lote (RLS local)
         self.full_clean(validate_unique=False, validate_constraints=False)
         return super().save(*args, **kwargs)
+
+
+@pghistory.track()  # a trilha da moderação também é auditável
+class PriceChangeRequest(models.Model):
+    """F6.1 — MODERAÇÃO (dono, 2026-07-07): mudança feita pelo COMPRADOR no
+    /partner/ **não vale na hora** — vira um PEDIDO pendente que o dono
+    aprova/rejeita no Django admin. Só a aprovação aplica no `Price` (e aí sim
+    reflete em card/bancada/valoração). É o mesmo padrão four-eyes do catálogo
+    (KnownPart.review_status): parceiro propõe, plataforma dispõe.
+
+    Regra de unicidade: no máximo UM pedido pendente por linha — o parceiro
+    editar de novo ATUALIZA o pedido pendente (não empilha)."""
+
+    REVIEW_PENDING, REVIEW_APPROVED, REVIEW_REJECTED = 'pending', 'approved', 'rejected'
+    REVIEW_CHOICES = [(REVIEW_PENDING, 'Pendente'),
+                      (REVIEW_APPROVED, 'Aprovado'),
+                      (REVIEW_REJECTED, 'Rejeitado')]
+
+    price = models.ForeignKey(Price, on_delete=models.CASCADE,
+                              related_name='change_requests', verbose_name='Linha')
+    # Denormalizada (RLS exige coluna local — padrão da casa).
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+
+    # O PEDIDO (para onde o comprador quer levar a linha):
+    new_status = models.CharField(max_length=10, choices=STATUS_CHOICES,
+                                  verbose_name='Novo estado')
+    new_price = models.DecimalField(max_digits=8, decimal_places=2,
+                                    null=True, blank=True, verbose_name='Novo USD')
+    # Snapshot do ANTES (para o admin decidir vendo o delta):
+    old_status = models.CharField(max_length=10, verbose_name='Estado anterior')
+    old_price = models.DecimalField(max_digits=8, decimal_places=2,
+                                    null=True, blank=True, verbose_name='USD anterior')
+
+    review_status = models.CharField(max_length=10, choices=REVIEW_CHOICES,
+                                     default=REVIEW_PENDING, verbose_name='Revisão')
+    requested_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                     on_delete=models.SET_NULL, null=True, blank=True,
+                                     related_name='+', verbose_name='Pedido por')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Pedido em')
+    reviewed_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                    on_delete=models.SET_NULL, null=True, blank=True,
+                                    related_name='+', verbose_name='Revisado por')
+    reviewed_at = models.DateTimeField(null=True, blank=True, verbose_name='Revisado em')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Mudança de preço (revisão)'
+        verbose_name_plural = 'Mudanças de preço (revisão)'
+        ordering = ['-created_at']
+        base_manager_name = 'all_companies'
+        constraints = [
+            models.UniqueConstraint(fields=['price'],
+                                    condition=Q(review_status='pending'),
+                                    name='one_pending_per_price'),
+            models.CheckConstraint(
+                name='pcr_review_vocab',
+                condition=Q(review_status__in=['pending', 'approved', 'rejected'])),
+            # Pedido coerente: cotado ⇒ tem USD; demais ⇒ sem USD (nunca 0).
+            models.CheckConstraint(
+                name='pcr_quoted_has_value',
+                condition=~Q(new_status=STATUS_QUOTED) | Q(new_price__isnull=False)),
+            models.CheckConstraint(
+                name='pcr_unpriced_is_null',
+                condition=Q(new_status=STATUS_QUOTED) | Q(new_price__isnull=True)),
+        ]
+
+    def __str__(self):
+        alvo = (f'US$ {self.new_price}' if self.new_status == STATUS_QUOTED
+                else dict(STATUS_CHOICES).get(self.new_status, self.new_status))
+        return f'{self.price} → {alvo}'
+
+    def clean(self):
+        super().clean()
+        if self.new_status == STATUS_QUOTED and self.new_price is None:
+            raise ValidationError({'new_price': 'Pedido "Cotado" exige o USD.'})
+        if self.new_status != STATUS_QUOTED and self.new_price is not None:
+            raise ValidationError({'new_price': 'Só "Cotado" carrega USD.'})
+
+    def save(self, *args, **kwargs):
+        if self.price_id and not self.company_id:
+            self.company_id = Price.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.price_id)
+        self.full_clean(validate_unique=False, validate_constraints=False)
+        return super().save(*args, **kwargs)
+
+    # ── Decisão do admin (chamada pelas actions do Django admin) ────────────
+    def approve(self, reviewer):
+        """Aplica o pedido no Price (via portão do modelo) e fecha a revisão.
+        `quote_date` = data da APROVAÇÃO (é quando passa a valer);
+        `updated_by` = quem PEDIU (o parceiro — auditoria fiel à origem)."""
+        from datetime import date as _date
+        from django.utils import timezone as _tz
+        p = self.price
+        p.status = self.new_status
+        if self.new_status == STATUS_QUOTED:
+            p.price_min = p.price_max = self.new_price
+            p.quote_date = _date.today()
+        else:
+            p.price_min = p.price_max = None
+            p.quote_date = None
+        p.updated_by = self.requested_by
+        p.save()
+        self.review_status = self.REVIEW_APPROVED
+        self.reviewed_by, self.reviewed_at = reviewer, _tz.now()
+        self.save()
+
+    def reject(self, reviewer):
+        """Rejeita: o Price fica exatamente como estava."""
+        from django.utils import timezone as _tz
+        self.review_status = self.REVIEW_REJECTED
+        self.reviewed_by, self.reviewed_at = reviewer, _tz.now()
+        self.save()
 
 
 class PricingConfig(models.Model):

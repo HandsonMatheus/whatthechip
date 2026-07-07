@@ -7,15 +7,35 @@
   <h1 style="font-weight:300;font-size:28px;margin:0;">
     {% if price_list.brand %}{{ price_list.brand.name }}{% else %}Outras marcas{% endif %}
   </h1>
-  {% if price_list.inherits_from %}
-  <span class="ptn-tag ptn-tag--inherited">herda de
-    {% if price_list.inherits_from.brand %}{{ price_list.inherits_from.brand.name }}{% else %}Outras marcas{% endif %}</span>
-  {% endif %}
 </div>
-<p style="font-size:13px;color:#6f6f6f;margin:0 0 18px;">
-  Preço em USD por chip · vazio → aguardando cotação · linhas cinzas são
-  herdadas (salvar cria o preço próprio aqui).
+<p style="font-size:13px;color:#6f6f6f;margin:0 0 14px;">
+  Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em USD.
+  {% if not price_list.brand %}Estes preços valem para toda marca que não tem
+  tabela própria.{% endif %}
 </p>
+
+{# ── Filtros (GET; o onchange submete) ─────────────────────────── #}
+<form method="get" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">
+  <label style="font-size:12px;font-weight:600;color:#6f6f6f;">Tipo
+    <select name="kind" onchange="this.form.submit()" class="ptn-input" style="width:auto;margin-left:6px;">
+      <option value="">Todos</option>
+      {% for k, label in kind_choices %}
+      <option value="{{ k }}" {% if f_kind == k %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label style="font-size:12px;font-weight:600;color:#6f6f6f;">Estado
+    <select name="state" onchange="this.form.submit()" class="ptn-input" style="width:auto;margin-left:6px;">
+      <option value="">Todos</option>
+      {% for s, label in state_choices %}
+      <option value="{{ s }}" {% if f_state == s %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  {% if f_kind or f_state %}
+  <a href="{% url 'pricing:partner_list' price_list.pk %}" style="font-size:12px;">limpar filtros</a>
+  {% endif %}
+</form>
 
 {% comment %}
   Um <form> POR LINHA sem quebrar o HTML: <form> dentro de <tr> envolvendo <td>
@@ -28,34 +48,36 @@
     <thead>
       <tr>
         <th>Tipo</th><th>Geração</th><th>Faixa</th>
-        <th>Preço US$</th><th>Não compro</th>
-        <th>Estado</th><th></th>
+        <th>Preço US$</th><th>Estado</th><th>Última atualização</th><th></th>
       </tr>
     </thead>
     <tbody>
       {% for r in rows %}
-      <tr class="{% if not r.own %}ptn-row--inherited{% endif %}">
+      <tr class="{% if r.status == 'not_made' %}ptn-row--inherited{% elif r.status == 'unquoted' %}ptn-row--unquoted{% elif r.status == 'no_buy' %}ptn-row--nobuy{% endif %}">
         <td style="font-weight:600;">{{ r.kind_label }}</td>
         <td style="font-family:'IBM Plex Mono',monospace;">{{ r.gen|default:"—" }}</td>
         <td style="font-family:'IBM Plex Mono',monospace;">{{ r.tier_value|floatformat:"-1" }}{% if r.kind == 'emcp' or r.kind == 'umcp' %}GB (NAND){% else %}{{ r.tier_unit }}{% endif %}</td>
         {% localize off %}
-        <td><input class="ptn-input" form="f{{ forloop.counter }}" type="number" step="0.01" min="0" name="price" value="{{ r.price_min|default_if_none:'' }}"></td>
+        <td><input class="ptn-input" form="f{{ forloop.counter }}" type="number" step="0.01" min="0" name="price" value="{{ r.price_min|default_if_none:'' }}" {% if r.status == 'not_made' %}disabled{% endif %}></td>
         {% endlocalize %}
-        <td style="text-align:center;"><input form="f{{ forloop.counter }}" type="checkbox" name="no_buy" {% if r.status == 'no_buy' %}checked{% endif %}></td>
         <td>
-          {% if not r.own %}
-            <span class="ptn-tag ptn-tag--inherited">herdado de {% if r.source_list.brand %}{{ r.source_list.brand.name }}{% else %}Outras marcas{% endif %}</span>
-          {% elif r.status == 'quoted' %}
-            <span class="ptn-tag ptn-tag--quoted">cotado{% if r.quote_date %} {{ r.quote_date|date:"d/m/y" }}{% endif %}</span>
-          {% elif r.status == 'no_buy' %}
-            <span class="ptn-tag ptn-tag--nobuy">não compro</span>
-          {% else %}
-            <span class="ptn-tag ptn-tag--pending">aguardando</span>
+          <select form="f{{ forloop.counter }}" name="state" class="ptn-input" style="width:auto;">
+            <option value="quoted"   {% if r.status == 'quoted' %}selected{% endif %}>Cotado</option>
+            <option value="unquoted" {% if r.status == 'unquoted' %}selected{% endif %}>Não cotado</option>
+            <option value="not_made" {% if r.status == 'not_made' %}selected{% endif %}>Não fabricado</option>
+            <option value="no_buy"   {% if r.status == 'no_buy' %}selected{% endif %}>Não compro</option>
+          </select>
+          {% if r.pending %}
+          <div style="margin-top:4px;"><span class="ptn-tag ptn-tag--review" title="Aguardando aprovação do WhatTheChip — o valor vigente ainda é o exibido.">⏳ em revisão: {% if r.pending.new_status == 'quoted' %}US$ {{ r.pending.new_price }}{% else %}{{ r.pending.get_new_status_display }}{% endif %}</span></div>
           {% endif %}
+        </td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#525252;">
+          {% if r.status == 'quoted' and r.quote_date %}{{ r.quote_date|date:"d/m/y" }}{% else %}—{% endif %}
         </td>
         <td>
           <form id="f{{ forloop.counter }}" method="post"
-                action="{% url 'pricing:partner_save' price_list.pk %}" style="margin:0;">
+                action="{% url 'pricing:partner_save' price_list.pk %}" style="margin:0;"
+                onsubmit="return confirm('Esta mudança será enviada para REVISÃO do WhatTheChip e só passa a valer após a aprovação. Confirmar o envio?');">
             {% csrf_token %}
             {% localize off %}
             <input type="hidden" name="kind"       value="{{ r.kind }}">
@@ -63,15 +85,35 @@
             <input type="hidden" name="tier_value" value="{{ r.tier_value }}">
             <input type="hidden" name="tier_unit"  value="{{ r.tier_unit }}">
             {% endlocalize %}
-            <button type="submit" class="ptn-btn{% if not r.own %} ptn-btn--ghost{% endif %}">{% if r.own %}Salvar{% else %}Sobrescrever{% endif %}</button>
+            <input type="hidden" name="f_kind"  value="{{ f_kind }}">
+            <input type="hidden" name="f_state" value="{{ f_state }}">
+            <button type="submit" class="ptn-btn">Enviar p/ revisão</button>
           </form>
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="7" style="color:#6f6f6f;padding:18px;">Lista vazia — as linhas são criadas pela equipe WhatTheChip.</td></tr>
+      <tr><td colspan="7" style="color:#6f6f6f;padding:18px;">Nenhuma linha
+        {% if f_kind or f_state %}com estes filtros{% else %}— as linhas são criadas pela equipe WhatTheChip{% endif %}.</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
+<script>
+/* Preço DESABILITADO quando o estado é "Não fabricado" (pedido do dono,
+   2026-07-07) — sincronizado ao trocar o select. Input disabled não submete,
+   e o servidor ignora preço fora de "Cotado" de qualquer forma. */
+(function () {
+  document.querySelectorAll('select[name=state]').forEach(function (sel) {
+    function sync() {
+      var f = sel.getAttribute('form');
+      var inp = document.querySelector('input[name=price][form="' + f + '"]');
+      if (inp) inp.disabled = (sel.value === 'not_made');
+    }
+    sel.addEventListener('change', sync);
+    sync();
+  });
+})();
+</script>
 
 {% endblock %}

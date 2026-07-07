@@ -11,9 +11,10 @@ Idempotente: re-rodar faz upsert pela chave (lista, kind, gen, tier).
 Regras encodadas (§6 — todas verificadas na planilha REAL):
   1. Uma aba por marca + "Other Brands" (vira a lista GENÉRICA). "Instructions"/
      "Sheet1" são ignoradas. Nome da aba → chips.Brand via normalização
-     ("Toshiba Kioxia"/"Toshiba/Kioxia" → "Toshiba-Kioxia"). Coluna A vazia →
-     marca da aba; coluna A com OUTRA marca (ex.: Rayson na Other Brands) →
-     lista própria daquela marca (criada sob demanda).
+     ("Toshiba Kioxia"/"Toshiba/Kioxia" → "Toshiba-Kioxia"). A coluna A é
+     DECORATIVA (decisão 2026-07-07): a marca da linha é sempre a da ABA — na
+     "Other Brands" tudo vira linha da genérica (nada de lista-fantasma).
+     Depois do import, rode `seed_price_grid` para unificar o grid.
   2. Preço-fonte = coluna F (RMB): número → min=max · faixa "90-110" → min/max ·
      "NO" → no_buy · vazio → unquoted. **USD = RMB × câmbio da célula B2** da
      aba (Decimal, ROUND_HALF_UP, 2 casas). A coluna E (USD) é IGNORADA.
@@ -191,8 +192,8 @@ class Command(BaseCommand):
             for i, row in enumerate(ws.iter_rows(min_row=4, values_only=True),
                                     start=4):
                 row = list(row) + [None] * (9 - len(row))
-                col_brand, col_type, col_gen, col_cap = (
-                    _clean(row[0]), _clean(row[1]), _clean(row[2]), _clean(row[3]))
+                col_type, col_gen, col_cap = (
+                    _clean(row[1]), _clean(row[2]), _clean(row[3]))
                 if not col_type and not col_cap:
                     continue                        # linha em branco/título
 
@@ -218,8 +219,10 @@ class Command(BaseCommand):
                     usd_min = (rmb_min * rate).quantize(_CENT, ROUND_HALF_UP)
                     usd_max = (rmb_max * rate).quantize(_CENT, ROUND_HALF_UP)
 
-                # Marca da LINHA: coluna A vence; vazia → a da aba (None = genérica).
-                brand_name = col_brand or tab_brand_name
+                # Marca da LINHA = a da ABA (decisão 2026-07-07): a coluna A é
+                # decorativa — na "Other Brands" TUDO é linha da GENÉRICA (nada
+                # de lista-fantasma por marca citada na coluna A, ex.: Rayson).
+                brand_name = tab_brand_name
 
                 key = (brand_name, kind, gen, tier)
                 entry = dict(

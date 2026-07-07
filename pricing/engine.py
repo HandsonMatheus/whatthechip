@@ -39,12 +39,15 @@ from decimal import ROUND_HALF_UP, Decimal
 from chips.chip_types import canonical_chip_type, is_generic, label_kind
 
 from .models import (KIND_UNIT, KINDS, Price, PriceList, PricingConfig,
-                     STATUS_NO_BUY, STATUS_QUOTED, STATUS_UNQUOTED, valid_gen)
+                     STATUS_NO_BUY, STATUS_NOT_MADE, STATUS_QUOTED,
+                     STATUS_UNQUOTED, valid_gen)
 
 # ── Status do PriceQuote (§5 do PRECIFICACAO) ──────────────────────────────────
 PRICED   = 'PRICED'     # linha cotada encontrada
 NO_BUY   = 'NO_BUY'     # linha encontrada: comprador NÃO compra (o "NO")
-UNQUOTED = 'UNQUOTED'   # linha encontrada: aguardando cotação (célula amarela)
+UNQUOTED = 'UNQUOTED'   # linha encontrada: não cotado ainda (célula amarela)
+NOT_MADE = 'NOT_MADE'   # linha encontrada: a marca NÃO FABRICA este combo —
+                        # negativa AUTORITATIVA (bloqueia fallback de propósito)
 NO_KEY   = 'NO_KEY'     # o chip não gera chave (geração/capacidade indeterminada)
 NO_ROW   = 'NO_ROW'     # chave ok, mas nenhuma lista tem a linha (fora da grade)
 NO_LIST  = 'NO_LIST'    # o comprador não tem nenhuma lista ativa
@@ -202,6 +205,9 @@ def price(result: dict, buyer) -> PriceQuote:
     if row.status == STATUS_NO_BUY:
         return PriceQuote(status=NO_BUY, reason='comprador não compra este item',
                           **base)
+    if row.status == STATUS_NOT_MADE:
+        return PriceQuote(status=NOT_MADE,
+                          reason='combo não fabricado pela marca', **base)
     if row.status == STATUS_UNQUOTED:
         return PriceQuote(status=UNQUOTED,
                           reason='aguardando cotação do comprador', **base)

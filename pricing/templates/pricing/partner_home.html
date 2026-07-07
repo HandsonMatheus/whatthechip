@@ -22,28 +22,27 @@
 <div class="ptn-card">
   <table class="ptn-table">
     <thead>
-      <tr><th>Lista</th><th>Herda de</th><th>Linhas</th><th>Aguardando</th><th></th></tr>
+      <tr><th>Marca</th><th>Cotados</th><th>Sem cotação</th><th></th></tr>
     </thead>
     <tbody>
       {% for pl in lists %}
       <tr>
         <td style="font-weight:600;">{% if pl.brand %}{{ pl.brand.name }}{% else %}Outras marcas{% endif %}</td>
-        <td>{% if pl.inherits_from %}{% if pl.inherits_from.brand %}{{ pl.inherits_from.brand.name }}{% else %}Outras marcas{% endif %}{% else %}—{% endif %}</td>
-        <td>{{ pl.stats.total }}</td>
+        <td>{% if pl.stats.quoted %}<span class="ptn-tag ptn-tag--quoted">{{ pl.stats.quoted }}</span>{% else %}—{% endif %}</td>
         <td>{% if pl.stats.pending %}<span class="ptn-tag ptn-tag--pending">{{ pl.stats.pending }}</span>{% else %}—{% endif %}</td>
         <td><a href="{% url 'pricing:partner_list' pl.pk %}" style="color:#0f62fe;font-weight:600;">Editar →</a></td>
       </tr>
       {% empty %}
-      <tr><td colspan="5" style="color:#6f6f6f;">Nenhuma lista ainda — fale com a equipe WhatTheChip.</td></tr>
+      <tr><td colspan="4" style="color:#6f6f6f;">Nenhuma lista ainda — fale com a equipe WhatTheChip.</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
 
 <p style="font-size:13px;color:#6f6f6f;line-height:1.6;">
-  Preços por chip, em <strong>dólar (USD)</strong>. Preencha mínimo e máximo iguais
-  para preço único, ou diferentes para uma faixa. Linhas em cinza vêm de outra
-  lista sua (herança) — salvar nelas cria o preço próprio desta lista.
+  Preços por chip, em <strong>dólar (USD)</strong>. Os preços de
+  <strong>Outras marcas</strong> valem para todo chip de marca que não tem
+  tabela própria.
 </p>
 
 {% endblock %}

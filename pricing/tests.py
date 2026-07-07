@@ -292,12 +292,16 @@ class ImportPriceXlsxTests(TestCase):
         # Normalização de marca: Toshiba/Kioxia → Toshiba-Kioxia.
         toshiba = P.get(kind='emmc', tier_value=Decimal('16'))
         self.assertEqual(toshiba.price_list.brand.name, 'Toshiba-Kioxia')
-        # Other Brands: linha sem marca → lista GENÉRICA; Rayson → lista própria.
+        # Other Brands: TUDO vira linha da GENÉRICA (coluna A é decorativa —
+        # decisão 2026-07-07: nada de lista-fantasma pra Rayson & cia).
         generica = P.get(kind='lpddr')
         self.assertIsNone(generica.price_list.brand)
         self.assertEqual(generica.price_min, Decimal('1.95'))  # 13 × 0.15
-        rayson = P.get(kind='emmc', tier_value=Decimal('8'))
-        self.assertEqual(rayson.price_list.brand.name, 'Rayson')
+        outras8 = P.get(kind='emmc', tier_value=Decimal('8'))
+        self.assertIsNone(outras8.price_list.brand)            # NÃO é lista Rayson
+        self.assertEqual(outras8.price_min, Decimal('1.50'))
+        self.assertFalse(PriceList.all_companies.filter(
+            brand__name='Rayson').exists())
         # A linha DDR de unidade errada não entrou:
         self.assertEqual(P.filter(kind='ddr').count(), 0)
 
@@ -474,6 +478,16 @@ class PriceGoldenTests(TestCase):
         self.assertTrue(velho.is_stale)                # cotado há 200 dias > 90
         fresco = self._price(chip_type='DDR3L', brand='Samsung', density_gbit_num=4.0)
         self.assertFalse(fresco.is_stale)
+
+    def test_not_made_e_negativa_autoritativa(self):
+        # Linha "não fabricado" responde NOT_MADE e BLOQUEIA o fallback
+        # (é a negativa explícita do grid unificado, decisão 2026-07-07).
+        Price.all_companies.create(
+            price_list=self.l_samsung, kind='ddr', gen='DDR5',
+            tier_value=Decimal('16'), tier_unit='Gb', status='not_made')
+        q = self._price(chip_type='DDR5', brand='Samsung', density_gbit_num=16.0)
+        self.assertEqual(q.status, 'NOT_MADE')
+        self.assertIn('não fabricado', q.reason)
 
     def test_comprador_sem_listas(self):
         vazio = Buyer.all_companies.create(company=self.company,
@@ -703,6 +717,56 @@ class BenchAndLotPricingTests(TestCase):
             self.assertContains(resp, 'US$ 30')                 # 5 × $6
 
 
+class SeedPriceGridTests(TestCase):
+    """seed_price_grid: grid UNIFICADO — marca ganha faltantes como 'não
+    fabricado'; Outras marcas como 'não cotado'; idempotente."""
+
+    def _run(self, commit=False):
+        from io import StringIO
+        from django.core.management import call_command
+        from tenancy.scope import set_current_company
+        out = StringIO()
+        try:
+            call_command('seed_price_grid', buyer='wuquan-seed',
+                         commit=commit, stdout=out)
+        finally:
+            set_current_company(None)
+        return out.getvalue()
+
+    def test_semeia_uniao_e_e_idempotente(self):
+        company = Company.objects.create(name='SeedCo', slug='seed-co')
+        buyer = Buyer.all_companies.create(company=company, name='Wuquan S',
+                                           slug='wuquan-seed')
+        marca = Brand.objects.create(name='Samsung S', code='SAMSE')
+        l_marca = PriceList.all_companies.create(buyer=buyer, brand=marca)
+        l_gen = PriceList.all_companies.create(buyer=buyer, brand=None)
+        Price.all_companies.create(price_list=l_marca, kind='emmc', gen='',
+                                   tier_value=Decimal('64'), tier_unit='GB',
+                                   status=STATUS_QUOTED,
+                                   price_min=Decimal('6.00'),
+                                   price_max=Decimal('6.00'))
+        Price.all_companies.create(price_list=l_gen, kind='ufs', gen='',
+                                   tier_value=Decimal('256'), tier_unit='GB',
+                                   status=STATUS_UNQUOTED)
+
+        self._run(commit=False)                              # dry-run: nada
+        self.assertEqual(Price.all_companies.count(), 2)
+
+        self._run(commit=True)
+        # marca ganhou a UFS 256 como NÃO FABRICADO:
+        nova = Price.all_companies.get(price_list=l_marca, kind='ufs')
+        self.assertEqual(nova.status, 'not_made')
+        # genérica ganhou a eMMC 64 como NÃO COTADO (ela oferece tudo):
+        gen_nova = Price.all_companies.get(price_list=l_gen, kind='emmc')
+        self.assertEqual(gen_nova.status, STATUS_UNQUOTED)
+        # linha existente intocada + idempotência:
+        self.assertEqual(Price.all_companies.get(
+            price_list=l_marca, kind='emmc').price_min, Decimal('6.00'))
+        antes = Price.all_companies.count()
+        self._run(commit=True)
+        self.assertEqual(Price.all_companies.count(), antes)
+
+
 class PartnerDashboardTests(TestCase):
     """F6 — /partner/: gate do parceiro, lançadeira, herdados, save e isolamento.
     Auditoria (updated_by/last_updated) GRAVADA mas NUNCA exibida (§7)."""
@@ -758,45 +822,99 @@ class PartnerDashboardTests(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['Location'], '/partner/')
 
-    def test_lista_mostra_propria_e_herdada_sem_auditoria(self):
+    def test_lista_mostra_so_linhas_proprias_sem_auditoria(self):
+        # GRID UNIFICADO (2026-07-07): a página mostra SÓ as linhas da própria
+        # lista — herança não aparece na UI (fica no engine, p/ marcas sem lista).
         self.client.force_login(self.partner)
-        resp = self.client.get(f'/partner/lists/{self.l_sk.pk}/')
-        self.assertContains(resp, 'herdado de Samsung P6')   # linha da Samsung, cinza
-        self.assertContains(resp, 'Sobrescrever')
+        resp = self.client.get(f'/partner/lists/{self.l_samsung.pk}/')
         self.assertContains(resp, '6.00')                    # value unlocalized
+        self.assertContains(resp, 'Não fabricado')           # opção do select
+        self.assertNotContains(resp, 'herdado')
         self.assertNotContains(resp, 'Atualizado')           # auditoria invisível
         self.assertNotContains(resp, 'parceiro_p6')
+        # SK (sem linhas próprias antes do seed_price_grid) vem vazia:
+        resp_sk = self.client.get(f'/partner/lists/{self.l_sk.pk}/')
+        self.assertNotContains(resp_sk, '6.00')
+
+    def test_filtros_por_tipo_e_estado(self):
+        self.client.force_login(self.partner)
+        url = f'/partner/lists/{self.l_samsung.pk}/'
+        resp = self.client.get(url, {'kind': 'ufs'})
+        self.assertNotContains(resp, 'value="6.00"')         # linha eMMC filtrada
+        self.assertContains(resp, 'UFS')
+        resp2 = self.client.get(url, {'state': 'quoted'})
+        self.assertContains(resp2, 'value="6.00"')
+        self.assertNotContains(resp2, '>256GB')              # a UFS 256 é unquoted
 
     def test_save_cota_no_buy_e_volta_a_aguardando(self):
         self.client.force_login(self.partner)
-        url = f'/partner/save/{self.l_sk.pk}/'
+        # F6.1 MODERAÇÃO: o save do parceiro NÃO muda o Price — cria um pedido
+        # pendente; só a aprovação do admin aplica.
+        from pricing.models import PriceChangeRequest
+        url = f'/partner/save/{self.l_samsung.pk}/'
         key = dict(kind='emmc', gen='', tier_value='64', tier_unit='GB')
-        # 1) sobrescrever herdada com preço FIXO → linha PRÓPRIA quoted, data=hoje
-        self.client.post(url, {**key, 'price': '5.50'})
-        own = Price.all_companies.get(price_list=self.l_sk, kind='emmc')
-        self.assertEqual((own.price_min, own.price_max),
-                         (Decimal('5.50'), Decimal('5.50')))
-        self.assertEqual(own.status, STATUS_QUOTED)
-        self.assertEqual(own.quote_date, date.today())
-        self.assertEqual(own.updated_by, self.partner)       # gravado, não exibido
-        # 2) não compro → limpa valores
-        self.client.post(url, {**key, 'no_buy': 'on'})
-        own.refresh_from_db()
-        self.assertEqual(own.status, STATUS_NO_BUY)
-        self.assertIsNone(own.price_min)
-        # 3) vazio → aguardando
-        self.client.post(url, {**key})
-        own.refresh_from_db()
-        self.assertEqual(own.status, STATUS_UNQUOTED)
+        row = Price.all_companies.get(price_list=self.l_samsung, kind='emmc')
+
+        # 1) pede cotação nova → Price INTACTO + pedido pendente
+        self.client.post(url, {**key, 'state': 'quoted', 'price': '5.50'})
+        row.refresh_from_db()
+        self.assertEqual(row.price_min, Decimal('6.00'))     # nada mudou ainda
+        req = PriceChangeRequest.all_companies.get(price=row)
+        self.assertEqual(req.review_status, 'pending')
+        self.assertEqual((req.new_price, req.old_price),
+                         (Decimal('5.50'), Decimal('6.00')))
+        self.assertEqual(req.requested_by, self.partner)
+
+        # o grid mostra o aviso "em revisão":
+        resp = self.client.get(f'/partner/lists/{self.l_samsung.pk}/')
+        self.assertContains(resp, 'em revisão')
+
+        # 2) editar de novo ATUALIZA o pedido pendente (não empilha)
+        self.client.post(url, {**key, 'state': 'quoted', 'price': '5.75'})
+        self.assertEqual(
+            PriceChangeRequest.all_companies.filter(price=row).count(), 1)
+        req.refresh_from_db()
+        self.assertEqual(req.new_price, Decimal('5.75'))
+
+        # 3) APROVAR aplica no Price (data = dia da aprovação; autor = parceiro)
+        User = get_user_model()
+        dono = User.objects.create_superuser('dono_p6', password='x')
+        req.approve(dono)
+        row.refresh_from_db()
+        self.assertEqual(row.price_min, Decimal('5.75'))
+        self.assertEqual(row.status, STATUS_QUOTED)
+        self.assertEqual(row.quote_date, date.today())
+        self.assertEqual(row.updated_by, self.partner)
+        req.refresh_from_db()
+        self.assertEqual((req.review_status, req.reviewed_by),
+                         ('approved', dono))
+
+        # 4) REJEITAR não toca no Price
+        self.client.post(url, {**key, 'state': 'no_buy'})
+        req2 = PriceChangeRequest.all_companies.get(price=row,
+                                                    review_status='pending')
+        req2.reject(dono)
+        row.refresh_from_db()
+        self.assertEqual(row.status, STATUS_QUOTED)          # segue cotado 5.75
+        self.assertEqual(row.price_min, Decimal('5.75'))
+
+        # 5) no-op não gera pedido fantasma
+        self.client.post(url, {**key, 'state': 'quoted', 'price': '5.75'})
+        self.assertFalse(PriceChangeRequest.all_companies.filter(
+            price=row, review_status='pending').exists())
 
     def test_save_invalido_nao_grava(self):
         self.client.force_login(self.partner)
         url = f'/partner/save/{self.l_samsung.pk}/'
         antes = Price.all_companies.get(price_list=self.l_samsung, kind='emmc')
         resp = self.client.post(url, dict(kind='emmc', gen='', tier_value='64',
-                                          tier_unit='GB', price='abc'),
-                                follow=True)
+                                          tier_unit='GB', state='quoted',
+                                          price='abc'), follow=True)
         self.assertContains(resp, 'Preço ilegível')
+        resp2 = self.client.post(url, dict(kind='emmc', gen='', tier_value='64',
+                                           tier_unit='GB', state='quoted'),
+                                 follow=True)
+        self.assertContains(resp2, 'exige o preço')          # Cotado sem USD
         depois = Price.all_companies.get(price_list=self.l_samsung, kind='emmc')
         self.assertEqual(depois.price_min, antes.price_min)  # intacto
 
@@ -806,7 +924,8 @@ class PartnerDashboardTests(TestCase):
             self.client.get(f'/partner/lists/{self.l_samsung.pk}/').status_code, 404)
         resp = self.client.post(f'/partner/save/{self.l_samsung.pk}/',
                                 dict(kind='emmc', gen='', tier_value='64',
-                                     tier_unit='GB', price='1.00'))
+                                     tier_unit='GB', state='quoted',
+                                     price='1.00'))
         self.assertEqual(resp.status_code, 404)
         row = Price.all_companies.get(price_list=self.l_samsung, kind='emmc')
         self.assertEqual(row.price_min, Decimal('6.00'))     # intocado

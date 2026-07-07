@@ -10,7 +10,8 @@ mostra auditoria.
 
 from django.contrib import admin
 
-from .models import Buyer, LotPricing, Price, PriceList, PricingConfig
+from .models import (Buyer, LotPricing, Price, PriceChangeRequest, PriceList,
+                     PricingConfig)
 
 
 class PlatformScopedAdmin(admin.ModelAdmin):
@@ -78,6 +79,49 @@ class LotPricingAdmin(PlatformScopedAdmin):
 
     def has_add_permission(self, request):
         return False        # nasce só no fechamento do lote
+
+
+@admin.register(PriceChangeRequest)
+class PriceChangeRequestAdmin(PlatformScopedAdmin):
+    """F6.1 — a FILA DE REVISÃO das mudanças do comprador. Nada vale até o
+    admin aprovar aqui (actions em massa). O pedido em si é read-only."""
+
+    list_display  = ('price', 'delta', 'requested_by', 'created_at',
+                     'review_status', 'reviewed_by', 'reviewed_at')
+    list_filter   = ('review_status', 'price__price_list__buyer')
+    ordering      = ('review_status', '-created_at')   # pendentes primeiro
+    actions       = ('aprovar', 'rejeitar')
+    readonly_fields = ('price', 'company', 'new_status', 'new_price',
+                       'old_status', 'old_price', 'review_status',
+                       'requested_by', 'created_at', 'reviewed_by', 'reviewed_at')
+
+    @admin.display(description='Mudança pedida')
+    def delta(self, obj):
+        de = (f'US$ {obj.old_price}' if obj.old_status == 'quoted'
+              else obj.get_old_status_display() if hasattr(obj, 'get_old_status_display')
+              else obj.old_status)
+        para = (f'US$ {obj.new_price}' if obj.new_status == 'quoted'
+                else obj.get_new_status_display())
+        return f'{de} → {para}'
+
+    def has_add_permission(self, request):
+        return False        # pedido nasce só no /partner/
+
+    @admin.action(description='✔ Aprovar selecionadas (aplica no preço)')
+    def aprovar(self, request, queryset):
+        n = 0
+        for req in queryset.filter(review_status=PriceChangeRequest.REVIEW_PENDING):
+            req.approve(request.user)
+            n += 1
+        self.message_user(request, f'{n} mudança(s) aprovada(s) e aplicada(s).')
+
+    @admin.action(description='✘ Rejeitar selecionadas (preço fica como está)')
+    def rejeitar(self, request, queryset):
+        n = 0
+        for req in queryset.filter(review_status=PriceChangeRequest.REVIEW_PENDING):
+            req.reject(request.user)
+            n += 1
+        self.message_user(request, f'{n} mudança(s) rejeitada(s).')
 
 
 @admin.register(PricingConfig)

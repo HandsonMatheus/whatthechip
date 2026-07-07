@@ -19,6 +19,8 @@
       </span>
     {% elif q.status == "NO_BUY" %}
       <span style="font-size:13px;font-weight:700;color:#a33;">não compra este item</span>
+    {% elif q.status == "NOT_MADE" %}
+      <span style="font-size:13px;font-weight:600;color:#6f6f6f;">não fabricado pela marca</span>
     {% elif q.status == "UNQUOTED" %}
       <span style="font-size:13px;font-weight:600;color:#b8860b;">aguardando cotação</span>
     {% else %}

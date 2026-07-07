@@ -830,6 +830,95 @@ simplicidade venceu. Implementação REVERSÍVEL:
 
 ⚠ Rodar `sync_index_page` de novo (o JS da home mudou).
 
+### 12.11 MODERAÇÃO das mudanças do comprador (dono, 2026-07-07; suíte 286/286)
+
+**Feature-chave de alinhamento: NADA que o comprador edita vale na hora.**
+Todo save no /partner/ vira um **`PriceChangeRequest` pendente**; o dono
+aprova/rejeita no Django admin; **só a aprovação aplica no `Price`** (e aí
+reflete em card/bancada/valoração). Mesmo padrão four-eyes do catálogo
+(KnownPart.review_status).
+
+- **Modelo `PriceChangeRequest`** (migrações 0007 + 0008-RLS, pghistory): o
+  pedido (`new_status`/`new_price`) + snapshot do antes (`old_*`) + quem pediu
+  e quem revisou. **Um pendente por linha** (constraint `one_pending_per_price`)
+  — editar de novo ATUALIZA o pedido, não empilha. No-op não gera pedido.
+- **`approve(reviewer)`** aplica via portão do modelo: `quote_date` = dia da
+  APROVAÇÃO; `updated_by` = quem PEDIU (o parceiro — auditoria fiel).
+  `reject()` deixa o preço exatamente como estava.
+- **Django admin → "Mudanças de preço (revisão)"**: fila com pendentes
+  primeiro, delta legível ("US$ 6.00 → US$ 5.50"), filtros, e actions em massa
+  **✔ Aprovar / ✘ Rejeitar**. Pedido é read-only (nasce só no /partner/).
+- **UX do parceiro:** popup de confirmação no envio ("será enviada para
+  REVISÃO…"), botão "Enviar p/ revisão", badge azul **⏳ em revisão** na linha
+  (mostrando o valor pedido) enquanto o vigente continua exibido.
+- **Cosméticos do mesmo pedido:** linha não-cotado = amarelo clarinho; não
+  compro = vermelho claro; preço DESABILITADO quando "Não fabricado" (JS
+  sincroniza ao trocar o select); coluna "Data" → **"Última atualização"**.
+
+**Runbook do dono:** `python manage.py migrate` (0007+0008) → suíte (286) →
+smoke: como parceiro, editar um preço → popup → badge "em revisão"; como
+dono, `/admin/` → Mudanças de preço → selecionar → ✔ Aprovar → o card/grid
+refletem. Commit/push como sempre.
+
+### 12.10 Rework do grid do parceiro (dono, 2026-07-07; suíte 286/286)
+
+Revisão do dono após uso real. Sete mudanças:
+
+1. **Sem lista-fantasma:** a coluna A da planilha é DECORATIVA no import — na
+   "Other Brands" TUDO vira linha da genérica (a linha "Rayson eMMC 8GB" agora é
+   preço de "Outras marcas"; a lista Rayson morre). Fold no banco local via
+   shell (runbook abaixo).
+2. **Estado novo `not_made` ("Não fabricado")** — migração `0006`. Combos que a
+   marca não produz (ex.: Kingston eMMC 256GB) deixam de aparecer como
+   "herdado" e viram negativa explícita. **No engine é AUTORITATIVA**: linha
+   not_made responde `NOT_MADE` e bloqueia fallback (de propósito).
+3. **"Sobrescrever" morreu** junto com a exibição de herança na UI do parceiro:
+   com o grid unificado, cada lista mostra SÓ as próprias linhas. A herança
+   segue existindo NO ENGINE (Outras marcas cobrindo marcas sem lista;
+   `inherits_from` configurável pelo dono no admin).
+4. **GRID UNIFICADO** — comando novo `seed_price_grid --buyer wuquan`
+   (dry-run/commit): toda lista ganha a grade-mestra (união de todos os
+   combos); faltantes entram como não-fabricado (marca) / não-cotado (Outras
+   marcas). Idempotente; roda após todo import.
+5. **Filtros por tipo e estado** acima do grid (GET, selects com auto-submit;
+   preservados no salvar).
+6. **Estado e Data separados** em duas colunas; o estado é um SELECT explícito
+   (Cotado exige preço; os demais limpam o USD).
+7. **Vocabulário de estados** = Cotado / Não cotado / Não fabricado /
+   **Não compro** — o 4º mantido com aval na conversa: "não compro" (Samsung
+   FABRICA GDDR, o Wuquan não quer) ≠ "não fabricado" (Kingston não faz eMMC
+   256GB); os dois existiam na planilha ('NO' vs. linha ausente).
+
+**Runbook do dono (rework):**
+
+```bash
+python manage.py migrate                    # pricing/0006 (estado not_made)
+# fold da Rayson (uma vez, banco local — pghistory registra):
+python manage.py shell -c "
+from datetime import date
+from decimal import Decimal
+from tenancy.models import Company
+from tenancy.scope import company_scope
+from pricing.models import PriceList, Price, STATUS_QUOTED
+with company_scope(Company.objects.get(slug='eminer')):
+    PriceList.objects.filter(brand__name='Rayson').delete()
+    p = Price.objects.get(price_list__brand__isnull=True, kind='emmc',
+                          tier_value=8, tier_unit='GB')
+    p.status = STATUS_QUOTED
+    p.price_min = p.price_max = Decimal('1.50')
+    p.quote_date = date(2026, 7, 5)
+    p.save()
+    print('Rayson fundida em Outras marcas: eMMC 8GB = US$ 1.50')"
+python manage.py seed_price_grid --buyer wuquan --company eminer            # dry-run
+python manage.py seed_price_grid --buyer wuquan --company eminer --commit  # grid unificado
+python manage.py sync_index_page            # JS da home ganhou o estado not_made
+python manage.py test chips estoque tenancy pricing --settings=core.settings_test   # 286
+python manage.py runserver                  # smoke: filtros, select de estado, coluna Data
+git add pricing/ _content/index.html PRECIFICACAO.md
+git commit -m "pricing: grid unificado do parceiro — not_made, filtros, estado+data separados, sem lista-fantasma"
+git push origin main
+```
+
 ### 12.9 Polimento do /partner/ (2026-07-07, pedido do dono; suíte 283/283)
 
 - **Header = padrão do painel interno:** o `partner_base.html` replica o Carbon
