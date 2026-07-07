@@ -1,11 +1,12 @@
 # PRECIFICACAO.md — Sistema de Preços do WhatTheChip (plano completo)
 
-> **Status: PLANO APROVADO EM DESENHO — nada implementado ainda.** Este é o design
-> de ponta a ponta acordado no brainstorm de 2026-07-06 (dono + agente), a partir do
-> `PROMPT_PRECOS.md` e da planilha `wuquanprices.xlsx` (tabela do comprador Wuquan).
-> **Ordem combinada:** a sessão dedicada do `PLANO_MULTITENANT.md` roda PRIMEIRO
-> (T1/T2 de lá = a F1 daqui); a implementação da precificação começa com o
-> handoff §15 daquele plano completo.
+> **Status: F0 CONSTRUÍDA (2026-07-07) · F1 entregue pela fundação multi-tenant.**
+> Design de ponta a ponta acordado no brainstorm de 2026-07-06 (dono + agente), a
+> partir do `PROMPT_PRECOS.md` e da planilha `wuquanprices.xlsx` (comprador Wuquan).
+> A fundação (`PLANO_MULTITENANT.md`, T1–T4) está construída e em produção — a
+> precificação roda em cima dela. **Ver §12 (diário de execução)** para o que já
+> existe e o runbook de validação de cada fase. **F2 CONSTRUÍDA (2026-07-07,
+> suíte 256/256)** — próxima fase: **F3** (`price()`/`price_lot()` + goldens).
 > Quando implementado, este arquivo vira a **bíblia técnica do sistema de preços**
 > (mesmo papel do `RENTABILIDADE.md` para rentabilidade). A aba `Instructions` da
 > planilha já aponta para este documento.
@@ -94,7 +95,11 @@ esses campos já saem normalizados do `classify()` + `chips/chip_types.py`:
 
 App separado (não incha `chips/`; permissões e dashboard do comprador vivem nele).
 
-### 3.0 `Company` + `Membership` — a fundação (mínima) do multi-tenant
+### 3.0 `Company` + `Membership` — a fundação do multi-tenant (✅ ENTREGUE)
+
+> Construída na sessão dedicada (`PLANO_MULTITENANT.md` T1–T4, em produção).
+> Os modelos reais vivem em `tenancy/` — o esboço abaixo é o contrato que a
+> precificação consome; detalhes de integração no §12.1.
 
 ```
 Company:    name, slug, active, notes              (empresa #1 = eMiner)
@@ -320,25 +325,38 @@ extraídas da planilha REAL (todas já verificadas nas 10 abas):
 `"8Gb = 1GB por die [~]"`, placeholders `"⚠ cap. não mapeada"`). Preço não pode
 parsear texto de humano.
 
-**Mudança (aditiva, um ponto só):** no FIM do `classify()`, uma função única
-`_attach_numeric_specs(r)` anexa ao dict:
+**Mudança (aditiva, um ponto só — ✅ construída, ver §12):** `classify()` virou um
+wrapper público fino sobre `_classify_impl()` (o pipeline, intocado) que anexa o
+bloco numérico via `_attach_numeric_specs(r)` — UM ponto cobre todos os caminhos
+de retorno (db exato, norm, FBGA, gramática, desconhecido, PN inválido):
 
 ```
-nand_gb      → float|None   (de emcp_nand)
-ram_gb       → float|None   (de emcp_ram — informativo; NÃO entra na chave)
-ram_gen      → str          (token canônico LPDDR do subtype, "" se genérico)
-cap_gb       → float|None   (de capacity)
-density_gbit → float|None   (de density_gbit do KnownPart ou do decode DRAM)
+nand_gb          → float|None  (de emcp_nand)
+ram_gb           → float|None  (de emcp_ram — informativo; NÃO entra na chave)
+ram_gen          → str         (token LPDDR canônico do subtype, fallback no
+                               emcp_ram; "" se ausente — nunca adivinha)
+cap_gb           → float|None  (de capacity)
+density_gbit_num → float|None  (de dram_density, via _extract_gbit case-sensitive)
 ```
 
-— reusando os extratores existentes (`_extract_gib`, `_CAP_RE`, `canonical_gen`).
-Placeholders/`"None"` → `None` (nunca 0).
+— reusando os extratores existentes (`_extract_gib`, `_extract_gbit`,
+`canonical_gen`). Placeholders/`"None"` → `None` (nunca 0).
 
-**Prova de que nada quebrou** (levantamento feito: 42 arquivos .py + 6 templates
-leem as strings — nenhum é tocado, as strings saem byte a byte idênticas):
-`characterize_baseline --diff` = **zero** + suíte completa verde (187 testes) +
-teste novo dos campos numéricos (âncoras por tipo). Documentar no CLAUDE.md §4:
-"resultado do classify: strings para humano, numéricos para máquina".
+**⚠ Duas armadilhas descobertas na implementação (respeite ao consumir):**
+1. **O nome `density_gbit` estava OCUPADO:** o `characterize_baseline` captura
+   `r.get("density_gbit")` (string do KnownPart, hoje sempre vazia no result) —
+   criar a chave numérica com esse nome quebraria o contrato de diff=0. Por isso
+   o campo numérico é **`density_gbit_num`**.
+2. **Nunca aplicar `_extract_gib` ao `dram_density`:** o `_CAP_RE` é
+   case-insensitive e leria `"8Gb"` (gigaBIT) como 8 GB. Densidade só via
+   `_extract_gbit` (case-sensitive) — coberto por teste.
+
+**Prova de que nada quebrou** (levantamento: 42 arquivos .py + 6 templates leem as
+strings — nenhum tocado; strings byte a byte idênticas): `characterize_baseline
+--diff` com **0 alterados** + suíte completa verde (239) + `NumericSpecsTests`/
+`NumericSpecsWiringTests` (âncoras por tipo, placeholder→None, armadilha Gb≠GB).
+Documentar no CLAUDE.md §4 na F7: "resultado do classify: strings para humano,
+numéricos para máquina".
 
 ---
 
@@ -346,9 +364,9 @@ teste novo dos campos numéricos (âncoras por tipo). Documentar no CLAUDE.md §
 
 | Fase | Entrega | Prova |
 |---|---|---|
-| **F0** | `_attach_numeric_specs` no engine + testes | characterize diff=0 · suíte verde |
+| **F0 ✅** (2026-07-07) | `_attach_numeric_specs` no engine + testes (§8 e §12) | suíte 239 OK no agente; characterize diff + suíte no ambiente do dono = runbook §12 |
 | **F1 (=T1)** | **ENTREGUE PELO PROJETO MULTI-TENANT** (sessão dedicada, `PLANO_MULTITENANT.md` T1/T2): `Company`+`Branch`+`Membership` (admin/gerente/operador), redirect por papel, numeração de lote atômica | checklist de handoff (§15 de lá) completo |
-| **F2** | app `pricing/`: modelos §3 + migrations + pghistory + admin básico | suíte verde · migrate aditivo |
+| **F2 ✅** (2026-07-07) | app `pricing/`: modelos §3 + migrations (0001 + 0002-RLS) + pghistory + admin básico (§12.3) | suíte 256 OK no agente; migrate + testes Postgres no dono = runbook §12.3 |
 | **F3** | `price()`/`price_lot()` + golden de preço (âncoras por kind: eMMC 64GB Samsung=$6, eMCP faixa, DDR3L, LPDDR4 vs 4X≠, genérico→NO_KEY, herança genérica→Nanya, no_buy GDDR) + teste de ciclo/override | suíte verde |
 | **F4** | `import_price_xlsx` + fixture de teste + **dry-run na planilha real** (dono roda o `--commit` local) | relatório do dry-run revisado pelo dono |
 | **F5** | preço no card de busca (gate por papel admin) | suíte verde · teste do gate por papel |
@@ -424,3 +442,124 @@ GLOBAL, comércio POR-EMPRESA; execução no `PLANO_MULTITENANT.md`) · nomencla
   prioriza a correção). Frentes 1–2 do plano de qualidade correm em paralelo.
 - **`subtype` LPDDR4 vs 4X** muda preço (item aberto KMDD) — golden de F3 cobre.
 - Famílias genéricas (K3/SDEM) sem preço até confirmação de geração — por design.
+
+---
+
+## 12. Diário de execução
+
+### 12.1 Fundação recebida do multi-tenant (2026-07-07) — o que a precificação consome
+
+Verificado no código após o deploy da fundação (T1–T4 + polimentos, suíte 231):
+
+- **`tenancy.Company`/`Branch`/`Membership`** existem (eMiner = empresa #1 em
+  prod, papéis reais atribuídos via `bootstrap_tenancy`). `Buyer.company` (F2)
+  aponta para `tenancy.Company`.
+- **`TenancyDeclarationTests` (estoque/tests.py) é o portão de tenancy:** ao criar
+  o app `pricing/`, adicionar `'pricing'` em `APPS_DO_PROJETO` e cada modelo novo
+  OU à lista `GLOBAL_DECLARADOS` OU escopado (campo `company` +
+  `CompanyScopedManager` como manager padrão + `Meta.base_manager_name=
+  'all_companies'`). Sem isso a suíte fica vermelha — por design.
+  ⚠ `Buyer.company` é NULLABLE (comprador de plataforma): o manager escopado
+  padrão filtra por igualdade — decidir na F2 como expor os de plataforma
+  (provável: manager custom `Q(company=cid) | Q(company__isnull=True)` só-leitura).
+- **RLS (Camada B):** seguir o padrão de `estoque/migrations/0014_t4_rls.py` para
+  as tabelas do pricing na F2 — `ENABLE`+`FORCE`+policy lendo os GUCs
+  `app.company_id`/`app.platform` (o `TenancyMiddleware` já os emite
+  transaction-local). Policies também nas tabelas de EVENTO pghistory do pricing
+  (preço é rastreado — histórico é tão sensível quanto o dado).
+- **Gates de view:** usar `tenancy/access.py::role_required('admin')` /
+  `RoleRequiredMixin` (F5: card de preço é admin-only; SEM bypass de superuser —
+  decisão da fundação). Parceiro (F6) fica FORA do enum de papéis: gate próprio
+  por vínculo `Buyer.users`.
+- **Comandos:** `import_price_xlsx` (F4) roda fora de request → escopo explícito
+  via `scope_command_to_company()` (auto-resolve com 1 empresa ativa; 2+ exige
+  `--company <slug>`), como os comandos do estoque.
+- **Redirect pós-login:** hoje `LOGIN_REDIRECT_URL='/painel/'`. Na F6, conta com
+  `Buyer.users` desvia para `/partner/` (mexer na lançadeira, não criar 2º login).
+
+### 12.2 F0 — construída em 2026-07-07 (suíte 239/239 no agente)
+
+- **`chips/engine.py`:** `classify()` virou wrapper público
+  (`_attach_numeric_specs(_classify_impl(pn_raw))`) — pipeline intocado, anexo em
+  UM ponto, todos os caminhos de retorno cobertos. Import novo:
+  `from .conventions import canonical_gen`. Contrato e armadilhas: §8.
+- **`chips/tests.py`:** `NumericSpecsTests` (pura, 7 casos: eMCP completo,
+  placeholder→None, decimal/MB/TB, lixo/'None', armadilha Gb≠GB, ram_gen
+  normaliza+fallback+não-inventa, dict de erro) + `NumericSpecsWiringTests`
+  (wrapper anexa o contrato no caminho desconhecido). 239 testes OK no sandbox
+  do agente (3 skips Postgres-only, esperados).
+- **Achados registrados no §8:** colisão de nome com o characterize
+  (`density_gbit` → `density_gbit_num`) e a proibição de `_extract_gib` sobre
+  `dram_density`.
+- **Nota de ambiente (sem ação):** no sandbox do agente, o
+  `GlobalMapGuardTests` não conseguia apagar o yaml temporário
+  (`_guardtest.yaml` órfão fez o golden reclamar) — permissão de delete
+  habilitada e arquivo limpo; no ambiente do dono isso não ocorre.
+
+**Runbook do dono (F0):**
+
+```bash
+python manage.py test chips estoque tenancy --settings=core.settings_test   # 239 esperados
+python manage.py characterize_baseline --diff baseline_t1t2.json            # "alterados: 0"
+                                        # (PNs novos do catálogo aparecem como "adicionados" — ok)
+git add chips/engine.py chips/tests.py PRECIFICACAO.md
+git commit -m "pricing F0: specs numéricas no classify() — strings pra humano, números pra máquina"
+git push origin main                    # deploy (só código; sem migration, sem passo em prod)
+```
+
+### 12.3 F2 — construída em 2026-07-07 (suíte 256/256 no agente)
+
+**O que existe (app `pricing/`, tudo versionado; nada gravado em banco ainda):**
+
+- **`pricing/models.py`:** `Buyer` (company nullable = plataforma), `PriceList`
+  (brand NULL = genérica; `inherits_from` 1 nível intra-comprador, valida ciclo/
+  cadeia no `clean()`), `Price` (chave kind/gen/tier + min/max Decimal + 3
+  estados + auditoria `updated_by`/`last_updated`), `PricingConfig` (singleton
+  global, staleness=90d, cenário=médio). O **vocabulário da chave**
+  (KIND_*/UNIT_*/STATUS_* + regras kind×unidade e kind×gen) mora no topo do
+  módulo — a F3 consome de lá (fonte única).
+- **Tenancy:** company DENORMALIZADA em PriceList/Price (herdada no `save()`,
+  mismatch rejeita — padrão `CompanyBoundByLot`); managers `objects` fail-closed
+  + `all_companies`; `TenancyDeclarationTests` atualizado (`pricing` em
+  APPS_DO_PROJETO; `PricingConfig` declarado GLOBAL).
+- **Migrations:** `0001_initial` (modelos + eventos pghistory + constraints) e
+  `0002_rls` (ENABLE+FORCE+policy nas 3 tabelas **e nas 3 de evento pghistory**;
+  a M2M `buyer_users` fica fora com justificativa no cabeçalho — só pares de
+  ids; o acesso do parceiro é decidido na view da F6).
+- **Admin (plataforma):** `PlatformScopedAdmin` local (padrão estoque);
+  `PriceAdmin` mostra `updated_by`/`last_updated` (readonly) e o `save_model`
+  grava quem mudou — Feature 3 do prompt, invisível ao comprador.
+- **Testes (17):** portão (kind×unidade, kind×gen, quoted⇔valor, faixa
+  invertida, chave duplicada), herança (1 nível, intra-comprador, genérica
+  única, auto-herança), escopo (fail-closed, A não vê B, NULL invisível),
+  singleton, pghistory-evento e RLS-handshake do pricing (2 últimos
+  Postgres-only, espelho do padrão estoque com probe-role anti-superuser).
+
+**Decisões fechadas na F2 (registro):**
+1. **`Buyer.company=NULL` fica INVISÍVEL ao manager escopado** (fail-closed até
+   o marketplace existir; plataforma vê via `all_companies`/GUC `app.platform`).
+2. **Unicidade é do BANCO, não do `full_clean`:** `validate_unique`/`validate_
+   constraints` consultam o `_default_manager` — que é o escopado fail-closed e
+   explodiria fora de request. O portão valida campos+regras (`clean()`); chave
+   duplicada vira `IntegrityError` da UniqueConstraint. ⚠ Lição para modelos
+   escopados futuros.
+3. **Constraint com vocabulário usa `sorted()`** — frozenset cru muda a ordem
+   por processo e o `makemigrations --check` acusa mudança fantasma.
+
+**Runbook do dono (F2):**
+
+```bash
+python manage.py migrate                    # pricing/0001 + 0002 (liga o RLS) — LOCAL
+python manage.py test chips estoque tenancy pricing --settings=core.settings_test   # 256 esperados
+python manage.py test pricing               # settings DEFAULT (Postgres): roda os 2 Postgres-only
+                                            # (evento pghistory + RLS handshake do pricing)
+# smoke: /admin/ → seção "Preços" (Compradores, Listas, Preços, Configuração)
+git add pricing/ core/settings.py estoque/tests.py PRECIFICACAO.md
+git commit -m "pricing F2: Buyer/PriceList/Price/PricingConfig — portão no modelo, pghistory, RLS"
+git push origin main                        # build roda o migrate em prod (0001+0002, aditivas)
+python manage.py guard_catalog              # hábito pós-deploy (DATABASE_URL do prod)
+```
+
+**Próxima fase: F3** — `price(result, buyer)` / `price_lot()` em
+`pricing/engine.py` + goldens de preço (§5 e §9). Sem migração; consome o
+vocabulário do models e os campos numéricos da F0.

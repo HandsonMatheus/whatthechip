@@ -2021,3 +2021,79 @@ class KnowledgeSchemaTests(TestCase):
         from chips.knowledge.schema import FamilySpec
         f = FamilySpec(prefix="KVR", chip_type="RAM", subtype="DDR", active=False)  # módulo bogus
         self.assertFalse(f.active)              # soft-delete passa (não classifica)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# F0 — SPECS NUMÉRICAS (PRECIFICACAO.md §8): strings pra humano, números pra máquina
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class NumericSpecsTests(SimpleTestCase):
+    """_attach_numeric_specs é pura (dict→dict): testa sem banco.
+
+    Contrato F0: nand_gb / ram_gb / cap_gb / density_gbit_num / ram_gen anexados
+    ao resultado, derivados das strings de exibição pelos extratores da
+    rentabilidade. Placeholder/lixo → None (nunca 0); geração ausente → ""."""
+
+    def _attach(self, **fields):
+        from chips.engine import _attach_numeric_specs
+        return _attach_numeric_specs(dict(fields))
+
+    def test_emcp_completo(self):
+        r = self._attach(emcp_nand="eMMC 5.1 64GB", emcp_ram="LPDDR4X 4GB",
+                         subtype="LPDDR4X")
+        self.assertEqual(r["nand_gb"], 64.0)
+        self.assertEqual(r["ram_gb"], 4.0)
+        self.assertEqual(r["ram_gen"], "LPDDR4X")
+
+    def test_placeholder_de_capacidade_nao_vira_numero(self):
+        # Gramática sem chave mapeada emite placeholder — não pode virar float.
+        r = self._attach(emcp_nand="eMMC 5.1 ⚠ cap. não mapeada",
+                         emcp_ram="tipo 'T' — consultar datasheet")
+        self.assertIsNone(r["nand_gb"])
+        self.assertIsNone(r["ram_gb"])
+        self.assertEqual(r["ram_gen"], "")
+
+    def test_capacidade_decimal_mb_e_tb(self):
+        self.assertEqual(self._attach(capacity="1.5GB")["cap_gb"], 1.5)   # K4E2E304EA
+        self.assertEqual(self._attach(capacity="512MB")["cap_gb"], 0.5)
+        self.assertEqual(self._attach(capacity="1TB")["cap_gb"], 1024.0)
+
+    def test_capacidade_lixo_vazio_ou_none_string(self):
+        self.assertIsNone(self._attach(capacity="None")["cap_gb"])   # string 'None' do snapshot
+        self.assertIsNone(self._attach(capacity="")["cap_gb"])
+        self.assertIsNone(self._attach()["cap_gb"])
+
+    def test_densidade_le_gigabit_nunca_gigabyte(self):
+        # "8Gb = 1GB por die": densidade = 8 Gb; o "1GB" (byte) NÃO pode contaminar
+        # nem a densidade nem o cap_gb (armadilha Gb≠GB; _CAP_RE é case-insensitive,
+        # por isso _extract_gib NUNCA é aplicado ao dram_density).
+        r = self._attach(dram_density="8Gb = 1GB por die [~]")
+        self.assertEqual(r["density_gbit_num"], 8.0)
+        self.assertIsNone(r["cap_gb"])
+        self.assertEqual(
+            self._attach(dram_density="16Gb total [✓]")["density_gbit_num"], 16.0)
+
+    def test_ram_gen_normaliza_e_faz_fallback(self):
+        self.assertEqual(self._attach(subtype="LPDDR4 Mobile")["ram_gen"], "LPDDR4")
+        # sem subtype → cai no emcp_ram ("LPDDR3 1GB" → LPDDR3)
+        self.assertEqual(self._attach(emcp_ram="LPDDR3 1GB")["ram_gen"], "LPDDR3")
+        # tipos não-LPDDR não inventam geração de RAM
+        self.assertEqual(self._attach(subtype="DDR3")["ram_gen"], "")
+
+    def test_dict_de_erro_nao_explode_e_ganha_contrato(self):
+        r = self._attach(pn="X", known=False, error="PN inválido")
+        for k in ("nand_gb", "ram_gb", "cap_gb", "density_gbit_num"):
+            self.assertIsNone(r[k])
+        self.assertEqual(r["ram_gen"], "")
+
+
+class NumericSpecsWiringTests(TestCase):
+    """O wrapper público classify() anexa o bloco numérico em TODOS os retornos
+    (db exato, norm, FBGA, gramática, desconhecido) — aqui, o caminho
+    'desconhecido' prova a fiação sem depender de catálogo carregado."""
+
+    def test_classify_desconhecido_carrega_o_contrato(self):
+        from chips.engine import classify
+        r = classify("ZZZZTESTE999")
+        for k in ("nand_gb", "ram_gb", "cap_gb", "density_gbit_num", "ram_gen"):
+            self.assertIn(k, r)

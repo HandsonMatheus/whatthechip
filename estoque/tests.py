@@ -907,8 +907,12 @@ class TenancyDeclarationTests(TestCase):
         'pages.Page',
         # O próprio tecido do tenancy.
         'tenancy.Company', 'tenancy.Branch', 'tenancy.Membership',
+        # Config do sistema de preços — singleton GLOBAL (padrão
+        # ProfitabilityConfig; PRECIFICACAO §3.4). Buyer/PriceList/Price são
+        # ESCOPADOS (company + CompanyScopedManager + RLS em pricing/0002).
+        'pricing.PricingConfig',
     }
-    APPS_DO_PROJETO = {'chips', 'estoque', 'pages', 'tenancy'}
+    APPS_DO_PROJETO = {'chips', 'estoque', 'pages', 'tenancy', 'pricing'}
 
     def test_toda_tabela_declara_tenancy(self):
         from django.apps import apps as django_apps

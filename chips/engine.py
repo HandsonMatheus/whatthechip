@@ -32,6 +32,7 @@ from django.db.models.functions import Length, Replace
 
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, ProfitabilityConfig, SearchLog, Source, UnknownChip
 from .chip_types import canonical_chip_type, profit_family
+from .conventions import canonical_gen
 from .normalize import normalize_pn
 
 
@@ -1242,6 +1243,53 @@ def is_dead_by_generation(result: dict) -> bool:
     return assess_profitability(_strip_capacity(result)) == "NÃO RENTÁVEL"
 
 
+# ── F0 — Specs numéricas para máquina (PRECIFICACAO.md §8) ─────────────────────
+# O resultado do classify() carrega STRINGS DE EXIBIÇÃO ("eMMC 5.1 64GB",
+# "LPDDR3 1GB", "8Gb = 1GB por die [~]") — boas pro card, péssimas pra código.
+# Este bloco anexa, no FIM do classify() (wrapper público), campos NUMÉRICOS
+# derivados pelos MESMOS extratores da rentabilidade (fonte única). Consumidor
+# alvo: pricing/engine.py (chave de preço).
+#
+# CONTRATO (aditivo — as strings continuam saindo byte a byte idênticas):
+#   nand_gb          float|None ← emcp_nand    (GB de NAND do pacote eMCP/uMCP)
+#   ram_gb           float|None ← emcp_ram     (GB de RAM — informativo: NÃO entra
+#                                na chave de preço; regra do comprador é por faixa)
+#   cap_gb           float|None ← capacity     (GB do pacote eMMC/UFS/LPDDR)
+#   density_gbit_num float|None ← dram_density (Gb por die, DDR/GDDR)
+#                                ⚠ sufixo _num de propósito: a chave "density_gbit"
+#                                já é capturada pelo characterize_baseline (string
+#                                vinda do KnownPart) — reusar o nome quebraria o
+#                                contrato de diff=0 do baseline.
+#   ram_gen          str        ← geração LPDDR canônica ("LPDDR4X") via
+#                                canonical_gen(subtype), fallback no emcp_ram;
+#                                "" quando não há (nunca adivinha).
+#
+# ⚠ NUNCA aplicar _extract_gib ao dram_density: o _CAP_RE é case-insensitive e
+# leria "8Gb" (gigaBIT) como 8 GB. Densidade usa só _extract_gbit (case-sensitive).
+
+def _attach_numeric_specs(r: dict) -> dict:
+    """Anexa o bloco numérico ao resultado (aditivo; contrato no comentário acima).
+
+    Placeholders da gramática ("⚠ cap. não mapeada"), strings 'None' e campos
+    vazios viram None — nunca 0 (zero seria um valor FALSO de capacidade).
+    """
+    if not isinstance(r, dict):
+        return r
+    r["nand_gb"] = _extract_gib(str(r.get("emcp_nand") or ""))
+    r["ram_gb"]  = _extract_gib(str(r.get("emcp_ram") or ""))
+    r["cap_gb"]  = _extract_gib(str(r.get("capacity") or ""))
+    r["density_gbit_num"] = _extract_gbit(str(r.get("dram_density") or ""))
+
+    ram_gen = ""
+    for src in (r.get("subtype"), r.get("emcp_ram")):
+        tok = canonical_gen(str(src or ""))
+        if tok.upper().startswith("LPDDR") and " " not in tok:
+            ram_gen = tok
+            break
+    r["ram_gen"] = ram_gen
+    return r
+
+
 # ── Ponto de entrada público ───────────────────────────────────────────────────
 
 def _pick_best_known(candidates: list):
@@ -1257,9 +1305,9 @@ def _pick_best_known(candidates: list):
     ))
 
 
-def classify(pn_raw: str) -> dict:
+def _classify_impl(pn_raw: str) -> dict:
     """
-    Classifica um Part Number.
+    Classifica um Part Number (pipeline interno — o público é classify()).
 
     Fluxo:
       1. Banco exato (confirmados) → resultado completo e verificado
@@ -1569,3 +1617,15 @@ def classify(pn_raw: str) -> dict:
         "fuzzy_suggestions": suggs,
         "in_review_queue":  True,   # UnknownChip já logado por _log_unknown()
     }
+
+
+def classify(pn_raw: str) -> dict:
+    """
+    Ponto de entrada PÚBLICO da classificação.
+
+    Delega o pipeline a _classify_impl e anexa as specs numéricas
+    (_attach_numeric_specs, F0 — PRECIFICACAO.md §8) em UM ponto só, cobrindo
+    todos os caminhos de retorno (db exato, norm, FBGA, gramática, desconhecido,
+    PN inválido). Aditivo: nenhuma string de exibição muda.
+    """
+    return _attach_numeric_specs(_classify_impl(pn_raw))

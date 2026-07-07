@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'pages',
     'chips',
     'estoque',
+    # Sistema de preços (PRECIFICACAO.md, F2): Buyer/PriceList/Price por-empresa
+    # (Buyer.company; RLS na pricing/0002) + PricingConfig global (singleton).
+    'pricing',
 ]
 
 # ── Autenticação ──────────────────────────────────────────────
