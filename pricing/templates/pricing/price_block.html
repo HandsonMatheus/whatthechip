@@ -1,0 +1,30 @@
+{% comment %}
+  Bloco de preço do comprador (F5/F8 — PRECIFICACAO §7). Fonte ÚNICA do markup:
+  incluído pelo decode_card.html (busca /chips/) e pelo confirm_card.html
+  (bancada do lote). Espera `price_quotes` = [(Buyer, PriceQuote)] no contexto —
+  que chega VAZIO para operador/gerente/anônimo (gate na VIEW, nunca só aqui).
+  ≈ = faixa/cotação velha (staleness, princípio #4 do plano).
+{% endcomment %}
+{% if price_quotes %}
+<div class="dc2-price-block" style="margin:0 16px 12px 16px;padding:10px 14px;background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;border-radius:6px;">
+  {% for buyer, q in price_quotes %}
+  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;{% if not forloop.last %}margin-bottom:6px;{% endif %}">
+    <span style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.04em;">💰 {{ buyer.name }}</span>
+    {% if q.status == "PRICED" %}
+      <span style="font-size:16px;font-weight:800;color:#1d6b2f;">
+        {% if q.is_stale %}≈ {% endif %}{% if q.is_range %}US$ {{ q.price_min }}–{{ q.price_max }}{% else %}US$ {{ q.price_min }}{% endif %}
+      </span>
+      <span style="font-size:11px;color:#557a5e;">
+        {% if q.is_range %}méd. US$ {{ q.mid }} · {% endif %}{% if q.quote_date %}cotado {{ q.quote_date|date:"d/m/Y" }}{% else %}referência (sem data){% endif %} · {{ q.via }}
+      </span>
+    {% elif q.status == "NO_BUY" %}
+      <span style="font-size:13px;font-weight:700;color:#a33;">não compra este item</span>
+    {% elif q.status == "UNQUOTED" %}
+      <span style="font-size:13px;font-weight:600;color:#b8860b;">aguardando cotação</span>
+    {% else %}
+      <span style="font-size:12px;color:#777;">sem preço — {{ q.reason }}</span>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

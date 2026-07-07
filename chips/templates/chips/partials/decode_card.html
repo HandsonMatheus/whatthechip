@@ -40,6 +40,11 @@
     {% endif %}
   </div>
 
+  <!-- ── Preço do comprador (F5 — SÓ papel admin; PRECIFICACAO §7) ────────
+       Markup na fonte única pricing/price_block.html (compartilhado com a
+       bancada do lote). price_quotes chega VAZIO para não-admin (gate na view). -->
+  {% include "pricing/price_block.html" %}
+
   <!-- ── Bloco família sem documentação pública ────────────────────────── -->
   {% if family_undocumented or "sem documentação" in result.subtype %}
   <div class="dc2-undoc-block" style="margin:0 16px 12px 16px;padding:14px 16px;background:#fff8e1;border:1px solid #f0c040;border-left:4px solid #e6a817;border-radius:6px;line-height:1.6;">

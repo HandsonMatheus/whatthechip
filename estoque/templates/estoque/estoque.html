@@ -1044,6 +1044,29 @@ table.est-table td { padding: var(--s5) var(--s5); }
 </div>
 {% endif %}
 
+{% comment %}
+  Valoração do lote (F8 — SÓ admin; PRECIFICACAO §7). `valuations` só entra no
+  contexto para papel admin (gate na view). Fechado = CONGELADO no fechamento;
+  aberto = estimativa on-read da tabela viva. ⚠ {# #} do Django NÃO é multilinha
+  — comentário longo é SEMPRE {% templatetag opencomment %}comment{% templatetag closecomment %}.
+{% endcomment %}
+{% if valuations %}
+<div style="background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;padding:16px 20px;margin-bottom:20px;">
+  <div style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">
+    💰 Valoração do lote {% if lot.status == 'closed' %}· congelada no fechamento{% else %}· estimativa ao vivo{% endif %}
+  </div>
+  {% for v in valuations %}
+  <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;{% if not forloop.last %}margin-bottom:8px;{% endif %}">
+    <span style="font-size:13px;font-weight:700;color:#1d6b2f;">{{ v.buyer.name }}</span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#1d6b2f;">US$ {{ v.total_mid }}</span>
+    <span style="font-size:12px;color:#557a5e;">faixa US$ {{ v.total_low }}–{{ v.total_high }}</span>
+    <span style="font-size:12px;color:#557a5e;">cobertura {{ v.coverage_units|floatformat:0 }}% ({{ v.priced_units }}/{{ v.total_units }} unid.)</span>
+    {% if v.frozen %}<span style="font-size:11px;color:#6f6f6f;">🔒 {{ v.created_at|date:"d/m/Y H:i" }}</span>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
 {# ── Duas colunas: console (esquerda) + estoque (direita) ─────── #}
 <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:stretch;">
 

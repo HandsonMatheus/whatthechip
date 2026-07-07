@@ -10,7 +10,7 @@ mostra auditoria.
 
 from django.contrib import admin
 
-from .models import Buyer, Price, PriceList, PricingConfig
+from .models import Buyer, LotPricing, Price, PriceList, PricingConfig
 
 
 class PlatformScopedAdmin(admin.ModelAdmin):
@@ -62,6 +62,22 @@ class PriceAdmin(PlatformScopedAdmin):
     def save_model(self, request, obj, form, change):
         obj.updated_by = request.user      # Feature 3: registra QUEM mudou
         super().save_model(request, obj, form, change)
+
+
+@admin.register(LotPricing)
+class LotPricingAdmin(PlatformScopedAdmin):
+    """Valoração congelada (F8): registro de auditoria — só leitura no admin."""
+
+    list_display = ('lot', 'buyer', 'company', 'total_mid', 'coverage_units',
+                    'priced_units', 'total_units', 'created_at', 'closed_by')
+    list_filter  = ('buyer', 'company')
+    readonly_fields = ('lot', 'buyer', 'company', 'total_low', 'total_mid',
+                       'total_high', 'priced_units', 'total_units',
+                       'priced_lines', 'total_lines', 'lines', 'created_at',
+                       'closed_by')
+
+    def has_add_permission(self, request):
+        return False        # nasce só no fechamento do lote
 
 
 @admin.register(PricingConfig)

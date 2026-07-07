@@ -14,6 +14,7 @@ POST /estoque/lote/<lot_pk>/reabrir/     → reabre lote
 
 import io
 import json
+import logging
 import re
 from datetime import datetime
 from difflib import get_close_matches
@@ -33,6 +34,8 @@ from chips.engine import assess_profitability, classify, is_dead_by_generation
 from chips.models import UnknownChip, Brand
 
 from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
+
+logger = logging.getLogger(__name__)
 
 
 # Bloqueio "só confirmados": só passa para o estoque quem é confirmado no banco.
@@ -557,10 +560,72 @@ def lot_detail(request, lot_pk):
     if request.headers.get('HX-Request'):
         return render(request, 'estoque/partials/table_body.html', ctx)
 
+    # F8 (PRECIFICACAO §7): valoração do lote — SÓ admin, só no render completo.
+    # Lote FECHADO mostra o CONGELADO (auditoria "vendi com qual tabela");
+    # lote aberto calcula on-read da tabela viva (re-classifica cada PN).
+    if getattr(request, 'company_role', None) == 'admin':
+        ctx['valuations'] = _lot_valuations(request, lot)
+
     return render(request, 'estoque/estoque.html', ctx)
 
 
+def _lot_valuations(request, lot):
+    """[{buyer, frozen, totals…}] para o painel de valoração (admin-only)."""
+    from pricing.engine import price_lot
+    from pricing.models import Buyer, LotPricing
+
+    out = []
+    if lot.status == Lot.STATUS_CLOSED:
+        for lp in LotPricing.objects.filter(lot=lot).select_related('buyer'):
+            out.append({
+                'buyer': lp.buyer, 'frozen': True, 'created_at': lp.created_at,
+                'total_low': lp.total_low, 'total_mid': lp.total_mid,
+                'total_high': lp.total_high,
+                'priced_units': lp.priced_units, 'total_units': lp.total_units,
+                'coverage_units': lp.coverage_units,
+            })
+        if out:
+            return out
+    for buyer in Buyer.objects.filter(active=True):
+        rep = price_lot(lot, buyer)
+        out.append({
+            'buyer': buyer, 'frozen': False, 'created_at': None,
+            'total_low': rep.totals['low'], 'total_mid': rep.totals['mid'],
+            'total_high': rep.totals['high'],
+            'priced_units': rep.priced_units, 'total_units': rep.total_units,
+            'coverage_units': rep.coverage_units,
+        })
+    return out
+
+
 # ─── lot close / reopen ──────────────────────────────────────────────────────
+
+def _freeze_lot_pricing(request, lot):
+    """F8 (PRECIFICACAO §1.7): congela a valoração no FECHAMENTO — o registro
+    'vendi com qual tabela'. Um LotPricing por comprador ativo; reabrir+fechar
+    cria outro (append). ⚠ Falha de preço NUNCA trava o fechamento do lote
+    (operação da bancada > auditoria): loga e segue."""
+    try:
+        from pricing.engine import price_lot
+        from pricing.models import Buyer, LotPricing
+        for buyer in Buyer.objects.filter(active=True):
+            rep = price_lot(lot, buyer)
+            LotPricing.all_companies.create(
+                lot=lot, buyer=buyer, closed_by=request.user,
+                total_low=rep.totals['low'], total_mid=rep.totals['mid'],
+                total_high=rep.totals['high'],
+                priced_units=rep.priced_units, total_units=rep.total_units,
+                priced_lines=rep.priced_lines, total_lines=rep.total_lines,
+                lines=[{
+                    'pn': l.part_number, 'qty': l.quantity,
+                    'status': l.quote.status,
+                    'min': str(l.quote.price_min) if l.quote.price_min is not None else None,
+                    'max': str(l.quote.price_max) if l.quote.price_max is not None else None,
+                    'reason': l.quote.reason, 'via': l.quote.via,
+                } for l in rep.lines])
+    except Exception:
+        logger.exception('F8: falha ao congelar valoração do lote %s', lot.pk)
+
 
 @role_required('manager')   # §8: fechar lote é de gerente+
 @require_POST
@@ -569,6 +634,9 @@ def lot_close(request, lot_pk):
     lot.status    = Lot.STATUS_CLOSED
     lot.closed_at = timezone.now()
     lot.save(update_fields=['status', 'closed_at'])
+    # O snapshot é criado no servidor mesmo quando quem fecha é o GERENTE —
+    # ele não VÊ valores (§7); o registro é para o admin/auditoria.
+    _freeze_lot_pricing(request, lot)
     return redirect('estoque:lot_detail', lot_pk=lot.pk)
 
 
@@ -635,6 +703,12 @@ def preview_chip(request, lot_pk):
         'profitable':      gateway['profitable'],
         'profitable_key':  gateway['profitable_key'],
     }
+
+    # F8 (PRECIFICACAO §7/§12): preço do comprador na bancada — SÓ admin.
+    # quotes_for_admin devolve [] para operador/gerente sem nem consultar preço.
+    from pricing.engine import quotes_for_admin
+    ctx['price_quotes'] = quotes_for_admin(request, result)
+
     return render(request, 'estoque/partials/confirm_card.html', ctx)
 
 

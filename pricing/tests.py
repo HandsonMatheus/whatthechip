@@ -524,6 +524,184 @@ class PriceLotTests(TestCase):
         self.assertEqual((pn, qty, status), ('PNSEM', 5, 'NO_ROW'))
 
 
+class PriceCardGateTests(TestCase):
+    """F5 — o preço no card de busca é SÓ para papel ADMIN da empresa.
+    Operador, gerente e anônimo recebem o card SEM o bloco (gate na view —
+    price_quotes chega vazio; esconder no template nunca é a única barreira)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from tenancy.models import Membership
+        cls.company = Company.objects.create(name='CardCo', slug='card-f5')
+        buyer = Buyer.all_companies.create(company=cls.company, name='Wuquan C',
+                                           slug='wuquan-card')
+        samsung = Brand.objects.create(name='Samsung', code='SAMF5')
+        lista = PriceList.all_companies.create(buyer=buyer, brand=samsung)
+        Price.all_companies.create(
+            price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
+            tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('6.00'), price_max=Decimal('6.00'))
+
+        User = get_user_model()
+        cls.users = {}
+        for role in ('admin', 'manager', 'operator'):
+            u = User.objects.create_user(f'{role}_f5')
+            Membership.objects.create(user=u, company=cls.company, role=role)
+            cls.users[role] = u
+
+    def _decode(self, user=None):
+        from unittest.mock import patch
+        if user is not None:
+            self.client.force_login(user)
+        # Forma COMPLETA do classify() (o card acessa muitos campos):
+        fake = dict(
+            pn='KLMCG8GEAC', known=True, known_exact=True, chip_type='eMMC',
+            subtype='', brand='Samsung', capacity='64GB', dram_density=None,
+            emcp_ram=None, emcp_nand=None, device='', confidence='confirmed',
+            source_url='', is_emcp=False, tip='', reasoning=[], from_web=False,
+            doc_url=None, fuzzy_suggestions=[], interface='', family_prefix='KLM',
+            family_undocumented=False, suffix_note=None,
+            classification_source='banco de dados', grammar_complete=True,
+            in_review_queue=False, pn_not_in_db=False, pn_incomplete=False,
+            profitable='RENTÁVEL',
+            nand_gb=None, ram_gb=None, cap_gb=64.0, density_gbit_num=None,
+            ram_gen='')
+        with patch('chips.views.classify', return_value=fake):
+            return self.client.get('/chips/decode/', {'pn': 'KLMCG8GEAC'})
+
+    def test_admin_ve_o_preco(self):
+        resp = self._decode(self.users['admin'])
+        # 'US$ 6' sem os centavos: o l10n pt-br formata Decimal com vírgula
+        # ("6,00") — a asserção fica robusta a locale.
+        self.assertContains(resp, 'US$ 6')
+        self.assertContains(resp, 'Wuquan C')
+        self.assertContains(resp, 'dc2-price-block')
+
+    def test_gerente_operador_e_anonimo_nao_veem(self):
+        for who in (self.users['manager'], self.users['operator'], None):
+            self.client.logout()
+            resp = self._decode(who)
+            self.assertEqual(resp.status_code, 200)
+            self.assertNotContains(resp, 'US$ 6')
+            self.assertNotContains(resp, 'dc2-price-block')
+
+
+class BenchAndLotPricingTests(TestCase):
+    """F8 — preço na bancada (admin-only), valoração do lote e congelamento
+    no fechamento. + F5-bis: o JSON do /chips/search/ só carrega prices p/ admin."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from tenancy.models import Membership
+        cls.company = Company.objects.create(name='F8Co', slug='f8co')
+        cls.buyer = Buyer.all_companies.create(company=cls.company,
+                                               name='Wuquan F8', slug='wuquan-f8')
+        samsung = Brand.objects.create(name='Samsung', code='SAMF8')
+        lista = PriceList.all_companies.create(buyer=cls.buyer, brand=samsung)
+        Price.all_companies.create(
+            price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
+            tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('6.00'), price_max=Decimal('6.00'))
+
+        User = get_user_model()
+        cls.users = {}
+        for role in ('admin', 'manager', 'operator'):
+            u = User.objects.create_user(f'{role}_f8')
+            Membership.objects.create(user=u, company=cls.company, role=role)
+            cls.users[role] = u
+
+    def _fake_result(self):
+        return dict(
+            pn='KLMCG8GEAC', known=True, known_exact=True, chip_type='eMMC',
+            subtype='', brand='Samsung', capacity='64GB', dram_density=None,
+            emcp_ram=None, emcp_nand=None, device='', confidence='confirmed',
+            source_url='', is_emcp=False, tip='', reasoning=[], from_web=False,
+            doc_url=None, fuzzy_suggestions=[], interface='', family_prefix='KLM',
+            family_undocumented=False, suffix_note=None,
+            classification_source='banco de dados', grammar_complete=True,
+            in_review_queue=False, pn_not_in_db=False, pn_incomplete=False,
+            profitable='RENTÁVEL',
+            nand_gb=None, ram_gb=None, cap_gb=64.0, density_gbit_num=None,
+            ram_gen='')
+
+    def _lot(self, qty=10):
+        from estoque.models import InventoryEntry, Lot
+        with company_scope(self.company):
+            lot = Lot.open_for_company(self.company, self.users['manager'], 'F8')
+            InventoryEntry.objects.create(lot=lot, part_number='KLMCG8GEAC',
+                                          quantity=qty)
+        return lot
+
+    def test_search_api_json_so_tem_prices_para_admin(self):
+        # ⚠ side_effect (dict NOVO por chamada): o search_api MUTA o result
+        # ("prices") — return_value compartilhado vazaria o preço do admin
+        # para a chamada seguinte do operador (em produção o classify cria
+        # um dict novo por chamada; o teste tem que imitar isso).
+        from unittest.mock import patch
+        with patch('chips.views.classify',
+                   side_effect=lambda pn: self._fake_result()):
+            self.client.force_login(self.users['admin'])
+            d = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'}).json()
+            self.assertIn('prices', d)
+            self.assertEqual(d['prices'][0]['min'], '6.00')     # string, não float
+            self.client.logout()
+            self.client.force_login(self.users['operator'])
+            d2 = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'}).json()
+            self.assertNotIn('prices', d2)
+            self.client.logout()
+            d3 = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'}).json()
+            self.assertNotIn('prices', d3)                      # anônimo idem
+
+    def test_bancada_preview_mostra_preco_so_para_admin(self):
+        from unittest.mock import patch
+        lot = self._lot()
+        with patch('estoque.views.classify', return_value=self._fake_result()):
+            self.client.force_login(self.users['admin'])
+            resp = self.client.get(f'/estoque/lote/{lot.pk}/preview/',
+                                   {'pn': 'KLMCG8GEAC'})
+            self.assertContains(resp, 'dc2-price-block')
+            self.assertContains(resp, 'US$ 6')
+            self.client.logout()
+            self.client.force_login(self.users['operator'])
+            resp2 = self.client.get(f'/estoque/lote/{lot.pk}/preview/',
+                                    {'pn': 'KLMCG8GEAC'})
+            self.assertEqual(resp2.status_code, 200)
+            self.assertNotContains(resp2, 'dc2-price-block')
+
+    def test_fechar_lote_congela_valoracao_e_painel_mostra(self):
+        from unittest.mock import patch
+        from pricing.models import LotPricing
+        lot = self._lot(qty=10)
+        with patch('chips.engine.classify', return_value=self._fake_result()):
+            # gerente fecha (é o papel dele) → snapshot nasce no servidor
+            self.client.force_login(self.users['manager'])
+            self.client.post(f'/estoque/lote/{lot.pk}/fechar/')
+            lp = LotPricing.all_companies.get(lot=lot)
+            self.assertEqual(lp.total_mid, Decimal('60.00'))    # 10 × $6
+            self.assertEqual(lp.priced_units, 10)
+            self.assertEqual(lp.company_id, self.company.pk)
+            self.assertEqual(lp.lines[0]['pn'], 'KLMCG8GEAC')
+            # gerente NÃO vê o painel de valoração
+            resp_m = self.client.get(f'/estoque/lote/{lot.pk}/')
+            self.assertNotContains(resp_m, 'Valoração do lote')
+            # admin vê o CONGELADO
+            self.client.logout()
+            self.client.force_login(self.users['admin'])
+            resp_a = self.client.get(f'/estoque/lote/{lot.pk}/')
+            self.assertContains(resp_a, 'Valoração do lote')
+            self.assertContains(resp_a, 'congelada no fechamento')
+            self.assertContains(resp_a, 'US$ 60')
+
+    def test_lote_aberto_mostra_estimativa_ao_vivo_para_admin(self):
+        from unittest.mock import patch
+        lot = self._lot(qty=5)
+        with patch('chips.engine.classify', return_value=self._fake_result()):
+            self.client.force_login(self.users['admin'])
+            resp = self.client.get(f'/estoque/lote/{lot.pk}/')
+            self.assertContains(resp, 'estimativa ao vivo')
+            self.assertContains(resp, 'US$ 30')                 # 5 × $6
+
+
 class PricingRLSTests(TransactionTestCase):
     """Camada B no pricing (espelho do estoque.RLSHandshakeTests): SQL CRU
     respeita as policies das tabelas de preço — nem query bugada cruza empresa.

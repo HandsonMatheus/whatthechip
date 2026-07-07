@@ -365,6 +365,66 @@ class Price(models.Model):
         return super().save(*args, **kwargs)
 
 
+@pghistory.track()  # auditoria: o congelamento é o registro "vendi com qual tabela"
+class LotPricing(models.Model):
+    """F8 — valoração CONGELADA de um lote no fechamento (PRECIFICACAO §1.7).
+
+    A exibição do preço é sempre on-read (tabela viva); ao FECHAR o lote, este
+    snapshot grava com qual cotação o lote foi valorado — por comprador. Reabrir
+    e fechar de novo cria OUTRO registro (append; o histórico fica). Visível só
+    para admin/plataforma; o gerente fecha o lote mas não vê valores (§7).
+    """
+
+    lot   = models.ForeignKey('estoque.Lot', on_delete=models.CASCADE,
+                              related_name='pricings', verbose_name='Lote')
+    buyer = models.ForeignKey(Buyer, on_delete=models.PROTECT,
+                              related_name='+', verbose_name='Comprador')
+    # Denormalizada do lote (RLS exige coluna local — padrão estoque T3/T4).
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+
+    total_low  = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Total (baixo)')
+    total_mid  = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Total (médio)')
+    total_high = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Total (alto)')
+    priced_units = models.PositiveIntegerField(verbose_name='Unid. precificadas')
+    total_units  = models.PositiveIntegerField(verbose_name='Unid. totais')
+    priced_lines = models.PositiveIntegerField(verbose_name='Linhas precificadas')
+    total_lines  = models.PositiveIntegerField(verbose_name='Linhas totais')
+    #: Auditoria por linha: [{pn, qty, status, min, max, reason, via}] — artefato
+    #: de registro (não é consultado relacionalmente; pro relacional há o Price).
+    lines = models.JSONField(default=list, verbose_name='Linhas (auditoria)')
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Congelado em')
+    closed_by  = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.SET_NULL, null=True, blank=True,
+                                   related_name='+', verbose_name='Fechado por')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Valoração de lote (congelada)'
+        verbose_name_plural = 'Valorações de lote (congeladas)'
+        ordering = ['-created_at']
+        base_manager_name = 'all_companies'
+        indexes = [models.Index(fields=['company', 'lot'],
+                                name='lotpricing_company_lot')]
+
+    def __str__(self):
+        return f'Lote #{self.lot_id} · {self.buyer} · {self.created_at:%d/%m/%Y}'
+
+    @property
+    def coverage_units(self) -> float:
+        return (100.0 * self.priced_units / self.total_units) if self.total_units else 0.0
+
+    def save(self, *args, **kwargs):
+        if self.lot_id and not self.company_id:
+            self.company_id = self.lot.company_id      # herda do lote (RLS local)
+        self.full_clean(validate_unique=False, validate_constraints=False)
+        return super().save(*args, **kwargs)
+
+
 class PricingConfig(models.Model):
     """Configuração do sistema de preços — singleton pk=1, editável no admin,
     efeito imediato (padrão ProfitabilityConfig). GLOBAL por ora; se um dia

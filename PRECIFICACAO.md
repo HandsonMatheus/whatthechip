@@ -5,9 +5,11 @@
 > partir do `PROMPT_PRECOS.md` e da planilha `wuquanprices.xlsx` (comprador Wuquan).
 > A fundação (`PLANO_MULTITENANT.md`, T1–T4) está construída e em produção — a
 > precificação roda em cima dela. **Ver §12 (diário de execução)** para o que já
-> existe e o runbook de validação de cada fase. **F2, F3 e F4 CONSTRUÍDAS
-> (2026-07-07, suíte 271/271; import validado contra a planilha REAL: 314
-> preços, zero conflitos)** — próxima fase: **F5** (preço no card de busca).
+> existe e o runbook de validação de cada fase. **F2–F5 + F5-bis + F8
+> CONSTRUÍDAS (2026-07-07, suíte 277/277). Import REAL gravado no local: 314
+> preços, planilha APOSENTADA. Preço vivo na home (JS), na bancada do lote e
+> valoração congelada no fechamento.** Restam: **F6** (dashboard `/partner/`)
+> e **F7** (docs no CLAUDE.md).
 > Quando implementado, este arquivo vira a **bíblia técnica do sistema de preços**
 > (mesmo papel do `RENTABILIDADE.md` para rentabilidade). A aba `Instructions` da
 > planilha já aponta para este documento.
@@ -370,10 +372,10 @@ numéricos para máquina".
 | **F2 ✅** (2026-07-07) | app `pricing/`: modelos §3 + migrations (0001 + 0002-RLS) + pghistory + admin básico (§12.3) | suíte 256 OK no agente; migrate + testes Postgres no dono = runbook §12.3 |
 | **F3 ✅** (2026-07-07) | `pricing/engine.py`: `price()`/`price_lot()` + goldens com os números da planilha real (§12.4) | suíte 266 OK no agente; runbook §12.4 |
 | **F4 ✅** (2026-07-07) | `import_price_xlsx` + testes + **dry-run E commit validados na planilha real** no sandbox (314 preços; §12.5) | dono roda dry-run + `--commit` no banco dele = runbook §12.5 |
-| **F5** | preço no card de busca (gate por papel admin) | suíte verde · teste do gate por papel |
+| **F5 ✅** (2026-07-07) | preço no card de busca, gate por papel admin (§12.6) | suíte 273 OK · `PriceCardGateTests` (admin vê; gerente/operador/anônimo não) |
 | **F6** | dashboard `/partner/` (§7.1: listas, herdados, unquoted, permissões) | teste de isolamento entre buyers |
 | **F7** | docs: este arquivo atualizado p/ bíblia + seção no CLAUDE.md (§4 e §5: comandos) | — |
-| **F8** *(futura, quando o dono pedir)* | preço no estoque: valoração on-read, `LotPricing` congela no fechamento, export com cobertura | suíte estoque verde |
+| **F8 ✅** (2026-07-07, antecipada a pedido do dono) | preço na bancada do lote (admin) + valoração on-read no lote + `LotPricing` congela no fechamento (§12.7). Export com preço: fora por ora (vazaria ao gerente) | suíte 277 OK · `BenchAndLotPricingTests` |
 
 O retrofit multi-tenant do **estoque** NÃO é fase daqui — é projeto próprio (§10).
 
@@ -637,8 +639,10 @@ verdade** = cotado×cotado divergente ou cotado×NO — esses continuam abortand
 # local:
 python manage.py test pricing --settings=core.settings_test                  # 32 esperados
 python manage.py test chips estoque tenancy pricing --settings=core.settings_test  # 271
-python manage.py import_price_xlsx wuquanprices.xlsx --buyer wuquan          # DRY-RUN: revisar
-python manage.py import_price_xlsx wuquanprices.xlsx --buyer wuquan --commit # grava LOCAL
+# ⚠ --company OBRIGATÓRIO quando há 2+ empresas ativas (local tem a "Brasil
+#   Reciclagem" de teste — o fail-closed exige o slug explícito):
+python manage.py import_price_xlsx wuquanprices.xlsx --buyer wuquan --company eminer          # DRY-RUN
+python manage.py import_price_xlsx wuquanprices.xlsx --buyer wuquan --company eminer --commit # grava LOCAL
 # admin local: Listas de preços → configurar herança do Wuquan:
 #   · lista GENÉRICA  → herda de → Nanya      (o "curinga" DRAM, agora dado)
 #   (SK importou linhas próprias — espelho fica a critério futuro)
@@ -652,6 +656,105 @@ python manage.py import_price_xlsx wuquanprices.xlsx --buyer wuquan --commit
 python manage.py guard_catalog
 ```
 
-**Próxima fase: F5** — preço no card de busca `/chips/`, gate por papel ADMIN
-(`tenancy.access`; gerente/operador seguem sem ver preço). Pequena: uma chamada
-a `price()` na view + bloco no template.
+### 12.6 F5 — construída em 2026-07-07 (suíte 273/273; import REAL já gravado no local)
+
+**Contexto:** o dono rodou o `import_price_xlsx --commit` no banco local — 314
+preços vivos, comprador Wuquan criado, planilha oficialmente aposentada.
+
+**O que existe:**
+
+- **`chips/views.py::_price_quotes_for_admin(request, result)`:** gate por
+  PAPEL antes de qualquer query — `request.company_role != 'admin'` → lista
+  vazia (operador/gerente/anônimo nem disparam a resolução). Admin → um
+  `PriceQuote` por comprador ativo da empresa (v1: o Wuquan; multi-comprador já
+  funciona de graça). Import lazy (chips não depende de pricing no load).
+- **Bloco no `decode_card.html`** (após o cabeçalho): PRICED → `US$ 6,00` ou
+  `≈ US$ 13,50–16,50` + méd. + data da cotação (ou "referência (sem data)") +
+  proveniência (`marca`/`herança…`); NO_BUY → "não compra este item"; UNQUOTED →
+  "aguardando cotação"; NO_KEY/NO_ROW → "sem preço — motivo". O `≈` marca
+  faixa/staleness (princípio #4).
+- **`PriceQuote.mid`** (property sem argumentos) para uso em template.
+- **`PriceCardGateTests`:** admin vê o bloco; gerente, operador E anônimo
+  recebem o card sem `dc2-price-block` (gate provado na view, não no template).
+  ⚠ Nota de l10n: `LANGUAGE_CODE=pt-br` formata Decimal com vírgula ("6,00") —
+  asserções de preço em teste não devem fixar o separador decimal.
+
+**Runbook do dono (F5 — só código):**
+
+```bash
+python manage.py test chips estoque tenancy pricing --settings=core.settings_test   # 273
+python manage.py runserver     # smoke: logar como ADMIN → buscar KLMAG2GE4A-A001
+                               # (ou outro PN classificável) → bloco 💰 no card;
+                               # logar como operador → card SEM preço
+git add chips/views.py chips/templates/chips/partials/decode_card.html pricing/ PRECIFICACAO.md
+git commit -m "pricing F5: preço no card de busca — admin-only, com cenários/staleness/proveniência"
+git push origin main
+```
+
+**Produção (quando quiser ligar os preços lá):** o código sobe no push; os
+DADOS entram com o mesmo import rodado contra o prod (backup antes, como
+sempre): `export DATABASE_URL=<prod>` → dry-run → `--commit` → `guard_catalog`.
+
+### 12.7 F5-bis + F8 — construídas em 2026-07-07 (suíte 277/277)
+
+**F5-bis — o card da home é JS, não o partial (achado do smoke do dono):** a
+home renderiza o resultado client-side a partir do JSON de `/chips/search/`
+(o `decode_card.html` da F5 só atende o partial HTMX de `/chips/decode/`).
+Correções: `search_api` agora anexa `result["prices"]` — **só para papel
+admin** (o gate é do servidor; para os demais a chave nem existe no JSON;
+Decimal serializado como STRING) — e o `renderResult` do `_content/index.html`
+ganhou o bloco 💰. ⚠ A home é uma Page do CMS: depois de editar o
+`_content/index.html`, rodar **`python manage.py sync_index_page`** (senão o
+banco segue servindo o JS antigo).
+
+**F8 — preço na bancada + valoração + congelamento (antecipada a pedido):**
+
+- **Fonte única do gate:** `pricing.engine.quotes_for_admin(request, result)`
+  (chips/views delega; estoque/views consome). Markup na fonte única
+  `pricing/templates/pricing/price_block.html`, incluído pelo `decode_card.html`
+  E pelo `confirm_card.html` (bancada — só em `aprovado`/`fila`; preço de
+  sucata não orienta triagem).
+- **Valoração do lote (admin-only, `estoque.html`):** lote ABERTO = estimativa
+  on-read da tabela viva (re-classifica cada PN); lote FECHADO = painel do
+  **congelado**.
+- **`LotPricing` (modelo novo, migrações 0003+0004-RLS):** no fechamento do
+  lote (`lot_close`), um snapshot por comprador ativo — totais nos 3 cenários,
+  cobertura, linhas em JSON (auditoria "vendi com qual tabela"). Reabrir+fechar
+  = outro registro (append). Falha de preço **nunca trava o fechamento** (log e
+  segue). Gerente fecha mas não vê valores; admin vê painel + registro no
+  Django admin (read-only). Export `.xlsx` segue SEM preço (deliberado:
+  exportar é permissão de gerente — colunas de preço vazariam; um "export
+  valorizado" admin-only fica como melhoria futura).
+
+**Lições de implementação (registro):**
+1. ⚠ **`{# … #}` do Django NÃO é multilinha** — comentário longo em template
+   vira TEXTO RENDERIZADO (vazou "Valoração do lote" pra todo papel até o
+   teste pegar). Comentário longo = `{% comment %}…{% endcomment %}`, sempre.
+2. Em teste, mock de `classify` com `return_value` compartilhado + view que
+   MUTA o result (`search_api` anexa `prices`) vaza estado entre chamadas —
+   usar `side_effect=lambda pn: dict_novo()`.
+
+**Runbook do dono (F5-bis + F8):**
+
+```bash
+python manage.py migrate                    # pricing/0003 (LotPricing) + 0004 (RLS)
+python manage.py sync_index_page            # publica o JS novo da home (CMS Page)
+python manage.py test chips estoque tenancy pricing --settings=core.settings_test   # 277
+python manage.py test pricing               # Postgres-only (RLS + pghistory)
+python manage.py runserver                  # smoke como ADMIN:
+                                            #  · home: buscar H5TQ4G63AFR → 💰 US$ 0,60
+                                            #  · lote: preview do mesmo PN → 💰 no card
+                                            #  · lote: painel "Valoração do lote" no topo
+                                            #  · fechar lote → painel vira "congelada"
+                                            # e como OPERADOR: nada de preço em lugar nenhum
+git add pricing/ chips/ estoque/ _content/index.html PRECIFICACAO.md
+git commit -m "pricing F5-bis+F8: preço na home (JSON/JS), bancada do lote e LotPricing congelado"
+git push origin main
+# prod (quando for ligar): build migra; rodar com DATABASE_URL do prod:
+#   sync_index_page (home nova) → import_price_xlsx (se ainda não rodou) → guard_catalog
+```
+
+**Próxima fase: F6** — dashboard `/partner/` (§7.1): a "UMA PÁGINA" do
+comprador, herdados acinzentados, células amarelas, sem auditoria visível.
+⚠ Lembrar da descoberta do §12.4: o fluxo do parceiro precisa emitir o GUC
+`app.company_id` da empresa do Buyer (parceiro não tem Membership).

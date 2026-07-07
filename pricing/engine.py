@@ -88,6 +88,11 @@ class PriceQuote:
             return self.price_max
         return ((self.price_min + self.price_max) / 2).quantize(_CENT, ROUND_HALF_UP)
 
+    @property
+    def mid(self) -> Decimal | None:
+        """Ponto médio da faixa — atalho SEM argumentos para uso em template."""
+        return self.value(PricingConfig.SCENARIO_MID)
+
 
 def _no_key(kind: str, reason: str) -> PriceQuote:
     return PriceQuote(status=NO_KEY, reason=reason, kind=kind)
@@ -206,6 +211,32 @@ def price(result: dict, buyer) -> PriceQuote:
              (date.today() - row.quote_date).days > cfg.staleness_days)
     return PriceQuote(status=PRICED, price_min=row.price_min,
                       price_max=row.price_max, is_stale=stale, **base)
+
+
+def quotes_for_admin(request, result):
+    """[(Buyer, PriceQuote)] para o card — SÓ papel ADMIN da empresa
+    (PRECIFICACAO §7). O gate roda ANTES de qualquer query: operador, gerente e
+    anônimo recebem lista vazia sem nem disparar a resolução de preço.
+    Fonte única do gate — consumida por chips/views (busca) e estoque/views
+    (bancada do lote, F8)."""
+    if getattr(request, 'company_role', None) != 'admin':
+        return []
+    from .models import Buyer
+    return [(b, price(result, b)) for b in Buyer.objects.filter(active=True)]
+
+
+def serialize_quote(buyer, q) -> dict:
+    """PriceQuote → dict JSON-safe (Decimal vira string — nunca float) para o
+    card client-side da home (search_api)."""
+    return {
+        'buyer': buyer.name, 'status': q.status, 'reason': q.reason,
+        'min': str(q.price_min) if q.price_min is not None else None,
+        'max': str(q.price_max) if q.price_max is not None else None,
+        'mid': str(q.mid) if q.mid is not None else None,
+        'is_range': q.is_range, 'is_stale': q.is_stale,
+        'quote_date': q.quote_date.strftime('%d/%m/%Y') if q.quote_date else None,
+        'via': q.via,
+    }
 
 
 # ── Lote inteiro (§5: regra 6 do comprador) ────────────────────────────────────

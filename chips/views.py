@@ -70,10 +70,27 @@ def search_api(request):
         return JsonResponse({"error": "PN muito curto — mínimo 4 caracteres"}, status=400)
 
     result = classify(pn)
+
+    # F5-bis (PRECIFICACAO §7): a home renderiza o card em JS a partir DESTE
+    # JSON — o preço entra aqui, e SÓ para papel admin (o gate é do servidor;
+    # para os demais a chave "prices" nem existe na resposta).
+    quotes = _price_quotes_for_admin(request, result)
+    if quotes:
+        from pricing.engine import serialize_quote
+        result["prices"] = [serialize_quote(b, q) for b, q in quotes]
+
     return JsonResponse(result)
 
 
 @require_GET
+def _price_quotes_for_admin(request, result):
+    """Bloco de preço do card (F5 — PRECIFICACAO §7): SÓ para papel ADMIN da
+    empresa. Delegado à fonte única `pricing.engine.quotes_for_admin` (import
+    lazy: o chips não depende do pricing no load do app)."""
+    from pricing.engine import quotes_for_admin
+    return quotes_for_admin(request, result)
+
+
 def decode_html(request):
     """
     Classifica um Part Number e retorna HTML parcial para o HTMX.
@@ -118,6 +135,9 @@ def decode_html(request):
         "profitable":          profitable,        # canônico — só p/ retrocompat de lógica
         "profitable_key":      profitable_key,    # chave estável — usar na lógica do template
         "profitable_label":    profitable_label,  # rótulo traduzido — usar na EXIBIÇÃO
+        # F5 (PRECIFICACAO §7): preço do comprador — lista VAZIA para quem não
+        # é admin da empresa (operador/gerente/anônimo nunca veem preço).
+        "price_quotes":        _price_quotes_for_admin(request, result),
     }
 
     return render(request, "chips/partials/decode_card.html", context)

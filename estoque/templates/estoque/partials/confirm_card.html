@@ -116,6 +116,14 @@
     </div>
   {% endif %}
 
+  {% comment %}
+    Preço do comprador (F8 — SÓ admin; PRECIFICACAO §7). price_quotes chega
+    vazio p/ operador/gerente (gate na view). Não renderiza em reprovado/
+    desconhecido — preço de sucata não orienta a bancada.
+  {% endcomment %}
+  {% if gateway_dest == 'aprovado' or gateway_dest == 'fila' %}
+  <div style="margin-top:14px;">{% include "pricing/price_block.html" %}</div>
+  {% endif %}
 
   {# ── Ações ───────────────────────────────────────────────────── #}
   <form class="est-confirm-form"
