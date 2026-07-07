@@ -18,12 +18,14 @@ import re
 from datetime import datetime
 from difflib import get_close_matches
 
-from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.db.models import F
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+
+from tenancy.access import role_required
 
 from chips.conventions import canonical_gen
 from chips.chip_types import canonical_chip_type, generation_of, label_kind
@@ -205,7 +207,13 @@ def _entries_for_display(lot, q='', tipo=''):
 
 
 def _get_lot(request, lot_pk):
-    return get_object_or_404(Lot, pk=lot_pk, operator=request.user)
+    """Lote acessível ao usuário. T1 (papéis, §8 do plano): o lote é um ATIVO DA
+    EMPRESA — o gerente abre, o operador lança nele — então caiu o filtro
+    ``operator=request.user`` (cada um só via os próprios lotes, o que impediria
+    o operador de trabalhar num lote aberto pelo gerente). O campo ``operator``
+    do Lot vira "quem abriu". T3: este helper passa a ser escopado por empresa
+    via CompanyScopedManager (hoje há UMA empresa; o gate de papel já protege)."""
+    return get_object_or_404(Lot, pk=lot_pk)
 
 
 def _extract_gb(text: str) -> str:
@@ -474,32 +482,57 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
     return _out('aprovado', profitable)
 
 
+# ─── painel (home pós-login) ─────────────────────────────────────────────────
+
+@role_required('operator')
+def painel(request):
+    """Home pós-login: responde "o que eu faço agora?" antes de jogar o usuário
+    na lista de lotes. Padrão lançadeira (decisão de UX 2026-07-06): o lote
+    ABERTO vira o CTA principal ("Continuar triagem"); sem lote aberto, o
+    empty-state orienta por papel (gerente: abrir lote; operador: pedir ao
+    gerente). Stats do dia são contexto, não o foco — o produto é a bancada.
+    T3: tudo aqui passa a ser escopado por empresa via manager."""
+    today = timezone.localdate()
+    open_lots = list(Lot.objects.filter(status=Lot.STATUS_OPEN))
+    ctx = {
+        'open_lots': open_lots,
+        'stats': {
+            'open_count':     len(open_lots),
+            'types_today':    InventoryEntry.objects.filter(added_at__date=today).count(),
+            'pending_count':  PendingEntry.objects.count(),
+            'rejected_today': RejectedEntry.objects.filter(created_at__date=today).count(),
+        },
+    }
+    return render(request, 'estoque/painel.html', ctx)
+
+
 # ─── lot list ───────────────────────────────────────────────────────────────
 
-@login_required
+@role_required('operator')
 def lot_list(request):
-    lots = Lot.objects.filter(operator=request.user)
+    # Todos os lotes (da empresa — T3 escopa via manager; hoje há uma empresa).
+    # Antes filtrava por operator=request.user; ver docstring de _get_lot.
+    lots = Lot.objects.all()
     return render(request, 'estoque/lotes.html', {'lots': lots})
 
 
 # ─── lot create ─────────────────────────────────────────────────────────────
 
-@login_required
+@role_required('manager')   # §8: abrir lote é de gerente+
 @require_POST
 def lot_create(request):
     description = request.POST.get('description', '').strip()
-    number = Lot.next_number()
-    lot = Lot.objects.create(
-        number=number,
-        operator=request.user,
-        description=description,
-    )
+    # T2: numeração atômica por empresa (lock no contador da Company) — elimina
+    # a corrida do antigo Max+1. request.company existe: o gate exige Membership.
+    # T3: o lote nasce com a empresa (e a filial do gerente, se houver — §9).
+    lot = Lot.open_for_company(request.company, request.user, description,
+                               branch=request.membership.branch)
     return redirect('estoque:lot_detail', lot_pk=lot.pk)
 
 
 # ─── lot detail ─────────────────────────────────────────────────────────────
 
-@login_required
+@role_required('operator')
 def lot_detail(request, lot_pk):
     lot  = _get_lot(request, lot_pk)
     q    = request.GET.get('q', '').strip()
@@ -529,7 +562,7 @@ def lot_detail(request, lot_pk):
 
 # ─── lot close / reopen ──────────────────────────────────────────────────────
 
-@login_required
+@role_required('manager')   # §8: fechar lote é de gerente+
 @require_POST
 def lot_close(request, lot_pk):
     lot = _get_lot(request, lot_pk)
@@ -539,7 +572,7 @@ def lot_close(request, lot_pk):
     return redirect('estoque:lot_detail', lot_pk=lot.pk)
 
 
-@login_required
+@role_required('manager')   # §8: reabrir lote é de gerente+
 @require_POST
 def lot_reopen(request, lot_pk):
     lot = _get_lot(request, lot_pk)
@@ -551,7 +584,7 @@ def lot_reopen(request, lot_pk):
 
 # ─── preview chip ────────────────────────────────────────────────────────────
 
-@login_required
+@role_required('operator')
 def preview_chip(request, lot_pk):
     lot = _get_lot(request, lot_pk)
     pn  = _normalise_pn(request.GET.get('pn', ''))
@@ -607,7 +640,7 @@ def preview_chip(request, lot_pk):
 
 # ─── add chip ────────────────────────────────────────────────────────────────
 
-@login_required
+@role_required('operator')   # §8: adicionar a lote ABERTO é o trabalho do operador
 @require_POST
 def add_chip(request, lot_pk):
     lot = _get_lot(request, lot_pk)
@@ -658,7 +691,9 @@ def add_chip(request, lot_pk):
     has_cap = _has_capacity(server_result)
 
     if not has_cap:
-        UnknownChip.objects.get_or_create(part_number=pn)
+        # company: anotação §14.1 (fila global; 1ª empresa a reportar).
+        UnknownChip.objects.get_or_create(
+            part_number=pn, defaults={'company': request.company})
         return render(request, 'estoque/partials/unknown_feedback.html', {'pn': pn})
 
     # ── Bloqueio "só confirmados" ────────────────────────────────────────────
@@ -738,10 +773,15 @@ def add_chip(request, lot_pk):
 
 # ─── remove entry ────────────────────────────────────────────────────────────
 
-@login_required
+@role_required('operator')
 @require_POST
 def remove_entry(request, lot_pk, pk):
     lot   = _get_lot(request, lot_pk)
+    # Operador só corrige lançamento em lote ABERTO (parte do fluxo de adicionar).
+    # Mexer em lote fechado é correção de gestão → gerente+ (comportamento de
+    # hoje preservado para o gerente; antes qualquer um removia de lote fechado).
+    if not lot.is_open and not request.membership.has_role('manager'):
+        raise PermissionDenied('Lote fechado: remoção é ação de gerente.')
     entry = get_object_or_404(InventoryEntry, pk=pk, lot=lot)
     qty   = max(1, int(request.POST.get('qty') or 1))
 
@@ -762,7 +802,7 @@ def remove_entry(request, lot_pk, pk):
 
 # ─── export xls ──────────────────────────────────────────────────────────────
 
-@login_required
+@role_required('manager')   # §8: exportar lote é de gerente+
 def export_xls(request, lot_pk):
     try:
         import openpyxl

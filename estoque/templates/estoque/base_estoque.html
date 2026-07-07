@@ -30,15 +30,38 @@
   .wtc-panel *, .wtc-panel *::before, .wtc-panel *::after { box-sizing: border-box; }
   .wtc-panel input::placeholder { color: #a8a8a8; }
 
-  /* Header (Carbon UI shell — escuro) */
+  /* Header (Carbon UI shell — escuro)
+     Anatomia, esquerda → direita:
+       marca (igual à home: texto + CJK) · nav (ativo = sublinha azul) ·
+       [spacer] · identidade da EMPRESA (logo/nome/filial) · usuário + papel ·
+       ações (site / sair). Cada zona separada por borda sutil. */
   .wtc-header { height: 56px; background: #161616; display: flex; align-items: center; position: sticky; top: 0; z-index: 40; }
-  .wtc-header__logo { background: #fff; height: 100%; display: flex; align-items: center; padding: 0 18px; flex: none; }
-  .wtc-header__logo img { height: 26px; width: auto; display: block; }
-  .wtc-header__nav { display: flex; align-items: center; gap: 8px; height: 100%; padding: 0 8px 0 20px; color: #f4f4f4; font-size: 15px; font-weight: 600; border-bottom: 3px solid #0f62fe; margin-bottom: -1px; text-decoration: none; }
+
+  .wtc-header__brand { display: flex; align-items: center; height: 100%; padding: 0 20px; border-right: 1px solid #393939; text-decoration: none; flex: none; }
+  .wtc-header__brand img { height: 26px; width: auto; display: block; }
+
+  .wtc-header__nav { display: flex; align-items: center; gap: 8px; height: 100%; padding: 0 16px; color: #c6c6c6; font-size: 14px; font-weight: 500; text-decoration: none; border-bottom: 3px solid transparent; border-top: 3px solid transparent; }
+  .wtc-header__nav:hover { background: #262626; color: #f4f4f4; }
+  .wtc-header__nav svg { stroke: currentColor; opacity: .8; }
+  .wtc-header__nav--active { color: #fff; font-weight: 600; border-bottom-color: #0f62fe; }
+  .wtc-header__nav--active svg { stroke: #78a9ff; opacity: 1; }
+
   .wtc-header__spacer { flex: 1; }
-  .wtc-header__actions { display: flex; align-items: center; gap: 6px; padding-right: 12px; }
-  .wtc-header__user { color: #c6c6c6; font-size: 14px; margin-right: 6px; }
-  .wtc-header__btn { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; color: #f4f4f4; font-size: 14px; border: 1px solid #525252; background: transparent; cursor: pointer; white-space: nowrap; flex: none; text-decoration: none; }
+
+  /* Identidade da empresa (tenant): logo + nome + filial */
+  .wtc-header__org { display: flex; align-items: center; gap: 10px; height: 100%; padding: 0 16px; border-left: 1px solid #393939; }
+  .wtc-header__org-logo { height: 30px; width: 30px; object-fit: contain; background: #fff; padding: 2px; border-radius: 2px; flex: none; }
+  .wtc-header__org-txt { display: flex; flex-direction: column; line-height: 1.2; }
+  .wtc-header__org-name { color: #f4f4f4; font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .wtc-header__org-branch { color: #8d8d8d; font-size: 11px; white-space: nowrap; }
+
+  /* Usuário + crachá de papel */
+  .wtc-header__who { display: flex; align-items: center; gap: 8px; height: 100%; padding: 0 16px; border-left: 1px solid #393939; }
+  .wtc-header__user { color: #c6c6c6; font-size: 13px; white-space: nowrap; }
+  .wtc-header__role { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #78a9ff; border: 1px solid #33539b; padding: 2px 7px; white-space: nowrap; }
+
+  .wtc-header__actions { display: flex; align-items: center; gap: 6px; height: 100%; padding: 0 12px 0 16px; border-left: 1px solid #393939; }
+  .wtc-header__btn { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; color: #f4f4f4; font-size: 14px; border: 1px solid #525252; background: transparent; cursor: pointer; white-space: nowrap; flex: none; text-decoration: none; font-family: inherit; }
   .wtc-header__btn:hover { background: #262626; }
   .wtc-header__btn--logout { color: #ff8389; }
 
@@ -47,12 +70,19 @@
 
   /* Links visitados nunca roxos */
   .wtc-work a, .wtc-work a:visited { color: #0f62fe; }
-  .wtc-header__nav, .wtc-header__nav:visited { color: #f4f4f4; }
+  .wtc-header__nav:visited { color: #c6c6c6; }
+  .wtc-header__nav--active:visited { color: #fff; }
   .wtc-header__btn, .wtc-header__btn:visited { color: #f4f4f4; }
   .wtc-header__btn--logout, .wtc-header__btn--logout:visited { color: #ff8389; }
 
+  @media (max-width: 900px) {
+    .wtc-header__who { display: none; }
+    .wtc-header__org { border-left: none; }
+    .wtc-header__brand img { height: 22px; }
+  }
   @media (max-width: 640px) {
-    .wtc-header__user { display: none; }
+    .wtc-header__org-txt { display: none; }
+    .wtc-header__btn span { display: none; }
     .wtc-work { padding: 16px; }
   }
   </style>
@@ -63,20 +93,57 @@
 
 <!-- ── Carbon UI shell header (escuro) ─────────────────────────── -->
 <header class="wtc-header">
-  <a href="/" class="wtc-header__logo">
-    <img src="{% static 'img/logo-light.svg' %}" alt="WhatTheChip?">
+  {# Marca — o MESMO svg da home no tema escuro (wtc-logo-dark) #}
+  <a href="{% url 'painel' %}" class="wtc-header__brand">
+    <img src="{% static 'img/wtc-logo-dark.svg' %}" alt="WhatTheChip 什么芯片">
   </a>
-  <a href="{% url 'estoque:index' %}" class="wtc-header__nav">
-    <svg width="18" height="18" viewBox="0 0 32 32" fill="none" stroke="#78a9ff" stroke-width="2">
+
+  <a href="{% url 'painel' %}" class="wtc-header__nav{% block nav_painel %}{% endblock %}">
+    <svg width="18" height="18" viewBox="0 0 32 32" fill="none" stroke-width="2">
+      <rect x="5" y="5" width="9" height="9"/><rect x="18" y="5" width="9" height="9"/>
+      <rect x="5" y="18" width="9" height="9"/><rect x="18" y="18" width="9" height="9"/>
+    </svg>
+    Painel
+  </a>
+  <a href="{% url 'estoque:index' %}" class="wtc-header__nav{% block nav_estoque %}{% endblock %}">
+    <svg width="18" height="18" viewBox="0 0 32 32" fill="none" stroke-width="2">
       <path d="M16 4 28 10v12L16 28 4 22V10z"/><path d="M4 10l12 6 12-6M16 16v12"/>
     </svg>
     Estoque
   </a>
+
   <div class="wtc-header__spacer"></div>
-  <div class="wtc-header__actions">
+
+  {# Identidade da EMPRESA: logo + nome + filial (tenant da sessão) #}
+  {% if wtc_company %}
+  <div class="wtc-header__org" title="{{ wtc_company.name }}{% if wtc_membership.branch %} · {{ wtc_membership.branch.name }}{% endif %}">
+    {% if wtc_company.logo %}
+      <img class="wtc-header__org-logo" src="{{ wtc_company.logo.url }}" alt="{{ wtc_company.name }}">
+    {% endif %}
+    <div class="wtc-header__org-txt">
+      <span class="wtc-header__org-name">{{ wtc_company.name }}</span>
+      {% if wtc_membership.branch %}
+        <span class="wtc-header__org-branch">{{ wtc_membership.branch.name }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# Usuário + crachá de papel #}
+  <div class="wtc-header__who">
     <span class="wtc-header__user">{{ request.user.get_full_name|default:request.user.username }}</span>
-    <a href="/" class="wtc-header__btn">‹ Voltar ao site</a>
-    <a href="{% url 'logout' %}" class="wtc-header__btn wtc-header__btn--logout">⤬ Sair</a>
+    {% if wtc_membership %}
+      <span class="wtc-header__role">{{ wtc_membership.get_role_display }}</span>
+    {% endif %}
+  </div>
+
+  <div class="wtc-header__actions">
+    <a href="/" class="wtc-header__btn">‹ <span>Site</span></a>
+    {# Logout é POST (Django 5 removeu o GET do LogoutView) → LOGOUT_REDIRECT_URL = '/' #}
+    <form method="post" action="{% url 'logout' %}" style="margin:0;display:flex;">
+      {% csrf_token %}
+      <button type="submit" class="wtc-header__btn wtc-header__btn--logout">⤬ <span>Sair</span></button>
+    </form>
   </div>
 </header>
 

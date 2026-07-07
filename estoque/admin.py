@@ -41,19 +41,39 @@ def _confirm_as_knownpart(pend):
         pass
 
 
+class PlatformScopedAdmin(admin.ModelAdmin):
+    """Base dos ModelAdmins do estoque (T3): o Django admin é ferramenta de
+    PLATAFORMA (§8 do plano) e enxerga TODAS as empresas — por isso usa o
+    manager ``all_companies`` explicitamente (o manager padrão é fail-closed e
+    explodiria fora de request escopada). Dropdowns de FK para Lot idem."""
+
+    def get_queryset(self, request):
+        qs = self.model.all_companies.get_queryset()
+        ordering = self.get_ordering(request)
+        if ordering:
+            qs = qs.order_by(*ordering)
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'lot':
+            kwargs['queryset'] = Lot.all_companies.all()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
 @admin.register(Lot)
-class LotAdmin(admin.ModelAdmin):
-    list_display  = ("number", "operator", "description", "status", "created_at", "closed_at")
-    list_filter   = ("status", "operator")
+class LotAdmin(PlatformScopedAdmin):
+    list_display  = ("number", "company", "branch", "operator", "description",
+                     "status", "created_at", "closed_at")
+    list_filter   = ("status", "company", "operator")
     search_fields = ("number", "description")
     readonly_fields = ("created_at",)
     ordering      = ("-number",)
 
 
 @admin.register(InventoryEntry)
-class InventoryEntryAdmin(admin.ModelAdmin):
-    list_display  = ("part_number", "lot", "chip_type", "display_capacity", "interface", "quantity", "last_updated")
-    list_filter   = ("chip_type", "is_emcp", "lot__operator")
+class InventoryEntryAdmin(PlatformScopedAdmin):
+    list_display  = ("part_number", "company", "lot", "chip_type", "display_capacity", "interface", "quantity", "last_updated")
+    list_filter   = ("chip_type", "is_emcp", "company", "lot__operator")
     search_fields = ("part_number", "chip_type")
     readonly_fields = ("added_at", "last_updated")
     ordering      = ("-last_updated",)
@@ -64,10 +84,11 @@ class InventoryEntryAdmin(admin.ModelAdmin):
 
 
 @admin.register(PendingEntry)
-class PendingEntryAdmin(admin.ModelAdmin):
-    list_display  = ("part_number", "lot", "chip_type", "capacity", "quantity",
+class PendingEntryAdmin(PlatformScopedAdmin):
+    list_display  = ("part_number", "company", "lot", "chip_type", "capacity", "quantity",
                      "confidence", "nearest_confirmed", "operator", "created_at")
-    list_filter   = ("classification_source", "confidence", "lot", "operator")
+    # T3: o filtro por 'lot' (FK) usaria o manager fail-closed → filtra por company.
+    list_filter   = ("classification_source", "confidence", "company", "operator")
     search_fields = ("part_number", "nearest_confirmed")
     readonly_fields = ("created_at",)
     ordering      = ("-created_at",)
@@ -77,7 +98,9 @@ class PendingEntryAdmin(admin.ModelAdmin):
     def aprovar(self, request, queryset):
         moved = 0
         for p in queryset:
-            entry, created = InventoryEntry.objects.get_or_create(
+            # all_companies: ação de PLATAFORMA (sem escopo de request). A
+            # empresa da entrada nova herda do lote no save() (CompanyBoundByLot).
+            entry, created = InventoryEntry.all_companies.get_or_create(
                 lot=p.lot, part_number=p.part_number,
                 defaults=dict(
                     chip_type=p.chip_type, brand=p.brand, capacity=p.capacity,
@@ -87,7 +110,7 @@ class PendingEntryAdmin(admin.ModelAdmin):
                 ),
             )
             if not created:
-                InventoryEntry.objects.filter(pk=entry.pk).update(
+                InventoryEntry.all_companies.filter(pk=entry.pk).update(
                     quantity=F("quantity") + p.quantity, last_updated=timezone.now())
             _confirm_as_knownpart(p)
             p.delete()
@@ -104,13 +127,13 @@ class PendingEntryAdmin(admin.ModelAdmin):
 
 
 @admin.register(RejectedEntry)
-class RejectedEntryAdmin(admin.ModelAdmin):
+class RejectedEntryAdmin(PlatformScopedAdmin):
     """Auditoria de chips reprovados por NÃO RENTÁVEL. Read-only: o registro é
     gravado só pelo fluxo de estoque (add_chip), nunca à mão. Use os filtros para
     calibrar as regras de rentabilidade (que tipos estão indo para o lixo)."""
-    list_display  = ("part_number", "lot", "chip_type", "display_capacity",
+    list_display  = ("part_number", "company", "lot", "chip_type", "display_capacity",
                      "rejection_reason", "quantity", "operator", "created_at")
-    list_filter   = ("rejection_reason", "chip_type", "lot", "operator")
+    list_filter   = ("rejection_reason", "chip_type", "company", "operator")
     search_fields = ("part_number", "chip_type")
     ordering      = ("-created_at",)
     readonly_fields = (

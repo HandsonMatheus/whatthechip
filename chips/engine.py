@@ -897,17 +897,34 @@ def _extract_gib(text: str) -> float | None:
 
 
 # ── Helpers de logging ─────────────────────────────────────────────────────────
+# ⚠ Escopo destes helpers: SÓ anotação de log (§14.1 do PLANO_MULTITENANT.md).
+# Nada aqui toca a CLASSIFICAÇÃO — a saída de classify() não muda.
+
+def _scope_company_id():
+    """Empresa corrente (contextvar do tenancy) para ANOTAR nos logs — ou None
+    (busca pública/anônima, comando sem escopo). Nunca explode: SearchLog/
+    UnknownChip são GLOBAIS; a empresa é atributo de análise, não filtro."""
+    try:
+        from tenancy.scope import current_company_id
+        return current_company_id()
+    except Exception:
+        return None
+
 
 def _log_search(pn: str, found: bool, source_used: str = ""):
     try:
-        SearchLog.objects.create(part_number=pn, found=found, source_used=source_used)
+        SearchLog.objects.create(part_number=pn, found=found,
+                                 source_used=source_used,
+                                 company_id=_scope_company_id())
     except Exception:
         logger.exception("Erro ao gravar SearchLog para PN=%s", pn)
 
 
 def _log_unknown(pn: str):
     try:
-        UnknownChip.objects.get_or_create(part_number=pn)
+        UnknownChip.objects.get_or_create(
+            part_number=pn,
+            defaults={"company_id": _scope_company_id()})
     except Exception:
         logger.exception("Erro ao gravar UnknownChip para PN=%s", pn)
 
@@ -1467,7 +1484,8 @@ def classify(pn_raw: str) -> dict:
             try:
                 UnknownChip.objects.get_or_create(
                     part_number=pn,
-                    defaults={"notes": "FBGA code — pendente resolução noturna via micron.com/fbga-parts-decoder"},
+                    defaults={"notes": "FBGA code — pendente resolução noturna via micron.com/fbga-parts-decoder",
+                              "company_id": _scope_company_id()},
                 )
             except Exception:
                 logger.exception("Erro ao registrar FBGA desconhecido PN=%s", pn)

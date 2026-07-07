@@ -91,6 +91,9 @@ class Command(SafeWriteCommand):
     help = "Corrige PNs do estoque (merge/rename/refresh) a partir de um CSV errado,certo. Dry-run por padrão."
 
     def add_arguments(self, parser):
+        # T3 (multi-empresa): comando tenant-scoped roda com escopo explícito.
+        parser.add_argument('--company', default=None,
+                            help='Slug da empresa (obrigatório com 2+ empresas ativas).')
         parser.add_argument("--lot", type=int, default=39)
         parser.add_argument("--file", type=str, help="CSV com linhas 'errado,certo'.")
         parser.add_argument("--commit", action="store_true")
@@ -118,6 +121,10 @@ class Command(SafeWriteCommand):
         return pairs
 
     def handle(self, *args, **opts):
+        # T3: seta o escopo fail-closed do processo ANTES de qualquer query
+        # (os managers do estoque explodem sem empresa — de propósito).
+        from tenancy.scope import scope_command_to_company
+        scope_command_to_company(opts.get('company'), stdout=self.stdout)
         if opts["revert"]:
             return self._revert(opts["lot"])
 

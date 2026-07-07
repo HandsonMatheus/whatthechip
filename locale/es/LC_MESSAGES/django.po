@@ -1,0 +1,214 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: WhatTheChip 1.0\n"
+"Report-Msgid-Bugs-To: eminerparaguay@gmail.com\n"
+"POT-Creation-Date: 2026-07-06 20:49\n"
+"PO-Revision-Date: 2026-07-06 00:00\n"
+"Last-Translator: WhatTheChip i18n <eminerparaguay@gmail.com>\n"
+"Language-Team: Español\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: core/settings.py
+msgid "Português"
+msgstr "Portugués"
+
+#: core/settings.py
+msgid "Español"
+msgstr "Español"
+
+#: chips/labels.py
+msgid "RENTÁVEL"
+msgstr "RENTABLE"
+
+#: chips/labels.py
+msgid "NÃO RENTÁVEL"
+msgstr "NO RENTABLE"
+
+#: chips/labels.py
+msgid "INDETERMINADO"
+msgstr "INDETERMINADO"
+
+#: templates/base.html
+msgid "Mudar idioma"
+msgstr "Cambiar idioma"
+
+#: templates/base.html
+msgid "em breve"
+msgstr "próximamente"
+
+#: templates/base.html
+msgid "Navegação principal"
+msgstr "Navegación principal"
+
+#: templates/base.html
+msgid "Abrir menu"
+msgstr "Abrir menú"
+
+#: templates/base.html
+msgid "Seções"
+msgstr "Secciones"
+
+#: templates/base.html
+msgid "Início"
+msgstr "Inicio"
+
+#: templates/base.html
+msgid "Adicionar chip"
+msgstr "Añadir chip"
+
+#: templates/base.html
+msgid "Contato"
+msgstr "Contacto"
+
+#: templates/base.html
+msgid "Alternar modo escuro/claro"
+msgstr "Alternar modo oscuro/claro"
+
+#: templates/base.html
+msgid "Entrar"
+msgstr "Entrar"
+
+#: templates/base.html
+msgid "Marcas suportadas"
+msgstr "Marcas compatibles"
+
+#: templates/base.html
+msgid "Adicionar chip ao banco"
+msgstr "Añadir chip a la base"
+
+#: templates/base.html
+msgid ""
+"Chip não catalogado? Envie o PN — analisamos e adicionamos em até 48&nbsp;h."
+msgstr ""
+"¿Chip no catalogado? Envía el PN — lo analizamos y lo añadimos en hasta "
+"48&nbsp;h."
+
+#: templates/base.html
+msgid "Fechar"
+msgstr "Cerrar"
+
+#: templates/base.html
+msgid ""
+"Quanto mais informação você enviar, mais rápido conseguimos identificar. Uma"
+" foto nítida do chip ajuda muito."
+msgstr ""
+"Cuanta más información envíes, más rápido lograremos identificarlo. Una foto"
+" nítida del chip ayuda mucho."
+
+#: templates/base.html
+msgid "Part Number"
+msgstr "Part Number"
+
+#: templates/base.html
+msgid "Foto do chip"
+msgstr "Foto del chip"
+
+#: templates/base.html
+msgid "Escolher imagem…"
+msgstr "Elegir imagen…"
+
+#: templates/base.html
+msgid "Contexto (opcional)"
+msgstr "Contexto (opcional)"
+
+#: templates/base.html
+msgid "Origem, marca do aparelho, observações…"
+msgstr "Origen, marca del aparato, observaciones…"
+
+#: templates/base.html
+msgid "Seu e-mail (para retorno)"
+msgstr "Tu correo (para respuesta)"
+
+#: templates/base.html
+msgid "Cancelar"
+msgstr "Cancelar"
+
+#: templates/base.html
+msgid "Enviar para análise"
+msgstr "Enviar para análisis"
+
+#: templates/base.html
+msgid "Recebido — obrigado!"
+msgstr "¡Recibido — gracias!"
+
+#: templates/base.html
+msgid ""
+"Seu envio entrou na fila de análise. Adicionamos o chip ao banco em até "
+"48&nbsp;h."
+msgstr ""
+"Tu envío entró en la cola de análisis. Añadimos el chip a la base en hasta "
+"48&nbsp;h."
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "PN incompleto — continue digitando"
+msgstr "PN incompleto — sigue escribiendo"
+
+#: chips/templates/chips/partials/decode_card.html
+#, python-format
+msgid "(esperado: %(n)s caracteres)"
+msgstr "(esperado: %(n)s caracteres)"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "PN não confirmado — confira a digitação"
+msgstr "PN no confirmado — revisa lo que escribiste"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "veja sugestões abaixo"
+msgstr "mira las sugerencias abajo"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Família identificada — sem documentação pública"
+msgstr "Familia identificada — sin documentación pública"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Chip identificado"
+msgstr "Chip identificado"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Interface"
+msgstr "Interfaz"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Dispositivo"
+msgstr "Dispositivo"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Densidade"
+msgstr "Densidad"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Capacidade"
+msgstr "Capacidad"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Sufixo:"
+msgstr "Sufijo:"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "VOCÊ QUIS DIZER?"
+msgstr "¿QUISISTE DECIR?"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "via"
+msgstr "vía"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Documentação →"
+msgstr "Documentación →"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Fonte ↗"
+msgstr "Fuente ↗"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Enviado para revisão"
+msgstr "Enviado a revisión"
+
+#: chips/templates/chips/partials/decode_card.html
+msgid "Reportar erro"
+msgstr "Reportar error"

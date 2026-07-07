@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_page
 
 from .engine import classify
+from .labels import profitability_label
 from .models import KnownPart, SearchLog, UnknownChip, CorrectionRequest, ChipSubmission
 
 
@@ -101,8 +102,9 @@ def decode_html(request):
         "NÃO RENTÁVEL":  "nao-rentavel",
         "INDETERMINADO": "indeterminado",
     }
-    profitable     = result.get("profitable", "INDETERMINADO")
-    profitable_key = _PROFIT_KEY.get(profitable, "indeterminado")
+    profitable     = result.get("profitable", "INDETERMINADO")   # valor canônico (lógica)
+    profitable_key = _PROFIT_KEY.get(profitable, "indeterminado")  # chave CSS
+    profitable_label = profitability_label(profitable)             # rótulo traduzido (exibição)
 
     context = {
         "result":              result,
@@ -113,8 +115,9 @@ def decode_html(request):
         "confidence_key":      _effective_conf(result),
         "show_source":         bool(result.get("source_url")),
         "family_undocumented": family_undocumented,
-        "profitable":          profitable,
-        "profitable_key":      profitable_key,
+        "profitable":          profitable,        # canônico — só p/ retrocompat de lógica
+        "profitable_key":      profitable_key,    # chave estável — usar na lógica do template
+        "profitable_label":    profitable_label,  # rótulo traduzido — usar na EXIBIÇÃO
     }
 
     return render(request, "chips/partials/decode_card.html", context)

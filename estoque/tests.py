@@ -14,17 +14,42 @@ Dois blocos:
     engine de classificação.
 """
 
+import threading
+from unittest import skipUnless
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.db import connection
+from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 
 from chips.engine import is_dead_by_generation
 from chips.models import UnknownChip
+from tenancy.models import Company, Membership
+from tenancy.scope import (CompanyScopedManager, CompanyScopeMissing,
+                           company_scope, set_current_company)
 
 from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
 from .views import _compute_gateway
+
+
+def _grant(user, role=Membership.ROLE_OPERATOR):
+    """Vincula o usuário de teste a uma empresa com papel (T1: as views do
+    estoque exigem Membership ativo — tenancy.access.role_required)."""
+    company, _ = Company.objects.get_or_create(
+        name='eMiner', defaults={'slug': 'eminer'})
+    Membership.objects.update_or_create(
+        user=user, company=company, defaults={'role': role, 'active': True})
+    return company
+
+
+def _scope(testcase, company):
+    """Escopo AMBIENTE de empresa para o corpo do teste (T3: os managers do
+    estoque são fail-closed — asserts diretos no ORM precisam de escopo, como
+    um comando precisaria). Cleanup força None (comandos chamados no meio do
+    teste também setam o contextvar; o reset por token não se aplica)."""
+    set_current_company(getattr(company, 'pk', company))
+    testcase.addCleanup(set_current_company, None)
 
 
 def _result(**over):
@@ -183,8 +208,11 @@ class AddChipHardBlockTests(TestCase):
     def setUp(self):
         User = get_user_model()
         self.user = User.objects.create_user(username='op', password='x')
+        self.company = _grant(self.user)       # T1: operador precisa de vínculo
+        _scope(self, self.company)             # T3: asserts diretos no ORM
+        self.lot = Lot.objects.create(number=0, operator=self.user,
+                                      company=self.company)
         self.client.login(username='op', password='x')
-        self.lot = Lot.objects.create(number=0, operator=self.user)
         self.url = reverse('estoque:add', args=[self.lot.pk])
 
     @patch('estoque.views.classify')
@@ -276,7 +304,10 @@ class ResnapshotLoteTests(TestCase):
 
     def setUp(self):
         self.user = get_user_model().objects.create_user(username='op2', password='x')
-        self.lot = Lot.objects.create(number=77, operator=self.user)
+        self.company = _grant(self.user)
+        _scope(self, self.company)
+        self.lot = Lot.objects.create(number=77, operator=self.user,
+                                      company=self.company)
 
     @patch('chips.engine.classify')
     def test_revalua_entrada_defasada(self, mock_classify):
@@ -338,8 +369,11 @@ class OnReadDisplayTests(TestCase):
 
     def setUp(self):
         self.user = get_user_model().objects.create_user(username='op3', password='x')
+        self.company = _grant(self.user)       # T1: operador precisa de vínculo
+        _scope(self, self.company)             # T3
         self.client.force_login(self.user)
-        self.lot = Lot.objects.create(number=88, operator=self.user)
+        self.lot = Lot.objects.create(number=88, operator=self.user,
+                                      company=self.company)
 
     def _get_table(self):
         resp = self.client.get(reverse('estoque:lot_detail', args=[self.lot.pk]))
@@ -384,3 +418,420 @@ class OnReadDisplayTests(TestCase):
             lot=self.lot, part_number='MTDATE9', chip_type='eMMC', capacity='16GB',
             snapshot_catalog_version=CatalogVersion.current())
         self.assertIn('atualizado', self._get_table())
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# T1 (PLANO_MULTITENANT.md) — matriz PAPEL × VIEW (prova do objetivo O1)
+# ═══════════════════════════════════════════════════════════════════════════
+
+class RoleMatrixTests(TestCase):
+    """§8 do plano vira parametrização: cada view sensível × cada papel →
+    status esperado. Esconder botão NUNCA é a única barreira — o gate é a view.
+
+    operador → busca/preview/adicionar/lista/detalhe (403 no resto)
+    gerente+ → abrir/fechar/reabrir/exportar
+    sem vínculo (logado) → 403 em tudo do estoque
+    anônimo → redirect ao login
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        User = get_user_model()
+        cls.company = Company.objects.create(name='eMiner', slug='eminer')
+        cls.users = {}
+        for username, role in [('mx_op', Membership.ROLE_OPERATOR),
+                               ('mx_mgr', Membership.ROLE_MANAGER),
+                               ('mx_adm', Membership.ROLE_ADMIN)]:
+            u = User.objects.create_user(username=username, password='x')
+            Membership.objects.create(user=u, company=cls.company, role=role)
+            cls.users[role] = u
+        # Logado mas SEM vínculo com empresa (ex.: conta órfã) → 403 em tudo.
+        cls.users['none'] = User.objects.create_user(username='mx_orfao', password='x')
+        # Lote aberto por um GERENTE — o operador trabalha nele (lote é da empresa).
+        cls.lot = Lot.all_companies.create(number=900, operator=cls.users['manager'],
+                                           company=cls.company)
+
+    def setUp(self):
+        _scope(self, self.company)   # T3: asserts diretos no ORM do teste
+
+    def _as(self, who):
+        self.client.logout()
+        if who is not None:
+            self.client.force_login(self.users[who])
+
+    # ── A matriz em si ───────────────────────────────────────────────────────
+    def test_matriz_papel_view(self):
+        lot_pk = self.lot.pk
+        # (nome, método, url, dados, {papel: status esperado})
+        # 200 = ok · 302 = redirect pós-ação (ok) · 403 = barrado
+        matrix = [
+            ('painel', 'get', reverse('painel'), {},
+             {'operator': 200, 'manager': 200, 'admin': 200, 'none': 403}),
+            ('lot_list', 'get', reverse('estoque:index'), {},
+             {'operator': 200, 'manager': 200, 'admin': 200, 'none': 403}),
+            ('lot_detail', 'get', reverse('estoque:lot_detail', args=[lot_pk]), {},
+             {'operator': 200, 'manager': 200, 'admin': 200, 'none': 403}),
+            ('preview', 'get', reverse('estoque:preview', args=[lot_pk]), {'pn': 'KM'},
+             {'operator': 200, 'manager': 200, 'admin': 200, 'none': 403}),
+            ('export', 'get', reverse('estoque:export', args=[lot_pk]), {},
+             {'operator': 403, 'manager': 200, 'admin': 200, 'none': 403}),
+            ('lot_close', 'post', reverse('estoque:lot_close', args=[lot_pk]), {},
+             {'operator': 403, 'manager': 302, 'admin': 302, 'none': 403}),
+            ('lot_reopen', 'post', reverse('estoque:lot_reopen', args=[lot_pk]), {},
+             {'operator': 403, 'manager': 302, 'admin': 302, 'none': 403}),
+            ('lot_create', 'post', reverse('estoque:lot_create'), {'description': 't'},
+             {'operator': 403, 'manager': 302, 'admin': 302, 'none': 403}),
+        ]
+        for name, method, url, data, expected in matrix:
+            for who, status in expected.items():
+                with self.subTest(view=name, papel=who):
+                    self._as(who)
+                    resp = getattr(self.client, method)(url, data)
+                    self.assertEqual(resp.status_code, status)
+            # Estado do lote pode ter mudado (close/reopen) — restaura.
+            Lot.objects.filter(pk=lot_pk).update(
+                status=Lot.STATUS_OPEN, closed_at=None)
+
+    def test_anonimo_redireciona_ao_login(self):
+        self._as(None)
+        resp = self.client.get(reverse('estoque:index'))
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn('/login/', resp['Location'])
+
+    @patch('estoque.views.classify')
+    def test_operador_adiciona_chip_em_lote_aberto(self, mock_classify):
+        """O trabalho do operador continua intacto (O2): adicionar a lote aberto
+        — inclusive lote aberto pelo GERENTE (lote é ativo da empresa)."""
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB',
+            classification_source='banco de dados', confidence='confirmed')
+        self._as('operator')
+        resp = self.client.post(reverse('estoque:add', args=[self.lot.pk]),
+                                {'pn': 'MATRIXOK16', 'qty': '1'})
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(InventoryEntry.objects.filter(
+            lot=self.lot, part_number='MATRIXOK16').exists())
+
+    @patch('estoque.views.classify')
+    def test_operador_remove_so_de_lote_aberto(self, mock_classify):
+        """Remoção: p/ operador é correção de lançamento (só lote ABERTO);
+        gerente também mexe em lote fechado (comportamento de hoje preservado)."""
+        mock_classify.return_value = _result(   # p/ o on-read do render da tabela
+            chip_type='eMMC', capacity='16GB',
+            classification_source='banco de dados', confidence='confirmed')
+        entry = InventoryEntry.objects.create(
+            lot=self.lot, part_number='MATRIXRM1', quantity=5)
+        url = reverse('estoque:remove', args=[self.lot.pk, entry.pk])
+
+        self._as('operator')
+        self.assertEqual(self.client.post(url, {'qty': '1'}).status_code, 200)
+
+        Lot.objects.filter(pk=self.lot.pk).update(status=Lot.STATUS_CLOSED)
+        self.assertEqual(self.client.post(url, {'qty': '1'}).status_code, 403)
+
+        self._as('manager')
+        self.assertEqual(self.client.post(url, {'qty': '1'}).status_code, 200)
+        Lot.objects.filter(pk=self.lot.pk).update(status=Lot.STATUS_OPEN)
+
+    def test_template_esconde_acoes_de_gerente_do_operador(self):
+        """Navegação por papel (§9): operador não vê 'Novo Lote' nem Fechar/
+        Exportar; gerente vê. (UX — a barreira real é a matriz acima.)"""
+        self._as('operator')
+        body = self.client.get(reverse('estoque:index')).content.decode()
+        self.assertNotIn('Novo Lote', body)
+        detail = self.client.get(
+            reverse('estoque:lot_detail', args=[self.lot.pk])).content.decode()
+        self.assertNotIn('Fechar Lote', detail)
+        self.assertNotIn('Exportar', detail)
+
+        self._as('manager')
+        body = self.client.get(reverse('estoque:index')).content.decode()
+        self.assertIn('Novo Lote', body)
+        detail = self.client.get(
+            reverse('estoque:lot_detail', args=[self.lot.pk])).content.decode()
+        self.assertIn('Fechar Lote', detail)
+        self.assertIn('Exportar', detail)
+
+    def test_operador_ve_lote_de_outro_usuario(self):
+        """Lote é ativo da EMPRESA (não do usuário): o operador enxerga e
+        trabalha no lote que o gerente abriu — mudança intencional da T1
+        (antes cada usuário só via os próprios lotes; ver _get_lot)."""
+        self._as('operator')
+        resp = self.client.get(reverse('estoque:index'))
+        self.assertContains(resp, '#900')
+
+
+class PainelTests(TestCase):
+    """/painel/ (lançadeira pós-login): hero = lote aberto → 1 clique para a
+    bancada; empty-state orienta por papel; stats do dia como contexto."""
+
+    @classmethod
+    def setUpTestData(cls):
+        User = get_user_model()
+        cls.company = Company.objects.create(name='eMiner', slug='eminer')
+        cls.op = User.objects.create_user('pn_op', password='x')
+        cls.mgr = User.objects.create_user('pn_mgr', password='x')
+        Membership.objects.create(user=cls.op, company=cls.company,
+                                  role=Membership.ROLE_OPERATOR)
+        Membership.objects.create(user=cls.mgr, company=cls.company,
+                                  role=Membership.ROLE_MANAGER)
+
+    def setUp(self):
+        _scope(self, self.company)   # T3
+
+    def test_hero_mostra_lote_aberto_com_cta(self):
+        lot = Lot.objects.create(number=500, operator=self.mgr,
+                                 company=self.company,
+                                 description='Compra Jul/26')
+        self.client.force_login(self.op)
+        resp = self.client.get(reverse('painel'))
+        self.assertContains(resp, '#500')
+        self.assertContains(resp, 'Continuar triagem')
+        self.assertContains(resp, reverse('estoque:lot_detail', args=[lot.pk]))
+
+    def test_lote_fechado_nao_vira_hero(self):
+        Lot.objects.create(number=501, operator=self.mgr, company=self.company,
+                           status=Lot.STATUS_CLOSED)
+        self.client.force_login(self.op)
+        resp = self.client.get(reverse('painel'))
+        self.assertContains(resp, 'Nenhum lote aberto')
+        self.assertNotContains(resp, 'Continuar triagem')
+
+    def test_empty_state_orienta_por_papel(self):
+        """Sem lote aberto: gerente ganha CTA de abrir; operador, a instrução
+        de pedir ao gerente (ele não pode abrir — matriz §8)."""
+        self.client.force_login(self.mgr)
+        resp = self.client.get(reverse('painel'))
+        self.assertContains(resp, 'Abrir um lote')
+
+        self.client.force_login(self.op)
+        resp = self.client.get(reverse('painel'))
+        self.assertNotContains(resp, 'Abrir um lote')
+        self.assertContains(resp, 'Peça ao gerente')
+
+    def test_stats_do_dia(self):
+        lot = Lot.objects.create(number=502, operator=self.mgr,
+                                 company=self.company)
+        InventoryEntry.objects.create(lot=lot, part_number='PNHOJE1')
+        PendingEntry.objects.create(lot=lot, part_number='PNFILA1',
+                                    operator=self.op)
+        self.client.force_login(self.op)
+        resp = self.client.get(reverse('painel'))
+        self.assertContains(resp, 'Tipos lançados hoje')
+        self.assertEqual(resp.status_code, 200)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# T2 (PLANO_MULTITENANT.md §7) — numeração de lote atômica (prova do O3)
+# ═══════════════════════════════════════════════════════════════════════════
+
+class LotNumberSequenceTests(TestCase):
+    """open_for_company em série: contador incrementa, herda seed, auto-cura
+    drift (lote criado por fora do contador). Roda em qualquer banco."""
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user('seq_user')
+        self.company = Company.objects.create(name='SeqCo', slug='seqco')
+
+    def test_empresa_nova_comeca_no_lote_1(self):
+        lot = Lot.open_for_company(self.company, self.user, 'primeiro')
+        self.assertEqual(lot.number, 1)          # "Lote #001" (§5.2 do plano)
+        self.assertEqual(Lot.open_for_company(self.company, self.user).number, 2)
+
+    def test_herda_seed_do_bootstrap(self):
+        Company.objects.filter(pk=self.company.pk).update(last_lot_number=40)
+        self.company.refresh_from_db()
+        self.assertEqual(Lot.open_for_company(self.company, self.user).number, 41)
+
+    def test_auto_cura_drift_do_contador(self):
+        """Lote criado POR FORA do contador (legado/manual) não gera colisão:
+        o guard max(contador, Max(number)) pula para depois dele."""
+        Lot.all_companies.create(number=77, operator=self.user,
+                                 company=self.company)      # fora do contador
+        lot = Lot.open_for_company(self.company, self.user)
+        self.assertEqual(lot.number, 78)
+        self.company.refresh_from_db()
+        self.assertEqual(self.company.last_lot_number, 78)  # contador curado
+
+
+class LotNumberRaceTests(TransactionTestCase):
+    """O3 (§7 do plano): N threads abrindo lote JUNTAS → números sequenciais sem
+    buraco, zero IntegrityError.
+
+    ⚠ Postgres-only: select_for_update é NO-OP no SQLite e o settings_test usa
+    SQLite em memória — aqui a prova passaria sem provar nada. Rodar de verdade:
+
+        python manage.py test estoque.tests.LotNumberRaceTests
+        # (settings default → seu Postgres local)
+    """
+
+    N_THREADS = 8
+
+    @skipUnless(connection.vendor == 'postgresql',
+                'select_for_update é no-op no SQLite — rodar contra Postgres')
+    def test_corrida_de_numeracao(self):
+        user = get_user_model().objects.create_user('race_user')
+        company = Company.objects.create(name='RaceCo', slug='raceco')
+
+        barrier = threading.Barrier(self.N_THREADS)   # todas partem juntas
+        numbers, errors = [], []
+
+        def worker():
+            try:
+                barrier.wait()
+                lot = Lot.open_for_company(company, user)
+                numbers.append(lot.number)
+            except Exception as exc:                  # IntegrityError incluso
+                errors.append(exc)
+            finally:
+                connection.close()                    # conexão da thread
+
+        threads = [threading.Thread(target=worker) for _ in range(self.N_THREADS)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        self.assertEqual(errors, [])                             # zero quebra
+        self.assertEqual(sorted(numbers),
+                         list(range(1, self.N_THREADS + 1)))     # sem buraco
+        company.refresh_from_db()
+        self.assertEqual(company.last_lot_number, self.N_THREADS)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# T3 (PLANO_MULTITENANT.md §12.1) — HANDSHAKE DE TENANCY (prova do O4)
+# A fronteira comercial absoluta: a empresa A JAMAIS vê lote/estoque/fila da B.
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TenancyHandshakeTests(TestCase):
+    """Permanente na suíte (no espírito do golden/handshake de rentabilidade):
+    cria empresas A e B com dados e prova que A não lê/edita/deleta/exporta
+    NADA de B — via manager padrão (Camada A) e via views. A camada B (RLS,
+    SQL cru) entra na T4 com o teste próprio."""
+
+    @classmethod
+    def setUpTestData(cls):
+        User = get_user_model()
+        cls.a = Company.objects.create(name='eMiner', slug='eminer')
+        cls.b = Company.objects.create(name='Brasil Reciclagem', slug='brasil')
+        cls.mgr_a = User.objects.create_user('hs_mgr_a', password='x')
+        cls.mgr_b = User.objects.create_user('hs_mgr_b', password='x')
+        Membership.objects.create(user=cls.mgr_a, company=cls.a,
+                                  role=Membership.ROLE_MANAGER)
+        Membership.objects.create(user=cls.mgr_b, company=cls.b,
+                                  role=Membership.ROLE_MANAGER)
+        cls.lot_a = Lot.open_for_company(cls.a, cls.mgr_a, 'lote da eMiner')
+        cls.lot_b = Lot.open_for_company(cls.b, cls.mgr_b, 'lote da Brasil')
+        # company dos filhos herda do lote no save() (CompanyBoundByLot).
+        cls.entry_a = InventoryEntry.all_companies.create(
+            lot=cls.lot_a, part_number='PN_DA_EMINER', quantity=3)
+        cls.entry_b = InventoryEntry.all_companies.create(
+            lot=cls.lot_b, part_number='PN_DA_BRASIL', quantity=5)
+        PendingEntry.all_companies.create(
+            lot=cls.lot_b, part_number='PEND_DA_BRASIL', operator=cls.mgr_b)
+        RejectedEntry.all_companies.create(
+            lot=cls.lot_b, part_number='REJ_DA_BRASIL', operator=cls.mgr_b)
+
+    # ── Numeração por empresa ────────────────────────────────────────────────
+    def test_cada_empresa_tem_sua_sequencia(self):
+        self.assertEqual(self.lot_a.number, 1)
+        self.assertEqual(self.lot_b.number, 1)   # mesmo nº, empresas diferentes
+        self.assertEqual(self.entry_b.company_id, self.b.pk)  # denormalizado
+
+    # ── Fail-closed (Camada A) ───────────────────────────────────────────────
+    def test_sem_escopo_explode_nunca_vaza_todos(self):
+        for Model in (Lot, InventoryEntry, PendingEntry, RejectedEntry):
+            with self.subTest(model=Model.__name__):
+                with self.assertRaises(CompanyScopeMissing):
+                    list(Model.objects.all())
+
+    # ── ORM escopado: leitura e escrita ──────────────────────────────────────
+    def test_orm_da_a_nao_le_nem_edita_a_b(self):
+        with company_scope(self.a):
+            self.assertEqual(
+                list(Lot.objects.values_list('description', flat=True)),
+                ['lote da eMiner'])
+            self.assertFalse(
+                InventoryEntry.objects.filter(part_number='PN_DA_BRASIL').exists())
+            self.assertEqual(PendingEntry.objects.count(), 0)
+            self.assertEqual(RejectedEntry.objects.count(), 0)
+            # Escrita cross-company pelo manager padrão = 0 linhas afetadas.
+            self.assertEqual(
+                InventoryEntry.objects.filter(pk=self.entry_b.pk).update(quantity=99), 0)
+            self.assertEqual(Lot.objects.filter(pk=self.lot_b.pk).delete()[0], 0)
+        with company_scope(self.b):
+            self.entry_b.refresh_from_db()
+            self.assertEqual(self.entry_b.quantity, 5)         # intacta
+            self.assertTrue(Lot.objects.filter(pk=self.lot_b.pk).exists())
+
+    # ── Views: gerente da B tentando o lote da A ─────────────────────────────
+    def test_views_da_a_devolvem_404_para_a_b(self):
+        self.client.force_login(self.mgr_b)
+        casos = [
+            ('detail', 'get', reverse('estoque:lot_detail', args=[self.lot_a.pk]), {}),
+            ('export', 'get', reverse('estoque:export', args=[self.lot_a.pk]), {}),
+            ('preview', 'get', reverse('estoque:preview', args=[self.lot_a.pk]),
+             {'pn': 'KMQX10013M'}),
+            ('add', 'post', reverse('estoque:add', args=[self.lot_a.pk]),
+             {'pn': 'KMQX10013M', 'qty': '1'}),
+            ('close', 'post', reverse('estoque:lot_close', args=[self.lot_a.pk]), {}),
+            ('remove', 'post',
+             reverse('estoque:remove', args=[self.lot_a.pk, self.entry_a.pk]),
+             {'qty': '1'}),
+        ]
+        for nome, metodo, url, data in casos:
+            with self.subTest(view=nome):
+                resp = getattr(self.client, metodo)(url, data)
+                self.assertEqual(resp.status_code, 404)   # nem existe para a B
+
+    def test_lista_e_painel_mostram_so_a_propria_empresa(self):
+        self.client.force_login(self.mgr_b)
+        body = self.client.get(reverse('estoque:index')).content.decode()
+        self.assertIn('lote da Brasil', body)
+        self.assertNotIn('lote da eMiner', body)
+        painel = self.client.get(reverse('painel')).content.decode()
+        self.assertNotIn('lote da eMiner', painel)
+
+
+class TenancyDeclarationTests(TestCase):
+    """§12.1: "tabela sem decisão de tenancy = suíte vermelha". Todo modelo dos
+    apps do projeto ou está na lista GLOBAL declarada (PRECIFICACAO §10), ou é
+    escopado (campo company + CompanyScopedManager como manager padrão).
+    Criou modelo novo e este teste quebrou? Decida o tenancy dele AQUI."""
+
+    GLOBAL_DECLARADOS = {
+        # Catálogo/produto — o "Google dos chips" é um cérebro só (§10).
+        'chips.Brand', 'chips.ChipFamily', 'chips.DecodeMap', 'chips.KnownPart',
+        'chips.Source', 'chips.SearchLog', 'chips.UnknownChip',
+        'chips.CorrectionRequest', 'chips.ChipSubmission',
+        'chips.ProfitabilityConfig', 'chips.CatalogVersion',
+        # CMS de documentação.
+        'pages.Page',
+        # O próprio tecido do tenancy.
+        'tenancy.Company', 'tenancy.Branch', 'tenancy.Membership',
+    }
+    APPS_DO_PROJETO = {'chips', 'estoque', 'pages', 'tenancy'}
+
+    def test_toda_tabela_declara_tenancy(self):
+        from django.apps import apps as django_apps
+        faltando = []
+        for model in django_apps.get_models():
+            if model._meta.app_label not in self.APPS_DO_PROJETO:
+                continue    # django/pghistory internos
+            if hasattr(model, 'pgh_tracked_model'):
+                continue    # tabela de evento pghistory (espelha a rastreada;
+                            # ganha policy própria na T4)
+            label = f'{model._meta.app_label}.{model.__name__}'
+            if label in self.GLOBAL_DECLARADOS:
+                continue
+            has_company = any(f.name == 'company' for f in model._meta.fields)
+            scoped = isinstance(model._default_manager, CompanyScopedManager)
+            if not (has_company and scoped):
+                faltando.append(label)
+        self.assertEqual(
+            faltando, [],
+            'Modelo(s) SEM decisão de tenancy: ou adicione à lista '
+            'GLOBAL_DECLARADOS (com justificativa no PR), ou dê a ele campo '
+            'company + CompanyScopedManager + caso no TenancyHandshakeTests: '
+            f'{faltando}')

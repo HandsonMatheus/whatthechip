@@ -5,7 +5,10 @@ Modelo de inventário por lote.
 """
 
 from django.conf import settings
-from django.db import models
+from django.core.exceptions import ValidationError
+from django.db import models, transaction
+
+from tenancy.scope import CompanyScopedManager
 
 
 class Lot(models.Model):
@@ -16,31 +19,100 @@ class Lot(models.Model):
         (STATUS_CLOSED, 'Fechado'),
     ]
 
-    number      = models.PositiveIntegerField(unique=True, verbose_name="Número")
+    # T3: numeração POR EMPRESA — unique (company, number), não mais global.
+    number      = models.PositiveIntegerField(verbose_name="Número")
+    # T3 (PLANO_MULTITENANT.md §5.2): o lote é ativo da EMPRESA — a chave do
+    # isolamento (e do futuro RLS). PROTECT: apagar empresa não leva lotes.
+    company     = models.ForeignKey(
+        'tenancy.Company', on_delete=models.PROTECT,
+        related_name='lots', verbose_name='Empresa',
+    )
+    branch      = models.ForeignKey(
+        'tenancy.Branch', on_delete=models.PROTECT,
+        null=True, blank=True,               # filial é OPCIONAL no v1 (sempre)
+        related_name='lots', verbose_name='Filial',
+    )
     operator    = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='lots',
         verbose_name='Operador',
+        help_text='Quem abriu o lote (o lote pertence à EMPRESA, não a ele).',
     )
     description = models.CharField(max_length=255, blank=True, default='', verbose_name='Descrição')
     status      = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_OPEN, verbose_name='Status')
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name='Aberto em')
     closed_at   = models.DateTimeField(null=True, blank=True, verbose_name='Fechado em')
 
+    # T3: o caminho PADRÃO já vem filtrado pela empresa corrente (fail-closed —
+    # sem escopo EXPLODE); all_companies é o escape EXPLÍCITO de plataforma
+    # (admin/comandos), auditável por grep. base_manager_name evita que as
+    # travessias internas do Django passem pelo manager fail-closed.
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
     class Meta:
         verbose_name = 'Lote'
         verbose_name_plural = 'Lotes'
         ordering = ['-number']
+        base_manager_name = 'all_companies'
+        constraints = [
+            # Cada empresa tem a SUA sequência (Lote #001 da Brasil Reciclagem
+            # coexiste com o #001 da eMiner). Substitui o unique global.
+            models.UniqueConstraint(fields=['company', 'number'],
+                                    name='unique_lot_company_number'),
+        ]
+        indexes = [
+            # Toda consulta do app começa por company (§5.2).
+            models.Index(fields=['company', '-number'],
+                         name='lot_company_number_desc'),
+        ]
 
     def __str__(self):
         return f'Lote #{self.number:03d}'
 
+    def save(self, *args, **kwargs):
+        # Portão no MODELO: filial tem que ser da mesma empresa do lote.
+        if self.branch_id and self.company_id and \
+                self.branch.company_id != self.company_id:
+            raise ValidationError(
+                {'branch': 'A filial deve pertencer à empresa do lote.'})
+        return super().save(*args, **kwargs)
+
     @classmethod
-    def next_number(cls):
+    def open_for_company(cls, company, operator, description='', branch=None):
+        """T2 (PLANO_MULTITENANT.md §7): abre um lote com numeração ATÔMICA por
+        empresa. Substitui o antigo ``next_number()`` (``Max('number')+1``), que
+        era uma CORRIDA real: dois gerentes clicando juntos liam o mesmo max e um
+        levava ``IntegrityError`` na cara.
+
+        Como funciona: trava a linha da Company (``select_for_update``) e
+        incrementa ``last_lot_number`` — criações simultâneas serializam no lock
+        e saem com números consecutivos, sem buraco e sem erro. O
+        ``max(contador, Max(number))`` é auto-cura de drift (lotes criados antes
+        do ``bootstrap_tenancy`` seedar o contador, ou contador atrasado por
+        qualquer motivo) enquanto o ``number`` ainda é unique GLOBAL — na T3 ele
+        vira ``unique (company, number)`` e o ``Max`` passa a filtrar por empresa.
+
+        ⚠ ``select_for_update`` é NO-OP no SQLite — o teste de corrida
+        (``LotNumberRaceTests``) só prova algo rodando contra Postgres."""
         from django.db.models import Max
-        max_n = cls.objects.aggregate(Max('number'))['number__max']
-        return (max_n if max_n is not None else -1) + 1
+        from tenancy.models import Company
+
+        with transaction.atomic():
+            locked = Company.objects.select_for_update().get(pk=company.pk)
+            # T3: numeração POR EMPRESA — o floor olha só os lotes DELA
+            # (all_companies de propósito: o método recebe a empresa explícita
+            # e não depende do escopo ambiente — comandos/testes chamam direto).
+            floor = (cls.all_companies.filter(company=locked)
+                     .aggregate(Max('number'))['number__max'])
+            next_n = max(locked.last_lot_number,
+                         floor if floor is not None else -1) + 1
+            locked.last_lot_number = next_n
+            locked.save(update_fields=['last_lot_number'])
+            return cls.all_companies.create(number=next_n, company=locked,
+                                            branch=branch, operator=operator,
+                                            description=description)
 
     @property
     def chip_count(self):
@@ -57,7 +129,35 @@ class Lot(models.Model):
         return self.status == self.STATUS_OPEN
 
 
-class InventoryEntry(models.Model):
+class CompanyBoundByLot(models.Model):
+    """Base das linhas do estoque (T3): DENORMALIZA a empresa do lote na própria
+    tabela — o RLS (T4) exige a coluna local, e os índices compostos
+    ``(company, …)`` também (PLANO_MULTITENANT.md §5.2). ``save()`` deriva a
+    empresa do lote e REJEITA mismatch (consistência pai-filho no modelo, não na
+    view). Managers: ``objects`` fail-closed; ``all_companies`` = plataforma."""
+
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                related_name='+', verbose_name='Empresa')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        abstract = True
+        base_manager_name = 'all_companies'
+
+    def save(self, *args, **kwargs):
+        if self.lot_id:
+            lot_company_id = self.lot.company_id
+            if not self.company_id:
+                self.company_id = lot_company_id      # herda do lote
+            elif lot_company_id and self.company_id != lot_company_id:
+                raise ValidationError(
+                    {'company': 'A entrada pertence a uma empresa diferente do lote.'})
+        return super().save(*args, **kwargs)
+
+
+class InventoryEntry(CompanyBoundByLot):
     lot = models.ForeignKey(
         Lot,
         on_delete=models.CASCADE,
@@ -82,7 +182,7 @@ class InventoryEntry(models.Model):
     added_at     = models.DateTimeField(auto_now_add=True, verbose_name='Adicionado em')
     last_updated = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
 
-    class Meta:
+    class Meta(CompanyBoundByLot.Meta):
         verbose_name = 'Entrada de Estoque'
         verbose_name_plural = 'Entradas de Estoque'
         ordering = ['-last_updated']
@@ -91,6 +191,13 @@ class InventoryEntry(models.Model):
                 fields=['lot', 'part_number'],
                 name='unique_lot_pn',
             )
+        ]
+        indexes = [
+            # §5.2: consultas lideradas por company (busca de PN e por lote).
+            models.Index(fields=['company', 'part_number'],
+                         name='inv_company_pn'),
+            models.Index(fields=['company', 'lot'],
+                         name='inv_company_lot'),
         ]
 
     def __str__(self):
@@ -111,7 +218,7 @@ class InventoryEntry(models.Model):
         return self.interface or '—'
 
 
-class PendingEntry(models.Model):
+class PendingEntry(CompanyBoundByLot):
     """
     Fila de conferência: chip que o operador tentou adicionar mas que NÃO está
     confirmado no banco (classification_source != "banco de dados" e confidence
@@ -145,7 +252,7 @@ class PendingEntry(models.Model):
     )
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name='Tentado em')
 
-    class Meta:
+    class Meta(CompanyBoundByLot.Meta):
         verbose_name = 'Pendente de Conferência'
         verbose_name_plural = 'Pendentes de Conferência'
         ordering = ['-created_at']
@@ -160,7 +267,7 @@ class PendingEntry(models.Model):
         return f'{self.part_number} × {self.quantity} (pendente · Lote #{self.lot.number:03d})'
 
 
-class RejectedEntry(models.Model):
+class RejectedEntry(CompanyBoundByLot):
     """
     Log de auditoria (append-only): chip CONFIRMADO no banco e com specs completas,
     mas que o operador tentou adicionar e foi barrado por NÃO RENTÁVEL na etapa 3 do
@@ -198,7 +305,7 @@ class RejectedEntry(models.Model):
     )
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name='Reprovado em')
 
-    class Meta:
+    class Meta(CompanyBoundByLot.Meta):
         verbose_name = 'Reprovado'
         verbose_name_plural = 'Reprovados'
         ordering = ['-created_at']

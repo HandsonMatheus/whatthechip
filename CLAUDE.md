@@ -168,7 +168,9 @@ Dependências: **`requirements.txt`** (ambiente local completo, com scrapers) e
 ```
 core/      → configuração do projeto (settings, urls, wsgi/asgi)
 chips/     → CORAÇÃO: engine de classificação, modelos de dados, API de busca
-estoque/   → inventário por lote (Lot/InventoryEntry); requer login
+estoque/   → inventário por lote (Lot/InventoryEntry); requer login + PAPEL
+tenancy/   → multi-empresa (T1, jul/2026): Company/Branch/Membership, papéis
+             admin/gerente/operador, escopo fail-closed — PLANO_MULTITENANT.md
 pages/     → CMS simples de documentação (modelo Page, servido em /<slug>/)
 ```
 
@@ -326,6 +328,7 @@ python manage.py validate_convention       # read-only: aponta registros fora da
 python manage.py normalize_convention --commit   # migra chip_type legado ("RAM")→geração canônica (reversível via JSON)
 python manage.py guard_catalog             # TRIPWIRE: roda DEPOIS de todo deploy — falha com alarme se o nº de known_parts despencar (>10% do high-water). Read-only exceto o bump do high-water. `--reset` só após queda legítima e revisada. Ver regra de ouro §2.1b.
 python manage.py restore_known_parts <dump>.json   # RECUPERAÇÃO: gap-fill de known_parts a partir de um dump/backup (cria só os que faltam, mapeia marca, religa família por prefixo; --commit). É o procedimento pós-incidente de perda.
+python manage.py bootstrap_tenancy --company eMiner --admin <u> --manager <u> --operator <u>…   # backfill T1 (multi-empresa): cria a Company, dá papéis nominais, seeda o contador de lote, restringe o Django admin à plataforma (tira is_staff de não-super) e derruba sessões. Dry-run padrão; --commit grava (backup antes). Ver PLANO_MULTITENANT.md §16.
 ```
 
 **Manutenção de estoque** (dry-run por padrão, reversíveis via JSON; rodar com
@@ -497,6 +500,19 @@ Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); `interface` = largura (`x
   Importadores **nunca** rebaixam um registro `confirmed`/`manual`.
 - **Não confie em dado de distribuidor ou IA** sem verificação por datasheet/Octopart
   (confundem Gb/GB, invertem primary/secondary, alucinam capacidade).
+- **Tenancy (T1–T3, jul/2026 — contrato: PRECIFICACAO §10; execução/bíblia: PLANO_MULTITENANT.md).**
+  Catálogo = GLOBAL; estoque = POR-EMPRESA **(T3 aplicada: Lot/Entry/Pending/Rejected têm
+  `company` NOT NULL, manager padrão fail-closed `CompanyScopedManager`, numeração
+  `unique (company, number)`)**. **Toda tabela nova exige decisão explícita de tenancy** —
+  o teste `TenancyDeclarationTests` (estoque/tests.py) FALHA se um modelo novo não estiver
+  na lista GLOBAL nem escopado. View de estoque usa `@role_required('operator'|'manager')`
+  (`tenancy/access.py`) — nunca só `@login_required`; esconder botão no template NUNCA é a
+  única barreira. Papel vem do `Membership` (operador < gerente < admin); plataforma =
+  `is_superuser` (Django admin via `all_companies` — `PlatformScopedAdmin`), que navega o
+  app com Membership real (SEM bypass nos gates). Fora de request o escopo é explícito:
+  `with company_scope(company):` ou, em comando, `--company <slug>` +
+  `scope_command_to_company()` (auto-resolve com UMA empresa ativa; 2+ exige o slug).
+  O lote é ativo da EMPRESA (não do usuário): `Lot.operator` = "quem abriu".
 - **Part-name da API Micron FBGA não é fonte para tipo de RAM** (BUG-8, 2026-06-19).
   A API retorna strings como `"MLC EMMC/LPDDR2 72G VFBGA"` que podem pertencer a
   famílias relacionadas com RAM diferente. Para MT29TZZZ, a API dizia "LPDDR2" mas
@@ -698,6 +714,7 @@ relevante quando a tarefa pedir:
 - **`PIECEMAKERS.md`** — bíblia técnica PieceMakers: anatomia do PN PMF, decode map PMF_DDR3_CAP, famílias, rentabilidade, fontes, armadilhas.
 - **`TOSHIBA-KIOXIA.md`** — bíblia técnica Toshiba / Kioxia: família THGBM (eMMC), decode maps THGBM_CAP/THGBM_GEN, eMCP TYC, famílias bloqueadas (KLUE/THGAF), armadilhas de sub-prefixo, gaps e roadmap. **CONSOLIDAÇÃO (2026-07-01):** Toshiba + Kioxia + KIOXIA(dup) viraram UMA marca **`Toshiba-Kioxia`** (code TXK) — mesma empresa (rename out/2019), em `chips/knowledge/toshiba-kioxia.yaml` (11 famílias). **Para adicionar/corrigir chip Toshiba-Kioxia, edite `chips/knowledge/toshiba-kioxia.yaml`** (contrato de autoria em §5).
 - **`FUZZY.md`** — bíblia técnica do sistema de sugestão inteligente de PNs: `_visual_edit_distance`, matriz de confusão visual, `_prefix_candidates`, `_combined_suggestions`, gate de confiança, frontend diff, tuning. **Leia antes de tocar nas funções `_fuzzy_*` / `_prefix_*` do engine.**
+- **`I18N.md`** — ⭐ bíblia técnica da **internacionalização (i18n)**: as 3 superfícies de tradução (UI/`gettext`+`.po`, saída do engine com chave-canônica-vs-rótulo, conteúdo do CMS via `django-modeltranslation`), como adicionar um idioma, como marcar strings e gerar/compilar catálogos, o desacoplamento do engine (`chips/labels.py` = fonte única do rótulo de rentabilidade; **nunca compare contra o rótulo na lógica — use a chave**), armadilhas (snapshot do estoque, `"por die"` no `DecodeMap`, strings em JS) e deploy do `.mo`. **Leia antes de mexer em tradução.** É o arquivo que o chat especializado em i18n mantém.
 
 > ⚠️ **Não há mais `docs/archive/` nem notas de sessão** (removidas na limpeza v1.0.0-beta,
 > jul/2026). Handoff/histórico vive no git e no chat, não em arquivo solto. **O código é a
@@ -712,7 +729,7 @@ relevante quando a tarefa pedir:
   **atualize a seção certa aqui** — não crie um documento novo solto na raiz.
 - **Não crie arquivos de nota de sessão** (tipo `NEXT_CHAT` / `BRIEFING_*` / handoffs datados).
   De `.md` de projeto existem: **README + CLAUDE + os 10 de marca + AUTORIA + RENTABILIDADE +
-  MICRON/PIECEMAKERS/TOSHIBA-KIOXIA + FUZZY** (bíblias técnicas permanentes; política v1.0.0-beta,
+  MICRON/PIECEMAKERS/TOSHIBA-KIOXIA + FUZZY + I18N** (bíblias técnicas permanentes; política v1.0.0-beta,
   jul/2026). Handoff de fim de sessão vai no git/PR e no chat — nunca em arquivo novo na raiz.
 - **Decisões de arquitetura duradouras** vão para a seção certa do próprio **`CLAUDE.md`**
   (o hub) ou pro `.md` da marca — nunca num doc solto.

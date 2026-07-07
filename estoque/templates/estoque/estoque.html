@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}Estoque — WhatTheChip?{% endblock %}
-{% block nav_estoque %} pnl-nav-link--active{% endblock %}
+{% block nav_estoque %} wtc-header__nav--active{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -1125,6 +1125,8 @@ table.est-table td { padding: var(--s5) var(--s5); }
       {% include "estoque/partials/table_body.html" %}
     </div>
 
+    {# Export/Fechar/Reabrir são de gerente+ (§8) — a barreira real é a view. #}
+    {% if wtc_is_manager %}
     <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid #e0e0e0;">
       <a href="{% url 'estoque:export' lot.pk %}"
          style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:44px;background:#fff;border:1px solid #8d8d8d;color:#161616;font-size:14px;font-weight:600;text-decoration:none;">
@@ -1143,6 +1145,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
       </form>
       {% endif %}
     </div>
+    {% endif %}
     </div>{# /widget estoque #}
 
   </div>{# /right wrapper #}

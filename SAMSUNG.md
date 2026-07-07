@@ -53,7 +53,9 @@ com `--commit`. Os CSVs do Samsung PSG (`import_samsung_psg`) **complementam** o
    `DRAM_PC`/`DRAM_MOBILE`: primary=densidade(Gb/Mb), secondary=MB/die. Siga o padrão das linhas existentes. Nunca escreva `"por die"` no secondary (o engine anexa).
 8. **`decode_density_type` e `decode_cap_map` são mutuamente exclusivos** — K4F/K4U/K3U DEVEM ter `decode_density_type: ''`.
 9. **Famílias KM com dígito na 3ª posição** (KM1/2/4/5/8, KMV numérico): `decode_gen_pos: null` — senão o engine gera texto Frankenstein ("tipo 'X' — consultar datasheet"). O engine usa o `subtype` fixo da família.
-10. **Não confie em distribuidor/IA sem verificar** (Jotrin/WinSource/Shenzhen/LLM confundem Gb/GB, invertem primary/secondary, alucinam). Cruzar com `semiconductor.samsung.com` / datasheet.
+10. **Não confie em distribuidor/IA sem verificar** (Jotrin/WinSource/Shenzhen/Preduo/Puris/Alibaba/LLM confundem Gb/GB, invertem primary/secondary, alucinam). Cruzar com `semiconductor.samsung.com` / datasheet.
+11. **Capacidade de eMCP/uMCP (NAND/RAM) só confirma via Octopart (categorização própria, não a descrição do distribuidor dentro da página) ou datasheet — distribuidor é só pista, nunca a fonte final.** Incidente real: distribuidor fez o dono shipar 6GB errado num KM3 — o Octopart já tinha 4GB certo.
+12. **Nunca reaproveite o valor de uma chave de posição (ex.: `X6`, `V8`) de uma família em outra.** A mesma chave pode decodificar RAM diferente conforme a família (ver armadilha do "bug X6" em §3). Cada família eMCP/uMCP tem sua própria tabela de RAM — confirme por família, sempre.
 
 ### 0.3 Hierarquia de fontes (imutável)
 
@@ -127,6 +129,17 @@ bus width em `pn[5:7]` (`08`=x8 · `16`=x16 · `04`/`46`=x4) → `interface`; `p
 - **subtype verboso quebra o label** (`"DDR3 PC DRAM 8Gb x8"` → `"…+8G"` truncado). Só a geração (regra #4).
 - **interface=`"LPDDR*"` = bug** (erro histórico corrigido em 2026-06 em 61 lugares). Se achar, corrija.
 - **Dados externos:** Gb×GB (IA sempre confunde: `32Gb LPDDR4X` = 32÷8 = 4GB); IA inventa cap_keys (sugeriu "KBKB" quando era "BK"); IA troca primary/secondary; distribuidores (Jotrin/Censtry/Wolfchip) erram; `"Galaxy MX6432"` é código interno Samsung (64=eMMC, 32=Gb RAM), **não** nome de celular — limpar `device`.
+- **Página individual de SKU pode sumir do site da Samsung — link vira hub genérico.** Parts antigos/legados
+  (ex.: LPDDR4 K4F de ~2015-2018) às vezes têm a página específica descontinuada: o link direto
+  (`/dram/lpddr/lpddr4/<pn>/`) redireciona pro hub da linha (`/dram/lpddr/lpddr4/`) em vez de mostrar o
+  produto. **A confirmação Tier-1 continua válida** — o **título indexado pelo buscador** no momento da
+  pesquisa (ex.: `"K4FBE3D4HM-GHCL(32 Gb) | DRAM | Samsung Semiconductor Global"`) já é a fonte (Samsung,
+  não distribuidor); o link só deixa de ser **clicável/re-verificável depois**. Sempre que isso acontecer,
+  registre no `notes` do known_part que o link pode redirecionar — evita parecer fonte fraca só porque o
+  clique não bate mais. Achado em 2026-07-06 pesquisando a família K4F (as 6 páginas oficiais citadas já
+  redirecionavam ao hub; mesmo assim os títulos bateram exatamente com a gramática — dono cross-checou via
+  Google e confirmou).
+- **Mapa de capacidade eMCP NÃO pode ser 100% compartilhado entre famílias — "bug X6" (2026-07):** a mesma chave de posição de 2 chars (ex.: `X6`, `V8`) decodificava RAM **diferente** conforme a família — `X6` = 3GB em KMD/KMG mas 2GB em KM4; `V8` = 6GB em KM2, 4GB em KM5, 8GB em KM8. Achado pesquisando KMDD6001BM (known_part), confirmado cruzando Octopart de 3 famílias. Corrigido separando **NAND** (family-independent, `SAM_EMCP_NAND`) de **RAM** (por família, `SAM_EMCP_RAM_<FAM>`/`SAM_EMCP_CAP_<FAM>` — ver CLAUDE.md, seção "eMCP: RAM decodificada POR-FAMÍLIA"). Famílias já corrigidas: KMD, KMG, KM4, KM5, KM8, KM2/KM2L/KM2P, KMAG, KMAS. Pendente: KMF/KMQ/KMR (LPDDR3 legado) e outras legadas. **Nunca reaproveite o valor de uma chave de outra família só porque a string é igual** — cada família tem sua própria tabela agora.
 
 ---
 
@@ -151,8 +164,11 @@ senão `capacity` → GB; eMCP/uMCP → `emcp_nand`/`emcp_ram`.
 
 ## 6. Fontes de pesquisa
 
-Tier 1: `semiconductor.samsung.com` (título com "(X Gb)"/"(X GB)"), datasheet Samsung. Tier 2: Octopart (⚠ inverte Gb/GB).
-Tier 3: SBiT, Puris. **Sempre conferir:** `Xbit ÷ 8 = YB`.
+Tier 1: `semiconductor.samsung.com` (título com "(X Gb)"/"(X GB)"), datasheet Samsung. Tier 2: Octopart — a
+**categorização própria** do Octopart (título do produto) é confiável pra capacidade; ⚠ a descrição de
+distribuidor **dentro** da página do Octopart não é (inverte Gb/GB, erra).
+Tier 3: SBiT, Puris — só apoio/corroboração, nunca a fonte decisiva de capacidade (ver §0.2 regra 11).
+**Sempre conferir:** `Xbit ÷ 8 = YB`.
 
 ---
 
@@ -161,6 +177,7 @@ Tier 3: SBiT, Puris. **Sempre conferir:** `Xbit ÷ 8 = YB`.
 - **2026-06:** convenção OPÇÃO 1 — a geração passou a viver no `chip_type` (era `"RAM"`/`"DDR"` genérico); interface LPDDR corrigida (`""`); subtypes verbosos limpos.
 - **K4Z** reclassificado LPDDR4X→GDDR6; **K4R/KMV** bifurcações resolvidas por prioridade de prefixo.
 - **`canonical_gen`** protege o label de subtype verboso (fonte única da convenção no consumo).
+- **2026-07:** bug do mapa compartilhado `SAM_EMCP_CAP` (mesma chave de posição → RAM diferente por família — `X6`/`V8`) corrigido com mapas por-família: `SAM_EMCP_NAND` (compartilhado) + `SAM_EMCP_RAM_<FAM>`/`SAM_EMCP_CAP_<FAM>` (por família). Achado pesquisando known_part de KMDD6001BM; corrigido em KMD, KMG, KM4, KM5, KM8, KM2/KM2L/KM2P, KMAG, KMAS — KMF/KMQ/KMR (legado LPDDR3) pendentes. Lição fixada: capacidade de eMCP/uMCP só confirma via Octopart (categorização própria) ou datasheet, nunca distribuidor sozinho (§0.2 regras 11-12).
 
 > Inventário de chaves, famílias e provenância por-PN vivem nos `maps`/`known_parts` do **`samsung.yaml`**.
 > Tudo cross-marca (comandos, convenção, rentabilidade, arquitetura, deploy) está no **CLAUDE.md** — o único

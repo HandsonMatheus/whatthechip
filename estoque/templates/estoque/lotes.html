@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}Lotes — WhatTheChip?{% endblock %}
-{% block nav_estoque %} pnl-nav-link--active{% endblock %}
+{% block nav_estoque %} wtc-header__nav--active{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -298,7 +298,8 @@
   <h1 class="lots-title">Lotes</h1>
 </div>
 
-{# ── Formulário de criação ─────────────────────────────────── #}
+{# ── Formulário de criação — gerente+ (a barreira real é a view) ── #}
+{% if wtc_is_manager %}
 <div class="lots-create-card">
   <div class="lots-create-title">Novo Lote</div>
   <form method="post" action="{% url 'estoque:lot_create' %}">
@@ -326,6 +327,7 @@
     </div>
   </form>
 </div>
+{% endif %}
 
 {# ── Lista de lotes ────────────────────────────────────────── #}
 {% if lots %}
@@ -374,16 +376,18 @@
         Abrir →
       </a>
 
-      {% if lot.status == 'open' %}
-      <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="margin:0">
-        {% csrf_token %}
-        <button type="submit" class="lot-btn lot-btn--danger">Fechar</button>
-      </form>
-      {% else %}
-      <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="margin:0">
-        {% csrf_token %}
-        <button type="submit" class="lot-btn lot-btn--success">Reabrir</button>
-      </form>
+      {% if wtc_is_manager %}
+        {% if lot.status == 'open' %}
+        <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="margin:0">
+          {% csrf_token %}
+          <button type="submit" class="lot-btn lot-btn--danger">Fechar</button>
+        </form>
+        {% else %}
+        <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="margin:0">
+          {% csrf_token %}
+          <button type="submit" class="lot-btn lot-btn--success">Reabrir</button>
+        </form>
+        {% endif %}
       {% endif %}
     </div>
 
@@ -395,7 +399,11 @@
 <div class="lots-empty">
   <div class="lots-empty-icon">◻</div>
   <div class="lots-empty-title">Nenhum lote ainda</div>
+  {% if wtc_is_manager %}
   <div class="lots-empty-sub">Crie o primeiro lote usando o formulário acima.</div>
+  {% else %}
+  <div class="lots-empty-sub">Peça ao gerente para abrir um lote de triagem.</div>
+  {% endif %}
 </div>
 {% endif %}
 

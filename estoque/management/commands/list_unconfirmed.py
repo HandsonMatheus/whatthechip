@@ -45,6 +45,9 @@ class Command(BaseCommand):
     help = "Lista PNs do lote com quantidade == N que ainda NÃO são confirmados (live). Read-only."
 
     def add_arguments(self, parser):
+        # T3 (multi-empresa): comando tenant-scoped roda com escopo explícito.
+        parser.add_argument('--company', default=None,
+                            help='Slug da empresa (obrigatório com 2+ empresas ativas).')
         parser.add_argument("--lot", type=int, default=39)
         parser.add_argument("--qty", type=int, default=1, help="Quantidade exata (default 1).")
         parser.add_argument("--all", action="store_true",
@@ -52,6 +55,10 @@ class Command(BaseCommand):
         parser.add_argument("--out", type=str, default="")
 
     def handle(self, *args, **opts):
+        # T3: seta o escopo fail-closed do processo ANTES de qualquer query
+        # (os managers do estoque explodem sem empresa — de propósito).
+        from tenancy.scope import scope_command_to_company
+        scope_command_to_company(opts.get('company'), stdout=self.stdout)
         try:
             lot = Lot.objects.get(number=opts["lot"])
         except Lot.DoesNotExist:

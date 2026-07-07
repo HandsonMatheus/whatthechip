@@ -1,23 +1,24 @@
+{% load i18n %}
 {% if result.known %}
 <div class="dc2-card{% if family_undocumented %} dc2-card--undoc{% endif %}" data-pn="{{ result.pn }}" data-debug="{{ result_json }}">
 
   <!-- ── Barra de status ─────────────────────────────────────────────────── -->
   {% if result.pn_incomplete %}
   <div class="dc2-status dc2-status--wait">
-    ⌛ PN incompleto — continue digitando
-    {% if result.pn_length_expected %}<span class="dc2-status-detail">(esperado: {{ result.pn_length_expected }} caracteres)</span>{% endif %}
+    ⌛ {% trans "PN incompleto — continue digitando" %}
+    {% if result.pn_length_expected %}<span class="dc2-status-detail">{% blocktrans trimmed with n=result.pn_length_expected %}(esperado: {{ n }} caracteres){% endblocktrans %}</span>{% endif %}
   </div>
   {% elif result.pn_not_in_db %}
   <div class="dc2-status dc2-status--warn">
-    ⚠ PN não confirmado — confira a digitação{% if result.fuzzy_suggestions %} · veja sugestões abaixo{% endif %}
+    ⚠ {% trans "PN não confirmado — confira a digitação" %}{% if result.fuzzy_suggestions %} · {% trans "veja sugestões abaixo" %}{% endif %}
   </div>
   {% elif family_undocumented %}
   <div class="dc2-status dc2-status--undoc" style="background:#fff8e1 !important;color:#b8860b !important;border-bottom:2px solid #e6a817;">
-    ⚠ Família identificada — sem documentação pública
+    ⚠ {% trans "Família identificada — sem documentação pública" %}
   </div>
   {% else %}
   <div class="dc2-status dc2-status--ok">
-    ✓ Chip identificado
+    ✓ {% trans "Chip identificado" %}
   </div>
   {% endif %}
 
@@ -28,9 +29,10 @@
         {{ result.chip_type }}{% if result.subtype %}<span class="dc2-subtype">{{ result.subtype }}</span>{% endif %}
       </div>
     </div>
-    {% if profitable and profitable != "INDETERMINADO" %}
+    {# Lógica pela CHAVE estável (nunca contra o rótulo PT); exibe o rótulo traduzido. Ver I18N.md. #}
+    {% if profitable_key and profitable_key != "indeterminado" %}
     <span class="wtc-profit-badge wtc-profit-badge--{{ profitable_key }}">
-      {% if profitable == "RENTÁVEL" %}✓{% else %}✗{% endif %} {{ profitable }}
+      {% if profitable_key == "rentavel" %}✓{% else %}✗{% endif %} {{ profitable_label }}
     </span>
     {% endif %}
     {% if result.brand %}
@@ -76,13 +78,13 @@
     {% endif %}
     {% if result.emcp_device %}
     <div class="dc2-spec-col dc2-spec-col--wide">
-      <span class="dc2-spec-label">Dispositivo</span>
+      <span class="dc2-spec-label">{% trans "Dispositivo" %}</span>
       <span class="dc2-spec-val">{{ result.emcp_device }}</span>
     </div>
     {% endif %}
     {% if result.interface %}
     <div class="dc2-spec-col">
-      <span class="dc2-spec-label">Interface</span>
+      <span class="dc2-spec-label">{% trans "Interface" %}</span>
       <span class="dc2-spec-val">{{ result.interface }}</span>
     </div>
     {% endif %}
@@ -91,25 +93,25 @@
   <div class="dc2-specs">
     {% if result.dram_density %}
     <div class="dc2-spec-col">
-      <span class="dc2-spec-label">Densidade</span>
+      <span class="dc2-spec-label">{% trans "Densidade" %}</span>
       <span class="dc2-spec-val">{{ result.dram_density }}</span>
     </div>
     {% endif %}
     {% if result.capacity %}
     <div class="dc2-spec-col">
-      <span class="dc2-spec-label">Capacidade</span>
+      <span class="dc2-spec-label">{% trans "Capacidade" %}</span>
       <span class="dc2-spec-val">{{ result.capacity }}</span>
     </div>
     {% endif %}
     {% if result.interface %}
     <div class="dc2-spec-col">
-      <span class="dc2-spec-label">Interface</span>
+      <span class="dc2-spec-label">{% trans "Interface" %}</span>
       <span class="dc2-spec-val">{{ result.interface }}</span>
     </div>
     {% endif %}
     {% if result.device %}
     <div class="dc2-spec-col dc2-spec-col--wide">
-      <span class="dc2-spec-label">Dispositivo</span>
+      <span class="dc2-spec-label">{% trans "Dispositivo" %}</span>
       <span class="dc2-spec-val">{{ result.device }}</span>
     </div>
     {% endif %}
@@ -119,7 +121,7 @@
   <!-- ── Sufixo ──────────────────────────────────────────────────────────── -->
   {% if result.suffix_note %}
   <div class="dc2-suffix">
-    <span class="dc2-suffix-label">Sufixo:</span> {{ result.suffix_note }}
+    <span class="dc2-suffix-label">{% trans "Sufixo:" %}</span> {{ result.suffix_note }}
   </div>
   {% endif %}
 
@@ -131,7 +133,7 @@
   <!-- ── Sugestões de PN (digitação errada / incompleto) ──────────────── -->
   {% if result.pn_not_in_db and result.fuzzy_suggestions %}
   <div style="margin:0 16px 12px 16px;padding:4px 0 0;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">VOCÊ QUIS DIZER?</div>
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">{% trans "VOCÊ QUIS DIZER?" %}</div>
     {% for sug in result.fuzzy_suggestions %}
     <a href="#"
        onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;"
@@ -152,22 +154,22 @@
 
     {% if result.classification_source %}
       <span class="dc2-sep">·</span>
-      <span class="dc2-source-tag">via {{ result.classification_source }}</span>
+      <span class="dc2-source-tag">{% trans "via" %} {{ result.classification_source }}</span>
     {% endif %}
 
     {% if result.doc_url %}
       <span class="dc2-sep">·</span>
-      <a class="dc2-doclink" href="{{ result.doc_url }}">Documentação →</a>
+      <a class="dc2-doclink" href="{{ result.doc_url }}">{% trans "Documentação →" %}</a>
     {% endif %}
 
     {% if show_source %}
       <span class="dc2-sep">·</span>
-      <a class="dc2-srclink" href="{{ result.source_url }}" target="_blank" rel="noopener">Fonte ↗</a>
+      <a class="dc2-srclink" href="{{ result.source_url }}" target="_blank" rel="noopener">{% trans "Fonte ↗" %}</a>
     {% endif %}
 
     {% if result.in_review_queue %}
       <span class="dc2-sep">·</span>
-      <span class="dc2-queue dc2-queue--warn">⚠ Enviado para revisão</span>
+      <span class="dc2-queue dc2-queue--warn">⚠ {% trans "Enviado para revisão" %}</span>
     {% endif %}
 
     <span class="dc2-sep">·</span>
@@ -177,7 +179,7 @@
         hx-target="#dc-report-{{ result.pn }}"
         hx-swap="innerHTML"
         hx-vals='{"pn": "{{ result.pn|escapejs }}", "chip_type": "{{ result.chip_type|escapejs }}", "capacity": "{{ result.capacity|default:result.emcp_nand|default:''|escapejs }}"}'
-        type="button">Reportar erro</button>
+        type="button">{% trans "Reportar erro" %}</button>
     </span>
 
     <span class="dc2-sep">·</span>
@@ -204,7 +206,7 @@
   </div>
   {% if result.fuzzy_suggestions %}
   <div style="margin-top:12px;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">VOCÊ QUIS DIZER?</div>
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">{% trans "VOCÊ QUIS DIZER?" %}</div>
     {% for sug in result.fuzzy_suggestions %}
     <a href="#"
        onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;"
@@ -258,7 +260,7 @@
 
   {% if result.fuzzy_suggestions %}
   <div style="margin-top:10px;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">VOCÊ QUIS DIZER?</div>
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:6px;">{% trans "VOCÊ QUIS DIZER?" %}</div>
     {% for sug in result.fuzzy_suggestions %}
     <a href="#"
        onclick="document.getElementById('pn-input').value='{{ sug|escapejs }}';triggerSearch('{{ sug|escapejs }}');return false;"

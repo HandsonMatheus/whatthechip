@@ -37,10 +37,17 @@ class Command(BaseCommand):
     help = "Audita o estoque: quantos PNs o engine ainda reconhece como banco vs gramática. Read-only."
 
     def add_arguments(self, parser):
+        # T3 (multi-empresa): comando tenant-scoped roda com escopo explícito.
+        parser.add_argument('--company', default=None,
+                            help='Slug da empresa (obrigatório com 2+ empresas ativas).')
         parser.add_argument("--lot", type=int, default=0, help="Só um lote (default: todos).")
         parser.add_argument("--list", type=int, default=40, help="Quantos exemplos KP-NÃO-RECON listar.")
 
     def handle(self, *args, **opts):
+        # T3: seta o escopo fail-closed do processo ANTES de qualquer query
+        # (os managers do estoque explodem sem empresa — de propósito).
+        from tenancy.scope import scope_command_to_company
+        scope_command_to_company(opts.get('company'), stdout=self.stdout)
         from estoque.models import InventoryEntry
         from chips.models import KnownPart
         from chips.engine import classify

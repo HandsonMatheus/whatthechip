@@ -63,6 +63,9 @@ class Command(SafeWriteCommand):
     help = "Promove a base atual de estoque a KnownPart manual/enriched (ponte p/ o bloqueio). Dry-run por padrão."
 
     def add_arguments(self, parser):
+        # T3 (multi-empresa): comando tenant-scoped roda com escopo explícito.
+        parser.add_argument('--company', default=None,
+                            help='Slug da empresa (obrigatório com 2+ empresas ativas).')
         parser.add_argument("--lot", type=int, default=DEFAULT_LOT)
         parser.add_argument("--all-lots", action="store_true",
                             help="Considera entradas de TODOS os lotes, não só --lot.")
@@ -102,6 +105,10 @@ class Command(SafeWriteCommand):
     # ── main ──────────────────────────────────────────────────────────────────
 
     def handle(self, *args, **opts):
+        # T3: seta o escopo fail-closed do processo ANTES de qualquer query
+        # (os managers do estoque explodem sem empresa — de propósito).
+        from tenancy.scope import scope_command_to_company
+        scope_command_to_company(opts.get('company'), stdout=self.stdout)
         if opts["revert"]:
             return self._revert()
 

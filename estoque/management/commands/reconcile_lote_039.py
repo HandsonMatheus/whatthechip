@@ -54,6 +54,9 @@ class Command(SafeWriteCommand):
     help = "Reconcilia o lote #039 somando a diferença em chips reais já existentes (sem PN inventado)."
 
     def add_arguments(self, parser):
+        # T3 (multi-empresa): comando tenant-scoped roda com escopo explícito.
+        parser.add_argument('--company', default=None,
+                            help='Slug da empresa (obrigatório com 2+ empresas ativas).')
         parser.add_argument("--lot", type=int, default=LOTE)
         parser.add_argument("--commit", action="store_true",
                             help="Aplica as somas. Sem isso, só simula (dry-run).")
@@ -78,6 +81,10 @@ class Command(SafeWriteCommand):
     # ── main ──────────────────────────────────────────────────────────────────
 
     def handle(self, *args, **opts):
+        # T3: seta o escopo fail-closed do processo ANTES de qualquer query
+        # (os managers do estoque explodem sem empresa — de propósito).
+        from tenancy.scope import scope_command_to_company
+        scope_command_to_company(opts.get('company'), stdout=self.stdout)
         if opts["revert"]:
             return self._revert(opts["lot"])
 

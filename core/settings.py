@@ -34,6 +34,10 @@ INSTALLED_APPS = [
     # os gatilhos são no-op (pgtrigger checa connection.vendor) — não quebra.
     'pgtrigger',
     'pghistory',
+    # Multi-empresa (PLANO_MULTITENANT.md, T1): Company/Branch/Membership,
+    # escopo por request (contextvar) e gates de papel. Antes de chips/estoque
+    # porque eles ganham FKs para tenancy (SearchLog.company etc.).
+    'tenancy',
     'pages',
     'chips',
     'estoque',
@@ -41,19 +45,28 @@ INSTALLED_APPS = [
 
 # ── Autenticação ──────────────────────────────────────────────
 LOGIN_URL          = '/login/'
-LOGIN_REDIRECT_URL = '/estoque/'
+LOGIN_REDIRECT_URL = '/painel/'   # lançadeira pós-login (UX 2026-07-06); o
+                                  # trabalho continua em /estoque/, 1 clique
 LOGOUT_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # ← serve static em produção
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # i18n: resolve o idioma da request (sessão → cookie django_language →
+    # Accept-Language → LANGUAGE_CODE). DEPOIS do SessionMiddleware e ANTES do
+    # CommonMiddleware (exigência do Django). Ativa gettext por request. Ver I18N.md.
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     # Captura o usuário autenticado no contexto do evento pghistory (o "quem"
     # das mudanças via admin/web). Precisa vir DEPOIS do AuthenticationMiddleware.
     'pghistory.middleware.HistoryMiddleware',
+    # Resolve o Membership do usuário → request.company/role + contextvar de
+    # escopo (tenancy/scope.py). DEPOIS do AuthenticationMiddleware. Na T4
+    # este middleware passa a abrir a transação da request e emitir SET LOCAL.
+    'tenancy.middleware.TenancyMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -69,8 +82,14 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                # i18n nos templates: LANGUAGE_CODE, LANGUAGES e o idioma ativo
+                # ({% get_current_language %}) — alimenta o seletor de idioma.
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # Papel/empresa nos templates (wtc_is_manager etc.) — navegação
+                # por papel (§9 do plano). A barreira real é o gate da view.
+                'tenancy.context_processors.tenancy',
             ],
         },
     },
@@ -97,9 +116,26 @@ else:
         }
     }
 
-LANGUAGE_CODE = 'pt-br'
+# ── Internacionalização (i18n) ────────────────────────────────
+# Português é o idioma-fonte (msgid) e o fallback. Os demais vivem em
+# locale/<código>/LC_MESSAGES/django.po (versionados no git). Adicionar um
+# idioma = incluir aqui + gerar/traduzir o .po. Detalhes: I18N.md.
+from django.utils.translation import gettext_lazy as _  # noqa: E402
+
+LANGUAGE_CODE = 'pt-br'          # fallback + idioma-fonte das strings (msgid)
+
+LANGUAGES = [
+    ('pt-br', _('Português')),
+    ('es',    _('Español')),
+    # ('en', _('English')),   # em breve — descomentar quando o .po estiver pronto
+    # ('zh-hans', _('中文')),  # em breve
+]
+
+# Onde o Django procura os catálogos .mo compilados (além dos de cada app).
+LOCALE_PATHS = [BASE_DIR / 'locale']
+
 TIME_ZONE = 'America/Sao_Paulo'
-USE_I18N = True
+USE_I18N = True                  # liga o motor de tradução por request
 USE_TZ = True
 
 STATIC_URL = '/static/'

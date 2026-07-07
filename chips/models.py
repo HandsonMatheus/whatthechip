@@ -319,6 +319,13 @@ class SearchLog(models.Model):
     source_used = models.TextField(blank=True, default="",
                                    help_text="grammar | db_exact | db_fbga | not_found")
     searched_at = models.DateTimeField(auto_now_add=True)
+    # Decisão §14.1 do PLANO_MULTITENANT.md: o log continua GLOBAL (alimenta o
+    # catálogo — efeito de rede; SEM manager escopado, SEM RLS), mas ANOTA a
+    # empresa quando a busca veio de usuário com vínculo (análise por cliente).
+    # NULL = busca pública/anônima ou fora de request. SET_NULL: o log sobrevive.
+    company = models.ForeignKey('tenancy.Company', null=True, blank=True,
+                                on_delete=models.SET_NULL, related_name='+',
+                                verbose_name='Empresa')
 
     class Meta:
         verbose_name = "Log de Busca"
@@ -334,6 +341,12 @@ class UnknownChip(models.Model):
     part_number = models.TextField(unique=True)
     notes       = models.TextField(blank=True, default="")
     logged_at   = models.DateTimeField(auto_now_add=True)
+    # §14.1 (PLANO_MULTITENANT.md): fila GLOBAL de enriquecimento (dedup por PN
+    # continua mundial — sem manager escopado, sem RLS); a empresa anotada é a
+    # PRIMEIRA que reportou (get_or_create com defaults). NULL = anônimo/comando.
+    company = models.ForeignKey('tenancy.Company', null=True, blank=True,
+                                on_delete=models.SET_NULL, related_name='+',
+                                verbose_name='Empresa (1ª a reportar)')
 
     class Meta:
         verbose_name = "Chip Desconhecido"

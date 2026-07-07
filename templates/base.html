@@ -1,6 +1,6 @@
-{% load static %}
+{% load static i18n %}
 <!doctype html>
-<html lang="pt-BR">
+<html lang="{{ LANGUAGE_CODE|default:'pt-BR' }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,10 +31,18 @@
 </head>
 <body>
 
+<!-- Form oculto do seletor de idioma: os itens .topnav__lang-item[data-lang]
+     preenchem #lang-input e postam este form (set_language). Ver I18N.md. -->
+<form id="lang-form" action="{% url 'set_language' %}" method="post" hidden>
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.get_full_path }}">
+  <input type="hidden" name="language" id="lang-input" value="">
+</form>
+
 <!-- ════════════════════════════════════════════════════════
      TOP NAV — Carbon + camada Luna
      ════════════════════════════════════════════════════════ -->
-<header class="topnav" aria-label="Navegação principal">
+<header class="topnav" aria-label="{% trans 'Navegação principal' %}">
 
   <a class="topnav__brand" href="{% url 'home' %}">
     <span>WhatTheChip</span>
@@ -42,46 +50,55 @@
   </a>
 
   <button class="topnav__hamburger" id="nav-hamburger" type="button"
-          aria-label="Abrir menu" aria-expanded="false">
+          aria-label="{% trans 'Abrir menu' %}" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 
-  <nav class="topnav__links" id="nav-links" aria-label="Seções">
+  <nav class="topnav__links" id="nav-links" aria-label="{% trans 'Seções' %}">
     <a class="topnav__link{% if current_slug == 'index' %} is-active{% endif %}"
-       href="{% url 'home' %}">Início</a>
+       href="{% url 'home' %}">{% trans "Início" %}</a>
 
-    <button class="topnav__navbtn" type="button" data-open-submit>Adicionar chip</button>
+    <button class="topnav__navbtn" type="button" data-open-submit>{% trans "Adicionar chip" %}</button>
 
     <a class="topnav__link{% if current_slug == 'contato' %} is-active{% endif %}"
-       href="{% url 'page' 'contato' %}">Contato</a>
+       href="{% url 'page' 'contato' %}">{% trans "Contato" %}</a>
   </nav>
 
   <div class="topnav__right">
-    <!-- Idioma -->
+    <!-- Idioma — o clique num item com data-lang posta o form oculto #lang-form
+         (set_language). Idiomas ativos vêm de settings.LANGUAGES; os "em breve"
+         são placeholders estáticos até o .po ficar pronto. Ver I18N.md. -->
     <div class="topnav__lang" id="nav-lang">
       <button class="topnav__util" type="button" aria-haspopup="listbox" aria-expanded="false"
-              aria-label="Mudar idioma">
+              aria-label="{% trans 'Mudar idioma' %}">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"/>
         </svg>
-        <span class="swatch">PT</span>
+        <span class="swatch">{{ LANGUAGE_CODE|slice:':2'|upper }}</span>
         <span class="caret" aria-hidden="true"></span>
       </button>
       <ul class="topnav__lang-menu" role="listbox">
-        <li class="topnav__lang-item is-active" role="option" aria-selected="true">
-          <span class="swatch">PT</span><span>Português</span>
+        {% get_available_languages as WTC_LANGUAGES %}
+        {% get_language_info_list for WTC_LANGUAGES as wtc_langs %}
+        {% for lang in wtc_langs %}
+        <li class="topnav__lang-item{% if lang.code == LANGUAGE_CODE %} is-active{% endif %}"
+            role="option" aria-selected="{% if lang.code == LANGUAGE_CODE %}true{% else %}false{% endif %}"
+            data-lang="{{ lang.code }}">
+          <span class="swatch">{{ lang.code|slice:':2'|upper }}</span><span>{{ lang.name_local|capfirst }}</span>
+        </li>
+        {% endfor %}
+        {# Placeholders "em breve" — remover quando o idioma entrar em settings.LANGUAGES #}
+        <li class="topnav__lang-item" role="option" aria-selected="false" data-soon>
+          <span class="swatch">EN</span><span>English — {% trans "em breve" %}</span>
         </li>
         <li class="topnav__lang-item" role="option" aria-selected="false" data-soon>
-          <span class="swatch">EN</span><span>English — em breve</span>
-        </li>
-        <li class="topnav__lang-item" role="option" aria-selected="false" data-soon>
-          <span class="swatch">中文</span><span>中文 — em breve</span>
+          <span class="swatch">中文</span><span>中文 — {% trans "em breve" %}</span>
         </li>
       </ul>
     </div>
 
     <!-- Tema -->
-    <button class="topnav__util" id="theme-btn" type="button" aria-label="Alternar modo escuro/claro">
+    <button class="topnav__util" id="theme-btn" type="button" aria-label="{% trans 'Alternar modo escuro/claro' %}">
       <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -97,11 +114,11 @@
     </button>
 
     <!-- Entrar -->
-    <a class="topnav__login" href="{% url 'login' %}" aria-label="Entrar">
+    <a class="topnav__login" href="{% url 'login' %}" aria-label="{% trans 'Entrar' %}">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>
       </svg>
-      <span>Entrar</span>
+      <span>{% trans "Entrar" %}</span>
     </a>
   </div>
 </header>
@@ -118,7 +135,7 @@
      ════════════════════════════════════════════════════════ -->
 <footer class="foot">
   <div class="foot__brands">
-    <span class="foot__brands-label">Marcas suportadas</span>
+    <span class="foot__brands-label">{% trans "Marcas suportadas" %}</span>
     <span class="foot__brands-item">Samsung</span>
     <span class="foot__brands-sep" aria-hidden="true"></span>
     <span class="foot__brands-item">SK Hynix</span>
@@ -145,10 +162,10 @@
   <div class="wtc-modal" role="dialog" aria-modal="true" aria-labelledby="submit-modal-title">
     <div class="wtc-modal__head">
       <h3 class="wtc-modal__title" id="submit-modal-title">
-        Adicionar chip ao banco
-        <small>Chip não catalogado? Envie o PN — analisamos e adicionamos em até 48&nbsp;h.</small>
+        {% trans "Adicionar chip ao banco" %}
+        <small>{% blocktrans trimmed %}Chip não catalogado? Envie o PN — analisamos e adicionamos em até 48&nbsp;h.{% endblocktrans %}</small>
       </h3>
-      <button class="wtc-modal__close" type="button" data-close-submit aria-label="Fechar">
+      <button class="wtc-modal__close" type="button" data-close-submit aria-label="{% trans 'Fechar' %}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M6 6l12 12M18 6L6 18"/>
         </svg>
@@ -157,54 +174,54 @@
 
     <form class="wtc-modal__body" id="submit-form" enctype="multipart/form-data">
       <p class="wtc-modal__intro">
-        Quanto mais informação você enviar, mais rápido conseguimos identificar.
-        Uma foto nítida do chip ajuda muito.
+        {% blocktrans trimmed %}Quanto mais informação você enviar, mais rápido conseguimos identificar.
+        Uma foto nítida do chip ajuda muito.{% endblocktrans %}
       </p>
       <p class="wtc-form-error" id="submit-error"></p>
 
       <div class="wtc-field">
-        <label for="submit-pn">Part Number <span class="req">*</span></label>
+        <label for="submit-pn">{% trans "Part Number" %} <span class="req">*</span></label>
         <input class="wtc-input is-mono" type="text" id="submit-pn" name="pn"
                autocomplete="off" autocapitalize="characters" spellcheck="false"
                placeholder="ex: KM3V6001CM" required />
       </div>
 
       <div class="wtc-field">
-        <label for="submit-photo">Foto do chip</label>
+        <label for="submit-photo">{% trans "Foto do chip" %}</label>
         <label class="wtc-file" for="submit-photo">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M4 16l4-4 4 4 4-6 4 6M3 5h18v14H3z"/>
           </svg>
-          <span class="wtc-file-label">Escolher imagem…</span>
+          <span class="wtc-file-label">{% trans "Escolher imagem…" %}</span>
           <span class="wtc-file-name" id="submit-photo-name"></span>
           <input type="file" id="submit-photo" name="photo" accept="image/*" />
         </label>
       </div>
 
       <div class="wtc-field">
-        <label for="submit-context">Contexto (opcional)</label>
+        <label for="submit-context">{% trans "Contexto (opcional)" %}</label>
         <textarea class="wtc-textarea" id="submit-context" name="context"
-                  placeholder="Origem, marca do aparelho, observações…"></textarea>
+                  placeholder="{% trans 'Origem, marca do aparelho, observações…' %}"></textarea>
       </div>
 
       <div class="wtc-field">
-        <label for="submit-email">Seu e-mail (para retorno)</label>
+        <label for="submit-email">{% trans "Seu e-mail (para retorno)" %}</label>
         <input class="wtc-input" type="email" id="submit-email" name="email"
                placeholder="voce@exemplo.com" />
       </div>
     </form>
 
     <div class="wtc-modal__foot">
-      <button class="wtc-btn-cancel" type="button" data-close-submit>Cancelar</button>
+      <button class="wtc-btn-cancel" type="button" data-close-submit>{% trans "Cancelar" %}</button>
       <button class="wtc-btn-submit" type="submit" form="submit-form" id="submit-btn">
-        <span class="submit-btn-label">Enviar para análise</span>
+        <span class="submit-btn-label">{% trans "Enviar para análise" %}</span>
       </button>
     </div>
 
     <div class="wtc-modal__success">
       <div class="ok-led" aria-hidden="true">✓</div>
-      <h4>Recebido — obrigado!</h4>
-      <p>Seu envio entrou na fila de análise. Adicionamos o chip ao banco em até 48&nbsp;h.</p>
+      <h4>{% trans "Recebido — obrigado!" %}</h4>
+      <p>{% blocktrans trimmed %}Seu envio entrou na fila de análise. Adicionamos o chip ao banco em até 48&nbsp;h.{% endblocktrans %}</p>
     </div>
   </div>
 </div>
@@ -256,6 +273,16 @@
       e.stopPropagation();
       var open = langWrap.classList.toggle('is-open');
       langBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // Clique num idioma disponível → preenche e posta o form set_language.
+    langWrap.querySelectorAll('.topnav__lang-item[data-lang]').forEach(function (item) {
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', function () {
+        var code = item.getAttribute('data-lang');
+        var input = document.getElementById('lang-input');
+        var form  = document.getElementById('lang-form');
+        if (code && input && form) { input.value = code; form.submit(); }
+      });
     });
     document.addEventListener('click', function (e) {
       if (!langWrap.contains(e.target)) {

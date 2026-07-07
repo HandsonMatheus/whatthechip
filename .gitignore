@@ -36,3 +36,8 @@ purge_enriched_backup_*.json
 # Planilhas de trabalho soltas na raiz
 /WTC_*.xlsx
 /precificacao_*.xlsx
+
+# Artefatos de sessão (T1-T3, jul/2026)
+.~*
+/resumo_*.xlsx
+correct_kp_revert_*.json
