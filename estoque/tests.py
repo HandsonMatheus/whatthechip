@@ -805,7 +805,32 @@ class RLSHandshakeTests(TransactionTestCase):
     ⚠ Postgres-only (no SQLite as policies nem existem; a Camada A cobre lá):
 
         python manage.py test estoque.tests.RLSHandshakeTests
+
+    ⚠ Armadilha §6.2.1: role SUPERUSER bypassa RLS por completo (até com
+    FORCE) — e o dev local costuma conectar como super (o Render não). Se o
+    role atual é super, o teste troca para um role de sondagem SEM superuser
+    (membro do role atual → mesmos privilégios, RLS aplica) só nas asserções.
     """
+
+    _PROBE_ROLE = 'wtc_rls_probe'
+
+    def _enter_non_superuser(self, cur):
+        cur.execute('SELECT rolsuper FROM pg_roles WHERE rolname = current_user')
+        if not cur.fetchone()[0]:
+            return          # já é não-super (prod-like): RLS vale direto
+        cur.execute('SELECT current_user')
+        original = cur.fetchone()[0]
+
+        def _leave():
+            with connection.cursor() as c:
+                c.execute('RESET ROLE')
+                c.execute(f'DROP ROLE IF EXISTS {self._PROBE_ROLE}')
+        self.addCleanup(_leave)
+
+        cur.execute(f'DROP ROLE IF EXISTS {self._PROBE_ROLE}')
+        cur.execute(f'CREATE ROLE {self._PROBE_ROLE}')          # sem SUPER/LOGIN
+        cur.execute(f'GRANT "{original}" TO {self._PROBE_ROLE}')  # herda privilégios
+        cur.execute(f'SET ROLE {self._PROBE_ROLE}')
 
     @skipUnless(connection.vendor == 'postgresql', 'RLS é Postgres-only')
     def test_sql_cru_respeita_o_rls(self):
@@ -828,6 +853,7 @@ class RLSHandshakeTests(TransactionTestCase):
         _clear_gucs()
 
         with connection.cursor() as cur:
+            self._enter_non_superuser(cur)   # §6.2.1: super bypassa RLS
             # 1) SEM GUC → FORCE RLS vale até para o dono da tabela: 0 linhas.
             cur.execute('SELECT count(*) FROM estoque_lot')
             self.assertEqual(cur.fetchone()[0], 0)
