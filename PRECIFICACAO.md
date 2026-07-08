@@ -830,6 +830,20 @@ simplicidade venceu. Implementação REVERSÍVEL:
 
 ⚠ Rodar `sync_index_page` de novo (o JS da home mudou).
 
+### 12.13 `add_price_row` — faixa nova revelada por chip real (2026-07-08)
+
+Caso real: H9HCNNN8KUMLHRNLE (SK Hynix **LPDDR4X 1GB**) saiu "fora da grade" —
+a planilha nunca teve LPDDR4X 1GB. É o fluxo previsto ("sem preço → dono
+adiciona a linha", §2/§11), agora com ferramenta própria:
+
+- **`add_price_row --buyer wuquan --kind lpddr --gen LPDDR4X --tier 1 --unit GB
+  --made-by "Samsung,SK Hynix,Micron,Nanya"`** — a faixa nasce em TODAS as
+  listas do grid unificado: `--made-by` + Outras marcas → **não cotado** (o
+  comprador cota no /partner/, com revisão); demais marcas → **não fabricado**.
+  Valida kind×gen×unidade no portão; idempotente; dry-run por padrão.
+- Quem fabrica LPDDR (matriz da aba Instructions): Samsung, SK Hynix, Micron,
+  Nanya. Kingston/Toshiba-Kioxia/SanDisk entram como não fabricado.
+
 ### 12.12 🔔 Notificações do parceiro (dono, 2026-07-07; suíte 286/286)
 
 Fechando o ciclo da moderação: o comprador fica sabendo da decisão.

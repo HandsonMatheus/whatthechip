@@ -767,6 +767,55 @@ class SeedPriceGridTests(TestCase):
         self.assertEqual(Price.all_companies.count(), antes)
 
 
+class AddPriceRowTests(TestCase):
+    """add_price_row: faixa nova entra no grid inteiro — made-by → não cotado;
+    demais marcas → não fabricado; Outras marcas sempre não cotado."""
+
+    def _run(self, commit=False, **extra):
+        from io import StringIO
+        from django.core.management import call_command
+        from tenancy.scope import set_current_company
+        out = StringIO()
+        base = dict(buyer='wuquan-row', kind='lpddr', gen='LPDDR4X',
+                    tier='1', unit='GB', made_by='Samsung R', commit=commit)
+        base.update(extra)
+        try:
+            call_command('add_price_row', stdout=out, **base)
+        finally:
+            set_current_company(None)
+        return out.getvalue()
+
+    def test_faixa_nova_no_grid_inteiro(self):
+        from django.core.management.base import CommandError
+        company = Company.objects.create(name='RowCo', slug='row-co')
+        buyer = Buyer.all_companies.create(company=company, name='Wuquan R',
+                                           slug='wuquan-row')
+        faz = Brand.objects.create(name='Samsung R', code='SAMRW')
+        nao_faz = Brand.objects.create(name='Kingston R', code='KGTRW')
+        l_faz = PriceList.all_companies.create(buyer=buyer, brand=faz)
+        l_nao = PriceList.all_companies.create(buyer=buyer, brand=nao_faz)
+        l_gen = PriceList.all_companies.create(buyer=buyer, brand=None)
+
+        self._run(commit=False)                              # dry-run: nada
+        self.assertEqual(Price.all_companies.count(), 0)
+
+        self._run(commit=True)
+        self.assertEqual(Price.all_companies.get(
+            price_list=l_faz, kind='lpddr').status, STATUS_UNQUOTED)
+        self.assertEqual(Price.all_companies.get(
+            price_list=l_gen, kind='lpddr').status, STATUS_UNQUOTED)
+        self.assertEqual(Price.all_companies.get(
+            price_list=l_nao, kind='lpddr').status, 'not_made')
+
+        self._run(commit=True)                               # idempotente
+        self.assertEqual(Price.all_companies.count(), 3)
+
+        with self.assertRaises(CommandError):                # gen inválida
+            self._run(commit=True, gen='DDR3')
+        with self.assertRaises(CommandError):                # marca desconhecida
+            self._run(commit=True, made_by='Marswell')
+
+
 class PartnerDashboardTests(TestCase):
     """F6 — /partner/: gate do parceiro, lançadeira, herdados, save e isolamento.
     Auditoria (updated_by/last_updated) GRAVADA mas NUNCA exibida (§7)."""
