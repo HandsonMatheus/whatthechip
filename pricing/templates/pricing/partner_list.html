@@ -1,39 +1,38 @@
 {% extends "pricing/partner_base.html" %}
-{% load l10n %}
-{% block title %}{% if price_list.brand %}{{ price_list.brand.name }}{% else %}Outras marcas{% endif %}{% endblock %}
+{% load l10n i18n %}
+{% block title %}{% if price_list.brand %}{{ price_list.brand.name }}{% else %}{% trans "Outras marcas" %}{% endif %}{% endblock %}
 {% block content %}
 
 <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px;">
   <h1 style="font-weight:300;font-size:28px;margin:0;">
-    {% if price_list.brand %}{{ price_list.brand.name }}{% else %}Outras marcas{% endif %}
+    {% if price_list.brand %}{{ price_list.brand.name }}{% else %}{% trans "Outras marcas" %}{% endif %}
   </h1>
 </div>
 <p style="font-size:13px;color:#6f6f6f;margin:0 0 14px;">
-  Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em USD.
-  {% if not price_list.brand %}Estes preços valem para toda marca que não tem
-  tabela própria.{% endif %}
+  {% blocktrans trimmed %}Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em USD.{% endblocktrans %}
+  {% if not price_list.brand %}{% trans "Estes preços valem para toda marca que não tem tabela própria." %}{% endif %}
 </p>
 
 {# ── Filtros (GET; o onchange submete) ─────────────────────────── #}
 <form method="get" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">
-  <label style="font-size:12px;font-weight:600;color:#6f6f6f;">Tipo
+  <label style="font-size:12px;font-weight:600;color:#6f6f6f;">{% trans "Tipo" %}
     <select name="kind" onchange="this.form.submit()" class="ptn-input" style="width:auto;margin-left:6px;">
-      <option value="">Todos</option>
+      <option value="">{% trans "Todos" %}</option>
       {% for k, label in kind_choices %}
       <option value="{{ k }}" {% if f_kind == k %}selected{% endif %}>{{ label }}</option>
       {% endfor %}
     </select>
   </label>
-  <label style="font-size:12px;font-weight:600;color:#6f6f6f;">Estado
+  <label style="font-size:12px;font-weight:600;color:#6f6f6f;">{% trans "Estado" %}
     <select name="state" onchange="this.form.submit()" class="ptn-input" style="width:auto;margin-left:6px;">
-      <option value="">Todos</option>
+      <option value="">{% trans "Todos" %}</option>
       {% for s, label in state_choices %}
       <option value="{{ s }}" {% if f_state == s %}selected{% endif %}>{{ label }}</option>
       {% endfor %}
     </select>
   </label>
   {% if f_kind or f_state %}
-  <a href="{% url 'pricing:partner_list' price_list.pk %}" style="font-size:12px;">limpar filtros</a>
+  <a href="{% url 'pricing:partner_list' price_list.pk %}" style="font-size:12px;">{% trans "limpar filtros" %}</a>
   {% endif %}
 </form>
 
@@ -47,8 +46,8 @@
   <table class="ptn-table">
     <thead>
       <tr>
-        <th>Tipo</th><th>Geração</th><th>Faixa</th>
-        <th>Preço US$</th><th>Estado</th><th>Última atualização</th><th></th>
+        <th>{% trans "Tipo" %}</th><th>{% trans "Geração" %}</th><th>{% trans "Faixa" %}</th>
+        <th>{% trans "Preço US$" %}</th><th>{% trans "Estado" %}</th><th>{% trans "Última atualização" %}</th><th></th>
       </tr>
     </thead>
     <tbody>
@@ -62,13 +61,13 @@
         {% endlocalize %}
         <td>
           <select form="f{{ forloop.counter }}" name="state" class="ptn-input" style="width:auto;">
-            <option value="quoted"   {% if r.status == 'quoted' %}selected{% endif %}>Cotado</option>
-            <option value="unquoted" {% if r.status == 'unquoted' %}selected{% endif %}>Não cotado</option>
-            <option value="not_made" {% if r.status == 'not_made' %}selected{% endif %}>Não fabricado</option>
-            <option value="no_buy"   {% if r.status == 'no_buy' %}selected{% endif %}>Não compro</option>
+            <option value="quoted"   {% if r.status == 'quoted' %}selected{% endif %}>{% trans "Cotado" %}</option>
+            <option value="unquoted" {% if r.status == 'unquoted' %}selected{% endif %}>{% trans "Não cotado" %}</option>
+            <option value="not_made" {% if r.status == 'not_made' %}selected{% endif %}>{% trans "Não fabricado" %}</option>
+            <option value="no_buy"   {% if r.status == 'no_buy' %}selected{% endif %}>{% trans "Não compro" %}</option>
           </select>
           {% if r.pending %}
-          <div style="margin-top:4px;"><span class="ptn-tag ptn-tag--review" title="Aguardando aprovação do WhatTheChip — o valor vigente ainda é o exibido.">⏳ em revisão: {% if r.pending.new_status == 'quoted' %}US$ {{ r.pending.new_price }}{% else %}{{ r.pending.get_new_status_display }}{% endif %}</span></div>
+          <div style="margin-top:4px;"><span class="ptn-tag ptn-tag--review" title="{% trans 'Aguardando aprovação do WhatTheChip — o valor vigente ainda é o exibido.' %}">⏳ {% trans "em revisão:" %} {% if r.pending.new_status == 'quoted' %}US$ {{ r.pending.new_price }}{% else %}{{ r.pending.get_new_status_display }}{% endif %}</span></div>
           {% endif %}
         </td>
         <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#525252;">
@@ -77,7 +76,7 @@
         <td>
           <form id="f{{ forloop.counter }}" method="post"
                 action="{% url 'pricing:partner_save' price_list.pk %}" style="margin:0;"
-                onsubmit="return confirm('Esta mudança será enviada para REVISÃO do WhatTheChip e só passa a valer após a aprovação. Confirmar o envio?');">
+                onsubmit="return confirm('{% trans "Esta mudança será enviada para REVISÃO do WhatTheChip e só passa a valer após a aprovação. Confirmar o envio?" %}');">
             {% csrf_token %}
             {% localize off %}
             <input type="hidden" name="kind"       value="{{ r.kind }}">
@@ -87,13 +86,13 @@
             {% endlocalize %}
             <input type="hidden" name="f_kind"  value="{{ f_kind }}">
             <input type="hidden" name="f_state" value="{{ f_state }}">
-            <button type="submit" class="ptn-btn">Enviar p/ revisão</button>
+            <button type="submit" class="ptn-btn">{% trans "Enviar p/ revisão" %}</button>
           </form>
         </td>
       </tr>
       {% empty %}
-      <tr><td colspan="7" style="color:#6f6f6f;padding:18px;">Nenhuma linha
-        {% if f_kind or f_state %}com estes filtros{% else %}— as linhas são criadas pela equipe WhatTheChip{% endif %}.</td></tr>
+      <tr><td colspan="7" style="color:#6f6f6f;padding:18px;">{% trans "Nenhuma linha" %}
+        {% if f_kind or f_state %}{% trans "com estes filtros" %}{% else %}— {% trans "as linhas são criadas pela equipe WhatTheChip" %}{% endif %}.</td></tr>
       {% endfor %}
     </tbody>
   </table>

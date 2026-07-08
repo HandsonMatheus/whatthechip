@@ -1,20 +1,21 @@
 {% extends "pricing/partner_base.html" %}
-{% block title %}Início{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Início" %}{% endblock %}
 {% block content %}
 
-<h1 style="font-weight:300;font-size:28px;margin:0 0 18px;">Bem-vindo, <strong style="font-weight:600;">{{ buyer.name }}</strong></h1>
+<h1 style="font-weight:300;font-size:28px;margin:0 0 18px;">{% blocktrans trimmed with name=buyer.name %}Bem-vindo, <strong style="font-weight:600;">{{ name }}</strong>{% endblocktrans %}</h1>
 
 <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px;">
   <div class="ptn-kpi">
-    <span style="font-size:12px;color:#6f6f6f;">Chips sem cotação</span>
+    <span style="font-size:12px;color:#6f6f6f;">{% trans "Chips sem cotação" %}</span>
     <b style="color:{% if pending %}#8a6d00{% else %}#198038{% endif %};">{{ pending }}</b>
   </div>
   <div class="ptn-kpi">
-    <span style="font-size:12px;color:#6f6f6f;">Cotações com mais de {{ staleness_days }} dias</span>
+    <span style="font-size:12px;color:#6f6f6f;">{% blocktrans trimmed %}Cotações com mais de {{ staleness_days }} dias{% endblocktrans %}</span>
     <b style="color:{% if stale %}#8a6d00{% else %}#198038{% endif %};">{{ stale }}</b>
   </div>
   <div class="ptn-kpi">
-    <span style="font-size:12px;color:#6f6f6f;">Chips cotados</span>
+    <span style="font-size:12px;color:#6f6f6f;">{% trans "Chips cotados" %}</span>
     <b style="color:#161616;">{{ quoted }}</b>
   </div>
 </div>
@@ -22,27 +23,25 @@
 <div class="ptn-card">
   <table class="ptn-table">
     <thead>
-      <tr><th>Marca</th><th>Cotados</th><th>Sem cotação</th><th></th></tr>
+      <tr><th>{% trans "Marca" %}</th><th>{% trans "Cotados" %}</th><th>{% trans "Sem cotação" %}</th><th></th></tr>
     </thead>
     <tbody>
       {% for pl in lists %}
       <tr>
-        <td style="font-weight:600;">{% if pl.brand %}{{ pl.brand.name }}{% else %}Outras marcas{% endif %}</td>
+        <td style="font-weight:600;">{% if pl.brand %}{{ pl.brand.name }}{% else %}{% trans "Outras marcas" %}{% endif %}</td>
         <td>{% if pl.stats.quoted %}<span class="ptn-tag ptn-tag--quoted">{{ pl.stats.quoted }}</span>{% else %}—{% endif %}</td>
         <td>{% if pl.stats.pending %}<span class="ptn-tag ptn-tag--pending">{{ pl.stats.pending }}</span>{% else %}—{% endif %}</td>
-        <td><a href="{% url 'pricing:partner_list' pl.pk %}" style="color:#0f62fe;font-weight:600;">Editar →</a></td>
+        <td><a href="{% url 'pricing:partner_list' pl.pk %}" style="color:#0f62fe;font-weight:600;">{% trans "Editar" %} →</a></td>
       </tr>
       {% empty %}
-      <tr><td colspan="4" style="color:#6f6f6f;">Nenhuma lista ainda — fale com a equipe WhatTheChip.</td></tr>
+      <tr><td colspan="4" style="color:#6f6f6f;">{% trans "Nenhuma lista ainda — fale com a equipe WhatTheChip." %}</td></tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
 
 <p style="font-size:13px;color:#6f6f6f;line-height:1.6;">
-  Preços por chip, em <strong>dólar (USD)</strong>. Os preços de
-  <strong>Outras marcas</strong> valem para todo chip de marca que não tem
-  tabela própria.
+  {% blocktrans trimmed %}Preços por chip, em <strong>dólar (USD)</strong>. Os preços de <strong>Outras marcas</strong> valem para todo chip de marca que não tem tabela própria.{% endblocktrans %}
 </p>
 
 {% endblock %}

@@ -5,6 +5,7 @@ Pillow>=10.0
 # ── Banco de dados ──────────────────────────────────────────────────────────────
 psycopg2-binary>=2.9
 django-pghistory>=3.9,<4   # auditoria do catálogo (passo 3); puxa django-pgtrigger (gatilhos Postgres)
+django-modeltranslation>=0.19  # i18n do CMS (metadados por idioma no pages.Page) — I18N.md §9
 
 # ── Conhecimento por marca em YAML (passo 4) ────────────────────────────────────
 PyYAML>=6.0                # load_brands lê chips/knowledge/<marca>.yaml

@@ -351,6 +351,8 @@
             + ' · ' + escHtml(p.via) + '</span>';
         } else if (p.status === 'NO_BUY') {
           priceBlock += '<span style="font-size:13px;font-weight:700;color:#a33;">não compra este item</span>';
+        } else if (p.status === 'NOT_MADE') {
+          priceBlock += '<span style="font-size:13px;font-weight:600;color:#777;">não fabricado pela marca</span>';
         } else if (p.status === 'UNQUOTED') {
           priceBlock += '<span style="font-size:13px;font-weight:600;color:#b8860b;">aguardando cotação</span>';
         } else {

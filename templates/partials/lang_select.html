@@ -1,0 +1,52 @@
+{% load i18n %}
+{% comment %}
+  Seletor COMPACTO de idioma (i18n — I18N.md §3 / MULTILANGUAGE.md).
+  Reutilizável em todas as camadas logadas/entradas do app; a home (base.html)
+  tem o dropdown próprio do topnav. POST para set_language: grava o cookie e,
+  logado, a preferência da conta (segue o usuário em qualquer dispositivo).
+
+  Variantes (passe via {% include ... with variant='shell' %}):
+    'shell'  → header ESCURO Carbon (painel/estoque, dashboard do parceiro):
+               visual de botão do shell (borda #525252, texto claro) — cores
+               EXPLÍCITAS, nada de currentColor (select nativo em fundo escuro
+               fica invisível em alguns SOs).
+    default  → contexto CLARO (login): discreto, cinza escuro.
+{% endcomment %}
+<form action="{% url 'set_language' %}" method="post"
+      style="margin:0;display:inline-flex;align-items:center;">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.get_full_path }}">
+  {% get_current_language as WTC_LANG %}
+  {% get_available_languages as WTC_LANGS %}
+  {% get_language_info_list for WTC_LANGS as wtc_langs %}
+  {% if variant == 'shell' %}
+  <label style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 10px;border:1px solid #525252;background:#161616;color:#f4f4f4;cursor:pointer;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c6c6c6"
+         stroke-width="2" aria-hidden="true" style="flex:none;">
+      <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"/>
+    </svg>
+    <select name="language" onchange="this.form.submit()"
+            aria-label="{% trans 'Mudar idioma' %}" title="{% trans 'Mudar idioma' %}"
+            style="background:#161616;color:#f4f4f4;border:none;font:inherit;font-size:13px;cursor:pointer;outline:none;-webkit-appearance:menulist;appearance:menulist;">
+      {% for lang in wtc_langs %}
+      <option value="{{ lang.code }}" {% if lang.code == WTC_LANG %}selected{% endif %}
+              style="color:#161616;background:#fff;">{{ lang.name_local|capfirst }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  {% else %}
+  <label style="display:inline-flex;align-items:center;gap:6px;color:#525252;cursor:pointer;">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#525252"
+         stroke-width="2" aria-hidden="true" style="flex:none;">
+      <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"/>
+    </svg>
+    <select name="language" onchange="this.form.submit()"
+            aria-label="{% trans 'Mudar idioma' %}" title="{% trans 'Mudar idioma' %}"
+            style="background:#fff;color:#161616;border:1px solid #c6c6c6;border-radius:2px;padding:3px 6px;font:inherit;font-size:13px;cursor:pointer;outline:none;">
+      {% for lang in wtc_langs %}
+      <option value="{{ lang.code }}" {% if lang.code == WTC_LANG %}selected{% endif %}>{{ lang.name_local|capfirst }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  {% endif %}
+</form>

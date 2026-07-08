@@ -29,6 +29,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from tenancy.scope import company_scope
@@ -214,7 +215,7 @@ def partner_save(request, list_pk):
     except InvalidOperation:
         tier_value = None
     if kind not in KINDS or tier_value is None or tier_unit not in ('GB', 'Gb'):
-        messages.error(request, 'Linha inválida — recarregue a página.')
+        messages.error(request, _('Linha inválida — recarregue a página.'))
         return redirect('pricing:partner_list', list_pk=pl.pk)
 
     # PREÇO FIXO + ESTADO EXPLÍCITO (decisões 2026-07-07): o parceiro escolhe o
@@ -231,18 +232,18 @@ def partner_save(request, list_pk):
 
     if state_req == STATUS_QUOTED:
         if not raw:
-            messages.error(request, 'Estado "Cotado" exige o preço em USD.')
+            messages.error(request, _('Estado "Cotado" exige o preço em USD.'))
             return _volta()
         try:
             mn = mx = Decimal(raw)
         except InvalidOperation:
-            messages.error(request, 'Preço ilegível — use números (ex.: 13.50).')
+            messages.error(request, _('Preço ilegível — use números (ex.: 13.50).'))
             return _volta()
         status, qd = STATUS_QUOTED, date.today()
     elif state_req in (STATUS_UNQUOTED, STATUS_NOT_MADE, STATUS_NO_BUY):
         status, mn, mx, qd = state_req, None, None, None
     else:
-        messages.error(request, 'Estado inválido — recarregue a página.')
+        messages.error(request, _('Estado inválido — recarregue a página.'))
         return _volta()
 
     obj = Price.all_companies.filter(
@@ -251,12 +252,12 @@ def partner_save(request, list_pk):
     if obj is None:
         # Grid unificado: a linha SEMPRE existe (seed_price_grid). Sumiu =
         # página velha. Nada de criar Price por fora da moderação.
-        messages.error(request, 'Linha não existe mais — recarregue a página.')
+        messages.error(request, _('Linha não existe mais — recarregue a página.'))
         return _volta()
 
     # Nada mudou? Não gera pedido fantasma.
     if status == obj.status and (status != STATUS_QUOTED or mn == obj.price_min):
-        messages.info(request, 'Nada a enviar — a linha já está assim.')
+        messages.info(request, _('Nada a enviar — a linha já está assim.'))
         return _volta()
 
     try:
@@ -273,15 +274,19 @@ def partner_save(request, list_pk):
         messages.error(request, ' · '.join(
             f'{msgs[0]}' for msgs in e.message_dict.values()))
     except IntegrityError:
-        messages.error(request, 'Conflito ao salvar — tente de novo.')
+        messages.error(request, _('Conflito ao salvar — tente de novo.'))
     else:
-        rot = {STATUS_QUOTED: f'cotado em US$ {mn}',
-               STATUS_NO_BUY: '"não compro"',
-               STATUS_UNQUOTED: 'não cotado',
-               STATUS_NOT_MADE: 'não fabricado'}
+        # i18n: os rótulos exibidos traduzem; STATUS_* (chaves) nunca.
+        rot = {STATUS_QUOTED: _('cotado em US$ %s') % mn,
+               STATUS_NO_BUY: '"%s"' % _('não compro'),
+               STATUS_UNQUOTED: _('não cotado'),
+               STATUS_NOT_MADE: _('não fabricado')}
         messages.success(
             request,
-            f'{_KIND_LABEL.get(kind, kind)} {tier_value.normalize():f}{tier_unit} '
-            f'→ {rot[status]}: enviado para REVISÃO do WhatTheChip — passa a '
-            'valer após a aprovação.')
+            _('%(item)s → %(state)s: enviado para REVISÃO do WhatTheChip — '
+              'passa a valer após a aprovação.') % {
+                'item': f'{_KIND_LABEL.get(kind, kind)} '
+                        f'{tier_value.normalize():f}{tier_unit}',
+                'state': rot[status],
+            })
     return _volta()

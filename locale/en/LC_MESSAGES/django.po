@@ -1,0 +1,977 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: WhatTheChip 1.0\n"
+"Report-Msgid-Bugs-To: eminerparaguay@gmail.com\n"
+"POT-Creation-Date: 2026-07-08 11:43\n"
+"PO-Revision-Date: 2026-07-08 11:43\n"
+"Last-Translator: WhatTheChip i18n <eminerparaguay@gmail.com>\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgid ""
+"%(item)s → %(state)s: enviado para REVISÃO do WhatTheChip — passa a valer "
+"após a aprovação."
+msgstr ""
+"%(item)s → %(state)s: sent for WhatTheChip REVIEW — takes effect after "
+"approval."
+
+#, python-format
+msgid "%(n1)s tipos · %(n2)s un."
+msgstr "%(n1)s types · %(n2)s units"
+
+#, python-format
+msgid "(esperado: %(n)s caracteres)"
+msgstr "(expected: %(n)s characters)"
+
+msgid "1 · leia o chip"
+msgstr "1 · read the chip"
+
+msgid "2 · digite o PN"
+msgstr "2 · type the PN"
+
+msgid "3 · lance no lote aberto"
+msgstr "3 · log it into the open lot"
+
+#, python-format
+msgid "<b>%(n)s</b> tipos"
+msgstr "<b>%(n)s</b> types"
+
+#, python-format
+msgid "<b>%(n)s</b> unidades"
+msgstr "<b>%(n)s</b> units"
+
+msgid "ABERTO"
+msgstr "OPEN"
+
+msgid "Aberto"
+msgstr "Open"
+
+#, python-format
+msgid "Aberto em %(d)s"
+msgstr "Opened on %(d)s"
+
+msgid "Abra o lote do dia para a bancada começar a lançar chips."
+msgstr "Open today's lot so the bench can start logging chips."
+
+msgid "Abrir"
+msgstr "Open"
+
+msgid "Abrir menu"
+msgstr "Open menu"
+
+msgid "Abrir um lote"
+msgstr "Open a lot"
+
+msgid "Acesso ao Painel"
+msgstr "Panel Access"
+
+msgid "Acesso restrito a operadores cadastrados."
+msgstr "Access restricted to registered operators."
+
+msgid "Adicionar ao estoque"
+msgstr "Add to stock"
+
+msgid "Adicionar chip"
+msgstr "Add chip"
+
+msgid "Adicionar chip ao banco"
+msgstr "Add chip to the database"
+
+msgid "Admin da empresa"
+msgstr "Company admin"
+
+msgid "Aguarda revisão do gestor · reconhecido por gramática"
+msgstr "Awaiting manager review · recognized by grammar"
+
+msgid ""
+"Aguardando aprovação do WhatTheChip — o valor vigente ainda é o exibido."
+msgstr ""
+"Awaiting WhatTheChip approval — the value in effect is still the one shown."
+
+msgid "Alternar modo escuro/claro"
+msgstr "Toggle dark/light mode"
+
+msgid "Aprovado"
+msgstr "Approved"
+
+msgid ""
+"As decisões do WhatTheChip sobre as suas mudanças de preço — aprovadas passam"
+" a valer na hora; rejeitadas mantêm o valor anterior."
+msgstr ""
+"WhatTheChip's decisions on your price changes — approved ones take effect "
+"immediately; rejected ones keep the previous value."
+
+#, python-format
+msgid "Bem-vindo, <strong style=\"font-weight:600;\">%(name)s</strong>"
+msgstr "Welcome, <strong style=\"font-weight:600;\">%(name)s</strong>"
+
+msgid "CAIXA FÍSICA"
+msgstr "PHYSICAL BIN"
+
+msgid "CONFERÊNCIA"
+msgstr "REVIEW"
+
+msgid "Cancelar"
+msgstr "Cancel"
+
+msgid "Capacidade"
+msgstr "Capacity"
+
+msgid "Chip"
+msgstr "Chip"
+
+msgid ""
+"Chip fora das famílias catalogadas ou PN possivelmente mal lido "
+"(OCR/scanner). Confira o PN diretamente no encapsulamento e tente novamente. "
+"Se o prefixo for desconhecido, o chip pode ser de fabricante não catalogado "
+"ou linha proprietária."
+msgstr ""
+"Chip outside the cataloged families, or the PN may have been misread "
+"(OCR/scanner). Check the PN directly on the package and try again. If the "
+"prefix is unknown, the chip may be from an uncataloged manufacturer or a "
+"proprietary line."
+
+msgid "Chip identificado"
+msgstr "Chip identified"
+
+msgid ""
+"Chip não catalogado? Envie o PN — analisamos e adicionamos em até 48&nbsp;h."
+msgstr ""
+"Chip not cataloged? Send the PN — we analyze and add it within 48&nbsp;h."
+
+msgid "Chip não reconhecido"
+msgstr "Chip not recognized"
+
+msgid "Chip não rentável — registra o descarte para auditoria"
+msgstr "Unprofitable chip — logs the disposal for auditing"
+
+msgid "Chips cotados"
+msgstr "Quoted chips"
+
+msgid "Chips sem cotação"
+msgstr "Chips without a quote"
+
+msgid "Clique Decodificar ou pressione Enter"
+msgstr "Click Decode or press Enter"
+
+msgid "Comprador"
+msgstr "Buyer"
+
+msgid "Confirmado"
+msgstr "Confirmed"
+
+msgid "Conflito ao salvar — tente de novo."
+msgstr "Conflict while saving — try again."
+
+msgid "Contato"
+msgstr "Contact"
+
+msgid "Contexto (opcional)"
+msgstr "Context (optional)"
+
+msgid "Continuar triagem"
+msgstr "Continue sorting"
+
+msgid "Continue digitando"
+msgstr "Keep typing"
+
+msgid "Copia diagnóstico completo para o clipboard"
+msgstr "Copies the full diagnostic to the clipboard"
+
+msgid "Copiar diagnóstico"
+msgstr "Copy diagnostic"
+
+msgid "Cotado"
+msgstr "Quoted"
+
+msgid "Cotados"
+msgstr "Quoted"
+
+#, python-format
+msgid "Cotações com mais de %(staleness_days)s dias"
+msgstr "Quotes older than %(staleness_days)s days"
+
+msgid "Criar Lote"
+msgstr "Create Lot"
+
+msgid "Crie o primeiro lote usando o formulário acima."
+msgstr "Create the first lot using the form above."
+
+msgid ""
+"Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre "
+"em USD."
+msgstr ""
+"Reference exchange rate (ECB/market, ~daily). System prices are always in "
+"USD."
+
+msgid "Código FBGA não cadastrado — chip Micron na fila de análise"
+msgstr "FBGA code not registered — Micron chip queued for analysis"
+
+msgid "DESCARTE"
+msgstr "DISCARD"
+
+msgid "Decidido em"
+msgstr "Decided on"
+
+msgid "Decisão"
+msgstr "Decision"
+
+msgid "Decodificar"
+msgstr "Decode"
+
+msgid "Densidade"
+msgstr "Density"
+
+msgid "Descrição (opcional)"
+msgstr "Description (optional)"
+
+msgid "Desfazer"
+msgstr "Undo"
+
+msgid "Digite o Part Number acima"
+msgstr "Type the Part Number above"
+
+msgid "Dispositivo"
+msgstr "Device"
+
+msgid "Ditar por voz"
+msgstr "Dictate by voice"
+
+msgid "Documentação →"
+msgstr "Documentation →"
+
+msgid "Editar"
+msgstr "Edit"
+
+msgid "Em estoque:"
+msgstr "In stock:"
+
+msgid "English"
+msgstr "English"
+
+msgid "Entrar"
+msgstr "Sign in"
+
+msgid "Enviado para a fila de revisão noturna"
+msgstr "Sent to the nightly review queue"
+
+msgid "Enviado para revisão"
+msgstr "Sent for review"
+
+msgid "Enviando…"
+msgstr "Sending…"
+
+msgid "Enviar p/ revisão"
+msgstr "Send for review"
+
+msgid "Enviar para análise"
+msgstr "Send for analysis"
+
+msgid "Enviar para conferência"
+msgstr "Send for review"
+
+msgid "Erro de conexão — tente novamente."
+msgstr "Connection error — try again."
+
+msgid "Erro do servidor"
+msgstr "Server error"
+
+msgid ""
+"Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em USD."
+msgstr ""
+"Choose the state of each line; <strong>Quoted</strong> requires the price in "
+"USD."
+
+msgid "Escolher imagem…"
+msgstr "Choose image…"
+
+msgid "Español"
+msgstr "Spanish"
+
+msgid "Esta ação não pode ser desfeita."
+msgstr "This action cannot be undone."
+
+msgid ""
+"Esta mudança será enviada para REVISÃO do WhatTheChip e só passa a valer após"
+" a aprovação. Confirmar o envio?"
+msgstr ""
+"This change will be sent for WhatTheChip REVIEW and only takes effect after "
+"approval. Confirm submission?"
+
+msgid "Estado"
+msgstr "State"
+
+msgid "Estado \"Cotado\" exige o preço em USD."
+msgstr "The \"Quoted\" state requires the price in USD."
+
+msgid "Estado inválido — recarregue a página."
+msgstr "Invalid state — reload the page."
+
+msgid ""
+"Este PN <strong>não está confirmado no banco</strong>, então não entrou no "
+"estoque."
+msgstr ""
+"This PN <strong>is not confirmed in the database</strong>, so it did not "
+"enter stock."
+
+msgid ""
+"Este Part Number pertence a uma família <strong>nunca documentada "
+"oficialmente</strong>: não consta em nenhum catálogo SK Hynix, datasheet, "
+"Octopart ou distribuidor verificado."
+msgstr ""
+"This Part Number belongs to a family <strong>never officially "
+"documented</strong>: it does not appear in any SK Hynix catalog, datasheet, "
+"Octopart, or verified distributor."
+
+msgid "Este chip"
+msgstr "This chip"
+
+msgid "Este lote está fechado. Reabra-o para adicionar chips."
+msgstr "This lot is closed. Reopen it to add chips."
+
+msgid "Estes preços valem para toda marca que não tem tabela própria."
+msgstr "These prices apply to every brand without its own table."
+
+msgid "Estoque"
+msgstr "Stock"
+
+msgid "Estoque do lote"
+msgstr "Lot stock"
+
+msgid "Exportar"
+msgstr "Export"
+
+msgid "FECHADO"
+msgstr "CLOSED"
+
+msgid "FILA"
+msgstr "QUEUE"
+
+msgid "Faixa"
+msgstr "Tier"
+
+msgid "Família identificada — sem documentação pública"
+msgstr "Family identified — no public documentation"
+
+msgid "Fechado"
+msgstr "Closed"
+
+#, python-format
+msgid "Fechado em %(d2)s"
+msgstr "Closed on %(d2)s"
+
+msgid "Fechar"
+msgstr "Close"
+
+msgid "Fechar Lote"
+msgstr "Close Lot"
+
+msgid "Filtrar por PN…"
+msgstr "Filter by PN…"
+
+#, python-format
+msgid ""
+"Foi enviado para a <strong>fila de conferência</strong> do gestor (qtd. "
+"acumulada: %(qty)s)."
+msgstr ""
+"It was sent to the manager's <strong>review queue</strong> (accumulated qty: "
+"%(qty)s)."
+
+msgid "Fonte ↗"
+msgstr "Source ↗"
+
+msgid "Foto do chip"
+msgstr "Chip photo"
+
+msgid "Geração"
+msgstr "Generation"
+
+msgid "Geração não rentável"
+msgstr "Unprofitable generation"
+
+msgid "Gerente"
+msgstr "Manager"
+
+msgid "Hipóteses:"
+msgstr "Hypotheses:"
+
+msgid "INDETERMINADO"
+msgstr "UNDETERMINED"
+
+msgid "Indeterminado (não avaliado)"
+msgstr "Undetermined (not assessed)"
+
+msgid "Informe um Part Number válido (mín. 3 caracteres)."
+msgstr "Enter a valid Part Number (min. 3 characters)."
+
+msgid "Interface"
+msgstr "Interface"
+
+msgid "Início"
+msgstr "Home"
+
+msgid "Limpar"
+msgstr "Clear"
+
+msgid "Linha inválida — recarregue a página."
+msgstr "Invalid line — reload the page."
+
+msgid "Linha não existe mais — recarregue a página."
+msgstr "Line no longer exists — reload the page."
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Lote"
+msgstr "Lot"
+
+msgid ""
+"Lote <strong>fechado</strong> — adições bloqueadas. Reabra para retomar a "
+"triagem."
+msgstr ""
+"Lot <strong>closed</strong> — additions blocked. Reopen to resume sorting."
+
+msgid "Lote aberto — triagem em andamento"
+msgstr "Open lot — sorting in progress"
+
+msgid "Lotes"
+msgstr "Lots"
+
+msgid "Lotes abertos"
+msgstr "Open lots"
+
+msgid "Marca"
+msgstr "Brand"
+
+msgid "Marcas suportadas"
+msgstr "Supported brands"
+
+msgid "Mudança pedida"
+msgstr "Requested change"
+
+msgid "Mudar idioma"
+msgstr "Change language"
+
+msgid "Na fila de conferência"
+msgstr "In the review queue"
+
+msgid "Nada a enviar — a linha já está assim."
+msgstr "Nothing to submit — the line is already like this."
+
+msgid "Navegação principal"
+msgstr "Main navigation"
+
+msgid "Nenhum chip encontrado"
+msgstr "No chips found"
+
+msgid "Nenhum chip lido ainda"
+msgstr "No chip read yet"
+
+msgid "Nenhum lote aberto agora"
+msgstr "No lot open right now"
+
+msgid "Nenhum lote ainda"
+msgstr "No lots yet"
+
+msgid ""
+"Nenhuma decisão ainda — suas mudanças enviadas aparecem aqui quando forem "
+"revisadas."
+msgstr "No decisions yet — your submitted changes appear here once reviewed."
+
+msgid "Nenhuma linha"
+msgstr "No lines"
+
+msgid "Nenhuma lista ainda — fale com a equipe WhatTheChip."
+msgstr "No lists yet — talk to the WhatTheChip team."
+
+msgid "Nenhuma unidade entrou no estoque"
+msgstr "No units entered stock"
+
+msgid "Notificações"
+msgstr "Notifications"
+
+msgid "Novo Lote"
+msgstr "New Lot"
+
+msgid "NÃO IDENTIFICADO"
+msgstr "NOT IDENTIFIED"
+
+msgid "NÃO RENTÁVEL"
+msgstr "NOT PROFITABLE"
+
+msgid "Não compro"
+msgstr "Don't buy"
+
+msgid "Não cotado"
+msgstr "Not quoted"
+
+msgid "Não fabricado"
+msgstr "Not manufactured"
+
+msgid "Não foi possível enviar. Tente novamente."
+msgstr "Could not send. Try again."
+
+msgid "Não rentável"
+msgstr "Not profitable"
+
+msgid "Não rentável pela geração · reconhecido por gramática (não confirmado)"
+msgstr "Unprofitable by generation · recognized by grammar (not confirmed)"
+
+msgid "Não rentável · resíduo eletrônico"
+msgstr "Not profitable · e-waste"
+
+#, python-format
+msgid ""
+"O código <strong>%(pn)s</strong> parece ser um <strong>código FBGA "
+"Micron</strong> (gravado a laser no encapsulamento — padrão D9XXX / D8XXX). "
+"Ele foi registrado para enriquecimento automático via <em>micron.com/fbga-"
+"parts-decoder</em> no job noturno."
+msgstr ""
+"The code <strong>%(pn)s</strong> looks like a <strong>Micron FBGA "
+"code</strong> (laser-marked on the package — D9XXX / D8XXX pattern). It was "
+"registered for automatic enrichment via <em>micron.com/fbga-parts-"
+"decoder</em> in the nightly job."
+
+msgid ""
+"O prefixo <code>KAT</code> (ePoP Samsung) é suportado, mas outros "
+"<code>KA·</code> são geralmente chips customizados Samsung (ASIC sob "
+"encomenda, pinout proprietário) sem mercado B2B padrão."
+msgstr ""
+"The <code>KAT</code> prefix (Samsung ePoP) is supported, but other "
+"<code>KA·</code> are usually Samsung custom chips (made-to-order ASIC, "
+"proprietary pinout) with no standard B2B market."
+
+msgid "Olá,"
+msgstr "Hello,"
+
+msgid "Operador"
+msgstr "Operator"
+
+msgid "Origem, marca do aparelho, observações…"
+msgstr "Origin, device brand, notes…"
+
+msgid ""
+"Os dados exibidos abaixo são <strong>estimativas por analogia "
+"estrutural</strong> — <em>não usar como especificação confirmada antes de "
+"verificar fisicamente.</em>"
+msgstr ""
+"The data shown below are <strong>estimates by structural analogy</strong> — "
+"<em>do not use as confirmed specification before physical verification.</em>"
+
+msgid "Outras marcas"
+msgstr "Other brands"
+
+msgid "Outros lotes abertos:"
+msgstr "Other open lots:"
+
+msgid "PART NUMBER"
+msgstr "PART NUMBER"
+
+msgid ""
+"PN adicionado à fila de chips desconhecidos. Obrigado por contribuir com o "
+"banco de dados."
+msgstr ""
+"PN added to the unknown-chips queue. Thanks for contributing to the database."
+
+msgid "PN começa com K — espaço Samsung / SK Hynix."
+msgstr "PN starts with K — Samsung / SK Hynix space."
+
+msgid "PN incompleto — continue digitando"
+msgstr "Incomplete PN — keep typing"
+
+msgid "PN inválido."
+msgstr "Invalid PN."
+
+msgid "PN muito curto — mínimo 4 caracteres"
+msgstr "PN too short — minimum 4 characters"
+
+msgid "PN não confirmado — confira a digitação"
+msgstr "PN not confirmed — check your typing"
+
+msgid "PN não confirmado — vai para a fila de conferência do gestor"
+msgstr "PN not confirmed — goes to the manager's review queue"
+
+msgid "POR GERAÇÃO"
+msgstr "BY GENERATION"
+
+msgid "Painel"
+msgstr "Panel"
+
+msgid "Part Number"
+msgstr "Part Number"
+
+msgid "Parâmetro 'pn' obrigatório"
+msgstr "Parameter 'pn' is required"
+
+msgid "Pendente"
+msgstr "Pending"
+
+msgid ""
+"Peça ao gerente para abrir o lote do dia — a triagem acontece sempre dentro "
+"de um lote."
+msgstr ""
+"Ask the manager to open today's lot — sorting always happens inside a lot."
+
+msgid "Peça ao gerente para abrir um lote de triagem."
+msgstr "Ask the manager to open a sorting lot."
+
+#, python-format
+msgid ""
+"Pode ser erro de digitação de <strong>%(near)s</strong> — confira o chip "
+"físico."
+msgstr ""
+"It may be a typo of <strong>%(near)s</strong> — check the physical chip."
+
+msgid "Português"
+msgstr "Portuguese"
+
+msgid "Prefixo KA· não catalogado."
+msgstr "KA· prefix not cataloged."
+
+msgid "Prefixo sem documentação pública verificável"
+msgstr "Prefix without verifiable public documentation"
+
+msgid "Prefixos Samsung suportados:"
+msgstr "Supported Samsung prefixes:"
+
+msgid "Preço US$"
+msgstr "Price US$"
+
+msgid "Preço ilegível — use números (ex.: 13.50)."
+msgstr "Unreadable price — use numbers (e.g., 13.50)."
+
+msgid "Preços"
+msgstr "Prices"
+
+msgid ""
+"Preços por chip, em <strong>dólar (USD)</strong>. Os preços de <strong>Outras"
+" marcas</strong> valem para todo chip de marca que não tem tabela própria."
+msgstr ""
+"Prices per chip, in <strong>US dollars (USD)</strong>. <strong>Other "
+"brands</strong> prices apply to every chip of a brand without its own table."
+
+msgid "QTD."
+msgstr "QTY."
+
+msgid "Quantidade a remover"
+msgstr "Quantity to remove"
+
+msgid ""
+"Quanto mais informação você enviar, mais rápido conseguimos identificar. Uma "
+"foto nítida do chip ajuda muito."
+msgstr ""
+"The more information you send, the faster we can identify it. A sharp photo "
+"of the chip helps a lot."
+
+msgid "RENTÁVEL"
+msgstr "PROFITABLE"
+
+msgid "REPROVADO"
+msgstr "REJECTED"
+
+msgid "Reabrir"
+msgstr "Reopen"
+
+msgid "Recebido — obrigado!"
+msgstr "Received — thank you!"
+
+msgid "Reconheci"
+msgstr "Recognized"
+
+msgid "Registrado"
+msgstr "Logged"
+
+msgid "Registrar como desconhecido"
+msgstr "Log as unknown"
+
+msgid "Registrar descarte"
+msgstr "Log disposal"
+
+msgid "Rejeitado"
+msgstr "Rejected"
+
+msgid "Remover"
+msgstr "Remove"
+
+#, python-format
+msgid "Remover %(pn_esc)s"
+msgstr "Remove %(pn_esc)s"
+
+msgid "Remover do estoque"
+msgstr "Remove from stock"
+
+msgid "Rentável"
+msgstr "Profitable"
+
+msgid "Reportar erro"
+msgstr "Report error"
+
+msgid "Reporte recebido — obrigado!"
+msgstr "Report received — thank you!"
+
+msgid "Reprovado — Resíduo eletrônico"
+msgstr "Rejected — E-waste"
+
+msgid "Reprovados hoje"
+msgstr "Rejected today"
+
+msgid "Sair"
+msgstr "Sign out"
+
+msgid ""
+"Se o chip estiver fisicamente disponível, anote o PN completo do "
+"encapsulamento e tente novamente — o PN completo (ex: MT53B512M64D4TX) "
+"funciona diretamente."
+msgstr ""
+"If the chip is physically available, note the full PN from the package and "
+"try again — the full PN (e.g., MT53B512M64D4TX) works directly."
+
+msgid ""
+"Se o prefixo não consta acima, pode ser chip de linha especial ou leitura "
+"incorreta do PN na placa."
+msgstr ""
+"If the prefix is not listed above, it may be a special-line chip or a misread"
+" PN on the board."
+
+msgid "Sem cotação"
+msgstr "No quote"
+
+msgid "Sem descrição"
+msgstr "No description"
+
+msgid "Senha"
+msgstr "Password"
+
+msgid "Separar para conferência"
+msgstr "Set aside for review"
+
+msgid "Separe este chip fisicamente e avise o gestor para confirmá-lo."
+msgstr "Physically set this chip aside and tell the manager to confirm it."
+
+msgid "Seu e-mail (para retorno)"
+msgstr "Your e-mail (for follow-up)"
+
+msgid ""
+"Seu envio entrou na fila de análise. Adicionamos o chip ao banco em até "
+"48&nbsp;h."
+msgstr ""
+"Your submission entered the analysis queue. We add the chip to the database "
+"within 48&nbsp;h."
+
+msgid "Seus preços por marca"
+msgstr "Your prices by brand"
+
+msgid "Seções"
+msgstr "Sections"
+
+msgid "Site"
+msgstr "Site"
+
+msgid "Specs ausentes ou incompletas"
+msgstr "Missing or incomplete specs"
+
+msgid "Sufixo:"
+msgstr "Suffix:"
+
+msgid "Tipo"
+msgstr "Type"
+
+msgid "Tipos"
+msgstr "Types"
+
+msgid "Tipos lançados hoje"
+msgstr "Types logged today"
+
+msgid "Todos"
+msgstr "All"
+
+msgid "Total un."
+msgstr "Total units"
+
+msgid "Usuário"
+msgstr "Username"
+
+msgid "Usuário ou senha incorretos. Tente novamente."
+msgstr "Incorrect username or password. Try again."
+
+msgid "VOCÊ QUIS DIZER?"
+msgstr "DID YOU MEAN?"
+
+msgid "Valoração do lote"
+msgstr "Lot valuation"
+
+msgid "Veja o terminal do"
+msgstr "Check the"
+
+msgid "Verificar demanda antes de reacondicionar — sem datasheet disponível."
+msgstr "Check demand before refurbishing — no datasheet available."
+
+msgid "Você conhece este chip? Entre em contato"
+msgstr "Do you know this chip? Get in touch"
+
+#, python-format
+msgid "aberto em %(d)s"
+msgstr "opened on %(d)s"
+
+msgid "adicionado ao estoque"
+msgstr "added to stock"
+
+msgid "aguardando cotação"
+msgstr "awaiting quote"
+
+msgid "as linhas são criadas pela equipe WhatTheChip"
+msgstr "lines are created by the WhatTheChip team"
+
+#, python-format
+msgid "atualizado %(d)s"
+msgstr "updated %(d)s"
+
+msgid "banco de dados"
+msgstr "database"
+
+#, python-format
+msgid "cobertura %(cov)s%% (%(priced)s/%(total)s unid.)"
+msgstr "coverage %(cov)s%% (%(priced)s/%(total)s units)"
+
+msgid "com estes filtros"
+msgstr "with these filters"
+
+msgid "congelada no fechamento"
+msgstr "frozen at closing"
+
+msgid "cotado"
+msgstr "quoted"
+
+#, python-format
+msgid "cotado em US$ %s"
+msgstr "quoted at US$ %s"
+
+msgid "câmbio de<br>referência"
+msgstr "reference<br>rate"
+
+msgid "do estoque."
+msgstr "from stock."
+
+msgid "e registrado para auditoria."
+msgstr "and logged for auditing."
+
+msgid "em revisão:"
+msgstr "under review:"
+
+msgid "encaminhe para o descarte de resíduos eletrônicos."
+msgstr "send it to e-waste disposal."
+
+msgid ""
+"erro de gravação do fabricante (misprint de laser) ou produto OEM com "
+"datasheet sob NDA não publicado."
+msgstr ""
+"manufacturer marking error (laser misprint) or OEM product with an "
+"unpublished NDA datasheet."
+
+msgid "estimativa ao vivo"
+msgstr "live estimate"
+
+msgid "foi classificado como"
+msgstr "was classified as"
+
+msgid "gramática"
+msgstr "grammar"
+
+msgid "gramática+db"
+msgstr "grammar+db"
+
+msgid "indeterminado"
+msgstr "undetermined"
+
+msgid "limpar filtros"
+msgstr "clear filters"
+
+msgid "mín."
+msgstr "min."
+
+msgid "não"
+msgstr "no"
+
+msgid "não compra este item"
+msgstr "doesn't buy this item"
+
+msgid "não compro"
+msgstr "don't buy"
+
+msgid "não cotado"
+msgstr "not quoted"
+
+msgid "não fabricado"
+msgstr "not manufactured"
+
+msgid "não fabricado pela marca"
+msgstr "not manufactured by the brand"
+
+msgid "para o traceback."
+msgstr "terminal for the traceback."
+
+msgid "pela geração"
+msgstr "by generation"
+
+msgid "reconhecido por gramática, não confirmado no banco"
+msgstr "recognized by grammar, not confirmed in the database"
+
+msgid "referência (sem data)"
+msgstr "reference (no date)"
+
+msgid "sem preço —"
+msgstr "no price —"
+
+msgid "sim"
+msgstr "yes"
+
+msgid "specs ausentes"
+msgstr "missing specs"
+
+msgid "specs reais"
+msgstr "real specs"
+
+msgid "tipo/geração"
+msgstr "type/generation"
+
+msgid "un"
+msgstr "u"
+
+msgid "unidades"
+msgstr "units"
+
+msgid "veja sugestões abaixo"
+msgstr "see suggestions below"
+
+msgid "verifique se o PN foi lido corretamente"
+msgstr "check whether the PN was read correctly"
+
+msgid "via"
+msgstr "via"
+
+msgid "~ Estimado"
+msgstr "~ Estimated"
+
+msgid "Última atualização"
+msgstr "Last update"
+
+msgid "✅ Confirmado"
+msgstr "✅ Confirmed"
+
+msgid "✏️ Manual"
+msgstr "✏️ Manual"
+
+msgid "中文"
+msgstr "Simplified Chinese"
+
+msgid "🏪 Distribuidor"
+msgstr "🏪 Distributor"
+
+msgid "📐 Gramática"
+msgstr "📐 Grammar"

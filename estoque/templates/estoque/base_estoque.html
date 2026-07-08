@@ -1,10 +1,10 @@
-{% load static %}
+{% load static i18n %}
 <!doctype html>
-<html lang="pt-BR">
+<html lang="{{ LANGUAGE_CODE|default:'pt-BR' }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Painel — WhatTheChip?{% endblock %}</title>
+  <title>{% block title %}{% trans "Painel" %} — WhatTheChip?{% endblock %}</title>
 
   <script>
     // Ambiente de bancada: tema claro fixo (Carbon White content + shell escuro).
@@ -103,13 +103,13 @@
       <rect x="5" y="5" width="9" height="9"/><rect x="18" y="5" width="9" height="9"/>
       <rect x="5" y="18" width="9" height="9"/><rect x="18" y="18" width="9" height="9"/>
     </svg>
-    Painel
+    {% trans "Painel" %}
   </a>
   <a href="{% url 'estoque:index' %}" class="wtc-header__nav{% block nav_estoque %}{% endblock %}">
     <svg width="18" height="18" viewBox="0 0 32 32" fill="none" stroke-width="2">
       <path d="M16 4 28 10v12L16 28 4 22V10z"/><path d="M4 10l12 6 12-6M16 16v12"/>
     </svg>
-    Estoque
+    {% trans "Estoque" %}
   </a>
 
   <div class="wtc-header__spacer"></div>
@@ -138,11 +138,13 @@
   </div>
 
   <div class="wtc-header__actions">
-    <a href="/" class="wtc-header__btn">‹ <span>Site</span></a>
+    {# Idioma — o operador muda quando quiser; logado, persiste na conta (I18N.md §3) #}
+    {% include "partials/lang_select.html" with variant='shell' %}
+    <a href="/" class="wtc-header__btn">‹ <span>{% trans "Site" %}</span></a>
     {# Logout é POST (Django 5 removeu o GET do LogoutView) → LOGOUT_REDIRECT_URL = '/' #}
     <form method="post" action="{% url 'logout' %}" style="margin:0;display:flex;">
       {% csrf_token %}
-      <button type="submit" class="wtc-header__btn wtc-header__btn--logout">⤬ <span>Sair</span></button>
+      <button type="submit" class="wtc-header__btn wtc-header__btn--logout">⤬ <span>{% trans "Sair" %}</span></button>
     </form>
   </div>
 </header>
@@ -153,6 +155,8 @@
 </main>
 
 {% block extra_js %}{% endblock %}
+{# Catálogo gettext p/ JS estático (mic.js usa window.gettext) — ANTES do mic.js. #}
+<script src="{% url 'javascript-catalog' %}"></script>
 <script src="{% static 'js/mic.js' %}"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
   que chega VAZIO para operador/gerente/anônimo (gate na VIEW, nunca só aqui).
   ≈ = faixa/cotação velha (staleness, princípio #4 do plano).
 {% endcomment %}
+{% load i18n %}
 {% if price_quotes %}
 <div class="dc2-price-block" style="margin:0 16px 12px 16px;padding:10px 14px;background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;border-radius:6px;">
   {% for buyer, q in price_quotes %}
@@ -15,16 +16,16 @@
         {% if q.is_stale %}≈ {% endif %}US$ {{ q.price_min }}
       </span>
       <span style="font-size:11px;color:#557a5e;">
-        {% if q.quote_date %}cotado {{ q.quote_date|date:"d/m/Y" }}{% else %}referência (sem data){% endif %} · {{ q.via }}
+        {% if q.quote_date %}{% trans "cotado" %} {{ q.quote_date|date:"d/m/Y" }}{% else %}{% trans "referência (sem data)" %}{% endif %} · {{ q.via }}
       </span>
     {% elif q.status == "NO_BUY" %}
-      <span style="font-size:13px;font-weight:700;color:#a33;">não compra este item</span>
+      <span style="font-size:13px;font-weight:700;color:#a33;">{% trans "não compra este item" %}</span>
     {% elif q.status == "NOT_MADE" %}
-      <span style="font-size:13px;font-weight:600;color:#6f6f6f;">não fabricado pela marca</span>
+      <span style="font-size:13px;font-weight:600;color:#6f6f6f;">{% trans "não fabricado pela marca" %}</span>
     {% elif q.status == "UNQUOTED" %}
-      <span style="font-size:13px;font-weight:600;color:#b8860b;">aguardando cotação</span>
+      <span style="font-size:13px;font-weight:600;color:#b8860b;">{% trans "aguardando cotação" %}</span>
     {% else %}
-      <span style="font-size:12px;color:#777;">sem preço — {{ q.reason }}</span>
+      <span style="font-size:12px;color:#777;">{% trans "sem preço —" %} {{ q.reason }}</span>
     {% endif %}
   </div>
   {% endfor %}

@@ -1,7 +1,7 @@
 {% extends "estoque/base_estoque.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Estoque — WhatTheChip?{% endblock %}
+{% block title %}{% trans "Estoque" %} — WhatTheChip?{% endblock %}
 {% block nav_estoque %} wtc-header__nav--active{% endblock %}
 
 {% block extra_head %}
@@ -1019,18 +1019,18 @@ table.est-table td { padding: var(--s5) var(--s5); }
 
 {# ── Breadcrumb ──────────────────────────────────────────────── #}
 <div style="font-size:13px;color:#6f6f6f;margin-bottom:14px;">
-  <a href="{% url 'estoque:index' %}" style="font-weight:500;">Lotes</a>
+  <a href="{% url 'estoque:index' %}" style="font-weight:500;">{% trans "Lotes" %}</a>
   <span style="color:#a8a8a8;margin:0 6px;">/</span>
-  <span style="color:#393939;">Lote #{{ lot.number|stringformat:"03d" }}</span>
+  <span style="color:#393939;">{% trans "Lote" %} #{{ lot.number|stringformat:"03d" }}</span>
 </div>
 
 {# ── Cabeçalho do lote ───────────────────────────────────────── #}
 <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;">
-  <h1 style="margin:0;font-size:clamp(26px,3.4vw,32px);font-weight:300;letter-spacing:-0.01em;white-space:nowrap;">Lote <span style="font-family:'IBM Plex Mono',monospace;font-weight:500;">#{{ lot.number|stringformat:"03d" }}</span></h1>
+  <h1 style="margin:0;font-size:clamp(26px,3.4vw,32px);font-weight:300;letter-spacing:-0.01em;white-space:nowrap;">{% trans "Lote" %} <span style="font-family:'IBM Plex Mono',monospace;font-weight:500;">#{{ lot.number|stringformat:"03d" }}</span></h1>
   {% if lot.status == 'closed' %}
-  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.08em;padding:4px 9px;background:#e0e0e0;color:#525252;">FECHADO</span>
+  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.08em;padding:4px 9px;background:#e0e0e0;color:#525252;">{% trans "FECHADO" %}</span>
   {% else %}
-  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.08em;padding:4px 9px;background:#defbe6;color:#198038;">ABERTO</span>
+  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.08em;padding:4px 9px;background:#defbe6;color:#198038;">{% trans "ABERTO" %}</span>
   {% endif %}
   {% if lot.description %}
   <span style="width:1px;height:18px;background:#c6c6c6;"></span>
@@ -1040,7 +1040,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
 
 {% if lot.status == 'closed' %}
 <div style="display:flex;align-items:center;gap:12px;background:#fff;border-left:4px solid #6f6f6f;padding:14px 18px;margin-bottom:20px;font-size:14px;color:#393939;">
-  🔒 <span>Lote <strong>fechado</strong> — adições bloqueadas. Reabra para retomar a triagem.</span>
+  🔒 <span>{% blocktrans trimmed %}Lote <strong>fechado</strong> — adições bloqueadas. Reabra para retomar a triagem.{% endblocktrans %}</span>
 </div>
 {% endif %}
 
@@ -1053,13 +1053,13 @@ table.est-table td { padding: var(--s5) var(--s5); }
 {% if valuations %}
 <div style="background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;padding:16px 20px;margin-bottom:20px;">
   <div style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">
-    💰 Valoração do lote {% if lot.status == 'closed' %}· congelada no fechamento{% else %}· estimativa ao vivo{% endif %}
+    💰 {% trans "Valoração do lote" %} {% if lot.status == 'closed' %}· {% trans "congelada no fechamento" %}{% else %}· {% trans "estimativa ao vivo" %}{% endif %}
   </div>
   {% for v in valuations %}
   <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;{% if not forloop.last %}margin-bottom:8px;{% endif %}">
     <span style="font-size:13px;font-weight:700;color:#1d6b2f;">{{ v.buyer.name }}</span>
     <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#1d6b2f;">US$ {{ v.total_mid }}</span>
-    <span style="font-size:12px;color:#557a5e;">cobertura {{ v.coverage_units|floatformat:0 }}% ({{ v.priced_units }}/{{ v.total_units }} unid.)</span>
+    <span style="font-size:12px;color:#557a5e;">{% blocktrans trimmed with cov=v.coverage_units|floatformat:0 priced=v.priced_units total=v.total_units %}cobertura {{ cov }}% ({{ priced }}/{{ total }} unid.){% endblocktrans %}</span>
     {% if v.frozen %}<span style="font-size:11px;color:#6f6f6f;">🔒 {{ v.created_at|date:"d/m/Y H:i" }}</span>{% endif %}
   </div>
   {% endfor %}
@@ -1073,7 +1073,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
   <div style="flex:2 1 540px;min-width:0;background:#fff;border:1px solid #e0e0e0;padding:28px;">
 
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <span style="font-size:12px;font-weight:600;letter-spacing:0.1em;color:#6f6f6f;">PART NUMBER</span>
+      <span style="font-size:12px;font-weight:600;letter-spacing:0.1em;color:#6f6f6f;">{% trans "PART NUMBER" %}</span>
       <span style="height:1px;background:#e0e0e0;flex:1;"></span>
     </div>
 
@@ -1083,11 +1083,11 @@ table.est-table td { padding: var(--s5) var(--s5); }
            style="width:100%;height:76px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 18px;font-family:'IBM Plex Mono',monospace;font-size:clamp(28px,4vw,40px);color:#161616;letter-spacing:0.02em;text-transform:uppercase;" />
 
     <div style="display:flex;gap:8px;margin-top:14px;">
-      <button type="button" id="est-decode-btn" class="wtc-decode-btn" disabled>Decodificar <span style="font-size:18px;">→</span></button>
-      <button type="button" id="est-clear-btn" class="wtc-clear-btn" disabled>Limpar</button>
+      <button type="button" id="est-decode-btn" class="wtc-decode-btn" disabled>{% trans "Decodificar" %} <span style="font-size:18px;">→</span></button>
+      <button type="button" id="est-clear-btn" class="wtc-clear-btn" disabled>{% trans "Limpar" %}</button>
       <button type="button" id="est-mic-btn" class="wtc-mic-btn"
               data-mic-target="pn-input" data-mic-hint="est-pin-hint" data-mic-cta="est-decode-btn"
-              title="Ditar por voz" aria-label="Ditar por voz"
+              title="{% trans 'Ditar por voz' %}" aria-label="{% trans 'Ditar por voz' %}"
               style="width:52px;height:52px;flex:none;background:#f4f4f4;border:1px solid #e0e0e0;color:#525252;cursor:pointer;display:flex;align-items:center;justify-content:center;"></button>
     </div>
 
@@ -1099,7 +1099,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
     <div id="confirm-area">
       <div style="margin-top:28px;border:1px dashed #e0e0e0;padding:44px 24px;text-align:center;">
         <svg width="40" height="40" viewBox="0 0 32 32" fill="none" stroke="#d0d0d0" stroke-width="1.5" style="margin-bottom:12px;"><path d="M16 4 28 10v12L16 28 4 22V10z"/><path d="M4 10l12 6 12-6M16 16v12"/></svg>
-        <div style="font-size:14px;color:#a8a8a8;">Nenhum chip lido ainda</div>
+        <div style="font-size:14px;color:#a8a8a8;">{% trans "Nenhum chip lido ainda" %}</div>
       </div>
     </div>
   </div>
@@ -1109,7 +1109,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
 
     {# ── Marcas suportadas — solto acima do widget ── #}
     <div style="padding:14px 16px;background:#f4f4f4;border:1px solid #e0e0e0;">
-      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6f6f6f;margin-bottom:10px;">Marcas suportadas</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6f6f6f;margin-bottom:10px;">{% trans "Marcas suportadas" %}</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
         {% for brand in brands %}
         <span style="font-size:11px;font-weight:700;color:#161616;padding:3px 10px;border:1px solid #c6c6c6;background:#fff;letter-spacing:0.02em;">{{ brand }}</span>
@@ -1122,17 +1122,17 @@ table.est-table td { padding: var(--s5) var(--s5); }
 
     <div style="padding:22px 20px 14px;border-bottom:1px solid #e0e0e0;">
       <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:16px;">
-        <h2 style="margin:0;font-size:18px;font-weight:600;white-space:nowrap;">Estoque do lote</h2>
-        <span style="font-size:12px;color:#6f6f6f;white-space:nowrap;">{{ lot.chip_count }} tipos · {{ lot.total_qty }} un.</span>
+        <h2 style="margin:0;font-size:18px;font-weight:600;white-space:nowrap;">{% trans "Estoque do lote" %}</h2>
+        <span style="font-size:12px;color:#6f6f6f;white-space:nowrap;">{% blocktrans trimmed with n1=lot.chip_count n2=lot.total_qty %}{{ n1 }} tipos · {{ n2 }} un.{% endblocktrans %}</span>
       </div>
       <div style="display:flex;gap:8px;">
-        <input id="search-q" name="q" type="search" value="{{ q }}" placeholder="Filtrar por PN…"
+        <input id="search-q" name="q" type="search" value="{{ q }}" placeholder="{% trans 'Filtrar por PN…' %}"
                hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="input changed delay:300ms" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#tipo-filter"
                style="flex:1;min-width:0;height:40px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 12px;font-size:14px;color:#161616;" />
         <select id="tipo-filter" name="tipo"
                 hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="change" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#search-q"
                 style="width:108px;flex:none;height:40px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 8px;font-size:14px;color:#161616;cursor:pointer;">
-          <option value="">Todos</option>
+          <option value="">{% trans "Todos" %}</option>
           <option value="eMCP" {% if tipo == "eMCP" %}selected{% endif %}>eMCP</option>
           <option value="uMCP" {% if tipo == "uMCP" %}selected{% endif %}>uMCP</option>
           <option value="eMMC" {% if tipo == "eMMC" %}selected{% endif %}>eMMC</option>
@@ -1153,17 +1153,17 @@ table.est-table td { padding: var(--s5) var(--s5); }
       <a href="{% url 'estoque:export' lot.pk %}"
          style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:44px;background:#fff;border:1px solid #8d8d8d;color:#161616;font-size:14px;font-weight:600;text-decoration:none;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#161616" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 19h14"/></svg>
-        Exportar
+        {% trans "Exportar" %}
       </a>
       {% if lot.status == 'open' %}
       <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="flex:none;margin:0;">
         {% csrf_token %}
-        <button type="submit" style="height:44px;padding:0 18px;background:#fff;border:1px solid #da1e28;color:#da1e28;font-size:14px;font-weight:600;cursor:pointer;">Fechar Lote</button>
+        <button type="submit" style="height:44px;padding:0 18px;background:#fff;border:1px solid #da1e28;color:#da1e28;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Fechar Lote" %}</button>
       </form>
       {% else %}
       <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="flex:none;margin:0;">
         {% csrf_token %}
-        <button type="submit" style="height:44px;padding:0 18px;background:#0f62fe;border:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">Reabrir</button>
+        <button type="submit" style="height:44px;padding:0 18px;background:#0f62fe;border:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Reabrir" %}</button>
       </form>
       {% endif %}
     </div>
@@ -1182,8 +1182,8 @@ table.est-table td { padding: var(--s5) var(--s5); }
 <div class="est-toast est-toast--hidden" id="est-toast" role="status" aria-live="polite">
   <span class="est-toast-icon">✓</span>
   <span class="est-toast-msg" id="est-toast-msg"></span>
-  <button class="est-toast-undo" id="est-toast-undo" type="button">Desfazer</button>
-  <button class="est-toast-close" type="button" onclick="hideToast()" aria-label="Fechar">×</button>
+  <button class="est-toast-undo" id="est-toast-undo" type="button">{% trans "Desfazer" %}</button>
+  <button class="est-toast-close" type="button" onclick="hideToast()" aria-label="{% trans 'Fechar' %}">×</button>
 </div>
 
 {# ── Modal de confirmação de remoção (Carbon medium-impact) ───── #}
@@ -1195,11 +1195,11 @@ table.est-table td { padding: var(--s5) var(--s5); }
     {# Header #}
     <div class="est-modal-header">
       <div class="est-modal-header-text">
-        <p class="est-modal-label" id="modal-label">Part Number</p>
-        <h2 class="est-modal-title" id="modal-title">Remover do estoque</h2>
+        <p class="est-modal-label" id="modal-label">{% trans "Part Number" %}</p>
+        <h2 class="est-modal-title" id="modal-title">{% trans "Remover do estoque" %}</h2>
       </div>
       <button class="est-modal-close" type="button"
-              onclick="closeDeleteModal()" aria-label="Fechar">
+              onclick="closeDeleteModal()" aria-label="{% trans 'Fechar' %}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2.5"
              stroke-linecap="round" stroke-linejoin="round">
@@ -1212,13 +1212,13 @@ table.est-table td { padding: var(--s5) var(--s5); }
     {# Body #}
     <div class="est-modal-body">
       <p class="est-modal-desc">
-        Remover <strong id="modal-pn-text"></strong> do estoque.
-        Esta ação não pode ser desfeita.
+        {% trans "Remover" %} <strong id="modal-pn-text"></strong> {% trans "do estoque." %}
+        {% trans "Esta ação não pode ser desfeita." %}
       </p>
 
       {# Aparece só se qty > 1 #}
       <div class="est-modal-qty-row" id="modal-qty-row">
-        <label class="est-label" for="modal-qty-input">Quantidade a remover</label>
+        <label class="est-label" for="modal-qty-input">{% trans "Quantidade a remover" %}</label>
         <input class="est-input est-input--qty"
                type="number" id="modal-qty-input"
                value="1" min="1" step="1">
@@ -1229,7 +1229,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
     {# Footer — Cancel preto + Remove vermelho, full-width #}
     <div class="est-modal-footer">
       <button class="est-modal-btn-cancel" type="button"
-              onclick="closeDeleteModal()">Cancelar</button>
+              onclick="closeDeleteModal()">{% trans "Cancelar" %}</button>
       <button class="est-modal-btn-delete" type="button"
               id="modal-confirm-btn" onclick="confirmDelete()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -1240,7 +1240,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
           <path d="M10 11v6"/><path d="M14 11v6"/>
           <path d="M9 6V4h6v2"/>
         </svg>
-        Remover
+        {% trans "Remover" %}
       </button>
     </div>
 
@@ -1263,8 +1263,8 @@ table.est-table td { padding: var(--s5) var(--s5); }
       if (box) box.innerHTML =
         '<div style="margin-top:16px;background:#fff1f1;border:1px solid #da1e28;'
         + 'border-left:4px solid #da1e28;padding:14px 16px;color:#a2191f;font-size:14px;">'
-        + '⚠ Erro do servidor (' + (x ? x.status : '?') + '). '
-        + 'Veja o terminal do <code>runserver</code> para o traceback.</div>';
+        + '⚠ ' + '{% trans "Erro do servidor" %} (' + (x ? x.status : '?') + '). '
+        + '{% trans "Veja o terminal do" %} <code>runserver</code> {% trans "para o traceback." %}</div>';
     } catch (err) {}
   });
 
@@ -1281,13 +1281,13 @@ table.est-table td { padding: var(--s5) var(--s5); }
     if (estClearBtn)  estClearBtn.disabled  = (len === 0);
     if (!estPinHint) return;
     if (len === 0) {
-      estPinHint.textContent = 'Digite o Part Number acima';
+      estPinHint.textContent = '{% trans "Digite o Part Number acima" %}';
       estPinHint.className   = 'pin-actions-hint';
     } else if (len < PN_MIN) {
-      estPinHint.textContent = 'Continue digitando (' + len + '/' + PN_MIN + ' mín.)';
+      estPinHint.textContent = '{% trans "Continue digitando" %} (' + len + '/' + PN_MIN + ' {% trans "mín." %})';
       estPinHint.className   = 'pin-actions-hint pin-actions-hint--warn';
     } else {
-      estPinHint.textContent = 'Clique Decodificar ou pressione Enter';
+      estPinHint.textContent = '{% trans "Clique Decodificar ou pressione Enter" %}';
       estPinHint.className   = 'pin-actions-hint';
     }
   }
@@ -1322,7 +1322,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
       var len = pnInput.value.length;
       if (estDecodeBtn) { estDecodeBtn.classList.remove('pin-btn--loading'); estDecodeBtn.disabled = (len < PN_MIN); }
       if (estClearBtn)  estClearBtn.disabled = (len === 0);
-      if (estPinHint && len >= PN_MIN) estPinHint.textContent = 'Clique Decodificar ou pressione Enter';
+      if (estPinHint && len >= PN_MIN) estPinHint.textContent = '{% trans "Clique Decodificar ou pressione Enter" %}';
     });
   }
 
@@ -1356,7 +1356,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
 
     if (qty > 1) {
       qtyRow.classList.add('est-modal-qty-row--visible');
-      qtyMeta.textContent = 'Em estoque: ' + qty + ' unidades';
+      qtyMeta.textContent = '{% trans "Em estoque:" %} ' + qty + ' {% trans "unidades" %}';
     } else {
       qtyRow.classList.remove('est-modal-qty-row--visible');
     }
@@ -1545,7 +1545,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
     _toastUndoPk  = pk;
     _toastUndoQty = qty;
 
-    msg.innerHTML = '<strong>' + qty + '×</strong> ' + pn + ' adicionado ao estoque';
+    msg.innerHTML = '<strong>' + qty + '×</strong> ' + pn + ' {% trans "adicionado ao estoque" %}';
     toast.classList.remove('est-toast--hidden');
 
     // Undo: remove exatamente a quantidade adicionada

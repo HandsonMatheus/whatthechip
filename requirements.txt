@@ -3,6 +3,7 @@ Django==5.2.15          # LTS; fixado p/ paridade local↔Render. NÃO subir p/ 
 Pillow>=10.0
 psycopg2-binary>=2.9
 django-pghistory>=3.9,<4  # auditoria do catálogo (passo 3); puxa django-pgtrigger (gatilhos Postgres)
+django-modeltranslation>=0.19  # i18n do CMS (metadados/colunas por idioma no pages.Page) — I18N.md §9
 
 # Conhecimento por marca em YAML (passo 4): load_brands lê os .yaml e valida com Pydantic
 PyYAML>=6.0
@@ -23,6 +24,7 @@ playwright>=1.40        # Browser real para Cloudflare JS challenge
 # Utilitários dos scripts
 tqdm>=4.0               # Barra de progresso no enrich_gemini.py
 openpyxl>=3.1           # Exportação de estoque para .xlsx
+polib>=1.2              # i18n sem gettext: scripts/i18n_compile.py (.po→.mo) — I18N.md §6.3
 
 # Coleta FBGA — pipeline bulk (stages 2-5)
 pdfplumber>=0.10        # Extração de tabelas de datasheets PDF (Stage 2)

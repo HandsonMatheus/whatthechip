@@ -1,3 +1,4 @@
+{% load i18n %}
 {% comment %}
   Card de triagem (Carbon v2). Root .est-confirm + data-debug (contrato JS:
   syncConfirmPn procura #confirm-area .est-confirm; o 📋 procura [data-debug]).
@@ -23,11 +24,11 @@
         {% endif %}
         <div style="font-size:13px;font-weight:600;color:#393939;">{{ step.label }}</div>
         {% if step.status == 'pass' %}
-          <div style="font-size:12px;font-weight:600;color:#198038;">sim</div>
+          <div style="font-size:12px;font-weight:600;color:#198038;">{% trans "sim" %}</div>
         {% elif step.status == 'fail' %}
-          <div style="font-size:12px;font-weight:600;color:#da1e28;">não</div>
+          <div style="font-size:12px;font-weight:600;color:#da1e28;">{% trans "não" %}</div>
         {% elif step.status == 'warn' %}
-          <div style="font-size:12px;font-weight:600;color:#ff832b;">indeterminado</div>
+          <div style="font-size:12px;font-weight:600;color:#ff832b;">{% trans "indeterminado" %}</div>
         {% else %}
           <div style="font-size:12px;font-weight:600;color:#a8a8a8;">—</div>
         {% endif %}
@@ -43,7 +44,7 @@
     .wtc-chip:hover{background:#c6c6c6;}
   </style>
   <div style="margin-bottom:22px;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:10px;">VOCÊ QUIS DIZER?</div>
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:10px;">{% trans "VOCÊ QUIS DIZER?" %}</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;">
       {% for s in gateway.typo.suggestions %}
       <a class="wtc-chip" href="#"
@@ -75,28 +76,28 @@
   {# ── Painel de destino ───────────────────────────────────────── #}
   {% if gateway_dest == 'aprovado' %}
     {% if destination_cat == 'emcp' %}{% with pbg='#da1e28' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "CAIXA FÍSICA" %}</span>
       <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>
       {% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}
     </div>{% endwith %}
     {% else %}
-      {% if destination_cat == 'umcp' %}{% with pbg='#ff7eb6' pfg='#161616' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
-      {% elif destination_cat == 'ufs' %}{% with pbg='#f1c21b' pfg='#161616' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
-      {% elif destination_cat == 'emmc' %}{% with pbg='#42be65' pfg='#161616' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
-      {% elif destination_cat == 'nand' %}{% with pbg='#8a3ffc' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
-      {% elif destination_cat == 'gddr' %}{% with pbg='#ff6900' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
-      {% elif destination_cat == 'ddr' %}{% with pbg='#795548' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
-      {% else %}{% with pbg='#4589ff' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CAIXA FÍSICA</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% if destination_cat == 'umcp' %}{% with pbg='#ff7eb6' pfg='#161616' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "CAIXA FÍSICA" %}</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% elif destination_cat == 'ufs' %}{% with pbg='#f1c21b' pfg='#161616' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "CAIXA FÍSICA" %}</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% elif destination_cat == 'emmc' %}{% with pbg='#42be65' pfg='#161616' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "CAIXA FÍSICA" %}</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% elif destination_cat == 'nand' %}{% with pbg='#8a3ffc' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "CAIXA FÍSICA" %}</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% elif destination_cat == 'gddr' %}{% with pbg='#ff6900' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "CAIXA FÍSICA" %}</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% elif destination_cat == 'ddr' %}{% with pbg='#795548' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "CAIXA FÍSICA" %}</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
+      {% else %}{% with pbg='#4589ff' pfg='#ffffff' %}<div style="padding:24px 26px;background:{{ pbg }};color:{{ pfg }};display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "CAIXA FÍSICA" %}</span><div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ destination }}</div>{% if result.brand or display_cap %}<div style="font-size:14px;opacity:0.92;">{{ result.brand }}{% if result.brand and display_cap %} · {% endif %}{{ display_cap }}</div>{% endif %}</div>{% endwith %}
       {% endif %}
     {% endif %}
   {% elif gateway_dest == 'reprovado' %}
     <div style="padding:24px 26px;background:#750e13;color:#ffb3b8;display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% if gateway.reject_by_generation %}DESCARTE · POR GERAÇÃO{% else %}DESCARTE{% endif %}</span>
-      <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;">REPROVADO</div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% if gateway.reject_by_generation %}{% trans "DESCARTE" %} · {% trans "POR GERAÇÃO" %}{% else %}{% trans "DESCARTE" %}{% endif %}</span>
+      <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;">{% trans "REPROVADO" %}</div>
       {% if gateway.reject_by_generation %}
-      <div style="font-size:14px;opacity:0.92;">Não rentável pela geração · reconhecido por gramática (não confirmado)</div>
+      <div style="font-size:14px;opacity:0.92;">{% trans "Não rentável pela geração · reconhecido por gramática (não confirmado)" %}</div>
       {% else %}
-      <div style="font-size:14px;opacity:0.92;">Não rentável · resíduo eletrônico</div>
+      <div style="font-size:14px;opacity:0.92;">{% trans "Não rentável · resíduo eletrônico" %}</div>
       {% endif %}
       {% if result.chip_type or result.brand or display_cap %}
       <div style="font-size:14px;opacity:0.92;">{{ result.chip_type }}{% if result.chip_type and result.brand %} · {% endif %}{{ result.brand }}{% if display_cap and result.chip_type or display_cap and result.brand %} · {% endif %}{{ display_cap }}</div>
@@ -104,15 +105,15 @@
     </div>
   {% elif gateway_dest == 'fila' %}
     <div style="padding:24px 26px;background:#ff832b;color:#161616;display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">CONFERÊNCIA</span>
-      <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;">FILA</div>
-      <div style="font-size:14px;opacity:0.92;">Aguarda revisão do gestor · reconhecido por gramática</div>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "CONFERÊNCIA" %}</span>
+      <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;letter-spacing:-0.01em;">{% trans "FILA" %}</div>
+      <div style="font-size:14px;opacity:0.92;">{% trans "Aguarda revisão do gestor · reconhecido por gramática" %}</div>
     </div>
   {% else %}
     <div style="padding:24px 26px;background:#f4f4f4;color:#161616;border:2px dashed #c6c6c6;display:flex;flex-direction:column;justify-content:center;min-height:168px;gap:10px;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">NÃO IDENTIFICADO</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "NÃO IDENTIFICADO" %}</span>
       <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;">?</div>
-      <div style="font-size:14px;opacity:0.92;">Specs ausentes ou incompletas</div>
+      <div style="font-size:14px;opacity:0.92;">{% trans "Specs ausentes ou incompletas" %}</div>
     </div>
   {% endif %}
 
@@ -146,7 +147,7 @@
     <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:22px;">
       {% if gateway_dest != 'desconhecido' %}
       <div>
-        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:7px;">QTD.</label>
+        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:7px;">{% trans "QTD." %}</label>
         <div style="display:flex;border:1px solid #8d8d8d;height:52px;background:#f4f4f4;">
           <input id="confirm-qty" name="qty" type="number" value="1" min="1" max="9999" inputmode="numeric"
                  style="width:58px;border:none;background:transparent;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:18px;color:#161616;" />
@@ -159,20 +160,20 @@
       {% endif %}
 
       {% if gateway_dest == 'aprovado' %}
-        <button type="submit" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#0f62fe;color:#fff;">+ Adicionar ao estoque</button>
+        <button type="submit" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#0f62fe;color:#fff;">+ {% trans "Adicionar ao estoque" %}</button>
       {% elif gateway_dest == 'fila' %}
-        <button type="submit" title="PN não confirmado — vai para a fila de conferência do gestor" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#ff832b;color:#161616;">⏳ Enviar para conferência</button>
+        <button type="submit" title="{% trans 'PN não confirmado — vai para a fila de conferência do gestor' %}" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#ff832b;color:#161616;">⏳ {% trans "Enviar para conferência" %}</button>
       {% elif gateway_dest == 'reprovado' %}
-        <button type="submit" title="Chip não rentável — registra o descarte para auditoria" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#da1e28;color:#fff;">✗ Registrar descarte</button>
+        <button type="submit" title="{% trans 'Chip não rentável — registra o descarte para auditoria' %}" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#da1e28;color:#fff;">✗ {% trans "Registrar descarte" %}</button>
       {% else %}
-        <button type="submit" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#ff832b;color:#161616;">Registrar como desconhecido</button>
+        <button type="submit" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#ff832b;color:#161616;">{% trans "Registrar como desconhecido" %}</button>
       {% endif %}
 
       <button type="button"
               onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();"
-              style="height:52px;padding:0 22px;background:#fff;border:1px solid #161616;color:#161616;font-size:15px;font-weight:600;cursor:pointer;">Cancelar</button>
+              style="height:52px;padding:0 22px;background:#fff;border:1px solid #161616;color:#161616;font-size:15px;font-weight:600;cursor:pointer;">{% trans "Cancelar" %}</button>
 
-      <button type="button" class="est-debug-btn" title="Copiar diagnóstico"
+      <button type="button" class="est-debug-btn" title="{% trans 'Copiar diagnóstico' %}"
               style="margin-left:auto;width:52px;height:52px;background:#fff;border:1px solid #8d8d8d;cursor:pointer;font-size:18px;">📋</button>
     </div>
   </form>

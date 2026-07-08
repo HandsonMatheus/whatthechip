@@ -12,18 +12,23 @@ from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_page
+from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _lazy
 
 from .engine import classify
-from .labels import profitability_label
+from .labels import profitability_label, source_label
 from .models import KnownPart, SearchLog, UnknownChip, CorrectionRequest, ChipSubmission
 
 
+# Rótulos de confiança EXIBIDOS no rodapé do decode card (i18n — I18N.md §5).
+# Lazy: o dict é módulo-level, mas o texto resolve no idioma da request.
+# A CHAVE ('confirmed'…) é canônica — a lógica/CSS usa a chave, nunca o rótulo.
 _CONF_LABEL = {
-    'confirmed':   '✅ Confirmado',
-    'manual':      '✏️ Manual',
-    'distributor': '🏪 Distribuidor',
-    'grammar':     '📐 Gramática',
-    'estimated':   '~ Estimado',
+    'confirmed':   _lazy('✅ Confirmado'),
+    'manual':      _lazy('✏️ Manual'),
+    'distributor': _lazy('🏪 Distribuidor'),
+    'grammar':     _lazy('📐 Gramática'),
+    'estimated':   _lazy('~ Estimado'),
 }
 
 
@@ -64,10 +69,10 @@ def search_api(request):
     pn = request.GET.get("pn", "").strip()
 
     if not pn:
-        return JsonResponse({"error": "Parâmetro 'pn' obrigatório"}, status=400)
+        return JsonResponse({"error": _("Parâmetro 'pn' obrigatório")}, status=400)
 
     if len(pn) < 4:
-        return JsonResponse({"error": "PN muito curto — mínimo 4 caracteres"}, status=400)
+        return JsonResponse({"error": _("PN muito curto — mínimo 4 caracteres")}, status=400)
 
     result = classify(pn)
 
@@ -135,6 +140,8 @@ def decode_html(request):
         "profitable":          profitable,        # canônico — só p/ retrocompat de lógica
         "profitable_key":      profitable_key,    # chave estável — usar na lógica do template
         "profitable_label":    profitable_label,  # rótulo traduzido — usar na EXIBIÇÃO
+        # Fonte de classificação: canônico fica no result (lógica); rótulo p/ exibir.
+        "classification_source_label": source_label(result.get("classification_source", "")),
         # F5 (PRECIFICACAO §7): preço do comprador — lista VAZIA para quem não
         # é admin da empresa (operador/gerente/anônimo nunca veem preço).
         "price_quotes":        _price_quotes_for_admin(request, result),
@@ -163,7 +170,7 @@ def report_error(request):
     capacity  = (request.POST.get("capacity")  or "").strip()[:100]
 
     if not pn or len(pn) < 4:
-        return HttpResponse('<span class="dc-report-err">PN inválido.</span>')
+        return HttpResponse('<span class="dc-report-err">' + _('PN inválido.') + '</span>')
 
     CorrectionRequest.objects.create(
         part_number         = pn,
@@ -172,7 +179,7 @@ def report_error(request):
     )
 
     return HttpResponse(
-        '<span class="dc-report-ok">✓ Reporte recebido — obrigado!</span>'
+        '<span class="dc-report-ok">✓ ' + _('Reporte recebido — obrigado!') + '</span>'
     )
 
 
@@ -214,7 +221,7 @@ def submit_chip(request):
 
     if not pn or len(pn) < 3:
         return JsonResponse(
-            {"ok": False, "error": "Informe um Part Number válido (mín. 3 caracteres)."},
+            {"ok": False, "error": _("Informe um Part Number válido (mín. 3 caracteres).")},
             status=400,
         )
 

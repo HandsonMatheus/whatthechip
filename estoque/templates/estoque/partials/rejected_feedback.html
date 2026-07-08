@@ -1,19 +1,19 @@
+{% load i18n %}
 <div class="est-confirm est-confirm--done" style="border-left-color:#da1e28;">
   <div class="est-confirm-head">
-    <span class="est-confirm-status" style="color:#da1e28;">✗ Reprovado — Resíduo eletrônico</span>
+    <span class="est-confirm-status" style="color:#da1e28;">✗ {% trans "Reprovado — Resíduo eletrônico" %}</span>
     <span class="est-confirm-pn">{{ pn }}</span>
   </div>
   <p class="est-confirm-hint">
-    Este chip{% if chip_type %} (<strong>{{ chip_type }}</strong>{% if capacity %} · {{ capacity }}{% endif %}){% endif %}
-    foi classificado como <strong>NÃO RENTÁVEL{% if by_generation %} pela geração{% endif %}</strong>
-    {% if by_generation %}(reconhecido por gramática, não confirmado no banco) {% endif %}e registrado para auditoria.
-    <strong>Nenhuma unidade entrou no estoque</strong> — encaminhe para o descarte de
-    resíduos eletrônicos.
+    {% trans "Este chip" %}{% if chip_type %} (<strong>{{ chip_type }}</strong>{% if capacity %} · {{ capacity }}{% endif %}){% endif %}
+    {% trans "foi classificado como" %} <strong>{% trans "NÃO RENTÁVEL" %}{% if by_generation %} {% trans "pela geração" %}{% endif %}</strong>
+    {% if by_generation %}({% trans "reconhecido por gramática, não confirmado no banco" %}) {% endif %}{% trans "e registrado para auditoria." %}
+    <strong>{% trans "Nenhuma unidade entrou no estoque" %}</strong> — {% trans "encaminhe para o descarte de resíduos eletrônicos." %}
   </p>
   <div class="est-confirm-actions">
     <button class="est-btn est-btn--ghost" type="button"
             onclick="this.closest('#confirm-area').innerHTML=''; document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">
-      Fechar
+      {% trans "Fechar" %}
     </button>
   </div>
 </div>

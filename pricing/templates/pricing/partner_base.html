@@ -13,13 +13,13 @@
     · Sidebar com todas as marcas (nav_lists vem das views) + pendências.
 
   ⚠ NUNCA exibir updated_by/last_updated aqui — auditoria é só do admin (§7).
-{% endcomment %}{% load static %}<!DOCTYPE html>
-<html lang="pt-br">
+{% endcomment %}{% load static i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'pt-br' }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>{% block title %}Preços{% endblock %} · WhatTheChip</title>
+  <title>{% block title %}{% trans "Preços" %}{% endblock %} · WhatTheChip</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -140,48 +140,50 @@
 
   <a href="{% url 'pricing:partner_home' %}"
      class="wtc-header__nav{% if not active_pk %} wtc-header__nav--active{% endif %}">
-    Início
+    {% trans "Início" %}
   </a>
 
   <span class="wtc-header__spacer"></span>
 
   {# Câmbio RMB→USD de REFERÊNCIA (client-side; escondido até carregar). #}
-  <div class="wtc-header__fx" id="wtc-fx" title="Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre em USD.">
+  <div class="wtc-header__fx" id="wtc-fx" title="{% trans 'Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre em USD.' %}">
     <span class="wtc-header__fx-val" id="wtc-fx-val"></span>
-    <span class="wtc-header__fx-note">câmbio de<br>referência</span>
+    <span class="wtc-header__fx-note">{% blocktrans trimmed %}câmbio de<br>referência{% endblocktrans %}</span>
   </div>
 
   <div class="wtc-header__who">
     <div class="wtc-header__org-txt">
       <span class="wtc-header__org-name">{{ buyer.name }}</span>
     </div>
-    <span class="wtc-header__role">Comprador</span>
+    <span class="wtc-header__role">{% trans "Comprador" %}</span>
   </div>
 
   <div class="wtc-header__actions">
+    {# Idioma — comprador escolhe (中文 p/ parceiro chinês); logado, persiste (I18N.md §3) #}
+    {% include "partials/lang_select.html" with variant='shell' %}
     {# 🔔 Notificações: decisões do WhatTheChip sobre os pedidos do comprador. #}
     <a href="{% url 'pricing:partner_notifications' %}" class="wtc-header__btn" style="position:relative;">
-      🔔 <span>Notificações</span>
+      🔔 <span>{% trans "Notificações" %}</span>
       {% if request.partner_unseen %}
       <span style="position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;padding:0 5px;background:#da1e28;color:#fff;border-radius:9px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">{{ request.partner_unseen }}</span>
       {% endif %}
     </a>
     <form method="post" action="{% url 'logout' %}" style="margin:0;">
       {% csrf_token %}
-      <button type="submit" class="wtc-header__btn wtc-header__btn--logout">Sair</button>
+      <button type="submit" class="wtc-header__btn wtc-header__btn--logout">{% trans "Sair" %}</button>
     </form>
   </div>
 </header>
 
 <div class="wtc-work">
   <aside class="ptn-side">
-    <div class="ptn-side__title">Seus preços por marca</div>
+    <div class="ptn-side__title">{% trans "Seus preços por marca" %}</div>
     <a href="{% url 'pricing:partner_home' %}"
-       class="ptn-side__link{% if not active_pk %} ptn-side__link--active{% endif %}">Início</a>
+       class="ptn-side__link{% if not active_pk %} ptn-side__link--active{% endif %}">{% trans "Início" %}</a>
     {% for pl in nav_lists %}
     <a href="{% url 'pricing:partner_list' pl.pk %}"
        class="ptn-side__link{% if active_pk == pl.pk %} ptn-side__link--active{% endif %}">
-      {% if pl.brand %}{{ pl.brand.name }}{% else %}Outras marcas{% endif %}
+      {% if pl.brand %}{{ pl.brand.name }}{% else %}{% trans "Outras marcas" %}{% endif %}
       {% if pl.stats.pending %}<span class="ptn-side__badge">{{ pl.stats.pending }}</span>{% endif %}
     </a>
     {% endfor %}

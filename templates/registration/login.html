@@ -1,10 +1,10 @@
-{% load static %}
+{% load static i18n %}
 <!doctype html>
-<html lang="pt-BR">
+<html lang="{{ LANGUAGE_CODE|default:'pt-BR' }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login — WhatTheChip?</title>
+  <title>{% trans "Login" %} — WhatTheChip?</title>
   <script>
     (function() {
       if (localStorage.getItem('wtc_theme') === 'dark')
@@ -131,10 +131,10 @@
   <div class="login-card">
 
     <div class="login-brand">WhatTheChip?</div>
-    <h1 class="login-title">Acesso ao Painel</h1>
+    <h1 class="login-title">{% trans "Acesso ao Painel" %}</h1>
 
     {% if form.errors %}
-    <div class="login-error">Usuário ou senha incorretos. Tente novamente.</div>
+    <div class="login-error">{% trans "Usuário ou senha incorretos. Tente novamente." %}</div>
     {% endif %}
 
     <form method="post" action="{% url 'login' %}">
@@ -142,21 +142,26 @@
       <input type="hidden" name="next" value="{{ next }}">
 
       <div class="login-field">
-        <label class="login-label" for="id_username">Usuário</label>
+        <label class="login-label" for="id_username">{% trans "Usuário" %}</label>
         <input class="login-input" type="text" name="username"
                id="id_username" autocomplete="username" autofocus />
       </div>
 
       <div class="login-field">
-        <label class="login-label" for="id_password">Senha</label>
+        <label class="login-label" for="id_password">{% trans "Senha" %}</label>
         <input class="login-input" type="password" name="password"
                id="id_password" autocomplete="current-password" />
       </div>
 
-      <button class="login-btn" type="submit">Entrar</button>
+      <button class="login-btn" type="submit">{% trans "Entrar" %}</button>
     </form>
 
-    <p class="login-footer">Acesso restrito a operadores cadastrados.</p>
+    <p class="login-footer">{% trans "Acesso restrito a operadores cadastrados." %}</p>
+
+    {# Idioma ANTES de logar (a preferência da conta assume depois — I18N.md §3) #}
+    <div style="margin-top:14px;display:flex;justify-content:center;color:var(--text-helper);">
+      {% include "partials/lang_select.html" %}
+    </div>
   </div>
 </div>
 </body>

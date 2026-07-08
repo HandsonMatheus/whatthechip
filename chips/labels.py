@@ -36,3 +36,19 @@ def profitability_label(value: str) -> str:
     Fail-open: valor desconhecido volta como veio (não estoura a UI).
     """
     return PROFITABILITY_LABELS.get(value, value)
+
+
+# Fonte da classificação: valor canônico do engine → rótulo exibível.
+# ⚠ O valor canônico é COMPARADO na lógica (estoque/views.py::CONFIRMED_SOURCES
+# = {"banco de dados"}) — por isso o engine NÃO muda; só a exibição traduz.
+# Vocabulário fechado (chips/engine.py): gramática · gramática+db · banco de dados.
+SOURCE_LABELS = {
+    "gramática":      _("gramática"),
+    "gramática+db":   _("gramática+db"),
+    "banco de dados": _("banco de dados"),
+}
+
+
+def source_label(value: str) -> str:
+    """Rótulo traduzido da fonte de classificação (fail-open, igual acima)."""
+    return SOURCE_LABELS.get(value, value)

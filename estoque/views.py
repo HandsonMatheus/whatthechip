@@ -24,6 +24,7 @@ from django.db.models import F
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from tenancy.access import role_required
@@ -38,14 +39,23 @@ from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
 logger = logging.getLogger(__name__)
 
 
-# Bloqueio "só confirmados": só passa para o estoque quem é confirmado no banco.
+# Elegibilidade de entrada no estoque: passa quem TEM REGISTRO no banco — confidence
+# confirmed, manual OU distributor. Decisão do dono (2026-07-08): distribuidor ENTRA;
+# gramática PURA (sem registro no banco) JAMAIS entra → vai pra fila.
+# ⚠ Isto é ELEGIBILIDADE DE ESTOQUE, não AUTORIDADE sobre a gramática: distribuidor
+# continua NÃO vencendo a gramática no engine (chips/engine.py::_CONFIRMED_CONFIDENCE
+# segue só confirmed/manual). As specs de um distribuidor vêm da gramática; ter o
+# registro só o torna elegível pra bancada.
 CONFIRMED_SOURCES = {"banco de dados"}
-CONFIRMED_CONF = {"confirmed", "manual"}
+CONFIRMED_CONF = {"confirmed", "manual", "distributor"}
 
 
 def _is_confirmed(result: dict) -> bool:
-    """True se o PN é confirmado no banco (vence a gramática). Reavaliado no
-    servidor — nunca confia no campo hidden do formulário."""
+    """True se o PN é ELEGÍVEL PRO ESTOQUE: tem registro no banco (confidence
+    confirmed/manual/distributor) OU a classificação veio do banco. Gramática pura
+    (sem registro) → False → fila. (O nome '_is_confirmed' é histórico; hoje inclui
+    distribuidor por decisão do dono — ver comentário acima.) Reavaliado no servidor —
+    nunca confia no campo hidden do formulário."""
     return (
         result.get("classification_source") in CONFIRMED_SOURCES
         or result.get("confidence") in CONFIRMED_CONF
@@ -429,10 +439,12 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
     """
     fuzzy = result.get('fuzzy_suggestions') or []
     typo = {'has': bool(fuzzy), 'suggestions': fuzzy}
+    # i18n: 'id' e 'status' são CHAVES (lógica/CSS — nunca traduzir);
+    # 'label' e 'detail' são EXIBIÇÃO (gettext, resolve no idioma da request).
     steps = [
-        {'id': 'identificacao', 'label': 'Reconheci',  'status': 'skip', 'detail': ''},
-        {'id': 'fonte',         'label': 'Confirmado',  'status': 'skip', 'detail': ''},
-        {'id': 'rentabilidade', 'label': 'Rentável',    'status': 'skip', 'detail': ''},
+        {'id': 'identificacao', 'label': _('Reconheci'),  'status': 'skip', 'detail': ''},
+        {'id': 'fonte',         'label': _('Confirmado'), 'status': 'skip', 'detail': ''},
+        {'id': 'rentabilidade', 'label': _('Rentável'),   'status': 'skip', 'detail': ''},
     ]
 
     def _out(destination, profitable='', by_generation=False):
@@ -450,38 +462,38 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
     # Vale mesmo SEM confirmação no banco e SEM capacidade mapeada — a geração é
     # lida da gramática curada. Só geração; nunca capacidade (limite de negócio).
     if is_dead_by_generation(result) and not _is_confirmed(result):
-        steps[0].update(status='pass', detail='tipo/geração')
+        steps[0].update(status='pass', detail=_('tipo/geração'))
         steps[1].update(status='fail',
-                        detail=result.get('classification_source') or 'gramática')
-        steps[2].update(status='fail', detail='Geração não rentável')
+                        detail=result.get('classification_source') or _('gramática'))
+        steps[2].update(status='fail', detail=_('Geração não rentável'))
         return _out('reprovado', 'NÃO RENTÁVEL', by_generation=True)
 
     # ── 1. Identificação (specs reais) ───────────────────────────────────────
     if not has_cap:
-        steps[0].update(status='fail', detail='specs ausentes')
+        steps[0].update(status='fail', detail=_('specs ausentes'))
         return _out('desconhecido')
-    steps[0].update(status='pass', detail='specs reais')
+    steps[0].update(status='pass', detail=_('specs reais'))
 
     # ── 2. Fonte (confirmado no banco) — NÃO altera _is_confirmed ─────────────
     if not _is_confirmed(result):
         steps[1].update(status='fail',
-                        detail=result.get('classification_source') or 'gramática')
+                        detail=result.get('classification_source') or _('gramática'))
         return _out('fila')
-    steps[1].update(status='pass', detail='banco de dados')
+    steps[1].update(status='pass', detail=_('banco de dados'))
 
     # ── 3. Rentabilidade (conservador: INDETERMINADO → aprovado) ─────────────
     profitable = assess_profitability(result)
     if profitable == 'NÃO RENTÁVEL':
-        steps[2].update(status='fail', detail='Não rentável')
+        steps[2].update(status='fail', detail=_('Não rentável'))
         return _out('reprovado', profitable)
 
     # RENTÁVEL = verde "sim". INDETERMINADO ENTRA no estoque (regra conservadora), mas
     # NÃO é um "sim" confiante — ganha estado próprio ('warn'/âmbar) pra não mentir ao
     # operador (bug: antes recebia status='pass' e o frontend mostrava "Rentável: sim").
     if profitable == 'RENTÁVEL':
-        steps[2].update(status='pass', detail='Rentável')
+        steps[2].update(status='pass', detail=_('Rentável'))
     else:
-        steps[2].update(status='warn', detail='Indeterminado (não avaliado)')
+        steps[2].update(status='warn', detail=_('Indeterminado (não avaliado)'))
     return _out('aprovado', profitable)
 
 
@@ -722,8 +734,8 @@ def add_chip(request, lot_pk):
     if not lot.is_open:
         return HttpResponse(
             '<div class="est-msg est-msg--error" style="padding:12px 16px;border:1px solid #da1e28;color:#da1e28;margin-top:12px;">'
-            'Este lote está fechado. Reabra-o para adicionar chips.'
-            '</div>'
+            + _('Este lote está fechado. Reabra-o para adicionar chips.')
+            + '</div>'
         )
 
     pn  = _normalise_pn(request.POST.get('pn', ''))
@@ -731,7 +743,7 @@ def add_chip(request, lot_pk):
 
     if len(pn) < 4:
         return HttpResponse(
-            '<div class="est-msg est-msg--error" style="padding:12px 16px;">PN inválido.</div>'
+            '<div class="est-msg est-msg--error" style="padding:12px 16px;">' + _('PN inválido.') + '</div>'
         )
 
     # Reclassifica no servidor (não confia no hidden do form).
@@ -748,6 +760,8 @@ def add_chip(request, lot_pk):
         RejectedEntry.objects.create(
             lot=lot, part_number=pn, quantity=qty,
             **_snapshot(server_result),
+            # ⚠ CANÔNICO — persistido p/ auditoria. NUNCA traduzir (i18n só na
+            # exibição; dado gravado fica em pt-br — I18N.md §8.2).
             rejection_reason='NÃO RENTÁVEL (geração)',
             operator=request.user,
         )
@@ -801,6 +815,7 @@ def add_chip(request, lot_pk):
         RejectedEntry.objects.create(
             lot=lot, part_number=pn, quantity=qty,
             **_snapshot(server_result),
+            # ⚠ CANÔNICO — persistido p/ auditoria. NUNCA traduzir (I18N.md §8.2).
             rejection_reason='NÃO RENTÁVEL',
             operator=request.user,
         )

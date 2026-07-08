@@ -1,0 +1,519 @@
+<!-- TRADUÇÃO GERADA a partir de index.html (pt-br) — rotina I18N.md §7/§9.
+     Editou o index.html? Atualize este arquivo na mesma sessão (o fallback é o PT).
+     Idioma: zh-hans -->
+<!-- ══════════════════════════════════════════════════════
+     INDEX — WhatTheChip · 什么芯片
+     Design Claude Design (Carbon + camada Luna/XP) reimplementado
+     em HTML/CSS/JS sobre o Django. Topnav e footer ficam em base.html.
+     Este arquivo é injetado por pages/views.home — NÃO usar tags Django,
+     apenas os placeholders {{PREFIX_DATA}} e {{STAT_*}}.
+     ══════════════════════════════════════════════════════ -->
+
+<!-- ── HERO + RESULTADO — cresce para empurrar a stats strip ao fundo ── -->
+<div class="hero-area">
+<section class="hero">
+  <div class="hero__inner">
+
+    <div class="logo" aria-label="WhatTheChip 什么芯片">
+      <img class="logo__svg is-light" src="/static/img/wtc-logo-light.svg" alt="WhatTheChip 什么芯片" />
+      <img class="logo__svg is-dark" src="/static/img/wtc-logo-dark.svg" alt="" aria-hidden="true" />
+    </div>
+
+    <form class="pnbar" id="pn-form" role="search" autocomplete="off">
+      <div class="pnbar__prefix" id="pn-prefix" title="前缀检测">
+        <span>等待输入 PN…</span>
+      </div>
+      <div class="pnbar__cells" id="pn-cells"></div>
+
+      <button type="button" class="pnbar__mic wtc-mic-btn" id="pn-mic"
+              data-mic-target="pn-input"
+              data-mic-cta="pn-decode"
+              aria-label="请说出 Part Number" title="请说出 Part Number"></button>
+
+      <button type="button" class="pnbar__clear" id="pn-clear"
+              aria-label="清除 PN" title="全部清除" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>
+        </svg>
+      </button>
+
+      <button type="submit" class="pnbar__decode" id="pn-decode" aria-label="解码" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>
+        </svg>
+        <span class="pnbar__decode-label">解码</span>
+        <span class="pnbar__decode-spinner" aria-hidden="true"></span>
+      </button>
+
+      <input class="pnbar__input" id="pn-input" type="text" spellcheck="false"
+             autocomplete="off" autocapitalize="characters" autocorrect="off"
+             aria-label="芯片 Part Number" />
+    </form>
+
+    <!-- Ações mobile: Apagar + Decodificar abaixo da barra -->
+    <div class="mobile-actions" aria-hidden="false">
+      <button type="button" class="pnbar__clear" id="pn-clear-mobile"
+              aria-label="清除 PN" title="清除" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>
+        </svg>
+      </button>
+      <button type="button" class="pnbar__decode" id="pn-decode-mobile" aria-label="解码" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>
+        </svg>
+        <span class="pnbar__decode-label">解码</span>
+        <span class="pnbar__decode-spinner" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <p class="pn-hint" id="pn-hint">请在上方输入 Part Number — 按 Enter 或点击“解码”</p>
+
+  </div>
+</section>
+
+<!-- ── RESULTADO (preenchido por JS) ── -->
+<div class="result-wrap" id="result-wrap"></div>
+</div><!-- /hero-area -->
+
+<!-- ── STATS STRIP ── -->
+<section class="stats">
+  <div class="stats__inner">
+    <div class="stat">
+      <span class="stat__label">数据库芯片数</span>
+      <span class="stat__value">{{STAT_PARTS}}</span>
+      <span class="stat__delta">已收录的 Part Number</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">制造商</span>
+      <span class="stat__value">{{STAT_BRANDS}}</span>
+      <span class="stat__delta">已映射品牌</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">已映射产品系列</span>
+      <span class="stat__value">{{STAT_FAMILIES}}</span>
+      <span class="stat__delta">eMMC · LPDDR · UFS · NAND</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">查询次数</span>
+      <span class="stat__value">{{STAT_SEARCHES}}</span>
+      <span class="stat__delta">已处理的查询</span>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Dados de prefixo injetados pelo Django ────────────────────────────────
+  var DATA = {{PREFIX_DATA}};
+
+  // ── Elementos ─────────────────────────────────────────────────────────────
+  var form        = document.getElementById('pn-form');
+  var input       = document.getElementById('pn-input');
+  var cellsWrap   = document.getElementById('pn-cells');
+  var prefixWrap  = document.getElementById('pn-prefix');
+  var hint        = document.getElementById('pn-hint');
+  var resultWrap  = document.getElementById('result-wrap');
+  var clearBtns   = [document.getElementById('pn-clear'), document.getElementById('pn-clear-mobile')];
+  var decodeBtns  = [document.getElementById('pn-decode'), document.getElementById('pn-decode-mobile')];
+
+  var CELL_MIN  = 16;   // células mostradas por padrão
+  var CELL_MAX  = 24;   // teto absoluto
+  var _cellCount = 0;
+  var _detectedFam = null;
+  var _lastApiPn   = '';
+  var _lastData    = null;
+
+  var CONF_LABEL = {
+    'confirmed':   '✅ 已确认',
+    'manual':      '✏️ 人工',
+    'distributor': '🏪 分销商',
+    'grammar':     '📐 语法规则',
+    'ai_high':     '🤖 AI — 高',
+    'ai_medium':   '🤖 AI — 中',
+    'ai_low':      '🤖 AI — 低',
+    'estimated':   '~ 估计',
+  };
+
+  // ── Utilitários ───────────────────────────────────────────────────────────
+  function normalize(s) { return (s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+  function escHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function effectiveConf(d) {
+    if (d.grammar_complete && d.confidence === 'estimated') return 'grammar';
+    return d.confidence || 'estimated';
+  }
+
+  // ── Camada 1: detecção de família por prefixo (client-side) ───────────────
+  function bestMatch(q) {
+    var best = null;
+    DATA.forEach(function (row) {
+      var parts = row.prefix.split('/').map(function (p) {
+        return normalize(p.replace(/\.\.\.$/, '').trim());
+      });
+      parts.forEach(function (p) {
+        if (p && q.indexOf(p) === 0 &&
+            (!best || p.length > normalize(best.prefix).length)) {
+          best = row;
+        }
+      });
+    });
+    return best;
+  }
+
+  // ── Renderiza as células do PN ────────────────────────────────────────────
+  function renderCells(value) {
+    var want = CELL_MIN;
+    if (value.length >= CELL_MIN) want = Math.min(value.length + 1, CELL_MAX);
+
+    if (_cellCount !== want) {
+      cellsWrap.innerHTML = '';
+      for (var i = 0; i < want; i++) {
+        var cell = document.createElement('div');
+        cell.className = 'pncell';
+        cell.setAttribute('aria-hidden', 'true');
+        cellsWrap.appendChild(cell);
+      }
+      _cellCount = want;
+    }
+
+    var cells = cellsWrap.children;
+    var focused = document.activeElement === input;
+    var prefixLen = _detectedFam ? normalize(_detectedFam.prefix).length : 0;
+
+    for (var j = 0; j < cells.length; j++) {
+      var ch = value[j] || '';
+      var isEmpty  = ch === '';
+      var isActive = focused && j === Math.min(value.length, cells.length - 1);
+      var isKnown  = !isEmpty && j < prefixLen;
+      cells[j].textContent = ch;
+      cells[j].className = 'pncell'
+        + (isActive ? ' is-active' : '')
+        + (isEmpty ? ' is-empty' : '')
+        + (isKnown ? ' is-known' : '');
+    }
+  }
+
+  // ── Atualiza o prefixo, o hint e o estado dos botões ──────────────────────
+  function updateChrome(q, fam) {
+    // Prefixo
+    if (fam) {
+      prefixWrap.innerHTML = '<span class="mfg">' + escHtml(fam.fab) + '</span>'
+        + '<span>&nbsp;·&nbsp;</span><span>' + escHtml(fam.tipo) + '</span>';
+    } else if (q) {
+      prefixWrap.innerHTML = '<span>产品系列未收录</span>';
+    } else {
+      prefixWrap.innerHTML = '<span>等待输入 PN…</span>';
+    }
+
+    // Botões
+    var canDecode = q.length >= 4;
+    decodeBtns.forEach(function (b) { if (b) b.disabled = !canDecode; });
+    clearBtns.forEach(function (b) {
+      if (!b) return;
+      b.disabled = q.length === 0;
+      if (b.id === 'pn-clear') b.hidden = q.length === 0;
+    });
+
+    // Hint
+    if (!q) {
+      hint.textContent = '请在上方输入 Part Number — 按 Enter 或点击“解码”';
+      hint.className = 'pn-hint';
+    } else if (q.length < 4) {
+      hint.textContent = '请继续输入 (' + q.length + '/4 最少)';
+      hint.className = 'pn-hint is-warn';
+    } else if (fam && fam.pn_length && q.length < fam.pn_length) {
+      hint.textContent = 'PN 不完整 — ' + q.length + '/' + fam.pn_length + ' 个字符';
+      hint.className = 'pn-hint is-warn';
+    } else {
+      hint.textContent = '按 Enter 或点击“解码”';
+      hint.className = 'pn-hint';
+    }
+  }
+
+  // ── Render principal enquanto o usuário digita ────────────────────────────
+  function render(raw) {
+    var q = normalize(raw);
+    var fam = q ? bestMatch(q) : null;
+    if (fam !== _detectedFam) { _detectedFam = fam; _lastApiPn = ''; }
+    renderCells(q);
+    updateChrome(q, fam);
+  }
+
+  // ── Loading dos botões de decode ──────────────────────────────────────────
+  function setLoading(on) {
+    decodeBtns.forEach(function (b) {
+      if (!b) return;
+      b.classList.toggle('is-loading', on);
+      if (on) b.disabled = true;
+    });
+  }
+
+  // ════════════════════════════════════════════════════════════════════
+  //  CARTÃO DE RESULTADO
+  // ════════════════════════════════════════════════════════════════════
+  function clearResult() { resultWrap.innerHTML = ''; _lastData = null; }
+
+  function cellHtml(label, value, note, mod) {
+    var cls = 'result__cell' + (mod ? ' result__cell--' + mod : '');
+    var valCls = 'result__value' + (value ? '' : ' dim');
+    return '<div class="' + cls + '">'
+      + '<div class="result__label">' + escHtml(label) + '</div>'
+      + '<div class="' + valCls + '">' + escHtml(value || '—') + '</div>'
+      + (note ? '<div class="result__note">' + escHtml(note) + '</div>' : '')
+      + '</div>';
+  }
+
+  function renderResult(d) {
+    _lastData = d;
+    var ts = new Date().toISOString().replace('T', ' ').slice(11, 19);
+    var undoc   = !!d.family_undocumented;
+    var eConf = effectiveConf(d);
+
+    // Cabeçalho
+    var titleSmall = d.subtype
+      ? ' <small class="result__subtype">· ' + escHtml(d.subtype) + '</small>'
+      : '';
+    var head = '<header class="result__head">'
+      + '<span class="led" aria-hidden="true"></span>'
+      + '<h2 class="result__title">' + escHtml(d.chip_type || '芯片') + titleSmall + '</h2>'
+      + '<span class="result__head-spacer"></span>'
+      + '<span class="result__meta">' + escHtml(d.pn || '') + ' · t=' + ts + 'Z</span>'
+      + '<span class="result__mfg"><span class="ic" aria-hidden="true"></span>'
+      + escHtml(d.brand || '—') + '</span>'
+      + '</header>';
+
+    // Bloco de aviso — família sem documentação pública
+    var undocWarn = '';
+    if (undoc) {
+      var pnEnc = encodeURIComponent(d.pn || '');
+      undocWarn = '<div class="result__undoc-warn">'
+        + '<div class="result__undoc-warn-title">⚠ 该产品系列无可核实的公开文档</div>'
+        + '<div class="result__undoc-warn-body">'
+        + '该 Part Number 属于一个<strong>从未被官方记载</strong>的产品系列 — '
+        + '在任何 SK Hynix 目录、datasheet、Octopart 或可信分销商处均无记录。<br><br>'
+        + '<strong>可能原因：</strong>厂商刻印错误（激光印错），或属于 datasheet 受 NDA 保密未公开的 OEM 产品。<br><br>'
+        + '以下数据为<strong>基于结构类比的估计</strong> — '
+        + '<em>在实物核验之前，请勿当作已确认的规格使用。</em>'
+        + '</div>'
+        + '<a class="result__undoc-warn-btn" href="mailto:eminerparaguay@gmail.com'
+        + '?subject=Informa%C3%A7%C3%B5es%20sobre%20' + pnEnc
+        + '&body=PN%3A%20' + pnEnc + '%0A%0AInforma%C3%A7%C3%B5es%3A">'
+        + '📩 认识这颗芯片？联系我们'
+        + '</a>'
+        + '</div>';
+    }
+
+    // Grade de 4 células
+    var grid;
+    if (d.is_emcp) {
+      grid = cellHtml('NAND', d.emcp_nand, '', 'em')
+           + cellHtml('RAM', d.emcp_ram, '', 'em')
+           + cellHtml('器件', d.emcp_device || d.device, '')
+           + cellHtml('接口', d.interface, '');
+    } else {
+      grid = cellHtml('密度', d.dram_density, '', 'em')
+           + cellHtml('接口', d.interface, '')
+           + cellHtml('容量', d.capacity, '')
+           + cellHtml('可信度', CONF_LABEL[eConf] || d.confidence, '');
+    }
+
+    // Rodapé
+    var foot = '<footer class="result__foot">'
+      + '<span class="check" aria-hidden="true">✓</span>'
+      + '<span>' + escHtml(CONF_LABEL[eConf] || d.confidence || '结果') + '</span>';
+    if (d.classification_source) {
+      foot += '<span class="sep">|</span><span>来源：' + escHtml(d.classification_source) + '</span>';
+    }
+    if (d.doc_url) {
+      foot += '<span class="sep">|</span><a href="' + escHtml(d.doc_url) + '">文档 →</a>';
+    }
+    foot += '<span class="sep">|</span>'
+      + '<button type="button" class="danger" id="rp-report">报告错误</button>'
+      + '<span class="sep">|</span>'
+      + '<button type="button" class="danger" id="rp-debug" style="color:var(--cds-text-placeholder)">📋 Debug</button>'
+      + '</footer>';
+
+    // ── Preço do comprador (F5 — PRECIFICACAO §7) ────────────────────────
+    // d.prices SÓ existe no JSON quando o usuário logado é ADMIN da empresa
+    // (o gate é do SERVIDOR, em /chips/search/ — este JS apenas exibe).
+    var priceBlock = '';
+    if (d.prices && d.prices.length) {
+      priceBlock = '<div class="result__price" style="margin:14px 16px 4px;padding:10px 14px;background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;border-radius:6px;">';
+      d.prices.forEach(function (p) {
+        priceBlock += '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">'
+          + '<span style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.04em;">💰 ' + escHtml(p.buyer) + '</span>';
+        if (p.status === 'PRICED') {
+          priceBlock += '<span style="font-size:16px;font-weight:800;color:#1d6b2f;">' + (p.is_stale ? '≈ ' : '') + 'US$ ' + escHtml(p.min) + '</span>'
+            + '<span style="font-size:11px;color:#557a5e;">'
+            + (p.quote_date ? '报价于 ' + escHtml(p.quote_date) : '参考价（无日期）')
+            + ' · ' + escHtml(p.via) + '</span>';
+        } else if (p.status === 'NO_BUY') {
+          priceBlock += '<span style="font-size:13px;font-weight:700;color:#a33;">不收购此项</span>';
+        } else if (p.status === 'NOT_MADE') {
+          priceBlock += '<span style="font-size:13px;font-weight:600;color:#777;">该品牌不生产</span>';
+        } else if (p.status === 'UNQUOTED') {
+          priceBlock += '<span style="font-size:13px;font-weight:600;color:#b8860b;">等待报价</span>';
+        } else {
+          priceBlock += '<span style="font-size:12px;color:#777;">无价格 — ' + escHtml(p.reason || '') + '</span>';
+        }
+        priceBlock += '</div>';
+      });
+      priceBlock += '</div>';
+    }
+
+    var articleClass = 'result'
+      + (undoc    ? ' result--undoc' : '');
+    resultWrap.innerHTML = '<article class="' + articleClass + '">'
+      + head + undocWarn + priceBlock + '<div class="result__grid">' + grid + '</div>' + foot + '</article>';
+
+    wireResultActions();
+  }
+
+  function renderNotFound(pn) {
+    _lastData = null;
+    resultWrap.innerHTML =
+      '<article class="result result--notfound">'
+      + '<header class="result__head">'
+      + '<span class="led" aria-hidden="true"></span>'
+      + '<h2 class="result__title">无法识别的芯片 '
+      + '<small>· 数据库中无匹配</small></h2>'
+      + '<span class="result__head-spacer"></span>'
+      + '<span class="result__meta">' + escHtml(pn) + '</span>'
+      + '</header>'
+      + '<div class="result__body">'
+      + '未找到该 Part Number。请核对芯片读数，或 '
+      + '<strong>提交 PN 供分析</strong> — 我们将在 48&nbsp;小时内手动收录。'
+      + '</div>'
+      + '<footer class="result__foot">'
+      + '<button type="button" class="danger" id="rp-submit" style="color:var(--cds-link-primary)">提交分析 →</button>'
+      + '</footer>'
+      + '</article>';
+
+    var sub = document.getElementById('rp-submit');
+    if (sub) sub.addEventListener('click', function () {
+      if (window.wtcOpenSubmitModal) window.wtcOpenSubmitModal(pn);
+    });
+  }
+
+  // ── Report + Debug ────────────────────────────────────────────────────────
+  function wireResultActions() {
+    var reportBtn = document.getElementById('rp-report');
+    if (reportBtn) {
+      reportBtn.addEventListener('click', function () {
+        if (!_lastData) return;
+        var body = new URLSearchParams({
+          pn:        _lastData.pn || '',
+          chip_type: _lastData.chip_type || '',
+          capacity:  _lastData.capacity || _lastData.emcp_nand || '',
+        });
+        fetch('/chips/report/', { method: 'POST', body: body })
+          .then(function () {
+            reportBtn.outerHTML = '<span class="ok">✓ 报告已收到 — 谢谢！</span>';
+          })
+          .catch(function () {});
+      });
+    }
+
+    var debugBtn = document.getElementById('rp-debug');
+    if (debugBtn) {
+      debugBtn.addEventListener('click', function () {
+        if (!_lastData) return;
+        var txt = '=== WhatTheChip Debug ===\nPN: ' + (_lastData.pn || '')
+          + '\n' + JSON.stringify(_lastData, null, 2);
+        var done = function () {
+          debugBtn.textContent = '✓ Copiado!';
+          setTimeout(function () { debugBtn.textContent = '📋 Debug'; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(txt).then(done).catch(function () {});
+        } else {
+          var ta = document.createElement('textarea');
+          ta.value = txt; ta.style.cssText = 'position:fixed;left:-9999px';
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand('copy'); done(); } catch (e) {}
+          document.body.removeChild(ta);
+        }
+      });
+    }
+  }
+
+  // ── Chama a API de classificação do Django ────────────────────────────────
+  function decode() {
+    var q = normalize(input.value);
+    if (q.length < 4) return;
+    if (q === _lastApiPn) return;
+    _lastApiPn = q;
+
+    setLoading(true);
+    hint.textContent = '解码中…';
+    hint.className = 'pn-hint';
+
+    fetch('/chips/search/?pn=' + encodeURIComponent(q))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.known) renderResult(d);
+        else renderNotFound(q);
+      })
+      .catch(function () {
+        hint.textContent = '网络连接错误 — 请重试';
+        hint.className = 'pn-hint is-warn';
+        _lastApiPn = '';
+      })
+      .finally(function () {
+        setLoading(false);
+        updateChrome(normalize(input.value), _detectedFam);
+      });
+  }
+
+  // ── Limpar ────────────────────────────────────────────────────────────────
+  function clearAll() {
+    input.value = '';
+    _lastApiPn = '';
+    render('');
+    clearResult();
+    input.focus();
+  }
+
+  // ── Eventos ───────────────────────────────────────────────────────────────
+  cellsWrap.addEventListener('click', function () { input.focus(); });
+  prefixWrap.addEventListener('click', function () { input.focus(); });
+
+  input.addEventListener('input', function () {
+    var clean = normalize(this.value);
+    if (this.value !== clean) this.value = clean;
+    render(clean);
+  });
+  input.addEventListener('focus', function () { render(normalize(this.value)); });
+  input.addEventListener('blur', function () { render(normalize(this.value)); });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); decode(); }
+    if (e.key === 'Escape') { clearAll(); this.blur(); }
+  });
+
+  form.addEventListener('submit', function (e) { e.preventDefault(); decode(); });
+
+  decodeBtns.forEach(function (b) {
+    if (b) b.addEventListener('click', function (e) { e.preventDefault(); decode(); });
+  });
+  clearBtns.forEach(function (b) {
+    if (b) b.addEventListener('click', function (e) { e.preventDefault(); clearAll(); });
+  });
+
+  // ── API global para sugestões externas ────────────────────────────────────
+  window.triggerSearch = function (pn) {
+    var clean = normalize(pn);
+    input.value = clean;
+    render(clean);
+    if (clean.length >= 4) decode();
+  };
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  render('');
+  setTimeout(function () { input.focus(); }, 120);
+})();
+</script>

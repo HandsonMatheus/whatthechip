@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 from django.shortcuts import render, get_object_or_404
 from django.conf import settings
+from django.utils import translation
+from django.utils.translation import gettext as _
 from .models import Page
 
 # _content/ — fonte de verdade para todo o conteúdo editorial.
@@ -11,6 +13,26 @@ from .models import Page
 # O banco ainda é usado para metadados: title, order, prev/next.
 _CONTENT_DIR = Path(settings.BASE_DIR) / "_content"
 _INDEX_CONTENT_PATH = _CONTENT_DIR / "index.html"
+
+
+def _localized_content_path(slug: str):
+    """Resolve o arquivo de conteúdo NO IDIOMA ATIVO (i18n — I18N.md §9).
+
+    Convenção: ``_content/<slug>.<código>.html`` é a tradução (ex.:
+    ``index.es.html``, ``index.zh-hans.html``); ``_content/<slug>.html`` é o
+    original pt-br e o FALLBACK universal — página sem tradução aparece em PT,
+    nunca em branco. As traduções são arquivos versionados no git (conteúdo-
+    -como-código), produzidos pela rotina do I18N.md §7.
+
+    Devolve o Path existente ou None (página só-banco).
+    """
+    lang = translation.get_language() or settings.LANGUAGE_CODE
+    if lang != settings.LANGUAGE_CODE:
+        localized = _CONTENT_DIR / f"{slug}.{lang}.html"
+        if localized.exists():
+            return localized
+    base = _CONTENT_DIR / f"{slug}.html"
+    return base if base.exists() else None
 
 
 def _nav_pages():
@@ -57,8 +79,10 @@ def _prefix_data_from_db():
 def home(request):
     pages = _nav_pages()
 
-    # Lê _content/index.html direto do disco — sem passar pelo banco.
-    content = _INDEX_CONTENT_PATH.read_text(encoding="utf-8")
+    # Lê _content/index[.<lang>].html direto do disco — sem passar pelo banco.
+    # O idioma ativo escolhe o arquivo; sem tradução → fallback pt-br (§9 do I18N.md).
+    content_path = _localized_content_path('index') or _INDEX_CONTENT_PATH
+    content = content_path.read_text(encoding="utf-8")
 
     prefix_data  = _prefix_data_from_db()
     prefix_count = len(prefix_data)
@@ -85,7 +109,7 @@ def home(request):
 
     # Objeto simples para manter compatibilidade com o template pages/page.html
     class _IndexPage:
-        title   = 'Início'
+        title   = _('Início')     # i18n: aparece no <title> da aba
         content = ''
     page = _IndexPage()
     page.content = content
@@ -107,13 +131,13 @@ def page_detail(request, slug):
     prev_page = pages.filter(order__lt=page.order).last() if in_nav else None
     next_page = pages.filter(order__gt=page.order).first() if in_nav else None
 
-    # Lê conteúdo direto de _content/{slug}.html quando o arquivo existir.
-    # Isso faz de _content/ a fonte de verdade para todo conteúdo editorial,
-    # igual ao que já é feito com a homepage. Editar o arquivo → mudança
-    # imediata no site, sem precisar sincronizar com o banco.
-    # Se o arquivo não existir (página criada só no admin), usa o banco.
-    content_file = _CONTENT_DIR / f"{slug}.html"
-    if content_file.exists():
+    # Lê conteúdo direto de _content/{slug}[.<lang>].html quando existir.
+    # _content/ é a fonte de verdade editorial; o idioma ativo escolhe o
+    # arquivo traduzido, com fallback pro pt-br (I18N.md §9). Se não houver
+    # arquivo (página criada só no admin), usa o banco — onde o
+    # modeltranslation resolve content_<lang> com fallback pt-br sozinho.
+    content_file = _localized_content_path(slug)
+    if content_file is not None:
         page.content = _fix_html_links(content_file.read_text(encoding="utf-8"))
     else:
         page.content = _fix_html_links(page.content or '')

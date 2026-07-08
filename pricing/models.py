@@ -44,6 +44,9 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import F, Q
+# i18n (I18N.md): SÓ os rótulos de choices exibidos ao COMPRADOR no /partner/
+# passam por gettext_lazy. Os VALORES ('quoted', 'no_buy'…) são chaves — nunca.
+from django.utils.translation import gettext_lazy as _lazy
 
 from tenancy.scope import CompanyScopedManager
 
@@ -81,11 +84,11 @@ _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
 STATUS_QUOTED, STATUS_NO_BUY, STATUS_UNQUOTED = 'quoted', 'no_buy', 'unquoted'
 STATUS_NOT_MADE = 'not_made'
 STATUS_CHOICES = [
-    (STATUS_QUOTED,   'Cotado'),
-    (STATUS_UNQUOTED, 'Não cotado'),         # a "célula amarela" (aguardando)
-    (STATUS_NOT_MADE, 'Não fabricado'),      # a marca não produz este combo
+    (STATUS_QUOTED,   _lazy('Cotado')),
+    (STATUS_UNQUOTED, _lazy('Não cotado')),  # a "célula amarela" (aguardando)
+    (STATUS_NOT_MADE, _lazy('Não fabricado')),  # a marca não produz este combo
                                              # (grid unificado, dono 2026-07-07)
-    (STATUS_NO_BUY,   'Não compro'),         # o "NO" da planilha: FABRICA, mas
+    (STATUS_NO_BUY,   _lazy('Não compro')),  # o "NO" da planilha: FABRICA, mas
                                              # o comprador não quer (≠ not_made)
 ]
 
@@ -450,9 +453,9 @@ class PriceChangeRequest(models.Model):
     editar de novo ATUALIZA o pedido pendente (não empilha)."""
 
     REVIEW_PENDING, REVIEW_APPROVED, REVIEW_REJECTED = 'pending', 'approved', 'rejected'
-    REVIEW_CHOICES = [(REVIEW_PENDING, 'Pendente'),
-                      (REVIEW_APPROVED, 'Aprovado'),
-                      (REVIEW_REJECTED, 'Rejeitado')]
+    REVIEW_CHOICES = [(REVIEW_PENDING, _lazy('Pendente')),
+                      (REVIEW_APPROVED, _lazy('Aprovado')),
+                      (REVIEW_REJECTED, _lazy('Rejeitado'))]
 
     price = models.ForeignKey(Price, on_delete=models.CASCADE,
                               related_name='change_requests', verbose_name='Linha')

@@ -1,7 +1,7 @@
 {% extends "estoque/base_estoque.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Painel — WhatTheChip?{% endblock %}
+{% block title %}{% trans "Painel" %} — WhatTheChip?{% endblock %}
 {% block nav_painel %} wtc-header__nav--active{% endblock %}
 
 {% block extra_head %}
@@ -65,9 +65,9 @@
 <div class="pn-wrap">
 
   {# ── Saudação + a missão da casa em uma linha ─────────────── #}
-  <h1 class="pn-hello">Olá, <strong>{{ request.user.get_full_name|default:request.user.username }}</strong></h1>
+  <h1 class="pn-hello">{% trans "Olá," %} <strong>{{ request.user.get_full_name|default:request.user.username }}</strong></h1>
   <p class="pn-mission">
-    <span class="pn-step">1 · leia o chip</span><span class="pn-arrow">→</span><span class="pn-step">2 · digite o PN</span><span class="pn-arrow">→</span><span class="pn-step">3 · lance no lote aberto</span>
+    <span class="pn-step">{% trans "1 · leia o chip" %}</span><span class="pn-arrow">→</span><span class="pn-step">{% trans "2 · digite o PN" %}</span><span class="pn-arrow">→</span><span class="pn-step">{% trans "3 · lance no lote aberto" %}</span>
   </p>
 
   {# ── HERO: a UMA ação principal ───────────────────────────── #}
@@ -75,24 +75,24 @@
     {% with lot=open_lots.0 %}
     <div class="pn-hero">
       <div class="pn-hero-info">
-        <div class="pn-hero-label">Lote aberto — triagem em andamento</div>
+        <div class="pn-hero-label">{% trans "Lote aberto — triagem em andamento" %}</div>
         <div class="pn-hero-lot">#{{ lot.number|stringformat:"03d" }}</div>
         {% if lot.description %}<div class="pn-hero-desc">{{ lot.description }}</div>{% endif %}
         <div class="pn-hero-meta">
-          <span><b>{{ lot.chip_count }}</b> tipos</span>
-          <span><b>{{ lot.total_qty }}</b> unidades</span>
-          <span>aberto em {{ lot.created_at|date:"d/m H:i" }}</span>
+          <span>{% blocktrans trimmed with n=lot.chip_count %}<b>{{ n }}</b> tipos{% endblocktrans %}</span>
+          <span>{% blocktrans trimmed with n=lot.total_qty %}<b>{{ n }}</b> unidades{% endblocktrans %}</span>
+          <span>{% blocktrans trimmed with d=lot.created_at|date:"d/m H:i" %}aberto em {{ d }}{% endblocktrans %}</span>
         </div>
       </div>
       <a class="pn-cta" href="{% url 'estoque:lot_detail' lot.pk %}">
-        Continuar triagem <span class="pn-cta-arrow">→</span>
+        {% trans "Continuar triagem" %} <span class="pn-cta-arrow">→</span>
       </a>
     </div>
     {% endwith %}
 
     {% if open_lots|length > 1 %}
     <div class="pn-more">
-      <span>Outros lotes abertos:</span>
+      <span>{% trans "Outros lotes abertos:" %}</span>
       {% for lot in open_lots|slice:"1:" %}
         <a href="{% url 'estoque:lot_detail' lot.pk %}">#{{ lot.number|stringformat:"03d" }}</a>
       {% endfor %}
@@ -102,12 +102,12 @@
   {% else %}
     <div class="pn-empty">
       <div class="pn-empty-icon">◻</div>
-      <div class="pn-empty-title">Nenhum lote aberto agora</div>
+      <div class="pn-empty-title">{% trans "Nenhum lote aberto agora" %}</div>
       {% if wtc_is_manager %}
-        <div class="pn-empty-sub">Abra o lote do dia para a bancada começar a lançar chips.</div>
-        <a class="pn-cta" href="{% url 'estoque:index' %}">Abrir um lote <span class="pn-cta-arrow">→</span></a>
+        <div class="pn-empty-sub">{% trans "Abra o lote do dia para a bancada começar a lançar chips." %}</div>
+        <a class="pn-cta" href="{% url 'estoque:index' %}">{% trans "Abrir um lote" %} <span class="pn-cta-arrow">→</span></a>
       {% else %}
-        <div class="pn-empty-sub">Peça ao gerente para abrir o lote do dia — a triagem acontece sempre dentro de um lote.</div>
+        <div class="pn-empty-sub">{% trans "Peça ao gerente para abrir o lote do dia — a triagem acontece sempre dentro de um lote." %}</div>
       {% endif %}
     </div>
   {% endif %}
@@ -116,19 +116,19 @@
   <div class="pn-stats">
     <div class="pn-stat">
       <div class="pn-stat-val">{{ stats.open_count }}</div>
-      <div class="pn-stat-label">Lotes abertos</div>
+      <div class="pn-stat-label">{% trans "Lotes abertos" %}</div>
     </div>
     <div class="pn-stat">
       <div class="pn-stat-val">{{ stats.types_today }}</div>
-      <div class="pn-stat-label">Tipos lançados hoje</div>
+      <div class="pn-stat-label">{% trans "Tipos lançados hoje" %}</div>
     </div>
     <div class="pn-stat {% if stats.pending_count %}pn-stat--warn{% endif %}">
       <div class="pn-stat-val">{{ stats.pending_count }}</div>
-      <div class="pn-stat-label">Na fila de conferência</div>
+      <div class="pn-stat-label">{% trans "Na fila de conferência" %}</div>
     </div>
     <div class="pn-stat {% if stats.rejected_today %}pn-stat--bad{% endif %}">
       <div class="pn-stat-val">{{ stats.rejected_today }}</div>
-      <div class="pn-stat-label">Reprovados hoje</div>
+      <div class="pn-stat-label">{% trans "Reprovados hoje" %}</div>
     </div>
   </div>
 

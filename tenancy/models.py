@@ -26,6 +26,10 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+# i18n (I18N.md §5/CLAUDE.md §6): rótulo de choices EXIBIDO a usuário final
+# (ex.: crachá de papel no header do painel) passa por gettext_lazy. O VALOR
+# ('operator'…) é chave de lógica — nunca traduz.
+from django.utils.translation import gettext_lazy as _lazy
 
 
 @pghistory.track()  # auditoria: criação/desativação de empresa é evento de plataforma
@@ -94,9 +98,9 @@ class Membership(models.Model):
     ROLE_MANAGER  = 'manager'
     ROLE_ADMIN    = 'admin'
     ROLE_CHOICES = [
-        (ROLE_OPERATOR, 'Operador'),
-        (ROLE_MANAGER,  'Gerente'),
-        (ROLE_ADMIN,    'Admin da empresa'),
+        (ROLE_OPERATOR, _lazy('Operador')),
+        (ROLE_MANAGER,  _lazy('Gerente')),
+        (ROLE_ADMIN,    _lazy('Admin da empresa')),
     ]
     #: Hierarquia: papel maior herda as permissões do menor (§8 do plano).
     ROLE_LEVEL = {ROLE_OPERATOR: 1, ROLE_MANAGER: 2, ROLE_ADMIN: 3}
@@ -157,3 +161,41 @@ class Membership(models.Model):
         # Guard barato e direcionado (não full_clean: uniques já são constraint).
         self.clean()
         return super().save(*args, **kwargs)
+
+
+def _language_choices():
+    """Choices dinâmicos = settings.LANGUAGES (fonte única dos idiomas ativos).
+
+    Callable (Django 5+): idioma novo em settings aparece no admin sem migração —
+    é o que mantém "idioma novo ≈ 1 arquivo .po" (I18N.md §4)."""
+    from django.conf import settings as _s
+    return list(_s.LANGUAGES)
+
+
+class UserLanguage(models.Model):
+    """Preferência de idioma da PESSOA (i18n — I18N.md §3).
+
+    GLOBAL (sem ``company``): a língua é do usuário, não da empresa — um técnico
+    chinês numa empresa paraguaia lê a UI em 中文. Camada 1 da cadeia de
+    resolução (vence cookie e Accept-Language via ``UserLanguageMiddleware``).
+
+    Vazio = sem preferência → cai na detecção automática (cookie → região).
+    Escrita: o próprio usuário pelo seletor do topo (``tenancy.views.set_language``)
+    ou o dono no admin ao criar a conta (não há cadastro público).
+    """
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='language_pref', verbose_name='Usuário')
+    language = models.CharField(
+        max_length=10, blank=True, default='', choices=_language_choices,
+        verbose_name='Idioma',
+        help_text='Vazio = automático (cookie do navegador → idioma do navegador/região).')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')
+
+    class Meta:
+        verbose_name = 'Preferência de idioma'
+        verbose_name_plural = 'Preferências de idioma'
+
+    def __str__(self):
+        return f'{self.user.username} → {self.language or "automático"}'

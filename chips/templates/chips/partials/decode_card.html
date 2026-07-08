@@ -49,19 +49,16 @@
   {% if family_undocumented or "sem documentação" in result.subtype %}
   <div class="dc2-undoc-block" style="margin:0 16px 12px 16px;padding:14px 16px;background:#fff8e1;border:1px solid #f0c040;border-left:4px solid #e6a817;border-radius:6px;line-height:1.6;">
     <div style="font-size:13px;font-weight:700;color:#b8600a;margin-bottom:8px;">
-      ⚠ Prefixo sem documentação pública verificável
+      ⚠ {% trans "Prefixo sem documentação pública verificável" %}
     </div>
     <div style="font-size:12px;color:#555;margin-bottom:12px;">
-      Este Part Number pertence a uma família <strong>nunca documentada oficialmente</strong>:
-      não consta em nenhum catálogo SK Hynix, datasheet, Octopart ou distribuidor verificado.<br><br>
-      <strong>Hipóteses:</strong> erro de gravação do fabricante (misprint de laser)
-      ou produto OEM com datasheet sob NDA não publicado.<br><br>
-      Os dados exibidos abaixo são <strong>estimativas por analogia estrutural</strong> —
-      <em>não usar como especificação confirmada antes de verificar fisicamente.</em>
+      {% blocktrans trimmed %}Este Part Number pertence a uma família <strong>nunca documentada oficialmente</strong>: não consta em nenhum catálogo SK Hynix, datasheet, Octopart ou distribuidor verificado.{% endblocktrans %}<br><br>
+      <strong>{% trans "Hipóteses:" %}</strong> {% trans "erro de gravação do fabricante (misprint de laser) ou produto OEM com datasheet sob NDA não publicado." %}<br><br>
+      {% blocktrans trimmed %}Os dados exibidos abaixo são <strong>estimativas por analogia estrutural</strong> — <em>não usar como especificação confirmada antes de verificar fisicamente.</em>{% endblocktrans %}
     </div>
     <a href="mailto:eminerparaguay@gmail.com?subject=Informa%C3%A7%C3%B5es%20sobre%20{{ result.pn|urlencode }}&body=PN%3A%20{{ result.pn|urlencode }}%0A%0AInforma%C3%A7%C3%B5es%3A"
        style="display:inline-block;padding:6px 14px;background:#e6a817;color:#fff;border-radius:5px;font-size:12px;font-weight:600;text-decoration:none;">
-      📩 Você conhece este chip? Entre em contato
+      📩 {% trans "Você conhece este chip? Entre em contato" %}
     </a>
   </div>
   {% endif %}
@@ -159,7 +156,8 @@
 
     {% if result.classification_source %}
       <span class="dc2-sep">·</span>
-      <span class="dc2-source-tag">{% trans "via" %} {{ result.classification_source }}</span>
+      {# Exibe o RÓTULO traduzido (source_label); o canônico segue no result p/ lógica. #}
+      <span class="dc2-source-tag">{% trans "via" %} {{ classification_source_label|default:result.classification_source }}</span>
     {% endif %}
 
     {% if result.doc_url %}
@@ -188,7 +186,7 @@
     </span>
 
     <span class="dc2-sep">·</span>
-    <button class="dc2-copy-btn dc-copy-btn" type="button" title="Copia diagnóstico completo para o clipboard">📋 Debug</button>
+    <button class="dc2-copy-btn dc-copy-btn" type="button" title="{% trans 'Copia diagnóstico completo para o clipboard' %}">📋 Debug</button>
 
   </div>
 
@@ -199,15 +197,11 @@
 <!-- ── FBGA desconhecido (código Micron não cadastrado) ─────────────────── -->
 <div class="dc2-not-found">
   <div class="dc2-not-found-title">
-    ⚠ Código FBGA não cadastrado — chip Micron na fila de análise
+    ⚠ {% trans "Código FBGA não cadastrado — chip Micron na fila de análise" %}
   </div>
   <div class="dc2-not-found-hint">
-    O código <strong>{{ result.pn }}</strong> parece ser um <strong>código FBGA Micron</strong>
-    (gravado a laser no encapsulamento — padrão D9XXX / D8XXX).
-    Ele foi registrado para enriquecimento automático via
-    <em>micron.com/fbga-parts-decoder</em> no job noturno.<br><br>
-    Se o chip estiver fisicamente disponível, anote o PN completo do encapsulamento
-    e tente novamente — o PN completo (ex: MT53B512M64D4TX) funciona diretamente.
+    {% blocktrans trimmed with pn=result.pn %}O código <strong>{{ pn }}</strong> parece ser um <strong>código FBGA Micron</strong> (gravado a laser no encapsulamento — padrão D9XXX / D8XXX). Ele foi registrado para enriquecimento automático via <em>micron.com/fbga-parts-decoder</em> no job noturno.{% endblocktrans %}<br><br>
+    {% blocktrans trimmed %}Se o chip estiver fisicamente disponível, anote o PN completo do encapsulamento e tente novamente — o PN completo (ex: MT53B512M64D4TX) funciona diretamente.{% endblocktrans %}
   </div>
   {% if result.fuzzy_suggestions %}
   <div style="margin-top:12px;">
@@ -225,7 +219,7 @@
   </div>
   {% elif result.in_review_queue %}
   <div style="margin-top:8px;font-size:12px;color:#888;">
-    ✓ Enviado para a fila de revisão noturna
+    ✓ {% trans "Enviado para a fila de revisão noturna" %}
   </div>
   {% endif %}
 </div>
@@ -236,29 +230,26 @@
 <div class="dc2-not-found">
 
   <div class="dc2-not-found-title">
-    ⚠ Chip não reconhecido{% if result.fuzzy_suggestions %} — veja sugestões abaixo{% else %} — verifique se o PN foi lido corretamente{% endif %}
+    ⚠ {% trans "Chip não reconhecido" %}{% if result.fuzzy_suggestions %} — {% trans "veja sugestões abaixo" %}{% else %} — {% trans "verifique se o PN foi lido corretamente" %}{% endif %}
   </div>
 
   {% with pn=result.pn %}
   {% if pn|slice:":2" == "KA" and pn|slice:":3" != "KAT" %}
   <div class="dc2-not-found-hint">
-    <strong>Prefixo KA· não catalogado.</strong>
-    O prefixo <code>KAT</code> (ePoP Samsung) é suportado, mas outros <code>KA·</code> são geralmente
-    chips customizados Samsung (ASIC sob encomenda, pinout proprietário) sem mercado B2B padrão.
-    <div class="dc2-not-found-warn">⚑ Verificar demanda antes de reacondicionar — sem datasheet disponível.</div>
+    <strong>{% trans "Prefixo KA· não catalogado." %}</strong>
+    {% blocktrans trimmed %}O prefixo <code>KAT</code> (ePoP Samsung) é suportado, mas outros <code>KA·</code> são geralmente chips customizados Samsung (ASIC sob encomenda, pinout proprietário) sem mercado B2B padrão.{% endblocktrans %}
+    <div class="dc2-not-found-warn">⚑ {% trans "Verificar demanda antes de reacondicionar — sem datasheet disponível." %}</div>
   </div>
   {% elif pn|slice:":1" == "K" %}
   <div class="dc2-not-found-hint">
-    <strong>PN começa com K — espaço Samsung / SK Hynix.</strong>
-    Prefixos Samsung suportados:<br>
+    <strong>{% trans "PN começa com K — espaço Samsung / SK Hynix." %}</strong>
+    {% trans "Prefixos Samsung suportados:" %}<br>
     <span class="dc2-prefix-list">KM· eMCP/uMCP · KL· UFS/eMMC · K3·/K4· DRAM · K5· NOR · K9· NAND · KAT ePoP · KUS SSD BGA</span><br>
-    Se o prefixo não consta acima, pode ser chip de linha especial ou leitura incorreta do PN na placa.
+    {% trans "Se o prefixo não consta acima, pode ser chip de linha especial ou leitura incorreta do PN na placa." %}
   </div>
   {% else %}
   <div class="dc2-not-found-hint">
-    Chip fora das famílias catalogadas ou PN possivelmente mal lido (OCR/scanner).
-    Confira o PN diretamente no encapsulamento e tente novamente.
-    Se o prefixo for desconhecido, o chip pode ser de fabricante não catalogado ou linha proprietária.
+    {% blocktrans trimmed %}Chip fora das famílias catalogadas ou PN possivelmente mal lido (OCR/scanner). Confira o PN diretamente no encapsulamento e tente novamente. Se o prefixo for desconhecido, o chip pode ser de fabricante não catalogado ou linha proprietária.{% endblocktrans %}
   </div>
   {% endif %}
   {% endwith %}

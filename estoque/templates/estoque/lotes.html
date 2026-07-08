@@ -1,7 +1,7 @@
 {% extends "estoque/base_estoque.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Lotes — WhatTheChip?{% endblock %}
+{% block title %}{% trans "Lotes" %} — WhatTheChip?{% endblock %}
 {% block nav_estoque %} wtc-header__nav--active{% endblock %}
 
 {% block extra_head %}
@@ -295,18 +295,18 @@
 
 {# ── Cabeçalho ─────────────────────────────────────────────── #}
 <div class="lots-header">
-  <h1 class="lots-title">Lotes</h1>
+  <h1 class="lots-title">{% trans "Lotes" %}</h1>
 </div>
 
 {# ── Formulário de criação — gerente+ (a barreira real é a view) ── #}
 {% if wtc_is_manager %}
 <div class="lots-create-card">
-  <div class="lots-create-title">Novo Lote</div>
+  <div class="lots-create-title">{% trans "Novo Lote" %}</div>
   <form method="post" action="{% url 'estoque:lot_create' %}">
     {% csrf_token %}
     <div class="lots-create-row">
       <div class="lots-create-field">
-        <label class="lot-label" for="lot-desc">Descrição (opcional)</label>
+        <label class="lot-label" for="lot-desc">{% trans "Descrição (opcional)" %}</label>
         <input class="lot-input"
                type="text"
                id="lot-desc"
@@ -322,7 +322,7 @@
           <line x1="12" y1="5" x2="12" y2="19"/>
           <line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
-        Criar Lote
+        {% trans "Criar Lote" %}
       </button>
     </div>
   </form>
@@ -339,33 +339,33 @@
       <div class="lot-card-number-row">
         <span class="lot-card-number">#{{ lot.number|stringformat:"03d" }}</span>
         {% if lot.status == 'open' %}
-          <span class="lot-badge lot-badge--open">Aberto</span>
+          <span class="lot-badge lot-badge--open">{% trans "Aberto" %}</span>
         {% else %}
-          <span class="lot-badge lot-badge--closed">Fechado</span>
+          <span class="lot-badge lot-badge--closed">{% trans "Fechado" %}</span>
         {% endif %}
       </div>
 
       {% if lot.description %}
         <div class="lot-card-desc">{{ lot.description }}</div>
       {% else %}
-        <div class="lot-card-desc lot-card-desc--empty">Sem descrição</div>
+        <div class="lot-card-desc lot-card-desc--empty">{% trans "Sem descrição" %}</div>
       {% endif %}
 
       <div class="lot-card-meta">
         <div class="lot-meta-item">
-          <span class="lot-meta-label">Tipos</span>
+          <span class="lot-meta-label">{% trans "Tipos" %}</span>
           <span class="lot-meta-val">{{ lot.chip_count }}</span>
         </div>
         <div class="lot-meta-item">
-          <span class="lot-meta-label">Total un.</span>
+          <span class="lot-meta-label">{% trans "Total un." %}</span>
           <span class="lot-meta-val">{{ lot.total_qty }}</span>
         </div>
       </div>
 
       <div class="lot-card-date">
-        Aberto em {{ lot.created_at|date:"d/m/Y H:i" }}
+        {% blocktrans trimmed with d=lot.created_at|date:"d/m/Y H:i" %}Aberto em {{ d }}{% endblocktrans %}
         {% if lot.closed_at %}
-          · Fechado em {{ lot.closed_at|date:"d/m/Y H:i" }}
+          · {% blocktrans trimmed with d2=lot.closed_at|date:"d/m/Y H:i" %}Fechado em {{ d2 }}{% endblocktrans %}
         {% endif %}
       </div>
     </div>
@@ -373,19 +373,19 @@
     <div class="lot-card-footer">
       <a class="lot-btn lot-btn--primary" style="color:#fff;"
          href="{% url 'estoque:lot_detail' lot.pk %}">
-        Abrir →
+        {% trans "Abrir" %} →
       </a>
 
       {% if wtc_is_manager %}
         {% if lot.status == 'open' %}
         <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="margin:0">
           {% csrf_token %}
-          <button type="submit" class="lot-btn lot-btn--danger">Fechar</button>
+          <button type="submit" class="lot-btn lot-btn--danger">{% trans "Fechar" %}</button>
         </form>
         {% else %}
         <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="margin:0">
           {% csrf_token %}
-          <button type="submit" class="lot-btn lot-btn--success">Reabrir</button>
+          <button type="submit" class="lot-btn lot-btn--success">{% trans "Reabrir" %}</button>
         </form>
         {% endif %}
       {% endif %}
@@ -398,11 +398,11 @@
 {% else %}
 <div class="lots-empty">
   <div class="lots-empty-icon">◻</div>
-  <div class="lots-empty-title">Nenhum lote ainda</div>
+  <div class="lots-empty-title">{% trans "Nenhum lote ainda" %}</div>
   {% if wtc_is_manager %}
-  <div class="lots-empty-sub">Crie o primeiro lote usando o formulário acima.</div>
+  <div class="lots-empty-sub">{% trans "Crie o primeiro lote usando o formulário acima." %}</div>
   {% else %}
-  <div class="lots-empty-sub">Peça ao gerente para abrir um lote de triagem.</div>
+  <div class="lots-empty-sub">{% trans "Peça ao gerente para abrir um lote de triagem." %}</div>
   {% endif %}
 </div>
 {% endif %}

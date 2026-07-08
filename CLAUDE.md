@@ -276,6 +276,8 @@ chips/engine.py          → classify(), gramática, profitability
 chips/models.py          → todo o modelo de dados + glossário nos docstrings
 chips/chip_types.py      → FONTE ÚNICA do vocabulário de tipos (chip_type/subtype): canonical_chip_type(), profit_family(), label_kind() — consumida por engine, gateway e validate/normalize_convention
 chips/conventions.py     → canonical_gen(): fonte única do LABEL de geração (limpa o subtype; consumida pelo gateway)
+chips/labels.py          → i18n: fonte única dos RÓTULOS traduzidos do engine (profitability_label, source_label) — canônico ≠ rótulo, ver I18N.md
+locale/                  → catálogos .po/.mo (es, en, zh_Hans) — 4 idiomas ativos; cadeia de detecção: UserLanguage (tenancy) > cookie > Accept-Language > pt-br
 chips/admin.py           → workflows de triagem (ChipFamily, KnownPart, correções)
 chips/management/commands/→ pipeline de dados (populate/import/fix/collect) — §5
 core/settings.py         → config; DATABASE_URL, NEXAR_*, etc.
@@ -326,6 +328,7 @@ python manage.py import_samsung_psg --all                   # CSVs em data/psg/
 python manage.py link_doc_pages / sync_index_page
 python manage.py validate_convention       # read-only: aponta registros fora da convenção (chip_types.py)
 python manage.py normalize_convention --commit   # migra chip_type legado ("RAM")→geração canônica (reversível via JSON)
+python manage.py check_translations        # read-only: PORTÃO dos catálogos i18n (locale/*.po) — placeholders, HTML, glossário protegido, fuzzy/vazio, .mo fresco. Roda após TODA atualização de tradução (inclusive por IA) e na suíte. Ver I18N.md §7.
 python manage.py guard_catalog             # TRIPWIRE: roda DEPOIS de todo deploy — falha com alarme se o nº de known_parts despencar (>10% do high-water). Read-only exceto o bump do high-water. `--reset` só após queda legítima e revisada. Ver regra de ouro §2.1b.
 python manage.py restore_known_parts <dump>.json   # RECUPERAÇÃO: gap-fill de known_parts a partir de um dump/backup (cria só os que faltam, mapeia marca, religa família por prefixo; --commit). É o procedimento pós-incidente de perda.
 python manage.py bootstrap_tenancy --company eMiner --admin <u> --manager <u> --operator <u>…   # backfill T1 (multi-empresa): cria a Company, dá papéis nominais, seeda o contador de lote, restringe o Django admin à plataforma (tira is_staff de não-super) e derruba sessões. Dry-run padrão; --commit grava (backup antes). Ver PLANO_MULTITENANT.md §16.
@@ -577,6 +580,25 @@ Fonte única em código: **`chips/chip_types.py`** (a convenção completa está
 > write-time** (populate/import/fix): `canonical_gen` é fail-open (token não reconhecido
 > passa intacto) e o subtype cru ainda aparece no card de busca.
 
+### Convenção i18n — TODA string nova nasce no lugar certo (inviolável)
+
+> A plataforma é multilíngue (pt-br/es/en/zh-hans — I18N.md). String "esquecida"
+> em PT não é detalhe: é bug de produto para 3 dos 4 públicos. A convenção tem
+> **portões automáticos** — quebrá-la deixa a suíte vermelha, não é opcional.
+
+| Onde a string nasce | Como nasce | Portão que pega |
+|---|---|---|
+| Template (HTML/JS inline) | `{% trans %}` / `{% blocktrans trimmed %}` | `check_translations` (entrada vazia) + smoke 4 idiomas |
+| View (mensagem/fragmento p/ usuário) | `gettext` (eager) | idem |
+| **Choices de modelo exibido a usuário** (`get_FOO_display`) | `gettext_lazy` nos RÓTULOS (valores = chave, nunca traduz) | `I18nChoicesDeclarationTests` — choices sem `_lazy` **e** sem declaração explícita = suíte vermelha |
+| JS estático (`static/js/*.js`) | `gettext('…')` + catálogo `djangojs` (rota `i18n/js/`) | `check_translations` |
+| Conteúdo editorial (CMS) | arquivo `_content/<slug>.<código>.html` (fallback pt-br automático); metadados via chave `i18n` do `import_content` | teste de home multilíngue + fallback |
+| Valor CANÔNICO do engine / string PERSISTIDA (`rejection_reason`, label de caixa, snapshot, export) | **NUNCA traduz** — rótulo só na exibição via `chips/labels.py` | `test_valor_canonico_nunca_muda` + suíte |
+| Django admin | **fixo em pt-br** (superfície de plataforma — decisão 2026-07-08); `verbose_name` fica PT | `AdminPlataformaPtBrTests` |
+
+Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CANÔNICO.**
+Processo completo, rotina de tradução (inclusive por IA) e glossário: **`I18N.md`** (§5–§7).
+
 ---
 
 ## 7. Armadilhas comuns (o que costuma quebrar)
@@ -717,7 +739,8 @@ relevante quando a tarefa pedir:
 - **`PIECEMAKERS.md`** — bíblia técnica PieceMakers: anatomia do PN PMF, decode map PMF_DDR3_CAP, famílias, rentabilidade, fontes, armadilhas.
 - **`TOSHIBA-KIOXIA.md`** — bíblia técnica Toshiba / Kioxia: família THGBM (eMMC), decode maps THGBM_CAP/THGBM_GEN, eMCP TYC, famílias bloqueadas (KLUE/THGAF), armadilhas de sub-prefixo, gaps e roadmap. **CONSOLIDAÇÃO (2026-07-01):** Toshiba + Kioxia + KIOXIA(dup) viraram UMA marca **`Toshiba-Kioxia`** (code TXK) — mesma empresa (rename out/2019), em `chips/knowledge/toshiba-kioxia.yaml` (11 famílias). **Para adicionar/corrigir chip Toshiba-Kioxia, edite `chips/knowledge/toshiba-kioxia.yaml`** (contrato de autoria em §5).
 - **`FUZZY.md`** — bíblia técnica do sistema de sugestão inteligente de PNs: `_visual_edit_distance`, matriz de confusão visual, `_prefix_candidates`, `_combined_suggestions`, gate de confiança, frontend diff, tuning. **Leia antes de tocar nas funções `_fuzzy_*` / `_prefix_*` do engine.**
-- **`I18N.md`** — ⭐ bíblia técnica da **internacionalização (i18n)**: as 3 superfícies de tradução (UI/`gettext`+`.po`, saída do engine com chave-canônica-vs-rótulo, conteúdo do CMS via `django-modeltranslation`), como adicionar um idioma, como marcar strings e gerar/compilar catálogos, o desacoplamento do engine (`chips/labels.py` = fonte única do rótulo de rentabilidade; **nunca compare contra o rótulo na lógica — use a chave**), armadilhas (snapshot do estoque, `"por die"` no `DecodeMap`, strings em JS) e deploy do `.mo`. **Leia antes de mexer em tradução.** É o arquivo que o chat especializado em i18n mantém.
+- **`I18N.md`** — ⭐ bíblia técnica da **internacionalização (i18n)** — **sistema COMPLETO em 4 idiomas (pt-br/es/en/zh-hans, jul/2026)**: a cadeia de resolução (preferência do usuário `tenancy.UserLanguage` > cookie > Accept-Language/região > pt-br), as 3 superfícies (UI/`gettext`+`.po`, saída do engine com chave-canônica-vs-rótulo via `chips/labels.py` — **nunca compare contra o rótulo na lógica, use a chave** —, CMS **files-first**: `_content/<slug>.<código>.html` + `django-modeltranslation` p/ metadados), como adicionar um idioma (≈ 2 `.po`), a **rotina de tradução segura para modelo de IA** (contrato §7.1 + portão `check_translations` + glossário DO-NOT-TRANSLATE), extração/compilação sem gettext (`scripts/i18n_extract.py`/`i18n_compile.py`), armadilhas (string persistida = canônica; snapshot; `"por die"` no `DecodeMap`; JS estático via `JavaScriptCatalog`) e deploy do `.mo`. **Leia antes de mexer em tradução.** É o arquivo que o chat especializado em i18n mantém.
+- **`MULTILANGUAGE.md`** — documento de **FEATURE** do multilíngue (pedido do dono, jul/2026), para compor a documentação geral do sistema: os 4 idiomas e públicos, a cadeia de decisão em linguagem de produto, onde ficam os seletores, o mapa do que é/não é traduzido (dados nunca), a rotina resumida e como adicionar idioma. Não duplica o técnico — aponta pro `I18N.md`.
 
 > ⚠️ **Não há mais `docs/archive/` nem notas de sessão** (removidas na limpeza v1.0.0-beta,
 > jul/2026). Handoff/histórico vive no git e no chat, não em arquivo solto. **O código é a
@@ -732,8 +755,9 @@ relevante quando a tarefa pedir:
   **atualize a seção certa aqui** — não crie um documento novo solto na raiz.
 - **Não crie arquivos de nota de sessão** (tipo `NEXT_CHAT` / `BRIEFING_*` / handoffs datados).
   De `.md` de projeto existem: **README + CLAUDE + os 10 de marca + AUTORIA + RENTABILIDADE +
-  MICRON/PIECEMAKERS/TOSHIBA-KIOXIA + FUZZY + I18N** (bíblias técnicas permanentes; política v1.0.0-beta,
-  jul/2026). Handoff de fim de sessão vai no git/PR e no chat — nunca em arquivo novo na raiz.
+  MICRON/PIECEMAKERS/TOSHIBA-KIOXIA + FUZZY + I18N + MULTILANGUAGE** (bíblias técnicas/feature
+  permanentes; política v1.0.0-beta, jul/2026). Handoff de fim de sessão vai no git/PR e no
+  chat — nunca em arquivo novo na raiz.
 - **Decisões de arquitetura duradouras** vão para a seção certa do próprio **`CLAUDE.md`**
   (o hub) ou pro `.md` da marca — nunca num doc solto.
 - **Em qualquer conflito entre documentos, o código vence**

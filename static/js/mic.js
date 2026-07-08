@@ -20,6 +20,14 @@
 (function () {
   'use strict';
 
+  // ── i18n (I18N.md §6/§8.4): window.gettext vem do JavaScriptCatalog
+  // (<script src="{% url 'javascript-catalog' %}">, incluído ANTES deste arquivo
+  // nos bases). Shim fail-open: sem catálogo, devolve o pt-br original.
+  // ⚠ O WORD_MAP abaixo é DADO (fonética de ditado), NUNCA passa por gettext.
+  var gettext = (typeof window.gettext === 'function')
+    ? window.gettext
+    : function (s) { return s; };
+
   // ── Mapeamento: palavras faladas → caractere de PN ──────────────────────────
   var WORD_MAP = {
     // Dígitos PT-BR
@@ -156,34 +164,34 @@
       case 'listening':
         btn.classList.add('is-listening');
         if (iconWrap) iconWrap.innerHTML = ICONS.listening;
-        btn.title = 'Ouvindo… clique para parar';
-        btn.setAttribute('aria-label', 'Gravando — clique para parar');
+        btn.title = gettext('Ouvindo… clique para parar');
+        btn.setAttribute('aria-label', gettext('Gravando — clique para parar'));
         break;
 
       case 'processing':
         btn.classList.add('is-processing');
         if (iconWrap) iconWrap.innerHTML = ICONS.spin;
-        btn.title = 'Processando…';
+        btn.title = gettext('Processando…');
         break;
 
       case 'ok':
         btn.classList.add('is-ok');
         if (iconWrap) iconWrap.innerHTML = ICONS.enter;   // ↵ enter convida o usuário
-        btn.title = 'Reconhecido — pressione Enter';
+        btn.title = gettext('Reconhecido — pressione Enter');
         setTimeout(function () { setState(btn, 'idle'); }, 3000);
         break;
 
       case 'err':
         btn.classList.add('is-err');
         if (iconWrap) iconWrap.innerHTML = ICONS.err;
-        btn.title = 'Não reconhecido — tente novamente';
+        btn.title = gettext('Não reconhecido — tente novamente');
         setTimeout(function () { setState(btn, 'idle'); }, 2000);
         break;
 
       default: // idle
         if (iconWrap) iconWrap.innerHTML = ICONS.mic;
-        btn.title = 'Fale o Part Number';
-        btn.setAttribute('aria-label', 'Ativar reconhecimento de voz');
+        btn.title = gettext('Fale o Part Number');
+        btn.setAttribute('aria-label', gettext('Ativar reconhecimento de voz'));
         break;
     }
   }
@@ -207,7 +215,7 @@
     var origText  = el.textContent;
     var origClass = el.className;
 
-    el.textContent = '↵  PN reconhecido — pressione Enter para confirmar';
+    el.textContent = '↵  ' + gettext('PN reconhecido — pressione Enter para confirmar');
     el.classList.add('wtc-mic-hint--active');
 
     setTimeout(function () {

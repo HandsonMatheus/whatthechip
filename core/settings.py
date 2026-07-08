@@ -23,6 +23,10 @@ if _render_host:
     ALLOWED_HOSTS.append(_render_host)
 
 INSTALLED_APPS = [
+    # i18n do CMS (superfície 3 — I18N.md §9): colunas por idioma no pages.Page
+    # (title_es, content_zh_hans…), fallback automático pro pt-br. ANTES do
+    # admin (exigência do pacote: patcheia o ModelAdmin).
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -70,6 +74,12 @@ MIDDLEWARE = [
     # escopo (tenancy/scope.py). DEPOIS do AuthenticationMiddleware. Na T4
     # este middleware passa a abrir a transação da request e emitir SET LOCAL.
     'tenancy.middleware.TenancyMiddleware',
+    # i18n: aplica a PREFERÊNCIA DE IDIOMA salva do usuário (tenancy.UserLanguage)
+    # por CIMA da detecção do LocaleMiddleware. Cadeia final de resolução:
+    # preferência no banco > cookie django_language > Accept-Language (região do
+    # navegador) > pt-br. DEPOIS do AuthenticationMiddleware (precisa do user).
+    # Ver I18N.md §3.
+    'tenancy.middleware.UserLanguageMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -128,14 +138,24 @@ from django.utils.translation import gettext_lazy as _  # noqa: E402
 LANGUAGE_CODE = 'pt-br'          # fallback + idioma-fonte das strings (msgid)
 
 LANGUAGES = [
-    ('pt-br', _('Português')),
-    ('es',    _('Español')),
-    # ('en', _('English')),   # em breve — descomentar quando o .po estiver pronto
-    # ('zh-hans', _('中文')),  # em breve
+    ('pt-br',   _('Português')),
+    ('es',      _('Español')),
+    ('en',      _('English')),
+    ('zh-hans', _('中文')),      # chinês simplificado (locale/zh_Hans/)
 ]
 
 # Onde o Django procura os catálogos .mo compilados (além dos de cada app).
 LOCALE_PATHS = [BASE_DIR / 'locale']
+
+# Cookie do seletor de idioma (set_language): persistente por 1 ano — a escolha
+# do operador anônimo/da bancada sobrevive ao fechamento do navegador. O default
+# do Django (None) expiraria na sessão do browser. Ver I18N.md §3 (cadeia).
+LANGUAGE_COOKIE_AGE = 60 * 60 * 24 * 365
+
+# modeltranslation (CMS): pt-br é a coluna-base e o fallback universal — página
+# sem tradução aparece em PT (nunca em branco). Ver I18N.md §9.
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'pt-br'
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('pt-br',)
 
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True                  # liga o motor de tradução por request

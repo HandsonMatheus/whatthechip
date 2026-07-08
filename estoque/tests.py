@@ -110,6 +110,25 @@ class GatewayDestinationTests(TestCase):
         self.assertEqual([s['status'] for s in g['steps']], ['pass', 'fail', 'skip'])
         self.assertEqual(g['profitable'], '')  # rentabilidade nem avaliada
 
+    def test_distribuidor_entra_no_estoque(self):
+        # Decisão do dono (2026-07-08): registro de DISTRIBUIDOR é elegível pro
+        # estoque (tem registro no banco), mesmo classificando pela gramática. As
+        # specs seguem vindo da gramática (distribuidor não vence o engine).
+        r = _result(chip_type='eMMC', capacity='16GB',
+                    classification_source='gramática', confidence='distributor')
+        g = _compute_gateway(r, has_cap=True)
+        self.assertEqual(g['destination'], 'aprovado')
+        self.assertEqual([s['status'] for s in g['steps']], ['pass', 'pass', 'pass'])
+
+    def test_gramatica_pura_sem_registro_vai_para_fila(self):
+        # "GRAMÁTICA JAMAIS": sem registro no banco (confidence vazio), mesmo com
+        # specs decodificadas pela gramática, NÃO entra no estoque → fila.
+        r = _result(chip_type='eMMC', capacity='16GB',
+                    classification_source='gramática', confidence='')
+        g = _compute_gateway(r, has_cap=True)
+        self.assertEqual(g['destination'], 'fila')
+        self.assertEqual([s['status'] for s in g['steps']], ['pass', 'fail', 'skip'])
+
     def test_sem_specs_desconhecido(self):
         g = _compute_gateway(_result(), has_cap=False)
         self.assertEqual(g['destination'], 'desconhecido')
@@ -907,6 +926,9 @@ class TenancyDeclarationTests(TestCase):
         'pages.Page',
         # O próprio tecido do tenancy.
         'tenancy.Company', 'tenancy.Branch', 'tenancy.Membership',
+        # i18n: a preferência de idioma é da PESSOA, não da empresa (um técnico
+        # chinês numa empresa paraguaia lê 中文) — GLOBAL. Ver I18N.md §3.
+        'tenancy.UserLanguage',
         # Config do sistema de preços — singleton GLOBAL (padrão
         # ProfitabilityConfig; PRECIFICACAO §3.4). Buyer/PriceList/Price são
         # ESCOPADOS (company + CompanyScopedManager + RLS em pricing/0002).

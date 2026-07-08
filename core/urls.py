@@ -3,8 +3,10 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.i18n import JavaScriptCatalog
 from estoque import views as estoque_views
 from pages import views
+from tenancy import views as tenancy_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,9 +20,13 @@ urlpatterns = [
     # Dashboard do COMPRADOR (F6 — PRECIFICACAO §7.1): rota em inglês, conta
     # externa via Buyer.users (a lançadeira /painel/ redireciona parceiro p/ cá).
     path('partner/', include('pricing.urls', namespace='pricing')),
-    # i18n: set_language (POST) grava o idioma escolhido no cookie/sessão e
-    # redireciona de volta. Alimenta o seletor do topo. ANTES da rota <slug>.
-    path('i18n/', include('django.conf.urls.i18n')),
+    # i18n: set_language (POST) grava o idioma no cookie E, se logado, na
+    # preferência do usuário (tenancy.UserLanguage — cadeia I18N.md §3).
+    # Mesma rota/nome do Django puro; alimenta os seletores. ANTES do <slug>.
+    path('i18n/setlang/', tenancy_views.set_language, name='set_language'),
+    # Catálogo gettext para os .js ESTÁTICOS (mic.js): expõe window.gettext()
+    # no idioma ativo. Templates inline não precisam ({% trans %} resolve).
+    path('i18n/js/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     # Páginas de conteúdo (deve ficar por último — captura <slug>)
     path('', views.home, name='home'),
     path('<slug:slug>/', views.page_detail, name='page'),

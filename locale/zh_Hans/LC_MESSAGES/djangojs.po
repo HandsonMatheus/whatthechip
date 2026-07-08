@@ -1,0 +1,38 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: WhatTheChip 1.0\n"
+"Report-Msgid-Bugs-To: eminerparaguay@gmail.com\n"
+"POT-Creation-Date: 2026-07-08 11:43\n"
+"PO-Revision-Date: 2026-07-08 11:43\n"
+"Last-Translator: WhatTheChip i18n <eminerparaguay@gmail.com>\n"
+"Language-Team: 中文 (简体)\n"
+"Language: zh-hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Ativar reconhecimento de voz"
+msgstr "启用语音识别"
+
+msgid "Fale o Part Number"
+msgstr "请说出 Part Number"
+
+msgid "Gravando — clique para parar"
+msgstr "录音中 — 点击停止"
+
+msgid "Não reconhecido — tente novamente"
+msgstr "未能识别 — 请重试"
+
+msgid "Ouvindo… clique para parar"
+msgstr "正在聆听… 点击停止"
+
+msgid "PN reconhecido — pressione Enter para confirmar"
+msgstr "PN 已识别 — 按 Enter 确认"
+
+msgid "Processando…"
+msgstr "处理中…"
+
+msgid "Reconhecido — pressione Enter"
+msgstr "已识别 — 按 Enter"

@@ -89,3 +89,59 @@ class TenancyMiddleware:
             .order_by('pk')          # v1: primeira empresa ativa (§14.7)
             .first()
         )
+
+
+class UserLanguageMiddleware:
+    """i18n (I18N.md §3): aplica a preferência de idioma SALVA do usuário logado.
+
+    O ``LocaleMiddleware`` já resolveu cookie → Accept-Language (região) → pt-br.
+    Este middleware roda DEPOIS (na ordem de request) e, se o usuário tem
+    ``UserLanguage.language`` preenchido e suportado, sobrepõe a ativação —
+    fechando a cadeia: **preferência no banco > cookie > região > pt-br**.
+
+    Anônimo ou sem preferência → no-op (fica o que o LocaleMiddleware decidiu).
+    O idioma preferido segue a conta em qualquer dispositivo — o cookie, não.
+    O cabeçalho ``Content-Language`` continua correto: o ``process_response`` do
+    LocaleMiddleware (que roda depois, na volta) lê o idioma ATIVO via
+    ``get_language()``, que é o que ativamos aqui.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        from django.utils import translation
+
+        # Django admin = superfície de PLATAFORMA, fixa em pt-br (decisão do
+        # dono, 2026-07-08 — I18N.md §2.7). Motivo: o chrome do Django traduz
+        # sozinho mas nossos verbose_names são PT (admin é só do dono/T1) —
+        # híbrido parece quebrado. Fixar = 100% consistente, zero dívida.
+        # O APP (bancada, /partner/, site) continua 100% multilíngue.
+        if request.path.startswith('/admin/'):
+            from django.conf import settings
+            translation.activate(settings.LANGUAGE_CODE)
+            request.LANGUAGE_CODE = translation.get_language()
+            return self.get_response(request)
+
+        lang = self._preferred_language(request)
+        if lang:
+            translation.activate(lang)
+            request.LANGUAGE_CODE = translation.get_language()
+        return self.get_response(request)
+
+    @staticmethod
+    def _preferred_language(request):
+        user = getattr(request, 'user', None)
+        if user is None or not user.is_authenticated:
+            return None
+        from django.conf import settings
+        from .models import UserLanguage
+        pref = (UserLanguage.objects
+                .filter(user=user)
+                .values_list('language', flat=True)
+                .first())
+        # Valida contra settings.LANGUAGES: idioma removido do settings deixa de
+        # ser aplicado sem quebrar (fail-open para a detecção automática).
+        if pref and pref in {code for code, _n in settings.LANGUAGES}:
+            return pref
+        return None

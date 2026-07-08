@@ -87,13 +87,6 @@
           <span class="swatch">{{ lang.code|slice:':2'|upper }}</span><span>{{ lang.name_local|capfirst }}</span>
         </li>
         {% endfor %}
-        {# Placeholders "em breve" — remover quando o idioma entrar em settings.LANGUAGES #}
-        <li class="topnav__lang-item" role="option" aria-selected="false" data-soon>
-          <span class="swatch">EN</span><span>English — {% trans "em breve" %}</span>
-        </li>
-        <li class="topnav__lang-item" role="option" aria-selected="false" data-soon>
-          <span class="swatch">中文</span><span>中文 — {% trans "em breve" %}</span>
-        </li>
       </ul>
     </div>
 
@@ -344,14 +337,14 @@
       e.preventDefault();
       var pn = (pnField.value || '').trim();
       if (pn.length < 3) {
-        if (errEl) { errEl.textContent = 'Informe um Part Number válido (mín. 3 caracteres).'; errEl.classList.add('is-shown'); }
+        if (errEl) { errEl.textContent = '{% trans "Informe um Part Number válido (mín. 3 caracteres)." %}'; errEl.classList.add('is-shown'); }
         return;
       }
       if (errEl) errEl.classList.remove('is-shown');
       submitBtn.disabled = true;
       var lbl = submitBtn.querySelector('.submit-btn-label');
       var oldLbl = lbl ? lbl.textContent : '';
-      if (lbl) lbl.textContent = 'Enviando…';
+      if (lbl) lbl.textContent = '{% trans "Enviando…" %}';
 
       fetch('/chips/submit/', { method: 'POST', body: new FormData(formEl) })
         .then(function (r) { return r.json(); })
@@ -361,11 +354,11 @@
             formEl.reset();
             if (photoName) photoName.textContent = '';
           } else {
-            if (errEl) { errEl.textContent = (d && d.error) || 'Não foi possível enviar. Tente novamente.'; errEl.classList.add('is-shown'); }
+            if (errEl) { errEl.textContent = (d && d.error) || '{% trans "Não foi possível enviar. Tente novamente." %}'; errEl.classList.add('is-shown'); }
           }
         })
         .catch(function () {
-          if (errEl) { errEl.textContent = 'Erro de conexão — tente novamente.'; errEl.classList.add('is-shown'); }
+          if (errEl) { errEl.textContent = '{% trans "Erro de conexão — tente novamente." %}'; errEl.classList.add('is-shown'); }
         })
         .finally(function () {
           submitBtn.disabled = false;
@@ -390,6 +383,8 @@
 })();
 </script>
 {% block extra_js %}{% endblock %}
+{# Catálogo gettext p/ JS estático (mic.js usa window.gettext) — ANTES do mic.js. #}
+<script src="{% url 'javascript-catalog' %}"></script>
 <script src="{% static 'js/mic.js' %}"></script>
 
 </body>

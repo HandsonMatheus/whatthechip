@@ -10,7 +10,7 @@ from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Branch, Company, Membership
+from .models import Branch, Company, Membership, UserLanguage
 
 
 class BranchSelect(forms.Select):
@@ -68,3 +68,40 @@ class MembershipAdmin(admin.ModelAdmin):
             kwargs['queryset'] = (Branch.objects.select_related('company')
                                   .order_by('company__name', 'name'))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+@admin.register(UserLanguage)
+class UserLanguageAdmin(admin.ModelAdmin):
+    """Preferência de idioma (i18n — I18N.md §3). Visão de LISTA (quem usa o
+    quê); a edição do dia a dia é o inline na ficha do usuário (abaixo)."""
+    list_display  = ('user', 'language', 'updated_at')
+    list_filter   = ('language',)
+    search_fields = ('user__username', 'user__email')
+    autocomplete_fields = ('user',)
+    readonly_fields = ('updated_at',)
+
+
+# ── Idioma DENTRO da ficha do usuário ────────────────────────────────────────
+# O fluxo real do dono é "criar/editar usuário" — a preferência de idioma tem
+# que estar ALI, não numa tela separada. Re-registra o UserAdmin padrão do
+# Django com o inline da preferência (I18N.md §3).
+from django.contrib.auth import get_user_model                    # noqa: E402
+from django.contrib.auth.admin import UserAdmin as _DjangoUserAdmin  # noqa: E402
+
+
+class UserLanguageInline(admin.StackedInline):
+    model = UserLanguage
+    can_delete = True
+    verbose_name = 'Idioma da plataforma'
+    verbose_name_plural = 'Idioma da plataforma'
+    extra = 0
+    max_num = 1
+
+
+_User = get_user_model()
+admin.site.unregister(_User)
+
+
+@admin.register(_User)
+class UserAdmin(_DjangoUserAdmin):
+    inlines = list(_DjangoUserAdmin.inlines) + [UserLanguageInline]
