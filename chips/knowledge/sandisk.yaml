@@ -1,6 +1,7 @@
-# Conhecimento SanDisk — FONTE do catálogo (gramática + known_parts).
-# Famílias 'magras': chip_type por prefixo; capacidade vem dos known_parts confirmados.
-# Editar aqui, validar no portão (load_brands --brand sandisk, dry-run), gravar com --commit. Ver CONTRATO_AUTORIA_YAML.md.
+# Conhecimento SanDisk — GRAMÁTICA do catálogo (famílias; sem DecodeMaps — marca declarativa).
+# Famílias 'magras': chip_type por prefixo; a capacidade vem dos known_parts confirmados, que vivem no
+# BANCO (Opção 2) — autoria via submit_known_parts → aprovação no admin. Editar a gramática aqui, validar
+# no portão (load_brands --brand sandisk, dry-run), gravar com --commit. Ver AUTORIA.md.
 brand:
   name: SanDisk
   code: SDK

@@ -1,8 +1,11 @@
-> ⚠️ **O CONHECIMENTO É YAML** (desde jul/2026). As famílias, decode maps e PNs confirmados vivem em
-> **`chips/knowledge/toshiba-kioxia.yaml`**, carregado por `load_brands`. Para **adicionar ou corrigir
-> um chip, edite o yaml** seguindo o contrato de autoria (via `CLAUDE.md`).
+> ⚠️ **DUAS FONTES, DUAS TRILHAS** (Opção 2, jul/2026). A **gramática** (famílias + decode maps) vive em
+> **`chips/knowledge/toshiba-kioxia.yaml`**, carregada por `load_brands`. Os **known_parts** (PNs
+> confirmados, a autoridade) vivem **no banco**, com revisão in-DB — autoria por `submit_known_parts
+> <arq> --commit` → **aprovação no admin** (fila `review_status`; four-eyes). Para **corrigir a gramática
+> de uma família, edite o yaml**; para **adicionar/corrigir um PN, use o `submit_known_parts`** (nunca no
+> yaml). Contrato completo: `AUTORIA.md`.
 >
-> **Este `.md` é a camada humana** — NÃO reproduz os dados do yaml (decode key→valor, inventário de
+> **Este `.md` é a camada humana** — NÃO reproduz os dados do catálogo (decode key→valor, inventário de
 > famílias, known_parts, formato de campos) nem valores mutáveis (rentabilidade). Aqui: **a consolidação
 > 1-marca, anatomia do PN, armadilhas, fontes**. **`CLAUDE.md`** é o único `.md` cross-marca mantido
 > (convenção, comandos §5, arquitetura + aponta pro contrato de autoria).
@@ -13,8 +16,8 @@
 
 **Toshiba-Kioxia** (code WTC `TXK`) — 3º maior fabricante mundial de NAND Flash. Na bancada eMiner
 aparece quase só como **eMMC standalone (THGBM)** em Android de entrada/mid-range; volume menor que
-Samsung/Hynix, boa liquidez B2B nas densidades maiores. A lista viva de famílias/mapas/known_parts está
-na **`toshiba-kioxia.yaml`** (11 famílias + mapas THGBM_CAP/GEN).
+Samsung/Hynix, boa liquidez B2B nas densidades maiores. A **gramática** viva (famílias/mapas) está na
+**`toshiba-kioxia.yaml`** (11 famílias + mapas THGBM_CAP/GEN); os **known_parts** vivem no banco (Opção 2).
 
 ## ⚠ É UMA MARCA SÓ (consolidação 2026-07-01)
 
@@ -100,5 +103,6 @@ por PN) → Mouser/DigiKey/TrustedParts/Octopart com fonte-fabricante → utmel/
 (corroboração, nunca fonte única) → Alibaba/OLX/listagem sem datasheet (nunca sem âncora de outro tier).
 IAs confundem sufixo de bin com capacidade e alucinam a geração eMMC — cruzar sempre com Octopart/kioxia.com.
 
-> Inventário de famílias/chaves e provenância por-PN (nas `notes`): **`toshiba-kioxia.yaml`**. Comandos,
-> convenção completa, rentabilidade, contrato de autoria: **CLAUDE.md**.
+> Inventário de famílias/chaves de decode: **`toshiba-kioxia.yaml`**; os known_parts e a provenância
+> por-PN (nas `notes`) vivem **no banco** (Opção 2). Comandos, convenção completa, rentabilidade, contrato
+> de autoria: **CLAUDE.md** / **AUTORIA.md**.

@@ -71,6 +71,14 @@ maps:
   - [2G, LPDDR1 256MB, '']
   - [4J, LPDDR1 512MB, '']
   - ['51', LPDDR1 512MB, '']
+  HYX_H9TA_NAND_CAP:
+  - ['1', 1GB, '']
+  - ['2', 2GB, '']
+  - ['4', 4GB, '']
+  HYX_H9TA_RAM_CAP:
+  - [1G, LPDDR1 1GB, '']
+  - [2G, LPDDR1 256MB, '']
+  - ['51', LPDDR1 512MB, '']
   HYX_H9D_NAND_CAP:
   - ['32', 4GB, '']
   - ['64', 8GB, '']
@@ -452,6 +460,24 @@ families:
   decode_density_type: ''
   suffix_rules: ''
   tip: 'eMCP SK Hynix LPDDR1 geração legada (H9DA). Chip combinado eMMC 4.x + LPDDR1. Nomenclatura anterior ao H9TP/H9TQ — decode posicional DIFERENTE de toda a linha H9Tx. Preduo.com (tier-1) confirma H9DA = eMMC+LPDDR1 (categoria ''137ball eMMC+LPD1''). pn[4] = capacidade NAND (1 char): 1=1GB · 2=2GB · 4=4GB. pn[7:9] = capacidade RAM LPDDR1 (2 chars): 25=256MB · 51=512MB · 2G=256MB · 4J=512MB. ⚠ ''X+Y'' na notação Preduo usa Gb para RAM: ''4+4'' = 4GB NAND + 4Gb(512MB) LPDDR1. pn[5:7]=''GH'' fixo (filler) — apenas pn[4] e pn[7:9] carregam capacidade. pn[10] = die gen (A=2ª · B=3ª · C=4ª); sufixo ''-4EM'' = eMMC 4.x eMCP. ⚠ Não compartilha DecodeMap com H9TQ/H9TP/H9DP — esquema completamente diferente. ⚠ Componente OBSOLETO para reuso comercial — eMMC 4.x + LPDDR1, era 2012-2015. Ex: H9DA4GH2GJAM = 4GB eMMC + 256MB LPDDR1 (pn[7:9]=''2G''→2Gb=256MB). Ex: H9DA4VH4JJMMCR = 4GB eMMC + 512MB LPDDR1 (Preduo ''4+4'', 4Gb=512MB). Destino: bancada eMCP legado / REFINO DE METAIS se sem demanda.'
+  reasoning: ''
+- prefix: H9TA
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: eMMC 4.x + LPDDR1
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 12
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: HYX_H9TA_NAND_CAP
+  decode_gen_pos: 7
+  decode_gen_map: HYX_H9TA_RAM_CAP
+  decode_gen_len: 2
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP SK Hynix família H9TA — LPDDR1, IRMÃ do H9DA (mesmo esquema posicional: pn[4]=NAND 1 char, pn[7:9]=RAM 2 chars), prefixo de catálogo diferente. Família NOVA, achada 2026-07-08: PN H9TA4GH2GDAC buscado na bancada, ausente da gramática. findcomponents.net confirma catálogo H9TA real e consistente — dezenas de PNs, não é typo (base 12 chars, sufixo de order-code variável): H9TA1GG51BMM(VR4DM/VR4EM), H9TA1GH1GBMM(VR4GM/VR4GMR), H9TA2GG1GDAC(PR4DM), H9TA4GG2GDMC(PR4GM), H9TA4GG4GDMC(PR4GM), H9TA4GH2GDAC(PR4GM), H9TA4GH2GDMC(PR4GM/PR4GMR), H9TA4GH4GDBC(PR4GM). Octopart NÃO tem cobertura de H9TA (substitui silenciosamente por H9DA no autocomplete). pn[4] (NAND, 1 char): 1=1GB · 2=2GB · 4=4GB. pn[7:9] (RAM, 2 chars): 1G=1GB · 2G=256MB · 51=512MB. ⚠ Confirmado DIRETO só pn[4]=''4''+pn[7:9]=''2G'' (H9TA4GH2GDAC), via WinSource (https://www.win-source.net/products/detail/hynix-semiconductor/h9ta4gh2gdacpr-4gm.html, ficha renderizada só via JS — dono confirmou o conteúdo em 2026-07-08, mesma limitação de fetch já documentada no caso H9TQ AA/AB) — mesma leitura do irmão já confirmado H9DA4GH2GJAM (pn[4:8]=''4GH2G'' idêntico). As chaves 1/2 (NAND) e 1G/51 (RAM) são corroboração ESTRUTURAL, não confirmação individual: batem exatamente com o mapa H9DA (já tier-1, Preduo) E aparecem em PNs H9TA reais e circulantes (findcomponents.net) usando exatamente esses códigos — mas não têm fonte Tier-1 própria por-PN. ⚠ pn[5:7] (filler no H9DA) varia entre ''GG''/''GH'' nos PNs H9TA encontrados — não é puramente decorativo aqui, mas não afeta o decode (RAM começa em pn[7]). ⚠⚠ CHAVE ''4G'' (RAM) NÃO MAPEADA DE PROPÓSITO: aparece em H9TA4GG4GDMC e H9TA4GH4GDBC mas NÃO existe no mapa H9DA (que tem ''4J''→512MB, não ''4G'') — sem corroboração cruzada, fica pendente até confirmação (lição do bug X6: mesma chave pode divergir entre famílias irmãs; não adivinhar). Componente OBSOLETO — eMMC 4.x + LPDDR1, era 2012-2015. Destino: bancada eMCP legado / REFINO DE METAIS se sem demanda.'
   reasoning: ''
 - prefix: H9DP
   chip_type: eMCP

@@ -1502,8 +1502,9 @@ _TK_GOLDEN = {  # Toshiba-Kioxia (marca única). THGBMFG/THGBMHG DESATIVADAS (ac
     "THGAF8G8T23BAIL": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGAF
     "THGAMVG7T13BAIL": ("eMMC", "", "", "", "", "INDETERMINADO"),  # Kioxia THGAM
     "THGJFPT0E18BAIP": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGJF
+    "THGBX2G7B2JLA01": ("NAND Flash", "16GB", "", "", "", "NÃO RENTÁVEL"),  # THGBX (2026-07-08, família nova) — decodifica 7B2=16GB (iFixit); NÃO RENTÁVEL é por TIPO (NAND raw sem controlador eMMC/UFS), não pela capacidade
 }
-_HYX_GOLDEN = {  # SK Hynix: 36 famílias (populate_hynix + add_chip_families). Cobre DDR1-5, LPDDR2-4X, eMMC, eMCP, UFS.
+_HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). Cobre DDR1-5, LPDDR2-4X, eMMC, eMCP, UFS.
     "H26M74002HMR":      ("eMMC", "64GB",  "", "", "", "RENTÁVEL"),
     "H26T87001CMR":      ("eMMC", "128GB", "", "", "", "RENTÁVEL"),
     "H28U88301AMR":      ("UFS",  "128GB", "", "", "", "RENTÁVEL"),
@@ -1517,6 +1518,11 @@ _HYX_GOLDEN = {  # SK Hynix: 36 famílias (populate_hynix + add_chip_families). 
     "H9CCNNNCLTML":      ("LPDDR3", "4GB", "", "", "", "RENTÁVEL"),
     "H9CKNNNBJTMP":      ("LPDDR3", "2GB", "", "", "", "RENTÁVEL"),
     "H9DA4GH2GJAM":      ("eMCP", "", "eMMC 4.x 4GB", "LPDDR1 256MB", "", "NÃO RENTÁVEL"),
+    "H9TA4GH2GDAC":      ("eMCP", "", "eMMC 4.x 4GB", "LPDDR1 256MB", "", "NÃO RENTÁVEL"),  # família NOVA, irmã do H9DA — WinSource 2026-07-08, output real conferido
+    "H9TA1GH1GBMMVR4GM": ("eMCP", "", "eMMC 4.x 1GB", "LPDDR1 1GB",  "", "NÃO RENTÁVEL"),  # corrobora NAND '1' + RAM '1G' (match exato c/ mapa H9DA)
+    "H9TA1GG51BMMVR4DM": ("eMCP", "", "eMMC 4.x 1GB", "LPDDR1 512MB", "", "NÃO RENTÁVEL"),  # corrobora RAM '51'
+    "H9TA2GG1GDACPR4DM": ("eMCP", "", "eMMC 4.x 2GB", "LPDDR1 1GB",  "", "NÃO RENTÁVEL"),  # corrobora NAND '2'
+    "H9TA4GG4GDMCPR4GM": ("eMCP", "", "eMMC 4.x 4GB", "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),  # RAM '4G' SEM corroboração (não existe no mapa H9DA) — prova que a gramática NÃO adivinha
     "H9DP32A4JJBC":      ("eMCP", "", "eMMC 4GB", "LPDDR2 512MB", "", "NÃO RENTÁVEL"),
     "H9HCNNNCPMAL":      ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),
     "H9HCNNNECMML":      ("LPDDR4X", "6GB", "", "", "", "RENTÁVEL"),

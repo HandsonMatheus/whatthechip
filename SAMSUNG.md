@@ -67,6 +67,10 @@ com `--commit`. Os CSVs do Samsung PSG (`import_samsung_psg`) **complementam** o
 5. IA externa — ÚLTIMO RECURSO; verificar SEMPRE
 ```
 Nunca fonte primária: Flash64Box, fóruns de reparo, WinSource sem rastreio, catálogos genéricos, IA sem verificação.
+**Allelco (allelcoelec.com) — descartar sempre, nem como Tier 3.** A seção "Specifications/FAQ" do site é
+gerada por IA sem verificação: pra `KB100D00WM-A453` (memória Samsung) o conteúdo descrevia um MOSFET
+(RDS(on), VGS, BVDSS) — completamente errado. Reviews de cliente na página também parecem fake/genéricas.
+Achado em 2026-07-08 pesquisando a família KB1 (LPDDR1 legado, ~2010).
 
 ---
 

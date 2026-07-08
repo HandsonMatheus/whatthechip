@@ -1,7 +1,8 @@
-# Conhecimento Micron — FONTE do catálogo (gramática + known_parts curados). A cobertura de massa
-# (DDR/eMMC do CSV, specs FBGA) vem de comandos LOCAIS que complementam: import_micron_catalog,
-# fill_capacity_from_micron_api, fix_micron_*. Editar aqui, validar no portão (load_brands --brand
-# micron, dry-run), gravar com --commit. Convenção e formato: CONTRATO_AUTORIA_YAML.md.
+# Conhecimento Micron — GRAMÁTICA do catálogo (famílias + decode maps). Os known_parts vivem no BANCO
+# (Opção 2): curados via submit_known_parts → aprovação no admin; a massa (DDR/eMMC do CSV, specs FBGA)
+# via comandos LOCAIS que gravam direto no banco (import_micron_catalog, fill_capacity_from_micron_api,
+# fix_micron_*). Editar a gramática aqui, validar no portão (load_brands --brand micron, dry-run), gravar
+# com --commit. Convenção e formato: AUTORIA.md.
 brand:
   name: Micron
   code: MIC

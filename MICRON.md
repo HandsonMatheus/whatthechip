@@ -1,13 +1,15 @@
-> ⚠️ **O CONHECIMENTO É YAML** (desde jul/2026). As famílias, mapas e PNs confirmados da Micron vivem
-> em **`chips/knowledge/micron.yaml`**, carregado por `load_brands`. Para **adicionar/corrigir gramática
-> ou known_parts curados, edite o yaml** seguindo o contrato de autoria (via `CLAUDE.md`).
+> ⚠️ **DUAS FONTES, DUAS TRILHAS** (Opção 2, jul/2026). A **gramática** da Micron (famílias + mapas) vive
+> em **`chips/knowledge/micron.yaml`**, carregada por `load_brands`. Os **known_parts** vivem **no banco**
+> (revisão in-DB): os curados por `submit_known_parts <arq> --commit` → **aprovação no admin**; a massa,
+> pelos pipelines locais da Micron (§2), que gravam `approved` direto. Para **corrigir a gramática, edite
+> o yaml**; para **um PN, use o `submit_known_parts`/os pipelines** (nunca o yaml). Contrato: `AUTORIA.md`.
 >
 > ⚠ **Micron é HÍBRIDA — a exceção entre as marcas.** Além do yaml, ela tem comandos LOCAIS
 > (`import_micron_catalog`, `fill_capacity_from_micron_api`, `enrich_micron_fbga`, `fix_micron_*`,
-> `collect/analyze_micron_*`) que **AINDA EXISTEM** e complementam o yaml com massa de CSV + specs de
-> FBGA (§2). Não são os aposentados `populate_*`/`fix_known_parts`.
+> `collect/analyze_micron_*`) que **AINDA EXISTEM** e enchem o catálogo (known_parts **no banco**) com
+> massa de CSV + specs de FBGA (§2). Não são os aposentados `populate_*`/`fix_known_parts`.
 >
-> **Este `.md` é a camada humana** — NÃO reproduz os dados do yaml (decode key→valor, known_parts,
+> **Este `.md` é a camada humana** — NÃO reproduz os dados do catálogo (decode key→valor, known_parts,
 > formato de campos) nem valores mutáveis (rentabilidade). Aqui: **o modelo híbrido, anatomia/nomenclatura,
 > FBGA, armadilhas, bugs (o *porquê*)**. **`CLAUDE.md`** é o único `.md` cross-marca mantido (convenção,
 > comandos §5 com flags, arquitetura + aponta pro contrato de autoria).
@@ -23,17 +25,18 @@ code de 5 chars** gravado a laser (ex.: `D9VFC`, `JWA60`) — a busca aceita os 
 
 ## ⚠ Modelo híbrido (a exceção da Micron)
 
-A `micron.yaml` tem a **gramática** (famílias + mapas MIC_MCP_CAP / MIC_TZZZ_GEN) + os **known_parts
-curados**. Mas a **cobertura de massa** vem de comandos LOCAIS (local-only, não rodam no Render) que
-**complementam** o yaml — este é o traço durável que distingue a Micron:
+A `micron.yaml` tem a **gramática** (famílias + mapas MIC_MCP_CAP / MIC_TZZZ_GEN); os **known_parts** vivem
+no banco (Opção 2). A **cobertura de massa** vem de comandos LOCAIS (local-only, não rodam no Render) que
+gravam known_parts **direto no banco** (pipeline de máquina, `approved`) — o traço durável que distingue a Micron:
 
 - `import_micron_catalog <csv>` — CSVs Micron → known_parts DDR/eMMC (`density_gbit`/`density_gb`/`capacity`).
 - `fill_capacity_from_micron_api` / `enrich_micron_fbga` / `lookup_fbga` — API FBGA → part-name + specs, por FBGA code.
 - `fix_micron_capacity` / `_lpddr_specs` / `_mcp_classification` — normalizam specs (fórmula sem dies, geração, eMMC×uMCP).
 - `collect_micron_catalog` / `analyze_micron_mcp_keys` — descoberta de famílias/chaves.
 
-Para **gramática e known_parts curados**: edite a `micron.yaml`. Para **massa DDR/eMMC/FBGA**: os comandos
-acima. As flags e a ordem de deploy estão no **CLAUDE.md §5**. Tudo roda pelo usuário (sempre `--dry-run` antes).
+Para a **gramática**: edite a `micron.yaml` (`load_brands`). Para **known_parts curados**: `submit_known_parts`
+→ admin. Para **massa DDR/eMMC/FBGA**: os comandos acima (gravam no banco). As flags e a ordem de deploy estão
+no **CLAUDE.md §5**. Tudo roda pelo usuário (sempre `--dry-run` antes).
 
 ---
 
@@ -132,7 +135,7 @@ AliExpress, catálogo genérico, `part-name` da API FBGA (pra tipo de RAM), dist
 - **`chip_type="RAM"` → geração:** DRAM discreta usa a geração no `chip_type` (`DDR3`/`LPDDR4`), nunca `"RAM"` (convenção OPÇÃO 1).
 - **eMMC×uMCP trocados (BUG-3)** e **gramática ignorada p/ eMCP distributor (BUG-6):** resolvidos por `source_url` e pela regra "gramática completa vence distributor/estimated".
 
-> Provenância por-PN e o inventário de FBGAs confirmados vivem nas `notes` dos known_parts do yaml.
+> Provenância por-PN e o inventário de FBGAs confirmados vivem nas `notes` dos known_parts (no banco — Opção 2).
 
-> Inventário de famílias/chaves e known_parts: **`micron.yaml`**. Comandos (com flags), convenção completa,
-> rentabilidade, contrato de autoria: **CLAUDE.md**.
+> Inventário de famílias/chaves de decode: **`micron.yaml`**; os known_parts vivem no banco (Opção 2).
+> Comandos (com flags), convenção completa, rentabilidade, contrato de autoria: **CLAUDE.md** / **AUTORIA.md**.

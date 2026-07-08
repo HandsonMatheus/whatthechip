@@ -1,14 +1,17 @@
-# Conhecimento Toshiba-Kioxia — FONTE do catálogo (gramática + known_parts). UMA marca (code TXK):
+# Conhecimento Toshiba-Kioxia — GRAMÁTICA do catálogo (famílias + decode maps). UMA marca (code TXK):
 # mesma empresa (Toshiba→Kioxia out/2019). THGBM tem decode (mapas THGBM_CAP/GEN); as demais famílias
-# são magras (specs dos known_parts). Editar aqui, validar no portão (load_brands --brand toshiba-kioxia,
-# dry-run), gravar com --commit. Convenção e formato: CONTRATO_AUTORIA_YAML.md.
+# são magras (reconhecimento por prefixo; as specs vêm dos known_parts, que vivem no BANCO — Opção 2).
+# Editar a gramática aqui, validar no portão (load_brands --brand toshiba-kioxia, dry-run), gravar com
+# --commit. known_parts: via submit_known_parts → aprovação no admin. Convenção e formato: AUTORIA.md.
 brand:
   name: Toshiba-Kioxia
   code: TXK
   notes: 'Japão · Divisão de Memória Toshiba, renomeada KIOXIA em out/2019 — MESMA empresa, mesmas fábricas e mesmo esquema de PN (THGBM coexiste nas duas eras). Chips pré-2019 gravados ''TOSHIBA'', pós-2019 ''KIOXIA''. Consolidados numa marca única (2026-07-01): antes eram 3 brands (Toshiba/Kioxia/KIOXIA-dup), o que criava ambiguidade de prefixo e duplicação. Não muda triagem (mesmas specs/destino).'
 maps:
   THGBM_CAP:
+  - [0C8, 128GB, '']
   - [0CB, 128GB, '']
+  - [0T8, 128GB, '']
   - [4D1, 2GB, '']
   - [5D1, 4GB, '']
   - [5D2, 8GB, '']
@@ -22,9 +25,15 @@ maps:
   - [8D4, 32GB, '']
   - [9C4, 64GB, '']
   - [9C8, 64GB, '']
+  THGBX_CAP:
+  - [7B2, 16GB, '']
+  - [7D2, 16GB, '']
+  - [8D4, 32GB, '']
   THGBM_GEN:
   - [B, eMMC 5.0, '']
+  - [D, eMMC 5.0, '']
   - [F, eMMC 5.0, '']
+  - [G, eMMC 5.1, '']
   - [H, eMMC 5.1, '']
   - [J, eMMC 5.1, '']
   - [N, eMMC 5.0, '']
@@ -47,8 +56,8 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC Toshiba / Kioxia — armazenamento Flash puro, sem RAM embutida. Prefixo THGBM cobre chips pré-2019 (Toshiba) e pós-2019 (Kioxia). Geração automática: pn[5] → N/T/F/B=eMMC 5.0 | H/J/U=eMMC 5.1. ⚠ Separe por geração: 5.1 (H/J/U) vale ~15-25% a mais que 5.0 (N/T/F/B). Capacidade: pn[7:10] → chave 3-chars → THGBM_CAP: 5D1=4GB · 5D2=8GB · 6C1=8GB · 6D1=8GB · 7C1=16GB · 7C2=16GB · 7D2=16GB · 8C2=32GB · 8C4=32GB · 8D4=32GB · 9C4=64GB · 9C8=64GB · 0CB=128GB. ⚠ Chaves não mapeadas (ex: 4D4, 6A2, 8D2) ficam com capacity=null — confirmar via Octopart/distribuidor e adicionar ao THGBM_CAP. Pacote: BGA153 (11.5×13mm). Interface paralela eMMC — NUNCA confundir com socket UFS (THGJF/THGAF/KLUE). Destino: bancada reacondicional Flash eMMC (separar por geração).'
-  reasoning: '["T=Toshiba · H=NAND tipo H · G=geração G · B=bus 8-bit · M=mobile", "pn[5]: código de geração NAND — N/T/F/B=eMMC 5.0 · H/J/U=eMMC 5.1", "pn[6]=G: constante identificadora de processo (sem decode)", "pn[7:10]: chave composta 3-chars → capacidade total (ver THGBM_CAP)", "pn[7]: densidade/die — 5=32Gb(4GB) · 6=64Gb(8GB) · 7=128Gb(16GB) · 8=64Gb(8GB) · 9=64Gb(8GB)", "pn[8]: tipo de stack — C/D/A/J/K (sem impacto na capacidade total)", "pn[9]: número de dies — 1/2/4/8", "pn[10]: tier de qualidade (L/K/E/J) — sem decode de capacidade", "pn[11:13]=BA: package BGA153", "pn[13]: I/O voltage — I=1.8V · U=dual-voltage 1.8/3.3V"]'
+  tip: 'eMMC Toshiba / Kioxia — armazenamento Flash puro, sem RAM embutida. Prefixo THGBM cobre chips pré-2019 (Toshiba) e pós-2019 (Kioxia). Geração automática: pn[5] → N/T/F/B/D=eMMC 5.0 | H/J/U/G=eMMC 5.1 (D e G confirmados 2026-07-08 via datasheet oficial Toshiba/TAEC e tabela de produto Mouser). ⚠ Separe por geração: 5.1 vale ~15-25% a mais que 5.0. Capacidade: pn[7:10] → chave 3-chars → THGBM_CAP: 5D1=4GB · 5D2=8GB · 6C1=8GB · 6D1=8GB · 7C1=16GB · 7C2=16GB · 7D2=16GB · 8C2=32GB · 8C4=32GB · 8D4=32GB · 9C4=64GB · 9C8=64GB · 0C8=128GB · 0CB=128GB · 0T8=128GB (0C8 e 0T8 confirmados 2026-07-08). ⚠ Chaves não mapeadas (ex: 4D4, 6A2, 8D2) ficam com capacity=null — confirmar via Octopart/distribuidor e adicionar ao THGBM_CAP. Pacote: BGA153 (11.5×13mm). Interface paralela eMMC — NUNCA confundir com socket UFS (THGJF/THGAF/KLUE). Destino: bancada reacondicional Flash eMMC (separar por geração).'
+  reasoning: '["T=Toshiba · H=NAND tipo H · G=geração G · B=bus 8-bit · M=mobile", "pn[5]: código de geração NAND — N/T/F/B/D=eMMC 5.0 · H/J/U/G=eMMC 5.1", "pn[6]=G: constante identificadora de processo (sem decode)", "pn[7:10]: chave composta 3-chars → capacidade total (ver THGBM_CAP)", "pn[7]: densidade/die — 5=32Gb(4GB) · 6=64Gb(8GB) · 7=128Gb(16GB) · 8=64Gb(8GB) · 9=64Gb(8GB)", "pn[8]: tipo de stack — C/D/A/J/K (sem impacto na capacidade total)", "pn[9]: número de dies — 1/2/4/8", "pn[10]: tier de qualidade (L/K/E/J) — sem decode de capacidade", "pn[11:13]=BA: package BGA153", "pn[13]: I/O voltage — I=1.8V · U=dual-voltage 1.8/3.3V", "2026-07-08: D=eMMC5.0 e 0C8=128GB confirmados via tabela oficial Toshiba/TAEC (Mouser Toshiba_FAB_eMMC-1511507.pdf) e datasheet THGBMNG5D1LBAIL (LCSC C391255, rev1.0 2018); 8D4=32GB reconfirmado via datasheet THGBMBG8D4KBAIR (rev1.1 2013); G=eMMC5.1 e 0T8=128GB via THGBMGT0T8LBAIG (Octopart/Avnet/Puris, Tier2-3, sem datasheet individual — ver notes do known_part)"]'
 - prefix: TYC
   chip_type: eMCP
   subtype: LPDDR2
@@ -229,6 +238,24 @@ families:
   suffix_rules: ''
   tip: NAND Flash raw Toshiba. Prefixo TH58 cobre várias gerações (SLC, MLC, TLC).
   reasoning: ''
+- prefix: THGBX
+  chip_type: NAND Flash
+  subtype: ''
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: 15
+  decode_cap_pos: 7
+  decode_cap_len: 3
+  decode_cap_map: THGBX_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'NAND Flash raw Toshiba/Kioxia para Apple — usado em iPhone 5s/6/6 Plus, iPad Air/Air 2, iPad Mini 2-4, iPad 5/6/Pro, iPod nano 7ª ger. (2012-2016), soldado ao controlador proprietário da Apple (NÃO é eMMC padrão — confirmado iFixit: "NAND Flash", não "eMMC", em 3 teardowns independentes). Capacidade: pn[7:10] → chave 3-chars → THGBX_CAP: 7B2=16GB · 7D2=16GB · 8D4=32GB (as 3 únicas confirmadas em Tier-1 até 2026-07-08). ⚠ Chave "8B4" (mesma faixa "8" que 8D4, letra de stack diferente) NÃO mapeada ainda — mesmo padrão do THGBM sugere 32GB, mas sem PN-âncora Tier-1 próprio, fica de fora até confirmar. "9B8"/"9D8" (aparentemente 64GB) só têm fonte Tier-3 — não mapeadas. pn[5] (dígito 2-6 observado, varia por sub-geração/prefixo comercial) e pn[6] (G ou T) NÃO têm significado confirmado — não afetam a chave de capacidade nos 3 casos provados (mesma chave em prefixo "2G..." e "5G..." deu a mesma capacidade). Destino: bancada NAND raw (capacidade decodifica; specs adicionais por known_part).'
+  reasoning: '["THGBX = prefixo Toshiba/Kioxia NAND raw dedicado a dispositivos Apple, distinto do THGBM (eMMC padrao) — nunca visto na gramatica antes de 2026-07-08", "Fonte Tier-1 (iFixit, lido diretamente): iPad Air LTE Teardown e iPad Mini 2 Teardown confirmam Toshiba THGBX2G7B2JLA01 16 GB NAND Flash (nao eMMC) — 2 teardowns independentes, mesmo PN", "Fonte Tier-1 (AppleInsider citando iFixit, lido diretamente): iPod nano 7a geracao Teardown confirma Toshiba THGBX2G7D2JLA01 16 GB NAND Flash — MESMA capacidade que 7B2 com letra de stack diferente (B vs D), prova que a letra de stack nao afeta a capacidade dentro do THGBX (mesmo padrao ja visto no THGBM)", "Fonte Tier-1 (iFixit, lido diretamente): iPad Pro 12.9pol Teardown confirma Toshiba THGBX5G8D4KLDXG 32 GB NAND Flash — mesma chave 8D4 num prefixo diferente (5G em vez de 2G), prova que pn[5]/pn[6] nao afetam a chave de capacidade", "pn[5] e pn[6] sem significado confirmado (fora do papel de nao afetar a capacidade) — por isso SEM decode_gen_pos", "8B4/9B8/9D8 deliberadamente NAO mapeados — inferencia por analogia sem PN-ancora Tier-1 proprio, contra a disciplina de nao adivinhar", "known_parts desta familia: ver submissions/toshiba-kioxia_thgbx_2026-07-08.yaml"]'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: MIGRADOS PARA O BANCO (fonte da verdade — Opção 2, jul/2026).

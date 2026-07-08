@@ -1,8 +1,11 @@
-> ⚠️ **O CONHECIMENTO É YAML** (desde jul/2026). As famílias e PNs confirmados da SanDisk vivem em
-> **`chips/knowledge/sandisk.yaml`**, carregado por `load_brands`. Para **adicionar ou corrigir um
-> chip, edite o yaml** seguindo o contrato de autoria (via `CLAUDE.md`).
+> ⚠️ **DUAS FONTES, DUAS TRILHAS** (Opção 2, jul/2026). A **gramática** da SanDisk (famílias) vive em
+> **`chips/knowledge/sandisk.yaml`**, carregada por `load_brands`. Os **known_parts** (PNs confirmados, a
+> autoridade — e na SanDisk a **única fonte de capacidade**, §2) vivem **no banco**, com revisão in-DB:
+> autoria por `submit_known_parts <arq> --commit` → **aprovação no admin**. Para **corrigir a gramática de
+> uma família, edite o yaml**; para **adicionar/corrigir um PN, use o `submit_known_parts`** (nunca no
+> yaml). Contrato completo: `AUTORIA.md`.
 >
-> **Este `.md` é a camada humana** — NÃO reproduz os dados do yaml (inventário de famílias, known_parts,
+> **Este `.md` é a camada humana** — NÃO reproduz os dados do catálogo (inventário de famílias, known_parts,
 > formato de campos) nem valores mutáveis (rentabilidade). Aqui: **anatomia do PN, armadilhas, a história
 > SanDisk×WD, convenção, fontes**. **`CLAUDE.md`** é o único `.md` cross-marca mantido (convenção,
 > comandos §5, arquitetura + aponta pro contrato de autoria).
@@ -13,7 +16,7 @@
 
 **SanDisk** (code WTC `SDK`) — armazenamento embarcado (eMMC, eMCP, UFS) pra smartphone/tablet. Na
 bancada eMiner aparece com frequência moderada, predominando **eMMC standalone** (gerações 4.41–5.1).
-A lista viva de famílias/known_parts está na **`sandisk.yaml`** (11 famílias, **sem DecodeMaps**).
+A **gramática** viva (famílias) está na **`sandisk.yaml`** (11 famílias, **sem DecodeMaps**); os **known_parts** vivem no banco (Opção 2).
 
 > **É uma marca só — ver §5.1 (SanDisk × Western Digital).** O PN gravado no chip sempre foi `SD…`;
 > só a documentação levou marca WD por um período (2016–2025).
@@ -53,7 +56,7 @@ DecodeMaps**. Consequência crítica:
 > **única** fonte de capacidade da marca. A missão contínua é confirmar PNs à medida que aparecem.
 
 **Normalização:** o engine faz `re.sub(r"[^A-Z0-9]", "", pn)` → o traço some (`SDIN9DW4-16G` →
-`SDIN9DW416G`). Grave o PN normalizado nos `known_parts` (o loader aceita com traço, mas o padrão é sem).
+`SDIN9DW416G`). Grave o PN normalizado no known_part (o `submit_known_parts`/portão aceita com traço, mas o padrão é sem).
 
 **Famílias (orientação — inventário completo na `sandisk.yaml`):** eMMC = `SD5DH`/`SD7DP`/`SDINB`/`SDMAG` +
 `SDIN` (fallback genérico, priority 80); UFS = `SDINDDH`/`SDINEDK`/`SDINFD`/`SDHQB`; eMCP = `SDAD`/`SDEM`.
@@ -104,5 +107,6 @@ Octopart/Mouser/Avnet (distribuidor autorizado) → distribuidor B2B rastreável
 `confirmed`) → **Preduo** (confiável pra tipo/ball count, **não** pra specs elétricos) → IA (último recurso,
 sempre verificar). **Nunca fonte única:** yoycart/chinahao sem cruzamento, eBay, catálogo Shenzhen sem rastreio.
 
-> Inventário de famílias e provenância por-PN (nas `notes`): **`sandisk.yaml`**. Comandos, convenção
-> completa, rentabilidade, contrato de autoria: **CLAUDE.md**.
+> Inventário de famílias (gramática): **`sandisk.yaml`**; os known_parts e a provenância por-PN (nas
+> `notes`) vivem **no banco** (Opção 2). Comandos, convenção completa, rentabilidade, contrato de autoria:
+> **CLAUDE.md** / **AUTORIA.md**.
