@@ -12,6 +12,12 @@ Como usar:
 
 from .settings import *  # noqa: F401, F403 — herda tudo
 
+# Isola a cache do engine (lru_cache por catalog_version) entre testes: em prod a
+# versão é monotônica, mas o banco de teste reinicia e os números colidem entre
+# casos → suíte instável por ORDEM. O runner limpa a cache antes de cada teste.
+# Ver core/test_runner.py. (Só testes; produção nunca usa este settings.)
+TEST_RUNNER = "core.test_runner.EngineCacheIsolationRunner"
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
