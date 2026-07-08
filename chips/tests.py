@@ -541,6 +541,24 @@ class EngineIntegrationTests(TestCase):
         result = classify('KMQ310006B')
         self.assertIn('KMQ310006A', result.get('fuzzy_suggestions', []))
 
+    def test_sugestao_inclui_distribuidor_mas_nao_estimated(self):
+        """Dono (2026-07-08): registro de DISTRIBUIDOR também é sugerido (prefixo/
+        fuzzy); 'estimated' continua fora (baixa confiança)."""
+        from chips.engine import classify
+        from chips.models import KnownPart
+        KnownPart.objects.create(
+            brand=self.samsung, family=self.family_emcp, part_number='KMQ3200DIST',
+            chip_type='eMCP', emcp_ram='LPDDR3 2GB', emcp_nand='eMMC 8GB',
+            confidence='distributor', source=self.source)
+        KnownPart.objects.create(
+            brand=self.samsung, family=self.family_emcp, part_number='KMQ3201ESTIM',
+            chip_type='eMCP', emcp_ram='LPDDR3 2GB', emcp_nand='eMMC 8GB',
+            confidence='estimated', source=self.source)
+        self.assertIn('KMQ3200DIST',
+                      classify('KMQ3200').get('fuzzy_suggestions', []))     # distribuidor entra
+        self.assertNotIn('KMQ3201ESTIM',
+                         classify('KMQ3201').get('fuzzy_suggestions', []))  # estimated fica fora
+
     # ── eMCP dual-decode (decode_cap_len=2) ───────────────────────────────────
 
     def test_emcp_kmr_dual_decode(self):

@@ -118,9 +118,12 @@ def _visual_edit_distance(a: str, b: str) -> float:
 
 
 # Níveis de confiança elegíveis para sugestão fuzzy/prefixo.
-# Apenas registros verificados por humano ou datasheet oficial são sugeridos —
-# evita que o operador seja direcionado a um PN estimado/distribuidor duvidoso.
-_SUGGESTION_CONFIDENCE = ("confirmed", "manual")
+# Inclui 'distributor' por decisão do dono (2026-07-08): registro de distribuidor é
+# legítimo (também entra no estoque — estoque/views.py), então o operador PODE ser
+# direcionado a ele. Só 'estimated' fica de fora (baixa confiança / Wayback). ⚠ Isto é
+# SUGESTÃO/descoberta, não AUTORIDADE: distribuidor continua sem vencer a gramática
+# (_CONFIRMED_CONFIDENCE abaixo segue confirmed/manual).
+_SUGGESTION_CONFIDENCE = ("confirmed", "manual", "distributor")
 
 # Níveis de confiança que VENCEM a gramática (autoridade / precedência). São os
 # verificados por humano/datasheet. Ver _result_from_known() (human_verified).
@@ -191,7 +194,7 @@ def _prefix_candidates(pn: str, min_prefix_len: int = 7) -> list:
     acima do threshold=2 do fuzzy, então o fuzzy nunca os capturaria).
 
     min_prefix_len evita retornar ruído para prefixos muito curtos (< 7 chars).
-    Restrito a confidence confirmed/manual: só PNs verificados são sugeridos.
+    Restrito a _SUGGESTION_CONFIDENCE (confirmed/manual/distributor): PNs com registro no banco.
     Retorna lista de KnownPart objects (mesmo padrão que _fuzzy_candidates).
     """
     if len(pn) < min_prefix_len:
