@@ -29,6 +29,13 @@ maps:
   - [7B2, 16GB, '']
   - [7D2, 16GB, '']
   - [8D4, 32GB, '']
+  THGAF_CAP:
+  - [G7, 16GB, '']
+  - [G8, 32GB, '']
+  - [G9, 64GB, '']
+  - [T0, 128GB, '']
+  - [T1, 256GB, '']
+  - [T2, 512GB, '']
   THGBM_GEN:
   - [B, eMMC 5.0, '']
   - [D, eMMC 5.0, '']
@@ -120,16 +127,16 @@ families:
   active: true
   priority: 50
   pn_length: 15
-  decode_cap_pos: null
-  decode_cap_len: 1
-  decode_cap_map: ''
+  decode_cap_pos: 6
+  decode_cap_len: 2
+  decode_cap_map: THGAF_CAP
   decode_gen_pos: null
   decode_gen_map: ''
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'UFS 2.1 Kioxia (era de transição Toshiba→Kioxia, ~2017-2022). Família sem decode gramatical — capacity/specs dependem de KnownPart confirmado. Capacidades: 16GB → 256GB (consumer + automotive Grade 2 AEC-Q100). Fonte Tier 1: Kioxia UFS Product Brief Rev.2.0 (2022) + Automotive Brief (2020). 11 PNs confirmados nos known_parts. Distinguir de THGJF* (UFS 3.1/4.0/4.1, geração mais nova).'
-  reasoning: '["THGAF = UFS 2.1 Toshiba/Kioxia (~2017-2022) — confirmado kioxia.com Tier 1", "Silkscreen físico: Toshiba (pré-2019) ou KIOXIA (pós-2019) — mesmo PN", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional", "Fonte: Kioxia UFS Product Brief Rev.2.0 (2022) + Automotive Brief Rev.2.0 (2020)"]'
+  tip: 'UFS 2.1 Kioxia (era de transição Toshiba→Kioxia, ~2017-2022). Capacidade: pn[6:8] → chave 2-chars → THGAF_CAP: G7=16GB · G8=32GB · G9=64GB · T0=128GB · T1=256GB · T2=512GB (progressão binária: cada passo dobra a capacidade). Chave confirmada em DUAS fontes Tier-1 independentes e concordantes: Kioxia Managed Flash Highlight Q1/2021 (grade consumer, sufixo BAIL/BAIR — 4 PNs: 8G8T23/8G9T43/8T0T43/8T1T83) e Kioxia Automotive Managed Flash Solutions Rev.2.0 out/2020 (grade automotive AEC-Q100 Grade 2, sufixo BAB7/BAB8/BABI — 11 PNs, inclui variantes B/E que não afetam a chave). pn[5] (dígito/letra: 8=consumer · 9/B/E=automotive · 4=outra variante vista em campo, ex. THGAF4T0N8LBAIR) e pn[8] (T ou L) NÃO afetam a capacidade — só pn[6:8] importa, confirmado por repetição idêntica da chave nas duas tabelas oficiais. Destino: bancada UFS (capacidade decodifica; specs adicionais por known_part). Distinguir de THGJF* (UFS 3.1/4.0/4.1, geração mais nova).'
+  reasoning: '["THGAF = UFS 2.1 Toshiba/Kioxia (~2017-2022) — confirmado kioxia.com Tier 1", "Silkscreen físico: Toshiba (pré-2019) ou KIOXIA (pós-2019) — mesmo PN", "decode_cap_map adicionado 2026-07-08: pn[6:8] (2 chars) — G7/G8/G9/T0/T1/T2 = 16/32/64/128/256/512GB", "Fonte Tier-1 nº1 (lida diretamente): Kioxia Managed Flash Memory Highlight Q1/2021 (PDF oficial via DigiKey) — tabela consumer grade lista THGAF8G8T23BAIL=32GB, THGAF8G9T43BAIR=64GB, THGAF8T0T43BAIR=128GB, THGAF8T1T83BAIR=256GB", "Fonte Tier-1 nº2 (lida diretamente): Kioxia Automotive Managed Flash Solutions Product Brief Rev.2.0 out/2020 (PDF oficial kioxia.com) — tabela automotive AEC-Q100 Grade 2 lista THGAF9G7L1LBAB7=16GB, THGAFBG8T13BAB7/THGAFEG8T13BAB7=32GB, THGAFBG9T23BAB8/THGAFEG9T23BAB8=64GB, THGAFBT0T43BAB8/THGAFET0T43BAB8=128GB, THGAFBT1T83BAB5/THGAFET1T83BAB5=256GB, THGAFBT2T83BABI=512GB — MESMA chave pn[6:8] que a tabela consumer nos 4 pontos que se sobrepõem (G8/G9/T0/T1), provando que pn[5] (grade) não afeta a capacidade", "PN da bancada (THGAF4T0N8LBAIR) e irmãos com pn[5]=4 não aparecem em nenhuma das duas tabelas oficiais encontradas — capacidade derivada da MESMA chave pn[6:8] já provada 2x/3x cada, não de sighting direto dessa variante específica; submetidos como known_part confidence=manual, não confirmed", "Família magra adicionada 2026-06-26, promovida a decode posicional 2026-07-08"]'
 - prefix: THGAM
   chip_type: eMMC
   subtype: ''
