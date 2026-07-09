@@ -505,7 +505,10 @@ Mobile/Multi-Channel/+eMMC/densidade/tensão/largura); `interface` = largura (`x
   (confundem Gb/GB, invertem primary/secondary, alucinam capacidade).
 - **Tenancy (T1–T4, jul/2026 — contrato: PRECIFICACAO §10; execução/bíblia: PLANO_MULTITENANT.md).**
   Catálogo = GLOBAL; estoque = POR-EMPRESA **(T3: Lot/Entry/Pending/Rejected têm
-  `company` NOT NULL, manager padrão fail-closed `CompanyScopedManager`, numeração
+  `company` NOT NULL, `objects` = `CompanyScopedManager` fail-closed — mas o
+  `Meta.default_manager_name` é o CRU `all_companies`: a validação de UniqueConstraint
+  do Django 5 e o admin usam `_default_manager`, que não pode filtrar (bug de prod
+  2026-07-09) — escopo nas views é sempre EXPLÍCITO via `Model.objects`; numeração
   `unique (company, number)`; T4: RLS+FORCE no Postgres — policies leem os GUCs
   `app.company_id`/`app.platform` que o TenancyMiddleware emite transaction-local;
   `manage.py shell` em tabela de estoque devolve 0 linhas sem `company_scope(...)` —
