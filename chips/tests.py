@@ -1521,6 +1521,7 @@ _TK_GOLDEN = {  # Toshiba-Kioxia (marca única). THGBMFG/THGBMHG DESATIVADAS (ac
     "THGAMVG7T13BAIL": ("eMMC", "", "", "", "", "INDETERMINADO"),  # Kioxia THGAM
     "THGJFPT0E18BAIP": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGJF
     "THGBX2G7B2JLA01": ("NAND Flash", "16GB", "", "", "", "NÃO RENTÁVEL"),  # THGBX (2026-07-08, família nova) — decodifica 7B2=16GB (iFixit); NÃO RENTÁVEL é por TIPO (NAND raw sem controlador eMMC/UFS), não pela capacidade
+    "THGBF7G8K4LBATR": ("UFS", "32GB", "", "", "", "RENTÁVEL"),  # THGBF (2026-07-09, revisado na 2ª rodada) — decode_cap_map reaproveita THGAF_CAP via pn[6:8]="G8"=32GB; 3 PNs (32/64/128GB) confirmam o padrão contra Octopart/Avnet, mas prefixo THGBF em si NUNCA confirmado Tier-1 — capacidade decodifica pela gramática, tipo/interface exato seguem sem Tier-1
 }
 _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). Cobre DDR1-5, LPDDR2-4X, eMMC, eMCP, UFS.
     "H26M74002HMR":      ("eMMC", "64GB",  "", "", "", "RENTÁVEL"),
@@ -1541,7 +1542,7 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H9TA1GG51BMMVR4DM": ("eMCP", "", "eMMC 4.x 1GB", "LPDDR1 512MB", "", "NÃO RENTÁVEL"),  # corrobora RAM '51'
     "H9TA2GG1GDACPR4DM": ("eMCP", "", "eMMC 4.x 2GB", "LPDDR1 1GB",  "", "NÃO RENTÁVEL"),  # corrobora NAND '2'
     "H9TA4GG4GDMCPR4GM": ("eMCP", "", "eMMC 4.x 4GB", "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),  # RAM '4G' SEM corroboração (não existe no mapa H9DA) — prova que a gramática NÃO adivinha
-    "H9DP32A4JJBC":      ("eMCP", "", "eMMC 4GB", "LPDDR2 512MB", "", "NÃO RENTÁVEL"),
+    "H9DP32A4JJBC":      ("eMCP", "", "eMMC 4GB", "LPDDR1 512MB", "", "NÃO RENTÁVEL"),  # gen corrigida LPDDR2→LPDDR1 (datasheet H9DP32A4JJBCGR "Mobile DDR / 400Mbps", 2026-07-09)
     "H9HCNNNCPMAL":      ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),
     "H9HCNNNECMML":      ("LPDDR4X", "6GB", "", "", "", "RENTÁVEL"),
     "H9HP16AECMMD":      ("eMCP", "", "eMMC 5.1 128GB", "LPDDR4X 6GB", "", "RENTÁVEL"),
@@ -2111,6 +2112,26 @@ class NumericSpecsTests(SimpleTestCase):
         for k in ("nand_gb", "ram_gb", "cap_gb", "density_gbit_num"):
             self.assertIsNone(r[k])
         self.assertEqual(r["ram_gen"], "")
+
+
+class EmcpGeracaoDesconhecidaTests(TestCase):
+    """FIX 2026-07-09 (JW500 / MT29C "Mobile DDR"): eMCP com geração de RAM
+    DESCONHECIDA — capacidade abaixo do mínimo reprova SEM depender de geração
+    (4ª instância do padrão recorrente do CLAUDE.md §7; antes o bail
+    lpddr_gen=None vinha ANTES dos limiares e devolvia INDETERMINADO)."""
+
+    def test_capacidade_abaixo_do_minimo_reprova_sem_geracao(self):
+        from chips.engine import assess_profitability
+        r = {'chip_type': 'eMCP', 'subtype': 'Mobile DDR', 'is_emcp': True,
+             'emcp_ram': 'Mobile DDR 512MB', 'emcp_nand': '1GB', 'capacity': ''}
+        self.assertEqual(assess_profitability(r), 'NÃO RENTÁVEL')
+
+    def test_geracao_desconhecida_com_capacidades_ok_segue_indeterminado(self):
+        # Sem saber a geração NÃO se pode APROVAR — indeterminado é honesto aqui.
+        from chips.engine import assess_profitability
+        r = {'chip_type': 'eMCP', 'subtype': 'Mobile DDR', 'is_emcp': True,
+             'emcp_ram': 'Mobile DDR 4GB', 'emcp_nand': '64GB', 'capacity': ''}
+        self.assertEqual(assess_profitability(r), 'INDETERMINADO')
 
 
 class NumericSpecsWiringTests(TestCase):

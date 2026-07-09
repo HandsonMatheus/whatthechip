@@ -85,10 +85,10 @@ maps:
   - ['64', 8GB, '']
   - [AG, 16GB, '']
   HYX_H9D_RAM_CAP:
-  - ['2', LPDDR2 256MB, '']
-  - ['3', LPDDR2 1GB, '']
-  - ['4', LPDDR2 512MB, '']
-  - ['8', LPDDR2 1GB, '']
+  - ['2', LPDDR1 256MB, '']
+  - ['3', LPDDR1 1GB, '']
+  - ['4', LPDDR1 512MB, '']
+  - ['8', LPDDR1 1GB, '']
   HYX_H9HP_NAND_CAP:
   - ['16', 128GB, '']
   - ['27', 32GB, '']
@@ -483,8 +483,8 @@ families:
   reasoning: ''
 - prefix: H9DP
   chip_type: eMCP
-  subtype: LPDDR2
-  interface: eMMC + LPDDR2
+  subtype: LPDDR1
+  interface: eMMC + LPDDR1
   is_emcp: true
   active: true
   priority: 50
@@ -497,8 +497,8 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP SK Hynix família H9D com LPDDR2 (H9DP). Chip combinado eMMC + RAM. pn[4:6] = capacidade NAND: 32=4GB · 64=8GB · AG=16GB. pn[7] = capacidade RAM (1 char): 2=256MB · 4=512MB · 8=1GB · 3=1GB. ⚠ RAM usa 1 char em pn[7] (não 2) — pn[6]=''A'' é código de controlador fixo, ignorar. ⚠ ''8'' e ''3'' resultam ambos em 1GB — organização de barramento diferente, mesma capacidade. ⚠ Mapa NAND próprio (HYX_H9D_NAND_CAP): ''AG''=16GB não existe no mapa H9TQ/H9TP. Ex: H9DPAGA3JJMC = 16GB eMMC + 1GB LPDDR2 ✓ Ex: H9DP64A8JJMC = 8GB eMMC + 1GB LPDDR2 ✓ Ex: H9DP32A4JJAC = 4GB eMMC + 512MB LPDDR2 ✓ Componente OBSOLETO para reuso — Destino: REFINO DE METAIS.'
-  reasoning: ''
+  tip: 'eMCP SK Hynix família H9D — LPDDR1 Mobile DDR (H9DP), era ~2012-2015. ⚠ GERAÇÃO CORRIGIDA 2026-07-09: era rotulada LPDDR2 (assunção não atestada); o datasheet do H9DP32A4JJBCGR diz "eNAND 4GB(x8) / Mobile DDR 4Gb(x32, 2CS)", "LPDDR 400Mbps" = LPDDR1 (irmã do H9DA, também Mobile DDR). Chip combinado eMMC + RAM. pn[4:6] = capacidade NAND: 32=4GB · 64=8GB · AG=16GB. pn[7] = capacidade RAM (1 char): 2=256MB · 4=512MB · 8=1GB · 3=1GB. ⚠ RAM usa 1 char em pn[7] (não 2) — pn[6]=''A'' é código de controlador fixo, ignorar. ⚠ ''8'' e ''3'' resultam ambos em 1GB — organização de barramento diferente, mesma capacidade. ⚠ Mapa NAND próprio (HYX_H9D_NAND_CAP): ''AG''=16GB não existe no mapa H9TQ/H9TP. Ex: H9DPAGA3JJMC = 16GB eMMC + 1GB LPDDR1 ✓ Ex: H9DP64A8JJMC = 8GB eMMC + 1GB LPDDR1 ✓ Ex: H9DP32A4JJAC = 4GB eMMC + 512MB LPDDR1 ✓ Componente OBSOLETO — LPDDR1 (gen 1 < mínimo) → sempre NÃO RENTÁVEL. Destino: REFINO DE METAIS.'
+  reasoning: 'Geração LPDDR1 atestada pelo datasheet SK Hynix do H9DP32A4JJBCGR ("Mobile DDR 4Gb", "LPDDR 400Mbps") — corrige assunção LPDDR2 anterior (2026-07-09). Prefixo define a geração; irmã H9DA também Mobile DDR/LPDDR1.'
 - prefix: H9HP
   chip_type: eMCP
   subtype: LPDDR4X
