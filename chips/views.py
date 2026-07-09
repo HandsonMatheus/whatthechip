@@ -87,11 +87,12 @@ def search_api(request):
     return JsonResponse(result)
 
 
-@require_GET
 def _price_quotes_for_admin(request, result):
     """Bloco de preço do card (F5 — PRECIFICACAO §7): SÓ para papel ADMIN da
     empresa. Delegado à fonte única `pricing.engine.quotes_for_admin` (import
-    lazy: o chips não depende do pricing no load do app)."""
+    lazy: o chips não depende do pricing no load do app).
+    ⚠ É um HELPER, não view — sem @require_GET (o decorator devolveria um
+    HttpResponseNotAllowed no lugar da lista se um fluxo POST o chamasse)."""
     from pricing.engine import quotes_for_admin
     return quotes_for_admin(request, result)
 

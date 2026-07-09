@@ -319,6 +319,17 @@ class Command(BaseCommand):
                 slug=opts['buyer'],
                 defaults={'name': opts['buyer'].replace('-', ' ').title(),
                           'company': company})
+            # Cura comprador ÓRFÃO (company=NULL, criado antes do escopo):
+            # get_or_create não atualiza defaults no "get" — e um Buyer sem
+            # empresa é INVISÍVEL ao Buyer.objects escopado (o admin não vê
+            # preço nenhum no card). NULL fica reservado ao marketplace futuro
+            # (§3.1), que será atribuição EXPLÍCITA, nunca acidente de import.
+            if not buyer_created and buyer.company_id is None:
+                buyer.company = company
+                buyer.save(update_fields=['company'])
+                self.stdout.write(self.style.WARNING(
+                    f'⚠ Comprador {buyer.slug!r} estava SEM empresa (órfão) — '
+                    f'atribuído à {company.name}.'))
             lists_created = rows_created = rows_updated = 0
             list_cache: dict = {}
 
