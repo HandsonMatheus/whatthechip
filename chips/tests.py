@@ -1517,7 +1517,7 @@ _TK_GOLDEN = {  # Toshiba-Kioxia (marca única). THGBMFG/THGBMHG DESATIVADAS (ac
                         "LPDDR4X ⚠ cap. não mapeada", "", "INDETERMINADO"),  # Toshiba TYD
     "THGBMFG7C2LBAIL": ("eMMC", "16GB", "", "", "", "RENTÁVEL"),   # THGBMFG desativada → THGBM decodifica (F=5.0, 7C2=16GB)
     "THGBMHG8C4LBAIR": ("eMMC", "32GB", "", "", "", "RENTÁVEL"),   # THGBMHG desativada → THGBM decodifica (H=5.1, 8C4=32GB)
-    "THGAF8G8T23BAIL": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGAF
+    "THGAF8G8T23BAIL": ("UFS",  "32GB", "", "", "", "RENTÁVEL"),  # Kioxia THGAF — decode_cap_map 2026-07-08: pn[6:8]="G8"=32GB (Kioxia Highlight Q1/2021)
     "THGAMVG7T13BAIL": ("eMMC", "", "", "", "", "INDETERMINADO"),  # Kioxia THGAM
     "THGJFPT0E18BAIP": ("UFS",  "", "", "", "", "INDETERMINADO"),  # Kioxia THGJF
     "THGBX2G7B2JLA01": ("NAND Flash", "16GB", "", "", "", "NÃO RENTÁVEL"),  # THGBX (2026-07-08, família nova) — decodifica 7B2=16GB (iFixit); NÃO RENTÁVEL é por TIPO (NAND raw sem controlador eMMC/UFS), não pela capacidade
