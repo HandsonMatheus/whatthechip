@@ -910,6 +910,44 @@ class RLSHandshakeTests(TransactionTestCase):
             self.assertEqual(cur.fetchone()[0], 2)
 
 
+class PlatformAdminFormTests(TestCase):
+    """Regressão do bug 2026-07-09 (produção): superuser de PLATAFORMA (sem
+    Membership) criando registro tenant-scoped pelo Django admin explodia com
+    CompanyScopeMissing — o Django 5 valida UniqueConstraint de formulário via
+    `_default_manager`, que era o fail-closed. Com `default_manager_name =
+    'all_companies'`, o form valida e salva; o escopo das VIEWS segue explícito
+    (Model.objects)."""
+
+    def setUp(self):
+        User = get_user_model()
+        self.company = Company.objects.create(name='eMiner', slug='eminer')
+        self.platform = User.objects.create_superuser('plat_admin', password='x')
+        self.client.force_login(self.platform)   # sem Membership de propósito
+
+    def test_plataforma_cria_lote_pelo_admin_sem_escopo(self):
+        operador = get_user_model().objects.create_user('adm_form_op')
+        resp = self.client.post('/admin/estoque/lot/add/', {
+            'number': '77', 'company': str(self.company.pk),
+            'operator': str(operador.pk), 'description': 'via admin',
+            'status': 'open',
+        })
+        # Sucesso = redirect pro changelist (antes: CompanyScopeMissing/500).
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(Lot.all_companies.filter(
+            number=77, company=self.company).exists())
+
+    def test_plataforma_cria_comprador_pelo_admin_sem_escopo(self):
+        """O caso EXATO do bug em produção (/admin/pricing/buyer/add/)."""
+        from pricing.models import Buyer
+        resp = self.client.post('/admin/pricing/buyer/add/', {
+            'company': str(self.company.pk), 'name': 'Wu Quan',
+            'slug': 'wu-quan', 'active': 'on', 'notes': '',
+        })
+        self.assertEqual(resp.status_code, 302)
+        buyer = Buyer.all_companies.get(slug='wu-quan')
+        self.assertEqual(buyer.company_id, self.company.pk)
+
+
 class TenancyDeclarationTests(TestCase):
     """§12.1: "tabela sem decisão de tenancy = suíte vermelha". Todo modelo dos
     apps do projeto ou está na lista GLOBAL declarada (PRECIFICACAO §10), ou é
@@ -949,12 +987,19 @@ class TenancyDeclarationTests(TestCase):
             if label in self.GLOBAL_DECLARADOS:
                 continue
             has_company = any(f.name == 'company' for f in model._meta.fields)
-            scoped = isinstance(model._default_manager, CompanyScopedManager)
-            if not (has_company and scoped):
+            # Convenção completa (bug 2026-07-09): `objects` = escopado
+            # fail-closed (o caminho EXPLÍCITO das views), e o DEFAULT = cru
+            # ('all_companies') — a validação de UniqueConstraint do Django 5
+            # e o admin usam _default_manager, que não pode ser fail-closed.
+            objects_scoped = isinstance(getattr(model, 'objects', None),
+                                        CompanyScopedManager)
+            default_cru = model._meta.default_manager_name == 'all_companies'
+            if not (has_company and objects_scoped and default_cru):
                 faltando.append(label)
         self.assertEqual(
             faltando, [],
-            'Modelo(s) SEM decisão de tenancy: ou adicione à lista '
+            'Modelo(s) SEM decisão de tenancy completa: ou adicione à lista '
             'GLOBAL_DECLARADOS (com justificativa no PR), ou dê a ele campo '
-            'company + CompanyScopedManager + caso no TenancyHandshakeTests: '
-            f'{faltando}')
+            'company + objects=CompanyScopedManager + all_companies + '
+            "Meta.base_manager_name/default_manager_name='all_companies' + "
+            f'caso no TenancyHandshakeTests: {faltando}')

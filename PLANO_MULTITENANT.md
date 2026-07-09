@@ -646,6 +646,19 @@ T5/T6 (fila no app + onboarding) antes do 2º cliente REAL logar.
   e o RLS vale integralmente. A regra do plano segue: a app nunca deve
   conectar como super.
 
+### Correção pós-produção (2026-07-09): default manager NÃO pode ser fail-closed
+
+Bug real em prod (`/admin/pricing/buyer/add/` → `CompanyScopeMissing`): o
+Django 5 valida `UniqueConstraint` de formulário via **`_default_manager`** —
+que era o `CompanyScopedManager`. Plataforma sem Membership (ou editando dado
+de outra empresa) explodia em QUALQUER admin de modelo tenant-scoped.
+**Convenção corrigida (é o padrão da doc do Django: default manager não
+filtra):** `objects` = escopado fail-closed (o caminho EXPLÍCITO das views),
+`Meta.default_manager_name = 'all_companies'` (validação/admin/dumpdata), e
+os `get_object_or_404` passam o manager explícito (`Lot.objects`). O
+`TenancyDeclarationTests` agora EXIGE o trio completo em modelo novo; 
+`PlatformAdminFormTests` é a regressão (Lot e Buyer via admin sem escopo).
+
 **Runbook do dono (T4):** local → `python manage.py migrate` (0014 liga o RLS)
 → `python manage.py test estoque.tests.RLSHandshakeTests` (prova Camada B) →
 re-rodar `estoque.tests.LotNumberRaceTests` (corrida sob RLS) → smoke com as

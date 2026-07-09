@@ -56,6 +56,12 @@ class Lot(models.Model):
         verbose_name_plural = 'Lotes'
         ordering = ['-number']
         base_manager_name = 'all_companies'
+        # ⚠ default = CRU (padrão da doc do Django: default manager NÃO filtra).
+        # Motivo concreto: Django 5 valida UniqueConstraint de formulário via
+        # _default_manager — com o fail-closed ali, o admin de plataforma
+        # EXPLODIA (CompanyScopeMissing em /admin/.../add/, bug 2026-07-09).
+        # O caminho escopado continua sendo o EXPLÍCITO: Model.objects.
+        default_manager_name = 'all_companies'
         constraints = [
             # Cada empresa tem a SUA sequência (Lote #001 da Brasil Reciclagem
             # coexiste com o #001 da eMiner). Substitui o unique global.
@@ -145,6 +151,12 @@ class CompanyBoundByLot(models.Model):
     class Meta:
         abstract = True
         base_manager_name = 'all_companies'
+        # ⚠ default = CRU (padrão da doc do Django: default manager NÃO filtra).
+        # Motivo concreto: Django 5 valida UniqueConstraint de formulário via
+        # _default_manager — com o fail-closed ali, o admin de plataforma
+        # EXPLODIA (CompanyScopeMissing em /admin/.../add/, bug 2026-07-09).
+        # O caminho escopado continua sendo o EXPLÍCITO: Model.objects.
+        default_manager_name = 'all_companies'
 
     def save(self, *args, **kwargs):
         if self.lot_id:

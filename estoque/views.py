@@ -224,9 +224,10 @@ def _get_lot(request, lot_pk):
     EMPRESA — o gerente abre, o operador lança nele — então caiu o filtro
     ``operator=request.user`` (cada um só via os próprios lotes, o que impediria
     o operador de trabalhar num lote aberto pelo gerente). O campo ``operator``
-    do Lot vira "quem abriu". T3: este helper passa a ser escopado por empresa
-    via CompanyScopedManager (hoje há UMA empresa; o gate de papel já protege)."""
-    return get_object_or_404(Lot, pk=lot_pk)
+    do Lot vira "quem abriu". T3: escopado por empresa via ``Lot.objects``
+    (EXPLÍCITO — o _default_manager voltou a ser o cru; ver estoque/models.py):
+    lote de outra empresa é 404, como se não existisse."""
+    return get_object_or_404(Lot.objects, pk=lot_pk)
 
 
 def _extract_gb(text: str) -> str:
@@ -871,7 +872,8 @@ def remove_entry(request, lot_pk, pk):
     # hoje preservado para o gerente; antes qualquer um removia de lote fechado).
     if not lot.is_open and not request.membership.has_role('manager'):
         raise PermissionDenied('Lote fechado: remoção é ação de gerente.')
-    entry = get_object_or_404(InventoryEntry, pk=pk, lot=lot)
+    # InventoryEntry.objects EXPLÍCITO: escopo por empresa (o default é cru).
+    entry = get_object_or_404(InventoryEntry.objects, pk=pk, lot=lot)
     qty   = max(1, int(request.POST.get('qty') or 1))
 
     if qty >= entry.quantity:

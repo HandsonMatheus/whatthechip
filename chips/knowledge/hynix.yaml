@@ -41,6 +41,7 @@ maps:
   HYX_EMCP_NAND_CAP:
   - ['16', 16GB, '']
   - ['17', 16GB, '']
+  - ['18', 16GB, '']
   - ['26', 32GB, '']
   - ['27', 32GB, '']
   - ['32', 4GB, '']
@@ -97,6 +98,7 @@ maps:
   - ['15', 128GB, '']
   - ['16', 128GB, '']
   - ['21', 256GB, '']
+  - ['22', 256GB, '']
   - ['53', 64GB, '']
   - ['54', 64GB, '']
   HYX_H9HR_NAND_CAP:
@@ -531,7 +533,7 @@ families:
   decode_gen_len: 2
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'uMCP SK Hynix com LPDDR4X (H9HQ). Chip combinado UFS 2.1 + RAM — geração premium. pn[4:6] = capacidade NAND: 15/16=128GB · 21=256GB · 53/54=64GB. pn[6:8] = capacidade RAM: AC=4GB · AD=3GB · AE=6GB · AF=8GB (mapa compartilhado com H9HP). ⚠ UFS (não eMMC): requer bancada UFS dedicada — incompatível com equipamento eMMC. ⚠ Sem 32GB na linha H9HQ — UFS+LPDDR4X é segmento premium, base é 64GB. Ex: H9HQ15ACPMADAR-KEM = 128GB UFS + 4GB LPDDR4X ✓ Ex: H9HQ21AECMADAR-KEM = 256GB UFS + 6GB LPDDR4X ✓ Destino: bancada uMCP/UFS (equipamento específico obrigatório).'
+  tip: 'uMCP SK Hynix com LPDDR4X (H9HQ). Chip combinado UFS 2.1 + RAM — geração premium. pn[4:6] = capacidade NAND: 15/16=128GB · 21/22=256GB · 53/54=64GB. pn[6:8] = capacidade RAM: AC=4GB · AD=3GB · AE=6GB · AF=8GB (mapa compartilhado com H9HP). ⚠ UFS (não eMMC): requer bancada UFS dedicada — incompatível com equipamento eMMC. ⚠ Sem 32GB na linha H9HQ — UFS+LPDDR4X é segmento premium, base é 64GB. Ex: H9HQ15ACPMADAR-KEM = 128GB UFS + 4GB LPDDR4X ✓ Ex: H9HQ21AECMADAR-KEM = 256GB UFS + 6GB LPDDR4X ✓ Ex: H9HQ22AECMMDAR-KEM = 256GB UFS + 6GB LPDDR4X ✓ (chave ''22'' achada 2026-07-09 — Preduo.com + catálogo de distribuidor concordam em "254 FBGA UFS 256GB LPDDR4X 48Gb"; adicionada ao mapa por corroboração dupla, mesmo padrão de pares adjacentes já visto em 15/16 e 53/54). Destino: bancada uMCP/UFS (equipamento específico obrigatório).'
   reasoning: ''
 - prefix: H9HR
   chip_type: uMCP
@@ -621,7 +623,7 @@ families:
   decode_gen_len: 2
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP SK Hynix com LPDDR3 (H9TQ). Chip combinado eMMC + RAM. pn[4:6] = capacidade NAND: 16/17=16GB · 26/27=32GB · 52=64GB · 64/65=8GB. pn[6:8] = capacidade RAM: A6=768MB · A8=1GB · AA=1.5GB · AB=2GB · AC=4GB · AD=3GB. ⚠ AA≠AB — não são sinônimos: AA=1.5GB (12Gbit, assimétrico, só existe emparelhado com NAND 64) é distinto de AB=2GB (16Gbit, emparelhado com NAND 17 e 64). Corrigido 2026-07-06: WinSource confirmou H9TQ64AAETMCUR-KUM = eMCP 8GB eMMC5.1 + 12Gb LPDDR3-1866; AB confirmado 2x independente (H9TQ17ABJTMCUR-KUM e H9TQ64ABJTMCUR-KUM, ambos 16Gb). ⚠ AC=4GB e AD=3GB (não invertido — ordem não é alfabética por tamanho). ⚠ Dois códigos NAND para mesma capacidade são normais: organização interna diferente. Ex: H9TQ52ACLT = 64GB NAND + 4GB LPDDR3. Destino: bancada eMCP (requer reballing + programação eMMC + LPDDR).'
+  tip: 'eMCP SK Hynix com LPDDR3 (H9TQ). Chip combinado eMMC + RAM. pn[4:6] = capacidade NAND: 16/17/18=16GB · 26/27=32GB · 52=64GB · 64/65=8GB. pn[6:8] = capacidade RAM: A6=768MB · A8=1GB · AA=1.5GB · AB=2GB · AC=4GB · AD=3GB. ⚠ AA≠AB — não são sinônimos: AA=1.5GB (12Gbit, assimétrico, só existe emparelhado com NAND 64) é distinto de AB=2GB (16Gbit, emparelhado com NAND 17 e 64). Corrigido 2026-07-06: WinSource confirmou H9TQ64AAETMCUR-KUM = eMCP 8GB eMMC5.1 + 12Gb LPDDR3-1866; AB confirmado 2x independente (H9TQ17ABJTMCUR-KUM e H9TQ64ABJTMCUR-KUM, ambos 16Gb). ⚠ AC=4GB e AD=3GB (não invertido — ordem não é alfabética por tamanho). ⚠ Dois (ou três) códigos NAND para mesma capacidade são normais: organização interna diferente. Chave ''18'' achada 2026-07-09 (H9TQ18ABJTMCUR-KTM) — Preduo + Puris concordam de forma independente em "16+16" (16GB eMMC + 16Gb÷8=2GB LPDDR3), mapa HYX_EMCP_NAND_CAP (compartilhado com H9TP) atualizado. Ex: H9TQ52ACLT = 64GB NAND + 4GB LPDDR3. Destino: bancada eMCP (requer reballing + programação eMMC + LPDDR).'
   reasoning: ''
 - prefix: HKMAG
   chip_type: UFS

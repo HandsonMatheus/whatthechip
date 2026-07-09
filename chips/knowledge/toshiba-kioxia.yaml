@@ -13,18 +13,28 @@ maps:
   - [0CB, 128GB, '']
   - [0T8, 128GB, '']
   - [4D1, 2GB, '']
+  - [5A1, 4GB, '']
   - [5D1, 4GB, '']
   - [5D2, 8GB, '']
+  - [6A2, 8GB, '']
   - [6C1, 8GB, '']
   - [6D1, 8GB, '']
+  - [7A2, 16GB, '']
+  - [7B2, 16GB, '']
   - [7C1, 16GB, '']
   - [7C2, 16GB, '']
   - [7D2, 16GB, '']
+  - [8A4, 32GB, '']
+  - [8B4, 32GB, '']
   - [8C2, 32GB, '']
   - [8C4, 32GB, '']
   - [8D4, 32GB, '']
+  - [8T4, 32GB, '']
+  - [9A8, 64GB, '']
+  - [9B8, 64GB, '']
   - [9C4, 64GB, '']
   - [9C8, 64GB, '']
+  - [9T8, 64GB, '']
   THGBX_CAP:
   - [7B2, 16GB, '']
   - [7D2, 16GB, '']
@@ -37,6 +47,8 @@ maps:
   - [T1, 256GB, '']
   - [T2, 512GB, '']
   THGBM_GEN:
+  - [5, eMMC 4.41, '']
+  - [A, eMMC 4.5, '']
   - [B, eMMC 5.0, '']
   - [D, eMMC 5.0, '']
   - [F, eMMC 5.0, '']
@@ -63,8 +75,8 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC Toshiba / Kioxia — armazenamento Flash puro, sem RAM embutida. Prefixo THGBM cobre chips pré-2019 (Toshiba) e pós-2019 (Kioxia). Geração automática: pn[5] → N/T/F/B/D=eMMC 5.0 | H/J/U/G=eMMC 5.1 (D e G confirmados 2026-07-08 via datasheet oficial Toshiba/TAEC e tabela de produto Mouser). ⚠ Separe por geração: 5.1 vale ~15-25% a mais que 5.0. Capacidade: pn[7:10] → chave 3-chars → THGBM_CAP: 5D1=4GB · 5D2=8GB · 6C1=8GB · 6D1=8GB · 7C1=16GB · 7C2=16GB · 7D2=16GB · 8C2=32GB · 8C4=32GB · 8D4=32GB · 9C4=64GB · 9C8=64GB · 0C8=128GB · 0CB=128GB · 0T8=128GB (0C8 e 0T8 confirmados 2026-07-08). ⚠ Chaves não mapeadas (ex: 4D4, 6A2, 8D2) ficam com capacity=null — confirmar via Octopart/distribuidor e adicionar ao THGBM_CAP. Pacote: BGA153 (11.5×13mm). Interface paralela eMMC — NUNCA confundir com socket UFS (THGJF/THGAF/KLUE). Destino: bancada reacondicional Flash eMMC (separar por geração).'
-  reasoning: '["T=Toshiba · H=NAND tipo H · G=geração G · B=bus 8-bit · M=mobile", "pn[5]: código de geração NAND — N/T/F/B/D=eMMC 5.0 · H/J/U/G=eMMC 5.1", "pn[6]=G: constante identificadora de processo (sem decode)", "pn[7:10]: chave composta 3-chars → capacidade total (ver THGBM_CAP)", "pn[7]: densidade/die — 5=32Gb(4GB) · 6=64Gb(8GB) · 7=128Gb(16GB) · 8=64Gb(8GB) · 9=64Gb(8GB)", "pn[8]: tipo de stack — C/D/A/J/K (sem impacto na capacidade total)", "pn[9]: número de dies — 1/2/4/8", "pn[10]: tier de qualidade (L/K/E/J) — sem decode de capacidade", "pn[11:13]=BA: package BGA153", "pn[13]: I/O voltage — I=1.8V · U=dual-voltage 1.8/3.3V", "2026-07-08: D=eMMC5.0 e 0C8=128GB confirmados via tabela oficial Toshiba/TAEC (Mouser Toshiba_FAB_eMMC-1511507.pdf) e datasheet THGBMNG5D1LBAIL (LCSC C391255, rev1.0 2018); 8D4=32GB reconfirmado via datasheet THGBMBG8D4KBAIR (rev1.1 2013); G=eMMC5.1 e 0T8=128GB via THGBMGT0T8LBAIG (Octopart/Avnet/Puris, Tier2-3, sem datasheet individual — ver notes do known_part)"]'
+  tip: 'eMMC Toshiba / Kioxia — armazenamento Flash puro, sem RAM embutida. Prefixo THGBM cobre chips pré-2019 (Toshiba) e pós-2019 (Kioxia), e DUAS eras de encoding: letra (2015+, BiCS, 5.0/5.1) e dígito/letra-A (2012-2013, FG-NAND, 4.41/4.5 — série Premium/Supreme/Prime). Geração automática: pn[5] → N/T/F/B/D=eMMC 5.0 · H/J/U/G=eMMC 5.1 · 5=eMMC 4.41(α) · A=eMMC 4.5 (5 e A confirmados 2026-07-09 via tabela oficial Toshiba semicon-storage.co.jp "Card Interface e-MMC" dez/2013, mirror Arrow.com — ambas VERSÕES DISTINTAS, não confundir: 4.41α ⊂ Premium/Supreme "5G..."/"5G..." vs 4.5 ⊂ mesma linha "AG..."). ⚠ Separe por geração: 5.1 vale ~15-25% a mais que 5.0; 4.41/4.5 são MAIS ANTIGAS que 5.0/5.1 (2012-13 vs 2015+). Capacidade: pn[7:10] → chave 3-chars → THGBM_CAP: 5A1=4GB · 5D1=4GB · 5D2=8GB · 6A2=8GB · 6C1=8GB · 6D1=8GB · 7A2=16GB · 7B2=16GB · 7C1=16GB · 7C2=16GB · 7D2=16GB · 8A4=32GB · 8B4=32GB · 8C2=32GB · 8C4=32GB · 8D4=32GB · 8T4=32GB · 9A8=64GB · 9B8=64GB · 9C4=64GB · 9C8=64GB · 9T8=64GB · 0C8=128GB · 0CB=128GB · 0T8=128GB (0C8 e 0T8 confirmados 2026-07-08; 5A1/6A2/7A2/7B2/8A4/8B4/8T4/9A8/9B8/9T8 confirmados 2026-07-09 na mesma tabela oficial — cobre as classes Premium "xAy"/Supreme "xBy"/Prime "xTy" da série 4GB-64GB). Pacote: BGA153 (11.5×13mm) ou variantes WFBGA/VFBGA169/TFBGA169 conforme classe/capacidade — não afeta decode. Interface paralela eMMC — NUNCA confundir com socket UFS (THGJF/THGAF/KLUE). Destino: bancada reacondicional Flash eMMC (separar por geração).'
+  reasoning: '["T=Toshiba · H=NAND tipo H · G=geração G · B=bus 8-bit · M=mobile", "pn[5]: código de geração NAND — N/T/F/B/D=eMMC 5.0 · H/J/U/G=eMMC 5.1 · 5=eMMC 4.41(α) · A=eMMC 4.5", "pn[6]=G: constante identificadora de processo (sem decode)", "pn[7:10]: chave composta 3-chars → capacidade total (ver THGBM_CAP)", "pn[7]: densidade/die — 5=32Gb(4GB) · 6=64Gb(8GB) · 7=128Gb(16GB) · 8=64Gb(8GB) · 9=64Gb(8GB)", "pn[8]: tipo de stack — A/B/C/D/J/K/T (sem impacto na capacidade total — confirmado 2x: 7A2/7B2 ambos 16GB, 8A4/8B4/8T4 ambos 32GB, 9A8/9B8/9T8 ambos 64GB, mesmo padrão de A/B/T sendo classe comercial Premium/Supreme/Prime, não capacidade)", "pn[9]: número de dies — 1/2/4/8", "pn[10]: tier de qualidade (L/K/E/J/G) — sem decode de capacidade", "pn[11:13]=BA: package BGA153", "pn[13]: I/O voltage — I=1.8V · U=dual-voltage 1.8/3.3V", "2026-07-08: D=eMMC5.0 e 0C8=128GB confirmados via tabela oficial Toshiba/TAEC (Mouser Toshiba_FAB_eMMC-1511507.pdf) e datasheet THGBMNG5D1LBAIL (LCSC C391255, rev1.0 2018); 8D4=32GB reconfirmado via datasheet THGBMBG8D4KBAIR (rev1.1 2013); G=eMMC5.1 e 0T8=128GB via THGBMGT0T8LBAIG (Octopart/Avnet/Puris, Tier2-3, sem datasheet individual — ver notes do known_part)", "2026-07-09: 5=eMMC4.41(α) confirmado via datasheet completo THGBM5G6A2JBAIR (boardcon.com, PDF oficial Toshiba jun/2012, rev0.2) — 8GB, chave 6A2; A=eMMC4.5 + TODA a tabela de capacidade 4GB-64GB (5A1/6A2/7A2/7B2/8A4/8B4/8T4/9A8/9B8/9T8) confirmados via página oficial de produto Toshiba semicon-storage.co.jp \"Card Interface : e-MMC\" (mirror Arrow.com, capturada dez/2013) — tabela completa com PN+capacidade+classe+versão+pacote pras 3 classes Premium/Supreme/Prime; classe Prime (7G..., ex. THGBM7G8T4JBAIR) tem capacidade confirmada mas versão eMMC não ficou clara na tabela — pn[5]=7 NÃO adicionado ao THGBM_GEN por falta de confirmação, só a capacidade (8T4/9T8) entrou"]'
 - prefix: TYC
   chip_type: eMCP
   subtype: LPDDR2

@@ -129,6 +129,11 @@ class Buyer(models.Model):
         verbose_name_plural = 'Compradores'
         ordering = ['name']
         base_manager_name = 'all_companies'
+        # default = CRU (ver estoque/models.py: a validação de UniqueConstraint
+        # do Django 5 usa _default_manager — fail-closed ali quebrava o admin
+        # de plataforma com CompanyScopeMissing, bug 2026-07-09). O caminho
+        # escopado continua sendo o EXPLÍCITO: Model.objects.
+        default_manager_name = 'all_companies'
         constraints = [
             models.UniqueConstraint(fields=['company', 'name'],
                                     name='unique_buyer_company_name'),
@@ -174,6 +179,11 @@ class PriceList(models.Model):
         verbose_name_plural = 'Listas de preços'
         ordering = ['buyer__name', 'brand__name']
         base_manager_name = 'all_companies'
+        # default = CRU (ver estoque/models.py: a validação de UniqueConstraint
+        # do Django 5 usa _default_manager — fail-closed ali quebrava o admin
+        # de plataforma com CompanyScopeMissing, bug 2026-07-09). O caminho
+        # escopado continua sendo o EXPLÍCITO: Model.objects.
+        default_manager_name = 'all_companies'
         constraints = [
             models.UniqueConstraint(fields=['buyer', 'brand'],
                                     name='unique_pricelist_buyer_brand'),
@@ -280,6 +290,11 @@ class Price(models.Model):
         verbose_name_plural = 'Preços'
         ordering = ['price_list', 'kind', 'gen', 'tier_value']
         base_manager_name = 'all_companies'
+        # default = CRU (ver estoque/models.py: a validação de UniqueConstraint
+        # do Django 5 usa _default_manager — fail-closed ali quebrava o admin
+        # de plataforma com CompanyScopeMissing, bug 2026-07-09). O caminho
+        # escopado continua sendo o EXPLÍCITO: Model.objects.
+        default_manager_name = 'all_companies'
         indexes = [
             models.Index(fields=['company', 'kind', 'gen'],
                          name='price_company_kind_gen'),
@@ -424,6 +439,11 @@ class LotPricing(models.Model):
         verbose_name_plural = 'Valorações de lote (congeladas)'
         ordering = ['-created_at']
         base_manager_name = 'all_companies'
+        # default = CRU (ver estoque/models.py: a validação de UniqueConstraint
+        # do Django 5 usa _default_manager — fail-closed ali quebrava o admin
+        # de plataforma com CompanyScopeMissing, bug 2026-07-09). O caminho
+        # escopado continua sendo o EXPLÍCITO: Model.objects.
+        default_manager_name = 'all_companies'
         indexes = [models.Index(fields=['company', 'lot'],
                                 name='lotpricing_company_lot')]
 
@@ -497,6 +517,11 @@ class PriceChangeRequest(models.Model):
         verbose_name_plural = 'Mudanças de preço (revisão)'
         ordering = ['-created_at']
         base_manager_name = 'all_companies'
+        # default = CRU (ver estoque/models.py: a validação de UniqueConstraint
+        # do Django 5 usa _default_manager — fail-closed ali quebrava o admin
+        # de plataforma com CompanyScopeMissing, bug 2026-07-09). O caminho
+        # escopado continua sendo o EXPLÍCITO: Model.objects.
+        default_manager_name = 'all_companies'
         constraints = [
             models.UniqueConstraint(fields=['price'],
                                     condition=Q(review_status='pending'),
