@@ -22,6 +22,15 @@ O que ele barra (a tabela "classe de erro → trava" do I18N.md §7):
   6. Espaço nas bordas divergente (msgid termina com espaço e msgstr não —
      quebra concatenação em template/JS).
   7. ``.mo`` ausente ou mais velho que o ``.po`` (tradução que "não aparece").
+  8. **COMPLETUDE (a trava anti-"esqueci"): string MARCADA no código que não
+     existe no catálogo de algum idioma.** Extrai os msgids do código-fonte
+     (``chips/i18n_source.py``, descoberta dinâmica — cobre app novo) e exige
+     cada um em TODO ``.po``. É o que impede um chat de marcar e não traduzir:
+     a suíte (PortaoDeCatalogoTests) roda este comando → fica vermelha.
+  9. **PT NÃO-MARCADO em template** (heurística por diacrítico fora de
+     ``{% trans %}``): texto cru esquecido vira erro. Exceção deliberada
+     (ex.: dump de debug) leva ``i18n-ok`` num comentário NA LINHA — a
+     exceção fica documentada no código, não escondida aqui.
 
 Parser .po próprio (sem dependência): cobre o subconjunto usado no projeto
 (msgid/msgstr/flags/multilinha). Uso:
@@ -166,7 +175,25 @@ class Command(BaseCommand):
             domains.update(p.stem for p in d.glob('*.po')) if d.exists() else None
         domains = sorted(domains) or ['django']
 
+        # Regra 8 (COMPLETUDE): msgids extraídos do CÓDIGO — todo catálogo
+        # precisa contê-los. Import tardio: a lib usa templatize (setup pronto).
+        from chips.i18n_source import (extract_django, extract_djangojs,
+                                       unmarked_pt_in_templates)
+        source_ids = {
+            'django':   extract_django(with_locations=True),
+            'djangojs': extract_djangojs(with_locations=True),
+        }
+
         total_err = 0
+
+        # Regra 9: PT cru (não marcado) em template — antes dos catálogos,
+        # porque string não marcada nem chega a virar msgid.
+        for f, line, trecho in unmarked_pt_in_templates():
+            self.stderr.write(self.style.ERROR(
+                f'✗ NÃO-MARCADA {f}:{line} «{trecho}» — texto PT fora de '
+                f'{{% trans %}}. Marque (MULTILANGUAGE.md §7) ou, se for '
+                f'deliberado (debug), anote "i18n-ok" na linha.'))
+            total_err += 1
         for code in langs:
             locdir = base / 'locale' / to_locale(code) / 'LC_MESSAGES'
             for domain in domains:
@@ -181,6 +208,16 @@ class Command(BaseCommand):
                     continue
                 entries = parse_po(po_path)
                 n_err = 0
+                # Regra 8: completude — marcado no código ⊆ catálogo.
+                po_ids = {e['msgid'] for e in entries}
+                for msgid, locs in sorted(source_ids.get(domain, {}).items()):
+                    if msgid not in po_ids:
+                        onde = ', '.join(f'{f}:{l}' for f, l in locs[:3])
+                        self.stderr.write(self.style.ERROR(
+                            f'✗ {tag}: FALTA no catálogo «{msgid[:60]}» '
+                            f'(marcada em {onde}) — string marcada sem '
+                            f'tradução. Rode a rotina (MULTILANGUAGE.md §7.2).'))
+                        n_err += 1
                 for e in entries:
                     probs = check_entry(e)
                     if opts['allow_fuzzy']:

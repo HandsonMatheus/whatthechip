@@ -1455,14 +1455,17 @@ table.est-table td { padding: var(--s5) var(--s5); }
   }
 
   function buildDebugText(d) {
+    // Dump de DEBUG (clipboard p/ suporte): fica em pt-br de propósito —
+    // quem lê é a plataforma. Linhas com acento levam "i18n-ok" p/ o
+    // detector de PT não-marcado do check_translations (I18N.md §7.3).
     var lines = [];
     var now   = new Date().toLocaleString('pt-BR');
     var sep   = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
     lines.push('=== WhatTheChip Debug (Estoque) ===');
     lines.push('PN:      ' + (d.pn || ''));
-    lines.push('Horário: ' + now);
+    lines.push('Horário: ' + now);                 // i18n-ok (debug)
     lines.push('');
-    lines.push(sep + ' RESULTADO VISÍVEL');
+    lines.push(sep + ' RESULTADO VISÍVEL');        // i18n-ok (debug)
     lines.push('Tipo:        ' + (d.chip_type    || '—'));
     lines.push('Subtipo:     ' + (d.subtype       || '—'));
     lines.push('Marca:       ' + (d.brand         || '—'));
@@ -1478,13 +1481,13 @@ table.est-table td { padding: var(--s5) var(--s5); }
     }
     lines.push('Sufixo:      ' + (d.suffix_note   || '—'));
     var confKey = (d.grammar_complete && d.confidence === 'estimated') ? 'grammar' : (d.confidence || '—');
-    var CONF_LABEL_EST = {'confirmed':'✅ Confirmado','manual':'✏️ Manual','distributor':'🏪 Distribuidor','grammar':'📐 Gramática','estimated':'~ Estimado'};
-    lines.push('Confiança:   ' + (CONF_LABEL_EST[confKey] || confKey));
+    var CONF_LABEL_EST = {'confirmed':'✅ Confirmado','manual':'✏️ Manual','distributor':'🏪 Distribuidor','grammar':'📐 Gramática','estimated':'~ Estimado'};   // i18n-ok (debug)
+    lines.push('Confiança:   ' + (CONF_LABEL_EST[confKey] || confKey));   // i18n-ok (debug)
     lines.push('Tip:         ' + (d.tip            || '—'));
     lines.push('');
-    lines.push(sep + ' MOTOR DE CLASSIFICAÇÃO');
+    lines.push(sep + ' MOTOR DE CLASSIFICAÇÃO');   // i18n-ok (debug)
     lines.push('Fonte:         ' + (d.classification_source || '—'));
-    lines.push('Família:       ' + (d.family_prefix          || '—'));
+    lines.push('Família:       ' + (d.family_prefix          || '—'));   // i18n-ok (debug)
     lines.push('known_exact:   ' + !!d.known_exact);
     lines.push('is_emcp:       ' + !!d.is_emcp);
     if (d.is_emcp) {

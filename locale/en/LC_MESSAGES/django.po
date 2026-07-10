@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WhatTheChip 1.0\n"
 "Report-Msgid-Bugs-To: eminerparaguay@gmail.com\n"
-"POT-Creation-Date: 2026-07-08 11:43\n"
-"PO-Revision-Date: 2026-07-08 11:43\n"
+"POT-Creation-Date: 2026-07-09 23:24\n"
+"PO-Revision-Date: 2026-07-09 23:24\n"
 "Last-Translator: WhatTheChip i18n <eminerparaguay@gmail.com>\n"
 "Language-Team: English\n"
 "Language: en\n"
@@ -13,6 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: pricing/views.py:286
 #, python-format
 msgid ""
 "%(item)s → %(state)s: enviado para REVISÃO do WhatTheChip — passa a valer "
@@ -21,85 +22,111 @@ msgstr ""
 "%(item)s → %(state)s: sent for WhatTheChip REVIEW — takes effect after "
 "approval."
 
+#: estoque/templates/estoque/estoque.html:1126
 #, python-format
 msgid "%(n1)s tipos · %(n2)s un."
 msgstr "%(n1)s types · %(n2)s units"
 
+#: chips/templates/chips/partials/decode_card.html:9
 #, python-format
 msgid "(esperado: %(n)s caracteres)"
 msgstr "(expected: %(n)s characters)"
 
+#: estoque/templates/estoque/painel.html:70
 msgid "1 · leia o chip"
 msgstr "1 · read the chip"
 
+#: estoque/templates/estoque/painel.html:70
 msgid "2 · digite o PN"
 msgstr "2 · type the PN"
 
+#: estoque/templates/estoque/painel.html:70
 msgid "3 · lance no lote aberto"
 msgstr "3 · log it into the open lot"
 
+#: estoque/templates/estoque/painel.html:82
 #, python-format
 msgid "<b>%(n)s</b> tipos"
 msgstr "<b>%(n)s</b> types"
 
+#: estoque/templates/estoque/painel.html:83
 #, python-format
 msgid "<b>%(n)s</b> unidades"
 msgstr "<b>%(n)s</b> units"
 
+#: estoque/templates/estoque/estoque.html:1033
 msgid "ABERTO"
 msgstr "OPEN"
 
+#: estoque/templates/estoque/lotes.html:342
 msgid "Aberto"
 msgstr "Open"
 
+#: estoque/templates/estoque/lotes.html:366
 #, python-format
 msgid "Aberto em %(d)s"
 msgstr "Opened on %(d)s"
 
+#: estoque/templates/estoque/painel.html:107
 msgid "Abra o lote do dia para a bancada começar a lançar chips."
 msgstr "Open today's lot so the bench can start logging chips."
 
+#: estoque/templates/estoque/lotes.html:376
 msgid "Abrir"
 msgstr "Open"
 
+#: templates/base.html:53
 msgid "Abrir menu"
 msgstr "Open menu"
 
+#: estoque/templates/estoque/painel.html:108
 msgid "Abrir um lote"
 msgstr "Open a lot"
 
+#: templates/registration/login.html:134
 msgid "Acesso ao Painel"
 msgstr "Panel Access"
 
+#: templates/registration/login.html:159
 msgid "Acesso restrito a operadores cadastrados."
 msgstr "Access restricted to registered operators."
 
+#: estoque/templates/estoque/partials/confirm_card.html:164
 msgid "Adicionar ao estoque"
 msgstr "Add to stock"
 
+#: templates/base.html:61
 msgid "Adicionar chip"
 msgstr "Add chip"
 
+#: templates/base.html:158
 msgid "Adicionar chip ao banco"
 msgstr "Add chip to the database"
 
+#: tenancy/models.py:103
 msgid "Admin da empresa"
 msgstr "Company admin"
 
+#: estoque/templates/estoque/partials/confirm_card.html:110
 msgid "Aguarda revisão do gestor · reconhecido por gramática"
 msgstr "Awaiting manager review · recognized by grammar"
 
+#: pricing/templates/pricing/partner_list.html:70
 msgid ""
 "Aguardando aprovação do WhatTheChip — o valor vigente ainda é o exibido."
 msgstr ""
 "Awaiting WhatTheChip approval — the value in effect is still the one shown."
 
+#: templates/base.html:94
 msgid "Alternar modo escuro/claro"
 msgstr "Toggle dark/light mode"
 
+#: pricing/templates/pricing/partner_notifications.html:21
+#: pricing/models.py:477
 msgid "Aprovado"
 msgstr "Approved"
 
+#: pricing/templates/pricing/partner_notifications.html:8
 msgid ""
 "As decisões do WhatTheChip sobre as suas mudanças de preço — aprovadas passam"
 " a valer na hora; rejeitadas mantêm o valor anterior."
@@ -107,25 +134,40 @@ msgstr ""
 "WhatTheChip's decisions on your price changes — approved ones take effect "
 "immediately; rejected ones keep the previous value."
 
+#: pricing/templates/pricing/partner_home.html:6
 #, python-format
 msgid "Bem-vindo, <strong style=\"font-weight:600;\">%(name)s</strong>"
 msgstr "Welcome, <strong style=\"font-weight:600;\">%(name)s</strong>"
 
+#: estoque/templates/estoque/partials/confirm_card.html:79
+#: estoque/templates/estoque/partials/confirm_card.html:84
+#: estoque/templates/estoque/partials/confirm_card.html:85
+#: estoque/templates/estoque/partials/confirm_card.html:86
+#: estoque/templates/estoque/partials/confirm_card.html:87
+#: estoque/templates/estoque/partials/confirm_card.html:88
+#: estoque/templates/estoque/partials/confirm_card.html:89
+#: estoque/templates/estoque/partials/confirm_card.html:90
 msgid "CAIXA FÍSICA"
 msgstr "PHYSICAL BIN"
 
+#: estoque/templates/estoque/partials/confirm_card.html:108
 msgid "CONFERÊNCIA"
 msgstr "REVIEW"
 
+#: templates/base.html:208 estoque/templates/estoque/estoque.html:1232
+#: estoque/templates/estoque/partials/confirm_card.html:175
 msgid "Cancelar"
 msgstr "Cancel"
 
+#: chips/templates/chips/partials/decode_card.html:104
 msgid "Capacidade"
 msgstr "Capacity"
 
+#: pricing/templates/pricing/partner_notifications.html:14
 msgid "Chip"
 msgstr "Chip"
 
+#: chips/templates/chips/partials/decode_card.html:252
 msgid ""
 "Chip fora das famílias catalogadas ou PN possivelmente mal lido "
 "(OCR/scanner). Confira o PN diretamente no encapsulamento e tente novamente. "
@@ -137,72 +179,95 @@ msgstr ""
 "prefix is unknown, the chip may be from an uncataloged manufacturer or a "
 "proprietary line."
 
+#: chips/templates/chips/partials/decode_card.html:21
 msgid "Chip identificado"
 msgstr "Chip identified"
 
+#: templates/base.html:159
 msgid ""
 "Chip não catalogado? Envie o PN — analisamos e adicionamos em até 48&nbsp;h."
 msgstr ""
 "Chip not cataloged? Send the PN — we analyze and add it within 48&nbsp;h."
 
+#: chips/templates/chips/partials/decode_card.html:233
 msgid "Chip não reconhecido"
 msgstr "Chip not recognized"
 
+#: estoque/templates/estoque/partials/confirm_card.html:168
 msgid "Chip não rentável — registra o descarte para auditoria"
 msgstr "Unprofitable chip — logs the disposal for auditing"
 
+#: pricing/templates/pricing/partner_home.html:18
 msgid "Chips cotados"
 msgstr "Quoted chips"
 
+#: pricing/templates/pricing/partner_home.html:10
 msgid "Chips sem cotação"
 msgstr "Chips without a quote"
 
+#: estoque/templates/estoque/estoque.html:1290
+#: estoque/templates/estoque/estoque.html:1325
 msgid "Clique Decodificar ou pressione Enter"
 msgstr "Click Decode or press Enter"
 
+#: pricing/templates/pricing/partner_base.html:158
 msgid "Comprador"
 msgstr "Buyer"
 
+#: estoque/views.py:447
 msgid "Confirmado"
 msgstr "Confirmed"
 
+#: pricing/views.py:277
 msgid "Conflito ao salvar — tente de novo."
 msgstr "Conflict while saving — try again."
 
+#: templates/base.html:64
 msgid "Contato"
 msgstr "Contact"
 
+#: templates/base.html:195
 msgid "Contexto (opcional)"
 msgstr "Context (optional)"
 
+#: estoque/templates/estoque/painel.html:88
 msgid "Continuar triagem"
 msgstr "Continue sorting"
 
+#: estoque/templates/estoque/estoque.html:1287
 msgid "Continue digitando"
 msgstr "Keep typing"
 
+#: chips/templates/chips/partials/decode_card.html:189
 msgid "Copia diagnóstico completo para o clipboard"
 msgstr "Copies the full diagnostic to the clipboard"
 
+#: estoque/templates/estoque/partials/confirm_card.html:177
 msgid "Copiar diagnóstico"
 msgstr "Copy diagnostic"
 
+#: pricing/templates/pricing/partner_list.html:64 pricing/models.py:87
 msgid "Cotado"
 msgstr "Quoted"
 
+#: pricing/templates/pricing/partner_home.html:26
 msgid "Cotados"
 msgstr "Quoted"
 
+#: pricing/templates/pricing/partner_home.html:14
 #, python-format
 msgid "Cotações com mais de %(staleness_days)s dias"
 msgstr "Quotes older than %(staleness_days)s days"
 
+#: estoque/templates/estoque/lotes.html:325
 msgid "Criar Lote"
 msgstr "Create Lot"
 
+#: estoque/templates/estoque/lotes.html:403
 msgid "Crie o primeiro lote usando o formulário acima."
 msgstr "Create the first lot using the form above."
 
+#: pricing/templates/pricing/partner_base.html:149
 msgid ""
 "Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre "
 "em USD."
@@ -210,93 +275,126 @@ msgstr ""
 "Reference exchange rate (ECB/market, ~daily). System prices are always in "
 "USD."
 
+#: chips/templates/chips/partials/decode_card.html:200
 msgid "Código FBGA não cadastrado — chip Micron na fila de análise"
 msgstr "FBGA code not registered — Micron chip queued for analysis"
 
+#: estoque/templates/estoque/partials/confirm_card.html:95
+#: estoque/templates/estoque/partials/confirm_card.html:95
 msgid "DESCARTE"
 msgstr "DISCARD"
 
+#: pricing/templates/pricing/partner_notifications.html:14
 msgid "Decidido em"
 msgstr "Decided on"
 
+#: pricing/templates/pricing/partner_notifications.html:14
 msgid "Decisão"
 msgstr "Decision"
 
+#: estoque/templates/estoque/estoque.html:1086
 msgid "Decodificar"
 msgstr "Decode"
 
+#: chips/templates/chips/partials/decode_card.html:98
 msgid "Densidade"
 msgstr "Density"
 
+#: estoque/templates/estoque/lotes.html:309
 msgid "Descrição (opcional)"
 msgstr "Description (optional)"
 
+#: estoque/templates/estoque/estoque.html:1185
 msgid "Desfazer"
 msgstr "Undo"
 
+#: estoque/templates/estoque/estoque.html:1284
 msgid "Digite o Part Number acima"
 msgstr "Type the Part Number above"
 
+#: chips/templates/chips/partials/decode_card.html:83
+#: chips/templates/chips/partials/decode_card.html:116
 msgid "Dispositivo"
 msgstr "Device"
 
+#: estoque/templates/estoque/estoque.html:1090
+#: estoque/templates/estoque/estoque.html:1090
 msgid "Ditar por voz"
 msgstr "Dictate by voice"
 
+#: chips/templates/chips/partials/decode_card.html:165
 msgid "Documentação →"
 msgstr "Documentation →"
 
+#: pricing/templates/pricing/partner_home.html:34
 msgid "Editar"
 msgstr "Edit"
 
+#: estoque/templates/estoque/estoque.html:1359
 msgid "Em estoque:"
 msgstr "In stock:"
 
+#: core/settings.py:143
 msgid "English"
 msgstr "English"
 
+#: templates/base.html:110 templates/base.html:114
+#: templates/registration/login.html:156
 msgid "Entrar"
 msgstr "Sign in"
 
+#: chips/templates/chips/partials/decode_card.html:222
 msgid "Enviado para a fila de revisão noturna"
 msgstr "Sent to the nightly review queue"
 
+#: chips/templates/chips/partials/decode_card.html:175
 msgid "Enviado para revisão"
 msgstr "Sent for review"
 
+#: templates/base.html:347
 msgid "Enviando…"
 msgstr "Sending…"
 
+#: pricing/templates/pricing/partner_list.html:89
 msgid "Enviar p/ revisão"
 msgstr "Send for review"
 
+#: templates/base.html:210
 msgid "Enviar para análise"
 msgstr "Send for analysis"
 
+#: estoque/templates/estoque/partials/confirm_card.html:166
 msgid "Enviar para conferência"
 msgstr "Send for review"
 
+#: templates/base.html:361
 msgid "Erro de conexão — tente novamente."
 msgstr "Connection error — try again."
 
+#: estoque/templates/estoque/estoque.html:1266
 msgid "Erro do servidor"
 msgstr "Server error"
 
+#: pricing/templates/pricing/partner_list.html:12
 msgid ""
 "Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em USD."
 msgstr ""
 "Choose the state of each line; <strong>Quoted</strong> requires the price in "
 "USD."
 
+#: templates/base.html:188
 msgid "Escolher imagem…"
 msgstr "Choose image…"
 
+#: core/settings.py:142
 msgid "Español"
 msgstr "Spanish"
 
+#: estoque/templates/estoque/estoque.html:1216
 msgid "Esta ação não pode ser desfeita."
 msgstr "This action cannot be undone."
 
+#: pricing/templates/pricing/partner_list.html:79
 msgid ""
 "Esta mudança será enviada para REVISÃO do WhatTheChip e só passa a valer após"
 " a aprovação. Confirmar o envio?"
@@ -304,15 +402,20 @@ msgstr ""
 "This change will be sent for WhatTheChip REVIEW and only takes effect after "
 "approval. Confirm submission?"
 
+#: pricing/templates/pricing/partner_list.html:26
+#: pricing/templates/pricing/partner_list.html:50
 msgid "Estado"
 msgstr "State"
 
+#: pricing/views.py:235
 msgid "Estado \"Cotado\" exige o preço em USD."
 msgstr "The \"Quoted\" state requires the price in USD."
 
+#: pricing/views.py:246
 msgid "Estado inválido — recarregue a página."
 msgstr "Invalid state — reload the page."
 
+#: estoque/templates/estoque/partials/pending_feedback.html:8
 msgid ""
 "Este PN <strong>não está confirmado no banco</strong>, então não entrou no "
 "estoque."
@@ -320,6 +423,7 @@ msgstr ""
 "This PN <strong>is not confirmed in the database</strong>, so it did not "
 "enter stock."
 
+#: chips/templates/chips/partials/decode_card.html:55
 msgid ""
 "Este Part Number pertence a uma família <strong>nunca documentada "
 "oficialmente</strong>: não consta em nenhum catálogo SK Hynix, datasheet, "
@@ -329,52 +433,74 @@ msgstr ""
 "documented</strong>: it does not appear in any SK Hynix catalog, datasheet, "
 "Octopart, or verified distributor."
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:8
 msgid "Este chip"
 msgstr "This chip"
 
+#: estoque/views.py:738
 msgid "Este lote está fechado. Reabra-o para adicionar chips."
 msgstr "This lot is closed. Reopen it to add chips."
 
+#: pricing/templates/pricing/partner_list.html:13
 msgid "Estes preços valem para toda marca que não tem tabela própria."
 msgstr "These prices apply to every brand without its own table."
 
+#: estoque/templates/estoque/base_estoque.html:112
+#: estoque/templates/estoque/estoque.html:4
 msgid "Estoque"
 msgstr "Stock"
 
+#: estoque/templates/estoque/estoque.html:1125
 msgid "Estoque do lote"
 msgstr "Lot stock"
 
+#: estoque/templates/estoque/estoque.html:1156
 msgid "Exportar"
 msgstr "Export"
 
+#: estoque/templates/estoque/estoque.html:1031
 msgid "FECHADO"
 msgstr "CLOSED"
 
+#: estoque/templates/estoque/partials/confirm_card.html:109
 msgid "FILA"
 msgstr "QUEUE"
 
+#: pricing/templates/pricing/partner_list.html:49
 msgid "Faixa"
 msgstr "Tier"
 
+#: chips/templates/chips/partials/decode_card.html:17
 msgid "Família identificada — sem documentação pública"
 msgstr "Family identified — no public documentation"
 
+#: estoque/templates/estoque/lotes.html:344
 msgid "Fechado"
 msgstr "Closed"
 
+#: estoque/templates/estoque/lotes.html:368
 #, python-format
 msgid "Fechado em %(d2)s"
 msgstr "Closed on %(d2)s"
 
+#: templates/base.html:161 estoque/templates/estoque/estoque.html:1186
+#: estoque/templates/estoque/estoque.html:1202
+#: estoque/templates/estoque/lotes.html:383
+#: estoque/templates/estoque/partials/pending_feedback.html:18
+#: estoque/templates/estoque/partials/rejected_feedback.html:16
+#: estoque/templates/estoque/partials/unknown_feedback.html:13
 msgid "Fechar"
 msgstr "Close"
 
+#: estoque/templates/estoque/estoque.html:1161
 msgid "Fechar Lote"
 msgstr "Close Lot"
 
+#: estoque/templates/estoque/estoque.html:1129
 msgid "Filtrar por PN…"
 msgstr "Filter by PN…"
 
+#: estoque/templates/estoque/partials/pending_feedback.html:9
 #, python-format
 msgid ""
 "Foi enviado para a <strong>fila de conferência</strong> do gestor (qtd. "
@@ -383,149 +509,208 @@ msgstr ""
 "It was sent to the manager's <strong>review queue</strong> (accumulated qty: "
 "%(qty)s)."
 
+#: chips/templates/chips/partials/decode_card.html:170
 msgid "Fonte ↗"
 msgstr "Source ↗"
 
+#: templates/base.html:183
 msgid "Foto do chip"
 msgstr "Chip photo"
 
+#: pricing/templates/pricing/partner_list.html:49
 msgid "Geração"
 msgstr "Generation"
 
+#: estoque/views.py:469
 msgid "Geração não rentável"
 msgstr "Unprofitable generation"
 
+#: tenancy/models.py:102
 msgid "Gerente"
 msgstr "Manager"
 
+#: chips/templates/chips/partials/decode_card.html:56
 msgid "Hipóteses:"
 msgstr "Hypotheses:"
 
+#: chips/labels.py:29
 msgid "INDETERMINADO"
 msgstr "UNDETERMINED"
 
+#: estoque/views.py:497
 msgid "Indeterminado (não avaliado)"
 msgstr "Undetermined (not assessed)"
 
+#: templates/base.html:340 chips/views.py:225
 msgid "Informe um Part Number válido (mín. 3 caracteres)."
 msgstr "Enter a valid Part Number (min. 3 characters)."
 
+#: chips/templates/chips/partials/decode_card.html:89
+#: chips/templates/chips/partials/decode_card.html:110
 msgid "Interface"
 msgstr "Interface"
 
+#: templates/base.html:59 pricing/templates/pricing/partner_base.html:143
+#: pricing/templates/pricing/partner_base.html:182
+#: pricing/templates/pricing/partner_home.html:3 pages/views.py:112
 msgid "Início"
 msgstr "Home"
 
+#: estoque/templates/estoque/estoque.html:1087
 msgid "Limpar"
 msgstr "Clear"
 
+#: pricing/views.py:218
 msgid "Linha inválida — recarregue a página."
 msgstr "Invalid line — reload the page."
 
+#: pricing/views.py:255
 msgid "Linha não existe mais — recarregue a página."
 msgstr "Line no longer exists — reload the page."
 
+#: templates/registration/login.html:7
 msgid "Login"
 msgstr "Login"
 
+#: estoque/templates/estoque/estoque.html:1024
+#: estoque/templates/estoque/estoque.html:1029
 msgid "Lote"
 msgstr "Lot"
 
+#: estoque/templates/estoque/estoque.html:1043
 msgid ""
 "Lote <strong>fechado</strong> — adições bloqueadas. Reabra para retomar a "
 "triagem."
 msgstr ""
 "Lot <strong>closed</strong> — additions blocked. Reopen to resume sorting."
 
+#: estoque/templates/estoque/painel.html:78
 msgid "Lote aberto — triagem em andamento"
 msgstr "Open lot — sorting in progress"
 
+#: estoque/templates/estoque/estoque.html:1022
+#: estoque/templates/estoque/lotes.html:4
+#: estoque/templates/estoque/lotes.html:298
 msgid "Lotes"
 msgstr "Lots"
 
+#: estoque/templates/estoque/painel.html:119
 msgid "Lotes abertos"
 msgstr "Open lots"
 
+#: pricing/templates/pricing/partner_home.html:26
 msgid "Marca"
 msgstr "Brand"
 
+#: templates/base.html:131 estoque/templates/estoque/estoque.html:1112
 msgid "Marcas suportadas"
 msgstr "Supported brands"
 
+#: pricing/templates/pricing/partner_notifications.html:14
 msgid "Mudança pedida"
 msgstr "Requested change"
 
+#: templates/base.html:73 templates/partials/lang_select.html:29
+#: templates/partials/lang_select.html:29
+#: templates/partials/lang_select.html:44
+#: templates/partials/lang_select.html:44
 msgid "Mudar idioma"
 msgstr "Change language"
 
+#: estoque/templates/estoque/painel.html:127
 msgid "Na fila de conferência"
 msgstr "In the review queue"
 
+#: pricing/views.py:260
 msgid "Nada a enviar — a linha já está assim."
 msgstr "Nothing to submit — the line is already like this."
 
+#: templates/base.html:45
 msgid "Navegação principal"
 msgstr "Main navigation"
 
+#: estoque/templates/estoque/partials/table_body.html:30
 msgid "Nenhum chip encontrado"
 msgstr "No chips found"
 
+#: estoque/templates/estoque/estoque.html:1102
 msgid "Nenhum chip lido ainda"
 msgstr "No chip read yet"
 
+#: estoque/templates/estoque/painel.html:105
 msgid "Nenhum lote aberto agora"
 msgstr "No lot open right now"
 
+#: estoque/templates/estoque/lotes.html:401
 msgid "Nenhum lote ainda"
 msgstr "No lots yet"
 
+#: pricing/templates/pricing/partner_notifications.html:31
 msgid ""
 "Nenhuma decisão ainda — suas mudanças enviadas aparecem aqui quando forem "
 "revisadas."
 msgstr "No decisions yet — your submitted changes appear here once reviewed."
 
+#: pricing/templates/pricing/partner_list.html:94
 msgid "Nenhuma linha"
 msgstr "No lines"
 
+#: pricing/templates/pricing/partner_home.html:37
 msgid "Nenhuma lista ainda — fale com a equipe WhatTheChip."
 msgstr "No lists yet — talk to the WhatTheChip team."
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:11
 msgid "Nenhuma unidade entrou no estoque"
 msgstr "No units entered stock"
 
+#: pricing/templates/pricing/partner_base.html:166
+#: pricing/templates/pricing/partner_notifications.html:3
+#: pricing/templates/pricing/partner_notifications.html:6
 msgid "Notificações"
 msgstr "Notifications"
 
+#: estoque/templates/estoque/lotes.html:304
 msgid "Novo Lote"
 msgstr "New Lot"
 
+#: estoque/templates/estoque/partials/confirm_card.html:114
 msgid "NÃO IDENTIFICADO"
 msgstr "NOT IDENTIFIED"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:9
+#: chips/labels.py:28
 msgid "NÃO RENTÁVEL"
 msgstr "NOT PROFITABLE"
 
+#: pricing/templates/pricing/partner_list.html:67 pricing/models.py:91
 msgid "Não compro"
 msgstr "Don't buy"
 
+#: pricing/templates/pricing/partner_list.html:65 pricing/models.py:88
 msgid "Não cotado"
 msgstr "Not quoted"
 
+#: pricing/templates/pricing/partner_list.html:66 pricing/models.py:89
 msgid "Não fabricado"
 msgstr "Not manufactured"
 
+#: templates/base.html:357
 msgid "Não foi possível enviar. Tente novamente."
 msgstr "Could not send. Try again."
 
+#: estoque/views.py:488
 msgid "Não rentável"
 msgstr "Not profitable"
 
+#: estoque/templates/estoque/partials/confirm_card.html:98
 msgid "Não rentável pela geração · reconhecido por gramática (não confirmado)"
 msgstr "Unprofitable by generation · recognized by grammar (not confirmed)"
 
+#: estoque/templates/estoque/partials/confirm_card.html:100
 msgid "Não rentável · resíduo eletrônico"
 msgstr "Not profitable · e-waste"
 
+#: chips/templates/chips/partials/decode_card.html:203
 #, python-format
 msgid ""
 "O código <strong>%(pn)s</strong> parece ser um <strong>código FBGA "
@@ -538,6 +723,7 @@ msgstr ""
 "registered for automatic enrichment via <em>micron.com/fbga-parts-"
 "decoder</em> in the nightly job."
 
+#: chips/templates/chips/partials/decode_card.html:240
 msgid ""
 "O prefixo <code>KAT</code> (ePoP Samsung) é suportado, mas outros "
 "<code>KA·</code> são geralmente chips customizados Samsung (ASIC sob "
@@ -547,15 +733,19 @@ msgstr ""
 "<code>KA·</code> are usually Samsung custom chips (made-to-order ASIC, "
 "proprietary pinout) with no standard B2B market."
 
+#: estoque/templates/estoque/painel.html:68
 msgid "Olá,"
 msgstr "Hello,"
 
+#: tenancy/models.py:101
 msgid "Operador"
 msgstr "Operator"
 
+#: templates/base.html:197
 msgid "Origem, marca do aparelho, observações…"
 msgstr "Origin, device brand, notes…"
 
+#: chips/templates/chips/partials/decode_card.html:57
 msgid ""
 "Os dados exibidos abaixo são <strong>estimativas por analogia "
 "estrutural</strong> — <em>não usar como especificação confirmada antes de "
@@ -564,63 +754,86 @@ msgstr ""
 "The data shown below are <strong>estimates by structural analogy</strong> — "
 "<em>do not use as confirmed specification before physical verification.</em>"
 
+#: pricing/templates/pricing/partner_base.html:186
+#: pricing/templates/pricing/partner_home.html:31
+#: pricing/templates/pricing/partner_list.html:3
+#: pricing/templates/pricing/partner_list.html:8
 msgid "Outras marcas"
 msgstr "Other brands"
 
+#: estoque/templates/estoque/painel.html:95
 msgid "Outros lotes abertos:"
 msgstr "Other open lots:"
 
+#: estoque/templates/estoque/estoque.html:1076
 msgid "PART NUMBER"
 msgstr "PART NUMBER"
 
+#: estoque/templates/estoque/partials/unknown_feedback.html:8
 msgid ""
 "PN adicionado à fila de chips desconhecidos. Obrigado por contribuir com o "
 "banco de dados."
 msgstr ""
 "PN added to the unknown-chips queue. Thanks for contributing to the database."
 
+#: chips/templates/chips/partials/decode_card.html:245
 msgid "PN começa com K — espaço Samsung / SK Hynix."
 msgstr "PN starts with K — Samsung / SK Hynix space."
 
+#: chips/templates/chips/partials/decode_card.html:8
 msgid "PN incompleto — continue digitando"
 msgstr "Incomplete PN — keep typing"
 
+#: chips/views.py:174 estoque/views.py:747
 msgid "PN inválido."
 msgstr "Invalid PN."
 
+#: chips/views.py:75
 msgid "PN muito curto — mínimo 4 caracteres"
 msgstr "PN too short — minimum 4 characters"
 
+#: chips/templates/chips/partials/decode_card.html:13
 msgid "PN não confirmado — confira a digitação"
 msgstr "PN not confirmed — check your typing"
 
+#: estoque/templates/estoque/partials/confirm_card.html:166
 msgid "PN não confirmado — vai para a fila de conferência do gestor"
 msgstr "PN not confirmed — goes to the manager's review queue"
 
+#: estoque/templates/estoque/partials/confirm_card.html:95
 msgid "POR GERAÇÃO"
 msgstr "BY GENERATION"
 
+#: estoque/templates/estoque/base_estoque.html:7
+#: estoque/templates/estoque/base_estoque.html:106
+#: estoque/templates/estoque/painel.html:4
 msgid "Painel"
 msgstr "Panel"
 
+#: templates/base.html:176 estoque/templates/estoque/estoque.html:1198
 msgid "Part Number"
 msgstr "Part Number"
 
+#: chips/views.py:72
 msgid "Parâmetro 'pn' obrigatório"
 msgstr "Parameter 'pn' is required"
 
+#: pricing/models.py:476
 msgid "Pendente"
 msgstr "Pending"
 
+#: estoque/templates/estoque/painel.html:110
 msgid ""
 "Peça ao gerente para abrir o lote do dia — a triagem acontece sempre dentro "
 "de um lote."
 msgstr ""
 "Ask the manager to open today's lot — sorting always happens inside a lot."
 
+#: estoque/templates/estoque/lotes.html:405
 msgid "Peça ao gerente para abrir um lote de triagem."
 msgstr "Ask the manager to open a sorting lot."
 
+#: estoque/templates/estoque/partials/pending_feedback.html:10
 #, python-format
 msgid ""
 "Pode ser erro de digitação de <strong>%(near)s</strong> — confira o chip "
@@ -628,27 +841,35 @@ msgid ""
 msgstr ""
 "It may be a typo of <strong>%(near)s</strong> — check the physical chip."
 
+#: core/settings.py:141
 msgid "Português"
 msgstr "Portuguese"
 
+#: chips/templates/chips/partials/decode_card.html:239
 msgid "Prefixo KA· não catalogado."
 msgstr "KA· prefix not cataloged."
 
+#: chips/templates/chips/partials/decode_card.html:52
 msgid "Prefixo sem documentação pública verificável"
 msgstr "Prefix without verifiable public documentation"
 
+#: chips/templates/chips/partials/decode_card.html:246
 msgid "Prefixos Samsung suportados:"
 msgstr "Supported Samsung prefixes:"
 
+#: pricing/templates/pricing/partner_list.html:50
 msgid "Preço US$"
 msgstr "Price US$"
 
+#: pricing/views.py:240
 msgid "Preço ilegível — use números (ex.: 13.50)."
 msgstr "Unreadable price — use numbers (e.g., 13.50)."
 
+#: pricing/templates/pricing/partner_base.html:22
 msgid "Preços"
 msgstr "Prices"
 
+#: pricing/templates/pricing/partner_home.html:44
 msgid ""
 "Preços por chip, em <strong>dólar (USD)</strong>. Os preços de <strong>Outras"
 " marcas</strong> valem para todo chip de marca que não tem tabela própria."
@@ -656,12 +877,15 @@ msgstr ""
 "Prices per chip, in <strong>US dollars (USD)</strong>. <strong>Other "
 "brands</strong> prices apply to every chip of a brand without its own table."
 
+#: estoque/templates/estoque/partials/confirm_card.html:151
 msgid "QTD."
 msgstr "QTY."
 
+#: estoque/templates/estoque/estoque.html:1221
 msgid "Quantidade a remover"
 msgstr "Quantity to remove"
 
+#: templates/base.html:170
 msgid ""
 "Quanto mais informação você enviar, mais rápido conseguimos identificar. Uma "
 "foto nítida do chip ajuda muito."
@@ -669,61 +893,84 @@ msgstr ""
 "The more information you send, the faster we can identify it. A sharp photo "
 "of the chip helps a lot."
 
+#: chips/labels.py:27
 msgid "RENTÁVEL"
 msgstr "PROFITABLE"
 
+#: estoque/templates/estoque/partials/confirm_card.html:96
 msgid "REPROVADO"
 msgstr "REJECTED"
 
+#: estoque/templates/estoque/estoque.html:1166
+#: estoque/templates/estoque/lotes.html:388
 msgid "Reabrir"
 msgstr "Reopen"
 
+#: templates/base.html:216
 msgid "Recebido — obrigado!"
 msgstr "Received — thank you!"
 
+#: estoque/views.py:446
 msgid "Reconheci"
 msgstr "Recognized"
 
+#: estoque/templates/estoque/partials/unknown_feedback.html:4
 msgid "Registrado"
 msgstr "Logged"
 
+#: estoque/templates/estoque/partials/confirm_card.html:170
 msgid "Registrar como desconhecido"
 msgstr "Log as unknown"
 
+#: estoque/templates/estoque/partials/confirm_card.html:168
 msgid "Registrar descarte"
 msgstr "Log disposal"
 
+#: pricing/templates/pricing/partner_notifications.html:23
+#: pricing/models.py:478
 msgid "Rejeitado"
 msgstr "Rejected"
 
+#: estoque/templates/estoque/estoque.html:1215
+#: estoque/templates/estoque/estoque.html:1243
 msgid "Remover"
 msgstr "Remove"
 
+#: estoque/templates/estoque/partials/table_body.html:18
 #, python-format
 msgid "Remover %(pn_esc)s"
 msgstr "Remove %(pn_esc)s"
 
+#: estoque/templates/estoque/estoque.html:1199
 msgid "Remover do estoque"
 msgstr "Remove from stock"
 
+#: estoque/views.py:448 estoque/views.py:495
 msgid "Rentável"
 msgstr "Profitable"
 
+#: chips/templates/chips/partials/decode_card.html:185
 msgid "Reportar erro"
 msgstr "Report error"
 
+#: chips/views.py:183
 msgid "Reporte recebido — obrigado!"
 msgstr "Report received — thank you!"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:4
 msgid "Reprovado — Resíduo eletrônico"
 msgstr "Rejected — E-waste"
 
+#: estoque/templates/estoque/painel.html:131
 msgid "Reprovados hoje"
 msgstr "Rejected today"
 
+#: estoque/templates/estoque/base_estoque.html:147
+#: pricing/templates/pricing/partner_base.html:173
 msgid "Sair"
 msgstr "Sign out"
 
+#: chips/templates/chips/partials/decode_card.html:204
 msgid ""
 "Se o chip estiver fisicamente disponível, anote o PN completo do "
 "encapsulamento e tente novamente — o PN completo (ex: MT53B512M64D4TX) "
@@ -732,6 +979,7 @@ msgstr ""
 "If the chip is physically available, note the full PN from the package and "
 "try again — the full PN (e.g., MT53B512M64D4TX) works directly."
 
+#: chips/templates/chips/partials/decode_card.html:248
 msgid ""
 "Se o prefixo não consta acima, pode ser chip de linha especial ou leitura "
 "incorreta do PN na placa."
@@ -739,24 +987,31 @@ msgstr ""
 "If the prefix is not listed above, it may be a special-line chip or a misread"
 " PN on the board."
 
+#: pricing/templates/pricing/partner_home.html:26
 msgid "Sem cotação"
 msgstr "No quote"
 
+#: estoque/templates/estoque/lotes.html:351
 msgid "Sem descrição"
 msgstr "No description"
 
+#: templates/registration/login.html:151
 msgid "Senha"
 msgstr "Password"
 
+#: estoque/templates/estoque/partials/pending_feedback.html:4
 msgid "Separar para conferência"
 msgstr "Set aside for review"
 
+#: estoque/templates/estoque/partials/pending_feedback.html:13
 msgid "Separe este chip fisicamente e avise o gestor para confirmá-lo."
 msgstr "Physically set this chip aside and tell the manager to confirm it."
 
+#: templates/base.html:201
 msgid "Seu e-mail (para retorno)"
 msgstr "Your e-mail (for follow-up)"
 
+#: templates/base.html:217
 msgid ""
 "Seu envio entrou na fila de análise. Adicionamos o chip ao banco em até "
 "48&nbsp;h."
@@ -764,109 +1019,149 @@ msgstr ""
 "Your submission entered the analysis queue. We add the chip to the database "
 "within 48&nbsp;h."
 
+#: pricing/templates/pricing/partner_base.html:180
 msgid "Seus preços por marca"
 msgstr "Your prices by brand"
 
+#: templates/base.html:57
 msgid "Seções"
 msgstr "Sections"
 
+#: estoque/templates/estoque/base_estoque.html:143
 msgid "Site"
 msgstr "Site"
 
+#: estoque/templates/estoque/partials/confirm_card.html:116
 msgid "Specs ausentes ou incompletas"
 msgstr "Missing or incomplete specs"
 
+#: chips/templates/chips/partials/decode_card.html:126
 msgid "Sufixo:"
 msgstr "Suffix:"
 
+#: pricing/templates/pricing/partner_list.html:18
+#: pricing/templates/pricing/partner_list.html:49
 msgid "Tipo"
 msgstr "Type"
 
+#: estoque/templates/estoque/lotes.html:356
 msgid "Tipos"
 msgstr "Types"
 
+#: estoque/templates/estoque/painel.html:123
 msgid "Tipos lançados hoje"
 msgstr "Types logged today"
 
+#: estoque/templates/estoque/estoque.html:1135
+#: pricing/templates/pricing/partner_list.html:20
+#: pricing/templates/pricing/partner_list.html:28
 msgid "Todos"
 msgstr "All"
 
+#: estoque/templates/estoque/lotes.html:360
 msgid "Total un."
 msgstr "Total units"
 
+#: templates/registration/login.html:145
 msgid "Usuário"
 msgstr "Username"
 
+#: templates/registration/login.html:137
 msgid "Usuário ou senha incorretos. Tente novamente."
 msgstr "Incorrect username or password. Try again."
 
+#: chips/templates/chips/partials/decode_card.html:138
+#: chips/templates/chips/partials/decode_card.html:208
+#: chips/templates/chips/partials/decode_card.html:259
+#: estoque/templates/estoque/partials/confirm_card.html:47
 msgid "VOCÊ QUIS DIZER?"
 msgstr "DID YOU MEAN?"
 
+#: estoque/templates/estoque/estoque.html:1056
 msgid "Valoração do lote"
 msgstr "Lot valuation"
 
+#: estoque/templates/estoque/estoque.html:1267
 msgid "Veja o terminal do"
 msgstr "Check the"
 
+#: chips/templates/chips/partials/decode_card.html:241
 msgid "Verificar demanda antes de reacondicionar — sem datasheet disponível."
 msgstr "Check demand before refurbishing — no datasheet available."
 
+#: chips/templates/chips/partials/decode_card.html:61
 msgid "Você conhece este chip? Entre em contato"
 msgstr "Do you know this chip? Get in touch"
 
+#: estoque/templates/estoque/painel.html:84
 #, python-format
 msgid "aberto em %(d)s"
 msgstr "opened on %(d)s"
 
+#: estoque/templates/estoque/estoque.html:1551
 msgid "adicionado ao estoque"
 msgstr "added to stock"
 
+#: pricing/templates/pricing/price_block.html:26
 msgid "aguardando cotação"
 msgstr "awaiting quote"
 
+#: pricing/templates/pricing/partner_list.html:95
 msgid "as linhas são criadas pela equipe WhatTheChip"
 msgstr "lines are created by the WhatTheChip team"
 
+#: estoque/templates/estoque/partials/table_body.html:24
 #, python-format
 msgid "atualizado %(d)s"
 msgstr "updated %(d)s"
 
+#: chips/labels.py:48 estoque/views.py:483
 msgid "banco de dados"
 msgstr "database"
 
+#: estoque/templates/estoque/estoque.html:1062
 #, python-format
 msgid "cobertura %(cov)s%% (%(priced)s/%(total)s unid.)"
 msgstr "coverage %(cov)s%% (%(priced)s/%(total)s units)"
 
+#: pricing/templates/pricing/partner_list.html:95
 msgid "com estes filtros"
 msgstr "with these filters"
 
+#: estoque/templates/estoque/estoque.html:1056
 msgid "congelada no fechamento"
 msgstr "frozen at closing"
 
+#: pricing/templates/pricing/price_block.html:19
 msgid "cotado"
 msgstr "quoted"
 
+#: pricing/views.py:280
 #, python-format
 msgid "cotado em US$ %s"
 msgstr "quoted at US$ %s"
 
+#: pricing/templates/pricing/partner_base.html:151
 msgid "câmbio de<br>referência"
 msgstr "reference<br>rate"
 
+#: estoque/templates/estoque/estoque.html:1215
 msgid "do estoque."
 msgstr "from stock."
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:10
 msgid "e registrado para auditoria."
 msgstr "and logged for auditing."
 
+#: pricing/templates/pricing/partner_list.html:70
 msgid "em revisão:"
 msgstr "under review:"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:11
 msgid "encaminhe para o descarte de resíduos eletrônicos."
 msgstr "send it to e-waste disposal."
 
+#: chips/templates/chips/partials/decode_card.html:56
 msgid ""
 "erro de gravação do fabricante (misprint de laser) ou produto OEM com "
 "datasheet sob NDA não publicado."
@@ -874,104 +1169,139 @@ msgstr ""
 "manufacturer marking error (laser misprint) or OEM product with an "
 "unpublished NDA datasheet."
 
+#: estoque/templates/estoque/estoque.html:1056
 msgid "estimativa ao vivo"
 msgstr "live estimate"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:9
 msgid "foi classificado como"
 msgstr "was classified as"
 
+#: chips/labels.py:46 estoque/views.py:468 estoque/views.py:481
 msgid "gramática"
 msgstr "grammar"
 
+#: chips/labels.py:47
 msgid "gramática+db"
 msgstr "grammar+db"
 
+#: estoque/templates/estoque/partials/confirm_card.html:31
 msgid "indeterminado"
 msgstr "undetermined"
 
+#: pricing/templates/pricing/partner_list.html:35
 msgid "limpar filtros"
 msgstr "clear filters"
 
+#: estoque/templates/estoque/estoque.html:1287
 msgid "mín."
 msgstr "min."
 
+#: estoque/templates/estoque/partials/confirm_card.html:29
 msgid "não"
 msgstr "no"
 
+#: pricing/templates/pricing/price_block.html:22
 msgid "não compra este item"
 msgstr "doesn't buy this item"
 
+#: pricing/views.py:281
 msgid "não compro"
 msgstr "don't buy"
 
+#: pricing/views.py:282
 msgid "não cotado"
 msgstr "not quoted"
 
+#: pricing/views.py:283
 msgid "não fabricado"
 msgstr "not manufactured"
 
+#: pricing/templates/pricing/price_block.html:24
 msgid "não fabricado pela marca"
 msgstr "not manufactured by the brand"
 
+#: estoque/templates/estoque/estoque.html:1267
 msgid "para o traceback."
 msgstr "terminal for the traceback."
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:9
 msgid "pela geração"
 msgstr "by generation"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:10
 msgid "reconhecido por gramática, não confirmado no banco"
 msgstr "recognized by grammar, not confirmed in the database"
 
+#: pricing/templates/pricing/price_block.html:19
 msgid "referência (sem data)"
 msgstr "reference (no date)"
 
+#: pricing/templates/pricing/price_block.html:28
 msgid "sem preço —"
 msgstr "no price —"
 
+#: estoque/templates/estoque/partials/confirm_card.html:27
 msgid "sim"
 msgstr "yes"
 
+#: estoque/views.py:474
 msgid "specs ausentes"
 msgstr "missing specs"
 
+#: estoque/views.py:476
 msgid "specs reais"
 msgstr "real specs"
 
+#: estoque/views.py:466
 msgid "tipo/geração"
 msgstr "type/generation"
 
+#: estoque/templates/estoque/partials/table_body.html:17
 msgid "un"
 msgstr "u"
 
+#: estoque/templates/estoque/estoque.html:1359
 msgid "unidades"
 msgstr "units"
 
+#: chips/templates/chips/partials/decode_card.html:13
+#: chips/templates/chips/partials/decode_card.html:233
 msgid "veja sugestões abaixo"
 msgstr "see suggestions below"
 
+#: chips/templates/chips/partials/decode_card.html:233
 msgid "verifique se o PN foi lido corretamente"
 msgstr "check whether the PN was read correctly"
 
+#: chips/templates/chips/partials/decode_card.html:160
 msgid "via"
 msgstr "via"
 
+#: chips/views.py:31
 msgid "~ Estimado"
 msgstr "~ Estimated"
 
+#: pricing/templates/pricing/partner_list.html:50
 msgid "Última atualização"
 msgstr "Last update"
 
+#: chips/views.py:27
 msgid "✅ Confirmado"
 msgstr "✅ Confirmed"
 
+#: chips/views.py:28
 msgid "✏️ Manual"
 msgstr "✏️ Manual"
 
+#: core/settings.py:144
 msgid "中文"
 msgstr "Simplified Chinese"
 
+#: chips/views.py:29
 msgid "🏪 Distribuidor"
 msgstr "🏪 Distributor"
 
+#: chips/views.py:30
 msgid "📐 Gramática"
 msgstr "📐 Grammar"

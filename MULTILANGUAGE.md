@@ -1,11 +1,13 @@
 # MULTILANGUAGE.md — O WhatTheChip em 4 idiomas
 
-> **Documento de FEATURE** — descreve o sistema multilíngue do ponto de vista
-> do produto: o que existe, como se comporta e como se opera. É a peça que
-> entra na documentação geral do sistema. A **bíblia técnica** (arquitetura,
-> rotina de tradução, armadilhas de código) é o **`I18N.md`** — em conflito,
-> o código vence, depois o I18N.md, depois este. Convenção de engenharia:
-> `CLAUDE.md` §6 ("Convenção i18n").
+> **Documento de FEATURE + CONTRATO DE AUTORIA.** A primeira metade (§1–§6)
+> descreve o sistema multilíngue do ponto de vista do produto — é a peça que
+> entra na documentação geral. O **§7 é o CONTRATO**: as regras que **todo
+> chat/agente que criar tela, página, mensagem ou string** segue para nascer
+> traduzido sem quebrar a convenção — leitura OBRIGATÓRIA antes de criar
+> conteúdo novo. A bíblia técnica (arquitetura, rotina profunda, armadilhas)
+> é o **`I18N.md`** — em conflito, o código vence, depois o I18N.md, depois
+> este. Convenção de engenharia: `CLAUDE.md` §6 ("Convenção i18n").
 >
 > Status: **no ar** desde 2026-07-08 · suíte com portões automáticos.
 
@@ -24,7 +26,7 @@ bancada de triagem e ao dashboard do comprador:
 | `zh-hans` | 中文 (simplificado) | compradores e parceiros na China |
 
 A arquitetura foi desenhada para escalar a **~10 idiomas** sem mexer em código:
-idioma novo ≈ catálogos de tradução + arquivos de conteúdo (ver §7).
+idioma novo ≈ catálogos de tradução + arquivos de conteúdo (ver §8).
 
 ---
 
@@ -129,7 +131,99 @@ estrangeiro vê o trecho antigo (nunca uma página quebrada).
 
 ---
 
-## 7. Como adicionar um idioma novo (visão de produto)
+## 7. ⭐ CONTRATO DE AUTORIA — para TODO chat que criar tela, página ou string
+
+> **A regra de ouro do autor: toda string nasce marcada E traduzida na MESMA
+> entrega.** "Traduzir depois" não existe — depois = nunca (foi exatamente o
+> bug de 2026-07-08: home, crachá de papel e admin entregues "para depois").
+> O custo marginal de nascer traduzido é de minutos; o custo da varredura
+> retroativa é uma sessão inteira com risco de landmine. Os portões
+> automáticos pegam o que foi marcado errado — **não pegam o que nunca foi
+> marcado**. A marcação é responsabilidade de quem cria a string.
+
+### 7.1 — "Vou criar X" → faça Y (nunca Z)
+
+| Vou criar… | FAÇA | NUNCA |
+|---|---|---|
+| Texto em template (novo ou editado) | `{% load i18n %}` + `{% trans "…" %}` / `{% blocktrans trimmed %}` (variável → `%(x)s`) | texto PT cru; marcar DADOS (PN, specs, `LPDDR4`, `x16`, marca, `{{ destination }}`) |
+| Mensagem de view p/ usuário | `gettext` (eager) | `gettext_lazy` dentro de `JsonResponse`/`json.dumps` (estoura); esquecer o import |
+| Choices de modelo EXIBIDO (`get_FOO_display`) | rótulos com `gettext_lazy`; se for admin-only/rótulo-dado → declarar em `I18nChoicesDeclarationTests.DECLARADOS` com justificativa | traduzir o VALOR (é chave de lógica); deixar sem decisão (suíte fica vermelha) |
+| String exibida que TAMBÉM é comparada | criar CHAVE estável + rótulo traduzido (padrão `chips/labels.py`) | `{% if x == "texto em PT" %}` — a landmine clássica (I18N.md §8.1) |
+| String PERSISTIDA no banco (motivos, snapshots, labels de caixa, export) | gravar o CANÔNICO pt-br + comentário `⚠ CANÔNICO — NUNCA traduzir` | passar por gettext no write (histórico viraria mistura de idiomas) |
+| String em JS | inline no template → `'{% trans "…" %}'`; em `static/*.js` → `gettext('…')` (domínio `djangojs`) | concatenar frase de pedaços quando a ordem muda entre línguas — use placeholder |
+| Página de CMS nova | `_content/<slug>.html` (PT) **+ os 3 irmãos** `.es/.en/.zh-hans.html` **+** metadados na chave `'i18n'` do `import_content` | entregar só o PT sem avisar. Conteúdo grande demais p/ traduzir na entrega? Entregue o PT, **declare a página na fila do I18N.md §10** e avise o dono — o fallback segura |
+| Editar conteúdo PT existente que JÁ tem traduções | atualizar os `<slug>.<código>.html` na MESMA sessão | deixar as traduções defasadas em silêncio |
+| Shell/layout novo (header próprio) | incluir `{% include "partials/lang_select.html" with variant='shell' %}` (ou default em fundo claro) | esquecer o seletor (`SeletorDeIdiomaPresenteTests` quebra) |
+| Emoji/símbolo junto do texto | fora do `{% trans %}` (`⚠ {% trans "…" %}`); em Python, pode ficar no msgid (padrão `_CONF_LABEL`) | — |
+
+### 7.2 — O fluxo do autor (depois de criar as strings)
+
+```bash
+1. python scripts/i18n_extract.py            # (ou makemessages) — liste SEUS msgids novos
+2. adicione es/en/zh-hans dos SEUS msgids nos .po (django e/ou djangojs)
+     — contrato do tradutor I18N.md §7.1: placeholders/HTML/glossário intocáveis;
+       termos consagrados dos catálogos existentes; DÚVIDA → "#, fuzzy" + avisar o dono
+     — não domina o idioma? entregue tabela msgid → 3 traduções p/ o chat i18n
+3. python scripts/i18n_compile.py            # (ou compilemessages) — .po → .mo
+4. python manage.py check_translations       # ← verde OBRIGATÓRIO
+5. python manage.py test chips estoque --settings=core.settings_test
+6. entregue TUDO no mesmo commit/PR (código + .po + .mo + conteúdo traduzido)
+```
+
+### 7.3 — E se o chat IGNORAR o contrato? (a resposta não é confiança)
+
+O contrato não depende de obediência — é **imposto por tripwires na suíte**,
+que todo chat roda no próprio checklist e o dono roda antes de qualquer merge
+(o backstop final). A pilha de imposição, da mais automática à humana:
+
+| O chat… | Quem pega | Como |
+|---|---|---|
+| marcou a string mas NÃO traduziu | `check_translations` **regra 8** (completude) | extrai os msgids do CÓDIGO (descoberta dinâmica — cobre app novo) e exige cada um em TODO catálogo; erro aponta `arquivo:linha` |
+| nem marcou (texto PT cru no template) | `check_translations` **regra 9** | detector por diacrítico fora de `{% trans %}`; exceção deliberada = `i18n-ok` na linha (documentada no código) |
+| traduziu quebrando placeholder/HTML/glossário | regras 3–5 do portão | diff estrutural msgid×msgstr |
+| criou choices exibido sem `_lazy` | `I18nChoicesDeclarationTests` | lazy OU declarado, senão vermelho |
+| criou shell sem seletor de idioma | `SeletorDeIdiomaPresenteTests` | presença nas 4 superfícies |
+| traduziu valor canônico/lógica | `test_valor_canonico_nunca_muda` + suíte | o engine tem que seguir falando pt-br |
+| **escreveu PT sem nenhum acento** (raro) ou tradução **errada de sentido** | **revisão humana do diff** (dono) | o único buraco não-automatizável — por isso a revisão continua no fluxo |
+
+E tudo isso roda dentro de `python manage.py test chips estoque
+--settings=core.settings_test` — **suíte vermelha = entrega recusada**, a
+mesma regra que já vale para golden/handshake/tenancy.
+
+### 7.4 — Rastreabilidade e edição das traduções (escala longa)
+
+- **Fonte única = os `.po` no git** (`locale/<idioma>/LC_MESSAGES/django.po` +
+  `djangojs.po`) — formato-padrão da indústria (gettext): texto puro,
+  diffável em PR, compatível com Poedit hoje e Weblate/tradutor humano amanhã,
+  sem migração.
+- **Cada entrada carrega `#: arquivo:linha`** (onde a string vive no código) —
+  Poedit/Weblate mostram o contexto; regeneradas a cada extração.
+- **Quem escreveu/quando** = `git blame`/histórico do `.po` (cada chat entrega
+  suas entradas no próprio commit).
+- **Editar uma tradução** = editar o `msgstr` (Poedit, editor, ou pedir ao chat
+  i18n) → `scripts/i18n_compile.py` → `check_translations` revalida →
+  commit. Nunca se edita o `msgid` (§7.5, proibição 6).
+- **Conteúdo CMS** = arquivos `_content/<slug>.<código>.html` no git — mesmo
+  trilho (diff, blame, PR).
+
+### 7.5 — As seis proibições do autor
+
+1. **Texto PT cru** em template/view novo (o portão não enxerga o não-marcado).
+2. **Traduzir** valor canônico, chave de lógica, dado ou string persistida.
+3. **Mexer em msgstr alheio** — você só ADICIONA os seus; consertar tradução
+   existente é tarefa do chat i18n (dono do I18N.md).
+4. **Inventar mecanismo** (i18n_patterns, URL por idioma, `if lang == 'es'` na
+   lógica, GeoIP, lib nova) — a arquitetura está fechada no I18N.md §2;
+   proposta de mudança → perguntar ao dono, não implementar.
+5. **Afrouxar os portões** — `PROTECTED_TERMS`, `check_translations`,
+   `I18nChoicesDeclarationTests.DECLARADOS` sem justificativa não se tocam
+   para "fazer passar".
+6. **Traduzir o msgid** — o pt-br é a chave; muda o texto-fonte = muda a chave
+   = tradução órfã em todos os idiomas.
+
+---
+
+## 8. Como adicionar um idioma novo (visão de produto)
 
 1. Ativar o idioma na configuração (1 linha em `settings.LANGUAGES`).
 2. Gerar e traduzir os 2 catálogos (`django.po` + `djangojs.po`) pela rotina §6.
@@ -142,7 +236,7 @@ o volume de texto a traduzir.
 
 ---
 
-## 8. Limitações conhecidas / fila
+## 9. Limitações conhecidas / fila
 
 - **Páginas de fabricante** (`fab-samsung`…, `fabricantes`, `contato`):
   conteúdo ainda em PT (fallback), traduzir sob demanda de mercado.
@@ -154,7 +248,7 @@ o volume de texto a traduzir.
 
 ---
 
-## 9. Ponteiros técnicos (para quem for mexer)
+## 10. Ponteiros técnicos (para quem for mexer)
 
 - **`I18N.md`** — a bíblia: arquitetura, decisões (§2), cadeia (§3), rotina de
   tradução com IA (§7), CMS files-first (§9), armadilhas (§8).

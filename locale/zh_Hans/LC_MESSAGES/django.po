@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WhatTheChip 1.0\n"
 "Report-Msgid-Bugs-To: eminerparaguay@gmail.com\n"
-"POT-Creation-Date: 2026-07-08 11:43\n"
-"PO-Revision-Date: 2026-07-08 11:43\n"
+"POT-Creation-Date: 2026-07-09 23:24\n"
+"PO-Revision-Date: 2026-07-09 23:24\n"
 "Last-Translator: WhatTheChip i18n <eminerparaguay@gmail.com>\n"
 "Language-Team: 中文 (简体)\n"
 "Language: zh-hans\n"
@@ -13,114 +13,156 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#: pricing/views.py:286
 #, python-format
 msgid ""
 "%(item)s → %(state)s: enviado para REVISÃO do WhatTheChip — passa a valer "
 "após a aprovação."
 msgstr "%(item)s → %(state)s：已提交 WhatTheChip 审核 — 审核通过后生效。"
 
+#: estoque/templates/estoque/estoque.html:1126
 #, python-format
 msgid "%(n1)s tipos · %(n2)s un."
 msgstr "%(n1)s 种 · %(n2)s 件"
 
+#: chips/templates/chips/partials/decode_card.html:9
 #, python-format
 msgid "(esperado: %(n)s caracteres)"
 msgstr "（应为 %(n)s 个字符）"
 
+#: estoque/templates/estoque/painel.html:70
 msgid "1 · leia o chip"
 msgstr "1 · 读取芯片"
 
+#: estoque/templates/estoque/painel.html:70
 msgid "2 · digite o PN"
 msgstr "2 · 输入 PN"
 
+#: estoque/templates/estoque/painel.html:70
 msgid "3 · lance no lote aberto"
 msgstr "3 · 录入到当前批次"
 
+#: estoque/templates/estoque/painel.html:82
 #, python-format
 msgid "<b>%(n)s</b> tipos"
 msgstr "<b>%(n)s</b> 种"
 
+#: estoque/templates/estoque/painel.html:83
 #, python-format
 msgid "<b>%(n)s</b> unidades"
 msgstr "<b>%(n)s</b> 件"
 
+#: estoque/templates/estoque/estoque.html:1033
 msgid "ABERTO"
 msgstr "进行中"
 
+#: estoque/templates/estoque/lotes.html:342
 msgid "Aberto"
 msgstr "进行中"
 
+#: estoque/templates/estoque/lotes.html:366
 #, python-format
 msgid "Aberto em %(d)s"
 msgstr "开启于 %(d)s"
 
+#: estoque/templates/estoque/painel.html:107
 msgid "Abra o lote do dia para a bancada começar a lançar chips."
 msgstr "请开启今日批次，工位即可开始录入芯片。"
 
+#: estoque/templates/estoque/lotes.html:376
 msgid "Abrir"
 msgstr "打开"
 
+#: templates/base.html:53
 msgid "Abrir menu"
 msgstr "打开菜单"
 
+#: estoque/templates/estoque/painel.html:108
 msgid "Abrir um lote"
 msgstr "开启批次"
 
+#: templates/registration/login.html:134
 msgid "Acesso ao Painel"
 msgstr "登录工作台"
 
+#: templates/registration/login.html:159
 msgid "Acesso restrito a operadores cadastrados."
 msgstr "仅限已注册的操作员访问。"
 
+#: estoque/templates/estoque/partials/confirm_card.html:164
 msgid "Adicionar ao estoque"
 msgstr "加入库存"
 
+#: templates/base.html:61
 msgid "Adicionar chip"
 msgstr "提交芯片"
 
+#: templates/base.html:158
 msgid "Adicionar chip ao banco"
 msgstr "向数据库提交芯片"
 
+#: tenancy/models.py:103
 msgid "Admin da empresa"
 msgstr "公司管理员"
 
+#: estoque/templates/estoque/partials/confirm_card.html:110
 msgid "Aguarda revisão do gestor · reconhecido por gramática"
 msgstr "等待经理复核 · 由语法规则识别"
 
+#: pricing/templates/pricing/partner_list.html:70
 msgid ""
 "Aguardando aprovação do WhatTheChip — o valor vigente ainda é o exibido."
 msgstr "等待 WhatTheChip 审批 — 当前生效的仍是所显示的价格。"
 
+#: templates/base.html:94
 msgid "Alternar modo escuro/claro"
 msgstr "切换深色/浅色模式"
 
+#: pricing/templates/pricing/partner_notifications.html:21
+#: pricing/models.py:477
 msgid "Aprovado"
 msgstr "已通过"
 
+#: pricing/templates/pricing/partner_notifications.html:8
 msgid ""
 "As decisões do WhatTheChip sobre as suas mudanças de preço — aprovadas passam"
 " a valer na hora; rejeitadas mantêm o valor anterior."
 msgstr "WhatTheChip 对您价格修改的决定 — 通过的立即生效；被拒绝的保持原价。"
 
+#: pricing/templates/pricing/partner_home.html:6
 #, python-format
 msgid "Bem-vindo, <strong style=\"font-weight:600;\">%(name)s</strong>"
 msgstr "欢迎，<strong style=\"font-weight:600;\">%(name)s</strong>"
 
+#: estoque/templates/estoque/partials/confirm_card.html:79
+#: estoque/templates/estoque/partials/confirm_card.html:84
+#: estoque/templates/estoque/partials/confirm_card.html:85
+#: estoque/templates/estoque/partials/confirm_card.html:86
+#: estoque/templates/estoque/partials/confirm_card.html:87
+#: estoque/templates/estoque/partials/confirm_card.html:88
+#: estoque/templates/estoque/partials/confirm_card.html:89
+#: estoque/templates/estoque/partials/confirm_card.html:90
 msgid "CAIXA FÍSICA"
 msgstr "实体料盒"
 
+#: estoque/templates/estoque/partials/confirm_card.html:108
 msgid "CONFERÊNCIA"
 msgstr "待复核"
 
+#: templates/base.html:208 estoque/templates/estoque/estoque.html:1232
+#: estoque/templates/estoque/partials/confirm_card.html:175
 msgid "Cancelar"
 msgstr "取消"
 
+#: chips/templates/chips/partials/decode_card.html:104
 msgid "Capacidade"
 msgstr "容量"
 
+#: pricing/templates/pricing/partner_notifications.html:14
 msgid "Chip"
 msgstr "芯片"
 
+#: chips/templates/chips/partials/decode_card.html:252
 msgid ""
 "Chip fora das famílias catalogadas ou PN possivelmente mal lido "
 "(OCR/scanner). Confira o PN diretamente no encapsulamento e tente novamente. "
@@ -130,180 +172,242 @@ msgstr ""
 "该芯片不属于已收录的产品系列，或 PN 可能读取有误（OCR/扫描）。请直接核对芯片封装上的 PN "
 "后重试。若前缀未知，则可能是未收录厂商或专有产品线的芯片。"
 
+#: chips/templates/chips/partials/decode_card.html:21
 msgid "Chip identificado"
 msgstr "芯片已识别"
 
+#: templates/base.html:159
 msgid ""
 "Chip não catalogado? Envie o PN — analisamos e adicionamos em até 48&nbsp;h."
 msgstr "芯片未收录？提交 PN — 我们将在 48&nbsp;小时内分析并收录。"
 
+#: chips/templates/chips/partials/decode_card.html:233
 msgid "Chip não reconhecido"
 msgstr "无法识别的芯片"
 
+#: estoque/templates/estoque/partials/confirm_card.html:168
 msgid "Chip não rentável — registra o descarte para auditoria"
 msgstr "无利润芯片 — 登记报废以备审计"
 
+#: pricing/templates/pricing/partner_home.html:18
 msgid "Chips cotados"
 msgstr "已报价芯片"
 
+#: pricing/templates/pricing/partner_home.html:10
 msgid "Chips sem cotação"
 msgstr "未报价芯片"
 
+#: estoque/templates/estoque/estoque.html:1290
+#: estoque/templates/estoque/estoque.html:1325
 msgid "Clique Decodificar ou pressione Enter"
 msgstr "点击“解码”或按 Enter"
 
+#: pricing/templates/pricing/partner_base.html:158
 msgid "Comprador"
 msgstr "买家"
 
+#: estoque/views.py:447
 msgid "Confirmado"
 msgstr "已确认"
 
+#: pricing/views.py:277
 msgid "Conflito ao salvar — tente de novo."
 msgstr "保存时发生冲突 — 请重试。"
 
+#: templates/base.html:64
 msgid "Contato"
 msgstr "联系我们"
 
+#: templates/base.html:195
 msgid "Contexto (opcional)"
 msgstr "背景信息（可选）"
 
+#: estoque/templates/estoque/painel.html:88
 msgid "Continuar triagem"
 msgstr "继续分拣"
 
+#: estoque/templates/estoque/estoque.html:1287
 msgid "Continue digitando"
 msgstr "请继续输入"
 
+#: chips/templates/chips/partials/decode_card.html:189
 msgid "Copia diagnóstico completo para o clipboard"
 msgstr "将完整诊断信息复制到剪贴板"
 
+#: estoque/templates/estoque/partials/confirm_card.html:177
 msgid "Copiar diagnóstico"
 msgstr "复制诊断信息"
 
+#: pricing/templates/pricing/partner_list.html:64 pricing/models.py:87
 msgid "Cotado"
 msgstr "已报价"
 
+#: pricing/templates/pricing/partner_home.html:26
 msgid "Cotados"
 msgstr "已报价"
 
+#: pricing/templates/pricing/partner_home.html:14
 #, python-format
 msgid "Cotações com mais de %(staleness_days)s dias"
 msgstr "超过 %(staleness_days)s 天的报价"
 
+#: estoque/templates/estoque/lotes.html:325
 msgid "Criar Lote"
 msgstr "创建批次"
 
+#: estoque/templates/estoque/lotes.html:403
 msgid "Crie o primeiro lote usando o formulário acima."
 msgstr "请使用上方表单创建第一个批次。"
 
+#: pricing/templates/pricing/partner_base.html:149
 msgid ""
 "Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre "
 "em USD."
 msgstr "参考汇率（欧洲央行/市场，约每日更新）。系统价格始终以美元（USD）计。"
 
+#: chips/templates/chips/partials/decode_card.html:200
 msgid "Código FBGA não cadastrado — chip Micron na fila de análise"
 msgstr "FBGA 代码未登记 — Micron 芯片已进入分析队列"
 
+#: estoque/templates/estoque/partials/confirm_card.html:95
+#: estoque/templates/estoque/partials/confirm_card.html:95
 msgid "DESCARTE"
 msgstr "报废"
 
+#: pricing/templates/pricing/partner_notifications.html:14
 msgid "Decidido em"
 msgstr "决定于"
 
+#: pricing/templates/pricing/partner_notifications.html:14
 msgid "Decisão"
 msgstr "决定"
 
+#: estoque/templates/estoque/estoque.html:1086
 msgid "Decodificar"
 msgstr "解码"
 
+#: chips/templates/chips/partials/decode_card.html:98
 msgid "Densidade"
 msgstr "密度"
 
+#: estoque/templates/estoque/lotes.html:309
 msgid "Descrição (opcional)"
 msgstr "描述（可选）"
 
+#: estoque/templates/estoque/estoque.html:1185
 msgid "Desfazer"
 msgstr "撤销"
 
+#: estoque/templates/estoque/estoque.html:1284
 msgid "Digite o Part Number acima"
 msgstr "请在上方输入 Part Number"
 
+#: chips/templates/chips/partials/decode_card.html:83
+#: chips/templates/chips/partials/decode_card.html:116
 msgid "Dispositivo"
 msgstr "器件"
 
+#: estoque/templates/estoque/estoque.html:1090
+#: estoque/templates/estoque/estoque.html:1090
 msgid "Ditar por voz"
 msgstr "语音输入"
 
+#: chips/templates/chips/partials/decode_card.html:165
 msgid "Documentação →"
 msgstr "文档 →"
 
+#: pricing/templates/pricing/partner_home.html:34
 msgid "Editar"
 msgstr "编辑"
 
+#: estoque/templates/estoque/estoque.html:1359
 msgid "Em estoque:"
 msgstr "库存数量："
 
+#: core/settings.py:143
 msgid "English"
 msgstr "英语"
 
+#: templates/base.html:110 templates/base.html:114
+#: templates/registration/login.html:156
 msgid "Entrar"
 msgstr "登录"
 
+#: chips/templates/chips/partials/decode_card.html:222
 msgid "Enviado para a fila de revisão noturna"
 msgstr "已加入夜间复核队列"
 
+#: chips/templates/chips/partials/decode_card.html:175
 msgid "Enviado para revisão"
 msgstr "已提交复核"
 
+#: templates/base.html:347
 msgid "Enviando…"
 msgstr "提交中…"
 
+#: pricing/templates/pricing/partner_list.html:89
 msgid "Enviar p/ revisão"
 msgstr "提交审核"
 
+#: templates/base.html:210
 msgid "Enviar para análise"
 msgstr "提交分析"
 
+#: estoque/templates/estoque/partials/confirm_card.html:166
 msgid "Enviar para conferência"
 msgstr "送交复核"
 
+#: templates/base.html:361
 msgid "Erro de conexão — tente novamente."
 msgstr "网络连接错误 — 请重试。"
 
+#: estoque/templates/estoque/estoque.html:1266
 msgid "Erro do servidor"
 msgstr "服务器错误"
 
+#: pricing/templates/pricing/partner_list.html:12
 msgid ""
 "Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em USD."
 msgstr "请为每一行选择状态；<strong>已报价</strong>必须填写美元（USD）价格。"
 
+#: templates/base.html:188
 msgid "Escolher imagem…"
 msgstr "选择图片…"
 
+#: core/settings.py:142
 msgid "Español"
 msgstr "西班牙语"
 
+#: estoque/templates/estoque/estoque.html:1216
 msgid "Esta ação não pode ser desfeita."
 msgstr "此操作无法撤销。"
 
+#: pricing/templates/pricing/partner_list.html:79
 msgid ""
 "Esta mudança será enviada para REVISÃO do WhatTheChip e só passa a valer após"
 " a aprovação. Confirmar o envio?"
 msgstr "此修改将提交 WhatTheChip 审核，审核通过后才生效。确认提交吗？"
 
+#: pricing/templates/pricing/partner_list.html:26
+#: pricing/templates/pricing/partner_list.html:50
 msgid "Estado"
 msgstr "状态"
 
+#: pricing/views.py:235
 msgid "Estado \"Cotado\" exige o preço em USD."
 msgstr "“已报价”状态必须填写美元（USD）价格。"
 
+#: pricing/views.py:246
 msgid "Estado inválido — recarregue a página."
 msgstr "状态无效 — 请刷新页面。"
 
+#: estoque/templates/estoque/partials/pending_feedback.html:8
 msgid ""
 "Este PN <strong>não está confirmado no banco</strong>, então não entrou no "
 "estoque."
 msgstr "该 PN <strong>尚未在数据库中确认</strong>，因此未入库。"
 
+#: chips/templates/chips/partials/decode_card.html:55
 msgid ""
 "Este Part Number pertence a uma família <strong>nunca documentada "
 "oficialmente</strong>: não consta em nenhum catálogo SK Hynix, datasheet, "
@@ -312,200 +416,281 @@ msgstr ""
 "该 Part Number 属于一个<strong>从未被官方记载</strong>的产品系列：在任何 SK Hynix "
 "目录、datasheet、Octopart 或可信分销商处均无记录。"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:8
 msgid "Este chip"
 msgstr "该芯片"
 
+#: estoque/views.py:738
 msgid "Este lote está fechado. Reabra-o para adicionar chips."
 msgstr "该批次已关闭。请重新开启后再录入芯片。"
 
+#: pricing/templates/pricing/partner_list.html:13
 msgid "Estes preços valem para toda marca que não tem tabela própria."
 msgstr "这些价格适用于所有没有专属价目表的品牌。"
 
+#: estoque/templates/estoque/base_estoque.html:112
+#: estoque/templates/estoque/estoque.html:4
 msgid "Estoque"
 msgstr "库存"
 
+#: estoque/templates/estoque/estoque.html:1125
 msgid "Estoque do lote"
 msgstr "批次库存"
 
+#: estoque/templates/estoque/estoque.html:1156
 msgid "Exportar"
 msgstr "导出"
 
+#: estoque/templates/estoque/estoque.html:1031
 msgid "FECHADO"
 msgstr "已关闭"
 
+#: estoque/templates/estoque/partials/confirm_card.html:109
 msgid "FILA"
 msgstr "待复核"
 
+#: pricing/templates/pricing/partner_list.html:49
 msgid "Faixa"
 msgstr "档位"
 
+#: chips/templates/chips/partials/decode_card.html:17
 msgid "Família identificada — sem documentação pública"
 msgstr "产品系列已识别 — 无公开文档"
 
+#: estoque/templates/estoque/lotes.html:344
 msgid "Fechado"
 msgstr "已关闭"
 
+#: estoque/templates/estoque/lotes.html:368
 #, python-format
 msgid "Fechado em %(d2)s"
 msgstr "关闭于 %(d2)s"
 
+#: templates/base.html:161 estoque/templates/estoque/estoque.html:1186
+#: estoque/templates/estoque/estoque.html:1202
+#: estoque/templates/estoque/lotes.html:383
+#: estoque/templates/estoque/partials/pending_feedback.html:18
+#: estoque/templates/estoque/partials/rejected_feedback.html:16
+#: estoque/templates/estoque/partials/unknown_feedback.html:13
 msgid "Fechar"
 msgstr "关闭"
 
+#: estoque/templates/estoque/estoque.html:1161
 msgid "Fechar Lote"
 msgstr "关闭批次"
 
+#: estoque/templates/estoque/estoque.html:1129
 msgid "Filtrar por PN…"
 msgstr "按 PN 筛选…"
 
+#: estoque/templates/estoque/partials/pending_feedback.html:9
 #, python-format
 msgid ""
 "Foi enviado para a <strong>fila de conferência</strong> do gestor (qtd. "
 "acumulada: %(qty)s)."
 msgstr "已送入经理的<strong>复核队列</strong>（累计数量：%(qty)s）。"
 
+#: chips/templates/chips/partials/decode_card.html:170
 msgid "Fonte ↗"
 msgstr "来源 ↗"
 
+#: templates/base.html:183
 msgid "Foto do chip"
 msgstr "芯片照片"
 
+#: pricing/templates/pricing/partner_list.html:49
 msgid "Geração"
 msgstr "代际"
 
+#: estoque/views.py:469
 msgid "Geração não rentável"
 msgstr "该代际无利润"
 
+#: tenancy/models.py:102
 msgid "Gerente"
 msgstr "经理"
 
+#: chips/templates/chips/partials/decode_card.html:56
 msgid "Hipóteses:"
 msgstr "可能原因："
 
+#: chips/labels.py:29
 msgid "INDETERMINADO"
 msgstr "未确定"
 
+#: estoque/views.py:497
 msgid "Indeterminado (não avaliado)"
 msgstr "未确定（未评估）"
 
+#: templates/base.html:340 chips/views.py:225
 msgid "Informe um Part Number válido (mín. 3 caracteres)."
 msgstr "请输入有效的 Part Number（至少 3 个字符）。"
 
+#: chips/templates/chips/partials/decode_card.html:89
+#: chips/templates/chips/partials/decode_card.html:110
 msgid "Interface"
 msgstr "接口"
 
+#: templates/base.html:59 pricing/templates/pricing/partner_base.html:143
+#: pricing/templates/pricing/partner_base.html:182
+#: pricing/templates/pricing/partner_home.html:3 pages/views.py:112
 msgid "Início"
 msgstr "首页"
 
+#: estoque/templates/estoque/estoque.html:1087
 msgid "Limpar"
 msgstr "清除"
 
+#: pricing/views.py:218
 msgid "Linha inválida — recarregue a página."
 msgstr "行数据无效 — 请刷新页面。"
 
+#: pricing/views.py:255
 msgid "Linha não existe mais — recarregue a página."
 msgstr "该行已不存在 — 请刷新页面。"
 
+#: templates/registration/login.html:7
 msgid "Login"
 msgstr "登录"
 
+#: estoque/templates/estoque/estoque.html:1024
+#: estoque/templates/estoque/estoque.html:1029
 msgid "Lote"
 msgstr "批次"
 
+#: estoque/templates/estoque/estoque.html:1043
 msgid ""
 "Lote <strong>fechado</strong> — adições bloqueadas. Reabra para retomar a "
 "triagem."
 msgstr "批次<strong>已关闭</strong> — 无法录入。请重新开启以继续分拣。"
 
+#: estoque/templates/estoque/painel.html:78
 msgid "Lote aberto — triagem em andamento"
 msgstr "批次进行中 — 正在分拣"
 
+#: estoque/templates/estoque/estoque.html:1022
+#: estoque/templates/estoque/lotes.html:4
+#: estoque/templates/estoque/lotes.html:298
 msgid "Lotes"
 msgstr "批次"
 
+#: estoque/templates/estoque/painel.html:119
 msgid "Lotes abertos"
 msgstr "进行中的批次"
 
+#: pricing/templates/pricing/partner_home.html:26
 msgid "Marca"
 msgstr "品牌"
 
+#: templates/base.html:131 estoque/templates/estoque/estoque.html:1112
 msgid "Marcas suportadas"
 msgstr "支持的品牌"
 
+#: pricing/templates/pricing/partner_notifications.html:14
 msgid "Mudança pedida"
 msgstr "申请的修改"
 
+#: templates/base.html:73 templates/partials/lang_select.html:29
+#: templates/partials/lang_select.html:29
+#: templates/partials/lang_select.html:44
+#: templates/partials/lang_select.html:44
 msgid "Mudar idioma"
 msgstr "切换语言"
 
+#: estoque/templates/estoque/painel.html:127
 msgid "Na fila de conferência"
 msgstr "复核队列中"
 
+#: pricing/views.py:260
 msgid "Nada a enviar — a linha já está assim."
 msgstr "无需提交 — 该行已是此状态。"
 
+#: templates/base.html:45
 msgid "Navegação principal"
 msgstr "主导航"
 
+#: estoque/templates/estoque/partials/table_body.html:30
 msgid "Nenhum chip encontrado"
 msgstr "未找到芯片"
 
+#: estoque/templates/estoque/estoque.html:1102
 msgid "Nenhum chip lido ainda"
 msgstr "尚未读取芯片"
 
+#: estoque/templates/estoque/painel.html:105
 msgid "Nenhum lote aberto agora"
 msgstr "当前没有进行中的批次"
 
+#: estoque/templates/estoque/lotes.html:401
 msgid "Nenhum lote ainda"
 msgstr "暂无批次"
 
+#: pricing/templates/pricing/partner_notifications.html:31
 msgid ""
 "Nenhuma decisão ainda — suas mudanças enviadas aparecem aqui quando forem "
 "revisadas."
 msgstr "暂无审核结果 — 您提交的修改在审核后会显示在这里。"
 
+#: pricing/templates/pricing/partner_list.html:94
 msgid "Nenhuma linha"
 msgstr "暂无数据行"
 
+#: pricing/templates/pricing/partner_home.html:37
 msgid "Nenhuma lista ainda — fale com a equipe WhatTheChip."
 msgstr "暂无价目表 — 请联系 WhatTheChip 团队。"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:11
 msgid "Nenhuma unidade entrou no estoque"
 msgstr "没有任何单位入库"
 
+#: pricing/templates/pricing/partner_base.html:166
+#: pricing/templates/pricing/partner_notifications.html:3
+#: pricing/templates/pricing/partner_notifications.html:6
 msgid "Notificações"
 msgstr "通知"
 
+#: estoque/templates/estoque/lotes.html:304
 msgid "Novo Lote"
 msgstr "新建批次"
 
+#: estoque/templates/estoque/partials/confirm_card.html:114
 msgid "NÃO IDENTIFICADO"
 msgstr "未识别"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:9
+#: chips/labels.py:28
 msgid "NÃO RENTÁVEL"
 msgstr "无利润"
 
+#: pricing/templates/pricing/partner_list.html:67 pricing/models.py:91
 msgid "Não compro"
 msgstr "不收购"
 
+#: pricing/templates/pricing/partner_list.html:65 pricing/models.py:88
 msgid "Não cotado"
 msgstr "未报价"
 
+#: pricing/templates/pricing/partner_list.html:66 pricing/models.py:89
 msgid "Não fabricado"
 msgstr "不生产"
 
+#: templates/base.html:357
 msgid "Não foi possível enviar. Tente novamente."
 msgstr "提交失败。请重试。"
 
+#: estoque/views.py:488
 msgid "Não rentável"
 msgstr "无利润"
 
+#: estoque/templates/estoque/partials/confirm_card.html:98
 msgid "Não rentável pela geração · reconhecido por gramática (não confirmado)"
 msgstr "按代际判定无利润 · 由语法规则识别（未确认）"
 
+#: estoque/templates/estoque/partials/confirm_card.html:100
 msgid "Não rentável · resíduo eletrônico"
 msgstr "无利润 · 电子废料"
 
+#: chips/templates/chips/partials/decode_card.html:203
 #, python-format
 msgid ""
 "O código <strong>%(pn)s</strong> parece ser um <strong>código FBGA "
@@ -516,6 +701,7 @@ msgstr ""
 "代码 <strong>%(pn)s</strong> 疑似 <strong>Micron FBGA 代码</strong>（激光刻印在封装上 — "
 "D9XXX / D8XXX 格式）。已登记，将由夜间任务通过 <em>micron.com/fbga-parts-decoder</em> 自动补全。"
 
+#: chips/templates/chips/partials/decode_card.html:240
 msgid ""
 "O prefixo <code>KAT</code> (ePoP Samsung) é suportado, mas outros "
 "<code>KA·</code> são geralmente chips customizados Samsung (ASIC sob "
@@ -524,415 +710,559 @@ msgstr ""
 "前缀 <code>KAT</code>（Samsung ePoP）已支持，但其他 <code>KA·</code> 通常是 Samsung "
 "定制芯片（按订单 ASIC、专有引脚），没有标准的 B2B 市场。"
 
+#: estoque/templates/estoque/painel.html:68
 msgid "Olá,"
 msgstr "你好，"
 
+#: tenancy/models.py:101
 msgid "Operador"
 msgstr "操作员"
 
+#: templates/base.html:197
 msgid "Origem, marca do aparelho, observações…"
 msgstr "来源、设备品牌、备注…"
 
+#: chips/templates/chips/partials/decode_card.html:57
 msgid ""
 "Os dados exibidos abaixo são <strong>estimativas por analogia "
 "estrutural</strong> — <em>não usar como especificação confirmada antes de "
 "verificar fisicamente.</em>"
 msgstr "以下数据为<strong>基于结构类比的估计</strong> — <em>在实物核验之前，请勿当作已确认的规格使用。</em>"
 
+#: pricing/templates/pricing/partner_base.html:186
+#: pricing/templates/pricing/partner_home.html:31
+#: pricing/templates/pricing/partner_list.html:3
+#: pricing/templates/pricing/partner_list.html:8
 msgid "Outras marcas"
 msgstr "其他品牌"
 
+#: estoque/templates/estoque/painel.html:95
 msgid "Outros lotes abertos:"
 msgstr "其他进行中的批次："
 
+#: estoque/templates/estoque/estoque.html:1076
 msgid "PART NUMBER"
 msgstr "PART NUMBER"
 
+#: estoque/templates/estoque/partials/unknown_feedback.html:8
 msgid ""
 "PN adicionado à fila de chips desconhecidos. Obrigado por contribuir com o "
 "banco de dados."
 msgstr "PN 已加入未知芯片队列。感谢您为数据库做出贡献。"
 
+#: chips/templates/chips/partials/decode_card.html:245
 msgid "PN começa com K — espaço Samsung / SK Hynix."
 msgstr "PN 以 K 开头 — 属于 Samsung / SK Hynix 的编码空间。"
 
+#: chips/templates/chips/partials/decode_card.html:8
 msgid "PN incompleto — continue digitando"
 msgstr "PN 不完整 — 请继续输入"
 
+#: chips/views.py:174 estoque/views.py:747
 msgid "PN inválido."
 msgstr "PN 无效。"
 
+#: chips/views.py:75
 msgid "PN muito curto — mínimo 4 caracteres"
 msgstr "PN 过短 — 至少 4 个字符"
 
+#: chips/templates/chips/partials/decode_card.html:13
 msgid "PN não confirmado — confira a digitação"
 msgstr "PN 未确认 — 请检查输入"
 
+#: estoque/templates/estoque/partials/confirm_card.html:166
 msgid "PN não confirmado — vai para a fila de conferência do gestor"
 msgstr "PN 未确认 — 将进入经理的复核队列"
 
+#: estoque/templates/estoque/partials/confirm_card.html:95
 msgid "POR GERAÇÃO"
 msgstr "按代际"
 
+#: estoque/templates/estoque/base_estoque.html:7
+#: estoque/templates/estoque/base_estoque.html:106
+#: estoque/templates/estoque/painel.html:4
 msgid "Painel"
 msgstr "工作台"
 
+#: templates/base.html:176 estoque/templates/estoque/estoque.html:1198
 msgid "Part Number"
 msgstr "Part Number"
 
+#: chips/views.py:72
 msgid "Parâmetro 'pn' obrigatório"
 msgstr "缺少必填参数 'pn'"
 
+#: pricing/models.py:476
 msgid "Pendente"
 msgstr "待审核"
 
+#: estoque/templates/estoque/painel.html:110
 msgid ""
 "Peça ao gerente para abrir o lote do dia — a triagem acontece sempre dentro "
 "de um lote."
 msgstr "请让经理开启今日批次 — 分拣始终在批次内进行。"
 
+#: estoque/templates/estoque/lotes.html:405
 msgid "Peça ao gerente para abrir um lote de triagem."
 msgstr "请让经理开启一个分拣批次。"
 
+#: estoque/templates/estoque/partials/pending_feedback.html:10
 #, python-format
 msgid ""
 "Pode ser erro de digitação de <strong>%(near)s</strong> — confira o chip "
 "físico."
 msgstr "可能是 <strong>%(near)s</strong> 的输入错误 — 请核对实物芯片。"
 
+#: core/settings.py:141
 msgid "Português"
 msgstr "葡萄牙语"
 
+#: chips/templates/chips/partials/decode_card.html:239
 msgid "Prefixo KA· não catalogado."
 msgstr "前缀 KA· 未收录。"
 
+#: chips/templates/chips/partials/decode_card.html:52
 msgid "Prefixo sem documentação pública verificável"
 msgstr "该前缀无可核实的公开文档"
 
+#: chips/templates/chips/partials/decode_card.html:246
 msgid "Prefixos Samsung suportados:"
 msgstr "支持的 Samsung 前缀："
 
+#: pricing/templates/pricing/partner_list.html:50
 msgid "Preço US$"
 msgstr "价格 US$"
 
+#: pricing/views.py:240
 msgid "Preço ilegível — use números (ex.: 13.50)."
 msgstr "价格无法识别 — 请输入数字（例如 13.50）。"
 
+#: pricing/templates/pricing/partner_base.html:22
 msgid "Preços"
 msgstr "价格"
 
+#: pricing/templates/pricing/partner_home.html:44
 msgid ""
 "Preços por chip, em <strong>dólar (USD)</strong>. Os preços de <strong>Outras"
 " marcas</strong> valem para todo chip de marca que não tem tabela própria."
 msgstr ""
 "每颗芯片的价格，以<strong>美元（USD）</strong>计。<strong>其他品牌</strong>的价格适用于所有没有专属价目表的品牌芯片。"
 
+#: estoque/templates/estoque/partials/confirm_card.html:151
 msgid "QTD."
 msgstr "数量"
 
+#: estoque/templates/estoque/estoque.html:1221
 msgid "Quantidade a remover"
 msgstr "移除数量"
 
+#: templates/base.html:170
 msgid ""
 "Quanto mais informação você enviar, mais rápido conseguimos identificar. Uma "
 "foto nítida do chip ajuda muito."
 msgstr "您提供的信息越多，我们识别得越快。一张清晰的芯片照片会非常有帮助。"
 
+#: chips/labels.py:27
 msgid "RENTÁVEL"
 msgstr "有利润"
 
+#: estoque/templates/estoque/partials/confirm_card.html:96
 msgid "REPROVADO"
 msgstr "不合格"
 
+#: estoque/templates/estoque/estoque.html:1166
+#: estoque/templates/estoque/lotes.html:388
 msgid "Reabrir"
 msgstr "重新开启"
 
+#: templates/base.html:216
 msgid "Recebido — obrigado!"
 msgstr "已收到 — 谢谢！"
 
+#: estoque/views.py:446
 msgid "Reconheci"
 msgstr "已识别"
 
+#: estoque/templates/estoque/partials/unknown_feedback.html:4
 msgid "Registrado"
 msgstr "已登记"
 
+#: estoque/templates/estoque/partials/confirm_card.html:170
 msgid "Registrar como desconhecido"
 msgstr "登记为未知"
 
+#: estoque/templates/estoque/partials/confirm_card.html:168
 msgid "Registrar descarte"
 msgstr "登记报废"
 
+#: pricing/templates/pricing/partner_notifications.html:23
+#: pricing/models.py:478
 msgid "Rejeitado"
 msgstr "已拒绝"
 
+#: estoque/templates/estoque/estoque.html:1215
+#: estoque/templates/estoque/estoque.html:1243
 msgid "Remover"
 msgstr "移除"
 
+#: estoque/templates/estoque/partials/table_body.html:18
 #, python-format
 msgid "Remover %(pn_esc)s"
 msgstr "移除 %(pn_esc)s"
 
+#: estoque/templates/estoque/estoque.html:1199
 msgid "Remover do estoque"
 msgstr "从库存中移除"
 
+#: estoque/views.py:448 estoque/views.py:495
 msgid "Rentável"
 msgstr "有利润"
 
+#: chips/templates/chips/partials/decode_card.html:185
 msgid "Reportar erro"
 msgstr "报告错误"
 
+#: chips/views.py:183
 msgid "Reporte recebido — obrigado!"
 msgstr "报告已收到 — 谢谢！"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:4
 msgid "Reprovado — Resíduo eletrônico"
 msgstr "不合格 — 电子废料"
 
+#: estoque/templates/estoque/painel.html:131
 msgid "Reprovados hoje"
 msgstr "今日不合格"
 
+#: estoque/templates/estoque/base_estoque.html:147
+#: pricing/templates/pricing/partner_base.html:173
 msgid "Sair"
 msgstr "退出"
 
+#: chips/templates/chips/partials/decode_card.html:204
 msgid ""
 "Se o chip estiver fisicamente disponível, anote o PN completo do "
 "encapsulamento e tente novamente — o PN completo (ex: MT53B512M64D4TX) "
 "funciona diretamente."
 msgstr "如果芯片在手边，请抄下封装上完整的 PN 后重试 — 完整 PN（如 MT53B512M64D4TX）可直接查询。"
 
+#: chips/templates/chips/partials/decode_card.html:248
 msgid ""
 "Se o prefixo não consta acima, pode ser chip de linha especial ou leitura "
 "incorreta do PN na placa."
 msgstr "如果前缀不在上表中，可能是特殊产品线芯片，或板上 PN 读取有误。"
 
+#: pricing/templates/pricing/partner_home.html:26
 msgid "Sem cotação"
 msgstr "未报价"
 
+#: estoque/templates/estoque/lotes.html:351
 msgid "Sem descrição"
 msgstr "无描述"
 
+#: templates/registration/login.html:151
 msgid "Senha"
 msgstr "密码"
 
+#: estoque/templates/estoque/partials/pending_feedback.html:4
 msgid "Separar para conferência"
 msgstr "分出待复核"
 
+#: estoque/templates/estoque/partials/pending_feedback.html:13
 msgid "Separe este chip fisicamente e avise o gestor para confirmá-lo."
 msgstr "请将该芯片单独放置，并通知经理进行确认。"
 
+#: templates/base.html:201
 msgid "Seu e-mail (para retorno)"
 msgstr "您的邮箱（用于回复）"
 
+#: templates/base.html:217
 msgid ""
 "Seu envio entrou na fila de análise. Adicionamos o chip ao banco em até "
 "48&nbsp;h."
 msgstr "您的提交已进入分析队列。我们将在 48&nbsp;小时内把芯片收录到数据库。"
 
+#: pricing/templates/pricing/partner_base.html:180
 msgid "Seus preços por marca"
 msgstr "您的品牌价目表"
 
+#: templates/base.html:57
 msgid "Seções"
 msgstr "栏目"
 
+#: estoque/templates/estoque/base_estoque.html:143
 msgid "Site"
 msgstr "网站"
 
+#: estoque/templates/estoque/partials/confirm_card.html:116
 msgid "Specs ausentes ou incompletas"
 msgstr "规格缺失或不完整"
 
+#: chips/templates/chips/partials/decode_card.html:126
 msgid "Sufixo:"
 msgstr "后缀："
 
+#: pricing/templates/pricing/partner_list.html:18
+#: pricing/templates/pricing/partner_list.html:49
 msgid "Tipo"
 msgstr "类型"
 
+#: estoque/templates/estoque/lotes.html:356
 msgid "Tipos"
 msgstr "种类"
 
+#: estoque/templates/estoque/painel.html:123
 msgid "Tipos lançados hoje"
 msgstr "今日录入种类"
 
+#: estoque/templates/estoque/estoque.html:1135
+#: pricing/templates/pricing/partner_list.html:20
+#: pricing/templates/pricing/partner_list.html:28
 msgid "Todos"
 msgstr "全部"
 
+#: estoque/templates/estoque/lotes.html:360
 msgid "Total un."
 msgstr "总件数"
 
+#: templates/registration/login.html:145
 msgid "Usuário"
 msgstr "用户名"
 
+#: templates/registration/login.html:137
 msgid "Usuário ou senha incorretos. Tente novamente."
 msgstr "用户名或密码错误。请重试。"
 
+#: chips/templates/chips/partials/decode_card.html:138
+#: chips/templates/chips/partials/decode_card.html:208
+#: chips/templates/chips/partials/decode_card.html:259
+#: estoque/templates/estoque/partials/confirm_card.html:47
 msgid "VOCÊ QUIS DIZER?"
 msgstr "您是不是要找？"
 
+#: estoque/templates/estoque/estoque.html:1056
 msgid "Valoração do lote"
 msgstr "批次估值"
 
+#: estoque/templates/estoque/estoque.html:1267
 msgid "Veja o terminal do"
 msgstr "请查看"
 
+#: chips/templates/chips/partials/decode_card.html:241
 msgid "Verificar demanda antes de reacondicionar — sem datasheet disponível."
 msgstr "翻新前请先确认市场需求 — 无可用 datasheet。"
 
+#: chips/templates/chips/partials/decode_card.html:61
 msgid "Você conhece este chip? Entre em contato"
 msgstr "认识这颗芯片？联系我们"
 
+#: estoque/templates/estoque/painel.html:84
 #, python-format
 msgid "aberto em %(d)s"
 msgstr "开启于 %(d)s"
 
+#: estoque/templates/estoque/estoque.html:1551
 msgid "adicionado ao estoque"
 msgstr "已入库"
 
+#: pricing/templates/pricing/price_block.html:26
 msgid "aguardando cotação"
 msgstr "等待报价"
 
+#: pricing/templates/pricing/partner_list.html:95
 msgid "as linhas são criadas pela equipe WhatTheChip"
 msgstr "数据行由 WhatTheChip 团队创建"
 
+#: estoque/templates/estoque/partials/table_body.html:24
 #, python-format
 msgid "atualizado %(d)s"
 msgstr "更新于 %(d)s"
 
+#: chips/labels.py:48 estoque/views.py:483
 msgid "banco de dados"
 msgstr "数据库"
 
+#: estoque/templates/estoque/estoque.html:1062
 #, python-format
 msgid "cobertura %(cov)s%% (%(priced)s/%(total)s unid.)"
 msgstr "覆盖率 %(cov)s%%（%(priced)s/%(total)s 件）"
 
+#: pricing/templates/pricing/partner_list.html:95
 msgid "com estes filtros"
 msgstr "（当前筛选条件下）"
 
+#: estoque/templates/estoque/estoque.html:1056
 msgid "congelada no fechamento"
 msgstr "关闭时冻结"
 
+#: pricing/templates/pricing/price_block.html:19
 msgid "cotado"
 msgstr "已报价"
 
+#: pricing/views.py:280
 #, python-format
 msgid "cotado em US$ %s"
 msgstr "报价 US$ %s"
 
+#: pricing/templates/pricing/partner_base.html:151
 msgid "câmbio de<br>referência"
 msgstr "参考<br>汇率"
 
+#: estoque/templates/estoque/estoque.html:1215
 msgid "do estoque."
 msgstr "（未入库）。"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:10
 msgid "e registrado para auditoria."
 msgstr "并已登记备查。"
 
+#: pricing/templates/pricing/partner_list.html:70
 msgid "em revisão:"
 msgstr "审核中："
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:11
 msgid "encaminhe para o descarte de resíduos eletrônicos."
 msgstr "请送往电子废料报废区。"
 
+#: chips/templates/chips/partials/decode_card.html:56
 msgid ""
 "erro de gravação do fabricante (misprint de laser) ou produto OEM com "
 "datasheet sob NDA não publicado."
 msgstr "厂商刻印错误（激光印错），或属于 datasheet 受 NDA 保密未公开的 OEM 产品。"
 
+#: estoque/templates/estoque/estoque.html:1056
 msgid "estimativa ao vivo"
 msgstr "实时估算"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:9
 msgid "foi classificado como"
 msgstr "被判定为"
 
+#: chips/labels.py:46 estoque/views.py:468 estoque/views.py:481
 msgid "gramática"
 msgstr "语法规则"
 
+#: chips/labels.py:47
 msgid "gramática+db"
 msgstr "语法规则+数据库"
 
+#: estoque/templates/estoque/partials/confirm_card.html:31
 msgid "indeterminado"
 msgstr "未确定"
 
+#: pricing/templates/pricing/partner_list.html:35
 msgid "limpar filtros"
 msgstr "清除筛选"
 
+#: estoque/templates/estoque/estoque.html:1287
 msgid "mín."
 msgstr "最少"
 
+#: estoque/templates/estoque/partials/confirm_card.html:29
 msgid "não"
 msgstr "否"
 
+#: pricing/templates/pricing/price_block.html:22
 msgid "não compra este item"
 msgstr "不收购此项"
 
+#: pricing/views.py:281
 msgid "não compro"
 msgstr "不收购"
 
+#: pricing/views.py:282
 msgid "não cotado"
 msgstr "未报价"
 
+#: pricing/views.py:283
 msgid "não fabricado"
 msgstr "不生产"
 
+#: pricing/templates/pricing/price_block.html:24
 msgid "não fabricado pela marca"
 msgstr "该品牌不生产"
 
+#: estoque/templates/estoque/estoque.html:1267
 msgid "para o traceback."
 msgstr "终端中的完整报错。"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:9
 msgid "pela geração"
 msgstr "（按代际）"
 
+#: estoque/templates/estoque/partials/rejected_feedback.html:10
 msgid "reconhecido por gramática, não confirmado no banco"
 msgstr "由语法规则识别，未在数据库中确认"
 
+#: pricing/templates/pricing/price_block.html:19
 msgid "referência (sem data)"
 msgstr "参考价（无日期）"
 
+#: pricing/templates/pricing/price_block.html:28
 msgid "sem preço —"
 msgstr "无价格 —"
 
+#: estoque/templates/estoque/partials/confirm_card.html:27
 msgid "sim"
 msgstr "是"
 
+#: estoque/views.py:474
 msgid "specs ausentes"
 msgstr "规格缺失"
 
+#: estoque/views.py:476
 msgid "specs reais"
 msgstr "规格属实"
 
+#: estoque/views.py:466
 msgid "tipo/geração"
 msgstr "类型/代际"
 
+#: estoque/templates/estoque/partials/table_body.html:17
 msgid "un"
 msgstr "件"
 
+#: estoque/templates/estoque/estoque.html:1359
 msgid "unidades"
 msgstr "件"
 
+#: chips/templates/chips/partials/decode_card.html:13
+#: chips/templates/chips/partials/decode_card.html:233
 msgid "veja sugestões abaixo"
 msgstr "请看下方建议"
 
+#: chips/templates/chips/partials/decode_card.html:233
 msgid "verifique se o PN foi lido corretamente"
 msgstr "请确认 PN 是否读取正确"
 
+#: chips/templates/chips/partials/decode_card.html:160
 msgid "via"
 msgstr "来源："
 
+#: chips/views.py:31
 msgid "~ Estimado"
 msgstr "~ 估计"
 
+#: pricing/templates/pricing/partner_list.html:50
 msgid "Última atualização"
 msgstr "最后更新"
 
+#: chips/views.py:27
 msgid "✅ Confirmado"
 msgstr "✅ 已确认"
 
+#: chips/views.py:28
 msgid "✏️ Manual"
 msgstr "✏️ 人工"
 
+#: core/settings.py:144
 msgid "中文"
 msgstr "中文"
 
+#: chips/views.py:29
 msgid "🏪 Distribuidor"
 msgstr "🏪 分销商"
 
+#: chips/views.py:30
 msgid "📐 Gramática"
 msgstr "📐 语法规则"

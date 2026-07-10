@@ -600,7 +600,9 @@ Fonte única em código: **`chips/chip_types.py`** (a convenção completa está
 | Django admin | **fixo em pt-br** (superfície de plataforma — decisão 2026-07-08); `verbose_name` fica PT | `AdminPlataformaPtBrTests` |
 
 Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CANÔNICO.**
-Processo completo, rotina de tradução (inclusive por IA) e glossário: **`I18N.md`** (§5–§7).
+**Criando tela/página/string nova? O contrato de autoria é o `MULTILANGUAGE.md` §7**
+(“toda string nasce marcada E traduzida na MESMA entrega” + tabela faça/nunca + fluxo
++ 6 proibições). Processo profundo, rotina de tradução por IA e glossário: **`I18N.md`** (§5–§7).
 
 ---
 
@@ -749,7 +751,7 @@ relevante quando a tarefa pedir:
 - **`TOSHIBA-KIOXIA.md`** — bíblia técnica Toshiba / Kioxia: família THGBM (eMMC), decode maps THGBM_CAP/THGBM_GEN, eMCP TYC, famílias bloqueadas (KLUE/THGAF), armadilhas de sub-prefixo, gaps e roadmap. **CONSOLIDAÇÃO (2026-07-01):** Toshiba + Kioxia + KIOXIA(dup) viraram UMA marca **`Toshiba-Kioxia`** (code TXK) — mesma empresa (rename out/2019), em `chips/knowledge/toshiba-kioxia.yaml` (11 famílias). **Para adicionar/corrigir chip Toshiba-Kioxia, edite `chips/knowledge/toshiba-kioxia.yaml`** (contrato de autoria em §5).
 - **`FUZZY.md`** — bíblia técnica do sistema de sugestão inteligente de PNs: `_visual_edit_distance`, matriz de confusão visual, `_prefix_candidates`, `_combined_suggestions`, gate de confiança, frontend diff, tuning. **Leia antes de tocar nas funções `_fuzzy_*` / `_prefix_*` do engine.**
 - **`I18N.md`** — ⭐ bíblia técnica da **internacionalização (i18n)** — **sistema COMPLETO em 4 idiomas (pt-br/es/en/zh-hans, jul/2026)**: a cadeia de resolução (preferência do usuário `tenancy.UserLanguage` > cookie > Accept-Language/região > pt-br), as 3 superfícies (UI/`gettext`+`.po`, saída do engine com chave-canônica-vs-rótulo via `chips/labels.py` — **nunca compare contra o rótulo na lógica, use a chave** —, CMS **files-first**: `_content/<slug>.<código>.html` + `django-modeltranslation` p/ metadados), como adicionar um idioma (≈ 2 `.po`), a **rotina de tradução segura para modelo de IA** (contrato §7.1 + portão `check_translations` + glossário DO-NOT-TRANSLATE), extração/compilação sem gettext (`scripts/i18n_extract.py`/`i18n_compile.py`), armadilhas (string persistida = canônica; snapshot; `"por die"` no `DecodeMap`; JS estático via `JavaScriptCatalog`) e deploy do `.mo`. **Leia antes de mexer em tradução.** É o arquivo que o chat especializado em i18n mantém.
-- **`MULTILANGUAGE.md`** — documento de **FEATURE** do multilíngue (pedido do dono, jul/2026), para compor a documentação geral do sistema: os 4 idiomas e públicos, a cadeia de decisão em linguagem de produto, onde ficam os seletores, o mapa do que é/não é traduzido (dados nunca), a rotina resumida e como adicionar idioma. Não duplica o técnico — aponta pro `I18N.md`.
+- **`MULTILANGUAGE.md`** — documento de **FEATURE** do multilíngue + ⭐ **CONTRATO DE AUTORIA (§7)**: além da descrição de produto (4 idiomas, cadeia de decisão, seletores, mapa do que é/não é traduzido), o **§7 é leitura OBRIGATÓRIA para QUALQUER chat que crie tela/página/mensagem/string** — a regra "toda string nasce marcada E traduzida na MESMA entrega", a tabela "vou criar X → faça Y (nunca Z)", o fluxo do autor (extract → traduzir os SEUS msgids → compile → `check_translations` → suíte → mesmo commit) e as 6 proibições. Não duplica o técnico — aponta pro `I18N.md`.
 
 > ⚠️ **Não há mais `docs/archive/` nem notas de sessão** (removidas na limpeza v1.0.0-beta,
 > jul/2026). Handoff/histórico vive no git e no chat, não em arquivo solto. **O código é a
