@@ -844,6 +844,47 @@ adiciona a linha", §2/§11), agora com ferramenta própria:
 - Quem fabrica LPDDR (matriz da aba Instructions): Samsung, SK Hynix, Micron,
   Nanya. Kingston/Toshiba-Kioxia/SanDisk entram como não fabricado.
 
+### 12.15 F9 — Catálogo de preços em PDF (dono, 2026-07-10; suíte 331/331)
+
+O comprador baixa da home do /partner/ um PDF com TODAS as tabelas — é o
+documento que ele repassa aos clientes dele (decisões do dono: os 4 estados
+entram; **seletor de idioma próprio** ao lado do botão; rodapé discreto
+"Gerado por WhatTheChip").
+
+- **Layout = a MATRIZ da planilha original** (compacidade máxima): seção por
+  tipo (ordem de KIND_CHOICES), marcas nas colunas (ordem da sidebar, genérica
+  por último), capacidades nas linhas. Célula: preço · `×` não compro (verm.) ·
+  `—` não fabricado (cinza) · vazio = sem cotação. Legenda no topo; ~83 combos
+  cabem em 2 páginas A4 retrato (cabeçalho repete na quebra).
+- **Código:** `pricing/pdf.py` — `catalog_data(buyer)` (ORM, 1 query) separado
+  de `render_catalog_pdf(...)` (reportlab puro, sem banco — testável/amostras).
+  View `partner_catalog_pdf` (`/partner/catalog.pdf?lang=…`), gate
+  `partner_required`; botão+seletor na `partner_home.html`. **reportlab>=4.5
+  nos DOIS requirements.**
+- **⚠ 3 pegadinhas descobertas (2026-07-10), todas documentadas no código:**
+  1. `_()` dentro de f-string é INVISÍVEL ao extractor/portão no Python 3.11
+     (f-string = um token). Os `_()` do pdf.py ficam fora de f-strings.
+  2. A CID `STSong-Light` NÃO é embutida — chinês some em leitor sem a fonte
+     (WeChat/celular, o destino do catálogo). Solução: TTF embutida com
+     subset (`pricing/fonts/DroidSansFallbackFull.ttf`, Apache-2.0, LICENSE
+     ao lado; PDF zh fica ~14KB).
+  3. A DroidSansFallback é SÓ CJK (cmap sem latino/dígitos/`×`/`—`) — nunca é
+     fonte-base: Helvetica sempre cobre latino/números; a CJK entra por RUN
+     (`_rich`/`_draw_mixed`) só nos trechos chineses.
+- **i18n:** 9 msgids novos traduzidos na mesma entrega (es/en/zh); specs e
+  nomes de marca canônicos nunca traduzem; "Outras marcas"→其他品牌 reusa o
+  msgid existente via `catalog_data`.
+- **Teste:** `test_catalogo_pdf` (matriz + HTTP 200/pdf/attachment + ?lang=zh
+  + 403 p/ operador). Sem migração, sem mudança de banco.
+- **Revisão do dono (2026-07-10, mesma entrega):** (a) célula cotada mostra
+  **`US$ <preço>`** (o catálogo circula solto — tem que gritar que é dólar);
+  (b) comentário `{# #}` multiline VAZOU na home do parceiro — 2ª ocorrência
+  do erro (CLAUDE.md §7) — trocado por `{% comment %}`; (c) **caso Rayson**:
+  lista criada à mão no admin de prod "pra herdar" poluiu sidebar+PDF —
+  marca SEM lista **já herda da genérica automaticamente** (cadeia do
+  `price()` filtra `active=True`); conserto = desativar a lista no admin, e o
+  `PriceListAdmin` ganhou aviso anti-footgun no formulário.
+
 ### 12.14 Página "Como funciona" no /partner/ (dono, 2026-07-09; suíte 324/324)
 
 Guia de apresentação do painel para o comprador — comunicação **curta e

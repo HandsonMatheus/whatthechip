@@ -48,6 +48,18 @@ class PriceListAdmin(PlatformScopedAdmin):
     list_filter   = ('active', 'buyer')
     search_fields = ('buyer__name', 'brand__name')
     readonly_fields = ('company', 'created_at')
+    fieldsets = ((None, {
+        'fields': ('buyer', 'brand', 'inherits_from', 'active',
+                   'company', 'created_at'),
+        # Anti-footgun (caso Rayson, 2026-07-10): lista criada "só pra herdar"
+        # polui a sidebar do parceiro e o catálogo PDF — a herança da genérica
+        # já é automática pela AUSÊNCIA de lista.
+        'description': '⚠ Marca SEM lista já usa os preços de "Outras marcas" '
+                       'automaticamente — NÃO crie lista só para herdar. Crie '
+                       'lista apenas quando a marca terá preços PRÓPRIOS '
+                       '(ela passa a aparecer na sidebar do parceiro e no '
+                       'catálogo PDF).',
+    }),)
 
 
 @admin.register(Price)
