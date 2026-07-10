@@ -157,6 +157,45 @@ class TemplateSmokeTests(TestCase):
         self.assertIn('Escuchando', resp.content.decode())
 
 
+class I18nSourceVenvGuardTests(TestCase):
+    """BUG real (2026-07-10): o venv do dono vive DENTRO do projeto
+    (chipdocs/venv/), então a descoberta dinâmica classificava django/
+    modeltranslation/pghistory como "apps locais" e o portão varria os
+    templates e _() do PRÓPRIO Django (msgids falsos + PT-cru de terceiros).
+    Não reproduzia no sandbox (pacotes fora do BASE_DIR) — por isso estes
+    testes prendem o comportamento nos DOIS ambientes."""
+
+    def test_caminho_de_venv_e_excluido(self):
+        from pathlib import Path
+        from chips.i18n_source import _excluded
+        self.assertTrue(_excluded(Path(
+            'venv/lib/python3.14/site-packages/django/contrib/admin/templates/a.html')))
+        self.assertTrue(_excluded(Path('.venv/lib/python3.12/site-packages/x.py')))
+        self.assertTrue(_excluded(Path('staticfiles/admin/js/core.js')))
+        self.assertFalse(_excluded(Path('estoque/templates/estoque/estoque.html')))
+        self.assertFalse(_excluded(Path('chips/views.py')))
+
+    def test_apps_de_site_packages_nunca_sao_locais(self):
+        """Na máquina do dono (venv dentro do projeto) isto FALHAVA pré-fix:
+        django/modeltranslation entravam como apps locais."""
+        from chips.i18n_source import _local_app_paths
+        nomes = {p.name for p in _local_app_paths()}
+        self.assertTrue({'chips', 'estoque', 'pricing', 'tenancy', 'pages'} <= nomes,
+                        f'apps do projeto sumiram da descoberta: {nomes}')
+        intrusos = {'django', 'admin', 'modeltranslation', 'pghistory',
+                    'pgtrigger', 'contrib'} & nomes
+        self.assertFalse(intrusos, f'app de site-packages tratado como local: {intrusos}')
+
+    def test_varredura_nunca_entra_no_venv(self):
+        from chips.i18n_source import (template_files, python_files, js_files,
+                                       _EXCLUDED_PARTS)
+        for f in (list(template_files()) + list(python_files())
+                  + list(js_files())):
+            self.assertFalse(
+                _EXCLUDED_PARTS.intersection(f.parts),
+                f'arquivo de venv/estático varrido pelo portão: {f}')
+
+
 class PortaoDeCatalogoTests(TestCase):
     """O check_translations (I18N.md §7) passa nos catálogos versionados.
     Se este teste quebrar: alguém ativou idioma sem catálogo, deixou entrada

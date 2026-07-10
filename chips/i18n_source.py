@@ -45,13 +45,32 @@ def _base() -> Path:
     return Path(settings.BASE_DIR)
 
 
+# ⚠ BUG REAL (2026-07-10): o venv do dono vive DENTRO do projeto
+# (``chipdocs/venv/``) — sem esta exclusão, ``base in p.parents`` classificava
+# django/modeltranslation/pghistory como "apps locais" e o portão varria os
+# templates e ``_()`` do PRÓPRIO Django (121 templates + milhares de msgids
+# falsos exigidos no catálogo). No sandbox do agente não reproduzia (pacotes
+# em ``~/.local``, fora do BASE_DIR) — bug dependente de ambiente. A lista
+# espelha o ``makemessages -i venv -i staticfiles`` do fluxo canônico e é
+# aplicada TAMBÉM nos walkers (defesa em profundidade contra lixo aninhado).
+_EXCLUDED_PARTS = frozenset({
+    'venv', '.venv', 'site-packages', 'dist-packages',
+    'node_modules', 'staticfiles',
+})
+
+
+def _excluded(path: Path) -> bool:
+    return bool(_EXCLUDED_PARTS.intersection(path.parts))
+
+
 def _local_app_paths():
-    """Paths dos apps do PROJETO (dentro de BASE_DIR) — pula site-packages."""
+    """Paths dos apps do PROJETO: dentro de BASE_DIR **e fora** de
+    venv/site-packages (o venv mora dentro do projeto — ver nota acima)."""
     base = _base().resolve()
     seen = []
     for cfg in django_apps.get_app_configs():
         p = Path(cfg.path).resolve()
-        if base in p.parents:
+        if base in p.parents and not _excluded(p.relative_to(base)):
             seen.append(p)
     return seen
 
@@ -60,7 +79,9 @@ def template_files():
     dirs = [_base() / 'templates'] + [p / 'templates' for p in _local_app_paths()]
     for d in dirs:
         if d.exists():
-            yield from sorted(d.rglob('*.html'))
+            for path in sorted(d.rglob('*.html')):
+                if not _excluded(path):
+                    yield path
 
 
 def python_files():
@@ -69,7 +90,7 @@ def python_files():
         if not root.exists():
             continue
         for path in sorted(root.rglob('*.py')):
-            if 'migrations' in path.parts:
+            if 'migrations' in path.parts or _excluded(path):
                 continue
             yield path
 
