@@ -324,6 +324,13 @@ maps:
   SAM_EMCP_CAP_KM2P:
   - [P8001, 64GB, 6GB]
   - [P9001, 64GB, 6GB]
+  # KM1 (uMCP UFS4.0+LPDDR5X, ultra-premium ~2023+): mapa PRÓPRIO por isolamento
+  # preventivo do bug X6 — NUNCA compartilha chave com as famílias legadas LPDDR1/2/3
+  # do SAM_EMCP_CAP. VAZIO por ora: nenhum código de densidade confirmado em Tier-1
+  # (nem "1G" do golden KM11G1646D, nem "2U" de KM12U000MA — linha nova demais p/ chegar
+  # em distribuidor). Sem entrada → engine devolve "não mapeada" (IDÊNTICO a hoje).
+  # Popular SÓ com chave âncora Tier-1 (datasheet / página oficial Samsung).
+  SAM_EMCP_CAP_KM1: []
   SAM_EMMC_GEN:
   - [E, eMMC 5.0, '']
   - [F, eMMC 4.5, '']
@@ -1435,13 +1442,13 @@ families:
   pn_length: 10
   decode_cap_pos: 3
   decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
+  decode_cap_map: SAM_EMCP_CAP_KM1
   decode_gen_pos: null
   decode_gen_map: ''
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: '⚠ uMCP Samsung linha numérica KM1 — chip ULTRA-PREMIUM. Interface UFS 4.0 (~4200 MB/s) + LPDDR5X — geração mais recente (2023+). Presente em flagships Galaxy S23/S24. Capacidade: pn[3:5] → mapa SAM_EMCP_CAP. Valor comercial MUITO ELEVADO — NÃO enviar para resíduo ou eMMC. ATENÇÃO OCR: ''1'' confundido com ''I'' nesses PNs — conferir PN físico. Destino: bancada reacondicional uMCP (Premium Tier 1).'
+  tip: '⚠ uMCP Samsung linha numérica KM1 — chip ULTRA-PREMIUM. Interface UFS 4.0 (~4200 MB/s) + LPDDR5X — geração mais recente (2023+). Presente em flagships Galaxy S23/S24. DECODE: pn[3:5] → mapa PRÓPRIO SAM_EMCP_CAP_KM1 (isolado do SAM_EMCP_CAP compartilhado por segurança X6 — KM1 é família de dígito, NUNCA compartilha chave com legadas LPDDR1/2/3). ⚠ Mapa VAZIO por ora: sem código de densidade confirmado em Tier-1 → engine devolve "não mapeada" (INDETERMINADO); popular só com âncora Tier-1. Valor comercial MUITO ELEVADO — NÃO enviar para resíduo ou eMMC. ATENÇÃO OCR: ''1'' confundido com ''I'' nesses PNs — conferir PN físico. Destino: bancada reacondicional uMCP (Premium Tier 1).'
   reasoning: ''
 - prefix: KM2
   chip_type: uMCP
