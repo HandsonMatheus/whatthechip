@@ -165,7 +165,8 @@ maps:
   - ['6', 8GB, '']
   - [A, 2GB, '']
   - [C, 3GB, '']
-  - [E, 4GB, '']
+  - [D, 3GB, '']
+  - [E, 6GB, '']
   - [G, 6GB, '']
   - [J, 8GB, '']
   HYX_LPDDR4X_RAM_CAP:
@@ -336,8 +337,8 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'LPDDR4X standalone SK Hynix, Era 2 nomenclatura H5 (H54G). DRAM móvel puro. pn[4] = densidade — dois sistemas coexistem: NUMÉRICO: 2=512MB · 3=1GB · 4=2GB · 5=4GB · 6=8GB. ALFABÉTICO (die-revision + fracionados): A=2GB · C=3GB · E=4GB · G=6GB · J=8GB. pn[5] = organização de banco (6 ou 8) — NÃO é capacidade, ignorar. Ex (numérico): H54G56CYRB-X247 = 4GB (TechInsights HP Spectre ✓). Ex (alfabético): H54GE6CYRB-X252 = 4GB (Helio G80/G85, broker B2B SEA ✓). Origem: smartphones 2019-2023, tablets modernos. Destino: triagem LPDDR4X — altíssima demanda no mercado de recondicionamento.'
-  reasoning: ''
+  tip: 'LPDDR4X standalone SK Hynix, Era 2 nomenclatura H5 (H54G). DRAM móvel puro. pn[4] = densidade — dois sistemas coexistem: NUMÉRICO: 2=512MB · 3=1GB · 4=2GB · 5=4GB · 6=8GB. ALFABÉTICO (die-revision + fracionados): A=2GB · C=3GB · D=3GB · E=6GB · G=6GB · J=8GB — E e G convergem na mesma capacidade (die-revision diferente, mesmo valor), igual ao par C/D. pn[5] = organização de banco (6 ou 8) — NÃO é capacidade, ignorar. Ex (numérico): H54G56CYRB-X247 = 4GB (TechInsights HP Spectre ✓); reconfirmado 2026-07-10 via Preduo (H54G56CYRBX247N, 32Gbit÷8=4GB). Ex (alfabético): H54GD6AYRBX273N = 3GB (Preduo 24Gbit + título Alibaba "3GB" ✓, 2026-07-10). Ex (alfabético, código E): H54GE6CYRBX262N = 6GB (Puris, fetch direto, 48Gbit÷8=6GB, 2026-07-10) — CORRIGIDO nesta data (autorizado pelo dono): valor antigo (4GB, exemplo "H54GE6CYRB-X252", fonte "Helio G80/G85, broker B2B SEA" sem URL) não foi rastreável em nova busca e foi substituído pela fonte direta e verificável. Origem: smartphones 2019-2023, tablets modernos. Destino: triagem LPDDR4X — altíssima demanda no mercado de recondicionamento.'
+  reasoning: '["D=3GB confirmado 2026-07-10: Preduo (fetch direto, H54GD6AYRBX273N, \"Density: 24Gbit\") + título Alibaba (\"H54GD6AYRBX273N LPDDR4X 3GB\") — 24Gbit÷8=3GB, dupla fonte independente.", "Numérico 2/5/6 reconfirmados 2026-07-10 via Puris/Preduo fetch direto: H54G26AYRBX256=4Gbit=512MB (código 2), H54G56CYRBX247N=32Gbit=4GB (código 5), H54G66AYZGX106N=64Gbit=8GB (código 6).", "E CORRIGIDO 2026-07-10 (autorizado pelo dono): valor antigo E=4GB vinha de fonte vaga sem URL (\"H54GE6CYRB-X252, broker B2B SEA\"), não rastreada em nova busca. Puris fetch direto de H54GE6CYRBX262N confirma 48Gbit=6GB — grammar corrigida para E=6GB, golden anchor atualizado. E passa a duplicar G (6GB), mesmo padrão die-revision já visto em C/D (3GB)."]'
 - prefix: H58G
   chip_type: LPDDR5
   subtype: LPDDR5

@@ -893,6 +893,63 @@ def remove_entry(request, lot_pk, pk):
 
 # ─── export xls ──────────────────────────────────────────────────────────────
 
+# Estados sem valor no export (mesmo vocabulário canônico do PriceQuote).
+_EXPORT_PRICE_LABEL = {
+    'NO_BUY':   'não compra',
+    'NOT_MADE': 'não fabricado',
+    'UNQUOTED': 'sem cotação',
+}
+
+
+def _export_price_maps(request, lot):
+    """[(nome_do_comprador, {pn: linha})] para as colunas de preço do export.
+
+    SÓ papel ADMIN da empresa (matriz §8 do PLANO_MULTITENANT: gerente exporta a
+    planilha SEM as colunas de preço — mesma regra do card e da valoração).
+    Lote FECHADO usa o CONGELADO da F8 (LotPricing.lines — "vendi com qual
+    tabela"); aberto (ou fechado sem congelado) precifica ON-READ da tabela viva.
+    """
+    if getattr(request, 'company_role', None) != 'admin':
+        return []
+    from pricing.engine import price_lot
+    from pricing.models import Buyer, LotPricing
+
+    out = []
+    for buyer in Buyer.objects.filter(active=True).order_by('name'):
+        lines = None
+        if lot.status == Lot.STATUS_CLOSED:
+            frozen = (LotPricing.objects.filter(lot=lot, buyer=buyer)
+                      .order_by('-created_at').first())
+            if frozen:
+                lines = {l.get('pn'): l for l in frozen.lines}
+        if lines is None:
+            rep = price_lot(lot, buyer)
+            lines = {
+                l.part_number: {
+                    'status': l.quote.status,
+                    'min': str(l.quote.price_min) if l.quote.price_min is not None else None,
+                    'max': str(l.quote.price_max) if l.quote.price_max is not None else None,
+                }
+                for l in rep.lines
+            }
+        out.append((buyer.name, lines))
+    return out
+
+
+def _export_price_cells(line, qty):
+    """(preço unitário, total da linha) para a planilha. PRICED → números
+    (ponto médio da faixa — igual ao cenário default 'médio' da config); sem
+    valor → rótulo curto no lugar do unitário e total vazio."""
+    from decimal import Decimal
+    if line and line.get('status') == 'PRICED' and line.get('min') is not None:
+        low  = Decimal(str(line['min']))
+        high = Decimal(str(line.get('max') or line['min']))
+        unit = (low + high) / 2
+        return float(round(unit, 2)), float(round(unit * (qty or 0), 2))
+    status = line.get('status') if line else None
+    return _EXPORT_PRICE_LABEL.get(status, 'sem preço'), None
+
+
 @role_required('manager')   # §8: exportar lote é de gerente+
 def export_xls(request, lot_pk):
     try:
@@ -903,6 +960,8 @@ def export_xls(request, lot_pk):
 
     lot     = _get_lot(request, lot_pk)
     entries_list = list(_entries_qs(lot))
+    # Colunas de preço: vazio para gerente (só admin vê preço — matriz §8).
+    price_maps = _export_price_maps(request, lot)
 
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -916,6 +975,12 @@ def export_xls(request, lot_pk):
 
     headers    = ['Part Number', 'Brand', 'Type', 'Capacity', 'Interface', 'Qty.', 'Source', 'Last Added']
     col_widths = [22, 16, 12, 20, 16, 8, 18, 20]
+    # Colunas de preço por comprador (só chegam aqui para admin). "Unit." é o
+    # ponto médio da faixa em USD (cenário default); fechado = congelado (F8).
+    for buyer_name, _lines in price_maps:
+        headers    += [f'Preço unit. — {buyer_name} (USD)',
+                       f'Total — {buyer_name} (USD)']
+        col_widths += [24, 20]
 
     for col_idx, (h, w) in enumerate(zip(headers, col_widths), start=1):
         cell = ws.cell(row=1, column=col_idx, value=h)
@@ -925,6 +990,8 @@ def export_xls(request, lot_pk):
         ws.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = w
 
     ws.row_dimensions[1].height = 28
+
+    buyer_totals = [0.0] * len(price_maps)   # soma da coluna Total por comprador
 
     for row_idx, entry in enumerate(entries_list, start=2):
         data = [
@@ -937,18 +1004,31 @@ def export_xls(request, lot_pk):
             entry.classification_source or '—',
             timezone.localtime(entry.last_updated).strftime('%d/%m/%Y %H:%M:%S') if entry.last_updated else '—',
         ]
+        for i, (_buyer_name, lines) in enumerate(price_maps):
+            unit, line_total = _export_price_cells(
+                lines.get(entry.part_number), entry.quantity)
+            data += [unit, line_total]
+            if line_total is not None:
+                buyer_totals[i] += line_total
         for col_idx, value in enumerate(data, start=1):
             cell = ws.cell(row=row_idx, column=col_idx, value=value)
             cell.border    = cell_border
             cell.alignment = Alignment(vertical='center')
             if col_idx == 1:
                 cell.font = mono_font
+            if col_idx > 8 and isinstance(value, float):
+                cell.number_format = '#,##0.00'
         ws.row_dimensions[row_idx].height = 20
 
     total_row  = len(entries_list) + 2
     total_font = Font(name='Calibri', bold=True, size=10)
     ws.cell(row=total_row, column=1, value='TOTAL').font = total_font
     ws.cell(row=total_row, column=6, value=sum(e.quantity for e in entries_list)).font = total_font
+    # Total geral em USD por comprador (na coluna "Total" dele).
+    for i, total in enumerate(buyer_totals):
+        cell = ws.cell(row=total_row, column=10 + i * 2, value=round(total, 2))
+        cell.font = total_font
+        cell.number_format = '#,##0.00'
 
     wb.properties.creator = 'WhatTheChip?'
     wb.properties.title   = f'Lote #{lot.number:03d} — {request.user.username}'

@@ -954,6 +954,70 @@ class PlatformAdminFormTests(TestCase):
         self.assertEqual(buyer.company_id, self.company.pk)
 
 
+class ExportPriceColumnsTests(TestCase):
+    """Export .xlsx com preço (feature 2026-07-09): colunas "Preço unit./Total —
+    <comprador> (USD)" **SÓ para ADMIN** (matriz §8: gerente não vê preço — ele
+    exporta a planilha sem as colunas; operador nem exporta, gate manager+ já
+    provado na RoleMatrixTests)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        User = get_user_model()
+        cls.company = Company.objects.create(name='eMiner', slug='eminer')
+        cls.adm = User.objects.create_user('xp_adm', password='x')
+        cls.mgr = User.objects.create_user('xp_mgr', password='x')
+        Membership.objects.create(user=cls.adm, company=cls.company,
+                                  role=Membership.ROLE_ADMIN)
+        Membership.objects.create(user=cls.mgr, company=cls.company,
+                                  role=Membership.ROLE_MANAGER)
+        cls.lot = Lot.all_companies.create(number=600, operator=cls.adm,
+                                           company=cls.company)
+        InventoryEntry.all_companies.create(
+            lot=cls.lot, part_number='KLMAG1JETD',
+            chip_type='eMMC', capacity='16GB', quantity=3)
+        # Catálogo: PN confirmado (o price_lot reclassifica cada PN on-read).
+        from chips.models import Brand as ChipBrand, KnownPart
+        brand = ChipBrand.objects.create(name='Samsung', code='SAM')
+        KnownPart.objects.create(part_number='KLMAG1JETD', brand=brand,
+                                 chip_type='eMMC', capacity='16GB',
+                                 confidence='confirmed', review_status='approved')
+        # Comprador com preço: eMMC 16GB = US$ 1,50 (lista genérica).
+        from pricing.models import Buyer, Price, PriceList
+        buyer = Buyer.all_companies.create(name='Wuquan', slug='wuquan',
+                                           company=cls.company)
+        pl = PriceList.all_companies.create(buyer=buyer, company=cls.company)
+        Price.all_companies.create(price_list=pl, kind='emmc', gen='',
+                                   tier_value=16, tier_unit='GB',
+                                   status='quoted', price_min='1.50',
+                                   price_max='1.50', company=cls.company)
+
+    def _sheet(self, user):
+        import io as _io
+        import openpyxl
+        self.client.force_login(user)
+        resp = self.client.get(reverse('estoque:export', args=[self.lot.pk]))
+        self.assertEqual(resp.status_code, 200)
+        return openpyxl.load_workbook(_io.BytesIO(resp.content)).active
+
+    def test_admin_exporta_com_preco_unitario_e_total(self):
+        ws = self._sheet(self.adm)
+        headers = [c.value for c in ws[1]]
+        self.assertIn('Preço unit. — Wuquan (USD)', headers)
+        self.assertIn('Total — Wuquan (USD)', headers)
+        unit_col = headers.index('Preço unit. — Wuquan (USD)') + 1
+        self.assertEqual(ws.cell(row=2, column=unit_col).value, 1.5)
+        self.assertEqual(ws.cell(row=2, column=unit_col + 1).value, 4.5)  # 3 × 1,50
+        self.assertEqual(ws.cell(row=3, column=unit_col + 1).value, 4.5)  # TOTAL geral
+
+    def test_gerente_exporta_sem_colunas_de_preco(self):
+        """Gerente continua exportando (papel dele) — mas a planilha vem SEM
+        preço (a decisão 'gerente não vê preço' vale em toda superfície)."""
+        ws = self._sheet(self.mgr)
+        headers = [c.value for c in ws[1]]
+        self.assertEqual(len(headers), 8)                 # só as colunas base
+        self.assertFalse(any('Preço' in str(h) for h in headers if h))
+
+
 class TenancyDeclarationTests(TestCase):
     """§12.1: "tabela sem decisão de tenancy = suíte vermelha". Todo modelo dos
     apps do projeto ou está na lista GLOBAL declarada (PRECIFICACAO §10), ou é

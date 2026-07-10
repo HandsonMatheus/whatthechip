@@ -1543,7 +1543,8 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H26M74002HMR":      ("eMMC", "64GB",  "", "", "", "RENTÁVEL"),
     "H26T87001CMR":      ("eMMC", "128GB", "", "", "", "RENTÁVEL"),
     "H28U88301AMR":      ("UFS",  "128GB", "", "", "", "RENTÁVEL"),
-    "H54GE6CYRB":        ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),
+    "H54GE6CYRB":        ("LPDDR4X", "6GB", "", "", "", "RENTÁVEL"),  # CORRIGIDO 2026-07-10 (autorização do dono): era 4GB (fonte antiga não rastreável); Puris fetch direto de H54GE6CYRBX262N confirma 48Gbit=6GB
+    "H54GD6AYRBX273N":   ("LPDDR4X", "3GB", "", "", "", "RENTÁVEL"),  # 2ª âncora H54G, chave 'D' nova (2026-07-10) — Preduo (24Gbit) + título Alibaba ("3GB") confirmam D=3GB
     "H5AN8G8NAFR-UHC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
     "H5AN8G8NAFR-VKC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
     "H5CG48MEBDX014N":   ("DDR5", "2GB",  "", "", "", "RENTÁVEL"),
@@ -1603,6 +1604,8 @@ _SAM_GOLDEN = {
     'K4AAG165W': ('DDR4', '', '', '', '16Gb = 2GB por die [~]', 'RENTÁVEL'),
     'K4B2G1646F': ('DDR3', '', '', '', '2Gb = 256MB por die [~]', 'RENTÁVEL'),
     'K4B8G0846D': ('DDR3', '', '', '', '8Gb = 1GB por die [✓]', 'RENTÁVEL'),
+    'K4D553235FGC33': ('GDDR2', '32MB', '', '', '', 'NÃO RENTÁVEL'),
+    'K4D263238KFC40': ('GDDR2', '16MB', '', '', '', 'NÃO RENTÁVEL'),
     'K4E6E304': ('LPDDR3', '2GB', '', '', '', 'RENTÁVEL'),
     'K4EBE304': ('LPDDR3', '4GB', '', '', '', 'RENTÁVEL'),
     'K4FHE30': ('LPDDR4', '3GB', '', '', '', 'RENTÁVEL'),

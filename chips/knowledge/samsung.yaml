@@ -46,10 +46,16 @@ maps:
   - ['7', 3GB, '24Gb — 4× 6Gb die. Ex: K3QF7F70DM-QGCE (Note 3, Samsung PR 3GB LPDDR3 ✓). Reacondicional seletivo.']
   - [A, 8GB, 64Gb — K3QFAFA0CM-AGCF (Samsung Semiconductor Global ✓ 2026-05-28). Geração C. Novo key — não existia no mapa anterior.]
   K3RG_CAP:
+  - [1G, 2GB, '16Gb — K3RG1G10BM-MGCH (Preduo Density ✓ + HKInventory/Win-Source/Censtry, 4 distribuidores independentes). Achado 2026-07-10.']
   - [2G, 4GB, 32Gb — K3RG2G20CA-MGCJ / K3RG2G20CM-FGCJ (PSG 1H 2017 ✓).]
   - [3G, 3GB, '24Gb — K3RG3G30MM-DGCH (iFixit Galaxy S6 Teardown 2015 ✓). Mesma capacidade que 4G, die diferente.']
   - [4G, 3GB, 24Gb — K3RG4G40MM-MGCJ (PSG 1H 2017 ✓).]
+  - [5G, 4GB, '32Gb — K3RG5G50MM-FGCJ (PN genuíno confirmado no catálogo OFICIAL Samsung/DirectIndustry — 1 dos 3 representantes LPDDR4 da linha K3RG lá, junto com 2G e 8G; densidade numérica só achada em título de listagem Alibaba, fonte única e mais fraca que as outras chaves — recomendado confirmar com 2ª fonte quando possível). Mesma capacidade que 2G, die diferente. Achado 2026-07-10.']
   - [6G, 6GB, 48Gb — K3RG6G60MM-MGCJ (PSG 1H 2017 ✓).]
+  - [8G, 8GB, 64Gb — K3RG8G80MM-MGCJ (Preduo Density ✓ + catálogo OFICIAL Samsung/DirectIndustry). Achado 2026-07-10.]
+  K4D_CAP:
+  - [26, 16MB, '128Mbit — K4D263238K-FC40/FC50 (datasheet Samsung oficial via BDTIC: "134,217,728 bits" = 128Mbit÷8=16MB, Rev 1.0 Jul/2008 ✓). Família nova, achada 2026-07-10.']
+  - [55, 32MB, '256Mbit — K4D553235F-GC25/GC2A/GC33 (datasheet Samsung oficial via alldatasheet: "268,435,456 bits" = 256Mbit÷8=32MB, Rev 1.6 Mai/2005 ✓). Família nova, achada 2026-07-10.']
   K4E_CAP:
   - [2E, 1.5GB, '12Gb — Galaxy Tab E / S5 Mini (~2014-2015). Sem liquidez B2B atual. K4E2E304EA-AGCF: Kynix/Worldway ✓. K4E2E304EE-AGCE: Alldatasheet Samsung PSG ✓ (2026-05-29). Galaxy Tab E SM-T560 = 1.5GB RAM confirmado — GSMarena/Icecat ✓. Chave também presente em LPDDR4_CAP (confirmado por datasheet Samsung).']
   - [6E, 2GB, 16Gb — Galaxy mid-range (~2014-2016).]
@@ -517,7 +523,7 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'LPDDR4 Multi-Channel Samsung (K3RG). Tensão I/O: 1.1V. Configuração: 4CH x16 = 64-bit total — encapsulamento multi-die. Capacidade pn[4:6] → K3RG_CAP: 4G=3GB · 3G=3GB · 2G=4GB · 6G=6GB. Exemplos: K3RG4G40MM (3GB, PSG 1H 2017 ✓) · K3RG3G30MM-DGCH (3GB, Galaxy S6 iFixit ✓) · K3RG2G20CA/CM (4GB, 366/432-ball) · K3RG6G60MM (6GB, 366-ball). ⚠ NÃO confundir com K3R (LPDDR3) — K3RG é LPDDR4. ⚠ NÃO misturar soquetes com K3U/K3UH (LPDDR4X, 0.6V). Destino: bancada reacondicional mobile (2016+ era).'
+  tip: 'LPDDR4 Multi-Channel Samsung (K3RG). Tensão I/O: 1.1V. Configuração: 4CH x16 = 64-bit total — encapsulamento multi-die. Capacidade pn[4:6] → K3RG_CAP: 1G=2GB · 2G=4GB · 3G=3GB · 4G=3GB · 5G=4GB · 6G=6GB · 8G=8GB. Exemplos: K3RG1G10BM (2GB, Preduo ✓) · K3RG4G40MM (3GB, PSG 1H 2017 ✓) · K3RG3G30MM-DGCH (3GB, Galaxy S6 iFixit ✓) · K3RG2G20CA/CM (4GB, 366/432-ball) · K3RG5G50MM (4GB, catálogo oficial Samsung ✓) · K3RG6G60MM (6GB, 366-ball) · K3RG8G80MM (8GB, Preduo + catálogo oficial Samsung ✓). ⚠ 1G/5G/8G achados 2026-07-10 (varredura de família) — 5G com densidade numérica de fonte única (Alibaba), confirmar 2ª fonte se possível. ⚠ NÃO confundir com K3R (LPDDR3) — K3RG é LPDDR4. ⚠ NÃO misturar soquetes com K3U/K3UH (LPDDR4X, 0.6V). Destino: bancada reacondicional mobile (2016+ era).'
   reasoning: ''
 - prefix: K3U
   chip_type: LPDDR4X
@@ -573,6 +579,24 @@ families:
   suffix_rules: ''
   tip: 'DDR3/DDR3L Samsung (2007–2016). B = DDR3. Densidade: pn[3:5] → 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB). Largura: pn[5:7] → 08=x8 · 16=x16. Tensão: sufixo BC=DDR3 1.5V · BY=DDR3L 1.35V. ⚠ NÃO misturar DDR3 com DDR3L na bancada. Destino por densidade: 1Gb (128MB) → resíduo (moagem/refino — sem liquidez B2B em 2026); ≥2Gb (256MB+) → checar demanda antes de reacondicionar.'
   reasoning: '["K → Samsung Memory", "4 → 4th-gen DRAM", "B → DDR3 (inclui DDR3L — distinção pela tensão do sufixo)", "Densidade: pn[3:5] via DRAM_PC — 1G=1Gb(128MB) · 2G=2Gb(256MB) · 4G=4Gb(512MB) · 8G=8Gb(1GB)", "Largura: pn[5:7] — 08=x8 (DIMMs/SO-DIMM) · 16=x16 (embarcados)", "Tensão: sufixo BC=DDR3 1.5V | BY=DDR3L 1.35V — NÃO misturar na bancada"]'
+- prefix: K4D
+  chip_type: GDDR2
+  subtype: GDDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 40
+  pn_length: null
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: K4D_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠ CONVENÇÃO DE MERCADO (decisão do dono, 2026-07-10): datasheet Samsung do K4D553235F-GC (Rev 1.6 Mai/2005) e do K4D263238K-FC (Rev 1.0 Jul/2008) chamam o chip só de "GDDR SDRAM", SEM número — não existe fonte Tier-1 que diga "GDDR2" explicitamente. Classificado como GDDR2 por convenção de época/mercado (2003-2008, pré-padronização JEDEC numerada — é o que a indústria retroativamente chama esses chips), decisão explícita do dono (o portão rejeita chip_type genérico "GDDR" em família ativa). Capacidade pn[3:5] → K4D_CAP: 26=16MB(128Mbit) · 55=32MB(256Mbit). Exemplos: K4D553235F-GC33 (32MB, datasheet Samsung oficial ✓) · K4D551638F-TC (32MB, mesma densidade, organização x16 em vez de x32) · K4D263238K-FC40/FC50 (16MB, datasheet Samsung oficial ✓). Sufixo (GCxx/TCxx/FCxx/VCxx) = grade de clock/velocidade, NÃO afeta capacidade; "V" no lugar de "G"/"F"/"T" = versão Lead-Free do mesmo chip. Usada em placas de vídeo AGP/PCIe antigas — geração morta, sem mercado B2B de reciclagem em 2026. Destino: sucata/moagem (NÃO RENTÁVEL por geração — GDDR2 < gddr_min_gen, independente de capacidade). Família nova, achada e adicionada 2026-07-10 (PN K4D553235FGC33, totalmente desconhecido antes).'
+  reasoning: '["K → Samsung Memory", "4 → 4th-gen DRAM", "D → GDDR SDRAM sem número no datasheet Samsung — classificado GDDR2 por convenção de mercado/época, decisão explícita do dono 2026-07-10 (não afirmado pela fonte Tier-1)", "Densidade: pn[3:5] via K4D_CAP — 26=128Mbit(16MB) · 55=256Mbit(32MB)", "Organização (x16/x32) não decodificada — não afeta capacidade total, só bus width", "Fonte Tier-1 de capacidade: datasheet Samsung oficial (alldatasheet + BDTIC) para K4D553235F-GC e K4D263238K"]'
 - prefix: K4E
   chip_type: LPDDR3
   subtype: LPDDR3

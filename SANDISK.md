@@ -88,7 +88,8 @@ triagem, resolvido só confirmando o PN). Sem números aqui.
 ### 5.1 SanDisk × Western Digital — o "mix" foi só na doc, nunca no PN
 
 Linha do tempo: SanDisk foi **comprada pela Western Digital em 2016** e **voltou a ser independente em
-21/fev/2025** (spin-off; Nasdaq: SNDK), ficando com todo o negócio de flash/NAND. A WD hoje é **só HDD**
+fev/2025** (spin-off distribuído 21/fev; negociação independente na Nasdaq como **SNDK** a partir de
+24/fev/2025), ficando com todo o negócio de flash/NAND. A WD hoje é **só HDD**
 (fora do domínio do WTC). Regras imutáveis pro operador:
 
 - O **PN gravado no chip sempre teve prefixo `SD`** (`SDIN…`, `SD7DP…`, `SDAD…`). A WD **nunca** criou chip de memória com prefixo "WD". O código que o operador lê é sempre SanDisk.
