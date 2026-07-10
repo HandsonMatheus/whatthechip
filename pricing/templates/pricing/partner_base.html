@@ -143,6 +143,11 @@
     {% trans "Início" %}
   </a>
 
+  <a href="{% url 'pricing:partner_how' %}"
+     class="wtc-header__nav{% if active_pk == 'how' %} wtc-header__nav--active{% endif %}">
+    {% trans "Como funciona" %}
+  </a>
+
   <span class="wtc-header__spacer"></span>
 
   {# Câmbio RMB→USD de REFERÊNCIA (client-side; escondido até carregar). #}

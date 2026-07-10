@@ -168,6 +168,17 @@ def partner_list(request, list_pk):
 
 
 @partner_required
+def partner_how(request):
+    """'Como funciona' — guia CURTO do dashboard para o comprador (pedido do
+    dono, 2026-07-09: comunicação objetiva, o comprador chinês não gosta de
+    ler). Conteúdo 100% no template, marcado com {% trans %} (MULTILANGUAGE §7)."""
+    return render(request, 'pricing/partner_how.html', {
+        'buyer': request.buyer,
+        'nav_lists': _lists_with_stats(request.buyer), 'active_pk': 'how',
+    })
+
+
+@partner_required
 def partner_notifications(request):
     """🔔 As decisões do WhatTheChip sobre os pedidos do comprador (aprovado/
     rejeitado), mais recentes primeiro. Abrir a página marca tudo como visto

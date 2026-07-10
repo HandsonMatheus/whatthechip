@@ -1319,3 +1319,153 @@ msgstr "🏪 Distribuidor"
 #: chips/views.py:30
 msgid "📐 Gramática"
 msgstr "📐 Gramática"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Como funciona"
+msgstr "Cómo funciona"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em USD, sempre atualizada, sem planilhas."
+msgstr "Aquí mantienes tu tabla de precios de compra de chips de memoria — siempre en USD, siempre actualizada, sin hojas de cálculo."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Escolha uma marca no menu à esquerda."
+msgstr "Elige una marca en el menú de la izquierda."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Digite o preço em USD e escolha o estado da linha."
+msgstr "Escribe el precio en USD y elige el estado de la línea."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Confirme o envio — sua mudança vai para a revisão do WhatTheChip."
+msgstr "Confirma el envío — tu cambio pasa a la revisión de WhatTheChip."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Aprovada, ela passa a valer na hora. Acompanhe a decisão nas notificações."
+msgstr "Aprobada, vale de inmediato. Sigue la decisión en las notificaciones."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Os estados de cada linha"
+msgstr "Los estados de cada línea"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "você já deu o preço deste chip."
+msgstr "ya diste el precio de este chip."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "falta você dar o preço. As linhas amarelas são a sua lista de tarefas."
+msgstr "falta que des el precio. Las líneas amarillas son tu lista de tareas."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "esta marca não produz este chip; o campo de preço fica travado."
+msgstr "esta marca no fabrica este chip; el campo de precio queda bloqueado."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "a marca produz, mas você não compra este item."
+msgstr "la marca lo fabrica, pero tú no compras este ítem."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Bom saber"
+msgstr "Conviene saber"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Os preços de “Outras marcas” valem para todo chip de marca que não tem tabela própria."
+msgstr "Los precios de “Otras marcas” valen para todo chip de una marca sin tabla propia."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "O câmbio no topo (1 ¥ → USD) é só uma referência — todos os preços são em USD."
+msgstr "El cambio en la parte superior (1 ¥ → USD) es solo una referencia — todos los precios son en USD."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "O preço é por chip (unitário)."
+msgstr "El precio es por chip (unitario)."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Perguntas frequentes"
+msgstr "Preguntas frecuentes"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Em que moeda eu preencho os preços?"
+msgstr "¿En qué moneda escribo los precios?"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Sempre em USD (dólar americano), por chip. O câmbio exibido no topo é apenas uma referência."
+msgstr "Siempre en USD (dólar estadounidense), por chip. El cambio que se muestra arriba es solo una referencia."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Meu preço vale na hora?"
+msgstr "¿Mi precio vale de inmediato?"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Não. Toda mudança passa primeiro pela revisão do WhatTheChip. Depois de aprovada, vale na hora — e você recebe uma notificação."
+msgstr "No. Todo cambio pasa primero por la revisión de WhatTheChip. Una vez aprobado, vale de inmediato — y recibes una notificación."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "O que significa “em revisão”?"
+msgstr "¿Qué significa “en revisión”?"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Sua mudança foi enviada e aguarda aprovação. Até lá, o valor antigo continua valendo."
+msgstr "Tu cambio fue enviado y espera aprobación. Hasta entonces, sigue valiendo el valor anterior."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Errei um preço. Posso corrigir?"
+msgstr "Me equivoqué en un precio. ¿Puedo corregirlo?"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Sim. Envie o valor certo na mesma linha — o novo pedido substitui o anterior."
+msgstr "Sí. Envía el valor correcto en la misma línea — el nuevo pedido reemplaza al anterior."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "O que é a linha amarela?"
+msgstr "¿Qué es la línea amarilla?"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "É um chip sem cotação — falta você dar o preço. O contador da página Início mostra quantos faltam."
+msgstr "Es un chip sin cotización — falta que des el precio. El contador de la página Inicio muestra cuántos faltan."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Para que serve a tabela “Outras marcas”?"
+msgstr "¿Para qué sirve la tabla “Otras marcas”?"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "É a sua tabela geral. Esses preços valem para chips de qualquer marca que não tem tabela própria."
+msgstr "Es tu tabla general. Esos precios valen para chips de cualquier marca sin tabla propia."
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Está faltando um chip na minha tabela?"
+msgstr "¿Falta un chip en mi tabla?"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você cotar."
+msgstr "Habla con WhatTheChip — agregamos la línea y aparece para que la cotices."

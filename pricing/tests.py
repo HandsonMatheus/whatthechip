@@ -865,6 +865,17 @@ class PartnerDashboardTests(TestCase):
         self.assertContains(resp, 'Chips sem cotação')
         self.assertContains(resp, 'Bem-vindo')
 
+    def test_como_funciona(self):
+        # F6.2: guia curto do comprador — acessível só ao parceiro, com FAQ.
+        self.client.force_login(self.partner)
+        resp = self.client.get('/partner/how/')
+        self.assertContains(resp, 'Como funciona')
+        self.assertContains(resp, 'Perguntas frequentes')
+        self.assertContains(resp, 'USD')
+        self.client.logout()
+        self.client.force_login(self.operator)
+        self.assertEqual(self.client.get('/partner/how/').status_code, 403)
+
     def test_lancadeira_redireciona_parceiro_para_o_partner(self):
         self.client.force_login(self.partner)
         resp = self.client.get('/painel/')
@@ -1066,3 +1077,57 @@ class PricingRLSTests(TransactionTestCase):
                 c2.execute("SELECT set_config('app.platform', '1', false)")
             cur.execute('SELECT count(*) FROM pricing_buyer')
             self.assertEqual(cur.fetchone()[0], 2)
+
+
+class PartnerSelfAccessRLSTests(TransactionTestCase):
+    """Regressão do bug de PRODUÇÃO 2026-07-09: o parceiro (sem Membership →
+    sem ``app.company_id``) precisa enxergar o PRÓPRIO Buyer sob RLS+FORCE —
+    senão o gate do /partner/ lê zero linhas e devolve 403. É a policy da
+    pricing/0010 (auto-acesso via ``app.user_id``, que o TenancyMiddleware
+    agora emite para todo autenticado). Postgres-only; no dev conectado como
+    superuser o RLS nem morde (§6.2.1) — troca para o role de sondagem.
+
+        python manage.py test pricing.tests.PartnerSelfAccessRLSTests
+    """
+
+    @skipUnless(connection.vendor == 'postgresql', 'RLS é Postgres-only')
+    def test_parceiro_ve_o_proprio_buyer_e_nada_mais(self):
+        from estoque.tests import enter_non_superuser
+        User = get_user_model()
+        a = Company.objects.create(name='SelfA', slug='selfa')
+        b = Company.objects.create(name='SelfB', slug='selfb')
+        wuquan = User.objects.create_user('rls_wuquan')
+        buyer_dele = Buyer.all_companies.create(company=a, name='Wu Quan',
+                                                slug='rls-wuquan')
+        buyer_dele.users.add(wuquan)
+        Buyer.all_companies.create(company=b, name='Outro Comprador',
+                                   slug='rls-outro')
+
+        def _clear():
+            with connection.cursor() as c:
+                for guc in ('app.company_id', 'app.platform', 'app.user_id'):
+                    c.execute("SELECT set_config(%s, '', false)", [guc])
+        self.addCleanup(_clear)
+        _clear()
+
+        with connection.cursor() as cur:
+            enter_non_superuser(self, cur)
+
+            # Sem NENHUM GUC (o estado do bug): zero linhas → era o 403.
+            cur.execute('SELECT count(*) FROM pricing_buyer')
+            self.assertEqual(cur.fetchone()[0], 0)
+
+            # Com app.user_id (o que o middleware emite p/ autenticado):
+            # o parceiro vê O PRÓPRIO buyer — e SÓ ele.
+            cur.execute("SELECT set_config('app.user_id', %s, false)",
+                        [str(wuquan.pk)])
+            cur.execute('SELECT slug FROM pricing_buyer')
+            self.assertEqual([r[0] for r in cur.fetchall()], ['rls-wuquan'])
+
+            # E o mesmo caminho que o GATE usa (ORM), sob o role de sondagem:
+            self.assertTrue(
+                Buyer.all_companies.filter(users=wuquan, active=True).exists())
+
+            # As tabelas SENSÍVEIS continuam fechadas sem escopo de empresa.
+            cur.execute('SELECT count(*) FROM pricing_pricelist')
+            self.assertEqual(cur.fetchone()[0], 0)

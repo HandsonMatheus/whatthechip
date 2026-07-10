@@ -12,4 +12,5 @@ urlpatterns = [
     path('save/<int:list_pk>/',   views.partner_save, name='partner_save'),
     path('notifications/',        views.partner_notifications,
          name='partner_notifications'),
+    path('how/',                  views.partner_how, name='partner_how'),
 ]

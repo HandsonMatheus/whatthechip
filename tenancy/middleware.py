@@ -62,11 +62,18 @@ class TenancyMiddleware:
     @staticmethod
     def _emit_rls_gucs(request, membership):
         user = getattr(request, 'user', None)
-        is_platform = bool(user is not None and user.is_authenticated
-                           and user.is_superuser)
-        if membership is None and not is_platform:
+        is_authenticated = bool(user is not None and user.is_authenticated)
+        if not is_authenticated:
             return                                      # anônimo: nada a emitir
+        is_platform = user.is_superuser
         with connection.cursor() as cur:
+            # app.user_id: identidade p/ policies de AUTO-ACESSO — o caso real
+            # é o COMPRADOR (sem Membership → sem app.company_id): a policy do
+            # pricing_buyer deixa ele ver O PRÓPRIO buyer (pricing/0010), senão
+            # o gate do /partner/ leria zero linhas e 403 (bug de prod
+            # 2026-07-09 — o superuser do dev local mascarava, RLS não vale
+            # p/ super).
+            _set_guc(cur, 'app.user_id', str(user.pk), local=True)
             if membership is not None:
                 _set_guc(cur, 'app.company_id',
                          str(membership.company_id), local=True)

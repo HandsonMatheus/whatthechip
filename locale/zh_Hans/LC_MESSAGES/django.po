@@ -1266,3 +1266,153 @@ msgstr "🏪 分销商"
 #: chips/views.py:30
 msgid "📐 Gramática"
 msgstr "📐 语法规则"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Como funciona"
+msgstr "使用说明"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em USD, sempre atualizada, sem planilhas."
+msgstr "在这里维护您的存储芯片收购价格表——始终以 USD 计价，随时更新，无需表格文件。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Escolha uma marca no menu à esquerda."
+msgstr "在左侧菜单中选择一个品牌。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Digite o preço em USD e escolha o estado da linha."
+msgstr "输入 USD 价格并选择该行的状态。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Confirme o envio — sua mudança vai para a revisão do WhatTheChip."
+msgstr "确认提交——您的修改将交由 WhatTheChip 审核。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Aprovada, ela passa a valer na hora. Acompanhe a decisão nas notificações."
+msgstr "审核通过后立即生效。请在通知中查看结果。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Os estados de cada linha"
+msgstr "每行的状态"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "você já deu o preço deste chip."
+msgstr "您已为该芯片报价。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "falta você dar o preço. As linhas amarelas são a sua lista de tarefas."
+msgstr "尚未报价。黄色行就是您的待办清单。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "esta marca não produz este chip; o campo de preço fica travado."
+msgstr "该品牌不生产此芯片；价格栏已锁定。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "a marca produz, mas você não compra este item."
+msgstr "该品牌生产此芯片，但您不收购。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Bom saber"
+msgstr "温馨提示"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Os preços de “Outras marcas” valem para todo chip de marca que não tem tabela própria."
+msgstr "“其他品牌”的价格适用于所有没有独立价格表的品牌芯片。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "O câmbio no topo (1 ¥ → USD) é só uma referência — todos os preços são em USD."
+msgstr "顶部汇率（1 ¥ → USD）仅供参考——所有价格均以 USD 计价。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "O preço é por chip (unitário)."
+msgstr "价格为单颗芯片的单价。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Perguntas frequentes"
+msgstr "常见问题"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Em que moeda eu preencho os preços?"
+msgstr "用什么货币填写价格？"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Sempre em USD (dólar americano), por chip. O câmbio exibido no topo é apenas uma referência."
+msgstr "始终以 USD（美元）按单颗芯片填写。顶部显示的汇率仅供参考。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Meu preço vale na hora?"
+msgstr "我的价格会立即生效吗？"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Não. Toda mudança passa primeiro pela revisão do WhatTheChip. Depois de aprovada, vale na hora — e você recebe uma notificação."
+msgstr "不会。所有修改需先经 WhatTheChip 审核。审核通过后立即生效，并会向您发送通知。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "O que significa “em revisão”?"
+msgstr "“审核中”是什么意思？"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Sua mudança foi enviada e aguarda aprovação. Até lá, o valor antigo continua valendo."
+msgstr "您的修改已提交，正在等待审核。在此之前，仍按原价格执行。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Errei um preço. Posso corrigir?"
+msgstr "价格填错了，可以改吗？"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Sim. Envie o valor certo na mesma linha — o novo pedido substitui o anterior."
+msgstr "可以。在同一行提交正确的价格，新申请会替换旧申请。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "O que é a linha amarela?"
+msgstr "黄色的行是什么？"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "É um chip sem cotação — falta você dar o preço. O contador da página Início mostra quantos faltam."
+msgstr "表示尚未报价的芯片——等您填写价格。首页的计数会显示还剩多少。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Para que serve a tabela “Outras marcas”?"
+msgstr "“其他品牌”价格表有什么用？"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "É a sua tabela geral. Esses preços valem para chips de qualquer marca que não tem tabela própria."
+msgstr "这是您的通用价格表，适用于所有没有独立价格表的品牌芯片。"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Está faltando um chip na minha tabela?"
+msgstr "价格表里缺少某个芯片？"
+
+#. Como funciona (partner_how) — 2026-07-09
+#: pricing/templates/pricing/partner_how.html
+msgid "Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você cotar."
+msgstr "请联系 WhatTheChip——我们会添加该行，您即可报价。"

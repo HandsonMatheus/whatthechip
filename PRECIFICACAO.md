@@ -844,6 +844,28 @@ adiciona a linha", §2/§11), agora com ferramenta própria:
 - Quem fabrica LPDDR (matriz da aba Instructions): Samsung, SK Hynix, Micron,
   Nanya. Kingston/Toshiba-Kioxia/SanDisk entram como não fabricado.
 
+### 12.14 Página "Como funciona" no /partner/ (dono, 2026-07-09; suíte 324/324)
+
+Guia de apresentação do painel para o comprador — comunicação **curta e
+direta** (decisão do dono: "esses caras não gostam muito de ler"), nascida
+**já nos 4 idiomas** (contrato MULTILANGUAGE.md §7):
+
+- **Rota/UI:** `/partner/how/` (`partner_how` em `pricing/views.py` +
+  `pricing/urls.py`), link "Como funciona" no header do `partner_base.html`.
+  Template `partner_how.html`: proposta em 1 frase, **4 passos** em cards,
+  os **4 estados** com as mesmas tags do grid, "Bom saber" (Outras marcas /
+  câmbio-referência / preço unitário) e **FAQ de 7 perguntas** em
+  `<details>` dobrável (sem JS). Gate `partner_required` (operador → 403).
+- **i18n:** 30 msgids novos, todos `{% trans %}`, traduzidos para es/en/
+  zh-hans na MESMA entrega (append-only nos `.po`, termos consagrados
+  reusados: Otras marcas/Other brands/其他品牌, Inicio/Home/首页, en
+  revisión/under review/审核中…). `check_translations` verde (311
+  entradas/idioma); zh usa 使用说明 ("instruções de uso") para o título.
+- **Teste:** `test_como_funciona` (PartnerDashboardTests) — parceiro 200 +
+  conteúdo; operador 403.
+- ⚠ O PT é a versão de revisão do dono — ajustes de texto mudam o msgid e
+  exigem re-rodar a rotina §7.2 (extract → traduzir → compile → portão).
+
 ### 12.12 🔔 Notificações do parceiro (dono, 2026-07-07; suíte 286/286)
 
 Fechando o ciclo da moderação: o comprador fica sabendo da decisão.
