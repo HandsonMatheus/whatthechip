@@ -172,6 +172,7 @@ maps:
   - [D, LPDDR4X, '']
   - [F, LPDDR3, '']
   - [G, LPDDR3, '']
+  - [I, LPDDR2, '']
   - [J, LPDDR2, '']
   - [K, LPDDR2, '']
   - [L, LPDDR5, '']
@@ -331,6 +332,16 @@ maps:
   # em distribuidor). Sem entrada → engine devolve "não mapeada" (IDÊNTICO a hoje).
   # Popular SÓ com chave âncora Tier-1 (datasheet / página oficial Samsung).
   SAM_EMCP_CAP_KM1: []
+  # KMI (eMCP LPDDR2 legado, ~2013-2015): mapa PRÓPRIO, NÃO compartilha com o
+  # SAM_EMCP_CAP legado nem com o KM1 (uMCP UFS4.0+LPDDR5X ultra-premium, dígito
+  # '1'). ⚠ ARMADILHA OCR CONFIRMADA: KMI2U000MA (letra 'I') foi lido/digitado como
+  # KM12U000MA (dígito '1') numa busca real — o próprio KM1 tem aviso de OCR no tip,
+  # mas essa PN caiu no lado errado até o dono achar a fonte física (Puris, 2026-07-10).
+  # Chave '2U' = 32GB eMMC + 16Gbit LPDDR2 (16Gbit ÷ 8 = 2GB) — confirmado por 5
+  # distribuidores independentes convergentes: Puris (archives/2280), Apogeeweb,
+  # Censtry, SSFKG (id=107781), Jotrin — todos "MCP 32GB eMMC 16Gb QDP LPDDR2-S4 SDRam".
+  SAM_EMCP_CAP_KMI:
+  - [2U, 32GB, 2GB]
   SAM_EMMC_GEN:
   - [E, eMMC 5.0, '']
   - [F, eMMC 4.5, '']
@@ -1684,6 +1695,24 @@ families:
   suffix_rules: ''
   tip: 'eMCP Samsung LPDDR3 + eMMC 5.1 — linha legacy, ~2016-2019. DECODE (corrigido 2026-07-04, bug X6): NAND por pn[3:5]→SAM_EMCP_NAND; RAM por pn[3:5]→SAM_EMCP_RAM_KMG (exata, só chaves LPDDR3 confirmadas: D6/X6=3GB, P6=4GB). Não usa mais o SAM_EMCP_CAP compartilhado (dava X6=2GB, era LPDDR4). Interface eMMC 5.1 — NÃO confundir com uMCP KML/KM5 que usam UFS. Destino: bancada reacondicional eMCP.'
   reasoning: '["K → Samsung Memory", "M → Managed (MCP)", "G → LPDDR3 (geração da família)", "pn[3:5] → densidade: NAND (D/X=32GB, P=64GB) + RAM LPDDR3 (X6/D6=24Gb=3GB, P6=32Gb=4GB)", "Fonte Tier-1: datasheet oficial Samsung KMGD6001BM-B421 (Jan/2017) = 32GB eMMC + 24Gb LPDDR3"]'
+- prefix: KMI
+  chip_type: eMCP
+  subtype: LPDDR2
+  interface: eMMC
+  is_emcp: true
+  active: true
+  priority: 40
+  pn_length: 10
+  decode_cap_pos: 3
+  decode_cap_len: 2
+  decode_cap_map: SAM_EMCP_CAP_KMI
+  decode_gen_pos: 2
+  decode_gen_map: SAM_EMCP_GEN
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '⚠⚠ ARMADILHA OCR — CONFIRME O PN FÍSICO. Letra "I" (i maiúsculo), NÃO dígito "1". Fácil confundir com a família KM1 (uMCP UFS4.0+LPDDR5X ultra-premium, 2023+) — são famílias TOTALMENTE diferentes (KMI é eMCP LPDDR2 legado ~2013-2015, baixo valor; KM1 é premium). Achado real: KMI2U000MA lido/digitado como "KM12U000MA" numa busca, só corrigido depois de achar a foto do chip físico (Puris). Capacidade: pn[3:5] → SAM_EMCP_CAP_KMI (mapa próprio — nunca compartilhar com KM1 nem com o SAM_EMCP_CAP legado). Chave 2U = 32GB eMMC + 2GB LPDDR2 (16Gbit÷8). Destino: Fluxo de Resíduo (LPDDR2 sem liquidez comercial, mesmo padrão de KMJ/KMK/KML/KMV).'
+  reasoning: '["K → Samsung Memory", "M → Managed (MCP)", "I → LPDDR2 (letra da família — NÃO confundir com dígito 1 de KM1)", "pn[3:5] → densidade combinada NAND+RAM: 2U = 32GB eMMC + 16Gbit(2GB) LPDDR2", "Fonte: 5 distribuidores independentes convergentes (Puris archives/2280, Apogeeweb, Censtry, SSFKG id=107781, Jotrin) — todos \"MCP 32GB eMMC 16Gb QDP LPDDR2-S4 SDRam\""]'
 - prefix: KMJ
   chip_type: eMCP
   subtype: LPDDR2
