@@ -5,6 +5,12 @@
 > datado de rotina. Quando os dois problemas forem resolvidos, **remova este arquivo** (o que
 > for durável — regra nova, decisão de arquitetura — vai pro `CLAUDE.md`, não fica solto).
 > (CLAUDE.md §10 desencoraja docs soltos na raiz; este é a exceção explicitamente pedida.)
+>
+> **🔄 Atualizado 2026-07-09.** Remedição no banco local corrigiu a estimativa de 06/07: o buraco
+> real é **816** identity-only (não ~440), **98% Micron** — e o **backfill foi RISCADO** como
+> estratégia de confirmação (não confirma nada; congelaria bugs de gramática — o dono derrubou a
+> ideia, com razão). O caminho é **Tier-1 por PN**. Detalhes em §1.1–1.4; ordem de ataque nova em
+> §6. SK Hynix já zerou.
 
 ---
 
@@ -48,43 +54,77 @@ a gramática é o **tapa-buraco pros PNs que NÃO temos**, não uma muleta pros 
 "✅ Confirmado" que empresta da gramática dá **falsa confiança** ao operador — e se a gramática erra
 (como no bug X6), o "confirmado" mostra errado.
 
-**Tamanho do estrago (medido com `audit_known_parts --empty`, banco local, 2026-07-06):**
+### 1.1 — Medição REAL (2026-07-09) — corrige a estimativa de 06/07
+
+A medição de 06/07 (`audit_known_parts --empty`) separava só por *"tem família?"* → deu ~440/~440.
+Era **otimista demais**: **ter família ≠ a gramática decodificar a capacidade** (muita família Micron
+casa o prefixo mas não fecha a spec). Remedi com um teste mais rígido — *"a gramática produz uma
+capacidade COMPLETA para este PN?"* (script em §3.1). Banco local, 2026-07-09:
 
 ```
-Confirmados/manual auditados: 6509  ·  SEM SPEC PRÓPRIA (identity-only): 876  (13,5%)
+IDENTITY-ONLY (confirmed/manual approved, sem spec própria): 877
+  BACKFILL alcança (gramática decodifica COMPLETO):  61   → Samsung 30 · Micron 27 · SK Hynix 4
+  FICAM (gramática NÃO decodifica → só Tier-1 resolve): 816 → Micron 799 · Samsung 17 · SK Hynix 0
 ```
 
-**Dois níveis de gravidade** (o 2º é pior):
+**A virada:** o buraco real não são 440, são **816** — e **98% é Micron** (os registros do enrichment
+FBGA que nasceram sem `emcp_*`/`capacity` e cuja família Micron não decodifica; ver CLAUDE.md armadilha
+`enrich_micron_fbga` não salva `emcp_*`). **SK Hynix zerou** (o dono já remediou — memória
+`wtc-identity-only-remediacao`). Samsung ficou com resíduo pequeno (17).
 
-- **~440 COBERTOS pela gramática** (têm família): Micron `MT53E/D/B`, `MT29P/TZZZ/VZZZ`, `MT30A`,
-  `MT52L`; Samsung `KM8/KM5/KMD/KM2*/KM3*/KMAG/KMAS`; SK `H9TQ/H9DP/H9HP`. A gramática preenche →
-  mostram **algo** (certo nas famílias já verificadas — §5; errado nas não). **Backfill resolve.**
-- **~440 SEM família no grammar** (agrupados por *tipo*, não por família): `LPDDR4X`=250, `LPDDR5`=67,
-  `eMCP`=43, `DDR2`=42, `eMMC`=36. Aqui o `_match_family` não casa → **a gramática NEM consegue
-  preencher** → confirmado **genuinamente sem spec nenhuma** (operador vê "Confirmado" + capacidade
-  em branco). **Backfill NÃO alcança; precisam de spec pesquisada de verdade.**
+**Origens (contam a história):** `psg_2h2014` (import do Samsung Product Selector Guide — confirmou a
+IDENTIDADE, não capturou specs); *"Confirmado manualmente pelo operador"* (SK — confirmou o PN físico
+mas não digitou specs); enrichment FBGA Micron (confirma PN↔FBGA, deixa a capacidade pro
+`fill_capacity_from_micron_api` que nem sempre rodou).
 
-**Origens (contam a história):** `psg_2h2014` (import do Samsung Product Selector Guide — confirmou
-a IDENTIDADE, não capturou specs); *"Confirmado manualmente pelo operador"* (SK — confirmou o PN
-físico mas não digitou specs); *"Fila de revisão"* / *"Octopart Tier 1: … = 'DD…'"* (K4B — a fonte
-está na `notes`, mas os campos de spec ficaram vazios).
+### 1.2 — Por que o BACKFILL não é a solução (retratação da frente 2 de 06/07)
 
-**Plano de conserto (3 frentes):**
+O plano de 06/07 tratava o **backfill** (gramática → registro) como "conserto" dos ~440 com família.
+**O dono derrubou a ideia, com razão (2026-07-09):** copiar o que a gramática calcula pra dentro do
+registro e manter o carimbo `confirmed` **não confirma NADA** — é a mesma conta da gramática com outro
+rótulo, **zero verificação nova**. Pior: onde a gramática erra (foi exatamente o caso do **bug X6**), o
+backfill **congelaria o erro como "confirmado"** — o oposto do objetivo. ⇒ **Backfill como estratégia
+de confirmação está RISCADO.**
 
-1. **Regra no PORTÃO (pequeno, fazer PRIMEIRO — estanca a sangria).** Em `KnownPart.clean()`
-   (`chips/models.py`) e/ou no Pydantic (`chips/knowledge/schema.py`): `confirmed`/`manual` sem
-   NENHUMA spec (nem `capacity`/`density_gbit`, nem `emcp_ram`/`emcp_nand`) → **rejeita ou rebaixa**
-   para `estimated`. ⚠ Decidir com o dono se mantém uma **exceção documentada** pro padrão
-   *identity-first* do FBGA (`enrich_micron_fbga` confirma PN↔FBGA e enche specs depois via
-   `fill_capacity_from_micron_api`) — se mantiver, esses ficam num status próprio, não `confirmed`.
-2. **Backfill (os ~440 com família verificada).** Construir `backfill_known_parts` (ou estender
-   `correct_known_parts` com `--fill-empty`): grava a spec da GRAMÁTICA VERIFICADA **dentro** do
-   registro confirmado, pra ele carregar o próprio dado. **Escopo por `--family`, só famílias
-   Tier-1-verificadas (§5), dry-run/backup/revert.** ⚠ NUNCA nas famílias não-verificadas — assaria
-   valor errado (a gramática ainda erra lá). Depois do backfill, o registro fica self-sufficient e o
-   ciclo `audit`/`correct` mantém sincronia se a gramática melhorar.
-3. **Pesquisar spec (os ~440 sem família).** O grosso e o mais lento. Precisa da pesquisa Tier-1 +
-   verificação do dono no Octopart (§4). Priorizar por volume na esteira / valor comercial.
+> Única exceção legítima, e é **tática de migração, não confirmação**: congelar valores de uma família
+> **verificada** dentro dos registros ANTES de aposentar/reescrever aquela gramática. Fora disso, não.
+
+### 1.3 — O que TORNA uma spec confiável (as duas vias legítimas)
+
+Uma spec só merece o carimbo quando vem de uma destas duas fontes:
+
+1. **Registro Tier-1 por PN** — a spec daquele PN batida contra datasheet do fabricante / Octopart e
+   gravada no known_part (`submit_known_parts` → aprovação). **É a meta do projeto.**
+2. **Família de gramática verificada** — regra posicional construída + testada por *golden* a partir de
+   datasheets Tier-1. É confirmação no nível da **REGRA**, não do PN.
+
+Os **61** "backfill-able" caem na via 2: já são servidos por gramática (em boa parte) verificada — por
+isso **exibem certo hoje**. Não estão "desconhecidos", estão cobertos por regra. Os **816** não têm via
+1 nem via 2 → só a **via 1 (Tier-1 por PN)** resolve.
+
+> **Ponto de fundo (dono, 2026-07-09):** o carimbo "Confirmado" num registro identity-only confirma a
+> **IDENTIDADE** (o PN existe / o FBGA bate), **não a SPEC** — o próprio CLAUDE.md já diz isso dos FBGA
+> Micron ("o ouro é só a identidade; capacity/subtype/density atestar sempre em Tier-1"). Opção futura
+> (mudança de código, decisão do dono): deixar isso explícito na tela — distinguir "identidade
+> confirmada / spec da gramática" de "spec confirmada".
+
+### 1.4 — Plano de conserto (reordenado por VALOR REAL)
+
+1. **Regra no PORTÃO (fazer PRIMEIRO — estanca a sangria).** Em `KnownPart.clean()`
+   (`chips/models.py`) e/ou no Pydantic (`chips/knowledge/schema.py`): `confirmed`/`manual` sem NENHUMA
+   spec (nem `capacity`/`density_gbit`, nem `emcp_ram`/`emcp_nand`) → **rejeita ou rebaixa** para
+   `estimated`. ⚠ Decidir com o dono a **exceção documentada** pro padrão *identity-first* do FBGA — se
+   mantiver, esses ficam num status próprio (ex.: `identity`), **não `confirmed`**. Isto sozinho já
+   resolve a **desonestidade do rótulo**.
+2. **Pesquisar spec Tier-1 dos 816 — é O TRABALHO.** Prioridade absoluta = **Micron 799**. Mas ANTES de
+   pesquisar 799 à mão: quebrar por *tipo / tem-família / PN em formato raw* (script a construir, §3.1)
+   pra separar o **recuperável barato** (re-rodar `fill_capacity_from_micron_api`; PN raw com
+   hífen/espaço que não casou `_match_family` e normaliza) do que **exige datasheet manual**. Só o
+   resíduo caro vira pesquisa PN-a-PN (Tier-1 + verificação do dono, §4). Priorizar por **rentabilidade**
+   (lixo dead-by-gen / sub-mínimo → capacidade é irrelevante, pula — memória `wtc-identity-only-remediacao`).
+3. **Os 61 (grammar-covered) — baixa prioridade.** Já exibem certo. Tier-1 aqui é só **procedência real
+   por PN**, não conserto visível. Dos 61, subir os **27 Micron** antes dos 30 Samsung (menos confiança
+   na gramática Micron); os 30 Samsung a gramática já está endurecida (§5). **Não** fazer backfill (§1.2).
 
 ---
 
@@ -133,6 +173,37 @@ geração, valor baixo), KMS (LPDDR1), KM1 (LPDDR5X — **sem dado nenhum**, pre
   `correct_known_parts … --dry-run` (revisar) → `… --commit` (backup automático) → `--revert` se
   algo estranhar.
 
+### 3.1 — Script de categorização (o que gerou os números de §1.1)
+
+Read-only, roda no banco-alvo. Separa identity-only em *backfill alcança* (gramática COMPLETA) vs
+*ficam* (só Tier-1), por marca:
+
+```bash
+python manage.py shell -c "
+from chips.models import KnownPart
+from chips.engine import _match_family, _result_from_family, _CAP_RE, _CONFIRMED_CONFIDENCE
+from collections import Counter
+def H(v): return bool((v or '').strip())
+fix=Counter(); res=Counter(); tot=0
+for kp in KnownPart.objects.filter(confidence__in=_CONFIRMED_CONFIDENCE, review_status='approved').select_related('brand','family'):
+    fam=kp.family or _match_family(kp.part_number)
+    emcp=(fam.is_emcp if fam else False) or (kp.chip_type or '').lower() in ('emcp','umcp')
+    idonly=(not(H(kp.emcp_ram) or H(kp.emcp_nand))) if emcp else (not(H(kp.capacity) or H(kp.density_gbit)))
+    if not idonly: continue
+    tot+=1
+    r=_result_from_family(kp.part_number, fam) if fam else {}
+    if fam and fam.is_emcp: ok=bool(_CAP_RE.search(str(r.get('emcp_ram') or '')) and _CAP_RE.search(str(r.get('emcp_nand') or '')))
+    elif fam: ok=bool(_CAP_RE.search(str(r.get('capacity') or r.get('dram_density') or '')))
+    else: ok=False
+    (fix if ok else res)[kp.brand.name]+=1
+print('IDENTITY-ONLY:', tot); print('BACKFILL alcança:', sum(fix.values()), dict(fix)); print('FICAM (Tier-1):', sum(res.values()), dict(res))
+"
+```
+
+**A construir (próximo passo prático):** o script-irmão que quebra os **799 Micron** por `chip_type`
+/ tem-família / PN em formato raw (hífen/espaço) — decide quanto é recuperável barato
+(re-`fill_capacity_from_micron_api`, normalização de PN) vs datasheet manual.
+
 ---
 
 ## 4. LIÇÕES desta sessão (NÃO repetir os erros)
@@ -151,6 +222,16 @@ geração, valor baixo), KMS (LPDDR1), KM1 (LPDDR5X — **sem dado nenhum**, pre
   o **dono confere no Octopart** e arbitra. Dois chats de marca em paralelo é seguro no técnico
   (dados disjuntos, escrita serializada pelo dono), mas **divide a atenção do dono** — a régua de
   desconfiança não pode afrouxar.
+- **Caso N1 (2026-07-09) — distribuidor é câmara de eco.** Três distribuidores (yoycart/Preduo/
+  Alibaba) "concordavam" 1.5GB pro `KMQN10006`; a **leitura do chip físico na esteira provou 1GB**.
+  Eles ecoam o mesmo erro entre si — *"3 fontes batendo" NÃO é confirmação se as 3 são distribuidor*.
+  Reforça a hierarquia: **chip físico > datasheet Tier-1 > distribuidor**; broker é lista de
+  descoberta, nunca spec. (Também vindicou reverter o remodel KMQ que se apoiava no 1.5GB errado.)
+- **Backfill ≠ confirmação (2026-07-09).** Gravar o valor da gramática dentro de um registro e mantê-lo
+  `confirmed` não adiciona verificação — e congelaria um bug de gramática como se fosse ouro. Ver §1.2.
+- **Bug de dado ABERTO (2026-07-09): `ChipFamily.reasoning` do prefix `H9DP` com JSON inválido.** O
+  script de §3.1 cuspiu `JSON inválido em ChipFamily.reasoning para prefix=H9DP` (sobra do fix LPDDR1 da
+  SK Hynix). Não afeta contagem nem engine, mas **corrigir no `chips/knowledge/hynix.yaml`** (via chat SK).
 
 ---
 
@@ -179,16 +260,21 @@ do KM3. `git log --oneline` mostra tudo.
 
 ---
 
-## 6. ORDEM DE ATAQUE recomendada (próxima sessão)
+## 6. ORDEM DE ATAQUE recomendada (atualizada 2026-07-09)
 
-1. **Regra no portão** (Problema A, frente 1) — pequena, estanca a criação de novos confirmados-vazios.
-   Decidir a exceção FBGA com o dono.
-2. **Backfill** (Problema A, frente 2) — construir o comando + rodar nas ~440 famílias verificadas.
-   Baixo risco (dry-run/revert), alto valor (tira as modernas da muleta da gramática).
-3. **LPDDR3 por-família** (Problema B) — construir da fonte-banco, com Octopart do dono nos códigos
-   de distribuidor. Fluxo INVERTIDO (não rodar `correct`).
-4. **Pesquisar specs dos ~440 sem-família** (Problema A, frente 3) — o grosso, contínuo, por volume.
-5. Legadas (KMJ/KMK/KML/KMV/KMS) e KM1 — menor prioridade.
+1. **Regra no portão** (Problema A, §1.4-1) — pequena, estanca a criação de novos confirmados-vazios.
+   Decidir a exceção FBGA (status `identity`) com o dono. Resolve a **desonestidade do rótulo** sozinha.
+2. **Micron 799 — o buraco real** (Problema A, §1.4-2). Primeiro o script de triagem (§3.1) pra separar
+   recuperável-barato (re-`fill_capacity_from_micron_api` / PN raw) de datasheet-manual. Depois pesquisa
+   Tier-1 do resíduo, priorizada por rentabilidade. **É aqui que o trabalho vale.**
+3. **Samsung 17 sem-família** (Problema A) — resíduo pequeno, mesma pesquisa Tier-1.
+4. **LPDDR3 por-família** (Problema B, §2) — construir da fonte-banco, com Octopart do dono nos códigos
+   de distribuidor. Fluxo INVERTIDO (não rodar `correct`). Lição N1 reforça: chip físico > distribuidor.
+5. **Os 61 grammar-covered** — baixa prioridade (já exibem certo; Tier-1 = só procedência). **Sem backfill.**
+6. Legadas (KMJ/KMK/KML/KMV/KMS) e KM1 — menor prioridade.
 
-> Ao terminar: dobrar o durável (regra do portão, decisão do backfill) no `CLAUDE.md` e **apagar
-> este arquivo**.
+> ~~Backfill (gramática → registro)~~ **RISCADO** como estratégia de confirmação (§1.2): não confirma
+> nada e congelaria bugs de gramática. Substituído por **Tier-1 por PN**.
+>
+> Ao terminar: dobrar o durável (regra do portão + "confirmado confirma identidade, não spec, no
+> identity-only") no `CLAUDE.md` e **apagar este arquivo**.

@@ -398,6 +398,22 @@ class EngineIntegrationTests(TestCase):
 
     # ── Camada 1: db_exact (só confirmados são autoridade) ────────────────────
 
+    def test_emcp_confirmado_identity_only_usa_gramatica(self):
+        """PROVA do 'identity-only' (padrão dos imports PSG Samsung, ex. KMQE60013B): um eMCP
+        CONFIRMADO sem emcp_ram/emcp_nand próprios EXIBE RAM/NAND na tela — mas vêm da GRAMÁTICA,
+        não do registro. O badge 'Confirmado' engana: a spec não está no known_part."""
+        from chips.engine import classify
+        from chips.models import KnownPart
+        KnownPart.objects.create(
+            brand=self.samsung, family=self.family_kmr, part_number='KMRBT099QZ',
+            chip_type='eMCP', subtype='', confidence='confirmed',
+            emcp_ram='', emcp_nand='')   # ← identity-only: registro SEM spec própria
+        r = classify('KMRBT099QZ')
+        self.assertIn('16GB', r.get('emcp_nand') or '')   # NAND aparece na tela...
+        self.assertIn('2GB', r.get('emcp_ram') or '')      # ...RAM aparece...
+        fresh = KnownPart.objects.get(part_number='KMRBT099QZ')
+        self.assertEqual((fresh.emcp_ram or '') + (fresh.emcp_nand or ''), '')  # ...mas o registro está VAZIO
+
     def test_db_exact_confirmado_retorna_imediato(self):
         """PN confirmado no banco retorna na camada 1 com known_exact=True."""
         from chips.engine import classify
@@ -1545,7 +1561,9 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H9DP32A4JJBC":      ("eMCP", "", "eMMC 4GB", "LPDDR1 512MB", "", "NÃO RENTÁVEL"),  # gen corrigida LPDDR2→LPDDR1 (datasheet H9DP32A4JJBCGR "Mobile DDR / 400Mbps", 2026-07-09)
     "H9HCNNNCPMAL":      ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),
     "H9HCNNNECMML":      ("LPDDR4X", "6GB", "", "", "", "RENTÁVEL"),
+    "H9HKNNNCTUMUBR-NMH": ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),  # 1º golden da família H9HK (2026-07-09) — sem cobertura antes; PN buscado na bancada, C=4GB confirmado por WinSource (32Gb/8) + já mapeado
     "H9HP16AECMMD":      ("eMCP", "", "eMMC 5.1 128GB", "LPDDR4X 6GB", "", "RENTÁVEL"),
+    "H9HP27ABUMMDAR-KEM": ("eMCP", "", "eMMC 5.1 32GB", "LPDDR4X 2GB", "", "RENTÁVEL"),  # chave RAM 'AB' nova no mapa compartilhado H9HP/H9HQ (2026-07-09) — Preduo + Puris concordam
     "H9HQ22AECMMDAR-KEM": ("uMCP", "", "UFS 2.1 256GB", "LPDDR4X 6GB", "", "RENTÁVEL"),  # chave NAND '22' nova no mapa (2026-07-09) — Preduo + distribuidor concordam, mesmo padrão de pares 15/16 e 53/54
     "H9TKNNN8JDAP":      ("LPDDR2", "1GB", "", "", "", "NÃO RENTÁVEL"),
     "H9TQ64A8GTCC":      ("eMCP", "", "eMMC 5.x 8GB", "LPDDR3 1GB", "", "RENTÁVEL"),

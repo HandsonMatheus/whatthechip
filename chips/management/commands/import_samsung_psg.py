@@ -70,8 +70,10 @@ _ALL_CSV_FILES = [
     "samsung_global_lpddr5x_k3kl_extended.csv",
     # Samsung Semiconductor Global — LPDDR5X K3KL variantes 8-16GB + código DL (2022-2024)
     "samsung_global_lpddr5x_k3kl_large.csv",
-    # Samsung Semiconductor Global — eMCP LPDDR3 (KMR/KMQ/KMG/KMF 2018-2022)
-    "samsung_global_emcp_lpddr3.csv",
+    # Samsung Semiconductor Global — eMCP LPDDR3: REMOVIDO 2026-07-09 (CSV apagado). ⚠ Este import
+    #   grava `capacity` e NÃO seta emcp_ram/emcp_nand → errado pra eMCP (convenção Opção 1); a RAM
+    #   vivia só na prosa das notes. Pra eMCP/uMCP use `submit_known_parts` com specs estruturados.
+    #   (Os outros eMCP/uMCP abaixo têm o MESMO problema — mantidos por ora, mas idem: não confiar.)
     # Samsung Semiconductor Global — eMCP LPDDR4X (KMD/KM3P/KM3H 2020-2023)
     "samsung_global_emcp_lpddr4x.csv",
     # Samsung Semiconductor Global — uMCP LPDDR4X (KM5/KM8/KM2H/KM2L/KM2P/KM2V 2020-2024)

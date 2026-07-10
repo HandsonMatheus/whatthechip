@@ -687,10 +687,16 @@ Processo completo, rotina de tradução (inclusive por IA) e glossário: **`I18N
   Chips reprovados **por tipo ou geração** (não por capacidade) retornam INDETERMINADO
   quando `assess_profitability` chega a um bloco que exige dados de capacidade e não
   os encontra. Instâncias corrigidas: LPDDR2 com DRAM_MOBILE (2026-06-19), GDDR2
-  (2026-06-20), ePoP (2026-06-20). **Regra de prevenção:** ao adicionar um novo
+  (2026-06-20), ePoP (2026-06-20), **eMCP com geração de RAM desconhecida
+  (2026-07-09, JW500/MT29C "Mobile DDR" 512MB)** — o bail `lpddr_gen is None`
+  vinha ANTES dos limiares de RAM/NAND, que não dependem de geração; agora a
+  capacidade reprova primeiro e geração-desconhecida só segura o veredito
+  quando as capacidades passam nos mínimos. **Regra de prevenção:** ao adicionar um novo
   chip_type ao sistema, pergunte — "este tipo é NÃO RENTÁVEL independente de
   capacidade?". Se sim → bloco de tipos no topo de `assess_profitability`. Se é
-  NÃO RENTÁVEL por geração → verificar geração ANTES de `_extract_gib` no bloco.
+  NÃO RENTÁVEL por geração → verificar geração ANTES de `_extract_gib` no bloco —
+  e limiares de CAPACIDADE nunca podem ficar atrás de um bail por dado ausente
+  de que eles não precisam.
 - **`_CAP_RE` não suportava capacidades decimais → RENTÁVEL falso (2026-06-27):**
   `_CAP_RE = re.compile(r"(\d+)\s*([TGMK])B")` — `\d+` sem `(?:\.\d+)?`. Para
   `"1.5GB"`: re.search encontra `"5GB"` na posição 2 (o "." não é dígito, a engine

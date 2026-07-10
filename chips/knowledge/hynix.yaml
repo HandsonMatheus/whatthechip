@@ -169,6 +169,7 @@ maps:
   - [G, 6GB, '']
   - [J, 8GB, '']
   HYX_LPDDR4X_RAM_CAP:
+  - [AB, LPDDR4X 2GB, '']
   - [AC, LPDDR4X 4GB, '']
   - [AD, LPDDR4X 3GB, '']
   - [AE, LPDDR4X 6GB, '']
@@ -246,7 +247,7 @@ families:
   decode_density_type: ''
   suffix_rules: ''
   tip: 'eMMC SK Hynix (H26M). Chip de armazenamento standalone — sem RAM embutida. pn[4] = capacidade: 3=4GB · 4=8GB · 5=16GB · 6=32GB · 7=64GB · 8=128GB. ⚠ ''H26M64...'' = 32GB (NÃO 64GB) — o ''6'' é o código de capacidade, o ''4'' é organização interna. Pacote FBGA-153, 11.5×13mm. Destino: bancada reacondicional eMMC.'
-  reasoning: ''
+  reasoning: '["pn[4]=4/5/6/7 (8/16/32/64GB) atestado pelo datasheet oficial SK Hynix e-NAND Product Family eMMC5.1 Compatible - Automotive (Rev 1.8, Sep/2020, hospedado na DigiKey).", "Product Line-up (p.4) lista as 4 capacidades × 4 grades de temperatura (AAT/AIT/IT/CT), com PN completo pra cada uma.", "Confirma a ressalva do tip: H26M64... = 32GB, NÃO 64GB — H26M64208EMRN é código 6 = 32GB na tabela oficial.", "Códigos 3=4GB e 8=128GB do tip não aparecem nesta lineup (capacidade máxima ODP = 64GB) — não confirmados nesta rodada, mantidos por já estarem na gramática (2026-07-09).", "2ª confirmação independente (2026-07-09): datasheet oficial SK Hynix e-NAND Product Family eMMC5.1 Compatible, Rev 1.0/Set-2017 (via LCSC, geração 128Gb-por-die) — Product Line-up: 16GB=H26M51002KPR, 32GB=H26M62002JPR, 64GB=H26M74002HMR. Reconfirma código 6=32GB (não 64GB) pela 3ª vez e dá fonte pro golden pré-existente H26M74002HMR, que não tinha citação.", "3ª confirmação (2026-07-09): datasheet oficial SK Hynix e-NAND Product Family eMMC5.1 Compatible, Rev 1.0/Ago-2015 (via bulcomp-eng, 1ª revisão pública documentada da família) — PN único H26M41204HPR = 8GB (64Gb x 1), código 4. Geração mais antiga, sem sufixo de grade de temperatura no PN."]'
 - prefix: H26T
   chip_type: eMMC
   subtype: ''
@@ -515,8 +516,8 @@ families:
   decode_gen_len: 2
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP SK Hynix com LPDDR4X (H9HP). Chip combinado eMMC 5.1 + RAM de alta velocidade. pn[4:6] = capacidade NAND: 16=128GB · 27=32GB · 52/53=64GB. pn[6:8] = capacidade RAM: AC=4GB · AD=3GB · AE=6GB · AF=8GB. ⚠ ''16'' aqui é 128GB (NÃO 16GB como no H9TQ) — mapas NAND não são compartilhados. ⚠ AC=4GB e AD=3GB (não invertido — padrão SK Hynix eMCP LPDDR4X). Ex: H9HP53ACPMMDAR-KMM = 64GB eMMC + 4GB LPDDR4X ✓ Ex: H9HP16AECMMDAR-KMM = 128GB eMMC + 6GB LPDDR4X ✓ Destino: bancada eMCP premium (requer equipamento LPDDR4X).'
-  reasoning: ''
+  tip: 'eMCP SK Hynix com LPDDR4X (H9HP). Chip combinado eMMC 5.1 + RAM de alta velocidade. pn[4:6] = capacidade NAND: 16=128GB · 27=32GB · 52/53=64GB. pn[6:8] = capacidade RAM: AB=2GB · AC=4GB · AD=3GB · AE=6GB · AF=8GB. ⚠ ''16'' aqui é 128GB (NÃO 16GB como no H9TQ) — mapas NAND não são compartilhados. ⚠ AC=4GB e AD=3GB (não invertido — padrão SK Hynix eMCP LPDDR4X). Ex: H9HP53ACPMMDAR-KMM = 64GB eMMC + 4GB LPDDR4X ✓ Ex: H9HP16AECMMDAR-KMM = 128GB eMMC + 6GB LPDDR4X ✓ Ex: H9HP27ABUMMDAR-KEM = 32GB eMMC + 2GB LPDDR4X ✓ (AB, chave nova 2026-07-09) Destino: bancada eMCP premium (requer equipamento LPDDR4X).'
+  reasoning: '["pn[6:8]=AB → LPDDR4X 2GB, chave nova em HYX_LPDDR4X_RAM_CAP (2026-07-09) — confirmada de forma independente por Preduo (preduo.com/product/emcp/emmc-lpddr4x/h9hp27abummdar-kem, Density=32+16) E Puris (puris.net/archives/5948, 32+16 eMMC+LPDDR4x), ambos fetchados direto.", "Aritmética: 16Gb (RAM) ÷ 8 = 2GB — bate com AB=2GB. Consistente com o padrão já visto: AC=4GB (32Gb÷8), AD=3GB (24Gb÷8), AE=6GB (48Gb÷8).", "Mapa compartilhado com H9HQ (não com H9HR, que usa HYX_H9HR_RAM_CAP próprio, códigos J*) — chave nova vale pras duas famílias.", "Sem colisão: AB já aparece em outros mapas Hynix não relacionados (LPDDR2/LPDDR3) sempre como 2GB — padrão consistente entre gerações, reforça a leitura."]'
 - prefix: H9HQ
   chip_type: uMCP
   subtype: LPDDR4X
@@ -785,8 +786,16 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'LPDDR4/LPDDR4X standalone SK Hynix, Era 1 barramento x64 (H9HK). DRAM móvel puro. Variante dual-channel do H9HC — maior largura de banda para processadores exigentes. pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB · E=6GB · F=8GB por chip. ⚠ ''D''=3GB assimétrico — H9HKNNNDGUMUBR-NLHR ✓ (OMO Electronic). ⚠ Mapa de capacidade idêntico ao H9HC — C=4GB confirmado em ambos os prefixos. ⚠ Preenchimento pn[4:7] variável — fatiar pn[7] direto. Origem: smartphones premium com arquitetura dual-channel 2016-2020. Destino: triagem LPDDR4 — alto valor no mercado de recondicionamento.'
-  reasoning: ''
+  tip: 'LPDDR4/LPDDR4X standalone SK Hynix, Era 1 barramento x64 (H9HK). DRAM móvel puro. Variante dual-channel do H9HC — maior largura de banda para processadores exigentes. pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB · E=6GB · F=8GB por chip. ⚠ ''D''=3GB assimétrico — H9HKNNNDGUMUBR-NLHR ✓ (OMO Electronic). ⚠ Mapa de capacidade idêntico ao H9HC — C=4GB confirmado em ambos os prefixos. ⚠ Preenchimento pn[4:7] variável — fatiar pn[7] direto. ⚠ Código ''E''=6GB tem 4 fontes/distribuidores independentes concordando (ver reasoning); um único PN (H9HKNNNEBMBUDR-NEH) apareceu como 8GB numa página do Puris sem nenhuma outra corroboração — tratado como provável erro de transcrição (1 caractere de diferença do irmão F=8GB confirmado, H9HKNNNFBMBUDR-NEH) e excluído do banco. Origem: smartphones premium com arquitetura dual-channel 2016-2020. Destino: triagem LPDDR4 — alto valor no mercado de recondicionamento.'
+  reasoning: '[
+    "PN buscado na bancada (H9HKNNNCTUM) e fragmento truncado do PN completo H9HKNNNCTUMUBR-NMH, atestado em cerca de 25 distribuidores via agregador DigiPart; decode ja estava correto antes desta rodada (pn[7]=C mapeia 4GB no HYX_LPDDR4_H9HC_CAP, compartilhado com H9HC/H9HCN).",
+    "WinSource (via DigiPart, fetch direto) descreve o PN completo como LPDDR4-3733 (32Gb) -- 32Gb dividido por 8 = 4GB, batendo com o C=4GB ja mapeado. Censtry (fetch direto) descreve o mesmo PN como LPDDR4 32GB -- unidade errada (Gb malescrito como GB), erro de descricao de distribuidor, nao contradiz o WinSource.",
+    "Codigo B=2GB confirmado por H9HKNNNBTUMUBR-NLH via Preduo (relacionados, fetch direto): 16Gbit dividido por 8 = 2GB.",
+    "Codigo C=4GB confirmado em mais 3 PNs: H9HKNNNCUUMUBR-NMH (Preduo, 32Gbit/8=4GB), H9HKNNNCRMAUDR-NEH e H9HKNNNCRMMVBR-NEH (Puris, navegacao/similares, 32Gbit/8=4GB cada).",
+    "Codigo E=6GB confirmado por 4 fontes independentes em 2 PNs reais: H9HKNNNEBUMUBR-NMH via Preduo (48Gbit/8=6GB) e via Chipsea/DigiPart (descricao literal LPDDR4373348GbFBG -- 48Gb/8=6GB); H9HKNNNEBMAVAR-NEH via Preduo E Puris (ambos 48Gbit/8=6GB, fetch direto cada um) E via WinSource/DigiPart (LPDDR4X-4266 (48Gb) -- 48Gb/8=6GB). Consenso forte e multi-distribuidor.",
+    "Codigo F=8GB confirmado por 2 PNs via Puris (pagina dedicada + similares): H9HKNNNFBMAUDR-NEH e H9HKNNNFBMBUDR-NEH, 64Gbit dividido por 8 = 8GB cada.",
+    "RESOLVIDO (rodada de acompanhamento pedida pelo dono): o PN H9HKNNNEBMBUDR-NEH tinha aparecido no Puris como 64Gbit (=8GB) para codigo E, contradizendo os 6GB. Investigacao adicional: nenhum dos outros 3 distribuidores que vendem esse PN exato (Ariat/YIC/IC Components, via DigiPart) mostra capacidade alguma -- zero corroboracao. O PN difere por 1 unico caractere do irmao de codigo F ja confirmado em 8GB (H9HKNNNFBMBUDR-NEH, mesmo sufixo BMBUDR-NEH). Concluido: provavel erro de transcricao do Puris (confundiu com o irmao F), nao um SKU real com capacidade diferente. Excluido da submissao por identidade incerta, mas o codigo E=6GB fica confirmado com confianca alta."
+  ]'
 - prefix: H5MS
   chip_type: LPDDR1
   subtype: LPDDR1

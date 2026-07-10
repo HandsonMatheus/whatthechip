@@ -1108,14 +1108,21 @@ def assess_profitability(result: dict) -> str:
         if ram_gb is None or nand_gb is None:
             return "INDETERMINADO"
 
-        if lpddr_gen is None:
-            return "INDETERMINADO"
-
-        if lpddr_gen < cfg.emcp_min_lpddr_gen:  # redundante pós-fix, mantido por segurança
-            return "NÃO RENTÁVEL"
+        # ── FIX 2026-07-09 (JW500 / MT29C "Mobile DDR"): capacidade reprova SEM
+        # depender de geração. Antes, lpddr_gen=None retornava INDETERMINADO
+        # AQUI e os limiares de RAM/NAND nunca rodavam — 4ª instância do padrão
+        # recorrente do CLAUDE.md §7 ("Mobile DDR 512MB" não tem token LPDDR,
+        # mas 0.5GB < 1GB já é NÃO RENTÁVEL sozinho). Geração desconhecida só
+        # segura o veredito quando as capacidades PASSAM nos mínimos (aí sim
+        # falta dado para APROVAR).
         if ram_gb < cfg.emcp_min_ram_gb - 0.01:
             return "NÃO RENTÁVEL"
         if nand_gb < cfg.emcp_min_nand_gb - 0.01:
+            return "NÃO RENTÁVEL"
+
+        if lpddr_gen is None:
+            return "INDETERMINADO"
+        if lpddr_gen < cfg.emcp_min_lpddr_gen:  # redundante pós-fix, mantido por segurança
             return "NÃO RENTÁVEL"
         return "RENTÁVEL"
 

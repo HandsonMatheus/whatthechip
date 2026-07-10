@@ -20,7 +20,8 @@
 
 **Micron** (code WTC `MIC`) — 2º fabricante mundial de DRAM e NAND (depois da Samsung). Na bancada eMiner
 aparece como eMCP/uMCP (MT29TZZZ LPDDR3, MT29VZZZ LPDDR4, MT30AZZZ LPDDR5), LPDDR standalone (MT53x/MT52L),
-DDR3/4 (MT41J/K, MT40A), eMMC (MTFC) e NAND raw (MT29C/MT29F). **O operador vê o PN completo OU o FBGA
+DDR3/4 (MT41J/K, MT40A), eMMC (MTFC), NAND raw (MT29F) e NAND+LPDRAM MCP legado PoP (MT29C — ver §4).
+**O operador vê o PN completo OU o FBGA
 code de 5 chars** gravado a laser (ex.: `D9VFC`, `JWA60`) — a busca aceita os dois.
 
 ## ⚠ Modelo híbrido (a exceção da Micron)
@@ -93,7 +94,7 @@ desconhecido → enfileira em `UnknownChip`. Duplicatas: prefere o registro com 
 
 - ⚠ **`"G"` no nome Micron = Gbit, não GB** — `MTFC8G`=8Gbit=1GB; `"72G VFBGA"`=72Gbit total. `÷8` sempre. DDR → `density_gbit`; LPDDR → `capacity`; **MCP → NÃO** usar o total como `capacity` (é NAND+RAM somado; preencher `capacity` num eMCP gera o bug clássico `"68GB"`).
 - ⚠ **`part-name` da API FBGA NÃO é fonte pra tipo de RAM** — a API retornava `"…/LPDDR2…"` pra chips LPDDR3 (**BUG-8**). O **prefixo do PN** define (MT29TZZZ=LPDDR3, MT29PZZZ=LPDDR2). Confirmar via datasheet/DigiKey.
-- ⚠ **`MT29C` ≠ eMCP** — a letra "C" é **barramento paralelo**, não "Combo". É NAND Flash raw (TSOP/parallel), sem RAM → resíduo. IAs erram chamando de "Combo/eMCP".
+- ⚠ **CORRIGIDO 2026-07-09 — `MT29C` TEM RAM, sim.** Esta linha dizia "NAND raw, sem RAM, resíduo" — **estava errada**. Datasheet oficial Micron (`152ball_nand_lpdram_j4xx_omap.fm`, achado via Alldatasheet a partir do PN de exemplo já citado em CLAUDE.md) confirma no próprio legend do part number: **"29C = NAND + LPDRAM MCP"** — Package-on-Package combinando um NAND raw (ex.: `MT29F4G16ABCWC-ET`) + uma Mobile LPDRAM raw (ex.: `MT46H32M32LFJG-6`) no mesmo encapsulamento. ⚠ Arquitetura diferente do eMCP Samsung/SK Hynix/MT29T/MT29P (que usam controller eMMC unificado): aqui as **interfaces são separadas** (NAND e LPDRAM endereçados como dois chips discretos empilhados, não um controller único) — mais perto de "PoP raw" que "eMCP gerenciado". Capacidade: densidade no PN (`{N}G{M}M`) dobra a cada passo — NAND `1G/2G/4G/8G` (Gb) e LPDRAM `12M/24M/48M/96M` (Gb) — confirmado via DigiKey (categoria paramétrica "8Gbit (NAND), 4Gbit (LPDRAM)" pro tier `8G96M`, PN irmão `MT29C8G96MAZBADJV-5 IT`). `chip_type` = **`MCP`** (já existe em `chips/chip_types.py` — category `catalog`, `profit_family="dead"`, `commercial=False`; descrito lá como "NAND raw + mDDR1 pré-eMCP, sem liquidez B2B"). Sempre NÃO RENTÁVEL + descarte por geração no gateway, independente de capacidade. `subtype` carrega a spec no formato descritivo do próprio código: `"Raw MCP — NAND {X} + mDDR1 {Y}"` — não usa `emcp_nand`/`emcp_ram`/`capacity` (esses são da categoria `managed_mcp`, diferente). Caso-fonte: FBGA JW500 → `MT29C8G96MAZAPDJA-5 IT` = NAND 1GB + mDDR1 512MB, capacidade confirmada via DigiKey (categoria paramétrica "8Gbit (NAND), 4Gbit (LPDRAM)" do PN-irmão `MT29C8G96MAZBADJV-5 IT`, mesma densidade), 2026-07-09.
 - ⚠ **`MT53B` ≠ `MT53E`** — LPDDR4 1.1V vs LPDDR4X 0.6V; misturar **danifica hardware**.
 - **eMMC vs uMCP em MT29VZZZ:** a distinção vem do `source_url` da API FBGA (`emmc-based` vs `ufs-based`); `fix_micron_mcp_classification` aplica.
 - **`COMPONENT DENSITY` do CSV é total NAND+RAM** pra MCP (não separa) — usar API FBGA / MIC_MCP_CAP, nunca como `capacity`.
@@ -131,7 +132,7 @@ AliExpress, catálogo genérico, `part-name` da API FBGA (pra tipo de RAM), dist
 - **BUG-8 (2026-06-19):** API FBGA dizia `LPDDR2` pra MT29TZZZ, que é **toda LPDDR3** (datasheet + DigiKey). Lição: o prefixo do PN define o tipo de RAM, não o part-name da API.
 - **Bug de dies (2026-06-27):** LPDDR inflada ×N por multiplicar `depth×width` pelos dies `D{N}`. Lição: a fórmula é `depth×width÷8`, sem dies.
 - **MT52L = LPDDR3, não LPDDR4 (2026-06-27):** "52"=LPDDR3. Tier-1 pegou antes de ~151 registros serem corrompidos em massa.
-- **MT29C = NAND raw, não "eMCP LPDDR2":** "C" = barramento paralelo.
+- **MT29C = NAND+LPDRAM MCP (PoP), CORRIGIDO 2026-07-09:** a entrada aqui dizia "NAND raw, não eMCP LPDDR2" e estava errada — datasheet oficial confirma "29C = NAND + LPDRAM MCP", combo real (interfaces separadas, não eMMC unificado). Ver §4 pra fonte, detalhe e o caso JW500.
 - **`chip_type="RAM"` → geração:** DRAM discreta usa a geração no `chip_type` (`DDR3`/`LPDDR4`), nunca `"RAM"` (convenção OPÇÃO 1).
 - **eMMC×uMCP trocados (BUG-3)** e **gramática ignorada p/ eMCP distributor (BUG-6):** resolvidos por `source_url` e pela regra "gramática completa vence distributor/estimated".
 
