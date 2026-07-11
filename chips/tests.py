@@ -1548,6 +1548,7 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H5AN8G8NAFR-UHC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
     "H5AN8G8NAFR-VKC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
     "H5CG48MEBDX014N":   ("DDR5", "2GB",  "", "", "", "RENTÁVEL"),
+    "H5GQ4H24AJR":       ("GDDR5", "512MB", "", "", "", "RENTÁVEL"),  # âncora família NOVA H5GQ (2026-07-10)
     "H5PS1G83EFR-S6C":   ("DDR2", "128MB", "", "", "", "NÃO RENTÁVEL"),
     "H5TC4G83CFR-PBA":   ("DDR3L", "512MB", "", "", "", "RENTÁVEL"),
     "H5TQ2G63GFR":       ("DDR3", "256MB", "", "", "", "RENTÁVEL"),

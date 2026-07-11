@@ -183,6 +183,11 @@ maps:
   - [D, 3GB, '']
   - [E, 6GB, '']
   - [F, 8GB, '']
+  HYX_GDDR5_H5GQ_CAP:
+  - ['1', 128MB, '']
+  - ['2', 256MB, '']
+  - ['4', 512MB, '']
+  - ['8', 1GB, '']
   HYX_LPDDR5_H58G_CAP:
   - ['5', 4GB, '']
   - ['6', 8GB, '']
@@ -411,6 +416,24 @@ families:
   suffix_rules: ''
   tip: '🚨 ATENÇÃO: Este chip é GDDR3 — memória gráfica (H5RS). NÃO É DDR3 de PC. Estrutura elétrica completamente diferente. Origem: placas de vídeo (GPUs) ou consoles antigos. ⚠ NÃO misturar com lote DDR3 (H5TQ/H5TC) — incompatíveis e com mercados distintos. Destino: separar para lote de memória gráfica GDDR3.'
   reasoning: ''
+- prefix: H5GQ
+  chip_type: GDDR5
+  subtype: GDDR5
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 4
+  decode_cap_len: 1
+  decode_cap_map: HYX_GDDR5_H5GQ_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '🚨 ATENÇÃO: Este chip é GDDR5 — memória gráfica de GPU (H5GQ). NÃO É DDR5 de PC (H5C). Origem: placas de vídeo (GPUs, ex. AMD RX 400/500). pn[4] = densidade por die: 1=128MB · 2=256MB · 4=512MB · 8=1GB. Placas de vídeo usam vários chips juntos (ex.: 8x H5GQ4H24AJR = 4GB de VRAM na placa) — a capacidade decodificada aqui é SEMPRE por chip individual, não da placa inteira. Sufixo após o miolo (ex. "-R4C"/"-T2C") é grade de velocidade/revisão, não afeta capacidade. ⚠ NÃO misturar com lote DDR/LPDDR — mercado e destino distintos (memória de GPU, geralmente sucata pois não reaproveita fora da placa). Destino: separar para lote de memória gráfica GDDR5.'
+  reasoning: '["Padrão de nomenclatura SK Hynix p/ GDDR5 confirmado em 4 pontos de densidade, cada um com fonte de distribuidor explicita (nao inferida por resumo de busca): H5GQ1H24BFR-T2C=1Gb (AllDataSheet, datasheet oficial 173 paginas, categoria \"1Gb (32Mx32) GDDR5 SGRAM\"); H5GQ2H24AFR=2Gb (AllDataSheet, datasheet oficial 172 paginas, categoria \"2Gb (64Mx32) GDDR5 SGRAM\"); H5GQ4H24AJR-R4C=4Gb (WinSource via DigiPart, fetch direto, \"GDDR5 4.0GHz 128Mx32 (4Gb)\" - unidade Gb minusculo, sem ambiguidade); H5GQ8H24MJR-R4C=8Gb (WinSource via DigiPart, fetch direto, \"GDDR5 4.0GHz 256Mx32 (8Gb)\"). Aritmetica MxN conferida em todos: 32Mx32=1Gbit, 64Mx32=2Gbit, 128Mx32=4Gbit, 256Mx32=8Gbit - dobra a cada degrau, consistente com pn[4] sendo o proprio digito de densidade em Gb (nao precisa de tabela de codigo arbitrario)."]'
 - prefix: H9CC
   chip_type: LPDDR3
   subtype: LPDDR3
