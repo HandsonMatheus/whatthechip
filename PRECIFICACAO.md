@@ -844,6 +844,26 @@ adiciona a linha", §2/§11), agora com ferramenta própria:
 - Quem fabrica LPDDR (matriz da aba Instructions): Samsung, SK Hynix, Micron,
   Nanya. Kingston/Toshiba-Kioxia/SanDisk entram como não fabricado.
 
+### 12.17 Fase 2 do lote 40 — habilitações no grid (dono, 2026-07-11; suíte 338/338)
+
+Chips REAIS do lote 40 revelaram combos marcados "não fabricado" (o seed usou
+a planilha original como censo de fabricação) e uma faixa fora da grade:
+
+- **`enable_price_row` (comando novo):** flip **não fabricado → não cotado**
+  para marca que fabrica de fato, garantindo a linha da GENÉRICA junto.
+  Só essa transição: cotado/não-compro são intocáveis (rebaixar é decisão de
+  admin); faixa inexistente aponta o `add_price_row`. Dry-run por padrão;
+  idempotente; pghistory audita. Testes: `EnablePriceRowTests`.
+- **Habilitações desta fase** (evidência = chips físicos no lote): SK Hynix
+  emcp/LPDDR3/8GB · Micron emcp/LPDDR3/64GB e emcp/LPDDR4/64GB · Samsung
+  umcp/LPDDR4X/256GB.
+- **Faixa nova eMCP LPDDR4 128GB** via `add_price_row`, made-by Samsung +
+  SK Hynix + Micron (decisão do dono). Conferência nas DEMAIS marcas pelo
+  próprio catálogo: Kingston eMCP para em 64GB (prefixos 04–64EMCP), Toshiba
+  só tem eMCP legado LPDDR2 4–8GB (TYC), SanDisk não tem família eMCP, Nanya
+  é DRAM-only → seguem "não fabricado" (habilitar depois se aparecer chip —
+  precedente H9HCN).
+
 ### 12.16 BUG lote 40 — DDR "sem preço" com linha cotada (2026-07-11; suíte 332/332)
 
 Export do lote 40 mostrava DDR3/DDR4 de **SK Hynix e Nanya** como "sem preço"

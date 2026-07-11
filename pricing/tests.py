@@ -20,7 +20,8 @@ from tenancy.models import Company
 from tenancy.scope import CompanyScopeMissing, company_scope
 
 from .models import (Buyer, Price, PriceList, PricingConfig,
-                     STATUS_NO_BUY, STATUS_QUOTED, STATUS_UNQUOTED)
+                     STATUS_NO_BUY, STATUS_NOT_MADE, STATUS_QUOTED,
+                     STATUS_UNQUOTED)
 
 
 def _setup_wuquan(company_name='eMiner F2', slug='eminer-f2'):
@@ -1215,3 +1216,77 @@ class DdrDensityFallbackTests(TestCase):
             {'chip_type': 'GDDR5X', 'subtype': 'GDDR5X', 'capacity': '8G'})
         self.assertIsNone(err)
         self.assertEqual(key, ('gddr', 'GDDR5X', Decimal('8'), 'Gb'))
+
+
+class EnablePriceRowTests(TestCase):
+    """enable_price_row (fase 2 do lote 40): flip "não fabricado" → "não
+    cotado" para marca que FABRICA de fato, garantindo a genérica junto.
+    Cotado/não-compro são intocáveis; faixa fora da grade aponta o
+    add_price_row."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company = Company.objects.create(name='EnbCo', slug='enb-co')
+        cls.buyer = Buyer.all_companies.create(company=cls.company,
+                                               name='Wuquan E', slug='wuquan-enb')
+        sk = Brand.objects.create(name='SK Hynix E', code='SKENB')
+        cls.l_sk = PriceList.all_companies.create(buyer=cls.buyer, brand=sk)
+        cls.l_gen = PriceList.all_companies.create(buyer=cls.buyer, brand=None)
+        for pl, status in ((cls.l_sk, STATUS_NOT_MADE),
+                           (cls.l_gen, STATUS_NOT_MADE)):
+            Price.all_companies.create(
+                price_list=pl, kind='emcp', gen='LPDDR3',
+                tier_value=Decimal('8'), tier_unit='GB', status=status)
+        # linha COTADA (guarda: nunca rebaixar) — grid unificado: a
+        # genérica também tem a linha (não cotada).
+        Price.all_companies.create(
+            price_list=cls.l_sk, kind='emmc', gen='', tier_value=Decimal('32'),
+            tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('4.00'), price_max=Decimal('4.00'))
+        Price.all_companies.create(
+            price_list=cls.l_gen, kind='emmc', gen='', tier_value=Decimal('32'),
+            tier_unit='GB', status=STATUS_UNQUOTED)
+
+    def _run(self, commit=False, **extra):
+        from io import StringIO
+        from django.core.management import call_command
+        from tenancy.scope import set_current_company
+        out = StringIO()
+        base = dict(buyer='wuquan-enb', brand='SK Hynix E', kind='emcp',
+                    gen='LPDDR3', tier='8', unit='GB', commit=commit)
+        base.update(extra)
+        try:
+            call_command('enable_price_row', stdout=out, **base)
+        finally:
+            set_current_company(None)
+        return out.getvalue()
+
+    def _status(self, pl, **key):
+        return Price.all_companies.get(price_list=pl, **key).status
+
+    def test_flip_com_generica_e_idempotencia(self):
+        key = dict(kind='emcp', gen='LPDDR3', tier_value=Decimal('8'),
+                   tier_unit='GB')
+        out = self._run(commit=False)                      # dry-run: nada muda
+        self.assertIn('não fabricado → não cotado', out)
+        self.assertEqual(self._status(self.l_sk, **key), STATUS_NOT_MADE)
+
+        self._run(commit=True)                             # flipa marca+genérica
+        self.assertEqual(self._status(self.l_sk, **key), STATUS_UNQUOTED)
+        self.assertEqual(self._status(self.l_gen, **key), STATUS_UNQUOTED)
+
+        out = self._run(commit=True)                       # idempotente
+        self.assertIn('já está "não cotado"', out)
+
+    def test_cotada_e_fora_da_grade_sao_protegidas(self):
+        from django.core.management.base import CommandError
+        # Linha cotada NUNCA é rebaixada (nem com commit).
+        out = self._run(commit=True, kind='emmc', gen='', tier='32')
+        self.assertIn('já COTADA', out)
+        self.assertEqual(
+            self._status(self.l_sk, kind='emmc', gen='',
+                         tier_value=Decimal('32'), tier_unit='GB'),
+            STATUS_QUOTED)
+        # Fora da grade → erro apontando o add_price_row.
+        with self.assertRaises(CommandError):
+            self._run(commit=True, tier='128')
