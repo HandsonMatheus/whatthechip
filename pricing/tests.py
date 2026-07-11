@@ -1208,7 +1208,10 @@ class DdrDensityFallbackTests(TestCase):
             {'chip_type': 'DDR3L', 'subtype': 'DDR3L', 'capacity': '4G'})
         self.assertIsNone(err)
         self.assertEqual(key, ('ddr', 'DDR3', Decimal('4'), 'Gb'))
-        # GDDR5X NÃO dobra para GDDR5 (mercado distinto, não é tensão).
+        # GDDR5X NÃO dobra para GDDR5 (mercado distinto, não é tensão) — e tem
+        # vocabulário próprio desde 2026-07-11 (antes caía pra 'GDDR' genérico
+        # e mudava a triagem).
         err, key = derive_price_key(
             {'chip_type': 'GDDR5X', 'subtype': 'GDDR5X', 'capacity': '8G'})
-        self.assertTrue(err is not None or key[1] == 'GDDR5X')
+        self.assertIsNone(err)
+        self.assertEqual(key, ('gddr', 'GDDR5X', Decimal('8'), 'Gb'))

@@ -118,24 +118,25 @@ class Command(SafeWriteCommand):
                 f"decode) — recomendado em famílias NOVAS: {', '.join(sem_reasoning[:8])}"
                 f"{'…' if len(sem_reasoning) > 8 else ''}"))
 
-        # ── ADVISORY (bug lote 40, 2026-07-11): família DDR-kind deve DECODIFICAR
-        # densidade. Sem `decode_density_type`, `dram_density` nunca nasce da
-        # gramática (a densidade sai como bytes-por-die no capacity, ex. '256MB')
-        # — o pricing tem fallback de LEITURA, mas a convenção (CLAUDE.md §6:
-        # densidade DDR = density_gbit/dram_density) pede a reforma da família
-        # (decode_density_type='pc' + DRAM_PC), trabalho do chat da marca.
+        # ── ADVISORY (bug lote 40, 2026-07-11): família DDR-kind precisa de UMA
+        # fonte de densidade. `decode_density_type` é a nativa; família só com
+        # `decode_cap_map` (bytes-por-die no capacity, ex. '256MB') é OK — o
+        # engine DERIVA o dram_density dela (`_result_from_family`, MB×8÷1024).
+        # Só avisa quando NÃO HÁ NENHUMA das duas: aí a densidade não nasce de
+        # jeito nenhum e a família precisa de reforma (CLAUDE.md §6/§7).
         from chips.chip_types import canonical_chip_type, label_kind
         from chips.knowledge.convention import DENSITY_KINDS
         sem_density = [
             f.prefix for f in spec.families
             if f.active
             and label_kind(canonical_chip_type(f.chip_type or "", f.subtype or "")) in DENSITY_KINDS
-            and not (f.decode_density_type or "").strip()]
+            and not (f.decode_density_type or "").strip()
+            and not (f.decode_cap_map or "").strip()]
         if sem_density:
             self.stdout.write(self.style.WARNING(
-                f"  ⚠ {len(sem_density)} família(s) DDR/GDDR SEM decode de densidade "
-                f"(decode_density_type vazio → dram_density não nasce; reformar — "
-                f"CLAUDE.md §6/§7): {', '.join(sem_density[:8])}"
+                f"  ⚠ {len(sem_density)} família(s) DDR/GDDR sem NENHUMA fonte de "
+                f"densidade (nem decode_density_type nem decode_cap_map → dram_density "
+                f"não nasce; reformar — CLAUDE.md §6/§7): {', '.join(sem_density[:8])}"
                 f"{'…' if len(sem_density) > 8 else ''}"))
 
         self.stdout.write(self.style.MIGRATE_HEADING(

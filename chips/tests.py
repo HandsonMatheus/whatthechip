@@ -1086,6 +1086,32 @@ class KnownPartModelGateTests(TestCase):
         kp4.refresh_from_db()
         self.assertEqual(kp4.density_gbit, "4Gb")
 
+    def test_densidade_derivada_de_familia_cap_map(self):
+        # Raiz do bug lote 40 (2026-07-11): família DDR-kind SEM decode de
+        # densidade próprio (cap_map com bytes POR DIE) ganha dram_density
+        # DERIVADO no engine (MB×8÷1024) — cobre todas as marcas de uma vez,
+        # sem reforma de yaml (posições de PN variam por marca).
+        from chips.engine import classify
+        from chips.models import Brand, ChipFamily, DecodeMap
+        b = Brand.objects.create(name="DerivB", code="DERIVB")
+        DecodeMap.objects.create(map_name="DERIV_CAP", char_key="2",
+                                 val_primary="256MB", val_secondary="", brand=b)
+        ChipFamily.objects.create(
+            brand=b, prefix="ZZT", chip_type="DDR3", subtype="DDR3",
+            decode_cap_pos=3, decode_cap_len=1, decode_cap_map="DERIV_CAP",
+            active=True)
+        r = classify("ZZT2AAAA")
+        self.assertEqual(r.get("capacity"), "256MB")
+        self.assertEqual(r.get("dram_density"), "2Gb = 256MB por die [✓]")
+        self.assertEqual(r.get("density_gbit_num"), 2.0)
+
+    def test_gddr5x_no_vocabulario(self):
+        # Dono (2026-07-11): GDDR5X preserva a especificidade (nunca dobrar
+        # pra 'GDDR' genérico — mudava a triagem do MT58K).
+        from chips.chip_types import canonical_chip_type, label_kind
+        self.assertEqual(canonical_chip_type("GDDR5X", ""), "GDDR5X")
+        self.assertEqual(label_kind("GDDR5X"), "gddr")
+
     def test_portao_pydantic_e_modelo_usam_a_mesma_fonte(self):
         # Consistência: a normalização do YAML (Pydantic) e a do modelo dão o MESMO subtype.
         from chips.knowledge.convention import apply_kp_convention
@@ -1451,14 +1477,14 @@ def _carrega_marca_e_confere_fidelidade(tc, slug):
 # Congelados da gramática validada (populate ANTES de aposentá-la; conferidos vs docs). Cada marca
 # deve identificar TODOS os seus PNs conhecidos SEMPRE assim (regra do dono, 2026-06-30).
 _PMK_GOLDEN = {
-    "PMF510816DBR":     ("DDR3",  "128MB", "", "", "", "NÃO RENTÁVEL"),  # 1Gb/die → < 2Gb → descarta
-    "PMF511808EBR":     ("DDR3",  "256MB", "", "", "", "RENTÁVEL"),      # 2Gb x8
-    "PMF511816EBR":     ("DDR3",  "256MB", "", "", "", "RENTÁVEL"),      # 2Gb x16 (KnownPart em prod)
-    "PMF512816CBR":     ("DDR3",  "512MB", "", "", "", "RENTÁVEL"),      # 4Gb
-    "PMF411816EBR":     ("DDR3L", "256MB", "", "", "", "RENTÁVEL"),      # DDR3L 2Gb (=DDR3)
+    "PMF510816DBR":     ("DDR3",  "128MB", "", "", "1Gb = 128MB por die [✓]", "NÃO RENTÁVEL"),  # 1Gb/die → < 2Gb → descarta; densidade DERIVADA do cap_map (2026-07-11)
+    "PMF511808EBR":     ("DDR3",  "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),      # 2Gb x8
+    "PMF511816EBR":     ("DDR3",  "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),      # 2Gb x16 (KnownPart em prod)
+    "PMF512816CBR":     ("DDR3",  "512MB", "", "", "4Gb = 512MB por die [✓]", "RENTÁVEL"),      # 4Gb
+    "PMF411816EBR":     ("DDR3L", "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),      # DDR3L 2Gb (=DDR3)
     "PMA212508ABR":     ("DDR4",  "",      "", "", "", "INDETERMINADO"), # DDR4 s/ decode → KnownPart resolve
     "PMA212816ABR":     ("DDR4",  "",      "", "", "", "INDETERMINADO"),
-    "PMF511816EBRKADN": ("DDR3",  "256MB", "", "", "", "RENTÁVEL"),      # variante -KADN do 2Gb
+    "PMF511816EBRKADN": ("DDR3",  "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),      # variante -KADN do 2Gb
 }
 _GIGA_GOLDEN = {
     "GD5F1GQ4UBYIG": ("NAND Flash", "128MB", "", "", "", "NÃO RENTÁVEL"),  # SPI NAND 1Gb
@@ -1579,10 +1605,10 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H5AN8G8NAFR-UHC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
     "H5AN8G8NAFR-VKC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
     "H5CG48MEBDX014N":   ("DDR5", "2GB",  "", "", "", "RENTÁVEL"),
-    "H5GQ4H24AJR":       ("GDDR5", "512MB", "", "", "", "RENTÁVEL"),  # âncora família NOVA H5GQ (2026-07-10)
-    "H5PS1G83EFR-S6C":   ("DDR2", "128MB", "", "", "", "NÃO RENTÁVEL"),
-    "H5TC4G83CFR-PBA":   ("DDR3L", "512MB", "", "", "", "RENTÁVEL"),
-    "H5TQ2G63GFR":       ("DDR3", "256MB", "", "", "", "RENTÁVEL"),
+    "H5GQ4H24AJR":       ("GDDR5", "512MB", "", "", "4Gb = 512MB por die [✓]", "RENTÁVEL"),  # âncora H5GQ; densidade DERIVADA (2026-07-11)
+    "H5PS1G83EFR-S6C":   ("DDR2", "128MB", "", "", "1Gb = 128MB por die [✓]", "NÃO RENTÁVEL"),
+    "H5TC4G83CFR-PBA":   ("DDR3L", "512MB", "", "", "4Gb = 512MB por die [✓]", "RENTÁVEL"),
+    "H5TQ2G63GFR":       ("DDR3", "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),
     "H9CCNNNCLTML":      ("LPDDR3", "4GB", "", "", "", "RENTÁVEL"),
     "H9CKNNNBJTMP":      ("LPDDR3", "2GB", "", "", "", "RENTÁVEL"),
     "H9DA4GH2GJAM":      ("eMCP", "", "eMMC 4.x 4GB", "LPDDR1 256MB", "", "NÃO RENTÁVEL"),
@@ -1603,8 +1629,8 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H9TQ64AAETMCUR-KUM": ("eMCP", "", "eMMC 5.x 8GB", "LPDDR3 1.5GB", "", "RENTÁVEL"),  # AA=1.5GB (12Gb) ≠ AB=2GB — WinSource 2026-07-06, ver hynix.yaml
     "H9TQ18ABJTMCUR-KTM": ("eMCP", "", "eMMC 5.x 16GB", "LPDDR3 2GB", "", "RENTÁVEL"),  # chave NAND '18' nova no mapa (2026-07-09) — Preduo + Puris concordam, mesmo padrão de trio 16/17/18
     "HN8T05BZGR":        ("UFS", "128GB", "", "", "", "RENTÁVEL"),
-    "HY5DU281622ET-25":  ("DDR1", "16MB", "", "", "", "NÃO RENTÁVEL"),
-    "HY5PS121621CFP-25": ("DDR2", "64MB", "", "", "", "NÃO RENTÁVEL"),
+    "HY5DU281622ET-25":  ("DDR1", "16MB", "", "", "0.125Gb = 16MB por die [✓]", "NÃO RENTÁVEL"),
+    "HY5PS121621CFP-25": ("DDR2", "64MB", "", "", "0.5Gb = 64MB por die [✓]", "NÃO RENTÁVEL"),
 }
 
 
@@ -1636,8 +1662,8 @@ _SAM_GOLDEN = {
     'K4AAG165W': ('DDR4', '', '', '', '16Gb = 2GB por die [~]', 'RENTÁVEL'),
     'K4B2G1646F': ('DDR3', '', '', '', '2Gb = 256MB por die [~]', 'RENTÁVEL'),
     'K4B8G0846D': ('DDR3', '', '', '', '8Gb = 1GB por die [✓]', 'RENTÁVEL'),
-    'K4D553235FGC33': ('GDDR2', '32MB', '', '', '', 'NÃO RENTÁVEL'),
-    'K4D263238KFC40': ('GDDR2', '16MB', '', '', '', 'NÃO RENTÁVEL'),
+    'K4D553235FGC33': ('GDDR2', '32MB', '', '', '0.25Gb = 32MB por die [✓]', 'NÃO RENTÁVEL'),  # densidade DERIVADA (2026-07-11)
+    'K4D263238KFC40': ('GDDR2', '16MB', '', '', '0.125Gb = 16MB por die [✓]', 'NÃO RENTÁVEL'),
     'K4E6E304': ('LPDDR3', '2GB', '', '', '', 'RENTÁVEL'),
     'K4EBE304': ('LPDDR3', '4GB', '', '', '', 'RENTÁVEL'),
     'K4FHE30': ('LPDDR4', '3GB', '', '', '', 'RENTÁVEL'),

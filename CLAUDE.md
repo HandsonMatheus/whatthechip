@@ -729,12 +729,22 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   known-SEM-família), `validate_convention` reporta ("densidade fora do lugar") +
   `normalize_convention` backfilla o legado (reversível), `load_brands` AVISA
   família DDR-kind sem decode de densidade, e o pricing mantém fallback de
-  leitura (`_gbit_from_capacity`). **Pendente (chats de marca): reformar as
-  famílias DDR-kind sem decode de densidade para `decode_density_type='pc'` +
-  DRAM_PC — o aviso do `load_brands` lista por marca; censo 2026-07-11:
-  SK Hynix (10: H5AN/H5TC/H5TQ/H5PS/H5RS/H5GQ…), Samsung (K4D/K4J/K4N/K4R/K4Z),
-  PieceMakers (7: PMF*/PMA/PMD/PME/PMS), Nanya (NT5AD/NT5CC/NT5PA), Micron
-  (MT40A/MT41K), GigaDevice (GDQ).**
+  leitura (`_gbit_from_capacity`). **Reforma dos yamls DESNECESSÁRIA (dono
+  delegou e foi resolvido no engine, 2026-07-11):** as posições de densidade
+  variam por marca (o decode `pc` fixo em `pn[3:5]` só serve à Samsung), então
+  em vez de operar ~28 famílias, `_result_from_family` DERIVA o `dram_density`
+  de família DDR-kind com cap_map per-die (`'256MB'` → `2Gb = 256MB por die
+  [✓]`, MB×8÷1024) — todas as marcas de uma vez; 14 goldens atualizados com a
+  densidade nova (aritmética conferida). `GDDR5X` entrou no vocabulário
+  (`chip_types.py`) — antes o `normalize_convention` o dobrava pra `GDDR`
+  genérico e MUDAVA a triagem. O aviso do `load_brands` agora só dispara para
+  família DDR-kind **sem NENHUMA fonte** (nem density_type nem cap_map) —
+  censo 2026-07-11: Samsung K4J/K4N/K4Z e SK Hynix H5RS (GDDR legadas),
+  GigaDevice GDQ, Micron MT40A/MT41K, e as famílias MAGRAS de Nanya
+  (NT5AD/NT5CC/NT5PA) e PieceMakers (PMA/PMD/PME/PMS/PMF) — estas últimas
+  decodificam só o TIPO pelo prefixo e dependem de KnownParts para specs
+  (que a regra 4 + `_known_dram_density` já servem); decidir na reforma de
+  dado se ganham mapas próprios.
 
 ---
 

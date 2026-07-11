@@ -27,6 +27,10 @@ _CLEAN_FIELDS = ("capacity", "emcp_ram", "emcp_nand", "density_gbit", "density_g
 #: Compartilhada com o pricing (fallback de leitura) e o normalize_convention.
 RX_DENSITY_BARE = re.compile(r"^(\d+(?:\.\d+)?)\s*G(?:b)?$")
 
+#: Bytes POR DIE ('256MB' — como as famílias DDR sem decode de densidade
+#: gravam o capacity). Gb = MB × 8 ÷ 1024. Compartilhado engine + pricing.
+RX_DIE_MB = re.compile(r"^(\d+(?:\.\d+)?)\s*MB$")
+
 #: kinds cuja capacidade comercial é DENSIDADE de die em Gb (CLAUDE.md §6:
 #: campo `density_gbit`) — DDR/GDDR/SDRAM/RDRAM. Consumido também pelo
 #: validate/normalize_convention.

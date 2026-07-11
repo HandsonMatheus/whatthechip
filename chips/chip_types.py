@@ -81,6 +81,10 @@ CHIP_TYPES: dict[str, ChipTypeSpec] = {
     "GDDR3":  ChipTypeSpec("dram_gpu", "gddr", "gddr", carries_generation=True),
     "GDDR4":  ChipTypeSpec("dram_gpu", "gddr", "gddr", carries_generation=True),
     "GDDR5":  ChipTypeSpec("dram_gpu", "gddr", "gddr", carries_generation=True),
+    # GDDR5X existia no mundo (GTX 1080, Micron MT58K) mas faltava aqui — o
+    # normalize_convention dobrava pra 'GDDR' genérico e MUDAVA a triagem
+    # (geração ausente → NÃO RENTÁVEL). Decisão do dono 2026-07-11: preservar.
+    "GDDR5X": ChipTypeSpec("dram_gpu", "gddr", "gddr", carries_generation=True),
     "GDDR6":  ChipTypeSpec("dram_gpu", "gddr", "gddr", carries_generation=True),
     "GDDR6X": ChipTypeSpec("dram_gpu", "gddr", "gddr", carries_generation=True),
 

@@ -886,8 +886,12 @@ pacote; Gb≠GB). F0 continua com prioridade. Teste:
   uMCP 256+8): estado do grid a corrigir no painel/admin.
 - **eMCP/uMCP com NAND 128GB+** e "⚠ cap. não mapeada": faixas fora da grade
   (`add_price_row`) e lacunas de gramática, respectivamente.
-- **Reforma das famílias DDR SK Hynix/Nanya** (decode_density_type='pc'):
-  trabalho dos CHATS DE MARCA — o `load_brands` agora avisa.
+- ~~Reforma das famílias DDR~~ **RESOLVIDA no engine (2026-07-11, dono
+  delegou):** `_result_from_family` deriva `dram_density` de cap_map per-die
+  (MB×8÷1024) para TODAS as marcas — sem cirurgia de yaml (posições variam
+  por marca). GDDR5X entrou no vocabulário (fim do fold pra genérico). 14
+  goldens atualizados; aviso do `load_brands` agora só p/ família sem
+  NENHUMA fonte de densidade (K4J/K4N/K4Z/H5RS — GDDR legadas).
 
 ### 12.15 F9 — Catálogo de preços em PDF (dono, 2026-07-10; suíte 331/331)
 
