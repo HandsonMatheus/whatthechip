@@ -22,6 +22,7 @@ python-dotenv>=1.0
 # ── Utilitários ─────────────────────────────────────────────────────────────────
 tqdm>=4.0
 openpyxl>=3.1              # Exportação de estoque/lote para .xlsx
+reportlab>=4.5             # Catálogo de preços do comprador em PDF (pricing/pdf.py)
 
 # ── NÃO incluídos (não rodam no Render free) ────────────────────────────────────
 # curl_cffi    ← scraping local apenas

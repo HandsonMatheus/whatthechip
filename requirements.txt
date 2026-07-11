@@ -24,6 +24,7 @@ playwright>=1.40        # Browser real para Cloudflare JS challenge
 # Utilitários dos scripts
 tqdm>=4.0               # Barra de progresso no enrich_gemini.py
 openpyxl>=3.1           # Exportação de estoque para .xlsx
+reportlab>=4.5          # Catálogo de preços do comprador em PDF (pricing/pdf.py)
 polib>=1.2              # i18n sem gettext: scripts/i18n_compile.py (.po→.mo) — I18N.md §6.3
 
 # Coleta FBGA — pipeline bulk (stages 2-5)

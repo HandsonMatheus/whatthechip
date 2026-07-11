@@ -13,4 +13,6 @@ urlpatterns = [
     path('notifications/',        views.partner_notifications,
          name='partner_notifications'),
     path('how/',                  views.partner_how, name='partner_how'),
+    path('catalog.pdf',           views.partner_catalog_pdf,
+         name='partner_catalog'),
 ]

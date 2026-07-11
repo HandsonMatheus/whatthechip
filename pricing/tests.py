@@ -876,6 +876,32 @@ class PartnerDashboardTests(TestCase):
         self.client.force_login(self.operator)
         self.assertEqual(self.client.get('/partner/how/').status_code, 403)
 
+    def test_catalogo_pdf(self):
+        # F9: catálogo em PDF — matriz (colunas=listas, seções=kind) + seletor
+        # de idioma do DOCUMENTO (?lang=, independe da sessão).
+        from pricing.pdf import catalog_data
+        columns, sections = catalog_data(self.buyer)
+        # Ordem = a da sidebar (sort Python por nome, ASCII): 'SK' < 'Sa'.
+        self.assertEqual(columns, ['SK Hynix P6', 'Samsung P6'])
+        self.assertEqual([s['title'] for s in sections], ['eMMC', 'UFS'])
+        emmc = sections[0]['rows'][0]
+        self.assertEqual(emmc['label'], '64GB')
+        self.assertEqual(emmc['cells'][1], ('quoted', '6.00'))
+        self.assertEqual(emmc['cells'][0], ('unquoted', None))   # SK sem linha
+
+        self.client.force_login(self.partner)
+        resp = self.client.get('/partner/catalog.pdf')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Content-Type'], 'application/pdf')
+        self.assertTrue(resp.content.startswith(b'%PDF'))
+        self.assertIn('wuquan-p6-prices-', resp['Content-Disposition'])
+        resp_zh = self.client.get('/partner/catalog.pdf?lang=zh-hans')
+        self.assertTrue(resp_zh.content.startswith(b'%PDF'))     # fonte CID CJK
+        self.assertContains(self.client.get('/partner/'), 'catalog.pdf')
+        self.client.logout()
+        self.client.force_login(self.operator)
+        self.assertEqual(self.client.get('/partner/catalog.pdf').status_code, 403)
+
     def test_lancadeira_redireciona_parceiro_para_o_partner(self):
         self.client.force_login(self.partner)
         resp = self.client.get('/painel/')

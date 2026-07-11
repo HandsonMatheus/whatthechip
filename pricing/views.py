@@ -24,11 +24,14 @@ from datetime import date, timedelta
 from decimal import Decimal, InvalidOperation
 from functools import wraps
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError, transaction
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import translation
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
@@ -176,6 +179,30 @@ def partner_how(request):
         'buyer': request.buyer,
         'nav_lists': _lists_with_stats(request.buyer), 'active_pk': 'how',
     })
+
+
+@partner_required
+def partner_catalog_pdf(request):
+    """F9 — CATÁLOGO em PDF (dono, 2026-07-10): todas as tabelas do comprador
+    numa matriz compacta (o documento que ele repassa aos clientes dele).
+
+    ``?lang=`` escolhe o idioma DO DOCUMENTO (seletor próprio na home —
+    decisão do dono: independe do idioma da sessão). Valor fora de
+    settings.LANGUAGES cai no idioma ativo da sessão. Sem cache: a tabela é
+    viva, o PDF nasce do estado atual (é o fim da planilha desatualizada)."""
+    from .pdf import catalog_data, render_catalog_pdf   # reportlab só aqui
+
+    lang = (request.GET.get('lang') or '').strip()
+    if lang not in {code for code, _n in settings.LANGUAGES}:
+        lang = translation.get_language() or settings.LANGUAGE_CODE
+    with translation.override(lang):
+        columns, sections = catalog_data(request.buyer)
+        pdf = render_catalog_pdf(request.buyer.name, columns, sections)
+
+    resp = HttpResponse(pdf, content_type='application/pdf')
+    fname = f'{request.buyer.slug}-prices-{date.today():%Y-%m-%d}.pdf'
+    resp['Content-Disposition'] = f'attachment; filename="{fname}"'
+    return resp
 
 
 @partner_required

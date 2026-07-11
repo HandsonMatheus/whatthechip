@@ -1469,3 +1469,48 @@ msgstr "¿Falta un chip en mi tabla?"
 #: pricing/templates/pricing/partner_how.html
 msgid "Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você cotar."
 msgstr "Habla con WhatTheChip — agregamos la línea y aparece para que la cotices."
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Catálogo de preços (PDF)"
+msgstr "Catálogo de precios (PDF)"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Todas as suas tabelas num único arquivo — pronto para enviar aos seus clientes."
+msgstr "Todas tus tablas en un solo archivo — listo para enviar a tus clientes."
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Idioma do catálogo"
+msgstr "Idioma del catálogo"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Baixar PDF"
+msgstr "Descargar PDF"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Tabela de preços"
+msgstr "Tabla de precios"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Preços em USD por chip (unitário)."
+msgstr "Precios en USD por chip (unitario)."
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "em branco: ainda sem cotação"
+msgstr "en blanco: aún sin cotización"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Emitido em"
+msgstr "Emitido el"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Gerado por WhatTheChip"
+msgstr "Generado por WhatTheChip"

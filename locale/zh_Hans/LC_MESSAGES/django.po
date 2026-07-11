@@ -1416,3 +1416,48 @@ msgstr "价格表里缺少某个芯片？"
 #: pricing/templates/pricing/partner_how.html
 msgid "Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você cotar."
 msgstr "请联系 WhatTheChip——我们会添加该行，您即可报价。"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Catálogo de preços (PDF)"
+msgstr "价格目录（PDF）"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Todas as suas tabelas num único arquivo — pronto para enviar aos seus clientes."
+msgstr "您的所有价格表汇总为一个文件——可直接发送给您的客户。"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Idioma do catálogo"
+msgstr "目录语言"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Baixar PDF"
+msgstr "下载 PDF"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Tabela de preços"
+msgstr "价格表"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Preços em USD por chip (unitário)."
+msgstr "价格以 USD 计，按单颗芯片计价。"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "em branco: ainda sem cotação"
+msgstr "空白：尚未报价"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Emitido em"
+msgstr "签发于"
+
+#. Catálogo PDF do comprador (F9) — 2026-07-10
+#: pricing/pdf.py pricing/templates/pricing/partner_home.html
+msgid "Gerado por WhatTheChip"
+msgstr "由 WhatTheChip 生成"
