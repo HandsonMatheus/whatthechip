@@ -32,6 +32,7 @@ Moeda: USD, ``Decimal`` sempre (PRECIFICACAO §1.3). Cenário de faixa:
 low = mínimo · mid = ponto médio (ROUND_HALF_UP, centavos) · high = máximo.
 """
 
+import re
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import ROUND_HALF_UP, Decimal
@@ -101,6 +102,35 @@ def _no_key(kind: str, reason: str) -> PriceQuote:
     return PriceQuote(status=NO_KEY, reason=reason, kind=kind)
 
 
+# ── Fallback de densidade DDR/GDDR (bug lote 40, 2026-07-11) ───────────────────
+# `density_gbit_num` (F0) só nasce de `dram_density` — que Samsung (decode
+# próprio) e Micron (FBGA) preenchem, mas as famílias DDR de SK Hynix/Nanya
+# NÃO: a gramática delas põe os BYTES POR DIE no `capacity` ('256MB'), e os
+# confirmados via bless_base carregam a convenção da caixa ('2G' = 2 Gbit,
+# density_gbit vazio). Nos dois casos a densidade está no `capacity` — só que
+# em outra roupa. Este fallback a despe, SÓ para kind ddr/gddr:
+#   '2Gb'   → 2.0   (Gbit explícito — raro, mas _extract_gbit-style)
+#   '2G'    → 2.0   (Gbit da convenção da caixa; 'G' sem B, case-sensitive)
+#   '256MB' → 2.0   (bytes por die × 8 ÷ 1024)
+# '2GB' NÃO entra (GB = byte de pacote, nunca densidade — Gb≠GB, regra da casa).
+# O padrão bare-Gbit é COMPARTILHADO com o portão de ESCRITA (convention.py,
+# regra 4): leitor e escritor nunca podem divergir sobre o que é densidade.
+from chips.knowledge.convention import RX_DENSITY_BARE  # noqa: E402
+
+_RX_MB_DIE = re.compile(r'^(\d+(?:\.\d+)?)\s*MB$')
+
+
+def _gbit_from_capacity(result: dict):
+    cap = str(result.get('capacity') or '').strip()
+    m = RX_DENSITY_BARE.match(cap)
+    if m:
+        return float(m.group(1))
+    m = _RX_MB_DIE.match(cap)
+    if m:
+        return float(m.group(1)) * 8 / 1024
+    return None
+
+
 def derive_price_key(result: dict):
     """Deriva (kind, gen, tier_value, tier_unit) da saída do classify().
 
@@ -131,6 +161,14 @@ def derive_price_key(result: dict):
         if is_generic(canon):
             return _no_key(kind, f'geração {canon} genérica — não keia preço'), None
         gen = canon
+        if kind == 'ddr':
+            # Variantes de TENSÃO precificam como a geração-base (dono,
+            # 2026-07-11: "DDR3L e DDR3 são a mesma coisa em termos de
+            # preço"). Cobre DDR3L/DDR3U/DDR4L… — só sufixo L/U; GDDR5X
+            # etc. NÃO entram (são chips de outro mercado, não tensão).
+            m = re.match(r'^(DDR\d+)[LU]$', gen)
+            if m:
+                gen = m.group(1)
         if not valid_gen(kind, gen):
             return _no_key(kind, f'geração {gen!r} inválida para {kind}'), None
 
@@ -138,7 +176,8 @@ def derive_price_key(result: dict):
     if kind in ('emcp', 'umcp'):
         tier, faltou = result.get('nand_gb'), 'NAND (GB) indisponível'
     elif kind in ('ddr', 'gddr'):
-        tier, faltou = result.get('density_gbit_num'), 'densidade (Gb) indisponível'
+        tier = result.get('density_gbit_num') or _gbit_from_capacity(result)
+        faltou = 'densidade (Gb) indisponível'
     else:
         tier, faltou = result.get('cap_gb'), 'capacidade (GB) indisponível'
     if not tier or tier <= 0:

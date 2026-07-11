@@ -844,6 +844,51 @@ adiciona a linha", §2/§11), agora com ferramenta própria:
 - Quem fabrica LPDDR (matriz da aba Instructions): Samsung, SK Hynix, Micron,
   Nanya. Kingston/Toshiba-Kioxia/SanDisk entram como não fabricado.
 
+### 12.16 BUG lote 40 — DDR "sem preço" com linha cotada (2026-07-11; suíte 332/332)
+
+Export do lote 40 mostrava DDR3/DDR4 de **SK Hynix e Nanya** como "sem preço"
+apesar do grid ter a linha cotada (ex.: DDR3 2Gb US$ 0.45). Reproduzido em
+banco-sonda com os PNs reais; a chave morria em `NO_KEY "densidade (Gb)
+indisponível"` por DUAS vias, ambas fora do `dram_density` (única fonte do
+`density_gbit_num` da F0):
+
+- **Gramática** dessas famílias decodifica a densidade como **bytes por die
+  no `capacity`** (`'256MB'` = 2Gb) e nunca preenche `dram_density`;
+- **Confirmados via `bless_base`** carregam a convenção da caixa no
+  `capacity` (`'2G'` = 2 **Gbit**) com `density_gbit` vazio.
+
+(Samsung tem decode de densidade próprio e Micron preenche via FBGA — por
+isso só parte do lote falhava.)
+
+**Fix (pricing, sem tocar o engine de classificação — zero characterize):**
+`derive_price_key` ganhou `_gbit_from_capacity` — fallback SÓ para ddr/gddr:
+`'2G'/'2Gb'` → 2.0 · `'256MB'` → ×8÷1024 → 2.0 · `'2GB'` NUNCA (byte de
+pacote; Gb≠GB). F0 continua com prioridade. Teste:
+`DdrDensityFallbackTests`.
+
+**Decisões do dono na sequência (2026-07-11):**
+- **DDR3L = DDR3 no preço** ("são a mesma coisa em termos de preço"): variante
+  de TENSÃO (sufixo L/U) dobra para a geração-base na chave — golden
+  `test_ddr3l_dobra_para_ddr3_na_chave` ATUALIZADO (afirmava o oposto até
+  10/07). GDDR5X NÃO dobra (outro mercado, não é tensão).
+- **Raiz tratada em camadas (pacote completo aprovado)** — o fallback acima é
+  o leitor-tolerante; a ESCRITA foi curada: regra 4 do `apply_kp_convention`
+  (density_gbit auto-preenche no save, todo caminho — cura o bless_base),
+  `_known_dram_density` no chips/engine (caminhos known-SEM-família também
+  exibem densidade), `validate_convention` reporta + `normalize_convention`
+  backfilla o legado (reversível), `load_brands` avisa família DDR-kind sem
+  `decode_density_type`. Ver CLAUDE.md §7 (armadilha nova). Characterize:
+  diff esperado = SÓ chips com density_gbit preenchido ganhando
+  `dram_density` (intencional).
+
+**Sobras do lote 40 (fase 2, decisão do dono — DADO, não código):**
+- **"não fabricado" para chips que existem** (SK eMCP 8+1GB etc., Samsung
+  uMCP 256+8): estado do grid a corrigir no painel/admin.
+- **eMCP/uMCP com NAND 128GB+** e "⚠ cap. não mapeada": faixas fora da grade
+  (`add_price_row`) e lacunas de gramática, respectivamente.
+- **Reforma das famílias DDR SK Hynix/Nanya** (decode_density_type='pc'):
+  trabalho dos CHATS DE MARCA — o `load_brands` agora avisa.
+
 ### 12.15 F9 — Catálogo de preços em PDF (dono, 2026-07-10; suíte 331/331)
 
 O comprador baixa da home do /partner/ um PDF com TODAS as tabelas — é o

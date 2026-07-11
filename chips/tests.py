@@ -1055,6 +1055,37 @@ class KnownPartModelGateTests(TestCase):
             with transaction.atomic():
                 KnownPart.objects.filter(pk=kp.pk).update(confidence="lixo")
 
+    def test_save_poe_densidade_ddr_no_lugar_certo(self):
+        # Regra 4 (bug lote 40, 2026-07-11): DDR-kind com capacity "pelada" em
+        # Gbit ('2G' — o que o bless_base grava da caixa) e density_gbit vazio
+        # → density_gbit auto-preenche ('2Gb'); capacity FICA (fill-only).
+        from chips.models import KnownPart
+        kp = KnownPart.objects.create(part_number="GATE007", brand=self._brand(),
+                                      chip_type="DDR3", subtype="DDR3",
+                                      capacity="2G", confidence="manual")
+        kp.refresh_from_db()
+        self.assertEqual(kp.density_gbit, "2Gb")
+        self.assertEqual(kp.capacity, "2G")
+        # 'GB' é byte de pacote — NUNCA vira densidade (Gb≠GB).
+        kp2 = KnownPart.objects.create(part_number="GATE008", brand=self._brand(),
+                                       chip_type="DDR3", subtype="DDR3",
+                                       capacity="2GB", confidence="manual")
+        kp2.refresh_from_db()
+        self.assertEqual(kp2.density_gbit, "")
+        # Kind de pacote (eMMC) intocado, mesmo com '2G' no capacity.
+        kp3 = KnownPart.objects.create(part_number="GATE009", brand=self._brand(),
+                                       chip_type="eMMC", capacity="2G",
+                                       confidence="manual")
+        kp3.refresh_from_db()
+        self.assertEqual(kp3.density_gbit, "")
+        # density_gbit já preenchido não é sobrescrito.
+        kp4 = KnownPart.objects.create(part_number="GATE010", brand=self._brand(),
+                                       chip_type="DDR3", subtype="DDR3",
+                                       capacity="2G", density_gbit="4Gb",
+                                       confidence="manual")
+        kp4.refresh_from_db()
+        self.assertEqual(kp4.density_gbit, "4Gb")
+
     def test_portao_pydantic_e_modelo_usam_a_mesma_fonte(self):
         # Consistência: a normalização do YAML (Pydantic) e a do modelo dão o MESMO subtype.
         from chips.knowledge.convention import apply_kp_convention

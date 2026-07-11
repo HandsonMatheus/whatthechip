@@ -716,6 +716,25 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   API); `capacity`/`subtype`/`density` são calculados localmente e podem estar errados — **atestar
   sempre em tier-1** (datasheet/DigiKey), nunca assumir. Ferramentas: `fix_micron_lpddr_specs` (normaliza
   specs MT5x, guard de eMCP), `fix_micron_capacity --family lpddr` (capacity). Detalhes: **`MICRON.md`**.
+- **Densidade DDR fora do lugar (`capacity='2G'` + `density_gbit` vazio) → chip
+  invisível ao PREÇO (2026-07-11, lote 40):** a convenção (§6) manda densidade de
+  DDR/GDDR/SDRAM/RDRAM em `density_gbit` (banco) / `dram_density` (engine), mas
+  (a) as famílias DDR de **SK Hynix/Nanya** decodificam bytes-por-die no
+  `capacity` ('256MB') sem `decode_density_type`, e (b) o `bless_base` promovia
+  snapshot com `capacity='2G'` (Gbit da caixa) sem density — nos dois casos
+  `density_gbit_num` (F0) ficava None e o pricing dava NO_KEY. **Corrigido em
+  camadas:** regra 4 do `apply_kp_convention` (auto-preenche `density_gbit` no
+  save — TODO caminho de escrita; fill-only, `'GB'` nunca entra: Gb≠GB),
+  `_known_dram_density` no engine (serve o `density_gbit` também nos caminhos
+  known-SEM-família), `validate_convention` reporta ("densidade fora do lugar") +
+  `normalize_convention` backfilla o legado (reversível), `load_brands` AVISA
+  família DDR-kind sem decode de densidade, e o pricing mantém fallback de
+  leitura (`_gbit_from_capacity`). **Pendente (chats de marca): reformar as
+  famílias DDR-kind sem decode de densidade para `decode_density_type='pc'` +
+  DRAM_PC — o aviso do `load_brands` lista por marca; censo 2026-07-11:
+  SK Hynix (10: H5AN/H5TC/H5TQ/H5PS/H5RS/H5GQ…), Samsung (K4D/K4J/K4N/K4R/K4Z),
+  PieceMakers (7: PMF*/PMA/PMD/PME/PMS), Nanya (NT5AD/NT5CC/NT5PA), Micron
+  (MT40A/MT41K), GigaDevice (GDQ).**
 
 ---
 

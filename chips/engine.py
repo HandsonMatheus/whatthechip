@@ -672,6 +672,19 @@ def _result_from_family(pn: str, fam) -> dict:
     return r
 
 
+def _known_dram_density(known):
+    """`dram_density` a partir do `density_gbit` do KnownPart (ou None).
+
+    Fonte única da expressão usada pelos TRÊS caminhos que servem um KnownPart
+    (com família, e os dois sem-família de `_classify_impl`). Sem isto, chip
+    confirmado sem família nunca exibia densidade mesmo com `density_gbit`
+    preenchido (metade Nanya do bug do lote 40, 2026-07-11)."""
+    if not known.density_gbit:
+        return None
+    return (f"{known.density_gbit} = {known.density_gb} por die [✓]"
+            if known.density_gb else f"{known.density_gbit} por die [✓]")
+
+
 def _result_from_known(pn: str, known, fam) -> dict:
     """
     Sobrepõe resultado da família com dados do KnownPart.
@@ -852,12 +865,9 @@ def _result_from_known(pn: str, known, fam) -> dict:
         if not grammar_wins:
             if known.capacity:
                 r["capacity"] = _clean(known.capacity)
-            if known.density_gbit:
-                _dgb = known.density_gb
-                r["dram_density"] = (
-                    f"{known.density_gbit} = {_dgb} por die [✓]"
-                    if _dgb else f"{known.density_gbit} por die [✓]"
-                )
+            _dd = _known_dram_density(known)
+            if _dd:
+                r["dram_density"] = _dd
         if known.device:
             r["device"] = known.device
 
@@ -1389,6 +1399,9 @@ def _classify_impl(pn_raw: str) -> dict:
                 # Sem família não há como saber se é não documentada — assume False.
                 "family_undocumented": False,
             }
+            _dd = _known_dram_density(known)
+            if _dd:                      # só quando há valor (characterize limpo)
+                result["dram_density"] = _dd
         result["profitable"] = assess_profitability(result)
         _log_search(pn, found=True, source_used="db_exact")
         return result
@@ -1432,6 +1445,9 @@ def _classify_impl(pn_raw: str) -> dict:
                 "family_prefix":     "",
                 "family_undocumented": False,
             }
+            _dd = _known_dram_density(known)
+            if _dd:                      # só quando há valor (characterize limpo)
+                result["dram_density"] = _dd
         result["profitable"] = assess_profitability(result)
         _log_search(pn, found=True, source_used="db_exact")
         return result

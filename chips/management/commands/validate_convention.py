@@ -20,6 +20,7 @@ from django.core.management.base import BaseCommand
 
 from chips.chip_types import canonical_chip_type, is_generic, label_kind, spec_for
 from chips.conventions import canonical_gen
+from chips.knowledge.convention import DENSITY_KINDS, RX_DENSITY_BARE
 from chips.management.commands.normalize_convention import _FAMILY_GENERIC, _multi_gen
 from chips.models import ChipFamily, KnownPart
 
@@ -74,6 +75,8 @@ class Command(BaseCommand):
         decisions = collections.defaultdict(list)
         migrar = collections.Counter()
 
+        dens_out = collections.Counter()   # densidade fora do lugar (bug lote 40)
+        dens_example = {}
         for kp in KnownPart.objects.select_related("brand").iterator():
             cat, detail = categorize(kp.chip_type, kp.subtype)
             cats[cat] += 1
@@ -83,6 +86,16 @@ class Command(BaseCommand):
                 )
             elif cat == "migrar":
                 migrar[detail] += 1
+            # Densidade no lugar certo (regra 4 do apply_kp_convention): DDR-kind
+            # com density_gbit vazio e capacity "pelada" em Gbit ('2G'/'2Gb').
+            if not (kp.density_gbit or "").strip():
+                canon_kp = canonical_chip_type(kp.chip_type or "", kp.subtype or "")
+                if label_kind(canon_kp) in DENSITY_KINDS \
+                        and RX_DENSITY_BARE.match((kp.capacity or "").strip()):
+                    key = (kp.brand.name if kp.brand_id else "",
+                           kp.chip_type or "", kp.capacity or "")
+                    dens_out[key] += 1
+                    dens_example.setdefault(key, kp.part_number)
 
         total = sum(cats.values())
         self.stdout.write(f"\n=== validate_convention — {total} KnownParts ===")
@@ -94,6 +107,14 @@ class Command(BaseCommand):
         self.stdout.write("\n  migrações mecânicas (top 20):")
         for k, c in migrar.most_common(20):
             self.stdout.write(f"    [{c:5d}x] {k}")
+
+        n_dens = sum(dens_out.values())
+        self.stdout.write(f"\n  densidade fora do lugar (DDR-kind, capacity Gbit "
+                          f"+ density_gbit vazio): {n_dens}")
+        for (brand, ct, cap), c in dens_out.most_common(10):
+            self.stdout.write(
+                f"    [{c:5d}x] {brand:10s} {ct:8s} capacity={cap!r} "
+                f"(ex.: {dens_example[(brand, ct, cap)]}) → normalize_convention preenche")
 
         if opts["list"]:
             for cat in ("conflito", "desconhecido", "ambiguo"):

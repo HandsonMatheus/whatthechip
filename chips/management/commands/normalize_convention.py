@@ -14,7 +14,12 @@ O que faz (idempotente):
   - Familias MULTI-GERACAO (ex.: K3 "LPDDR2/LPDDR3") -> token generico (flagged), NAO
     forca uma geracao (decisao do usuario).
 
-NAO mexe em: confidence (preserva confirmed/manual), capacity/density/emcp_* (specs).
+NAO mexe em: confidence (preserva confirmed/manual), emcp_* e VALORES de spec.
+Excecao unica (2026-07-11, bug lote 40): DENSIDADE NO LUGAR CERTO — KnownPart
+DDR/GDDR/SDRAM/RDRAM com density_gbit vazio e capacity "pelada" em Gbit
+('2G'/'2Gb', o que o bless_base gravava) ganha density_gbit='<n>Gb'. FILL-ONLY
+(capacity fica; 'GB' nunca entra), mecanico e reversivel como o resto. E a
+MESMA regra 4 do apply_kp_convention — este comando so a aplica ao legado.
 Comportamento (label/rentabilidade) NAO muda — so o chip_type/subtype ARMAZENADO vira
 canonico (o engine ja resolvia em tempo real via canonical_chip_type).
 """
@@ -27,6 +32,7 @@ from django.db import transaction
 
 from chips.chip_types import canonical_chip_type, is_generic, label_kind
 from chips.conventions import canonical_gen
+from chips.knowledge.convention import DENSITY_KINDS, RX_DENSITY_BARE
 from chips.models import ChipFamily, KnownPart
 
 # Kingston nao fabrica silicio; familias DRAM "KF/KVR/ACR" sao bogus (ver memoria
@@ -83,6 +89,13 @@ def _plan(obj):
     ch = {}
     if canon != (obj.chip_type or ""):
         ch["chip_type"] = [obj.chip_type, canon]
+    # Densidade no lugar certo (regra 4 do apply_kp_convention; so KnownPart —
+    # ChipFamily nao tem density_gbit). Usa o canon FINAL (pos-familia).
+    if hasattr(obj, "density_gbit") and not (obj.density_gbit or "").strip() \
+            and label_kind(canon) in DENSITY_KINDS:
+        m = RX_DENSITY_BARE.match((obj.capacity or "").strip())
+        if m:
+            ch["density_gbit"] = [obj.density_gbit, f"{m.group(1)}Gb"]
     return ch
 
 

@@ -425,13 +425,18 @@ class PriceGoldenTests(TestCase):
         self.assertEqual(q4.price_min, Decimal('3.75'))
         self.assertEqual(q4x.price_min, Decimal('2.55'))   # subtype é bug de preço
 
-    def test_ddr3l_nao_cai_em_ddr3_nem_vice_versa(self):
+    def test_ddr3l_dobra_para_ddr3_na_chave(self):
+        # POLÍTICA NOVA (dono, 2026-07-11): "DDR3L e DDR3 são a mesma coisa em
+        # termos de preço" — variante de TENSÃO dobra para a geração-base na
+        # chave. (Até 10/07 o golden afirmava o oposto — atualizado junto com
+        # a decisão; a linha DDR3L 0.60 do fixture fica inalcançável de
+        # propósito: grade real não tem linhas DDR3L.)
         q = self._price(chip_type='DDR3L', brand='Samsung', density_gbit_num=4.0)
-        self.assertEqual(q.price_min, Decimal('0.60'))
-        # DDR3 4Gb na Samsung NÃO existe → NO_ROW (nunca cai no DDR3L "parecido");
-        # e a cadeia segue: genérica TEM DDR3 4Gb próprio (0.50) → acha lá.
+        self.assertEqual(q.status, 'PRICED')
+        self.assertEqual(q.price_min, Decimal('0.50'))   # DDR3 4Gb da genérica
+        self.assertEqual(q.via, 'genérica')
+        # DDR3 puro segue idêntico — mesma chave, mesmo preço.
         q2 = self._price(chip_type='DDR3', brand='Samsung', density_gbit_num=4.0)
-        self.assertEqual(q2.status, 'PRICED')
         self.assertEqual(q2.price_min, Decimal('0.50'))
         self.assertEqual(q2.via, 'genérica')
 
@@ -1157,3 +1162,53 @@ class PartnerSelfAccessRLSTests(TransactionTestCase):
             # As tabelas SENSÍVEIS continuam fechadas sem escopo de empresa.
             cur.execute('SELECT count(*) FROM pricing_pricelist')
             self.assertEqual(cur.fetchone()[0], 0)
+
+
+class DdrDensityFallbackTests(TestCase):
+    """Bug do lote 40 (2026-07-11): DDR de SK Hynix/Nanya saía NO_KEY
+    ("densidade indisponível") apesar da linha cotada no grid — a gramática
+    dessas famílias põe os bytes POR DIE no `capacity` ('256MB') sem
+    `dram_density`, e os confirmados via bless_base carregam a convenção da
+    caixa ('2G' = Gbit) com `density_gbit` vazio. O `derive_price_key` agora
+    despe a densidade do `capacity` (fallback SÓ para ddr/gddr)."""
+
+    def test_fallback_de_densidade_no_capacity(self):
+        from .engine import NO_KEY as NK, derive_price_key
+        base = {'chip_type': 'DDR3', 'subtype': 'DDR3'}
+
+        # Gramática SK Hynix/Nanya: bytes por die ('256MB' → 2Gb).
+        err, key = derive_price_key({**base, 'capacity': '256MB'})
+        self.assertIsNone(err)
+        self.assertEqual(key, ('ddr', 'DDR3', Decimal('2'), 'Gb'))
+
+        # bless_base / convenção da caixa: '4G' = 4 Gbit.
+        err, key = derive_price_key({**base, 'capacity': '4G'})
+        self.assertIsNone(err)
+        self.assertEqual(key, ('ddr', 'DDR3', Decimal('4'), 'Gb'))
+
+        # 'GB' é BYTE de pacote — NUNCA vira densidade (Gb≠GB, regra da casa).
+        err, key = derive_price_key({**base, 'capacity': '2GB'})
+        self.assertIsNone(key)
+        self.assertEqual(err.status, NK)
+
+        # F0 (density_gbit_num) continua tendo prioridade sobre o fallback.
+        err, key = derive_price_key(
+            {**base, 'capacity': '256MB', 'density_gbit_num': 8.0})
+        self.assertEqual(key[2], Decimal('8'))
+
+        # Fallback NÃO vale para kinds de pacote (eMMC '2G' seguiria sem chave).
+        err, key = derive_price_key({'chip_type': 'eMMC', 'capacity': '2G'})
+        self.assertIsNone(key)
+        self.assertEqual(err.status, NK)
+
+    def test_ddr3l_precifica_como_ddr3(self):
+        # Dono (2026-07-11): variante de tensão = mesmo preço da geração-base.
+        from .engine import derive_price_key
+        err, key = derive_price_key(
+            {'chip_type': 'DDR3L', 'subtype': 'DDR3L', 'capacity': '4G'})
+        self.assertIsNone(err)
+        self.assertEqual(key, ('ddr', 'DDR3', Decimal('4'), 'Gb'))
+        # GDDR5X NÃO dobra para GDDR5 (mercado distinto, não é tensão).
+        err, key = derive_price_key(
+            {'chip_type': 'GDDR5X', 'subtype': 'GDDR5X', 'capacity': '8G'})
+        self.assertTrue(err is not None or key[1] == 'GDDR5X')
