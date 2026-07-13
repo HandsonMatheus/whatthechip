@@ -393,6 +393,48 @@ class RefreshLoteRelabelTests(TestCase):
         self.assertEqual(e.classification_source, 'banco de dados')
 
 
+class PreviewFuzzyPopupTests(TestCase):
+    """O popup de sugestões (fuzzy) renderiza no card e ABRE SOZINHO quando o chip
+    cai em fila/desconhecido — as operadoras ignoravam o inline e mandavam typo pra
+    fila (pedido 2026-07-13). Em aprovado NÃO auto-abre (não incomoda decode válido)."""
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='op55', password='x')
+        self.company = _grant(self.user)
+        _scope(self, self.company)
+        self.client.force_login(self.user)
+        self.lot = Lot.objects.create(number=55, operator=self.user,
+                                      company=self.company)
+
+    @patch('estoque.views.classify')
+    def test_popup_abre_sozinho_em_fila(self, mock_classify):
+        # eMMC 16GB por gramática (não confirmado) → fila; com sugestão fuzzy.
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB',
+            classification_source='gramática', confidence='estimated',
+            fuzzy_suggestions=['KLMAG1JETD'])
+        url = reverse('estoque:preview', args=[self.lot.pk])
+        body = self.client.get(url, {'pn': 'KLMAG1JET0'}).content.decode()
+        self.assertIn('fuzzy-modal-overlay', body)          # popup presente
+        self.assertIn("ov.style.display='flex'", body)      # abre sozinho (fila)
+        self.assertIn('KLMAG1JETD', body)                   # sugestão aparece
+        # trava: comentário de template NÃO pode vazar na página (bug do {# #}
+        # multi-linha, corrigido 2026-07-13 — {# #} do Django é só de UMA linha).
+        self.assertNotIn('força a conferência', body)
+
+    @patch('estoque.views.classify')
+    def test_popup_nao_auto_abre_em_aprovado(self, mock_classify):
+        # Confirmado + rentável → aprovado; mesmo com sugestão, popup NÃO auto-abre.
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB',
+            classification_source='banco de dados', confidence='confirmed',
+            fuzzy_suggestions=['KLMAG1JETD'])
+        url = reverse('estoque:preview', args=[self.lot.pk])
+        body = self.client.get(url, {'pn': 'KLMAG1JETD'}).content.decode()
+        self.assertIn('fuzzy-modal-overlay', body)          # markup existe
+        self.assertNotIn("ov.style.display='flex'", body)   # mas NÃO auto-abre
+
+
 class ResnapshotLoteTests(TestCase):
     """Passo 2: o resnapshot_lote revalua as entradas DEFASADAS (catálogo melhorou)."""
 
