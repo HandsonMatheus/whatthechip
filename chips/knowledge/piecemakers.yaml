@@ -63,8 +63,26 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'DDR4 SDRAM PieceMakers Technology (PMA). 1.2V. Catálogo atual: 4Gb x8 (PMA212508ABR) · 4Gb x16 (PMA212816ABR). Velocidades: 2133/2400/2666 Mbps. Package: 78FBGA (x8) · 96FBGA (x16). Decode posicional pendente — estrutura PN DDR4 não totalmente confirmada. Routing: classifica como DDR4 para bancada de triagem. Rentabilidade: DDR4 qualquer densidade → RENTÁVEL (verifique ProfitabilityConfig).'
+  tip: 'DDR4 SDRAM PieceMakers Technology (PMA). 1.2V. Catálogo atual: 4Gb x8 (PMA212508ABR) · 4Gb x16 (PMA212816ABR). Velocidades: 2133/2400/2666 Mbps. Package: 78FBGA (x8) · 96FBGA (x16). Decode posicional pendente — estrutura PN DDR4 não totalmente confirmada. Routing: classifica como DDR4 para bancada de triagem. Rentabilidade: SEM decode de densidade, cai em INDETERMINADO até um known_part confirmar a densidade; com densidade ≥1Gb → RENTÁVEL, <1Gb → NÃO RENTÁVEL (ProfitabilityConfig). ⚠ Catálogo oficial (2026-07-13) já mostra revisão PMA212816C (sucede a ABR/A antiga) — só 1 fonte, não confirmado em 2ª fonte, não mexi nos known_parts existentes por causa disso.'
   reasoning: ''
+- prefix: PMG6
+  chip_type: DDR4
+  subtype: DDR4
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR4 SDRAM PieceMakers Technology (PMG6) — FAMÍLIA NOVA, prefixo distinto de PMA, achada no catálogo oficial em 2026-07-13 (piecemakers.com.tw/products/standard-dram, aba DDR4/4Gb). Só 1 PN confirmado: PMG6124D, 4Gb, 1.2V, 1200/1333/1600 Mbps, package 78FBGA(x8)/96FBGA(x16) — o MESMO PN base cobre as duas organizações na tabela oficial (⚠ sufixo que distingue x8 de x16, se existir, ainda não confirmado — nenhum distribuidor encontrado nesta rodada). Decode posicional NÃO tentado (1 PN só, sem 2ª densidade pra confirmar posição — regra de ouro do projeto). Routing: classifica como DDR4 pra bancada de triagem, igual à PMA. Rentabilidade: mesmo padrão da PMA — sem known_part, cai em INDETERMINADO.'
+  reasoning: 'Fonte: piecemakers.com.tw/products/standard-dram (catálogo oficial, tab DDR4), 2026-07-13. Só 1 PN — NÃO expandir decode nem assumir sufixo x8/x16 sem confirmação Tier-1/Tier-2 adicional.'
 - prefix: PMD
   chip_type: DDR1
   subtype: DDR1

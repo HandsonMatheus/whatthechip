@@ -1,0 +1,782 @@
+# Submissão de known_parts — PieceMakers, cluster PMF5 (DDR3 1.5V) + PMF4 (DDR3L 1.35V)
+#
+# GATILHO: operador buscou "PMF511816DBR" na bancada (2026-07-13, debug de estoque). A gramática
+# já decodifica certo (DDR3 2Gb x16 256MB, RENTÁVEL) mas o PN não tinha known_part — pn_not_in_db.
+# Regra do projeto: nunca coletar só 1 PN — pesquisar o CLUSTER inteiro da família (mesma densidade/
+# revisão + toda a matriz densidade×barramento×tensão de PMF5/PMF4).
+#
+# METODOLOGIA:
+#   1. Tier 1 — piecemakers.com.tw/products/standard-dram (catálogo oficial atual, SPA/Nuxt). Só a
+#      aba "1Gb" carrega sem JS (sem navegador Chrome disponível nesta sessão); mostrou PMF510816C,
+#      PMF510808D, PMF510816D, PMF510808E, PMF510816E — todas MP. Ausência da revisão B bate com o
+#      EOL do glochip (ver abaixo). Abas 2Gb/4Gb não confirmadas neste site nesta rodada.
+#   2. Tier 2 — glochip.com/ddr3/piecemakers.html: tabela técnica estruturada (Part No./Den./Org./
+#      Vol./Speed/Package/Status) com a matriz COMPLETA de PMF5 (DDR3) e PMF4 (DDR3L), batendo 100%
+#      com a Tier-1 nas linhas sobrepostas (1Gb: C/D/E MP, B ausente/EOL). Fonte principal desta
+#      submissão.
+#   3. PMF511816DBR (revisão D, 2Gb x16) NÃO aparece na tabela do glochip (que só lista E/F nessa
+#      densidade) — mas "PMF511816DBR-KADN" aparece em DUAS distribuidoras independentes (Ariat-Tech
+#      e Censtry, cada uma com página própria do PN, não menção de terceiros) com estoque real, mais
+#      o achado físico na bancada (o operador escaneou o chip). Precedente: o próprio catálogo mostra
+#      3 revisões (C/D/E) coexistindo em produção na densidade 1Gb — confirma que revisões múltiplas
+#      convivem por densidade, então uma revisão D em 2Gb (além do E/F já no glochip) é plausível e
+#      consistente com o padrão. Specs (2Gb/x16/256MB/1.5V) herdadas do known_part JÁ APROVADO
+#      PMF511816EBR (mesma família/densidade/barramento) — revisão de silício (B/C/D/E/F/G) nunca
+#      altera specs, regra já documentada em PIECEMAKERS.md §3 e confirmada de novo aqui (nenhuma
+#      linha do glochip muda densidade/org/tensão entre revisões da mesma densidade).
+#   4. NÃO incluído: PMF511816EBR e PMF511816EBRKADN (já APROVADOS — o comando pula automaticamente
+#      known_part com review_status=approved, mas omiti da lista por limpeza). PMF511816GBR-KADN
+#      apareceu só como link de "related parts" (não página própria) — evidência fraca, NÃO incluído
+#      (ver PIECEMAKERS.md §5, fica como lead pra próxima rodada).
+#   5. DDR2 (PME)/DDR (PMD)/SDR (PMS): tabela completa do glochip, incluída no ADENDO #3 abaixo
+#      (pedido do dono de cobertura máxima) — são sempre NÃO RENTÁVEL (geração morta), mas valem
+#      como identidade/completude de catálogo.
+#   6. ADENDO 2026-07-13 (pedido do dono): PMA212816C e PMG6124D (achados nesta mesma pesquisa,
+#      catálogo oficial DDR4) entraram no fim do lote — ver notes de cada um. A família PMG6 (prefixo
+#      novo) já foi adicionada ao piecemakers.yaml (routing-only, decode_cap_pos=null, mesmo padrão
+#      da PMA) — ⚠ FALTA a âncora golden em chips/tests.py (`_PMK_GOLDEN`) antes de rodar a suíte
+#      completa; é edição de código, fora do escopo deste chat (só yaml/submissão) — o dono precisa
+#      adicionar. Sugestão de linha (specs esperadas após aprovar o known_part PMG6124D abaixo):
+#        "PMG6124D": ("DDR4", "512MB", "", "", "", "INDETERMINADO"),  # sem known_part aprovado ainda
+#      (o veredito muda pra depender do known_part uma vez aprovado — igual ao padrão da PMA).
+#   7. ADENDO #2 2026-07-13 (~18h14): operador buscou "PMF511816CBR" na bancada — mesmo padrão do
+#      PMF511816DBR (revisão fora da tabela do glochip em 2Gb x16, confirmada via distribuidor com
+#      estoque real: Sierra IC, 487un + NetComponents). Adicionado PMF511816CBR + variante -KADN
+#      no fim do arquivo. Indício (NÃO confirmado, excluído desta leva): tag solta "PMF511816ABR-
+#      I9DN" na OMO Electronic sugere que pode existir também revisão A em 2Gb x16 — sem página
+#      própria, evidência fraca demais pra incluir.
+#   8. ADENDO #3 2026-07-13 (pedido do dono: "colete mais, não só 1, precisamos do máximo possível
+#      de variações"): (a) corrigido gap da 1ª rodada — revisão E em 1Gb (PMF5 e PMF4, x8+x16) já
+#      estava no fetch da Tier-1 oficial mas não tinha sido cruzada; (b) achada revisão H em 2Gb E
+#      4Gb x16 (PMF5 e PMF4) via navegação individual do catálogo do glochip (páginas dedicadas,
+#      não a tabela-resumo) — G testado via URL direta no glochip = 404, confirmado ainda excluído;
+#      (c) adicionado DDR2(PME)/DDR1(PMD)/SDR(PMS) inteiros (10+8+5=23 PNs) da tabela glochip já
+#      fetchada — sempre NÃO RENTÁVEL, valem por completude de identidade. Total do arquivo: 70
+#      known_parts (era 34 antes deste adendo).
+#
+# confidence=manual em TODOS (Tier-2 estruturado + cruzamento Tier-1 parcial; sem datasheet PDF
+# direto — mesmo critério já usado no known_part aprovado PMF511816EBR).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/piecemakers_pmf5_pmf4_2026-07-13.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/piecemakers_pmf5_pmf4_2026-07-13.yaml --commit
+#
+brand: "PieceMakers"
+known_parts:
+  # ── PMF5 · DDR3 1.5V · 1Gb (128MB) ──────────────────────────────────────────────────────────
+  - part_number: "PMF510808BBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 1Gb x8 1.5V, 78FBGA, revisão B, status EOL no glochip. Ausente do catálogo oficial atual (piecemakers.com.tw/products/standard-dram, aba 1Gb) — consistente com EOL."
+
+  - part_number: "PMF510816BBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 1Gb x16 1.5V, 96FBGA, revisão B, status EOL no glochip. Ausente do catálogo oficial atual — consistente com EOL."
+
+  - part_number: "PMF510816CBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 1Gb x16 1.5V, 96FBGA, revisão C, MP. Confirmado também no catálogo oficial piecemakers.com.tw/products/standard-dram (aba 1Gb, 2026-07-13): PMF510816C listado como MP."
+
+  - part_number: "PMF510808DBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 1Gb x8 1.5V, 78FBGA, revisão D, MP. Confirmado também no catálogo oficial (aba 1Gb): PMF510808D listado como MP."
+
+  - part_number: "PMF510816DBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 1Gb x16 1.5V, 96FBGA, revisão D, MP. Confirmado também no catálogo oficial (aba 1Gb): PMF510816D listado como MP."
+
+  # ── PMF5 · DDR3 1.5V · 2Gb (256MB) ──────────────────────────────────────────────────────────
+  - part_number: "PMF511808EBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 2Gb x8 1.5V, 78FBGA, revisão E, MP. Par x8 do PMF511816EBR (já known_part aprovado, x16)."
+
+  - part_number: "PMF511816FBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 2Gb x16 1.5V, 96FBGA, revisão F, MP. Mesma densidade/org do known_part aprovado PMF511816EBR (revisão E) — revisão não altera specs."
+
+  - part_number: "PMF511816DBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.ariat-tech.com/parts/PMF511816DBR-KADN"
+    notes: >
+      PN do gatilho desta submissão — achado na bancada (SearchLog 2026-07-13), classify() já
+      decodifica certo via gramática (DDR3 2Gb x16 256MB, RENTÁVEL) mas sem known_part. Revisão D
+      NÃO aparece na tabela do glochip (só lista E/F em 2Gb x16), mas "PMF511816DBR-KADN" tem
+      página própria em DUAS distribuidoras independentes com estoque real (Ariat-Tech e Censtry
+      — ambas sem specs detalhadas, só confirmam existência/identidade do PN, não decidem specs
+      sozinhas). Specs herdadas do known_part já APROVADO PMF511816EBR (mesma família 2Gb x16
+      1.5V) seguindo a regra documentada de que revisão de silício (B–G) nunca altera
+      densidade/organização/tensão — confirmado de novo nesta pesquisa: nenhuma linha do glochip
+      muda specs entre revisões da mesma densidade, e o catálogo oficial mostra 3 revisões (C/D/E)
+      coexistindo em produção só na densidade 1Gb, provando que revisões múltiplas convivem.
+
+  - part_number: "PMF511816DBRKADN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.censtry.com/product/pmtech/pmf511816dbr-kadn.html"
+    notes: >
+      Variante de sufixo de grade/temperatura "-KADN" do PMF511816DBR acima — mesmo chip, specs
+      idênticas (sufixo nunca altera specs, mesmo padrão já usado pro par aprovado
+      PMF511816EBR/PMF511816EBRKADN). Cadastrado à parte porque é a forma exata que aparece nas
+      distribuidoras e pode ser a forma que o operador digite.
+
+  - part_number: "PMF511816CBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.sierraic.com/PMF511816CBR"
+    notes: >
+      2º PN buscado na bancada nesta mesma leva (debug de estoque 2026-07-13, ~18h14) — mesma
+      situação do PMF511816DBR: revisão C NÃO aparece na tabela do glochip em 2Gb x16 (que só
+      lista E/F), mas a variante "-KADN" tem estoque REAL confirmado na Sierra IC (487 unidades,
+      ROHS compliant, página própria com datasheet linkado) + referência cruzada na NetComponents
+      (agregador de distribuidores). Specs herdadas do known_part já APROVADO PMF511816EBR (mesma
+      família 2Gb x16 1.5V) pela mesma regra de revisão-não-altera-specs já usada nesta submissão.
+      Achado interessante: o tier 2Gb x16 parece ter MAIS revisões em circulação real (C, D
+      confirmados agora; A aparece só como tag solta na OMO Electronic, sem página própria —
+      NÃO confirmado o suficiente, excluído) do que a tabela do glochip mostra (só E/F) — ver
+      PIECEMAKERS.md §5.
+
+  - part_number: "PMF511816CBRKADN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.sierraic.com/PMF511816CBRKADN"
+    notes: >
+      Variante de sufixo "-KADN" do PMF511816CBR acima — mesmo chip, specs idênticas (sufixo
+      nunca altera specs). É a forma exata com estoque confirmado na Sierra IC (487 unidades) e
+      referenciada na NetComponents.
+
+  # ── PMF5 · DDR3 1.5V · 4Gb (512MB) ──────────────────────────────────────────────────────────
+  - part_number: "PMF512808CBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 4Gb x8 1.5V, 78FBGA, revisão C, MP."
+
+  - part_number: "PMF512816CBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 4Gb x16 1.5V, 96FBGA, revisão C, MP."
+
+  - part_number: "PMF512808DBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 4Gb x8 1.5V, 78FBGA, revisão D, status EOL no glochip."
+
+  - part_number: "PMF512816DBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 4Gb x16 1.5V, 96FBGA, revisão D, status EOL no glochip."
+
+  - part_number: "PMF512808EBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 4Gb x8 1.5V, 78FBGA, revisão E, MP."
+
+  - part_number: "PMF512816EBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 4Gb x16 1.5V, 96FBGA, revisão E, MP."
+
+  - part_number: "PMF512808FBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 4Gb x8 1.5V, 78FBGA, revisão F, MP."
+
+  - part_number: "PMF512816FBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3 4Gb x16 1.5V, 96FBGA, revisão F, MP."
+
+  # ── PMF4 · DDR3L 1.35V · 1Gb (128MB) ────────────────────────────────────────────────────────
+  - part_number: "PMF410808BBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 1Gb x8 1.35V, 78FBGA, revisão B, status EOL no glochip."
+
+  - part_number: "PMF410816BBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 1Gb x16 1.35V, 96FBGA, revisão B, status EOL no glochip."
+
+  - part_number: "PMF410808DBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 1Gb x8 1.35V, 78FBGA, revisão D, MP."
+
+  - part_number: "PMF410816DBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 1Gb x16 1.35V, 96FBGA, revisão D, MP."
+
+  # ── PMF4 · DDR3L 1.35V · 2Gb (256MB) ────────────────────────────────────────────────────────
+  - part_number: "PMF411808EBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 2Gb x8 1.35V, 78FBGA, revisão E, MP."
+
+  - part_number: "PMF411816EBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 2Gb x16 1.35V, 96FBGA, revisão E, MP. Equivalente DDR3L do known_part já aprovado PMF511816EBR (mesma densidade/org, tensão 1.35V em vez de 1.5V)."
+
+  - part_number: "PMF411816FBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 2Gb x16 1.35V, 96FBGA, revisão F, MP."
+
+  # ── PMF4 · DDR3L 1.35V · 4Gb (512MB) ────────────────────────────────────────────────────────
+  - part_number: "PMF412808CBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 4Gb x8 1.35V, 78FBGA, revisão C, MP."
+
+  - part_number: "PMF412816CBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 4Gb x16 1.35V, 96FBGA, revisão C, MP."
+
+  - part_number: "PMF412808EBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 4Gb x8 1.35V, 78FBGA, revisão E, MP."
+
+  - part_number: "PMF412816EBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 4Gb x16 1.35V, 96FBGA, revisão E, MP."
+
+  - part_number: "PMF412808FBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 4Gb x8 1.35V, 78FBGA, revisão F, MP."
+
+  - part_number: "PMF412816FBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR3L 4Gb x16 1.35V, 96FBGA, revisão F, MP."
+
+  # ── ADENDO 2026-07-13 · DDR4, achados fora do cluster PMF5/PMF4 original (pedido do dono) ─────
+  - part_number: "PMA212816C"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.piecemakers.com.tw/products/standard-dram"
+    notes: >
+      Revisão nova (C) do PN já parcialmente coberto pelo known_part aprovado PMA212816ABR
+      (revisão A) — mesma família PMA, 4Gb x16 1.2V 96FBGA. Achado no catálogo oficial atual
+      (piecemakers.com.tw/products/standard-dram, aba DDR4, 2026-07-13), listado como MP; a
+      revisão A não aparece mais na aba atual (pode ter sido sucedida pela C, ou ambas coexistem —
+      não confirmado em 2ª fonte). Specs herdadas do known_part irmão pela mesma regra de
+      revisão-não-altera-specs já usada nas famílias PMF5/PMF4 desta submissão.
+
+  - part_number: "PMG6124D"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    capacity: "512MB"
+    interface: ""
+    confidence: manual
+    source_url: "https://www.piecemakers.com.tw/products/standard-dram"
+    notes: >
+      Família NOVA (prefixo PMG6, adicionado ao piecemakers.yaml nesta mesma rodada — routing-only,
+      igual à PMA, decode posicional não tentado). Único PN visto: catálogo oficial atual
+      (piecemakers.com.tw/products/standard-dram, aba DDR4/4Gb, 2026-07-13), 4Gb, 1.2V,
+      1200/1333/1600 Mbps, package 78FBGA(x8)/96FBGA(x16) — a MESMA linha da tabela cobre as duas
+      organizações sem diferenciar o PN completo por sufixo. `interface` deixado VAZIO de propósito
+      (ambíguo entre x8/x16 — não decido sozinho qual). Nenhum distribuidor (Jotrin/Ariat-Tech/
+      Censtry/LCSC) lista este PN — só a fonte Tier-1 oficial, sem corroboração independente ainda.
+      ⚠ FAMÍLIA NOVA exige âncora golden em chips/tests.py (`_PMK_GOLDEN`/`GoldenObrigatorioTests`)
+      antes da suíte completa passar — edição de código fora do escopo deste chat; sugestão de
+      linha no cabeçalho deste arquivo.
+
+  # ══════════════════════════════════════════════════════════════════════════════════════════
+  # ADENDO #3 · 2026-07-13 · EXPANSÃO MÁXIMA (pedido do dono: "colete mais, não só 1")
+  # Metodologia adicional desta leva:
+  #  a) Cruzei Tier-1 (aba 1Gb do catálogo oficial, já fetchada) × Tier-2 (tabela glochip) e achei
+  #     GAP que eu tinha perdido na 1ª rodada: revisão E em 1Gb (PMF5 e PMF4, x8 e x16) está no
+  #     site oficial mas NÃO estava na tabela do glochip — cross-referenciei errado da 1ª vez
+  #     (só usei o oficial pra confirmar C/D, não notei que E também aparecia lá). Corrigido.
+  #  b) Andei a navegação "anterior/próximo" das páginas INDIVIDUAIS do glochip (não só a tabela-
+  #     resumo) e achei revisão H em 2Gb x16 E 4Gb x16, em AMBAS PMF5 e PMF4 — 4 PNs base novos,
+  #     cada um com sua própria página no glochip (evidência real, não sidebar). Confirmei também
+  #     que "G" (achado antes só como link solto na Ariat-Tech) NÃO tem página própria no glochip
+  #     (testei a URL direta — 404) → mantido EXCLUÍDO, evidência insuficiente.
+  #  c) DDR2(PME)/DDR1(PMD)/SDR(PMS) — tabelas completas que eu já tinha fetchado do glochip mas
+  #     não tinha submetido (baixa prioridade comercial, mas o dono pediu máximo de cobertura
+  #     agora). Todas SEMPRE NÃO RENTÁVEL (geração morta / profit_family dead ou ddr<min) — não
+  #     precisam de known_part pra classificar certo, mas valem pra identidade/completude do
+  #     catálogo.
+  # ══════════════════════════════════════════════════════════════════════════════════════════
+
+  # ── Gap corrigido: revisão E em 1Gb (Tier-1 oficial, confirmado; eu tinha perdido na 1ª leva) ──
+  - part_number: "PMF510808EBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.piecemakers.com.tw/products/standard-dram"
+    notes: "DDR3 1Gb x8 1.5V, 78FBGA, revisão E, MP — catálogo oficial (aba 1Gb, 2026-07-13). GAP da 1ª rodada: estava na Tier-1 mas não notei (só cruzei C/D); glochip também não lista E em 1Gb."
+
+  - part_number: "PMF510816EBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.piecemakers.com.tw/products/standard-dram"
+    notes: "DDR3 1Gb x16 1.5V, 96FBGA, revisão E, MP — catálogo oficial (aba 1Gb, 2026-07-13). Mesmo gap do par x8 acima."
+
+  - part_number: "PMF410808EBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.piecemakers.com.tw/products/standard-dram"
+    notes: "DDR3L 1Gb x8 1.35V, 78FBGA, revisão E, MP — catálogo oficial (aba 1Gb, 2026-07-13). Mesmo gap: oficial mostra D e E em 1Gb, glochip só tinha B(EOL)/D."
+
+  - part_number: "PMF410816EBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.piecemakers.com.tw/products/standard-dram"
+    notes: "DDR3L 1Gb x16 1.35V, 96FBGA, revisão E, MP — catálogo oficial (aba 1Gb, 2026-07-13). Mesmo gap do par x8 acima."
+
+  # ── Revisão H em 2Gb/4Gb x16 (achada via navegação individual do glochip, PMF5 e PMF4) ────────
+  - part_number: "PMF511816HBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/piecemakers/PMF511816HBR-KADN.html"
+    notes: >
+      DDR3 2Gb x16 1.5V, revisão H — mais uma revisão além de E/F que já estavam na tabela
+      principal do glochip; achada via página individual dedicada (não a tabela-resumo), navegada
+      pelo link "anterior/próximo" a partir do PMF510816DBR-KADN. Forma base extrapolada da forma
+      com sufixo (ver PMF511816HBRKADN abaixo) pela mesma regra de sufixo-não-altera-specs.
+      Specs herdadas do known_part já aprovado PMF511816EBR (mesma densidade/org/tensão).
+
+  - part_number: "PMF511816HBRKADN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/piecemakers/PMF511816HBR-KADN.html"
+    notes: "Forma EXATA com sufixo -KADN, como aparece na página dedicada do glochip (título da página = PMF511816HBR-KADN). Mesmo chip do PMF511816HBR acima."
+
+  - part_number: "PMF411816HBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/piecemakers/PMF411816HBR-MBDN.html"
+    notes: >
+      DDR3L 2Gb x16 1.35V, revisão H — equivalente DDR3L do PMF511816HBR acima. Página dedicada no
+      glochip (sufixo -MBDN no título). Specs herdadas do known_part já aprovado PMF411816EBR
+      (mesma densidade/org, 1.35V).
+
+  - part_number: "PMF411816HBRMBDN"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/piecemakers/PMF411816HBR-MBDN.html"
+    notes: "Forma EXATA com sufixo -MBDN, como aparece na página dedicada do glochip. Mesmo chip do PMF411816HBR acima."
+
+  - part_number: "PMF512816HBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/piecemakers/PMF512816HBR-KADN.html"
+    notes: >
+      DDR3 4Gb x16 1.5V, revisão H — mais uma revisão além de C/D/E/F que já estavam na tabela
+      principal do glochip. Página dedicada, achada na mesma navegação individual. Specs herdadas
+      do known_part já aprovado PMF512816EBR (mesma densidade/org/tensão).
+
+  - part_number: "PMF512816HBRKADN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/piecemakers/PMF512816HBR-KADN.html"
+    notes: "Forma EXATA com sufixo -KADN, como aparece na página dedicada do glochip. Mesmo chip do PMF512816HBR acima."
+
+  - part_number: "PMF412816HBR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/piecemakers/PMF412816HBR-MBDN.html"
+    notes: >
+      DDR3L 4Gb x16 1.35V, revisão H — equivalente DDR3L do PMF512816HBR acima. Página dedicada no
+      glochip (sufixo -MBDN). Specs herdadas do known_part já aprovado PMF412816EBR.
+
+  - part_number: "PMF412816HBRMBDN"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/piecemakers/PMF412816HBR-MBDN.html"
+    notes: "Forma EXATA com sufixo -MBDN, como aparece na página dedicada do glochip. Mesmo chip do PMF412816HBR acima."
+
+  # ── Bônus: variante -KADN do PMF510816DBR já incluído (achada na mesma navegação) ─────────────
+  - part_number: "PMF510816DBRKADN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/piecemakers/PMF510816DBR-KADN.html"
+    notes: "Variante de sufixo -KADN do PMF510816DBR (já incluído acima, sem sufixo) — mesmo chip, achado na mesma navegação individual do glochip."
+
+  # ── DDR2 (PME) · sempre NÃO RENTÁVEL (geração morta) · fonte: tabela glochip já fetchada ───────
+  - part_number: "PME807408ABR"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "16MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR2 128Mb(÷8=16MB) x8 1.8V, 60FBGA, revisão A, MP. Sempre NÃO RENTÁVEL (DDR2 = geração morta) — identidade só, sem valor comercial."
+
+  - part_number: "PME807416ABR"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "16MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR2 128Mb(÷8=16MB) x16 1.8V, 84FBGA, revisão A, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PME808408ABR"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "32MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR2 256Mb(÷8=32MB) x8 1.8V, 60FBGA, revisão A, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PME808416ABR"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "32MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR2 256Mb(÷8=32MB) x16 1.8V, 84FBGA, revisão A, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PME809408CBR"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR2 512Mb(÷8=64MB) x8 1.8V, 60FBGA, revisão C, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PME809416CBR"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR2 512Mb(÷8=64MB) x16 1.8V, 84FBGA, revisão C, MP. Sempre NÃO RENTÁVEL. Confirmado também via distribuidor: Ariat-Tech tem página própria PME809416CBR-G8DN."
+
+  - part_number: "PME809408DBR"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR2 512Mb(÷8=64MB) x8 1.8V, 60FBGA, revisão D, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PME809416DBR"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "64MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR2 512Mb(÷8=64MB) x16 1.8V, 84FBGA, revisão D, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PME810808CBR"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR2 1Gb(÷8=128MB) x8 1.8V, 60FBGA, revisão C, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PME810816CBR"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR2 1Gb(÷8=128MB) x16 1.8V, 84FBGA, revisão C, MP. Sempre NÃO RENTÁVEL."
+
+  # ── DDR1 (PMD) · sempre NÃO RENTÁVEL (geração morta) · fonte: tabela glochip já fetchada ───────
+  - part_number: "PMD606416ATR"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    capacity: "8MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR1 64Mb(÷8=8MB) x16 1.8V, 66TSOPII, revisão A, MP. Sempre NÃO RENTÁVEL (DDR1 = geração morta)."
+
+  - part_number: "PMD706416ATR"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    capacity: "8MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR1 64Mb(÷8=8MB) x16 2.5V, 66TSOPII, revisão A, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PMD707408BTR"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    capacity: "16MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR1 128Mb(÷8=16MB) x8 2.5V, 66TSOPII, revisão B, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PMD707416BTR"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    capacity: "16MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR1 128Mb(÷8=16MB) x16 2.5V, 66TSOPII, revisão B, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PMD708408CTR"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    capacity: "32MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR1 256Mb(÷8=32MB) x8 2.5V, 66TSOPII, revisão C, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PMD708416CTR"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    capacity: "32MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR1 256Mb(÷8=32MB) x16 2.5V, 66TSOPII, revisão C, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PMD709408CTR"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    capacity: "64MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR1 512Mb(÷8=64MB) x8 2.5V, 66TSOPII, revisão C, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PMD709416CTR"
+    chip_type: "DDR1"
+    subtype: "DDR1"
+    capacity: "64MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "DDR1 512Mb(÷8=64MB) x16 2.5V, 66TSOPII, revisão C, MP. Sempre NÃO RENTÁVEL."
+
+  # ── SDR (PMS) · geração mais antiga, sempre NÃO RENTÁVEL · fonte: tabela glochip já fetchada ───
+  - part_number: "PMS304216ATR"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    capacity: "2MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "SDR 16Mb(÷8=2MB) x16 3.3V, 50TSOPII, revisão A, status EOL. Sempre NÃO RENTÁVEL (SDRAM = profit_family dead)."
+
+  - part_number: "PMS306416BTR"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    capacity: "8MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "SDR 64Mb(÷8=8MB) x16 3.3V, 54TSOPII, revisão B, status EOL. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PMS306416CTR"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    capacity: "8MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "SDR 64Mb(÷8=8MB) x16 3.3V, 54TSOPII, revisão C, MP. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PMS307416ATR"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    capacity: "16MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "SDR 128Mb(÷8=16MB) x16 3.3V, 54TSOPII, revisão A, status EOL. Sempre NÃO RENTÁVEL."
+
+  - part_number: "PMS307416BTR"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    capacity: "16MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.glochip.com/ddr3/piecemakers.html"
+    notes: "SDR 128Mb(÷8=16MB) x16 3.3V, 54TSOPII, revisão B, MP. Sempre NÃO RENTÁVEL."
