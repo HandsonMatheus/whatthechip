@@ -1781,6 +1781,7 @@ _SAM_GOLDEN = {
     'KMQE60013B': ('eMCP', '', 'eMMC 5.1 16GB', 'LPDDR3 2GB', '', 'RENTÁVEL'),
     'KMQX60013A': ('eMCP', '', 'eMMC 5.1 32GB', 'LPDDR3 2GB', '', 'RENTÁVEL'),
     'KMRP60014M': ('eMCP', '', 'eMMC 5.1 64GB', 'LPDDR3 4GB', '', 'RENTÁVEL'),
+    'KMR310008M': ('eMCP', '', 'eMMC 5.1 16GB', 'LPDDR3 3GB', '', 'RENTÁVEL'),
     'KMS1G1646D': ('eMCP', '', 'eMMC ⚠ cap. não mapeada', 'LPDDR1 ⚠ cap. não mapeada', '', 'NÃO RENTÁVEL'),
     'KMV1G1646D': ('eMCP', '', 'eMMC ⚠ cap. não mapeada', 'LPDDR2 (legado) ⚠ cap. não mapeada', '', 'NÃO RENTÁVEL'),
     'KUS1G1646DBC': ('BGA SSD', '', '', '', '', 'INDETERMINADO'),

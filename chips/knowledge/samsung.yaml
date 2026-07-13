@@ -342,6 +342,44 @@ maps:
   # Censtry, SSFKG (id=107781), Jotrin — todos "MCP 32GB eMMC 16Gb QDP LPDDR2-S4 SDRam".
   SAM_EMCP_CAP_KMI:
   - [2U, 32GB, 2GB]
+  # KMR (LPDDR3, eMCP): mapa compartilhado SAM_EMCP_CAP tinha RAM ERRADA pra
+  # maioria das chaves da família (bug clássico "X6" — valores de OUTRA
+  # família herdados por engano). Corrigido 2026-07-13 via cross-check dos 13
+  # known_parts já confirmados no seed + índice Puris (puris.net/emcplist,
+  # títulos "NAND+RAMGb eMCP-D3 Samsung") contra o mapa legado:
+  #   21: mapa dizia 2GB → correto 3GB (KMR21000BM-B809, Puris "32+24")
+  #   31: mapa dizia 1GB → MAIORIA 3GB (KMR310008M/31000BM/31000BA = "16+24");
+  #       ⚠ EXCEÇÃO real: KMR310001M-B611 = "16+16" = 2GB — mesma chave pn[3:5],
+  #       RAM diferente. O grammar sozinho não distingue; a exceção (001M) já
+  #       está registrada como known_part confirmado (vence a gramática).
+  #   7X: mapa dizia 1GB → correto 2GB (KMR7X0001M-B510/B511, Puris "8+16")
+  #   8X: mapa dizia 1GB → correto 2GB (KMR8X0001M-B608, Puris "16+16")
+  #   D6: mapa dizia 3GB → correto 4GB (KMRD60014M-B512, Puris+Preduo "32+32")
+  #   E1: mapa dizia 2GB → correto 3GB (KMRE1000BM-B512, Puris+Preduo "16+24")
+  #   NW: mapa dizia 1GB → correto 2GB (KMRNW0001M-B509, Puris "8+16")
+  #   V5: AUSENTE do mapa → adicionado 4GB (KMRV50014M-B809, Preduo "128+32" +
+  #       cpuprocessorchip "128+32" convergentes)
+  #   X1: mapa dizia 2GB → correto 3GB (KMRX10014M-B614, já confirmado no seed)
+  #   X6: mapa dizia 2GB → correto 4GB (KMRX60014M-B614, já confirmado no seed)
+  #   4Z/82/C1/H6/P6: mapa já batia com o known_part confirmado — mantidos.
+  # Isolado em mapa próprio pra não vazar pra outras famílias que ainda usam o
+  # SAM_EMCP_CAP legado (mesmo raciocínio de KM4/KM5/KM8/KM1/KMI).
+  SAM_EMCP_CAP_KMR:
+  - ['21', 32GB, 3GB]
+  - ['31', 16GB, 3GB]
+  - [4Z, 32GB, 2GB]
+  - [7X, 8GB, 2GB]
+  - ['82', 16GB, 2GB]
+  - [8X, 16GB, 2GB]
+  - [C1, 64GB, 4GB]
+  - [D6, 32GB, 4GB]
+  - [E1, 16GB, 3GB]
+  - [H6, 64GB, 4GB]
+  - [NW, 8GB, 2GB]
+  - [P6, 64GB, 4GB]
+  - [V5, 128GB, 4GB]
+  - [X1, 32GB, 3GB]
+  - [X6, 32GB, 4GB]
   SAM_EMMC_GEN:
   - [E, eMMC 5.0, '']
   - [F, eMMC 4.5, '']
@@ -1813,14 +1851,14 @@ families:
   pn_length: 10
   decode_cap_pos: 3
   decode_cap_len: 2
-  decode_cap_map: SAM_EMCP_CAP
+  decode_cap_map: SAM_EMCP_CAP_KMR
   decode_gen_pos: 2
   decode_gen_map: SAM_EMCP_GEN
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP Samsung LPDDR3 + eMMC 5.1. R = LPDDR3 (2026-05-26: corrigido de LPDDR4/4X — âncora anterior era falsa). Exemplos: KMRH60014A (64GB+4GB LPDDR3-1866), KMRX60014M (32GB+4GB LPDDR3). Destino: reacondicional eMCP.'
-  reasoning: ''
+  tip: 'eMCP Samsung LPDDR3 + eMMC 5.1. R = LPDDR3 (2026-05-26: corrigido de LPDDR4/4X — âncora anterior era falsa). DECODE (corrigido 2026-07-13): mapa próprio SAM_EMCP_CAP_KMR — o SAM_EMCP_CAP compartilhado tinha RAM errada pra maioria das chaves da família (bug clássico "X6"). ⚠ chave 31 tem uma exceção real: KMR310001M-B611 = 2GB (16+16), mas os demais PNs da mesma chave (0BM/0BA/008M) = 3GB (16+24) — grammar assume a maioria (3GB), a exceção 001M está registrada como known_part (vence). Exemplos: KMRH60014A (64GB+4GB LPDDR3-1866), KMRX60014M (32GB+4GB LPDDR3). Destino: reacondicional eMCP.'
+  reasoning: '["K → Samsung Memory", "M → Managed (MCP)", "R → LPDDR3 (SAM_EMCP_GEN)", "pn[3:5] → densidade combinada NAND+RAM via SAM_EMCP_CAP_KMR (mapa próprio, 2026-07-13 — o legado SAM_EMCP_CAP tinha RAM de outra família)", "Fonte Tier-1: índice Puris (puris.net/emcplist) + Preduo, cross-checado contra 13 known_parts já confirmados no seed"]'
 - prefix: KMS
   chip_type: eMCP
   subtype: LPDDR1
