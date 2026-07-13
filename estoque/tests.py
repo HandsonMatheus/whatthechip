@@ -317,6 +317,81 @@ class AddChipHardBlockTests(TestCase):
         self.assertEqual(rej.first().rejection_reason, 'NÃO RENTÁVEL (geração)')
         self.assertFalse(UnknownChip.objects.filter(part_number='KMN5W000ZM').exists())
 
+    @patch('estoque.views.classify')
+    def test_distribuidor_entra_com_source_banco_de_dados(self, mock_classify):
+        """Lote 41 (2026-07-13): registro DISTRIBUIDOR cujas specs a gramática
+        completou (classification_source='gramática') É elegível (decisão 2026-07-08)
+        e, por TER registro no banco, entra com o rótulo 'banco de dados' — nunca
+        'gramática' (que parecia chip sem registro e disparava falso alarme)."""
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB',
+            classification_source='gramática', confidence='distributor')
+        self.client.post(self.url, {'pn': 'THGBMBG7D4KBAIW', 'qty': '1', 'has_cap': 'true'})
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='THGBMBG7D4KBAIW')
+        self.assertEqual(e.classification_source, 'banco de dados')
+
+
+class DisplaySourceTests(TestCase):
+    """_display_source: rótulo 'Source' do ESTOQUE = 'banco de dados' para tudo que
+    tem registro no banco (confirmed/manual/distributor) — inclusive distribuidor com
+    specs por gramática. Gramática PURA (sem registro) preserva 'gramática'. O motor
+    e o site NÃO mudam. (Diagnóstico do lote 41, 2026-07-13.)"""
+
+    def test_distribuidor_com_specs_por_gramatica_vira_banco(self):
+        from estoque.views import _display_source
+        self.assertEqual(
+            _display_source(_result(classification_source='gramática',
+                                    confidence='distributor')),
+            'banco de dados')
+
+    def test_confirmado_e_banco(self):
+        from estoque.views import _display_source
+        self.assertEqual(
+            _display_source(_result(classification_source='banco de dados',
+                                    confidence='confirmed')),
+            'banco de dados')
+
+    def test_confirmado_sem_familia_source_vazio_vira_banco(self):
+        # Micron JZ###: known_exact True, source vazio → 'banco de dados' (não apaga).
+        from estoque.views import _display_source
+        self.assertEqual(
+            _display_source(_result(classification_source='', confidence='confirmed',
+                                    known_exact=True)),
+            'banco de dados')
+
+    def test_gramatica_pura_preserva_rotulo(self):
+        # Sem registro (estimated) → NÃO elegível → mantém 'gramática'.
+        from estoque.views import _display_source
+        self.assertEqual(
+            _display_source(_result(classification_source='gramática',
+                                    confidence='estimated')),
+            'gramática')
+
+
+class RefreshLoteRelabelTests(TestCase):
+    """refresh_lote reescreve o Source das entradas JÁ gravadas ao vivo: distribuidor
+    com specs por gramática ('gramática' antigo) → 'banco de dados' (fix do lote 41)."""
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='op41', password='x')
+        self.company = _grant(self.user)
+        _scope(self, self.company)
+        self.lot = Lot.objects.create(number=41, operator=self.user,
+                                      company=self.company)
+
+    @patch('estoque.management.commands.refresh_lote.classify')
+    def test_relabela_distribuidor_gramatica_para_banco(self, mock_classify):
+        from django.core.management import call_command
+        e = InventoryEntry.objects.create(
+            lot=self.lot, part_number='THGBMBG7D4KBAIW', chip_type='eMMC',
+            capacity='16GB', classification_source='gramática')
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB',
+            classification_source='gramática', confidence='distributor')
+        call_command('refresh_lote', '--lot', '41', '--commit')
+        e.refresh_from_db()
+        self.assertEqual(e.classification_source, 'banco de dados')
+
 
 class ResnapshotLoteTests(TestCase):
     """Passo 2: o resnapshot_lote revalua as entradas DEFASADAS (catálogo melhorou)."""

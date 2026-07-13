@@ -62,6 +62,33 @@ def _is_confirmed(result: dict) -> bool:
     )
 
 
+def _display_source(result: dict) -> str:
+    """Rótulo 'Source' na camada de ESTOQUE (card, tabela e export .xlsx) — FONTE ÚNICA.
+
+    Regra: tudo que é ELEGÍVEL ao estoque passou pelo gate ``_is_confirmed`` — ou
+    seja, TEM registro no banco (confidence confirmed/manual/distributor). Do ponto
+    de vista do estoque a origem é, portanto, o BANCO — inclusive quando as specs de
+    um registro DISTRIBUIDOR foram completadas pela gramática (o motor marca
+    ``classification_source='gramática'`` para sinalizar isso no SITE de
+    identificação; no estoque esse rótulo confundia — parecia chip SEM registro,
+    contradizendo a regra "só entra quem tem registro"). Diagnóstico: lote 41,
+    2026-07-13.
+
+    ``known_exact`` cobre o confirmado SEM família casada (ex.: Micron JZ###), cujo
+    ``classification_source`` pode vir vazio. Fora desses casos (fila / itens sem
+    registro no banco), preserva o rótulo cru do motor.
+
+    ⚠ NÃO altera o motor nem o site: é só a TRADUÇÃO de exibição do estoque. O gate
+    (``_is_confirmed``) continua lendo o ``classification_source`` CRU do motor.
+    """
+    if _is_confirmed(result):
+        return "banco de dados"
+    src = result.get("classification_source") or ""
+    if not src and result.get("known_exact"):
+        return "banco de dados"
+    return src
+
+
 def _size_for_entry(result: dict) -> str:
     """Tamanho a GRAVAR no estoque. `capacity` (bytes) tem prioridade; para DRAM
     standalone (DDR/GDDR) a capacity vem vazia e o tamanho está em `dram_density`
@@ -123,7 +150,7 @@ def _snapshot(result: dict) -> dict:
         "emcp_nand":             result.get("emcp_nand") or "",
         "is_emcp":               bool(result.get("is_emcp")),
         "interface":             _clean_interface(result),
-        "classification_source": result.get("classification_source") or "",
+        "classification_source": _display_source(result),
         "confidence":            result.get("confidence") or "",
     }
 
@@ -180,16 +207,14 @@ def _entries_qs(lot, q='', tipo=''):
 
 def _current_snapshot(pn: str) -> dict:
     """Snapshot ATUAL do servidor para um PN: `_snapshot(classify(pn))` sem o
-    campo `confidence`, mais a derivação do rótulo "banco de dados" para um
-    confirmado SEM família casada (ex.: Micron JZ###) — igual ao
-    `resnapshot_lote`/`refresh_lote._live_source`. Devolve só os campos de
-    exibição (chip_type/brand/capacity/emcp_*/is_emcp/interface/Source)."""
+    campo `confidence`. O rótulo 'Source' (incl. a tradução distribuidor/gramática →
+    "banco de dados" e o confirmado SEM família casada) é derivado por
+    `_display_source`, dentro do `_snapshot` — fonte única, igual ao intake e ao
+    `resnapshot_lote`/`refresh_lote`. Devolve só os campos de exibição
+    (chip_type/brand/capacity/emcp_*/is_emcp/interface/Source)."""
     r = classify(pn) or {}
     snap = _snapshot(r)
     snap.pop("confidence", None)
-    if not snap["classification_source"] and (
-            r.get("confidence") in ("confirmed", "manual") or r.get("known_exact")):
-        snap["classification_source"] = "banco de dados"
     return snap
 
 

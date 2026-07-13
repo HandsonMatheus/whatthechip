@@ -31,22 +31,18 @@ from core.safe_command import SafeWriteCommand
 from chips.engine import classify
 from estoque.models import InventoryEntry, Lot
 
-CONFIRMED_CONF = {"confirmed", "manual"}
-
-
 def _revert_path(n):
     return os.path.join(str(settings.BASE_DIR), f"refresh_lote_{n:03d}_revert.json")
 
 
 def _live_source(pn):
-    """Fonte que o engine atribui AO VIVO. Confirmados SEM família casada caem no
-    fallback do classify() (sem classification_source) — deriva "banco de dados"
-    da confidence para não APAGAR o rótulo (ex.: códigos Micron JZ###)."""
-    r = classify(pn) or {}
-    src = r.get("classification_source", "") or ""
-    if not src and (r.get("confidence") in CONFIRMED_CONF or r.get("known_exact")):
-        src = "banco de dados"
-    return src
+    """Rótulo 'Source' que o ESTOQUE exibe para o PN, recomputado AO VIVO. FONTE
+    ÚNICA com o intake: delega a ``estoque.views._display_source`` (elegível/tem
+    registro no banco → "banco de dados" — inclusive DISTRIBUIDOR com specs por
+    gramática; e o confirmado SEM família casada, ex.: Micron JZ###). Ver o
+    diagnóstico do lote 41 (2026-07-13)."""
+    from estoque.views import _display_source
+    return _display_source(classify(pn) or {})
 
 
 class Command(SafeWriteCommand):
