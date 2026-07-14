@@ -95,7 +95,7 @@ CHIP_TYPES: dict[str, ChipTypeSpec] = {
 
     # ── Catálogo — sem caixa comercial; classificação/documentação ───────────
     "NOR Flash": ChipTypeSpec("catalog", "none", "dead", commercial=False, aliases=("nor flash", "nor", "spi nor")),
-    "OneNAND":   ChipTypeSpec("catalog", "none", "indeterminado", commercial=False),
+    "OneNAND":   ChipTypeSpec("catalog", "none", "dead", commercial=False),  # 2026-07-14: sem liquidez B2B (resíduo por tipo, não por capacidade) — mesma classe de NOR Flash/MCP/ePoP; decisão do dono
     "MCP":       ChipTypeSpec("catalog", "none", "dead", commercial=False),
     "ePoP":      ChipTypeSpec("catalog", "none", "dead", commercial=False, aliases=("epop", "e-pop")),
     "SoC":       ChipTypeSpec("catalog", "none", "indeterminado", commercial=False),

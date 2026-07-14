@@ -98,11 +98,11 @@ class ProfitFamilyTests(SimpleTestCase):
             self.assertTrue(is_dead(tok), tok)
 
     def test_raw_nand_and_catalog_dead(self):
-        for tok in ("NAND Flash", "NOR Flash", "MCP", "ePoP"):
+        for tok in ("NAND Flash", "NOR Flash", "MCP", "ePoP", "OneNAND"):
             self.assertTrue(is_dead(tok), tok)
-        # OneNAND fica INDETERMINADO (preserva o comportamento antigo — não estava
-        # no conjunto "dead"). Candidato a "dead" como o EDO, se o usuário decidir.
-        self.assertEqual(profit_family("OneNAND"), "indeterminado")
+        # OneNAND decidido "dead" pelo dono em 2026-07-14 (sem liquidez B2B, mesma
+        # classe de NOR Flash/MCP/ePoP) — ver chips/chip_types.py.
+        self.assertEqual(profit_family("OneNAND"), "dead")
 
     def test_dram_families(self):
         self.assertEqual(profit_family("DDR3"), "ddr")
