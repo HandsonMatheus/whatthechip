@@ -294,11 +294,21 @@ maps:
   #   é só afinar decode_cap_len (campo por-família), mesmo padrão combinado do KM4.
   #   Fontes Tier-1 arbitradas pelo dono: L9000/L9001 = Samsung Global; V8001/C7001 = Octopart
   #   ("128GB+32Gb"=4GB / "64GB+32Gb"=4GB). ⚠ Preduo dava V8001=6GB — ERRADO (broker não confiável).
+  #   2026-07-14: +3 chaves — V7001 (NX Electronics ficha dedicada "128GB UFS2.1+ 32Gb LPDDR4X"
+  #   + Samsung Global indexado + Win Source, todas 4GB) · P8001/P9001 (Samsung Semiconductor
+  #   USA/Global oficiais + Lisleapex/Puris/Avaq/NX Electronics, todas 4GB — mesmo padrão "001"=4GB
+  #   já visto em L9001/V8001/C7001). ⚠ H7001 pesquisado mas NÃO adicionado: fonte nova achou
+  #   "24Gb"(3GB) conflitando com pesquisa local prévia "32Gb"(4GB) — sem página estruturada de
+  #   desempate lida ainda, fica "não mapeada" até confirmar (não adivinhar — mesma disciplina do
+  #   resto do mapa).
   #   Código sem confirmação → "não mapeada" (cresce conforme o dono confirma no Octopart).
   SAM_EMCP_CAP_KM5:
   - [L9000, 128GB, 6GB]
   - [L9001, 128GB, 4GB]
+  - [V7001, 128GB, 4GB]
   - [V8001, 128GB, 4GB]
+  - [P8001, 64GB, 4GB]
+  - [P9001, 64GB, 4GB]
   - [C7001, 64GB, 4GB]
   # KM8 (uMCP LPDDR4X + UFS): mesma estrutura do KM5 (chave longa pn[3:8], len=5).
   #   ⚠ PROVA VIVA do por-família: V8001 = 4GB no KM5 mas 8GB no KM8 (mesmo código, família
