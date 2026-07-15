@@ -152,6 +152,7 @@ maps:
   HYX_LPDDR3_CAP:
   - ['4', 512MB, '']
   - ['8', 1GB, '']
+  - [A, 1.5GB, '']
   - [B, 2GB, '']
   - [C, 4GB, '']
   - [D, 3GB, '']
@@ -450,8 +451,8 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'LPDDR3 standalone SK Hynix, barramento x32 (H9CC). DRAM móvel puro. pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB por chip. ⚠ Preenchimento pn[4:7] variável (NNN ou outro) — não validar, fatiar pn[7] direto. ⚠ ''D''=3GB é assimétrico (24Gbit) — chip dos smartphones com exatamente 3GB de RAM. ⚠ Teto confirmado: C=4GB. LPDDR3 não escala para 6GB ou 8GB. Origem: smartphones premium e ultrabooks soldados 2013-2017. Destino: triagem LPDDR3 — alta demanda no mercado de recondicionamento.'
-  reasoning: ''
+  tip: 'LPDDR3 standalone SK Hynix, barramento x32 (H9CC). DRAM móvel puro. pn[7] = densidade: 4=512MB · 8=1GB · A=1.5GB · B=2GB · D=3GB · C=4GB por chip. ⚠ Preenchimento pn[4:7] variável (NNN ou outro) — não validar, fatiar pn[7] direto. ⚠ ''A''=1.5GB (12Gbit) e ''D''=3GB (24Gbit) são assimétricos — densidades "ímpares" da SK Hynix (die de 6Gbit, ver reasoning) usadas em tablets/smartphones de RAM não-binária. ⚠ Teto confirmado: C=4GB. Origem: smartphones premium e ultrabooks soldados 2013-2017. Destino: triagem LPDDR3 — alta demanda no mercado de recondicionamento.'
+  reasoning: '["Código ''A'' (pn[7]) achado em 2026-07-13 pesquisando H9CKNNNAETAP: WinSource (via DigiPart, fetch direto da página do order-code completo H9CKNNNAETAPLR-NUH) descreve o PN como \"LPDDR3-1866 x32 (12Gb)\" — campo estruturado de distribuidor, não prosa. 12Gb÷8=1.5GB. Corroborado por 2 fontes independentes: (1) post de teardown no fórum XDA identifica H9CKNNNAETAP como o chip de RAM físico do Amazon Fire HD 8 (2017); (2) a especificação pública do Fire HD 8 (2017) (GSMArena e outros) documenta 1.5GB de RAM total — bate com um único chip de 1.5GB (não múltiplos chips, design típico de tablet MediaTek MT8163 dessa faixa). Mesmo padrão de densidade não-binária já visto no código ''D''=3GB (die de 6Gbit×4, ver release oficial SK Hynix ''Developed Industry-Leading 6Gb LPDDR3\") — 6Gbit×2=12Gbit=1.5GB é a mesma família de die assimétrico, só com metade do stack."]'
 - prefix: H9CK
   chip_type: LPDDR3
   subtype: LPDDR3
@@ -468,8 +469,8 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'LPDDR3 standalone SK Hynix, barramento x64 (H9CK). DRAM móvel puro. pn[7] = densidade: 4=512MB · 8=1GB · B=2GB · D=3GB · C=4GB por chip. ⚠ Preenchimento pn[4:7] variável (NNN ou outro) — não validar, fatiar pn[7] direto. ⚠ ''D''=3GB assimétrico · ''C''=4GB teto confirmado. ⚠ x64: largura de barramento dupla vs H9CC — mesma capacidade, throughput maior. Origem: smartphones premium e ultrabooks soldados 2013-2017. Destino: triagem LPDDR3 — alta demanda no mercado de recondicionamento.'
-  reasoning: ''
+  tip: 'LPDDR3 standalone SK Hynix, barramento x64 (H9CK). DRAM móvel puro. pn[7] = densidade: 4=512MB · 8=1GB · A=1.5GB · B=2GB · D=3GB · C=4GB por chip. ⚠ Preenchimento pn[4:7] variável (NNN ou outro) — não validar, fatiar pn[7] direto. ⚠ ''A''=1.5GB e ''D''=3GB assimétricos · ''C''=4GB teto confirmado. ⚠ x64: largura de barramento dupla vs H9CC — mesma capacidade, throughput maior (mas ver reasoning: um distribuidor descreveu um PN H9CK como "x32", contradizendo essa convenção — sinalizado, não resolvido). Origem: smartphones premium e ultrabooks soldados 2013-2017. Destino: triagem LPDDR3 — alta demanda no mercado de recondicionamento.'
+  reasoning: '["Código ''A'' (pn[7]) achado em 2026-07-13 pesquisando H9CKNNNAETAP — mesma fonte e mesma lógica do H9CC (mapa HYX_LPDDR3_CAP é compartilhado entre as duas famílias): WinSource (via DigiPart, fetch direto de H9CKNNNAETAPLR-NUH) descreve \"LPDDR3-1866 x32 (12Gb)\" — campo estruturado. 12Gb÷8=1.5GB. Corroborado por teardown do fórum XDA (H9CKNNNAETAP = chip de RAM do Amazon Fire HD 8 2017) + spec pública do device (1.5GB RAM total, GSMArena). ⚠⚠ DISCREPÂNCIA NÃO RESOLVIDA: a descrição do WinSource diz \"x32\", mas o tip desta família documenta H9CK=x64 (contraste com H9CC=x32). Pode ser erro de catálogo do distribuidor (mesmo lote de dados tinha outro erro claro: 3 revendedores rotulavam esse PN como fabricante \"SAMSUNG\", claramente errado — é SK Hynix) OU pode indicar que a convenção x32/x64 por-prefixo não é estritamente universal. Não alterei o campo interface nem a convenção x64 com base nisso — fica sinalizado para o dono decidir se investiga mais."]'
 - prefix: H9DA
   chip_type: eMCP
   subtype: LPDDR1
