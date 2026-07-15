@@ -3,7 +3,7 @@
 brand:
   name: Nanya
   code: NANYA
-  notes: ''
+  notes: 'Taiwan · Fundada 1995 (spin-off do grupo Formosa Plastics) · DRAM discreta (SDRAM/DDR/LPDDR) — DRAM-only, sem NAND/eMMC/UFS/eMCP · Site: nanya.com.tw'
 maps: {}
 families:
 - prefix: NT5AD
@@ -60,6 +60,30 @@ families:
   suffix_rules: ''
   tip: DDR3L Nanya, variante low-voltage do NT5CC. Comum em notebooks.
   reasoning: ''
+- prefix: NT6CL
+  chip_type: LPDDR3
+  subtype: LPDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: >
+    LPDDR3 SDRAM Nanya (mobile, empilhamento SDP/DDP/QDP). Capacidade requer known_part —
+    o PN sozinho e ambiguo sem contexto: a LETRA logo apos a profundidade muda o
+    empilhamento (M=SDP 1 die, T=DDP 2 dies, F=QDP 4 dies), ex.: 256M32=8Gb(SDP) mas
+    512T32=16Gb(DDP) e 1024F32=32Gb(QDP) — mesma formula profundidade x largura / 8, só
+    que a letra também é o multiplicador de die. Confirmado na tabela "Ordering
+    Information" do datasheet oficial Nanya — ver dossie de submissão pra detalhe.
+  reasoning: '["Datasheet oficial Nanya, tabela Ordering Information (pag. 2 de 159), NT6CL256M32AM-H1 v1.6 02/2019: 8Gb(SDP)=256M x32 letra M -> NT6CL256M32A(Q/M)-H*; 16Gb(DDP)=512M(T) x32 letra T -> NT6CL512T32A(Q/M)-H*; 32Gb(QDP) letra F -> NT6CL1024F32*. Fonte: alldatasheet.com/html-pdf/1145677/NANYA/NT6CL256M32AM-H1/373/2/ (conteudo do datasheet aberto diretamente, nao resumo de busca)."]'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: MIGRADOS PARA O BANCO (fonte da verdade — Opção 2, jul/2026).

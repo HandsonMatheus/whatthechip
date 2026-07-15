@@ -1086,6 +1086,43 @@ class KnownPartModelGateTests(TestCase):
         kp4.refresh_from_db()
         self.assertEqual(kp4.density_gbit, "4Gb")
 
+    def test_guard_tipo_x_familia_is_emcp(self):
+        # BRECHA do SD5DH26A4G (fechada aqui): um known_part eMCP submetido/aprovado caindo
+        # numa família eMMC (is_emcp=False) — o engine tira o tipo da FAMÍLIA e nunca lê
+        # emcp_nand/emcp_ram → a capacidade some no classify. O clean() agora barra os dois
+        # sentidos do conflito eMCP↔não-eMCP; identity-only (chip_type vazio) segue livre.
+        from chips.models import ChipFamily, KnownPart
+        from chips.engine import clear_engine_cache
+        from django.core.exceptions import ValidationError
+        b = self._brand()
+        ChipFamily.objects.create(brand=b, prefix="GEMMC", chip_type="eMMC",
+                                  is_emcp=False, active=True, priority=50)
+        ChipFamily.objects.create(brand=b, prefix="GEMCP", chip_type="eMCP",
+                                  is_emcp=True, active=True, priority=50)
+        clear_engine_cache()   # _match_family (no clean()) tem que ver as famílias novas
+
+        # (1) o caso reportado: eMCP sob família eMMC → REJEITA.
+        with self.assertRaises(ValidationError):
+            KnownPart.objects.create(part_number="GEMMC26A4G", brand=b, chip_type="eMCP",
+                                     subtype="LPDDR1", emcp_nand="4GB",
+                                     emcp_ram="LPDDR1 768MB", confidence="manual")
+        # (2) sentido reverso: eMMC sob família eMCP → REJEITA.
+        with self.assertRaises(ValidationError):
+            KnownPart.objects.create(part_number="GEMCP0016A", brand=b, chip_type="eMMC",
+                                     capacity="16GB", confidence="manual")
+        # (3) coerente: eMCP sob família eMCP → OK.
+        self.assertTrue(KnownPart.objects.create(
+            part_number="GEMCP0032B", brand=b, chip_type="eMCP", subtype="LPDDR4",
+            emcp_nand="32GB", emcp_ram="LPDDR4 3GB", confidence="manual").pk)
+        # (4) coerente: eMMC sob família eMMC → OK.
+        self.assertTrue(KnownPart.objects.create(
+            part_number="GEMMC0016C", brand=b, chip_type="eMMC", capacity="16GB",
+            confidence="manual").pk)
+        # (5) identity-only: chip_type vazio defere à gramática → OK (não é conflito).
+        self.assertTrue(KnownPart.objects.create(
+            part_number="GEMMC0008D", brand=b, chip_type="", confidence="confirmed").pk)
+        clear_engine_cache()   # não vazar as famílias de teste pro cache dos próximos testes
+
     def test_densidade_derivada_de_familia_cap_map(self):
         # Raiz do bug lote 40 (2026-07-11): família DDR-kind SEM decode de
         # densidade próprio (cap_map com bytes POR DIE) ganha dram_density
@@ -1548,9 +1585,9 @@ _SD_GOLDEN = {  # SanDisk: famílias MAGRAS — chip_type por prefixo; capacidad
     "SD5DH24A4G":  ("eMMC", "", "", "", "", "INDETERMINADO"),
     "SD7DP24C4G":  ("eMMC", "", "", "", "", "INDETERMINADO"),
     "SDADA4DR64G": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
-                    "tipo 'A' — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),
+                    "RAM não mapeada — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),  # subtype vazio → fallback INDETERMINADO (fix 2026-07-15: antes "tipo 'A'" via dict Samsung)
     "SDADB48K16G": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
-                    "tipo 'A' — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),
+                    "RAM não mapeada — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),  # idem SDADA4DR64G
     "SDIN5C116G":  ("eMMC", "", "", "", "", "INDETERMINADO"),
     "SDIN5C14G":   ("eMMC", "", "", "", "", "INDETERMINADO"),
     "SDIN5C18G":   ("eMMC", "", "", "", "", "INDETERMINADO"),
@@ -1585,9 +1622,30 @@ _TK_GOLDEN = {  # Toshiba-Kioxia (marca única). THGBMFG/THGBMHG DESATIVADAS (ac
     # magras (eMCP/UFS por prefixo) = INDETERMINADO na gramática; THGBM decodifica capacidade.
     "THGBMBG7D2KBAIL": ("eMMC", "16GB", "", "", "", "RENTÁVEL"),   # Toshiba THGBM (decodifica cap)
     "TYC0FH121638RA":  ("eMCP", "", "eMMC ⚠ cap. não mapeada",
-                        "tipo 'C' — consultar datasheet ⚠ cap. não mapeada", "", "INDETERMINADO"),  # Toshiba TYC
+                        "LPDDR2 ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),  # Toshiba TYC — LPDDR2 do subtype (fix EMCP_RAM_TYPES 2026-07-15); LPDDR2 = geração morta → descarte (antes mascarado como "tipo 'C'" → ia pra fila)
     "TYD0FH221627RA":  ("eMCP", "", "eMMC ⚠ cap. não mapeada",
-                        "LPDDR4X ⚠ cap. não mapeada", "", "INDETERMINADO"),  # Toshiba TYD
+                        "LPDDR3 ⚠ cap. não mapeada", "", "INDETERMINADO"),  # Toshiba TYD — LPDDR3 do subtype (corrigido 2026-07-15: antes colidia com EMCP_RAM_TYPES['D']→"LPDDR4X"; o dict é exclusivo Samsung)
+    # TY8A0A/TY9A0A/TYAB0A/TY890A/TYBC0A/TY6801/TY6701/TY5701 (2026-07-15, família NOVA — eMCP Toshiba
+    # muito legado ~2010-2011, RAM LPDDR1, SEM known_part nenhum, só gramática): as 8 variantes de chave
+    # dão o MESMO resultado (magras, sem decode_cap_map; decode_gen_map='TY_EMCP_GEN' vazio de propósito
+    # força extração de "LPDDR1" do subtype em vez do fallback EMCP_RAM_TYPES — ver reasoning no yaml).
+    # NÃO RENTÁVEL só por geração, independente de capacidade — era esse o pedido do dono.
+    "TY8A0A111173KC": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+    "TY9A0A111171KC": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+    "TYAB0A111128KC": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+    "TY890A111229KC": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+    "TYBC0A111124LC": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),  # PN da bancada
+    "TY6801111190KC": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+    "TY6701111184KC": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
+    "TY5701111183KC": ("eMCP", "", "eMMC ⚠ cap. não mapeada",
+                        "LPDDR1 (código não mapeado — atualizar populate) ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),
     "THGBMFG7C2LBAIL": ("eMMC", "16GB", "", "", "", "RENTÁVEL"),   # THGBMFG desativada → THGBM decodifica (F=5.0, 7C2=16GB)
     "THGBMHG8C4LBAIR": ("eMMC", "32GB", "", "", "", "RENTÁVEL"),   # THGBMHG desativada → THGBM decodifica (H=5.1, 8C4=32GB)
     "THGAF8G8T23BAIL": ("UFS",  "32GB", "", "", "", "RENTÁVEL"),  # Kioxia THGAF — decode_cap_map 2026-07-08: pn[6:8]="G8"=32GB (Kioxia Highlight Q1/2021)
@@ -1611,6 +1669,7 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H5TQ2G63GFR":       ("DDR3", "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),
     "H9CCNNNCLTML":      ("LPDDR3", "4GB", "", "", "", "RENTÁVEL"),
     "H9CKNNNBJTMP":      ("LPDDR3", "2GB", "", "", "", "RENTÁVEL"),
+    "H9CKNNNAETAP":      ("LPDDR3", "1.5GB", "", "", "", "NÃO RENTÁVEL"),  # código 'A' NOVO (2026-07-13): WinSource "12Gb" + corrobora Fire HD 8 (2017, 1.5GB RAM)
     "H9DA4GH2GJAM":      ("eMCP", "", "eMMC 4.x 4GB", "LPDDR1 256MB", "", "NÃO RENTÁVEL"),
     "H9TA4GH2GDAC":      ("eMCP", "", "eMMC 4.x 4GB", "LPDDR1 256MB", "", "NÃO RENTÁVEL"),  # família NOVA, irmã do H9DA — WinSource 2026-07-08, output real conferido
     "H9TA1GH1GBMMVR4GM": ("eMCP", "", "eMMC 4.x 1GB", "LPDDR1 1GB",  "", "NÃO RENTÁVEL"),  # corrobora NAND '1' + RAM '1G' (match exato c/ mapa H9DA)
@@ -1807,6 +1866,9 @@ _NANYA_GOLDEN = {  # Nanya: 3 famílias DDR magras — tipo pelo prefixo, capaci
     'NT5AD512M8-JC':    ('DDR4', '', '', '', '', 'INDETERMINADO'),
     'NT5PA256M16DP':    ('DDR3L', '', '', '', '', 'INDETERMINADO'),
     'NT5PA128M16FP':    ('DDR3L', '', '', '', '', 'INDETERMINADO'),
+    # NT6CL = LPDDR3 mobile (SDP/DDP/QDP) — família nova 2026-07-15, mesmo padrão magro
+    # (tipo pelo prefixo, capacidade só via known_part; ver nanya.yaml `reasoning`/`tip`).
+    'NT6CL256M32AM':    ('LPDDR3', '', '', '', '', 'INDETERMINADO'),
 }
 
 
