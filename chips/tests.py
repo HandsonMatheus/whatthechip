@@ -1565,6 +1565,7 @@ _PMK_GOLDEN = {
     "PMF411816EBR":     ("DDR3L", "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),      # DDR3L 2Gb (=DDR3)
     "PMA212508ABR":     ("DDR4",  "",      "", "", "", "INDETERMINADO"), # DDR4 s/ decode → KnownPart resolve
     "PMA212816ABR":     ("DDR4",  "",      "", "", "", "INDETERMINADO"),
+    "PMG6124D":         ("DDR4",  "",      "", "", "", "INDETERMINADO"), # PMG6 (família NOVA 2026-07-13, DDR4 s/ decode — igual PMA); âncora golden obrigatória (verificado no classify)
     "PMF511816EBRKADN": ("DDR3",  "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),      # variante -KADN do 2Gb
 }
 _GIGA_GOLDEN = {
