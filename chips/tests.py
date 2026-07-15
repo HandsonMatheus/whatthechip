@@ -1914,6 +1914,10 @@ _NANYA_GOLDEN = {  # Nanya: 3 famílias DDR magras — tipo pelo prefixo, capaci
     # NT6CL = LPDDR3 mobile (SDP/DDP/QDP) — família nova 2026-07-15, mesmo padrão magro
     # (tipo pelo prefixo, capacidade só via known_part; ver nanya.yaml `reasoning`/`tip`).
     'NT6CL256M32AM':    ('LPDDR3', '', '', '', '', 'INDETERMINADO'),
+    # NT5TU = DDR2 (PC/desktop legado) — família nova 2026-07-15. DIFERENTE das outras: DDR2
+    # está abaixo de ddr_min_gen (3=DDR3 mínimo) → NÃO RENTÁVEL já na gramática, sem precisar
+    # de known_part (is_dead_by_generation=True mesmo sem capacidade).
+    'NT5TU32M16FG-AC':  ('DDR2', '', '', '', '', 'NÃO RENTÁVEL'),
 }
 
 

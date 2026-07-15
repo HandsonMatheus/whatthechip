@@ -84,6 +84,24 @@ families:
     que a letra também é o multiplicador de die. Confirmado na tabela "Ordering
     Information" do datasheet oficial Nanya — ver dossie de submissão pra detalhe.
   reasoning: '["Datasheet oficial Nanya, tabela Ordering Information (pag. 2 de 159), NT6CL256M32AM-H1 v1.6 02/2019: 8Gb(SDP)=256M x32 letra M -> NT6CL256M32A(Q/M)-H*; 16Gb(DDP)=512M(T) x32 letra T -> NT6CL512T32A(Q/M)-H*; 32Gb(QDP) letra F -> NT6CL1024F32*. Fonte: alldatasheet.com/html-pdf/1145677/NANYA/NT6CL256M32AM-H1/373/2/ (conteudo do datasheet aberto diretamente, nao resumo de busca)."]'
+- prefix: NT5TU
+  chip_type: DDR2
+  subtype: DDR2
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR2 SDRAM Nanya (PC/desktop legado). Geracao abaixo do minimo comercial (DDR3+) -- NAO RENTAVEL independente de capacidade.'
+  reasoning: '["Alldatasheet, indice completo do prefixo NT5TU (146 resultados, 3 sub-prefixos reconciliados exato: NT5TU1*=38 + NT5TU3*=36 + NT5TU6*=72): descricao uniforme \"Commercial/Industrial/Automotive DDR2 512Mb/1Gb SDRAM\" em toda a familia. PN do debug ao vivo NT5TU32M16FG-AC confirmado direto: alldatasheet.com/datasheet-pdf/pdf/1145608/NANYA/NT5TU32M16FG-AC.html (conteudo aberto diretamente, Manufacturer=NANYA, Direct Link=nanya.com)."]'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: MIGRADOS PARA O BANCO (fonte da verdade — Opção 2, jul/2026).
