@@ -1293,6 +1293,24 @@ families:
   suffix_rules: ''
   tip: 'K9Z = Samsung NAND Flash MLC/TLC variante especial. Densidade: pn[3:5] → NAND_FLASH_CAP. Destino: bancada reacondicional Flash.'
   reasoning: ''
+- prefix: KA1
+  chip_type: MCP
+  subtype: NAND Flash + mDDR (legado)
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: 10
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'MCP legado (Multi-Chip Package): NAND Flash + mDDR (mobile DDR) no mesmo encapsulamento — memória gerenciada pré-eMCP (Samsung, obsoleta). Sem liquidez B2B, mesma classe de NOR Flash/OneNAND/ePoP. Sem decode de capacidade (não afeta rentabilidade — MCP é sempre NÃO RENTÁVEL). Destino: fluxo de resíduo (moagem/refino).'
+  reasoning: '["K → Samsung Memory", "A1 → série MCP legada (NAND+mDDR), sufixos BJTT/AJTT/AJGG/BJYY", "Fonte: descrições convergentes de distribuidores (Jotrin/WinSource/IC-Components/DigiPart) — \"MCP: 4G NAND + 4G mDDR (ND44)\" — sem datasheet Tier-1/Octopart encontrado (chip obsoleto); por isso sem decode_cap_map e known_part com confidence=distributor", "Cluster de sufixos achado (DigiPart \"See Also\"): KA1000015E/B, KA1000012M, KA1000015M, KA100Z018M, KA100000DM, KA100H019M, KA100H00DA — todos pn_length=10"]'
 - prefix: KAT
   chip_type: ePoP
   subtype: eMMC + LPDDR Empilhado

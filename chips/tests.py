@@ -1721,6 +1721,7 @@ _SAM_GOLDEN = {
     'K9W1G1646DBC': ('NAND Flash', '1Gb', '', '', '', 'NÃO RENTÁVEL'),
     'K9X1G1646DBC': ('NAND Flash', '1Gb', '', '', '', 'NÃO RENTÁVEL'),
     'K9Z1G1646DBC': ('NAND Flash', '1Gb', '', '', '', 'NÃO RENTÁVEL'),
+    'KA1000015E': ('MCP', '', '', '', '', 'NÃO RENTÁVEL'),
     'KAT1G1646DBC': ('ePoP', '', 'eMMC ⚠ cap. não mapeada', "tipo 'T' — consultar datasheet ⚠ cap. não mapeada", '', 'NÃO RENTÁVEL'),
     'KF91G1646DBC': ('NAND Flash', '', '', '', '', 'NÃO RENTÁVEL'),
     'KLMCG2KETM': ('eMMC', '64GB', '', '', '', 'RENTÁVEL'),
