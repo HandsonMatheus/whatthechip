@@ -24,8 +24,8 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC SanDisk legado (SD5DH...). Era 2012-2013. Capacidade típica: 4GB-8GB. Die code: 24=24nm · A/C/F=revisão. Sufixo declarativo: -4G=4GB · -8G=8GB. Dispositivos: S5301 (Galaxy Pocket 2), S6810 (Galaxy Fame), S6802 (S Advance). ⚠ Interface eMMC 4.3/4.4 estimada — sem datasheet Tier 1 confirmado. Confirmar capacidade via known_parts por PN específico.'
-  reasoning: ''
+  tip: 'eMMC SanDisk legado (SD5DH...). Era 2012-2013. ⚠ Capacidade real confirmada: só "-4G"=4GB (investigado 2026-07-14 — busca exaustiva NÃO achou nenhum "-8G" real dentro do prefixo SD5DH; o "-8G" pertence à família IRMÃ "SD5D" sem o H, ainda fora do yaml, ver reasoning). Die-codes confirmados: 24A=Samsung GT-S6802 · 24C=Samsung GT-S5301/GT-S6810 (ambos eMMC puro) · 26A=HTC Desire X T328e/w, Huawei U8950/Ascend G600, LG Optimus L7 II P715 — ⚠ 26A é EXCEÇÃO: known_part confirmado como eMCP (NAND 4GB + LPDDR1 768MB), não eMMC puro como o resto da família (is_emcp da família continua false — é só este die-code que foge do padrão; decisão do dono 2026-07-14 via triangulação, sem datasheet, ver submissions/INVESTIGACAO_sandisk_sd5dh_2026-07-14.md). Significado dos 2 dígitos (24/26) NÃO confirmado por fonte direta — não é nm de processo com certeza. ⚠ Interface eMMC 4.3/4.4 estimada — sem datasheet Tier 1 confirmado em nenhuma busca. Confirmar capacidade/tipo via known_parts por PN específico.'
+  reasoning: 'Atualizado 2026-07-14 (submissions/INVESTIGACAO_sandisk_sd5dh_2026-07-14.md): PN âncora SD5DH26A4G revelou (a) o tip antigo overclaimava "-8G" sem nenhum PN real por trás — corrigido; (b) o die-code 26A é eMCP (RAM embutida), não eMMC puro como 24A/24C — decisão do dono aceitando triangulação indireta (substituto Samsung pino-a-pino confirmado + aritmética de RAM batendo com o total dos 3 aparelhos), sem datasheet Tier-1; (c) achado de bônus fora do escopo: existe uma família IRMÃ "SD5D" (SEM o H) — eMCP confirmado, ball-count diferente (FBGA162 em ao menos 1 membro), members SD5D14A-4G/SD5D28B-4G-8G/SD5D28C-16G — não está no yaml, backlog pra rodada futura (mesmo tratamento dado a SDINHDL6/SDINFDQ6 no dia anterior).'
 - prefix: SDINDDH
   chip_type: UFS
   subtype: ''
@@ -96,8 +96,8 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC 5.1 SanDisk iNAND (SDINB...). HS400; BGA153 11.5×13mm. Sub-linhas: SDINBDG4=iNAND7250 · SDINBDD4=iNAND7350(3D) · SDINBDA4=iNAND7550(SmartSLC). Capacidade: -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB · -128G=128GB · -256G=256GB. ⚠ NÃO é UFS — corrigido jun/2026 (product briefs PB01/PB02/PB04). ⚠ Prioridade 40: bate antes do SDIN genérico (priority=80). Confirmar capacidade via known_parts por PN específico. Destino: bancada eMMC.'
-  reasoning: ''
+  tip: 'eMMC 5.1 SanDisk iNAND (SDINB...). HS400; BGA153 11.5×13mm. Sub-linhas: SDINBDG4=iNAND7250/"iNAND AT EM122" · SDINBDD4=iNAND7350(3D) · SDINBDA4=iNAND7550(SmartSLC) · SDINBDA6="iNAND EM132" (3D NAND, sucessora do DA4, investigado 2026-07-14 — ver submissions/INVESTIGACAO_sandisk_sdinbda6_2026-07-14.md; 6 known_parts confirmed via 2 product briefs oficiais PDF, capacidade 8G-256G; ⚠ SDINBDA5 NÃO existe, numeração pula). Nomenclatura dupla: linha antiga "72xx/73xx/75xx" convive com a nova "EM1xx"/"EU3xx" (mesmos produtos, marketing atualizado). Capacidade: -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB · -128G=128GB · -256G=256GB. Grades: sem sufixo=comercial · -I1/-XI1=industrial · -XA1/-ZA1=automotivo (mesma capacidade, temperatura diferente — normalizador MANTÉM essas letras, então um PN com sufixo de grade não casa com o known_part base, precisa de entrada própria se aparecer). ⚠ NÃO é UFS — corrigido jun/2026 (product briefs PB01/PB02/PB04). ⚠ Prioridade 40: bate antes do SDIN genérico (priority=80). Confirmar capacidade via known_parts por PN específico. Destino: bancada eMMC.'
+  reasoning: 'Atualizado 2026-07-14 (submissions/INVESTIGACAO_sandisk_sdinbda6_2026-07-14.md): PN âncora SDINBDA616G revelou uma 4ª sub-linha (DA6) não documentada, mais nova que DA4, achada via 2 product briefs oficiais SanDisk/WD em PDF (brochure automotivo + brief dedicado EM132) com tabela Ordering Information completa. Bônus: a mesma brochure revelou o prefixo SDINHDL6 (UFS 4.1, "iNAND AT EU752") totalmente novo, fora do nosso yaml — backlog, não pesquisado ainda. Grammar (decode_cap_pos etc.) permanece null/vazia — sem mudança estrutural.'
 - prefix: SD7DP
   chip_type: eMMC
   subtype: ''
@@ -118,7 +118,7 @@ families:
   reasoning: ''
 - prefix: SDAD
   chip_type: eMCP
-  subtype: LPDDR3
+  subtype: ''
   interface: ''
   is_emcp: true
   active: true
@@ -132,8 +132,8 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMCP SanDisk variante SDAD. Híbrido eMMC + LPDDR. ⚠ PENDENTE: sem PN físico confirmado na esteira. Confirmar nos known_parts (com emcp_nand e emcp_ram). Destino provisório: bancada eMCP — aguardar confirmação.'
-  reasoning: ''
+  tip: 'eMCP SanDisk variante SDAD. Híbrido eMMC + LPDDR. ⚠ A geração da RAM NÃO está no PN sozinho → subtype deixado VAZIO de propósito (NÃO assumir LPDDR3): vem do ball count físico (221-ball=LPDDR3 presumido · 254-ball=LPDDR4X confirmado) ou de known_part Tier-1. ⚠ Sem datasheet público SanDisk/WD — família provavelmente vendida só sob NDA a OEMs (pesquisa em 6 frentes independentes, 2026-07-13, sem achar nenhum). ⚠ Prefixo SDAD colide com adaptadores físicos SanDisk (SDAD-67, SDADP-01...) — não são chips, ignorar em buscas. 1 PN confirmado: SDADA4CR-128G = 254-ball/LPDDR4X/4GB (evidência: firmware coreboot testado, não datasheet — ver submissions/INVESTIGACAO_sandisk_sdad_2026-07-13.md). Confirmar geração+capacidade (emcp_nand+emcp_ram) no known_part. Destino provisório: bancada eMCP.'
+  reasoning: 'Investigado 2026-07-13 (submissions/INVESTIGACAO_sandisk_sdad_2026-07-13.md): cluster de ~14 PNs reais mapeado a partir do PN SDADL2BP32G; 1 confirmado e submetido (SDADA4CR128G, confidence=manual, fonte=coreboot); demais sem fonte Tier-1 — decisão de sourcing pendente com o dono. subtype ficou vazio de propósito: o cluster mistura LPDDR3 (presumido, sub-família 221-ball L2/F4/B48) e LPDDR4X (confirmado, sub-família 254-ball A4CR/A4DR) — nenhum valor único seria correto pra família inteira.'
 - prefix: SDEM
   chip_type: eMCP
   subtype: LPDDR3
@@ -186,12 +186,12 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC SanDisk iNAND variante SDMAG. Capacidade no sufixo: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB. ⚠ PENDENTE: sem confirmação física na esteira ainda. Confirmar capacidade e geração via known_parts quando PN real aparecer. Destino provisório: bancada eMMC — aguardar confirmação.'
-  reasoning: ''
+  tip: 'eMMC SanDisk iNAND variante SDMAG. Capacidade no sufixo: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB. ⚠ PENDENTE: sem confirmação física na esteira ainda. ⚠⚠ SUSPEITA DE FAMÍLIA FANTASMA (investigado 2026-07-15, ver submissions/INVESTIGACAO_sandisk_sdmal_2026-07-15.md): busca ampla (2 rodadas, várias hipóteses de erro de leitura) não achou NENHUMA evidência real de "SDMAG" em lugar nenhum — nem distribuidor, nem broker, nem fórum. O PN que motivou a suspeita de confirmação (leitura de bancada "SDMALBB2C16G") era na verdade a família NÃO-relacionada "SDMAL" (NAND Apple-proprietária, chip_type diferente — ver known_part SDMALBB2016G). Mantida `active: true` sem mudança de gramática — descadastrar é decisão maior, fica pro dono avaliar. Confirmar capacidade e geração via known_parts quando/se PN real aparecer. Destino provisório: bancada eMMC — aguardar confirmação.'
+  reasoning: 'Nota 2026-07-15: a única "quase-confirmação" que já tivemos desta família (leitura de bancada semelhante ao prefixo) acabou sendo outra família inteira (SDMAL, Apple-proprietária) por coincidência de prefixo — reforça a suspeita de que SDMAG nunca teve PN real visto por ninguém. Não decidi remover a família (fora do escopo de uma correção de tip); só documentei o achado pra quem for revisar o catálogo depois.'
 - prefix: SDIN
   chip_type: eMMC
   subtype: ''
-  interface: eMMC 4.5 / 5.0 / 5.1
+  interface: eMMC (múltiplas gerações — ver tip)
   is_emcp: false
   active: true
   priority: 80
@@ -204,8 +204,8 @@ families:
   decode_gen_len: 1
   decode_density_type: ''
   suffix_rules: ''
-  tip: 'eMMC SanDisk iNAND legado (SDIN...). Família mais comum na esteira. Cobre múltiplas gerações: eMMC 4.5, 5.0 e 5.1. Capacidade no sufixo após o traço: -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB · -128G=128GB. Sub-famílias: SDINBDG4 / SDINBDD4 / SDINBDA4 = iNAND 7250/7350/7550 (eMMC 5.1). UFS real usa prefixos SDINDDH / SDINEDK / SDINFD (famílias distintas). ⚠ SDINB... (prefixo mais longo) tem prioridade — engine bate nele antes deste. ⚠ Sufixo OCR truncado → chip sem capacidade. Confirmar via known_parts por PN específico. Destino: bancada eMMC (verificar geração antes de precificar).'
-  reasoning: ''
+  tip: 'eMMC SanDisk iNAND legado (SDIN...). Família mais comum na esteira, mas cobre VÁRIAS GERAÇÕES DE PROTOCOLO distintas (investigado 2026-07-14, 5 datasheets oficiais lidos na íntegra — ver submissions/INVESTIGACAO_sandisk_sdin_2026-07-14.md e INVESTIGACAO_sandisk_sd9_2026-07-14.md): SDIN2xx = SD 1.1/2.0 + SPI, jul/2007, ⚠ NÃO é eMMC de verdade (doc 80-36-00592) · SDIN4xx (inclui o clássico SDIN4C2, ~2008-2009) = eMMC, geração exata sem datasheet público localizado (buraco documental real, tratado via evidência triangulada não-oficial) · SDIN5xx = e.MMC 4.41, dez/2010 (doc 80-36-03433) · SDIN7DP2 = e.MMC 4.51 "Ultra", fev/2013 (doc 80-36-03494) · SDIN8xx = e.MMC 4.51 HS200 (backlog, sem datasheet lido ainda) · SDIN9DS2 "iNAND 5130" / SDIN9DW4 "iNAND Extreme" = eMMC 5.0 HS400, 2015 (product brief + doc 80-36-03680) · SDIN9DW5 = eMMC 5.0, sem datasheet oficial (triangulado, mesma família DW). Ordem de geração confirmada pelo product brief 2015: 7(4.51) < 8(4.51 HS200) < 9(5.0 HS400) < SDINADB(5.0+) < SDINADF(5.1) — as duas últimas (prefixo SDINA) ainda fora do escopo/não pesquisadas. Capacidade no sufixo após o traço: -512M=512MB · -1G=1GB · -2G=2GB · -4G=4GB · -8G=8GB · -16G=16GB · -32G=32GB · -64G=64GB · -128G=128GB. Sub-famílias: SDINBDG4 / SDINBDD4 / SDINBDA4 = iNAND 7250/7350/7550 (eMMC 5.1, prefixo próprio SDINB). UFS real usa prefixos SDINDDH / SDINEDK / SDINFD (famílias distintas). ⚠ SDINB... (prefixo mais longo) tem prioridade — engine bate nele antes deste. ⚠ Sufixo OCR truncado → chip sem capacidade. ⚠ NÃO confundir com o prefixo "SD9..." (SEM "IN") — é uma família eMCP totalmente diferente e não-relacionada, ver família own-doc / SANDISK.md. Backlog ainda aberto: SDIN3xx (protocolo incerto), SDINADB/SDINADF (gerações mais novas que 9). 32 known_parts confirmados/manuais submetidos 2026-07-14 cobrindo gerações 2/5/7/9 + cluster 4C2 (25 confirmed + 7 manual). Confirmar via known_parts por PN específico. Destino: bancada eMMC (verificar geração antes de precificar).'
+  reasoning: 'Atualizado 2026-07-14 em duas rodadas (submissions/INVESTIGACAO_sandisk_sdin_2026-07-14.md + INVESTIGACAO_sandisk_sd9_2026-07-14.md): 1ª rodada (PN âncora SDIN4C24G) achou 3 protocolos históricos distintos, não só "eMMC 4.5/5.0/5.1"; 2ª rodada (PN âncora SD9DS28K8G, que na verdade é de uma família eMCP NÃO relacionada — ver alerta no tip) resolveu de passagem o backlog SDIN9xx com 2 datasheets técnicos completos. Grammar (decode_cap_pos etc.) permanece null/vazia — capacidade continua puramente declarativa via sufixo, sem mudança estrutural; só o tip/interface foram enriquecidos.'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: MIGRADOS PARA O BANCO (fonte da verdade — Opção 2, jul/2026).
