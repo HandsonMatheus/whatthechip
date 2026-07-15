@@ -46,6 +46,7 @@ maps:
   - [7B2, 16GB, '']
   - [7D2, 16GB, '']
   - [8D4, 32GB, '']
+  TY_EMCP_GEN: []
   THGAF_CAP:
   - [G7, 16GB, '']
   - [G8, 32GB, '']
@@ -120,6 +121,150 @@ families:
   suffix_rules: ''
   tip: 'eMCP Toshiba: eMMC 4.5 + LPDDR3, package BGA-221 (mais novo que TYC/BGA-162). Família sem decode gramatical — capacity/specs dependem de KnownPart manual. Rentabilidade: depende da capacidade (LPDDR3 ≥ threshold → RENTÁVEL; sem specs → INDETERMINADO). Subprefixos: TYD0F*=4GB NAND · TYD0G*=8GB NAND (Preduo Tier 3 ✓). RAM: pn[6:8]=''22''→1GB LPDDR3 (âncora TYD0GH221651RA, Preduo Tier 3 ✓). Cluster de lote: TYD0FH221[XXXX]RA = mesmas specs, só lote diferente. Distinguir de TYC* (LPDDR2, BGA-162) — geração mais antiga e NÃO RENTÁVEL.'
   reasoning: '["TYD = Toshiba eMCP LPDDR3/BGA-221 (~2015-2020) — geração seguinte ao TYC/LPDDR2/BGA-162", "pn[3:5]: capacidade NAND — 0F=4GB · 0G=8GB (Preduo Tier 3 ✓)", "pn[5]=H: marcador de RAM (hipótese — consistente com TYC; sem Tier 1)", "pn[6:8]: código RAM — 22=1GB LPDDR3 (âncora TYD0GH221651RA, Preduo Tier 3 ✓)", "pn[8:12]: código de lote/batch — não encode specs (ex.: 1627, 1651)", "Família magra adicionada 2026-06-26: reconhecimento por prefixo sem decode posicional", "Fonte: Preduo Tier 3 (TYD0GH221651RA=8+8 eMMC+LPDDR3 221ball) + Octopart Tier 2 (tipo SDRAM+eMMC MCP ✓)"]'
+- prefix: TY8A0A
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: 'TY_EMCP_GEN'
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Toshiba muito legado (~2010-2011, contexto Qualcomm MSM7227A/MSM7625A ARM11 single-core — feature-phone/entry-level). RAM: LPDDR1 (mobile DDR de 1a geracao, abaixo ate do LPDDR2 do TYC) para SEMPRE NAO RENTAVEL por geracao, independente de capacidade (mesmo mecanismo do TYC/TYD). Familia SEM decode de capacidade -- nenhum PN individual confirmado como known_part nesta rodada. Exemplo conhecido: TY8A0A111173KC (1G NAND+256M RAM, confirmado Tier-3 em 2026-07-09 -- ja e known_part). Irmas (mesma familia raiz, prefixo proprio cada uma): TY9A0A/TYAB0A/TY890A/TYBC0A/TY6801/TY6701/TY5701. Ver reasoning pro porque do decode_gen_map apontar pra um mapa vazio de proposito.'
+  reasoning: '["Achado original (2026-07-09): PN da bancada TY8A0A111173KC, known=false, sem familia nenhuma no engine.", "Fonte Tier-3 rf-china.com/n22/TY.asp (lida diretamente): tabela 2.MCP sistema rotula explicitamente MCP pra TY5701111183KC/TY6701111184KC/TY6801111190KC/TY890A111229KC/TY8A0A111173KC/TY9A0A111171KC/TY9A0A111174KC/TYAB0A111128KC/TYBC0A111086KC -- confirma TIPO (eMCP) pras 8 variantes de chave. So 2 delas (8A0A, AB0A) tiveram capacidade explicita em outra tabela da mesma fonte -- ja submetidas como known_part em 2026-07-09.", "2026-07-15 (PN da bancada TYBC0A111124LC, variante BC nova): busca exaustiva (rf-china, dzsc.com, hkinventory, apogeeweb, worldwayelec/it, AliExpress, Octopart/Kynix/Utsource) NAO achou capacidade pra nenhum PN da chave BC. Decisao do dono: cadastrar a FAMILIA (nao os PNs individuais) com a geracao legada (LPDDR1) ja e suficiente pro sistema reprovar por rentabilidade sem precisar confirmar capacidade -- NENHUM known_part foi submetido nesta rodada, so gramatica.", "8 prefixos de 6 chars (nao um TY generico de 2 chars): dzsc.com mostra dezenas de componentes Toshiba NAO-memoria (capacitores, conectores, indutores, ate a marca TYCO) que tambem comecam com TY -- prefixo curto geraria falso-positivo massivo. Os 8 prefixos sao exatamente os confirmados MCP pela rf-china.", "decode_gen_map=TY_EMCP_GEN aponta pra um DecodeMap SEM NENHUMA linha cadastrada (de proposito): o engine (chips/engine.py ~L542-563) tem 3 caminhos pro tipo de RAM em familia eMCP -- Caminho 1 (mapa com chave encontrada), Caminho 2 (mapa configurado mas chave ausente -> extrai LPDDR do subtype via regex, E O QUE QUEREMOS), Caminho 3 (SEM mapa configurado -> fallback EMCP_RAM_TYPES pela 3a letra do PN, dict documentado como exclusivo Samsung mas o codigo nao checa marca -- colide por acidente quando pn[2] de outra marca bate uma chave Samsung; ex.: TYD tem pn[2]=D e EMCP_RAM_TYPES[D]=LPDDR4X, entao TYD hoje mostra LPDDR4X errado em vez do LPDDR3 real do subtype -- bug PRE-EXISTENTE, fora do escopo desta submissao, reportado ao dono separadamente). Testado empiricamente no sandbox: SEM o decode_gen_map apontando pro mapa vazio, as variantes que comecam com LETRA (AB, BC -- pn[2] nao-digito) cairiam no Caminho 3 e ficariam profitable=INDETERMINADO em vez de NAO RENTAVEL. Com o mapa vazio forcando Caminho 2 uniformemente, as 8 variantes (digito ou letra em pn[2]) extraem LPDDR1 do subtype corretamente e reprovam por geracao, igual ao TYC/TYD."]'
+- prefix: TY9A0A
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: 'TY_EMCP_GEN'
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Toshiba muito legado (~2010-2011). RAM: LPDDR1 para SEMPRE NAO RENTAVEL por geracao. Familia SEM decode de capacidade. Exemplos conhecidos (existencia/tipo Tier-3, sem capacidade): TY9A0A111171KC, TY9A0A111174KC. Irmas: TY8A0A/TYAB0A/TY890A/TYBC0A/TY6801/TY6701/TY5701. Mesmo grupo/decisao/fonte que TY8A0A -- ver reasoning la pro historico completo.'
+  reasoning: '["Mesmo achado/decisao/fonte do bloco TY8A0A (ver reasoning completo la) -- familia-irma, variante de chave 9A.", "rf-china.com/n22/TY.asp confirma MCP pra TY9A0A111171KC e TY9A0A111174KC -- sem capacidade.", "decode_gen_map=TY_EMCP_GEN (mapa vazio de proposito) forca extracao de LPDDR1 do subtype -- pn[2]=9 e digito, cairia no Caminho 3-digito de qualquer forma (extrai subtype certo), mas mantido por consistencia com as irmas de letra."]'
+- prefix: TYAB0A
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: 'TY_EMCP_GEN'
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Toshiba muito legado (~2010-2011). RAM: LPDDR1 para SEMPRE NAO RENTAVEL por geracao. Familia SEM decode de capacidade nesta gramatica (o PN ancora TYAB0A111128KC ja e known_part com capacidade real -- 2GNAND+1G -- confirmada em 2026-07-09; PNs NOVOS desta chave sem known_part proprio caem na gramatica magra e reprovam so por geracao). Irmas: TY8A0A/TY9A0A/TY890A/TYBC0A/TY6801/TY6701/TY5701. pn[2]=A e LETRA -- SEM o decode_gen_map apontando pro mapa vazio, cairia no Caminho 3/EMCP_RAM_TYPES e ficaria INDETERMINADO (ver reasoning do TY8A0A).'
+  reasoning: '["Mesmo achado/decisao/fonte do bloco TY8A0A (ver reasoning completo la) -- familia-irma, variante de chave AB.", "rf-china.com/n22/TY.asp + tabela de capacidade separada confirmam TYAB0A111128KC = 2GNAND+1G (ja known_part, confidence=distributor, 2026-07-09).", "decode_gen_map=TY_EMCP_GEN E NECESSARIO aqui (nao so por consistencia): pn[2]=A e LETRA, cairia no Caminho 3 (EMCP_RAM_TYPES) sem o mapa vazio forcando Caminho 2 -- testado empiricamente, A nao e chave do EMCP_RAM_TYPES, resultaria em placeholder sem LPDDR e profitable=INDETERMINADO em vez de NAO RENTAVEL."]'
+- prefix: TY890A
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: 'TY_EMCP_GEN'
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Toshiba muito legado (~2010-2011). RAM: LPDDR1 para SEMPRE NAO RENTAVEL por geracao. Familia SEM decode de capacidade -- TY890A111229KC teve capacidade PARCIAL na fonte rf-china (numero cortado na propria fonte -- RAM nao confirmavel) e ficou de fora da submissao de known_parts de proposito (regra: excluir, nao adivinhar). Irmas: TY8A0A/TY9A0A/TYAB0A/TYBC0A/TY6801/TY6701/TY5701.'
+  reasoning: '["Mesmo achado/decisao/fonte do bloco TY8A0A (ver reasoning completo la) -- familia-irma, variante de chave 89.", "rf-china.com confirma MCP pra TY890A111229KC, mas a notacao de capacidade corta exatamente antes do numero de RAM na propria fonte (confirmado 2x, nao e truncamento da extracao) -- PN excluido da submissao de known_parts em 2026-07-09.", "decode_gen_map=TY_EMCP_GEN por consistencia -- pn[2]=8 e digito, ja cairia no Caminho 3-digito corretamente de qualquer forma."]'
+- prefix: TYBC0A
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: 'TY_EMCP_GEN'
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Toshiba muito legado (~2010-2011). RAM: LPDDR1 para SEMPRE NAO RENTAVEL por geracao. Familia SEM decode de capacidade -- nenhum PN confirmado como known_part (busca exaustiva 2026-07-15 nao achou capacidade em fonte nenhuma, apesar de existirem 14+ PNs catalogados por distribuidor sob esta chave). PN da bancada TYBC0A111124LC pertence aqui. Irmas: TY8A0A/TY9A0A/TYAB0A/TY890A/TY6801/TY6701/TY5701. pn[2]=B e LETRA -- SEM o decode_gen_map apontando pro mapa vazio, cairia no Caminho 3/EMCP_RAM_TYPES e ficaria INDETERMINADO em vez de NAO RENTAVEL (ver reasoning do TY8A0A) -- ESTA e a variante que motivou a descoberta do fallback.'
+  reasoning: '["2026-07-15: PN da bancada TYBC0A111124LC, known=false, in_review_queue=true. Busca exaustiva (rf-china.com/n22/TY.asp -- confirma so TYBC0A111086KC como MCP, sem capacidade; dzsc.com -- indice alfabetico lista 14+ irmaos de lote: 086/100/107/118/119/124/200/206/264/375/392/405/430/557, paginas individuais JS-renderizadas/vazias no fetch; hkinventory -- listing OK mas pagina de detalhe vazia; apogeeweb/worldwayelec/worldwayit -- vazios ou bot-blocked; AliExpress -- bundle lista TYBC0A111405KC+TYBC0A111086KC junto com outros PNs TY novos, pagina vazia no fetch; Octopart/Kynix/Utsource -- sem resultado) NAO achou capacidade em NENHUMA fonte pra esta chave.", "Dono decidiu (2026-07-15): nao vamos confirmar nenhum PN individual desta chave -- cadastrar a familia com a geracao legada (LPDDR1) ja basta pro sistema barrar por rentabilidade.", "pn[2]=B e LETRA -- esta e a variante que expos o fallback EMCP_RAM_TYPES (Caminho 3 do engine): sem decode_gen_map apontando pro mapa vazio, B nao bate nenhuma chave do dict (J/Z/K/Y/V/Q/R/S/D/E/L) e o engine devolveria placeholder tipo B - consultar datasheet sem LPDDR nenhum -- profitable ficaria INDETERMINADO, NAO o NAO RENTAVEL que o dono pediu. Testado empiricamente no sandbox antes de finalizar (com e sem o mapa vazio) -- ver reasoning do TY8A0A pro mecanismo completo."]'
+- prefix: TY6801
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: 'TY_EMCP_GEN'
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Toshiba muito legado (~2010-2011). RAM: LPDDR1 para SEMPRE NAO RENTAVEL por geracao. Familia SEM decode de capacidade. Exemplo conhecido (existencia/tipo Tier-3, sem capacidade): TY6801111190KC. Irmas: TY8A0A/TY9A0A/TYAB0A/TY890A/TYBC0A/TY6701/TY5701.'
+  reasoning: '["Mesmo achado/decisao/fonte do bloco TY8A0A (ver reasoning completo la) -- familia-irma, variante de chave 68.", "rf-china.com/n22/TY.asp confirma MCP pra TY6801111190KC -- sem capacidade.", "decode_gen_map=TY_EMCP_GEN por consistencia -- pn[2]=6 e digito, ja cairia no Caminho 3-digito corretamente de qualquer forma."]'
+- prefix: TY6701
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: 'TY_EMCP_GEN'
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Toshiba muito legado (~2010-2011). RAM: LPDDR1 para SEMPRE NAO RENTAVEL por geracao. Familia SEM decode de capacidade. Exemplo conhecido (existencia/tipo Tier-3, sem capacidade): TY6701111184KC. Irmas: TY8A0A/TY9A0A/TYAB0A/TY890A/TYBC0A/TY6801/TY5701.'
+  reasoning: '["Mesmo achado/decisao/fonte do bloco TY8A0A (ver reasoning completo la) -- familia-irma, variante de chave 67.", "rf-china.com/n22/TY.asp confirma MCP pra TY6701111184KC -- sem capacidade.", "decode_gen_map=TY_EMCP_GEN por consistencia -- pn[2]=6 e digito, ja cairia no Caminho 3-digito corretamente de qualquer forma."]'
+- prefix: TY5701
+  chip_type: eMCP
+  subtype: LPDDR1
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: 14
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: 'TY_EMCP_GEN'
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP Toshiba muito legado (~2010-2011). RAM: LPDDR1 para SEMPRE NAO RENTAVEL por geracao. Familia SEM decode de capacidade. Exemplo conhecido (existencia/tipo Tier-3, sem capacidade): TY5701111183KC. Irmas: TY8A0A/TY9A0A/TYAB0A/TY890A/TYBC0A/TY6801/TY6701.'
+  reasoning: '["Mesmo achado/decisao/fonte do bloco TY8A0A (ver reasoning completo la) -- familia-irma, variante de chave 57.", "rf-china.com/n22/TY.asp confirma MCP pra TY5701111183KC -- sem capacidade.", "decode_gen_map=TY_EMCP_GEN por consistencia -- pn[2]=5 e digito, ja cairia no Caminho 3-digito corretamente de qualquer forma."]'
 - prefix: KMEYH
   chip_type: eMMC
   subtype: ''
