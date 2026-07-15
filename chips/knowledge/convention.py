@@ -77,3 +77,43 @@ def apply_kp_convention(obj):
                 setattr(obj, "density_gbit", f"{m.group(1)}Gb")
 
     return obj
+
+
+def family_type_conflict(part_number: str, chip_type: str) -> str | None:
+    """Detecta o conflito known_part × FAMÍLIA no eixo ``is_emcp`` — a brecha que deixou o
+    ``SD5DH26A4G`` (submetido eMCP, com a capacidade em ``emcp_nand``/``emcp_ram``) cair na
+    família eMMC ``SD5DH`` (``is_emcp=False``). O engine tira o ``chip_type`` da FAMÍLIA (não
+    do known_part) e, como a família não é eMCP, NUNCA lê ``emcp_nand``/``emcp_ram`` → a
+    capacidade some no ``classify``. Nem o Pydantic (valida o known_part isolado) nem o
+    ``clean()`` (só convenção/vocabulário) cruzavam known_part × família — esta é a trava.
+
+    Retorna uma mensagem ACIONÁVEL se houver conflito; senão ``None``. FAIL-OPEN de propósito:
+      - ``chip_type`` vazio (identity-only) → ``None``: defere à gramática, não há merge quebrado;
+      - nenhuma família casa o prefixo → ``None``: a gramática não renderiza, não há merge;
+      - ``chip_type`` fora do vocabulário (``spec_for`` = ``None``) → ``None``: outro problema, não deste guard.
+    Só dispara quando o ``chip_type`` é um tipo CANÔNICO conhecido cuja "MCP-ness" (eMCP/uMCP)
+    DIVERGE do ``is_emcp`` da família — o eixo EXATO em que o merge de ``_result_from_known`` quebra.
+    """
+    ct = (chip_type or "").strip()
+    if not ct:
+        return None
+    from chips.chip_types import spec_for
+    sp = spec_for(ct)
+    if sp is None:
+        return None
+
+    from chips.engine import _match_family
+    from chips.normalize import normalize_pn
+    fam = _match_family(normalize_pn(part_number))
+    if fam is None or sp.is_emcp == fam.is_emcp:
+        return None
+
+    kp_kind  = "eMCP/uMCP (composto NAND+RAM)" if sp.is_emcp else f"NÃO-MCP ('{ct}')"
+    fam_kind = "eMCP/uMCP (is_emcp=True)" if fam.is_emcp else "NÃO-MCP (is_emcp=False)"
+    return (
+        f"conflito de tipo known_part × família: o chip_type '{ct}' é {kp_kind}, mas o PN "
+        f"'{part_number}' casa a família '{fam.prefix}', que é {fam_kind}. O engine deriva o "
+        f"tipo da FAMÍLIA e ignora o ramo oposto (eMCP↔não-eMCP) no merge, então a capacidade "
+        f"some no classify. Corrija o chip_type do known_part OU crie/aponte uma família "
+        f"{'eMCP' if sp.is_emcp else 'não-eMCP'} para esse prefixo antes de gravar."
+    )

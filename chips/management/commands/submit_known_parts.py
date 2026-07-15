@@ -66,6 +66,16 @@ class Command(BaseCommand):
         if erros:
             raise CommandError("PORTÃO rejeitou:\n" + "\n".join(erros))
 
+        # PORTÃO 2 (tipo × FAMÍLIA): o KnownPartSpec valida o known_part ISOLADO — não conhece
+        # a família que o prefixo vai casar. Cruza aqui (mesma trava do clean() do modelo) pra o
+        # chat ver o conflito eMCP↔não-eMCP no DRY-RUN, não só quando o --commit explode no save.
+        from chips.knowledge.convention import family_type_conflict
+        conflitos = [f"  {s.part_number}: {msg}"
+                     for s in specs
+                     if (msg := family_type_conflict(s.part_number, s.chip_type))]
+        if conflitos:
+            raise CommandError("PORTÃO (tipo × família) rejeitou:\n" + "\n".join(conflitos))
+
         brand = Brand.objects.filter(name=brand_name).first()
         if brand is None:
             raise CommandError(f"marca '{brand_name}' não existe no banco (crie a gramática antes).")

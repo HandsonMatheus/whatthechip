@@ -289,8 +289,15 @@ class KnownPart(models.Model):
         fora do vocabulário. As regras de AUTORIA (proveniência, four-eyes) vivem no
         boundary de submissão / na revisão in-DB, não aqui (não quebrar re-save de legado)."""
         from django.core.exceptions import ValidationError
-        from chips.knowledge.convention import apply_kp_convention, CONFIDENCE_VOCAB
+        from chips.knowledge.convention import (
+            apply_kp_convention, family_type_conflict, CONFIDENCE_VOCAB)
         apply_kp_convention(self)
+        # Trava known_part × FAMÍLIA (eixo is_emcp) — fecha a brecha do SD5DH26A4G
+        # (eMCP caindo numa família eMMC → o engine tira o tipo da família e perde a
+        # capacidade eMCP). Cobre TODO caminho de escrita por rodar no clean().
+        conflito = family_type_conflict(self.part_number, self.chip_type)
+        if conflito:
+            raise ValidationError({"chip_type": conflito})
         if self.confidence not in CONFIDENCE_VOCAB:
             raise ValidationError({"confidence":
                 f"confidence '{self.confidence}' inválido — use um de {sorted(CONFIDENCE_VOCAB)}."})
