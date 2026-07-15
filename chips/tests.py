@@ -109,6 +109,50 @@ class DecodeLenTests(SimpleTestCase):
         self.assertIn('eMMC', r['emcp_nand'])
         self.assertEqual(r['emcp_source'], 'parcial (gramática)')
 
+    def test_emcp_nao_samsung_sem_mapa_extrai_do_subtype(self):
+        """Fix 2026-07-15: EMCP_RAM_TYPES é EXCLUSIVO Samsung. Família eMCP de OUTRA marca
+        sem decode_gen_map NÃO pega a geração pelo dict (colidia — TYD 3ª='D' → 'LPDDR4X'
+        num chip LPDDR3). Extrai do próprio subtype; subtype vazio → placeholder INDETERMINADO."""
+        from chips.engine import _result_from_family
+        with patch('chips.engine._load_decode_map', return_value={}):
+            with patch('chips.engine._doc_url', return_value=None):
+                # (1) Toshiba TYD — 3ª letra 'D' colidiria com EMCP_RAM_TYPES['D']='LPDDR4X':
+                #     agora vem LPDDR3 do subtype.
+                fam = self._make_family(pos=None, cap_len=1, map_name='',
+                                        is_emcp=True, interface='eMMC 4.5')
+                fam.brand.name = 'Toshiba-Kioxia'; fam.prefix = 'TYD'; fam.subtype = 'LPDDR3'
+                r = _result_from_family('TYD0FH221627RA', fam)
+                self.assertTrue(r['emcp_ram'].startswith('LPDDR3'),
+                                f"esperava LPDDR3 do subtype, veio {r['emcp_ram']!r}")
+                self.assertNotIn('LPDDR4', r['emcp_ram'])
+                # (2) subtype VAZIO (ex.: SanDisk SDAD): fallback SEGURO → 'não mapeada'
+                #     (INDETERMINADO), NUNCA bare 'LPDDR' (que a rentab. leria como LPDDR1/descarte).
+                fam2 = self._make_family(pos=None, cap_len=1, map_name='',
+                                         is_emcp=True, interface='eMMC 4.5')
+                fam2.brand.name = 'SanDisk'; fam2.prefix = 'SDAD'; fam2.subtype = ''
+                r2 = _result_from_family('SDADA4CR128G', fam2)
+                self.assertIn('não mapeada', r2['emcp_ram'])
+                self.assertFalse(r2['emcp_ram'].startswith('LPDDR'),
+                                 f"subtype vazio não pode virar 'LPDDR' bare, veio {r2['emcp_ram']!r}")
+
+    def test_emcp_samsung_sem_mapa_ainda_usa_dict(self):
+        """Controle do fix: Samsung SEM gen_map continua decodificando pela 3ª letra
+        (EMCP_RAM_TYPES) — o gate é a MARCA, e a Samsung é a dona da convenção KMx."""
+        from chips.engine import _result_from_family
+        with patch('chips.engine._load_decode_map', return_value={}):
+            with patch('chips.engine._doc_url', return_value=None):
+                fam = self._make_family(pos=None, cap_len=1, map_name='',
+                                        is_emcp=True, interface='eMMC 5.1')
+                # brand.name já é 'Samsung'; KMV → 3ª letra 'V' → EMCP_RAM_TYPES (LPDDR2 legado).
+                fam.prefix = 'KMV'; fam.subtype = ''   # mesmo subtype vazio, Samsung usa o dict
+                r = _result_from_family('KMV0000000000', fam)
+                # Samsung via dict → começa com a geração ('LPDDR2 (legado)…'); NÃO cai no
+                # placeholder 'RAM não mapeada' do ramo não-Samsung. (O engine sempre anexa
+                # '⚠ cap. não mapeada' quando não há capacidade — por isso testo o PREFIXO.)
+                self.assertTrue(r['emcp_ram'].startswith('LPDDR'),
+                                f"Samsung deve decodificar via dict, veio {r['emcp_ram']!r}")
+                self.assertNotIn('RAM não mapeada', r['emcp_ram'])
+
     def test_emcp_ram_types_r_e_lpddr4(self):
         """Verifica que 'R' mapeia para LPDDR4/4X (corrigido — era LPDDR3)."""
         from chips.engine import EMCP_RAM_TYPES

@@ -551,15 +551,29 @@ def _result_from_family(pn: str, fam) -> dict:
                 if m else "RAM não mapeada — consultar datasheet"
             )
         else:
-            # Caminho 3: Samsung legacy sem decode_gen_map (KMV, KMJ, KMQ antigo…)
-            # Convenção de letra na 3ª posição do PN — exclusiva Samsung.
+            # Caminho 3: RAM pela 3ª letra do PN — convenção EXCLUSIVA Samsung
+            # (EMCP_RAM_TYPES é o dict da nomenclatura KMx). O gate REAL é a MARCA, não só
+            # "decode_gen_map vazio": uma família eMCP de OUTRA marca sem decode_gen_map
+            # (Toshiba TYC/TYD, SanDisk SDEM, Kingston EMCP…) NÃO segue a convenção Samsung —
+            # a 3ª letra dela colidia com o dict e sobrescrevia o subtype REAL (ex.: TYD 'D'
+            # → "LPDDR4X" num chip LPDDR3). Gate por marca (fix 2026-07-15).
             ram_char = pn[2] if len(pn) > 2 else "?"
-            if ram_char.isdigit():
-                # Família numérica Samsung (KM4, KM8, KM5…): o dígito é parte do prefixo,
-                # não letra de geração. Extrai tipo do subtype da família.
+            _is_samsung = (getattr(fam.brand, "name", "") or "").strip().lower() == "samsung"
+            if not _is_samsung:
+                # Qualquer OUTRA marca sem decode_gen_map: a 3ª letra NÃO é código Samsung.
+                # Extrai a geração do próprio subtype. Fallback SEGURO quando o subtype não
+                # traz geração (ex.: SanDisk SDAD, subtype vazio): placeholder que cai em
+                # INDETERMINADO — NUNCA bare "LPDDR", que a rentabilidade lê como LPDDR1 e
+                # mandaria ao descarte um chip de geração DESCONHECIDA (2026-07-15).
+                m = re.search(r'LPDDR[\dX/]+', fam.subtype or '')
+                ram_type = m.group(0) if m else "RAM não mapeada — consultar datasheet"
+            elif ram_char.isdigit():
+                # Família NUMÉRICA Samsung (KM4/KM8/KM5…): o dígito é parte do prefixo, não
+                # letra de geração. Extrai do subtype (comportamento ORIGINAL preservado).
                 m = re.search(r'LPDDR[\dX/]+', fam.subtype or '')
                 ram_type = m.group(0) if m else "LPDDR"
             else:
+                # Samsung legacy sem mapa (KMV/KML/KMS/KAT…): a letra É a geração (dict Samsung).
                 ram_type = EMCP_RAM_TYPES.get(ram_char, f"tipo '{ram_char}' — consultar datasheet")
 
         # Versão NAND eMMC/UFS: usa a parte ANTES do "+" da interface.
