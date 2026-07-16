@@ -232,11 +232,10 @@ def derive_price_key(result: dict):
     return None, (kind, gen, Decimal(str(tier)), KIND_UNIT[kind])
 
 
-def _resolution_chain(buyer, brand_name: str):
-    """[(PriceList, rótulo)] na ordem de resolução do §4 (sem duplicatas)."""
-    lists = list(PriceList.all_companies
-                 .filter(buyer=buyer, active=True)
-                 .select_related('inherits_from', 'brand'))
+def _chain_from_lists(lists, brand_name: str):
+    """[(PriceList, rótulo)] na ordem de resolução do §4 (sem duplicatas) —
+    PURO, a partir das listas ativas já carregadas. Fonte única da ordem:
+    consumido por _resolution_chain (1 chip) e BuyerPricingContext (lote)."""
     by_brand = {pl.brand.name: pl for pl in lists if pl.brand_id}
     generic  = next((pl for pl in lists if pl.brand_id is None), None)
 
@@ -257,24 +256,28 @@ def _resolution_chain(buyer, brand_name: str):
     return chain
 
 
-def price(result: dict, buyer) -> PriceQuote:
-    """Quanto o ``buyer`` paga pelo chip do ``result``. Fonte única (§5)."""
-    err, key = derive_price_key(result or {})
-    if err is not None:
-        return err
-    kind, gen, tier_value, tier_unit = key
+def _active_lists(buyer):
+    return list(PriceList.all_companies
+                .filter(buyer=buyer, active=True)
+                .select_related('inherits_from', 'brand'))
 
-    chain = _resolution_chain(buyer, result.get('brand') or '')
-    if not chain:
-        return PriceQuote(status=NO_LIST, kind=kind, gen=gen,
-                          tier_value=tier_value, tier_unit=tier_unit,
-                          reason=f'comprador {buyer} sem lista de preços ativa')
 
-    order = {pl.pk: i for i, (pl, _) in enumerate(chain)}
-    rows = list(Price.all_companies.filter(
-        price_list_id__in=list(order), kind=kind, gen=gen,
-        tier_value=tier_value, tier_unit=tier_unit,
-    ).select_related('price_list'))
+def _resolution_chain(buyer, brand_name: str):
+    """[(PriceList, rótulo)] na ordem de resolução do §4 (sem duplicatas)."""
+    return _chain_from_lists(_active_lists(buyer), brand_name)
+
+
+def _quote_no_list(buyer, kind, gen, tier_value, tier_unit) -> PriceQuote:
+    return PriceQuote(status=NO_LIST, kind=kind, gen=gen,
+                      tier_value=tier_value, tier_unit=tier_unit,
+                      reason=f'comprador {buyer} sem lista de preços ativa')
+
+
+def _quote_from_candidates(rows, chain, buyer, cfg,
+                           kind, gen, tier_value, tier_unit) -> PriceQuote:
+    """Cauda compartilhada de price() e do caminho de LOTE: escolhe a linha
+    (1ª da cadeia vence) e monta o PriceQuote — status, staleness e a
+    derivação ¥→US$ vivem SÓ aqui (fonte única)."""
     if not rows:
         return PriceQuote(status=NO_ROW, kind=kind, gen=gen,
                           tier_value=tier_value, tier_unit=tier_unit,
@@ -282,6 +285,7 @@ def price(result: dict, buyer) -> PriceQuote:
                                  f'{tier_value.normalize():f}{tier_unit} fora da '
                                  'grade — adicionar linha na tabela')
 
+    order = {pl.pk: i for i, (pl, _) in enumerate(chain)}
     row = min(rows, key=lambda r: order[r.price_list_id])   # 1ª da cadeia vence
     pl, via = chain[order[row.price_list_id]]
 
@@ -297,7 +301,6 @@ def price(result: dict, buyer) -> PriceQuote:
         return PriceQuote(status=UNQUOTED,
                           reason='aguardando cotação do comprador', **base)
 
-    cfg = PricingConfig.get_config()
     stale = (row.quote_date is None or
              (date.today() - row.quote_date).days > cfg.staleness_days)
     # F10 (RMB canônico): o banco guarda ¥; o USD é DERIVADO AQUI — ¥ × taxa
@@ -311,6 +314,77 @@ def price(result: dict, buyer) -> PriceQuote:
         price_min=(row.price_min * rate).quantize(_CENT, ROUND_HALF_UP),
         price_max=(row.price_max * rate).quantize(_CENT, ROUND_HALF_UP),
         is_stale=stale, **base)
+
+
+def price(result: dict, buyer) -> PriceQuote:
+    """Quanto o ``buyer`` paga pelo chip do ``result``. Fonte única (§5).
+    Caminho de 1 CHIP (card/busca): consulta estreita por chave. Para LOTES,
+    use ``BuyerPricingContext`` — mesmo resultado, I/O constante."""
+    err, key = derive_price_key(result or {})
+    if err is not None:
+        return err
+    kind, gen, tier_value, tier_unit = key
+
+    chain = _resolution_chain(buyer, result.get('brand') or '')
+    if not chain:
+        return _quote_no_list(buyer, kind, gen, tier_value, tier_unit)
+
+    rows = list(Price.all_companies.filter(
+        price_list_id__in=[pl.pk for pl, _via in chain], kind=kind, gen=gen,
+        tier_value=tier_value, tier_unit=tier_unit,
+    ).select_related('price_list'))
+    return _quote_from_candidates(rows, chain, buyer, PricingConfig.get_config(),
+                                  kind, gen, tier_value, tier_unit)
+
+
+class BuyerPricingContext:
+    """Contexto pré-carregado para precificar MUITAS linhas do MESMO buyer.
+
+    Incidente 2026-07-16 (lote 42): ``price_lot`` fazia ~3 queries POR PN
+    (cadeia de listas + linha de preço + PricingConfig.get_or_create) — num
+    lote de centenas de linhas contra o Postgres remoto isso passava dos 30s
+    do gunicorn, o worker morria em loop e o site inteiro parecia fora.
+    Este contexto fixa o I/O do lote em **3 queries totais** (listas + TODAS
+    as linhas do buyer + config), independente do tamanho do lote; sobra por
+    linha só o ``classify()`` (CPU + cache do catálogo). O resultado é
+    idêntico ao de ``price()`` — a cauda (_quote_from_candidates) é a mesma.
+    """
+
+    def __init__(self, buyer):
+        self.buyer = buyer
+        self.cfg = PricingConfig.get_config()
+        self._lists = _active_lists(buyer)
+        #: (price_list_id, kind, gen, tier_value, tier_unit) → Price
+        #  (Decimal hasheia por VALOR: 64 == 64.0 → a chave derivada casa a
+        #  armazenada mesmo diferindo em casas decimais, como no filtro SQL.)
+        self._rows = {
+            (r.price_list_id, r.kind, r.gen, r.tier_value, r.tier_unit): r
+            for r in Price.all_companies.filter(
+                price_list_id__in=[pl.pk for pl in self._lists])
+        }
+        self._chains = {}
+
+    def _chain(self, brand_name: str):
+        if brand_name not in self._chains:
+            self._chains[brand_name] = _chain_from_lists(self._lists, brand_name)
+        return self._chains[brand_name]
+
+    def price(self, result: dict) -> PriceQuote:
+        """Equivalente a ``price(result, self.buyer)`` — sem tocar o banco."""
+        err, key = derive_price_key(result or {})
+        if err is not None:
+            return err
+        kind, gen, tier_value, tier_unit = key
+
+        chain = self._chain(result.get('brand') or '')
+        if not chain:
+            return _quote_no_list(self.buyer, kind, gen, tier_value, tier_unit)
+
+        rows = [r for r in (self._rows.get((pl.pk, kind, gen, tier_value,
+                                            tier_unit)) for pl, _via in chain)
+                if r is not None]
+        return _quote_from_candidates(rows, chain, self.buyer, self.cfg,
+                                      kind, gen, tier_value, tier_unit)
 
 
 def quotes_for_admin(request, result):
@@ -379,6 +453,10 @@ def price_lot(lot, buyer) -> LotPricingReport:
 
     ⚠ Requer escopo de empresa ativo (request de membro ou ``company_scope``):
     ``lot.entries`` usa o manager escopado fail-closed.
+
+    I/O constante (incidente 2026-07-16): usa ``BuyerPricingContext`` — 3
+    queries fixas para o lote inteiro em vez de ~3 por PN (que estourava o
+    timeout do gunicorn em lote grande e derrubava o worker).
     """
     from chips.engine import classify   # lazy: evita acoplamento na importação
 
@@ -387,8 +465,9 @@ def price_lot(lot, buyer) -> LotPricingReport:
         PricingConfig.SCENARIO_MID: Decimal('0.00'),
         PricingConfig.SCENARIO_HIGH: Decimal('0.00'),
     })
+    ctx = BuyerPricingContext(buyer)
     for entry in lot.entries.all():
-        q = price(classify(entry.part_number), buyer)
+        q = ctx.price(classify(entry.part_number))
         qty = entry.quantity or 0
         report.lines.append(LotQuoteLine(entry.part_number, qty, q))
         report.total_lines += 1

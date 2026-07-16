@@ -844,7 +844,7 @@ adiciona a linha", §2/§11), agora com ferramenta própria:
 - Quem fabrica LPDDR (matriz da aba Instructions): Samsung, SK Hynix, Micron,
   Nanya. Kingston/Toshiba-Kioxia/SanDisk entram como não fabricado.
 
-### 12.18 F10 — RMB CANÔNICO (**COMPLETA em código** 2026-07-16, suíte 354/354 + `check_translations` verde; **aguardando a VIRADA** — runbook no fim desta seção)
+### 12.18 F10 — RMB CANÔNICO (**LIVE** — virada executada 2026-07-16: deploy `2b75916` + `migrate_prices_to_rmb --buyer wu-quan --rate-used 0.15 --commit` = 256 registros → ¥; 41 valores ¥ não-redondos aceitos como estão — digitados em USD pós-launch, ÷0.15 é a leitura fiel da época; arredondar seria mudar preço do parceiro sem consentimento (ajuste, se quiser, via moderação/admin). `guard_catalog` ✓ 7729. Reversão: `migrate_prices_to_rmb_revert.json` guardado FORA do git. Suíte 354/354 + `check_translations` verde.)
 
 **F10.1 entregue 2026-07-11 (INERTE até a virada):** `Buyer.fx_usd_rate`
 (default 0.14, pghistory audita; migração de schema aditiva — deploy seguro a
@@ -895,6 +895,27 @@ tela US$.
   (sempre localiza → '0,1400' em pt-br). Taxa/dinheiro formatado em property
   Python (`Buyer.fx_usd_rate_display`, `PriceQuote.rmb_display`) com
   `f'{d.normalize():f}'` (o `:f` evita o 9E+1 — §12).
+
+**⚠ INCIDENTE pós-virada (2026-07-16, ~20:10 UTC) — site fora por worker em
+loop; resolvido no mesmo dia:** `/estoque/lote/42/` (lote grande) levava ~30s
+→ `WORKER TIMEOUT` do gunicorn (default 30s) matava o worker ÚNICO no meio da
+escrita → browser re-tentava → worker novo nascia FRIO (recarrega o catálogo)
+→ loop; o site inteiro parecia fora, mas banco/senha/dados-¥ estavam OK
+(preview e estáticos respondiam 200). **Causa raiz (pré-existente, exposta
+pelo lote grande + caches frios do deploy):** a valoração on-read fazia ~3
+queries POR PN (cadeia de listas + linha de preço + `PricingConfig.
+get_or_create`) × comprador, contra o Postgres remoto. **Fix em 2 camadas:**
+(a) `Procfile` → `--timeout 120 --workers 2` (cinto de segurança + sem fila
+atrás de página lenta; se o Start Command do dashboard estiver preenchido,
+ele VENCE o Procfile — manter iguais); (b) **`BuyerPricingContext`**
+(pricing/engine.py): `price_lot` passa a fazer **4 queries TOTAIS** (entries
++ config + listas + todas as linhas do buyer) qualquer que seja o tamanho do
+lote — o `price()` do card segue com a consulta estreita; a cauda
+(`_quote_from_candidates`) é fonte única dos dois caminhos. Regressão
+travada por `test_valoracao_faz_queries_constantes` (assertNumQueries=4;
+suíte 355/355). Nota solta do log: `JSON inválido em ChipFamily.reasoning`
+(SDINB/SDAD/SDIN/PMG6/H9DP/EMCP…) é dado sujo no campo `reasoning` dessas
+famílias — inofensivo; corrigir nos yamls das marcas.
 
 **RUNBOOK DA VIRADA (o dono roda; deploy + dados JUNTOS, nesta ordem):**
 

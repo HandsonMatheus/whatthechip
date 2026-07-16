@@ -571,6 +571,42 @@ class PriceLotTests(TestCase):
         (pn, qty, status, reason), = report.unpriced
         self.assertEqual((pn, qty, status), ('PNSEM', 5, 'NO_ROW'))
 
+    def test_valoracao_faz_queries_constantes(self):
+        """Incidente de PROD 2026-07-16 (lote 42): price_lot fazia ~3 queries
+        POR PN (cadeia + linha + PricingConfig.get_or_create) — lote grande
+        passava dos 30s do gunicorn, o worker morria em loop e o site caía.
+        O BuyerPricingContext fixa o I/O do lote em 4 queries TOTAIS
+        (entries + config + listas + linhas), qualquer que seja o tamanho."""
+        from unittest.mock import patch
+        from estoque.models import Lot, InventoryEntry
+
+        company = Company.objects.create(name='LotNq', slug='lot-nq')
+        buyer = Buyer.all_companies.create(company=company, name='WuquanNQ',
+                                           slug='wuquan-nq')
+        samsung = Brand.objects.create(name='Samsung NQ', code='SAMNQ')
+        lista = PriceList.all_companies.create(buyer=buyer, brand=samsung)
+        Price.all_companies.create(
+            price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
+            tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('40'), price_max=Decimal('40'))
+        PricingConfig.get_config()      # singleton nasce FORA da contagem
+
+        User = get_user_model()
+        u = User.objects.create_user('lot_nq')
+        with company_scope(company):
+            lot = Lot.open_for_company(company, u, 'lote NQ')
+            for i in range(30):
+                InventoryEntry.objects.create(lot=lot, part_number=f'PN{i:03d}',
+                                              quantity=1)
+            fake = _r(chip_type='eMMC', brand='Samsung NQ', cap_gb=64.0)
+            from pricing import engine as peng
+            with patch('chips.engine.classify',
+                       side_effect=lambda pn: dict(fake)):
+                with self.assertNumQueries(4):
+                    report = peng.price_lot(lot, buyer)
+        self.assertEqual(report.priced_lines, 30)
+        self.assertEqual(report.totals['mid'], Decimal('168.00'))  # 30 × 5.60
+
 
 class PriceCardGateTests(TestCase):
     """F5 — o preço no card de busca é SÓ para papel ADMIN da empresa.
