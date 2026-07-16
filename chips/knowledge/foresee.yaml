@@ -151,6 +151,24 @@ families:
   suffix_rules: ''
   tip: 'eMCP3 Foresee/Longsys (FEPN..., pn[2:4]=PN), FBGA221 11.5x13mm. Combo eMMC + LPDDR. RAM = LPDDR3 INFERIDO (nao ha datasheet FEPNA aberto): o proprio catalogo Foresee usa "3"=LPDDR3 e "4x"=LPDDR4X — o ePOP3 (FAPUA) e "+1.2V" (core LPDDR3) e o ePOP4x "+0.6V" (LPDDR4X), logo por analogia eMCP3=LPDDR3 (aceito pelo dono 2026-07-15). Familia MAGRA: capacidade dos known_parts. Ancoras: FEPNA1608 (16GB+LPDDR3 1GB), FEPNA3208 (32GB+1GB). Fonte: catalogo Longsys (geracao inferida do ePOP, nao datasheet FEPNA).'
   reasoning: '["Catalogo oficial Longsys, secao eMCP3: FEPNA1608-58A4302 e -58A4324 (16GB+8Gb), FEPNA3208-58A1924 (32GB+8Gb), FBGA221 x8+x32. A GERACAO da RAM (LPDDR3) NAO esta em datasheet FEPNA aberto (nao publicado) — foi INFERIDA da nomenclatura do proprio catalogo Foresee: ePOP3 (FAPUA) = +1.2V (core LPDDR3) e ePOP4x (FAPEA) = +0.6V (LPDDR4X), logo 3=LPDDR3 consistentemente. Inferencia aceita pelo dono (2026-07-15). Capacidade (16/32GB NAND + 1GB RAM, de 8Gb/8) confirmada no catalogo; SO a geracao e inferida."]'
+- prefix: FUPR
+  chip_type: uMCP
+  subtype: 'LPDDR4X'
+  interface: 'UFS 2.2'
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'uMCP4x Foresee/Longsys (FUPR..., pn[1:3]=UP=UFS-based-MCP), FBGA254 11.5x13mm. Combo UFS 2.2 + LPDDR4X (analogo ao eMCP4x FEPR, mas o NAND e UFS em vez de eMMC). RAM = LPDDR4X CONFIRMADO (linha rotulada "uMCP4x" no catalogo + voltagem LPDDR 0.6V + pagina oficial de uMCP diz "LPDDR4x uMCP"). interface="UFS 2.2" (a pagina oficial confirma controlador UFS2.2) — NECESSARIO: o engine tira a versao NAND do interface (path da gramatica sairia "eMMC" se vazio). Familia MAGRA: capacidade NAO decodifica posicional (mesmo motivo do FEPR — "6432"=64GB+32Gb com "64" literal, mas "A832"=128GB usa codigo A8; so 2 PNs) — capacidade vem dos known_parts. NAND=GB e LPDDR=Gb no PN (converter /8). Ancoras: FUPRB6432-C2A56N1 (64GB+LPDDR4X 4GB), FUPRFA832-C2A56N1 (128GB+4GB). Fonte: catalogo oficial Longsys, secao uMCP.'
+  reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com), secao uMCP: SO 2 PNs, ambos linha uMCP4x — FUPRB6432-C2A56N1 (64GB+32Gb) e FUPRFA832-C2A56N1 (128GB+32Gb), FBGA254 11.5x13mm, 3D NAND+1anm, -25 a 85C, x8+x32. RAM LPDDR4X CONFIRMADA (nao inferida como eMCP3): (a) a linha e rotulada uMCP4x no catalogo, (b) voltagem LPDDR 1.8V/1.1/1.1or0.6 (o 0.6V e assinatura LPDDR4X), (c) a pagina oficial umcp-memory.html diz literal LPDDR4x uMCP e UFS 2.2. Familia MAGRA sem decode de capacidade: o codigo do NAND nao e literal (64 literal vs A8 codigo pra 128GB) e so ha 2 PNs — capacidade fica pros known_parts confirmados. interface=UFS 2.2 e obrigatorio: o engine deriva a versao NAND (UFS vs eMMC) do campo interface (linha 583 engine.py); vazio sairia eMMC (errado)."]'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: vivem no BANCO (Opcao 2) — submeter via submit_known_parts. Este yaml
