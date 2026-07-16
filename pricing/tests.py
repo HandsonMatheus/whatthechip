@@ -1290,3 +1290,44 @@ class EnablePriceRowTests(TestCase):
         # Fora da grade → erro apontando o add_price_row.
         with self.assertRaises(CommandError):
             self._run(commit=True, tier='128')
+
+
+class MigratePricesToRmbTests(TestCase):
+    """F10.1: a migração DIVIDE pela taxa em que os USD nasceram (0.15),
+    recuperando os ¥ originais (13.50 → ¥90); reporta ¥ não-redondo; reverte."""
+
+    def test_converte_e_reverte(self):
+        from io import StringIO
+        from django.core.management import call_command
+        from tenancy.scope import set_current_company
+        co = Company.objects.create(name='RmbCo', slug='rmb-co')
+        buyer = Buyer.all_companies.create(company=co, name='Wu R', slug='wu-rmb')
+        b = Brand.objects.create(name='Sam RMB', code='SAMRMB')
+        pl = PriceList.all_companies.create(buyer=buyer, brand=b)
+        p = Price.all_companies.create(
+            price_list=pl, kind='emmc', gen='', tier_value=Decimal('64'),
+            tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('13.50'), price_max=Decimal('13.50'))
+        try:
+            out = StringIO()
+            call_command('migrate_prices_to_rmb', buyer='wu-rmb',
+                         rate_used='0.15', stdout=out)          # dry-run
+            p.refresh_from_db()
+            self.assertEqual(p.price_min, Decimal('13.50'))     # nada mudou
+            call_command('migrate_prices_to_rmb', buyer='wu-rmb',
+                         rate_used='0.15', commit=True, stdout=out)
+            p.refresh_from_db()
+            self.assertEqual(p.price_min, Decimal('90.00'))     # ¥ original
+            self.assertEqual(p.price_max, Decimal('90.00'))
+            call_command('migrate_prices_to_rmb', buyer='wu-rmb',
+                         rate_used='0.15',
+                         revert='migrate_prices_to_rmb_revert.json', stdout=out)
+            p.refresh_from_db()
+            self.assertEqual(p.price_min, Decimal('13.50'))     # desfeito
+            # taxa vigente é OUTRO número (0.14) e vive no Buyer:
+            self.assertEqual(buyer.fx_usd_rate, Decimal('0.14'))
+        finally:
+            set_current_company(None)
+            import os
+            if os.path.exists('migrate_prices_to_rmb_revert.json'):
+                os.unlink('migrate_prices_to_rmb_revert.json')

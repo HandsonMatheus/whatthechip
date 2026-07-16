@@ -844,6 +844,53 @@ adiciona a linha", §2/§11), agora com ferramenta própria:
 - Quem fabrica LPDDR (matriz da aba Instructions): Samsung, SK Hynix, Micron,
   Nanya. Kingston/Toshiba-Kioxia/SanDisk entram como não fabricado.
 
+### 12.18 F10 — RMB CANÔNICO (plano aprovado; **F10.1 construída** 2026-07-11, suíte 352/352; F10.2–F10.7 a executar)
+
+**F10.1 entregue (INERTE até o resto):** `Buyer.fx_usd_rate` (default 0.14,
+pghistory audita; migração de schema aditiva — deploy seguro a qualquer hora)
++ comando `migrate_prices_to_rmb --rate-used 0.15` (dry-run/revert; golden
+13.50→¥90; reporta ¥ não-redondo). ⚠ **O comando de DADOS só roda junto com o
+deploy da F10 completa** — antes disso o banco falaria ¥ e a tela US$.
+
+O comprador trata preço em RMB (convenção do mercado dele). Decisões fechadas
+com o dono (AskUserQuestion, 2026-07-11): **RMB armazenado** (o ¥ digitado
+nunca muda; USD é DERIVADO na leitura) · **taxa contratual gerida pelo dono**
+(sem API viva; editável com histórico pghistory) · **exibição dual ¥+US$** no
+card/bancada (valoração de lote e export .xlsx seguem SÓ USD) · **taxa vigente
+= 0.14**.
+
+⚠ **A sutileza da migração:** os valores atuais foram convertidos a **0.15**
+(import da planilha + WeChat). Logo: migrar dividindo por **0.15** (recupera
+os ¥ redondos originais — ¥90, ¥110, ¥80) e configurar a taxa vigente **0.14**
+para a derivação. Efeito intencional: USD derivado cai ~6,7% (¥90 → US$ 12.60,
+era 13.50) — é o contrato atual refletindo na valoração. O dry-run mostra
+tudo; ¥ não-redondo na saída = valor que o parceiro digitou em USD depois do
+launch (revisar caso a caso).
+
+**Fases:**
+- **F10.1 Modelo:** `Buyer.fx_usd_rate` (Decimal 4 casas, default 0.14,
+  auditado); `Price.price_min/max` e `PriceChangeRequest.new/old_price` passam
+  a SEMÂNTICA RMB (sem rename — docstrings/verbose_name '¥'); comando
+  `migrate_prices_to_rmb --rate-used 0.15` (dry-run/revert, reporta ¥ não-
+  redondos). `LotPricing` congelados ficam como estão (snapshots históricos
+  em USD, documentar).
+- **F10.2 Engine:** `PriceQuote` ganha `.rmb`/`mid_rmb` (armazenado) e
+  `value()/mid` passam a DERIVAR USD (¥ × taxa do buyer) — consumidores de
+  estoque não mudam. `serialize_quote` com os dois.
+- **F10.3 Parceiro:** grid/inputs/moderação/notificações em ¥; header troca a
+  API viva pela **taxa contratual vigente** ("1 ¥ = US$ 0.14 · contrato");
+  página "Como funciona" reescrita (msgids de USD mudam → rodada i18n
+  completa es/en/zh).
+- **F10.4 Admin:** PriceAdmin em ¥ + coluna US$ calculada; `fx_usd_rate`
+  editável no BuyerAdmin (mudar a taxa NÃO toca os ¥ — só o USD lido).
+- **F10.5 Card/bancada:** dual "¥ 90 · US$ 12.60" (partial + JS da home);
+  valoração/export inalterados (USD derivado).
+- **F10.6 Catálogo PDF:** seletor de MOEDA além do idioma (`?currency=rmb|usd`)
+  — título/legenda/células na moeda escolhida.
+- **F10.7:** i18n (portão verde) + testes (migração golden 13.50→¥90; USD
+  derivado a 0.14; ¥ do parceiro gravado cru; PDF nas duas moedas; taxa nova
+  muda USD e preserva ¥) + diário + runbook.
+
 ### 12.17 Fase 2 do lote 40 — habilitações no grid (dono, 2026-07-11; suíte 338/338)
 
 Chips REAIS do lote 40 revelaram combos marcados "não fabricado" (o seed usou

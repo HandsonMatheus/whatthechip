@@ -1065,6 +1065,7 @@ class PlatformAdminFormTests(TestCase):
         resp = self.client.post('/admin/pricing/buyer/add/', {
             'company': str(self.company.pk), 'name': 'Wu Quan',
             'slug': 'wu-quan', 'active': 'on', 'notes': '',
+            'fx_usd_rate': '0.14',   # F10.1: taxa contratual ¥→US$
         })
         self.assertEqual(resp.status_code, 302)
         buyer = Buyer.all_companies.get(slug='wu-quan')

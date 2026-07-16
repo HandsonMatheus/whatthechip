@@ -37,6 +37,7 @@ Decisões estruturais (PRECIFICACAO.md §1, §3 e §12):
 """
 
 import re
+from decimal import Decimal
 
 import pghistory
 
@@ -119,6 +120,14 @@ class Buyer(models.Model):
         verbose_name='Contas do comprador',
         help_text='Usuários que acessam o dashboard /partner/ deste comprador.')
     notes      = models.TextField(blank=True, default='', verbose_name='Notas')
+    # F10 (RMB canônico, plano §12.18): taxa CONTRATUAL ¥→US$ deste comprador
+    # (dono gere; pghistory audita a mudança). Os Price guardam ¥ — o USD é
+    # DERIVADO na leitura (¥ × taxa); mudar a taxa NUNCA toca os ¥ gravados.
+    fx_usd_rate = models.DecimalField(
+        max_digits=8, decimal_places=4, default=Decimal('0.14'),
+        verbose_name='Taxa ¥→US$ (contratual)',
+        help_text='US$ por 1 ¥ (ex.: 0.14). Muda só quando o contrato mudar; '
+                  'os preços em ¥ não são afetados.')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
 
     objects       = CompanyScopedManager()
