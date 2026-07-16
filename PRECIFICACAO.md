@@ -844,13 +844,85 @@ adiciona a linha", §2/§11), agora com ferramenta própria:
 - Quem fabrica LPDDR (matriz da aba Instructions): Samsung, SK Hynix, Micron,
   Nanya. Kingston/Toshiba-Kioxia/SanDisk entram como não fabricado.
 
-### 12.18 F10 — RMB CANÔNICO (plano aprovado; **F10.1 construída** 2026-07-11, suíte 352/352; F10.2–F10.7 a executar)
+### 12.18 F10 — RMB CANÔNICO (**COMPLETA em código** 2026-07-16, suíte 354/354 + `check_translations` verde; **aguardando a VIRADA** — runbook no fim desta seção)
 
-**F10.1 entregue (INERTE até o resto):** `Buyer.fx_usd_rate` (default 0.14,
-pghistory audita; migração de schema aditiva — deploy seguro a qualquer hora)
-+ comando `migrate_prices_to_rmb --rate-used 0.15` (dry-run/revert; golden
-13.50→¥90; reporta ¥ não-redondo). ⚠ **O comando de DADOS só roda junto com o
-deploy da F10 completa** — antes disso o banco falaria ¥ e a tela US$.
+**F10.1 entregue 2026-07-11 (INERTE até a virada):** `Buyer.fx_usd_rate`
+(default 0.14, pghistory audita; migração de schema aditiva — deploy seguro a
+qualquer hora) + comando `migrate_prices_to_rmb --rate-used 0.15` (dry-run/
+revert; golden 13.50→¥90; reporta ¥ não-redondo). ⚠ **O comando de DADOS só
+roda junto com o deploy da F10 completa** — antes disso o banco falaria ¥ e a
+tela US$.
+
+**F10.2–F10.7 entregues 2026-07-16 (sessão de pricing):**
+
+- **Engine (F10.2) — decisão de desenho central:** o USD é derivado **NA
+  CONSTRUÇÃO do `PriceQuote`** (`price()`: `price_min/max` = ¥ × taxa,
+  quantizado a centavo), e o ¥ armazenado sai em campos novos
+  `rmb_min/rmb_max` + `value_rmb()/mid_rmb/rmb/rmb_display`. Assim
+  `value()`/`mid`/`price_min` continuam USD e **NENHUM consumidor do estoque
+  mudou** (valoração on-read, congelamento F8 — inclusive as `lines` de
+  auditoria — e export .xlsx seguem USD, agora derivado).
+  `serialize_quote` ganhou `rmb` (display, '90') e `mid_rmb` ('90.00').
+- **Parceiro (F10.3):** grid/inputs/moderação/notificações em ¥; header troca
+  a cotação viva (script er-api/frankfurter REMOVIDO) pela **taxa contratual**
+  "1 ¥ = US$ 0.14 · taxa do contrato" (server-side, `fx_usd_rate_display`);
+  página "Como funciona" reescrita em ¥ + FAQ nova ("E se a taxa mudar?").
+- **Admin (F10.4):** `Price` com verbose_names em ¥ (migração **0012**, só
+  metadados) + coluna **US$ (derivado)** calculada; `fx_usd_rate` no
+  BuyerAdmin (list + form); delta da moderação em ¥.
+- **Card/bancada (F10.5):** dual **"¥ 90 · US$ 12.60"** no `price_block.html`
+  (com `{% localize off %}` — dinheiro sempre com ponto) e no JS da home
+  (4 arquivos `_content/index*.html`; a home lê `_content/` do disco → o push
+  já publica).
+- **PDF (F10.6):** `?currency=rmb|usd` (default **usd** — é o documento que
+  circula pros clientes dele); seletor de moeda ao lado do de idioma na home;
+  título "(US$ / ¥ RMB)", legenda e células na moeda; filename com a moeda.
+  ¥ existe em WinAnsi (Helvetica) — sem mexer na fonte CJK.
+- **`import_price_xlsx` corrigido (guarda-costas do canônico):** gravava
+  RMB × B2 (foi assim que os USD "nasceram a 0.15") — agora grava o **¥
+  DIRETO** (B2 continua obrigatória só como validação de estrutura). Re-rodar
+  o import nunca mais corrompe o banco ¥.
+- **i18n (F10.7):** 16 msgids novos/mudados traduzidos es/en/zh na MESMA
+  entrega (append no bloco "F10 RMB canônico" dos `.po`; `.mo` compilados;
+  portão `check_translations` verde, 337 entradas/idioma).
+- **Testes:** 354/354 (`chips estoque tenancy pricing`, era 352). Goldens
+  refeitos com os **¥ da planilha** (¥40/¥90/¥25…) e USD derivado @0.14
+  (¥90→12.60); novos: `test_taxa_nova_muda_usd_e_preserva_o_yuan`,
+  `test_header_mostra_taxa_contratual`, PDF nas 2 moedas, `rmb`/`mid_rmb` no
+  JSON, linhas do congelado F8 em USD ('5.60', nunca ¥), export .xlsx
+  ¥15→US$ 2.10. Fixture do estoque (`ExportPriceColumnsTests`) migrado p/ ¥.
+- **Pegadinha nova documentada:** `floatformat` **ignora** `{% localize off %}`
+  (sempre localiza → '0,1400' em pt-br). Taxa/dinheiro formatado em property
+  Python (`Buyer.fx_usd_rate_display`, `PriceQuote.rmb_display`) com
+  `f'{d.normalize():f}'` (o `:f` evita o 9E+1 — §12).
+
+**RUNBOOK DA VIRADA (o dono roda; deploy + dados JUNTOS, nesta ordem):**
+
+0. **Pré-requisitos bloqueantes:** (a) senha do Postgres **ROTACIONADA**
+   (vazou 2× em chat); (b) **backup fresco** (Render Export); (c) horário de
+   baixo uso — entre o deploy ficar live e o passo 4 há uma janela de minutos
+   em que o card mostra USD errado-BAIXO (¥ antigo × 0.14 ≈ US$ 1.89) — por
+   isso dados vêm IMEDIATAMENTE após o deploy (errado-baixo é o lado seguro;
+   rodar dados ANTES mostraria errado-ALTO, US$ 90).
+1. **Local:** suíte (354) + `check_translations` + revisar `git status` (há
+   arquivos alheios à F10 no working tree — FORESEE.md/BRIEFING_* — não
+   commitá-los junto sem querer; `submissions/` nunca vai pro git).
+2. `git push origin main` → build do Render roda a migração **0012**
+   (metadados, segura) + collectstatic.
+3. Esperar o deploy **LIVE** no dashboard.
+4. **Dados (IMEDIATAMENTE):** com `DATABASE_URL` do prod (a URL NOVA
+   pós-rotação; conferir o **slug real do buyer** no /admin/pricing/buyer/):
+   `python manage.py migrate_prices_to_rmb --buyer <slug> --rate-used 0.15`
+   (DRY-RUN: os ¥ têm que sair REDONDOS — 13.50→¥90 é a prova; ¥ não-redondo
+   = digitado em USD pós-launch, revisar caso a caso) → re-rodar com
+   `--commit` → **guardar o `migrate_prices_to_rmb_revert.json`** (é a
+   reversão: `--revert <arquivo>`).
+5. **Smoke:** card de PN cotado (admin) = "¥ 90 · US$ 12.60"; /partner/ em ¥
+   com header "1 ¥ = US$ 0.14"; PDF nas 2 moedas; valoração/export de lote em
+   USD ~6,7% menor que antes (**intencional** — contrato 0.14 vigente; lotes
+   FECHADOS congelados não mudam).
+6. `python manage.py guard_catalog` (tripwire padrão pós-deploy).
+7. Avisar o Wu Quan que o painel dele agora é em ¥ (a tela que ele pediu).
 
 O comprador trata preço em RMB (convenção do mercado dele). Decisões fechadas
 com o dono (AskUserQuestion, 2026-07-11): **RMB armazenado** (o ¥ digitado

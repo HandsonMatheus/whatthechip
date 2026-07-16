@@ -348,7 +348,7 @@
         priceBlock += '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">'
           + '<span style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.04em;">💰 ' + escHtml(p.buyer) + '</span>';
         if (p.status === 'PRICED') {
-          priceBlock += '<span style="font-size:16px;font-weight:800;color:#1d6b2f;">' + (p.is_stale ? '≈ ' : '') + 'US$ ' + escHtml(p.min) + '</span>'
+          priceBlock += '<span style="font-size:16px;font-weight:800;color:#1d6b2f;">' + (p.is_stale ? '≈ ' : '') + '¥ ' + escHtml(p.rmb) + ' <span style="font-weight:600;color:#2e7d3a;">· US$ ' + escHtml(p.min) + '</span></span>'
             + '<span style="font-size:11px;color:#557a5e;">'
             + (p.quote_date ? '报价于 ' + escHtml(p.quote_date) : '参考价（无日期）')
             + ' · ' + escHtml(p.via) + '</span>';

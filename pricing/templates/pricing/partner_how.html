@@ -4,15 +4,16 @@
 {% block content %}
 
 {% comment %}
-  "Como funciona" (F6.2, dono 2026-07-09): guia CURTO — o comprador não gosta
-  de ler. Proposta em 1 frase, 4 passos, estados, 3 dicas e FAQ dobravel
-  (details/summary, sem JS). Tudo {% trans %} (MULTILANGUAGE.md §7); emojis
-  fora do trans; USD/WhatTheChip/nomes de marca = glossário protegido.
+  "Como funciona" (F6.2, dono 2026-07-09; REESCRITA F10 2026-07-16: preços em
+  ¥ RMB, taxa contratual): guia CURTO — o comprador não gosta de ler. Proposta
+  em 1 frase, 4 passos, estados, 3 dicas e FAQ dobravel (details/summary, sem
+  JS). Tudo {% trans %} (MULTILANGUAGE.md §7); emojis fora do trans;
+  USD/RMB/WhatTheChip/nomes de marca = glossário protegido.
 {% endcomment %}
 
 <h1 style="font-weight:300;font-size:28px;margin:0 0 8px;">{% trans "Como funciona" %}</h1>
 <p style="font-size:15px;color:#393939;margin:0 0 24px;max-width:640px;line-height:1.55;">
-  {% trans "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em USD, sempre atualizada, sem planilhas." %}
+  {% trans "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em ¥ (RMB), sempre atualizada, sem planilhas." %}
 </p>
 
 {# ── 4 passos ─────────────────────────────────────────────────── #}
@@ -23,7 +24,7 @@
   </div>
   <div class="ptn-card" style="margin:0;">
     <div style="font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:700;color:#0f62fe;">2</div>
-    <div style="font-size:14px;line-height:1.5;margin-top:6px;">{% trans "Digite o preço em USD e escolha o estado da linha." %}</div>
+    <div style="font-size:14px;line-height:1.5;margin-top:6px;">{% trans "Digite o preço em ¥ (RMB) e escolha o estado da linha." %}</div>
   </div>
   <div class="ptn-card" style="margin:0;">
     <div style="font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:700;color:#0f62fe;">3</div>
@@ -51,7 +52,7 @@
   <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;margin-bottom:12px;">{% trans "Bom saber" %}</div>
   <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.8;">
     <li>{% trans "Os preços de “Outras marcas” valem para todo chip de marca que não tem tabela própria." %}</li>
-    <li>{% trans "O câmbio no topo (1 ¥ → USD) é só uma referência — todos os preços são em USD." %}</li>
+    <li>{% trans "A taxa no topo (1 ¥ → US$) é a do seu contrato com o WhatTheChip — é ela que converte os seus ¥ em US$. Ela só muda quando o contrato mudar, e os seus ¥ nunca mudam junto." %}</li>
     <li>{% trans "O preço é por chip (unitário)." %}</li>
   </ul>
 </div>
@@ -68,7 +69,11 @@
 
 <details class="ptn-faq">
   <summary>{% trans "Em que moeda eu preencho os preços?" %}</summary>
-  <p>{% trans "Sempre em USD (dólar americano), por chip. O câmbio exibido no topo é apenas uma referência." %}</p>
+  <p>{% trans "Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado — a conversão para US$ é feita pelo sistema, com a taxa do contrato exibida no topo." %}</p>
+</details>
+<details class="ptn-faq">
+  <summary>{% trans "E se a taxa do contrato mudar?" %}</summary>
+  <p>{% trans "Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula a partir deles." %}</p>
 </details>
 <details class="ptn-faq">
   <summary>{% trans "Meu preço vale na hora?" %}</summary>

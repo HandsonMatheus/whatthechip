@@ -41,6 +41,12 @@
       <option value="{{ l.code }}" {% if l.code == CUR_LANG %}selected{% endif %}>{{ l.name_local }}</option>
       {% endfor %}
     </select>
+    {# F10.6: MOEDA do documento — USD (derivado, default: é o que circula
+       pros clientes dele) ou ¥ (o armazenado). Símbolos são universais. #}
+    <select name="currency" style="padding:7px 8px;border:1px solid #8d8d8d;background:#fff;font-size:13px;" aria-label="{% trans "Moeda do catálogo" %}">
+      <option value="usd" selected>US$</option>
+      <option value="rmb">¥ RMB</option>
+    </select>
     <button type="submit" style="padding:8px 14px;background:#0f62fe;color:#fff;border:0;font-size:13px;font-weight:600;cursor:pointer;">{% trans "Baixar PDF" %}</button>
   </form>
 </div>
@@ -66,7 +72,7 @@
 </div>
 
 <p style="font-size:13px;color:#6f6f6f;line-height:1.6;">
-  {% blocktrans trimmed %}Preços por chip, em <strong>dólar (USD)</strong>. Os preços de <strong>Outras marcas</strong> valem para todo chip de marca que não tem tabela própria.{% endblocktrans %}
+  {% blocktrans trimmed %}Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. Os preços de <strong>Outras marcas</strong> valem para todo chip de marca que não tem tabela própria.{% endblocktrans %}
 </p>
 
 {% endblock %}

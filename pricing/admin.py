@@ -35,7 +35,10 @@ class PlatformScopedAdmin(admin.ModelAdmin):
 
 @admin.register(Buyer)
 class BuyerAdmin(PlatformScopedAdmin):
-    list_display  = ('name', 'company', 'active', 'created_at')
+    # F10: fx_usd_rate é a taxa CONTRATUAL ¥→US$ — editável AQUI (o dono
+    # gere; pghistory audita). Mudar a taxa NÃO toca os ¥ gravados nos
+    # Price — só o US$ derivado na leitura.
+    list_display  = ('name', 'company', 'fx_usd_rate', 'active', 'created_at')
     list_filter   = ('active', 'company')
     search_fields = ('name', 'slug')
     prepopulated_fields = {'slug': ('name',)}
@@ -64,13 +67,24 @@ class PriceListAdmin(PlatformScopedAdmin):
 
 @admin.register(Price)
 class PriceAdmin(PlatformScopedAdmin):
+    # F10 (RMB canônico): price_min/max são ¥; a coluna `usd` é CALCULADA
+    # (¥ × taxa contratual do comprador) — nunca gravada.
     list_display  = ('price_list', 'kind', 'gen', 'tier_value', 'tier_unit',
-                     'status', 'price_min', 'price_max', 'quote_date',
+                     'status', 'price_min', 'price_max', 'usd', 'quote_date',
                      'last_updated', 'updated_by')
     list_filter   = ('kind', 'status', 'price_list__buyer')
     search_fields = ('gen', 'price_list__buyer__name', 'price_list__brand__name')
+    list_select_related = ('price_list__buyer', 'price_list__brand')
     # Auditoria interna: visível AQUI, nunca no dashboard do comprador (§7).
     readonly_fields = ('company', 'last_updated', 'updated_by')
+
+    @admin.display(description='US$ (derivado)')
+    def usd(self, obj):
+        if obj.status != 'quoted' or obj.price_min is None:
+            return '—'
+        from decimal import ROUND_HALF_UP, Decimal
+        rate = obj.price_list.buyer.fx_usd_rate
+        return f'US$ {(obj.price_min * rate).quantize(Decimal("0.01"), ROUND_HALF_UP)}'
 
     def save_model(self, request, obj, form, change):
         obj.updated_by = request.user      # Feature 3: registra QUEM mudou
@@ -109,10 +123,11 @@ class PriceChangeRequestAdmin(PlatformScopedAdmin):
 
     @admin.display(description='Mudança pedida')
     def delta(self, obj):
-        de = (f'US$ {obj.old_price}' if obj.old_status == 'quoted'
+        # F10: o pedido do parceiro é em ¥ (o que ele digitou, cru).
+        de = (f'¥ {obj.old_price}' if obj.old_status == 'quoted'
               else obj.get_old_status_display() if hasattr(obj, 'get_old_status_display')
               else obj.old_status)
-        para = (f'US$ {obj.new_price}' if obj.new_status == 'quoted'
+        para = (f'¥ {obj.new_price}' if obj.new_status == 'quoted'
                 else obj.get_new_status_display())
         return f'{de} → {para}'
 

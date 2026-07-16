@@ -1518,3 +1518,83 @@ msgstr "Emitido el"
 #: pricing/pdf.py pricing/templates/pricing/partner_home.html
 msgid "Gerado por WhatTheChip"
 msgstr "Generado por WhatTheChip"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_base.html
+msgid "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥ em US$. Muda só quando o contrato mudar."
+msgstr "Tasa del contrato con WhatTheChip — es la tasa usada para convertir tus ¥ a US$. Cambia solo cuando cambie el contrato."
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_base.html
+msgid "taxa do<br>contrato"
+msgstr "tasa del<br>contrato"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/views.py
+msgid "cotado em ¥ %s"
+msgstr "cotizado en ¥ %s"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/views.py
+msgid "Estado \"Cotado\" exige o preço em ¥ (RMB)."
+msgstr "El estado \"Cotizado\" exige el precio en ¥ (RMB)."
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/views.py
+msgid "Preço ilegível — use números (ex.: 90)."
+msgstr "Precio ilegible — usa números (ej.: 90)."
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_home.html
+msgid "Moeda do catálogo"
+msgstr "Moneda del catálogo"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_home.html
+msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. Os preços de <strong>Outras marcas</strong> valem para todo chip de marca que não tem tabela própria."
+msgstr "Precios por chip, en <strong>yuanes (¥ RMB)</strong> — la conversión a US$ usa la tasa del contrato, mostrada arriba. Los precios de <strong>Otras marcas</strong> valen para todo chip de una marca que no tiene tabla propia."
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_list.html
+msgid "Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em ¥ (RMB)."
+msgstr "Elige el estado de cada línea; <strong>Cotizado</strong> exige el precio en ¥ (RMB)."
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_list.html
+msgid "Preço ¥"
+msgstr "Precio ¥"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em ¥ (RMB), sempre atualizada, sem planilhas."
+msgstr "Aquí mantienes tu tabla de precios de compra de chips de memoria — siempre en ¥ (RMB), siempre actualizada, sin hojas de cálculo."
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "Digite o preço em ¥ (RMB) e escolha o estado da linha."
+msgstr "Escribe el precio en ¥ (RMB) y elige el estado de la línea."
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "A taxa no topo (1 ¥ → US$) é a do seu contrato com o WhatTheChip — é ela que converte os seus ¥ em US$. Ela só muda quando o contrato mudar, e os seus ¥ nunca mudam junto."
+msgstr "La tasa de arriba (1 ¥ → US$) es la de tu contrato con WhatTheChip — es la que convierte tus ¥ a US$. Solo cambia cuando cambia el contrato, y tus ¥ nunca cambian con ella."
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado — a conversão para US$ é feita pelo sistema, com a taxa do contrato exibida no topo."
+msgstr "Siempre en ¥ (RMB), por chip. El número que escribes es el que queda guardado — la conversión a US$ la hace el sistema, con la tasa del contrato mostrada arriba."
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "E se a taxa do contrato mudar?"
+msgstr "¿Y si cambia la tasa del contrato?"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula a partir deles."
+msgstr "Tus precios en ¥ no cambian. Solo cambia el valor en US$ que el sistema calcula a partir de ellos."
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/pdf.py
+msgid "Preços em ¥ (RMB) por chip (unitário)."
+msgstr "Precios en ¥ (RMB) por chip (unitario)."

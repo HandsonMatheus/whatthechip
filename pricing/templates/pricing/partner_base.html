@@ -7,13 +7,13 @@
   classes .wtc-header__* são cópia fiel dos tokens de lá.
 
   Extras do parceiro:
-    · Câmbio USD→CNY de REFERÊNCIA no topo (JS client-side, ver bloco no fim —
-      exibição apenas; NENHUM cálculo do sistema usa esse número: USD é a
-      moeda canônica, princípio #3 do plano).
+    · TAXA CONTRATUAL ¥→US$ no topo (F10 §12.18: server-side, é o
+      Buyer.fx_usd_rate que o dono gere — substituiu a cotação viva de API;
+      é a taxa que o sistema USA para derivar o USD dos ¥).
     · Sidebar com todas as marcas (nav_lists vem das views) + pendências.
 
   ⚠ NUNCA exibir updated_by/last_updated aqui — auditoria é só do admin (§7).
-{% endcomment %}{% load static i18n %}<!DOCTYPE html>
+{% endcomment %}{% load static i18n l10n %}<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:'pt-br' }}">
 <head>
   <meta charset="utf-8">
@@ -63,8 +63,8 @@
     .wtc-header__btn:hover { background:#262626; }
     .wtc-header__btn--logout { color:#ff8389; }
 
-    /* Câmbio de referência (zona própria, estilo "org") */
-    .wtc-header__fx { display:none; align-items:center; gap:8px; height:100%;
+    /* Taxa contratual ¥→US$ (zona própria, estilo "org") */
+    .wtc-header__fx { display:flex; align-items:center; gap:8px; height:100%;
                       padding:0 16px; border-left:1px solid #393939; }
     .wtc-header__fx-val { font-family:'IBM Plex Mono',monospace; color:#f4f4f4;
                           font-size:13px; font-weight:600; white-space:nowrap; }
@@ -150,10 +150,11 @@
 
   <span class="wtc-header__spacer"></span>
 
-  {# Câmbio RMB→USD de REFERÊNCIA (client-side; escondido até carregar). #}
-  <div class="wtc-header__fx" id="wtc-fx" title="{% trans 'Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre em USD.' %}">
-    <span class="wtc-header__fx-val" id="wtc-fx-val"></span>
-    <span class="wtc-header__fx-note">{% blocktrans trimmed %}câmbio de<br>referência{% endblocktrans %}</span>
+  {# Taxa CONTRATUAL ¥→US$ (F10: server-side, Buyer.fx_usd_rate — é a taxa
+     que o sistema usa para derivar o USD; a cotação viva de API morreu). #}
+  <div class="wtc-header__fx" title="{% trans 'Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥ em US$. Muda só quando o contrato mudar.' %}">
+    <span class="wtc-header__fx-val">1 ¥ = US$ {{ buyer.fx_usd_rate_display }}</span>
+    <span class="wtc-header__fx-note">{% blocktrans trimmed %}taxa do<br>contrato{% endblocktrans %}</span>
   </div>
 
   <div class="wtc-header__who">
@@ -204,42 +205,10 @@
   </main>
 </div>
 
-<script>
-/* Câmbio RMB→USD de referência (exibição APENAS — nenhum cálculo usa isto;
-   os preços do sistema são sempre em USD). A API devolve USD→CNY; exibimos o
-   INVERSO (1 ¥ = 1/rate USD), que é como o comprador pensa.
-   Fonte primária: open.er-api.com (sem chave, CORS ok); fallback: frankfurter.
-   Cache de 1h no sessionStorage; em falha, a zona simplesmente não aparece. */
-(function () {
-  var box = document.getElementById('wtc-fx'),
-      val = document.getElementById('wtc-fx-val');
-  if (!box || !val) return;
-  function show(rate) {
-    if (!rate || !isFinite(rate) || rate <= 0) return;
-    val.textContent = '1 ¥ ≈ US$ ' + (1 / rate).toFixed(3);
-    box.style.display = 'flex';
-  }
-  try {
-    var cached = JSON.parse(sessionStorage.getItem('wtc_fx_cny') || 'null');
-    if (cached && (Date.now() - cached.t) < 3600e3) { show(cached.r); return; }
-  } catch (e) {}
-  function keep(rate) {
-    try { sessionStorage.setItem('wtc_fx_cny', JSON.stringify({ r: rate, t: Date.now() })); } catch (e) {}
-    show(rate);
-  }
-  fetch('https://open.er-api.com/v6/latest/USD')
-    .then(function (r) { return r.json(); })
-    .then(function (d) {
-      if (d && d.rates && d.rates.CNY) keep(d.rates.CNY);
-      else throw new Error('sem CNY');
-    })
-    .catch(function () {
-      fetch('https://api.frankfurter.app/latest?from=USD&to=CNY')
-        .then(function (r) { return r.json(); })
-        .then(function (d) { if (d && d.rates && d.rates.CNY) keep(d.rates.CNY); })
-        .catch(function () {});
-    });
-})();
-</script>
+{% comment %}
+  F10 (§12.18): o script de cotação viva (er-api/frankfurter) foi REMOVIDO —
+  a zona __fx agora exibe a taxa CONTRATUAL (Buyer.fx_usd_rate), server-side.
+  Cotação de mercado no header confundiria: a taxa que VALE é a do contrato.
+{% endcomment %}
 </body>
 </html>

@@ -1465,3 +1465,83 @@ msgstr "签发于"
 #: pricing/pdf.py pricing/templates/pricing/partner_home.html
 msgid "Gerado por WhatTheChip"
 msgstr "由 WhatTheChip 生成"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_base.html
+msgid "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥ em US$. Muda só quando o contrato mudar."
+msgstr "与 WhatTheChip 合同中的汇率——用于把您的 ¥ 换算成 US$。只有合同变更时才会改变。"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_base.html
+msgid "taxa do<br>contrato"
+msgstr "合同<br>汇率"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/views.py
+msgid "cotado em ¥ %s"
+msgstr "报价 ¥ %s"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/views.py
+msgid "Estado \"Cotado\" exige o preço em ¥ (RMB)."
+msgstr "“已报价”状态必须填写 ¥（RMB）价格。"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/views.py
+msgid "Preço ilegível — use números (ex.: 90)."
+msgstr "价格无法识别 — 请输入数字（例如 90）。"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_home.html
+msgid "Moeda do catálogo"
+msgstr "目录货币"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_home.html
+msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. Os preços de <strong>Outras marcas</strong> valem para todo chip de marca que não tem tabela própria."
+msgstr "价格按芯片计，以<strong>人民币（¥ RMB）</strong>计价——US$ 按顶部显示的合同汇率换算。<strong>其他品牌</strong>的价格适用于所有没有专属价格表的品牌芯片。"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_list.html
+msgid "Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em ¥ (RMB)."
+msgstr "选择每行的状态；<strong>已报价</strong>必须填写 ¥（RMB）价格。"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_list.html
+msgid "Preço ¥"
+msgstr "价格 ¥"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em ¥ (RMB), sempre atualizada, sem planilhas."
+msgstr "在这里维护您的存储芯片收购价格表——始终以 ¥（RMB）计价，随时更新，无需表格文件。"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "Digite o preço em ¥ (RMB) e escolha o estado da linha."
+msgstr "输入 ¥（RMB）价格并选择该行的状态。"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "A taxa no topo (1 ¥ → US$) é a do seu contrato com o WhatTheChip — é ela que converte os seus ¥ em US$. Ela só muda quando o contrato mudar, e os seus ¥ nunca mudam junto."
+msgstr "顶部汇率（1 ¥ → US$）是您与 WhatTheChip 合同中的汇率——由它把您的 ¥ 换算成 US$。只有合同变更时才会改变，而您的 ¥ 价格不会随之变动。"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado — a conversão para US$ é feita pelo sistema, com a taxa do contrato exibida no topo."
+msgstr "始终以 ¥（RMB）计价，按芯片计。您输入的数字就是系统保存的数字——US$ 由系统按顶部显示的合同汇率换算。"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "E se a taxa do contrato mudar?"
+msgstr "如果合同汇率变了怎么办？"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/templates/pricing/partner_how.html
+msgid "Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula a partir deles."
+msgstr "您的 ¥ 价格不会变，变的只是系统据此计算出的 US$ 金额。"
+
+#. F10 RMB canônico — 2026-07-16
+#: pricing/pdf.py
+msgid "Preços em ¥ (RMB) por chip (unitário)."
+msgstr "价格以 ¥（RMB）计，按芯片（单价）。"

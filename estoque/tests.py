@@ -1099,15 +1099,17 @@ class ExportPriceColumnsTests(TestCase):
         KnownPart.objects.create(part_number='KLMAG1JETD', brand=brand,
                                  chip_type='eMMC', capacity='16GB',
                                  confidence='confirmed', review_status='approved')
-        # Comprador com preço: eMMC 16GB = US$ 1,50 (lista genérica).
+        # Comprador com preço: eMMC 16GB = ¥ 15 (lista genérica). F10 (RMB
+        # canônico): o banco guarda ¥; o export segue em USD DERIVADO pela
+        # taxa contratual default 0.14 → US$ 2,10 unitário.
         from pricing.models import Buyer, Price, PriceList
         buyer = Buyer.all_companies.create(name='Wuquan', slug='wuquan',
                                            company=cls.company)
         pl = PriceList.all_companies.create(buyer=buyer, company=cls.company)
         Price.all_companies.create(price_list=pl, kind='emmc', gen='',
                                    tier_value=16, tier_unit='GB',
-                                   status='quoted', price_min='1.50',
-                                   price_max='1.50', company=cls.company)
+                                   status='quoted', price_min='15',
+                                   price_max='15', company=cls.company)
 
     def _sheet(self, user):
         import io as _io
@@ -1123,9 +1125,10 @@ class ExportPriceColumnsTests(TestCase):
         self.assertIn('Preço unit. — Wuquan (USD)', headers)
         self.assertIn('Total — Wuquan (USD)', headers)
         unit_col = headers.index('Preço unit. — Wuquan (USD)') + 1
-        self.assertEqual(ws.cell(row=2, column=unit_col).value, 1.5)
-        self.assertEqual(ws.cell(row=2, column=unit_col + 1).value, 4.5)  # 3 × 1,50
-        self.assertEqual(ws.cell(row=3, column=unit_col + 1).value, 4.5)  # TOTAL geral
+        # USD DERIVADO (F10): ¥15 × 0.14 = 2.10 — o export NUNCA vê ¥.
+        self.assertEqual(ws.cell(row=2, column=unit_col).value, 2.1)
+        self.assertEqual(ws.cell(row=2, column=unit_col + 1).value, 6.3)  # 3 × 2,10
+        self.assertEqual(ws.cell(row=3, column=unit_col + 1).value, 6.3)  # TOTAL geral
 
     def test_gerente_exporta_sem_colunas_de_preco(self):
         """Gerente continua exportando (papel dele) — mas a planilha vem SEM

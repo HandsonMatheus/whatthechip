@@ -198,8 +198,10 @@ class PricingPghistoryTests(TestCase):
 
 
 class ImportPriceXlsxTests(TestCase):
-    """F4 — o import da planilha do comprador: dry-run, conversão RMB→USD,
-    colapso eMCP, 3 estados, normalização de marca, idempotência e conflito."""
+    """F4 — o import da planilha do comprador: dry-run, colapso eMCP,
+    3 estados, normalização de marca, idempotência e conflito.
+    F10 (RMB canônico): o ¥ da coluna F é gravado DIRETO — a antiga conversão
+    × B2 morreu (era ela que gerava os USD "nascidos a 0.15")."""
 
     @classmethod
     def setUpTestData(cls):
@@ -282,12 +284,12 @@ class ImportPriceXlsxTests(TestCase):
         P = Price.all_companies
         emmc = P.get(kind='emmc', tier_value=Decimal('64'))
         self.assertEqual((emmc.price_min, emmc.price_max),
-                         (Decimal('6.00'), Decimal('6.00')))   # 40 RMB × 0.15
+                         (Decimal('40.00'), Decimal('40.00')))  # ¥40 DIRETO (F10)
         self.assertEqual(str(emmc.quote_date), '2026-06-29')
         emcp = P.get(kind='emcp')                              # 64+4 e 64+3 → UMA linha
-        # faixa "90-110" RMB → ponto médio 100 × 0.15 = 15.00 (preço FIXO)
+        # faixa "90-110" RMB → ponto médio ¥100 (preço FIXO; sem × câmbio)
         self.assertEqual((emcp.price_min, emcp.price_max),
-                         (Decimal('15.00'), Decimal('15.00')))
+                         (Decimal('100.00'), Decimal('100.00')))
         self.assertEqual(P.get(kind='gddr').status, STATUS_NO_BUY)
         self.assertEqual(P.get(kind='ufs').status, STATUS_UNQUOTED)
         # Normalização de marca: Toshiba/Kioxia → Toshiba-Kioxia.
@@ -297,10 +299,10 @@ class ImportPriceXlsxTests(TestCase):
         # decisão 2026-07-07: nada de lista-fantasma pra Rayson & cia).
         generica = P.get(kind='lpddr')
         self.assertIsNone(generica.price_list.brand)
-        self.assertEqual(generica.price_min, Decimal('1.95'))  # 13 × 0.15
+        self.assertEqual(generica.price_min, Decimal('13.00'))  # ¥13 direto
         outras8 = P.get(kind='emmc', tier_value=Decimal('8'))
         self.assertIsNone(outras8.price_list.brand)            # NÃO é lista Rayson
-        self.assertEqual(outras8.price_min, Decimal('1.50'))
+        self.assertEqual(outras8.price_min, Decimal('10.00'))
         self.assertFalse(PriceList.all_companies.filter(
             brand__name='Rayson').exists())
         # A linha DDR de unidade errada não entrou:
@@ -340,7 +342,12 @@ def _r(**kw):
 class PriceGoldenTests(TestCase):
     """F3 — goldens com os NÚMEROS REAIS da planilha do Wuquan (§9 do plano).
 
-    Provam: chave por kind, faixa (cenários), LPDDR4≠4X, RAM fora da chave,
+    F10 (RMB canônico, §12.18): o fixture agora guarda os **¥ ORIGINAIS** da
+    planilha (a coluna RMB — ¥40, ¥90, ¥25…) e as asserções esperam o **USD
+    DERIVADO** pela taxa contratual default 0.14 (¥90 → US$ 12.60; era 13.50
+    quando os USD nasceram a 0.15 — a queda de ~6,7% é o contrato atual).
+
+    Provam: chave por kind, derivação ¥→US$, LPDDR4≠4X, RAM fora da chave,
     3 estados de sem-preço, genérico→NO_KEY, fora-da-grade→NO_ROW, e a cadeia
     de herança inteira (marca → herança → genérica → herança da genérica)."""
 
@@ -375,23 +382,24 @@ class PriceGoldenTests(TestCase):
                 price_max=Decimal(str(mx)) if mx is not None else None,
                 quote_date=qd)
 
-        # Samsung (valores da planilha real; faixa 13.50–16.50 achatada no
-        # ponto médio 15.00 — preço FIXO, decisão 2026-07-07):
-        row(cls.l_samsung, 'emmc', '', 64, 'GB', '6.00', '6.00', qd=hoje)
-        row(cls.l_samsung, 'emcp', 'LPDDR4X', 64, 'GB', '15.00', '15.00')  # sem data → ≈
-        row(cls.l_samsung, 'lpddr', 'LPDDR4', 4, 'GB', '3.75', '3.75', qd=hoje)
-        row(cls.l_samsung, 'lpddr', 'LPDDR4X', 4, 'GB', '2.55', '2.55', qd=hoje)
-        row(cls.l_samsung, 'ddr', 'DDR3L', 4, 'Gb', '0.60', '0.60', qd=hoje)
-        row(cls.l_samsung, 'ddr', 'DDR4', 8, 'Gb', '1.95', '1.95', qd=velho)
+        # Samsung — os ¥ da PLANILHA (coluna RMB; faixa "90-110" achatada no
+        # ponto médio ¥100→ aqui usamos ¥90, o golden do plano §12.18 — preço
+        # FIXO, decisão 2026-07-07). USD derivado @0.14 nas asserções:
+        row(cls.l_samsung, 'emmc', '', 64, 'GB', '40', '40', qd=hoje)          # → 5.60
+        row(cls.l_samsung, 'emcp', 'LPDDR4X', 64, 'GB', '90', '90')  # sem data → ≈; → 12.60
+        row(cls.l_samsung, 'lpddr', 'LPDDR4', 4, 'GB', '25', '25', qd=hoje)    # → 3.50
+        row(cls.l_samsung, 'lpddr', 'LPDDR4X', 4, 'GB', '17', '17', qd=hoje)   # → 2.38
+        row(cls.l_samsung, 'ddr', 'DDR3L', 4, 'Gb', '4', '4', qd=hoje)         # → 0.56
+        row(cls.l_samsung, 'ddr', 'DDR4', 8, 'Gb', '13', '13', qd=velho)       # → 1.82
         row(cls.l_samsung, 'gddr', 'GDDR5', 8, 'Gb', status=STATUS_NO_BUY)
         row(cls.l_samsung, 'ufs', '', 256, 'GB', status=STATUS_UNQUOTED)
         # Nanya (o "curinga" DRAM, agora como dado):
-        row(cls.l_nanya, 'ddr', 'DDR3', 2, 'Gb', '0.45', '0.45', qd=hoje)
-        row(cls.l_nanya, 'lpddr', 'LPDDR4', 2, 'GB', '1.95', '1.95', qd=hoje)
+        row(cls.l_nanya, 'ddr', 'DDR3', 2, 'Gb', '3', '3', qd=hoje)            # → 0.42
+        row(cls.l_nanya, 'lpddr', 'LPDDR4', 2, 'GB', '13', '13', qd=hoje)      # → 1.82
         # Genérica: linha PRÓPRIA sobrepõe a herdada da Nanya (override):
-        row(cls.l_generic, 'ddr', 'DDR3', 4, 'Gb', '0.50', '0.50', qd=hoje)
+        row(cls.l_generic, 'ddr', 'DDR3', 4, 'Gb', '5', '5', qd=hoje)          # → 0.70
         # Rayson (da aba Other Brands): só o override dele:
-        row(cls.l_rayson, 'emmc', '', 8, 'GB', '1.50', '1.50', qd=hoje)
+        row(cls.l_rayson, 'emmc', '', 8, 'GB', '10', '10', qd=hoje)            # → 1.40
 
     def _price(self, **kw):
         from .engine import price
@@ -400,31 +408,49 @@ class PriceGoldenTests(TestCase):
     def test_emmc_samsung_64gb_preco_exato(self):
         q = self._price(chip_type='eMMC', brand='Samsung', cap_gb=64.0)
         self.assertEqual(q.status, 'PRICED')
+        # ¥ armazenado + USD derivado (¥40 × 0.14 = 5.60):
+        self.assertEqual((q.rmb_min, q.rmb_max), (Decimal('40'), Decimal('40')))
         self.assertEqual((q.price_min, q.price_max),
-                         (Decimal('6.00'), Decimal('6.00')))
+                         (Decimal('5.60'), Decimal('5.60')))
         self.assertFalse(q.is_range)
         self.assertFalse(q.is_stale)
         self.assertEqual(q.via, 'marca')
 
     def test_emcp_preco_fixo_e_ram_fora_da_chave(self):
+        # O golden do plano §12.18: ¥90 → US$ 12.60 (taxa contratual 0.14).
         q = self._price(chip_type='eMCP', subtype='LPDDR4X', brand='Samsung',
                         nand_gb=64.0, ram_gb=4.0, ram_gen='LPDDR4X')
         self.assertEqual(q.status, 'PRICED')
         self.assertFalse(q.is_range)                     # preço FIXO (2026-07-07)
         self.assertTrue(q.is_stale)                      # linha sem quote_date → ≈
-        self.assertEqual(q.value(), Decimal('15.00'))
+        self.assertEqual(q.value(), Decimal('12.60'))
+        self.assertEqual(q.rmb, Decimal('90'))           # o ¥ digitado, intacto
+        self.assertEqual(q.mid_rmb, Decimal('90.00'))
+        self.assertEqual(q.rmb_display, '90')            # card dual: "¥ 90 · US$ 12.60"
         # RAM 3GB vs 4GB: MESMA faixa de NAND, MESMO preço (regra do comprador).
         q3 = self._price(chip_type='eMCP', subtype='LPDDR4X', brand='Samsung',
                          nand_gb=64.0, ram_gb=3.0, ram_gen='LPDDR4X')
         self.assertEqual(q3.price_min, q.price_min)
+
+    def test_taxa_nova_muda_usd_e_preserva_o_yuan(self):
+        # F10: mudar a taxa contratual NUNCA toca os ¥ — só o USD derivado.
+        self.buyer.fx_usd_rate = Decimal('0.15')
+        self.buyer.save()
+        q = self._price(chip_type='eMCP', subtype='LPDDR4X', brand='Samsung',
+                        nand_gb=64.0, ram_gb=4.0, ram_gen='LPDDR4X')
+        self.assertEqual(q.rmb, Decimal('90'))            # ¥ intacto
+        self.assertEqual(q.price_min, Decimal('13.50'))   # USD acompanha a taxa
+        # e o banco continua guardando o ¥ cru:
+        row = Price.all_companies.get(price_list=self.l_samsung, kind='emcp')
+        self.assertEqual(row.price_min, Decimal('90'))
 
     def test_lpddr4_e_4x_tem_precos_diferentes(self):
         q4 = self._price(chip_type='LPDDR4', brand='Samsung', cap_gb=4.0,
                          ram_gen='LPDDR4')
         q4x = self._price(chip_type='LPDDR4X', brand='Samsung', cap_gb=4.0,
                           ram_gen='LPDDR4X')
-        self.assertEqual(q4.price_min, Decimal('3.75'))
-        self.assertEqual(q4x.price_min, Decimal('2.55'))   # subtype é bug de preço
+        self.assertEqual(q4.price_min, Decimal('3.50'))    # ¥25 × 0.14
+        self.assertEqual(q4x.price_min, Decimal('2.38'))   # ¥17 × 0.14 — subtype é bug de preço
 
     def test_ddr3l_dobra_para_ddr3_na_chave(self):
         # POLÍTICA NOVA (dono, 2026-07-11): "DDR3L e DDR3 são a mesma coisa em
@@ -434,11 +460,11 @@ class PriceGoldenTests(TestCase):
         # propósito: grade real não tem linhas DDR3L.)
         q = self._price(chip_type='DDR3L', brand='Samsung', density_gbit_num=4.0)
         self.assertEqual(q.status, 'PRICED')
-        self.assertEqual(q.price_min, Decimal('0.50'))   # DDR3 4Gb da genérica
+        self.assertEqual(q.price_min, Decimal('0.70'))   # DDR3 4Gb da genérica (¥5)
         self.assertEqual(q.via, 'genérica')
         # DDR3 puro segue idêntico — mesma chave, mesmo preço.
         q2 = self._price(chip_type='DDR3', brand='Samsung', density_gbit_num=4.0)
-        self.assertEqual(q2.price_min, Decimal('0.50'))
+        self.assertEqual(q2.price_min, Decimal('0.70'))
         self.assertEqual(q2.via, 'genérica')
 
     def test_tres_estados_de_sem_preco(self):
@@ -463,20 +489,20 @@ class PriceGoldenTests(TestCase):
     def test_cadeia_de_heranca_completa(self):
         # SK herda da Samsung ("SK = Samsung" como dado):
         sk = self._price(chip_type='eMMC', brand='SK Hynix', cap_gb=64.0)
-        self.assertEqual(sk.price_min, Decimal('6.00'))
+        self.assertEqual(sk.price_min, Decimal('5.60'))            # ¥40 @0.14
         self.assertEqual(sk.via, 'herança da marca')
         # Rayson: linha própria vence tudo:
         ray = self._price(chip_type='eMMC', brand='Rayson', cap_gb=8.0)
-        self.assertEqual((ray.price_min, ray.via), (Decimal('1.50'), 'marca'))
+        self.assertEqual((ray.price_min, ray.via), (Decimal('1.40'), 'marca'))
         # Rayson LPDDR4 2GB: não tem → genérica não tem → Nanya (herança da genérica):
         ray2 = self._price(chip_type='LPDDR4', brand='Rayson', cap_gb=2.0,
                            ram_gen='LPDDR4')
         self.assertEqual((ray2.price_min, ray2.via),
-                         (Decimal('1.95'), 'herança da genérica'))
+                         (Decimal('1.82'), 'herança da genérica'))  # ¥13 @0.14
         # Marca DESCONHECIDA (sem lista): cai direto na genérica→Nanya:
         esmt = self._price(chip_type='DDR3', brand='ESMT', density_gbit_num=2.0)
         self.assertEqual((esmt.price_min, esmt.via),
-                         (Decimal('0.45'), 'herança da genérica'))
+                         (Decimal('0.42'), 'herança da genérica'))  # ¥3 @0.14
 
     def test_staleness_por_data(self):
         velho = self._price(chip_type='DDR4', brand='Samsung', density_gbit_num=8.0)
@@ -518,7 +544,7 @@ class PriceLotTests(TestCase):
         Price.all_companies.create(
             price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
-            price_min=Decimal('6.00'), price_max=Decimal('6.00'))
+            price_min=Decimal('40'), price_max=Decimal('40'))   # ¥40 → US$ 5.60
 
         User = get_user_model()
         u = User.objects.create_user('lot_f3')
@@ -539,7 +565,8 @@ class PriceLotTests(TestCase):
         self.assertEqual(report.priced_lines, 1)
         self.assertEqual(report.total_units, 15)
         self.assertEqual(report.priced_units, 10)
-        self.assertEqual(report.totals['mid'], Decimal('60.00'))   # 10 × $6
+        # Valoração SEGUE em USD (F10): 10 × US$ 5.60 (¥40 derivado @0.14).
+        self.assertEqual(report.totals['mid'], Decimal('56.00'))
         self.assertEqual(report.coverage_units, 100.0 * 10 / 15)
         (pn, qty, status, reason), = report.unpriced
         self.assertEqual((pn, qty, status), ('PNSEM', 5, 'NO_ROW'))
@@ -561,7 +588,7 @@ class PriceCardGateTests(TestCase):
         Price.all_companies.create(
             price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
-            price_min=Decimal('6.00'), price_max=Decimal('6.00'))
+            price_min=Decimal('40'), price_max=Decimal('40'))   # ¥40 → US$ 5.60
 
         User = get_user_model()
         cls.users = {}
@@ -592,9 +619,10 @@ class PriceCardGateTests(TestCase):
 
     def test_admin_ve_o_preco(self):
         resp = self._decode(self.users['admin'])
-        # 'US$ 6' sem os centavos: o l10n pt-br formata Decimal com vírgula
-        # ("6,00") — a asserção fica robusta a locale.
-        self.assertContains(resp, 'US$ 6')
+        # F10.5: exibição DUAL "¥ 40 · US$ 5.60" — o bloco usa {% localize
+        # off %}, então o decimal vem com PONTO em qualquer idioma da UI.
+        self.assertContains(resp, '¥ 40')
+        self.assertContains(resp, 'US$ 5.60')
         self.assertContains(resp, 'Wuquan C')
         self.assertContains(resp, 'dc2-price-block')
 
@@ -603,7 +631,8 @@ class PriceCardGateTests(TestCase):
             self.client.logout()
             resp = self._decode(who)
             self.assertEqual(resp.status_code, 200)
-            self.assertNotContains(resp, 'US$ 6')
+            self.assertNotContains(resp, 'US$ 5.60')
+            self.assertNotContains(resp, '¥ 40')
             self.assertNotContains(resp, 'dc2-price-block')
 
 
@@ -622,7 +651,7 @@ class BenchAndLotPricingTests(TestCase):
         Price.all_companies.create(
             price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
-            price_min=Decimal('6.00'), price_max=Decimal('6.00'))
+            price_min=Decimal('40'), price_max=Decimal('40'))   # ¥40 → US$ 5.60
 
         User = get_user_model()
         cls.users = {}
@@ -664,7 +693,10 @@ class BenchAndLotPricingTests(TestCase):
             self.client.force_login(self.users['admin'])
             d = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'}).json()
             self.assertIn('prices', d)
-            self.assertEqual(d['prices'][0]['min'], '6.00')     # string, não float
+            # F10: as DUAS moedas no JSON — USD derivado + ¥ armazenado.
+            self.assertEqual(d['prices'][0]['min'], '5.60')     # string, não float
+            self.assertEqual(d['prices'][0]['rmb'], '40')       # ¥ de exibição
+            self.assertEqual(d['prices'][0]['mid_rmb'], '40.00')
             self.client.logout()
             self.client.force_login(self.users['operator'])
             d2 = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'}).json()
@@ -681,7 +713,8 @@ class BenchAndLotPricingTests(TestCase):
             resp = self.client.get(f'/estoque/lote/{lot.pk}/preview/',
                                    {'pn': 'KLMCG8GEAC'})
             self.assertContains(resp, 'dc2-price-block')
-            self.assertContains(resp, 'US$ 6')
+            self.assertContains(resp, '¥ 40')            # dual (F10.5)
+            self.assertContains(resp, 'US$ 5.60')
             self.client.logout()
             self.client.force_login(self.users['operator'])
             resp2 = self.client.get(f'/estoque/lote/{lot.pk}/preview/',
@@ -698,10 +731,13 @@ class BenchAndLotPricingTests(TestCase):
             self.client.force_login(self.users['manager'])
             self.client.post(f'/estoque/lote/{lot.pk}/fechar/')
             lp = LotPricing.all_companies.get(lot=lot)
-            self.assertEqual(lp.total_mid, Decimal('60.00'))    # 10 × $6
+            # Congelado SEGUE em USD (F10): 10 × US$ 5.60 (¥40 @0.14) — e as
+            # linhas de auditoria também (nunca ¥ no snapshot).
+            self.assertEqual(lp.total_mid, Decimal('56.00'))
             self.assertEqual(lp.priced_units, 10)
             self.assertEqual(lp.company_id, self.company.pk)
             self.assertEqual(lp.lines[0]['pn'], 'KLMCG8GEAC')
+            self.assertEqual(lp.lines[0]['min'], '5.60')        # USD, não ¥
             # gerente NÃO vê o painel de valoração
             resp_m = self.client.get(f'/estoque/lote/{lot.pk}/')
             self.assertNotContains(resp_m, 'Valoração do lote')
@@ -711,7 +747,7 @@ class BenchAndLotPricingTests(TestCase):
             resp_a = self.client.get(f'/estoque/lote/{lot.pk}/')
             self.assertContains(resp_a, 'Valoração do lote')
             self.assertContains(resp_a, 'congelada no fechamento')
-            self.assertContains(resp_a, 'US$ 60')
+            self.assertContains(resp_a, 'US$ 56')               # 10 × US$ 5.60
 
     def test_lote_aberto_mostra_estimativa_ao_vivo_para_admin(self):
         from unittest.mock import patch
@@ -720,7 +756,7 @@ class BenchAndLotPricingTests(TestCase):
             self.client.force_login(self.users['admin'])
             resp = self.client.get(f'/estoque/lote/{lot.pk}/')
             self.assertContains(resp, 'estimativa ao vivo')
-            self.assertContains(resp, 'US$ 30')                 # 5 × $6
+            self.assertContains(resp, 'US$ 28')                 # 5 × US$ 5.60
 
 
 class SeedPriceGridTests(TestCase):
@@ -873,36 +909,55 @@ class PartnerDashboardTests(TestCase):
 
     def test_como_funciona(self):
         # F6.2: guia curto do comprador — acessível só ao parceiro, com FAQ.
+        # F10: a página foi REESCRITA em ¥ (RMB) — nada de "preço em USD".
         self.client.force_login(self.partner)
         resp = self.client.get('/partner/how/')
         self.assertContains(resp, 'Como funciona')
         self.assertContains(resp, 'Perguntas frequentes')
-        self.assertContains(resp, 'USD')
+        self.assertContains(resp, 'RMB')
+        self.assertContains(resp, 'taxa do')             # taxa do contrato
+        self.assertNotContains(resp, 'preço em USD')
         self.client.logout()
         self.client.force_login(self.operator)
         self.assertEqual(self.client.get('/partner/how/').status_code, 403)
 
+    def test_header_mostra_taxa_contratual(self):
+        # F10.3: o header troca a cotação viva pela taxa do CONTRATO
+        # (Buyer.fx_usd_rate, default 0.14) — e o script de API morreu.
+        self.client.force_login(self.partner)
+        resp = self.client.get('/partner/')
+        self.assertContains(resp, '1 ¥ = US$ 0.14')
+        self.assertNotContains(resp, 'er-api.com')       # cotação viva removida
+
     def test_catalogo_pdf(self):
         # F9: catálogo em PDF — matriz (colunas=listas, seções=kind) + seletor
         # de idioma do DOCUMENTO (?lang=, independe da sessão).
+        # F10.6: seletor de MOEDA (?currency=rmb|usd; default usd = derivado).
         from pricing.pdf import catalog_data
-        columns, sections = catalog_data(self.buyer)
+        columns, sections = catalog_data(self.buyer)                 # default: usd
         # Ordem = a da sidebar (sort Python por nome, ASCII): 'SK' < 'Sa'.
         self.assertEqual(columns, ['SK Hynix P6', 'Samsung P6'])
         self.assertEqual([s['title'] for s in sections], ['eMMC', 'UFS'])
         emmc = sections[0]['rows'][0]
         self.assertEqual(emmc['label'], '64GB')
-        self.assertEqual(emmc['cells'][1], ('quoted', '6.00'))
+        # USD DERIVADO: ¥6 × 0.14 = 0.84 (o fixture guarda ¥ 6.00).
+        self.assertEqual(emmc['cells'][1], ('quoted', '0.84'))
         self.assertEqual(emmc['cells'][0], ('unquoted', None))   # SK sem linha
+        # Moeda RMB: o ¥ armazenado cru, sem zeros à direita.
+        _cols, sections_rmb = catalog_data(self.buyer, currency='rmb')
+        self.assertEqual(sections_rmb[0]['rows'][0]['cells'][1], ('quoted', '6'))
 
         self.client.force_login(self.partner)
         resp = self.client.get('/partner/catalog.pdf')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp['Content-Type'], 'application/pdf')
         self.assertTrue(resp.content.startswith(b'%PDF'))
-        self.assertIn('wuquan-p6-prices-', resp['Content-Disposition'])
-        resp_zh = self.client.get('/partner/catalog.pdf?lang=zh-hans')
-        self.assertTrue(resp_zh.content.startswith(b'%PDF'))     # fonte CID CJK
+        self.assertIn('wuquan-p6-prices-usd-', resp['Content-Disposition'])
+        resp_rmb = self.client.get('/partner/catalog.pdf?currency=rmb')
+        self.assertTrue(resp_rmb.content.startswith(b'%PDF'))
+        self.assertIn('wuquan-p6-prices-rmb-', resp_rmb['Content-Disposition'])
+        resp_zh = self.client.get('/partner/catalog.pdf?lang=zh-hans&currency=rmb')
+        self.assertTrue(resp_zh.content.startswith(b'%PDF'))     # fonte CJK + ¥
         self.assertContains(self.client.get('/partner/'), 'catalog.pdf')
         self.client.logout()
         self.client.force_login(self.operator)
@@ -1003,7 +1058,7 @@ class PartnerDashboardTests(TestCase):
         resp = self.client.get('/partner/notifications/')
         self.assertContains(resp, '✔ Aprovado')
         self.assertContains(resp, '✘ Rejeitado')
-        self.assertContains(resp, 'US$ 5.75')
+        self.assertContains(resp, '¥ 5.75')              # F10: pedido em ¥
         resp = self.client.get('/partner/')
         self.assertEqual(resp.wsgi_request.partner_unseen, 0)
 

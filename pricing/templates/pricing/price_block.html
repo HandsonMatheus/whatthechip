@@ -4,8 +4,11 @@
   (bancada do lote). Espera `price_quotes` = [(Buyer, PriceQuote)] no contexto —
   que chega VAZIO para operador/gerente/anônimo (gate na VIEW, nunca só aqui).
   ≈ = faixa/cotação velha (staleness, princípio #4 do plano).
+  F10 (§12.18): exibição DUAL "¥ 90 · US$ 12.60" — o ¥ é o armazenado (a
+  língua do comprador); o US$ é derivado pela taxa contratual. Valores com
+  {% localize off %} (dinheiro sempre com PONTO, em qualquer idioma da UI).
 {% endcomment %}
-{% load i18n %}
+{% load i18n l10n %}
 {% if price_quotes %}
 <div class="dc2-price-block" style="margin:0 16px 12px 16px;padding:10px 14px;background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;border-radius:6px;">
   {% for buyer, q in price_quotes %}
@@ -13,7 +16,7 @@
     <span style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.04em;">💰 {{ buyer.name }}</span>
     {% if q.status == "PRICED" %}
       <span style="font-size:16px;font-weight:800;color:#1d6b2f;">
-        {% if q.is_stale %}≈ {% endif %}US$ {{ q.price_min }}
+        {% localize off %}{% if q.is_stale %}≈ {% endif %}¥ {{ q.rmb_display }} <span style="font-weight:600;color:#2e7d3a;">· US$ {{ q.price_min }}</span>{% endlocalize %}
       </span>
       <span style="font-size:11px;color:#557a5e;">
         {% if q.quote_date %}{% trans "cotado" %} {{ q.quote_date|date:"d/m/Y" }}{% else %}{% trans "referência (sem data)" %}{% endif %} · {{ q.via }}

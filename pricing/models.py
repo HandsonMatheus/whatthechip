@@ -13,14 +13,19 @@ Modelos:
                     sem lista própria). Herança como DADO: ``inherits_from``
                     (1 nível, mesmo comprador) — "SK espelha Samsung" e
                     "genérica cai na Nanya" são regras DO COMPRADOR, não código.
-    Price         → a linha de preço: chave (kind, gen, tier) + min/max em USD
-                    + status (quoted / no_buy / unquoted) + auditoria.
+    Price         → a linha de preço: chave (kind, gen, tier) + min/max em ¥
+                    (RMB) + status (quoted / no_buy / unquoted) + auditoria.
     PricingConfig → singleton global (staleness, cenário default) — padrão
                     ProfitabilityConfig.
 
-Decisões estruturais (PRECIFICACAO.md §1, §3 e §12):
-  - **USD canônico em Decimal.** Faixa = ``price_min``/``price_max`` (exato ⇔
-    min == max). "Sem preço" NUNCA é 0: é ``status`` ≠ quoted com campos NULL.
+Decisões estruturais (PRECIFICACAO.md §1, §3, §12 e §12.18):
+  - **RMB (¥) canônico em Decimal — F10 (2026-07-16).** O comprador pensa em
+    ¥: o que ele digita é o que o banco guarda (``price_min``/``price_max``,
+    SEM rename — a semântica dos campos virou ¥). O **USD é DERIVADO na
+    leitura** (¥ × ``Buyer.fx_usd_rate``, taxa CONTRATUAL do dono) — mudar a
+    taxa nunca toca os ¥. Faixa = min/max (exato ⇔ min == max). "Sem preço"
+    NUNCA é 0: é ``status`` ≠ quoted com campos NULL. (⚠ exceção histórica:
+    ``LotPricing`` congelados pré-F10 ficam em USD — snapshots.)
   - **Três estados de sem-preço** (achado na planilha real): ``no_buy`` =
     comprador não compra (o "NO"); ``unquoted`` = combo existe, aguardando
     cotação (as "células amarelas"); linha inexistente = fora da grade.
@@ -151,6 +156,14 @@ class Buyer(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def fx_usd_rate_display(self) -> str:
+        """Taxa sem zeros à direita p/ o header do /partner/ ('0.14').
+        ⚠ Property (não filtro): floatformat SEMPRE localiza (ignora
+        {% localize off %}) e viraria '0,1400' em pt-br; dinheiro/taxa é
+        com PONTO. O :f evita o 9E+1 do normalize() (PRECIFICACAO §12)."""
+        return f'{self.fx_usd_rate.normalize():f}'
+
 
 @pghistory.track()  # auditoria: criar lista / trocar herança muda preços em massa
 class PriceList(models.Model):
@@ -244,9 +257,11 @@ class PriceList(models.Model):
 
 @pghistory.track()  # auditoria: TODA mudança de preço é evento (quem/quando/valor)
 class Price(models.Model):
-    """Uma linha de preço: chave (kind, gen, tier) → USD min/max + status.
+    """Uma linha de preço: chave (kind, gen, tier) → ¥ (RMB) min/max + status.
 
-    A leitura para humanos: "eMCP LPDDR4X 64GB → $13.50–16.50 (cotado 2026-06-29)".
+    A leitura para humanos: "eMCP LPDDR4X 64GB → ¥90 (cotado 2026-06-29)".
+    F10 (RMB canônico): o ¥ digitado NUNCA muda; o USD (ex.: US$ 12.60 a taxa
+    0.14) é derivado na leitura pelo pricing/engine — nunca gravado aqui.
     ``updated_by``/``last_updated`` são auditoria interna — NUNCA aparecem no
     dashboard do comprador (PRECIFICACAO §7).
     """
@@ -271,13 +286,18 @@ class Price(models.Model):
     tier_unit = models.CharField(max_length=2, choices=UNIT_CHOICES,
                                  verbose_name='Unidade')
 
-    # ── O VALOR (USD, Decimal — nunca float; PRECIFICACAO §1.3/§1.4) ────────
+    # ── O VALOR (¥ RMB, Decimal — nunca float; §1.3/§1.4 + §12.18) ──────────
     status = models.CharField(max_length=10, choices=STATUS_CHOICES,
                               default=STATUS_UNQUOTED, verbose_name='Status')
-    price_min = models.DecimalField(max_digits=8, decimal_places=2,
-                                    null=True, blank=True, verbose_name='USD mín.')
-    price_max = models.DecimalField(max_digits=8, decimal_places=2,
-                                    null=True, blank=True, verbose_name='USD máx.')
+    price_min = models.DecimalField(
+        max_digits=8, decimal_places=2, null=True, blank=True,
+        verbose_name='¥ mín. (RMB)',
+        help_text='Em yuan (¥). O USD é derivado na leitura: ¥ × taxa '
+                  'contratual do comprador (Buyer.fx_usd_rate).')
+    price_max = models.DecimalField(
+        max_digits=8, decimal_places=2, null=True, blank=True,
+        verbose_name='¥ máx. (RMB)',
+        help_text='Preço FIXO (2026-07-07): igual ao mínimo.')
     quote_date = models.DateField(null=True, blank=True, verbose_name='Data da cotação',
                                   help_text='Sem data = tratado como referência antiga (≈).')
 
@@ -377,14 +397,14 @@ class Price(models.Model):
         # Espelho amigável das CheckConstraints (mensagem melhor que IntegrityError).
         if self.status == STATUS_QUOTED:
             if self.price_min is None or self.price_max is None:
-                errors['price_min'] = 'Cotado exige o preço em USD.'
+                errors['price_min'] = 'Cotado exige o preço em ¥ (RMB).'
             elif self.price_min != self.price_max:
                 errors['price_min'] = ('Preço é FIXO (decisão 2026-07-07): não há '
                                        'faixa — informe UM valor (mín = máx).')
         else:
             if self.price_min is not None or self.price_max is not None:
                 errors['status'] = ('Sem-preço (não cotado / não fabricado / '
-                                    'não compro) não carrega valor — limpe o USD.')
+                                    'não compro) não carrega valor — limpe o ¥.')
         if errors:
             raise ValidationError(errors)
 
@@ -413,6 +433,8 @@ class LotPricing(models.Model):
     snapshot grava com qual cotação o lote foi valorado — por comprador. Reabrir
     e fechar de novo cria OUTRO registro (append; o histórico fica). Visível só
     para admin/plataforma; o gerente fecha o lote mas não vê valores (§7).
+    Moeda: **USD sempre** (decisão F10 §12.18 — valoração/export são USD; pós-
+    virada o USD já vem DERIVADO do ¥ pelo engine; congelados antigos idem).
     """
 
     lot   = models.ForeignKey('estoque.Lot', on_delete=models.CASCADE,
@@ -493,15 +515,15 @@ class PriceChangeRequest(models.Model):
                                 null=True, blank=True, related_name='+',
                                 verbose_name='Empresa', editable=False)
 
-    # O PEDIDO (para onde o comprador quer levar a linha):
+    # O PEDIDO (para onde o comprador quer levar a linha) — em ¥ (F10):
     new_status = models.CharField(max_length=10, choices=STATUS_CHOICES,
                                   verbose_name='Novo estado')
     new_price = models.DecimalField(max_digits=8, decimal_places=2,
-                                    null=True, blank=True, verbose_name='Novo USD')
+                                    null=True, blank=True, verbose_name='Novo ¥')
     # Snapshot do ANTES (para o admin decidir vendo o delta):
     old_status = models.CharField(max_length=10, verbose_name='Estado anterior')
     old_price = models.DecimalField(max_digits=8, decimal_places=2,
-                                    null=True, blank=True, verbose_name='USD anterior')
+                                    null=True, blank=True, verbose_name='¥ anterior')
 
     review_status = models.CharField(max_length=10, choices=REVIEW_CHOICES,
                                      default=REVIEW_PENDING, verbose_name='Revisão')
@@ -548,16 +570,16 @@ class PriceChangeRequest(models.Model):
         ]
 
     def __str__(self):
-        alvo = (f'US$ {self.new_price}' if self.new_status == STATUS_QUOTED
+        alvo = (f'¥ {self.new_price}' if self.new_status == STATUS_QUOTED
                 else dict(STATUS_CHOICES).get(self.new_status, self.new_status))
         return f'{self.price} → {alvo}'
 
     def clean(self):
         super().clean()
         if self.new_status == STATUS_QUOTED and self.new_price is None:
-            raise ValidationError({'new_price': 'Pedido "Cotado" exige o USD.'})
+            raise ValidationError({'new_price': 'Pedido "Cotado" exige o ¥.'})
         if self.new_status != STATUS_QUOTED and self.new_price is not None:
-            raise ValidationError({'new_price': 'Só "Cotado" carrega USD.'})
+            raise ValidationError({'new_price': 'Só "Cotado" carrega ¥.'})
 
     def save(self, *args, **kwargs):
         if self.price_id and not self.company_id:

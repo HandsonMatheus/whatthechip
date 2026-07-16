@@ -9,7 +9,7 @@
   </h1>
 </div>
 <p style="font-size:13px;color:#6f6f6f;margin:0 0 14px;">
-  {% blocktrans trimmed %}Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em USD.{% endblocktrans %}
+  {% blocktrans trimmed %}Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em ¥ (RMB).{% endblocktrans %}
   {% if not price_list.brand %}{% trans "Estes preços valem para toda marca que não tem tabela própria." %}{% endif %}
 </p>
 
@@ -47,7 +47,7 @@
     <thead>
       <tr>
         <th>{% trans "Tipo" %}</th><th>{% trans "Geração" %}</th><th>{% trans "Faixa" %}</th>
-        <th>{% trans "Preço US$" %}</th><th>{% trans "Estado" %}</th><th>{% trans "Última atualização" %}</th><th></th>
+        <th>{% trans "Preço ¥" %}</th><th>{% trans "Estado" %}</th><th>{% trans "Última atualização" %}</th><th></th>
       </tr>
     </thead>
     <tbody>
@@ -67,7 +67,7 @@
             <option value="no_buy"   {% if r.status == 'no_buy' %}selected{% endif %}>{% trans "Não compro" %}</option>
           </select>
           {% if r.pending %}
-          <div style="margin-top:4px;"><span class="ptn-tag ptn-tag--review" title="{% trans 'Aguardando aprovação do WhatTheChip — o valor vigente ainda é o exibido.' %}">⏳ {% trans "em revisão:" %} {% if r.pending.new_status == 'quoted' %}US$ {{ r.pending.new_price }}{% else %}{{ r.pending.get_new_status_display }}{% endif %}</span></div>
+          <div style="margin-top:4px;"><span class="ptn-tag ptn-tag--review" title="{% trans 'Aguardando aprovação do WhatTheChip — o valor vigente ainda é o exibido.' %}">⏳ {% trans "em revisão:" %} {% if r.pending.new_status == 'quoted' %}{% localize off %}¥ {{ r.pending.new_price }}{% endlocalize %}{% else %}{{ r.pending.get_new_status_display }}{% endif %}</span></div>
           {% endif %}
         </td>
         <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#525252;">

@@ -23,6 +23,7 @@ língua manda pros clientes, independente da sessão). Specs (eMMC, LPDDR4X,
 
 import re
 from datetime import date
+from decimal import Decimal, ROUND_HALF_UP
 from io import BytesIO
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -68,7 +69,7 @@ def _fmt_tier(value):
     return s
 
 
-def catalog_data(buyer):
+def catalog_data(buyer, currency='usd'):
     """Estrutura pura do catálogo: ``(columns, sections)``.
 
     - ``columns``: nomes das listas, marcas em ordem alfabética e a genérica
@@ -77,6 +78,9 @@ def catalog_data(buyer):
       cada linha com ``label`` e ``cells`` alinhadas às colunas; célula =
       ``('quoted', '6.00')`` | ``('no_buy', None)`` | ``('not_made', None)``
       | ``('unquoted', None)``.
+    - ``currency`` (F10.6): ``'usd'`` = DERIVADO (¥ armazenado × taxa
+      contratual ``buyer.fx_usd_rate``, 2 casas — o documento que circula em
+      dólar); ``'rmb'`` = o ¥ armazenado cru, sem zeros à direita ('90').
     """
     lists = list(PriceList.all_companies.filter(buyer=buyer, active=True)
                  .select_related('brand').order_by('brand__name'))
@@ -89,11 +93,19 @@ def catalog_data(buyer):
     # Uma query; monta o grid em memória (centenas de linhas, nada de N+1).
     grid = {}          # (kind, gen, tier_value, tier_unit) -> [cell] * n
     n = len(lists)
+    rate = buyer.fx_usd_rate            # taxa CONTRATUAL (F10) — só p/ 'usd'
     for p in Price.all_companies.filter(price_list__in=lists):
         key = (p.kind, p.gen, p.tier_value, p.tier_unit)
         cells = grid.setdefault(key, [('unquoted', None)] * n)
         if p.status == STATUS_QUOTED:
-            cell = ('quoted', f'{p.price_min:.2f}')
+            if currency == 'rmb':
+                # ¥ armazenado, sem zeros à direita (o comprador pensa em ¥
+                # redondo). ⚠ normalize() sem :f imprimiria 9E+1.
+                cell = ('quoted', f'{p.price_min.normalize():f}')
+            else:
+                usd = (p.price_min * rate).quantize(Decimal('0.01'),
+                                                    ROUND_HALF_UP)
+                cell = ('quoted', f'{usd:.2f}')
         elif p.status == STATUS_NO_BUY:
             cell = ('no_buy', None)
         elif p.status == STATUS_NOT_MADE:
@@ -173,14 +185,21 @@ def _draw_mixed(canvas, x, y, text, size, base, cjk):
         x += pdfmetrics.stringWidth(part, f, size)
 
 
-def render_catalog_pdf(buyer_name, columns, sections):
+def render_catalog_pdf(buyer_name, columns, sections, currency='usd'):
     """Monta o PDF (bytes). Sem banco — recebe a estrutura de catalog_data.
+    ``currency`` (F10.6) decide título/legenda/prefixo das células — os
+    VALORES já vêm prontos na moeda certa de catalog_data.
 
     ⚠ i18n: os ``_()`` ficam FORA das f-strings de propósito — no Python 3.11
     o tokenizer vê a f-string como um token só e o extractor/portão
     (chips/i18n_source.py) não enxergaria os msgids lá dentro."""
     t_title = _('Tabela de preços')
-    t_unit = _('Preços em USD por chip (unitário).')
+    if currency == 'rmb':
+        t_unit = _('Preços em ¥ (RMB) por chip (unitário).')
+        cur_prefix, cur_tag = '¥ ', '¥ RMB'
+    else:
+        t_unit = _('Preços em USD por chip (unitário).')
+        cur_prefix, cur_tag = 'US$ ', 'US$'
     t_no_buy = _('Não compro')
     t_not_made = _('Não fabricado')
     t_blank = _('em branco: ainda sem cotação')
@@ -215,7 +234,9 @@ def render_catalog_pdf(buyer_name, columns, sections):
               f'{t_blank}')
 
     story = [
-        Paragraph(_rich(f'{buyer_name} — {t_title}', cjk), st_h1),
+        # Título com a MOEDA (F10.6): o mesmo comprador circula os dois PDFs —
+        # tem que dar pra distinguir na primeira linha.
+        Paragraph(_rich(f'{buyer_name} — {t_title} ({cur_tag})', cjk), st_h1),
         Paragraph(_rich(f'{t_issued} {issued} · {legend}', cjk), st_sub),
         Spacer(0, 4),
     ]
@@ -231,9 +252,9 @@ def render_catalog_pdf(buyer_name, columns, sections):
             line = [row['label']]
             for c_i, (state, value) in enumerate(row['cells'], start=1):
                 if state == 'quoted':
-                    # "US$" em cada célula (dono, 2026-07-10): o catálogo
-                    # circula solto — o preço precisa gritar que é dólar.
-                    line.append(f'US$ {value}')
+                    # Moeda em cada célula (dono, 2026-07-10): o catálogo
+                    # circula solto — o preço precisa gritar a moeda.
+                    line.append(f'{cur_prefix}{value}')
                 elif state == 'no_buy':
                     line.append(_SYM_NO_BUY)
                     styles.append(('TEXTCOLOR', (c_i, r_i), (c_i, r_i), _RED))

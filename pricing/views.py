@@ -2,8 +2,10 @@
 pricing/views.py — F6: o dashboard do COMPRADOR em /partner/ (PRECIFICACAO §7.1).
 
 É o substituto definitivo da planilha: o comprador (Wuquan) loga, vê o que falta
-cotar (as "células amarelas"), o que está velho, e edita os preços DELE — em USD,
-sem jamais ver auditoria (`updated_by`/`last_updated` são só do admin, §7).
+cotar (as "células amarelas"), o que está velho, e edita os preços DELE — em
+**¥ (RMB)**, a moeda em que ele pensa (F10, §12.18: o ¥ digitado é o que o
+banco guarda; o USD é derivado pela taxa contratual) — sem jamais ver auditoria
+(`updated_by`/`last_updated` são só do admin, §7).
 
 Segurança (3 camadas):
   1. `partner_required`: conta EXTERNA — o vínculo é `Buyer.users`, não
@@ -188,19 +190,26 @@ def partner_catalog_pdf(request):
 
     ``?lang=`` escolhe o idioma DO DOCUMENTO (seletor próprio na home —
     decisão do dono: independe do idioma da sessão). Valor fora de
-    settings.LANGUAGES cai no idioma ativo da sessão. Sem cache: a tabela é
-    viva, o PDF nasce do estado atual (é o fim da planilha desatualizada)."""
+    settings.LANGUAGES cai no idioma ativo da sessão. ``?currency=rmb|usd``
+    (F10.6) escolhe a MOEDA do documento: usd = derivado pela taxa contratual
+    (default — é o que circula pros clientes dele hoje); rmb = o ¥ armazenado.
+    Sem cache: a tabela é viva, o PDF nasce do estado atual (é o fim da
+    planilha desatualizada)."""
     from .pdf import catalog_data, render_catalog_pdf   # reportlab só aqui
 
     lang = (request.GET.get('lang') or '').strip()
     if lang not in {code for code, _n in settings.LANGUAGES}:
         lang = translation.get_language() or settings.LANGUAGE_CODE
+    currency = (request.GET.get('currency') or '').strip().lower()
+    if currency not in ('rmb', 'usd'):
+        currency = 'usd'
     with translation.override(lang):
-        columns, sections = catalog_data(request.buyer)
-        pdf = render_catalog_pdf(request.buyer.name, columns, sections)
+        columns, sections = catalog_data(request.buyer, currency=currency)
+        pdf = render_catalog_pdf(request.buyer.name, columns, sections,
+                                 currency=currency)
 
     resp = HttpResponse(pdf, content_type='application/pdf')
-    fname = f'{request.buyer.slug}-prices-{date.today():%Y-%m-%d}.pdf'
+    fname = f'{request.buyer.slug}-prices-{currency}-{date.today():%Y-%m-%d}.pdf'
     resp['Content-Disposition'] = f'attachment; filename="{fname}"'
     return resp
 
@@ -225,7 +234,8 @@ def partner_notifications(request):
         faixa = f'{p.tier_value.normalize():f}{p.tier_unit}'
         it.resumo = f'{marca} · {_KIND_LABEL.get(p.kind, p.kind)} ' \
                     f'{p.gen + " " if p.gen else ""}{faixa}'
-        it.novo = (f'US$ {it.new_price}' if it.new_status == STATUS_QUOTED
+        # F10: o pedido do parceiro é em ¥ (a moeda dele) — nunca convertido.
+        it.novo = (f'¥ {it.new_price}' if it.new_status == STATUS_QUOTED
                    else dict(STATUS_CHOICES).get(it.new_status, it.new_status))
 
     _unseen_decisions(buyer).update(seen_by_partner=True)   # zera o badge
@@ -270,12 +280,14 @@ def partner_save(request, list_pk):
 
     if state_req == STATUS_QUOTED:
         if not raw:
-            messages.error(request, _('Estado "Cotado" exige o preço em USD.'))
+            messages.error(request, _('Estado "Cotado" exige o preço em ¥ (RMB).'))
             return _volta()
         try:
+            # F10 (RMB canônico): o ¥ digitado entra CRU no pedido — nenhuma
+            # conversão aqui; o USD é derivado na leitura pelo engine.
             mn = mx = Decimal(raw)
         except InvalidOperation:
-            messages.error(request, _('Preço ilegível — use números (ex.: 13.50).'))
+            messages.error(request, _('Preço ilegível — use números (ex.: 90).'))
             return _volta()
         status, qd = STATUS_QUOTED, date.today()
     elif state_req in (STATUS_UNQUOTED, STATUS_NOT_MADE, STATUS_NO_BUY):
@@ -315,7 +327,7 @@ def partner_save(request, list_pk):
         messages.error(request, _('Conflito ao salvar — tente de novo.'))
     else:
         # i18n: os rótulos exibidos traduzem; STATUS_* (chaves) nunca.
-        rot = {STATUS_QUOTED: _('cotado em US$ %s') % mn,
+        rot = {STATUS_QUOTED: _('cotado em ¥ %s') % mn,
                STATUS_NO_BUY: '"%s"' % _('não compro'),
                STATUS_UNQUOTED: _('não cotado'),
                STATUS_NOT_MADE: _('não fabricado')}

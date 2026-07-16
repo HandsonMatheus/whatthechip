@@ -15,9 +15,13 @@ Regras encodadas (§6 — todas verificadas na planilha REAL):
      DECORATIVA (decisão 2026-07-07): a marca da linha é sempre a da ABA — na
      "Other Brands" tudo vira linha da genérica (nada de lista-fantasma).
      Depois do import, rode `seed_price_grid` para unificar o grid.
-  2. Preço-fonte = coluna F (RMB): número → min=max · faixa "90-110" → min/max ·
-     "NO" → no_buy · vazio → unquoted. **USD = RMB × câmbio da célula B2** da
-     aba (Decimal, ROUND_HALF_UP, 2 casas). A coluna E (USD) é IGNORADA.
+  2. Preço-fonte = coluna F (RMB): número → min=max · faixa "90-110" → min/max
+     (achatada no ponto médio) · "NO" → no_buy · vazio → unquoted. **F10 (RMB
+     canônico, 2026-07-16): o ¥ é gravado DIRETO** — nada de × câmbio; o USD é
+     derivado na leitura pelo engine (Buyer.fx_usd_rate). A célula B2 (câmbio)
+     segue OBRIGATÓRIA só como validação de estrutura da planilha; a coluna E
+     (USD) é IGNORADA. (Pré-F10 este comando gravava RMB × B2 — foi assim que
+     os USD "nasceram a 0.15"; o migrate_prices_to_rmb desfaz isso ÷0.15.)
   3. eMCP/uMCP: "64+4" → tier = 64 GB (NAND) + gen = subtipo LPDDR; os combos de
      RAM da MESMA faixa COLAPSAM numa linha. Combos com preços DIFERENTES na
      mesma (gen, faixa) = CONFLITO → o import ABORTA com relatório (contradiz a
@@ -214,10 +218,11 @@ class Command(BaseCommand):
                     skipped.append((where, f'RMB {row[5]!r} ilegível'))
                     continue
                 status, rmb_min, rmb_max = parsed
-                usd_min = usd_max = None
+                val_min = val_max = None
                 if status == STATUS_QUOTED:
-                    usd_min = (rmb_min * rate).quantize(_CENT, ROUND_HALF_UP)
-                    usd_max = (rmb_max * rate).quantize(_CENT, ROUND_HALF_UP)
+                    # F10 (RMB canônico): grava o ¥ DIRETO — sem × câmbio.
+                    val_min = rmb_min.quantize(_CENT, ROUND_HALF_UP)
+                    val_max = rmb_max.quantize(_CENT, ROUND_HALF_UP)
 
                 # Marca da LINHA = a da ABA (decisão 2026-07-07): a coluna A é
                 # decorativa — na "Other Brands" TUDO é linha da GENÉRICA (nada
@@ -226,7 +231,7 @@ class Command(BaseCommand):
 
                 key = (brand_name, kind, gen, tier)
                 entry = dict(
-                    status=status, usd_min=usd_min, usd_max=usd_max,
+                    status=status, val_min=val_min, val_max=val_max,
                     quote_date=self._parse_date(row[6]),
                     source=_clean(row[7])[:200], notes=_clean(row[8]),
                     where=where, collapsed=0,
@@ -246,8 +251,8 @@ class Command(BaseCommand):
                     return max(d for d in (a, b) if d) if (a or b) else None
 
                 if kept['status'] == status:
-                    same_value = (kept['usd_min'] == usd_min and
-                                  kept['usd_max'] == usd_max)
+                    same_value = (kept['val_min'] == val_min and
+                                  kept['val_max'] == val_max)
                     if same_value:
                         kept['collapsed'] += 1
                         kept['quote_date'] = _merge_date(kept['quote_date'],
@@ -264,8 +269,8 @@ class Command(BaseCommand):
                     (kept['where'], where,
                      f'{brand_name or "Genérica"} {kind}/{gen} '
                      f'{tier.normalize():f}{KIND_UNIT[kind]}: '
-                     f'{kept["status"]}:{kept["usd_min"]}–{kept["usd_max"]} '
-                     f'≠ {status}:{usd_min}–{usd_max}'))
+                     f'{kept["status"]}:¥{kept["val_min"]}–{kept["val_max"]} '
+                     f'≠ {status}:¥{val_min}–{val_max}'))
 
         # ── Marcas precisam existir ANTES (load_brands) ──────────────────────
         brand_cache, missing = {}, set()
@@ -346,8 +351,8 @@ class Command(BaseCommand):
             for (brand_name, kind, gen, tier), e in plan.items():
                 pl = _list_for(brand_name)
                 fields = dict(
-                    status=e['status'], price_min=e['usd_min'],
-                    price_max=e['usd_max'], quote_date=e['quote_date'],
+                    status=e['status'], price_min=e['val_min'],
+                    price_max=e['val_max'], quote_date=e['quote_date'],
                     source=e['source'] or f"import {opts['xlsx']}",
                     notes=e['notes'])
                 obj = Price.all_companies.filter(

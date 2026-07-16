@@ -28,7 +28,14 @@ conexão ainda precisa do GUC (`app.company_id`): requests de membro já o têm
 (middleware); **o dashboard do parceiro (F6) precisará emitir o GUC da empresa
 do Buyer** — anotado no PRECIFICACAO §12.
 
-Moeda: USD, ``Decimal`` sempre (PRECIFICACAO §1.3). Cenário de faixa:
+Moeda (F10, RMB CANÔNICO — PRECIFICACAO §12.18): o ``Price`` guarda **¥ (RMB)**
+— o número que o comprador digitou, que NUNCA muda. O **USD é DERIVADO na
+leitura**: ¥ × ``Buyer.fx_usd_rate`` (taxa CONTRATUAL, gerida pelo dono),
+calculado na construção do ``PriceQuote`` — por isso ``price_min/max``/
+``value()``/``mid`` continuam devolvendo USD e NENHUM consumidor do estoque
+(valoração, export, congelamento F8) muda. O ¥ armazenado sai em
+``rmb_min/rmb_max``/``rmb``/``mid_rmb`` (card dual "¥ 90 · US$ 12.60").
+``Decimal`` sempre (PRECIFICACAO §1.3). Cenário de faixa:
 low = mínimo · mid = ponto médio (ROUND_HALF_UP, centavos) · high = máximo.
 """
 
@@ -67,9 +74,14 @@ class PriceQuote:
     gen: str = ''
     tier_value: Decimal | None = None
     tier_unit: str = ''
-    # O valor (só em PRICED):
-    price_min: Decimal | None = None
-    price_max: Decimal | None = None
+    # O valor (só em PRICED) — F10 (RMB canônico): price_min/max carregam o
+    # USD **DERIVADO** (¥ × Buyer.fx_usd_rate, calculado no price()) para que
+    # NENHUM consumidor mude (estoque/export/F8 seguem lendo USD daqui);
+    # rmb_min/max carregam o ¥ **ARMAZENADO** (o que o comprador digitou).
+    price_min: Decimal | None = None      # USD derivado
+    price_max: Decimal | None = None      # USD derivado
+    rmb_min: Decimal | None = None        # ¥ armazenado (Price.price_min)
+    rmb_max: Decimal | None = None        # ¥ armazenado (Price.price_max)
     quote_date: date | None = None
     is_stale: bool = False          # cotação velha/sem data → exibir "≈"
     # Proveniência (auditável):
@@ -82,7 +94,9 @@ class PriceQuote:
                 and self.price_min != self.price_max)
 
     def value(self, scenario: str | None = None) -> Decimal | None:
-        """USD do cenário (low/mid/high; default = PricingConfig). None se não-PRICED."""
+        """USD do cenário (low/mid/high; default = PricingConfig). None se
+        não-PRICED. F10: é o USD **derivado** (¥ × taxa contratual do buyer,
+        já calculado em price_min/max) — a moeda de valoração/export."""
         if self.status != PRICED:
             return None
         scenario = scenario or PricingConfig.get_config().default_scenario
@@ -94,8 +108,40 @@ class PriceQuote:
 
     @property
     def mid(self) -> Decimal | None:
-        """Ponto médio da faixa — atalho SEM argumentos para uso em template."""
+        """Ponto médio da faixa em USD — atalho SEM argumentos p/ template."""
         return self.value(PricingConfig.SCENARIO_MID)
+
+    # ── ¥ armazenado (F10 — RMB canônico, PRECIFICACAO §12.18) ──────────────
+    def value_rmb(self, scenario: str | None = None) -> Decimal | None:
+        """¥ do cenário — espelho de value() na moeda ARMAZENADA. Preço é
+        FIXO (min == max desde 2026-07-07), então os cenários coincidem."""
+        if self.status != PRICED:
+            return None
+        scenario = scenario or PricingConfig.get_config().default_scenario
+        if scenario == PricingConfig.SCENARIO_LOW:
+            return self.rmb_min
+        if scenario == PricingConfig.SCENARIO_HIGH:
+            return self.rmb_max
+        return ((self.rmb_min + self.rmb_max) / 2).quantize(_CENT, ROUND_HALF_UP)
+
+    @property
+    def mid_rmb(self) -> Decimal | None:
+        """Ponto médio da faixa em ¥ — atalho SEM argumentos p/ template."""
+        return self.value_rmb(PricingConfig.SCENARIO_MID)
+
+    @property
+    def rmb(self) -> Decimal | None:
+        """O ¥ de exibição (preço fixo: rmb_min == rmb_max)."""
+        return self.rmb_min
+
+    @property
+    def rmb_display(self) -> str | None:
+        """¥ SEM zeros à direita p/ o card dual ('90', '117.86') — o comprador
+        pensa em ¥ redondo. ⚠ ``normalize()`` sozinho imprime notação
+        científica (90.00 → 9E+1); o ``:f`` força decimal (PRECIFICACAO §12)."""
+        if self.rmb is None:
+            return None
+        return f'{self.rmb.normalize():f}'
 
 
 def _no_key(kind: str, reason: str) -> PriceQuote:
@@ -254,8 +300,17 @@ def price(result: dict, buyer) -> PriceQuote:
     cfg = PricingConfig.get_config()
     stale = (row.quote_date is None or
              (date.today() - row.quote_date).days > cfg.staleness_days)
-    return PriceQuote(status=PRICED, price_min=row.price_min,
-                      price_max=row.price_max, is_stale=stale, **base)
+    # F10 (RMB canônico): o banco guarda ¥; o USD é DERIVADO AQUI — ¥ × taxa
+    # CONTRATUAL do comprador (Buyer.fx_usd_rate; mudar a taxa nunca toca os
+    # ¥). Derivar na construção mantém TODOS os consumidores de USD intactos
+    # (value()/mid, valoração, export, congelamento F8).
+    rate = buyer.fx_usd_rate
+    return PriceQuote(
+        status=PRICED,
+        rmb_min=row.price_min, rmb_max=row.price_max,
+        price_min=(row.price_min * rate).quantize(_CENT, ROUND_HALF_UP),
+        price_max=(row.price_max * rate).quantize(_CENT, ROUND_HALF_UP),
+        is_stale=stale, **base)
 
 
 def quotes_for_admin(request, result):
@@ -272,12 +327,16 @@ def quotes_for_admin(request, result):
 
 def serialize_quote(buyer, q) -> dict:
     """PriceQuote → dict JSON-safe (Decimal vira string — nunca float) para o
-    card client-side da home (search_api)."""
+    card client-side da home (search_api). F10: as DUAS moedas — min/max/mid
+    seguem USD (derivado); 'rmb' é o ¥ de exibição ('90', sem zeros) e
+    'mid_rmb' o ponto médio ¥ cru ('90.00')."""
     return {
         'buyer': buyer.name, 'status': q.status, 'reason': q.reason,
         'min': str(q.price_min) if q.price_min is not None else None,
         'max': str(q.price_max) if q.price_max is not None else None,
         'mid': str(q.mid) if q.mid is not None else None,
+        'rmb': q.rmb_display,
+        'mid_rmb': str(q.mid_rmb) if q.mid_rmb is not None else None,
         'is_range': q.is_range, 'is_stale': q.is_stale,
         'quote_date': q.quote_date.strftime('%d/%m/%Y') if q.quote_date else None,
         'via': q.via,
