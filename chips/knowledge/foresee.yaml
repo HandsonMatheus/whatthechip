@@ -169,6 +169,42 @@ families:
   suffix_rules: ''
   tip: 'uMCP4x Foresee/Longsys (FUPR..., pn[1:3]=UP=UFS-based-MCP), FBGA254 11.5x13mm. Combo UFS 2.2 + LPDDR4X (analogo ao eMCP4x FEPR, mas o NAND e UFS em vez de eMMC). RAM = LPDDR4X CONFIRMADO (linha rotulada "uMCP4x" no catalogo + voltagem LPDDR 0.6V + pagina oficial de uMCP diz "LPDDR4x uMCP"). interface="UFS 2.2" (a pagina oficial confirma controlador UFS2.2) — NECESSARIO: o engine tira a versao NAND do interface (path da gramatica sairia "eMMC" se vazio). Familia MAGRA: capacidade NAO decodifica posicional (mesmo motivo do FEPR — "6432"=64GB+32Gb com "64" literal, mas "A832"=128GB usa codigo A8; so 2 PNs) — capacidade vem dos known_parts. NAND=GB e LPDDR=Gb no PN (converter /8). Ancoras: FUPRB6432-C2A56N1 (64GB+LPDDR4X 4GB), FUPRFA832-C2A56N1 (128GB+4GB). Fonte: catalogo oficial Longsys, secao uMCP.'
   reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com), secao uMCP: SO 2 PNs, ambos linha uMCP4x — FUPRB6432-C2A56N1 (64GB+32Gb) e FUPRFA832-C2A56N1 (128GB+32Gb), FBGA254 11.5x13mm, 3D NAND+1anm, -25 a 85C, x8+x32. RAM LPDDR4X CONFIRMADA (nao inferida como eMCP3): (a) a linha e rotulada uMCP4x no catalogo, (b) voltagem LPDDR 1.8V/1.1/1.1or0.6 (o 0.6V e assinatura LPDDR4X), (c) a pagina oficial umcp-memory.html diz literal LPDDR4x uMCP e UFS 2.2. Familia MAGRA sem decode de capacidade: o codigo do NAND nao e literal (64 literal vs A8 codigo pra 128GB) e so ha 2 PNs — capacidade fica pros known_parts confirmados. interface=UFS 2.2 e obrigatorio: o engine deriva a versao NAND (UFS vs eMMC) do campo interface (linha 583 engine.py); vazio sairia eMMC (errado)."]'
+- prefix: FAPU
+  chip_type: ePoP
+  subtype: 'eMMC + LPDDR3 Empilhado'
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'ePOP3 Foresee/Longsys (FAPU..., pn[1:3]=AP=ePOP, pn[3]=U=geracao 3), FBGA136 10x10x0.9mm. eMMC + LPDDR EMPILHADO sobre o SoC (Package-on-Package). ⚠ SEMPRE NAO RENTAVEL por tipo (memoria empilhada em SoC, sem mercado B2B de reciclagem — igual KAT da Samsung) — a rentabilidade NAO depende da capacidade; a gramatica sozinha ja manda pro descarte. Familia MAGRA: capacidade NAO decodifica (irrelevante p/ dead-by-type; anchors do catalogo abaixo). Anchors: FAPUA0804-58C2948 (8GB+4Gb), FAPUB0808-58C2948 (8GB+8Gb), FAPUB3208-58C2948 (32GB+8Gb). Fonte: catalogo oficial Longsys, secao ePOP3.'
+  reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com), secao ePOP3: FAPUA0804-58C2948 (8GB+4Gb), FAPUB0808-58C2948 (8GB+8Gb), FAPUB3208-58C2948 (32GB+8Gb), FBGA136 10x10x0.9mm, 1.8V/3.3V+1.2V, 3D NAND+20nm, x8+x32, -25 a 85C. chip_type=ePoP (categoria catalog em chip_types.py) = SEMPRE NAO RENTAVEL por tipo, independente de capacidade (guard dead-by-type em assess_profitability intercepta antes do bloco eMCP). Familia MAGRA de proposito: capacidade e IRRELEVANTE p/ dead-by-type, entao nao ha known_parts (nao vale a aprovacao do dono). subtype descritivo (LPDDR3 do rotulo ePOP3 + core +1.2V) so p/ documentacao — nao afeta triagem. is_emcp=true espelha o modelo KAT da Samsung."]'
+- prefix: FAPE
+  chip_type: ePoP
+  subtype: 'eMMC + LPDDR4X Empilhado'
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'ePOP4x Foresee/Longsys (FAPE..., pn[3]=E=geracao 4x), FBGA144 8x9.5x0.8mm. eMMC + LPDDR4X EMPILHADO sobre o SoC. ⚠ SEMPRE NAO RENTAVEL por tipo (mesma razao do FAPU/ePOP3). Familia MAGRA: capacidade irrelevante p/ dead-by-type. Anchor: FAPEA3216-58C29N3 (32GB+16Gb). Fonte: catalogo oficial Longsys, secao ePOP4x.'
+  reasoning: '["Catalogo oficial FORESEE (longsys.com), secao ePOP4x: FAPEA3216-58C29N3 (32GB+16Gb), FBGA144 8x9.5x0.8mm, 1.8V/3.3V+0.6V, 3D NAND+1anm, x8+x16, -25 a 85C. O +0.6V confirma LPDDR4X (mesma assinatura do eMCP4x/uMCP4x). chip_type=ePoP = SEMPRE NAO RENTAVEL por tipo (guard dead-by-type). Familia MAGRA sem known_parts: capacidade irrelevante p/ dead-by-type. pn[3]=E (vs U no ePOP3) marca a geracao 4x, mesma logica do PR/PN do eMCP."]'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: vivem no BANCO (Opcao 2) — submeter via submit_known_parts. Este yaml
