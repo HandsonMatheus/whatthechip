@@ -24,6 +24,15 @@ maps:
   - ['064', 64GB, '']
   - ['128', 128GB, '']
   - ['256', 256GB, '']
+  # Capacidade LPDDR4X standalone (FLXC) — o digito ANTES do "G" (pn[7]) = GB do pacote.
+  # Confirmado Tier-1: FLXC2002G=2GB (512Mx32=16Gbit, DigiKey) e FLXC2004G=4GB (32Gbit, DigiKey);
+  # 3/6/8 do catalogo oficial (24/48/64Gb). val_primary = capacidade legivel (GB do pacote).
+  FRS_LPDDR4X_CAP:
+  - ['2', 2GB, '']
+  - ['3', 3GB, '']
+  - ['4', 4GB, '']
+  - ['6', 6GB, '']
+  - ['8', 8GB, '']
 families:
 - prefix: FEMD
   chip_type: eMMC
@@ -205,6 +214,24 @@ families:
   suffix_rules: ''
   tip: 'ePOP4x Foresee/Longsys (FAPE..., pn[3]=E=geracao 4x), FBGA144 8x9.5x0.8mm. eMMC + LPDDR4X EMPILHADO sobre o SoC. ⚠ SEMPRE NAO RENTAVEL por tipo (mesma razao do FAPU/ePOP3). Familia MAGRA: capacidade irrelevante p/ dead-by-type. Anchor: FAPEA3216-58C29N3 (32GB+16Gb). Fonte: catalogo oficial Longsys, secao ePOP4x.'
   reasoning: '["Catalogo oficial FORESEE (longsys.com), secao ePOP4x: FAPEA3216-58C29N3 (32GB+16Gb), FBGA144 8x9.5x0.8mm, 1.8V/3.3V+0.6V, 3D NAND+1anm, x8+x16, -25 a 85C. O +0.6V confirma LPDDR4X (mesma assinatura do eMCP4x/uMCP4x). chip_type=ePoP = SEMPRE NAO RENTAVEL por tipo (guard dead-by-type). Familia MAGRA sem known_parts: capacidade irrelevante p/ dead-by-type. pn[3]=E (vs U no ePOP3) marca a geracao 4x, mesma logica do PR/PN do eMCP."]'
+- prefix: FLXC
+  chip_type: LPDDR4X
+  subtype: 'LPDDR4X'
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 7
+  decode_cap_len: 1
+  decode_cap_map: FRS_LPDDR4X_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'LPDDR4X standalone Foresee/Longsys (FLXC...), RAM pura, zero NAND. FBGA200 x32, 10x14.5mm, 1.1V/0.6V, 3733/4266Mbps. Decode de capacidade: o DIGITO ANTES do "G" (pn[7]) = GB do pacote — FLXC2002G=2GB, FLXC2004G=4GB, FLXC4008G=8GB. (O "2"/"4" apos FLXC nao e capacidade — e config de canal; a capacidade e so o digito pn[7].) Confirmado Tier-1: FLXC2002G-N2=2GB (512Mx32=16Gbit) e FLXC2004G-30=4GB (32Gbit) na DigiKey; 3/6/8 do catalogo oficial. Sufixo (-N2/-C4/-30...) = die/processo, nao decodificado. Isolamento ESD — chip de alto valor. Fonte: catalogo oficial Longsys + DigiKey.'
+  reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com), secao LPDDR4x: FLXC2002G (16Gb), FLXC2003G (24Gb), FLXC4003G (24Gb), FLXC2004G (32Gb), FLXC4006G (48Gb), FLXC4008G (64Gb), todos FBGA200 x32 LPDDR4x. Decode: o digito antes do G (pn[7]) = GB do pacote. CONFIRMADO Tier-1 em 2 anchors independentes na DigiKey: FLXC2004G-30 = 4GByte (meta oficial DigiKey, LPDDR4X 1866MHz) e FLXC2002G-N2 = 2GB (512Mx32=16Gbit, LPDDR4X). As chaves 3/6/8 vem da lista de densidades do catalogo oficial (24/48/64Gb) que casa 1-a-1 com a regra pn[7]=GB. So codigos vistos em PN-ancora real (2/3/4/6/8). is_emcp=false, chip_type=LPDDR4X (OPCAO 1: geracao no chip_type p/ DRAM discreta), espelha o modelo H9HC da SK Hynix (mesmo decode_cap_pos=7). NCLDXC1MG256M32 (8Gb=1GB, nomenclatura legada NCLD) NAO entra nesta familia (prefixo diferente) — fica como known_part avulso se necessario."]'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: vivem no BANCO (Opcao 2) — submeter via submit_known_parts. Este yaml

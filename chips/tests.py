@@ -1936,6 +1936,9 @@ _FORESEE_GOLDEN = {  # Foresee/Longsys — 1a entrega: eMMC (FEMD/FEMK/FEMJ). Ca
     "FUPRFA832-C2A56N1": ("uMCP", "", "UFS 2.2 ⚠ cap. não mapeada", "LPDDR4X ⚠ cap. não mapeada", "", "INDETERMINADO"),  # FUPR uMCP4x 128GB (cap via known_part)
     "FAPUA0804-58C2948": ("ePoP", "", "eMMC ⚠ cap. não mapeada", "LPDDR3 ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),   # FAPU ePOP3 — dead-by-type (cap irrelevante, sem known_part)
     "FAPEA3216-58C29N3": ("ePoP", "", "eMMC ⚠ cap. não mapeada", "LPDDR4X ⚠ cap. não mapeada", "", "NÃO RENTÁVEL"),  # FAPE ePOP4x — dead-by-type
+    "FLXC2002G-N2": ("LPDDR4X", "2GB", "", "", "", "RENTÁVEL"),   # FLXC LPDDR4X standalone 2GB (16Gbit) — DigiKey confirmado
+    "FLXC2004G-30": ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),   # FLXC 4GB (32Gbit) — DigiKey confirmado (4GByte)
+    "FLXC4008G-30": ("LPDDR4X", "8GB", "", "", "", "RENTÁVEL"),   # FLXC 8GB (64Gbit) — catálogo oficial
 }
 
 
