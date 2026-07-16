@@ -1112,7 +1112,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
       <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6f6f6f;margin-bottom:10px;">{% trans "Marcas suportadas" %}</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
         {% for brand in brands %}
-        <span style="font-size:11px;font-weight:700;color:#161616;padding:3px 10px;border:1px solid #c6c6c6;background:#fff;letter-spacing:0.02em;">{{ brand }}</span>
+        <span style="font-size:11px;font-weight:700;color:#161616;padding:3px 10px;border:1px solid #c6c6c6;background:#fff;letter-spacing:0.02em;">{{ brand }}{% if brand == "Foresee" %}<sup style="font-size:8px;font-weight:800;letter-spacing:.06em;color:#fff;background:#198038;padding:1px 5px;border-radius:3px;margin-left:5px;vertical-align:top;">{% trans "NOVO" %}</sup>{% endif %}</span>
         {% endfor %}
       </div>
     </div>

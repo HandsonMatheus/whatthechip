@@ -606,6 +606,10 @@ msgstr "Lotes abiertos"
 msgid "Marca"
 msgstr "Marca"
 
+#: templates/base.html:146 estoque/templates/estoque/estoque.html:1115
+msgid "NOVO"
+msgstr "NUEVO"
+
 #: templates/base.html:131 estoque/templates/estoque/estoque.html:1112
 msgid "Marcas suportadas"
 msgstr "Marcas compatibles"
