@@ -1941,6 +1941,10 @@ _FORESEE_GOLDEN = {  # Foresee/Longsys — 1a entrega: eMMC (FEMD/FEMK/FEMJ). Ca
     "FLXC4008G-30": ("LPDDR4X", "8GB", "", "", "", "RENTÁVEL"),   # FLXC 8GB (64Gbit) — catálogo oficial
     "F60C1A0002-M6AR": ("DDR3L", "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),  # F60C DDR3L 2Gb/die
     "F60C1A0004-M79R": ("DDR3L", "512MB", "", "", "4Gb = 512MB por die [✓]", "RENTÁVEL"),  # F60C DDR3L 4Gb/die wide-temp
+    "F35UQA512M-WWT": ("NAND Flash", "", "", "", "", "NÃO RENTÁVEL"),        # F35 SPI NAND SLC — dead-by-type
+    "FS35ND04G-S2Y2QWFI000": ("NAND Flash", "", "", "", "", "NÃO RENTÁVEL"), # FS35 SPI NAND SLC — dead-by-type
+    "FS33ND01GS108TFI0": ("NAND Flash", "", "", "", "", "NÃO RENTÁVEL"),     # FS33 parallel NAND SLC — dead-by-type
+    "FSNU8A001G-TWT": ("NAND Flash", "", "", "", "", "NÃO RENTÁVEL"),        # FSN BGA NAND SLC — dead-by-type
 }
 
 

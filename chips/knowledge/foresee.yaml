@@ -255,6 +255,78 @@ families:
   suffix_rules: ''
   tip: 'DDR3L standalone Foresee/Longsys (F60C1A...), DRAM de PC low-voltage 1.35/1.5V, x16, FBGA96 7.5x13.5mm, 25nm, JEDEC. Densidade LITERAL no PN: pn[6:10] = Gb por die (0002=2Gb, 0004=4Gb). Convencao DDR (§6): o mapa guarda MB POR DIE (256MB/512MB) e o engine DERIVA "XGb = YMB por die". Sufixo (-M6AR/-M69W/-M79R/-M79W) = temperatura/tensao/revisao: R=0~95C, W=-40~95C wide-temp. Rentabilidade: 2Gb/4Gb ambos >= 2Gb => RENTAVEL (DDR3L=DDR3). Aplicacoes: GPON, POS, TV box. Fonte: catalogo oficial Longsys, secao DDR3L.'
   reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com), secao DDR3L: F60C1A0002-M6AR e -M69W (2Gb), F60C1A0004-M79R e -M79W (4Gb), todos DDR3L 1.35/1.5V, x16, FBGA96 7.5x13.5x1.2mm, 25nm, 0~95C (R) ou -40~95C (W). Densidade LITERAL pn[6:10] (0002=2Gb, 0004=4Gb). Convencao DDR: val_primary do mapa = MB por die (2Gb=256MB, 4Gb=512MB), engine deriva dram_density (MBx8/1024=Gb). chip_type=DDR3L (existe em chip_types.py, profit_family=ddr; catalogo rotula DDR3L 1.35V). Espelha o modelo PMF4 (PieceMakers DDR3L) e H5TC (SK Hynix). Ambas densidades >= 2Gb => RENTAVEL."]'
+- prefix: F35
+  chip_type: NAND Flash
+  subtype: 'SLC NAND'
+  interface: 'SPI'
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'SPI NAND Flash raw Foresee/Longsys (F35UQA=1.8V, F35SQA=3.3V), SLC, WSON8, x1/x2/x4 SPI. ⚠ SEMPRE NAO RENTAVEL por tipo (NAND raw sem controlador — chip_type=NAND Flash e dead-by-type; sem mercado B2B). Densidade minuscula (512Mb-2Gb = 64-256MB reais). Familia MAGRA: capacidade NAO decodifica (irrelevante p/ dead-by-type + evita armadilha Gb/MB). Anchors: F35UQA512M-WWT, F35UQA001G-WWT, F35SQA002G-WWT. Fonte: catalogo oficial Longsys, secao SPI NAND Flash.'
+  reasoning: '["Catalogo oficial FORESEE (longsys.com), secao SPI NAND Flash: F35UQA512M/001G/002G-WWT e -VWR (1.8V), F35SQA512M/001G/002G-WWT e -VWR (3.3V), SLC, WSON8 8x6/6x5mm, x1/x2/x4 SPI, -40~85C. chip_type=NAND Flash = dead-by-type (nand_raw/dead em chip_types.py) = SEMPRE NAO RENTAVEL, independente de capacidade. Familia MAGRA de proposito: as densidades sao minusculas (512Mb-2Gb=64-256MB) e irrelevantes p/ dead-by-type; nao decodifico capacidade p/ evitar a armadilha Gb(bit)/MB(byte) e por ser triagem-irrelevante. subtype=SLC NAND (celula, convencao §6)."]'
+- prefix: FS35
+  chip_type: NAND Flash
+  subtype: 'SLC NAND'
+  interface: 'SPI'
+  is_emcp: false
+  active: true
+  priority: 60
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'SPI NAND Flash raw Foresee/Longsys (FS35ND...), SLC, x1/x2/x4 SPI, ECC interno. ⚠ SEMPRE NAO RENTAVEL por tipo (NAND raw dead-by-type). Familia MAGRA. Prioridade 60 > F35 p/ nao ser capturada por prefixo curto. Anchor: FS35ND04G-S2Y2QWFI000 (4Gb=512MB). Fonte: catalogo oficial Longsys, secao SPI NAND Flash 3.3V.'
+  reasoning: '["Catalogo oficial FORESEE (longsys.com), secao SPI NAND Flash 3.3V: FS35ND04G-S2Y2QWFI000 (4Gb SLC SPI). Prefixo FS35 distinto do F35 (serie QA). chip_type=NAND Flash = dead-by-type = SEMPRE NAO RENTAVEL. Familia MAGRA (densidade 4Gb=512MB irrelevante p/ dead-by-type). priority 60 evita colisao de prefixo com F35/FS33."]'
+- prefix: FS33
+  chip_type: NAND Flash
+  subtype: 'SLC NAND'
+  interface: 'Async/ONFI'
+  is_emcp: false
+  active: true
+  priority: 60
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'Parallel NAND Flash raw Foresee/Longsys (FS33ND...), SLC, TSOP48 x8, paralela. ⚠ SEMPRE NAO RENTAVEL por tipo (NAND raw dead-by-type). Familia MAGRA. Anchors: FS33ND01GS108TFI0 (1Gb=128MB), FS33ND04GS108TFI0/BFI0 (4Gb=512MB). Fonte: catalogo oficial Longsys, secao Parallel NAND Flash (TSOP).'
+  reasoning: '["Catalogo oficial FORESEE (longsys.com), secao Parallel NAND Flash (TSOP): FS33ND01GS108TFI0 (1Gb), FS33ND04GS108TFI0 e FS33ND04GS108BFI0 (4Gb), SLC, TSOP48 12x20mm, x8, 3.3V, -40~85C. chip_type=NAND Flash = dead-by-type = SEMPRE NAO RENTAVEL. Familia MAGRA (1-4Gb=128-512MB irrelevante). priority 60 evita colisao de prefixo."]'
+- prefix: FSN
+  chip_type: NAND Flash
+  subtype: 'SLC NAND'
+  interface: 'Async/ONFI'
+  is_emcp: false
+  active: true
+  priority: 60
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'NAND Flash raw BGA Foresee/Longsys (FSNU=1.8V, FSNS=3.3V), SLC, BGA63/BGA48 8x6mm, x8. ⚠ SEMPRE NAO RENTAVEL por tipo (NAND raw dead-by-type). Familia MAGRA. Pacote BGA minimo p/ economia de PCB. Anchors: FSNU8A001G-TWT, FSNS8A001G-TWT, FSNU8A002G-TWT (1-2Gb=128-256MB). Fonte: catalogo oficial Longsys, secao Parallel NAND Flash (BGA).'
+  reasoning: '["Catalogo oficial FORESEE (longsys.com), secao Parallel NAND Flash (BGA): FSNU8A001G/002G-TWT e -EWT (1.8V), FSNS8A001G/002G-TWT e -EWT (3.3V), SLC, BGA63/BGA48 8x6mm, x8, -40~85C. chip_type=NAND Flash = dead-by-type = SEMPRE NAO RENTAVEL. Familia MAGRA (1-2Gb=128-256MB irrelevante p/ dead-by-type). priority 60."]'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: vivem no BANCO (Opcao 2) — submeter via submit_known_parts. Este yaml
