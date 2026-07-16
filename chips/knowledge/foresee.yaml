@@ -19,6 +19,11 @@ maps:
   - ['128', 128GB, '']
   - ['256', 256GB, '']
   - ['512', 512GB, '']
+  # Capacidade UFS — LITERAL no PN (pn[6:9]=GB), so codigos vistos no catalogo (064..256).
+  FRS_UFS_CAP:
+  - ['064', 64GB, '']
+  - ['128', 128GB, '']
+  - ['256', 256GB, '']
 families:
 - prefix: FEMD
   chip_type: eMMC
@@ -74,6 +79,78 @@ families:
   suffix_rules: ''
   tip: 'eMMC 5.1 Foresee SUBSIZE TLC (FEMJ...), FBGA153. Capacidade literal pn[6:9]=GB. Ancora: FEMJNM032G-58C29 (32GB, 3D TLC). Fonte: catalogo oficial Longsys.'
   reasoning: '["Catalogo oficial FORESEE (longsys.com / LCSC C18199807), secao Commercial Subsize eMMC. FEMJNM032G-58C29 (32GB, 3D TLC), eMMC5.1 FBGA153. Capacidade literal na mesma posicao pn[6:9] do FEMD."]'
+- prefix: FEUDNN
+  chip_type: UFS
+  subtype: ''
+  interface: 'UFS 2.2'
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 6
+  decode_cap_len: 3
+  decode_cap_map: FRS_UFS_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS 2.2 Foresee/Longsys COMERCIAL (FEUDNN...), FBGA153 11.5x13mm, 3D NAND, 1.8V/3.3V, -25~85C. Capacidade LITERAL pn[6:9]=GB (064=64GB, 256=256GB) — NAO Gbit. Recursos UFS 2.2: LDPC, Write Booster, HPB, FFU. pn[1:3]=EU (UFS puro, vs EM=eMMC). Ancoras: FEUDNN064G-C2A56, FEUDNN128G-C2A56, FEUDNN256G-C2A44. Fonte: catalogo oficial Longsys.'
+  reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com / LCSC C18199807), secao Commercial UFS. PNs reais: FEUDNN064G-C2A56 e -C2H14 (64GB), FEUDNN128G-C2A56 e -C2H14 (128GB), FEUDNN256G-C2A44 (256GB), todos UFS2.2 FBGA153 3D NAND -25 a 85C. Capacidade literal pn[6:9] (064/128/256); mesma estrutura FE_D do eMMC com pn[2]=U (UFS)."]'
+- prefix: FEUDME
+  chip_type: UFS
+  subtype: ''
+  interface: 'UFS 2.1'
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 6
+  decode_cap_len: 3
+  decode_cap_map: FRS_UFS_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'UFS 2.1 Gear3 2-lane Foresee AUTOMOTIVO (FEUDME...), FBGA153 11.5x13x1.2mm, 3D NAND, -40~105C (AEC-Q100). Capacidade LITERAL pn[6:9]=GB. Grade ME (pn[4:6]) = automotivo, mesma letra do eMMC auto. Ancoras: FEUDME064G-B8A19 (64GB), FEUDME128G-B8A19 (128GB). Fonte: catalogo oficial Longsys.'
+  reasoning: '["Catalogo oficial FORESEE (longsys.com / LCSC C18199807), secao Automotive UFS. FEUDME064G-B8A19 (64GB) e FEUDME128G-B8A19 (128GB), UFS 2.1 Gear3 2-lane, FBGA153 11.5x13x1.2mm, 3D NAND, -40 a 105C AEC-Q100. Capacidade literal pn[6:9]."]'
+- prefix: FEPR
+  chip_type: eMCP
+  subtype: 'LPDDR4X'
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP4x Foresee/Longsys (FEPR..., pn[2:4]=PR), FBGA254 11.5x13mm. Combo eMMC 5.1 + LPDDR4X. RAM = LPDDR4X CONFIRMADO no datasheet (FEPRF6432-58A1930: secao "LPDDR4X Functional Description", 32Gb 3733Mbps, 0.6V). Familia MAGRA: capacidade NAO decodifica posicional (pn "6432"=64GB+32Gb com "64" literal, mas "A832"=128GB+32Gb usa codigo A8 pro NAND; so 3 PNs, insuficiente) — capacidade vem dos known_parts. NAND=GB e LPDDR=Gb no PN (converter /8). Ancoras: FEPRF6432 (64GB+LPDDR4X 4GB), FEPRB6432 (64GB+4GB), FEPRFA832 (128GB+4GB). Fonte: datasheet FEPRF6432 + catalogo Longsys.'
+  reasoning: '["Datasheet oficial FEPRF6432-58A1930 (Longsys, espelho community.nxp.com): secao 8 LPDDR4X Functional Description, LPDDR4X 32Gb 3733Mbps, voltagem 1.1/0.6V (=LPDDR4X). Catalogo oficial confirma FEPRF6432/FEPRB6432 (64GB+32Gb) e FEPRFA832 (128GB+32Gb), FBGA254 eMCP4x. Familia MAGRA sem decode de capacidade: o codigo do NAND nao e literal (64 vs A8 pra 128GB) e so ha 3 PNs — capacidade fica pros known_parts confirmados."]'
+- prefix: FEPN
+  chip_type: eMCP
+  subtype: 'LPDDR3'
+  interface: ''
+  is_emcp: true
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'eMCP3 Foresee/Longsys (FEPN..., pn[2:4]=PN), FBGA221 11.5x13mm. Combo eMMC + LPDDR. RAM = LPDDR3 INFERIDO (nao ha datasheet FEPNA aberto): o proprio catalogo Foresee usa "3"=LPDDR3 e "4x"=LPDDR4X — o ePOP3 (FAPUA) e "+1.2V" (core LPDDR3) e o ePOP4x "+0.6V" (LPDDR4X), logo por analogia eMCP3=LPDDR3 (aceito pelo dono 2026-07-15). Familia MAGRA: capacidade dos known_parts. Ancoras: FEPNA1608 (16GB+LPDDR3 1GB), FEPNA3208 (32GB+1GB). Fonte: catalogo Longsys (geracao inferida do ePOP, nao datasheet FEPNA).'
+  reasoning: '["Catalogo oficial Longsys, secao eMCP3: FEPNA1608-58A4302 e -58A4324 (16GB+8Gb), FEPNA3208-58A1924 (32GB+8Gb), FBGA221 x8+x32. A GERACAO da RAM (LPDDR3) NAO esta em datasheet FEPNA aberto (nao publicado) — foi INFERIDA da nomenclatura do proprio catalogo Foresee: ePOP3 (FAPUA) = +1.2V (core LPDDR3) e ePOP4x (FAPEA) = +0.6V (LPDDR4X), logo 3=LPDDR3 consistentemente. Inferencia aceita pelo dono (2026-07-15). Capacidade (16/32GB NAND + 1GB RAM, de 8Gb/8) confirmada no catalogo; SO a geracao e inferida."]'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: vivem no BANCO (Opcao 2) — submeter via submit_known_parts. Este yaml

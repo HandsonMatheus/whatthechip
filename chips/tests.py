@@ -1927,6 +1927,11 @@ _FORESEE_GOLDEN = {  # Foresee/Longsys — 1a entrega: eMMC (FEMD/FEMK/FEMJ). Ca
     "FEMDNN032G-A3A55": ("eMMC", "32GB",  "", "", "", "RENTÁVEL"),   # FEMD comercial 32GB
     "FEMKNN008G-58A42": ("eMMC", "8GB",   "", "", "", "RENTÁVEL"),   # FEMK subsize 8GB MLC
     "FEMJNM032G-58C29": ("eMMC", "32GB",  "", "", "", "RENTÁVEL"),   # FEMJ subsize TLC 32GB
+    "FEUDNN064G-C2A56": ("UFS",  "64GB",  "", "", "", "RENTÁVEL"),   # FEUDNN UFS 2.2 comercial 64GB
+    "FEUDNN256G-C2A44": ("UFS",  "256GB", "", "", "", "RENTÁVEL"),   # FEUDNN 256GB
+    "FEUDME064G-B8A19": ("UFS",  "64GB",  "", "", "", "RENTÁVEL"),   # FEUDME UFS 2.1 Gear3 automotivo
+    "FEPRF6432-58A1930": ("eMCP", "", "eMMC ⚠ cap. não mapeada", "LPDDR4X ⚠ cap. não mapeada", "", "INDETERMINADO"),  # FEPR eMCP4x LPDDR4X (cap via known_part)
+    "FEPNA1608-58A4302": ("eMCP", "", "eMMC ⚠ cap. não mapeada", "LPDDR3 ⚠ cap. não mapeada", "", "INDETERMINADO"),    # FEPN eMCP3 LPDDR3 inferido (cap via known_part)
 }
 
 
