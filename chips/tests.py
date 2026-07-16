@@ -1939,6 +1939,8 @@ _FORESEE_GOLDEN = {  # Foresee/Longsys — 1a entrega: eMMC (FEMD/FEMK/FEMJ). Ca
     "FLXC2002G-N2": ("LPDDR4X", "2GB", "", "", "", "RENTÁVEL"),   # FLXC LPDDR4X standalone 2GB (16Gbit) — DigiKey confirmado
     "FLXC2004G-30": ("LPDDR4X", "4GB", "", "", "", "RENTÁVEL"),   # FLXC 4GB (32Gbit) — DigiKey confirmado (4GByte)
     "FLXC4008G-30": ("LPDDR4X", "8GB", "", "", "", "RENTÁVEL"),   # FLXC 8GB (64Gbit) — catálogo oficial
+    "F60C1A0002-M6AR": ("DDR3L", "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),  # F60C DDR3L 2Gb/die
+    "F60C1A0004-M79R": ("DDR3L", "512MB", "", "", "4Gb = 512MB por die [✓]", "RENTÁVEL"),  # F60C DDR3L 4Gb/die wide-temp
 }
 
 

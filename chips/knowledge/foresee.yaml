@@ -33,6 +33,11 @@ maps:
   - ['4', 4GB, '']
   - ['6', 6GB, '']
   - ['8', 8GB, '']
+  # Densidade DDR3L (F60C) — LITERAL no PN (pn[6:10]=Gb por die). Convencao DDR (§6): val_primary =
+  # MB POR DIE (o engine DERIVA "XGb = YMB por die" via MBx8/1024). "0002"=2Gb=256MB, "0004"=4Gb=512MB.
+  FRS_DDR3L_CAP:
+  - ['0002', 256MB, '']
+  - ['0004', 512MB, '']
 families:
 - prefix: FEMD
   chip_type: eMMC
@@ -232,6 +237,24 @@ families:
   suffix_rules: ''
   tip: 'LPDDR4X standalone Foresee/Longsys (FLXC...), RAM pura, zero NAND. FBGA200 x32, 10x14.5mm, 1.1V/0.6V, 3733/4266Mbps. Decode de capacidade: o DIGITO ANTES do "G" (pn[7]) = GB do pacote — FLXC2002G=2GB, FLXC2004G=4GB, FLXC4008G=8GB. (O "2"/"4" apos FLXC nao e capacidade — e config de canal; a capacidade e so o digito pn[7].) Confirmado Tier-1: FLXC2002G-N2=2GB (512Mx32=16Gbit) e FLXC2004G-30=4GB (32Gbit) na DigiKey; 3/6/8 do catalogo oficial. Sufixo (-N2/-C4/-30...) = die/processo, nao decodificado. Isolamento ESD — chip de alto valor. Fonte: catalogo oficial Longsys + DigiKey.'
   reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com), secao LPDDR4x: FLXC2002G (16Gb), FLXC2003G (24Gb), FLXC4003G (24Gb), FLXC2004G (32Gb), FLXC4006G (48Gb), FLXC4008G (64Gb), todos FBGA200 x32 LPDDR4x. Decode: o digito antes do G (pn[7]) = GB do pacote. CONFIRMADO Tier-1 em 2 anchors independentes na DigiKey: FLXC2004G-30 = 4GByte (meta oficial DigiKey, LPDDR4X 1866MHz) e FLXC2002G-N2 = 2GB (512Mx32=16Gbit, LPDDR4X). As chaves 3/6/8 vem da lista de densidades do catalogo oficial (24/48/64Gb) que casa 1-a-1 com a regra pn[7]=GB. So codigos vistos em PN-ancora real (2/3/4/6/8). is_emcp=false, chip_type=LPDDR4X (OPCAO 1: geracao no chip_type p/ DRAM discreta), espelha o modelo H9HC da SK Hynix (mesmo decode_cap_pos=7). NCLDXC1MG256M32 (8Gb=1GB, nomenclatura legada NCLD) NAO entra nesta familia (prefixo diferente) — fica como known_part avulso se necessario."]'
+- prefix: F60C
+  chip_type: DDR3L
+  subtype: 'DDR3L'
+  interface: 'x16'
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: 6
+  decode_cap_len: 4
+  decode_cap_map: FRS_DDR3L_CAP
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'DDR3L standalone Foresee/Longsys (F60C1A...), DRAM de PC low-voltage 1.35/1.5V, x16, FBGA96 7.5x13.5mm, 25nm, JEDEC. Densidade LITERAL no PN: pn[6:10] = Gb por die (0002=2Gb, 0004=4Gb). Convencao DDR (§6): o mapa guarda MB POR DIE (256MB/512MB) e o engine DERIVA "XGb = YMB por die". Sufixo (-M6AR/-M69W/-M79R/-M79W) = temperatura/tensao/revisao: R=0~95C, W=-40~95C wide-temp. Rentabilidade: 2Gb/4Gb ambos >= 2Gb => RENTAVEL (DDR3L=DDR3). Aplicacoes: GPON, POS, TV box. Fonte: catalogo oficial Longsys, secao DDR3L.'
+  reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com), secao DDR3L: F60C1A0002-M6AR e -M69W (2Gb), F60C1A0004-M79R e -M79W (4Gb), todos DDR3L 1.35/1.5V, x16, FBGA96 7.5x13.5x1.2mm, 25nm, 0~95C (R) ou -40~95C (W). Densidade LITERAL pn[6:10] (0002=2Gb, 0004=4Gb). Convencao DDR: val_primary do mapa = MB por die (2Gb=256MB, 4Gb=512MB), engine deriva dram_density (MBx8/1024=Gb). chip_type=DDR3L (existe em chip_types.py, profit_family=ddr; catalogo rotula DDR3L 1.35V). Espelha o modelo PMF4 (PieceMakers DDR3L) e H5TC (SK Hynix). Ambas densidades >= 2Gb => RENTAVEL."]'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: vivem no BANCO (Opcao 2) — submeter via submit_known_parts. Este yaml
