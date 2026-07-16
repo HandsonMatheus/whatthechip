@@ -327,6 +327,24 @@ families:
   suffix_rules: ''
   tip: 'NAND Flash raw BGA Foresee/Longsys (FSNU=1.8V, FSNS=3.3V), SLC, BGA63/BGA48 8x6mm, x8. ⚠ SEMPRE NAO RENTAVEL por tipo (NAND raw dead-by-type). Familia MAGRA. Pacote BGA minimo p/ economia de PCB. Anchors: FSNU8A001G-TWT, FSNS8A001G-TWT, FSNU8A002G-TWT (1-2Gb=128-256MB). Fonte: catalogo oficial Longsys, secao Parallel NAND Flash (BGA).'
   reasoning: '["Catalogo oficial FORESEE (longsys.com), secao Parallel NAND Flash (BGA): FSNU8A001G/002G-TWT e -EWT (1.8V), FSNS8A001G/002G-TWT e -EWT (3.3V), SLC, BGA63/BGA48 8x6mm, x8, -40~85C. chip_type=NAND Flash = dead-by-type = SEMPRE NAO RENTAVEL. Familia MAGRA (1-2Gb=128-256MB irrelevante p/ dead-by-type). priority 60."]'
+- prefix: F70M
+  chip_type: MCP
+  subtype: 'SLC NAND + LPDDR2 (legado)'
+  interface: 'Async NAND + LPDDR2'
+  is_emcp: false
+  active: true
+  priority: 55
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: 'nMCP legado Foresee/Longsys (F70M..., NAND-based MCP), BGA162 8x10.5mm, x8+x32. NAND SLC + LPDDR2 empilhados num pacote (pre-eMCP, ~feature phones/4G modules/IoT). ⚠ SEMPRE NAO RENTAVEL por tipo (chip_type=MCP e dead-by-type em chip_types.py — NAND raw + mDDR/LPDDR2 legado, sem liquidez B2B, mesma classe de NOR Flash/ePoP). is_emcp=false (espelha o modelo MCP legado da Samsung: chip composto tratado como tipo unico dead). Familia MAGRA. Anchor: F70ME0101D-RDWA (1Gb NAND + 1Gb LPDDR2). Fonte: catalogo oficial Longsys, secao nMCP.'
+  reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com), secao nMCP: F70ME0101D-RDWA, 1Gb SLC NAND + 1Gb LPDDR2, 1.8V, x8+x32, LPDDR2, BGA162 8x10.5x1.0mm, -40~85C, Production. chip_type=MCP = dead-by-type (catalog/dead em chip_types.py) = SEMPRE NAO RENTAVEL, independente de capacidade (NAND raw + LPDDR2 legado pre-eMCP, sem mercado B2B de reciclagem). is_emcp=false espelha o modelo MCP legado da Samsung (subtype descritivo, tratado como tipo unico dead, nao como combo eMCP). Familia MAGRA: capacidade irrelevante p/ dead-by-type."]'
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: vivem no BANCO (Opcao 2) — submeter via submit_known_parts. Este yaml

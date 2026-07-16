@@ -1945,6 +1945,7 @@ _FORESEE_GOLDEN = {  # Foresee/Longsys — 1a entrega: eMMC (FEMD/FEMK/FEMJ). Ca
     "FS35ND04G-S2Y2QWFI000": ("NAND Flash", "", "", "", "", "NÃO RENTÁVEL"), # FS35 SPI NAND SLC — dead-by-type
     "FS33ND01GS108TFI0": ("NAND Flash", "", "", "", "", "NÃO RENTÁVEL"),     # FS33 parallel NAND SLC — dead-by-type
     "FSNU8A001G-TWT": ("NAND Flash", "", "", "", "", "NÃO RENTÁVEL"),        # FSN BGA NAND SLC — dead-by-type
+    "F70ME0101D-RDWA": ("MCP", "", "", "", "", "NÃO RENTÁVEL"),              # F70M nMCP legado (NAND+LPDDR2) — dead-by-type
 }
 
 
