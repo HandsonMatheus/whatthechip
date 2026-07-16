@@ -1,15 +1,21 @@
 # Conhecimento Foresee (Longsys Electronics) — GRAMÁTICA do catálogo (Opção 2).
-# Marca NOVA (jul/2026). 1ª entrega: eMMC. Fonte Tier-1: catálogo oficial "FORESEE
-# Embedded Storage Product Catalogue" (longsys.com, espelho LCSC C18199807) + datasheets/
-# listagens LCSC/DigiKey por PN. Capacidade eMMC é LITERAL no PN (pn[6:9] = GB).
+# Marca NOVA (jul/2026), construída DO ZERO em Tier-1, catálogo por catálogo. COMPLETA:
+# 9 categorias / 17 famílias — eMMC (FEMD/FEMK/FEMJ), UFS (FEUD*), eMCP (FEPR/FEPN),
+# uMCP (FUPR), ePOP (FAPU/FAPE), LPDDR4X (FLXC), DDR3L (F60C), NAND raw (F35/FS35/FS33/FSN),
+# nMCP (F70M). Fonte Tier-1: catálogo oficial "FORESEE Embedded Storage Product Catalogue"
+# (longsys.com) + datasheet eMCP FEPRF6432 (community.nxp.com) + DigiKey (anchors FLXC).
+# ⚠ O "G" no PN muda de UNIDADE por linha: eMMC/UFS/LPDDR4X = GB; NAND raw/DDR3L = Gbit (÷8).
 # Editar aqui, validar no portão (load_brands --brand foresee, dry-run), gravar com --commit.
 brand:
   name: Foresee
   code: FRS
   notes: 'China (Shenzhen) · Marca de storage da Longsys Electronics (fundada 2011; 1o eMMC em massa da China). Foco industrial/automotivo/IoT/consumo. Linhas: eMMC/UFS/eMCP/uMCP/ePOP/NAND raw/LPDDR4X/DDR3L. Longsys tambem e dona da Lexar (2017) — marca SEPARADA, nao fundir com Foresee. Site: longsys.com'
 maps:
-  # Capacidade eMMC — LITERAL no PN (pn[6:9], 3 digitos + "G" = GB, NAO Gbit). So codigos
-  # vistos em PN-ancora real do catalogo/LCSC (004..512). val_primary = capacidade legivel.
+  # Capacidade eMMC — LITERAL no PN (pn[6:9], 3 digitos + "G" = GB, NAO Gbit). val_primary =
+  # capacidade legivel. 004..256 = catalogo oficial (Tier-1); 512 = FEMDNN512G-C9C76 visto na
+  # LCSC (distribuidor, fora do catalogo) — mantido pois a capacidade e LITERAL/auto-evidente
+  # e o PN existe; baixo risco. ⚠ FEMDRM0128G (industrial 128GB, 4 digitos "0128") NAO decodifica
+  # aqui (pn[6:9]="012") — coberto por known_part exato (ver reasoning do FEMD).
   FRS_EMMC_CAP:
   - ['004', 4GB, '']
   - ['008', 8GB, '']
@@ -56,7 +62,7 @@ families:
   decode_density_type: ''
   suffix_rules: ''
   tip: 'eMMC 5.1 Foresee/Longsys (FEMD...), FBGA153 11.5x13mm, 1.8V/3.3V. Capacidade LITERAL no PN: pn[6:9] = GB (032=32GB, 128=128GB) — NAO e Gbit (o "G" da Foresee muda de unidade por linha; aqui e GB). Grade em pn[4:6]: NN=comercial · ME=automotivo Grade2 (AEC-Q100) · RM=industrial · RW=industrial wide-temp · MW=automotivo Grade3. pn[3]=D (pacote padrao). Sufixo (5 chars apos "-") = revisao/NAND/controlador, nao decodificado. Legado equivalente: FSEIASLD-* (mesmo produto que FEMDRM*). Fonte: catalogo oficial Longsys + LCSC.'
-  reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com, espelho LCSC C18199807) + datasheets/listagens LCSC/DigiKey por PN. Capacidade literal (GB) confirmada em PNs reais: FEMDNN008G/016G/032G/064G/128G/256G (comercial 3D TLC, -A3A5x), FEMDME004G a 064G (auto Grade2, -A8Axx), FEMDRM008G a 064G (industrial 3D NAND, -A3A5x), FEMDRW008G a 128G (industrial wide-temp, -88Axx), FEMDMW008G a 064G (auto Grade3, -88Axx). Todos eMMC 5.1, FBGA153. O catalogo lista o industrial 128GB como FEMDRM0128G (4 digitos) — provavel typo, pois a LCSC lista FEMDNN128G com 3 digitos; nao adicionei chave de 4 digitos, um FEMDRM0128G real cai em INDETERMINADO ate confirmar."]'
+  reasoning: '["Catalogo oficial FORESEE Embedded Storage Product Catalogue (longsys.com, espelho LCSC C18199807) + datasheets/listagens LCSC/DigiKey por PN. Capacidade literal (GB) confirmada em PNs reais: FEMDNN008G/016G/032G/064G/128G/256G (comercial 3D TLC, -A3A5x), FEMDME004G a 064G (auto Grade2, -A8Axx), FEMDRM008G a 064G (industrial 3D NAND, -A3A5x), FEMDRW008G a 128G (industrial wide-temp, -88Axx), FEMDMW008G a 064G (auto Grade3, -88Axx). Todos eMMC 5.1, FBGA153. ⚠ O catalogo lista o industrial 128GB como FEMDRM0128G (4 digitos 0128) — NAO e typo, e um PN real (a Longsys cross-referencia FSEIASLD-128G). Mas o formato 4-digitos quebra o decode posicional (pn[6:9]=012, nao 128 → INDETERMINADO); o wide-temp FEMDRW128G usa 3 digitos e decodifica normal. E um one-off da grade RM 128GB: coberto por KNOWN_PART exato (FEMDRM0128G-A3A56 → eMMC 128GB), nao por chave no mapa. 512G: FEMDNN512G-C9C76 na LCSC (fora do catalogo, capacidade literal, baixo risco)."]'
 - prefix: FEMK
   chip_type: eMMC
   subtype: ''
@@ -348,5 +354,7 @@ families:
 
 # ─────────────────────────────────────────────────────────────────────────────
 # known_parts: vivem no BANCO (Opcao 2) — submeter via submit_known_parts. Este yaml
-# so carrega GRAMATICA. Proximas categorias (UFS/eMCP/uMCP/ePOP/NAND/DRAM): FORESEE.md.
+# so carrega GRAMATICA. known_parts confirmados nas categorias RENTAVEIS (eMMC/UFS/eMCP/
+# uMCP/LPDDR4X/DDR3L) em submissions/foresee_*.yaml; ePOP/NAND raw/nMCP sao dead-by-type
+# (sem known_parts — capacidade irrelevante). Camada humana + anatomia do PN: FORESEE.md.
 # ─────────────────────────────────────────────────────────────────────────────
