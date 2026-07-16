@@ -1921,6 +1921,15 @@ _NANYA_GOLDEN = {  # Nanya: 3 famílias DDR magras — tipo pelo prefixo, capaci
 }
 
 
+_FORESEE_GOLDEN = {  # Foresee/Longsys — 1a entrega: eMMC (FEMD/FEMK/FEMJ). Capacidade LITERAL
+    # no PN (pn[6:9]=GB, NAO Gbit). Fonte Tier-1: catalogo oficial Longsys + LCSC/DigiKey.
+    "FEMDNN128G-A3A56": ("eMMC", "128GB", "", "", "", "RENTÁVEL"),   # FEMD comercial 128GB 3D TLC
+    "FEMDNN032G-A3A55": ("eMMC", "32GB",  "", "", "", "RENTÁVEL"),   # FEMD comercial 32GB
+    "FEMKNN008G-58A42": ("eMMC", "8GB",   "", "", "", "RENTÁVEL"),   # FEMK subsize 8GB MLC
+    "FEMJNM032G-58C29": ("eMMC", "32GB",  "", "", "", "RENTÁVEL"),   # FEMJ subsize TLC 32GB
+}
+
+
 class LoadBrandsPiecemakersTests(TestCase):
     """Passo 4: PieceMakers carregada de chips/knowledge/piecemakers.yaml. Fidelidade
     (YAML→banco) + identificação de TODOS os PNs conhecidos. (Equivalência ao antigo
@@ -2110,6 +2119,19 @@ class NanyaLoadBrandsTests(TestCase):
         call_command("load_brands", "--brand", "nanya", "--commit", "--skip-known-parts", verbosity=0)
         clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia; prod é monotônico)
         for pn, esperado in _NANYA_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+
+class ForeseeLoadBrandsTests(TestCase):
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "foresee")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "foresee", "--commit", "--skip-known-parts", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia)
+        for pn, esperado in _FORESEE_GOLDEN.items():
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
