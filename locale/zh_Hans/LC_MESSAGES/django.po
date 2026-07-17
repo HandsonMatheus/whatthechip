@@ -1749,3 +1749,23 @@ msgstr "发票已取消——重新登记结算后可再开票。"
 
 msgid "Valores ilegíveis — use números."
 msgstr "数值无法识别——请输入数字。"
+
+#: templates/registration/login.html
+msgid "Voltar para a busca"
+msgstr "返回搜索"
+
+#: templates/registration/login.html
+msgid "Mostrar senha"
+msgstr "显示密码"
+
+#: templates/registration/login.html
+msgid "Manter conectado"
+msgstr "保持登录"
+
+#: templates/registration/login.html
+msgid "Esqueceu a senha?"
+msgstr "忘记密码？"
+
+#: templates/registration/login.html
+msgid "Recuperação de senha: contate o administrador do seu operador."
+msgstr "密码找回：请联系您运营方的管理员。"

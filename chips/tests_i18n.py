@@ -271,10 +271,10 @@ class CmsConteudoPorIdiomaTests(TestCase):
     pt-br) e os METADADOS (title…) vêm do modeltranslation no banco."""
 
     HOME_PROBES = {
-        'pt-br':   'Aguardando PN…',
-        'es':      'Esperando PN…',
-        'en':      'Waiting for PN…',
-        'zh-hans': '等待输入 PN…',
+        'pt-br':   'Experimente',
+        'es':      'Prueba',
+        'en':      'Try it',
+        'zh-hans': '试试看',
     }
 
     def _client_em(self, lng):

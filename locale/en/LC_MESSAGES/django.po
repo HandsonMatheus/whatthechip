@@ -1788,3 +1788,23 @@ msgstr "Invoice cancelled — record a new settlement to re-issue."
 
 msgid "Valores ilegíveis — use números."
 msgstr "Unreadable values — use numbers."
+
+#: templates/registration/login.html
+msgid "Voltar para a busca"
+msgstr "Back to search"
+
+#: templates/registration/login.html
+msgid "Mostrar senha"
+msgstr "Show password"
+
+#: templates/registration/login.html
+msgid "Manter conectado"
+msgstr "Keep me signed in"
+
+#: templates/registration/login.html
+msgid "Esqueceu a senha?"
+msgstr "Forgot your password?"
+
+#: templates/registration/login.html
+msgid "Recuperação de senha: contate o administrador do seu operador."
+msgstr "Password recovery: contact your operator's administrator."

@@ -1,154 +1,133 @@
-<!-- TRADUÇÃO GERADA a partir de index.html (pt-br) — rotina I18N.md §7/§9.
-     Editou o index.html? Atualize este arquivo na mesma sessão (o fallback é o PT).
-     Idioma: en -->
 <!-- ══════════════════════════════════════════════════════
-     INDEX — WhatTheChip · 什么芯片
-     Design Claude Design (Carbon + camada Luna/XP) reimplementado
-     em HTML/CSS/JS sobre o Django. Topnav e footer ficam em base.html.
-     Este arquivo é injetado por pages/views.home — NÃO usar tags Django,
-     apenas os placeholders {{PREFIX_DATA}} e {{STAT_*}}.
+     INDEX — WhatTheChip · 什么芯片   (redesenho "Render", finder bar)
+     Injetado por pages/views.home — NÃO usar tags Django aqui, apenas os
+     placeholders de dados PREFIX_DATA / STAT_* (entre chaves duplas) que a
+     view substitui via str.replace.
+     A nav e o footer ficam em base.html; o visual vem de static/css/design.css.
+     O resultado REAL vem de /chips/search/ (JSON) — o JS abaixo consome esse
+     endpoint (sem catálogo fake). Estados via data-state em #app.
      ══════════════════════════════════════════════════════ -->
 
-<!-- ── HERO + RESULTADO — cresce para empurrar a stats strip ao fundo ── -->
-<div class="hero-area">
-<section class="hero">
-  <div class="hero__inner">
+<div class="app" data-state="idle" id="app">
+  <div class="stage">
+    <div class="col-main">
 
-    <div class="logo" aria-label="WhatTheChip 什么芯片">
-      <img class="logo__svg is-light" src="/static/img/wtc-logo-light.svg" alt="WhatTheChip 什么芯片" />
-      <img class="logo__svg is-dark" src="/static/img/wtc-logo-dark.svg" alt="" aria-hidden="true" />
-    </div>
-
-    <form class="pnbar" id="pn-form" role="search" autocomplete="off">
-      <div class="pnbar__prefix" id="pn-prefix" title="Prefix detection">
-        <span>Waiting for PN…</span>
+      <!-- Brandmark (grande no idle; pequeno à esquerda ao mostrar resultado) -->
+      <div class="brandmark" aria-label="WhatTheChip 什么芯片">
+        <img class="is-light" src="/static/img/wtc-logo-light.svg" alt="WhatTheChip 什么芯片" />
+        <img class="is-dark" src="/static/img/wtc-logo-dark.svg" alt="" aria-hidden="true" />
       </div>
-      <div class="pnbar__cells" id="pn-cells"></div>
 
-      <button type="button" class="pnbar__mic wtc-mic-btn" id="pn-mic"
-              data-mic-target="pn-input"
-              data-mic-cta="pn-decode"
-              aria-label="Say the Part Number" title="Say the Part Number"></button>
+      <!-- Finder bar -->
+      <div class="finder-wrap">
+        <form class="finder" id="pn-form" role="search" autocomplete="off">
+          <span class="finder__search" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.3-4.3"/></svg>
+          </span>
 
-      <button type="button" class="pnbar__clear" id="pn-clear"
-              aria-label="Clear PN" title="Clear all" hidden>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>
-        </svg>
-      </button>
+          <input class="finder__input" id="pn-input" type="text"
+                 inputmode="latin" spellcheck="false"
+                 autocapitalize="characters" autocorrect="off" autocomplete="off"
+                 placeholder="Search Part Number…  e.g. KMQ310006A"
+                 aria-label="Chip part number" />
 
-      <button type="submit" class="pnbar__decode" id="pn-decode" aria-label="Decode" disabled>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>
-        </svg>
-        <span class="pnbar__decode-label">Decode</span>
-        <span class="pnbar__decode-spinner" aria-hidden="true"></span>
-      </button>
+          <button type="button" class="finder__mic wtc-mic-btn" id="pn-mic"
+                  data-mic-target="pn-input" data-mic-cta="pn-decode" data-mic-hint="pn-hint"
+                  aria-label="Speak the Part Number" title="Speak the Part Number"></button>
 
-      <input class="pnbar__input" id="pn-input" type="text" spellcheck="false"
-             autocomplete="off" autocapitalize="characters" autocorrect="off"
-             aria-label="Chip part number" />
-    </form>
+          <button type="submit" class="finder__go" id="pn-decode" aria-label="Identify" disabled>
+            <svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <span class="spin" aria-hidden="true"></span>
+            <span class="finder__go-label">Identify</span>
+          </button>
+        </form>
 
-    <!-- Ações mobile: Apagar + Decodificar abaixo da barra -->
-    <div class="mobile-actions" aria-hidden="false">
-      <button type="button" class="pnbar__clear" id="pn-clear-mobile"
-              aria-label="Clear PN" title="Clear" disabled>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>
-        </svg>
-      </button>
-      <button type="button" class="pnbar__decode" id="pn-decode-mobile" aria-label="Decode" disabled>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>
-        </svg>
-        <span class="pnbar__decode-label">Decode</span>
-        <span class="pnbar__decode-spinner" aria-hidden="true"></span>
-      </button>
-    </div>
+        <div class="finder-bar" id="pn-bar"></div>
 
-    <p class="pn-hint" id="pn-hint">Type the Part Number above — press Enter or Decode</p>
+        <div class="subline">
+          <div class="hintkeys" id="pn-hint"><span class="kbd">Enter</span> identifies <span class="meta-sep">·</span> <span class="kbd">Esc</span> clears</div>
+        </div>
+      </div>
 
-  </div>
-</section>
+      <!-- Exemplos clicáveis (idle) -->
+      <div class="quick">
+        <div class="quick__label">Try it</div>
+        <div class="quick__grid" id="pn-examples"></div>
+      </div>
 
-<!-- ── RESULTADO (preenchido por JS) ── -->
-<div class="result-wrap" id="result-wrap"></div>
-</div><!-- /hero-area -->
+      <!-- Resultado / não encontrado (preenchido por JS a partir de /chips/search/) -->
+      <div class="result-slot" id="result-wrap"></div>
 
-<!-- ── STATS STRIP ── -->
-<section class="stats">
-  <div class="stats__inner">
-    <div class="stat">
-      <span class="stat__label">Chips in the database</span>
-      <span class="stat__value">{{STAT_PARTS}}</span>
-      <span class="stat__delta">Cataloged part numbers</span>
-    </div>
-    <div class="stat">
-      <span class="stat__label">Manufacturers</span>
-      <span class="stat__value">{{STAT_BRANDS}}</span>
-      <span class="stat__delta">Mapped brands</span>
-    </div>
-    <div class="stat">
-      <span class="stat__label">Mapped families</span>
-      <span class="stat__value">{{STAT_FAMILIES}}</span>
-      <span class="stat__delta">eMMC · LPDDR · UFS · NAND</span>
-    </div>
-    <div class="stat">
-      <span class="stat__label">Logged searches</span>
-      <span class="stat__value">{{STAT_SEARCHES}}</span>
-      <span class="stat__delta">Searches processed</span>
     </div>
   </div>
-</section>
+
+  <!-- Stats strip — números reais do banco -->
+  <section class="stats">
+    <div class="stats__inner">
+      <div class="stat"><div class="stat__v">{{STAT_PARTS}}</div><div class="stat__l">Chips in database</div></div>
+      <div class="stat"><div class="stat__v">{{STAT_BRANDS}}</div><div class="stat__l">Manufacturers</div></div>
+      <div class="stat"><div class="stat__v">{{STAT_FAMILIES}}</div><div class="stat__l">Families</div></div>
+      <div class="stat"><div class="stat__v">{{STAT_SEARCHES}}</div><div class="stat__l">Searches</div></div>
+    </div>
+  </section>
+</div>
 
 <script>
 (function () {
   'use strict';
 
-  // ── Dados de prefixo injetados pelo Django ────────────────────────────────
+  // Dados de prefixo injetados pelo Django (detecção de família client-side).
   var DATA = {{PREFIX_DATA}};
 
-  // ── Elementos ─────────────────────────────────────────────────────────────
-  var form        = document.getElementById('pn-form');
-  var input       = document.getElementById('pn-input');
-  var cellsWrap   = document.getElementById('pn-cells');
-  var prefixWrap  = document.getElementById('pn-prefix');
-  var hint        = document.getElementById('pn-hint');
-  var resultWrap  = document.getElementById('result-wrap');
-  var clearBtns   = [document.getElementById('pn-clear'), document.getElementById('pn-clear-mobile')];
-  var decodeBtns  = [document.getElementById('pn-decode'), document.getElementById('pn-decode-mobile')];
+  var app        = document.getElementById('app');
+  var form       = document.getElementById('pn-form');
+  var input      = document.getElementById('pn-input');
+  var goBtn      = document.getElementById('pn-decode');
+  var bar        = document.getElementById('pn-bar');
+  var hint       = document.getElementById('pn-hint');
+  var resultWrap = document.getElementById('result-wrap');
+  var examplesW  = document.getElementById('pn-examples');
 
-  var CELL_MIN  = 16;   // células mostradas por padrão
-  var CELL_MAX  = 24;   // teto absoluto
-  var _cellCount = 0;
-  var _detectedFam = null;
   var _lastApiPn   = '';
   var _lastData    = null;
+  var _detectedFam = null;
 
+  // Rótulos de confiança (sem emoji — o "dot" colorido está no CSS).
   var CONF_LABEL = {
-    'confirmed':   '✅ Confirmed',
-    'manual':      '✏️ Manual',
-    'distributor': '🏪 Distributor',
-    'grammar':     '📐 Grammar',
-    'ai_high':     '🤖 AI — High',
-    'ai_medium':   '🤖 AI — Medium',
-    'ai_low':      '🤖 AI — Low',
-    'estimated':   '~ Estimated',
+    confirmed:'Confirmed', manual:'Manual', grammar:'Grammar', distributor:'Distributor',
+    ai_high:'AI · high confidence', ai_medium:'AI · medium confidence', ai_low:'AI · low confidence',
+    estimated:'Estimated'
   };
+  // Veredito: chave canônica (do servidor) → [classe CSS, rótulo]. Ver I18N.md.
+  var VERDICT = {
+    'RENTÁVEL':      ['rentavel', 'Profitable'],
+    'NÃO RENTÁVEL':  ['nao',      'Not profitable'],
+    'INDETERMINADO': ['indet',    'Undetermined']
+  };
+  // PNs de exemplo (o dono pode ajustar esta lista conforme o catálogo).
+  var EXAMPLES = [
+    { pn:'KMQ310006A',     m:'Samsung · eMCP' },
+    { pn:'K4B2G1646F',     m:'Samsung · DDR3' },
+    { pn:'MT53E1G32D2FW',  m:'Micron · LPDDR' },
+    { pn:'H9HCNNNCPMMLXR', m:'SK Hynix · LPDDR4X' }
+  ];
 
-  // ── Utilitários ───────────────────────────────────────────────────────────
+  var IC_WARN  = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17v.01M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>';
+  var IC_ERR   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.3-4.3M11 8v3M11 14v.01"/></svg>';
+  var IC_ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var IC_SEND  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>';
+
   function normalize(s) { return (s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
   function escHtml(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
   function effectiveConf(d) {
     if (d.grammar_complete && d.confidence === 'estimated') return 'grammar';
     return d.confidence || 'estimated';
   }
 
-  // ── Camada 1: detecção de família por prefixo (client-side) ───────────────
+  // Detecção de família por prefixo (mais longo vence). DATA[].prefix pode ter
+  // várias formas separadas por "/" e sufixo "..." (ex.: "KMQ.../KMD...").
   function bestMatch(q) {
     var best = null;
     DATA.forEach(function (row) {
@@ -156,293 +135,162 @@
         return normalize(p.replace(/\.\.\.$/, '').trim());
       });
       parts.forEach(function (p) {
-        if (p && q.indexOf(p) === 0 &&
-            (!best || p.length > normalize(best.prefix).length)) {
-          best = row;
-        }
+        if (p && q.indexOf(p) === 0 && (!best || p.length > normalize(best.prefix).length)) best = row;
       });
     });
     return best;
   }
 
-  // ── Renderiza as células do PN ────────────────────────────────────────────
-  function renderCells(value) {
-    var want = CELL_MIN;
-    if (value.length >= CELL_MIN) want = Math.min(value.length + 1, CELL_MAX);
+  // Monta os chips de exemplo.
+  EXAMPLES.forEach(function (e) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip-ex';
+    b.innerHTML = '<span class="chip-ex__pn">' + escHtml(e.pn) + '</span>'
+                + '<span class="chip-ex__meta">' + escHtml(e.m) + '</span>';
+    b.addEventListener('click', function () { input.value = e.pn; render(normalize(e.pn)); decode(); });
+    examplesW.appendChild(b);
+  });
 
-    if (_cellCount !== want) {
-      cellsWrap.innerHTML = '';
-      for (var i = 0; i < want; i++) {
-        var cell = document.createElement('div');
-        cell.className = 'pncell';
-        cell.setAttribute('aria-hidden', 'true');
-        cellsWrap.appendChild(cell);
-      }
-      _cellCount = want;
-    }
-
-    var cells = cellsWrap.children;
-    var focused = document.activeElement === input;
-    var prefixLen = _detectedFam ? normalize(_detectedFam.prefix).length : 0;
-
-    for (var j = 0; j < cells.length; j++) {
-      var ch = value[j] || '';
-      var isEmpty  = ch === '';
-      var isActive = focused && j === Math.min(value.length, cells.length - 1);
-      var isKnown  = !isEmpty && j < prefixLen;
-      cells[j].textContent = ch;
-      cells[j].className = 'pncell'
-        + (isActive ? ' is-active' : '')
-        + (isEmpty ? ' is-empty' : '')
-        + (isKnown ? ' is-known' : '');
-    }
-  }
-
-  // ── Atualiza o prefixo, o hint e o estado dos botões ──────────────────────
+  // Atualiza o estado do botão e a dica conforme o texto digitado.
   function updateChrome(q, fam) {
-    // Prefixo
-    if (fam) {
-      prefixWrap.innerHTML = '<span class="mfg">' + escHtml(fam.fab) + '</span>'
-        + '<span>&nbsp;·&nbsp;</span><span>' + escHtml(fam.tipo) + '</span>';
-    } else if (q) {
-      prefixWrap.innerHTML = '<span>Family not cataloged</span>';
-    } else {
-      prefixWrap.innerHTML = '<span>Waiting for PN…</span>';
-    }
+    goBtn.disabled = q.length < 4;
 
-    // Botões
-    var canDecode = q.length >= 4;
-    decodeBtns.forEach(function (b) { if (b) b.disabled = !canDecode; });
-    clearBtns.forEach(function (b) {
-      if (!b) return;
-      b.disabled = q.length === 0;
-      if (b.id === 'pn-clear') b.hidden = q.length === 0;
-    });
-
-    // Hint
     if (!q) {
-      hint.textContent = 'Type the Part Number above — press Enter or Decode';
-      hint.className = 'pn-hint';
+      hint.innerHTML = '<span class="kbd">Enter</span> identifies <span class="meta-sep">·</span> <span class="kbd">Esc</span> clears';
+      hint.className = 'hintkeys';
     } else if (q.length < 4) {
-      hint.textContent = 'Keep typing (' + q.length + '/4 minimum)';
-      hint.className = 'pn-hint is-warn';
+      hint.textContent = 'Keep typing — minimum 4 characters (' + q.length + '/4)';
+      hint.className = 'hintkeys is-warn';
     } else if (fam && fam.pn_length && q.length < fam.pn_length) {
       hint.textContent = 'Incomplete PN — ' + q.length + '/' + fam.pn_length + ' characters';
-      hint.className = 'pn-hint is-warn';
+      hint.className = 'hintkeys is-warn';
     } else {
-      hint.textContent = 'Press Enter or click Decode';
-      hint.className = 'pn-hint';
+      hint.innerHTML = '<span class="kbd">Enter</span> identifies';
+      hint.className = 'hintkeys';
     }
   }
 
-  // ── Render principal enquanto o usuário digita ────────────────────────────
-  function render(raw) {
-    var q = normalize(raw);
+  function render(q) {
     var fam = q ? bestMatch(q) : null;
     if (fam !== _detectedFam) { _detectedFam = fam; _lastApiPn = ''; }
-    renderCells(q);
     updateChrome(q, fam);
   }
 
-  // ── Loading dos botões de decode ──────────────────────────────────────────
   function setLoading(on) {
-    decodeBtns.forEach(function (b) {
-      if (!b) return;
-      b.classList.toggle('is-loading', on);
-      if (on) b.disabled = true;
-    });
+    goBtn.classList.toggle('is-loading', on);
+    bar.classList.toggle('is-on', on);
+    goBtn.disabled = on || normalize(input.value).length < 4;
   }
 
-  // ════════════════════════════════════════════════════════════════════
-  //  CARTÃO DE RESULTADO
-  // ════════════════════════════════════════════════════════════════════
-  function clearResult() { resultWrap.innerHTML = ''; _lastData = null; }
-
-  function cellHtml(label, value, note, mod) {
-    var cls = 'result__cell' + (mod ? ' result__cell--' + mod : '');
-    var valCls = 'result__value' + (value ? '' : ' dim');
-    return '<div class="' + cls + '">'
-      + '<div class="result__label">' + escHtml(label) + '</div>'
-      + '<div class="' + valCls + '">' + escHtml(value || '—') + '</div>'
-      + (note ? '<div class="result__note">' + escHtml(note) + '</div>' : '')
-      + '</div>';
+  function specCell(label, val, hi) {
+    var has = val && val !== '—';
+    return '<div class="spec' + (hi ? ' spec--hi' : '') + '">'
+      + '<div class="spec__label">' + escHtml(label) + '</div>'
+      + '<div class="spec__val' + (has ? '' : ' dim') + '">' + escHtml(has ? val : '—') + '</div></div>';
   }
 
   function renderResult(d) {
     _lastData = d;
-    var ts = new Date().toISOString().replace('T', ' ').slice(11, 19);
-    var undoc   = !!d.family_undocumented;
+    app.setAttribute('data-state', 'result');
+
     var eConf = effectiveConf(d);
+    var v = VERDICT[d.profitable];
+    var verdict = v ? '<div class="verdict"><span class="vpill vpill--' + v[0] + '">' + escHtml(v[1]) + '</span></div>' : '';
 
-    // Cabeçalho
-    var titleSmall = d.subtype
-      ? ' <small class="result__subtype">· ' + escHtml(d.subtype) + '</small>'
-      : '';
-    var head = '<header class="result__head">'
-      + '<span class="led" aria-hidden="true"></span>'
-      + '<h2 class="result__title">' + escHtml(d.chip_type || 'Chip') + titleSmall + '</h2>'
-      + '<span class="result__head-spacer"></span>'
-      + '<span class="result__meta">' + escHtml(d.pn || '') + ' · t=' + ts + 'Z</span>'
-      + '<span class="result__mfg"><span class="ic" aria-hidden="true"></span>'
-      + escHtml(d.brand || '—') + '</span>'
-      + '</header>';
+    var subtype = d.subtype ? '<small>' + escHtml(d.subtype) + '</small>' : '';
+    var head = '<div class="card__head"><div class="card__id">'
+      + '<div class="card__type">' + escHtml(d.chip_type || 'Chip') + subtype + '</div>'
+      + '<div class="card__mfg"><span class="l">Manufacturer</span>' + escHtml(d.brand || '—') + '</div>'
+      + '</div>' + verdict + '</div>';
 
-    // Bloco de aviso — família sem documentação pública
-    var undocWarn = '';
-    if (undoc) {
+    var undoc = '';
+    if (d.family_undocumented) {
       var pnEnc = encodeURIComponent(d.pn || '');
-      undocWarn = '<div class="result__undoc-warn">'
-        + '<div class="result__undoc-warn-title">⚠ Family without verifiable public documentation</div>'
-        + '<div class="result__undoc-warn-body">'
-        + 'This Part Number belongs to a family <strong>never officially documented</strong> — '
-        + 'it does not appear in any SK Hynix catalog, datasheet, Octopart, or verified distributor.<br><br>'
-        + '<strong>Hypotheses:</strong> manufacturer marking error (laser misprint) or OEM product with an unpublished NDA datasheet.<br><br>'
-        + 'The data shown below are <strong>estimates by structural analogy</strong> — '
-        + '<em>do not use as confirmed specification without physical verification.</em>'
-        + '</div>'
-        + '<a class="result__undoc-warn-btn" href="mailto:eminerparaguay@gmail.com'
-        + '?subject=Informa%C3%A7%C3%B5es%20sobre%20' + pnEnc
-        + '&body=PN%3A%20' + pnEnc + '%0A%0AInforma%C3%A7%C3%B5es%3A">'
-        + '📩 Do you know this chip? Get in touch'
-        + '</a>'
+      undoc = '<div class="undoc">'
+        + '<div class="undoc__t">' + IC_WARN + 'Family without verifiable public documentation</div>'
+        + '<div class="undoc__b">Este Part Number pertence a uma família <strong>nunca documentada oficialmente</strong>. '
+        + 'Os dados abaixo são <strong>estimativas por analogia estrutural</strong> — confirme fisicamente antes de decidir.</div>'
+        + '<a class="undoc__btn" href="mailto:eminerparaguay@gmail.com?subject=Informa%C3%A7%C3%B5es%20sobre%20' + pnEnc
+        + '&body=PN%3A%20' + pnEnc + '%0A%0AInforma%C3%A7%C3%B5es%3A">📩 Do you know this chip? Get in touch</a>'
         + '</div>';
     }
 
-    // Grade de 4 células
     var grid;
     if (d.is_emcp) {
-      grid = cellHtml('NAND', d.emcp_nand, '', 'em')
-           + cellHtml('RAM', d.emcp_ram, '', 'em')
-           + cellHtml('Device', d.emcp_device || d.device, '')
-           + cellHtml('Interface', d.interface, '');
+      grid = specCell('NAND', d.emcp_nand, true) + specCell('RAM', d.emcp_ram, true)
+           + specCell('Device', d.emcp_device || d.device, false) + specCell('Interface', d.interface, false);
     } else {
-      grid = cellHtml('Density', d.dram_density, '', 'em')
-           + cellHtml('Interface', d.interface, '')
-           + cellHtml('Capacity', d.capacity, '')
-           + cellHtml('Confidence', CONF_LABEL[eConf] || d.confidence, '');
+      grid = specCell('Density', d.dram_density, true) + specCell('Interface', d.interface, false)
+           + specCell('Capacity', d.capacity, false) + specCell('Device', d.device, false);
     }
 
-    // Rodapé
-    var foot = '<footer class="result__foot">'
-      + '<span class="check" aria-hidden="true">✓</span>'
-      + '<span>' + escHtml(CONF_LABEL[eConf] || d.confidence || 'Result') + '</span>';
-    if (d.classification_source) {
-      foot += '<span class="sep">|</span><span>via ' + escHtml(d.classification_source) + '</span>';
-    }
-    if (d.doc_url) {
-      foot += '<span class="sep">|</span><a href="' + escHtml(d.doc_url) + '">Documentation →</a>';
-    }
-    foot += '<span class="sep">|</span>'
-      + '<button type="button" class="danger" id="rp-report">Report error</button>'
-      + '<span class="sep">|</span>'
-      + '<button type="button" class="danger" id="rp-debug" style="color:var(--cds-text-placeholder)">📋 Debug</button>'
-      + '</footer>';
+    var foot = '<div class="card__foot"><span class="pntag">' + escHtml(d.pn || '') + '</span>'
+      + '<span class="dotsep">·</span>'
+      + '<span class="conf conf--' + eConf + '"><span class="dot"></span>' + escHtml(CONF_LABEL[eConf] || d.confidence || '') + '</span>';
+    foot += '<span class="dotsep">·</span><button type="button" class="linkbtn linkbtn--danger" id="rp-report">Report error</button></div>';
 
-    // ── Preço do comprador (F5 — PRECIFICACAO §7) ────────────────────────
-    // d.prices SÓ existe no JSON quando o usuário logado é ADMIN da empresa
-    // (o gate é do SERVIDOR, em /chips/search/ — este JS apenas exibe).
-    var priceBlock = '';
-    if (d.prices && d.prices.length) {
-      priceBlock = '<div class="result__price" style="margin:14px 16px 4px;padding:10px 14px;background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;border-radius:6px;">';
-      d.prices.forEach(function (p) {
-        priceBlock += '<div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;">'
-          + '<span style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.04em;">💰 ' + escHtml(p.buyer) + '</span>';
-        if (p.status === 'PRICED') {
-          priceBlock += '<span style="font-size:16px;font-weight:800;color:#1d6b2f;">' + (p.is_stale ? '≈ ' : '') + '¥ ' + escHtml(p.rmb) + ' <span style="font-weight:600;color:#2e7d3a;">· US$ ' + escHtml(p.min) + '</span></span>'
-            + '<span style="font-size:11px;color:#557a5e;">'
-            + (p.quote_date ? 'quoted ' + escHtml(p.quote_date) : 'reference (no date)')
-            + ' · ' + escHtml(p.via) + '</span>';
-        } else if (p.status === 'NO_BUY') {
-          priceBlock += '<span style="font-size:13px;font-weight:700;color:#a33;">doesn't buy this item</span>';
-        } else if (p.status === 'NOT_MADE') {
-          priceBlock += '<span style="font-size:13px;font-weight:600;color:#777;">not manufactured by the brand</span>';
-        } else if (p.status === 'UNQUOTED') {
-          priceBlock += '<span style="font-size:13px;font-weight:600;color:#b8860b;">awaiting quote</span>';
-        } else {
-          priceBlock += '<span style="font-size:12px;color:#777;">no price — ' + escHtml(p.reason || '') + '</span>';
-        }
-        priceBlock += '</div>';
-      });
-      priceBlock += '</div>';
-    }
-
-    var articleClass = 'result'
-      + (undoc    ? ' result--undoc' : '');
-    resultWrap.innerHTML = '<article class="' + articleClass + '">'
-      + head + undocWarn + priceBlock + '<div class="result__grid">' + grid + '</div>' + foot + '</article>';
+    resultWrap.innerHTML = '<div class="card">' + head + undoc
+      + '<div class="card__grid">' + grid + '</div>' + foot + '</div>';
 
     wireResultActions();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function renderNotFound(pn) {
+  function renderNotFound(d, pn) {
     _lastData = null;
-    resultWrap.innerHTML =
-      '<article class="result result--notfound">'
-      + '<header class="result__head">'
-      + '<span class="led" aria-hidden="true"></span>'
-      + '<h2 class="result__title">Chip not identified '
-      + '<small>· no match in the database</small></h2>'
-      + '<span class="result__head-spacer"></span>'
-      + '<span class="result__meta">' + escHtml(pn) + '</span>'
-      + '</header>'
-      + '<div class="result__body">'
-      + 'We could not find that Part Number. Check the chip reading, or '
-      + '<strong>send the PN for analysis</strong> — we add it manually to the database within 48&nbsp;h.'
-      + '</div>'
-      + '<footer class="result__foot">'
-      + '<button type="button" class="danger" id="rp-submit" style="color:var(--cds-link-primary)">Send for analysis →</button>'
-      + '</footer>'
-      + '</article>';
+    app.setAttribute('data-state', 'notfound');
 
-    var sub = document.getElementById('rp-submit');
-    if (sub) sub.addEventListener('click', function () {
-      if (window.wtcOpenSubmitModal) window.wtcOpenSubmitModal(pn);
+    var sugg = '';
+    var list = (d && d.fuzzy_suggestions) || [];
+    if (list.length) {
+      sugg = '<div class="suggest"><div class="suggest__label">Did you mean?</div>';
+      var bn = normalize(pn);
+      list.forEach(function (s) {
+        var t = normalize(s), i = 0;
+        while (i < bn.length && i < t.length && bn[i] === t[i]) i++;
+        var pre = t.slice(0, i), dif = t.slice(i);
+        sugg += '<button type="button" class="suggest__item" data-sug="' + escHtml(s) + '">'
+          + '<span class="suggest__pn">' + escHtml(pre) + '<span class="diff">' + escHtml(dif) + '</span></span>'
+          + '<span class="suggest__arrow">' + IC_ARROW + '</span></button>';
+      });
+      sugg += '</div>';
+    }
+
+    resultWrap.innerHTML = '<div class="notfound">'
+      + '<div class="notfound__head"><div class="notfound__badge">' + IC_ERR + '</div>'
+      + '<div><div class="notfound__t">Chip not identified <small>no match in the database</small></div></div></div>'
+      + '<div class="notfound__body">We did not find <strong>' + escHtml(pn) + '</strong>. '
+      + 'Verifique o código gravado no chip e tente novamente.' + sugg
+      + '<button type="button" class="btn-primary" id="rp-submit">' + IC_SEND + 'Send for analysis</button>'
+      + '</div></div>';
+
+    var sb = document.getElementById('rp-submit');
+    if (sb) sb.addEventListener('click', function () { if (window.wtcOpenSubmitModal) window.wtcOpenSubmitModal(pn); });
+    resultWrap.querySelectorAll('[data-sug]').forEach(function (btn) {
+      btn.addEventListener('click', function () { triggerSearch(btn.getAttribute('data-sug')); });
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ── Report + Debug ────────────────────────────────────────────────────────
+  // Report + Debug do card.
   function wireResultActions() {
-    var reportBtn = document.getElementById('rp-report');
-    if (reportBtn) {
-      reportBtn.addEventListener('click', function () {
-        if (!_lastData) return;
-        var body = new URLSearchParams({
-          pn:        _lastData.pn || '',
-          chip_type: _lastData.chip_type || '',
-          capacity:  _lastData.capacity || _lastData.emcp_nand || '',
-        });
-        fetch('/chips/report/', { method: 'POST', body: body })
-          .then(function () {
-            reportBtn.outerHTML = '<span class="ok">✓ Report received — thank you!</span>';
-          })
-          .catch(function () {});
+    var rb = document.getElementById('rp-report');
+    if (rb) rb.addEventListener('click', function () {
+      if (!_lastData) return;
+      var body = new URLSearchParams({
+        pn:        _lastData.pn || '',
+        chip_type: _lastData.chip_type || '',
+        capacity:  _lastData.capacity || _lastData.emcp_nand || ''
       });
-    }
+      fetch('/chips/report/', { method: 'POST', body: body })
+        .then(function () { rb.outerHTML = '<span class="ok">✓ Reporte recebido — obrigado!</span>'; })
+        .catch(function () {});
+    });
 
-    var debugBtn = document.getElementById('rp-debug');
-    if (debugBtn) {
-      debugBtn.addEventListener('click', function () {
-        if (!_lastData) return;
-        var txt = '=== WhatTheChip Debug ===\nPN: ' + (_lastData.pn || '')
-          + '\n' + JSON.stringify(_lastData, null, 2);
-        var done = function () {
-          debugBtn.textContent = '✓ Copiado!';
-          setTimeout(function () { debugBtn.textContent = '📋 Debug'; }, 2000);
-        };
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(txt).then(done).catch(function () {});
-        } else {
-          var ta = document.createElement('textarea');
-          ta.value = txt; ta.style.cssText = 'position:fixed;left:-9999px';
-          document.body.appendChild(ta); ta.select();
-          try { document.execCommand('copy'); done(); } catch (e) {}
-          document.body.removeChild(ta);
-        }
-      });
-    }
   }
 
-  // ── Chama a API de classificação do Django ────────────────────────────────
+  // Chama a API real de classificação do Django.
   function decode() {
     var q = normalize(input.value);
     if (q.length < 4) return;
@@ -450,61 +298,43 @@
     _lastApiPn = q;
 
     setLoading(true);
-    hint.textContent = 'Decoding…';
-    hint.className = 'pn-hint';
-
     fetch('/chips/search/?pn=' + encodeURIComponent(q))
       .then(function (r) { return r.json(); })
-      .then(function (d) {
-        if (d && d.known) renderResult(d);
-        else renderNotFound(q);
-      })
+      .then(function (d) { if (d && d.known) renderResult(d); else renderNotFound(d, q); })
       .catch(function () {
         hint.textContent = 'Connection error — try again';
-        hint.className = 'pn-hint is-warn';
+        hint.className = 'hintkeys is-warn';
         _lastApiPn = '';
       })
       .finally(function () {
         setLoading(false);
-        updateChrome(normalize(input.value), _detectedFam);
+        input.focus(); input.select();   // fluxo de bancada: re-foca e seleciona
       });
   }
 
-  // ── Limpar ────────────────────────────────────────────────────────────────
   function clearAll() {
     input.value = '';
     _lastApiPn = '';
+    app.setAttribute('data-state', 'idle');
+    resultWrap.innerHTML = '';
     render('');
-    clearResult();
     input.focus();
   }
 
-  // ── Eventos ───────────────────────────────────────────────────────────────
-  cellsWrap.addEventListener('click', function () { input.focus(); });
-  prefixWrap.addEventListener('click', function () { input.focus(); });
-
+  // Eventos.
   input.addEventListener('input', function () {
     var clean = normalize(this.value);
     if (this.value !== clean) this.value = clean;
     render(clean);
   });
-  input.addEventListener('focus', function () { render(normalize(this.value)); });
-  input.addEventListener('blur', function () { render(normalize(this.value)); });
   input.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); decode(); }
-    if (e.key === 'Escape') { clearAll(); this.blur(); }
+    if (e.key === 'Enter')  { e.preventDefault(); decode(); }
+    if (e.key === 'Escape') { e.preventDefault(); clearAll(); this.blur(); }
   });
-
   form.addEventListener('submit', function (e) { e.preventDefault(); decode(); });
+  goBtn.addEventListener('click', function (e) { e.preventDefault(); decode(); });
 
-  decodeBtns.forEach(function (b) {
-    if (b) b.addEventListener('click', function (e) { e.preventDefault(); decode(); });
-  });
-  clearBtns.forEach(function (b) {
-    if (b) b.addEventListener('click', function (e) { e.preventDefault(); clearAll(); });
-  });
-
-  // ── API global para sugestões externas ────────────────────────────────────
+  // API global (sugestões do card, mic.js CTA, etc.).
   window.triggerSearch = function (pn) {
     var clean = normalize(pn);
     input.value = clean;
@@ -512,7 +342,7 @@
     if (clean.length >= 4) decode();
   };
 
-  // ── Init ──────────────────────────────────────────────────────────────────
+  // Init.
   render('');
   setTimeout(function () { input.focus(); }, 120);
 })();

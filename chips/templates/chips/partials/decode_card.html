@@ -40,10 +40,8 @@
     {% endif %}
   </div>
 
-  <!-- ── Preço do comprador (F5 — SÓ papel admin; PRECIFICACAO §7) ────────
-       Markup na fonte única pricing/price_block.html (compartilhado com a
-       bancada do lote). price_quotes chega VAZIO para não-admin (gate na view). -->
-  {% include "pricing/price_block.html" %}
+  {% comment %}Faixa de preço (F5) removida do card na limpeza visual (jul/2026).
+     A fonte pricing/price_block.html continua existindo p/ a bancada do lote.{% endcomment %}
 
   <!-- ── Bloco família sem documentação pública ────────────────────────── -->
   {% if family_undocumented or "sem documentação" in result.subtype %}
@@ -152,29 +150,9 @@
   <!-- ── Rodapé ──────────────────────────────────────────────────────────── -->
   <div class="dc2-footer">
 
+    <span class="dc2-pn" style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--text-primary);letter-spacing:.02em;">{{ result.pn }}</span>
+    <span class="dc2-sep">·</span>
     <span class="dc2-conf dc2-conf--{{ confidence_key }}">{{ confidence_label }}</span>
-
-    {% if result.classification_source %}
-      <span class="dc2-sep">·</span>
-      {# Exibe o RÓTULO traduzido (source_label); o canônico segue no result p/ lógica. #}
-      <span class="dc2-source-tag">{% trans "via" %} {{ classification_source_label|default:result.classification_source }}</span>
-    {% endif %}
-
-    {% if result.doc_url %}
-      <span class="dc2-sep">·</span>
-      <a class="dc2-doclink" href="{{ result.doc_url }}">{% trans "Documentação →" %}</a>
-    {% endif %}
-
-    {% if show_source %}
-      <span class="dc2-sep">·</span>
-      <a class="dc2-srclink" href="{{ result.source_url }}" target="_blank" rel="noopener">{% trans "Fonte ↗" %}</a>
-    {% endif %}
-
-    {% if result.in_review_queue %}
-      <span class="dc2-sep">·</span>
-      <span class="dc2-queue dc2-queue--warn">⚠ {% trans "Enviado para revisão" %}</span>
-    {% endif %}
-
     <span class="dc2-sep">·</span>
     <span id="dc-report-{{ result.pn }}">
       <button class="dc2-report-btn"
@@ -184,9 +162,6 @@
         hx-vals='{"pn": "{{ result.pn|escapejs }}", "chip_type": "{{ result.chip_type|escapejs }}", "capacity": "{{ result.capacity|default:result.emcp_nand|default:''|escapejs }}"}'
         type="button">{% trans "Reportar erro" %}</button>
     </span>
-
-    <span class="dc2-sep">·</span>
-    <button class="dc2-copy-btn dc-copy-btn" type="button" title="{% trans 'Copia diagnóstico completo para o clipboard' %}">📋 Debug</button>
 
   </div>
 

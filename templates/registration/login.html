@@ -4,165 +4,242 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% trans "Login" %} — WhatTheChip?</title>
+  <title>{% trans "Entrar" %} — WhatTheChip? · 什么芯片</title>
+
+  <!-- Aplica o tema antes do paint (evita flash) -->
   <script>
-    (function() {
-      if (localStorage.getItem('wtc_theme') === 'dark')
-        document.documentElement.setAttribute('data-theme', 'dark');
+    (function () {
+      try { if (localStorage.getItem('wtc_theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) {}
     })();
   </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
-  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
   <style>
-    .login-wrap {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--surface-2);
-      padding: var(--s5);
+    /* Tokens — mesma paleta do design.css (login é self-contained) */
+    :root{
+      --ink-100:#161616;--ink-90:#21272a;--ink-80:#343a3f;--ink-70:#4d5358;--ink-60:#697077;
+      --ink-50:#878d96;--ink-40:#a2a9b0;--ink-30:#c1c7cd;--ink-20:#dde1e6;--ink-10:#f2f4f8;--ink-05:#f7f8fb;--white:#fff;
+      --blue-10:#edf5ff;--blue-20:#d0e2ff;--blue-40:#78a9ff;--blue-60:#0f62fe;--blue-60h:#0353e9;--blue-70:#0043ce;
+      --red-10:#fff1f1;--red-50:#fa4d56;--red-60:#da1e28;--red-70:#a2191f;
+      --r-sm:8px;--r-md:12px;--r-lg:16px;--r-pill:999px;
+      --sh-3:0 24px 48px -20px rgba(15,98,254,.22),0 8px 20px -12px rgba(16,24,40,.14);
+      --sans:'Helvetica Neue',Helvetica,Arial,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+      --dur-1:120ms;
+      --bg:var(--ink-05);--surface:var(--white);--surface-2:var(--ink-10);--line:var(--ink-20);--line-2:var(--ink-30);
+      --text:var(--ink-100);--muted:var(--ink-60);--faint:var(--ink-50);--accent:var(--blue-60);--focus:var(--blue-60);
     }
-
-    .login-card {
-      width: 100%;
-      max-width: 380px;
-      background: var(--surface);
-      border: 1px solid var(--border-subtle);
-      padding: var(--s8) var(--s7);
+    [data-theme="dark"]{
+      --bg:#0b0e11;--surface:#14181c;--surface-2:#1b2026;--line:#272d33;--line-2:#3a4249;
+      --text:#f2f4f8;--muted:#a2a9b0;--faint:#878d96;--accent:var(--blue-40);--focus:var(--blue-40);
+      --blue-10:#0a2150;--blue-20:#0b2f74;--red-10:#2c0f11;
+      --sh-3:0 28px 56px -22px rgba(0,0,0,.7);
     }
+    *{box-sizing:border-box}
+    html,body{margin:0}
+    body{background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;
+      line-height:1.45;min-height:100vh;display:flex;flex-direction:column;position:relative}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    a:visited{color:var(--accent)}
+    button{font-family:inherit}
+    :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+    ::selection{background:var(--blue-20);color:var(--ink-100)}
 
-    .login-brand {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--interactive);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-bottom: var(--s6);
-    }
+    /* Fundo: grade sutil de chip, mascarada no centro */
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;
+      background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+      background-size:34px 34px;opacity:.35;
+      -webkit-mask-image:radial-gradient(ellipse 60% 55% at 50% 32%,#000 20%,transparent 78%);
+              mask-image:radial-gradient(ellipse 60% 55% at 50% 32%,#000 20%,transparent 78%)}
 
-    .login-title {
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: var(--s6);
-      letter-spacing: -0.01em;
-    }
+    /* Top bar */
+    .login-top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:18px 22px}
+    .login-back{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);font-weight:500}
+    .login-back:hover{color:var(--text);text-decoration:none}
+    .login-back svg{width:16px;height:16px}
+    .login-top__right{display:flex;align-items:center;gap:8px}
+    .login-lang{margin:0;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 8px 0 10px;
+      border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+    .login-lang svg{flex:none}
+    .login-lang select{background:none;border:0;color:var(--muted);font:inherit;font-size:12.5px;
+      cursor:pointer;outline:none;padding:2px}
+    .login-theme{width:36px;height:36px;display:grid;place-items:center;border-radius:var(--r-sm);
+      border:1px solid transparent;background:none;color:var(--muted);cursor:pointer;transition:all var(--dur-1)}
+    .login-theme:hover{color:var(--text);background:var(--surface-2)}
+    .login-theme svg{width:18px;height:18px}
+    .login-theme .icon-sun{display:none}
+    [data-theme="dark"] .login-theme .icon-moon{display:none}
+    [data-theme="dark"] .login-theme .icon-sun{display:block}
 
-    .login-field {
-      margin-bottom: var(--s5);
-    }
+    /* Palco central */
+    .login-wrap{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;padding:24px 20px 60px}
+    .login-brand{margin-bottom:26px}
+    .login-brand img{height:52px;width:auto;display:block}
+    .login-brand .is-dark{display:none}
+    [data-theme="dark"] .login-brand .is-light{display:none}
+    [data-theme="dark"] .login-brand .is-dark{display:block}
 
-    .login-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      margin-bottom: var(--s2);
-    }
+    /* Card */
+    .login-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--line);
+      border-radius:var(--r-lg);box-shadow:var(--sh-3);padding:30px 30px 26px}
+    .login-field{margin-bottom:16px}
+    .login-label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:7px}
+    .login-input{width:100%;height:44px;border:1px solid var(--line-2);border-radius:var(--r-md);
+      background:var(--surface);color:var(--text);font-size:15px;padding:0 14px;outline:0;
+      transition:border-color var(--dur-1),box-shadow var(--dur-1)}
+    .login-input::placeholder{color:var(--ink-40)}
+    .login-input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--blue-10)}
+    .login-input.is-err{border-color:var(--red-60)}
+    .login-input-wrap{position:relative;display:flex;align-items:center}
+    .login-input-wrap .login-input{padding-right:44px}
+    .login-reveal{position:absolute;right:6px;width:34px;height:34px;display:grid;place-items:center;
+      border:0;background:none;color:var(--faint);cursor:pointer;border-radius:var(--r-sm)}
+    .login-reveal:hover{color:var(--text);background:var(--surface-2)}
+    .login-reveal svg{width:18px;height:18px}
+    .login-reveal .eye-off{display:none}
+    .login-reveal.is-on .eye-off{display:block}
+    .login-reveal.is-on .eye{display:none}
+    .login-row{display:flex;align-items:center;justify-content:space-between;margin:6px 0 22px}
+    .login-check{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
+    .login-check input{position:absolute;opacity:0;width:0;height:0}
+    .login-check__box{width:18px;height:18px;border:1px solid var(--line-2);border-radius:5px;
+      display:grid;place-items:center;color:#fff;transition:all var(--dur-1)}
+    .login-check__box svg{width:12px;height:12px;opacity:0}
+    .login-check input:checked + .login-check__box{background:var(--blue-60);border-color:var(--blue-60)}
+    .login-check input:checked + .login-check__box svg{opacity:1}
+    .login-check input:focus-visible + .login-check__box{outline:2px solid var(--focus);outline-offset:2px}
+    .login-forgot{font-size:13px;font-weight:600;color:var(--accent);background:none;border:0;cursor:pointer;padding:0}
+    .login-forgot:hover{text-decoration:underline}
+    .login-btn{width:100%;height:46px;border:0;border-radius:var(--r-md);background:var(--blue-60);color:#fff;
+      font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+      transition:background var(--dur-1)}
+    .login-btn:hover{background:var(--blue-60h)}
+    .login-btn:active{filter:brightness(.96)}
+    .login-formerr{background:var(--red-10);border:1px solid var(--red-60);color:var(--red-70);font-size:13px;
+      border-radius:var(--r-md);padding:10px 12px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    [data-theme="dark"] .login-formerr{color:#ff8389}
+    .login-formerr svg{width:16px;height:16px;flex-shrink:0}
+    .login-note{margin:14px 0 0;font-size:12.5px;color:var(--muted);text-align:center}
+    .login-help{position:relative;z-index:2;margin:18px 0 0;font-size:12.5px;color:var(--faint);text-align:center}
+    .login-foot{position:relative;z-index:2;text-align:center;font-size:12px;color:var(--faint);padding:0 24px 24px}
 
-    .login-input {
-      width: 100%;
-      height: 44px;
-      padding: 0 var(--s4);
-      font-size: 14px;
-      font-family: var(--font);
-      color: var(--text-primary);
-      background: var(--surface);
-      border: 1px solid var(--border-default);
-      border-radius: var(--r-sm);
-      outline: none;
-      transition: border-color .15s;
-    }
-
-    .login-input:focus {
-      border-color: var(--interactive);
-      box-shadow: inset 0 0 0 1px var(--interactive);
-    }
-
-    .login-error {
-      padding: var(--s3) var(--s4);
-      background: var(--error-bg);
-      border: 1px solid var(--error-bd);
-      border-left: 3px solid var(--error);
-      color: var(--error);
-      font-size: 13px;
-      border-radius: var(--r-sm);
-      margin-bottom: var(--s5);
-    }
-
-    .login-btn {
-      display: block;
-      width: 100%;
-      height: 44px;
-      background: var(--interactive);
-      color: var(--text-on-color);
-      border: none;
-      border-radius: var(--r-sm);
-      font-size: 14px;
-      font-weight: 600;
-      font-family: var(--font);
-      cursor: pointer;
-      margin-top: var(--s6);
-      transition: background .15s;
-    }
-
-    .login-btn:hover { background: var(--interactive-hover); }
-    .login-btn:active { background: var(--interactive-active); }
-
-    .login-footer {
-      margin-top: var(--s6);
-      font-size: 11px;
-      color: var(--text-helper);
-      text-align: center;
-    }
-
-    [data-theme="dark"] .login-card { background: #1c1c1c; border-color: #3d3d3d; }
-    [data-theme="dark"] .login-input { background: #2d2d2d; border-color: #525252; color: #f4f4f4; }
+    @media(max-width:480px){ .login-card{padding:24px 20px} .login-brand img{height:44px} .login-top{padding:14px 16px} }
   </style>
 </head>
 <body>
-<div class="login-wrap">
-  <div class="login-card">
 
-    <div class="login-brand">WhatTheChip?</div>
-    <h1 class="login-title">{% trans "Acesso ao Painel" %}</h1>
+  <!-- Top bar: voltar · idioma · tema -->
+  <div class="login-top">
+    <a class="login-back" href="{% url 'home' %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      {% trans "Voltar para a busca" %}
+    </a>
+    <div class="login-top__right">
+      {# Idioma ANTES de logar (a preferência da conta assume depois — I18N.md §3). #}
+      <form class="login-lang" action="{% url 'set_language' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"/></svg>
+        {% get_current_language as WTC_LANG %}
+        {% get_available_languages as WTC_LANGS %}
+        {% get_language_info_list for WTC_LANGS as wtc_langs %}
+        <select name="language" onchange="this.form.submit()" aria-label="{% trans 'Mudar idioma' %}" title="{% trans 'Mudar idioma' %}">
+          {% for lang in wtc_langs %}
+          <option value="{{ lang.code }}" {% if lang.code == WTC_LANG %}selected{% endif %}>{{ lang.name_local|capfirst }}</option>
+          {% endfor %}
+        </select>
+      </form>
+      <button class="login-theme" id="theme-btn" type="button" aria-label="{% trans 'Alternar modo escuro/claro' %}">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+    </div>
+  </div>
 
-    {% if form.errors %}
-    <div class="login-error">{% trans "Usuário ou senha incorretos. Tente novamente." %}</div>
-    {% endif %}
+  <div class="login-wrap">
+    <div class="login-brand">
+      <img class="is-light" src="{% static 'img/whatthechip-lightmode.svg' %}" alt="WhatTheChip 什么芯片" />
+      <img class="is-dark" src="{% static 'img/whatthechip-darkmode.svg' %}" alt="" aria-hidden="true" />
+    </div>
 
-    <form method="post" action="{% url 'login' %}">
+    <form class="login-card" method="post" action="{% url 'login' %}">
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ next }}">
 
+      {% if form.errors %}
+      <div class="login-formerr">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.01"/></svg>
+        <span>{% trans "Usuário ou senha incorretos. Tente novamente." %}</span>
+      </div>
+      {% endif %}
+
       <div class="login-field">
         <label class="login-label" for="id_username">{% trans "Usuário" %}</label>
-        <input class="login-input" type="text" name="username"
-               id="id_username" autocomplete="username" autofocus />
+        <input class="login-input{% if form.errors %} is-err{% endif %}" type="text" name="username" id="id_username"
+               autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="operador" autofocus />
       </div>
 
       <div class="login-field">
         <label class="login-label" for="id_password">{% trans "Senha" %}</label>
-        <input class="login-input" type="password" name="password"
-               id="id_password" autocomplete="current-password" />
+        <div class="login-input-wrap">
+          <input class="login-input{% if form.errors %} is-err{% endif %}" type="password" name="password" id="id_password"
+                 autocomplete="current-password" placeholder="••••••••" />
+          <button class="login-reveal" id="login-reveal" type="button" aria-label="{% trans 'Mostrar senha' %}">
+            <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M9.9 5.1A9.5 9.5 0 0 1 12 5c7 0 11 7 11 7a17 17 0 0 1-3.2 3.9M6.1 6.1A17 17 0 0 0 1 12s4 7 11 7a9.5 9.5 0 0 0 3.2-.5M3 3l18 18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="login-row">
+        <label class="login-check">
+          <input type="checkbox" name="remember" checked />
+          <span class="login-check__box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+          {% trans "Manter conectado" %}
+        </label>
+        <button class="login-forgot" id="login-forgot" type="button">{% trans "Esqueceu a senha?" %}</button>
       </div>
 
       <button class="login-btn" type="submit">{% trans "Entrar" %}</button>
+
+      <p class="login-note" id="login-note" hidden>{% trans "Recuperação de senha: contate o administrador do seu operador." %}</p>
     </form>
 
-    <p class="login-footer">{% trans "Acesso restrito a operadores cadastrados." %}</p>
-
-    {# Idioma ANTES de logar (a preferência da conta assume depois — I18N.md §3) #}
-    <div style="margin-top:14px;display:flex;justify-content:center;color:var(--text-helper);">
-      {% include "partials/lang_select.html" %}
-    </div>
+    <p class="login-help">{% trans "Acesso restrito a operadores cadastrados." %}</p>
   </div>
-</div>
+
+  <div class="login-foot">© 2026 WhatTheChip · v1.0.0-beta</div>
+
+  <script>
+  (function () {
+    'use strict';
+    // Tema
+    var themeBtn = document.getElementById('theme-btn');
+    if (themeBtn) themeBtn.addEventListener('click', function () {
+      var dark = document.documentElement.getAttribute('data-theme') !== 'dark';
+      if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+      else document.documentElement.removeAttribute('data-theme');
+      try { localStorage.setItem('wtc_theme', dark ? 'dark' : 'light'); } catch (e) {}
+    });
+    // Mostrar / ocultar senha
+    var reveal = document.getElementById('login-reveal');
+    var pass = document.getElementById('id_password');
+    if (reveal && pass) reveal.addEventListener('click', function () {
+      var on = pass.type === 'password';
+      pass.type = on ? 'text' : 'password';
+      reveal.classList.toggle('is-on', on);
+      pass.focus();
+    });
+    // Esqueceu a senha — revela a nota de contato (sem fluxo de reset)
+    var forgot = document.getElementById('login-forgot');
+    var note = document.getElementById('login-note');
+    if (forgot && note) forgot.addEventListener('click', function () { note.hidden = !note.hidden; });
+  })();
+  </script>
 </body>
 </html>

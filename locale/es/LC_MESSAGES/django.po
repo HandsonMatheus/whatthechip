@@ -1802,3 +1802,23 @@ msgstr "Factura cancelada — registra una nueva liquidación para reemitir."
 
 msgid "Valores ilegíveis — use números."
 msgstr "Valores ilegibles — usa números."
+
+#: templates/registration/login.html
+msgid "Voltar para a busca"
+msgstr "Volver a la búsqueda"
+
+#: templates/registration/login.html
+msgid "Mostrar senha"
+msgstr "Mostrar contraseña"
+
+#: templates/registration/login.html
+msgid "Manter conectado"
+msgstr "Mantener sesión iniciada"
+
+#: templates/registration/login.html
+msgid "Esqueceu a senha?"
+msgstr "¿Olvidó su contraseña?"
+
+#: templates/registration/login.html
+msgid "Recuperação de senha: contate o administrador do seu operador."
+msgstr "Recuperación de contraseña: contacte al administrador de su operador."
