@@ -1045,6 +1045,19 @@ valores é o PDF da OV — nenhum expõe o comprador.
   `SettlementInvoicePaymentTests` (fluxo + OV intacta + travas) e telas.
   **F11 COMPLETA** (resta só o romaneio do estoque, fora do escopo).
 
+**Ajuste pós-F11 (dono, 2026-07-17):** o gate do preço no card
+(`quotes_for_admin`) passou a aceitar também o **admin do SISTEMA**
+(superuser sem Membership → manager cru, enxerga todos os compradores) —
+única exceção documentada ao "plataforma navega com Membership real";
+admin de empresa segue no manager escopado; operador/gerente/anônimo seguem
+sem a chave `prices` no JSON. Teste:
+`test_superuser_plataforma_ve_prices_no_json`. E o bug do topnav da home
+("Entrar" fixo com sessão iniciada) foi corrigido no shell público
+(`templates/base.html` + `pages/tests.py::TopnavSessionTests`); de quebra, o
+`PriceCardGateTests` foi adaptado ao redesenho `e47f496` (sessão paralela),
+que removeu o price_block server-side do card HTMX da busca — o preço da
+busca é client-side via JSON do search_api; fonte server-side = bancada.
+
 **RUNBOOK DO DEPLOY F11 EM PROD (o dono roda; comandos UM POR VEZ):**
 
 0. **Pré (bloqueantes):** (a) senha do Postgres ROTACIONADA confirmada; (b)

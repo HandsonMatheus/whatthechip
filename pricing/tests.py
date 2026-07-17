@@ -821,6 +821,21 @@ class BenchAndLotPricingTests(TestCase):
             d3 = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'}).json()
             self.assertNotIn('prices', d3)                      # anônimo idem
 
+    def test_superuser_plataforma_ve_prices_no_json(self):
+        """Dono (2026-07-17): o preço da home também aparece pro admin do
+        SISTEMA (superuser SEM Membership) — plataforma enxerga tudo via
+        manager cru; anônimo e papéis não-admin seguem sem a chave."""
+        from unittest.mock import patch
+        User = get_user_model()
+        root = User.objects.create_superuser('root_f8', password='x')
+        with patch('chips.views.classify',
+                   side_effect=lambda pn: self._fake_result()):
+            self.client.force_login(root)
+            d = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'}).json()
+            self.assertIn('prices', d)
+            self.assertEqual(d['prices'][0]['min'], '5.60')
+            self.assertEqual(d['prices'][0]['buyer'], 'WhatTheChip')  # sigilo
+
     def test_bancada_preview_mostra_preco_so_para_admin(self):
         from unittest.mock import patch
         lot = self._lot()

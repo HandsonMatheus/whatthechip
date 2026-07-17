@@ -406,15 +406,25 @@ class BuyerPricingContext:
 
 
 def quotes_for_admin(request, result):
-    """[(Buyer, PriceQuote)] para o card — SÓ papel ADMIN da empresa
-    (PRECIFICACAO §7). O gate roda ANTES de qualquer query: operador, gerente e
-    anônimo recebem lista vazia sem nem disparar a resolução de preço.
-    Fonte única do gate — consumida por chips/views (busca) e estoque/views
-    (bancada do lote, F8)."""
-    if getattr(request, 'company_role', None) != 'admin':
+    """[(Buyer, PriceQuote)] para o card — papel ADMIN da empresa OU admin do
+    SISTEMA (superuser — dono, 2026-07-17: a plataforma vê o preço no card
+    mesmo sem Membership; é a única exceção ao "plataforma navega com
+    Membership real": preço é dado DELA). O gate roda ANTES de qualquer
+    query: operador, gerente e anônimo recebem lista vazia sem nem disparar
+    a resolução. Fonte única do gate — consumida por chips/views (busca:
+    JSON do search_api que alimenta a home) e estoque/views (bancada, F8)."""
+    user = getattr(request, 'user', None)
+    is_platform = bool(user is not None and user.is_authenticated
+                       and user.is_superuser)
+    is_company_admin = getattr(request, 'company_role', None) == 'admin'
+    if not (is_company_admin or is_platform):
         return []
     from .models import Buyer
-    return [(b, price(result, b)) for b in Buyer.objects.filter(active=True)]
+    # Admin de empresa: manager ESCOPADO (só os compradores da empresa dele).
+    # Plataforma SEM membership: sem escopo de request → o manager escopado
+    # explodiria (fail-closed); usa o cru — plataforma enxerga todas.
+    manager = Buyer.objects if is_company_admin else Buyer.all_companies
+    return [(b, price(result, b)) for b in manager.filter(active=True)]
 
 
 def serialize_quote(buyer, q) -> dict:
