@@ -1666,3 +1666,86 @@ msgstr "确认关闭"
 
 msgid "Ordem de venda"
 msgstr "销售订单"
+
+#. F11.4 Acerto → Fatura → Pagamentos — 2026-07-16
+#: vendas/
+msgid "Acerto"
+msgstr "结算"
+
+msgid "Resultado do comprador"
+msgstr "买家验收结果"
+
+msgid "Informe o que o comprador reportou: unidades rejeitadas (mortos) e/ou novo ¥ unitário por categoria. Campos vazios mantêm o combinado. A ordem não muda — a fatura sai com o valor final."
+msgstr "填写买家反馈的结果：每个类别的不良（坏件）数量和/或新的 ¥ 单价。留空则保持原约定。订单不会变动——发票按最终金额开出。"
+
+msgid "Un. rejeitadas"
+msgstr "不良数量"
+
+msgid "Novo ¥ unitário"
+msgstr "新 ¥ 单价"
+
+msgid "Observações (opcional)"
+msgstr "备注（可选）"
+
+msgid "Registrar o resultado e emitir a fatura com o valor final?"
+msgstr "登记结果并按最终金额开出发票？"
+
+msgid "Registrar resultado e faturar"
+msgstr "登记结果并开票"
+
+msgid "Voltar"
+msgstr "返回"
+
+msgid "Fatura"
+msgstr "发票"
+
+msgid "em aberto"
+msgstr "未结清"
+
+msgid "paga"
+msgstr "已结清"
+
+msgid "congelada na emissão"
+msgstr "开票时冻结"
+
+msgid "Recebido"
+msgstr "已收款"
+
+msgid "Saldo"
+msgstr "余额"
+
+msgid "Ajustes do acerto"
+msgstr "结算调整"
+
+msgid "Pagamentos"
+msgstr "付款记录"
+
+msgid "Nenhum pagamento ainda."
+msgstr "尚无付款。"
+
+msgid "Registrar pagamento"
+msgstr "登记付款"
+
+msgid "Referência (opcional)"
+msgstr "备注（可选）"
+
+msgid "Registrar"
+msgstr "登记"
+
+msgid "Cancelar fatura"
+msgstr "取消发票"
+
+msgid "Cancelar esta fatura? (só sem pagamentos; um novo acerto reemite)"
+msgstr "取消这张发票？（仅限无付款时；重新结算后可再开票）"
+
+msgid "Resultado registrado — fatura emitida com o valor final."
+msgstr "结果已登记——发票已按最终金额开出。"
+
+msgid "Pagamento registrado."
+msgstr "付款已登记。"
+
+msgid "Fatura cancelada — registre um novo acerto para reemitir."
+msgstr "发票已取消——重新登记结算后可再开票。"
+
+msgid "Valores ilegíveis — use números."
+msgstr "数值无法识别——请输入数字。"

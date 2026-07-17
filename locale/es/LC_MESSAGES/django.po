@@ -1719,3 +1719,86 @@ msgstr "Confirmar cierre"
 
 msgid "Ordem de venda"
 msgstr "Orden de venta"
+
+#. F11.4 Acerto → Fatura → Pagamentos — 2026-07-16
+#: vendas/
+msgid "Acerto"
+msgstr "Liquidación"
+
+msgid "Resultado do comprador"
+msgstr "Resultado del comprador"
+
+msgid "Informe o que o comprador reportou: unidades rejeitadas (mortos) e/ou novo ¥ unitário por categoria. Campos vazios mantêm o combinado. A ordem não muda — a fatura sai com o valor final."
+msgstr "Informa lo que reportó el comprador: unidades rechazadas (muertas) y/o nuevo ¥ unitario por categoría. Campos vacíos mantienen lo acordado. La orden no cambia — la factura sale con el valor final."
+
+msgid "Un. rejeitadas"
+msgstr "Un. rechazadas"
+
+msgid "Novo ¥ unitário"
+msgstr "Nuevo ¥ unitario"
+
+msgid "Observações (opcional)"
+msgstr "Observaciones (opcional)"
+
+msgid "Registrar o resultado e emitir a fatura com o valor final?"
+msgstr "¿Registrar el resultado y emitir la factura con el valor final?"
+
+msgid "Registrar resultado e faturar"
+msgstr "Registrar resultado y facturar"
+
+msgid "Voltar"
+msgstr "Volver"
+
+msgid "Fatura"
+msgstr "Factura"
+
+msgid "em aberto"
+msgstr "pendiente"
+
+msgid "paga"
+msgstr "pagada"
+
+msgid "congelada na emissão"
+msgstr "congelada en la emisión"
+
+msgid "Recebido"
+msgstr "Recibido"
+
+msgid "Saldo"
+msgstr "Saldo"
+
+msgid "Ajustes do acerto"
+msgstr "Ajustes de la liquidación"
+
+msgid "Pagamentos"
+msgstr "Pagos"
+
+msgid "Nenhum pagamento ainda."
+msgstr "Ningún pago todavía."
+
+msgid "Registrar pagamento"
+msgstr "Registrar pago"
+
+msgid "Referência (opcional)"
+msgstr "Referencia (opcional)"
+
+msgid "Registrar"
+msgstr "Registrar"
+
+msgid "Cancelar fatura"
+msgstr "Cancelar factura"
+
+msgid "Cancelar esta fatura? (só sem pagamentos; um novo acerto reemite)"
+msgstr "¿Cancelar esta factura? (solo sin pagos; una nueva liquidación reemite)"
+
+msgid "Resultado registrado — fatura emitida com o valor final."
+msgstr "Resultado registrado — factura emitida con el valor final."
+
+msgid "Pagamento registrado."
+msgstr "Pago registrado."
+
+msgid "Fatura cancelada — registre um novo acerto para reemitir."
+msgstr "Factura cancelada — registra una nueva liquidación para reemitir."
+
+msgid "Valores ilegíveis — use números."
+msgstr "Valores ilegibles — usa números."

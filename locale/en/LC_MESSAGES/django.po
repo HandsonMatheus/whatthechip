@@ -1705,3 +1705,86 @@ msgstr "Confirm closing"
 
 msgid "Ordem de venda"
 msgstr "Sales order"
+
+#. F11.4 Acerto → Fatura → Pagamentos — 2026-07-16
+#: vendas/
+msgid "Acerto"
+msgstr "Settlement"
+
+msgid "Resultado do comprador"
+msgstr "Buyer result"
+
+msgid "Informe o que o comprador reportou: unidades rejeitadas (mortos) e/ou novo ¥ unitário por categoria. Campos vazios mantêm o combinado. A ordem não muda — a fatura sai com o valor final."
+msgstr "Enter what the buyer reported: rejected units (dead) and/or a new unit ¥ per category. Empty fields keep the agreed values. The order does not change — the invoice carries the final amount."
+
+msgid "Un. rejeitadas"
+msgstr "Rejected units"
+
+msgid "Novo ¥ unitário"
+msgstr "New unit ¥"
+
+msgid "Observações (opcional)"
+msgstr "Notes (optional)"
+
+msgid "Registrar o resultado e emitir a fatura com o valor final?"
+msgstr "Record the result and issue the invoice with the final amount?"
+
+msgid "Registrar resultado e faturar"
+msgstr "Record result and invoice"
+
+msgid "Voltar"
+msgstr "Back"
+
+msgid "Fatura"
+msgstr "Invoice"
+
+msgid "em aberto"
+msgstr "open"
+
+msgid "paga"
+msgstr "paid"
+
+msgid "congelada na emissão"
+msgstr "frozen at issue"
+
+msgid "Recebido"
+msgstr "Received"
+
+msgid "Saldo"
+msgstr "Balance"
+
+msgid "Ajustes do acerto"
+msgstr "Settlement adjustments"
+
+msgid "Pagamentos"
+msgstr "Payments"
+
+msgid "Nenhum pagamento ainda."
+msgstr "No payments yet."
+
+msgid "Registrar pagamento"
+msgstr "Record payment"
+
+msgid "Referência (opcional)"
+msgstr "Reference (optional)"
+
+msgid "Registrar"
+msgstr "Record"
+
+msgid "Cancelar fatura"
+msgstr "Cancel invoice"
+
+msgid "Cancelar esta fatura? (só sem pagamentos; um novo acerto reemite)"
+msgstr "Cancel this invoice? (only without payments; a new settlement re-issues)"
+
+msgid "Resultado registrado — fatura emitida com o valor final."
+msgstr "Result recorded — invoice issued with the final amount."
+
+msgid "Pagamento registrado."
+msgstr "Payment recorded."
+
+msgid "Fatura cancelada — registre um novo acerto para reemitir."
+msgstr "Invoice cancelled — record a new settlement to re-issue."
+
+msgid "Valores ilegíveis — use números."
+msgstr "Unreadable values — use numbers."
