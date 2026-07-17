@@ -1045,6 +1045,35 @@ valores é o PDF da OV — nenhum expõe o comprador.
   `SettlementInvoicePaymentTests` (fluxo + OV intacta + travas) e telas.
   **F11 COMPLETA** (resta só o romaneio do estoque, fora do escopo).
 
+**RUNBOOK DO DEPLOY F11 EM PROD (o dono roda; comandos UM POR VEZ):**
+
+0. **Pré (bloqueantes):** (a) senha do Postgres ROTACIONADA confirmada; (b)
+   **Render Export fresco** (regra §2.1b: backup antes de deploy com
+   migrations); (c) Render → serviço web → Settings → Start Command: se
+   preenchido, tem que ser IGUAL ao Procfile (`--timeout 120 --workers 2`).
+1. `git push origin main` → build roda `migrate` (estoque/0015 aditiva +
+   pricing/0013 aditiva + vendas/0001–0004, RLS incluso) + collectstatic.
+   Esperar **Live**. Sem janela de dado (prod já está em ¥; F11 é aditiva).
+2. **IMEDIATAMENTE pós-Live** (com `DATABASE_URL` do prod exportada; slug
+   prod = **wu-quan**): `migrate_prices_to_rmb --buyer wu-quan --mark-migrated`
+   — o prod JÁ está em ¥ e a trava nasce desligada; ligar é o 1º ato
+   (proteção contra o incidente da dupla-migração).
+3. `resnapshot_lote --all --commit --company eminer` — backfill das CHAVES
+   de preço (F11.1) em todo o estoque. ⚠ classifica cada PN: com ~20k
+   entradas leva VÁRIOS minutos; idempotente, re-executável. Até rodar, a
+   valoração usa o fallback (funciona, só mais lenta). O SafeWriteCommand
+   pede digitar o nome do banco — conferir que o BANCO-ALVO é o do Render.
+4. `backfill_sales_orders --company eminer` (dry-run: revisar lote a lote
+   US$ congelado → ¥ ÷0.15) → re-rodar com `--commit`. Depende do passo 3.
+5. `guard_catalog` (tripwire padrão pós-deploy).
+6. **Smoke read-only:** /vendas/ com o histórico (retroativas confirmadas);
+   card de PN cotado = "💰 WhatTheChip ¥ … · US$ …" (sem Wu Quan!); página
+   do lote 39 rápida (LOT/039/…); abrir uma OV retroativa + PDF; export
+   .xlsx com header "WhatTheChip (USD)"; /partner/ intacto (nome real ok
+   lá). NÃO fechar/reabrir lote real como teste em prod.
+7. Vendas novas a partir daqui: fechar lote (modal type-to-confirm) → OV →
+   acerto → fatura → pagamentos, tudo em prod.
+
 ### 12.18 F10 — RMB CANÔNICO (**LIVE** — virada executada 2026-07-16: deploy `2b75916` + `migrate_prices_to_rmb --buyer wu-quan --rate-used 0.15 --commit` = 256 registros → ¥; 41 valores ¥ não-redondos aceitos como estão — digitados em USD pós-launch, ÷0.15 é a leitura fiel da época; arredondar seria mudar preço do parceiro sem consentimento (ajuste, se quiser, via moderação/admin). `guard_catalog` ✓ 7729. Reversão: `migrate_prices_to_rmb_revert.json` guardado FORA do git. Suíte 354/354 + `check_translations` verde.)
 
 **F10.1 entregue 2026-07-11 (INERTE até a virada):** `Buyer.fx_usd_rate`
