@@ -1040,7 +1040,9 @@ def _export_price_maps(request, lot):
                 for l in rep.lines
             }
 
-    return [(buyer.name, frozen_by.get(buyer.pk) or live_by.get(buyer.pk, {}))
+    # F11.3 (sigilo): o header da planilha leva o CODINOME, nunca o nome.
+    return [(buyer.display_name,
+             frozen_by.get(buyer.pk) or live_by.get(buyer.pk, {}))
             for buyer in buyers]
 
 

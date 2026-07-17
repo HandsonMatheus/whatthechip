@@ -1207,6 +1207,7 @@ class ExportPriceColumnsTests(TestCase):
         # taxa contratual default 0.14 → US$ 2,10 unitário.
         from pricing.models import Buyer, Price, PriceList
         buyer = Buyer.all_companies.create(name='Wuquan', slug='wuquan',
+                                           codename='WU',
                                            company=cls.company)
         pl = PriceList.all_companies.create(buyer=buyer, company=cls.company)
         Price.all_companies.create(price_list=pl, kind='emmc', gen='',
@@ -1225,9 +1226,10 @@ class ExportPriceColumnsTests(TestCase):
     def test_admin_exporta_com_preco_unitario_e_total(self):
         ws = self._sheet(self.adm)
         headers = [c.value for c in ws[1]]
-        self.assertIn('Preço unit. — Wuquan (USD)', headers)
-        self.assertIn('Total — Wuquan (USD)', headers)
-        unit_col = headers.index('Preço unit. — Wuquan (USD)') + 1
+        # F11.3: header com CODINOME — nome real nunca sai no export.
+        self.assertIn('Preço unit. — WU (USD)', headers)
+        self.assertIn('Total — WU (USD)', headers)
+        unit_col = headers.index('Preço unit. — WU (USD)') + 1
         # USD DERIVADO (F10): ¥15 × 0.14 = 2.10 — o export NUNCA vê ¥.
         self.assertEqual(ws.cell(row=2, column=unit_col).value, 2.1)
         self.assertEqual(ws.cell(row=2, column=unit_col + 1).value, 6.3)  # 3 × 2,10

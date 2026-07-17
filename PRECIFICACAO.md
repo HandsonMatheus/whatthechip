@@ -983,8 +983,24 @@ valores é o PDF da OV — nenhum expõe o comprador.
   venda→"Lote LOT/…"; (d) **Baixar PDF da OV** (`vendas/pdf.py`, simples sem
   timbre, reusa helpers CJK do pricing/pdf; draft = valores vivos,
   confirmada = congelados; filename `SO-001-07-26.pdf`). Suíte 371/371.
-- F11.3 retroativos + rótulo neutro do comprador (card/export) → F11.4
-  acerto + fatura + pagamentos (+ F11.2b PDF da OV).
+- **F11.3 ✅ ENTREGUE 2026-07-16 (local; suíte 372/372):** (a) **codinome do
+  comprador** — `Buyer.codename` (migração pricing/0013; fallback
+  `BUYER-<pk>`) + `display_name` em TODA superfície de empresa: card
+  (`price_block`), JSON da home (`serialize_quote` — cobre os 4 JS do CMS
+  sem tocá-los), painel de valoração do lote e headers do export .xlsx. O
+  nome/slug reais ficam SÓ no Django admin (plataforma) e no /partner/ do
+  próprio comprador. ⚠ Dono: setar o codinome no admin (ex.: BUYER-01) e
+  conferir que nada de "Wu Quan" aparece nas telas de empresa. (b)
+  **`backfill_sales_orders`** — lotes FECHADOS sem OV ganham OV retroativa
+  **CONFIRMADA** do congelado F8: `total_usd` = total_mid fiel; `total_rmb`
+  = ÷ `--rate-used` (0.15 pré-virada); `fx_usd_rate` = taxa da ÉPOCA;
+  `confirmed_at` = data do congelamento; linhas por (marca, chave) só com
+  QUANTIDADES (unitário vazio — congelado F8 é por PN/total; notas da OV
+  explicam); dry-run/commit, idempotente; lote fechado SEM congelado é
+  pulado com aviso. Rodar por empresa após o resnapshot (as linhas dependem
+  das chaves F11.1).
+- F11.4 acerto + fatura + pagamentos (+ F11.2b PDF da OV… entregue no
+  F11.2c; resta o PDF do romaneio do estoque, fora do F11).
 
 ### 12.18 F10 — RMB CANÔNICO (**LIVE** — virada executada 2026-07-16: deploy `2b75916` + `migrate_prices_to_rmb --buyer wu-quan --rate-used 0.15 --commit` = 256 registros → ¥; 41 valores ¥ não-redondos aceitos como estão — digitados em USD pós-launch, ÷0.15 é a leitura fiel da época; arredondar seria mudar preço do parceiro sem consentimento (ajuste, se quiser, via moderação/admin). `guard_catalog` ✓ 7729. Reversão: `migrate_prices_to_rmb_revert.json` guardado FORA do git. Suíte 354/354 + `check_translations` verde.)
 

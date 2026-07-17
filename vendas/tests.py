@@ -241,6 +241,56 @@ class LotCloseReopenTests(TestCase):
         self.assertEqual(self.lot.status, Lot.STATUS_OPEN)
 
 
+class BackfillSalesOrdersTests(TestCase):
+    """F11.3: lote FECHADO sem OV ganha OV retroativa CONFIRMADA a partir do
+    LotPricing congelado — total USD fiel, ¥ = USD ÷ taxa da época (0.15),
+    confirmed_at = data do congelamento; linhas só com quantidades."""
+
+    def test_backfill_cria_confirmada_e_e_idempotente(self):
+        from io import StringIO
+        from django.core.management import call_command
+        from django.utils import timezone
+        from pricing.models import LotPricing
+
+        company, buyer, brand = _setup('vd-back')
+        User = get_user_model()
+        u = User.objects.create_user('vd_back')
+        set_current_company(company.pk)
+        self.addCleanup(set_current_company, None)
+
+        lot = Lot.open_for_company(company, u, 'histórico')
+        _entries(lot, brand, com_emcp=False)          # 5 un. eMMC + 7 sem chave
+        lot.status, lot.closed_at = Lot.STATUS_CLOSED, timezone.now()
+        lot.save(update_fields=['status', 'closed_at'])
+        lp = LotPricing.all_companies.create(
+            lot=lot, buyer=buyer,
+            total_low=Decimal('60.90'), total_mid=Decimal('60.90'),
+            total_high=Decimal('60.90'), priced_units=5, total_units=12,
+            priced_lines=2, total_lines=3,
+            lines=[{'pn': 'VDEMMC1', 'qty': 3, 'status': 'PRICED'}])
+
+        out = StringIO()
+        call_command('backfill_sales_orders', company='vd-back', stdout=out)
+        self.assertFalse(SalesOrder.all_companies.exists())   # dry-run
+        call_command('backfill_sales_orders', company='vd-back',
+                     commit=True, stdout=out)
+        so = SalesOrder.all_companies.get(lot=lot)
+        self.assertEqual(so.status, STATUS_CONFIRMED)
+        self.assertEqual(so.total_usd, Decimal('60.90'))
+        self.assertEqual(so.total_rmb, Decimal('406.00'))     # 60.90 ÷ 0.15
+        self.assertEqual(so.fx_usd_rate, Decimal('0.15'))     # taxa da ÉPOCA
+        so.refresh_from_db()
+        self.assertEqual(so.confirmed_at, lp.created_at)      # cronologia fiel
+        line = so.lines.get()
+        self.assertEqual((line.kind, line.quantity, line.unit_rmb),
+                         ('emmc', 5, None))                   # qty sim, unit não
+        self.assertEqual(so.unkeyed_units, 7)
+        # Idempotente: re-rodar não duplica.
+        call_command('backfill_sales_orders', company='vd-back',
+                     commit=True, stdout=out)
+        self.assertEqual(SalesOrder.all_companies.filter(lot=lot).count(), 1)
+
+
 class VendasGateTests(TestCase):
     """Menu Vendas é ADMIN-only: gerente/operador/anônimo não veem valor."""
 
