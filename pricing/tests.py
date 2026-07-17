@@ -698,7 +698,6 @@ class PriceCardGateTests(TestCase):
         from tenancy.models import Membership
         cls.company = Company.objects.create(name='CardCo', slug='card-f5')
         buyer = Buyer.all_companies.create(company=cls.company, name='Wuquan C',
-                                       codename='WU-CARD',
                                            slug='wuquan-card')
         samsung = Brand.objects.create(name='Samsung', code='SAMF5')
         lista = PriceList.all_companies.create(buyer=buyer, brand=samsung)
@@ -740,8 +739,8 @@ class PriceCardGateTests(TestCase):
         # off %}, então o decimal vem com PONTO em qualquer idioma da UI.
         self.assertContains(resp, '¥ 40')
         self.assertContains(resp, 'US$ 5.60')
-        # F11.3 (sigilo): o card mostra o CODINOME, nunca o nome real.
-        self.assertContains(resp, 'WU-CARD')
+        # F11.3 (sigilo): a contraparte é o WhatTheChip — nunca o comprador.
+        self.assertContains(resp, '💰 WhatTheChip')
         self.assertNotContains(resp, 'Wuquan C')
         self.assertContains(resp, 'dc2-price-block')
 

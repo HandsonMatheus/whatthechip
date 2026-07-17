@@ -983,14 +983,17 @@ valores é o PDF da OV — nenhum expõe o comprador.
   venda→"Lote LOT/…"; (d) **Baixar PDF da OV** (`vendas/pdf.py`, simples sem
   timbre, reusa helpers CJK do pricing/pdf; draft = valores vivos,
   confirmada = congelados; filename `SO-001-07-26.pdf`). Suíte 371/371.
-- **F11.3 ✅ ENTREGUE 2026-07-16 (local; suíte 372/372):** (a) **codinome do
-  comprador** — `Buyer.codename` (migração pricing/0013; fallback
-  `BUYER-<pk>`) + `display_name` em TODA superfície de empresa: card
-  (`price_block`), JSON da home (`serialize_quote` — cobre os 4 JS do CMS
-  sem tocá-los), painel de valoração do lote e headers do export .xlsx. O
-  nome/slug reais ficam SÓ no Django admin (plataforma) e no /partner/ do
-  próprio comprador. ⚠ Dono: setar o codinome no admin (ex.: BUYER-01) e
-  conferir que nada de "Wu Quan" aparece nas telas de empresa. (b)
+- **F11.3 ✅ ENTREGUE 2026-07-16 (local; suíte 372/372):** (a) **sigilo do
+  comprador — SEM codinome** (dono corrigiu na revisão: "o cliente final nem
+  precisa saber que existe um comprador; o trato é direto com o
+  WhatTheChip"): toda superfície de EMPRESA mostra o rótulo fixo
+  **`WhatTheChip`** como contraparte — card (`price_block`), JSON da home
+  (`serialize_quote`, cobre os 4 JS do CMS), painel de valoração do lote e
+  headers do export .xlsx ("Preço unit. — WhatTheChip (USD)"). Comprador
+  (nome/slug/existência) visível SÓ no Django admin (plataforma — que já é
+  restrito a superuser via bootstrap_tenancy) e no /partner/ dele mesmo. A
+  1ª versão com `Buyer.codename` foi REVERTIDA antes de qualquer migrate
+  (campo+migração 0013 removidos; `makemigrations --check` limpo). (b)
   **`backfill_sales_orders`** — lotes FECHADOS sem OV ganham OV retroativa
   **CONFIRMADA** do congelado F8: `total_usd` = total_mid fiel; `total_rmb`
   = ÷ `--rate-used` (0.15 pré-virada); `fx_usd_rate` = taxa da ÉPOCA;

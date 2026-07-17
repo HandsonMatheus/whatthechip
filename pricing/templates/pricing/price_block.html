@@ -13,8 +13,8 @@
 <div class="dc2-price-block" style="margin:0 16px 12px 16px;padding:10px 14px;background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;border-radius:6px;">
   {% for buyer, q in price_quotes %}
   <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;{% if not forloop.last %}margin-bottom:6px;{% endif %}">
-    {# F11.3: CODINOME — o nome real do comprador é segredo de plataforma. #}
-    <span style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.04em;">💰 {{ buyer.display_name }}</span>
+    {# F11.3: a contraparte da empresa é o WhatTheChip — comprador não existe aqui. #}
+    <span style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.04em;">💰 WhatTheChip</span>
     {% if q.status == "PRICED" %}
       <span style="font-size:16px;font-weight:800;color:#1d6b2f;">
         {% localize off %}{% if q.is_stale %}≈ {% endif %}¥ {{ q.rmb_display }} <span style="font-weight:600;color:#2e7d3a;">· US$ {{ q.price_min }}</span>{% endlocalize %}

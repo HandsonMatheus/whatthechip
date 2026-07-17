@@ -1040,8 +1040,9 @@ def _export_price_maps(request, lot):
                 for l in rep.lines
             }
 
-    # F11.3 (sigilo): o header da planilha leva o CODINOME, nunca o nome.
-    return [(buyer.display_name,
+    # F11.3 (sigilo): para a empresa a contraparte é o WhatTheChip —
+    # nenhuma identidade de comprador no header da planilha.
+    return [('WhatTheChip',
              frozen_by.get(buyer.pk) or live_by.get(buyer.pk, {}))
             for buyer in buyers]
 

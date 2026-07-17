@@ -423,9 +423,9 @@ def serialize_quote(buyer, q) -> dict:
     seguem USD (derivado); 'rmb' é o ¥ de exibição ('90', sem zeros) e
     'mid_rmb' o ponto médio ¥ cru ('90.00')."""
     return {
-        # F11.3 (sigilo): o JSON que chega ao browser de EMPRESA leva o
-        # CODINOME — o nome real do comprador nunca sai da plataforma.
-        'buyer': buyer.display_name, 'status': q.status, 'reason': q.reason,
+        # F11.3 (sigilo): para a empresa a contraparte é o WhatTheChip —
+        # nenhuma identidade de comprador sai da plataforma.
+        'buyer': 'WhatTheChip', 'status': q.status, 'reason': q.reason,
         'min': str(q.price_min) if q.price_min is not None else None,
         'max': str(q.price_max) if q.price_max is not None else None,
         'mid': str(q.mid) if q.mid is not None else None,

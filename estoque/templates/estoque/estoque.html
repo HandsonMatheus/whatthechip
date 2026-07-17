@@ -1067,8 +1067,8 @@ table.est-table td { padding: var(--s5) var(--s5); }
   </div>
   {% for v in valuations %}
   <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;{% if not forloop.last %}margin-bottom:8px;{% endif %}">
-    {# F11.3: CODINOME — nome real do comprador é segredo de plataforma. #}
-    <span style="font-size:13px;font-weight:700;color:#1d6b2f;">{{ v.buyer.display_name }}</span>
+    {# F11.3: a contraparte da empresa é o WhatTheChip — comprador não existe aqui. #}
+    <span style="font-size:13px;font-weight:700;color:#1d6b2f;">WhatTheChip</span>
     <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#1d6b2f;">US$ {{ v.total_mid }}</span>
     <span style="font-size:12px;color:#557a5e;">{% blocktrans trimmed with cov=v.coverage_units|floatformat:0 priced=v.priced_units total=v.total_units %}cobertura {{ cov }}% ({{ priced }}/{{ total }} unid.){% endblocktrans %}</span>
     {% if v.frozen %}<span style="font-size:11px;color:#6f6f6f;">🔒 {{ v.created_at|date:"d/m/Y H:i" }}</span>{% endif %}

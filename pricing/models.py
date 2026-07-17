@@ -125,14 +125,10 @@ class Buyer(models.Model):
         verbose_name='Contas do comprador',
         help_text='Usuários que acessam o dashboard /partner/ deste comprador.')
     notes      = models.TextField(blank=True, default='', verbose_name='Notas')
-    # F11.3 (sigilo, dono 2026-07-16): o NOME do comprador é segredo de
-    # PLATAFORMA (posição de broker da eMiner). Telas/exports/JSON de empresa
-    # usam o CODINOME; nome/slug reais só no Django admin e no /partner/ do
-    # próprio comprador. Vazio → fallback neutro 'BUYER-<pk>'.
-    codename = models.CharField(
-        max_length=40, blank=True, default='', verbose_name='Codinome',
-        help_text='Rótulo NEUTRO exibido a empresas-cliente no lugar do nome '
-                  '(ex.: BUYER-01). Vazio = BUYER-<id>.')
+    # F11.3 (sigilo, dono 2026-07-16 — revisado): para a EMPRESA-CLIENTE a
+    # contraparte é o WhatTheChip — o comprador nem EXISTE nas telas dela
+    # (rótulo fixo 'WhatTheChip' em card/JSON/export/valoração). Nome real
+    # só no Django admin (plataforma) e no /partner/ do próprio comprador.
     # F10 (RMB canônico, plano §12.18): taxa CONTRATUAL ¥→US$ deste comprador
     # (dono gere; pghistory audita a mudança). Os Price guardam ¥ — o USD é
     # DERIVADO na leitura (¥ × taxa); mudar a taxa NUNCA toca os ¥ gravados.
@@ -163,12 +159,6 @@ class Buyer(models.Model):
 
     def __str__(self):
         return self.name
-
-    @property
-    def display_name(self) -> str:
-        """O rótulo que as EMPRESAS veem (card, export, JSON): codinome ou
-        'BUYER-<pk>'. NUNCA o nome real — sigilo de plataforma (F11.3)."""
-        return self.codename or f'BUYER-{self.pk:02d}'
 
     @property
     def fx_usd_rate_display(self) -> str:
