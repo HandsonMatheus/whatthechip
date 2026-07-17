@@ -1493,11 +1493,31 @@ class MigratePricesToRmbTests(TestCase):
             p.refresh_from_db()
             self.assertEqual(p.price_min, Decimal('90.00'))     # ¥ original
             self.assertEqual(p.price_max, Decimal('90.00'))
+            # 🔒 TRAVA (incidente local 2026-07-16: rodou 2× → ¥90 virou
+            # ¥600): re-rodar — até em DRY-RUN — é recusado com erro claro.
+            buyer.refresh_from_db()
+            self.assertTrue(buyer.prices_in_rmb)
+            from django.core.management.base import CommandError
+            with self.assertRaises(CommandError) as cm:
+                call_command('migrate_prices_to_rmb', buyer='wu-rmb',
+                             rate_used='0.15', stdout=out)
+            self.assertIn('TRAVA', str(cm.exception))
+            p.refresh_from_db()
+            self.assertEqual(p.price_min, Decimal('90.00'))     # intacto
             call_command('migrate_prices_to_rmb', buyer='wu-rmb',
                          rate_used='0.15',
                          revert='migrate_prices_to_rmb_revert.json', stdout=out)
             p.refresh_from_db()
             self.assertEqual(p.price_min, Decimal('13.50'))     # desfeito
+            buyer.refresh_from_db()
+            self.assertFalse(buyer.prices_in_rmb)               # destravado
+            # --mark-migrated religa a trava SEM tocar valores:
+            call_command('migrate_prices_to_rmb', buyer='wu-rmb',
+                         rate_used='0.15', mark_migrated=True, stdout=out)
+            buyer.refresh_from_db()
+            self.assertTrue(buyer.prices_in_rmb)
+            p.refresh_from_db()
+            self.assertEqual(p.price_min, Decimal('13.50'))     # intocado
             # taxa vigente é OUTRO número (0.14) e vive no Buyer:
             self.assertEqual(buyer.fx_usd_rate, Decimal('0.14'))
         finally:

@@ -974,6 +974,23 @@ valores é o PDF da OV — nenhum expõe o comprador.
   Cura: rodar a migração de dados no local também. ⚠ Lição de ambiente: a
   migração de DADOS da F10 é POR BANCO — todo ambiente (local, staging,
   prod) precisa rodá-la uma vez.
+  **⚠ INCIDENTE 2 (2026-07-16, local): a migração ¥ rodou DUAS vezes** (o
+  comando não tinha trava e a instrução foi repetida em mensagens
+  diferentes) → ¥90 virou ¥600 e TODA valoração inflou 6,7× (lote 39:
+  151.403 = 3.395×(1/0.15)²; o aviso de "¥ não-redondo" não pega a 2ª
+  rodada — ¥600 é redondo). Cura: `--revert` do json da última rodada.
+  **Trava permanente:** `Buyer.prices_in_rmb` (migração pricing/0013) — o
+  commit liga a trava; re-rodar (até dry-run) é RECUSADO com erro;
+  `--mark-migrated` liga a trava sem tocar valores (ambiente que já está em
+  ¥ — ex.: prod no deploy da F11, e o local do dono pós-revert); `--revert`
+  desliga e manda conferir. Testado em MigratePricesToRmbTests.
+  **⚠ INCIDENTE 3 (2026-07-16): `{# #}` multiline vazando como TEXTO** nas
+  páginas (3ª ocorrência do erro da casa — 7 pontos: header/messages do
+  shell, smart button, form/modal de fechamento, fx do parceiro, moeda do
+  catálogo). Corrigidos para `{% comment %}` e agora há PORTÃO:
+  `TemplateMultilineCommentTests` (estoque/tests.py) varre TODOS os
+  templates e deixa a suíte vermelha se alguém escrever `{# #}` com quebra
+  de linha. Suíte 373/373.
   **2ª revisão do dono (F11.2c, 2026-07-16):** (a) fechamento com **modal da
   casa** (est-modal Carbon: resumo código+total, type-to-confirm digitando o
   código; modal DENTRO do gate de gerente — operador não vê nem o HTML;

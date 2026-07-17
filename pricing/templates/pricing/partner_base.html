@@ -150,8 +150,8 @@
 
   <span class="wtc-header__spacer"></span>
 
-  {# Taxa CONTRATUAL ¥→US$ (F10: server-side, Buyer.fx_usd_rate — é a taxa
-     que o sistema usa para derivar o USD; a cotação viva de API morreu). #}
+  {% comment %} Taxa CONTRATUAL ¥→US$ (F10: server-side, Buyer.fx_usd_rate — é a taxa
+     que o sistema usa para derivar o USD; a cotação viva de API morreu). {% endcomment %}
   <div class="wtc-header__fx" title="{% trans 'Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥ em US$. Muda só quando o contrato mudar.' %}">
     <span class="wtc-header__fx-val">1 ¥ = US$ {{ buyer.fx_usd_rate_display }}</span>
     <span class="wtc-header__fx-note">{% blocktrans trimmed %}taxa do<br>contrato{% endblocktrans %}</span>

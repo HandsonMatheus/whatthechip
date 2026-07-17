@@ -137,6 +137,13 @@ class Buyer(models.Model):
         verbose_name='Taxa ¥→US$ (contratual)',
         help_text='US$ por 1 ¥ (ex.: 0.14). Muda só quando o contrato mudar; '
                   'os preços em ¥ não são afetados.')
+    # TRAVA anti-dupla-migração (incidente local 2026-07-16: o
+    # migrate_prices_to_rmb rodou 2× e os ¥ viraram 6,7× maiores — ¥90→¥600).
+    # True = os Price deste comprador JÁ estão em ¥; o comando RECUSA re-rodar.
+    prices_in_rmb = models.BooleanField(
+        default=False, verbose_name='Preços já em ¥ (RMB)',
+        help_text='Trava do migrate_prices_to_rmb: marcado = a migração F10 '
+                  'já rodou neste banco — re-rodar multiplicaria os valores.')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
 
     objects       = CompanyScopedManager()

@@ -1038,8 +1038,8 @@ table.est-table td { padding: var(--s5) var(--s5); }
   {% endif %}
   <span style="flex:1;"></span>
   {% if sales_order %}
-  {# Smart button (padrão Odoo, F11.2c): a venda deste lote — só admin
-     (a view só põe sales_order no ctx para admin). #}
+  {% comment %} Smart button (padrão Odoo, F11.2c): a venda deste lote — só admin
+     (a view só põe sales_order no ctx para admin). {% endcomment %}
   <a href="{% url 'vendas:so_detail' sales_order.pk %}"
      style="display:inline-flex;flex-direction:column;gap:2px;padding:8px 16px;background:#fff;border:1px solid #0f62fe;text-decoration:none;line-height:1.2;">
     <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Ordem de venda" %}</span>
@@ -1167,9 +1167,9 @@ table.est-table td { padding: var(--s5) var(--s5); }
         {% trans "Exportar" %}
       </a>
       {% if lot.status == 'open' %}
-      {# F11.2c: fechar é IRREVERSÍVEL na prática (gera a cotação de venda) —
+      {% comment %} F11.2c: fechar é IRREVERSÍVEL na prática (gera a cotação de venda) —
          modal da CASA (est-modal, Carbon) com resumo do lote e type-to-confirm
-         do código COMPLETO. A barreira real é a VIEW (confere confirm_code). #}
+         do código COMPLETO. A barreira real é a VIEW (confere confirm_code). {% endcomment %}
       <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" id="close-lot-form" style="display:none;">
         {% csrf_token %}
         <input type="hidden" name="confirm_code" id="close-confirm-code" value="">
@@ -1202,9 +1202,9 @@ table.est-table td { padding: var(--s5) var(--s5); }
 </div>
 
 {# ── Modal de confirmação de remoção (Carbon medium-impact) ───── #}
-{# ── Modal de FECHAMENTO do lote (F11.2c — est-modal, Carbon da casa).
+{% comment %} ── Modal de FECHAMENTO do lote (F11.2c — est-modal, Carbon da casa).
      Dentro do gate de GERENTE: operador não fecha lote (e o texto do modal
-     não pode nem aparecer no HTML dele — teste de navegação por papel). #}
+     não pode nem aparecer no HTML dele — teste de navegação por papel). {% endcomment %}
 {% if wtc_is_manager %}
 <div class="est-modal-overlay" id="close-modal-overlay" role="dialog" aria-modal="true"
      onclick="if(event.target===this)closeCloseModal()">

@@ -40,20 +40,48 @@ class Command(BaseCommand):
         parser.add_argument('--commit', action='store_true')
         parser.add_argument('--revert', default='',
                             help='JSON de reversão a desfazer.')
+        parser.add_argument('--mark-migrated', action='store_true',
+                            help='Só liga a TRAVA (prices_in_rmb=True) sem tocar '
+                                 'valores — p/ ambiente que já está em ¥.')
 
     def handle(self, *args, **opts):
         scope_command_to_company(opts['company'], self.stdout)
+        buyer = Buyer.all_companies.filter(slug=opts['buyer']).first()
+        if buyer is None:
+            raise CommandError(f"Comprador {opts['buyer']!r} não existe.")
+        if opts['mark_migrated']:
+            buyer.prices_in_rmb = True
+            buyer.save(update_fields=['prices_in_rmb'])
+            self.stdout.write(self.style.SUCCESS(
+                f'🔒 Trava ligada: {buyer.slug} marcado como JÁ em ¥ '
+                '(nenhum valor foi alterado).'))
+            return
         if opts['revert']:
-            return self._revert(opts['revert'])
+            out = self._revert(opts['revert'])
+            # Desfez a última rodada → destrava para o operador decidir; se os
+            # valores CONTINUAM em ¥ (caso dupla-rodada), re-ligue a trava:
+            buyer.prices_in_rmb = False
+            buyer.save(update_fields=['prices_in_rmb'])
+            self.stdout.write(self.style.WARNING(
+                '⚠ Trava desligada pelo revert. Confira os valores: se '
+                'continuam em ¥ (você desfez uma rodada EXTRA), re-ligue com '
+                '--mark-migrated.'))
+            return out
         try:
             rate = Decimal(opts['rate_used'])
             if rate <= 0:
                 raise InvalidOperation
         except InvalidOperation:
             raise CommandError('--rate-used obrigatório e > 0 (ex.: 0.15).')
-        buyer = Buyer.all_companies.filter(slug=opts['buyer']).first()
-        if buyer is None:
-            raise CommandError(f"Comprador {opts['buyer']!r} não existe.")
+        # ── TRAVA anti-dupla-execução (incidente local 2026-07-16: rodou 2× e
+        # os ¥ ficaram 6,7× maiores; o aviso de "¥ não-redondo" NÃO pega a 2ª
+        # rodada porque ¥600 é redondo). Vale para dry-run e commit. ──
+        if buyer.prices_in_rmb:
+            raise CommandError(
+                f'TRAVA: os preços de {buyer.slug!r} JÁ estão em ¥ '
+                f'(prices_in_rmb=True) — re-rodar multiplicaria tudo por '
+                f'{(1 / rate):.2f}×. Se este banco realmente ainda está em '
+                'USD, desmarque "Preços já em ¥" no admin do comprador.')
 
         log, nao_redondos = [], []
         planos = [
@@ -96,10 +124,13 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             self._apply(log, novo=True)
+            buyer.prices_in_rmb = True          # 🔒 trava a re-execução
+            buyer.save(update_fields=['prices_in_rmb'])
         path = 'migrate_prices_to_rmb_revert.json'
         json.dump(log, open(path, 'w'), ensure_ascii=False, indent=0)
         self.stdout.write(self.style.SUCCESS(
-            f'✅ {len(log)} registro(s) convertidos p/ ¥. Reversível: {path}'))
+            f'✅ {len(log)} registro(s) convertidos p/ ¥ e trava ligada. '
+            f'Reversível: {path}'))
 
     def _apply(self, log, novo: bool):
         modelos = {'price': Price, 'pcr': PriceChangeRequest}

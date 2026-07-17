@@ -41,8 +41,8 @@
       <option value="{{ l.code }}" {% if l.code == CUR_LANG %}selected{% endif %}>{{ l.name_local }}</option>
       {% endfor %}
     </select>
-    {# F10.6: MOEDA do documento — USD (derivado, default: é o que circula
-       pros clientes dele) ou ¥ (o armazenado). Símbolos são universais. #}
+    {% comment %} F10.6: MOEDA do documento — USD (derivado, default: é o que circula
+       pros clientes dele) ou ¥ (o armazenado). Símbolos são universais. {% endcomment %}
     <select name="currency" style="padding:7px 8px;border:1px solid #8d8d8d;background:#fff;font-size:13px;" aria-label="{% trans "Moeda do catálogo" %}">
       <option value="usd" selected>US$</option>
       <option value="rmb">¥ RMB</option>

@@ -1243,6 +1243,47 @@ class ExportPriceColumnsTests(TestCase):
         self.assertFalse(any('Preço' in str(h) for h in headers if h))
 
 
+class TemplateMultilineCommentTests(TestCase):
+    """PORTÃO (3ª ocorrência do erro, 2026-07-16 — CLAUDE.md §7): `{# #}` do
+    Django é SÓ single-line; com quebra de linha o "comentário" VAZA como
+    texto puro na página. Comentário longo = {% comment %}. Este teste varre
+    todos os templates dos apps e deixa a suíte vermelha na hora."""
+
+    def test_nenhum_template_tem_comentario_hash_multilinha(self):
+        import pathlib
+        from django.conf import settings
+        base = pathlib.Path(settings.BASE_DIR)
+        maus = []
+        raizes = [base / app for app in
+                  ('chips', 'estoque', 'pages', 'tenancy', 'pricing',
+                   'vendas')] + [base / 'templates']
+        for raiz in raizes:
+            for p in raiz.glob('**/templates/**/*.html'):
+                self._scan(p, base, maus)
+            if raiz.name == 'templates':
+                for p in raiz.glob('**/*.html'):
+                    self._scan(p, base, maus)
+        self.assertEqual(
+            maus, [],
+            '{# #} multiline VAZA como texto — troque por {% comment %}: '
+            + ', '.join(maus))
+
+    @staticmethod
+    def _scan(path, base, maus):
+        t = path.read_text(encoding='utf-8')
+        i = 0
+        while True:
+            s = t.find('{#', i)
+            if s == -1:
+                return
+            e = t.find('#}', s)
+            if e == -1 or '\n' in t[s:e]:
+                maus.append(f'{path.relative_to(base)}:{t[:s].count(chr(10)) + 1}')
+                if e == -1:
+                    return
+            i = e + 2
+
+
 class TenancyDeclarationTests(TestCase):
     """§12.1: "tabela sem decisão de tenancy = suíte vermelha". Todo modelo dos
     apps do projeto ou está na lista GLOBAL declarada (PRECIFICACAO §10), ou é

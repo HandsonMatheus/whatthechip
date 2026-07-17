@@ -38,7 +38,8 @@ class BuyerAdmin(PlatformScopedAdmin):
     # F10: fx_usd_rate é a taxa CONTRATUAL ¥→US$ — editável AQUI (o dono
     # gere; pghistory audita). Mudar a taxa NÃO toca os ¥ gravados nos
     # Price — só o US$ derivado na leitura.
-    list_display  = ('name', 'company', 'fx_usd_rate', 'active', 'created_at')
+    list_display  = ('name', 'company', 'fx_usd_rate', 'prices_in_rmb',
+                     'active', 'created_at')
     list_filter   = ('active', 'company')
     search_fields = ('name', 'slug')
     prepopulated_fields = {'slug': ('name',)}
