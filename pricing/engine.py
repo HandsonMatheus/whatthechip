@@ -456,27 +456,50 @@ def price_lot(lot, buyer) -> LotPricingReport:
 
     I/O constante (incidente 2026-07-16): usa ``BuyerPricingContext`` — 3
     queries fixas para o lote inteiro em vez de ~3 por PN (que estourava o
-    timeout do gunicorn em lote grande e derrubava o worker).
+    timeout do gunicorn em lote grande e derrubava o worker). Para VÁRIOS
+    compradores use ``price_lot_multi`` (classify 1× por PN — F11.0).
+    """
+    (_b, report), = price_lot_multi(lot, [buyer])
+    return report
+
+
+def price_lot_multi(lot, buyers) -> list:
+    """[(Buyer, LotPricingReport)] — o lote inteiro para VÁRIOS compradores,
+    classificando cada PN **UMA vez** (F11.0, 2026-07-16): o painel de
+    valoração roda um price_lot POR buyer e o classify dominava o tempo
+    (lote 42: ~300 PNs × 3 buyers = ~900 classificações ≈ 28s). Aqui o
+    classify roda 1× por PN DISTINTO e cada buyer só re-precifica o result
+    (BuyerPricingContext, em memória). Mesmo resultado, N× menos CPU/I/O.
     """
     from chips.engine import classify   # lazy: evita acoplamento na importação
 
-    report = LotPricingReport(totals={
-        PricingConfig.SCENARIO_LOW: Decimal('0.00'),
-        PricingConfig.SCENARIO_MID: Decimal('0.00'),
-        PricingConfig.SCENARIO_HIGH: Decimal('0.00'),
-    })
-    ctx = BuyerPricingContext(buyer)
-    for entry in lot.entries.all():
-        q = ctx.price(classify(entry.part_number))
-        qty = entry.quantity or 0
-        report.lines.append(LotQuoteLine(entry.part_number, qty, q))
-        report.total_lines += 1
-        report.total_units += qty
-        if q.status == PRICED:
-            report.priced_lines += 1
-            report.priced_units += qty
-            for scenario in report.totals:
-                report.totals[scenario] += q.value(scenario) * qty
-        else:
-            report.unpriced.append((entry.part_number, qty, q.status, q.reason))
-    return report
+    entries = list(lot.entries.all())
+    results = {}                        # pn → result (1 classify por PN distinto)
+    for e in entries:
+        if e.part_number not in results:
+            results[e.part_number] = classify(e.part_number)
+
+    out = []
+    for buyer in buyers:
+        ctx = BuyerPricingContext(buyer)
+        report = LotPricingReport(totals={
+            PricingConfig.SCENARIO_LOW: Decimal('0.00'),
+            PricingConfig.SCENARIO_MID: Decimal('0.00'),
+            PricingConfig.SCENARIO_HIGH: Decimal('0.00'),
+        })
+        for entry in entries:
+            q = ctx.price(results[entry.part_number])
+            qty = entry.quantity or 0
+            report.lines.append(LotQuoteLine(entry.part_number, qty, q))
+            report.total_lines += 1
+            report.total_units += qty
+            if q.status == PRICED:
+                report.priced_lines += 1
+                report.priced_units += qty
+                for scenario in report.totals:
+                    report.totals[scenario] += q.value(scenario) * qty
+            else:
+                report.unpriced.append((entry.part_number, qty,
+                                        q.status, q.reason))
+        out.append((buyer, report))
+    return out

@@ -844,6 +844,93 @@ adiciona a linha", §2/§11), agora com ferramenta própria:
 - Quem fabrica LPDDR (matriz da aba Instructions): Samsung, SK Hynix, Micron,
   Nanya. Kingston/Toshiba-Kioxia/SanDisk entram como não fabricado.
 
+### 12.19 F11 — VENDAS (plano fechado 2026-07-16; **EXECUÇÃO INICIADA no local** — dono deu o "vai" 2026-07-16; publicação em prod só com runbook próprio)
+
+**Motivação:** o incidente dos lotes 41/42 (valoração on-read = classify × PN
+× comprador × ACESSO; 28s por página mesmo otimizada) + empresa crescendo
+(clientes novos diários, multi-tenant no ar). O on-read do §1.7 foi decisão
+nossa p/ 1 empresa e lotes pequenos — não é convenção de mercado; a convenção
+(Odoo) é a que o dono pediu: **valor mora em documento comercial; estoque é
+quantidade**.
+
+**Decisões FECHADAS pelo dono (brainstorm 2026-07-16):**
+- **Um comprador só, sempre** (Wu Quan) — sem multi-cotação/comparação; todos
+  os lotes de TODOS os clientes da plataforma desaguam nele. Quando o 2º
+  cliente chegar, Wu Quan vira **comprador de PLATAFORMA** (`company=NULL`,
+  reservado no §3.1).
+- **Sigilo total do comprador:** nome/slug/qualquer identificação = segredo
+  de PLATAFORMA (é o segredo comercial da eMiner como broker). Empresa-cliente
+  e usuário final NUNCA veem — telas/exports/PDFs internos usam rótulo neutro
+  ou codinome; nome real só no Django admin. ⚠ Leaks atuais a corrigir na
+  F11: card "💰 Wuquan" e header do export "Preço unit. — Wuquan (USD)" (ok
+  enquanto o único cliente é a própria eMiner; OBRIGATÓRIO antes do 2º).
+- **Lote aberto SEMPRE valorado** (admin) — via join barato (chave
+  materializada), preço segue VIVO.
+- **Lote fechado é imutável** (só admin); reabrir CANCELA cotação draft; com
+  OV confirmada a reabertura é BLOQUEADA até cancelar a ordem (padrão Odoo).
+- **OV em ¥ canônico com toggle US$** (visualizar em ambas — padrão F10).
+- **Linhas da OV = resumo por CATEGORIA** (a chave de preço: "eMMC 4GB",
+  "DDR3 2Gb", "eMCP LPDDR4X 64GB" — geração incluída: DDR3 2Gb ≠ DDR4 2Gb);
+  o detalhado por PN fica só no inventário.
+- **Resultado do comprador NUNCA edita a OV** (padrão Odoo: fatura pelo
+  aceito + nota de crédito): entra como **ACERTO** vinculado — ajustes por
+  categoria (mortos, repreciação) → valor final. Bônus: histórico de acerto
+  por comprador vira dado de negociação.
+- **Pagamentos sempre em US$** (parciais, contra a fatura; saldo em aberto
+  nas duas moedas pela taxa congelada).
+- **Retroativos:** lotes já fechados ganham OVs geradas dos `LotPricing`
+  (migração de dados); o LotPricing é absorvido/aposentado.
+
+**Arquitetura (3 camadas):**
+1. **Escrita:** a bancada já classifica no lançamento → grava na entrada a
+   **CHAVE de preço** (kind/gen/tier — estável; quem muda é o preço). Custo
+   zero; defasagem de chave = mesma classe do snapshot (cura: resnapshot
+   estendido, que também faz o backfill dos lotes existentes).
+2. **Leitura (lote aberto):** valoração = chaves gravadas × `Price` vivo via
+   `BuyerPricingContext` (construído no incidente 2026-07-16) — SEM classify;
+   ~4-6 queries por página, qualquer tamanho/nº de compradores.
+3. **Comercial (app `vendas/`):** fechamento → **Cotação draft** (valores
+   VIVOS, re-join) → **confirmar congela** linha a linha (¥ unit + taxa
+   contratual + US$ — auditoria cambial "vendi a 0.14") → **Acerto**
+   (resultado) → **Fatura** (valor final) → **Pagamentos US$**. Link forte
+   lote ↔ OV (botão nos dois sentidos). Menu Vendas admin-only (regra
+   "gerente não vê valor" mantida). Tenancy por-empresa padrão T3/T4 + RLS +
+   pghistory + numeração `(company, number)`.
+
+**Assumidos salvo veto do dono:** app ÚNICO `vendas/` no v1 (OV+Acerto+
+Fatura+Pagamento; separar `faturamento/` quando crescer).
+
+**Nomenclatura (dono, 2026-07-16): UNIVERSAL, inglês, NUNCA traduz** — o
+código é valor CANÔNICO (regra i18n: banco guarda canônico, rótulo em volta
+traduz). Formato `PREFIX/NUM/MM/YY`: **`LOT/041/07/26`** (estoque; NUM = a
+sequência perpétua por empresa que já existe — "lote 41" continua "lote 41",
+MM/YY informativo do mês de abertura) · **`SO/012/07/26`** (ordem de venda) ·
+**`INV/005/08/26`** (fatura — INV **confirmado pelo dono** 2026-07-16; BILL
+descartado: no Odoo é conta de FORNECEDOR). **NUM perpétuo, NUNCA reinicia**
+(confirmado); zero-padded 3 dígitos; sequência por empresa, `unique (company,
+number)`.
+
+**Anotado para o ESTOQUE (fora do escopo F11):** romaneio de FECHAMENTO
+imprimível por categoria SEM valores (conferência física); a versão com
+valores é o PDF da OV — nenhum expõe o comprador.
+
+**Fases (cada uma com testes + tenancy declarado + i18n §7):**
+- **F11.0 ✅ ENTREGUE 2026-07-16 (local; suíte 358/358):**
+  (a) `price_lot_multi(lot, buyers)` — classify **1× por PN distinto**,
+  compartilhado entre compradores (era 1× por PN × buyer: ~900 no lote 42);
+  `_lot_valuations`/`_freeze_lot_pricing`/`_export_price_maps` migrados;
+  `price_lot(lot, buyer)` mantido como caso-de-1.
+  (b) **Paginação** do "Estoque do lote": 100 linhas/página (`?p=`), botões
+  no padrão HTMX dos filtros; filtro/busca/add/remove resetam pra pág. 1
+  (ordem -last_updated → recém-lançado sempre visível); valoração e export
+  seguem cobrindo o lote INTEIRO. 3 msgids novos traduzidos es/en/zh.
+  Testes: `test_multi_comprador_classifica_cada_pn_uma_vez` (10 classifies
+  p/ 10 PNs × 2 buyers) + `LotPaginationTests`.
+- F11.1 chave materializada + valoração por join + resnapshot/backfill →
+  F11.2 app vendas (modelos, fluxo, telas, PDF da OV) → F11.3 retroativos +
+  rótulo neutro do comprador (card/export) → F11.4 acerto + fatura +
+  pagamentos.
+
 ### 12.18 F10 — RMB CANÔNICO (**LIVE** — virada executada 2026-07-16: deploy `2b75916` + `migrate_prices_to_rmb --buyer wu-quan --rate-used 0.15 --commit` = 256 registros → ¥; 41 valores ¥ não-redondos aceitos como estão — digitados em USD pós-launch, ÷0.15 é a leitura fiel da época; arredondar seria mudar preço do parceiro sem consentimento (ajuste, se quiser, via moderação/admin). `guard_catalog` ✓ 7729. Reversão: `migrate_prices_to_rmb_revert.json` guardado FORA do git. Suíte 354/354 + `check_translations` verde.)
 
 **F10.1 entregue 2026-07-11 (INERTE até a virada):** `Buyer.fx_usd_rate`

@@ -205,6 +205,22 @@ def _entries_qs(lot, q='', tipo=''):
     return qs.order_by('-last_updated')
 
 
+#: F11.0b (2026-07-16): linhas por página do "Estoque do lote". A página
+#: renderizava TODAS as entradas (lote 42 = ~700KB de HTML por request).
+_PAGE_SIZE = 100
+
+
+def _paginate_entries(request, entries):
+    """(entradas da página, page_obj) — pagina a LISTA já montada (a ordem
+    -last_updated garante o recém-lançado na página 1). Filtro/busca resetam
+    para a página 1 sozinhos (o hx-get deles não envia ?p=); POSTs de
+    add/remove idem. A valoração e o export seguem cobrindo o lote INTEIRO —
+    isto é só exibição."""
+    from django.core.paginator import Paginator
+    page_obj = Paginator(entries, _PAGE_SIZE).get_page(request.GET.get('p'))
+    return list(page_obj.object_list), page_obj
+
+
 def _current_snapshot(pn: str) -> dict:
     """Snapshot ATUAL do servidor para um PN: `_snapshot(classify(pn))` sem o
     campo `confidence`. O rótulo 'Source' (incl. a tradução distribuidor/gramática →
@@ -580,11 +596,13 @@ def lot_detail(request, lot_pk):
     tipo = request.GET.get('tipo', '').strip()
 
     entries   = _entries_for_display(lot, q, tipo)
-    total_qty = sum(e.quantity for e in entries)
+    total_qty = sum(e.quantity for e in entries)          # do lote/filtro INTEIRO
+    entries, page_obj = _paginate_entries(request, entries)   # F11.0b
 
     ctx = {
         'lot':       lot,
         'entries':   entries,
+        'page_obj':  page_obj,
         'total_qty': total_qty,
         'q':         q,
         'tipo':      tipo,
@@ -609,7 +627,7 @@ def lot_detail(request, lot_pk):
 
 def _lot_valuations(request, lot):
     """[{buyer, frozen, totals…}] para o painel de valoração (admin-only)."""
-    from pricing.engine import price_lot
+    from pricing.engine import price_lot_multi
     from pricing.models import Buyer, LotPricing
 
     out = []
@@ -624,8 +642,8 @@ def _lot_valuations(request, lot):
             })
         if out:
             return out
-    for buyer in Buyer.objects.filter(active=True):
-        rep = price_lot(lot, buyer)
+    # F11.0: classify 1× por PN, compartilhado entre os compradores.
+    for buyer, rep in price_lot_multi(lot, Buyer.objects.filter(active=True)):
         out.append({
             'buyer': buyer, 'frozen': False, 'created_at': None,
             'total_low': rep.totals['low'], 'total_mid': rep.totals['mid'],
@@ -644,10 +662,10 @@ def _freeze_lot_pricing(request, lot):
     cria outro (append). ⚠ Falha de preço NUNCA trava o fechamento do lote
     (operação da bancada > auditoria): loga e segue."""
     try:
-        from pricing.engine import price_lot
+        from pricing.engine import price_lot_multi
         from pricing.models import Buyer, LotPricing
-        for buyer in Buyer.objects.filter(active=True):
-            rep = price_lot(lot, buyer)
+        # F11.0: classify 1× por PN, compartilhado entre os compradores.
+        for buyer, rep in price_lot_multi(lot, Buyer.objects.filter(active=True)):
             LotPricing.all_companies.create(
                 lot=lot, buyer=buyer, closed_by=request.user,
                 total_low=rep.totals['low'], total_mid=rep.totals['mid'],
@@ -875,10 +893,12 @@ def add_chip(request, lot_pk):
 
     entries   = _entries_for_display(lot)
     total_qty = sum(e.quantity for e in entries)
+    entries, page_obj = _paginate_entries(request, entries)   # F11.0b: pág. 1
 
     response = render(request, 'estoque/partials/table_body.html', {
         'lot':        lot,
         'entries':    entries,
+        'page_obj':   page_obj,
         'total_qty':  total_qty,
         'just_added': pn,
     })
@@ -908,10 +928,12 @@ def remove_entry(request, lot_pk, pk):
 
     entries   = _entries_for_display(lot)
     total_qty = sum(e.quantity for e in entries)
+    entries, page_obj = _paginate_entries(request, entries)   # F11.0b: pág. 1
 
     return render(request, 'estoque/partials/table_body.html', {
         'lot':       lot,
         'entries':   entries,
+        'page_obj':  page_obj,
         'total_qty': total_qty,
     })
 
@@ -936,20 +958,27 @@ def _export_price_maps(request, lot):
     """
     if getattr(request, 'company_role', None) != 'admin':
         return []
-    from pricing.engine import price_lot
+    from pricing.engine import price_lot_multi
     from pricing.models import Buyer, LotPricing
 
-    out = []
-    for buyer in Buyer.objects.filter(active=True).order_by('name'):
-        lines = None
+    # 1ª passada: quem tem CONGELADO usa o congelado; os demais entram na
+    # precificação viva EM GRUPO (F11.0: classify 1× por PN pra todos).
+    frozen_by, live_buyers = {}, []
+    buyers = list(Buyer.objects.filter(active=True).order_by('name'))
+    for buyer in buyers:
+        frozen = None
         if lot.status == Lot.STATUS_CLOSED:
             frozen = (LotPricing.objects.filter(lot=lot, buyer=buyer)
                       .order_by('-created_at').first())
-            if frozen:
-                lines = {l.get('pn'): l for l in frozen.lines}
-        if lines is None:
-            rep = price_lot(lot, buyer)
-            lines = {
+        if frozen:
+            frozen_by[buyer.pk] = {l.get('pn'): l for l in frozen.lines}
+        else:
+            live_buyers.append(buyer)
+
+    live_by = {}
+    if live_buyers:
+        for buyer, rep in price_lot_multi(lot, live_buyers):
+            live_by[buyer.pk] = {
                 l.part_number: {
                     'status': l.quote.status,
                     'min': str(l.quote.price_min) if l.quote.price_min is not None else None,
@@ -957,8 +986,9 @@ def _export_price_maps(request, lot):
                 }
                 for l in rep.lines
             }
-        out.append((buyer.name, lines))
-    return out
+
+    return [(buyer.name, frozen_by.get(buyer.pk) or live_by.get(buyer.pk, {}))
+            for buyer in buyers]
 
 
 def _export_price_cells(line, qty):

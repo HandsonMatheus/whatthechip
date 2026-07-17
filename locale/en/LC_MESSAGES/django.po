@@ -1584,3 +1584,19 @@ msgstr "Your ¥ prices do not change. Only the US$ value the system calculates f
 #: pricing/pdf.py
 msgid "Preços em ¥ (RMB) por chip (unitário)."
 msgstr "Prices in ¥ (RMB) per chip (unit price)."
+
+#. F11.0b paginação do lote — 2026-07-16
+#: estoque/templates/estoque/partials/table_body.html
+msgid "Anterior"
+msgstr "Previous"
+
+#. F11.0b paginação do lote — 2026-07-16
+#: estoque/templates/estoque/partials/table_body.html
+msgid "Próxima"
+msgstr "Next"
+
+#. F11.0b paginação do lote — 2026-07-16
+#: estoque/templates/estoque/partials/table_body.html
+#, python-format
+msgid "página %(a)s de %(b)s"
+msgstr "page %(a)s of %(b)s"

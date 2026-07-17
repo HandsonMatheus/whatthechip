@@ -697,6 +697,54 @@ class RoleMatrixTests(TestCase):
         self.assertContains(resp, '#900')
 
 
+class LotPaginationTests(TestCase):
+    """F11.0b (2026-07-16): a página do lote renderizava TODAS as entradas
+    (lote 42 = ~700KB de HTML). Agora pagina em 100/página; filtros e POSTs
+    resetam pra página 1 (não enviam ?p=); valoração/export seguem cobrindo
+    o lote inteiro (testado em ExportPriceColumnsTests/BenchAndLot)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from chips.models import CatalogVersion
+        User = get_user_model()
+        cls.company = Company.objects.create(name='PgCo', slug='pg-co')
+        cls.op = User.objects.create_user('pg_op', password='x')
+        Membership.objects.create(user=cls.op, company=cls.company,
+                                  role=Membership.ROLE_OPERATOR)
+        cls.lot = Lot.all_companies.create(number=700, operator=cls.op,
+                                           company=cls.company)
+        cur = CatalogVersion.current()
+        for i in range(105):
+            # snapshot_catalog_version atual → o on-read NÃO reclassifica.
+            InventoryEntry.all_companies.create(
+                lot=cls.lot, part_number=f'PG{i:04d}', quantity=1,
+                chip_type='eMMC', company=cls.company,
+                snapshot_catalog_version=cur)
+
+    def setUp(self):
+        _scope(self, self.company)
+
+    def test_pagina_1_e_2(self):
+        self.client.force_login(self.op)
+        url = reverse('estoque:lot_detail', args=[self.lot.pk])
+        resp = self.client.get(url)
+        # class=" — o seletor .wtc-stock-row do CSS não entra na conta.
+        self.assertEqual(resp.content.decode().count('class="wtc-stock-row"'), 100)
+        self.assertContains(resp, 'página 1 de 2')
+        self.assertContains(resp, 'Próxima')
+        resp2 = self.client.get(url, {'p': '2'})
+        self.assertEqual(resp2.content.decode().count('class="wtc-stock-row"'), 5)
+        self.assertContains(resp2, 'página 2 de 2')
+        self.assertContains(resp2, 'Anterior')
+
+    def test_filtro_htmx_reseta_e_esconde_paginacao_com_pouco_resultado(self):
+        self.client.force_login(self.op)
+        url = reverse('estoque:lot_detail', args=[self.lot.pk])
+        resp = self.client.get(url, {'q': 'PG0001'}, HTTP_HX_REQUEST='true')
+        self.assertEqual(resp.content.decode().count('class="wtc-stock-row"'), 1)
+        self.assertNotContains(resp, 'página 1 de')     # 1 página → sem rodapé
+
+
 class PainelTests(TestCase):
     """/painel/ (lançadeira pós-login): hero = lote aberto → 1 clique para a
     bancada; empty-state orienta por papel; stats do dia como contexto."""

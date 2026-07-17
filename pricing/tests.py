@@ -607,6 +607,49 @@ class PriceLotTests(TestCase):
         self.assertEqual(report.priced_lines, 30)
         self.assertEqual(report.totals['mid'], Decimal('168.00'))  # 30 × 5.60
 
+    def test_multi_comprador_classifica_cada_pn_uma_vez(self):
+        """F11.0 (2026-07-16): a valoração rodava price_lot POR comprador e o
+        classify dominava o tempo (~300 PNs × 3 buyers ≈ 28s no lote 41).
+        price_lot_multi classifica cada PN DISTINTO uma única vez e cada
+        comprador só re-precifica o result em memória."""
+        from unittest.mock import patch
+        from estoque.models import Lot, InventoryEntry
+
+        company = Company.objects.create(name='MultiCo', slug='multi-co')
+        b1 = Buyer.all_companies.create(company=company, name='Wu M1',
+                                        slug='wu-m1')
+        b2 = Buyer.all_companies.create(company=company, name='Wu M2',
+                                        slug='wu-m2')
+        samsung = Brand.objects.create(name='Samsung M', code='SAMMU')
+        for buyer, preco in ((b1, '40'), (b2, '50')):
+            pl = PriceList.all_companies.create(buyer=buyer, brand=samsung)
+            Price.all_companies.create(
+                price_list=pl, kind='emmc', gen='', tier_value=Decimal('64'),
+                tier_unit='GB', status=STATUS_QUOTED,
+                price_min=Decimal(preco), price_max=Decimal(preco))
+
+        User = get_user_model()
+        u = User.objects.create_user('multi_u')
+        with company_scope(company):
+            lot = Lot.open_for_company(company, u, 'lote M')
+            for i in range(10):
+                InventoryEntry.objects.create(lot=lot, part_number=f'PM{i:03d}',
+                                              quantity=1)
+
+            fake = _r(chip_type='eMMC', brand='Samsung M', cap_gb=64.0)
+            from pricing import engine as peng
+            with patch('chips.engine.classify',
+                       side_effect=lambda pn: dict(fake)) as mock_cls:
+                reports = dict(peng.price_lot_multi(lot, [b1, b2]))
+
+        # 10 PNs, 2 compradores → 10 classifies (não 20).
+        self.assertEqual(mock_cls.call_count, 10)
+        # Cada comprador precifica com a PRÓPRIA tabela (¥40 vs ¥50 @0.14):
+        self.assertEqual(reports[b1].totals['mid'], Decimal('56.00'))   # 10 × 5.60
+        self.assertEqual(reports[b2].totals['mid'], Decimal('70.00'))   # 10 × 7.00
+        self.assertEqual(reports[b1].total_units, 10)
+        self.assertEqual(reports[b1].total_lines, 10)
+
 
 class PriceCardGateTests(TestCase):
     """F5 — o preço no card de busca é SÓ para papel ADMIN da empresa.

@@ -24,6 +24,28 @@
     <div style="font-size:12px;color:#6f6f6f;margin-top:5px;">{{ entry.brand|default:"—" }} · {{ entry.display_capacity }}{% if entry.last_updated %}<span style="color:#a8a8a8;"> · {% blocktrans trimmed with d=entry.last_updated|date:"d/m/y H:i" %}atualizado {{ d }}{% endblocktrans %}</span>{% endif %}</div>
   </div>
   {% endfor %}
+  {% if page_obj and page_obj.paginator.num_pages > 1 %}
+  {% comment %}
+    F11.0b: paginação (100 linhas/página — lote grande gerava 700KB de HTML).
+    Os botões usam o MESMO padrão HTMX dos filtros (hx-get parcial no
+    #table-body-wrap); q/tipo preservados na URL; filtros resetam p/ pág. 1.
+  {% endcomment %}
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 20px;border-top:1px solid #e0e0e0;background:#fafafa;">
+    {% if page_obj.has_previous %}
+    <button type="button" class="wtc-page-btn"
+            hx-get="{% url 'estoque:lot_detail' lot.pk %}?p={{ page_obj.previous_page_number }}&q={{ q|default:''|urlencode }}&tipo={{ tipo|default:''|urlencode }}"
+            hx-target="#table-body-wrap" hx-swap="innerHTML"
+            style="background:none;border:1px solid #8d8d8d;padding:6px 14px;font-size:13px;cursor:pointer;">‹ {% trans "Anterior" %}</button>
+    {% else %}<span></span>{% endif %}
+    <span style="font-size:12px;color:#6f6f6f;">{% blocktrans trimmed with a=page_obj.number b=page_obj.paginator.num_pages %}página {{ a }} de {{ b }}{% endblocktrans %}</span>
+    {% if page_obj.has_next %}
+    <button type="button" class="wtc-page-btn"
+            hx-get="{% url 'estoque:lot_detail' lot.pk %}?p={{ page_obj.next_page_number }}&q={{ q|default:''|urlencode }}&tipo={{ tipo|default:''|urlencode }}"
+            hx-target="#table-body-wrap" hx-swap="innerHTML"
+            style="background:none;border:1px solid #8d8d8d;padding:6px 14px;font-size:13px;cursor:pointer;">{% trans "Próxima" %} ›</button>
+    {% else %}<span></span>{% endif %}
+  </div>
+  {% endif %}
 {% else %}
   <div style="text-align:center;padding:56px 24px;color:#a8a8a8;">
     <svg width="40" height="40" viewBox="0 0 32 32" fill="none" stroke="#d0d0d0" stroke-width="1.5" style="margin-bottom:10px;"><path d="M16 4 28 10v12L16 28 4 22V10z"/><path d="M4 10l12 6 12-6M16 16v12"/></svg>
