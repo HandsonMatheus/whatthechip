@@ -19,6 +19,7 @@ import re
 from datetime import datetime
 from difflib import get_close_matches
 
+from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db.models import F
 from django.http import HttpResponse
@@ -638,6 +639,10 @@ def lot_detail(request, lot_pk):
     # lote aberto calcula on-read da tabela viva (re-classifica cada PN).
     if getattr(request, 'company_role', None) == 'admin':
         ctx['valuations'] = _lot_valuations(request, lot)
+        # F11.2c: smart button (padrão Odoo) — a venda ativa deste lote.
+        from vendas.models import STATUS_CANCELLED, SalesOrder
+        ctx['sales_order'] = (SalesOrder.all_companies.filter(lot=lot)
+                              .exclude(status=STATUS_CANCELLED).first())
 
     return render(request, 'estoque/estoque.html', ctx)
 
@@ -704,12 +709,28 @@ def _freeze_lot_pricing(request, lot):
 @require_POST
 def lot_close(request, lot_pk):
     lot = _get_lot(request, lot_pk)
+    # F11.2 (dono, 2026-07-16): fechar exige digitar o CÓDIGO COMPLETO do
+    # lote (type-to-confirm) — a barreira é AQUI, o prompt do template é UX.
+    if (request.POST.get('confirm_code') or '').strip() != lot.code:
+        messages.error(request, _(
+            'Código de confirmação não confere — digite o código completo '
+            'do lote (ex.: %(code)s). O lote NÃO foi fechado.')
+            % {'code': lot.code})
+        return redirect('estoque:lot_detail', lot_pk=lot.pk)
     lot.status    = Lot.STATUS_CLOSED
     lot.closed_at = timezone.now()
     lot.save(update_fields=['status', 'closed_at'])
     # O snapshot é criado no servidor mesmo quando quem fecha é o GERENTE —
     # ele não VÊ valores (§7); o registro é para o admin/auditoria.
     _freeze_lot_pricing(request, lot)
+    # F11.2 (§12.19): fechamento gera a COTAÇÃO draft no menu Vendas (valores
+    # vivos até o admin confirmar). Nunca trava o fechamento (padrão F8).
+    from vendas.services import create_draft_for_lot
+    so = create_draft_for_lot(lot, request.user)
+    # F11.2c (dono): ADMIN cai direto na venda recém-criada; gerente segue no
+    # lote (ele não vê /vendas/ — "gerente não vê valor").
+    if so is not None and getattr(request, 'company_role', None) == 'admin':
+        return redirect('vendas:so_detail', pk=so.pk)
     return redirect('estoque:lot_detail', lot_pk=lot.pk)
 
 
@@ -717,6 +738,19 @@ def lot_close(request, lot_pk):
 @require_POST
 def lot_reopen(request, lot_pk):
     lot = _get_lot(request, lot_pk)
+    # F11.2 (padrão Odoo, dono 2026-07-16): OV CONFIRMADA bloqueia a
+    # reabertura (cancele a ordem no menu Vendas antes — auditável);
+    # cotação DRAFT é cancelada automaticamente ao reabrir.
+    from vendas.models import STATUS_CONFIRMED, STATUS_DRAFT, SalesOrder
+    from vendas.services import cancel as cancel_so
+    if SalesOrder.all_companies.filter(lot=lot,
+                                       status=STATUS_CONFIRMED).exists():
+        messages.error(request, _(
+            'Este lote tem uma Ordem de Venda CONFIRMADA — cancele a ordem '
+            'no menu Vendas antes de reabrir.'))
+        return redirect('estoque:lot_detail', lot_pk=lot.pk)
+    for so in SalesOrder.all_companies.filter(lot=lot, status=STATUS_DRAFT):
+        cancel_so(so, request.user)
     lot.status    = Lot.STATUS_OPEN
     lot.closed_at = None
     lot.save(update_fields=['status', 'closed_at'])

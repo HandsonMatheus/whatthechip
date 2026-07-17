@@ -20,6 +20,8 @@ urlpatterns = [
     # Dashboard do COMPRADOR (F6 — PRECIFICACAO §7.1): rota em inglês, conta
     # externa via Buyer.users (a lançadeira /painel/ redireciona parceiro p/ cá).
     path('partner/', include('pricing.urls', namespace='pricing')),
+    # Vendas (F11.2 — PRECIFICACAO §12.19): Cotação → OV do lote; admin-only.
+    path('vendas/', include('vendas.urls', namespace='vendas')),
     # i18n: set_language (POST) grava o idioma no cookie E, se logado, na
     # preferência do usuário (tenancy.UserLanguage — cadeia I18N.md §3).
     # Mesma rota/nome do Django puro; alimenta os seletores. ANTES do <slug>.

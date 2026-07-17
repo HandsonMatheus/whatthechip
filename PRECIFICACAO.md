@@ -937,9 +937,54 @@ valores é o PDF da OV — nenhum expõe o comprador.
   **OU sem chave** — mesmo com carimbo em dia). ⚠ Pós-migrate, rodar
   `resnapshot_lote --all --commit` uma vez (backfill do estoque atual);
   freshness da chave = mesma régua do snapshot (§ resnapshot).
-- F11.2 app vendas (modelos, fluxo, telas, PDF da OV) → F11.3 retroativos +
-  rótulo neutro do comprador (card/export) → F11.4 acerto + fatura +
-  pagamentos.
+- **F11.2 ✅ ENTREGUE 2026-07-16 (local; suíte 369/369, i18n verde):** app
+  **`vendas/`** — `DocSequence` (NUM perpétuo por empresa, atômico via
+  select_for_update), `SalesOrder` (código canônico `SO/NUM/MM/YY`; estados
+  draft→confirmed→cancelled; `one_active_so_per_lot`; congela
+  `fx_usd_rate`/`total_rmb`/`total_usd` na confirmação — CheckConstraint
+  `so_confirmed_is_frozen`) e `SalesOrderLine` (**categoria POR MARCA** — a
+  chave de preço + brand: o comprador cota por marca, "eMMC 16GB" Samsung ≠
+  SanDisk; detalhado por PN fica no inventário). **Fluxo:** fechar lote →
+  cotação draft (agregada das chaves F11.1; `unkeyed_units` transparente);
+  draft é VIVO (re-join via `price_from_key`); **confirmar exige todas as
+  linhas cotadas** (erro lista as pendências — força completar o grid) e
+  congela ¥+taxa+US$ linha a linha; reabrir cancela draft e é **BLOQUEADO**
+  com OV confirmada; re-fechar cria OUTRA ordem (número novo). Telas
+  `/vendas/` admin-only (nav "Vendas" no shell gated por `wtc_role`; barreira
+  real = `@role_required('admin')`); dual ¥·US$ com `{% localize off %}`;
+  nome do comprador NÃO aparece nas telas (sigilo; admin Django é o único
+  lugar). Migrações **0001+0002-RLS** (padrão pricing); pghistory; tenancy
+  declarado (`APPS_DO_PROJETO` += vendas). **Bônus:** o shell do estoque não
+  renderizava `django.contrib.messages` — corrigido no `base_estoque.html`
+  (o aviso de reabertura bloqueada era invisível). 28 msgids es/en/zh.
+  Testes: `vendas/tests.py` (fluxo completo, congelamento vs grid vivo,
+  bloqueio de confirmação com linha sem preço, numeração, hooks de
+  fechar/reabrir, gates de papel). **Fica pra F11.2b:** PDF da OV.
+  **Revisão do dono (2026-07-16, mesma entrega):** (a) `total_usd` da OV =
+  **SOMA das linhas congeladas** (estilo fatura — quem confere linha a linha
+  chega no total), não `total_rmb × taxa` (divergia por arredondamento por
+  linha: caso ¥2.10 → 0.28 vs 0.294); (b) **type-to-confirm no fechamento**:
+  digitar o código COMPLETO do lote (barreira na VIEW via `confirm_code`;
+  prompt é UX); (c) **nomenclatura `LOT/NUM/MM/YY` aplicada** (`Lot.code`,
+  exibida em painel/lotes/lote/vendas — a fala "lote 41" segue); (d) tabela
+  do /vendas/ alinhada ao Carbon (hover/zebra); (e) **falso-bug de preço
+  investigado**: prod lote 39 US$ 25k (congelado PRÉ-F10, Σ¥×0.15) vs local
+  US$ 3,4k — o banco LOCAL nunca rodou o `migrate_prices_to_rmb` (só o prod
+  rodou na virada): os USD antigos (13.50) eram lidos como ¥ → ~6,7× menor.
+  Cura: rodar a migração de dados no local também. ⚠ Lição de ambiente: a
+  migração de DADOS da F10 é POR BANCO — todo ambiente (local, staging,
+  prod) precisa rodá-la uma vez.
+  **2ª revisão do dono (F11.2c, 2026-07-16):** (a) fechamento com **modal da
+  casa** (est-modal Carbon: resumo código+total, type-to-confirm digitando o
+  código; modal DENTRO do gate de gerente — operador não vê nem o HTML;
+  barreira segue na view); (b) admin fecha → **redirect direto pra OV**
+  (gerente segue no lote — não vê /vendas/); (c) **smart buttons padrão
+  Odoo** nos dois sentidos: lote→"Ordem de venda SO/…" (ctx só p/ admin) e
+  venda→"Lote LOT/…"; (d) **Baixar PDF da OV** (`vendas/pdf.py`, simples sem
+  timbre, reusa helpers CJK do pricing/pdf; draft = valores vivos,
+  confirmada = congelados; filename `SO-001-07-26.pdf`). Suíte 371/371.
+- F11.3 retroativos + rótulo neutro do comprador (card/export) → F11.4
+  acerto + fatura + pagamentos (+ F11.2b PDF da OV).
 
 ### 12.18 F10 — RMB CANÔNICO (**LIVE** — virada executada 2026-07-16: deploy `2b75916` + `migrate_prices_to_rmb --buyer wu-quan --rate-used 0.15 --commit` = 256 registros → ¥; 41 valores ¥ não-redondos aceitos como estão — digitados em USD pós-launch, ÷0.15 é a leitura fiel da época; arredondar seria mudar preço do parceiro sem consentimento (ajuste, se quiser, via moderação/admin). `guard_catalog` ✓ 7729. Reversão: `migrate_prices_to_rmb_revert.json` guardado FORA do git. Suíte 354/354 + `check_translations` verde.)
 

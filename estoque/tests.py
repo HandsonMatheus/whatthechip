@@ -749,7 +749,7 @@ class RoleMatrixTests(TestCase):
         (antes cada usuário só via os próprios lotes; ver _get_lot)."""
         self._as('operator')
         resp = self.client.get(reverse('estoque:index'))
-        self.assertContains(resp, '#900')
+        self.assertContains(resp, 'LOT/900/')   # nomenclatura F11.2
 
 
 class LotPaginationTests(TestCase):
@@ -824,7 +824,7 @@ class PainelTests(TestCase):
                                  description='Compra Jul/26')
         self.client.force_login(self.op)
         resp = self.client.get(reverse('painel'))
-        self.assertContains(resp, '#500')
+        self.assertContains(resp, 'LOT/500/')   # nomenclatura F11.2
         self.assertContains(resp, 'Continuar triagem')
         self.assertContains(resp, reverse('estoque:lot_detail', args=[lot.pk]))
 
@@ -1266,7 +1266,10 @@ class TenancyDeclarationTests(TestCase):
         # ESCOPADOS (company + CompanyScopedManager + RLS em pricing/0002).
         'pricing.PricingConfig',
     }
-    APPS_DO_PROJETO = {'chips', 'estoque', 'pages', 'tenancy', 'pricing'}
+    # F11.2: 'vendas' entra — SalesOrder/SalesOrderLine/DocSequence são
+    # ESCOPADOS (company + CompanyScopedManager + RLS em vendas/0002).
+    APPS_DO_PROJETO = {'chips', 'estoque', 'pages', 'tenancy', 'pricing',
+                       'vendas'}
 
     def test_toda_tabela_declara_tenancy(self):
         from django.apps import apps as django_apps

@@ -1,0 +1,55 @@
+{% extends "estoque/base_estoque.html" %}
+{% load i18n l10n %}
+{% block title %}{% trans "Vendas" %} — WhatTheChip?{% endblock %}
+{% block nav_vendas %} wtc-header__nav--active{% endblock %}
+{% block main %}
+<div style="max-width:1100px;margin:0 auto;padding:28px 24px;">
+  <h1 style="font-weight:300;font-size:28px;margin:0 0 4px;">{% trans "Vendas" %}</h1>
+  <p style="font-size:13px;color:#6f6f6f;margin:0 0 18px;">
+    {% trans "Fechar um lote gera a cotação (valores vivos); confirmar congela ¥, taxa e US$ — a ordem confirmada nunca muda (ajustes entram como acerto)." %}
+  </p>
+
+  <style>
+    /* Tokens do shell (base_estoque/lotes) — tabela no Carbon da casa. */
+    .vd-table tbody tr:hover { background:#f4f4f4; }
+    .vd-table tbody tr:nth-child(even) { background:#fafafa; }
+    .vd-table td { font-size:14px; }
+  </style>
+  <div style="background:#fff;border:1px solid #e0e0e0;box-shadow:0 1px 2px rgba(0,0,0,.04);">
+    <table class="vd-table" style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:2px solid #e0e0e0;">
+          <th style="text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Ordem" %}</th>
+          <th style="text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Lote" %}</th>
+          <th style="text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Status" %}</th>
+          <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Total ¥" %}</th>
+          <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Total US$" %}</th>
+          <th style="text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Criada em" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for so in orders %}
+        <tr style="border-bottom:1px solid #eee;{% if so.status == 'cancelled' %}opacity:.55;{% endif %}">
+          <td style="padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-weight:600;">
+            <a href="{% url 'vendas:so_detail' so.pk %}" style="color:#0f62fe;text-decoration:none;">{{ so.code }}</a>
+          </td>
+          <td style="padding:10px 14px;"><a href="{% url 'estoque:lot_detail' so.lot.pk %}" style="color:#0f62fe;">{{ so.lot.code }}</a></td>
+          <td style="padding:10px 14px;">
+            {% if so.status == 'draft' %}<span style="font-size:11px;font-weight:700;background:#fff1c2;color:#8a6d00;padding:2px 8px;border-radius:10px;">{% trans "cotação" %}</span>
+            {% elif so.status == 'confirmed' %}<span style="font-size:11px;font-weight:700;background:#defbe6;color:#0e6027;padding:2px 8px;border-radius:10px;">{% trans "confirmada" %}</span>
+            {% else %}<span style="font-size:11px;font-weight:700;background:#e8e8e8;color:#525252;padding:2px 8px;border-radius:10px;">{% trans "cancelada" %}</span>{% endif %}
+          </td>
+          {% localize off %}
+          <td style="padding:10px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if so.total_rmb is not None %}¥ {{ so.total_rmb }}{% else %}—{% endif %}</td>
+          <td style="padding:10px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if so.total_usd is not None %}US$ {{ so.total_usd }}{% else %}—{% endif %}</td>
+          {% endlocalize %}
+          <td style="padding:10px 14px;font-size:13px;color:#525252;">{{ so.created_at|date:"d/m/y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="padding:24px;color:#6f6f6f;">{% trans "Nenhuma ordem ainda — feche um lote para gerar a primeira cotação." %}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

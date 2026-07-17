@@ -1021,12 +1021,12 @@ table.est-table td { padding: var(--s5) var(--s5); }
 <div style="font-size:13px;color:#6f6f6f;margin-bottom:14px;">
   <a href="{% url 'estoque:index' %}" style="font-weight:500;">{% trans "Lotes" %}</a>
   <span style="color:#a8a8a8;margin:0 6px;">/</span>
-  <span style="color:#393939;">{% trans "Lote" %} #{{ lot.number|stringformat:"03d" }}</span>
+  <span style="color:#393939;font-family:'IBM Plex Mono',monospace;">{{ lot.code }}</span>
 </div>
 
 {# ── Cabeçalho do lote ───────────────────────────────────────── #}
 <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;">
-  <h1 style="margin:0;font-size:clamp(26px,3.4vw,32px);font-weight:300;letter-spacing:-0.01em;white-space:nowrap;">{% trans "Lote" %} <span style="font-family:'IBM Plex Mono',monospace;font-weight:500;">#{{ lot.number|stringformat:"03d" }}</span></h1>
+  <h1 style="margin:0;font-size:clamp(26px,3.4vw,32px);font-weight:300;letter-spacing:-0.01em;white-space:nowrap;"><span style="font-family:'IBM Plex Mono',monospace;font-weight:500;">{{ lot.code }}</span></h1>
   {% if lot.status == 'closed' %}
   <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.08em;padding:4px 9px;background:#e0e0e0;color:#525252;">{% trans "FECHADO" %}</span>
   {% else %}
@@ -1035,6 +1035,16 @@ table.est-table td { padding: var(--s5) var(--s5); }
   {% if lot.description %}
   <span style="width:1px;height:18px;background:#c6c6c6;"></span>
   <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6f6f6f;letter-spacing:0.04em;">{{ lot.description|upper }}</span>
+  {% endif %}
+  <span style="flex:1;"></span>
+  {% if sales_order %}
+  {# Smart button (padrão Odoo, F11.2c): a venda deste lote — só admin
+     (a view só põe sales_order no ctx para admin). #}
+  <a href="{% url 'vendas:so_detail' sales_order.pk %}"
+     style="display:inline-flex;flex-direction:column;gap:2px;padding:8px 16px;background:#fff;border:1px solid #0f62fe;text-decoration:none;line-height:1.2;">
+    <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Ordem de venda" %}</span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ sales_order.code }}</span>
+  </a>
   {% endif %}
 </div>
 
@@ -1156,10 +1166,14 @@ table.est-table td { padding: var(--s5) var(--s5); }
         {% trans "Exportar" %}
       </a>
       {% if lot.status == 'open' %}
-      <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="flex:none;margin:0;">
+      {# F11.2c: fechar é IRREVERSÍVEL na prática (gera a cotação de venda) —
+         modal da CASA (est-modal, Carbon) com resumo do lote e type-to-confirm
+         do código COMPLETO. A barreira real é a VIEW (confere confirm_code). #}
+      <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" id="close-lot-form" style="display:none;">
         {% csrf_token %}
-        <button type="submit" style="height:44px;padding:0 18px;background:#fff;border:1px solid #da1e28;color:#da1e28;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Fechar Lote" %}</button>
+        <input type="hidden" name="confirm_code" id="close-confirm-code" value="">
       </form>
+      <button type="button" onclick="openCloseModal()" style="height:44px;padding:0 18px;background:#fff;border:1px solid #da1e28;color:#da1e28;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Fechar Lote" %}</button>
       {% else %}
       <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="flex:none;margin:0;">
         {% csrf_token %}
@@ -1187,6 +1201,52 @@ table.est-table td { padding: var(--s5) var(--s5); }
 </div>
 
 {# ── Modal de confirmação de remoção (Carbon medium-impact) ───── #}
+{# ── Modal de FECHAMENTO do lote (F11.2c — est-modal, Carbon da casa).
+     Dentro do gate de GERENTE: operador não fecha lote (e o texto do modal
+     não pode nem aparecer no HTML dele — teste de navegação por papel). #}
+{% if wtc_is_manager %}
+<div class="est-modal-overlay" id="close-modal-overlay" role="dialog" aria-modal="true"
+     onclick="if(event.target===this)closeCloseModal()">
+  <div class="est-modal">
+    <div class="est-modal-header">
+      <div class="est-modal-header-text">
+        <div class="est-modal-label">{% trans "Fechar Lote" %}</div>
+        <div class="est-modal-title" style="font-family:'IBM Plex Mono',monospace;">{{ lot.code }}</div>
+      </div>
+      <button class="est-modal-close" type="button" onclick="closeCloseModal()" aria-label="{% trans 'Fechar' %}">×</button>
+    </div>
+    <div class="est-modal-body">
+      <div style="display:flex;gap:22px;padding:12px 14px;background:var(--surface-2,#f4f4f4);margin-bottom:14px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Lote" %}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;">{{ lot.code }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Total" %}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;">{% blocktrans trimmed with n1=lot.chip_count n2=lot.total_qty %}{{ n1 }} tipos · {{ n2 }} un.{% endblocktrans %}</div>
+        </div>
+      </div>
+      <p class="est-modal-desc" style="margin:0 0 10px;">{% trans "Fechar o lote gera a cotação de venda e trava a bancada. Digite o código completo do lote para confirmar:" %}</p>
+      <input id="close-code-input" type="text" autocomplete="off" spellcheck="false"
+             placeholder="{{ lot.code }}"
+             style="width:100%;height:42px;padding:0 12px;border:1px solid #8d8d8d;font-family:'IBM Plex Mono',monospace;font-size:14px;"
+             oninput="var ok=this.value.trim()==='{{ lot.code }}';document.getElementById('close-confirm-btn').disabled=!ok;">
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
+        <button class="est-modal-btn-cancel" type="button" onclick="closeCloseModal()">{% trans "Cancelar" %}</button>
+        <button class="est-modal-btn-delete" id="close-confirm-btn" type="button" disabled
+                onclick="document.getElementById('close-confirm-code').value=document.getElementById('close-code-input').value.trim();document.getElementById('close-lot-form').submit();">
+          {% trans "Confirmar fechamento" %}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function openCloseModal(){var o=document.getElementById('close-modal-overlay');o.style.display='flex';var i=document.getElementById('close-code-input');i.value='';document.getElementById('close-confirm-btn').disabled=true;setTimeout(function(){i.focus();},50);}
+function closeCloseModal(){document.getElementById('close-modal-overlay').style.display='none';}
+</script>
+{% endif %}
+
 <div class="est-modal-overlay" id="delete-modal-overlay"
      role="dialog" aria-modal="true" aria-labelledby="modal-title"
      onclick="handleOverlayClick(event)">

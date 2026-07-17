@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     # Sistema de preços (PRECIFICACAO.md, F2): Buyer/PriceList/Price por-empresa
     # (Buyer.company; RLS na pricing/0002) + PricingConfig global (singleton).
     'pricing',
+    # Vendas (PRECIFICACAO §12.19, F11.2): Cotação → OV por lote (padrão Odoo);
+    # tudo por-empresa (RLS na vendas/0002); menu admin-only.
+    'vendas',
 ]
 
 # ── Autenticação ──────────────────────────────────────────────

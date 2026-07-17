@@ -337,7 +337,7 @@
 
     <div class="lot-card-top">
       <div class="lot-card-number-row">
-        <span class="lot-card-number">#{{ lot.number|stringformat:"03d" }}</span>
+        <span class="lot-card-number">{{ lot.code }}</span>
         {% if lot.status == 'open' %}
           <span class="lot-badge lot-badge--open">{% trans "Aberto" %}</span>
         {% else %}

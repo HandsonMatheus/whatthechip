@@ -1600,3 +1600,108 @@ msgstr "Next"
 #, python-format
 msgid "página %(a)s de %(b)s"
 msgstr "page %(a)s of %(b)s"
+
+#. F11.2 Vendas — 2026-07-16
+#: vendas/ estoque/templates/estoque/base_estoque.html
+msgid "Vendas"
+msgstr "Sales"
+
+msgid "Fechar um lote gera a cotação (valores vivos); confirmar congela ¥, taxa e US$ — a ordem confirmada nunca muda (ajustes entram como acerto)."
+msgstr "Closing a lot creates the quotation (live values); confirming freezes ¥, rate and US$ — a confirmed order never changes (adjustments come in as a settlement)."
+
+msgid "Ordem"
+msgstr "Order"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Total ¥"
+msgstr "Total ¥"
+
+msgid "Total US$"
+msgstr "Total US$"
+
+msgid "Criada em"
+msgstr "Created at"
+
+msgid "cotação"
+msgstr "quotation"
+
+msgid "confirmada"
+msgstr "confirmed"
+
+msgid "cancelada"
+msgstr "cancelled"
+
+msgid "Nenhuma ordem ainda — feche um lote para gerar a primeira cotação."
+msgstr "No orders yet — close a lot to create the first quotation."
+
+msgid "cotação — valores vivos"
+msgstr "quotation — live values"
+
+msgid "confirmada — valores congelados"
+msgstr "confirmed — values frozen"
+
+msgid "taxa"
+msgstr "rate"
+
+msgid "congelada na confirmação"
+msgstr "frozen at confirmation"
+
+msgid "contrato vigente"
+msgstr "current contract"
+
+#, python-format
+msgid "%(n)s un. sem chave de preço (fora do mercado — ver inventário)"
+msgstr "%(n)s units without a price key (outside the market — see inventory)"
+
+msgid "Categoria"
+msgstr "Category"
+
+msgid "Qtd."
+msgstr "Qty."
+
+msgid "¥ unit."
+msgstr "¥ unit"
+
+msgid "Total"
+msgstr "Total"
+
+#, python-format
+msgid "%(n)s linha(s) sem preço — complete o grid do comprador para poder confirmar"
+msgstr "%(n)s line(s) without a price — complete the buyer's grid before confirming"
+
+msgid "Confirmar congela o ¥, a taxa do contrato e o US$ desta ordem — ela não muda mais (ajustes do resultado entram como acerto). Confirmar?"
+msgstr "Confirming freezes this order's ¥, contract rate and US$ — it no longer changes (result adjustments come in as a settlement). Confirm?"
+
+msgid "Confirmar ordem"
+msgstr "Confirm order"
+
+msgid "Cancelar esta ordem? (auditado; o lote poderá ser reaberto)"
+msgstr "Cancel this order? (audited; the lot can then be reopened)"
+
+msgid "Ordem confirmada — valores congelados (¥ + taxa do contrato + US$)."
+msgstr "Order confirmed — values frozen (¥ + contract rate + US$)."
+
+msgid "Ordem cancelada."
+msgstr "Order cancelled."
+
+msgid "Este lote tem uma Ordem de Venda CONFIRMADA — cancele a ordem no menu Vendas antes de reabrir."
+msgstr "This lot has a CONFIRMED Sales Order — cancel the order in the Sales menu before reopening."
+
+#. F11.2 type-to-confirm do fechamento — 2026-07-16
+#: estoque/templates/estoque/estoque.html estoque/views.py
+msgid "Fechar o lote gera a cotação de venda e trava a bancada. Digite o código completo do lote para confirmar:"
+msgstr "Closing the lot creates the sales quotation and locks the bench. Type the full lot code to confirm:"
+
+#, python-format
+msgid "Código de confirmação não confere — digite o código completo do lote (ex.: %(code)s). O lote NÃO foi fechado."
+msgstr "Confirmation code does not match — type the full lot code (e.g., %(code)s). The lot was NOT closed."
+
+#. F11.2c modal de fechamento + smart buttons + PDF da OV — 2026-07-16
+#: estoque/templates/estoque/estoque.html vendas/
+msgid "Confirmar fechamento"
+msgstr "Confirm closing"
+
+msgid "Ordem de venda"
+msgstr "Sales order"

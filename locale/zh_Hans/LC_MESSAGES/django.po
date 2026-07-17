@@ -1561,3 +1561,108 @@ msgstr "下一页"
 #, python-format
 msgid "página %(a)s de %(b)s"
 msgstr "第 %(a)s 页，共 %(b)s 页"
+
+#. F11.2 Vendas — 2026-07-16
+#: vendas/ estoque/templates/estoque/base_estoque.html
+msgid "Vendas"
+msgstr "销售"
+
+msgid "Fechar um lote gera a cotação (valores vivos); confirmar congela ¥, taxa e US$ — a ordem confirmada nunca muda (ajustes entram como acerto)."
+msgstr "关闭批次会生成报价单（实时价格）；确认后冻结 ¥、汇率和 US$——已确认的订单不再变动（调整以结算单形式录入）。"
+
+msgid "Ordem"
+msgstr "订单"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Total ¥"
+msgstr "总计 ¥"
+
+msgid "Total US$"
+msgstr "总计 US$"
+
+msgid "Criada em"
+msgstr "创建于"
+
+msgid "cotação"
+msgstr "报价单"
+
+msgid "confirmada"
+msgstr "已确认"
+
+msgid "cancelada"
+msgstr "已取消"
+
+msgid "Nenhuma ordem ainda — feche um lote para gerar a primeira cotação."
+msgstr "还没有订单——关闭一个批次即可生成第一张报价单。"
+
+msgid "cotação — valores vivos"
+msgstr "报价单——实时价格"
+
+msgid "confirmada — valores congelados"
+msgstr "已确认——价格已冻结"
+
+msgid "taxa"
+msgstr "汇率"
+
+msgid "congelada na confirmação"
+msgstr "确认时冻结"
+
+msgid "contrato vigente"
+msgstr "现行合同"
+
+#, python-format
+msgid "%(n)s un. sem chave de preço (fora do mercado — ver inventário)"
+msgstr "%(n)s 件没有价格键（不在收购范围——见库存）"
+
+msgid "Categoria"
+msgstr "类别"
+
+msgid "Qtd."
+msgstr "数量"
+
+msgid "¥ unit."
+msgstr "¥ 单价"
+
+msgid "Total"
+msgstr "总计"
+
+#, python-format
+msgid "%(n)s linha(s) sem preço — complete o grid do comprador para poder confirmar"
+msgstr "%(n)s 行没有价格——请先完成买家的报价表再确认"
+
+msgid "Confirmar congela o ¥, a taxa do contrato e o US$ desta ordem — ela não muda mais (ajustes do resultado entram como acerto). Confirmar?"
+msgstr "确认后将冻结这张订单的 ¥、合同汇率和 US$——不再变动（结果的调整以结算单形式录入）。确认吗？"
+
+msgid "Confirmar ordem"
+msgstr "确认订单"
+
+msgid "Cancelar esta ordem? (auditado; o lote poderá ser reaberto)"
+msgstr "取消这张订单？（有审计记录；之后批次可以重新打开）"
+
+msgid "Ordem confirmada — valores congelados (¥ + taxa do contrato + US$)."
+msgstr "订单已确认——价格已冻结（¥ + 合同汇率 + US$）。"
+
+msgid "Ordem cancelada."
+msgstr "订单已取消。"
+
+msgid "Este lote tem uma Ordem de Venda CONFIRMADA — cancele a ordem no menu Vendas antes de reabrir."
+msgstr "该批次有一张已确认的销售订单——请先在销售菜单取消订单再重新打开。"
+
+#. F11.2 type-to-confirm do fechamento — 2026-07-16
+#: estoque/templates/estoque/estoque.html estoque/views.py
+msgid "Fechar o lote gera a cotação de venda e trava a bancada. Digite o código completo do lote para confirmar:"
+msgstr "关闭批次将生成销售报价单并锁定工作台。请输入完整的批次编号以确认："
+
+#, python-format
+msgid "Código de confirmação não confere — digite o código completo do lote (ex.: %(code)s). O lote NÃO foi fechado."
+msgstr "确认编号不一致——请输入完整的批次编号（例如 %(code)s）。批次未被关闭。"
+
+#. F11.2c modal de fechamento + smart buttons + PDF da OV — 2026-07-16
+#: estoque/templates/estoque/estoque.html vendas/
+msgid "Confirmar fechamento"
+msgstr "确认关闭"
+
+msgid "Ordem de venda"
+msgstr "销售订单"

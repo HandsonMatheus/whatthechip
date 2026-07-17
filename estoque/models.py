@@ -42,6 +42,17 @@ class Lot(models.Model):
     description = models.CharField(max_length=255, blank=True, default='', verbose_name='Descrição')
     status      = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_OPEN, verbose_name='Status')
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name='Aberto em')
+
+    @property
+    def code(self) -> str:
+        """``LOT/NUM/MM/YY`` — nomenclatura UNIVERSAL canônica (dono,
+        2026-07-16; PRECIFICACAO §12.19): inglês, NUNCA traduz; NUM = a mesma
+        sequência perpétua por empresa de sempre ("lote 41" continua sendo o
+        41); MM/YY do mês de ABERTURA, informativo. É também o texto que o
+        gerente digita para confirmar o fechamento (type-to-confirm)."""
+        d = self.created_at
+        return (f'LOT/{self.number:03d}/{d:%m}/{d:%y}' if d
+                else f'LOT/{self.number:03d}')
     closed_at   = models.DateTimeField(null=True, blank=True, verbose_name='Fechado em')
 
     # T3: o caminho PADRÃO já vem filtrado pela empresa corrente (fail-closed —

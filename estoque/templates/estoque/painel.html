@@ -76,7 +76,7 @@
     <div class="pn-hero">
       <div class="pn-hero-info">
         <div class="pn-hero-label">{% trans "Lote aberto — triagem em andamento" %}</div>
-        <div class="pn-hero-lot">#{{ lot.number|stringformat:"03d" }}</div>
+        <div class="pn-hero-lot">{{ lot.code }}</div>
         {% if lot.description %}<div class="pn-hero-desc">{{ lot.description }}</div>{% endif %}
         <div class="pn-hero-meta">
           <span>{% blocktrans trimmed with n=lot.chip_count %}<b>{{ n }}</b> tipos{% endblocktrans %}</span>
@@ -94,7 +94,7 @@
     <div class="pn-more">
       <span>{% trans "Outros lotes abertos:" %}</span>
       {% for lot in open_lots|slice:"1:" %}
-        <a href="{% url 'estoque:lot_detail' lot.pk %}">#{{ lot.number|stringformat:"03d" }}</a>
+        <a href="{% url 'estoque:lot_detail' lot.pk %}">{{ lot.code }}</a>
       {% endfor %}
     </div>
     {% endif %}

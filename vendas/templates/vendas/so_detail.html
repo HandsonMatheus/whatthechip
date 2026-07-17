@@ -1,0 +1,117 @@
+{% extends "estoque/base_estoque.html" %}
+{% load i18n l10n %}
+{% block title %}{{ so.code }} — WhatTheChip?{% endblock %}
+{% block nav_vendas %} wtc-header__nav--active{% endblock %}
+{% block main %}
+{% comment %}
+  Detalhe da Cotação/OV (F11.2). Moeda dual ¥ + US$ SEMPRE visível (decisão do
+  dono: "deve ser possível visualizar em ambas") — draft deriva pela taxa
+  ATUAL do contrato; confirmada usa a taxa CONGELADA. {% localize off %} em
+  dinheiro (ponto decimal em qualquer idioma). O nome do comprador NÃO aparece
+  (sigilo de plataforma — F11.3 formaliza o codinome).
+{% endcomment %}
+<div style="max-width:1100px;margin:0 auto;padding:28px 24px;">
+
+  {% if messages %}{% for m in messages %}
+  <div style="padding:12px 16px;margin-bottom:14px;border-left:4px solid {% if m.tags == 'error' %}#da1e28{% else %}#198038{% endif %};background:#fff;font-size:14px;">{{ m }}</div>
+  {% endfor %}{% endif %}
+
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:4px;">
+    <h1 style="font-weight:300;font-size:28px;margin:0;font-family:'IBM Plex Mono',monospace;">{{ so.code }}</h1>
+    {% if so.status == 'draft' %}<span style="font-size:12px;font-weight:700;background:#fff1c2;color:#8a6d00;padding:3px 10px;border-radius:10px;">{% trans "cotação — valores vivos" %}</span>
+    {% elif so.status == 'confirmed' %}<span style="font-size:12px;font-weight:700;background:#defbe6;color:#0e6027;padding:3px 10px;border-radius:10px;">{% trans "confirmada — valores congelados" %}</span>
+    {% else %}<span style="font-size:12px;font-weight:700;background:#e8e8e8;color:#525252;padding:3px 10px;border-radius:10px;">{% trans "cancelada" %}</span>{% endif %}
+    <span style="flex:1;"></span>
+    <a href="{% url 'vendas:so_pdf' so.pk %}"
+       style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;background:#fff;border:1px solid #8d8d8d;color:#161616;font-size:13px;font-weight:600;text-decoration:none;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#161616" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 11l5 4 5-4M5 19h14"/></svg>
+      {% trans "Baixar PDF" %}
+    </a>
+    {# Smart button (padrão Odoo, F11.2c): o lote desta venda. #}
+    <a href="{% url 'estoque:lot_detail' so.lot.pk %}"
+       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;text-decoration:none;line-height:1.2;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Lote" %}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ so.lot.code }}</span>
+    </a>
+  </div>
+
+  <p style="font-size:13px;color:#6f6f6f;margin:0 0 18px;">
+    <a href="{% url 'estoque:lot_detail' so.lot.pk %}" style="color:#0f62fe;font-weight:600;">← {{ so.lot.code }}</a>
+    · {% trans "taxa" %} {% localize off %}1 ¥ = US$ {{ fx_rate }}{% endlocalize %}
+    {% if so.status == 'confirmed' %}({% trans "congelada na confirmação" %}){% else %}({% trans "contrato vigente" %}){% endif %}
+    {% if so.unkeyed_units %} · ⚠ {% blocktrans trimmed with n=so.unkeyed_units %}{{ n }} un. sem chave de preço (fora do mercado — ver inventário){% endblocktrans %}{% endif %}
+  </p>
+
+  <div style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px;">
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:2px solid #e0e0e0;">
+          <th style="text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Categoria" %}</th>
+          <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Qtd." %}</th>
+          <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "¥ unit." %}</th>
+          <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Total ¥" %}</th>
+          <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Total US$" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% localize off %}
+        {% if so.status == 'draft' %}
+          {% for row in rows %}
+          <tr style="border-bottom:1px solid #eee;{% if not row.priced %}background:#fffbea;{% endif %}">
+            <td style="padding:9px 14px;font-weight:600;">{{ row.line.label }}</td>
+            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{{ row.line.quantity }}</td>
+            {% if row.priced %}
+            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">¥ {{ row.unit_rmb }}</td>
+            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">¥ {{ row.total_rmb }}</td>
+            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">US$ {{ row.total_usd }}</td>
+            {% else %}
+            <td colspan="3" style="padding:9px 14px;text-align:right;font-size:12px;color:#8a6d00;">{{ row.reason }}</td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        {% else %}
+          {% for line in lines %}
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:9px 14px;font-weight:600;">{{ line.label }}</td>
+            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{{ line.quantity }}</td>
+            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if line.unit_rmb is not None %}¥ {{ line.unit_rmb }}{% else %}—{% endif %}</td>
+            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if line.total_rmb is not None %}¥ {{ line.total_rmb }}{% else %}—{% endif %}</td>
+            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if line.total_usd is not None %}US$ {{ line.total_usd }}{% else %}—{% endif %}</td>
+          </tr>
+          {% endfor %}
+        {% endif %}
+        {% endlocalize %}
+      </tbody>
+    </table>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+    <div style="background:#fff;border:1px solid #e0e0e0;padding:14px 22px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Total" %}</div>
+      {% localize off %}
+      {% if so.status == 'draft' %}
+      <div style="font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;">¥ {{ live_total_rmb }} <span style="font-size:15px;color:#525252;">· US$ {{ live_total_usd }}</span></div>
+      {% if pending %}<div style="font-size:12px;color:#8a6d00;">⚠ {% blocktrans trimmed with n=pending|length %}{{ n }} linha(s) sem preço — complete o grid do comprador para poder confirmar{% endblocktrans %}</div>{% endif %}
+      {% else %}
+      <div style="font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;">{% if so.total_rmb is not None %}¥ {{ so.total_rmb }} <span style="font-size:15px;color:#525252;">· US$ {{ so.total_usd }}</span>{% else %}—{% endif %}</div>
+      {% endif %}
+      {% endlocalize %}
+    </div>
+
+    {% if so.status == 'draft' %}
+    <form method="post" action="{% url 'vendas:so_confirm' so.pk %}" style="margin:0;"
+          onsubmit="return confirm('{% trans "Confirmar congela o ¥, a taxa do contrato e o US$ desta ordem — ela não muda mais (ajustes do resultado entram como acerto). Confirmar?" %}');">
+      {% csrf_token %}
+      <button type="submit" style="height:44px;padding:0 22px;background:#0f62fe;color:#fff;border:0;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Confirmar ordem" %}</button>
+    </form>
+    {% endif %}
+    {% if so.status != 'cancelled' %}
+    <form method="post" action="{% url 'vendas:so_cancel' so.pk %}" style="margin:0;"
+          onsubmit="return confirm('{% trans "Cancelar esta ordem? (auditado; o lote poderá ser reaberto)" %}');">
+      {% csrf_token %}
+      <button type="submit" style="height:44px;padding:0 18px;background:#fff;color:#da1e28;border:1px solid #da1e28;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Cancelar" %}</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

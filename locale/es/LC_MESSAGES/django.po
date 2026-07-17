@@ -1614,3 +1614,108 @@ msgstr "Siguiente"
 #, python-format
 msgid "página %(a)s de %(b)s"
 msgstr "página %(a)s de %(b)s"
+
+#. F11.2 Vendas — 2026-07-16
+#: vendas/ estoque/templates/estoque/base_estoque.html
+msgid "Vendas"
+msgstr "Ventas"
+
+msgid "Fechar um lote gera a cotação (valores vivos); confirmar congela ¥, taxa e US$ — a ordem confirmada nunca muda (ajustes entram como acerto)."
+msgstr "Cerrar un lote genera la cotización (valores vivos); confirmar congela ¥, tasa y US$ — la orden confirmada nunca cambia (los ajustes entran como liquidación)."
+
+msgid "Ordem"
+msgstr "Orden"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Total ¥"
+msgstr "Total ¥"
+
+msgid "Total US$"
+msgstr "Total US$"
+
+msgid "Criada em"
+msgstr "Creada el"
+
+msgid "cotação"
+msgstr "cotización"
+
+msgid "confirmada"
+msgstr "confirmada"
+
+msgid "cancelada"
+msgstr "cancelada"
+
+msgid "Nenhuma ordem ainda — feche um lote para gerar a primeira cotação."
+msgstr "Ninguna orden todavía — cierra un lote para generar la primera cotización."
+
+msgid "cotação — valores vivos"
+msgstr "cotización — valores vivos"
+
+msgid "confirmada — valores congelados"
+msgstr "confirmada — valores congelados"
+
+msgid "taxa"
+msgstr "tasa"
+
+msgid "congelada na confirmação"
+msgstr "congelada en la confirmación"
+
+msgid "contrato vigente"
+msgstr "contrato vigente"
+
+#, python-format
+msgid "%(n)s un. sem chave de preço (fora do mercado — ver inventário)"
+msgstr "%(n)s un. sin clave de precio (fuera del mercado — ver inventario)"
+
+msgid "Categoria"
+msgstr "Categoría"
+
+msgid "Qtd."
+msgstr "Cant."
+
+msgid "¥ unit."
+msgstr "¥ unit."
+
+msgid "Total"
+msgstr "Total"
+
+#, python-format
+msgid "%(n)s linha(s) sem preço — complete o grid do comprador para poder confirmar"
+msgstr "%(n)s línea(s) sin precio — completa el grid del comprador para poder confirmar"
+
+msgid "Confirmar congela o ¥, a taxa do contrato e o US$ desta ordem — ela não muda mais (ajustes do resultado entram como acerto). Confirmar?"
+msgstr "Confirmar congela el ¥, la tasa del contrato y el US$ de esta orden — ya no cambia más (los ajustes del resultado entran como liquidación). ¿Confirmar?"
+
+msgid "Confirmar ordem"
+msgstr "Confirmar orden"
+
+msgid "Cancelar esta ordem? (auditado; o lote poderá ser reaberto)"
+msgstr "¿Cancelar esta orden? (auditado; el lote podrá reabrirse)"
+
+msgid "Ordem confirmada — valores congelados (¥ + taxa do contrato + US$)."
+msgstr "Orden confirmada — valores congelados (¥ + tasa del contrato + US$)."
+
+msgid "Ordem cancelada."
+msgstr "Orden cancelada."
+
+msgid "Este lote tem uma Ordem de Venda CONFIRMADA — cancele a ordem no menu Vendas antes de reabrir."
+msgstr "Este lote tiene una Orden de Venta CONFIRMADA — cancela la orden en el menú Ventas antes de reabrir."
+
+#. F11.2 type-to-confirm do fechamento — 2026-07-16
+#: estoque/templates/estoque/estoque.html estoque/views.py
+msgid "Fechar o lote gera a cotação de venda e trava a bancada. Digite o código completo do lote para confirmar:"
+msgstr "Cerrar el lote genera la cotización de venta y bloquea el banco de trabajo. Escribe el código completo del lote para confirmar:"
+
+#, python-format
+msgid "Código de confirmação não confere — digite o código completo do lote (ex.: %(code)s). O lote NÃO foi fechado."
+msgstr "El código de confirmación no coincide — escribe el código completo del lote (ej.: %(code)s). El lote NO fue cerrado."
+
+#. F11.2c modal de fechamento + smart buttons + PDF da OV — 2026-07-16
+#: estoque/templates/estoque/estoque.html vendas/
+msgid "Confirmar fechamento"
+msgstr "Confirmar cierre"
+
+msgid "Ordem de venda"
+msgstr "Orden de venta"

@@ -845,7 +845,8 @@ class BenchAndLotPricingTests(TestCase):
         with patch('chips.engine.classify', return_value=self._fake_result()):
             # gerente fecha (é o papel dele) → snapshot nasce no servidor
             self.client.force_login(self.users['manager'])
-            self.client.post(f'/estoque/lote/{lot.pk}/fechar/')
+            self.client.post(f'/estoque/lote/{lot.pk}/fechar/',
+                             {'confirm_code': lot.code})
             lp = LotPricing.all_companies.get(lot=lot)
             # Congelado SEGUE em USD (F10): 10 × US$ 5.60 (¥40 @0.14) — e as
             # linhas de auditoria também (nunca ¥ no snapshot).
