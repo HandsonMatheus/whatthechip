@@ -27,6 +27,14 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#161616" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 11l5 4 5-4M5 19h14"/></svg>
       {% trans "Baixar PDF" %}
     </a>
+    {% if invoice %}
+    {# Smart button FATURA (F11.4 — o "fatura relacionada" do Odoo). #}
+    <a href="{% url 'vendas:invoice_detail' invoice.pk %}"
+       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;text-decoration:none;line-height:1.2;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Fatura" %}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ invoice.code }}</span>
+    </a>
+    {% endif %}
     {# Smart button (padrão Odoo, F11.2c): o lote desta venda. #}
     <a href="{% url 'estoque:lot_detail' so.lot.pk %}"
        style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;text-decoration:none;line-height:1.2;">
@@ -104,6 +112,12 @@
       {% csrf_token %}
       <button type="submit" style="height:44px;padding:0 22px;background:#0f62fe;color:#fff;border:0;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Confirmar ordem" %}</button>
     </form>
+    {% endif %}
+    {% if can_settle %}
+    <a href="{% url 'vendas:settlement_new' so.pk %}"
+       style="height:44px;display:inline-flex;align-items:center;padding:0 22px;background:#198038;color:#fff;font-size:14px;font-weight:600;text-decoration:none;">
+      {% trans "Registrar resultado e faturar" %}
+    </a>
     {% endif %}
     {% if so.status != 'cancelled' %}
     <form method="post" action="{% url 'vendas:so_cancel' so.pk %}" style="margin:0;"

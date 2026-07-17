@@ -14,7 +14,8 @@ from django.views.decorators.http import require_POST
 
 from tenancy.access import role_required
 
-from .models import STATUS_DRAFT, SalesOrder
+from .models import (INV_OPEN, Invoice, STATUS_CONFIRMED, STATUS_DRAFT,
+                     SalesOrder)
 from . import services
 
 
@@ -29,7 +30,11 @@ def so_list(request):
 def so_detail(request, pk):
     so = get_object_or_404(
         SalesOrder.objects.select_related('lot', 'buyer'), pk=pk)
-    ctx = {'so': so}
+    # F11.4: smart button FATURA (ativa) + CTA de acerto quando confirmada.
+    invoice = (Invoice.all_companies.filter(order=so)
+               .exclude(status='cancelled').first())
+    ctx = {'so': so, 'invoice': invoice,
+           'can_settle': so.status == STATUS_CONFIRMED and invoice is None}
     if so.status == STATUS_DRAFT:
         pairs = services.live_quotes(so)
         total_rmb, total_usd, pending = services.draft_totals(pairs)
@@ -115,3 +120,92 @@ def so_cancel(request, pk):
     services.cancel(so, request.user)
     messages.success(request, _('Ordem cancelada.'))
     return redirect('vendas:so_detail', pk=so.pk)
+
+
+# ═══ F11.4 — Acerto → Fatura → Pagamentos ═══════════════════════════════════
+
+@role_required('admin')
+def settlement_new(request, pk):
+    """Tela do RESULTADO do comprador: linhas da OV confirmada com campos de
+    rejeitados/novo ¥; salvar cria Acerto + Fatura num ato (OV intacta)."""
+    from decimal import Decimal, InvalidOperation
+    so = get_object_or_404(
+        SalesOrder.objects.select_related('lot', 'buyer'), pk=pk)
+    lines = list(so.lines.all())
+    if request.method == 'POST':
+        adjustments = {}
+        try:
+            for line in lines:
+                rej_raw = (request.POST.get(f'rej_{line.pk}') or '').strip()
+                novo_raw = (request.POST.get(f'price_{line.pk}') or '').strip()
+                rej = int(rej_raw) if rej_raw else 0
+                novo = (Decimal(novo_raw.replace(',', '.'))
+                        if novo_raw else None)
+                if rej or novo is not None:
+                    adjustments[line.pk] = (rej, novo)
+        except (ValueError, InvalidOperation):
+            messages.error(request, _('Valores ilegíveis — use números.'))
+            return redirect('vendas:settlement_new', pk=so.pk)
+        try:
+            _st, inv = services.settle_and_invoice(
+                so, adjustments, request.user,
+                notes=(request.POST.get('notes') or '').strip())
+        except ValidationError as e:
+            messages.error(request, ' '.join(e.messages))
+            return redirect('vendas:settlement_new', pk=so.pk)
+        messages.success(request, _('Resultado registrado — fatura emitida '
+                                    'com o valor final.'))
+        return redirect('vendas:invoice_detail', pk=inv.pk)
+    return render(request, 'vendas/settlement_form.html',
+                  {'so': so, 'lines': lines})
+
+
+@role_required('admin')
+def invoice_detail(request, pk):
+    inv = get_object_or_404(
+        Invoice.objects.select_related('order__lot', 'settlement'), pk=pk)
+    adj = (list(inv.settlement.lines.select_related('order_line'))
+           if inv.settlement_id else [])
+    return render(request, 'vendas/invoice_detail.html', {
+        'inv': inv, 'adjustments': adj,
+        'payments': inv.payments.select_related('created_by'),
+    })
+
+
+@role_required('admin')
+@require_POST
+def invoice_pay(request, pk):
+    from datetime import date
+    from decimal import Decimal, InvalidOperation
+    inv = get_object_or_404(Invoice.objects, pk=pk)
+    try:
+        amount = Decimal((request.POST.get('amount') or '')
+                         .strip().replace(',', '.'))
+        paid_at = (date.fromisoformat(request.POST.get('paid_at'))
+                   if request.POST.get('paid_at') else date.today())
+    except (InvalidOperation, ValueError):
+        messages.error(request, _('Valores ilegíveis — use números.'))
+        return redirect('vendas:invoice_detail', pk=inv.pk)
+    try:
+        services.register_payment(
+            inv, amount, paid_at, request.user,
+            reference=(request.POST.get('reference') or '').strip())
+    except ValidationError as e:
+        messages.error(request, ' '.join(e.messages))
+    else:
+        messages.success(request, _('Pagamento registrado.'))
+    return redirect('vendas:invoice_detail', pk=inv.pk)
+
+
+@role_required('admin')
+@require_POST
+def invoice_cancel(request, pk):
+    inv = get_object_or_404(Invoice.objects, pk=pk)
+    try:
+        services.cancel_invoice(inv, request.user)
+    except ValidationError as e:
+        messages.error(request, ' '.join(e.messages))
+    else:
+        messages.success(request, _('Fatura cancelada — registre um novo '
+                                    'acerto para reemitir.'))
+    return redirect('vendas:so_detail', pk=inv.order_id)

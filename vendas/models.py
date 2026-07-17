@@ -263,3 +263,224 @@ class SalesOrderLine(models.Model):
                 'company_id', flat=True).get(pk=self.order_id)
         self.full_clean(validate_unique=False, validate_constraints=False)
         return super().save(*args, **kwargs)
+
+
+# ═══ F11.4 — Acerto → Fatura → Pagamentos (padrão Odoo, dono 2026-07-16) ═══
+
+@pghistory.track()
+class Settlement(models.Model):
+    """ACERTO — o RESULTADO do comprador sobre uma OV CONFIRMADA (mortos por
+    categoria, repreciação). **A OV nunca é editada** (padrão Odoo: fatura
+    pelo aceito + nota de crédito): o acerto registra os deltas e a FATURA
+    nasce com o valor final. Histórico de acertos por comprador = dado de
+    negociação (quanto de morto ele reporta por categoria)."""
+
+    order = models.ForeignKey(SalesOrder, on_delete=models.PROTECT,
+                              related_name='settlements', verbose_name='Ordem')
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    notes = models.TextField(blank=True, default='', verbose_name='Notas')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Registrado em')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.SET_NULL, null=True,
+                                   blank=True, related_name='+',
+                                   verbose_name='Registrado por')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Acerto (resultado do comprador)'
+        verbose_name_plural = 'Acertos (resultado do comprador)'
+        ordering = ['-created_at']
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
+
+    def __str__(self):
+        return f'Acerto da {self.order}'
+
+    def save(self, *args, **kwargs):
+        if self.order_id and not self.company_id:
+            self.company_id = SalesOrder.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.order_id)
+        self.full_clean(validate_unique=False, validate_constraints=False)
+        return super().save(*args, **kwargs)
+
+
+@pghistory.track()
+class SettlementLine(models.Model):
+    """Ajuste de UMA categoria da OV: quantidade rejeitada (mortos) e/ou novo
+    ¥ unitário (repreciação). Linha final = (qty − rejeitados) × (novo ¥ ou o
+    ¥ congelado da OV)."""
+
+    settlement = models.ForeignKey(Settlement, on_delete=models.CASCADE,
+                                   related_name='lines', verbose_name='Acerto')
+    order_line = models.ForeignKey(SalesOrderLine, on_delete=models.PROTECT,
+                                   related_name='adjustments',
+                                   verbose_name='Linha da ordem')
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    qty_rejected = models.PositiveIntegerField(default=0,
+                                               verbose_name='Un. rejeitadas')
+    new_unit_rmb = models.DecimalField(
+        max_digits=8, decimal_places=2, null=True, blank=True,
+        verbose_name='Novo ¥ unitário',
+        help_text='Vazio = mantém o ¥ congelado da OV.')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Linha do acerto'
+        verbose_name_plural = 'Linhas do acerto'
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
+        constraints = [
+            models.UniqueConstraint(fields=['settlement', 'order_line'],
+                                    name='unique_settlement_order_line'),
+        ]
+
+    def __str__(self):
+        return f'{self.order_line} · −{self.qty_rejected}'
+
+    def save(self, *args, **kwargs):
+        if self.settlement_id and not self.company_id:
+            self.company_id = Settlement.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.settlement_id)
+        self.full_clean(validate_unique=False, validate_constraints=False)
+        return super().save(*args, **kwargs)
+
+
+INV_OPEN, INV_PAID, INV_CANCELLED = 'open', 'paid', 'cancelled'
+INV_STATUS_CHOICES = [(INV_OPEN, 'Em aberto'), (INV_PAID, 'Paga'),
+                      (INV_CANCELLED, 'Cancelada')]
+
+
+@pghistory.track()
+class Invoice(models.Model):
+    """FATURA (``INV/NUM/MM/YY``) — o valor FINAL a receber da OV após o
+    acerto; congelado na emissão (¥ + taxa da OV + US$). Pagamentos em US$
+    abatem; saldo zero → paga. Cancelável só SEM pagamentos (re-acerto emite
+    outra)."""
+
+    order = models.ForeignKey(SalesOrder, on_delete=models.PROTECT,
+                              related_name='invoices', verbose_name='Ordem')
+    settlement = models.ForeignKey(Settlement, on_delete=models.PROTECT,
+                                   null=True, blank=True, related_name='invoices',
+                                   verbose_name='Acerto')
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    number = models.PositiveIntegerField(verbose_name='Número')
+    status = models.CharField(max_length=10, choices=INV_STATUS_CHOICES,
+                              default=INV_OPEN, verbose_name='Status')
+    fx_usd_rate = models.DecimalField(max_digits=8, decimal_places=4,
+                                      verbose_name='Taxa ¥→US$ (congelada)')
+    total_rmb = models.DecimalField(max_digits=12, decimal_places=2,
+                                    verbose_name='Total ¥')
+    total_usd = models.DecimalField(max_digits=12, decimal_places=2,
+                                    verbose_name='Total US$')
+    issued_at = models.DateTimeField(auto_now_add=True, verbose_name='Emitida em')
+    issued_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                  on_delete=models.SET_NULL, null=True,
+                                  blank=True, related_name='+',
+                                  verbose_name='Emitida por')
+    cancelled_at = models.DateTimeField(null=True, blank=True,
+                                        verbose_name='Cancelada em')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Fatura'
+        verbose_name_plural = 'Faturas'
+        ordering = ['-issued_at']
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
+        constraints = [
+            models.UniqueConstraint(fields=['company', 'number'],
+                                    name='unique_invoice_company_number'),
+            # Uma fatura ATIVA por OV (re-acerto = cancelar e emitir outra).
+            models.UniqueConstraint(fields=['order'],
+                                    condition=~Q(status='cancelled'),
+                                    name='one_active_invoice_per_order'),
+            models.CheckConstraint(
+                name='invoice_status_vocab',
+                condition=Q(status__in=['open', 'paid', 'cancelled'])),
+        ]
+
+    def __str__(self):
+        return self.code
+
+    @property
+    def code(self) -> str:
+        """``INV/NUM/MM/YY`` — canônico universal (INV confirmado pelo dono;
+        BILL no Odoo é conta de FORNECEDOR). NUM perpétuo por empresa."""
+        d = self.issued_at
+        return (f'INV/{self.number:03d}/{d:%m}/{d:%y}' if d
+                else f'INV/{self.number:03d}')
+
+    @property
+    def paid_usd(self) -> Decimal:
+        return (self.payments.aggregate(t=models.Sum('amount_usd'))['t']
+                or Decimal('0.00'))
+
+    @property
+    def balance_usd(self) -> Decimal:
+        return self.total_usd - self.paid_usd
+
+    def save(self, *args, **kwargs):
+        if self.order_id and not self.company_id:
+            self.company_id = SalesOrder.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.order_id)
+        self.full_clean(validate_unique=False, validate_constraints=False)
+        return super().save(*args, **kwargs)
+
+
+@pghistory.track()
+class Payment(models.Model):
+    """Pagamento recebido do comprador — SEMPRE em US$ (decisão do dono,
+    2026-07-16). Parciais permitidos; saldo zero vira fatura PAGA."""
+
+    invoice = models.ForeignKey(Invoice, on_delete=models.PROTECT,
+                                related_name='payments', verbose_name='Fatura')
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    amount_usd = models.DecimalField(max_digits=12, decimal_places=2,
+                                     verbose_name='Valor US$')
+    paid_at = models.DateField(verbose_name='Data do pagamento')
+    reference = models.CharField(max_length=120, blank=True, default='',
+                                 verbose_name='Referência',
+                                 help_text='Wire/recibo/observação curta.')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Registrado em')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.SET_NULL, null=True,
+                                   blank=True, related_name='+',
+                                   verbose_name='Registrado por')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Pagamento'
+        verbose_name_plural = 'Pagamentos'
+        ordering = ['-paid_at', '-created_at']
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
+        constraints = [
+            models.CheckConstraint(name='payment_positive',
+                                   condition=Q(amount_usd__gt=0)),
+        ]
+
+    def __str__(self):
+        return f'{self.invoice_id} · US$ {self.amount_usd} · {self.paid_at}'
+
+    def save(self, *args, **kwargs):
+        if self.invoice_id and not self.company_id:
+            self.company_id = Invoice.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.invoice_id)
+        self.full_clean(validate_unique=False, validate_constraints=False)
+        return super().save(*args, **kwargs)

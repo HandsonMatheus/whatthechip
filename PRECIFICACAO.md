@@ -984,6 +984,14 @@ valores é o PDF da OV — nenhum expõe o comprador.
   `--mark-migrated` liga a trava sem tocar valores (ambiente que já está em
   ¥ — ex.: prod no deploy da F11, e o local do dono pós-revert); `--revert`
   desliga e manda conferir. Testado em MigratePricesToRmbTests.
+  **Resolução (2026-07-16):** o revert.json da rodada extra não foi
+  encontrado no local → reversão pela MATEMÁTICA: `--rate-used 6.6667`
+  (=×0.15) desfez exatamente uma divisão; dry-run provou (todos os ¥
+  redondos: 33.33→5, 266.67→40…; 13 não-redondos = USD pós-launch no
+  ¥-equivalente, mesma família dos 41 do prod). Commit ok, trava religada.
+  ⚠ Lição operacional: comandos pro dono AGORA vão UM POR VEZ e sem
+  placeholders em bloco (blocos colados inteiros executaram placeholder
+  `/CAMINHO/COMPLETO` e um `--mark-migrated` indevido).
   **⚠ INCIDENTE 3 (2026-07-16): `{# #}` multiline vazando como TEXTO** nas
   páginas (3ª ocorrência do erro da casa — 7 pontos: header/messages do
   shell, smart button, form/modal de fechamento, fx do parceiro, moeda do
@@ -1019,8 +1027,23 @@ valores é o PDF da OV — nenhum expõe o comprador.
   explicam); dry-run/commit, idempotente; lote fechado SEM congelado é
   pulado com aviso. Rodar por empresa após o resnapshot (as linhas dependem
   das chaves F11.1).
-- F11.4 acerto + fatura + pagamentos (+ F11.2b PDF da OV… entregue no
-  F11.2c; resta o PDF do romaneio do estoque, fora do F11).
+- **F11.4 ✅ ENTREGUE 2026-07-16 (local; suíte 375/375, i18n verde — 27
+  msgids):** **Acerto → Fatura → Pagamentos** (migração vendas/0003 +
+  0004-RLS). `Settlement`/`SettlementLine` = o RESULTADO do comprador
+  (mortos por categoria + repreço ¥); **a OV confirmada NUNCA muda** (padrão
+  Odoo fatura-pelo-aceito): `settle_and_invoice()` cria acerto + **Fatura
+  `INV/NUM/MM/YY`** num ato atômico — total final = Σ linhas ajustadas
+  ((qty−rejeitadas) × (novo ¥ ou o congelado)), USD somado POR LINHA (F10),
+  taxa herdada da OV. UMA fatura ativa por OV; re-acerto = cancelar fatura
+  (SÓ sem pagamentos) e reemitir (número novo). `Payment` sempre **US$**
+  (decisão do dono), parciais, acima-do-saldo barrado; saldo zero → PAGA.
+  Telas: CTA "Registrar resultado e faturar" na OV confirmada → form de
+  ajustes → fatura com Total/Recebido/Saldo, ajustes do acerto, pagamentos e
+  form de registro; **smart buttons** OV↔Fatura (o "fatura relacionada" do
+  Odoo) e Fatura→Lote. Admin-only. Histórico de acerto por comprador fica
+  registrado (dado de negociação). Testes:
+  `SettlementInvoicePaymentTests` (fluxo + OV intacta + travas) e telas.
+  **F11 COMPLETA** (resta só o romaneio do estoque, fora do escopo).
 
 ### 12.18 F10 — RMB CANÔNICO (**LIVE** — virada executada 2026-07-16: deploy `2b75916` + `migrate_prices_to_rmb --buyer wu-quan --rate-used 0.15 --commit` = 256 registros → ¥; 41 valores ¥ não-redondos aceitos como estão — digitados em USD pós-launch, ÷0.15 é a leitura fiel da época; arredondar seria mudar preço do parceiro sem consentimento (ajuste, se quiser, via moderação/admin). `guard_catalog` ✓ 7729. Reversão: `migrate_prices_to_rmb_revert.json` guardado FORA do git. Suíte 354/354 + `check_translations` verde.)
 

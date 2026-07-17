@@ -153,3 +153,99 @@ def cancel(so, user):
     so.cancelled_by = user
     so.save()
     return so
+
+
+# ═══ F11.4 — Acerto → Fatura → Pagamentos ═══════════════════════════════════
+
+def settle_and_invoice(so, adjustments, user, notes=''):
+    """RESULTADO do comprador → Acerto + Fatura, num ato atômico (padrão
+    Odoo: a OV confirmada fica INTACTA; a fatura carrega o valor final).
+
+    ``adjustments`` = {order_line_pk: (qty_rejected, new_unit_rmb|None)} —
+    linhas fora do dict ficam sem ajuste (mantêm qty e ¥ da OV). Sem NENHUM
+    ajuste = fatura do valor cheio da OV (acerto vazio, registrado mesmo
+    assim — auditoria de que o resultado foi "sem diferenças").
+
+    Regras: só OV CONFIRMADA; só UMA fatura ativa por OV (re-acerto exige
+    cancelar a fatura anterior — sem pagamentos); rejeitados ≤ quantidade.
+    """
+    from .models import (Invoice, SEQ_INVOICE, STATUS_CONFIRMED, Settlement,
+                         SettlementLine)
+    if so.status != STATUS_CONFIRMED:
+        raise ValidationError('Acerto/fatura é de OV CONFIRMADA.')
+    if Invoice.all_companies.filter(order=so).exclude(
+            status='cancelled').exists():
+        raise ValidationError('Esta OV já tem fatura ativa — cancele-a '
+                              '(sem pagamentos) para re-acertar.')
+
+    lines = list(so.lines.all())
+    by_pk = {l.pk: l for l in lines}
+    for pk, (rej, _novo) in adjustments.items():
+        line = by_pk.get(pk)
+        if line is None:
+            raise ValidationError(f'Linha {pk} não é desta OV.')
+        if rej > line.quantity:
+            raise ValidationError(
+                f'{line.label}: rejeitadas ({rej}) > quantidade '
+                f'({line.quantity}).')
+
+    with transaction.atomic():
+        st = Settlement(order=so, created_by=user, notes=notes)
+        st.save()
+        total_rmb = Decimal('0.00')
+        total_usd = Decimal('0.00')
+        rate = so.fx_usd_rate
+        for line in lines:
+            rej, novo = adjustments.get(line.pk, (0, None))
+            if rej or novo is not None:
+                SettlementLine.all_companies.create(
+                    settlement=st, order_line=line,
+                    qty_rejected=rej, new_unit_rmb=novo)
+            qty = line.quantity - rej
+            unit = novo if novo is not None else line.unit_rmb
+            unit_usd = (unit * rate).quantize(_CENT, ROUND_HALF_UP)
+            total_rmb += unit * qty
+            total_usd += unit_usd * qty          # soma por linha (F10, fatura)
+        inv = Invoice(
+            order=so, settlement=st,
+            number=DocSequence.next_number(so.company, SEQ_INVOICE),
+            fx_usd_rate=rate,
+            total_rmb=total_rmb.quantize(_CENT, ROUND_HALF_UP),
+            total_usd=total_usd.quantize(_CENT, ROUND_HALF_UP),
+            issued_by=user)
+        inv.save()
+    return st, inv
+
+
+def register_payment(invoice, amount_usd, paid_at, user, reference=''):
+    """Pagamento em US$ contra a fatura; saldo zero (ou negativo? nunca —
+    barra acima do saldo) marca PAGA."""
+    from .models import INV_OPEN, INV_PAID, Payment
+    if invoice.status != INV_OPEN:
+        raise ValidationError('Só fatura EM ABERTO recebe pagamento.')
+    if amount_usd <= 0:
+        raise ValidationError('Valor do pagamento deve ser positivo.')
+    if amount_usd > invoice.balance_usd:
+        raise ValidationError(
+            f'Pagamento (US$ {amount_usd}) maior que o saldo '
+            f'(US$ {invoice.balance_usd}).')
+    with transaction.atomic():
+        p = Payment(invoice=invoice, amount_usd=amount_usd,
+                    paid_at=paid_at, reference=reference, created_by=user)
+        p.save()
+        if invoice.balance_usd <= 0:
+            invoice.status = INV_PAID
+            invoice.save()
+    return p
+
+
+def cancel_invoice(invoice, user):
+    """Cancela fatura SEM pagamentos (pré-requisito do re-acerto)."""
+    from .models import INV_CANCELLED
+    if invoice.payments.exists():
+        raise ValidationError('Fatura com pagamento não se cancela — '
+                              'trate a diferença num novo acerto/registro.')
+    invoice.status = INV_CANCELLED
+    invoice.cancelled_at = timezone.now()
+    invoice.save()
+    return invoice

@@ -241,6 +241,108 @@ class LotCloseReopenTests(TestCase):
         self.assertEqual(self.lot.status, Lot.STATUS_OPEN)
 
 
+class SettlementInvoicePaymentTests(TestCase):
+    """F11.4: resultado do comprador (mortos+repreço) → fatura com valor
+    final (OV INTACTA — padrão Odoo) → pagamentos US$ parciais → paga."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.brand = _setup('vd-set')
+        User = get_user_model()
+        cls.adm = User.objects.create_user('vd_set_adm', password='x')
+        Membership.objects.create(user=cls.adm, company=cls.company,
+                                  role=Membership.ROLE_ADMIN)
+
+    def setUp(self):
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        lot = Lot.open_for_company(self.company, self.adm, 'set')
+        _entries(lot, self.brand)                 # 5 eMMC16 + 4 eMCP64 + SoC
+        self.so = services.create_draft_for_lot(lot, self.adm)
+        services.confirm(self.so, self.adm)       # ¥435 · US$ 60.90
+
+    def test_acerto_fatura_pagamentos(self):
+        from datetime import date
+        from vendas.models import Invoice
+        emcp = self.so.lines.get(kind='emcp')     # 4 × ¥90
+        emmc = self.so.lines.get(kind='emmc')     # 5 × ¥15
+        # Resultado: 1 eMCP morto + eMMC repreciado ¥15→¥12.
+        st, inv = services.settle_and_invoice(
+            self.so, {emcp.pk: (1, None), emmc.pk: (0, Decimal('12'))},
+            self.adm, notes='resultado jul')
+        # Fatura: 3×¥90 + 5×¥12 = ¥330 → US$ 46.20 @0.14 (soma por linha).
+        self.assertEqual(inv.total_rmb, Decimal('330.00'))
+        self.assertEqual(inv.total_usd, Decimal('46.20'))
+        self.assertEqual(inv.fx_usd_rate, Decimal('0.14'))
+        self.assertTrue(inv.code.startswith('INV/001/'))
+        # OV INTACTA (padrão Odoo): nada mudou na ordem.
+        self.so.refresh_from_db()
+        self.assertEqual(self.so.total_rmb, Decimal('435.00'))
+        emcp.refresh_from_db()
+        self.assertEqual((emcp.quantity, emcp.unit_rmb), (4, Decimal('90')))
+        # 2ª fatura na mesma OV: barrada.
+        with self.assertRaises(ValidationError):
+            services.settle_and_invoice(self.so, {}, self.adm)
+        # Rejeitar mais que a quantidade: barrado (nova OV seria preciso —
+        # aqui só valida a mensagem via fatura ativa cancelada antes):
+        services.cancel_invoice(inv, self.adm)
+        with self.assertRaises(ValidationError) as cm:
+            services.settle_and_invoice(self.so, {emcp.pk: (99, None)},
+                                        self.adm)
+        self.assertIn('rejeitadas', str(cm.exception).lower())
+        # Re-acerto pós-cancelamento: nova fatura, número novo.
+        _st2, inv2 = services.settle_and_invoice(self.so, {}, self.adm)
+        self.assertGreater(inv2.number, inv.number)
+        self.assertEqual(inv2.total_usd, Decimal('60.90'))   # sem ajustes
+        # Pagamentos parciais em US$ → saldo → paga.
+        services.register_payment(inv2, Decimal('40.00'),
+                                  date(2026, 7, 20), self.adm, 'wire 1')
+        self.assertEqual(inv2.balance_usd, Decimal('20.90'))
+        self.assertEqual(inv2.status, 'open')
+        with self.assertRaises(ValidationError):              # acima do saldo
+            services.register_payment(inv2, Decimal('21.00'),
+                                      date(2026, 7, 21), self.adm)
+        services.register_payment(inv2, Decimal('20.90'),
+                                  date(2026, 7, 22), self.adm, 'wire 2')
+        inv2.refresh_from_db()
+        self.assertEqual(inv2.status, 'paid')
+        self.assertEqual(inv2.balance_usd, Decimal('0.00'))
+        # Fatura com pagamento não cancela.
+        with self.assertRaises(ValidationError):
+            services.cancel_invoice(inv2, self.adm)
+
+    def test_telas_do_fluxo(self):
+        from vendas.models import Invoice
+        self.client.force_login(self.adm)
+        # CTA na OV confirmada sem fatura:
+        resp = self.client.get(reverse('vendas:so_detail', args=[self.so.pk]))
+        self.assertContains(resp, 'Registrar resultado e faturar')
+        # Form do acerto → POST cria fatura e redireciona pra ela:
+        emcp = self.so.lines.get(kind='emcp')
+        resp = self.client.post(
+            reverse('vendas:settlement_new', args=[self.so.pk]),
+            {f'rej_{emcp.pk}': '1'})
+        inv = Invoice.all_companies.get(order=self.so)
+        self.assertEqual(resp['Location'],
+                         reverse('vendas:invoice_detail', args=[inv.pk]))
+        # Detalhe da fatura: totais + smart buttons OV/lote + form pagamento.
+        detail = self.client.get(reverse('vendas:invoice_detail',
+                                         args=[inv.pk]))
+        self.assertContains(detail, inv.code)
+        self.assertContains(detail, self.so.code)
+        self.assertContains(detail, 'Registrar pagamento')
+        # Smart button FATURA na OV:
+        so_page = self.client.get(reverse('vendas:so_detail',
+                                          args=[self.so.pk]))
+        self.assertContains(so_page, inv.code)
+        # Pagamento via POST:
+        self.client.post(reverse('vendas:invoice_pay', args=[inv.pk]),
+                         {'amount': str(inv.total_usd),
+                          'paid_at': '2026-07-20', 'reference': 'wire'})
+        inv.refresh_from_db()
+        self.assertEqual(inv.status, 'paid')
+
+
 class BackfillSalesOrdersTests(TestCase):
     """F11.3: lote FECHADO sem OV ganha OV retroativa CONFIRMADA a partir do
     LotPricing congelado — total USD fiel, ¥ = USD ÷ taxa da época (0.15),

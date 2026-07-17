@@ -1,0 +1,62 @@
+{% extends "estoque/base_estoque.html" %}
+{% load i18n l10n %}
+{% block title %}{% trans "Acerto" %} — {{ so.code }}{% endblock %}
+{% block nav_vendas %} wtc-header__nav--active{% endblock %}
+{% block main %}
+{% comment %}
+  F11.4 — RESULTADO do comprador (padrão Odoo): a OV confirmada NÃO muda;
+  aqui se registram os deltas (mortos por categoria, repreço) e a FATURA
+  nasce com o valor final. Campos vazios = linha sem ajuste.
+{% endcomment %}
+<div style="max-width:1100px;margin:0 auto;padding:28px 24px;">
+  <h1 style="font-weight:300;font-size:28px;margin:0 0 4px;">{% trans "Resultado do comprador" %} · <span style="font-family:'IBM Plex Mono',monospace;">{{ so.code }}</span></h1>
+  <p style="font-size:13px;color:#6f6f6f;margin:0 0 18px;">
+    {% trans "Informe o que o comprador reportou: unidades rejeitadas (mortos) e/ou novo ¥ unitário por categoria. Campos vazios mantêm o combinado. A ordem não muda — a fatura sai com o valor final." %}
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    <div style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:2px solid #e0e0e0;">
+            <th style="text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Categoria" %}</th>
+            <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Qtd." %}</th>
+            <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "¥ unit." %}</th>
+            <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Un. rejeitadas" %}</th>
+            <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Novo ¥ unitário" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% localize off %}
+          {% for line in lines %}
+          <tr style="border-bottom:1px solid #eee;">
+            <td style="padding:9px 14px;font-weight:600;">{{ line.label }}</td>
+            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{{ line.quantity }}</td>
+            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">¥ {{ line.unit_rmb }}</td>
+            <td style="padding:9px 14px;text-align:right;">
+              <input type="number" name="rej_{{ line.pk }}" min="0" max="{{ line.quantity }}" placeholder="0"
+                     style="width:90px;height:36px;padding:0 10px;border:1px solid #8d8d8d;font-family:'IBM Plex Mono',monospace;text-align:right;">
+            </td>
+            <td style="padding:9px 14px;text-align:right;">
+              <input type="number" name="price_{{ line.pk }}" min="0" step="0.01" placeholder="{{ line.unit_rmb }}"
+                     style="width:110px;height:36px;padding:0 10px;border:1px solid #8d8d8d;font-family:'IBM Plex Mono',monospace;text-align:right;">
+            </td>
+          </tr>
+          {% endfor %}
+          {% endlocalize %}
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+      <input type="text" name="notes" maxlength="500" placeholder="{% trans 'Observações (opcional)' %}"
+             style="flex:1;min-width:280px;height:44px;padding:0 12px;border:1px solid #8d8d8d;font-size:14px;">
+      <button type="submit" style="height:44px;padding:0 22px;background:#0f62fe;color:#fff;border:0;font-size:14px;font-weight:600;cursor:pointer;"
+              onclick="return confirm('{% trans "Registrar o resultado e emitir a fatura com o valor final?" %}');">
+        {% trans "Registrar resultado e faturar" %}
+      </button>
+      <a href="{% url 'vendas:so_detail' so.pk %}" style="height:44px;display:inline-flex;align-items:center;padding:0 18px;background:#fff;border:1px solid #8d8d8d;color:#161616;font-size:14px;font-weight:600;text-decoration:none;">{% trans "Voltar" %}</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
