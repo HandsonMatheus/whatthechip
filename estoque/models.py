@@ -190,6 +190,27 @@ class InventoryEntry(CompanyBoundByLot):
     # CatalogVersion.current(), a entrada está DEFASADA (resnapshot_lote/on-read revaluam).
     snapshot_catalog_version = models.IntegerField(default=0, verbose_name='Versão do snapshot')
 
+    # ── F11.1 (2026-07-16): CHAVE DE PREÇO materializada no LANÇAMENTO ──────
+    # O classify já roda na bancada; gravamos aqui a chave (kind/gen/tier —
+    # vocabulário do pricing, estável: quem muda é o PREÇO, não a chave) e a
+    # valoração/export resolvem contra a tabela Price VIVA por join — o
+    # classify sai do caminho de LEITURA (incidente lote 41/42). Chave vazia
+    # COM price_key_reason = chip sem chave (NO_KEY, motivo gravado); tudo
+    # vazio = entrada LEGADA (valoração cai no fallback classify; cura
+    # definitiva = resnapshot_lote, que faz o backfill). A defasagem segue a
+    # régua do snapshot_catalog_version, como o resto do snapshot.
+    price_kind = models.CharField(max_length=8, blank=True, default='',
+                                  verbose_name='Chave de preço: tipo')
+    price_gen = models.CharField(max_length=12, blank=True, default='',
+                                 verbose_name='Chave de preço: geração')
+    price_tier_value = models.DecimalField(max_digits=6, decimal_places=1,
+                                           null=True, blank=True,
+                                           verbose_name='Chave de preço: faixa')
+    price_tier_unit = models.CharField(max_length=2, blank=True, default='',
+                                       verbose_name='Chave de preço: unidade')
+    price_key_reason = models.CharField(max_length=200, blank=True, default='',
+                                        verbose_name='Sem chave (motivo)')
+
     quantity     = models.PositiveIntegerField(default=1, verbose_name='Quantidade')
     added_at     = models.DateTimeField(auto_now_add=True, verbose_name='Adicionado em')
     last_updated = models.DateTimeField(auto_now=True, verbose_name='Atualizado em')

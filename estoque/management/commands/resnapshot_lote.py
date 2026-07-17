@@ -32,15 +32,23 @@ from core.safe_command import SafeWriteCommand
 _REVERT_DIR = "var/reverts"
 _REVERT = os.path.join(_REVERT_DIR, "resnapshot_lote_revert.json")
 
-# Campos que o resnapshot reescreve (espelho do _snapshot, sem confidence, + carimbo + data).
+# Campos que o resnapshot reescreve (espelho do _snapshot, sem confidence, + a
+# CHAVE DE PREÇO da F11.1 + carimbo + data).
 _FIELDS = [
     "chip_type", "brand", "capacity", "emcp_ram", "emcp_nand", "is_emcp",
-    "interface", "classification_source", "snapshot_catalog_version", "last_updated",
+    "interface", "classification_source",
+    "price_kind", "price_gen", "price_tier_value", "price_tier_unit",
+    "price_key_reason",
+    "snapshot_catalog_version", "last_updated",
 ]
-# Campos vindos de _snapshot (sem confidence) — usados para detectar mudança.
+# Campos comparados p/ detectar mudança (snapshot + chave de preço — F11.1:
+# é AQUI que as entradas legadas/defasadas ganham/renovam a chave; a valoração
+# lê a chave gravada e só classifica no fallback legado).
 _SNAP_KEYS = [
     "chip_type", "brand", "capacity", "emcp_ram", "emcp_nand", "is_emcp",
     "interface", "classification_source",
+    "price_kind", "price_gen", "price_tier_value", "price_tier_unit",
+    "price_key_reason",
 ]
 CONFIRMED_CONF = {"confirmed", "manual"}
 
@@ -71,7 +79,7 @@ class Command(SafeWriteCommand):
         from chips.engine import classify
         from chips.models import CatalogVersion
         from estoque.models import InventoryEntry, Lot
-        from estoque.views import _snapshot
+        from estoque.views import _price_key_fields, _snapshot
 
         cur = CatalogVersion.current()
         qs = InventoryEntry.objects.all()
@@ -83,15 +91,23 @@ class Command(SafeWriteCommand):
                 raise CommandError(f"Lote #{opts['lot']} não existe.")
             qs = qs.filter(lot=lot)
 
-        stale = list(qs.filter(snapshot_catalog_version__lt=cur).order_by("part_number"))
+        from django.db.models import Q
+        stale = list(qs.filter(
+            Q(snapshot_catalog_version__lt=cur) |
+            # F11.1: entrada LEGADA sem chave de preço (pré-F11.1, aprovação
+            # de pendência, restore) — backfill MESMO com o carimbo em dia.
+            Q(price_kind='', price_key_reason='', price_tier_value__isnull=True)
+        ).order_by("part_number"))
         self.stdout.write(
-            f"\nEdição atual do catálogo: {cur}  ·  entradas defasadas: {len(stale)}")
+            f"\nEdição atual do catálogo: {cur}  ·  entradas a revisar "
+            f"(defasadas ou sem chave de preço): {len(stale)}")
 
         changed = []  # (entry, before_dict)
         for e in stale:
             r = classify(e.part_number) or {}
             snap = _snapshot(r)
             snap.pop("confidence", None)
+            snap.update(_price_key_fields(r))   # F11.1: chave junto do snapshot
             # Não apagar o rótulo de confirmados SEM família casada (ex.: Micron JZ###):
             # deriva 'banco de dados' da confiança, igual ao refresh_lote._live_source.
             if not snap["classification_source"] and (

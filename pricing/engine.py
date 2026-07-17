@@ -386,6 +386,24 @@ class BuyerPricingContext:
         return _quote_from_candidates(rows, chain, self.buyer, self.cfg,
                                       kind, gen, tier_value, tier_unit)
 
+    def price_from_key(self, kind, gen, tier_value, tier_unit,
+                       brand_name='', no_key_reason=''):
+        """Quote a partir da CHAVE MATERIALIZADA na entrada do estoque
+        (F11.1) — ZERO classify, zero query: a chave foi derivada no
+        lançamento (a bancada já classifica) e aqui só resolve contra a
+        tabela viva. Chave ausente com motivo = NO_KEY gravado."""
+        if not kind or tier_value is None:
+            return _no_key(kind or '',
+                           no_key_reason or 'chave de preço ausente')
+        chain = self._chain(brand_name or '')
+        if not chain:
+            return _quote_no_list(self.buyer, kind, gen, tier_value, tier_unit)
+        rows = [r for r in (self._rows.get((pl.pk, kind, gen, tier_value,
+                                            tier_unit)) for pl, _via in chain)
+                if r is not None]
+        return _quote_from_candidates(rows, chain, self.buyer, self.cfg,
+                                      kind, gen, tier_value, tier_unit)
+
 
 def quotes_for_admin(request, result):
     """[(Buyer, PriceQuote)] para o card — SÓ papel ADMIN da empresa
@@ -474,9 +492,17 @@ def price_lot_multi(lot, buyers) -> list:
     from chips.engine import classify   # lazy: evita acoplamento na importação
 
     entries = list(lot.entries.all())
-    results = {}                        # pn → result (1 classify por PN distinto)
+    # F11.1: entrada com CHAVE materializada (ou NO_KEY com motivo) precifica
+    # SEM classify — a chave nasceu no lançamento. O classify só roda para
+    # entradas LEGADAS (tudo vazio: pré-F11.1, aprovação de pendência,
+    # restores) — 1× por PN distinto; a cura definitiva é o resnapshot_lote.
+    def _legacy(e):
+        return (not e.price_kind and not e.price_key_reason
+                and e.price_tier_value is None)
+
+    results = {}                        # pn → result (1 classify por PN legado)
     for e in entries:
-        if e.part_number not in results:
+        if _legacy(e) and e.part_number not in results:
             results[e.part_number] = classify(e.part_number)
 
     out = []
@@ -488,7 +514,14 @@ def price_lot_multi(lot, buyers) -> list:
             PricingConfig.SCENARIO_HIGH: Decimal('0.00'),
         })
         for entry in entries:
-            q = ctx.price(results[entry.part_number])
+            if entry.part_number in results:
+                q = ctx.price(results[entry.part_number])
+            else:
+                q = ctx.price_from_key(
+                    entry.price_kind, entry.price_gen,
+                    entry.price_tier_value, entry.price_tier_unit,
+                    brand_name=entry.brand,
+                    no_key_reason=entry.price_key_reason)
             qty = entry.quantity or 0
             report.lines.append(LotQuoteLine(entry.part_number, qty, q))
             report.total_lines += 1

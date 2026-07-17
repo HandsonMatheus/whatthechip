@@ -926,8 +926,18 @@ valores é o PDF da OV — nenhum expõe o comprador.
   seguem cobrindo o lote INTEIRO. 3 msgids novos traduzidos es/en/zh.
   Testes: `test_multi_comprador_classifica_cada_pn_uma_vez` (10 classifies
   p/ 10 PNs × 2 buyers) + `LotPaginationTests`.
-- F11.1 chave materializada + valoração por join + resnapshot/backfill →
-  F11.2 app vendas (modelos, fluxo, telas, PDF da OV) → F11.3 retroativos +
+- **F11.1 ✅ ENTREGUE 2026-07-16 (local; suíte 362/362):** InventoryEntry
+  ganhou a CHAVE DE PREÇO (`price_kind/gen/tier_value/tier_unit` +
+  `price_key_reason` p/ NO_KEY — migração **0015**, aditiva); o intake grava
+  via `_price_key_fields(server_result)` (o classify já rodou — custo zero);
+  `BuyerPricingContext.price_from_key()` + `price_lot_multi` leem a chave
+  gravada — **classify SAIU do caminho de leitura** (fica só no fallback de
+  entrada LEGADA: pré-F11.1, aprovação de pendência, restores);
+  `resnapshot_lote` faz o backfill/refresh da chave (filtro pega defasada
+  **OU sem chave** — mesmo com carimbo em dia). ⚠ Pós-migrate, rodar
+  `resnapshot_lote --all --commit` uma vez (backfill do estoque atual);
+  freshness da chave = mesma régua do snapshot (§ resnapshot).
+- F11.2 app vendas (modelos, fluxo, telas, PDF da OV) → F11.3 retroativos +
   rótulo neutro do comprador (card/export) → F11.4 acerto + fatura +
   pagamentos.
 

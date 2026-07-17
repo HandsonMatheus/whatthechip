@@ -155,6 +155,23 @@ def _snapshot(result: dict) -> dict:
     }
 
 
+def _price_key_fields(result: dict) -> dict:
+    """F11.1: deriva a CHAVE DE PREÇO do classify e devolve os campos do
+    InventoryEntry — gravada no LANÇAMENTO para a valoração resolver contra a
+    tabela Price viva sem reclassificar o lote na leitura. Sem chave (NO_KEY)
+    grava o MOTIVO (aparece no sem-preço do export/valoração)."""
+    from pricing.engine import derive_price_key   # lazy (padrão da F8)
+    err, key = derive_price_key(result or {})
+    if err is not None:
+        return {'price_kind': err.kind or '', 'price_gen': '',
+                'price_tier_value': None, 'price_tier_unit': '',
+                'price_key_reason': err.reason[:200]}
+    kind, gen, tier_value, tier_unit = key
+    return {'price_kind': kind, 'price_gen': gen,
+            'price_tier_value': tier_value, 'price_tier_unit': tier_unit,
+            'price_key_reason': ''}
+
+
 def _nearest_in_lot(lot, pn: str) -> str:
     """PN já existente no lote mais parecido — provável original de um typo."""
     pool = list(lot.entries.values_list("part_number", flat=True))
@@ -878,8 +895,10 @@ def add_chip(request, lot_pk):
     snap = _snapshot(server_result)
     snap.pop('confidence', None)
     # Passo 2: carimba a edição do catálogo do snapshot de intake (detecção de defasagem).
+    # F11.1: a chave de preço nasce junto (o classify já rodou — custo zero).
     from chips.models import CatalogVersion
-    defaults = {**snap, 'quantity': qty, 'snapshot_catalog_version': CatalogVersion.current()}
+    defaults = {**snap, **_price_key_fields(server_result), 'quantity': qty,
+                'snapshot_catalog_version': CatalogVersion.current()}
 
     entry, created = InventoryEntry.objects.get_or_create(
         lot=lot, part_number=pn, defaults=defaults,

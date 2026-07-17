@@ -607,6 +607,43 @@ class PriceLotTests(TestCase):
         self.assertEqual(report.priced_lines, 30)
         self.assertEqual(report.totals['mid'], Decimal('168.00'))  # 30 × 5.60
 
+    def test_chave_materializada_dispensa_o_classify(self):
+        """F11.1: entrada com a CHAVE gravada no lançamento precifica SEM
+        classify (o classify saiu do caminho de leitura); NO_KEY gravado
+        reporta o motivo do lançamento; classify fica só pro fallback legado."""
+        from unittest.mock import patch
+        from estoque.models import Lot, InventoryEntry
+
+        company = Company.objects.create(name='KeyCo', slug='key-co')
+        buyer = Buyer.all_companies.create(company=company, name='Wu K',
+                                           slug='wu-key')
+        samsung = Brand.objects.create(name='Samsung K', code='SAMKY')
+        lista = PriceList.all_companies.create(buyer=buyer, brand=samsung)
+        Price.all_companies.create(
+            price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
+            tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('40'), price_max=Decimal('40'))   # ¥40 → US$ 5.60
+        User = get_user_model()
+        u = User.objects.create_user('key_u')
+        with company_scope(company):
+            lot = Lot.open_for_company(company, u, 'lote K')
+            InventoryEntry.objects.create(          # COM chave (intake F11.1)
+                lot=lot, part_number='KEYED64', quantity=2, brand='Samsung K',
+                price_kind='emmc', price_gen='',
+                price_tier_value=Decimal('64'), price_tier_unit='GB')
+            InventoryEntry.objects.create(          # NO_KEY gravado no intake
+                lot=lot, part_number='SEMCHAVE', quantity=1,
+                price_key_reason='tipo fora do mercado de preço')
+            from pricing import engine as peng
+            with patch('chips.engine.classify') as mock_cls:
+                (_b, rep), = peng.price_lot_multi(lot, [buyer])
+        mock_cls.assert_not_called()                # ZERO classify na leitura
+        self.assertEqual(rep.priced_units, 2)
+        self.assertEqual(rep.totals['mid'], Decimal('11.20'))   # 2 × US$ 5.60
+        (pn, _qty, status, reason), = rep.unpriced
+        self.assertEqual((pn, status), ('SEMCHAVE', 'NO_KEY'))
+        self.assertIn('fora do mercado', reason)
+
     def test_multi_comprador_classifica_cada_pn_uma_vez(self):
         """F11.0 (2026-07-16): a valoração rodava price_lot POR comprador e o
         classify dominava o tempo (~300 PNs × 3 buyers ≈ 28s no lote 41).

@@ -287,6 +287,32 @@ class AddChipHardBlockTests(TestCase):
         self.assertGreaterEqual(entry.snapshot_catalog_version, 1)
 
     @patch('estoque.views.classify')
+    def test_intake_grava_chave_de_preco(self, mock_classify):
+        """F11.1: o lançamento materializa a CHAVE DE PREÇO (kind/gen/tier) —
+        a valoração resolve por join na tabela viva, sem reclassificar."""
+        from decimal import Decimal
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB', cap_gb=16.0,
+            classification_source='banco de dados', confidence='confirmed')
+        self.client.post(self.url, {'pn': 'TESTKEY16', 'qty': '1', 'has_cap': 'true'})
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTKEY16')
+        self.assertEqual((e.price_kind, e.price_gen, e.price_tier_unit),
+                         ('emmc', '', 'GB'))
+        self.assertEqual(e.price_tier_value, Decimal('16'))
+        self.assertEqual(e.price_key_reason, '')
+
+    @patch('estoque.views.classify')
+    def test_intake_sem_chave_grava_o_motivo(self, mock_classify):
+        """F11.1: chip fora do mercado de preço entra no estoque com o MOTIVO
+        do NO_KEY gravado (aparece no sem-preço da valoração/export)."""
+        mock_classify.return_value = _result(
+            chip_type='SoC', capacity='8GB', confidence='manual')
+        self.client.post(self.url, {'pn': 'TESTKEY00', 'qty': '1', 'has_cap': 'true'})
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTKEY00')
+        self.assertIsNone(e.price_tier_value)
+        self.assertIn('fora do mercado', e.price_key_reason)
+
+    @patch('estoque.views.classify')
     def test_nao_confirmado_vai_para_pending(self, mock_classify):
         mock_classify.return_value = _result(
             chip_type='eMMC', capacity='16GB',
@@ -481,6 +507,35 @@ class ResnapshotLoteTests(TestCase):
         call_command('resnapshot_lote', '--lot', '77', '--commit')
         e.refresh_from_db()
         self.assertEqual(e.classification_source, 'banco de dados')  # NÃO apagou
+
+    @patch('chips.engine.classify')
+    def test_backfill_da_chave_de_preco(self, mock_classify):
+        """F11.1: entrada LEGADA (sem chave — pré-F11.1, aprovação de
+        pendência, restore) ganha a chave no resnapshot (backfill)."""
+        from decimal import Decimal
+        from chips.models import CatalogVersion
+        from django.core.management import call_command
+        v0 = CatalogVersion.current()
+        e = InventoryEntry.objects.create(
+            lot=self.lot, part_number='LEGADO16', chip_type='eMMC',
+            capacity='16GB', snapshot_catalog_version=v0)
+        self.assertEqual(e.price_kind, '')                  # nasceu legada
+        CatalogVersion.bump()
+        cur = CatalogVersion.current()
+        # Legada com o carimbo EM DIA: o backfill tem que pegar mesmo assim
+        # (o filtro do resnapshot inclui "sem chave", não só "defasada").
+        e2 = InventoryEntry.objects.create(
+            lot=self.lot, part_number='LEGADOCUR', chip_type='eMMC',
+            capacity='16GB', snapshot_catalog_version=cur)
+        mock_classify.return_value = {
+            'chip_type': 'eMMC', 'capacity': '16GB', 'cap_gb': 16.0,
+            'classification_source': 'banco de dados'}
+        call_command('resnapshot_lote', '--lot', '77', '--commit')
+        e.refresh_from_db()
+        e2.refresh_from_db()
+        self.assertEqual((e.price_kind, e.price_tier_unit), ('emmc', 'GB'))
+        self.assertEqual(e.price_tier_value, Decimal('16'))
+        self.assertEqual(e2.price_kind, 'emmc')             # backfill sem bump
 
     @patch('chips.engine.classify')
     def test_dry_run_explicito_nao_grava(self, mock_classify):
