@@ -101,6 +101,17 @@
       </svg>
     </button>
 
+    {% if user.is_authenticated %}
+    <!-- Sessão iniciada: nome do usuário → lançadeira /painel/ (que manda
+         parceiro pro /partner/ e membro pro painel — destino único). -->
+    <a class="topnav__login" href="{% url 'painel' %}" aria-label="{% trans 'Painel' %}"
+       title="{% trans 'Painel' %}">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>
+      </svg>
+      <span>{{ user.get_full_name|default:user.username }}</span>
+    </a>
+    {% else %}
     <!-- Entrar -->
     <a class="topnav__login" href="{% url 'login' %}" aria-label="{% trans 'Entrar' %}">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -108,6 +119,7 @@
       </svg>
       <span>{% trans "Entrar" %}</span>
     </a>
+    {% endif %}
   </div>
 </header>
 

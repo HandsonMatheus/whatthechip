@@ -733,25 +733,23 @@ class PriceCardGateTests(TestCase):
         with patch('chips.views.classify', return_value=fake):
             return self.client.get('/chips/decode/', {'pn': 'KLMCG8GEAC'})
 
-    def test_admin_ve_o_preco(self):
-        resp = self._decode(self.users['admin'])
-        # F10.5: exibição DUAL "¥ 40 · US$ 5.60" — o bloco usa {% localize
-        # off %}, então o decimal vem com PONTO em qualquer idioma da UI.
-        self.assertContains(resp, '¥ 40')
-        self.assertContains(resp, 'US$ 5.60')
-        # F11.3 (sigilo): a contraparte é o WhatTheChip — nunca o comprador.
-        self.assertContains(resp, '💰 WhatTheChip')
-        self.assertNotContains(resp, 'Wuquan C')
-        self.assertContains(resp, 'dc2-price-block')
-
-    def test_gerente_operador_e_anonimo_nao_veem(self):
-        for who in (self.users['manager'], self.users['operator'], None):
+    def test_decode_card_nao_carrega_preco_nem_para_admin(self):
+        """REDESENHO do frontend (commit e47f496, sessão paralela): o card
+        HTMX da BUSCA (/chips/decode/) NÃO inclui mais o price_block
+        server-side — o preço da busca vive no JSON do search_api
+        (client-side; gate testado em BenchAndLotPricingTests). Fonte
+        server-side do bloco: só a BANCADA (confirm_card, teste próprio).
+        Aqui: mesmo com linha COTADA no grid, nada de preço nem de comprador
+        vaza no parcial — para NENHUM papel (sigilo F11.3 incluso)."""
+        for who in (self.users['admin'], self.users['manager'],
+                    self.users['operator'], None):
             self.client.logout()
             resp = self._decode(who)
             self.assertEqual(resp.status_code, 200)
             self.assertNotContains(resp, 'US$ 5.60')
             self.assertNotContains(resp, '¥ 40')
             self.assertNotContains(resp, 'dc2-price-block')
+            self.assertNotContains(resp, 'Wuquan C')
 
 
 class BenchAndLotPricingTests(TestCase):
