@@ -242,8 +242,14 @@
               onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();"
               style="height:52px;padding:0 22px;background:#fff;border:1px solid #161616;color:#161616;font-size:15px;font-weight:600;cursor:pointer;">{% trans "Cancelar" %}</button>
 
+      {% comment %} Debug (copiar diagnóstico) — SÓ superuser (dono, 2026-07-20):
+         é ferramenta de suporte da PLATAFORMA; nem admin de empresa vê. O dump
+         lê o data-debug do card (que só existe no card completo — cliente
+         mascarado nunca o recebe). {% endcomment %}
+      {% if user.is_superuser %}
       <button type="button" class="est-debug-btn" title="{% trans 'Copiar diagnóstico' %}"
               style="margin-left:auto;width:52px;height:52px;background:#fff;border:1px solid #8d8d8d;cursor:pointer;font-size:18px;">📋</button>
+      {% endif %}
     </div>
   </form>
 

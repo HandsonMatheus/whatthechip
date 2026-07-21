@@ -41,15 +41,40 @@
   {% comment %} Sugestão de TYPO (só PNs — correção operacional; nenhuma
      spec): mesmo mecanismo do card completo. {% endcomment %}
   {% if gateway.typo.has %}
+  <style>
+    .wtc-chip{transition:background 0.12s;}
+    .wtc-chip:hover{background:#c6c6c6;}
+  </style>
   <div style="margin-top:16px;">
     <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:10px;">{% trans "VOCÊ QUIS DIZER?" %}</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;">
       {% for s in gateway.typo.suggestions %}
-      <a href="#" onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
-         style="display:inline-flex;align-items:center;padding:8px 14px;background:#e8e8e8;text-decoration:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:#0f62fe;">{{ s }}</a>
+      <a class="wtc-chip" href="#"
+         onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
+         style="display:inline-flex;align-items:center;padding:8px 14px;background:#e8e8e8;text-decoration:none;cursor:pointer;">
+        <span class="wtc-fuzzy-pn"
+              data-typed="{{ pn }}"
+              data-suggestion="{{ s }}"
+              style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:#0f62fe;">{{ s }}</span>
+      </a>
       {% endfor %}
     </div>
   </div>
+  {% comment %} Diff visual do typo (verde = o que falta/difere do digitado) —
+     mesmo mecanismo do card completo. Só caracteres do PN: zero spec. {% endcomment %}
+  <script>
+  (function(){
+    document.querySelectorAll('.wtc-fuzzy-pn').forEach(function(el){
+      var t=el.dataset.typed||'', s=el.dataset.suggestion||'', i=0;
+      while(i<t.length&&i<s.length&&s[i]===t[i])i++;
+      var pre=s.slice(0,i), dif=s.slice(i);
+      el.innerHTML=
+        (pre?'<span>'+pre+'</span>':'')+
+        (dif?'<span style="color:#198038;font-weight:700">'+dif+' +</span>':
+             '<span style="color:#6f6f6f;margin-left:3px;">+</span>');
+    });
+  })();
+  </script>
   {% endif %}
 
   {% comment %} Preço: SÓ admin da empresa (price_quotes chega vazio pros

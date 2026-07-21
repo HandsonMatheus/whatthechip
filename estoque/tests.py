@@ -1367,6 +1367,73 @@ class SeedCategoryCodesTests(TestCase):
         self.assertEqual(lbl, 'C-004')
 
 
+class DebugButtonGateTests(TestCase):
+    """O 📋 (copiar diagnóstico) é ferramenta de suporte da PLATAFORMA — só
+    SUPERUSER vê (dono, 2026-07-20): nem admin de empresa, nem operador da
+    plataforma. O card completo continua com data-debug (só plataforma o
+    recebe; cliente mascarado nunca — MaskingTests)."""
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='dbg_op',
+                                                         password='x')
+        self.company = _grant(self.user, role=Membership.ROLE_ADMIN)
+        _scope(self, self.company)
+        self.lot = Lot.objects.create(number=571, operator=self.user,
+                                      company=self.company)
+        self.url = reverse('estoque:preview', args=[self.lot.pk])
+
+    def _body(self, user):
+        self.client.force_login(user)
+        with patch('estoque.views.classify') as mock_classify:
+            mock_classify.return_value = _result(
+                chip_type='eMMC', capacity='16GB',
+                classification_source='banco de dados', confidence='confirmed')
+            return self.client.get(self.url, {'pn': 'KLMAG1JETD'}).content.decode()
+
+    def test_admin_de_empresa_nao_ve_o_botao(self):
+        body = self._body(self.user)
+        self.assertIn('data-debug', body)            # card completo (plataforma)
+        self.assertNotIn('est-debug-btn', body)      # botão 📋 NÃO
+
+    def test_superuser_ve_o_botao(self):
+        su = get_user_model().objects.create_superuser(username='dbg_su',
+                                                       password='x')
+        # Superuser navega o app com Membership REAL (sem bypass nos gates).
+        Membership.objects.create(user=su, company=self.company,
+                                  role=Membership.ROLE_OPERATOR)
+        body = self._body(su)
+        self.assertIn('est-debug-btn', body)
+
+
+class MaskedFuzzyDiffTests(TestCase):
+    """Card MASCARADO mantém o diff visual do typo (verde = o que falta do
+    digitado) — regressão apontada pelo dono 2026-07-20. Só caracteres de PN:
+    nenhuma spec entra na sugestão."""
+
+    def setUp(self):
+        User = get_user_model()
+        self.cli = Company.objects.create(name='Cliente FZ', slug='cli-fz')
+        self.user = User.objects.create_user('fz_cli', password='x')
+        Membership.objects.create(user=self.user, company=self.cli,
+                                  role=Membership.ROLE_OPERATOR)
+        _scope(self, self.cli)
+        self.lot = Lot.all_companies.create(number=572, operator=self.user,
+                                            company=self.cli)
+        self.client.force_login(self.user)
+
+    @patch('estoque.views.classify')
+    def test_diff_verde_presente_no_card_mascarado(self, mock_classify):
+        mock_classify.return_value = _result(
+            fuzzy_suggestions=['KLMAG1JETD'])
+        url = reverse('estoque:preview', args=[self.lot.pk])
+        body = self.client.get(url, {'pn': 'KLMAG1JET0'}).content.decode()
+        self.assertIn('wtc-fuzzy-pn', body)                    # span do diff
+        self.assertIn('data-suggestion="KLMAG1JETD"', body)
+        self.assertIn('#198038', body)                         # verde do diff
+        self.assertNotIn('data-debug', body)                   # máscara intacta
+        self.assertNotIn('est-debug-btn', body)
+
+
 class TemplateMultilineCommentTests(TestCase):
     """PORTÃO (3ª ocorrência do erro, 2026-07-16 — CLAUDE.md §7): `{# #}` do
     Django é SÓ single-line; com quebra de linha o "comentário" VAZA como
