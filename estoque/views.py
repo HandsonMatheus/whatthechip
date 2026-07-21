@@ -173,6 +173,36 @@ def _price_key_fields(result: dict) -> dict:
             'price_key_reason': ''}
 
 
+def _masked_category(result: dict):
+    """F12: (código C-###, é_geral?) do resultado — o rótulo que a empresa-
+    CLIENTE vê no lugar de tipo/specs. Com chave de preço → C-### (cria o
+    código na 1ª aparição da categoria — permanente); sem chave → C-000
+    'Geral' (balde de avaliação)."""
+    from pricing.engine import derive_price_key
+    from pricing.models import CategoryCode
+    err, key = derive_price_key(result or {})
+    if err is not None:
+        return CategoryCode.GENERAL_LABEL, True
+    return CategoryCode.label_for_key(*key), False
+
+
+def _masked_entry_labels(entries):
+    """F12: anexa ``entry.category_label`` (C-###/C-000) numa passada só —
+    lookup em lote (sem N+1) pros renders mascarados da tabela do lote."""
+    from pricing.models import CategoryCode
+    keyed = {(c.kind, c.gen, c.tier_value, c.tier_unit): f'C-{c.code:03d}'
+             for c in CategoryCode.objects.all()}
+    for e in entries:
+        if e.price_tier_value is None:
+            e.category_label = CategoryCode.GENERAL_LABEL
+        else:
+            k = (e.price_kind, e.price_gen, e.price_tier_value,
+                 e.price_tier_unit)
+            # Categoria inédita (entrada anterior ao seed): cria na hora.
+            e.category_label = keyed.get(k) or CategoryCode.label_for_key(*k)
+    return entries
+
+
 def _nearest_in_lot(lot, pn: str) -> str:
     """PN já existente no lote mais parecido — provável original de um typo."""
     pool = list(lot.entries.values_list("part_number", flat=True))
@@ -617,10 +647,17 @@ def lot_detail(request, lot_pk):
     total_qty = sum(e.quantity for e in entries)          # do lote/filtro INTEIRO
     entries, page_obj = _paginate_entries(request, entries)   # F11.0b
 
+    # F12: empresa-CLIENTE vê a tabela mascarada (PN + C-### + qtd).
+    from tenancy.access import is_unmasked
+    masked = not is_unmasked(request)
+    if masked:
+        _masked_entry_labels(entries)
+
     ctx = {
         'lot':       lot,
         'entries':   entries,
         'page_obj':  page_obj,
+        'masked':    masked,
         'total_qty': total_qty,
         'q':         q,
         'tipo':      tipo,
@@ -816,6 +853,18 @@ def preview_chip(request, lot_pk):
     from pricing.engine import quotes_for_admin
     ctx['price_quotes'] = quotes_for_admin(request, result)
 
+    # F12 (máscara de categoria, dono 2026-07-17): empresa-CLIENTE recebe o
+    # card MASCARADO (template whitelist: PN + destino C-###/baldes + qtd +
+    # preço p/ admin — sem specs, sem veredito nominal, sem data-debug).
+    # Plataforma (is_unmasked) segue no card completo.
+    from tenancy.access import is_unmasked
+    if not is_unmasked(request):
+        masked_code, masked_general = _masked_category(result)
+        ctx.update({'masked_code': masked_code,
+                    'masked_general': masked_general})
+        return render(request,
+                      'estoque/partials/confirm_card_masked.html', ctx)
+
     return render(request, 'estoque/partials/confirm_card.html', ctx)
 
 
@@ -947,11 +996,16 @@ def add_chip(request, lot_pk):
     entries   = _entries_for_display(lot)
     total_qty = sum(e.quantity for e in entries)
     entries, page_obj = _paginate_entries(request, entries)   # F11.0b: pág. 1
+    from tenancy.access import is_unmasked
+    masked = not is_unmasked(request)                         # F12
+    if masked:
+        _masked_entry_labels(entries)
 
     response = render(request, 'estoque/partials/table_body.html', {
         'lot':        lot,
         'entries':    entries,
         'page_obj':   page_obj,
+        'masked':     masked,
         'total_qty':  total_qty,
         'just_added': pn,
     })
@@ -982,11 +1036,16 @@ def remove_entry(request, lot_pk, pk):
     entries   = _entries_for_display(lot)
     total_qty = sum(e.quantity for e in entries)
     entries, page_obj = _paginate_entries(request, entries)   # F11.0b: pág. 1
+    from tenancy.access import is_unmasked
+    masked = not is_unmasked(request)                         # F12
+    if masked:
+        _masked_entry_labels(entries)
 
     return render(request, 'estoque/partials/table_body.html', {
         'lot':       lot,
         'entries':   entries,
         'page_obj':  page_obj,
+        'masked':    masked,
         'total_qty': total_qty,
     })
 
@@ -1084,8 +1143,18 @@ def export_xls(request, lot_pk):
     cell_border  = Border(bottom=Side(style='thin', color='E0E0E0'))
     mono_font    = Font(name='Courier New', size=10)
 
-    headers    = ['Part Number', 'Brand', 'Type', 'Capacity', 'Interface', 'Qty.', 'Source', 'Last Added']
-    col_widths = [22, 16, 12, 20, 16, 8, 18, 20]
+    # F12: export mascarado p/ empresa-cliente — specs viram o código C-###.
+    from tenancy.access import is_unmasked
+    masked = not is_unmasked(request)
+    if masked:
+        _masked_entry_labels(entries_list)
+        headers    = ['Part Number', 'Category', 'Qty.', 'Last Added']
+        col_widths = [22, 12, 8, 20]
+    else:
+        headers    = ['Part Number', 'Brand', 'Type', 'Capacity', 'Interface', 'Qty.', 'Source', 'Last Added']
+        col_widths = [22, 16, 12, 20, 16, 8, 18, 20]
+    base_n  = len(headers)
+    qty_col = 3 if masked else 6
     # Colunas de preço por comprador (só chegam aqui para admin). "Unit." é o
     # ponto médio da faixa em USD (cenário default); fechado = congelado (F8).
     for buyer_name, _lines in price_maps:
@@ -1105,16 +1174,22 @@ def export_xls(request, lot_pk):
     buyer_totals = [0.0] * len(price_maps)   # soma da coluna Total por comprador
 
     for row_idx, entry in enumerate(entries_list, start=2):
-        data = [
-            entry.part_number,
-            entry.brand or '—',
-            entry.chip_type or '—',
-            entry.display_capacity,
-            entry.interface or '—',
-            entry.quantity,
-            entry.classification_source or '—',
-            timezone.localtime(entry.last_updated).strftime('%d/%m/%Y %H:%M:%S') if entry.last_updated else '—',
-        ]
+        _quando = (timezone.localtime(entry.last_updated)
+                   .strftime('%d/%m/%Y %H:%M:%S') if entry.last_updated else '—')
+        if masked:
+            data = [entry.part_number, entry.category_label,
+                    entry.quantity, _quando]
+        else:
+            data = [
+                entry.part_number,
+                entry.brand or '—',
+                entry.chip_type or '—',
+                entry.display_capacity,
+                entry.interface or '—',
+                entry.quantity,
+                entry.classification_source or '—',
+                _quando,
+            ]
         for i, (_buyer_name, lines) in enumerate(price_maps):
             unit, line_total = _export_price_cells(
                 lines.get(entry.part_number), entry.quantity)
@@ -1127,17 +1202,17 @@ def export_xls(request, lot_pk):
             cell.alignment = Alignment(vertical='center')
             if col_idx == 1:
                 cell.font = mono_font
-            if col_idx > 8 and isinstance(value, float):
+            if col_idx > base_n and isinstance(value, float):
                 cell.number_format = '#,##0.00'
         ws.row_dimensions[row_idx].height = 20
 
     total_row  = len(entries_list) + 2
     total_font = Font(name='Calibri', bold=True, size=10)
     ws.cell(row=total_row, column=1, value='TOTAL').font = total_font
-    ws.cell(row=total_row, column=6, value=sum(e.quantity for e in entries_list)).font = total_font
+    ws.cell(row=total_row, column=qty_col, value=sum(e.quantity for e in entries_list)).font = total_font
     # Total geral em USD por comprador (na coluna "Total" dele).
     for i, total in enumerate(buyer_totals):
-        cell = ws.cell(row=total_row, column=10 + i * 2, value=round(total, 2))
+        cell = ws.cell(row=total_row, column=base_n + 2 + i * 2, value=round(total, 2))
         cell.font = total_font
         cell.number_format = '#,##0.00'
 

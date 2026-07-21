@@ -10,8 +10,8 @@ mostra auditoria.
 
 from django.contrib import admin
 
-from .models import (Buyer, LotPricing, Price, PriceChangeRequest, PriceList,
-                     PricingConfig)
+from .models import (Buyer, CategoryCode, LotPricing, Price,
+                     PriceChangeRequest, PriceList, PricingConfig)
 
 
 class PlatformScopedAdmin(admin.ModelAdmin):
@@ -150,6 +150,26 @@ class PriceChangeRequestAdmin(PlatformScopedAdmin):
             req.reject(request.user)
             n += 1
         self.message_user(request, f'{n} mudança(s) rejeitada(s).')
+
+
+@admin.register(CategoryCode)
+class CategoryCodeAdmin(admin.ModelAdmin):
+    """F12 — o DICIONÁRIO código↔categoria (só a plataforma enxerga o admin).
+    Código nunca muda/reusa (caixa é física) → tudo read-only; nasce no
+    seed_category_codes ou automaticamente na 1ª aparição da categoria."""
+
+    list_display = ('label', 'kind', 'gen', 'tier_value', 'tier_unit',
+                    'created_at')
+    list_filter = ('kind',)
+    search_fields = ('code', 'gen')
+    readonly_fields = ('kind', 'gen', 'tier_value', 'tier_unit', 'code',
+                       'created_at')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(PricingConfig)

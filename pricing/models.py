@@ -628,6 +628,78 @@ class PriceChangeRequest(models.Model):
         self.save()
 
 
+class CategoryCode(models.Model):
+    """F12 — apelido OPACO e GLOBAL da categoria comercial (a chave de preço).
+
+    O conhecimento "PN → o que é → quanto vale" é o ativo do negócio (dono,
+    2026-07-17): empresa-CLIENTE vê só ``C-###``; os rótulos reais ficam na
+    plataforma. Regras: **um código por chave** (kind/gen/tier — a mesma da
+    F11.1/OV); **global e estável** (caixa é física: nunca renomeia, nunca
+    reutiliza); numeração inicial SORTEADA (`seed_category_codes` — se fosse
+    na ordem da grade, o número viraria quase-ordinal e vazaria estrutura);
+    categoria nova ganha o próximo sequencial automaticamente. ``C-000`` é
+    reservado ao balde "Geral" (aprovado sem chave) — nunca atribuído aqui.
+    """
+
+    kind = models.CharField(max_length=8, verbose_name='Tipo')
+    gen  = models.CharField(max_length=12, blank=True, default='',
+                            verbose_name='Geração')
+    tier_value = models.DecimalField(max_digits=6, decimal_places=1,
+                                     verbose_name='Faixa')
+    tier_unit = models.CharField(max_length=2, verbose_name='Unidade')
+    code = models.PositiveIntegerField(unique=True, verbose_name='Código')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+
+    class Meta:
+        verbose_name = 'Código de categoria (F12)'
+        verbose_name_plural = 'Códigos de categoria (F12)'
+        ordering = ['code']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['kind', 'gen', 'tier_value', 'tier_unit'],
+                name='unique_categorycode_key'),
+            models.CheckConstraint(name='categorycode_positive',
+                                   condition=Q(code__gt=0)),
+        ]
+
+    def __str__(self):
+        return f'{self.label} = {self.kind}/{self.gen or "—"} ' \
+               f'{self.tier_value}{self.tier_unit}'
+
+    @property
+    def label(self) -> str:
+        """``C-###`` — canônico universal, NUNCA traduz."""
+        return f'C-{self.code:03d}'
+
+    GENERAL_LABEL = 'C-000'          # balde "Geral" (aprovado sem chave)
+
+    @classmethod
+    def label_for_key(cls, kind, gen, tier_value, tier_unit) -> str:
+        """Código da chave — cria com o PRÓXIMO sequencial se a categoria é
+        inédita (categoria nova ganha código na hora, permanente)."""
+        from django.db import IntegrityError, transaction
+        from django.db.models import Max
+        obj = cls.objects.filter(kind=kind, gen=gen, tier_value=tier_value,
+                                 tier_unit=tier_unit).first()
+        if obj:
+            return obj.label
+        for _tentativa in range(2):      # corrida rara: retry único
+            try:
+                with transaction.atomic():
+                    nxt = (cls.objects.aggregate(m=Max('code'))['m'] or 0) + 1
+                    obj = cls.objects.create(kind=kind, gen=gen,
+                                             tier_value=tier_value,
+                                             tier_unit=tier_unit, code=nxt)
+                    return obj.label
+            except IntegrityError:
+                obj = cls.objects.filter(kind=kind, gen=gen,
+                                         tier_value=tier_value,
+                                         tier_unit=tier_unit).first()
+                if obj:
+                    return obj.label
+        raise IntegrityError('CategoryCode: corrida não resolvida.')
+
+
 class PricingConfig(models.Model):
     """Configuração do sistema de preços — singleton pk=1, editável no admin,
     efeito imediato (padrão ProfitabilityConfig). GLOBAL por ora; se um dia

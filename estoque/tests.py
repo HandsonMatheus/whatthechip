@@ -36,8 +36,11 @@ from .views import _compute_gateway
 def _grant(user, role=Membership.ROLE_OPERATOR):
     """Vincula o usuário de teste a uma empresa com papel (T1: as views do
     estoque exigem Membership ativo — tenancy.access.role_required)."""
+    # F12: a eMiner dos testes é a PLATAFORMA (vê rótulos reais) — os
+    # testes de vista completa continuam valendo; máscara testada à parte
+    # (MaskingTests, com empresa-CLIENTE própria).
     company, _ = Company.objects.get_or_create(
-        name='eMiner', defaults={'slug': 'eminer'})
+        name='eMiner', defaults={'slug': 'eminer', 'is_platform': True})
     Membership.objects.update_or_create(
         user=user, company=company, defaults={'role': role, 'active': True})
     return company
@@ -1184,7 +1187,8 @@ class ExportPriceColumnsTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         User = get_user_model()
-        cls.company = Company.objects.create(name='eMiner', slug='eminer')
+        cls.company = Company.objects.create(name='eMiner', slug='eminer',
+                                             is_platform=True)   # F12
         cls.adm = User.objects.create_user('xp_adm', password='x')
         cls.mgr = User.objects.create_user('xp_mgr', password='x')
         Membership.objects.create(user=cls.adm, company=cls.company,
@@ -1241,6 +1245,126 @@ class ExportPriceColumnsTests(TestCase):
         headers = [c.value for c in ws[1]]
         self.assertEqual(len(headers), 8)                 # só as colunas base
         self.assertFalse(any('Preço' in str(h) for h in headers if h))
+
+
+class MaskingTests(TestCase):
+    """F12 (dono, 2026-07-17): o conhecimento "PN → o que é → quanto vale" é
+    o ativo do negócio. Empresa-CLIENTE vê só o código C-### (bancada com
+    card whitelist SEM data-debug, tabela, export); a PLATAFORMA
+    (Company.is_platform / superuser) vê tudo."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from decimal import Decimal
+        from pricing.models import CategoryCode
+        User = get_user_model()
+        cls.plat = Company.objects.create(name='eMiner HQ', slug='mask-plat',
+                                          is_platform=True)
+        cls.cli = Company.objects.create(name='Cliente X', slug='mask-cli')
+        cls.users = {}
+        for tag, co in (('plat', cls.plat), ('cli', cls.cli)):
+            u = User.objects.create_user(f'mask_{tag}', password='x')
+            Membership.objects.create(user=u, company=co,
+                                      role=Membership.ROLE_MANAGER)  # export
+            cls.users[tag] = u
+        cls.code = CategoryCode.objects.create(
+            kind='emmc', gen='', tier_value=Decimal('16'), tier_unit='GB',
+            code=153)
+        # Confirmado no catálogo → bancada aprova (gate "só confirmados").
+        from chips.models import Brand as ChipBrand, KnownPart
+        b = ChipBrand.objects.create(name='Samsung MK', code='SAMMK')
+        KnownPart.objects.create(part_number='MASKPN16', brand=b,
+                                 chip_type='eMMC', capacity='16GB',
+                                 confidence='confirmed',
+                                 review_status='approved')
+
+    def _lot(self, company, user):
+        set_current_company(company.pk)
+        self.addCleanup(set_current_company, None)
+        lot = Lot.all_companies.create(number=800 + company.pk,
+                                       operator=user, company=company)
+        return lot
+
+    def test_bancada_cliente_mascarada_plataforma_completa(self):
+        lot_c = self._lot(self.cli, self.users['cli'])
+        self.client.login(username='mask_cli', password='x')
+        resp = self.client.get(
+            reverse('estoque:preview', args=[lot_c.pk]), {'pn': 'MASKPN16'})
+        body = resp.content.decode()
+        self.assertIn('C-153', body)                  # código da categoria
+        self.assertIn('Caixa', body)
+        self.assertNotIn('eMMC', body)                # specs NÃO vazam
+        self.assertNotIn('16GB', body)
+        self.assertNotIn('data-debug', body)          # o JSON inteiro tampouco
+        self.assertNotIn('Rentável', body)            # veredito nominal some
+        # Plataforma: card completo, com specs e debug.
+        lot_p = self._lot(self.plat, self.users['plat'])
+        self.client.login(username='mask_plat', password='x')
+        resp = self.client.get(
+            reverse('estoque:preview', args=[lot_p.pk]), {'pn': 'MASKPN16'})
+        body = resp.content.decode()
+        self.assertIn('eMMC', body)
+        self.assertIn('data-debug', body)
+
+    def test_tabela_e_export_mascarados(self):
+        from decimal import Decimal
+        from chips.models import CatalogVersion
+        lot = self._lot(self.cli, self.users['cli'])
+        InventoryEntry.all_companies.create(
+            lot=lot, part_number='MASKPN16', quantity=3, brand='Samsung MK',
+            chip_type='eMMC', capacity='16GB', company=self.cli,
+            snapshot_catalog_version=CatalogVersion.current(),
+            price_kind='emmc', price_gen='', price_tier_value=Decimal('16'),
+            price_tier_unit='GB')
+        self.client.login(username='mask_cli', password='x')
+        page = self.client.get(
+            reverse('estoque:lot_detail', args=[lot.pk])).content.decode()
+        self.assertIn('C-153', page)
+        self.assertNotIn('>eMMC<', page)              # badge de tipo sumiu
+        import io as _io
+        import openpyxl
+        resp = self.client.get(reverse('estoque:export', args=[lot.pk]))
+        ws = openpyxl.load_workbook(_io.BytesIO(resp.content)).active
+        headers = [c.value for c in ws[1]]
+        self.assertIn('Category', headers)
+        self.assertNotIn('Type', headers)             # colunas de spec sumiram
+        self.assertNotIn('Capacity', headers)
+        self.assertEqual(ws.cell(row=2, column=2).value, 'C-153')
+
+
+class SeedCategoryCodesTests(TestCase):
+    """F12: o seed numera as categorias existentes (grid + estoque) em ordem
+    SORTEADA, é idempotente, e categoria nova ganha o próximo sequencial."""
+
+    def test_seed_e_sequencial(self):
+        from decimal import Decimal
+        from io import StringIO
+        from django.core.management import call_command
+        from chips.models import Brand as ChipBrand
+        from pricing.models import (Buyer, CategoryCode, Price, PriceList,
+                                    STATUS_QUOTED)
+        co = Company.objects.create(name='SeedCd', slug='seed-cd')
+        buyer = Buyer.all_companies.create(company=co, name='Wu SC',
+                                           slug='wu-seedcd')
+        b = ChipBrand.objects.create(name='Sam SC', code='SAMSC')
+        pl = PriceList.all_companies.create(buyer=buyer, brand=b)
+        for tier in ('16', '32', '64'):
+            Price.all_companies.create(
+                price_list=pl, kind='emmc', gen='', tier_value=Decimal(tier),
+                tier_unit='GB', status=STATUS_QUOTED,
+                price_min=Decimal('10'), price_max=Decimal('10'))
+        out = StringIO()
+        call_command('seed_category_codes', stdout=out)          # dry-run
+        self.assertEqual(CategoryCode.objects.count(), 0)
+        call_command('seed_category_codes', commit=True, stdout=out)
+        self.assertEqual(CategoryCode.objects.count(), 3)
+        codes = set(CategoryCode.objects.values_list('code', flat=True))
+        self.assertEqual(codes, {1, 2, 3})                       # sequencial…
+        call_command('seed_category_codes', commit=True, stdout=out)
+        self.assertEqual(CategoryCode.objects.count(), 3)        # idempotente
+        # Categoria INÉDITA ganha o próximo número automaticamente:
+        lbl = CategoryCode.label_for_key('ufs', '', Decimal('256'), 'GB')
+        self.assertEqual(lbl, 'C-004')
 
 
 class TemplateMultilineCommentTests(TestCase):
@@ -1307,6 +1431,10 @@ class TenancyDeclarationTests(TestCase):
         # ProfitabilityConfig; PRECIFICACAO §3.4). Buyer/PriceList/Price são
         # ESCOPADOS (company + CompanyScopedManager + RLS em pricing/0002).
         'pricing.PricingConfig',
+        # F12: dicionário GLOBAL código C-### ↔ categoria (chave de
+        # preço) — mesma tabela para todo cliente (decisão do dono:
+        # auditabilidade > embaralhamento por empresa).
+        'pricing.CategoryCode',
     }
     # F11.2: 'vendas' entra — SalesOrder/SalesOrderLine/DocSequence são
     # ESCOPADOS (company + CompanyScopedManager + RLS em vendas/0002).

@@ -1140,6 +1140,9 @@ table.est-table td { padding: var(--s5) var(--s5); }
         <input id="search-q" name="q" type="search" value="{{ q }}" placeholder="{% trans 'Filtrar por PN…' %}"
                hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="input changed delay:300ms" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#tipo-filter"
                style="flex:1;min-width:0;height:40px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 12px;font-size:14px;color:#161616;" />
+        {% if not masked %}
+        {% comment %} F12: filtro por TIPO só faz sentido pra quem vê tipos
+           (plataforma). Empresa-cliente enxerga códigos C-###. {% endcomment %}
         <select id="tipo-filter" name="tipo"
                 hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="change" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#search-q"
                 style="width:108px;flex:none;height:40px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 8px;font-size:14px;color:#161616;cursor:pointer;">
@@ -1151,6 +1154,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
           <option value="RAM"  {% if tipo == "RAM"  %}selected{% endif %}>RAM</option>
           <option value="NAND" {% if tipo == "NAND" %}selected{% endif %}>NAND</option>
         </select>
+        {% endif %}
       </div>
     </div>
 

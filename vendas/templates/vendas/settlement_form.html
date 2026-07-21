@@ -31,7 +31,7 @@
           {% localize off %}
           {% for line in lines %}
           <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:9px 14px;font-weight:600;">{{ line.label }}</td>
+            <td style="padding:9px 14px;font-weight:600;">{{ line.display_label }}</td>
             <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{{ line.quantity }}</td>
             <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">¥ {{ line.unit_rmb }}</td>
             <td style="padding:9px 14px;text-align:right;">

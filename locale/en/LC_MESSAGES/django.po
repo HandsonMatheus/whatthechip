@@ -1808,3 +1808,21 @@ msgstr "Forgot your password?"
 #: templates/registration/login.html
 msgid "Recuperação de senha: contate o administrador do seu operador."
 msgstr "Password recovery: contact your operator's administrator."
+
+#. F12 máscara de categoria (card whitelist da bancada) — 2026-07-17
+#: estoque/templates/estoque/partials/confirm_card_masked.html
+msgid "Caixa"
+msgstr "Box"
+
+msgid "IDENTIFICADO"
+msgstr "IDENTIFIED"
+
+msgid "Geral (avaliação)"
+msgstr "General (evaluation)"
+
+#, python-format
+msgid "já no lote: %(n)s un."
+msgstr "already in the lot: %(n)s units"
+
+msgid "Separar para verificação — segue para a fila do gestor."
+msgstr "Set aside for verification — goes to the manager queue."

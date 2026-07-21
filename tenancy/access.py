@@ -21,6 +21,20 @@ from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 
 
+def is_unmasked(request) -> bool:
+    """F12 (máscara de categoria, dono 2026-07-17): quem vê rótulos REAIS de
+    categoria (specs/tipo) — o admin do SISTEMA (superuser) e os membros de
+    empresa marcada ``is_platform`` (eMiner). Todo mundo de empresa-CLIENTE
+    vê apenas o código opaco ``C-###`` em bancada/tabela/export/OV/fatura.
+    Fonte única da política — consumida por estoque e vendas."""
+    user = getattr(request, 'user', None)
+    if user is not None and getattr(user, 'is_authenticated', False) \
+            and user.is_superuser:
+        return True
+    m = getattr(request, 'membership', None)
+    return bool(m and m.company.is_platform)
+
+
 def role_required(min_role: str):
     """Decorator de view: exige login + Membership ativo + papel >= ``min_role``.
 

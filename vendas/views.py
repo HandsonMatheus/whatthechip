@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
-from tenancy.access import role_required
+from tenancy.access import is_unmasked, role_required
 
 from .models import (INV_OPEN, Invoice, STATUS_CONFIRMED, STATUS_DRAFT,
                      SalesOrder)
@@ -35,8 +35,10 @@ def so_detail(request, pk):
                .exclude(status='cancelled').first())
     ctx = {'so': so, 'invoice': invoice,
            'can_settle': so.status == STATUS_CONFIRMED and invoice is None}
+    unmasked = is_unmasked(request)              # F12: rótulo real × C-###
     if so.status == STATUS_DRAFT:
         pairs = services.live_quotes(so)
+        services.annotate_labels([l for l, _q in pairs], unmasked)
         total_rmb, total_usd, pending = services.draft_totals(pairs)
         # Linhas prontas p/ template (aritmética aqui — template não calcula).
         rows = []
@@ -52,7 +54,9 @@ def so_detail(request, pk):
                     'live_total_usd': total_usd, 'pending': pending,
                     'fx_rate': so.buyer.fx_usd_rate})
     else:
-        ctx.update({'lines': so.lines.all(), 'fx_rate': so.fx_usd_rate})
+        ctx.update({'lines': services.annotate_labels(
+                        list(so.lines.all()), unmasked),
+                    'fx_rate': so.fx_usd_rate})
     return render(request, 'vendas/so_detail.html', ctx)
 
 
@@ -65,16 +69,18 @@ def so_pdf(request, pk):
 
     so = get_object_or_404(
         SalesOrder.objects.select_related('lot', 'buyer'), pk=pk)
+    unmasked = is_unmasked(request)              # F12: rótulo real × C-###
     rows = []
     if so.status == STATUS_DRAFT:
         pairs = services.live_quotes(so)
+        services.annotate_labels([l for l, _q in pairs], unmasked)
         total_rmb, total_usd, _pending = services.draft_totals(pairs)
         fx_rate = so.buyer.fx_usd_rate
         for line, q in pairs:
             priced = q.status == 'PRICED'
             rows.append({
-                'label': line.label if priced
-                         else f'{line.label} — {q.reason}',
+                'label': line.display_label if priced
+                         else f'{line.display_label} — {q.reason}',
                 'qty': str(line.quantity),
                 'unit_rmb': q.rmb_display if priced else None,
                 'total_rmb': str(q.rmb * line.quantity) if priced else None,
@@ -83,10 +89,11 @@ def so_pdf(request, pk):
     else:
         total_rmb, total_usd = so.total_rmb or 0, so.total_usd or 0
         fx_rate = so.fx_usd_rate or so.buyer.fx_usd_rate
-        for line in so.lines.all():
+        for line in services.annotate_labels(list(so.lines.all()),
+                                             unmasked):
             priced = line.unit_rmb is not None
             rows.append({
-                'label': line.label, 'qty': str(line.quantity),
+                'label': line.display_label, 'qty': str(line.quantity),
                 'unit_rmb': str(line.unit_rmb) if priced else None,
                 'total_rmb': str(line.total_rmb) if priced else None,
                 'total_usd': str(line.total_usd) if priced else None,
@@ -156,6 +163,7 @@ def settlement_new(request, pk):
         messages.success(request, _('Resultado registrado — fatura emitida '
                                     'com o valor final.'))
         return redirect('vendas:invoice_detail', pk=inv.pk)
+    services.annotate_labels(lines, is_unmasked(request))     # F12
     return render(request, 'vendas/settlement_form.html',
                   {'so': so, 'lines': lines})
 
@@ -166,6 +174,8 @@ def invoice_detail(request, pk):
         Invoice.objects.select_related('order__lot', 'settlement'), pk=pk)
     adj = (list(inv.settlement.lines.select_related('order_line'))
            if inv.settlement_id else [])
+    services.annotate_labels([a.order_line for a in adj],
+                             is_unmasked(request))             # F12
     return render(request, 'vendas/invoice_detail.html', {
         'inv': inv, 'adjustments': adj,
         'payments': inv.payments.select_related('created_by'),

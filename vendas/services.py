@@ -155,6 +155,21 @@ def cancel(so, user):
     return so
 
 
+def annotate_labels(lines, unmasked: bool):
+    """F12 (máscara, dono 2026-07-17): anexa ``display_label`` — plataforma
+    vê o rótulo REAL ("Samsung · eMCP LPDDR4X 64GB"); empresa-CLIENTE vê o
+    código opaco C-### (mesma tabela global da bancada/export)."""
+    if unmasked:
+        for l in lines:
+            l.display_label = l.label
+        return lines
+    from pricing.models import CategoryCode
+    for l in lines:
+        l.display_label = CategoryCode.label_for_key(
+            l.kind, l.gen, l.tier_value, l.tier_unit)
+    return lines
+
+
 # ═══ F11.4 — Acerto → Fatura → Pagamentos ═══════════════════════════════════
 
 def settle_and_invoice(so, adjustments, user, notes=''):

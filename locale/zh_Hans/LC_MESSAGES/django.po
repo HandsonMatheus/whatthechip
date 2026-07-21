@@ -1769,3 +1769,21 @@ msgstr "忘记密码？"
 #: templates/registration/login.html
 msgid "Recuperação de senha: contate o administrador do seu operador."
 msgstr "密码找回：请联系您运营方的管理员。"
+
+#. F12 máscara de categoria (card whitelist da bancada) — 2026-07-17
+#: estoque/templates/estoque/partials/confirm_card_masked.html
+msgid "Caixa"
+msgstr "箱"
+
+msgid "IDENTIFICADO"
+msgstr "已识别"
+
+msgid "Geral (avaliação)"
+msgstr "通用（待评估）"
+
+#, python-format
+msgid "já no lote: %(n)s un."
+msgstr "批次中已有：%(n)s 件"
+
+msgid "Separar para verificação — segue para a fila do gestor."
+msgstr "请单独放置待核验——将进入主管的待审队列。"

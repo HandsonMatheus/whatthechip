@@ -41,6 +41,15 @@ class Company(models.Model):
                               help_text='Identificador para rotas/domínio futuros (ex.: "eminer").')
     active = models.BooleanField(default=True, verbose_name='Ativa',
                                  help_text='Desativar ≠ deletar — o histórico fica.')
+    # F12 (máscara de categoria, dono 2026-07-17): o conhecimento de chips é o
+    # ativo do NEGÓCIO — empresa-CLIENTE vê só o código opaco C-### (bancada,
+    # export, OV, fatura); a empresa DA PLATAFORMA (eMiner) vê os rótulos
+    # reais. Marcar só a(s) empresa(s) dona(s) do WhatTheChip.
+    is_platform = models.BooleanField(
+        default=False, verbose_name='Empresa da plataforma',
+        help_text='Dona do WhatTheChip: usuários dela veem os rótulos REAIS '
+                  'de categoria. Empresas-cliente veem só o código C-### '
+                  '(F12 — proteção do conhecimento).')
     # Branding por empresa (logo nas telas do app / subdomínio futuro — §10).
     # ⚠ Em produção (Render) o filesystem é EFÊMERO: upload some no próximo
     # deploy. Antes de usar logo em prod: disco persistente do Render ou S3.

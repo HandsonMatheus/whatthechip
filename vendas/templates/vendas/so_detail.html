@@ -64,7 +64,7 @@
         {% if so.status == 'draft' %}
           {% for row in rows %}
           <tr style="border-bottom:1px solid #eee;{% if not row.priced %}background:#fffbea;{% endif %}">
-            <td style="padding:9px 14px;font-weight:600;">{{ row.line.label }}</td>
+            <td style="padding:9px 14px;font-weight:600;">{{ row.line.display_label }}</td>
             <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{{ row.line.quantity }}</td>
             {% if row.priced %}
             <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">¥ {{ row.unit_rmb }}</td>
@@ -78,7 +78,7 @@
         {% else %}
           {% for line in lines %}
           <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:9px 14px;font-weight:600;">{{ line.label }}</td>
+            <td style="padding:9px 14px;font-weight:600;">{{ line.display_label }}</td>
             <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{{ line.quantity }}</td>
             <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if line.unit_rmb is not None %}¥ {{ line.unit_rmb }}{% else %}—{% endif %}</td>
             <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if line.total_rmb is not None %}¥ {{ line.total_rmb }}{% else %}—{% endif %}</td>

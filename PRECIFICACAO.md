@@ -844,6 +844,47 @@ adiciona a linha", §2/§11), agora com ferramenta própria:
 - Quem fabrica LPDDR (matriz da aba Instructions): Samsung, SK Hynix, Micron,
   Nanya. Kingston/Toshiba-Kioxia/SanDisk entram como não fabricado.
 
+### 12.20 F12 — MÁSCARA DE INFORMAÇÃO (código C-###; dono 2026-07-17; **ENTREGUE local** — suíte 380/380, i18n verde)
+
+**Tese (dono):** o conhecimento "PN → o que é → quanto vale" é o ativo do
+negócio — empresa-CLIENTE não pode aprendê-lo usando a plataforma. O
+operador vê o DESTINO, não o porquê.
+
+**Decisões fechadas (brainstorm 2026-07-17):** código **GLOBAL e estável**
+(sem variação por cliente — auditabilidade/confiança > embaralhamento);
+formato **`C-###`** (canônico, nunca traduz); **1 código por CHAVE DE PREÇO**
+(kind/gen/tier — F11.1/OV); numeração inicial **SORTEADA** (ordem natural da
+grade vazaria estrutura), depois sequencial automático; baldes fixos
+**C-000 · Geral** (aprovado sem chave), **CONFERÊNCIA** (fila) e
+**DESCARTE** (reprovado — a palavra "NÃO RENTÁVEL" some da bancada);
+gerente exporta com código, sem specs; **eMiner fora da máscara**
+(`Company.is_platform`); **site público = fase 2** (ocultar a busca — hoje
+ele ainda entrega decode completo a anônimo; furo CONHECIDO e aceito até lá).
+
+**Implementação:** `pricing.CategoryCode` (GLOBAL — declarado no
+TenancyDeclarationTests; dicionário só no Django admin, read-only;
+`label_for_key` cria o próximo sequencial na 1ª aparição) + comando
+**`seed_category_codes`** (chaves do grid + do estoque, sorteio, idempotente,
+dry-run) + `tenancy.Company.is_platform` + **fonte única da política**
+`tenancy.access.is_unmasked(request)` (superuser OU empresa is_platform).
+Superfícies mascaradas p/ empresa-cliente: **bancada** (template WHITELIST
+`confirm_card_masked.html`: PN + Caixa C-### gigante/baldes + typo-popup
+só-PNs + qtd + preço p/ admin — **sem specs, sem veredito nominal, sem
+`data-debug`**, hidden inputs só pn/has_cap — o add re-classifica no
+servidor); **tabela do lote** (badge C-### no lugar do tipo; sub-linha sem
+marca/capacidade; filtro por tipo oculto); **export .xlsx** (colunas
+PN/Category/Qty/Last Added + preço p/ admin); **vendas** (OV/acerto/fatura/
+PDF com `display_label` = C-### p/ cliente, rótulo real p/ plataforma).
+Fixtures "eMiner" dos testes viraram `is_platform=True` (semanticamente
+correto); máscara testada com empresa-cliente própria (`MaskingTests` +
+`SeedCategoryCodesTests`). 5 msgids novos es/en/zh. Migrações: tenancy
+(is_platform) + pricing (CategoryCode), aditivas.
+
+**Runbook local/prod (F12):** `migrate` → `seed_category_codes` (dry →
+`--commit`) → marcar a eMiner como plataforma (admin → Empresas →
+is_platform) → smoke com usuário de empresa-CLIENTE (bancada = "Caixa
+C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
+
 ### 12.19 F11 — VENDAS (plano fechado 2026-07-16; **EXECUÇÃO INICIADA no local** — dono deu o "vai" 2026-07-16; publicação em prod só com runbook próprio)
 
 **Motivação:** o incidente dos lotes 41/42 (valoração on-read = classify × PN
