@@ -13,12 +13,12 @@
     <span style="flex:1;"></span>
     {% comment %} Smart buttons (padrão Odoo): a OV e o lote desta fatura. {% endcomment %}
     <a href="{% url 'vendas:so_detail' inv.order.pk %}"
-       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;text-decoration:none;line-height:1.2;">
+       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;border-radius:12px;text-decoration:none;line-height:1.2;">
       <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Ordem de venda" %}</span>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ inv.order.code }}</span>
     </a>
     <a href="{% url 'estoque:lot_detail' inv.order.lot.pk %}"
-       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;text-decoration:none;line-height:1.2;">
+       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;border-radius:12px;text-decoration:none;line-height:1.2;">
       <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Lote" %}</span>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ inv.order.lot.code }}</span>
     </a>
@@ -29,22 +29,22 @@
   </p>
 
   <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px;">
-    <div style="background:#fff;border:1px solid #e0e0e0;padding:14px 22px;min-width:200px;">
+    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;padding:14px 22px;min-width:200px;">
       <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Total" %}</div>
       <div style="font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;">¥ {{ inv.total_rmb }} <span style="font-size:14px;color:#525252;">· US$ {{ inv.total_usd }}</span></div>
     </div>
-    <div style="background:#fff;border:1px solid #e0e0e0;padding:14px 22px;min-width:180px;">
+    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;padding:14px 22px;min-width:180px;">
       <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Recebido" %}</div>
       <div style="font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;color:#0e6027;">US$ {{ inv.paid_usd }}</div>
     </div>
-    <div style="background:#fff;border:1px solid #e0e0e0;padding:14px 22px;min-width:180px;">
+    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;padding:14px 22px;min-width:180px;">
       <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Saldo" %}</div>
       <div style="font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;color:{% if inv.balance_usd > 0 %}#8a6d00{% else %}#0e6027{% endif %};">US$ {{ inv.balance_usd }}</div>
     </div>
   </div>
 
   {% if adjustments %}
-  <div style="background:#fff;border:1px solid #e0e0e0;margin-bottom:18px;">
+  <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;margin-bottom:18px;">
     <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;padding:12px 14px 0;">{% trans "Ajustes do acerto" %}</div>
     <table style="width:100%;border-collapse:collapse;">
       <tbody>
@@ -60,7 +60,7 @@
   </div>
   {% endif %}
 
-  <div style="background:#fff;border:1px solid #e0e0e0;margin-bottom:18px;">
+  <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;margin-bottom:18px;">
     <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;padding:12px 14px 0;">{% trans "Pagamentos" %}</div>
     <table style="width:100%;border-collapse:collapse;">
       <tbody>
@@ -78,21 +78,21 @@
   </div>
 
   {% if inv.status == 'open' %}
-  <form method="post" action="{% url 'vendas:invoice_pay' inv.pk %}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#fff;border:1px solid #e0e0e0;padding:14px;">
+  <form method="post" action="{% url 'vendas:invoice_pay' inv.pk %}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#fff;border:1px solid #dde1e6;border-radius:16px;padding:14px;">
     {% csrf_token %}
     <span style="font-size:13px;font-weight:600;">{% trans "Registrar pagamento" %} (US$):</span>
     <input type="number" name="amount" step="0.01" min="0.01" required placeholder="0.00"
-           style="width:130px;height:40px;padding:0 10px;border:1px solid #8d8d8d;font-family:'IBM Plex Mono',monospace;text-align:right;">
+           style="width:130px;height:40px;padding:0 10px;border:1px solid #c1c7cd;border-radius:10px;font-family:'IBM Plex Mono',monospace;text-align:right;">
     <input type="date" name="paid_at" value="{% now 'Y-m-d' %}"
-           style="height:40px;padding:0 10px;border:1px solid #8d8d8d;font-size:13px;">
+           style="height:40px;padding:0 10px;border:1px solid #c1c7cd;border-radius:10px;font-size:13px;">
     <input type="text" name="reference" maxlength="120" placeholder="{% trans 'Referência (opcional)' %}"
-           style="flex:1;min-width:180px;height:40px;padding:0 10px;border:1px solid #8d8d8d;font-size:13px;">
+           style="flex:1;min-width:180px;height:40px;padding:0 10px;border:1px solid #c1c7cd;border-radius:10px;font-size:13px;">
     <button type="submit" style="height:40px;padding:0 18px;background:#0f62fe;color:#fff;border:0;font-size:13px;font-weight:600;cursor:pointer;">{% trans "Registrar" %}</button>
   </form>
   <form method="post" action="{% url 'vendas:invoice_cancel' inv.pk %}" style="margin-top:10px;"
         onsubmit="return confirm('{% trans "Cancelar esta fatura? (só sem pagamentos; um novo acerto reemite)" %}');">
     {% csrf_token %}
-    <button type="submit" style="height:36px;padding:0 14px;background:#fff;color:#da1e28;border:1px solid #da1e28;font-size:13px;font-weight:600;cursor:pointer;">{% trans "Cancelar fatura" %}</button>
+    <button type="submit" style="height:36px;padding:0 14px;background:#fff;color:#da1e28;border:1px solid #da1e28;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;">{% trans "Cancelar fatura" %}</button>
   </form>
   {% endif %}
   {% endlocalize %}

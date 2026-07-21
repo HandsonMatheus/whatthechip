@@ -21,21 +21,21 @@
     {% else %}<span style="font-size:12px;font-weight:700;background:#e8e8e8;color:#525252;padding:3px 10px;border-radius:10px;">{% trans "cancelada" %}</span>{% endif %}
     <span style="flex:1;"></span>
     <a href="{% url 'vendas:so_pdf' so.pk %}"
-       style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;background:#fff;border:1px solid #8d8d8d;color:#161616;font-size:13px;font-weight:600;text-decoration:none;">
+       style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;background:#fff;border:1px solid #c1c7cd;border-radius:10px;color:#161616;font-size:13px;font-weight:600;text-decoration:none;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#161616" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 11l5 4 5-4M5 19h14"/></svg>
       {% trans "Baixar PDF" %}
     </a>
     {% if invoice %}
     {# Smart button FATURA (F11.4 — o "fatura relacionada" do Odoo). #}
     <a href="{% url 'vendas:invoice_detail' invoice.pk %}"
-       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;text-decoration:none;line-height:1.2;">
+       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;border-radius:12px;text-decoration:none;line-height:1.2;">
       <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Fatura" %}</span>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ invoice.code }}</span>
     </a>
     {% endif %}
     {# Smart button (padrão Odoo, F11.2c): o lote desta venda. #}
     <a href="{% url 'estoque:lot_detail' so.lot.pk %}"
-       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;text-decoration:none;line-height:1.2;">
+       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;border-radius:12px;text-decoration:none;line-height:1.2;">
       <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Lote" %}</span>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ so.lot.code }}</span>
     </a>
@@ -48,7 +48,7 @@
     {% if so.unkeyed_units %} · ⚠ {% blocktrans trimmed with n=so.unkeyed_units %}{{ n }} un. sem chave de preço (fora do mercado — ver inventário){% endblocktrans %}{% endif %}
   </p>
 
-  <div style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px;">
+  <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;overflow:hidden;margin-bottom:16px;">
     <table style="width:100%;border-collapse:collapse;">
       <thead>
         <tr style="border-bottom:2px solid #e0e0e0;">
@@ -92,7 +92,7 @@
   </div>
 
   <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
-    <div style="background:#fff;border:1px solid #e0e0e0;padding:14px 22px;">
+    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;overflow:hidden;padding:14px 22px;">
       <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Total" %}</div>
       {% localize off %}
       {% if so.status == 'draft' %}
@@ -121,7 +121,7 @@
     <form method="post" action="{% url 'vendas:so_cancel' so.pk %}" style="margin:0;"
           onsubmit="return confirm('{% trans "Cancelar esta ordem? (auditado; o lote poderá ser reaberto)" %}');">
       {% csrf_token %}
-      <button type="submit" style="height:44px;padding:0 18px;background:#fff;color:#da1e28;border:1px solid #da1e28;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Cancelar" %}</button>
+      <button type="submit" style="height:44px;padding:0 18px;background:#fff;color:#da1e28;border:1px solid #da1e28;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Cancelar" %}</button>
     </form>
     {% endif %}
   </div>
