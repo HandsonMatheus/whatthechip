@@ -7,7 +7,7 @@
   <title>{% block title %}{% trans "Painel" %} — WhatTheChip?{% endblock %}</title>
 
   <script>
-    // Ambiente de bancada: tema claro fixo (Carbon White content + shell escuro).
+    // Ambiente de bancada: tema claro fixo (conteúdo claro + shell escuro).
     document.documentElement.removeAttribute('data-theme');
     try { localStorage.removeItem('wtc_theme'); } catch (e) {}
   </script>
@@ -20,7 +20,22 @@
   <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.min.js" defer></script>
 
   <style>
-  /* ═══ Painel WhatTheChip — IBM Carbon (shell escuro + conteúdo claro) ═══ */
+  /* ═══ Shell interno WhatTheChip (redesenho — navbar escura #101317, nav em pills) ═══
+     Fase 0 do handoff: só o SHELL mudou de visual; o conteúdo (block main) segue
+     no style.css até o redesenho por tela (fases 1-3). Nomes de classe mantidos
+     (.wtc-header*/.wtc-work) p/ não tocar os 7 templates de conteúdo. */
+  :root{
+    --ink-100:#161616;--ink-60:#697077;--ink-40:#a2a9b0;--white:#fff;
+    --blue-40:#78a9ff;--blue-60:#0f62fe;--blue-60h:#0353e9;--blue-70:#0043ce;
+    --green-50:#24a148;--amber-40:#f1c21b;--red-50:#fa4d56;--red-60:#da1e28;
+    --r-sm:8px;--r-md:12px;--r-lg:16px;--r-pill:999px;
+    --sh-1:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);
+    --sh-2:0 6px 16px -6px rgba(16,24,40,.14),0 2px 6px -2px rgba(16,24,40,.08);
+    --sans:'Helvetica Neue',Helvetica,Arial,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+    --dur-1:120ms;--dur-2:240ms;--ease:cubic-bezier(.2,0,.2,1);
+    --shell:#101317;--shell-2:#1a1f25;--shell-line:#272d33;--shell-line-2:#3a4249;
+    --shell-text:#f2f4f8;--shell-muted:#a2a9b0;--shell-faint:#697077;
+  }
   body.wtc-panel {
     margin: 0; background: #f4f4f4;
     font-family: 'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
@@ -30,50 +45,51 @@
   .wtc-panel *, .wtc-panel *::before, .wtc-panel *::after { box-sizing: border-box; }
   .wtc-panel input::placeholder { color: #a8a8a8; }
 
-  /* Header (Carbon UI shell — escuro)
-     Anatomia, esquerda → direita:
-       marca (igual à home: texto + CJK) · nav (ativo = sublinha azul) ·
-       [spacer] · identidade da EMPRESA (logo/nome/filial) · usuário + papel ·
-       ações (site / sair). Cada zona separada por borda sutil. */
-  .wtc-header { height: 56px; background: #161616; display: flex; align-items: center; position: sticky; top: 0; z-index: 40; }
-
-  .wtc-header__brand { display: flex; align-items: center; height: 100%; padding: 0 20px; border-right: 1px solid #393939; text-decoration: none; flex: none; }
+  /* Header — shell escuro. Anatomia (esq → dir): marca · nav (pills, ativo azul) ·
+     [spacer] · empresa (logo/nome/filial) · usuário (avatar + papel via access.role_tag)
+     · ações (idioma / site / sair). */
+  .wtc-header { height: 60px; background: var(--shell); display: flex; align-items: center; position: sticky; top: 0; z-index: 40; padding: 0 14px; gap: 6px; border-bottom: 1px solid var(--shell-line); font-family: var(--sans); }
+  .wtc-header__brand { display: flex; align-items: center; height: 100%; padding: 0 12px 0 6px; margin-right: 4px; flex: none; text-decoration: none; }
   .wtc-header__brand img { height: 26px; width: auto; display: block; }
 
-  .wtc-header__nav { display: flex; align-items: center; gap: 8px; height: 100%; padding: 0 16px; color: #c6c6c6; font-size: 14px; font-weight: 500; text-decoration: none; border-bottom: 3px solid transparent; border-top: 3px solid transparent; }
-  .wtc-header__nav:hover { background: #262626; color: #f4f4f4; }
-  .wtc-header__nav svg { stroke: currentColor; opacity: .8; }
-  .wtc-header__nav--active { color: #fff; font-weight: 600; border-bottom-color: #0f62fe; }
-  .wtc-header__nav--active svg { stroke: #78a9ff; opacity: 1; }
+  .wtc-header__nav { display: flex; align-items: center; gap: 9px; height: 38px; padding: 0 14px; border-radius: var(--r-sm); color: var(--shell-muted); font-size: 14px; font-weight: 500; text-decoration: none; border: 0; background: none; cursor: pointer; transition: background var(--dur-1), color var(--dur-1); }
+  .wtc-header__nav svg { width: 18px; height: 18px; stroke: currentColor; opacity: .85; }
+  .wtc-header__nav:hover { background: var(--shell-2); color: var(--shell-text); text-decoration: none; }
+  .wtc-header__nav--active { background: rgba(15,98,254,.16); color: #fff; font-weight: 600; }
+  .wtc-header__nav--active svg { stroke: var(--blue-40); opacity: 1; }
 
   .wtc-header__spacer { flex: 1; }
 
-  /* Identidade da empresa (tenant): logo + nome + filial */
-  .wtc-header__org { display: flex; align-items: center; gap: 10px; height: 100%; padding: 0 16px; border-left: 1px solid #393939; }
-  .wtc-header__org-logo { height: 30px; width: 30px; object-fit: contain; background: #fff; padding: 2px; border-radius: 2px; flex: none; }
-  .wtc-header__org-txt { display: flex; flex-direction: column; line-height: 1.2; }
-  .wtc-header__org-name { color: #f4f4f4; font-size: 13px; font-weight: 600; white-space: nowrap; }
-  .wtc-header__org-branch { color: #8d8d8d; font-size: 11px; white-space: nowrap; }
+  /* Identidade da empresa (tenant): logo (ou iniciais) + nome + filial */
+  .wtc-header__org { display: flex; align-items: center; gap: 10px; height: 100%; padding: 0 14px; }
+  .wtc-header__org-logo { height: 32px; width: 32px; border-radius: var(--r-sm); object-fit: contain; background: #fff; display: grid; place-items: center; font-weight: 700; color: var(--blue-70); font-size: 14px; flex: none; text-transform: uppercase; }
+  .wtc-header__org-txt { display: flex; flex-direction: column; line-height: 1.25; }
+  .wtc-header__org-name { color: var(--shell-text); font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .wtc-header__org-branch { color: var(--shell-faint); font-size: 11px; white-space: nowrap; }
 
-  /* Usuário + crachá de papel */
-  .wtc-header__who { display: flex; align-items: center; gap: 8px; height: 100%; padding: 0 16px; border-left: 1px solid #393939; }
-  .wtc-header__user { color: #c6c6c6; font-size: 13px; white-space: nowrap; }
-  .wtc-header__role { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #78a9ff; border: 1px solid #33539b; padding: 2px 7px; white-space: nowrap; }
+  /* Usuário: avatar (iniciais) + nome + papel */
+  .wtc-header__who { display: flex; align-items: center; gap: 9px; height: 100%; padding: 0 14px; border-left: 1px solid var(--shell-line); }
+  .wtc-header__avatar { width: 30px; height: 30px; border-radius: var(--r-pill); background: var(--shell-2); border: 1px solid var(--shell-line-2); display: grid; place-items: center; color: var(--shell-text); font-size: 12px; font-weight: 600; flex: none; text-transform: uppercase; }
+  .wtc-header__user { color: var(--shell-muted); font-size: 13px; white-space: nowrap; display: flex; flex-direction: column; line-height: 1.25; }
+  .wtc-header__user b { color: var(--shell-text); font-weight: 600; }
+  .wtc-header__role { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--blue-40); }
 
-  .wtc-header__actions { display: flex; align-items: center; gap: 6px; height: 100%; padding: 0 12px 0 16px; border-left: 1px solid #393939; }
-  .wtc-header__btn { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; color: #f4f4f4; font-size: 14px; border: 1px solid #525252; background: transparent; cursor: pointer; white-space: nowrap; flex: none; text-decoration: none; font-family: inherit; }
-  .wtc-header__btn:hover { background: #262626; }
-  .wtc-header__btn--logout { color: #ff8389; }
-
-  /* Área de trabalho centralizada */
-  .wtc-work { max-width: 1340px; width: 100%; margin: 0 auto; padding: 24px; flex: 1; }
+  .wtc-header__actions { display: flex; align-items: center; gap: 6px; height: 100%; padding-left: 8px; border-left: 1px solid var(--shell-line); }
+  .wtc-header__btn { display: flex; align-items: center; gap: 7px; height: 36px; padding: 0 13px; border-radius: var(--r-sm); border: 1px solid var(--shell-line-2); background: transparent; color: var(--shell-text); font-size: 13.5px; cursor: pointer; white-space: nowrap; flex: none; text-decoration: none; font-family: inherit; transition: background var(--dur-1); }
+  .wtc-header__btn:hover { background: var(--shell-2); text-decoration: none; }
+  .wtc-header__btn svg { width: 15px; height: 15px; }
+  .wtc-header__btn--logout { color: #ff8389; border-color: #5b2b2f; }
+  .wtc-header__btn--logout:hover { background: #2c0f11; }
 
   /* Links visitados nunca roxos */
-  .wtc-work a, .wtc-work a:visited { color: #0f62fe; }
-  .wtc-header__nav:visited { color: #c6c6c6; }
+  .wtc-header__nav:visited { color: var(--shell-muted); }
   .wtc-header__nav--active:visited { color: #fff; }
-  .wtc-header__btn, .wtc-header__btn:visited { color: #f4f4f4; }
+  .wtc-header__btn, .wtc-header__btn:visited { color: var(--shell-text); }
   .wtc-header__btn--logout, .wtc-header__btn--logout:visited { color: #ff8389; }
+  .wtc-work a, .wtc-work a:visited { color: var(--blue-60); }
+
+  /* Área de trabalho centralizada */
+  .wtc-work { max-width: 1340px; width: 100%; margin: 0 auto; padding: 28px 24px 72px; flex: 1; }
 
   @media (max-width: 900px) {
     .wtc-header__who { display: none; }
@@ -91,32 +107,33 @@
 </head>
 <body class="wtc-panel">
 
-<!-- ── Carbon UI shell header (escuro) ─────────────────────────── -->
+<!-- ── Shell interno (navbar escura) ───────────────────────────── -->
 <header class="wtc-header">
-  {# Marca — o MESMO svg da home no tema escuro (wtc-logo-dark) #}
-  <a href="{% url 'painel' %}" class="wtc-header__brand">
-    <img src="{% static 'img/wtc-logo-dark.svg' %}" alt="WhatTheChip 什么芯片">
+  {# Marca — lockup escuro (mesmo svg da home no tema escuro) → volta ao painel #}
+  <a href="{% url 'painel' %}" class="wtc-header__brand" aria-label="WhatTheChip 什么芯片">
+    <img src="{% static 'img/whatthechip-darkmode.svg' %}" alt="WhatTheChip 什么芯片">
   </a>
 
   <a href="{% url 'painel' %}" class="wtc-header__nav{% block nav_painel %}{% endblock %}">
-    <svg width="18" height="18" viewBox="0 0 32 32" fill="none" stroke-width="2">
+    <svg viewBox="0 0 32 32" fill="none" stroke-width="2">
       <rect x="5" y="5" width="9" height="9"/><rect x="18" y="5" width="9" height="9"/>
       <rect x="5" y="18" width="9" height="9"/><rect x="18" y="18" width="9" height="9"/>
     </svg>
     {% trans "Painel" %}
   </a>
   <a href="{% url 'estoque:index' %}" class="wtc-header__nav{% block nav_estoque %}{% endblock %}">
-    <svg width="18" height="18" viewBox="0 0 32 32" fill="none" stroke-width="2">
+    <svg viewBox="0 0 32 32" fill="none" stroke-width="2">
       <path d="M16 4 28 10v12L16 28 4 22V10z"/><path d="M4 10l12 6 12-6M16 16v12"/>
     </svg>
     {% trans "Estoque" %}
   </a>
-  {% if wtc_role == 'admin' %}
-  {% comment %} F11.2: Vendas é ADMIN-ONLY ("gerente não vê valor", matriz §8) — e a
-     barreira real é a view (@role_required('admin')), nunca só este if. {% endcomment %}
+  {% if access.can_sales %}
+  {% comment %} Vendas ADMIN-ONLY (matriz do handoff §Regra central). A barreira
+     real é a view (@role_required('admin')), NUNCA só este if. {% endcomment %}
   <a href="{% url 'vendas:so_list' %}" class="wtc-header__nav{% block nav_vendas %}{% endblock %}">
-    <svg width="18" height="18" viewBox="0 0 32 32" fill="none" stroke-width="2">
-      <path d="M6 6h4l3 14h12l3-10H12"/><circle cx="14" cy="26" r="2"/><circle cx="24" cy="26" r="2"/>
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 3h2l2.4 12.3a2 2 0 0 0 2 1.7h7.7a2 2 0 0 0 2-1.6L22 8H6"/>
+      <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
     </svg>
     {% trans "Vendas" %}
   </a>
@@ -124,11 +141,13 @@
 
   <div class="wtc-header__spacer"></div>
 
-  {# Identidade da EMPRESA: logo + nome + filial (tenant da sessão) #}
+  {# Identidade da EMPRESA: logo (ou iniciais) + nome + filial (tenant da sessão) #}
   {% if wtc_company %}
   <div class="wtc-header__org" title="{{ wtc_company.name }}{% if wtc_membership.branch %} · {{ wtc_membership.branch.name }}{% endif %}">
     {% if wtc_company.logo %}
       <img class="wtc-header__org-logo" src="{{ wtc_company.logo.url }}" alt="{{ wtc_company.name }}">
+    {% else %}
+      <div class="wtc-header__org-logo">{{ wtc_company.name|slice:':2' }}</div>
     {% endif %}
     <div class="wtc-header__org-txt">
       <span class="wtc-header__org-name">{{ wtc_company.name }}</span>
@@ -139,22 +158,29 @@
   </div>
   {% endif %}
 
-  {# Usuário + crachá de papel #}
+  {# Usuário: avatar (iniciais) + nome + papel (access.role_tag) #}
   <div class="wtc-header__who">
-    <span class="wtc-header__user">{{ request.user.get_full_name|default:request.user.username }}</span>
-    {% if wtc_membership %}
-      <span class="wtc-header__role">{{ wtc_membership.get_role_display }}</span>
-    {% endif %}
+    <div class="wtc-header__avatar">{{ request.user.get_full_name|default:request.user.username|slice:':2' }}</div>
+    <div class="wtc-header__user">
+      <b>{{ request.user.get_full_name|default:request.user.username }}</b>
+      {% if access.role_tag %}<span class="wtc-header__role">{{ access.role_tag }}</span>{% endif %}
+    </div>
   </div>
 
   <div class="wtc-header__actions">
     {# Idioma — o operador muda quando quiser; logado, persiste na conta (I18N.md §3) #}
     {% include "partials/lang_select.html" with variant='shell' %}
-    <a href="/" class="wtc-header__btn">‹ <span>{% trans "Site" %}</span></a>
+    <a href="/" class="wtc-header__btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <span>{% trans "Site" %}</span>
+    </a>
     {# Logout é POST (Django 5 removeu o GET do LogoutView) → LOGOUT_REDIRECT_URL = '/' #}
     <form method="post" action="{% url 'logout' %}" style="margin:0;display:flex;">
       {% csrf_token %}
-      <button type="submit" class="wtc-header__btn wtc-header__btn--logout">⤬ <span>{% trans "Sair" %}</span></button>
+      <button type="submit" class="wtc-header__btn wtc-header__btn--logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg>
+        <span>{% trans "Sair" %}</span>
+      </button>
     </form>
   </div>
 </header>
@@ -162,11 +188,11 @@
 <!-- ── Conteúdo ────────────────────────────────────────────────── -->
 <main class="wtc-work" id="pnl-content">
   {% if messages %}
-  {% comment %} F11.2: o shell não renderizava django.contrib.messages — avisos como
-     "reabertura bloqueada por OV confirmada" ficavam invisíveis. {% endcomment %}
-  <div style="max-width:1100px;margin:0 auto;padding:14px 24px 0;">
+  {% comment %} O shell renderiza django.contrib.messages (avisos como
+     "reabertura bloqueada por OV confirmada"). {% endcomment %}
+  <div style="max-width:1100px;margin:0 auto 14px;">
     {% for m in messages %}
-    <div style="padding:12px 16px;margin-bottom:10px;border-left:4px solid {% if m.tags == 'error' %}#da1e28{% elif m.tags == 'success' %}#198038{% else %}#0f62fe{% endif %};background:#fff;font-size:14px;box-shadow:0 1px 2px rgba(0,0,0,.06);">{{ m }}</div>
+    <div style="padding:12px 16px;margin-bottom:10px;border-radius:8px;border-left:4px solid {% if m.tags == 'error' %}#da1e28{% elif m.tags == 'success' %}#198038{% else %}#0f62fe{% endif %};background:#fff;font-size:14px;box-shadow:0 1px 2px rgba(0,0,0,.06);">{{ m }}</div>
     {% endfor %}
   </div>
   {% endif %}

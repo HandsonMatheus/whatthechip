@@ -7,78 +7,112 @@
   carrega o result inteiro num atributo — aqui NÃO). O conhecimento
   "PN → o que é" é o ativo da plataforma; o operador vê o DESTINO, não o
   porquê. Rótulos reais: só plataforma (tenancy.access.is_unmasked).
+  Visual: redesenho flat do handoff (kit triagem.html) — estilos com escopo no
+  próprio partial (o swap HTMX substitui o card inteiro, então há 1 <style> só).
 {% endcomment %}
-<div class="est-confirm est-confirm--{{ gateway_dest }}" style="margin-top:28px;">
+<style>
+  .mc{margin-top:24px;max-width:640px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif}
+  .mc__dest{border-radius:16px;padding:26px 28px;display:flex;flex-direction:column;gap:9px;border-left:6px solid transparent;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05)}
+  .mc__dest--box{background:#e6f7ec;border-color:#24a148}
+  .mc__dest--conf{background:#fdf3d6;border-color:#f1c21b}
+  .mc__dest--desc{background:#fff1f1;border-color:#da1e28}
+  .mc__dest--unk{background:#f2f4f8;border:2px dashed #c1c7cd;border-left:2px dashed #c1c7cd}
+  .mc__eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  .mc__dest--box .mc__eyebrow{color:#0e6027}
+  .mc__dest--conf .mc__eyebrow{color:#8a6a00}
+  .mc__dest--desc .mc__eyebrow{color:#a2191f}
+  .mc__dest--unk .mc__eyebrow{color:#697077}
+  .mc__row{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .mc__cap{font-size:14px;font-weight:600;color:#4d5358}
+  .mc__code{font-family:'IBM Plex Mono',monospace;font-weight:700;line-height:1;color:#161616}
+  .mc__code--box{font-size:clamp(44px,5vw,62px)}
+  .mc__code--word{font-size:clamp(34px,4vw,52px)}
+  .mc__general{font-size:14px;font-weight:600;color:#4d5358}
+  .mc__note{font-size:13px}
+  .mc__dest--box .mc__note{color:#0e6027}
+  .mc__dest--conf .mc__note{color:#8a6a00}
+  /* Sugestões de typo (só caracteres do PN — zero spec) */
+  .mc__typo{margin-top:16px}
+  .mc__typo-lbl{font-size:11px;font-weight:600;letter-spacing:.08em;color:#697077;margin-bottom:10px}
+  .mc__chips{display:flex;flex-wrap:wrap;gap:8px}
+  .mc__chip{display:inline-flex;align-items:center;padding:9px 14px;background:#f2f4f8;border:1px solid #dde1e6;border-radius:8px;text-decoration:none;cursor:pointer;transition:border-color .12s,background .12s}
+  .mc__chip:hover{border-color:#c1c7cd;background:#e8ecf3}
+  .mc__chip .wtc-fuzzy-pn{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:#0f62fe}
+  /* Ações */
+  .mc__actions{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:22px}
+  .mc__qty-lbl{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;color:#697077;margin-bottom:7px}
+  .mc__qty{display:flex;align-items:center;height:52px;border:1px solid #c1c7cd;border-radius:12px;overflow:hidden;background:#fff}
+  .mc__qty input{width:60px;border:none;background:transparent;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:18px;color:#161616;outline:none}
+  .mc__qty-steppers{display:flex;flex-direction:column;border-left:1px solid #dde1e6}
+  .mc__qty-steppers button{flex:1;width:34px;border:none;background:#f7f8fb;cursor:pointer;color:#4d5358;font-size:10px}
+  .mc__qty-steppers button:first-child{border-bottom:1px solid #dde1e6}
+  .mc__qty-steppers button:hover{background:#eef1f6}
+  .mc__btn{height:52px;padding:0 24px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-family:inherit}
+  .mc__btn--box{background:#0f62fe;color:#fff}.mc__btn--box:hover{background:#0353e9}
+  .mc__btn--conf{background:#f1c21b;color:#161616}
+  .mc__btn--desc{background:#da1e28;color:#fff}
+  .mc__btn--cancel{background:#fff;border:1px solid #c1c7cd;color:#161616;height:52px;padding:0 22px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
+  .mc__btn--cancel:hover{background:#f2f4f8}
+</style>
+
+<div class="mc est-confirm est-confirm--{{ gateway_dest }}">
 
   {% if gateway_dest == 'aprovado' %}
-    <div style="padding:26px 28px;background:#defbe6;border-left:6px solid #198038;display:flex;flex-direction:column;gap:8px;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;color:#0e6027;">✓ {% trans "IDENTIFICADO" %} · {{ pn }}</span>
-      <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;">
-        <span style="font-size:14px;font-weight:600;color:#0e6027;">{% trans "Caixa" %}</span>
-        <span style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:clamp(40px,4.6vw,60px);line-height:1;color:#161616;">{{ masked_code }}</span>
-        {% if masked_general %}<span style="font-size:14px;font-weight:600;color:#525252;">{% trans "Geral (avaliação)" %}</span>{% endif %}
+    <div class="mc__dest mc__dest--box">
+      <span class="mc__eyebrow">✓ {% trans "IDENTIFICADO" %} · {{ pn }}</span>
+      <div class="mc__row">
+        <span class="mc__cap">{% trans "Caixa" %}</span>
+        <span class="mc__code mc__code--box">{{ masked_code }}</span>
+        {% if masked_general %}<span class="mc__general">{% trans "Geral (avaliação)" %}</span>{% endif %}
       </div>
-      {% if current_qty %}<div style="font-size:13px;color:#0e6027;">{% blocktrans trimmed with n=current_qty %}já no lote: {{ n }} un.{% endblocktrans %}</div>{% endif %}
+      {% if current_qty %}<div class="mc__note">{% blocktrans trimmed with n=current_qty %}já no lote: {{ n }} un.{% endblocktrans %}</div>{% endif %}
     </div>
   {% elif gateway_dest == 'fila' %}
-    <div style="padding:26px 28px;background:#fff8e1;border-left:6px solid #ff832b;display:flex;flex-direction:column;gap:8px;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;color:#8a6d00;">⏳ {{ pn }}</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:clamp(34px,4vw,50px);line-height:1;color:#161616;">{% trans "CONFERÊNCIA" %}</span>
-      <div style="font-size:13px;color:#8a6d00;">{% trans "Separar para verificação — segue para a fila do gestor." %}</div>
+    <div class="mc__dest mc__dest--conf">
+      <span class="mc__eyebrow">⏳ {{ pn }}</span>
+      <span class="mc__code mc__code--word">{% trans "CONFERÊNCIA" %}</span>
+      <div class="mc__note">{% trans "Separar para verificação — segue para a fila do gestor." %}</div>
     </div>
   {% elif gateway_dest == 'reprovado' %}
-    <div style="padding:26px 28px;background:#fff1f1;border-left:6px solid #da1e28;display:flex;flex-direction:column;gap:8px;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;color:#a2191f;">✗ {{ pn }}</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:clamp(34px,4vw,50px);line-height:1;color:#161616;">{% trans "DESCARTE" %}</span>
+    <div class="mc__dest mc__dest--desc">
+      <span class="mc__eyebrow">✗ {{ pn }}</span>
+      <span class="mc__code mc__code--word">{% trans "DESCARTE" %}</span>
     </div>
   {% else %}
-    <div style="padding:26px 28px;background:#f4f4f4;border:2px dashed #c6c6c6;display:flex;flex-direction:column;gap:8px;">
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.12em;opacity:0.72;">{% trans "NÃO IDENTIFICADO" %} · {{ pn }}</span>
-      <div style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(38px,4.4vw,56px);line-height:1;">?</div>
+    <div class="mc__dest mc__dest--unk">
+      <span class="mc__eyebrow">{% trans "NÃO IDENTIFICADO" %} · {{ pn }}</span>
+      <div class="mc__code mc__code--word">?</div>
     </div>
   {% endif %}
 
-  {% comment %} Sugestão de TYPO (só PNs — correção operacional; nenhuma
-     spec): mesmo mecanismo do card completo. {% endcomment %}
+  {% comment %} Sugestão de TYPO (só PNs — correção operacional; nenhuma spec). {% endcomment %}
   {% if gateway.typo.has %}
-  <style>
-    .wtc-chip{transition:background 0.12s;}
-    .wtc-chip:hover{background:#c6c6c6;}
-  </style>
-  <div style="margin-top:16px;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:10px;">{% trans "VOCÊ QUIS DIZER?" %}</div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+  <div class="mc__typo">
+    <div class="mc__typo-lbl">{% trans "VOCÊ QUIS DIZER?" %}</div>
+    <div class="mc__chips">
       {% for s in gateway.typo.suggestions %}
-      <a class="wtc-chip" href="#"
-         onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
-         style="display:inline-flex;align-items:center;padding:8px 14px;background:#e8e8e8;text-decoration:none;cursor:pointer;">
-        <span class="wtc-fuzzy-pn"
-              data-typed="{{ pn }}"
-              data-suggestion="{{ s }}"
-              style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:#0f62fe;">{{ s }}</span>
+      <a class="mc__chip" href="#"
+         onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;">
+        <span class="wtc-fuzzy-pn" data-typed="{{ pn }}" data-suggestion="{{ s }}">{{ s }}</span>
       </a>
       {% endfor %}
     </div>
   </div>
-  {% comment %} Diff visual do typo (verde = o que falta/difere do digitado) —
-     mesmo mecanismo do card completo. Só caracteres do PN: zero spec. {% endcomment %}
   <script>
   (function(){
     document.querySelectorAll('.wtc-fuzzy-pn').forEach(function(el){
       var t=el.dataset.typed||'', s=el.dataset.suggestion||'', i=0;
       while(i<t.length&&i<s.length&&s[i]===t[i])i++;
       var pre=s.slice(0,i), dif=s.slice(i);
-      el.innerHTML=
-        (pre?'<span>'+pre+'</span>':'')+
-        (dif?'<span style="color:#198038;font-weight:700">'+dif+' +</span>':
-             '<span style="color:#6f6f6f;margin-left:3px;">+</span>');
+      el.innerHTML=(pre?'<span>'+pre+'</span>':'')+
+        (dif?'<span style="color:#198038;font-weight:700">'+dif+' +</span>':'<span style="color:#697077;margin-left:3px;">+</span>');
     });
   })();
   </script>
   {% endif %}
 
-  {% comment %} Preço: SÓ admin da empresa (price_quotes chega vazio pros
-     demais — gate na view); mesmo bloco dual da F10.5, sem identidade. {% endcomment %}
+  {% comment %} Preço: SÓ admin da empresa (price_quotes chega vazio pros demais
+     — gate na view); mesmo bloco dual, sem identidade. {% endcomment %}
   {% if gateway_dest == 'aprovado' or gateway_dest == 'fila' %}
   <div style="margin-top:14px;">{% include "pricing/price_block.html" %}</div>
   {% endif %}
@@ -89,39 +123,37 @@
         hx-swap="innerHTML"
         {% if gateway_dest == 'aprovado' %}hx-on::after-request="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('confirm-area').innerHTML='';"{% endif %}>
     {% csrf_token %}
-    {% comment %} Só o contrato mínimo do POST (o add re-classifica no
-       SERVIDOR — specs em hidden seriam vazamento no HTML). {% endcomment %}
+    {% comment %} Só o contrato mínimo do POST (o add re-classifica no SERVIDOR —
+       specs em hidden seriam vazamento no HTML). {% endcomment %}
     <input type="hidden" name="pn"      value="{{ pn }}">
     <input type="hidden" name="has_cap" value="{{ has_cap|yesno:'true,false' }}">
 
-    <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:22px;">
+    <div class="mc__actions">
       {% if gateway_dest != 'desconhecido' %}
       <div>
-        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:0.08em;color:#6f6f6f;margin-bottom:7px;">{% trans "QTD." %}</label>
-        <div style="display:flex;border:1px solid #8d8d8d;height:52px;background:#f4f4f4;">
-          <input id="confirm-qty" name="qty" type="number" value="1" min="1" max="9999" inputmode="numeric"
-                 style="width:58px;border:none;background:transparent;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:18px;color:#161616;" />
-          <div style="display:flex;flex-direction:column;border-left:1px solid #c6c6c6;">
-            <button type="button" onclick="document.getElementById('confirm-qty').stepUp()" style="flex:1;width:34px;border:none;border-bottom:1px solid #c6c6c6;background:#fff;cursor:pointer;color:#161616;font-size:10px;">▲</button>
-            <button type="button" onclick="document.getElementById('confirm-qty').stepDown()" style="flex:1;width:34px;border:none;background:#fff;cursor:pointer;color:#161616;font-size:10px;">▼</button>
+        <label class="mc__qty-lbl">{% trans "QTD." %}</label>
+        <div class="mc__qty">
+          <input id="confirm-qty" name="qty" type="number" value="1" min="1" max="9999" inputmode="numeric" />
+          <div class="mc__qty-steppers">
+            <button type="button" onclick="document.getElementById('confirm-qty').stepUp()">▲</button>
+            <button type="button" onclick="document.getElementById('confirm-qty').stepDown()">▼</button>
           </div>
         </div>
       </div>
       {% endif %}
 
       {% if gateway_dest == 'aprovado' %}
-        <button type="submit" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#0f62fe;color:#fff;">+ {% trans "Adicionar ao estoque" %}</button>
+        <button type="submit" class="mc__btn mc__btn--box">+ {% trans "Adicionar ao estoque" %}</button>
       {% elif gateway_dest == 'fila' %}
-        <button type="submit" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#ff832b;color:#161616;">⏳ {% trans "Enviar para conferência" %}</button>
+        <button type="submit" class="mc__btn mc__btn--conf">⏳ {% trans "Enviar para conferência" %}</button>
       {% elif gateway_dest == 'reprovado' %}
-        <button type="submit" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#da1e28;color:#fff;">✗ {% trans "Registrar descarte" %}</button>
+        <button type="submit" class="mc__btn mc__btn--desc">✗ {% trans "Registrar descarte" %}</button>
       {% else %}
-        <button type="submit" style="height:52px;padding:0 24px;border:none;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:#ff832b;color:#161616;">{% trans "Registrar como desconhecido" %}</button>
+        <button type="submit" class="mc__btn mc__btn--conf">{% trans "Registrar como desconhecido" %}</button>
       {% endif %}
 
-      <button type="button"
-              onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();"
-              style="height:52px;padding:0 22px;background:#fff;border:1px solid #161616;color:#161616;font-size:15px;font-weight:600;cursor:pointer;">{% trans "Cancelar" %}</button>
+      <button type="button" class="mc__btn--cancel"
+              onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">{% trans "Cancelar" %}</button>
     </div>
   </form>
 </div>

@@ -631,8 +631,8 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
   background: var(--surface);
   width: 100%;
   max-width: 480px;
-  border-radius: 0;             /* Carbon flat */
-  box-shadow: 0 16px 48px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 16px;
+  box-shadow: 0 24px 48px -20px rgba(15,98,254,.18), 0 8px 20px -12px rgba(16,24,40,.20);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -680,7 +680,7 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border-radius: 0;
+  border-radius: 8px;
   transition: background .1s;
 }
 .est-modal-close:hover { background: var(--surface-3); }
@@ -734,10 +734,10 @@ table.est-table .est-th-qty, table.est-table .est-th-action { width: 60px; }
 }
 
 .est-modal-btn-cancel {
-  background: #161616;
-  color: #ffffff;
+  background: #f2f4f8;
+  color: #161616;
 }
-.est-modal-btn-cancel:hover { background: #393939; }
+.est-modal-btn-cancel:hover { background: #e8ecf3; }
 
 .est-modal-btn-delete {
   background: #da1e28;
@@ -1061,7 +1061,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
   — comentário longo é SEMPRE {% templatetag opencomment %}comment{% templatetag closecomment %}.
 {% endcomment %}
 {% if valuations %}
-<div style="background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;padding:16px 20px;margin-bottom:20px;">
+<div style="background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
   <div style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">
     💰 {% trans "Valoração do lote" %} {% if lot.status == 'closed' %}· {% trans "congelada no fechamento" %}{% else %}· {% trans "estimativa ao vivo" %}{% endif %}
   </div>
@@ -1081,7 +1081,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
 <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:stretch;">
 
   {# ── LEFT: console de triagem ──────────────────────────────── #}
-  <div style="flex:2 1 540px;min-width:0;background:#fff;border:1px solid #e0e0e0;padding:28px;">
+  <div style="flex:2 1 540px;min-width:0;background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);padding:28px;">
 
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <span style="font-size:12px;font-weight:600;letter-spacing:0.1em;color:#6f6f6f;">{% trans "PART NUMBER" %}</span>
@@ -1091,7 +1091,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
     <input id="pn-input" name="pn" type="text" value=""
            placeholder="KMQ310006M-B421" spellcheck="false" autocomplete="off" inputmode="text" autofocus
            hx-get="{% url 'estoque:preview' lot.pk %}" hx-trigger="pn-ready" hx-target="#confirm-area" hx-swap="innerHTML" hx-include="[name='pn']"
-           style="width:100%;height:76px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 18px;font-family:'IBM Plex Mono',monospace;font-size:clamp(28px,4vw,40px);color:#161616;letter-spacing:0.02em;text-transform:uppercase;" />
+           style="width:100%;height:76px;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:12px;padding:0 18px;font-family:'IBM Plex Mono',monospace;font-size:clamp(28px,4vw,40px);color:#161616;letter-spacing:0.02em;text-transform:uppercase;" />
 
     <div style="display:flex;gap:8px;margin-top:14px;">
       <button type="button" id="est-decode-btn" class="wtc-decode-btn" disabled>{% trans "Decodificar" %} <span style="font-size:18px;">→</span></button>
@@ -1099,7 +1099,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
       <button type="button" id="est-mic-btn" class="wtc-mic-btn"
               data-mic-target="pn-input" data-mic-hint="est-pin-hint" data-mic-cta="est-decode-btn"
               title="{% trans 'Ditar por voz' %}" aria-label="{% trans 'Ditar por voz' %}"
-              style="width:52px;height:52px;flex:none;background:#f4f4f4;border:1px solid #e0e0e0;color:#525252;cursor:pointer;display:flex;align-items:center;justify-content:center;"></button>
+              style="width:52px;height:52px;flex:none;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:12px;color:#525252;cursor:pointer;display:flex;align-items:center;justify-content:center;"></button>
     </div>
 
     {# hints ocultos — mantidos para o JS de decode/voz #}
@@ -1108,7 +1108,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
 
     {# Resultado / estado vazio — alvo HTMX #}
     <div id="confirm-area">
-      <div style="margin-top:28px;border:1px dashed #e0e0e0;padding:44px 24px;text-align:center;">
+      <div style="margin-top:28px;border:1px dashed #c1c7cd;border-radius:16px;padding:44px 24px;text-align:center;">
         <svg width="40" height="40" viewBox="0 0 32 32" fill="none" stroke="#d0d0d0" stroke-width="1.5" style="margin-bottom:12px;"><path d="M16 4 28 10v12L16 28 4 22V10z"/><path d="M4 10l12 6 12-6M16 16v12"/></svg>
         <div style="font-size:14px;color:#a8a8a8;">{% trans "Nenhum chip lido ainda" %}</div>
       </div>
@@ -1119,7 +1119,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
   <div style="flex:1 1 360px;min-width:0;display:flex;flex-direction:column;gap:10px;align-self:stretch;">
 
     {# ── Marcas suportadas — solto acima do widget ── #}
-    <div style="padding:14px 16px;background:#f4f4f4;border:1px solid #e0e0e0;">
+    <div style="padding:14px 16px;background:#f7f8fb;border:1px solid #dde1e6;border-radius:12px;">
       <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6f6f6f;margin-bottom:10px;">{% trans "Marcas suportadas" %}</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
         {% for brand in brands %}
@@ -1129,7 +1129,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
     </div>
 
     {# ── Widget de estoque do lote ── #}
-    <div style="background:#fff;border:1px solid #e0e0e0;display:flex;flex-direction:column;flex:1;">
+    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);display:flex;flex-direction:column;flex:1;">
 
     <div style="padding:22px 20px 14px;border-bottom:1px solid #e0e0e0;">
       <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:16px;">
@@ -1139,13 +1139,13 @@ table.est-table td { padding: var(--s5) var(--s5); }
       <div style="display:flex;gap:8px;">
         <input id="search-q" name="q" type="search" value="{{ q }}" placeholder="{% trans 'Filtrar por PN…' %}"
                hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="input changed delay:300ms" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#tipo-filter"
-               style="flex:1;min-width:0;height:40px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 12px;font-size:14px;color:#161616;" />
+               style="flex:1;min-width:0;height:40px;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:10px;padding:0 12px;font-size:14px;color:#161616;" />
         {% if not masked %}
         {% comment %} F12: filtro por TIPO só faz sentido pra quem vê tipos
            (plataforma). Empresa-cliente enxerga códigos C-###. {% endcomment %}
         <select id="tipo-filter" name="tipo"
                 hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="change" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#search-q"
-                style="width:108px;flex:none;height:40px;background:#f4f4f4;border:none;border-bottom:1px solid #8d8d8d;padding:0 8px;font-size:14px;color:#161616;cursor:pointer;">
+                style="width:108px;flex:none;height:40px;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:10px;padding:0 8px;font-size:14px;color:#161616;cursor:pointer;">
           <option value="">{% trans "Todos" %}</option>
           <option value="eMCP" {% if tipo == "eMCP" %}selected{% endif %}>eMCP</option>
           <option value="uMCP" {% if tipo == "uMCP" %}selected{% endif %}>uMCP</option>
@@ -1166,7 +1166,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
     {% if wtc_is_manager %}
     <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid #e0e0e0;">
       <a href="{% url 'estoque:export' lot.pk %}"
-         style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:44px;background:#fff;border:1px solid #8d8d8d;color:#161616;font-size:14px;font-weight:600;text-decoration:none;">
+         style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:44px;background:#fff;border:1px solid #c1c7cd;border-radius:10px;color:#161616;font-size:14px;font-weight:600;text-decoration:none;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#161616" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 19h14"/></svg>
         {% trans "Exportar" %}
       </a>
