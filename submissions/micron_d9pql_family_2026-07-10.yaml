@@ -1,0 +1,512 @@
+# Submissão de known_parts — Micron, FBGA D9PQL + família MT41K1G4 (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9PQL
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9PQW, D9PSL, D8CQL, D8GQL, D9BYL) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ACHADO: D9PQL → MT41K1G4RH-125:E. Prefixo MT41K = DDR3L (1,35V),
+# mesma família já vista em D9PZQ/D9TXS/D9PSC. Capacidade: 1G × 4bit =
+# 4096Mb = 4Gb — confirmado via Octopart ("DDR3L SDRAM 4G-Bit 1Gx4
+# 1.35V"). chip_type="DDR3L", interface="x4", density_gbit="4Gb".
+#
+# Forward-lookup no prefixo "MT41K1G4" (2026-07-10) achou 46 PNs: 24 de
+# produção ("D9*") + 22 Engineering Sample ("Z9*", EXCLUÍDOS). Nenhum
+# dos 24 tem part-name direto da Micron (campo vazio em todos —
+# família mais antiga/menos indexada no decoder). Entram aqui os 24 de
+# produção (alvo + 23 irmãos), apoiados na fórmula + tipo confirmados
+# pelo alvo via Octopart + identidade direta da API Micron por
+# fbga_code. Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente
+# — lição do incidente D9RZH). Sem sobreposição com nenhuma submissão
+# anterior (grep em submissions/*.yaml, zero match).
+#
+# ⚠ PENDENTE — pré-checagem de part_number_norm contra o banco (ver
+# memória wtc-precheck-part-number-norm-antes-de-bulk) ainda não rodada
+# pelo dono. Ver script no chat.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9pql_family_2026-07-10.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9pql_family_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41K1G4RH-125:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9PQL"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=MT41K1G4RH-125%3AE"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-10): D9PQL → MT41K1G4RH-125:E. Prefixo MT41K = DDR3L
+      (1,35V), mesma convenção já estabelecida nos lotes
+      D9PZQ/D9TXS/D9PSC. CAPACIDADE por fórmula: 1G (profundidade) × 4bit
+      (largura) = 4096Mb = 4Gb. Confirmado via Octopart, campo estruturado
+      direto: "DRAM Chip DDR3L SDRAM 4G-Bit 1Gx4 1.35V 78-Pin F-BGA" —
+      bate exato em tipo (DDR3L), organização (1Gx4) e densidade (4G-Bit)
+      — fonte: https://octopart.com/search?q=MT41K1G4RH-125%3AE. Campo
+      density_gbit (Gb), interface x4, convenção DDR discreta (CLAUDE.md
+      §6).
+
+  - part_number: "MT41K1G4THW-187E:F"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9LCV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LCV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4THW-15E:F"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9LCX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LCX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4THD-187E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9LRX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LRX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4THD-15E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9LSB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LSB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4THV-15E:H"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9MQG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MQG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4THV-125:H"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9MQQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MQQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4THV-187E:H"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9MRD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MRD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4RA-15E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9NZW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9NZW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4RA-125:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9PCM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PCM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4THV-125:M"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9PFL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PFL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4THV-15E:M"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9PFQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PFQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4HX-125:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9PXT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PXT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4HX-107:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4RH-107:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9QBQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QBQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4RA-107:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9QFJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QFJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4RH-15E:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9QSM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QSM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4RH-125:J"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9QVJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QVJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4RH-107:J"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9QVN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QVN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4RH-125 M:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9RBP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RBP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4RG-107:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9RVW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RVW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4DA-107:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9SGP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SGP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4DA-107:R"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9TDJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TDJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K1G4DA-125:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "4Gb"
+    fbga_code: "D9VBS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9VBS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K1G4, 2026-07-10). Mesma organização do alvo D9PQL
+      (MT41K1G4RH-125:E): 1G × 4bit = 4096Mb = 4Gb — capacidade invariante
+      nesta família (forward-lookup restrito ao prefixo exato MT41K1G4).
+      Tipo DDR3L confirmado pelo alvo via Octopart ("DDR3L SDRAM ...
+      1.35V") + convenção MT41K já estabelecida nesta série. Sem part-name
+      individual da Micron para nenhum PN desta família (campo vazio em
+      todos os 24 retornos do forward-lookup) nem verificação distribuidor
+      específica para este PN; apoiado na fórmula + tipo confirmados pelo
+      alvo + identidade direta da API oficial Micron para ESTE fbga_code.

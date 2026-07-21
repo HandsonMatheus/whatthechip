@@ -1,0 +1,52 @@
+# Submissão de known_parts — Samsung, família KMI (NOVA — eMCP LPDDR2 legado)
+#
+# ⚠ ORIGEM: PN buscado como "KM12U000MA" (dígito '1') — a própria família KM1
+# (uMCP UFS4.0+LPDDR5X ultra-premium) já tinha aviso de OCR no tip ("1 confundido
+# com I"), mas ninguém (nem o motor, nem outro chat que corrigiu o SAM_EMCP_CAP_KM1)
+# havia checado a leitura alternativa "I" até o dono achar a foto do chip físico:
+# https://www.puris.net/archives/2280 — modelo real é KMI2U000MA-B800 (letra I).
+# Família KMI CRIADA DO ZERO (não existia gramática nem known_part algum antes).
+#
+# DECODE: pn[2]='I' → LPDDR2 (SAM_EMCP_GEN, adicionado). pn[3:5]='2U' → 32GB eMMC +
+# 16Gbit LPDDR2 (16Gbit÷8=2GB), mapa próprio SAM_EMCP_CAP_KMI (isolado do KM1 e do
+# SAM_EMCP_CAP legado — mesma disciplina preventiva já aplicada ao KM1 nesta sessão).
+#
+# FONTE: 5 distribuidores independentes convergentes, todos com o texto idêntico
+# "MCP 32GB eMMC 16Gb QDP LPDDR2-S4 SDRam":
+#   - Puris (https://www.puris.net/archives/2280) — fonte original do dono, com foto do chip
+#   - Apogeeweb (https://www.apogeeweb.net/productdetail/samsung-semiconductor-inc-kmi2u000ma-b800-htrs14mb)
+#   - Censtry (https://www.censtry.com/product/samsung/kmi2u000ma-b800.html) — 7654 PCS em estoque
+#   - SSFKG (id=107781)
+#   - Jotrin
+# RENTABILIDADE: LPDDR2 é geração morta no sistema (mesmo padrão de KMJ/KMK/KML/KMV,
+# já documentados como "sem valor comercial atual/Fluxo de Resíduo") — NÃO RENTÁVEL
+# confirmado no engine independente da capacidade.
+brand: "Samsung"
+known_parts:
+  - part_number: "KMI2U000MA"
+    chip_type: "eMCP"
+    subtype: "LPDDR2"
+    emcp_nand: "eMMC 32GB"
+    emcp_ram: "LPDDR2 2GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/2280"
+    notes: >
+      PN buscado originalmente (com typo de OCR "KM12U000MA", dígito 1 em vez de
+      letra I — ver cabeçalho do arquivo). 5 distribuidores independentes
+      convergentes: Puris (foto do chip físico), Apogeeweb, Censtry (7654 PCS em
+      estoque), SSFKG, Jotrin — todos "MCP 32GB eMMC 16Gb QDP LPDDR2-S4 SDRam".
+      16Gbit ÷ 8 = 2GB. Família KMI nova — não existia gramática nem known_part
+      antes desta submissão.
+
+  - part_number: "KMI2U000MAB800"
+    chip_type: "eMCP"
+    subtype: "LPDDR2"
+    emcp_nand: "eMMC 32GB"
+    emcp_ram: "LPDDR2 2GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/2280"
+    notes: >
+      Forma completa com sufixo de revisão "-B800" (marcação física real do chip,
+      confirmada por foto no Puris). Mesma fonte e mesmos dados do PN base
+      KMI2U000MA — registrado como linha separada para casar com a busca caso o
+      operador digite o sufixo completo.

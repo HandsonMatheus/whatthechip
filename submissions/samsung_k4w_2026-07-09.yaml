@@ -1,0 +1,121 @@
+# Submissão de known_parts — Samsung, família K4W (gDDR3)
+# Gerado a partir do PN não identificado K4W2G1646SBC12 (busca em 2026-07-09,
+# 20:16). O local seed_known_parts.json já tinha 13 known_parts da família
+# (die-letters C/D/E/B/Q em 1Gb/2Gb/4Gb) — este arquivo cobre 3 die-letters
+# NOVOS, achados pesquisando o alvo e "todos os seus similares" (pedido do
+# usuário): S (2Gb, o alvo), G (1Gb) e E (2Gb) — mais Q em 2Gb (Q já existia
+# em 4Gb no seed, mas não em 2Gb). Nenhuma capacidade diverge da gramática
+# (SAM já decodifica certo via DRAM_PC) — só faltavam os PNs exatos no banco.
+#
+# Convenção de PN: K4W tem pn_length=null (variável) — registro BASE e
+# BASE+sufixo (sem hífen) pra cada die-letter, mesmo padrão já usado no seed
+# existente (ex.: K4W2G1646C E K4W2G1646CHC12 separados).
+brand: "Samsung"
+known_parts:
+  - part_number: "K4W2G1646S"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.digipart.com/part/K4W2G1646S-BC12"
+    notes: >
+      Base PN — gDDR3 Samsung 2Gb x16 (S-die). Deriva de K4W2G1646S-BC12
+      (Censtry + DigiPart + WorldwayES + NetComponents, todos confirmando
+      "2Gb GDDR3 SDRAM... 128Mx16... FBGA-96"). 2Gbit÷8=256MB/die — bate com
+      a gramática (pn[3:5]='2G' via DRAM_PC). Mesmo padrão dos die-letters
+      C/E/Q já vistos nesta família: letra não muda capacidade, só
+      revisão/fab.
+
+  - part_number: "K4W2G1646SBC12"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.digipart.com/part/K4W2G1646S-BC12"
+    notes: >
+      PN original buscado (família/mapa já cadastrados, PN exato não estava
+      no banco — só por isso "não achou"; fuzzy_suggestion do engine apontou
+      K4W2G1646CHC12, mas 'S' é um die-letter REAL e diferente, não erro de
+      leitura). Mesma fonte do item acima (DigiPart, Censtry, WorldwayES).
+      BC12 = grade de speed/temp, specs idênticos aos outros grades desta
+      família.
+
+  - part_number: "K4W1G1646G"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://datasheet.ciiva.com/26786/k4w1g1646g-bc11-26786980.pdf"
+    notes: >
+      Base PN — gDDR3 Samsung 1Gb x16 (G-die), NOVO die-letter não visto nos
+      known_parts já existentes desta família (que só tinham D/E pra 1Gb).
+      Datasheet Samsung real (Ciiva, PDF direto) confirma "K4W1G1646G-BC11,
+      1Gb gDDR3 SDRAM, G-die, 64Mx16" — 1Gbit÷8=128MB/die, bate com a
+      gramática (pn[3:5]='1G'). Também em estoque ativo (Jotrin, Impact
+      Computers).
+
+  - part_number: "K4W1G1646GBC11"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "128MB"
+    confidence: confirmed
+    source_url: "https://datasheet.ciiva.com/26786/k4w1g1646g-bc11-26786980.pdf"
+    notes: >
+      Forma completa (base+sufixo) do item acima — mesmo datasheet Samsung
+      direto (Ciiva). BC11 = grade de speed/temp.
+
+  - part_number: "K4W2G1646E"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.censtry.com/product/samsung/k4w2g1646e.html"
+    notes: >
+      Base PN — gDDR3 Samsung 2Gb x16 (E-die), NOVO die-letter não visto nos
+      known_parts já existentes desta família pra 2Gb (que só tinham C).
+      Censtry + AB Sunshine + Datasheets360 + Alldatasheet confirmam
+      "K4W2G1646E-BC1A, GDDR3, 128Mx16, 1.5V, mass production". 2Gbit÷8=
+      256MB/die — bate com a gramática.
+
+  - part_number: "K4W2G1646EBC1A"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.censtry.com/product/samsung/k4w2g1646e.html"
+    notes: >
+      Forma completa (base+sufixo) do item acima — mesmas fontes. BC1A =
+      grade de speed/temp.
+
+  - part_number: "K4W2G1646Q"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: distributor
+    source_url: "https://www.jotrin.com/product/parts/K4W2G1646Q_BC1A"
+    notes: >
+      Base PN — Q-die já confirmado nesta família em 4Gb (K4W4G1646Q, seed
+      existente), agora também aparece em 2Gb via listagem Jotrin
+      (K4W2G1646Q-BC1A). Fonte única (1 distribuidor, sem datasheet direto)
+      — por isso confidence=distributor, não confirmed (mesmo critério já
+      usado no seed pros itens só-Octopart desta família). 2Gbit÷8=256MB —
+      bate com a gramática de qualquer forma (não muda o resultado, só
+      confirma o PN como conhecido).
+
+  - part_number: "K4W2G1646QBC1A"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: distributor
+    source_url: "https://www.jotrin.com/product/parts/K4W2G1646Q_BC1A"
+    notes: >
+      Forma completa (base+sufixo) do item acima — mesma fonte única
+      (Jotrin), mesma ressalva de confidence=distributor.

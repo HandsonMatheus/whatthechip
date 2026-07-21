@@ -1,0 +1,153 @@
+# Submissão de known_parts — Samsung, família K4D (GDDR2, convenção de mercado) — FAMÍLIA NOVA
+# Gerado a partir do PN totalmente desconhecido K4D553235FGC33 (busca em 2026-07-10,
+# 10:47) — known=false, sem família, sem fuzzy_suggestion. Não havia NADA local
+# (seed_known_parts.json, data/psg/, samsung.yaml) sobre K4D — família criada do zero.
+#
+# O QUE É: "GDDR SDRAM" Samsung — o datasheet oficial (K4D553235F-GC, Rev 1.6
+# Mai/2005, E o K4D263238K-FC, Rev 1.0 Jul/2008) chama o chip só de "GDDR SDRAM",
+# SEM número de geração. NÃO existe fonte Tier-1 dizendo "GDDR2" explicitamente.
+# ⚠ chip_type="GDDR2" é CONVENÇÃO DE MERCADO/ÉPOCA (2003-2008, pré-padronização
+# JEDEC numerada — é como a indústria chama retroativamente esses chips), decisão
+# EXPLÍCITA do dono (2026-07-10) — o portão do load_brands rejeita chip_type
+# genérico "GDDR" (sem número) em família ativa (regra de ouro #12). Documentado
+# integralmente no tip/reasoning da família em samsung.yaml.
+#
+# DECODE: pn[3:5] (2 chars logo após "K4D") = densidade total do chip, INDEPENDENTE
+# da organização (x16 vs x32 — sufixo/base variam mas a capacidade total é a mesma).
+# Confirmado com bit count EXATO em 2 datasheets Samsung oficiais:
+#   - K4D553235F-GC (alldatasheet, Rev 1.6 Mai/2005): "268,435,456 bits" = 256Mbit = 32MB → chave '55'
+#   - K4D263238K-FC (BDTIC/Samsung, Rev 1.0 Jul/2008): "134,217,728 bits" = 128Mbit = 16MB → chave '26'
+# Sufixo (GCxx/TCxx/FCxx/VCxx) = grade de clock (MHz/Mbps), não muda capacidade.
+# "V" no lugar da letra G/F/T = versão Lead-Free do MESMO chip (o próprio datasheet
+# diz: "K4D553235F-VC é o PN da versão lead-free").
+#
+# RENTABILIDADE: GDDR2 < gddr_min_gen (default 3) → NÃO RENTÁVEL, independente de
+# capacidade (mesmo mecanismo já usado no bug fix de GDDR2 anterior). Validado no
+# sandbox (ver relato ao dono).
+#
+# PNs coletados — mesma base do alvo (K4D553235F, chave '55', 3 grades de clock
+# confirmadas na tabela ORDERING INFORMATION do datasheet oficial + 1 variante
+# lead-free); base irmã mesma densidade mas organização x16 (K4D551638F, 4 grades
+# de clock confirmadas via alldatasheet); base da 2ª densidade (K4D263238K, chave
+# '26', 2 grades de clock confirmadas no datasheet oficial).
+brand: "Samsung"
+known_parts:
+  - part_number: "K4D553235FGC33"
+    chip_type: "GDDR2"
+    subtype: "GDDR2"
+    capacity: "32MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/100853/SAMSUNG/K4D553235F-GC33.html"
+    notes: >
+      PN original buscado (totalmente desconhecido, sem família). Datasheet
+      Samsung oficial (alldatasheet, Rev 1.6 Mai/2005): "The K4D553235F is
+      268,435,456 bits... organized as 4 x 2,097,152 words by 32 bits" =
+      256Mbit = 32MB. Tabela ORDERING INFORMATION confirma GC33 = 300MHz,
+      600Mbps/pin, SSTL_18, 144-Ball FBGA. 2M x 32Bit x 4 Banks GDDR SDRAM.
+      ⚠ chip_type=GDDR2 é convenção de mercado/época — o datasheet Samsung
+      não afirma o número da geração (decisão do dono, ver yaml da família).
+
+  - part_number: "K4D553235FGC25"
+    chip_type: "GDDR2"
+    subtype: "GDDR2"
+    capacity: "32MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/100853/SAMSUNG/K4D553235F-GC33.html"
+    notes: >
+      Grade de clock irmã do alvo (mesma base K4D553235F) — tabela ORDERING
+      INFORMATION do mesmo datasheet oficial: GC25 = 400MHz, 800Mbps/pin.
+      Mesma capacidade 32MB (256Mbit). chip_type=GDDR2 = convenção de
+      mercado (ver PN alvo acima).
+
+  - part_number: "K4D553235FGC2A"
+    chip_type: "GDDR2"
+    subtype: "GDDR2"
+    capacity: "32MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/100853/SAMSUNG/K4D553235F-GC33.html"
+    notes: >
+      Grade de clock irmã do alvo (mesma base K4D553235F) — tabela ORDERING
+      INFORMATION do mesmo datasheet oficial: GC2A = 350MHz, 700Mbps/pin.
+      Mesma capacidade 32MB (256Mbit). chip_type=GDDR2 = convenção de
+      mercado (ver PN alvo acima).
+
+  - part_number: "K4D553235FVC33"
+    chip_type: "GDDR2"
+    subtype: "GDDR2"
+    capacity: "32MB"
+    confidence: confirmed
+    source_url: "https://datasheet.octopart.com/K4D553235F-VC33-Samsung-datasheet-13694237.pdf"
+    notes: >
+      Variante Lead-Free do PN alvo — o próprio datasheet Samsung diz
+      "K4D553235F-VC é o PN de embalagem lead-free" (mesmo chip, "G"→"V").
+      Confirmado como PN real rastreado no Octopart. Mesma capacidade 32MB.
+      chip_type=GDDR2 = convenção de mercado (ver PN alvo acima).
+
+  - part_number: "K4D551638FTC33"
+    chip_type: "GDDR2"
+    subtype: "GDDR2"
+    capacity: "32MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/85029/SAMSUNG/K4D551638F-TC33.html"
+    notes: >
+      Base irmã do alvo — MESMA densidade (256Mbit=32MB, chave '55') mas
+      organização diferente: "4 x 4,194,304 words by 16 bits" (x16, não x32
+      como K4D553235F) — capacidade total idêntica, só bus width diferente
+      (não decodificado nesta gramática, só a capacidade). Datasheet Samsung
+      oficial via alldatasheet. TC33 = grade de clock. chip_type=GDDR2 =
+      convenção de mercado (ver PN alvo acima).
+
+  - part_number: "K4D551638FTC40"
+    chip_type: "GDDR2"
+    subtype: "GDDR2"
+    capacity: "32MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/85030/SAMSUNG/K4D551638F-TC40.html"
+    notes: >
+      Grade de clock irmã do item acima (mesma base K4D551638F). Datasheet
+      Samsung oficial via alldatasheet. Mesma capacidade 32MB.
+
+  - part_number: "K4D551638FTC50"
+    chip_type: "GDDR2"
+    subtype: "GDDR2"
+    capacity: "32MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/85032/SAMSUNG/K4D551638F-TC50.html"
+    notes: >
+      Grade de clock irmã do item acima (mesma base K4D551638F). Datasheet
+      Samsung oficial via alldatasheet. Mesma capacidade 32MB.
+
+  - part_number: "K4D551638FTC60"
+    chip_type: "GDDR2"
+    subtype: "GDDR2"
+    capacity: "32MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/85033/SAMSUNG/K4D551638F-TC60.html"
+    notes: >
+      Grade de clock irmã do item acima (mesma base K4D551638F). Datasheet
+      Samsung oficial via alldatasheet. Mesma capacidade 32MB.
+
+  - part_number: "K4D263238KFC40"
+    chip_type: "GDDR2"
+    subtype: "GDDR2"
+    capacity: "16MB"
+    confidence: confirmed
+    source_url: "https://www.bdtic.com/datasheet/SAMSUNG/K4D263238K_144FBGA_RoHS.pdf"
+    notes: >
+      2ª densidade da família (chave '26', 128Mbit=16MB). Datasheet Samsung
+      oficial (BDTIC, Rev 1.0 Jul/2008): "The K4D263238K is 134,217,728
+      bits... organized as 4 x 1,048,576 words by 32 bits" = 128Mbit = 16MB.
+      Tabela ORDERING INFORMATION confirma FC40 = 250MHz, 500Mbps/pin,
+      SSTL_2, 144FBGA Lead-Free/Halogen-Free. chip_type=GDDR2 = convenção
+      de mercado (ver PN alvo acima).
+
+  - part_number: "K4D263238KFC50"
+    chip_type: "GDDR2"
+    subtype: "GDDR2"
+    capacity: "16MB"
+    confidence: confirmed
+    source_url: "https://www.bdtic.com/datasheet/SAMSUNG/K4D263238K_144FBGA_RoHS.pdf"
+    notes: >
+      Grade de clock irmã do item acima (mesma base K4D263238K) — tabela
+      ORDERING INFORMATION do mesmo datasheet oficial: FC50 = 200MHz,
+      400Mbps/pin. Mesma capacidade 16MB (128Mbit).

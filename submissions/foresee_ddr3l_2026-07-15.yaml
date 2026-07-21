@@ -1,0 +1,44 @@
+# Submissão known_parts — Foresee (Longsys), categoria DDR3L standalone (2026-07-15).
+# Fonte Tier-1: catálogo oficial "FORESEE Embedded Storage Product Catalogue" (longsys.com), seção DDR3L.
+# DRAM de PC low-voltage (1.35/1.5V), x16, FBGA96, 25nm, JEDEC. Densidade LITERAL no PN (pn[6:10]=Gb/die).
+# Convenção DDR (§6): density_gbit = densidade do die em Gb; capacity = MB por die (Gb÷8). 2Gb/4Gb ≥ 2Gb ⇒ RENTÁVEL.
+# Rodar (o DONO): submit_known_parts submissions/foresee_ddr3l_2026-07-15.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ddr3l_2026-07-15.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "F60C1A0002-M6AR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys (FORESEE Embedded Storage Product Catalogue), seção DDR3L: F60C1A0002-M6AR, 2Gbit/die (=256MB), DDR3L 1.35/1.5V, x16, FBGA96 7.5x13.5x1.2mm, 25nm, 0~95C. Densidade literal pn[6:10]=0002=2Gb."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "F60C1A0002-M69W"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "256MB"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção DDR3L: F60C1A0002-M69W, 2Gbit/die (=256MB), DDR3L, x16, FBGA96, wide-temp -40~95C (sufixo W). Densidade literal pn[6:10]=0002=2Gb."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "F60C1A0004-M79R"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção DDR3L: F60C1A0004-M79R, 4Gbit/die (=512MB), DDR3L 1.35/1.5V, x16, FBGA96 7.5x13.5x1.2mm, 25nm, 0~95C. Densidade literal pn[6:10]=0004=4Gb. Análogo ao Micron MT41K256M16 (256M×16=4Gbit, mesmo pacote)."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "F60C1A0004-M79W"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    capacity: "512MB"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção DDR3L: F60C1A0004-M79W, 4Gbit/die (=512MB), DDR3L, x16, FBGA96, wide-temp -40~95C (sufixo W). Densidade literal pn[6:10]=0004=4Gb."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"

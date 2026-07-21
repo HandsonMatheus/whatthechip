@@ -1,0 +1,573 @@
+# Submissão de known_parts — Micron, FBGA NW912 + família MT29F512G08 (2026-07-15)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA NW912
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (NW922, JW312, JW412, JW712, JW812) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ACHADO: NW912 → MT29F512G08EEHAFJ4-3R:A. Família MT29F (NAND Flash
+# cru), mesma base de NW813/NW814 — aqui organização "512G8" (512Gb
+# totais, x8). TIPO + CAPACIDADE confirmados diretamente pelo part-name
+# da própria Micron: "TLC 512G X8 VBGA", sub-category
+# "obsolete-3d-nand". CAPACIDADE por fórmula: 512Gb ÷ 8bit = 64GB —
+# cross-check independente via Octopart: "NAND Flash, 3D NAND Flash,
+# 512Gb, 3.3V, 132-ball VBGA" + "512Gb 64G x 8 333MHz" (bate exato).
+#
+# Coleta máxima da família (conforme padrão desta sessão): forward-
+# lookup no PREFIXO DE PN "MT29F512G08" (2026-07-15, não no prefixo do
+# fbga_code — mesma situação do NW814: a família se espalha por vários
+# prefixos de fbga_code: HS/NQ/NV/NW/NX/NY) devolveu 220 PNs. Filtrado
+# por "tem part-name direto da Micron" (mesmo critério de NW813/NW814 —
+# célula MLC/TLC NÃO é fixa pelo prefixo, exige confirmação por PN;
+# confirmado ao vivo aqui: esta leva mistura 11 MLC + 14 TLC sob o MESMO
+# prefixo "MT29F512G08") — sobraram 25 irmãos confirmados (incl. alvo),
+# TODOS com capacidade de pacote 512Gb=64GB. O filtro "só com part-name"
+# NÃO exclui por si só entradas com "ES" no PN (diferente das famílias
+# DDR desta sessão): 3 dos 25 confirmados têm "ES" colado ao sufixo
+# (HSA17 "-ITFES:G", NX902 "-37ITRES:E", NX910 "-3ITFES:A") mas MESMO
+# ASSIM têm part-name+sub-category diretos da Micron — Tier-1 direto
+# por PN individual prevalece sobre a heurística de "ES=amostra não
+# confirmada" (essa heurística serve pra formula-extension SEM
+# confirmação própria; aqui cada entrada tem confirmação própria da
+# Micron, então entra). Cross-check no Octopart confirma que a variante
+# ES desta família (ex. MT29F512G08EEHAFJ4-3RES:A) é um part-number
+# distinto e cataloga-do — "ES" aqui não invalida a confirmação Tier-1
+# específica daquele PN.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match, incl. NW813/NW814).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_nw912_family_2026-07-15.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_nw912_family_2026-07-15.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT29F512G08EEHAFJ4-3R:A"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW912"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-3d-nand/part-catalog/part-detail/mt29f512g08eehafj4-3r-a"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-15): NW912 → MT29F512G08EEHAFJ4-3R:A. Família MT29F (NAND
+      Flash cru), mesma base de NW813/NW814. TIPO + CAPACIDADE
+      confirmados diretamente pelo part-name da própria Micron: "TLC 512G X8 VBGA",
+      sub-category "obsolete-3d-nand". CAPACIDADE por fórmula: 512Gb
+      (densidade total do pacote, "512G" no part-name) ÷ 8bit (largura,
+      "X8") = 64GB. Cross-check independente via Octopart: "NAND Flash,
+      3D NAND Flash, 512Gb, 3.3V, 132-ball VBGA" + descrição estruturada
+      "512Gb 64G x 8 333MHz" — bate exato em densidade (512Gb) e
+      organização (x8). Célula TLC confirmada pela Micron E pelo Octopart
+      (categoria "3D NAND Flash"). chip_type="NAND Flash",
+      subtype="TLC NAND", interface="Async/ONFI" (mesma convenção do lote
+      NW813/NW814 pra família MT29F).
+
+  - part_number: "MT29F512G08EBLGEJ4-ITFES:G"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "HSA17"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-tlc-nand/part-catalog/part-detail/mt29f512g08eblgej4-itfes-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "obsolete-tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBLGEJ4-ITF:G"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "HSA18"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-tlc-nand/part-catalog/part-detail/mt29f512g08eblgej4-itf-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "obsolete-tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CMCEBJ4-37ITR:E"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NQ467"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/mlc-nand/part-catalog/part-detail/mt29f512g08cmcebj4-37itr-e"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 VBGA", sub-category "mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBHAFJ4-3ITF:A"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NQ469"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/tlc-nand/part-catalog/part-detail/mt29f512g08ebhafj4-3itf-a"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CUCABH3-10Z:A"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW472"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-mlc-nand/part-catalog/part-detail/mt29f512g08cucabh3-10z-a"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 LBGA", sub-category "obsolete-mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CUCABH3-10ITZ:A"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW496"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-mlc-nand/part-catalog/part-detail/mt29f512g08cucabh3-10itz-a"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 LBGA", sub-category "obsolete-mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CKCABH7-6:A"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW510"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-mlc-nand/part-catalog/part-detail/mt29f512g08ckcabh7-6-a"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 TBGA", sub-category "obsolete-mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CUCDBJ6-6R:D"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW561"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-mlc-nand/part-catalog/part-detail/mt29f512g08cucdbj6-6r-d"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 LBGA", sub-category "obsolete-mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CMCBBH7-6R:B"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW581"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-mlc-nand/part-catalog/part-detail/mt29f512g08cmcbbh7-6r-b"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 TBGA", sub-category "obsolete-mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CKECBH7-12:C"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW663"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-mlc-nand/part-catalog/part-detail/mt29f512g08ckecbh7-12-c"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 TBGA", sub-category "obsolete-mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CMECBH7-12:C"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW665"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-mlc-nand/part-catalog/part-detail/mt29f512g08cmecbh7-12-c"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 TBGA", sub-category "obsolete-mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CKCCBH7-6R:C"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW683"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-mlc-nand/part-catalog/part-detail/mt29f512g08ckccbh7-6r-c"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 TBGA", sub-category "obsolete-mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CMCCBH7-6R:C"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW686"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-mlc-nand/part-catalog/part-detail/mt29f512g08cmccbh7-6r-c"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 TBGA", sub-category "obsolete-mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EMCBBJ5-6:B"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW784"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-tlc-nand/part-catalog/part-detail/mt29f512g08emcbbj5-6-b"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 TBGA", sub-category "obsolete-tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBHAFJ4-3R:A"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW915"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-3d-nand/part-catalog/part-detail/mt29f512g08ebhafj4-3r-a"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "obsolete-3d-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBHAFJ4-3T:A"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW928"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-3d-nand/part-catalog/part-detail/mt29f512g08ebhafj4-3t-a"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "obsolete-3d-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBHBFJ4-R:B"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW950"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/tlc-nand/part-catalog/part-detail/mt29f512g08ebhbfj4-r-b"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBLCEJ4-R:C"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW962"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-tlc-nand/part-catalog/part-detail/mt29f512g08eblcej4-r-c"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "obsolete-tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBHBFJ4-T:B"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW966"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-tlc-nand/part-catalog/part-detail/mt29f512g08ebhbfj4-t-b"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "obsolete-tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBLCEJ4-T:C"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NW975"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-tlc-nand/part-catalog/part-detail/mt29f512g08eblcej4-t-c"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "obsolete-tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08CMCEBJ4-37ITRES:E"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NX902"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-mlc-nand/part-catalog/part-detail/mt29f512g08cmcebj4-37itres-e"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "MLC 512G X8 VBGA", sub-category "obsolete-mlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (MLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBHAFJ4-3ITFES:A"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NX910"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-tlc-nand/part-catalog/part-detail/mt29f512g08ebhafj4-3itfes-a"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "obsolete-tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBLEEJ4-R:E"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NY126"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/tlc-nand/part-catalog/part-detail/mt29f512g08ebleej4-r-e"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).
+
+  - part_number: "MT29F512G08EBLEEJ4-T:E"
+    chip_type: "NAND Flash"
+    subtype: "TLC NAND"
+    interface: "Async/ONFI"
+    capacity: "64GB"
+    fbga_code: "NY137"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/storage/nand-flash/tlc-nand/part-catalog/part-detail/mt29f512g08ebleej4-t-e"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo de PN MT29F512G08, 2026-07-15):
+      "TLC 512G X8 VBGA", sub-category "tlc-nand". Mesmo prefixo
+      de PN do alvo NW912 ("MT29F512G08") → mesma capacidade total de
+      pacote: 512Gb ÷ 8bit = 64GB — bate exato com o "512G X8" do próprio
+      part-name. Célula (TLC) confirmada pelo próprio
+      part-name oficial da Micron para ESTE fbga_code — célula NÃO é fixa
+      pelo prefixo nesta família (esta leva mistura MLC e TLC sob o
+      mesmo prefixo "MT29F512G08", confirmado programaticamente: 11 MLC +
+      14 TLC), por isso subtype explícito por PN em vez de herdado (mesma
+      lição dos lotes NW813/NW814).

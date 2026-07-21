@@ -1,0 +1,2024 @@
+# Submissão de known_parts — Micron, FBGA D9KSL + família MT47H128M8 (2026-07-15)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9KSL
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9XSL, D9KJL, D9KSF, D9KSG, D9KSJ) IGNORADO
+# por construção — já são KnownPart aprovado.
+#
+# ACHADO: D9KSL → MT47H128M8HV-3 IT:G. Prefixo MT47H = DDR2, mesma
+# família base de D9RZH/D9MTG/D9KJP — aqui organização "128M8" (1Gb,
+# x8). Sem part-name direto da Micron para o próprio alvo, mas Octopart
+# lista o MESMO part-number com a MESMA revisão ":G" diretamente:
+# "MT47H128M8HV-3 IT:G — DRAM Chip DDR2 SDRAM 1G-Bit 128Mx8 1.8V 60-Pin
+# FBGA Tray". Capacidade: 128M × 8bit = 1024Mb = 1Gb — bate exato.
+#
+# Coleta máxima da família (conforme padrão desta sessão): forward-
+# lookup no prefixo "MT47H128M8" (2026-07-15) achou 136 PNs: 100 de
+# produção ("D9*") + 36 Engineering Sample ("Z9*", EXCLUÍDOS). Dos 100
+# D9, 2 têm "ES" no próprio texto do PN apesar do prefixo D9 "de
+# produção" (checado programaticamente, regex `(?:^| )ES(?:$|[ :])`) —
+# EXCLUÍDOS: D9FVM ("...5E L ES:A"), D9FVN ("...37E L ES:A"). Restam 98
+# D9 de produção limpos. 12 têm part-name direto da Micron confirmando
+# tipo+capacidade ("DDR2 1G X8 FBGA"/"TFBGA": D9LHN, D9LHP, D9LHQ, D9LNN,
+# D9LVF, D9LVM, D9LXP, D9LXQ, D9LXZ, D9MCG, D9RZK, D9RZW); os outros 86
+# (alvo + 85 irmãos) herdam a mesma organização por construção do
+# próprio prefixo buscado (verificado programaticamente: todos os 98
+# part-numbers começam literalmente por "MT47H128M8", mesma lógica já
+# usada em D9RZH/D9MTG/D9KJP/D9MNT/D9NMW).
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9ksl_family_2026-07-15.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9ksl_family_2026-07-15.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT47H128M8HV-3 IT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSL"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=MT47H128M8HV-3%20IT%3AG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-15): D9KSL → MT47H128M8HV-3 IT:G. Prefixo MT47H = DDR2,
+      mesma família já vista em D9RZH/D9MTG/D9KJP (organização diferente:
+      aqui "128M8" em vez de "64M16"/"256M8"/"64M8"). Sem part-name
+      direto da Micron para o próprio alvo (campo vazio). CAPACIDADE por
+      fórmula: 128M (profundidade) × 8bit (largura) = 1024Mb = 1Gb —
+      confirmado via Octopart, MESMO part-number e MESMA revisão ":G"
+      listados diretamente: "MT47H128M8HV-3 IT:G — DRAM Chip DDR2 SDRAM
+      1G-Bit 128Mx8 1.8V 60-Pin FBGA Tray" — bate exato em organização
+      (128Mx8) e densidade (1G-Bit). Campo density_gbit (Gb), interface
+      x8, convenção DDR discreta (CLAUDE.md §6).
+
+  - part_number: "MT47H128M8CF-3:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LHN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m8cf-3-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 FBGA",
+      sub-category "obsolete-ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8CF-25:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LHP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m8cf-25-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 FBGA",
+      sub-category "obsolete-ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8CF-25E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LHQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m8cf-25e-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 FBGA",
+      sub-category "obsolete-ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8CF-187E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LNN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m8cf-187e-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 FBGA",
+      sub-category "obsolete-ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8CF-25E IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LVF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m8cf-25e-it-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 FBGA",
+      sub-category "obsolete-ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8CF-3 IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LVM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m8cf-3-it-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 FBGA",
+      sub-category "obsolete-ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8JN-3:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LXP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m8jn-3-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 FBGA",
+      sub-category "obsolete-ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8JN-3 IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LXQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m8jn-3-it-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 FBGA",
+      sub-category "obsolete-ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8CF-3 L:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LXZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m8cf-3-l-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 FBGA",
+      sub-category "obsolete-ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8CF-3 AIT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MCG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h128m8cf-3-ait-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 FBGA",
+      sub-category "obsolete-ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8SH-25E:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9RZK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h128m8sh-25e-m"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 TFBGA",
+      sub-category "ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8SH-25E IT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9RZW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h128m8sh-25e-it-m"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H128M8, 2026-07-15): "DDR2 1G X8 TFBGA",
+      sub-category "ddr2-sdram" — confirma DDR2 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT47H128M8BT-37E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9DMT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DMT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8BT-0 MS:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9FMJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FMJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8BT-5E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9FMK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FMK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8FT-0 MS:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9FQX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FQX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8BT-3:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9FTB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FTB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8BT-5E L:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9FVK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FVK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8BT-37E L:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9FVL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FVL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8BT-3 L:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GCQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GCQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8THK-5E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GHM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GHM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8THK-37E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GHN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GHN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8B7-3:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GSV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GSV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8THK-3:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GZT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GZT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8B7-37E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HBD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HBD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8B7-25E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HBQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HBQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8THK-3:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HCL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HCL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8B7-5E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8F7-5E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8F7-3:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8F7-5E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8F7-37E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8F7-3 IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8B7-5E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HHC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HHC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8B7-37E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HHD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HHD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8B7-3 IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HHF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HHF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-5E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HND"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HND"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-5E IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-5E L:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-37E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-37E IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-37E L:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3 IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3 L:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-25:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-25E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8THK-37E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HQN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HQN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8B7-3 L:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HTG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HTG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8B7-37E L:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HTH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HTH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8BT-37E IT:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HTL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HTL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HV-5E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JGR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JGR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HV-37E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JGS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JGS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HV-3:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JGT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JGT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HV-5E IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JGV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JGV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HV-37E IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JGW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JGW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HV-3 IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JGX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JGX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-187E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JKH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JKH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JMN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JMN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-187E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JQC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JQC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8BT-K:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JQS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JQS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JVW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JVW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-25:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JWB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JWB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-25E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JWD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JWD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3 CA:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KDM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KDM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-37E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KGW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KGW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-25 CA:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KRL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KRL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-25 CA:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KRM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KRM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3 CA:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KRN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KRN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3 IT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3 L:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HV-3:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KVQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KVQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-0 MS:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KZQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KZQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8HQ-3 AT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KZS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KZS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8QTM-3:J"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LPD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LPD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8QTM-25:J"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LPF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LPF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8QGM-3:J"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LPG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LPG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8QGM-25:J"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LPH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LPH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8QJM-3:J"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LPJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LPJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8QJM-25:J"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LPK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LPK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8JN-25E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MDJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MDJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-3 AAT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MDQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MDQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8QRM-25:J"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MGD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MGD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-25 AIT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MMR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MMR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-25 AAT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MNG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MNG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-25E AIT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MSX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MSX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-25E P-AIT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MVC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MVC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-25 S:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9QLX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QLX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-25E:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9RRR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RRR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-187E:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9RTM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RTM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-25E IT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9RTR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RTR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-25E AIT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9RTT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RTT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8CF-25E AAT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9RTV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RTV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8SH-187E:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9RZR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RZR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8SH-25E AIT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9SBB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SBB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H128M8SH-25E AAT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9SBG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SBG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H128M8, 2026-07-15). Mesma organização do alvo D9KSL
+      (MT47H128M8HV-3 IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H128M8, verificado programaticamente: todos os 98 part-numbers
+      produção começam literalmente por "MT47H128M8"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9LHN e outros: "DDR2 1G X8 FBGA"/"TFBGA").
+      Sem verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.

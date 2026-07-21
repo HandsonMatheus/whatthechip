@@ -1,0 +1,573 @@
+# Submissão de known_parts — Micron, FBGA D9PZQ + família MT41K256M16 (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9PZQ
+# (não identificado na bancada, fila de revisão — SearchLog 10/07/2026 11:20).
+#
+# fuzzy_sugest. do debug (D9PWQ, D9XZQ, D9ZZQ, D8JZQ, D9CSQ) IGNORADO por
+# construção — já são KnownPart aprovado (ver memória
+# wtc-fuzzy-sugest-ja-confirmado-nao-pesquisar). Só o alvo foi pesquisado.
+#
+# ⚠ ACHADO DE ESCALA + DECISÃO DO DONO (2026-07-10): forward-lookup no
+# prefixo "MT41K256M16" (mesma organização do alvo) devolveu 92 PNs/FBGAs
+# distintos (53 produção "D9*" + 39 Engineering Sample "Z9*"). TODOS são
+# matematicamente a MESMA densidade (256M×16bit=4096Mb=4Gb). Perguntei ao
+# dono se valia bulk-submeter a família inteira — resposta: "bulk agora".
+#
+# ⚠⚠ DUAS RODADAS DE CORREÇÃO PÓS --commit (2026-07-10), documentando pra
+# não repetir:
+#   1ª rodada: D9PXV (MT41K256M16HA-125:E) quebrou o --commit com
+#   UniqueViolation em part_number_norm — o banco já tinha uma VARIANTE DE
+#   FORMATAÇÃO do mesmo PN normalizado (submit_known_parts.py só pula
+#   duplicata em match EXATO da string; uma variante de formatação passa
+#   direto pro INSERT e esbarra na constraint do banco). Removido.
+#   2ª rodada: rodei uma query read-only (KnownPart.objects.filter(
+#   part_number_norm__in=...)) pra checar os 51 restantes ANTES de tentar
+#   de novo — achou mais 26 colisões: 25 são o PACOTE INTEIRO "TW" (die-rev
+#   :P e :R, ex. MT41K256M16TW-107:P) já **approved/confirmed** no banco
+#   com a MESMA string exata (entrou por outro canal — provavelmente
+#   import_micron_catalog ou uma sessão anterior, fora da minha
+#   visibilidade); a 26ª é outra variante de formatação (MT41K256M16LY-
+#   107:N → banco tem "MT41K256M16LY107N"). Todas as 26 removidas.
+# RESULTADO: pacotes RE/HA/LY (die-rev :D/:E/:N) NÃO estavam no banco — só
+# esses entram aqui (24 + o alvo D9PZQ = 25). O pacote TW inteiro já estava
+# coberto; incluí-lo de novo seria puro trabalho redundante.
+#
+# METODOLOGIA: capacidade de CADA entrada vem da mesma fórmula
+# profundidade×largura (invariante pra família 256M16, 4Gb), já validada
+# por fonte Tier-1 3x nesta família (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS
+# no lote D9TXS, D9PZQ via Octopart). Identidade (FBGA→PN) de cada entrada
+# vem direto da API oficial da Micron, por fbga_code. TODAS as 25 abaixo
+# foram confirmadas ausentes do banco via query read-only em 2026-07-10
+# (não apenas ausentes do fuzzy_sugest./minhas submissões anteriores).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9pzq_family_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/micron_d9pzq_family_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41K256M16HA-125 IT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZQ"
+    confidence: confirmed
+    source_url: "https://octopart.com/mt41k256m16ha-125ite-micron-67039679"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto, 2026-07-10):
+      D9PZQ → MT41K256M16HA-125 IT:E. Capacidade: conta pelo PN — 256M
+      (profundidade) × 16bit (largura) = 4096Mb = 4Gb. Confirmado
+      independentemente por Octopart, que tem listagem estruturada para ESTE PN
+      exato (com o sufixo IT:E): “DRAM Chip DDR3L SDRAM 4G-Bit 256Mx16 1.35V
+      96-Pin F-BGA” — “4G-Bit” bate exato com a conta, unidade em bit sem
+      ambiguidade. Mesma organização/densidade já confirmada 2x nesta conversa
+      pra este prefixo (D9SKC/D9SKG no lote D9SXC; D9TCS/D9TDS no lote D9TXS).
+      Campo density_gbit (Gb), convenção DDR discreta (CLAUDE.md §6). Obsoleto
+      (Octopart: “Lifecycle Status: Obsolete”), comum em equipamento antigo —
+      bom candidato pra bancada. Checado 2026-07-10 contra o banco (query read-
+      only) — este PN exato NÃO existe ainda, confirmando que é genuinamente
+      novo.
+
+  - part_number: "MT41K256M16RE-15E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PBF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PBF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16RE-125:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PCR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PCR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16RE-15E IT:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PTZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PTZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-125G:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PXX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PXX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-107:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-107G:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-107 IT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-125 AIT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-107 AIT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-125 AAT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9QBB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QBB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-107 AAT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9QBD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QBD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16RE-15E M:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9QDN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QDN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16RE-125 M:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9QDP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QDP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16RE-107:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9QFD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QFD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-125 M:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9QLJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QLJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-15E M:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9QNV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QNV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-125 M AIT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9QXB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QXB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-107 M:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9RNB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RNB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-125 XIT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9RZG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RZG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16HA-125 V:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9SCQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SCQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16LY-107 M:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9SDF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SDF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16LY-093G:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9SDH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SDH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16LY-093:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9SFD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SFD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).
+
+  - part_number: "MT41K256M16LY-093 IT:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9SXM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SXM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K256M16, 2026-07-10). Mesma organização do alvo D9PZQ
+      (MT41K256M16HA-125 IT:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (muda só fábrica/pacote/velocidade/temperatura,
+      nunca a organização 256M16). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula já validada 3x nesta família
+      (D9SKC/D9SKG no lote D9SXC, D9TCS/D9TDS no lote D9TXS, D9PZQ via Octopart
+      neste lote) + identidade direta da API oficial Micron para ESTE fbga_code.
+      Checado 2026-07-10 contra o banco (query read-only, part_number_norm) —
+      confirmado AUSENTE (não é o pacote TW, que já está approved no banco por
+      outro canal).

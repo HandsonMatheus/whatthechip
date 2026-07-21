@@ -1,0 +1,101 @@
+# Submissão de known_parts — Samsung, família KM5 (uMCP LPDDR4X + UFS, PREMIUM). PN alvo:
+# KM5V7001DM (busca 2026-07-14). Chave 'V7001' (pn[3:8], decode_cap_len=5) estava SEM MAPA
+# ("cap. não mapeada" → INDETERMINADO) — corrigido: adicionei V7001 + P8001 + P9001 ao
+# SAM_EMCP_CAP_KM5 (chips/knowledge/samsung.yaml), todas 4GB, fontes abaixo.
+#
+# ⚠ DISCIPLINA DESTA FAMÍLIA (já documentada no tip do engine): só códigos Tier-1 confirmados
+# pelo dono (Octopart/Samsung) — Preduo já provado NÃO confiável aqui (dava V8001=6GB, real
+# 4GB). Nenhuma fonte usada nesta submissão é Preduo; usei Samsung Semiconductor
+# (USA/Global, domínio oficial), NX Electronics, Win Source, Lisleapex, Puris, Avaq — todas
+# fichas DEDICADAS de um único PN (não títulos concatenados de múltiplos PNs).
+#
+# KM5V7001DM (alvo): NX Electronics (ficha dedicada, "uMCP 128GB UFS2.1+ 32Gb LPDDR4X-3733")
+# + Win Source + título indexado Samsung Semiconductor Global. 32Gb÷8=4GB. Mesmo padrão "001"
+# =4GB já visto em L9001/V8001/C7001 (todos já no mapa).
+#
+# Bônus (3 PNs já pesquisados numa sessão anterior via Samsung Global — data/psg/
+# samsung_global_umcp_lpddr4x.csv, confirmed/enriched — MAS nunca submetidos como known_parts;
+# reverifiquei os 2 que também entraram na gramática nesta rodada):
+#   - KM5C7001DM: já era âncora do mapa (64GB+4GB).
+#   - KM5V8001DM: já era âncora do mapa (128GB+4GB) — reverificado via Samsung Semiconductor
+#     Global + Puris (ficha dedicada "128+48"... nota: Puris mostra outro valor aqui mas NÃO
+#     usei Puris como fonte de densidade por causa do histórico de bug desta família; mantive
+#     o valor já-âncora 4GB, sourced em Octopart/Samsung Global originalmente).
+#   - KM5P8001DM: NOVO no mapa nesta rodada. Samsung Semiconductor USA (domínio oficial!) +
+#     Lisleapex + Puris + Avaq + Ovaga, todas "64GB UFS2.1+32Gb LPDDR4X"=4GB.
+#   - KM5P9001DM: NOVO no mapa nesta rodada. Samsung Semiconductor Global (domínio oficial!) +
+#     Fusion + NX Electronics + Edal Tech, todas "64GB+32Gb LPDDR4X"=4GB.
+#
+# ⚠ KM5H7001DM PESQUISADO MAS NÃO INCLUÍDO: pesquisa local prévia dizia 64GB+4GB(32Gb), mas
+# uma fonte nova encontrada nesta rodada sugeriu 24Gb(3GB) — conflito não resolvido (não achei
+# página estruturada de desempate). Fica de fora até confirmar — não decido no achismo.
+brand: "Samsung"
+known_parts:
+  - part_number: "KM5V7001DM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 128GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    source_url: "https://nxelectronics.com/home/productdetail/?item_id=330154213&partno=KM5V7001DM-B621"
+    notes: >
+      PN alvo. NX Electronics (ficha dedicada de PN único, não título concatenado):
+      "uMCP 128GB UFS2.1+ 32Gb LPDDR4X-3733" para KM5V7001DM-B621. Corroborado por Win
+      Source + título indexado Samsung Semiconductor Global (página ao vivo redireciona
+      hoje). 32Gb÷8=4GB. SEM uso de Preduo (família com histórico de erro lá).
+
+  - part_number: "KM5C7001DM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/mcp/umcp/lpddr5-umcp/km5c7001dm-b622/"
+    notes: >
+      Já era âncora do mapa (SAM_EMCP_CAP_KM5['C7001']=64GB+4GB, fonte original Octopart);
+      nunca tinha sido formalizado como known_part. Título indexado Samsung Semiconductor
+      Global confirma "KM5C7001DM-B622(4266 Mbps)". 32Gb÷8=4GB.
+
+  - part_number: "KM5V8001DM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 128GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/mcp/model/lpddr5-umcp/km5v8001dm-b622/"
+    notes: >
+      Já era âncora do mapa (SAM_EMCP_CAP_KM5['V8001']=64GB+4GB — o valor que PROVA o bug
+      por-família desta família: mesma chave dá 8GB no KM8 e 6GB no KM2). Título indexado
+      Samsung Semiconductor Global (Global+EMEA) confirma "KM5V8001DM-B622(4266Mbps)".
+      Nunca tinha sido formalizado como known_part.
+
+  - part_number: "KM5P8001DM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/us/mcp/model/lpddr5-umcp/km5p8001dm-b424/"
+    notes: >
+      Chave 'P8001' NOVA no mapa nesta rodada. Samsung Semiconductor USA (domínio oficial)
+      + Lisleapex + Avaq + Ovaga, todas "64GB UFS2.1+ 32Gb LPDDR4X-4266"=4GB. Pesquisa local
+      prévia (data/psg/samsung_global_umcp_lpddr4x.csv) já tinha confirmado o mesmo valor.
+
+  - part_number: "KM5P9001DM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/mcp/umcp/lpddr5-umcp/km5p9001dm-b424/"
+    notes: >
+      Chave 'P9001' NOVA no mapa nesta rodada. Samsung Semiconductor Global (domínio
+      oficial) + Fusion + NX Electronics + Edal Tech, todas "64GB+32Gb LPDDR4X-4266"=4GB.
+      Pesquisa local prévia já tinha confirmado o mesmo valor. ⚠ Havia golden ANTIGO
+      esperando "não mapeada"/INDETERMINADO pra este PN (pré-existente ao mapa ganhar esta
+      chave) — atualizado em chips/tests.py pra refletir o novo resultado correto.

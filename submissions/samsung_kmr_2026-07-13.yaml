@@ -1,0 +1,166 @@
+# Submissão de known_parts — Samsung, família KMR (eMCP LPDDR3 + eMMC 5.1)
+# PN alvo: KMR310008M (busca 2026-07-13). Local (seed) já tinha 13 known_parts
+# confirmados na família (chaves 21/31/4Z/82/8X/C1/H6/P6/X1/X6) mas NENHUM
+# batendo com o PN exato do alvo — e nenhum CSV PSG existe pra KMR.
+#
+# DESCOBERTA IMPORTANTE (achado de gramática): cross-checando os 13 known_parts
+# já confirmados contra o mapa compartilhado SAM_EMCP_CAP, achei que a RAM
+# mapeada estava ERRADA pra 7 das 10 chaves da família (bug clássico "X6" — a
+# mesma classe de erro já corrigida em KM4/KM5/KM8/KM2/KM1/KMI nesta sessão).
+# Corrigi criando um mapa próprio SAM_EMCP_CAP_KMR em chips/knowledge/samsung.yaml
+# e repontando a família pra ele (detalhes/fontes no comentário do próprio yaml).
+#
+# PESQUISA DO ALVO (KMR310008M): inicialmente encontrei uma fonte de baixa
+# qualidade (cpuprocessorchip, reseller chinês agregado) dizendo "16+24" mas
+# TAMBÉM achei, no MESMO ecossistema de revenda, um anúncio garbled (imall.com)
+# atribuindo "128+16" ao PN IRMÃO já confirmado (KMR310001M-B611) — valor
+# comprovadamente ERRADO (o confirmado é 16+16=2GB via Preduo). Isso me fez
+# desconfiar da fonte e pesquisar mais fundo antes de confirmar. Achei o índice
+# MESTRE da Puris (puris.net/emcplist — lista todos os PNs eMCP que eles têm
+# página dedicada) e localizei a página PRÓPRIA do alvo: "KMR310008M-A611 16+24
+# eMCP-D3 Samsung" (título E corpo da página, estruturados, não é anúncio
+# garbled). 16GB NAND + 24Gb÷8=3GB LPDDR3 — CONFIRMADO por 2 fontes
+# independentes e estruturadas (Puris + a tabela "Specifications" própria do
+# cpuprocessorchip, que agora bate). confidence=confirmed.
+#
+# ⚠ Achado relevante: a chave "31" (pn[3:5]) tem uma exceção REAL — o PN irmão
+# KMR310001M-B611 (já confirmado no seed, mesma chave "31") é 16+16=2GB, mas
+# KMR310008M-A611 e outros irmãos da MESMA chave (ver abaixo) são 16+24=3GB.
+# Ou seja, dentro da família KMR, a chave de 2 chars sozinha NÃO garante a
+# mesma RAM pra todo PN — é um limite real da gramática atual (documentado no
+# yaml). Por isso registro cada PN individualmente como known_part em vez de
+# confiar cegamente na gramática.
+#
+# VARREDURA MÁXIMA (instrução permanente do usuário: sempre coletar o máximo
+# possível de PNs seguros/confirmados): usando o índice puris.net/emcplist como
+# lista-mestra de TODOS os PNs KMR que a Puris já catalogou, fiz o cross-check
+# contra os 13 já confirmados no seed e achei 7 PNs GENUINAMENTE NOVOS, todos
+# com página própria/estruturada (Puris e/ou Preduo, 2 fontes convergentes
+# quando havia):
+#
+# - KMR31000BM-B611 e KMR31000BA-B614: irmãos da MESMA chave "31" do alvo,
+#   ambos confirmados via Puris "16+24"=3GB (páginas próprias e dedicadas).
+# - KMR7X0001M-B510/B511: chave "7X" — NOVA pra esta família (não estava em
+#   nenhum known_part local nem no mapa antigo com valor certo). Puris "8+16"
+#   = 8GB+2GB.
+# - KMRNW0001M-B509: chave "NW" — NOVA. Puris "8+16" = 8GB+2GB.
+# - KMRE1000BM-B512: chave "E1" — NOVA. Puris E Preduo convergentes "16+24" =
+#   16GB+3GB.
+# - KMRD60014M-B512: chave "D6" — NOVA. Puris E Preduo convergentes "32+32" =
+#   32GB+4GB.
+# - KMRV50014M-B809: chave "V5" — NOVA (nem existia no mapa antigo). Preduo
+#   (tabela estruturada "Density: 128+32") + cpuprocessorchip convergentes =
+#   128GB+4GB.
+#
+# NÃO registrados (sem confirmação direta, sem invenção): KMR31000BB-B614 e
+# KMR310008A-A614 (mesma chave "31", existência confirmada em listagens, mas
+# nenhuma fonte com densidade explícita própria); KMRC1000BM-B809 (só 1 fonte
+# de baixa confiança "64+24", conflita com o já confirmado KMRC10014M=64+4GB
+# da mesma chave "C1" — mesma ambiguidade da chave "31", mas sem 2ª fonte pra
+# resolver); KMR8X0001A-B609 e KMR4Z0001A-B803 (variantes de sufixo "A" só
+# vistas em anúncios agregados sem densidade própria).
+brand: "Samsung"
+known_parts:
+  - part_number: "KMR310008M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 16GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/3645"
+    notes: >
+      PN alvo. Puris (puris.net/archives/3645, página própria: "KMR310008M-A611
+      16+24 eMCP-D3 Samsung") + cpuprocessorchip (tabela Specifications própria:
+      eStorage Den.=16GB, DRAM Den.=24Gb) convergentes. 24Gb÷8=3GB. ⚠ Irmão de
+      mesma chave "31" KMR310001M-B611 (já confirmado, 2GB) é EXCEÇÃO — ver
+      known_part dele + comentário no yaml (SAM_EMCP_CAP_KMR).
+
+  - part_number: "KMR31000BM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 16GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/2963"
+    notes: >
+      Achado na varredura máxima (índice puris.net/emcplist) — irmão de mesma
+      chave "31" do alvo. Puris (página própria, "16+24 221ball eMCP-D3") =
+      16GB+3GB.
+
+  - part_number: "KMR31000BA"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 16GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/3646"
+    notes: >
+      Achado na varredura máxima (índice puris.net/emcplist) — irmão de mesma
+      chave "31" do alvo. Puris (página própria, "16+24 eMCP-D3") = 16GB+3GB.
+
+  - part_number: "KMR7X0001M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 8GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/2955"
+    notes: >
+      Achado na varredura máxima — chave "7X", NOVA pra família KMR (nenhum
+      known_part local prévio nesta chave; o mapa legado tinha valor errado,
+      1GB). Puris (página própria, "8+16 221ball eMCP-D3", 2 sufixos B510/B511
+      vistos) = 8GB+2GB (16Gb÷8).
+
+  - part_number: "KMRNW0001M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 8GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/2967"
+    notes: >
+      Achado na varredura máxima — chave "NW", NOVA pra família KMR. Puris
+      (página própria, "8+16 221ball eMCP-D3") = 8GB+2GB (16Gb÷8).
+
+  - part_number: "KMRE1000BM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 16GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/2969"
+    notes: >
+      Achado na varredura máxima — chave "E1", NOVA pra família KMR. Puris E
+      Preduo convergentes ("16+24 221ball eMCP-D3") = 16GB+3GB (24Gb÷8).
+
+  - part_number: "KMRD60014M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR3 4GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/3647"
+    notes: >
+      Achado na varredura máxima — chave "D6", NOVA pra família KMR. Puris E
+      Preduo convergentes ("32+32 eMCP-D3") = 32GB+4GB (32Gb÷8).
+
+  - part_number: "KMRV50014M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 128GB"
+    emcp_ram: "LPDDR3 4GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/kmrv50014m-b809"
+    notes: >
+      Achado na varredura máxima — chave "V5", ausente do mapa legado (nem
+      decodificava). Preduo (tabela estruturada, "Density: 128+32") +
+      cpuprocessorchip (mesmo valor "128+32" num anúncio correlato)
+      convergentes = 128GB+4GB (32Gb÷8).

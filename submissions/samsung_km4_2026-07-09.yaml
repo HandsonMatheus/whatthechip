@@ -1,0 +1,65 @@
+# Submissão de known_parts — Samsung, família KM4 (eMCP LPDDR4X)
+# Gerado a partir do PN não identificado KM4X60002M (busca em 2026-07-09, 20:45).
+#
+# ACHADO: a família KM4 só tem UMA chave de capacidade documentada no mapa
+# SAM_EMCP_CAP_KM4 (X6 = 32GB+2GB), âncorada em KM4X6001KM-B321. Pesquisando
+# o alvo + "todos os similares" (varredura Preduo/Puris pelo prefixo KM4),
+# encontrei que a família tem só ESSES DOIS PNs visíveis no mercado — e eles
+# DIVERGEM na RAM apesar de terem o MESMO cap_key "X6" (pn[3:5]):
+#   - KM4X6001KM-B321 → 32GB eMMC + 16Gb (2GB) LPDDR4X  [já é o default do mapa]
+#   - KM4X60002M-B321 → 32GB eMMC + 24Gb (3GB) LPDDR4X  [ALVO — mapa dava 2GB, errado]
+# Mesmo padrão já visto neste projeto (chave compartilhada com valores reais
+# diferentes por sufixo/família — casos X6 cross-family KMD/KM4/KMG e o '31'
+# de 3 vias em KMQ): a correção certa é known_part confirmed por PN exato,
+# SEM tocar no mapa (que continua servindo de default pra qualquer X6 ainda
+# não confirmado nesta família).
+#
+# Fontes (2 independentes, concordam exatamente em "32+24" vs "32+16"):
+#   - Preduo (distribuidor recorrente, mesma fonte já usada pro anchor X6 original)
+#   - Puris (distribuidor independente, mesmo padrão de nomenclatura "NAND+RAM(Gb)")
+# Confirmação por página própria de cada PN nos dois sites (não é lista genérica).
+# KM4X6001KM-B321 também tem página própria confirmada no site oficial Samsung
+# (semiconductor.samsung.com), status EOL — a página do KM4X60002M no domínio
+# samsung.com redireciona pra uma categoria genérica (LPDDR5 uMCP overview, não
+# específica do PN — provavelmente por ser peça mais antiga/descontinuada), por
+# isso a fonte aqui é Preduo+Puris (mesmo padrão de confiança já aceito no
+# projeto pro anchor original).
+#
+# pn_length=10 fixo pra família KM4 — os PNs abaixo já são a forma completa
+# (sem sufixo de grade tipo "-B321" grudado, igual ao padrão KMQ/KMD/KLM).
+brand: "Samsung"
+known_parts:
+  - part_number: "KM4X60002M"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: "eMMC 5.1"
+    emcp_nand: "32GB"
+    emcp_ram: "LPDDR4X 3GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr4x/254ball_emmc-lpd4x/km4x60002m-b321"
+    notes: >
+      PN original buscado (família/mapa já cadastrados — pn[3:5]='X6' —, mas o
+      PN exato não estava no banco; mapa SAM_EMCP_CAP_KM4 daria 2GB, errado
+      pra este PN específico). Preduo (Density "32+24") + Puris (Density
+      "32+24", página própria do PN) — dois distribuidores independentes,
+      mesma leitura exata. 24Gb÷8=3GB LPDDR4X. Contraste direto com o irmão
+      KM4X6001KM-B321 (32+16=2GB) — MESMO cap_key "X6", RAM real diferente
+      por sufixo de device code (pn[5:10] diverge: "0002M" vs "001KM").
+      NAND (32GB) idêntico nos dois.
+
+  - part_number: "KM4X6001KM"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: "eMMC 5.1"
+    emcp_nand: "32GB"
+    emcp_ram: "LPDDR4X 2GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/mcp/model/emcp/km4x6001km-b321/"
+    notes: >
+      Irmão do PN acima — é o próprio anchor que já origina o valor default
+      do mapa SAM_EMCP_CAP_KM4 (X6=32GB+2GB), mas ainda não estava registrado
+      como known_part (só citado nos comentários do yaml). Registro aqui pra
+      virar confirmado no banco. Fonte: página própria Samsung Semiconductor
+      Global (16Gb LPDDR4X @ 0.6V, status EOL) + Preduo + Puris (ambos
+      "32+16"). 16Gb÷8=2GB LPDDR4X. Sem mudança de valor — só formaliza o
+      known_part que faltava.

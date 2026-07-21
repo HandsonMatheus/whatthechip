@@ -1,0 +1,162 @@
+# Submissão de known_parts — Micron, FBGA JW500 e vizinhos fuzzy (2026-07-09)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA JW500
+# (não identificado na bancada, fila de revisão).
+#
+# ⚠ ATUALIZAÇÃO 2026-07-09 (tarde): o ALVO (JW500 → MT29C8G96MAZAPDJA-5 IT)
+# ENTROU nesta submissão — o dono trouxe o link do DigiKey do PN-irmão
+# MT29C8G96MAZBADJV-5 IT (mesma densidade 8G96M) que fecha a capacidade
+# com uma fonte estruturada (categoria paramétrica DigiKey, não só
+# extrapolação da progressão do datasheet). Ver notes do JW500 abaixo e
+# INVESTIGACAO_micron_jw500_mt29c_2026-07-09.md (mantido, com a seção de
+# decisão marcada como resolvida — restou só a ressalva de schema/chip_type,
+# sinalizada nas notes). MICRON.md também foi corrigido (linhas 23/§4/§7)
+# com autorização do dono — MT29C NÃO é raw-sem-RAM como dizia antes.
+#
+# ⚠ ACHADO SECUNDÁRIO (dentro do MTFC, resolvido sozinho): nem todo
+# "MTFC{N}G" é GB direto — ver notes de JW300/JW304 abaixo. Cheguei a
+# quase submeter 16GB/32GB como 2GB/4GB por causa de um campo "Density: N Gb"
+# do Octopart; achei 2 fontes estruturadas melhores (catálogo om-nanotech +
+# datasheet oficial Micron via TI) que confirmam GB direto e expliquei a
+# contradição nas notes. Documentando aqui para não repetir o quase-erro.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_jw500_family_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/micron_jw500_family_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT29C8G96MAZAPDJA-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 1GB + mDDR1 512MB"
+    interface: ""
+    fbga_code: "JW500"
+    confidence: confirmed
+    source_url: "https://www.digikey.com/en/products/filter/memory/memory/8gbit-nand-4gbit-lpdram/774"
+    notes: >
+      Identidade via API FBGA oficial da Micron (2026-07-09): JW500 →
+      MT29C8G96MAZAPDJA-5 IT. TIPO: datasheet oficial Micron
+      (152ball_nand_lpdram_j4xx_omap.fm, achado via Alldatasheet a partir
+      do PN de exemplo já citado no CLAUDE.md) confirma no próprio legend
+      do part number "29C = NAND + LPDRAM MCP" — Package-on-Package
+      combinando um NAND raw + uma Mobile LPDRAM raw, INTERFACES
+      SEPARADAS (não é eMMC unificado como o eMCP Samsung/SK Hynix/MT29T/
+      MT29P). Isso CORRIGE o MICRON.md, que dizia "MT29C = NAND raw, sem
+      RAM" (linhas 96/134, agora atualizadas com autorização do dono,
+      2026-07-09).
+      CAPACIDADE: link do dono (DigiKey, 2026-07-09) confirma o PN-IRMÃO
+      MT29C8G96MAZBADJV-5 IT (mesmíssima densidade "8G96M", só muda
+      AP→BA na posição de config/pacote) via categoria paramétrica
+      estruturada do DigiKey "8Gbit (NAND), 4Gbit (LPDRAM) Memory" —
+      NAND=8Gb÷8=1GB, LPDRAM=4Gb÷8=512MB. Como "AP" vs "BA" está fora do
+      bloco de densidade (`8G96M` é idêntico nos dois; a letra que muda
+      vem DEPOIS, no bloco de config/chip-count/pacote, conforme o
+      part-numbering chart oficial), a mesma capacidade vale pro nosso
+      alvo. Confirma também a progressão geométrica do datasheet
+      (NAND 1G/2G/4G/8G, LPDRAM 12M/24M/48M/96M, sempre dobrando) que eu
+      já tinha usado como hipótese — agora é leitura direta, não mais
+      extrapolação.
+      SCHEMA (resolvido pelo dono, 2026-07-09): chip_type="MCP" já existe
+      em chips/chip_types.py — category="catalog", profit_family="dead",
+      commercial=False — descrito literalmente no comentário do código
+      como "NAND raw + mDDR1 pré-eMCP, sem liquidez B2B". Testado pelo
+      dono: com chip_type=MCP o JW500 sai NÃO RENTÁVEL + descarte por
+      geração direto no gateway, sem precisar de capacidade pra decidir
+      (profit_family=dead já basta). subtype segue o formato descritivo
+      que o próprio código usa como exemplo ("Raw MCP — NAND {X} + mDDR1
+      {Y}") — categoria "catalog" carrega a spec no subtype, não em
+      campos estruturados de capacidade (diferente de eMCP/uMCP). Sem
+      emcp_nand/emcp_ram/capacity aqui de propósito — não se aplicam a
+      este chip_type. Vale recategorizar os MT29C já no banco (se
+      houver) de eMCP→MCP; não tenho acesso pra checar/fazer isso — fica
+      pro dono ou pro passo de correção em massa.
+
+  - part_number: "MTFC4GCHDK-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    fbga_code: "JW200"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW200"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Sem distribuidor com
+      dados pra "CHDK" especificamente (Octopart: "no listings"). Capacidade
+      pela convenção MTFC4G=4GB direto — confirmada Tier-1 no numbering
+      guide numemmc.pdf (ciclo JZ067) e reforçada pelo datasheet oficial
+      Micron "4GB, 8GB, 16GB, 32GB: e-MMC" (emmc_4-32gb_ctrd_441_100b-it.pdf,
+      hospedado em e2e.ti.com — mesma família de densidades, confirma
+      GB direto pra 4/8/16/32G neste range de produto).
+
+  - part_number: "MTFC4GCFDK-ET"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    fbga_code: "JW240"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW240"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Mesma base que JW200
+      (convenção MTFC4G=4GB direto, Tier-1 numemmc.pdf + datasheet oficial
+      "4GB,8GB,16GB,32GB: e-MMC"). Sem distribuidor com dados pra "CFDK"
+      especificamente.
+
+  - part_number: "MTFC16GHKDH-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "16GB"
+    fbga_code: "JW300"
+    confidence: confirmed
+    source_url: "https://www.om-nanotech.com/component/micron-emmc-part-catalog"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). ⚠ CONFLITO DE FONTES
+      resolvido — mostrando o caminho todo porque quase decidi errado:
+      Octopart tem um campo estruturado "Density: 16 Gb" + Avnet descreve
+      "NAND Flash 3.3V 16Gbit 2G x 8bit 169-Pin FBGA" — se essa densidade
+      fosse o pacote inteiro, 16Gb÷8 = 2GB (não 16GB). MAS 2 fontes
+      melhores contradizem isso: (1) catálogo estruturado da om-nanotech
+      (distribuidor indiano, tabela com colunas Part/Density/Depth/Width,
+      não é prosa solta) lista "MTFC16GHKDH-ET | 16GB" e "MTFC16GHKDH-WT |
+      16GB" explicitamente; (2) datasheet OFICIAL Micron pra mesma família
+      de densidade (MTFC4GLDDQ/8GLDDQ/16GJDDQ/32GJDDQ, "4GB,8GB,16GB,32GB:
+      e-MMC", hospedado em e2e.ti.com) confirma que a faixa 4-32G desta
+      linha MTFC é GB DIRETO — Table 2 "Ordering Information" lista
+      "MTFC16GJDDQ-4M IT | 16GB | ... | 2 x 64Gb, MLC" (ou seja, o pacote
+      de 16GB usa 2 dies de 64Gb cada = 128Gb de silício bruto — a
+      densidade "16Gb" do Octopart não bate com NENHUM componente dessa
+      conta, quase certamente erro/dado incompleto do Octopart/Avnet pra
+      esse PN específico, não uma leitura literal do datasheet). Convenção
+      MTFC{N}G=N GB direto reafirmada — Density Tier-1 confirmada por
+      catálogo estruturado + datasheet oficial > 1 campo solto do Octopart.
+
+  - part_number: "MTFC32GHKDN-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "32GB"
+    fbga_code: "JW304"
+    confidence: confirmed
+    source_url: "https://www.om-nanotech.com/component/micron-emmc-part-catalog"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Mesmo conflito e mesma
+      resolução do JW300 acima (par direto na família HKDH/HKDN, mesmo
+      catálogo om-nanotech confirma "MTFC32GHKDN-WT | 32GB" e mesmo
+      datasheet oficial confirma a linha 4-32GB como GB direto). Octopart
+      "Density: 32 Gb" + Avnet "32Gbit 4G x 8bit" tratados como dado
+      incompleto/impreciso do distribuidor, não como fonte que vence a
+      convenção confirmada + o catálogo estruturado.
+
+  - part_number: "MTFC8GKLDI-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "8GB"
+    fbga_code: "JW330"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW330"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Sem distribuidor com
+      dados pra "KLDI" especificamente (Octopart: "no listings"). Capacidade
+      pela convenção MTFC8G=8GB direto (mesma base Tier-1 do JW200/JW240
+      acima — numemmc.pdf + datasheet oficial "4GB,8GB,16GB,32GB: e-MMC").

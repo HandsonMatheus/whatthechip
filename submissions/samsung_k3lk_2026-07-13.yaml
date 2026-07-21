@@ -1,0 +1,109 @@
+# Submissão de known_parts — Samsung, família K3LK (LPDDR5 standalone)
+# PN alvo: K3LK2K20CMBGCP (busca 2026-07-13). Local (seed + 2 CSVs PSG
+# dedicados: samsung_global_lpddr5_2020_2023.csv e samsung_global_lpddr5_k3lk_v2.csv)
+# já tinha cobertura MUITO rica da família (13+ known_parts confirmados,
+# caps BK/2K/3K/4K/6K/7K/CK/DK, gens BM/CM/EM) — inclusive a BASE
+# "K3LK2K20CM" (6GB, confirmed) e a variante "K3LK2K20CMJFCP". Mas o
+# sufixo exato do alvo, "BGCP", só existia local para OUTRO cap-code
+# (4K40CM-BGCP) — não para 2K20CM. Grammar já decodifica certo hoje
+# (pn[4:6]='2K'→LPDDR5_CAP→6GB, mapa já cita K3LK2K20BM-BGCN como fonte)
+# — só faltava o PN exato com este sufixo.
+#
+# K3LK2K20CMBGCP (alvo): confirmado por Puris (foto/ficha, "规格：48Gbit
+# 封装：496ball LPDDR5") + Preduo (ficha estruturada: Type=LPDDR,
+# Sub-Type=LPDDR5, Package=496ball LPDDR5, Density=48Gbit) + HKInventory.
+# 48Gbit÷8=6GB — bate exatamente com a gramática e com a base já
+# confirmada no seed. confidence=confirmed (2 fontes estruturadas
+# convergentes + já bate com known_part base pré-existente).
+#
+# K3LK2K20CMJHCP: ACHADO BÔNUS (não era o alvo) — variante de sufixo
+# irmã (JHCP em vez de BGCP), achada pesquisando o padrão completo já
+# visto em 4K40CM (que tem 4 sufixos confirmados: JFCP/JHCP/JUCP/BGCP)
+# aplicado a 2K20CM. Confirmado via página PRÓPRIA no site oficial
+# Samsung Semiconductor Global (título indexado "K3LK2K20CM-JHCP (48
+# Gb) | DRAM | Samsung Semiconductor Global" — Tier-1, mesma capacidade
+# 48Gbit=6GB). confidence=confirmed (fonte Tier-1 direta).
+#
+# Busquei também K3LK2K20CM-JUCP (paralelo ao 4K40CM-JUCP já confirmado
+# localmente) — NENHUMA fonte dedicada encontrada (só menção genérica
+# por analogia num resumo de busca, sem link próprio) — não registrado,
+# sem evidência não invento.
+#
+# --- RODADA 2 (mesmo dia): usuário pediu para sempre tentar o máximo ---
+# Varredura sistemática: pra CADA base já confirmada localmente (BK, 2K,
+# 3K, 4K [BM e CM], 6K, 7K, CK, DK), busquei TODOS os sufixos direto no
+# site oficial Samsung (semiconductor.samsung.com) pra achar variantes
+# que nem seed nem os 2 CSVs PSG ainda tinham. Confirmei 2 sufixos
+# GENUINAMENTE NOVOS (Tier-1, título indexado já mostra a capacidade):
+#
+# - K3LK4K40BMCGCN: base 4K40BM já tinha só o sufixo BGCN local; CGCN é
+#   um 2º sufixo real da mesma base, "(96 Gb)" = 12GB, bate com 4K=12GB.
+# - K3LK7K70BMJHCP: base 7K70BM já tinha 3 sufixos locais (BGCP/JGCP/
+#   JUCP); JHCP é um 4º sufixo real, "(64 Gb)" = 8GB, bate com 7K=8GB.
+#
+# Todas as outras combinações batidas na varredura (BKB0BM-MGCP,
+# 2K20BM-BGCN, 3K30EM-BGCN/CGCN, 4K40CM-BGCP/JFCP/JHCP/JUCP,
+# 6K60BM-BGCP/JGCP, CKC0BM-MFCP/MGCP/MUCP, DKD0CM-BGCP) JÁ estavam no
+# seed ou nos CSVs — não duplicadas aqui.
+brand: "Samsung"
+known_parts:
+  - part_number: "K3LK2K20CMBGCP"
+    chip_type: "LPDDR5"
+    subtype: "LPDDR5"
+    interface: ""
+    capacity: "6GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/9018"
+    notes: >
+      PN buscado originalmente (família/mapa já cadastrados — grammar
+      já decodifica 2K=6GB certo, e o seed já tinha a base
+      "K3LK2K20CM" confirmada — só faltava a forma completa com este
+      sufixo). Puris (ficha com foto, "规格：48Gbit 封装：496ball
+      LPDDR5") + Preduo (ficha estruturada: Type=LPDDR, Sub-Type=LPDDR5,
+      Package=496ball LPDDR5, Density=48Gbit, SKU WP00689) +
+      HKInventory. 48Gbit÷8=6GB — bate com a gramática e com o
+      known_part base já confirmado.
+
+  - part_number: "K3LK2K20CMJHCP"
+    chip_type: "LPDDR5"
+    subtype: "LPDDR5"
+    interface: ""
+    capacity: "6GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5/k3lk2k20cm-jhcp/"
+    notes: >
+      Achado bônus (não era o alvo): variante de sufixo irmã (JHCP),
+      achada aplicando à chave 2K20CM o mesmo padrão de 4 sufixos já
+      visto e confirmado localmente em 4K40CM (JFCP/JHCP/JUCP/BGCP).
+      Página própria no site oficial Samsung Semiconductor Global
+      (Tier-1), título indexado confirma "(48 Gb)" = 6GB, mesma
+      capacidade da base. Não achei o paralelo JUCP para este
+      cap-code — não registrado.
+
+  - part_number: "K3LK4K40BMCGCN"
+    chip_type: "LPDDR5"
+    subtype: "LPDDR5"
+    interface: ""
+    capacity: "12GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5/k3lk4k40bm-cgcn/"
+    notes: >
+      Achado na varredura sistemática (rodada 2) — base "K3LK4K40BM" já
+      confirmada localmente só com sufixo BGCN; CGCN é um 2º sufixo real
+      da mesma base. Página própria no site oficial Samsung
+      Semiconductor Global (Tier-1), título indexado confirma "(96 Gb)"
+      = 12GB, bate com a chave 4K=12GB da gramática.
+
+  - part_number: "K3LK7K70BMJHCP"
+    chip_type: "LPDDR5"
+    subtype: "LPDDR5"
+    interface: ""
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5/k3lk7k70bm-jhcp/"
+    notes: >
+      Achado na varredura sistemática (rodada 2) — base "K3LK7K70BM" já
+      confirmada localmente com 3 sufixos (BGCP/JGCP/JUCP); JHCP é um 4º
+      sufixo real da mesma base. Página própria no site oficial Samsung
+      Semiconductor Global (Tier-1), título indexado confirma "(64 Gb)"
+      = 8GB, bate com a chave 7K=8GB da gramática.

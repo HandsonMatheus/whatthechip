@@ -1,0 +1,121 @@
+# Submissão de known_parts — Micron, FBGA D9TXS (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9TXS
+# (não identificado na bancada, fila de revisão — SearchLog 10/07/2026 10:34).
+#
+# ⚠ CORREÇÃO 2026-07-10: a versão anterior deste arquivo incluía 5
+# known_parts extras (D9TCS/D9TDS/D9TXF/D9TXG/D9TXQ) tirados do campo
+# "fuzzy_sugest." do debug da bancada. Isso estava ERRADO — confirmado em
+# chips/engine.py (_fuzzy_candidates/_prefix_candidates, linhas 159-212):
+# esse campo só é populado a partir de KnownPart já `review_status=
+# "approved"`. Ou seja, tudo que aparece em fuzzy_sugest. JÁ está
+# confirmado no sistema, com specs — pesquisar e resubmeter é trabalho
+# redundante, não é isso que este chat deve fazer. O trabalho é achar o
+# que AINDA NÃO está no sistema. Ver memória
+# wtc-fuzzy-sugest-ja-confirmado-nao-pesquisar (correção 2026-07-10) —
+# substitui a leitura anterior de "pesquisar cluster inteiro" quanto ao
+# campo fuzzy_sugest. especificamente (esse último continua valendo para
+# sweep de família do PRÓPRIO alvo via forward-lookup na API Micron, ex.:
+# a varredura do prefixo MT58K abaixo, que achou os OUTROS PNs da família
+# nova do alvo — isso sim é trabalho genuíno, porque nenhum deles está no
+# sistema ainda).
+#
+# ⚠ ACHADO: D9TXS é GDDR5X — família MT58K, que NÃO existe em
+# chips/knowledge/micron.yaml hoje. É a SEGUNDA família GDDR nova
+# encontrada em uma semana (a primeira foi MT51J/GDDR5, no lote D9SXC de
+# 2026-07-09, ainda não aplicada na gramática). Proposta de gramática
+# comentada no final deste arquivo — NÃO apliquei no yaml (AUTORIA.md
+# exige golden test antes de família de prefixo novo entrar).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9txs_family_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/micron_d9txs_family_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  # ── D9TXS — o alvo, FAMÍLIA NOVA (GDDR5X, MT58K) ──────────────────────────
+  - part_number: "MT58K256M32JA-100:A"
+    chip_type: "GDDR5X"
+    subtype: "GDDR5X"
+    interface: "x32"
+    density_gbit: "8Gb"
+    fbga_code: "D9TXS"
+    confidence: confirmed
+    source_url: "https://www.techinsights.com/products/0716-43012-o-5dm-100"
+    notes: >
+      Identidade via API oficial FBGA Decoder da Micron (fetch direto,
+      2026-07-10): D9TXS → MT58K256M32JA-100:A. TIPO: TechInsights (empresa
+      de reverse-engineering de semicondutores — fonte técnica confiável,
+      não é revendedor) tem entrada estruturada de catálogo pro PN EXATO:
+      "Device Type: DDR SGRAM" + título "Micron MT58K256M32JA-100:A 1 GB
+      GDDR5X SDRAM". Octopart confirma independentemente: "Synchronous
+      Graphics RAM, 256MX32, CMOS, PBGA190" + campo técnico "Number of
+      Terminals: 190" (TFBGA-190) + resumo de busca cita densidade
+      "8589934592 bits" = 2^33 = 8Gb exato (contagem bruta, sem
+      ambiguidade de unidade). CAPACIDADE: conta pelo PN — 256M
+      (profundidade) × 32bit (largura) = 8192Mb = 8Gb — bate exato com o
+      "8 Gb" do Octopart e com "1GB" do TechInsights (8Gb÷8=1GB). 3 fontes
+      independentes batendo. ⚠ Campo é density_gbit (Gb), não capacity —
+      GDDR usa density_gbit por convenção (CLAUDE.md §6), igual DDR3/DDR4/
+      SDRAM/RDRAM. Obsoleto desde ~2016 (Introduction Date 2016-04-13 no
+      Octopart), ainda assim comum na bancada de reciclagem (GPU antiga).
+      ⚠⚠ FAMÍLIA NOVA — chips/knowledge/micron.yaml não tem prefixo MT58K
+      nem chip_type=GDDR5X pra Micron (é a SEGUNDA família GDDR nova em uma
+      semana — a primeira foi MT51J/GDDR5 no lote D9SXC 2026-07-09, ainda
+      não aplicada). Ver proposta de gramática comentada no fim deste
+      arquivo antes de aprovar — forward-lookup no prefixo "MT58K" (não só
+      "MT58K256M32") devolveu SÓ os 11 PNs já listados na proposta (mesma
+      organização 256M32/256M321, variando só grau de velocidade -100/-110/
+      -120 e ES/MS) — família pequena e já totalmente varrida, sem outro
+      tier de densidade encontrado. Nenhum desses 11 aparece no
+      fuzzy_sugest. da bancada (o alvo é família nova — não há nada
+      aprovado ainda pra sugerir), o que é consistente com serem, de fato,
+      todos ausentes do sistema.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PROPOSTA Trilha A (NÃO aplicada — rascunho pra revisão/golden antes de ir
+# pro chips/knowledge/micron.yaml). Cobre a família nova MT58K (GDDR5X).
+# Forward-lookup completo na API Micron (prefixo "MT58K", 2026-07-10) achou
+# a família INTEIRA — só 11 PNs, todos a mesma organização 256M×32(1):
+#   D9TWR(-120:A) D9TXS(-100:A, ALVO) D9VHH(-110:A) — variantes "JA" puras
+#   D9VRK(-100:A) D9VRL(-110:A) D9VRN(-120:A)       — variantes "1JA" (die rev?)
+#   + 5 ES/MS (Z9TWS/Z9TXT/Z9TZP/Z9VHJ/Z9VRM/Z9VRP)
+# Todas variam só em speed grade (-100/-110/-120, unidade "ns" tipicamente)
+# e nessa pequena diferença "JA" vs "1JA" (não decodifiquei o que o "1"
+# extra significa — não tinha PN-âncora com part-name pra confirmar; deixo
+# como está no PN, sem tentar separar/generalizar). Nenhum desses 10
+# irmãos apareceu no fuzzy_sugest. da bancada (esperado — nenhum está
+# aprovado no sistema ainda), então não estão numa submissão known_parts
+# aqui: sem PN-âncora com capacidade confirmada individualmente pra cada
+# um, e a decisão de tratá-los como "mesma densidade por semelhança
+# estrutural" (como fiz com o irmão do JW500 no lote anterior) precisa de
+# confirmação Tier-1 por variante, que não busquei ainda pra estes 10 —
+# ficam como pendência, não como known_part especulativo.
+#
+# - prefix: MT58K
+#   chip_type: GDDR5X
+#   subtype: GDDR5X
+#   interface: x32          # só variante x32 encontrada nesta família pequena
+#   is_emcp: false
+#   active: true
+#   priority: 50
+#   pn_length: null
+#   decode_cap_pos: null     # sem chave posicional simples — densidade vem do
+#   decode_cap_len: 1        # bloco [profundidade][M][largura] (igual MT52L/
+#   decode_cap_map: ''       # MT53x) — decode_density_type: micron deveria
+#   decode_gen_pos: null     # bastar (mesma fórmula depth×width÷8), MAS aqui
+#   decode_gen_map: ''       # o campo alvo é density_gbit (Gb), não capacity
+#   decode_gen_len: 1        # (GB) — não testei se o engine já roteia GDDR
+#   decode_density_type: ''  # pro campo certo automaticamente. PRECISA TESTE
+#   suffix_rules: ''         # antes de ativar (mesma pendência já anotada
+#   tip: >                   # pra MT51J/GDDR5 no lote D9SXC).
+#     GDDR5X (memória de GPU, geração mais nova que GDDR5) Micron. Família
+#     pequena e obsoleta (~2016), só 256M×32 encontrado (8Gb/1GB). Ex.:
+#     MT58K256M32JA-100:A = 256M×32bit÷8 = 8Gb (confirmado TechInsights +
+#     Octopart, 2026-07-10).
+#   reasoning: '["Achado pesquisando FBGA D9TXS, 2026-07-10", "GDDR5X confirmado via TechInsights (Device Type: DDR SGRAM, título 1GB GDDR5X SDRAM) + Octopart (Synchronous Graphics RAM, 8Gb density)", "Forward-lookup no prefixo MT58K inteiro devolveu só 11 PNs — família pequena, já totalmente mapeada", "Segunda família GDDR nova em uma semana — considerar tratar GDDR5/GDDR5X juntas numa revisão de gramática, não uma de cada vez"]'
+#
+# ⚠ OBRIGATÓRIO antes de aprovar esta família (AUTORIA.md): golden test em
+# chips/tests.py (_MIC_GOLDEN) com MT58K256M32JA-100:A → GDDR5X·8Gb,
+# incluindo rentabilidade (handshake — GDDR já tem regra própria via
+# gddr_min_gen, mas confirmar que "GDDR5X" extrai geração "5" corretamente
+# no regex de _ddr_generation/GDDR do engine antes de assumir RENTÁVEL).

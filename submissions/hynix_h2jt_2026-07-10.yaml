@@ -1,0 +1,91 @@
+# Submissão de known_parts — SK Hynix, prefixo H2JT (NAND Flash raw legado, NOVO — sem família)
+# Gerado a partir da investigação do PN H2JTDG8UD3MBR (busca na bancada, 2026-07-10) — PN
+# totalmente desconhecido, known=false, zero fuzzy_suggestions, in_review_queue=true.
+#
+# ⚠ SEM FIX DE GRAMÁTICA (decisão deliberada, não omissão): investiguei se dava pra criar uma
+# família H2JT com decode posicional de capacidade, mas a evidência mostra que NÃO segue um
+# padrão posicional simples. Achei:
+#   - H2JTDG8UD3MBR e H2JTDG8UD2MBR (mesmo "miolo" DG8U, dígito 3 vs 2) = MESMA capacidade
+#     (16GB, ambos usados no mesmo slot do iPhone 5s 16GB conforme revendedores).
+#   - H2JTFG8YD2MBR (miolo DIFERENTE, FG8Y não DG8U) = 64GB — capacidade totalmente diferente,
+#     não é "um a mais" do anterior.
+#   - H2JTDG8UD1CMR-BCR = também 16GB (128Gb) por uma ficha técnica de distribuidor, mas parece
+#     ser de processo posterior (1xnm vs 21nm/2ynm do 5s) e H2JTDG8UD1BMS aparece associado ao
+#     iPhone 6 16GB (dispositivo DIFERENTE), não ao 5s.
+# Ou seja: o "package mark" é específico por aplicação/geração do iPhone (marca custom Apple+
+# Hynix), não uma gramática Hynix genérica decodificável por posição — inventar uma regra aqui
+# seria adivinhação. Cada PN confirmado entra como known_part individual (Trilha B). Se mais
+# PNs dessa família aparecerem nas buscas, dá pra reavaliar se emerge um padrão real.
+#
+# TIPO: NAND Flash raw (não eMMC/eMCP) — confirmado "2 bit/cell" (MLC) e processo 21nm/2ynm
+# class pela TechInsights. Hynix chama o padrão de "E2NAND3.0" (ECC/buffering aprimorados da
+# própria Hynix), mas estruturalmente é NAND Flash MLC — chip_type="NAND Flash", subtype="MLC
+# NAND", igual à convenção já usada pra outros NAND raw do catálogo.
+#
+# FONTES: duas análises profissionais de teardown físico (abrir o aparelho, fotografar/decapear
+# o chip, ler a marcação a laser do package) — mais confiáveis que listagem de distribuidor
+# porque é identificação direta do componente físico, não transcrição de catálogo:
+#   - EE Times / iFixit (via citação direta, fetch), teardown do iPhone 5s 16GB.
+#   - TechInsights (fetch direto, autores nomeados: Jim Morrison, Ray Fontaine, Dick James,
+#     Chad Davis), teardown oficial do iPhone 5s — inclui a análise de processo (21nm, 2bit/
+#     célula) que também aparece como produto próprio da TechInsights (fpr-1303-801).
+# Confidence=manual em ambos (são análise de terceiros especializados, não datasheet do
+# fabricante — mas de qualidade bem acima de listagem de distribuidor comum).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h2jt_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h2jt_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H2JTDG8UD3MBR"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: ""
+    capacity: "16GB"
+    confidence: manual
+    source_url: "https://teeyonglim.wordpress.com/2013/09/23/iphone-5s-teardown-ifixit-style-ee-times/"
+    notes: >
+      PN buscado na bancada, totalmente desconhecido antes desta submissão (zero fuzzy match).
+      Teardown do iPhone 5s 16GB (EE Times/iFixit, via citação direta fetchada, com link
+      original pra eetimes.com/document.asp?doc_id=1319560&page_number=5) lista explicitamente:
+      "SK Hynix H2JTDG8UD3MBR 128 Gb (16 GB) NAND Flash" — 128Gb÷8=16GB, aritmética já vem
+      pronta na fonte. Identificação por decapagem/leitura física do chip, não transcrição de
+      catálogo.
+
+  - part_number: "H2JTDG8UD2MBR"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: ""
+    capacity: "16GB"
+    confidence: manual
+    source_url: "https://www.chipbay.uk/product/iphone-5s-16gb-nand-flash-ic-chip-with-firmware-skhynix-h2jtdg8ud2mbr-2/"
+    notes: >
+      Irmão do PN alvo — mesmo miolo "DG8U", só o dígito final muda (2 em vez de 3). ChipBay
+      vende os dois juntos explicitamente como "iPhone 5s 16GB NAND Flash IC Chip ... SKHynix
+      H2JTDG8UD2MBR H2JTDG8UD3MBR" (mesma aplicação/capacidade). Corroborado independentemente
+      por Aliexpress ("Hynix 16GB ipad memory nand flash iPhone 5s H2JTDG8UD2MBR") e eBay
+      ("Hynix H2JTDG8UD2MBR - 16 GB NAND Flash Drive"). Múltiplas fontes de mercado
+      concordando, mas nenhuma é um teardown físico dedicado como o do D3MBR acima.
+
+  - part_number: "H2JTFG8YD2MBR"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: ""
+    capacity: "64GB"
+    confidence: manual
+    source_url: "https://www.techinsights.com/blog/apple-iphone-5s-teardown"
+    notes: >
+      Achado pesquisando o cluster do iPhone 5s (não é o PN buscado, mas mesma aplicação/
+      família de mercado). Miolo DIFERENTE do PN alvo ("FG8Y", não "DG8U") — capacidade
+      DIFERENTE, não é sequência do mesmo lote. Teardown oficial da TechInsights (fetch direto,
+      autores nomeados), tier premium na Back Board do iPhone 5s 64GB: "Hynix 64 GB NAND
+      Flash, Package Mark: H2JTFG8YD2MBR, 8 stacked NAND Flash, Die Mark: H27QCG8T2B ...
+      conforming to their E2NAND3.0 standard ... manufactured in Hynix's 21 nm process
+      ('2ynm class')". Confirma diretamente 64GB, sem precisar de conta Gb→GB (já em GB).
+
+# NÃO incluído (ambíguo, precisaria de rodada dedicada): H2JTDG8UD1CMR-BCR (128Gb=16GB por uma
+# ficha técnica de distribuidor, mas processo "1xnm" — geração posterior à do 5s) e
+# H2JTDG8UD1BMS (aparece em revendedores como peça de iPhone 6 16GB, não iPhone 5s — dispositivo
+# diferente). Não incluí nenhum dos dois por falta de fonte tão forte quanto as 3 acima, e por
+# apontarem pra um dispositivo/geração diferente do PN buscado.

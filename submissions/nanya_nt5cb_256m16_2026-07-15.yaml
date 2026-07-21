@@ -1,0 +1,66 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB256M16BP-DI"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://octopart.com/nt5cb256m16bp-di-nanya-25738479"
+    notes: >
+      PN do debug ao vivo do estoque (15/07/2026 18:02) foi "NT5CB256M16BP" (sem sufixo) --
+      esta e a variante "-DI" da MESMA die letter "B", confirmada em pagina dedicada do
+      Octopart (nao resumo de busca): "DDR3 Dram, 256MX16, 0.225NS, Cmos, PBGA96", Nominal
+      Supply Voltage=1.5V (confirma DDR3, nao DDR3L -- bate com a convencao ja estabelecida
+      NT5CB=DDR3 1.5V vs NT5CC=DDR3L 1.35V), TFBGA 96-pin, pais de origem Taiwan, datasheet
+      IHS de 135 paginas. Aritmetica: 256M x 16bit = 4096Mbit = 4Gb (bate). NAO achei a forma
+      BASE "NT5CB256M16BP" (sem sufixo) como entrada indexada em nenhuma fonte aberta
+      diretamente -- normalize_pn distingue "NT5CB256M16BP" de "NT5CB256M16BPDI" (remove só
+      "-"), entao este known_part talvez NAO resolva o PN exato da bancada se o sufixo "-DI"
+      nao estiver de fato gravado na peca fisica (mesma ressalva ja documentada na rodada
+      NT6CL para NT6CL512M4GN-CG).
+
+  - part_number: "NT5CB256M16CN-DIA"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145570/NANYA/NT5CB256M16CN-DIA.html"
+    notes: >
+      Densidade 256M16=4Gb ja estava mapeada no dossie da rodada NT5CB anterior (bucket
+      NT5CB2*, 220 resultados) mas nenhum known_part dela tinha sido submetido ainda (a rodada
+      passada so cobriu 64M16/1Gb e 512M8/4Gb). Alldatasheet: "Commercial, Industrial and
+      Automotive DDR3(L) 4Gb SDRAM". Aritmetica: 256M x 16bit = 4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5CB256M16CP"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145482/NANYA/NT5CB256M16CP.html"
+    notes: >
+      Forma mais curta (sem sufixo de grade, so a die letter "C"+"P") do mesmo cluster
+      256M16, indexada como entrada propria no Alldatasheet. Aritmetica: 256M x 16bit =
+      4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5CB256M16BP-CG"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/nanya/NT5CB256M16BP-CG"
+    notes: >
+      PN EXATO do 2o debug ao vivo (15/07/2026 18:06) -- CONFIRMADO PELO DONO (18:xx): a
+      marcacao fisica e "-CG", nao "-DG" (leitura inicial do operador). Antes da confirmacao,
+      eu ja tinha achado esta variante como a unica real correspondente (nao achei "-DG" em
+      nenhuma fonte; Alldatasheet "No Data" pra qualquer entrada com die letter "B" nesta
+      organizacao; "-CG" apareceu de forma consistente em 5+ distribuidoras). Pagina do
+      Octopart aberta diretamente (nao resumo de busca): "DDR3 Dram, 256MX16, 0.255NS, Cmos,
+      PBGA96", Nominal Supply Voltage=1.5V (confirma DDR3), nota do distribuidor Win Source:
+      "DDR3-1333 256Mx16 (4Gb)". Aritmetica: 256M x 16bit = 4096Mbit = 4Gb (bate). Com o
+      sufixo "-CG" confirmado como a marcacao real, este known_part AGORA resolve o PN exato
+      da bancada (normalize_pn("NT5CB256M16BP-CG") == normalize_pn do PN fisico, sem a
+      ambiguidade de sufixo que outros known_parts desta submissao ainda tem).

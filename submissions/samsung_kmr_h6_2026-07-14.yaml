@@ -1,0 +1,90 @@
+# Submissão de known_parts — Samsung, família KMR (eMCP LPDDR3 + eMMC 5.1). PN alvo:
+# KMRH60014M (busca 2026-07-14, 2º round desta família nesta sessão — ver
+# submissions/samsung_kmr_2026-07-13.yaml pro round anterior, que criou o mapa dedicado
+# SAM_EMCP_CAP_KMR). Chave 'H6' já mapeada (64GB+4GB) — âncora original é o já-confirmado
+# KMRH60014A (seed, "Sistema mostrava LPDDR4/4X — ERRADO", corrigido 2026-05-26). Meu alvo
+# (sufixo M) é irmão de sufixo do já-confirmado H60014A — mesmo padrão de "sufixo não muda
+# capacidade" já validado várias vezes nesta família (KMQN10006 A/B/M) e nesta sessão.
+#
+# Varredura via Puris master index (mesma técnica do round 07-13): cruzei os ~130 PNs Samsung
+# do puris.net/emcplist contra os já confirmados (13 no seed + 8 do meu round 07-13) — achei
+# 3 siblings genuinamente novos, todos verificados individualmente antes de registrar:
+#
+# KMR4Z0001A: irmã de sufixo do já-confirmado KMR4Z0001M (seed, 32GB+2GB). Puris (página
+# dedicada archives/2982) + Jotrin + Lisleapex + Censtry + eBay ("32+2"), todos "32+16"=2GB.
+# Mesmo padrão de invariância por sufixo.
+#
+# KMRC1000BM: ⚠ ACHADO NOVO — mesma chave 'C1' do já-confirmado KMRC10014M (seed, 64GB+4GB),
+# mas KMRC1000BM tem RAM DIFERENTE: 64GB+3GB (24Gb). Confirmado Preduo + 2x AliExpress ("64+3"/
+# "64+24") + Win Source + 2x eBay ("64+24"), todos convergentes. É o MESMO padrão "mesma chave,
+# densidade diferente dentro da família" já documentado (memória
+# wtc-mesma-chave-densidade-diferente-dentro-familia) — desta vez na chave C1, não na '31'.
+# O mapa continua default=4GB (maioria, KMRC10014M+variantes B809/B809007 já confirmados);
+# este known_part individual resolve corretamente o caso 000B.
+#
+# KMR8X0001A: irmã de sufixo do já-confirmado KMR8X0001M (seed, 16GB+2GB, chave '8X'). Existe
+# de fato (BGA221, listagem Amazon agrupando junto com 8X0001M sob "16GB"), mas não achei
+# página estruturada com NAND+RAM explícitos separados pra ESTE sufixo especificamente — só
+# o agrupamento com o já-confirmado M. confidence=manual (padrão de invariância por sufixo,
+# 100% consistente em todo caso já testado nesta família, mas sem citação explícita própria).
+brand: "Samsung"
+known_parts:
+  - part_number: "KMRH60014M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "64GB"
+    emcp_ram: "LPDDR3 4GB"
+    confidence: confirmed
+    source_url: "https://www.censtry.com/product/samsung/kmrh60014m-b614t05.html"
+    notes: >
+      PN alvo. Censtry (2 fichas, -B614T05) + Satellite Mobile Institute + Jotrin, todos
+      Samsung eMCP 64GB+4GB LPDDR3. Irmão de sufixo do já-confirmado KMRH60014A (seed:
+      cpuprocessorchip "64+32 EMCP D3 LPDDR3-1866MHz" = mesma coisa). Bate a chave 'H6' do
+      SAM_EMCP_CAP_KMR (64GB+4GB).
+
+  - part_number: "KMR4Z0001A"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "32GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: confirmed
+    source_url: "https://www.puris.net/archives/2982"
+    notes: >
+      Irmão de sufixo do já-confirmado KMR4Z0001M (seed, 32GB+2GB). Puris (página dedicada)
+      + Jotrin + Lisleapex + Censtry + eBay ("32+2"), todos "32+16"=2GB. Bate a chave '4Z'.
+
+  - part_number: "KMRC1000BM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "64GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/kmrc1000bm-b809"
+    notes: >
+      ⚠ EXCEÇÃO de densidade dentro da chave 'C1' (achado novo 2026-07-14, mesmo padrão já
+      visto na chave '31' em 2026-07-13 — ver memória
+      wtc-mesma-chave-densidade-diferente-dentro-familia). O default do mapa (4GB) vem de
+      KMRC10014M+variantes (já confirmados, maioria). KMRC1000BM tem NAND igual (64GB) mas
+      RAM diferente: 24Gb=3GB. Preduo + 2x AliExpress ("64+3"/"64+24") + Win Source + 2x
+      eBay ("64+24"), todos convergentes. Este known_part individual é o único jeito de a
+      gramática (que não distingue "0014" de "000B" na posição não-decodificada) acertar
+      este PN físico específico.
+
+  - part_number: "KMR8X0001A"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: manual
+    source_url: "https://www.amazon.com/KMR31000BM-B611-KMR310001M-B611-KMR8X0001M-B608-KMR8X0001A-B609-KMR820001M-B609/dp/B0F5MTL2TV"
+    notes: >
+      Irmão de sufixo do já-confirmado KMR8X0001M (seed, 16GB+2GB, chave '8X'). Existência
+      real confirmada (BGA221, listagem Amazon agrupando junto com 8X0001M sob rótulo
+      "16GB"), mas sem página estruturada própria com NAND+RAM separados pra ESTE sufixo
+      especificamente. confidence=manual: padrão de invariância por sufixo (100%
+      consistente em todo caso já testado nesta família — KMQN10006 A/B/M, KMR4Z0001 A/M
+      acima) + existência real, mas sem citação explícita isolada.

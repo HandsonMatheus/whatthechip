@@ -1,0 +1,37 @@
+# Submissão de known_parts — Samsung, família K3QF, chave '5' (1.5GB)
+# PN alvo: K3QF5F50AMEGCE (busca 2026-07-10). Grammar já decodifica certo (K3QF_CAP['5']
+# = 1.5GB, LPDDR3, NÃO RENTÁVEL) — este known_part é só para formalizar o PN exato no banco.
+#
+# ⚠ confidence=distributor POR DECISÃO EXPLÍCITA DO DONO (2026-07-10) — NÃO é citação
+# direta de fonte. Busca exaustiva (Samsung oficial, alldatasheet — confirmado ZERO
+# datasheets K3QF5* publicados no site inteiro —, Octopart "no exact matches", LCSC,
+# Utsource, Alibaba, Findchips, Sourcengine, DigiPart, Ariat-Tech, Zeanoit, Censtry,
+# Lisleapex, eBay, HKInventory, SSFKG, OMO-IC) NÃO encontrou nenhuma fonte, de nenhum
+# tier, citando "K3QF5F50AM-EGCE" (nem a base "K3QF5F50AM") literalmente.
+#
+# O que existe são DUAS peças confirmadas SEPARADAMENTE (composição, não citação do PN
+# inteiro):
+#   1. Chave '5' do K3QF_CAP = 1.5GB (12Gb = 2× 6Gb die) — confirmado por chip físico na
+#      esteira (eMiner, 2026-05-13), PN irmão K3QF5F50MM (die "MM", mesma chave).
+#   2. Die "AM" é revisão real usada nesta família — confirmado via K3QF6F60AM-FGCF
+#      (chave '6', 3GB, NÃO a chave '5' do alvo) em 4 fontes tier-3 rastreáveis:
+#      LCSC C2847502 (com datasheet PDF próprio), Utsource, Alibaba, DigiPart.
+#   3. Sufixo "-EGCE" é padrão real de grade Samsung LPDDR3 (visto em K3QF1F10EM-AGCE,
+#      K4E6E304EE-EGCE etc.) — não carrega capacidade, só velocidade/pacote.
+# Nenhuma fonte junta as três peças na string exata do alvo. Registrado como distributor
+# (não confirmed/manual) para refletir isso — não vence a gramática, só formaliza o PN.
+brand: "Samsung"
+known_parts:
+  - part_number: "K3QF5F50AMEGCE"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1.5GB"
+    confidence: distributor
+    notes: >
+      SEM fonte única citando este PN completo — ver cabeçalho do arquivo para a
+      composição. Chave '5' (1.5GB) confirmada por bancada física em K3QF5F50MM
+      (eMiner, 2026-05-13). Die "AM" confirmado real nesta família via K3QF6F60AM-FGCF
+      (LCSC C2847502 + datasheet, Utsource, Alibaba, DigiPart — chave '6'=3GB, não a
+      '5' do alvo). Sufixo "-EGCE" é padrão Samsung LPDDR3 visto em K3QF1F10EM-AGCE e
+      K4E6E304EE-EGCE. Decisão explícita do dono (2026-07-10) de registrar por
+      composição em vez de deixar só na gramática.

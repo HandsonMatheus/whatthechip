@@ -1,0 +1,241 @@
+# Submissão known_parts — Foresee (Longsys), família LEGADA "NCLD" de LPDDR4/LPDDR4X standalone
+# (2026-07-16). Origem: PN buscado na bancada "NCDLXC4MJ512M32" (debug estoque, known=false,
+# in_review_queue=true, 0 fuzzy_suggestions) — NÃO existe como string em nenhuma fonte. Investigado
+# como possível erro de transcrição do operador (ver nota do 1º known_part abaixo). Pedido do dono:
+# coletar o PN + TODAS as variantes do cluster, não só 1.
+#
+# ⚠ ESTRUTURA DECIFRADA (Tier-1, datasheet oficial Longsys "NCLD4CXMAXXXM32" Rev B2 2017, die Micron):
+#   NC (Longsys) + LD+{geração, ex. "4"=LPDDR4} + C (pacote 200-ball) + {CS: "1"=1CS ou "2"=2CS} +
+#   {2 chars = código do die/fornecedor, ex. "MA"=die Micron} + {profundidade}M{largura} (capacidade).
+#   Capacidade = profundidade × largura ÷ 8 = bits totais — CONFIRMADO literalmente na tabela do
+#   datasheet p/ 4 PNs (256M32=8Gb, 512M32=16Gb, 768M32=24Gb, 1024M32=32Gb) E no catálogo oficial
+#   (NCLDXC1MG256M32=8Gb). Fórmula validada contra 5 âncoras Tier-1 antes de aplicar aos irmãos.
+# ⚠ DUAS SUB-FAMÍLIAS, tipo DIFERENTE (não confundir):
+#   "NCLD4C..." (die Micron, datasheet SEM opção 0.6V) = LPDDR4 PADRÃO (não-X).
+#   "NCLDXC..." (catálogo oficial LISTA com opção 0.6V, seção "LPDDR4x") = LPDDR4X.
+#   Aplico "LPDDR4X" aos irmãos NCLDXC* não vistos em datasheet próprio, por consistência de
+#   subfamília com o único confirmado (NCLDXC1MG256M32) — mesma disciplina do eMCP3→LPDDR3 (FEPN).
+# ⚠ GAP "NCLD3B" RESOLVIDO (16/07/2026, PN buscado na bancada foi exatamente "NCLD3B2256M32" —
+#   debug estoque, known=false, in_review_queue=true). Era LPDDR3, não ambiguidade 4/4X: achei o
+#   datasheet oficial "D-00151 FORESEE - LPDDR3 - NCLD3B1256M32 - 178ball - 11x11.5 - 1333Mbps - SPEC"
+#   (mirror Scribd) + a página oficial longsys.com/products/embedded-storage/embedded-storage/lpddr.html
+#   confirma a linha "FORESEE LPDDR3" existe (667/800MHz). Estrutura: mesmo esqueleto NC+LD+<geração
+#   ex.'3'>+<pacote ex.'B'>+<CS 1/2>[+2 chars vendor opcional]+<profundidade>M<largura> — "B"=pacote
+#   178-ball (LPDDR3), diferente de "C"=200-ball (LPDDR4/4X das 2 subfamílias já confirmadas acima).
+#   Sem o código de vendor de 2 chars a maioria das vezes (ex. NCLD3B2256M32), mas existem variantes
+#   COM vendor (NCLD3B1M7256M32, NCLD3B1M5128M32, NCLD3B2M7512M32 — vistas no netComponents, mesma
+#   capacidade das "limpas" equivalentes, não submetidas agora — lote extra se pedido). Submeti as 4
+#   PNs "limpas" abaixo (1256/2256/1128/2512, cobrindo 0.5/1/1/2GB — sim, 1256 e 2256 dão a MESMA
+#   capacidade 1GB com CS diferente, como já visto no par NCLD4C1MA256M32/NCLDXC1MG256M32).
+# ⚠ netComponents cross-validou a PRÓPRIA CONFIABILIDADE: os totais de estoque pra NCLDXC1MJ512M32
+#   (27.922un) e NCLDXC1MC512M32 (27.150un) que citei acima bateram EXATOS com uma nova consulta feita
+#   agora — mesma fonte, mesmo dado, 2 buscas independentes no tempo.
+# ⚠ CATCH de alucinação (3ª vez nesta sessão): resumo de busca automático alegou que a página HQonline
+#   de NCLD3B2512M32 dizia "2GiB LPDDR3 533MHz, 16Gb, 512Mx32" — abri a página eu mesmo: os campos
+#   estruturados reais são de OUTRO tipo de componente (SOIC-16, isolador, "Number Of Channels: 2"),
+#   claramente um artefato de template da HQonline, "Description" vazio. Descartei a alegação; a
+#   capacidade de NCLD3B2512M32 abaixo vem SÓ da fórmula validada (não de fonte lida diretamente).
+# ⚠ NÃO propus ChipFamily nova (Trilha A) apesar da estrutura decifrada, agora com 3 subfamílias
+#   confirmadas (4C/XC/3B) — é decisão arquitetural do dono (mais poderosa/arriscada que known_part
+#   avulso); o plano pré-existente no FORESEE.md já dizia "avulso se aparecer". Sinalizo a possibilidade
+#   no chat, não decido sozinho — com 3 pontos de dado o caso pra uma ChipFamily de verdade fica mais
+#   forte, mas continua sendo call do dono.
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_ncld_legacy_2026-07-16.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ncld_legacy_2026-07-16.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "NCLDXC1MJ512M32"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "2GB"
+    confidence: manual
+    notes: >
+      ⭐ CANDIDATO A MATCH do PN buscado na bancada "NCDLXC4MJ512M32" (debug estoque 16/07/2026,
+      known=false, 0 fuzzy_suggestions). Hipótese de erro de transcrição do operador: (a) posições 3-4
+      "DL" trocadas — deveria ser "LD" (LPDDR, confirmado pelo decode oficial da família); (b) posição
+      7 "4" — no decode oficial essa posição é CS-count e só aceita "1" ou "2" ("4" é valor inválido,
+      reforça leitura errada de "1"). Corrigindo os 2 chars: "NCDLXC4MJ512M32" → "NCLDXC1MJ512M32",
+      que EXISTE e é multiplamente confirmado (netComponents: 9 line items/8 fornecedores/3 países,
+      27.922 unidades em estoque agregado; Arrow.com: página de produto Shenzhen Longsys Electronics;
+      HardDiskDirect: "LPDDR4X-3200MHz FORESEE 512Mx32" — ⚠ o rótulo "(16GB)" da HardDiskDirect está
+      ERRADO, é a mesma armadilha Gb/GB já catalogada p/ essa distribuidora no SK_HYNIX.md §6; não usei
+      a capacidade dela como fonte). Capacidade real pela fórmula confirmada: 512M×32bit÷8 = 2048MB =
+      2GB (= 16Gb, bate com o rótulo "512Mx32" que TODAS as fontes concordam). chip_type=LPDDR4X por
+      consistência de subfamília "XC" com NCLDXC1MG256M32 (única confirmada em datasheet/catálogo).
+      ⚠ NÃO tenho 100% de certeza que este é o PN físico do chip na bancada — recomendo reconferir o
+      código gravado a laser antes de aprovar, ou aprovar como "melhor match documentado" se o operador
+      não puder reconferir.
+    source_url: "https://www.netcomponents.com/sitemap/NCLDXC1MC512M32.html"
+  - part_number: "NCLD4C1MA256M32"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "1GB"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial Longsys "FORESEE LPDDR4 NCLD4CXMAXXXM32" Rev B2 (2017.08.01, die Micron),
+      Table 1 (Key Timing Parameters) + seção "LPDDR4 Part Number Decode": NCLD4C1MA256M32 = array
+      256Mb×32, 1 die, densidade 8Gb/die = 8Gb total (256M×32bit÷8=1024MB=1GB). Decode oficial: NC
+      (Longsys) + LD4 (LPDDR4) + C (pacote 200-ball) + 1 (1CS) + MA (die Micron) + 256M32 (capacidade).
+      Options: VDD1/VDD2 = 1.8V/1.1V (SEM opção 0.6V) → LPDDR4 padrão, NÃO é LPDDR4X (diferente da
+      subfamília NCLDXC, que o catálogo lista com opção 0.6V). FBGA200 10x14.5x0.95mm, -30~85°C.
+    source_url: "https://brainypi.com/wp-content/uploads/2023/03/FORESEE_LPDDR4_200ball_NCLD4CXMAXXXM32_10x14.5_VFBGA_Spec_B1_20170802.pdf"
+  - part_number: "NCLD4C2MA512M32"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "2GB"
+    confidence: confirmed
+    notes: >
+      Mesmo datasheet oficial do NCLD4C1MA256M32 (Table 1 + Table 2 Device Addressing): array
+      512Mb×32, 2 dies empacotados, densidade 8Gb/die → total 16Gb (512M×32bit÷8=2048MB=2GB). Tabela
+      "Device Addressing" confirma literalmente "512M32 (16Gb)". LPDDR4 padrão (mesma família
+      NCLD4C, sem opção 0.6V no datasheet).
+    source_url: "https://brainypi.com/wp-content/uploads/2023/03/FORESEE_LPDDR4_200ball_NCLD4CXMAXXXM32_10x14.5_VFBGA_Spec_B1_20170802.pdf"
+  - part_number: "NCLD4C2MA768M32"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "3GB"
+    confidence: confirmed
+    notes: >
+      Mesmo datasheet oficial (Table 1 Key Timing Parameters): array 768Mb×32, 3 dies empacotados →
+      768M×32bit÷8=3072MB=3GB (=24Gb). LPDDR4 padrão. Nota: o PN mantém o dígito "2" após NCLD4C
+      (mesmo do 512M32) apesar de 3 dies — esse dígito é CS-count (1 ou 2 canais lógicos), não conta
+      de die físico; a densidade real vem do sufixo 768M32, confirmado na tabela de endereçamento.
+    source_url: "https://brainypi.com/wp-content/uploads/2023/03/FORESEE_LPDDR4_200ball_NCLD4CXMAXXXM32_10x14.5_VFBGA_Spec_B1_20170802.pdf"
+  - part_number: "NCLD4C2MA001G32"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: >
+      Mesmo datasheet oficial (Table 1): array 1024Mb×32 (notação "001G32" = 1G×32), 4 dies
+      empacotados → 1024M×32bit÷8=4096MB=4GB (=32Gb). Maior capacidade documentada da subfamília
+      NCLD4C. LPDDR4 padrão (device x8, RL/WL diferente do x16 dos irmãos menores — ver datasheet).
+    source_url: "https://brainypi.com/wp-content/uploads/2023/03/FORESEE_LPDDR4_200ball_NCLD4CXMAXXXM32_10x14.5_VFBGA_Spec_B1_20170802.pdf"
+  - part_number: "NCLDXC1MG256M32"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "1GB"
+    confidence: confirmed
+    notes: >
+      Catálogo oficial "FORESEE Embedded Storage Product Catalogue" (longsys.com), seção LPDDR4x —
+      PN listado com densidade 8Gb (256M×32bit÷8=1024MB=1GB), voltagem 1.8V/1.1V/0.6V (opção X
+      confirmada, ao contrário da subfamília NCLD4C). Já sinalizado como gap no FORESEE.md §5 desde a
+      construção original da marca (2026-07-15) — este known_part fecha o gap. Provavelmente
+      NÃO RENTÁVEL/limítrofe por capacidade (1GB), mas isso é decisão do assess_profitability, não
+      deste known_part.
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "NCLDXC1MC512M32"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "2GB"
+    confidence: manual
+    notes: >
+      Existência confirmada: netComponents (9 line items, 8 fornecedores em CN/TW/IN, 27.150 unidades
+      agregadas — página própria do PN). Capacidade pela fórmula validada (512M×32bit÷8=2048MB=2GB),
+      mesma profundidade×largura do NCLDXC1MJ512M32 (irmão de código de die "C" em vez de "J" — mesma
+      posição que varia entre NCLD4C1MA/NCLDXC1MG/etc., aparenta ser fornecedor/lote do die, não afeta
+      capacidade). Sem datasheet próprio aberto — confidence=manual.
+    source_url: "https://www.netcomponents.com/sitemap/NCLDXC1MC512M32.html"
+  - part_number: "NCLDXC2MG512M32"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "2GB"
+    confidence: manual
+    notes: >
+      Existência confirmada: listado no agregador netComponents (sidebar "Other Parts" da página
+      NCLDXC1MC512M32, 2 fornecedores, 14.850 unidades). Capacidade pela fórmula validada
+      (512M×32bit÷8=2GB). Código "2" (vs "1" nos irmãos) = CS-count 2 canais lógicos, por analogia ao
+      decode oficial do NCLD4C. Sem datasheet próprio — confidence=manual.
+    source_url: "https://www.netcomponents.com/sitemap/NCLDXC1MC512M32.html"
+  - part_number: "NCLDXC1ME384M32"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "1.5GB"
+    confidence: manual
+    notes: >
+      Existência confirmada: netComponents (sidebar "Other Parts", 1 fornecedor, 4.517 unidades).
+      Capacidade pela fórmula validada: 384M×32bit÷8=1536MB=1.5GB (=12Gb). Densidade intermediária
+      não vista nos outros irmãos (256/512/768/1024M) — plausível (a família tem degraus de 256M),
+      mas é a capacidade MENOS corroborada deste lote (só 1 fornecedor). confidence=manual.
+    source_url: "https://www.netcomponents.com/sitemap/NCLDXC1MC512M32.html"
+  - part_number: "NCLDXC2ME768M32"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "3GB"
+    confidence: manual
+    notes: >
+      Existência confirmada: netComponents (sidebar "Other Parts", 1 fornecedor, 8.000 unidades).
+      Capacidade pela fórmula validada: 768M×32bit÷8=3072MB=3GB (=24Gb) — mesma capacidade do
+      NCLD4C2MA768M32 (confirmado em datasheet), reforça a fórmula. confidence=manual (sem datasheet
+      próprio desta PN específica).
+    source_url: "https://www.netcomponents.com/sitemap/NCLDXC1MC512M32.html"
+  - part_number: "NCLDXC1MF768M32"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "3GB"
+    confidence: manual
+    notes: >
+      Existência confirmada: netComponents (sidebar "Other Parts", 1 fornecedor, 5.000 unidades).
+      Mesma capacidade do NCLDXC2ME768M32 e do NCLD4C2MA768M32 (768M×32bit÷8=3GB) — código de die "F"
+      em vez de "E"/"2MA". Terceira confirmação independente da capacidade 768M32=3GB nesta rodada.
+      confidence=manual.
+    source_url: "https://www.netcomponents.com/sitemap/NCLDXC1MC512M32.html"
+  - part_number: "NCLD3B1256M32"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial catalogado "D-00151 FORESEE - LPDDR3 - NCLD3B1256M32 - 178ball - 11x11.5 -
+      1333Mbps - SPEC" (mirror Scribd; não abri o PDF completo, mas o título do documento confirma
+      geração e pacote sem ambiguidade). Página oficial longsys.com/products/embedded-storage/
+      embedded-storage/lpddr.html confirma a linha "FORESEE LPDDR3" (667/800MHz) existe. netComponents:
+      1 fornecedor CN, 4.520 unidades, fabricante listado "Forsee (Longsys)"/"Longsys"/"Foresight Power
+      - ShenZhen". Capacidade pela fórmula já validada em 5 âncoras Tier-1 da família NCLD (depth×largura
+      ÷8): 256M×32bit÷8=8192Mbit÷1024=8Gb=1024MB=1GB. Estrutura: NC+LD+3(geração LPDDR3)+B(pacote
+      178-ball, diferente do "C"=200-ball das subfamílias LPDDR4/4X)+1(CS)+256M32(capacidade).
+    source_url: "https://www.netcomponents.com/sitemap/NCLD3B1256M32.html"
+  - part_number: "NCLD3B2256M32"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: manual
+    notes: >
+      ⭐ PN EXATO buscado na bancada (debug estoque 16/07/2026, known=false, in_review_queue=true) —
+      sem erro de transcrição desta vez, string real e íntegra. Existência fortemente confirmada:
+      agregador DigiPart mostra 8 distribuidores independentes (MountainView/LONGSYS, Ariat, YIC,
+      New Strength — descrição "FBGA178" explícita —, IC Components, Sierra IC, Haode, Green Light);
+      netComponents agrega 7 fornecedores/4 países, 50.474 unidades totais. Mesma família/geração do
+      irmão com datasheet próprio NCLD3B1256M32 (acima) — mesmo pacote 178-ball, mesma regra de
+      capacidade. Capacidade pela fórmula: 256M×32bit÷8=8192Mbit÷1024=8Gb=1024MB=1GB (CS=2, contra
+      CS=1 do 1256M32 — mesma capacidade final, como já visto no par NCLD4C1MA256M32/NCLDXC1MG256M32).
+      Sem datasheet próprio desta PN específica (só do irmão 1256M32) — confidence=manual.
+    source_url: "https://www.digipart.com/part/NCLD3B2256M32"
+  - part_number: "NCLD3B1128M32"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "512MB"
+    confidence: manual
+    notes: >
+      Existência fortemente confirmada: DigiPart agrega 5 distribuidores (Ariat, YIC, IC Components,
+      Sierra IC, Green Light); netComponents agrega 9 fornecedores/5 países, 308.974 unidades totais
+      (o maior estoque agregado de todo o cluster NCLD visto até agora). Mesma família NCLD3B (178-ball,
+      LPDDR3) do irmão com datasheet NCLD3B1256M32. Capacidade pela fórmula: 128M×32bit÷8=4096Mbit÷
+      1024=4Gb=512MB. Menor capacidade do cluster. Sem datasheet próprio — confidence=manual.
+    source_url: "https://www.digipart.com/part/NCLD3B1128M32"
+  - part_number: "NCLD3B2512M32"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    notes: >
+      Existência confirmada: netComponents (5 fornecedores/2 países, 21.764 unidades); Upverter tem
+      página própria do PN (conteúdo não pôde ser lido, JS-rendered). ⚠ Um resumo de busca automático
+      alegou specs "2GiB LPDDR3 533MHz, 16Gb, 512Mx32" vindas da página HQonline — abri a página
+      diretamente e os campos "estruturados" reais pertencem a OUTRO componente (SOIC-16, isolador,
+      claramente template incorreto da HQonline, "Description" vazio) — descartei a alegação como
+      provável alucinação. Capacidade aqui vem SÓ da fórmula validada, não de fonte lida diretamente:
+      512M×32bit÷8=16384Mbit÷1024=16Gb=2048MB=2GB. Maior capacidade do cluster NCLD3B visto até agora.
+      confidence=manual.
+    source_url: "https://www.netcomponents.com/sitemap/NCLD3B2512M32.html"

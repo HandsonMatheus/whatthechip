@@ -1,0 +1,251 @@
+# Submissão de known_parts — Micron, FBGA JW738 + família MT29C4G48M (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA JW738
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (JW438, JW708, JW778, JW788, JW838) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ACHADO: JW738 → MT29C4G48MAAHBAAKS-5 WT. Família MT29C (mesma dos
+# lotes JW500/JW614 — chip_type="MCP", NAND+LPDRAM raw em PoP). Bloco
+# de densidade "4G48M" = NAND 4Gb + LPDRAM código "48M" = 2Gb — conta:
+# NAND 4Gb÷8=512MB, LPDRAM 2Gb÷8=256MB, total 4Gb+2Gb=6Gb. Confirmado
+# pelo PRÓPRIO part-name da Micron: "SLC EMMC/MOBILE DDR 6G VFBGA" —
+# 6Gb bate EXATO com "6G".
+#
+# Forward-lookup no prefixo "MT29C4G48M" (2026-07-10) devolveu 74 PNs:
+# 72 com fbga_code "JW*" (produção) + 1 "JQ*" (qualification sample,
+# JQ257 — variante QS do JW257, EXCLUÍDO) + 1 "JZ*" (JZ106, também
+# fora do padrão de produção "JW", EXCLUÍDO). Dos 72 "JW", só 14 têm
+# part-name preenchido pela própria Micron (confirmação forte) — os
+# outros ~58 NÃO têm nenhuma fonte Tier-1 e por isso NÃO entram aqui
+# (mesma regra dos lotes JW500/JW614: sem fonte, fora da submissão).
+#
+# ⚠ EXCLUÍDO E SINALIZADO: JWC10 (MT29C4G48MAZBBAKB-48 IT ES) tem "ES"
+# (Engineering Sample) literalmente no PRÓPRIO part-number, apesar do
+# fbga_code começar com "JW" (padrão que neste lote indica produção —
+# os ES ficaram em fbga_code "JY*"/"JQ*"/"JZ*" pros demais). Como o "ES"
+# está no texto do PN, não no prefixo do fbga_code, tratei como amostra
+# de engenharia mesmo assim e excluí — não é peça de produção garantida.
+#
+# Dos 13 que restam (12 confirmados + o alvo, já contado), 11 dizem
+# "MOBILE DDR" (RAM tipo mDDR1, incl. o alvo — que diz especificamente
+# "SLC EMMC/MOBILE DDR", ver nota do alvo sobre por que isso NÃO é o
+# mesmo alerta do JW658) e 2 dizem "NAND MCP" genérico (RAM não
+# especificada — tratado como tal, não inventei o tipo). Nenhuma
+# variante "SDR" apareceu nesta família (diferente do JW614).
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_jw738_family_2026-07-10.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_jw738_family_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT29C4G48MAAHBAAKS-5 WT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JW738"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c4g48maahbaaks-5-wt"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (2026-07-10): "SLC EMMC/MOBILE DDR 6G VFBGA", sub-category
+      "obsolete-nand-mcp-catalog", com página própria no catálogo de
+      obsoletos da Micron. Capacidade: densidade "4G48M" = NAND 4Gb +
+      LPDRAM código "48M" = 2Gb (mesma progressão geométrica já usada nos
+      lotes JW500/JW614: código 48M=2Gb). NAND 4Gb÷8=512MB; LPDRAM
+      2Gb÷8=256MB. Cross-check: 4Gb+2Gb=6Gb bate EXATO com "6G" do part-
+      name oficial. Nota sobre o texto "SLC EMMC" (em vez do "MASSFLASH"
+      mais comum nos outros PNs desta família): sub-category é a MESMA
+      "obsolete-nand-mcp-catalog" dos demais — NÃO é o "obsolete-emmc-
+      based-mcp" que sinalizou risco de controller eMMC de verdade no PN
+      JW658 (lote JW614). Tratado como raw MCP normal (SLC = tecnologia de
+      célula da NAND, não indica controller gerenciado). chip_type=MCP
+      (categoria "catalog", profit_family="dead", commercial=False — já
+      resolvido nos lotes JW500/JW614 com o dono, ver chips/chip_types.py
+      e MICRON.md §4).
+
+  - part_number: "MT29C4G48MAAGBAAKS-5 WT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JW737"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c4g48maagbaaks-5-wt"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10): "SLC EMMC/MOBILE
+      DDR 6G VFBGA", sub-category "obsolete-nand-mcp-catalog". Mesma
+      densidade do alvo JW738 (bloco "4G48M" idêntico): NAND 4Gb=512MB +
+      LPDRAM 2Gb=256MB, total 6Gb confirmado pelo próprio part-name
+      ("6G"). chip_type=MCP (mesma base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAYBAAKS-5 WT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JW739"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c4g48maybaaks-5-wt"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10):
+      "MASSFLASH/MOBILE DDR 6G WFBGA", sub-category "obsolete-nand-mcp-
+      catalog". Mesma densidade do alvo JW738 (bloco "4G48M" idêntico):
+      NAND 4Gb=512MB + LPDRAM 2Gb=256MB, total 6Gb confirmado pelo próprio
+      part-name ("6G"). chip_type=MCP (mesma base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAZBAAKS-5 WT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JW740"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c4g48mazbaaks-5-wt"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10):
+      "MASSFLASH/MOBILE DDR 6G WFBGA", sub-category "obsolete-nand-mcp-
+      catalog". Mesma densidade do alvo JW738 (bloco "4G48M" idêntico):
+      NAND 4Gb=512MB + LPDRAM 2Gb=256MB, total 6Gb confirmado pelo próprio
+      part-name ("6G"). chip_type=MCP (mesma base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAZBAAKQ-5 WT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JW759"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c4g48mazbaakq-5-wt"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10):
+      "MASSFLASH/MOBILE DDR 6G WFBGA", sub-category "obsolete-nand-mcp-
+      catalog". Mesma densidade do alvo JW738 (bloco "4G48M" idêntico):
+      NAND 4Gb=512MB + LPDRAM 2Gb=256MB, total 6Gb confirmado pelo próprio
+      part-name ("6G"). chip_type=MCP (mesma base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAZBAAKQ-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JW880"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c4g48mazbaakq-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10):
+      "MASSFLASH/MOBILE DDR 6G WFBGA", sub-category "obsolete-nand-mcp-
+      catalog". Mesma densidade do alvo JW738 (bloco "4G48M" idêntico):
+      NAND 4Gb=512MB + LPDRAM 2Gb=256MB, total 6Gb confirmado pelo próprio
+      part-name ("6G"). chip_type=MCP (mesma base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAYBBAKS-48 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JWB09"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/multichip-packages/nand-based-mcp/part-catalog/part-detail/mt29c4g48maybbaks-48-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10):
+      "MASSFLASH/MOBILE DDR 6G VFBGA", sub-category "nand-based-mcp".
+      Mesma densidade do alvo JW738 (bloco "4G48M" idêntico): NAND
+      4Gb=512MB + LPDRAM 2Gb=256MB, total 6Gb confirmado pelo próprio
+      part-name ("6G"). chip_type=MCP (mesma base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAZBBAKS-48 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JWB27"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/multichip-packages/nand-based-mcp/part-catalog/part-detail/mt29c4g48mazbbaks-48-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10):
+      "MASSFLASH/MOBILE DDR 6G VFBGA", sub-category "nand-based-mcp".
+      Mesma densidade do alvo JW738 (bloco "4G48M" idêntico): NAND
+      4Gb=512MB + LPDRAM 2Gb=256MB, total 6Gb confirmado pelo próprio
+      part-name ("6G"). chip_type=MCP (mesma base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAAGBBAKS-48 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + RAM 256MB (tipo não especificado)"
+    interface: ""
+    fbga_code: "JWB57"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c4g48maagbbaks-48-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10): "NAND MCP 6G
+      VFBGA", sub-category "obsolete-nand-mcp-catalog". Mesma densidade do
+      alvo JW738 (bloco "4G48M" idêntico): NAND 4Gb=512MB + LPDRAM
+      2Gb=256MB, total 6Gb confirmado pelo próprio part-name ("6G").
+      chip_type=MCP (mesma base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAAGBBAKS-48 WT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JWB58"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c4g48maagbbaks-48-wt"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10):
+      "MASSFLASH/MOBILE DDR 6G VFBGA", sub-category "obsolete-nand-mcp-
+      catalog". Mesma densidade do alvo JW738 (bloco "4G48M" idêntico):
+      NAND 4Gb=512MB + LPDRAM 2Gb=256MB, total 6Gb confirmado pelo próprio
+      part-name ("6G"). chip_type=MCP (mesma base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAYBBAHK-48 AIT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JWB94"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c4g48maybbahk-48-ait"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10):
+      "MASSFLASH/MOBILE DDR 6G VFBGA", sub-category "obsolete-nand-mcp-
+      catalog". Mesma densidade do alvo JW738 (bloco "4G48M" idêntico):
+      NAND 4Gb=512MB + LPDRAM 2Gb=256MB, total 6Gb confirmado pelo próprio
+      part-name ("6G"). chip_type=MCP (mesma base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAYBBAMR-48 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + RAM 256MB (tipo não especificado)"
+    interface: ""
+    fbga_code: "JWC04"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/multichip-packages/nand-based-mcp/part-catalog/part-detail/mt29c4g48maybbamr-48-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10): "NAND MCP 6G
+      VFBGA", sub-category "nand-based-mcp". Mesma densidade do alvo JW738
+      (bloco "4G48M" idêntico): NAND 4Gb=512MB + LPDRAM 2Gb=256MB, total
+      6Gb confirmado pelo próprio part-name ("6G"). chip_type=MCP (mesma
+      base do JW738/JW614/JW500).
+
+  - part_number: "MT29C4G48MAZBBAKB-48 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 512MB + mDDR1 256MB"
+    interface: ""
+    fbga_code: "JWC09"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/multichip-packages/nand-based-mcp/part-catalog/part-detail/mt29c4g48mazbbakb-48-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C4G48M, 2026-07-10):
+      "MASSFLASH/MOBILE DDR 6G WFBGA", sub-category "nand-based-mcp".
+      Mesma densidade do alvo JW738 (bloco "4G48M" idêntico): NAND
+      4Gb=512MB + LPDRAM 2Gb=256MB, total 6Gb confirmado pelo próprio
+      part-name ("6G"). chip_type=MCP (mesma base do JW738/JW614/JW500).

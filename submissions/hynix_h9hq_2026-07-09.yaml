@@ -1,0 +1,121 @@
+# Submissão de known_parts — SK Hynix, família H9HQ (uMCP UFS2.1+LPDDR4X, JÁ EXISTENTE)
+# Gerado pelo chat de marca SK Hynix a partir da investigação do PN H9HQ15AECMAD
+# (busca na bancada, 2026-07-09). Família H9HQ e mapas HYX_H9HQ_NAND_CAP/
+# HYX_LPDDR4X_RAM_CAP JÁ EXISTIAM e já decodificavam o PN buscado certo (known=true,
+# grammar_complete=true, RENTÁVEL). Trilha B (known_parts) + 1 fix pontual de
+# Trilha A (ver abaixo).
+#
+# Fui atrás dos irmãos reais encontrados no caminho (Preduo + Puris, catálogos
+# estruturados de broker — Preduo já é tratado como tier-1 neste projeto, ver
+# hynix.yaml tip do H9DA). Os dois concordam de forma independente pra cada PN
+# abaixo (formato "NAND+RAM" tipo "128+48" = 128GB UFS + 48Gb(÷8)=6GB LPDDR4X).
+#
+# ACHADO / FIX DE GRAMÁTICA: H9HQ22AECMMDAR-KEM tem pn[4:6]='22', que NÃO estava
+# no mapa HYX_H9HQ_NAND_CAP (só tinha '21'→256GB). Duas fontes (Preduo + um
+# catálogo de distribuidor achado via busca) concordam: "254 FBGA UFS 256GB
+# LPDDR4X 48Gb" — bate com o padrão já visto na família (pares adjacentes pra
+# mesma capacidade: 15/16→128GB, 53/54→64GB), então '22'→256GB foi ADICIONADO ao
+# mapa em chips/knowledge/hynix.yaml (não é só known_part — é fix de gramática,
+# corrige QUALQUER PN futuro com esse código, não só este). Golden novo em
+# chips/tests.py prova o fix.
+#
+# LIÇÃO DO H9HCNNNECMMLTR-NEE (aplicada aqui): só uso fonte que eu de fato abri e
+# li o conteúdo — nada de confiar em título/slug de anúncio sem confirmar o corpo
+# da página. Preduo e Puris foram os dois fetchados diretamente (não só snippet
+# de busca).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hq_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hq_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HQ15AECMADAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "128GB"
+    emcp_ram: "LPDDR4X 6GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/umcp/ufs-lpddr4x/h9hq15aecmadar-kem"
+    notes: >
+      PN original buscado na bancada foi "H9HQ15AECMAD" (base sem sufixo de order
+      code) — mesmo decode. Preduo (tier-1 neste projeto) e Puris (puris.net/archives/6063,
+      catálogo estruturado, mesmo padrão) concordam: "128+48" = 128GB UFS2.1 +
+      48Gb(÷8)=6GB LPDDR4X. WinSource também lista o PN (achado na busca, não
+      fetchado por causa da renderização JS, mas soma mais uma fonte).
+
+  - part_number: "H9HQ16AFAMMDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "128GB"
+    emcp_ram: "LPDDR4X 8GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/umcp/ufs-lpddr4x/h9hq16afammdar-kem"
+    notes: >
+      Achado nos "Related products" do Preduo ao investigar o PN principal desta
+      submissão. Preduo: "128+64" = 128GB UFS + 64Gb(÷8)=8GB LPDDR4X. Corrobora
+      pn[4:6]='16'→128GB (par de '15') e pn[6:8]='AF'→8GB, ambos já no tip.
+
+  - part_number: "H9HQ16AECMMDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "128GB"
+    emcp_ram: "LPDDR4X 6GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/umcp/ufs-lpddr4x/h9hq16aecmmdar-kem"
+    notes: >
+      Achado nos "Related products" do Preduo. Preduo: "128+48" = 128GB + 6GB.
+      Segunda corroboração independente de pn[4:6]='16'→128GB (a primeira foi o
+      PN acima, RAM diferente — 8GB vs 6GB, mesmo NAND).
+
+  - part_number: "H9HQ22AECMMDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "256GB"
+    emcp_ram: "LPDDR4X 6GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/umcp/ufs-lpddr4x/h9hq16aecmmdar-kem"
+    notes: >
+      Achado nos "Related products" do Preduo — motivou o FIX de gramática desta
+      submissão (chave NAND '22' não existia no mapa, só '21'). Preduo: "256+48".
+      Segunda fonte independente (catálogo de distribuidor achado via busca):
+      "254 FBGA UFS 256GB LPDDR4X 48Gb" — mesmos números. Duas fontes concordando
+      + padrão de pares adjacentes já estabelecido na família (15/16, 53/54) →
+      confiança suficiente pra adicionar '22'→256GB ao HYX_H9HQ_NAND_CAP.
+
+  - part_number: "H9HQ54ACPMMDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/umcp/ufs-lpddr4x/h9hq54acpmmdar-kem"
+    notes: >
+      Achado nos "Related products" do Preduo. Preduo: "64+32" = 64GB + 4GB.
+      Corrobora pn[4:6]='54'→64GB e pn[6:8]='AC'→4GB, ambos já no tip.
+
+  - part_number: "H9HQ54ADKMMDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "64GB"
+    emcp_ram: "LPDDR4X 3GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/8373"
+    notes: >
+      Achado nos "Similar Posts" do Puris ao investigar o PN principal. Puris:
+      "64+24" = 64GB + 24Gb(÷8)=3GB. Corrobora pn[6:8]='AD'→3GB (já no tip) e é
+      segunda confirmação independente de pn[4:6]='54'→64GB (RAM diferente do PN
+      acima — 3GB vs 4GB, mesmo NAND).
+
+# ── Achado à parte, NÃO investigado agora (fora do escopo desta submissão) ──────
+# O Puris também listou PNs de prefixo "H9QT"/"H9QG" (ex.: H9QT1GGBN6X129,
+# H9QT0G6BNXX077R, H9QG9G5AN6X154N) nas seções "Similar Posts" — parecem ser uma
+# família SK Hynix uMCP DIFERENTE (prefixo não existe no hynix.yaml, nem H9HQ nem
+# nenhum outro já catalogado). Não pesquisei a fundo — sinalizando pro dono/pra
+# uma próxima rodada, mesmo padrão do achado H9TA.

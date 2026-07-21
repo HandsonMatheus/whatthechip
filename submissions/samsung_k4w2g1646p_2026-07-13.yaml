@@ -1,0 +1,97 @@
+# Submissão de known_parts — Samsung, família K4W (gDDR3)
+# PN alvo: K4W2G1646P (busca 2026-07-13). Mesmo trabalho de varredura profunda já
+# feito em submissions/samsung_k4w_2026-07-09.yaml + addendum (die-letters D/E/G em
+# 1Gb, B/C/E/Q/S em 2Gb, B/D/E/Q em 4Gb). Local (seed + PSGs) NÃO tinha 'P' nem 'T'
+# em nenhuma capacidade — confirmado via seed_known_parts.json (14 K4W, nenhum P/T)
+# e as 2 submissões prévias. Grammar já decodifica certo hoje (pn[3:5]='2G' via
+# DRAM_PC global → 256MB) — só faltava o PN exato no banco.
+#
+# 'P' (alvo) — 2Gb, achado em 11 fontes de distribuidor independentes convergentes,
+# todas "SAMSUNG BGA" / gDDR3 série K4W2G1646, em estoque real (centenas a milhares
+# de unidades cada): DigiPart (agregador — 10 revendedores distintos: Hongte, Ariat,
+# YIC, Allchip, Atosn, New Strength, IC-Components, Sierra IC, Green Light, Chipsea)
+# + Censtry.kr (listagem individual) + Kynix (73 un.) + IC-Components (11061 un.).
+# ⚠ Diferente de C/E/Q/B/S (que tinham texto descritivo explícito "2Gb GDDR3
+# SDRAM... 128Mx16... FBGA-96" citando o PN), NENHUMA fonte teve texto de spec
+# citando 'P' literalmente — só confirmação de catálogo/estoque. Cheguei a checar o
+# Product Selection Guide oficial Samsung (2H 2013, via mirror arrow.com) que listou
+# a linha gDDR3 K4W inteira — mas essa edição específica só lista D/B (4Gb), Q/E
+# (2Gb) e G (1Gb); nem P nem S nem C nem T aparecem nela (são variantes de bin de
+# velocidade / edições de catálogo diferentes, não uma lista exaustiva histórica).
+# Por isso confidence=distributor (não confirmed) — mesmo critério já usado pro
+# die-letter Q em 2Gb (que tinha só 1 fonte distribuidora; aqui são 11). Capacidade
+# 2Gbit÷8=256MB inferida com segurança da gramática já comprovada da família (não
+# muda com o die-letter — mesmo padrão dos 5 die-letters já confirmados em 2Gb).
+#
+# 'T' — ACHADO BÔNUS (não era o alvo): apareceu nas seções "See Also" das páginas
+# DigiPart de P, como K4W2G1646T-BC11 — mesmo perfil evidencial (7 revendedores
+# independentes via DigiPart: Allchip, New Strength, Sierra IC, Haode, Green Light,
+# Chipsea + estoques de centenas a 100mil unidades), também 2Gb, também ausente do
+# PSG oficial. Mesmo tratamento: confidence=distributor.
+#
+# Nem P nem T encontrados em 1Gb ou 4Gb (buscas diretas "K4W1G1646P/T" e
+# "K4W4G1646P/T" vazias, e as seções "See Also" de ambos não trazem essas
+# combinações) — parecem existir só na fatia 2Gb, mesmo padrão de S (2Gb-only).
+# Nenhuma classe de densidade 8Gb encontrada (mesma conclusão do addendum anterior).
+brand: "Samsung"
+known_parts:
+  - part_number: "K4W2G1646P"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: distributor
+    source_url: "https://www.digipart.com/part/K4W2G1646P-HC12"
+    notes: >
+      Base PN — gDDR3 Samsung 2Gb x16 (P-die). PN buscado originalmente
+      (família/mapa já cadastrados, PN exato não estava no banco). 11
+      distribuidores independentes convergentes (DigiPart agregando 10
+      revendedores + Censtry.kr + Kynix + IC-Components), todos "SAMSUNG
+      BGA" da série K4W2G1646, em estoque real. SEM texto de spec
+      explícito citando 'P' (diferente de C/E/Q/B/S) — só confirmação de
+      catálogo/estoque, por isso confidence=distributor. 2Gbit÷8=256MB —
+      capacidade inferida da gramática já comprovada da família (pn[3:5]
+      não muda com o die-letter), não de spec própria do 'P'. PSG oficial
+      Samsung (2H 2013) não lista este die-letter especificamente.
+
+  - part_number: "K4W2G1646PHC12"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: distributor
+    source_url: "https://www.digipart.com/part/K4W2G1646P-HC12"
+    notes: >
+      Forma completa (base+sufixo) do item acima — mesmas 11 fontes.
+      HC12 = grade de speed/temp, mesmo padrão dos outros die-letters
+      desta família.
+
+  - part_number: "K4W2G1646T"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: distributor
+    source_url: "https://www.digipart.com/part/K4W2G1646T-BC11"
+    notes: >
+      Base PN — gDDR3 Samsung 2Gb x16 (T-die), NOVO die-letter não visto
+      no seed nem nas submissões anteriores desta família. Achado como
+      referência cruzada ("See Also") nas páginas DigiPart do PN alvo
+      K4W2G1646P — mesmo padrão evidencial: 7 distribuidores
+      independentes convergentes via DigiPart (Allchip, New Strength,
+      Sierra IC, Haode, Green Light, Chipsea), todos "SAMSUNG BGA",
+      estoque de centenas a 100mil unidades. SEM texto de spec explícito
+      citando 'T', mesma ressalva do 'P' acima — confidence=distributor.
+      2Gbit÷8=256MB — mesma inferência via gramática comprovada da
+      família.
+
+  - part_number: "K4W2G1646TBC11"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: distributor
+    source_url: "https://www.digipart.com/part/K4W2G1646T-BC11"
+    notes: >
+      Forma completa (base+sufixo) do item acima — mesmas 7 fontes.
+      BC11 = grade de speed/temp.

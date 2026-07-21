@@ -1,0 +1,146 @@
+# Submissão de known_parts — Samsung, família KMQ (eMCP LPDDR3 + eMMC 5.1, maior volume
+# na esteira ~2015-2019). PN alvo: KMQ4Z0013M (busca 2026-07-14). Grammar já decodifica certo
+# (SAM_EMCP_CAP['4Z']=32GB+2GB, mapa LEGADO compartilhado, ainda sem SAM_EMCP_CAP_KMQ dedicado).
+#
+# Checagem de bug X6-style: local já tinha 7 known_parts KMQ confirmados (310006A/B, 310013M,
+# 7X000SA, 820013M, D60013M, N10006B). Cruzei TODOS contra o mapa legado SAM_EMCP_CAP + pesquisei
+# mais 9 chaves via Preduo/Samsung Global/distribuidores nesta rodada (4Z, 72, 31[novo sufixo],
+# NW, 8X, E1, E6[2 sufixos], X6). RESULTADO: o mapa legado bate com a realidade confirmada da KMQ
+# em TODAS as chaves testadas (11 de 11) — diferente de outras famílias (KM4/KMD/KMI/KMR) que já
+# precisaram de mapa dedicado. NÃO criei SAM_EMCP_CAP_KMQ nesta rodada — sem evidência de bug.
+#
+# ⚠ ACHADO — discrepância KMQD60013M (NÃO ALTEREI o known_part existente): local tem
+# confidence=confirmed via LEITURA FÍSICA na esteira eMiner (2026-05-13, "chip físico confirmado")
+# = 32GB+3GB. Preduo (KMQD60013M-B318, ficha própria) diz "32+16" = 32GB+2GB. Mantive o valor
+# físico (evidência mais forte que uma listagem de distribuidor) — sinalizando a divergência pro
+# dono, sem tocar no registro já confirmado. Pode ser variante de die diferente sob o mesmo PN.
+#
+# Chave '31' segue com MÚLTIPLOS valores dentro da família (padrão já visto em KMR — ver memória
+# wtc-mesma-chave-densidade-diferente-dentro-familia): 013B=1GB (físico, já local) e agora
+# 000SM=1GB (Preduo, bate o default do mapa) são MAIORIA; 006A/006B=1.5GB (fabricante, já local)
+# e 013M=2GB (Alibaba, já local) são exceções já registradas individualmente. Nada novo a fazer
+# aqui — só documentando que o padrão se mantém consistente.
+#
+# 8 known_parts NOVOS (bônus, achados via Preduo — página dedicada de cada PN, "Density" explícito
+# + fabricante=Samsung) + o alvo:
+brand: "Samsung"
+known_parts:
+  - part_number: "KMQ4Z0013M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "32GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: confirmed
+    source_url: "https://www.ampheo.com/product/kmq4z0013m-b8090-28134192"
+    notes: >
+      PN alvo. Bate a chave '4Z' do mapa (32GB+2GB). Confirmado por Ampheo + Censtry +
+      Win Source (todos citam KMQ4Z0013M-B809/B8090, "eMMC 32GB + LPDDR3 16Gb"=2GB),
+      3 distribuidores independentes convergentes.
+
+  - part_number: "KMQ72000SM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball/kmq72000sm-b316"
+    notes: >
+      Bônus — achado via Preduo (ficha dedicada KMQ72000SM-B316, "8+8 Samsung", SKU
+      WP01421). Bate a chave '72' do mapa (8GB+1GB).
+
+  - part_number: "KMQ31000SM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball/kmq31000sm-b417"
+    notes: >
+      Bônus — achado via Preduo (ficha dedicada KMQ31000SM-B417, "16+8 Samsung", SKU
+      WP01394). Bate o default do mapa pra chave '31' (16GB+1GB) — mesmo valor
+      majoritário do já confirmado KMQ310013B (físico). Reforça que 006A/006B(1.5GB)
+      e 013M(2GB) são as exceções dentro desta chave, não o padrão.
+
+  - part_number: "KMQNW000SM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/kmqnw000sm-b316"
+    notes: >
+      Bônus — achado via Preduo (ficha dedicada KMQNW000SM-B316, "8+8 Samsung", SKU
+      WP01424). Bate a chave 'NW' do mapa (8GB+1GB).
+
+  - part_number: "KMQ8X000SA"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/kmq8x000sa-b414"
+    notes: >
+      Bônus — achado via Preduo (ficha dedicada KMQ8X000SA-B414, "16+8 Samsung", SKU
+      WP01395). Bate a chave '8X' do mapa (16GB+1GB).
+
+  - part_number: "KMQE10013M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/kmqe10013m-b318"
+    notes: >
+      Bônus (fuzzy_sugest. do debug tool). Jotrin + Censtry + Ovaga + Preduo (ficha
+      dedicada, SKU WP01384, "16+16 Samsung") convergentes. Bate a chave 'E1' do mapa
+      (16GB+2GB). ⚠ Checagem cross-family: KMR tem E1=3GB (mapa dedicado
+      SAM_EMCP_CAP_KMR, achado round 2026-07-13) — KMQ e KMR DIVERGEM na chave E1,
+      cada família com seu próprio valor real (não é erro, é o padrão já esperado de
+      chave-por-família).
+
+  - part_number: "KMQE60013M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/mcp/model/lpddr5-umcp/kmqe60013m-b318/"
+    notes: >
+      Bônus (fuzzy_sugest. do debug tool). Confirmado no PRÓPRIO domínio Samsung
+      Semiconductor Global (título indexado "Samsung KMQE60013M-B318") + Preduo (ficha
+      dedicada) + Ampheo + cpuprocessorchip: "16GB eMMC5.1 + 16Gb LPDDR3-1866". Bate a
+      chave 'E6' do mapa (16GB+2GB).
+
+  - part_number: "KMQE60013B"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/kmqe60013b-b318"
+    notes: >
+      Bônus — sufixo irmão (B em vez de M) do KMQE60013M acima. Preduo (ficha dedicada,
+      SKU WP00203, "16+16 Samsung"). Mesma chave 'E6', revisão de sufixo não muda
+      capacidade (padrão já confirmado no round KMQN10006 2026-07-09).
+
+  - part_number: "KMQX60013A"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "32GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/kmqx60013a-b419"
+    notes: >
+      Bônus — checagem específica da chave 'X6' (a mais notoriamente bug-prone do
+      projeto, já corrigida em KM1/KM2/KM2L/KM2P/KM4/KM5/KM8/KMI/KMR). Preduo (ficha
+      dedicada, SKU WP00204, "32+16 Samsung"). Bate o default do mapa legado (32GB+2GB)
+      — SEM divergência pra KMQ nesta chave.

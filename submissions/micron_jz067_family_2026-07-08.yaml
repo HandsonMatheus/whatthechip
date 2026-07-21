@@ -1,0 +1,119 @@
+# Submissão de known_parts — Micron, FBGA JZ067 e família (2026-07-08)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA JZ067
+# (não identificado na bancada, fila de revisão — SearchLog 08/07/2026 15:22).
+# Decodificado via API FBGA oficial da Micron (fetch direto ao
+# micron.com/sales-support/design-tools/fbga-parts-decoder) + forward-lookup
+# pra mapear a família (nunca resolver um PN só — ver CLAUDE.md/AUTORIA.md).
+#
+# Só entraram AQUI os achados sem ambiguidade. O restante da família (JZ059,
+# JZ061, JZ067 propriamente dito, JZ068, JZ037 — interface eMMC×UFS incerta —
+# e o cluster JZ003/JZ007/JZ012/JZ014 — capacidade não mapeada) está
+# documentado em INVESTIGACAO_micron_jz067_family_2026-07-08.md, aguardando
+# decisão do dono antes de submeter.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_jz067_family_2026-07-08.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/micron_jz067_family_2026-07-08.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT29TZZZAD8DKKBT-107 W ES.9F8"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.0"
+    emcp_nand: "64GB"
+    emcp_ram: "LPDDR3 4GB"
+    fbga_code: "JZ047"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JZ047"
+    notes: >
+      Identidade FBGA↔PN via API oficial FBGA Decoder da Micron (fetch
+      direto, 2026-07-08). Capacidade via chave 'AD8' já mapeada em
+      MIC_MCP_CAP (chips/knowledge/micron.yaml, família MT29TZZZ) — NAND
+      64GB + LPDDR3 4GB; pn[8]='A' via MIC_TZZZ_GEN = LPDDR3 Gen B. Não
+      depende de nenhuma correção de gramática, só faltava o known_part com
+      fbga_code pra ficar achável na bancada (MT29TZZZ tem decode_cap_pos
+      setado, mas o engine só decodifica a PARTIR do PN — o FBGA→PN em si só
+      existe via known_part). ⚠ Sufixo "W ES.9F8" = Engineering Sample
+      (amostra de pré-produção Micron) — sinalizando caso o operador/triagem
+      trate ES diferente de peça comercial normal.
+      Cross-check Octopart (2026-07-08, pedido do dono): a variante de
+      PRODUÇÃO do mesmo corpo de PN (sem "ES" — MT29TZZZAD8DKKBT-107 W.9F8,
+      FBGA JZ049, NÃO JZ047) tem part-name oficial Micron "EMCP 544G TFBGA" —
+      544Gbit TOTAL (NAND+RAM) ÷ 8 = 68GB = 64GB NAND + 4GB RAM, bate exato.
+      O campo estruturado "Density: 32 Gb" do Octopart pra esse PN é
+      32Gbit ÷ 8 = 4GB — bate com o componente RAM isolado (LPDDR3 4GB), não
+      com o total nem com o NAND sozinho (cuidado: Octopart não deixa claro
+      qual componente está reportando). ⚠ Octopart não indexa a variante ES
+      (JZ047) separadamente — assumi que o ES compartilha specs da produção
+      (mesmo corpo de PN, só difere em qualificação); é inferência minha, não
+      confirmação direta para o ES em si.
+
+  - part_number: "MTFC32GAMAKAM-WT"
+    chip_type: "UFS"
+    subtype: ""
+    interface: "UFS"
+    capacity: "32GB"
+    fbga_code: "JZ017"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-universal-flash-storage/part-catalog/part-detail/mtfc32gamakam-wt"
+    notes: >
+      Identidade + interface + capacidade via API oficial FBGA Decoder da
+      Micron (fetch direto, 2026-07-08): sub-category=
+      "obsolete-universal-flash-storage", part-name="MASSFLASH/CONTROLLER
+      256G VFBG" (256Gbit ÷ 8 = 32GB, bate com o "32G" do PN — convenção
+      MTFC{N}G = N GB). Produto obsoleto/EOL no catálogo Micron (ainda assim
+      pode aparecer na bancada de reciclagem). Versão exata do UFS (2.1/2.2)
+      não confirmada — API não especifica; deixei o campo genérico em vez de
+      inventar o número.
+      ⚠ IMPORTANTE: este achado CONTRADIZ a suposição hoje hardcoded na
+      gramática (chips/knowledge/micron.yaml, família MTFC: chip_type=eMMC
+      pra todo o prefixo) — MTFC também cobre UFS. Ver seção 1 de
+      INVESTIGACAO_micron_jz067_family_2026-07-08.md antes de mexer na
+      família MTFC do yaml.
+      Cross-check Octopart (2026-07-08, pedido do dono,
+      octopart.com/part/micron/MTFC32GAMAKAM-WT): descrição "256Gb 32G x 8" —
+      256Gbit ÷ 8 = 32GB, bate exato (aqui não há ambiguidade NAND×RAM porque
+      MTFC/UFS é um componente de memória só, sem RAM separada).
+
+  - part_number: "MTFC256GBAOANAM-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "256GB"
+    fbga_code: "JZ067"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/ProductDetail/Micron/MTFC256GBAOANAM-WT-TR"
+    notes: >
+      Este é o PN original do debug de bancada (08/07/2026 15:22) que abriu
+      toda a investigação. Capacidade 256GB cross-validada 3x (convenção do
+      PN MTFC256G=GB direto, confirmada no numbering guide oficial Micron
+      numemmc.pdf; datasheet oficial Micron/DigiKey do irmão MTFC256GAOAMAM-WT
+      que lista "256GB" por extenso; Octopart "2Tb"=2048Gb÷8=256GB — as 3
+      batem). Interface eMMC confirmada via Mouser (2026-07-08, link trazido
+      pelo dono): atributo estruturado "Categoría de producto: eMMC" +
+      "Tipo de producto: eMMC" + breadcrumb Semiconductores>Memory ICs>eMMC
+      (não é descrição solta de revendedor, é campo categórico do Mouser).
+      ⚠ ACHADO: o irmão de revisão "A" desta mesma família de PN
+      (MTFC256GAOAMAM-WT, FBGA JZ059) é **UFS** confirmado por datasheet
+      oficial (ver seção 1 da investigação) — ou seja, a revisão A→B trocou
+      a interface, não é só variante de silício/controller. Não generalizar
+      eMMC pra outros códigos "A" da mesma faixa de capacidade.
+
+  - part_number: "MTFC256GBAOANAM-WT ES"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "256GB"
+    fbga_code: "JZ068"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/ProductDetail/Micron/MTFC256GBAOANAM-WT-TR"
+    notes: >
+      Variante Engineering Sample do PN acima (mesmo corpo "BAOANAM",
+      confirmed eMMC 256GB via Mouser). ⚠ INFERÊNCIA: a Micron não lista o
+      ES separadamente em nenhum distribuidor que achei (Octopart devolveu
+      dado de outro chip nessa página — ver investigação); assumo que ES
+      compartilha specs da produção (mesmo corpo de PN, só difere em
+      qualificação/pré-produção), mas isso não tem confirmação direta pro
+      ES em si — se o revisor preferir, pode segurar este e manter só o
+      -WT (produção) confirmado.

@@ -1,0 +1,97 @@
+# Submissão de known_parts — SK Hynix, família H9CK (LPDDR3 standalone x64).
+# Gerado a partir da investigação do PN H9CKNNNBJTAP (busca na bancada, 2026-07-13).
+#
+# PN bem formado, código pn[7]='B'=2GB — já extensivamente confirmado nesta sessão
+# (rodada 2: H9CKNNNBPTAT + H9CKNNNBJTMPLR). Gramática já decodifica certo
+# (grammar_complete=true, capacity=2GB, profitable=RENTÁVEL) — zero mudança de
+# gramática, é known_parts-only (Trilha B).
+#
+# ⚠ EXPANDIDO (mesmo dia, pedido explícito do dono: "colete mais... nosso objetivo
+# nunca é coletar somente 1" — igual ao "só 2? colete mais" do round H26M). Voltei à
+# página de catálogo próprio da OMO Electronic pro prefixo "H9CKNNNB" inteiro (42 PNs
+# indexados, todos manufacturer real/categoria Memory) e identifiquei os mid-fills
+# DISTINTOS (JTAP/JTMP/KTAR/KTAT/KTMR/KTMT/PTAR/PTAT/PTMR/RTMT — cada um é um PN
+# fisicamente diferente que o operador pode achar na bancada, mesmo código de
+# densidade). Adicionei os 4 com evidência mais forte (múltiplos distribuidores
+# independentes, 2 deles com campo estruturado de densidade) além do alvo original.
+# Total agora: 5 known_parts, todos código 'B'=2GB (6º e 7º PNs do código 'B' desta
+# sessão, contando H9CKNNNBPTAT/BJTMPLR da rodada 2).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9ck_bjtap_2026-07-13.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9ck_bjtap_2026-07-13.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9CKNNNBJTAP"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9CKNNNBJTAP"
+    notes: >
+      PN buscado na bancada (2026-07-13). Identificado por teardown como o chip de
+      RAM físico do Samsung Galaxy J5 (2017, SM-J530F-DS). Especificação pública do
+      SM-J530F (GSMArena) documenta 2GB de RAM LPDDR3 total no aparelho — bate exato
+      com o código pn[7]='B'=2GB do tip da família (já confirmado 2x nesta sessão via
+      H9CKNNNBPTAT e H9CKNNNBJTMPLR). Distribuidor Atosn Technology (via DigiPart)
+      confirma o sufixo de grade "-LR" (H9CKNNNBJTAPLR-NUH / -NUHR, manufacturer=
+      SKHYNIX, "in stock", 10000 unidades cada). confidence=manual (teardown +
+      distribuidor estruturado, não datasheet oficial lido na íntegra).
+
+  - part_number: "H9CKNNNBKTAT"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9cknnnbktatdr-nuh.html"
+    notes: >
+      Irmão do PN alvo (mesmo código 'B', mid-fill "KTAT"). WinSource (via DigiPart)
+      tem campo ESTRUTURADO: "LPDDR3-1866 x32 (16Gb)" — 16Gb÷8=2GB, mesma fonte/
+      padrão já usado pra H9CKNNNBJTMPLR na rodada 2. Confirmado em 15+ distribuidores
+      independentes (TIST, Conevo, WinSource, Zeano, Atosn, Semicon, YIC, Ariat,
+      Yuanxinai, GlobalTek, Hongte, Kepictronics, NewStrength, OMO, IC Components,
+      Sierra IC, Haode, Green Light, Chipsea) — um dos PNs mais amplamente
+      distribuídos encontrados na família H9CK até agora. confidence=manual.
+
+  - part_number: "H9CKNNNBKTMR"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/418/h9cknnnbktmr-1190.html"
+    notes: >
+      Irmão do PN alvo (mesmo código 'B', mid-fill "KTMR" — não confundir com
+      H9CKNNN8KTMRLR, código '8', já submetido na rodada 2). Listado no catálogo
+      próprio da OMO Electronic ("New and Original", categoria Memory), com PNs-
+      irmãos de sufixo de grade também indexados (H9CKNNNBKTMRPR, H9CKNNNBKTMRPR-KUH,
+      H9CKNNNBKTMRPR-NUH). confidence=manual (catálogo de distribuidor, sem campo
+      estruturado de densidade encontrado — capacidade inferida do código pn[7]='B'
+      já confirmado por 6 outros PNs desta família nesta sessão).
+
+  - part_number: "H9CKNNNBRTMT"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/b4d/h9cknnnbrtmtar-nth-1190.html"
+    notes: >
+      Irmão do PN alvo (mesmo código 'B', mid-fill "RTMT"). Listado no catálogo
+      próprio da OMO Electronic com descrição explícita "LPDDR3 DRAM" (único PN desta
+      pesquisa com esse campo preenchido) — sufixo de grade "H9CKNNNBRTMTAR-NTH"
+      também indexado independentemente na Kynix (distribuidor separado). confidence=
+      manual (2 distribuidores independentes + descrição de tipo confirmando LPDDR3).
+
+  - part_number: "H9CKNNNBPTMR"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/ad3/h9cknnnbptmr-1190.html"
+    notes: >
+      Irmão do PN alvo (mesmo código 'B', mid-fill "PTMR" — não confundir com
+      H9CKNNNBPTAT, mid-fill "PTAT", já submetido na rodada 2). Listado no catálogo
+      próprio da OMO Electronic ("New and Original", categoria Memory), com sufixo de
+      grade "H9CKNNNBPTMR-LRNTM" também indexado (Jotrin Electronics — fetch direto
+      bloqueado por proteção anti-bot, mas o PN aparece no índice do distribuidor).
+      confidence=manual (catálogo de distribuidor).

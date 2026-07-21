@@ -1,0 +1,333 @@
+# Submissão known_parts — SanDisk, família SDIN (eMMC iNAND legado)
+# Origem: investigação a partir do PN SDIN4C24G (debug do estoque, 14/07/2026).
+# Ver INVESTIGACAO_sandisk_sdin_2026-07-14.md para a cronologia completa (3 gerações de protocolo).
+#
+# 18 PNs confidence=confirmed (3 datasheets oficiais SanDisk, verificados por fetch direto e leitura
+# integral — não é relato de agente) + 3 PNs confidence=manual (cluster SDIN4C2, sem datasheet
+# público, mas triangulado por TI E2E forum + Elnec + iFixit — ver §4 da investigação).
+#
+# ⚠ RODAR O PRECHECK ABAIXO ANTES DO --commit (lição do incidente SDADB48K16G de ontem: o lookup
+# do submit_known_parts é por part_number EXATO, não normalizado — um PN já existente com grafia
+# diferente, ex. com traço, não é encontrado e o INSERT duplicado quebra a constraint do banco):
+#
+#   python manage.py shell <<'EOF'
+#   from chips.normalize import normalize_pn
+#   from chips.models import KnownPart
+#   pns = ["SDIN2C1512M","SDIN2C21G","SDIN2C22G","SDIN2C24G","SDIN2B24G","SDIN2B28G",
+#          "SDIN5D22G","SDIN5C24G","SDIN5C14G","SDIN5C28G","SDIN5C18G","SDIN5C216G",
+#          "SDIN5C116G","SDIN5B232G","SDIN5E132G","SDIN5F164G","SDIN7DP24G","SDIN7DP28G",
+#          "SDIN4C24G","SDIN4C28G","SDIN4C216G"]
+#   for pn in pns:
+#       norm = normalize_pn(pn)
+#       existing = KnownPart.objects.filter(part_number_norm=norm)
+#       if existing.exists():
+#           for e in existing:
+#               print(f"COLISÃO {pn} (norm={norm}) -> já existe id={e.id} part_number={e.part_number!r} "
+#                     f"review_status={e.review_status} confidence={e.confidence}")
+#       else:
+#           print(f"livre    {pn}")
+#   EOF
+#
+# Qualquer PN que aparecer como COLISÃO deve ser removido deste arquivo antes do --commit (a
+# correção do registro existente é feita direto no admin, não por este comando).
+#
+# Uso (o DONO roda, nunca o chat):
+#   python manage.py submit_known_parts submissions/sandisk_sdin_2026-07-14.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/sandisk_sdin_2026-07-14.yaml --commit    # grava (submitted, oculto) + aprovar no admin depois
+#
+# ⚠ Golden test: SDIN5C116G, SDIN5C14G, SDIN5C18G já existem em chips/tests.py::_SD_GOLDEN como
+# âncora de INDETERMINADO. Depois de aprovar, esses 3 vão sair de INDETERMINADO — characterize_baseline
+# --diff vai acusar; atualização do tests.py é o dono (fora do escopo deste chat mexer em .py).
+
+brand: "SanDisk"
+known_parts:
+  # ── Geração 2 (SDIN2xx) — SD 1.1/2.0 + SPI, NÃO é eMMC ainda (pré-padrão MMC) ──
+  # Fonte: doc SanDisk 80-36-00592 Rev 1.2 (jul/2007), "SanDisk iNAND (JEDEC Package) Data Sheet",
+  # Tabela 15 "Ordering Information". Hospedado DigiKey, cabeçalho/copyright SanDisk autênticos.
+  - part_number: "SDIN2C1512M"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "512MB"
+    interface: "SD 1.1/2.0 + SPI (pré-eMMC)"
+    device: "169-ball JEDEC BGA"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-00592 Rev 1.2 (jul/2007), Tabela 15 "Ordering Information".
+      Verificado por fetch direto do PDF (cabeçalho/copyright/patentes SanDisk Corporation
+      autênticos, hospedado media.digikey.com). Protocolo SD 1.1/2.0 + SPI — geração anterior ao
+      padrão MMC, classificado aqui como eMMC (bucket comercial da família) mas tecnicamente não é.
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/SDIN2C_B_Rev_Jul_2007.pdf"
+
+  - part_number: "SDIN2C21G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "1GB"
+    interface: "SD 1.1/2.0 + SPI (pré-eMMC)"
+    device: "169-ball JEDEC BGA"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-00592 Rev 1.2 (jul/2007), Tabela 15 "Ordering Information".
+      Mesma fonte/verificação de SDIN2C1512M (mesmo documento, PN irmão na mesma tabela).
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/SDIN2C_B_Rev_Jul_2007.pdf"
+
+  - part_number: "SDIN2C22G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "2GB"
+    interface: "SD 1.1/2.0 + SPI (pré-eMMC)"
+    device: "169-ball JEDEC BGA"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-00592 Rev 1.2 (jul/2007), Tabela 15 "Ordering Information".
+      Mesma fonte/verificação de SDIN2C1512M.
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/SDIN2C_B_Rev_Jul_2007.pdf"
+
+  - part_number: "SDIN2C24G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    interface: "SD 1.1/2.0 + SPI (pré-eMMC)"
+    device: "169-ball JEDEC BGA"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-00592 Rev 1.2 (jul/2007), Tabela 15 "Ordering Information".
+      Mesma fonte/verificação de SDIN2C1512M. ⚠ Não confundir com SDIN5C2-4G (geração 5, doc
+      diferente, mesmo sufixo de capacidade) nem com SDIN4C2-4G (cluster manual, §abaixo).
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/SDIN2C_B_Rev_Jul_2007.pdf"
+
+  - part_number: "SDIN2B24G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    interface: "SD 1.1/2.0 + SPI (pré-eMMC)"
+    device: "169-ball JEDEC BGA"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-00592 Rev 1.2 (jul/2007), Tabela 15 "Ordering Information" —
+      variante "2B" (linha própria na mesma tabela, distinta de "2C2"/4G).
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/SDIN2C_B_Rev_Jul_2007.pdf"
+
+  - part_number: "SDIN2B28G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "SD 1.1/2.0 + SPI (pré-eMMC)"
+    device: "169-ball JEDEC BGA"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-00592 Rev 1.2 (jul/2007), Tabela 15 "Ordering Information",
+      variante "2B" — maior capacidade da tabela.
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/SDIN2C_B_Rev_Jul_2007.pdf"
+
+  # ── Geração 5 (SDIN5xx) — e.MMC 4.41 (JESD84-A441) ──
+  # Fonte: doc SanDisk 80-36-03433 Rev 1.3 (dez/2010), "SanDisk iNAND e.MMC 4.41 I/F Data Sheet",
+  # Tabela 12 "Ordering Information" + Tabela 9 "Capacity for User Data". DigiKey, verificado
+  # integralmente por fetch direto. X2=MLC(2 bits/célula), X3=tecnologia 3 bits/célula.
+  - part_number: "SDIN5D22G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "2GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03433 Rev 1.3 (dez/2010), Tabela 12 "Ordering Information".
+      Variante "5D2" — única entrada de 2GB da tabela, tecnologia X2.
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/iNAND_e.MMC_4.4_I_F.pdf"
+
+  - part_number: "SDIN5C24G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03433 Rev 1.3 (dez/2010), Tabela 12 "Ordering Information" +
+      Tabela 9 "Capacity for User Data": 7.729.152 LBA = 3.957.325.824 bytes (capacidade real
+      ligeiramente abaixo do nominal 4GB — padrão da indústria, área reservada p/ overprovisioning).
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/iNAND_e.MMC_4.4_I_F.pdf"
+
+  - part_number: "SDIN5C14G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03433 Rev 1.3 (dez/2010), Tabela 12 "Ordering Information" —
+      variante "5C1" (X3), mesma capacidade nominal de SDIN5C2-4G (X2) mas tecnologia NAND
+      diferente. Coincide com sugestão fuzzy do motor no debug original do PN SDIN4C24G.
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/iNAND_e.MMC_4.4_I_F.pdf"
+
+  - part_number: "SDIN5C28G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03433 Rev 1.3 (dez/2010), Tabela 12 "Ordering Information".
+      Coincide com sugestão fuzzy do motor no debug original do PN SDIN4C24G.
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/iNAND_e.MMC_4.4_I_F.pdf"
+
+  - part_number: "SDIN5C18G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03433 Rev 1.3 (dez/2010), Tabela 12 "Ordering Information" —
+      variante X3 de SDIN5C2-8G.
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/iNAND_e.MMC_4.4_I_F.pdf"
+
+  - part_number: "SDIN5C216G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03433 Rev 1.3 (dez/2010), Tabela 12 "Ordering Information".
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/iNAND_e.MMC_4.4_I_F.pdf"
+
+  - part_number: "SDIN5C116G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03433 Rev 1.3 (dez/2010), Tabela 12 "Ordering Information" —
+      variante X3 de SDIN5C2-16G. ⚠ Já existe como âncora golden INDETERMINADO em
+      chips/tests.py::_SD_GOLDEN — vai desatualizar após aprovação (esperado).
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/iNAND_e.MMC_4.4_I_F.pdf"
+
+  - part_number: "SDIN5B232G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "32GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X2 (2 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03433 Rev 1.3 (dez/2010), Tabela 12 "Ordering Information" —
+      variante "5B2" (não "5C2") nesta capacidade.
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/iNAND_e.MMC_4.4_I_F.pdf"
+
+  - part_number: "SDIN5E132G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "32GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03433 Rev 1.3 (dez/2010), Tabela 12 "Ordering Information" —
+      variante "5E1" (X3), mesma capacidade nominal de SDIN5B2-32G (X2).
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/iNAND_e.MMC_4.4_I_F.pdf"
+
+  - part_number: "SDIN5F164G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "64GB"
+    interface: "e.MMC 4.41 (JESD84-A441)"
+    device: "X3 (3 bits/célula)"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03433 Rev 1.3 (dez/2010), Tabela 12 "Ordering Information" —
+      maior capacidade da tabela, variante "5F1".
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/M-Systems%20Inc%20PDFs/iNAND_e.MMC_4.4_I_F.pdf"
+
+  # ── Geração 7 (SDIN7DP2) — e.MMC 4.51 "Ultra" (JESD84-B451) ──
+  # Fonte: doc SanDisk 80-36-03494 Rev 1.3 (fev/2013), "SanDisk iNAND Ultra e.MMC 4.51 I/F Data
+  # Sheet", Tabela 12 "Ordering Information" + Tabela 9 "Capacity for User Data".
+  - part_number: "SDIN7DP24G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    interface: "e.MMC 4.51 Ultra (JESD84-B451)"
+    device: "X2, 153-ball, 11.5×13×1.0mm"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03494 Rev 1.3 (fev/2013), Tabela 12 "Ordering Information" +
+      Tabela 9: 3.959.422.976 bytes. Verificado por fetch direto (mirror bulcomp-eng.com, cabeçalho/
+      copyright/patentes/histórico de revisão SanDisk idênticos aos outros 2 docs oficiais — mesma
+      autenticidade). Amostra de qualificação: SDIN7DP2-4G-Q (mesma tabela).
+    source_url: "https://www.bulcomp-eng.com/datasheet/SDIN7DP2-4G%20(BGA153)%20-%20Datasheet%201.pdf"
+
+  - part_number: "SDIN7DP28G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "e.MMC 4.51 Ultra (JESD84-B451)"
+    device: "X2, 153-ball, 11.5×13×1.0mm"
+    confidence: confirmed
+    notes: >
+      Datasheet oficial SanDisk 80-36-03494 Rev 1.3 (fev/2013), Tabela 12 "Ordering Information" +
+      Tabela 9: 7.818.182.656 bytes. Mesma fonte/verificação de SDIN7DP2-4G.
+    source_url: "https://www.bulcomp-eng.com/datasheet/SDIN7DP2-4G%20(BGA153)%20-%20Datasheet%201.pdf"
+
+  # ── Cluster SDIN4C2 (inclui o PN do caso original) — SEM datasheet público localizado ──
+  # confidence=manual: evidência não é revenda simples (seria distributor) — é engenharia real
+  # verificada (fórum TI E2E citando datasheet do fabricante em mãos + fabricante de programador
+  # Elnec com pinout real + iFixit confirmando em prosa técnica de teardown, não título de anúncio).
+  # Ver §4 da investigação para o detalhe completo de cada fonte.
+  - part_number: "SDIN4C24G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    interface: "eMMC (geração não confirmada, ~2008-2009)"
+    device: "169-ball FBGA (convergência de distribuidor)"
+    confidence: manual
+    notes: >
+      PN do caso original (debug do estoque 14/07/2026). SEM datasheet oficial localizado
+      (geração "4" fica entre o doc 2007/SD-SPI e o doc 2010/e.MMC 4.41 — buraco documental real).
+      Evidência: (1) TI E2E forum, thread de engenheiro integrando SDIN4C2-4G numa placa DM365
+      (TI DaVinci), cita "the data sheet for the SDIN4C2-4G device" em mãos —
+      https://e2e.ti.com/support/processors-group/processors/f/processors-forum/124680/; (2) Elnec
+      (fabricante de programador de chip) lista SDIN4C2-4G-U [FBGA169] como dispositivo suportado,
+      com adaptador de hardware específico — precisa de pinout real, não é revenda —
+      elnec.com/en/device/SanDisk/; (3) 7+ distribuidores independentes convergem em "4GB,
+      169FBGA". Capacidade 4GB = leitura direta do sufixo declarativo padrão SanDisk (convenção já
+      confirmada na marca inteira). Geração exata da célula NAND/versão eMMC não confirmada —
+      por isso capacidade vai no known_part mas subtype/interface ficam conservadores.
+    source_url: "https://e2e.ti.com/support/processors-group/processors/f/processors-forum/124680/"
+
+  - part_number: "SDIN4C28G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "eMMC (geração não confirmada, ~2008-2009)"
+    device: "169-ball FBGA (convergência de distribuidor)"
+    confidence: manual
+    notes: >
+      Mesmo cluster de SDIN4C24G (ver notas lá para a metodologia completa). Evidência adicional
+      específica: Elnec lista SDIN4C2-8G-U [FBGA169] como dispositivo suportado (mesma família de
+      programador/pinout real); serviceemmc.com (lista de compatibilidade de técnicos) cita
+      SDIN4C2-8G = Samsung Galaxy S I9000 como cross-ref de dispositivo real. Capacidade 8GB =
+      sufixo declarativo padrão.
+    source_url: "https://www.elnec.com/en/device/SanDisk/"
+
+  - part_number: "SDIN4C216G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "eMMC (geração não confirmada, ~2008-2009)"
+    device: "169-ball FBGA (convergência de distribuidor)"
+    confidence: manual
+    notes: >
+      Mesmo cluster de SDIN4C24G (ver notas lá). Evidência MAIS FORTE do trio: iFixit confirma em
+      PROSA TÉCNICA de teardown real (não título de anúncio comercial) — "SanDisk SDIN4C2-16G 16GB
+      Flash memory" no Motorola Droid Bionic Teardown
+      (ifixit.com/Teardown/Motorola+Droid+Bionic+Teardown/6449) E "SanDisk SDIN4C2 16GB MLC NAND
+      flash" no Nexus S Teardown (ifixit.com/Teardown/Nexus+S+Teardown/4365) — dois aparelhos
+      distintos, duas equipes de desmontagem distintas, mesma leitura de capacidade. Estabelece a
+      convenção "-16G = 16GB" pro cluster inteiro.
+    source_url: "https://www.ifixit.com/Teardown/Motorola+Droid+Bionic+Teardown/6449"

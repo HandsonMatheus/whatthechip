@@ -1,0 +1,340 @@
+# Submissão de known_parts — Toshiba-Kioxia, família THGBM (eMMC, decode completo)
+# Gerado pelo chat de marca Toshiba-Kioxia a partir da investigação do PN THGBMBG5D1KBAIL
+# (busca na bancada, 2026-07-08, Octopart: https://octopart.com/part/toshiba/THGBMBG5D1KBAIL).
+# A família THGBM já decodifica B=eMMC5.0 e 5D1=4GB pela gramática (não é família nova) — o
+# trabalho aqui foi (1) confirmar individualmente o PN original e (2) levantar TODOS os PNs
+# irmãos rastreáveis da mesma família, em vez de só o chip pedido, seguindo a convenção do
+# projeto ("nunca 1 chip só"). Achei uma tabela oficial de produto Toshiba/TAEC (via Mouser,
+# copyright jun/2016) que lista 10 SKUs com densidade explícita, mais uma lista de outros SKUs
+# reais na mesma página do fabricante, e baixei 2 datasheets completos individuais (Kioxia 2018
+# e Toshiba 2013) que confirmam PNs fora da tabela. Isso revelou 2 chaves de geração (D, G) e
+# 2 chaves de capacidade (0C8, 0T8) que NÃO estavam no THGBM_GEN/THGBM_CAP — adicionadas ao
+# chips/knowledge/toshiba-kioxia.yaml nesta mesma entrega (Trilha A), com a fonte de cada uma
+# registrada no `reasoning` da família. D e 0C8 vêm de fonte Tier-1-equivalente (datasheet
+# oficial); G e 0T8 vêm de Tier-2/3 (Octopart+Avnet+Puris, sem datasheet individual) — sinalizado
+# nas notes abaixo para o revisor dar atenção extra a esses dois.
+#
+# Hierarquia de fonte usada (TOSHIBA-KIOXIA.md §5): Tier-1 = datasheet oficial (kioxia.com /
+# toshiba.semicon-storage.com, ou mirror que reproduz o datasheet completo/original, ex.: LCSC,
+# faiusr). Tier-2 = Octopart/Mouser/DigiKey/TrustedParts com fonte-fabricante (specs técnicas
+# reais, não só "em estoque"). Tier-3 = utmel/censtry/AIChipLink/Puris/WinSource/findcomponents
+# (só corroboração, nunca fonte única de capacidade).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_2026-07-08.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_2026-07-08.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  # ── PN original da bancada — confirmação INDIVIDUAL por corroboração cruzada (sem datasheet
+  #    dedicado a ESTE PN específico, mas 7+ fontes independentes concordam sem exceção, e os
+  #    dois componentes do decode — geração B e chave 5D1 — foram confirmados em Tier-1 separado
+  #    via os PNs irmãos abaixo). Por isso confidence=manual, não confirmed. ──
+  - part_number: "THGBMBG5D1KBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://octopart.com/part/toshiba/THGBMBG5D1KBAIL"
+    notes: >
+      4GB eMMC, JEDEC/MMCA 5.0, 153-ball WFBGA, obsoleto. Concordância unânime entre 7+ fontes
+      independentes: Octopart (specs técnicas: 153 terminais, 2.7-3.6V, -25/85°C — fonte-fabricante,
+      Tier-2), Jotrin, Veswin, datasheet4u (2 páginas distintas), datasheetcafe, Lisleapex,
+      Fusion, Part-elec. Também existe um documento Toshiba de "pre-loading data" catalogado no
+      Scribd com o nome "Thgbmbg5d1kbail_a19nm_4gb_E-mmc_Ver5.0_e_rev1.0_140807" (processo a19nm,
+      rev1.0, 07/08/2014) — não consegui abrir o conteúdo (Scribd bloqueia extração), mas o nome
+      do arquivo é consistente com nomenclatura interna Toshiba real. IMPORTANTE: os dois
+      componentes do decode (geração 'B'=pn[5] e chave de capacidade '5D1'=pn[7:10]) foram
+      confirmados de forma independente e direta em datasheets oficiais completos de PNs irmãos
+      desta mesma submissão — THGBMBG8D4KBAIR confirma 'B'=eMMC5.0 (datasheet Toshiba 2013) e
+      THGBMNG5D1LBAIL confirma '5D1'=4GB (datasheet Kioxia 2018). Nenhuma fonte conflitante
+      encontrada.
+
+  # ── Confirmados via tabela oficial de produto Toshiba/TAEC (hospedada pela Mouser, copyright
+  #    jun/2016) — https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf — a tabela
+  #    "e-MMC PRODUCT LIST" lista Density + Item Name + Technology + JEDEC + Temperatura +
+  #    Package linha a linha. Equivalente a Tier-1 (conteúdo é o datasheet do fabricante). ──
+  - part_number: "THGBMDG5D1LBAIT"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Tabela oficial Toshiba/TAEC "e-MMC PRODUCT LIST": Density 4GB, Technology 15nm, JEDEC 5.0,
+      -25°C a 85°C, package 153FBGA 11x10. Geração 'D'=pn[5] NÃO estava mapeada em THGBM_GEN antes
+      desta submissão — adicionada ao yaml (Trilha A) com esta mesma fonte.
+
+  - part_number: "THGBMNG5D1LBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.lcsc.com/datasheet/C391255.pdf"
+    notes: >
+      Datasheet completo dedicado (© 2018 Toshiba Memory Corporation, Rev1.0 21/fev/2018,
+      hospedado pela LCSC — conteúdo é o datasheet original, com pinout, registros CID/CSD/
+      Extended-CSD completos). Confirma: 4GB, "1 x 32Gbit" NAND 15nm, JEDEC/MMCA Ver.5.0,
+      153-ball P-WFBGA153, User Area Density 3.959.422.976 bytes. Corrige um erro de um
+      resumo de busca anterior que alegou "32GB (organização 4Gx8)" para este PN — 4Gx8 = 4G
+      palavras x 8 bits = 32Gbit = 4GB, não 32GB; o datasheet primário bate com o mapa já
+      existente (5D1=4GB), não com o resumo errado.
+
+  - part_number: "THGBMHG6C1LBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: "Tabela oficial Toshiba/TAEC: 8GB, 15nm, JEDEC 5.1, -25°C a 85°C, 153FBGA 11.5x13."
+
+  - part_number: "THGBMHG6C1LBAWL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Tabela oficial Toshiba/TAEC: 8GB, 15nm, JEDEC 5.1, -40°C a 85°C (variante extended-temp
+      da THGBMHG6C1LBAIL — pn[13]='W' em vez de 'I'; mesma capacidade/geração, grau térmico
+      diferente, sem impacto na triagem).
+
+  - part_number: "THGBMHG7C1LBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: "Tabela oficial Toshiba/TAEC: 16GB, 15nm, JEDEC 5.1, -25°C a 85°C, 153FBGA 11.5x13."
+
+  - part_number: "THGBMHG7C2LBAWR"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Tabela oficial Toshiba/TAEC: 16GB, 15nm, JEDEC 5.1, -40°C a 85°C (variante extended-temp,
+      chave de capacidade 7C2 — mesma capacidade que 7C1, stack diferente).
+
+  - part_number: "THGBMHG8C2LBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: "Tabela oficial Toshiba/TAEC: 32GB, 15nm, JEDEC 5.1, -25°C a 85°C, 153FBGA 11.5x13."
+
+  - part_number: "THGBMHG8C4LBAWR"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Tabela oficial Toshiba/TAEC: 32GB, 15nm, JEDEC 5.1, -40°C a 85°C (variante extended-temp,
+      chave 8C4 — mesma capacidade que 8C2, stack diferente; confirma também que 8C4 já mapeado
+      bate com esta fonte independente).
+
+  - part_number: "THGBMHG9C4LBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: "Tabela oficial Toshiba/TAEC: 64GB, 15nm, JEDEC 5.1, -25°C a 85°C, 153FBGA 11.5x13."
+
+  - part_number: "THGBMHG9C8LBAWG"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Tabela oficial Toshiba/TAEC: 64GB, 15nm, JEDEC 5.1, -40°C a 85°C (variante extended-temp,
+      chave 9C8 — mesma capacidade que 9C4, stack diferente).
+
+  - part_number: "THGBMHT0C8LBAIG"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "128GB"
+    confidence: confirmed
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Tabela oficial Toshiba/TAEC: 128GB, 15nm, JEDEC 5.1, -25°C a 85°C, 153FBGA 11.5x13. Chave
+      de capacidade '0C8'=pn[7:10] NÃO estava mapeada em THGBM_CAP antes desta submissão
+      (só '0CB' existia para 128GB) — '0C8' adicionada ao yaml (Trilha A) com esta mesma fonte.
+
+  - part_number: "THGBMBG8D4KBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://14469692.s21i.faiusr.com/61/ABUIABA9GAAgn-fMqgYouJ-ggAY.pdf"
+    notes: >
+      Datasheet completo dedicado (TOSHIBA e-MMC Module, Rev1.1 05/ago/2013, com pinout e
+      registros CID/CSD/Extended-CSD completos — mesmo padrão de documento do datasheet oficial
+      da THGBMNG5D1LBAIL acima). Confirma: 32GB, "4 x 64Gb A19nm" NAND, JEDEC/MMCA Ver.5.0,
+      153-ball P-VFBGA153, User Area Density 31.268.536.320 bytes. Reconfirma em Tier-1 que
+      geração 'B'=pn[5] é eMMC 5.0 (mesma letra do PN original desta submissão,
+      THGBMBG5D1KBAIL) e que chave '8D4'=pn[7:10] é 32GB (já mapeada, agora com fonte primária
+      direta).
+
+  # ── Irmãos achados na mesma página oficial do fabricante (lista de SKUs Toshiba na página
+  #    Mouser acima) — corroboração ESTRUTURAL: a EXISTÊNCIA do PN vem da página oficial do
+  #    fabricante (Mouser lista como produto Toshiba genuíno), o VALOR (capacidade/geração) vem
+  #    de combinar chaves JÁ confirmadas (nesta submissão ou preexistentes no yaml) — mesma
+  #    lógica que o próprio decode da gramática usa. Sem datasheet individual lido por-PN →
+  #    confidence=distributor (mais baixo que confirmed/manual de propósito). ──
+  - part_number: "THGBMDG5D1LBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser) junto dos SKUs da tabela. Geração 'D' e
+      chave '5D1' já confirmadas nesta mesma submissão (THGBMDG5D1LBAIT/THGBMNG5D1LBAIL) →
+      4GB eMMC5.0. Irmão de sufixo (L em vez de T) da THGBMDG5D1LBAIT — mesma spec, variante
+      de bin/temperatura (pn[14], sem impacto).
+
+  - part_number: "THGBMNG5D1LBAIT"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser). Irmão de sufixo da THGBMNG5D1LBAIL
+      (confirmed acima, datasheet dedicado) — mesma geração N e chave 5D1, sufixo T em vez de L.
+
+  - part_number: "THGBMFG8C2LBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "32GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser). Geração 'F' já existia no THGBM_GEN
+      (eMMC5.0); chave '8C2' já confirmada nesta submissão (THGBMHG8C2LBAIL) → 32GB.
+
+  - part_number: "THGBMFG6C1LBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "8GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser). Geração 'F' (eMMC5.0, já mapeada) + chave
+      '6C1' (8GB, confirmada nesta submissão) → 8GB.
+
+  - part_number: "THGBMFG7C1LBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser). Geração 'F' (eMMC5.0) + chave '7C1'
+      (16GB, confirmada nesta submissão) → 16GB.
+
+  - part_number: "THGBMFG9C4LBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "64GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser). Geração 'F' (eMMC5.0) + chave '9C4'
+      (64GB, confirmada nesta submissão) → 64GB.
+
+  - part_number: "THGBMHG8C4LBAU7"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "32GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser). Geração 'H' (eMMC5.1, já mapeada) + chave
+      '8C4' (32GB, confirmada nesta submissão) → 32GB. Sufixo U7 = outra variante de
+      grau/bin (pn[13:15]), sem impacto na capacidade.
+
+  - part_number: "THGBMHG6C1LBAU6"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "8GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser). Geração 'H' (eMMC5.1) + chave '6C1'
+      (8GB, confirmada nesta submissão) → 8GB.
+
+  - part_number: "THGBMHG7C2LBAU7"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser). Geração 'H' (eMMC5.1) + chave '7C2'
+      (16GB, confirmada nesta submissão) → 16GB.
+
+  - part_number: "THGBMHG9C8LBAU8"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "64GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser). Geração 'H' (eMMC5.1) + chave '9C8'
+      (64GB, confirmada nesta submissão) → 64GB.
+
+  - part_number: "THGBMFT0C8LBAIG"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "128GB"
+    confidence: distributor
+    source_url: "https://www.mouser.com/datasheet/2/877/Toshiba_FAB_eMMC-1511507.pdf"
+    notes: >
+      Listado na página oficial Toshiba/TAEC (Mouser). Geração 'F' (eMMC5.0, já mapeada) + chave
+      '0C8' (128GB, confirmada nesta submissão via THGBMHT0C8LBAIG) → 128GB. Nenhuma fonte
+      declara a densidade desta combinação F+0C8 individualmente — capacidade inferida por
+      correspondência de chave, mesma lógica da gramática.
+
+  # ── Único PN fora da lista de produto oficial — achado via busca dedicada, introduz DUAS
+  #    chaves novas ao mesmo tempo (geração G + capacidade 0T8). Fonte é Tier-2/3 (sem datasheet
+  #    individual): Octopart e Avnet (fonte-fabricante, Tier-2) declaram "128GB" explicitamente;
+  #    Puris (Tier-3) declara "128GB eMMC 5.1" explicitamente. Sinalizado para atenção extra do
+  #    revisor por introduzir 2 valores novos de uma vez sem datasheet primário. ──
+  - part_number: "THGBMGT0T8LBAIG"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "128GB"
+    confidence: distributor
+    source_url: "https://octopart.com/part/kioxia/THGBMGT0T8LBAIG"
+    notes: >
+      ⚠ Introduz 2 chaves novas simultaneamente: geração 'G' (pn[5], sem precedente no
+      THGBM_GEN) e capacidade '0T8' (pn[7:10], sem precedente no THGBM_CAP) — SEM datasheet
+      oficial individual encontrado, diferente dos outros itens desta submissão. Fontes: Octopart
+      ("128GB Nand 15NM Embedded Multimedia Chip") e a descrição do distribuidor autorizado Avnet
+      na mesma página ("128GB NAND 15NM EMBEDDED MULTIMEDIA CHIP") — Tier-2, fonte-fabricante.
+      Puris (https://www.puris.net/archives/3191, Tier-3) declara explicitamente "THGBMGT0T8LBAIG
+      128GB eMMC 5.1". DigiPart lista este PN ao lado do THGBMHT0C8LBAIG (128GB confirmado nesta
+      submissão), reforçando que ambos são o mesmo tier de capacidade em pacotes/gerações
+      distintos. Recomendo ao revisor validar 'G' e '0T8' num datasheet Kioxia antes de aprovar,
+      se possível — não achei o datasheet individual apesar de tentar.
+
+# ── NÃO submetidos (ficam de fora de propósito) ──────────────────────────────
+# THGBM1G8D8EBAI2 — aparece em várias buscas ("Toshiba launches largest density embedded eMMC"),
+# mas é uma sub-família MAIS ANTIGA e DIFERENTE: JEDEC/MMCA Ver.4.3 (não 5.0/5.1), package
+# 169-ball FBGA 14x18mm (não 153-ball), lançamento 2008. pn[5]='1' (dígito) e pn[7:10]='8D8' não
+# seguem o esquema de decode do THGBM_GEN/THGBM_CAP atual (que é da era 15nm/JEDEC5.x). Não é
+# "irmão" no sentido que interessa à gramática atual — precisaria de investigação e possivelmente
+# uma família/decode separados se algum dia aparecer na bancada. Fonte: datasheet.octopart.com/
+# THGBM1G8D8EBAI2-Toshiba-datasheet-11973698.pdf (press release, JEDEC 4.3, 32GB, BGA169).
+#
+# THGBM4G5D1HBAIR — apareceu em UMA única página (datasheet4u), com pn[5]='4' (dígito), o que não
+# tem precedente em nenhuma outra fonte consultada e pode ser erro de OCR/scraping do próprio
+# datasheet4u (ex.: confusão com outro PN). Sem segunda fonte independente que confirme o '4' —
+# não incluí para não arriscar introduzir uma chave de geração inventada. Precisa reverificação
+# individual antes de qualquer decisão.

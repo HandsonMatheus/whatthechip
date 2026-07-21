@@ -1,0 +1,166 @@
+# Submissão de known_parts — Micron, FBGA D9SXC e vizinhos fuzzy (2026-07-09)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9SXC
+# (não identificado na bancada, fila de revisão — SearchLog 09/07/2026 11:07).
+# Mesmo processo do lote JZ067 (2026-07-08): resolvido via API FBGA oficial
+# da Micron + as 5 sugestões fuzzy do próprio motor (D9SKC/D9SKG/D9SSC/D9SVC/
+# D9SXB), cada capacidade com aritmética mostrada e 2+ fontes batendo — nunca
+# só o número final (ver memória wtc-mostrar-aritmetica-gb-gbit).
+#
+# ⚠ ACHADO PRINCIPAL: D9SXC (o alvo) é GDDR5 — família MT51J, que NÃO existe
+# em chips/knowledge/micron.yaml hoje (só temos MT52L/MT53B/D/E). É memória
+# de GPU, não mobile/desktop DRAM. Proposta de gramática (Trilha A) no final
+# deste arquivo, como comentário — NÃO apliquei no yaml (preciso de
+# load_brands --dry-run + golden test, que só rodam na sua máquina/CI;
+# AUTORIA.md exige golden pra família de prefixo novo).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9sxc_family_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/micron_d9sxc_family_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  # ── D9SXC — o alvo original, FAMÍLIA NOVA (GDDR5, MT51J) ──────────────────
+  - part_number: "MT51J256M32HF-60:A"
+    chip_type: "GDDR5"
+    subtype: "GDDR5"
+    interface: "x32"
+    density_gbit: "8Gb"
+    fbga_code: "D9SXC"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/micron/MT51J256M32HF-80:B"
+    notes: >
+      Identidade via API oficial FBGA Decoder da Micron (fetch direto,
+      2026-07-09): D9SXC → MT51J256M32HF-60:A. Capacidade: campo estruturado
+      Octopart "Density: 8 Gb" (não é descrição solta — é atributo técnico) +
+      2 distribuidores citando "GDDR5 8Gb" (Unikeyic) e "GDDR5 8G" (Avnet) +
+      conta pelo PN: 256M(profundidade) × 32bit(largura) = 8192Mb = 8Gb —
+      as 3 fontes batem. ⚠ Campo é density_gbit (Gb), NÃO capacity — DRAM
+      discreta usa density_gbit por convenção (CLAUDE.md §6), diferente do
+      LPDDR avulso (capacity em GB) que os outros 4 known_parts deste arquivo
+      usam. Interface "x32" vem do "M32" no PN (largura de barramento).
+      ⚠⚠ FAMÍLIA NOVA — chips/knowledge/micron.yaml não tem prefixo MT51J
+      nem chip_type=GDDR5 pra Micron (só K4N.../Samsung usa GDDR hoje). Ver
+      proposta de gramática comentada no fim deste arquivo antes de aprovar
+      — sem ela, PNs "irmãos" (MT51J256M32HF-70/80/50, MT51J128M32HF-70,
+      achados no forward-lookup) continuam invisíveis mesmo depois deste
+      known_part entrar.
+
+  # ── Sugestões fuzzy do motor — famílias JÁ existentes na gramática ─────────
+  - part_number: "MT41K64M16TW-125:J"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9SKC"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/micron/MT41K64M16TW-125:J"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Capacidade: Octopart
+      "DDR3L SDRAM 1G-Bit" (título) + "Density" não exposto no card mas IHS
+      cita "1GBIT" + AAA Chips cita "1073741824bit" = 2^30 bits = exatamente
+      1Gb (contagem bruta, sem ambiguidade) + conta pelo PN: 64M × 16bit =
+      1024Mb = 1Gb. 4 fontes batendo. Família MT41K já existe no yaml
+      (chip_type/subtype corretos) mas SEM decode de capacidade
+      (decode_cap_pos/decode_density_type vazios) — por isso density_gbit
+      explícito aqui é o único jeito de a bancada mostrar a capacidade.
+      Lifecycle "Obsolete" no Octopart (Last Updated há 6 meses) — normal
+      pra reciclagem.
+
+  - part_number: "MT53B512M64D4NK-062 WT:B"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "4GB"
+    fbga_code: "D9SKG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SKG"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Capacidade: 512M × 64bit
+      ÷ 8 = 4096MB = 4GB — o MESMO cálculo já documentado como exemplo no
+      próprio chips/knowledge/micron.yaml (família MT53B, tip cita
+      "MT53B512M64D4TX → 512M×64bit = 32Gb ÷ 8 = 4GB LPDDR4"; nosso PN só
+      muda o sufixo NK/-062/:B, que não afeta profundidade×largura). Família
+      já decodifica isso sozinha via decode_density_type=micron — este
+      known_part só resolve o FBGA→PN (a gramática não faz o caminho
+      inverso), a capacidade é redundante/conferência.
+
+  - part_number: "MT52L256M32D1PF-125 WT:B"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "1GB"
+    fbga_code: "D9SSC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SSC"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Capacidade: 256M × 32bit
+      ÷ 8 = 1024MB = 1GB, mesma fórmula já validada da família MT52L (yaml).
+      Família já decodifica sozinha via decode_density_type=micron; known_part
+      só resolve o FBGA→PN.
+
+  - part_number: "MT52L256M64D2PD-107 WT:B"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "2GB"
+    fbga_code: "D9SVC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-lpddr/part-catalog/part-detail/mt52l256m64d2pd-107-wt-b"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron (2026-07-09,
+      raro — a maioria dos PNs deste lote não tem part-name preenchido, este
+      teve): "LPDDR3 16G X64 WFBGA", sub-category "obsolete-lpddr". Conta:
+      16Gb ÷ 8 = 2GB (convenção part-name = Gbit, MICRON.md §4). Bate exato
+      com profundidade×largura do PN: 256M × 64bit ÷ 8 = 2048MB = 2GB. Dupla
+      confirmação Tier-1 direto da própria Micron, sem precisar de Octopart.
+
+  - part_number: "MT52L256M32D1PD-107 WT:B"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "1GB"
+    fbga_code: "D9SXB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SXB"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Capacidade: 256M × 32bit
+      ÷ 8 = 1024MB = 1GB, mesma conta do D9SSC (mesma profundidade×largura;
+      sufixo PD/PF e ":B" não afeta densidade). Família já decodifica sozinha.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PROPOSTA Trilha A (NÃO aplicada — rascunho pra revisão/golden antes de ir
+# pro chips/knowledge/micron.yaml). Cobre a família nova MT51J (GDDR5).
+# Forward-lookup na API Micron (2026-07-09) achou mais 8 FBGA/PN irmãos além
+# do D9SXC: D9SXD(-70:A) D9TCB(-80:A) D9TNP(-50:A) D9TRZ(-60S:A) D9VVQ(-70:B)
+# D9VVR(-80:B) D9XGP(128M32HF-70:B) + 6 variantes ES (Z9SNK/Z9SZB/Z9TCC/Z9TNQ/
+# Z9VVN/Z9VVP). Todas variam só em speed grade (-50/-60/-70/-80) e revisão
+# (:A/:B) — mesma densidade 8Gb, exceto D9XGP que é 128M32 (4Gb, metade).
+#
+# - prefix: MT51J
+#   chip_type: GDDR5
+#   subtype: GDDR5
+#   interface: x32          # confirmar se existe variante x16 antes de fixar
+#   is_emcp: false
+#   active: true
+#   priority: 50
+#   pn_length: null
+#   decode_cap_pos: null     # sem chave posicional simples — density vem do
+#   decode_cap_len: 1        # bloco [profundidade][M][largura], igual MT52L/
+#   decode_cap_map: ''       # MT53x — usar decode_density_type: micron?
+#   decode_gen_pos: null     # PRECISA TESTAR: a fórmula profundidade×largura÷8
+#   decode_gen_map: ''       # dá Gb (não GB) pra GDDR5 — decode_density_type
+#   decode_gen_len: 1        # 'micron' hoje devolve capacity em GB; se for
+#   decode_density_type: ''  # reaproveitar, confirmar se o engine sabe rotear
+#   suffix_rules: ''         # DRAM discreta pro campo density_gbit em vez de
+#   tip: >                   # capacity. NÃO testei isso — é só a densidade
+#     GDDR5 (memória de GPU) Micron. NOVO pro sistema — nenhuma outra marca
+#     GDDR nossa tem family assim (Samsung tem chip_type=GDDR mas via família
+#     própria). Ex.: MT51J256M32HF-60:A = 256M×32bit÷8 = 8Gb (confirmado
+#     Octopart+2 distribuidores). MT51J128M32HF-70:B = 128M×32bit÷8 = 4Gb.
+#   reasoning: '["Achado pesquisando FBGA D9SXC, 2026-07-09", "GDDR5 confirmado via Octopart (Density: 8Gb) + Unikeyic + Avnet", "8 FBGA irmãos no forward-lookup, todos MT51J256M32 ou 128M32, variando só speed/revisão"]'
+#
+# ⚠ OBRIGATÓRIO antes de aprovar esta família (AUTORIA.md): golden test em
+# chips/tests.py (_MIC_GOLDEN) com pelo menos MT51J256M32HF-60:A → GDDR5·8Gb
+# e MT51J128M32HF-70:B → GDDR5·4Gb, incluindo rentabilidade (handshake —
+# GDDR já tem regra própria em assess_profitability via gddr_min_gen, mas
+# confirmar que GDDR5 ≥ threshold default 3 dá RENTÁVEL, não assumir).

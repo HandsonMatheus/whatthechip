@@ -1,0 +1,122 @@
+# Submissão known_parts — SanDisk, sub-linha SDINBDA6 (família SDINB, eMMC 5.1 "iNAND EM132")
+# Origem: investigação a partir do PN SDINBDA616G (debug do estoque, 14/07/2026).
+# Ver INVESTIGACAO_sandisk_sdinbda6_2026-07-14.md para a análise completa.
+#
+# 6 PNs confidence=confirmed: 4 (32/64/128/256G) via 2 product briefs oficiais SanDisk/WD em PDF
+# com tabela "Ordering Information" explícita; 2 (8/16G) via página oficial sandisk.com por SKU +
+# corroboração de distribuidor (evidência ligeiramente mais fraca, sem PDF com tabela, mas ainda
+# domínio oficial do fabricante — ver §3.B da investigação pro detalhe da limitação).
+#
+# ⚠ RODAR O PRECHECK ABAIXO ANTES DO --commit:
+#
+#   python manage.py shell <<'EOF'
+#   from chips.normalize import normalize_pn
+#   from chips.models import KnownPart
+#   pns = ["SDINBDA68G","SDINBDA616G","SDINBDA632G","SDINBDA664G","SDINBDA6128G","SDINBDA6256G"]
+#   for pn in pns:
+#       norm = normalize_pn(pn)
+#       existing = KnownPart.objects.filter(part_number_norm=norm)
+#       if existing.exists():
+#           for e in existing:
+#               print(f"COLISÃO {pn} (norm={norm}) -> já existe id={e.id} part_number={e.part_number!r} "
+#                     f"review_status={e.review_status} confidence={e.confidence}")
+#       else:
+#           print(f"livre    {pn}")
+#   EOF
+#
+# Qualquer PN "COLISÃO" deve ser removido antes do --commit (ver os últimos 2 rounds de hoje —
+# é bem provável que o repositório compartilhado já tenha alguns destes de outra sessão).
+#
+# Uso (o DONO roda, nunca o chat):
+#   python manage.py submit_known_parts submissions/sandisk_sdinbda6_2026-07-14.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/sandisk_sdinbda6_2026-07-14.yaml --commit    # grava (submitted, oculto) + aprovar no admin depois
+#
+# Sem golden test afetado nesta rodada (nenhum PN "SDINBDA" está em chips/tests.py::_SD_GOLDEN).
+
+brand: "SanDisk"
+known_parts:
+  - part_number: "SDINBDA68G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "8GB"
+    interface: "eMMC 5.1 HS400 (iNAND EM132, 3D NAND)"
+    device: "TFBGA153, 11.5×13mm"
+    confidence: confirmed
+    notes: >
+      Página oficial sandisk.com, configurador por SKU (sku=SDINBDA6-8G), título indexado "8GB 3D
+      NAND Commercial e.MMC | Sandisk". Sub-linha nova da família SDINB (existente no catálogo),
+      nome de produto "iNAND EM132", sucessora do SDINBDA4 ("iNAND 7550 SmartSLC") — mesma
+      interface eMMC 5.1 HS400, tecnologia 3D NAND. ⚠ Não li o corpo renderizado completo da página
+      (JS pesado) — confirmação vem do título indexado (metadado real da página oficial) +
+      corroboração de distribuidores independentes pra variante industrial de mesma capacidade
+      (rtxchips, censtry, trustedparts — todos eMMC 5.1 HS400/TFBGA153 consistente).
+    source_url: "https://www.sandisk.com/products/embedded-flash/mobile-inand-emmc-drives?sku=SDINBDA6-8G"
+
+  - part_number: "SDINBDA616G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "eMMC 5.1 HS400 (iNAND EM132, 3D NAND)"
+    device: "TFBGA153, 11.5×13mm"
+    confidence: confirmed
+    notes: >
+      PN do caso original (debug do estoque 14/07/2026). Página oficial sandisk.com, configurador
+      por SKU (sku=SDINBDA6-16G), título indexado "16GB 3D NAND Commercial e.MMC | Sandisk". Mesma
+      metodologia/ressalva de SDINBDA6-8G (ver notas lá). Corroborado por múltiplos distribuidores
+      independentes pra variante industrial SDINBDA6-16G-I (rtxchips, censtry, trustedparts,
+      lovechip, kynix, xonelec) — todos convergem em eMMC 5.1 HS400, TFBGA153, 11.5×13mm.
+    source_url: "https://www.sandisk.com/products/embedded-flash/mobile-inand-emmc-drives?sku=SDINBDA6-16G"
+
+  - part_number: "SDINBDA632G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "32GB"
+    interface: "eMMC 5.1 HS400 (iNAND EM132, 3D NAND)"
+    device: "TFBGA153, 11.5×13×1.0mm"
+    confidence: confirmed
+    notes: >
+      Confirmado por 2 documentos oficiais SanDisk/Western Digital em PDF, tabela "Ordering
+      Information" explícita: (1) brochure "Advanced Flash Storage Solutions for Automotive
+      Applications" (ago/2025), pg.6; (2) product brief dedicado "iNAND AT EM132 Automotive
+      Embedded Flash Drive" (jul/2025). Ambos confirmam: 32GB, pacote 11.5×13×1.0mm, PN grade
+      automotivo SDINBDA6-32G-XA1 (-40 a 85°C) / SDINBDA6-32G-ZA1 (-40 a 105°C). PN submetido aqui
+      é o BASE (sem sufixo de grade) — ver §4 da investigação pra por que grades não viram
+      known_part separado.
+    source_url: "https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/western-digital/collateral/product-brief/product-brief-automotive-inand-at-em132.pdf"
+
+  - part_number: "SDINBDA664G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "64GB"
+    interface: "eMMC 5.1 HS400 (iNAND EM132, 3D NAND)"
+    device: "TFBGA153, 11.5×13×1.0mm"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDINBDA6-32G (2 product briefs oficiais PDF, ver notas lá). Ordering
+      Information: 64GB, pacote 11.5×13×1.0mm, PN grade automotivo SDINBDA6-64G-XA1/-ZA1.
+    source_url: "https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/western-digital/collateral/product-brief/product-brief-automotive-inand-at-em132.pdf"
+
+  - part_number: "SDINBDA6128G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "128GB"
+    interface: "eMMC 5.1 HS400 (iNAND EM132, 3D NAND)"
+    device: "TFBGA153, 11.5×13×1.0mm"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDINBDA6-32G (2 product briefs oficiais PDF, ver notas lá). Ordering
+      Information: 128GB, pacote 11.5×13×1.0mm, PN grade automotivo SDINBDA6-128G-XA1/-ZA1.
+    source_url: "https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/western-digital/collateral/product-brief/product-brief-automotive-inand-at-em132.pdf"
+
+  - part_number: "SDINBDA6256G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "256GB"
+    interface: "eMMC 5.1 HS400 (iNAND EM132, 3D NAND)"
+    device: "TFBGA153, 11.5×13×1.2mm"
+    confidence: confirmed
+    notes: >
+      Mesma fonte de SDINBDA6-32G (2 product briefs oficiais PDF, ver notas lá). Ordering
+      Information: 256GB, pacote 11.5×13×1.2mm (única capacidade com pacote mais espesso), PN
+      grade automotivo SDINBDA6-256G-XA1/-ZA1. Maior capacidade confirmada da sub-linha.
+    source_url: "https://documents.sandisk.com/content/dam/asset-library/en_us/assets/public/western-digital/collateral/product-brief/product-brief-automotive-inand-at-em132.pdf"

@@ -1,0 +1,100 @@
+# Submissão de known_parts — Toshiba-Kioxia, cluster THGBM "BG" completo (pn[5]="B", eMMC 5.0)
+# Gerado a partir da pesquisa de THGBMBG6D1KBAIL (PN da bancada, known_exact=false, confidence=
+# estimated — decodifica certo via gramática mas sem known_part). Regra permanente aplicada: busca
+# ampla ANTES de submeter (ver memory wtc-pesquisar-cluster-inteiro-nao-so-1-pn) — achado 1 catálogo
+# oficial Toshiba com a linha e-MMC standard-temp COMPLETA (4-64GB), 5 densidades, confirmando de
+# uma vez o PN buscado + 3 irmãos genuinamente novos (2 dos 5 já eram known_part).
+#
+# Fonte Tier-1 principal: catálogo oficial Toshiba/toshiba-components.com "FAB_eMMC_1405" (flyer de
+# produto, Copyright 2014 TOSHIBA corporation), mirror lido diretamente em
+# https://pdf.datasheet.live/0374b282/toshiba.co.jp/THGBMBG6D1KBAIL.html — tabela "e-MMC – PRODUCT
+# LIST" com Density/Item Name/Technology/JEDEC/Temperature/Package, DUAS colunas (standard-temp "BG"
+# A19nm JEDEC5.0 e extended-temp "AG" 19nm JEDEC4.5). A coluna "AG" bate 100% com known_parts JÁ
+# aprovados (THGBMAG5A1JBAWR/THGBMAG6A2JBAWR/THGBMAG7B2JBAWM/THGBMAG8B4JBAWM) — corrobora a fonte
+# sem duplicar trabalho. A coluna "BG" (esta submissão) tem 5 densidades:
+#   4GB=THGBMBG5D1KBAIT · 8GB=THGBMBG6D1KBAIL · 16GB=THGBMBG7D2KBAIL · 32GB=THGBMBG8D4KBAIR(já
+#   known_part, não resubmetido) · 64GB=THGBMBG9D8KBAIG
+#
+# Fonte Tier-1 secundária (só p/ THGBMBG7D2KBAIL): datasheet oficial completo e independente (31
+# páginas, Rev.1.1 Aug.5th 2013), hospedado por um distribuidor (s21i.faiusr.com) mas com todo o
+# conteúdo técnico e o boilerplate legal "RESTRICTIONS ON PRODUCT USE" idênticos ao padrão Toshiba —
+# CID Register confirma nome de produto interno "016GE2" e "2 x 64Gb A19nm" (2 dies × 64Gb = 128Gb =
+# 16GB, bate com a densidade declarada).
+#
+# pn[5]="B" já confirmado eMMC 5.0 no THGBM_GEN (não é achado novo). Chaves de capacidade "5D1"/
+# "6D1"/"7D2" já existiam no THGBM_CAP (só confirmam PN individual); "9D8" é chave NOVA — adicionada
+# à gramática nesta rodada ([9D8, 64GB, ''] em chips/knowledge/toshiba-kioxia.yaml).
+#
+# ⚠ O resumo em prosa do WebSearch errou de novo nesta rodada (chamou THGBMBG5D1KBAIT de "controlador
+# de drive flash, 2GB, 65nm, 8-die") — CONTRADIZ a tabela oficial lida diretamente (4GB/A19nm/eMMC/
+# JEDEC5.0). Fonte usada = a tabela primária, não o resumo. Reforça a prática de nunca confiar no
+# resumo da ferramenta de busca sem abrir a fonte.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_bg_cluster_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_bg_cluster_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "THGBMBG5D1KBAIT"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.live/0374b282/toshiba.co.jp/THGBMBG6D1KBAIL.html"
+    notes: >
+      Catálogo oficial Toshiba "FAB_eMMC_1405" (mirror datasheet.live, lido diretamente), tabela
+      "e-MMC – PRODUCT LIST": "4GByte | THGBMBG5D1KBAIT | A19nm | JEDEC 5.0 | -25°C to 85°C |
+      153FBGA 11x10". Chave pn[7:10]="5D1" já existente no THGBM_CAP (4GB, mesma chave do irmão
+      já confirmado THGBMBG5D1KBAIL — PN DIFERENTE, sufixo final "T" em vez de "L", mesma
+      capacidade). pn[5]="B" já confirmado eMMC 5.0. ⚠ Resumo do WebSearch para este PN específico
+      estava ERRADO (disse "2GB, 65nm, controlador de drive") — descartado, usada a tabela oficial
+      lida diretamente.
+
+  - part_number: "THGBMBG6D1KBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.live/0374b282/toshiba.co.jp/THGBMBG6D1KBAIL.html"
+    notes: >
+      PN da bancada (já decodificava certo via gramática — chave "6D1"=8GB e pn[5]="B"=eMMC5.0 já
+      confirmados antes; faltava known_part). Catálogo oficial Toshiba "FAB_eMMC_1405" (lido
+      diretamente): "8GByte | THGBMBG6D1KBAIL | A19nm | JEDEC 5.0 | -25°C to 85°C | 153FBGA
+      11.5x13". Promove de confidence=estimated (só gramática) para confirmed (Tier-1 manufacturer
+      catalog).
+
+  - part_number: "THGBMBG7D2KBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://14469692.s21i.faiusr.com/61/ABUIABA9GAAgn-fMqgYopvqQSg.pdf"
+    notes: >
+      Irmão do PN da bancada (fuzzy sugerido pelo engine). DUAS fontes Tier-1 independentes: (1)
+      datasheet oficial completo e standalone (31pg, Rev.1.1 Aug.5th 2013) — "THGBMBG7D2KBAIL is
+      16GB density of e-MMC Module... NAND Flash Type 2 x 64Gb A19nm" (2×64Gb=128Gb=16GB, conta
+      bate) — CID Register mostra nome interno "016GE2"; JEDEC/MMCA V5.0 confirma pn[5]="B"=eMMC
+      5.0 já mapeado. (2) mesmo catálogo "FAB_eMMC_1405" da tabela do cluster BG: "16GByte |
+      THGBMBG7D2KBAIL | A19nm | JEDEC 5.0". Chave "7D2" já existente no THGBM_CAP (16GB) — bate
+      nas duas fontes.
+
+  - part_number: "THGBMBG9D8KBAIG"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://pdf.datasheet.live/0374b282/toshiba.co.jp/THGBMBG6D1KBAIL.html"
+    notes: >
+      Catálogo oficial Toshiba "FAB_eMMC_1405" (lido diretamente): "64GByte | THGBMBG9D8KBAIG |
+      A19nm | JEDEC 5.0 | -25°C to 85°C | 153FBGA 11.5x13" — fecha a tabela do cluster BG (a
+      própria fonte declara a faixa "4GByte – 64GByte" como o range completo da linha standard-
+      temp). Corroborado por distribuidor (Ovaga: "512G-bit" → 512Gb ÷ 8 = 64GB, mesma conta).
+      Chave pn[7:10]="9D8" é NOVA — não existia no THGBM_CAP (tinha 9A8/9B8/9C4/9C8/9T8, todos
+      64GB). Adicionada à gramática nesta rodada: [9D8, 64GB, '']. pn[5]="B" já confirmado eMMC
+      5.0.
+
+# ── Já known_part, NÃO resubmetido (fecha o cluster BG, só corrobora) ─────────────────────────
+# THGBMBG5D1KBAIL (4GB) e THGBMBG8D4KBAIR (32GB) — já aprovados em rodada anterior; a mesma tabela
+# oficial desta submissão CORROBORA os dois (aparecem implicitamente como a mesma família/coluna,
+# mesmo padrão A19nm/JEDEC5.0/153FBGA). Portão já pula PN aprovado — não incluídos aqui.

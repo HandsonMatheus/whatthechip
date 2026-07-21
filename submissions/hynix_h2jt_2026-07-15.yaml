@@ -1,0 +1,98 @@
+# Submissão de known_parts — SK Hynix, prefixo H2JT (NAND Flash raw legado, MESMA família
+# sem gramática dos arquivos hynix_h2jt_2026-07-10.yaml/2026-07-10b.yaml — miolo "EG8V" é
+# NOVO, nunca visto nas rodadas anteriores).
+# Gerado a partir da investigação do PN H2JTEG8VD3MBR (busca na bancada, 2026-07-15).
+#
+# SEM fix de gramática (mesma razão já documentada nos arquivos anteriores desta família): o
+# "package mark" H2JT é específico por aplicação/geração de dispositivo Apple, não uma posição
+# decodificável de forma genérica — cada PN entra individualmente como known_part (Trilha B).
+#
+# ⚠ PESQUISA DIFÍCIL — AUTORIZAÇÃO EXPLÍCITA DO DONO pra usar fonte de tier mais baixo ("pode
+# usar fontes de menor tier neste porque é antigo", 2026-07-15): busquei extensamente por
+# teardown/datasheet direto do PN ALVO (H2JTEG8VD3MBR) sem sucesso — iFixit, TechInsights,
+# distribuidores estruturados (DigiPart-style), Puris/Preduo, OMO, hkinventory: nenhum tinha
+# entrada própria com capacidade. O que FECHOU o caso:
+#
+# 1) iFixit "Apple TV 4th Generation Teardown" (fetch direto, publicado 2015-09-22, autora Sam
+#    Goldheart — mesmo padrão de qualidade Tier-teardown já usado em toda a família): Step 5
+#    identifica explicitamente "SK Hynix H2JTEG8VD1BMR 32 GB NAND flash memory" — teardown
+#    físico, não listagem de distribuidor. O link da própria página aponta pro Databook OFICIAL
+#    da SK Hynix (skhynix.com/inc/pdfDownload.jsp?path=/datasheet/Databook/Databook_4Q'2013_
+#    NANDFlash.pdf). CONFIRMA: miolo "EG8V" = 32GB.
+# 2) O PN ALVO "H2JTEG8VD3MBR" (mesmo miolo "EG8V", dígito final "3" em vez de "1") aparece na
+#    lista de compatibilidade da EasyJTAG NANDKit (ferramenta profissional de reparo/programação
+#    de NAND, fetch direto) ao lado do irmão "H2JTEG8VD1BMR" (já confirmado acima) e de
+#    "H2JTEG8VD1CMS" — confirma que o PN alvo é um chip real e genuíno, catalogado pela mesma
+#    ferramenta que já confirmou (implicitamente) os outros PNs desta família em rodadas
+#    anteriores.
+# 3) PADRÃO JÁ ESTABELECIDO nesta família (rodada 2026-07-10): dentro do MESMO miolo, o dígito
+#    final antes do sufixo de 3 letras NÃO muda capacidade — H2JTDG8UD3MBR e H2JTDG8UD2MBR
+#    (mesmo miolo "DG8U", dígito 3 vs 2) eram ambos 16GB. Aplicando o mesmo padrão: miolo
+#    "EG8V" com dígito "3" (alvo) deve ser a MESMA capacidade que miolo "EG8V" com dígito "1"
+#    (H2JTEG8VD1BMR, confirmado 32GB por teardown direto).
+#
+# Ou seja: não é teardown DIRETO do PN exato (isso eu não achei, apesar de busca extensa) — é
+# teardown direto do irmão de miolo idêntico + confirmação de existência real do PN exato numa
+# fonte de tier mais baixo (ferramenta de reparo) + o padrão já estabelecido nesta família de
+# que o dígito final não muda capacidade dentro do mesmo miolo. Autorizado pelo dono a aceitar
+# esse nível de evidência por ser peça antiga (2015, Apple TV 4th gen) com pouquíssima presença
+# documental pública.
+#
+# ⭐ ACHADO: esta família H2JT NÃO é exclusiva de iPhone — o teardown do Apple TV 4th Generation
+# (A8 SoC, tvOS, 2015) usa o MESMO padrão de package mark Hynix. Amplia o escopo conhecido da
+# família (antes só iPhone 5/5s/6/6 Plus).
+#
+# TIPO: mesma convenção já usada nesta família — chip_type="NAND Flash", subtype="MLC NAND"
+# (mantida a consistência; o teardown do Apple TV não especifica MLC/TLC explicitamente, mas
+# não há evidência em contrário e é a mesma geração/cluster de processo das outras confirmações).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h2jt_2026-07-15.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h2jt_2026-07-15.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H2JTEG8VD1BMR"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: ""
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.ifixit.com/Teardown/Apple+TV+4th+Generation+Teardown/49046"
+    notes: >
+      Achado pesquisando o miolo "EG8V" do PN alvo (fetch direto). iFixit "Apple TV 4th
+      Generation Teardown" (2015-09-22, Step 5): "SK Hynix H2JTEG8VD1BMR 32 GB NAND flash
+      memory" — teardown físico direto, identificação de componente na placa lógica do
+      Apple TV 4th gen (A8 SoC). O texto do próprio iFixit linka pro Databook OFICIAL SK
+      Hynix (4Q'2013 NAND Flash). Amplia a família H2JT pra além de iPhone — também usada
+      em Apple TV. Base da inferência de capacidade pro PN alvo (mesmo miolo, ver notes
+      abaixo). confidence=manual.
+
+  - part_number: "H2JTEG8VD3MBR"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: ""
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://easy-jtag.com/nand-kit-2/"
+    notes: >
+      PN ALVO buscado na bancada (2026-07-15), fuzzy_suggestions do debug sugeria
+      "H2JTDG8UD3MBR" (irmão de miolo DIFERENTE, "DG8U", já confirmado 16GB em 2026-07-10 —
+      NÃO é o mesmo chip, capacidades diferentes por miolo diferente). Não achei teardown
+      DIRETO deste PN exato apesar de busca extensa (iFixit, TechInsights, distribuidores) —
+      autorização do dono pra aceitar fonte de tier mais baixo por ser peça antiga (Apple TV
+      4th gen, 2015). Capacidade de 32GB inferida por: (1) mesmo miolo "EG8V" do irmão
+      H2JTEG8VD1BMR, confirmado 32GB por teardown DIRETO do iFixit (ver known_part acima);
+      (2) o PN exato aparece confirmado como chip real na lista de compatibilidade da
+      EasyJTAG NANDKit (ferramenta profissional de reparo NAND), ao lado do irmão -D1BMR já
+      citado; (3) padrão já estabelecido nesta família (rodada 2026-07-10): dígito final
+      antes do sufixo de 3 letras não muda capacidade dentro do MESMO miolo (D3MBR e D2MBR
+      do miolo "DG8U" eram ambos 16GB — mesma lógica aplicada aqui pro miolo "EG8V").
+      confidence=manual — evidência por inferência de padrão + fonte de tier mais baixo pra
+      identidade, não teardown direto do PN exato. Sinalizado transparentemente.
+
+# NÃO incluído: H2JTEG8VD1CMS — mesmo miolo "EG8V" (provavelmente também 32GB pelo mesmo
+# padrão), aparece na mesma lista EasyJTAG, mas não achei nenhuma fonte adicional (nem teardown
+# nem marketplace) que o mencione especificamente. Como não é o PN buscado na bancada e a
+# evidência é mais fraca ainda que a do alvo (só 1 menção, numa lista genérica), fica de fora
+# por ora — não incluído "de brinde" só porque o padrão provavelmente se aplica.

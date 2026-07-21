@@ -1,0 +1,153 @@
+# Submissão de known_parts — SK Hynix, família H8AC (MCP legado — NAND raw + Mobile
+# SDRAM pré-eMCP). Gerado a partir da investigação do PN H8ACS0PGOMBP (busca na
+# bancada, 2026-07-10). Prefixo H8AC não tem (e não vai ganhar) ChipFamily — ver
+# nota "POR QUE NÃO VIRA GRAMÁTICA" abaixo; é known_parts-only, igual ao
+# tratamento dado a H2JT nesta mesma sessão.
+#
+# CORREÇÃO 0/O: o PN lido na bancada foi "H8ACS0PGOMBP" (letra O na posição 9). O
+# PN real é "H8ACS0PG0MBP" (dígito zero) — confirmado por dezenas de distribuidores
+# independentes (DigiPart, WinSource, OMO, Jotrin); a versão com "O" só aparece como
+# artefato de scraping/OCR duplicado nos próprios catálogos (mesmo padrão visto em
+# outros PNs da família: H8ACSOPEOMBR-46M vs H8ACS0PE0MBR-46M, H8ACSOPHOACR-46M vs
+# H8ACS0PH0ACR-46M). O normalize_pn() do projeto NÃO funde 0/O — quem cobre isso na
+# bancada é o sistema de fuzzy suggestions, não esta submissão.
+#
+# FONTE (Tier-3, autorizado pelo dono para esta família por ser "muito antiga"):
+# Jotrin Electronics — fetch direto de cada página INDIVIDUAL de produto (não só a
+# categoria BGA107 usada no 1º achado). Só entram aqui os PNs cuja página tinha
+# descrição ESTRUTURADA (meta-description / título / subtítulo — ex.: "Nand Mobile
+# SD 512 256" ou "MCP 1G Nand / 1G Mobile SDRAM"), nunca o texto narrativo genérico
+# de FAQ/rodapé ("available for purchase...") que a maioria das páginas mostra.
+# confidence=manual — mesmo nível usado a sessão toda p/ dado ESTRUTURADO de
+# catálogo de distribuidor (não prosa) — WinSource/AllDataSheet nas rodadas H9HK/
+# H5GQ; não é "confirmed" (não abri datasheet oficial).
+#
+# BUSCA POR SIMILARES (pedido do dono, 2026-07-10: "nosso objetivo é sempre
+# coletar vários da mesma família, nunca 1 só"): verifiquei individualmente ~20
+# páginas de PNs irmãos H8AC no Jotrin (além da página de categoria BGA107 do 1º
+# achado). Taxa de acerto ficou em torno de 5/20 — a maioria das páginas Jotrin
+# desse prefixo só tem boilerplate genérico sem número de capacidade (não incluí
+# esses — seria adivinhar). Os 5 PNs abaixo tiveram descrição estruturada real:
+#   H8ACS0PG0MBP  512Mb NAND + 256Mb Mobile SDRAM   (achado original, cat. BGA107)
+#   H8ACS0CE0ABR  512Mb NAND + 256Mb Mobile SDRAM   (mesma capacidade, letras CE)
+#   H8ACS0CF0ACR  512Mb NAND + 256Mb Mobile SDRAM   (mesma capacidade, letras CF)
+#   H8ACS0EH0ACR  512Mb NAND + 256Mb Mobile SDRAM   (mesma capacidade, letras EH)
+#   H8ACS0EJ0MCP  1024Mb NAND + 1024Mb Mobile SDRAM (capacidade MAIOR, letras EJ, sufixo -66M)
+#
+# POR QUE NÃO VIRA GRAMÁTICA (ChipFamily): mesmo com 5 pontos, o par de letras nas
+# posições 6-7 NÃO define capacidade de forma óbvia — quatro combinações diferentes
+# (PG, CE, CF, EH) mapeiam para a MESMA capacidade (512+256), e só uma (EJ, também
+# com sufixo "-66M" em vez de "-56M"/"-46M") mapeia para outra (1024+1024). Isso
+# sugere que essas letras codificam outra coisa (revisão de die / grade de
+# velocidade / fornecedor de sub-die) e não capacidade diretamente — decodificar
+# isso exigiria MUITO mais pontos de dado do que temos, e arriscaria decode errado
+# pros PNs não confirmados. Fica como known_parts-only (Trilha B).
+#
+# ARITMÉTICA (Gb→GB, conforme convenção do projeto):
+#   Grupo 512+256:  NAND 512Mb÷8=64MB   · RAM 256Mb÷8=32MB   (Mobile SDRAM, pré-LPDDR)
+#   Grupo 1024+1024: NAND 1024Mb÷8=128MB · RAM 1024Mb÷8=128MB (idem)
+#
+# CLASSIFICAÇÃO chip_type="MCP" (não "eMCP"): confirmado em chips/chip_types.py:95
+# — "MCP": ChipTypeSpec("catalog","none","dead", commercial=False) — é o tipo
+# "MCP legado" citado no docstring de assess_profitability (chips/engine.py:1036-37,
+# 1063): "MCP legado: NAND raw + mDDR1 pré-eMCP, sem liquidez B2B" → NÃO RENTÁVEL
+# SEMPRE, independente de capacidade (_fam=="dead" no engine, guard antes do bloco
+# eMCP). NÃO é eMCP porque a RAM é Mobile SDRAM, não LPDDR — não cabe no formato
+# `emcp_ram="LPDDR{n} {cap}GB"`. Segui o precedente já usado nesta sessão p/ Micron
+# "Raw MCP" (submissions/micron_jw500_family_2026-07-09.yaml): capacity/emcp_nand/
+# emcp_ram ficam VAZIOS de propósito (não se aplicam a este chip_type); a composição
+# NAND+RAM vai como texto no subtype.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h8ac_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h8ac_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H8ACS0PG0MBP"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 64MB + Mobile SDRAM 32MB"
+    interface: ""
+    confidence: manual
+    source_url: "https://www.jotrin.kr/package/bga107"
+    notes: >
+      PN buscado na bancada como "H8ACS0PGOMBP" (letra O) — provável erro de
+      leitura; a forma real "H8ACS0PG0MBP" (zero) é a amplamente distribuída
+      (DigiPart, WinSource, OMO, Jotrin, 20+ fontes). A variante vendida completa
+      é "H8ACS0PG0MBP-56M-C" ("-56M-C" = grade de velocidade/temperatura, não
+      afeta capacidade). Jotrin (página de categoria BGA107, fetch direto,
+      https://www.jotrin.kr/package/bga107): coluna estruturada "회사: HYNIX ·
+      꾸러미: BGA107 · 512M Nand+ 256M Mobile SD". 512Mb NAND ÷8 = 64MB; 256Mb
+      Mobile SDRAM ÷8 = 32MB. Mobile SDRAM é pré-LPDDR (mais antigo que LPDDR1) —
+      compatível com o encapsulamento BGA107 (pequeno, ~2008-2012 pelos date
+      codes vistos nos distribuidores) e com chip_type="MCP" legado (sempre NÃO
+      RENTÁVEL por tipo, chips/chip_types.py:95 + chips/engine.py:1036).
+      confidence=manual (fonte Tier-3, autorizada pelo dono para esta família
+      antiga — catálogo de distribuidor, não datasheet oficial; "distributor"
+      literal deixaria o registro invisível no engine já que capacity/emcp_*
+      ficam vazios de propósito — o gate _USABLE exige specs reais OU
+      confirmed/manual, ver chips/engine.py).
+
+  - part_number: "H8ACS0CE0ABR"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 64MB + Mobile SDRAM 32MB"
+    interface: ""
+    confidence: manual
+    source_url: "https://www.jotrin.kr/product/parts/H8ACS0CE0ABR_56M"
+    notes: >
+      Irmão do H8ACS0PG0MBP (mesma família H8AC), letras de posição 6-7
+      diferentes (CE em vez de PG). Variante completa "H8ACS0CE0ABR-56M-C".
+      Jotrin (página individual do produto, fetch direto): meta-description e
+      título "Nand+Mobile SD 512+256" — mesma capacidade do PN original: 512Mb
+      NAND ÷8 = 64MB; 256Mb Mobile SDRAM ÷8 = 32MB. (A seção de texto/FAQ dessa
+      página específica mostrou conteúdo corrompido/de outro produto — ignorado;
+      só usei o título/meta-description, que são campos estruturados
+      consistentes com o padrão validado no PN original.) confidence=manual
+      (mesma justificativa do PN acima — Tier-3 autorizado pelo dono).
+
+  - part_number: "H8ACS0CF0ACR"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 64MB + Mobile SDRAM 32MB"
+    interface: ""
+    confidence: manual
+    source_url: "https://www.jotrin.kr/product/parts/H8ACS0CF0ACR_56M_C"
+    notes: >
+      Irmão do H8ACS0PG0MBP (mesma família H8AC), letras CF. Variante completa
+      "H8ACS0CF0ACR-56M-C". Jotrin (página individual, fetch direto):
+      meta-description "Learn more about H8ACS0CF0ACR-56M-C Nand Mobile SD 512
+      256" + subtítulo do produto "Nand Mobile SD 512 256" — mesma capacidade:
+      512Mb NAND ÷8 = 64MB; 256Mb Mobile SDRAM ÷8 = 32MB. confidence=manual
+      (mesma justificativa do PN acima).
+
+  - part_number: "H8ACS0EH0ACR"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 64MB + Mobile SDRAM 32MB"
+    interface: ""
+    confidence: manual
+    source_url: "https://www.jotrin.kr/product/parts/H8ACS0EH0ACR_56M_C"
+    notes: >
+      Irmão do H8ACS0PG0MBP (mesma família H8AC), letras EH. Variante completa
+      "H8ACS0EH0ACR-56M-C". Jotrin (página individual, fetch direto):
+      meta-description "Learn more about H8ACS0EH0ACR-56M-C Nand Mobile SD 512
+      256" + subtítulo do produto "Nand Mobile SD 512 256" — mesma capacidade:
+      512Mb NAND ÷8 = 64MB; 256Mb Mobile SDRAM ÷8 = 32MB. confidence=manual
+      (mesma justificativa do PN acima).
+
+  - part_number: "H8ACS0EJ0MCP"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + Mobile SDRAM 128MB"
+    interface: ""
+    confidence: manual
+    source_url: "https://www.jotrin.kr/product/parts/H8ACS0EJ0MCP_66M"
+    notes: >
+      Irmão do H8ACS0PG0MBP (mesma família H8AC), letras EJ — CAPACIDADE MAIOR
+      que os outros 4 PNs desta submissão (sufixo "-66M-C" em vez de "-56M-C"/
+      "-46M-C"). Jotrin (página individual, fetch direto): meta-description
+      "Learn more about H8ACS0EJ0MCP-66M-C MCP 1G Nand / 1G Mobile SDRAM" +
+      subtítulo do produto "MCP 1G Nand / 1G Mobile SDRAM". 1024Mb (1G) NAND
+      ÷8 = 128MB; 1024Mb (1G) Mobile SDRAM ÷8 = 128MB — mesma convenção de
+      bit-labeling dos outros PNs da família (512M=512Mb, 256M=256Mb). Prova
+      que a família TEM mais de uma capacidade — reforça a decisão de não criar
+      gramática (ver nota "POR QUE NÃO VIRA GRAMÁTICA" no cabeçalho: não dá pra
+      isolar qual posição do PN determina a capacidade com só 5 pontos).
+      confidence=manual (mesma justificativa do PN acima).

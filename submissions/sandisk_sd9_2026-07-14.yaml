@@ -1,0 +1,97 @@
+# Submissão known_parts — SanDisk, PN isolado SD9DS28K-8G (eMCP) + cluster SDIN9DW5 (eMMC)
+# Origem: investigação a partir do PN SD9DS28K8G (debug do estoque, 14/07/2026).
+# Ver INVESTIGACAO_sandisk_sd9_2026-07-14.md para a análise completa.
+#
+# ⚠ 2026-07-14, PODADO após precheck: das 11 entradas originais, **7 já existiam** no banco local,
+# todas review_status=approved (SDIN9DS2-8G/16G/32G/64G confirmed idêntico ao que eu ia submeter;
+# SDIN9DW4-64G confirmed idêntico; SDIN9DW4-16G/-32G já existiam como MANUAL, com part_number COM
+# TRAÇO — foi isso que causou o IntegrityError no primeiro --commit, mesmo mecanismo do incidente
+# SDADB48K16G de ontem). Restam só as 4 entradas genuinamente novas abaixo.
+#
+# 💡 OPORTUNIDADE (não é ação deste arquivo — é decisão manual do dono no admin): os registros
+# existentes SDIN9DW4-16G (id=10636) e SDIN9DW4-32G (id=10637) estão como confidence=manual, mas a
+# pesquisa de hoje achou o datasheet técnico oficial completo (doc 80-36-03680 Rev 1.11, Western
+# Digital) que cobre exatamente esses 2 PNs com tabela "Ordering Information" explícita — evidência
+# mais forte que o que os colocou como manual originalmente. Se quiser, edite os 2 registros no
+# admin pra confidence=confirmed citando essa fonte (o submit_known_parts NUNCA faz isso sozinho —
+# por desenho, ele pula qualquer PN já approved, não rebaixa nem reclassifica).
+#
+# Uso (o DONO roda, nunca o chat):
+#   python manage.py submit_known_parts submissions/sandisk_sd9_2026-07-14.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/sandisk_sd9_2026-07-14.yaml --commit    # grava (submitted, oculto) + aprovar no admin depois
+#
+# Sem golden test afetado nesta rodada (nenhum destes PNs está em chips/tests.py::_SD_GOLDEN).
+# Precheck já rodado 2026-07-14 pelo dono para os 11 originais — os 4 abaixo vieram "livre".
+
+brand: "SanDisk"
+known_parts:
+  # ── PN isolado: SD9DS28K-8G (eMCP) — prefixo SD9, SEM família no yaml (ver investigação §3) ──
+  - part_number: "SD9DS28K8G"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    interface: ""
+    device: "221-ball FBGA, EOL, FW 1.1, usado no Qualcomm/Arrow DragonBoard 410c (96Boards)"
+    confidence: manual
+    notes: >
+      PN do caso original (debug do estoque 14/07/2026). Identidade+specs confirmadas pelo Manual
+      Oficial de Hardware do 96Boards DragonBoard 410c (placa Qualcomm Snapdragon 410, programa
+      Linaro/96Boards): "The installed chip provides 8Gbyte of solid state storage and 1Gbyte of
+      LPDDR3. The LPDDR3 is a 32bit width bus... The eMMC is an 8bit implementation... eMMC 4.5".
+      Corroborado por post de engenheiro da Qualcomm Canadá no fórum oficial 96Boards, listando
+      substitutos drop-in (Kingston 08EMCP08-NL3DT227, Micron MT29TZZZ8D5JKEZB-107/JKEPD-125) todos
+      descritos como "8GB eMMC, 1GB DRAM" — o MESMO post confirma que a SanDisk não publica
+      datasheet público desta peça ("you need to talk to SanDisk to get a copy"), o que explica a
+      ausência de documento oficial SanDisk-branded (por isso confidence=manual, não confirmed).
+      Ambiguidade "8+8" (notação de mercado) resolvida como 8GB NAND + 8Gb(=1GB) RAM, não 8GB+8GB:
+      (1) revendedor eBay distinto já converteu e escreveu "8+1" pro MESMO PN; (2) datasheet oficial
+      Nanya de peça análoga (eMCP 221-ball+LPDDR3) usa a mesma convenção NAND-em-GB/RAM-em-Gb; (3)
+      GB+GB seria fisicamente implausível pra LPDDR3 móvel dessa era em qualquer concorrente do
+      mesmo "balde" de pacote 221-ball (checado via Puris/emcplist). Package 221-ball FBGA
+      confirmado (Preduo + Puris) — mesma classe da família irmã SDAD (221-ball=LPDDR3). Busca
+      exaustiva em ~25 distribuidores NÃO achou nenhum PN irmão de capacidade ou die-code diferente
+      — parece peça semicustomizada de baixo volume pro programa DragonBoard, não uma família.
+    source_url: "https://www.96boards.org/documentation/consumer/dragonboard/dragonboard410c/hardware-docs/hardware-user-manual.md.html"
+
+  # ── Cluster SDIN9DW5 — SEM datasheet oficial, mas convergência forte de mercado ──
+  # (SDIN9DS2-8/16/32/64G e SDIN9DW4-16/32/64G JÁ EXISTIAM approved no banco — removidos daqui)
+  - part_number: "SDIN9DW516G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "16GB"
+    interface: "eMMC 5.0 (iNAND Extreme, geração DW5)"
+    device: "153-ball FBGA"
+    confidence: manual
+    notes: >
+      SEM datasheet oficial localizado (busca ativa sem sucesso). 5 fontes de mercado convergentes
+      (Alibaba ×2, AliExpress, eBay, Worldway Electronics) confirmam capacidade + pacote 153-ball
+      FBGA + "eMMC 5.0". Specs de performance NÃO confirmadas (sem fonte de engenharia). Padrão de
+      nomenclatura da família (DE1→DE2→DE4, DP2→DP4) sugere fortemente ser revisão de die/processo
+      subsequente ao DW4 (já approved no banco) dentro da mesma "iNAND Extreme" — inferência por
+      padrão, não confirmação direta, por isso confidence=manual e não confirmed.
+    source_url: "https://www.alibaba.com/product-detail/MSMWTRPM-SDIN9DW5-32G-153FBGA-EMMC-5_1600768284342.html"
+
+  - part_number: "SDIN9DW532G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "32GB"
+    interface: "eMMC 5.0 (iNAND Extreme, geração DW5)"
+    device: "153-ball FBGA"
+    confidence: manual
+    notes: >
+      Mesma metodologia de SDIN9DW5-16G (ver notas lá). Fonte primária: anúncio Alibaba explícito
+      "SDIN9DW5-32G 153FBGA EMMC 5.0 32GB", corroborado por AliExpress/eBay/Worldway.
+    source_url: "https://www.alibaba.com/product-detail/MSMWTRPM-SDIN9DW5-32G-153FBGA-EMMC-5_1600768284342.html"
+
+  - part_number: "SDIN9DW564G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "64GB"
+    interface: "eMMC 5.0 (iNAND Extreme, geração DW5)"
+    device: "153-ball FBGA"
+    confidence: manual
+    notes: >
+      Mesma metodologia de SDIN9DW5-16G (ver notas lá). Corroborado por eBay (anúncio específico
+      "SDIN9DW5-64G") além dos 4 outros distribuidores convergentes.
+    source_url: "https://www.ebay.com/itm/124056675589"

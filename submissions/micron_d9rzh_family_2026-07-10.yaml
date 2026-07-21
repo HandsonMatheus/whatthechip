@@ -1,0 +1,1759 @@
+# Submissão de known_parts — Micron, FBGA D9RZH + família MT47H64M16 (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9RZH
+# (não identificado na bancada, fila de revisão).
+#
+# ⚠ ACHADO: D9RZH → MT47H64M16NF-25E:M. Prefixo MT47H — NOVO nesta
+# série de lotes: DIFERENTE de MT41K/MT41J (DDR3-family), MT51J (GDDR5),
+# MT58K (GDDR5X) e MT29C (MCP) já vistos. MT47H = DDR2. chip_type="DDR2".
+#
+# Capacidade: 64M × 16bit = 1024Mb = 1Gb — bate exato com o part-name
+# direto da Micron "DDR2 1G X16 TFBGA/FBGA". Forward-lookup no prefixo
+# "MT47H64M16" (2026-07-10) achou 126 PNs: 97 de produção ("D9*") + 29
+# Engineering Sample ("Z9*", EXCLUÍDOS).
+#
+# ⚠ CORREÇÃO PÓS-CRASH (rodada 2): o --commit da 1ª versão (97 PNs)
+# quebrou com UniqueViolation em part_number_norm="MT47H64M16HR25EPAITH".
+# Causa: D9MVB ("MT47H64M16HR-25E P-AIT:H", hífen) e D9QKP ("MT47H64M16HR-
+# 25E P AIT:H", espaço) são DOIS fbga_code DIFERENTES e genuinamente
+# válidos no decoder oficial da Micron (confirmados individualmente via
+# reverse-lookup, HTTP 200 nos dois, 2026-07-10) — mas normalize_pn()
+# despreza hífen/espaço, então os dois colapsam pro MESMO
+# part_number_norm. O schema só aceita um. NENHUM dos dois tem part-name
+# da Micron pra desambiguar (ambos vazios), e specs são idênticas em tudo
+# mais (pacote HR, -25E, temp AIT, revisão :H) — não dá pra saber qual
+# fbga_code é "o certo" sem mais fonte. ⚠ AMBOS EXCLUÍDOS desta submissão
+# (nem D9MVB nem D9QKP entram) — decisão sinalizada ao dono, não decidida
+# sozinho. Restam 95 known_parts nesta versão (97 - 2).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9rzh_family_2026-07-10.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9rzh_family_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT47H64M16NF-25E:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RZH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h64m16nf-25e-m"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-10): D9RZH → MT47H64M16NF-25E:M. Prefixo MT47H = DDR2 —
+      primeira vez que este prefixo aparece nesta série de lotes
+      (anteriores eram MT41K/MT41J=DDR3-family, MT51J=GDDR5, MT58K=GDDR5X,
+      MT29C=MCP). TIPO + CAPACIDADE confirmados diretamente pelo campo
+      part-name da própria Micron: "DDR2 1G X16 TFBGA", sub-category
+      "ddr2-sdram" (em produção, não obsoleto). CAPACIDADE por fórmula:
+      64M (profundidade) × 16bit (largura) = 1024Mb = 1Gb — bate exato com
+      o "1G" do part-name. Campo density_gbit (Gb), convenção DDR discreta
+      (CLAUDE.md §6). Pacote NF = TFBGA (thin FBGA); outros pacotes da
+      mesma família (BT/B7/F7/HR/HW/RP) são FBGA padrão — diferença só de
+      encapsulamento físico, não de especificação elétrica.
+
+  - part_number: "MT47H64M16BT-37E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9DHL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DHL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16BT-0 MS"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9DMK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DMK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16BT-0 MS:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9DPX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DPX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16BT-37E ES:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9DPZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DPZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16BT-37E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9DQB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DQB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16BT-5E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9DQD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DQD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16BT-3:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9GPX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GPX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16B7-5E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9GZK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GZK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16B7-5E ES:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9GZL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GZL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16B7-37E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9GZM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GZM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16B7-37E ES:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9GZN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GZN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16B7-3:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HBL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HBL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16B7-25E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HBS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HBS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16F7-5E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16F7-37E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16F7-3:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16F7-5E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16F7-37E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HFZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HFZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16F7-3 IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HGB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HGB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16B7-5E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HGX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HGX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16B7-37E IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HGZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HGZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16B7-3 IT:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HHB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HHB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-5E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-5E IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-5E L:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-37E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-37E IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-37E L:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HNZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HNZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3 IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HPB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HPB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3 L:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HPC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HPC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HPD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HPD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HPF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HPF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16BT-5E IT:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HRB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HRB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16BT-37E IT:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HTF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HTF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16B7-3 L:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9HXG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HXG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16BT-37E L:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JDX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JDX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HW-37E IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JFB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JFB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HW-5E IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JFC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JFC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HW-3 IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JFD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JFD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HW-37E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JFF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JFF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HW-5E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JFG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JFG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HW-3:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JFH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JFH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-187E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JKK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JKK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JWQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JWQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JWS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JWS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JWV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JWV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E IT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JZK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JZK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E L:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9JZN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JZN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-37E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KKP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KKP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3 AT:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KKQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KKQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-187E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KQF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KQF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3 IT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E IT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3 L:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E L:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HW-3:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HW-3 IT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3 AT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KSQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HW-25E IT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9KWN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KWN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LHR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-3-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-25:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LHS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-25-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-25E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LHT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-25e-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-187E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LNL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-187e-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HW-25E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LRP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LRP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-2G:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LVL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LVL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3 L:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LVP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-3-l-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HW-3:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LXL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hw-3-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HW-3 IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LXN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hw-3-it-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-3 IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LXV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-3-it-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-25E L:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LXW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-25e-l-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-3 AIT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9LZX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-3-ait-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-25E AIT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9MDH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-25e-ait-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-25E IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9MDK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-25e-it-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HW-25E IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9MDN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hw-25e-it-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HW-25E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9MDP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MDP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-3 AAT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9MDR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-3-aat-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-25E AAT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9MDS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-25e-aat-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-25 IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9MGB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16hr-25-it-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16HR-25E XIT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9QNJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QNJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E V:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RNJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RNJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RRT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RRT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-187E:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RTP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RTP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E IT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RTX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RTX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E AIT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RVB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RVB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E XIT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RVC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RVC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16HR-25E AAT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RVD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RVD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16RP-25E AIT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RWS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RWS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.
+
+  - part_number: "MT47H64M16NF-187E:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RZP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16nf-187e-m"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16NF-25E IT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RZT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h64m16nf-25e-it-m"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "ddr2-sdram" (em produção (não obsoleto
+      no catálogo)) — confirma DDR2 e a densidade 1Gb diretamente da
+      Micron, sem precisar de fonte secundária. 64M × 16bit = 1024Mb = 1Gb
+      bate exato.
+
+  - part_number: "MT47H64M16NF-25E AIT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9RZZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h64m16nf-25e-ait-m"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "ddr2-sdram" (em produção (não obsoleto
+      no catálogo)) — confirma DDR2 e a densidade 1Gb diretamente da
+      Micron, sem precisar de fonte secundária. 64M × 16bit = 1024Mb = 1Gb
+      bate exato.
+
+  - part_number: "MT47H64M16NF-25E XIT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9SBC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h64m16nf-25e-xit-m"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 1Gb diretamente da Micron, sem precisar
+      de fonte secundária. 64M × 16bit = 1024Mb = 1Gb bate exato.
+
+  - part_number: "MT47H64M16NF-25E AAT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9SBD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h64m16nf-25e-aat-m"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H64M16, 2026-07-10): "DDR2 1G X16
+      FBGA"/"TFBGA", sub-category "ddr2-sdram" (em produção (não obsoleto
+      no catálogo)) — confirma DDR2 e a densidade 1Gb diretamente da
+      Micron, sem precisar de fonte secundária. 64M × 16bit = 1024Mb = 1Gb
+      bate exato.
+
+  - part_number: "MT47H64M16NF-25E AUT:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "1Gb"
+    fbga_code: "D9TCF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TCF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H64M16, 2026-07-10). Mesma organização do alvo D9RZH
+      (MT47H64M16NF-25E:M): 64M × 16bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H64M16). Tipo DDR2 confirmado pelo alvo + irmãos com part-name
+      direto da Micron nesta mesma leva. Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula + tipo
+      confirmados + identidade direta da API oficial Micron para ESTE
+      fbga_code.

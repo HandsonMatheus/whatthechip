@@ -1,0 +1,96 @@
+# Submissão de known_parts — Toshiba-Kioxia, família THGBF (UFS, família NOVA)
+# Gerado pelo chat de marca Toshiba-Kioxia a partir da investigação do PN THGBF7G8K4LBATR
+# (busca na bancada, 2026-07-09) — prefixo THGBF nunca visto antes, não constava na gramática.
+#
+# ⚠ IMPORTANTE — esta submissão é DIFERENTE das anteriores desta marca: nenhuma fonte Tier-1
+# (datasheet oficial, press release, página de produto Toshiba/Kioxia) nomeia "THGBF" apesar de
+# busca exaustiva (news.toshiba.com, toshiba.semicon-storage.com, kioxia product briefs,
+# part-naming-conventions oficial — este último nem cobre produtos de storage/memória). O lastro
+# é Tier-2 (Octopart, páginas lidas diretamente) + o padrão posicional pn[6:8] batendo EXATAMENTE
+# com o mapa THGAF_CAP (esse sim Tier-1) em 3 PNs independentes — ver 2ª rodada de pesquisa
+# abaixo. Por isso confidence=distributor nos 3, não confirmed nem manual: a CHAVE bate com um
+# mapa Tier-1 de outra família, mas o PREFIXO THGBF em si nunca foi nomeado numa fonte Tier-1.
+#
+# 1ª rodada (2026-07-09, PN da bancada): só achei THGBF7G8K4LBATR com dado bom (Avnet via
+# Octopart, "32GB NAND 15nm UFS"); pareceu um caso isolado, cheguei a fazer a família magra sem
+# decode_cap_map. 2ª rodada (mesmo dia, a pedido do dono "só achou este PN nesta pesquisa toda?"):
+# reabri o Octopart DIRETO pros 2 irmãos que já tinha visto em fontes Tier-3 (antes descartados
+# por falta de fonte melhor) — desta vez os títulos do Octopart vieram LIMPOS pros dois ("Flash
+# Card NNG-byte ... Universal Flash Storage ... VFBGA/TFBGA"), diferente do PN da bancada (que
+# tem uma categoria raiz quebrada só naquele registro específico). Botando os 3 PNs lado a lado,
+# a chave pn[6:8] bateu EXATAMENTE com o mapa THGAF_CAP já Tier-1 confirmado (G8=32GB, G9=64GB,
+# T0=128GB) — closed a família pra decode_cap_pos=6/decode_cap_len=2/decode_cap_map=THGAF_CAP
+# (reaproveitado, não é um mapa novo). A hipótese inicial (analogia à chave de 3 chars do THGLF)
+# foi descartada — o padrão real é o de 2 chars do THGAF.
+#
+# Família THGBF documentada com tip/reasoning extensos em chips/knowledge/toshiba-kioxia.yaml
+# explicando toda a cadeia de evidência (as 2 rodadas) e o que foi descartado. Golden em
+# chips/tests.py (_TK_GOLDEN["THGBF7G8K4LBATR"]) agora prova a GRAMÁTICA decodificando 32GB/
+# RENTÁVEL (antes era INDETERMINADO, quando a família ainda era magra).
+#
+# Hierarquia de fonte usada: Tier-2 = Octopart (páginas dos 3 PNs lidas diretamente, não resumo
+# de busca) — Avnet e IHS consistentes nos 3, sem contradição entre si. Tier-1 (não é do THGBF,
+# é do THGAF — reaproveitado só como mapa de capacidade): Kioxia Managed Flash Highlight Q1/2021
+# + Automotive Managed Flash Solutions Rev.2.0.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbf_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbf_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  # ── PN da bancada — 1ª rodada. confidence=distributor de propósito (fonte não é Tier-1) ──
+  - part_number: "THGBF7G8K4LBATR"
+    chip_type: "UFS"
+    capacity: "32GB"
+    confidence: distributor
+    source_url: "https://octopart.com/part/kioxia/THGBF7G8K4LBATR"
+    notes: >
+      Página do produto no Octopart (lida diretamente) traz descrições de 2 distribuidores
+      rastreáveis concordantes: Avnet — "32GB NAND 15nm UFS - EEPROM"; IHS — "Flash, 32GX8,
+      PBGA153" (compatível). A categoria-raiz e o campo "Interface: Parallel" DESTA página
+      específica são incoerentes com o Physical da mesma página (BGA/153-terminal vs. título
+      "64LQFP") — dado cruzado/quebrado, não usado; comparando com os outros 2 PNs desta
+      família (ambos com título limpo no Octopart), trato como glitch pontual deste registro,
+      não do prefixo. Capacidade confirmada pela posição: pn[6:8]="G8" bate exatamente com
+      THGAF_CAP (G8=32GB, mapa Tier-1 da família-irmã THGAF, reaproveitado na gramática desta
+      família 2026-07-09). Descartado: Avaq (Tier-3) contraditória dentro da própria página
+      (texto diz UFS, tabela técnica diz "Serial e-MMC", 3 capacidades diferentes citadas).
+      SINALIZAR para conferência manual — não é Tier-1.
+
+  # ── 2 irmãos — 2ª rodada (2026-07-09), achados reabrindo o Octopart direto a pedido do dono ──
+  - part_number: "THGBF7G9L4LBATR"
+    chip_type: "UFS"
+    capacity: "64GB"
+    confidence: distributor
+    source_url: "https://octopart.com/part/kioxia/THGBF7G9L4LBATR"
+    notes: >
+      Título do Octopart (lido diretamente, categoria LIMPA desta vez): "Flash Card 64G-byte
+      3.3V Universal Flash Storage 153-Pin VFBGA". Descrição Avnet idêntica ao título. IHS:
+      "Flash, 64GX8, PBGA153" (compatível). Unikeyic (Tier-3): "Flash Serial e-MMC 3V/3.3V
+      512G-bit 153-Pin VFBGA" — tipo diverge (e-MMC vs UFS) mas o número bate: 512Gbit÷8=64GB,
+      mesma capacidade; tratado como ruído de tipo de um distribuidor Tier-3, não como
+      contradição de capacidade. Descartado: YIC International ("IC VREF SERIES 0.13% 8MSOP")
+      e IC Components Ltd. ("SAMSUNG FBGA153") — claramente templates errados/mismatched,
+      mesmo padrão de lixo já visto noutras páginas desta pesquisa. Capacidade confirmada pela
+      posição: pn[6:8]="G9" bate exatamente com THGAF_CAP (G9=64GB). SINALIZAR para
+      conferência manual — não é Tier-1.
+
+  - part_number: "THGBF7T0L8LBATA"
+    chip_type: "UFS"
+    capacity: "128GB"
+    confidence: distributor
+    source_url: "https://octopart.com/part/kioxia/THGBF7T0L8LBATA"
+    notes: >
+      Título do Octopart (lido diretamente, categoria LIMPA): "Flash Card 128G-byte 1.8V/3.3V
+      Universal Flash Storage 153-Pin TFBGA". Descrição Avnet idêntica ao título. IHS: "Flash,
+      128GX8, PBGA153" (compatível). Sem entradas de distribuidor contraditórias nesta página
+      (diferente das outras 2). Capacidade confirmada pela posição: pn[6:8]="T0" bate
+      exatamente com THGAF_CAP (T0=128GB) — terceiro ponto independente confirmando o mesmo
+      padrão posicional de 2 caracteres. SINALIZAR para conferência manual — não é Tier-1.
+
+# ── NÃO submetidos (ficam de fora de propósito) ──────────────────────────────
+# Nenhum PN adicional identificado até agora além dos 3 acima. Se aparecerem mais PNs desta
+# família (padrão esperado pelo mapa reaproveitado: G7=16GB, T1=256GB, T2=512GB — ainda não
+# vistos em nenhuma fonte para o prefixo THGBF), aplicar o mesmo processo: abrir o Octopart
+# direto, cruzar Avnet/IHS, e checar se pn[6:8] bate com THGAF_CAP antes de submeter.

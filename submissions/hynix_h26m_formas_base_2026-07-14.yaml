@@ -1,0 +1,99 @@
+# Submissão de known_parts — SK Hynix, família H26M (eMMC standalone).
+# Gerado a partir da investigação do PN H26M41208HPR (busca na bancada, 2026-07-14) — MESMO
+# padrão "forma sem sufixo" já visto 2x nesta sessão (H26M31003FPR de manhã, H26M64208EMR à
+# tarde). SEM fix de gramática — pn[4] já decodifica certo pras 3 chaves desta submissão
+# ('4'→8GB, '5'→16GB, '7'→64GB), todas grammar_complete=true no debug/sandbox.
+#
+# ⚠ OBSERVAÇÃO DO DONO (motivo desta rodada): "esse daqui tem variacoes dele confirmadas com
+# uma letra no final, mas esse realmente nao tem, acaba ai no R" — o fuzzy só sugeria a forma
+# com letra (H26M41208HPRI), o dono confirmou por leitura direta que o PN da bancada acaba em
+# "R" puro. Investiguei H26M41208HPR e achei real e distinto — ver known_part 1 abaixo.
+#
+# VARREDURA DE FAMÍLIA (pedido permanente do dono — "colete mais da mesma familia, nao so 1"):
+# a família H26M já tem cobertura TOTAL do datasheet oficial pras formas COM letra de grade
+# (16 known_parts, 4 capacidades × N/Q/A/I, hynix_h26m_2026-07-09.yaml) — mas nenhuma forma
+# SEM letra tinha sido verificada ainda pras chaves 16GB e 64GB. Aproveitei esta rodada pra
+# fechar as duas lacunas de uma vez, junto com o alvo de 8GB — as 5 capacidades da família
+# (4/8/16/32/64GB) ficam com a forma-base confirmada depois desta submissão (4GB e 32GB já
+# tinham sido fechadas nas rodadas de hoje mais cedo: hynix_h26m_rodada2_2026-07-13.yaml e
+# hynix_h26m_64208_2026-07-14.yaml).
+#
+# CONFIRMAÇÃO — a forma sem sufixo é o PN BASE, não erro/typo: o próprio datasheet oficial
+# (Rev 1.8, Product Line-up p.4) já nomeia os 4 grades de cada capacidade como
+# "H26M<...>-N/-Q/-A/-I" — ou seja, "H26M<...>" (sem sufixo) é estruturalmente o PN base ao
+# qual a letra de grade se adiciona. Confirmado independentemente em cada caso desta submissão
+# via descrição ESTRUTURADA de distribuidor/agregador com capacidade explícita (não apenas
+# existência em catálogo) — ver notes de cada known_part.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h26m_formas_base_2026-07-14.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h26m_formas_base_2026-07-14.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H26M41208HPR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.lcsc.com/product-detail/C2927805.html"
+    notes: >
+      PN ALVO buscado na bancada (2026-07-14), lido SEM letra de sufixo (dono confirmou por
+      leitura direta do chip — "acaba ai no R"). LCSC (via DigiPart, distribuidor de catálogo
+      estruturado direto, não agregador de listagem) descreve explicitamente: "8GB eMMC 5.1
+      FBGA-153(11.5x13) Memory (ICs) RoHS" — 8GB direto, bate com pn[4]='4' da gramática.
+      Corroborado por Microchip USA (via DigiPart): "FLASH - NAND (SLC) MEMORY IC 64GBIT
+      EMMC_5.1 200 MHZ 153-FBGA (11.5X13)" — 64Gbit÷8=8GB, 2ª fonte estruturada independente
+      batendo exato. OMO Electronic (catálogo próprio, omo-ic.com/tags/H26M41208.html) lista
+      só 2 entradas totais no prefixo ("H26M41208HPR vs H26M41208HPRI"), confirmando a forma
+      sem letra como SKU distinto e catalogado, manufacturer SKHYNIX. 30+ distribuidores no
+      DigiPart carregam a forma sem letra como entrada própria (não alias das variantes A/I/
+      N/Q/R), manufacturer SKHYNIX/SK Hynix/Hynix consistente (com typos esperados: "SK HYNI",
+      "HUNIX", "SKYHYNIX" — mesmo padrão de erro tipográfico já visto nesta sessão, não são
+      fabricantes diferentes). Package FBGA-153 (11.5×13mm) bate com o package oficial da
+      família (datasheet Rev 1.8). confidence=manual.
+
+  - part_number: "H26M52208FPR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "16GB"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/99a/h26m52208fpr-1190.html"
+    notes: >
+      Achado na varredura de família (chave pn[4]='5'→16GB, mesma família do alvo, forma sem
+      sufixo nunca antes verificada). Catálogo próprio da OMO Electronic tem descrição
+      estruturada PRÓPRIA (não a de agregador secundário): "Flash Card 16G-byte -888V Embedded
+      MMC 153-Pin FBGA" — 16G-byte=16GB direto, bate com pn[4]='5'. ⚠ MESMO achado
+      metodológico do H26M64208EMR desta sessão: a MESMA página da OMO mostra uma 2ª fonte
+      ("Source Electronics") com o texto "Managed NAND Flash Serial e-MMC 16G-bit" — se lido
+      literalmente (÷8) daria 2GB, contradizendo. Como a descrição PRÓPRIA da OMO (byte, não
+      bit) já bate exato com a gramática, e o mesmo padrão de rótulo "G-bit" inconsistente já
+      foi visto e resolvido no H26M64208EMR/H26M64103EMR (ver hynix_h26m_64208_2026-07-14.yaml),
+      trato "16G-bit" aqui como o mesmo rótulo idiossincrático desses agregadores — não um
+      conflito real de capacidade. Reforço contextual: "Related products" da mesma página OMO
+      lista H26M52002CKR (mesmo prefixo "H26M52", package diferente) como "16GB NAND Flash
+      Memory Double Stack" — 3ª fonte independente na mesma vizinhança confirmando 16GB.
+      Manufacturer SKHYNIX consistente em 20+ distribuidores no DigiPart. confidence=manual.
+
+  - part_number: "H26M78208CMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "64GB"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/782/h26m78208cmr-1151.html"
+    notes: >
+      Achado na varredura de família (chave pn[4]='7'→64GB, forma sem sufixo nunca antes
+      verificada). EVIDÊNCIA MAIS FORTE desta submissão — DUPLA confirmação estruturada e
+      direta, sem ambiguidade de unidade: catálogo próprio da OMO Electronic descreve "Flash
+      Card 64G-byte Embedded MMC 153-Pin FBGA" (64G-byte=64GB) E WinSource (via DigiPart)
+      descreve independentemente "64GB eMMC5.1 EE510" (64GB literal, sem conversão Gbit
+      necessária). As duas fontes batem exato entre si e com pn[4]='7' da gramática. OMO
+      Electronic (catálogo próprio, omo-ic.com/tags/H26M78208.html) lista só 2 entradas totais
+      no prefixo ("H26M78208CMR vs H26M78208CMRA"), confirmando a forma sem letra como SKU
+      distinto, manufacturer HYNIX. 25+ distribuidores no DigiPart carregam a forma sem letra
+      como entrada própria, manufacturer SKHYNIX/SK Hynix/Hynix consistente (2 outliers
+      "VISHAY"/mislabel de fabricante de discretos, mesmo padrão já visto nesta sessão, não
+      usados). confidence=manual.

@@ -1,0 +1,102 @@
+# Submissão de known_parts — SK Hynix, família H9HQ (uMCP LPDDR4X, JÁ EXISTENTE)
+# Gerado a partir da investigação do PN H9HQ53ACPMMD (busca na bancada, 2026-07-10).
+# Família H9HQ e mapas HYX_H9HQ_NAND_CAP/HYX_LPDDR4X_RAM_CAP JÁ EXISTIAM e já decodificavam
+# certo (64GB NAND/4GB RAM, RENTÁVEL) — SEM fix de gramática nesta rodada. Todas as chaves
+# usadas (NAND 53/54, RAM AC/AD/AE) já estavam mapeadas antes desta busca.
+#
+# FONTES: Preduo e Puris (catálogos de broker estruturados, fetch direto) + WinSource via
+# agregador DigiPart. Aritmética Gbit→GB mostrada em cada nota.
+#
+# ⚠ ACHADO — WinSource mostra a própria conta pronta pro PN alvo: descrição literal
+# "uMCP 64GB UFS2.1 + 4GB(32Gb) LPDDR4X-4266" — confirma 64GB UFS + 32Gb÷8=4GB LPDDR4X,
+# batendo exatamente com pn[4:6]='53'→64GB e pn[6:8]='AC'→4GB já mapeados.
+#
+# ⚠ NOTA — H9HQ53ACPMMDAR-KMM (variante de sufixo -KMM, mesma densidade 64+32 do alvo -KEM):
+# a página do Preduo rotula "Type: eMCP" mas "Sub-Type: UFS+LPDDR4x" — inconsistência de
+# categorização interna do site (o produto É uMCP, confirmado pela Sub-Type e pela densidade
+# idêntica ao par -KEM já certo). Não é conflito de capacidade, só rótulo de categoria mal
+# aplicado pelo Preduo — incluído normalmente.
+#
+# ⚠ NOTA — H9HQ54ACPMMDAR-KEM: Puris descreve como "UFS2.2" (não "UFS 2.1" como o tip da
+# família assume por padrão) — detalhe de versão de protocolo que a gramática não decodifica
+# posicionalmente; não afeta capacidade nem chip_type/subtype gravados.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hq_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hq_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HQ53ACPMMDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9hq53acpmmdar-kem.html"
+    notes: >
+      PN original buscado na bancada foi "H9HQ53ACPMMD" (base sem sufixo de order code) —
+      mesmo decode. WinSource (via DigiPart, fetch direto) descreve "uMCP 64GB UFS2.1 +
+      4GB(32Gb) LPDDR4X-4266" — a própria fonte já mostra 32Gb÷8=4GB. Também confirmado por
+      ~10 distribuidores adicionais no DigiPart (TIST, YIC, Zeano, Ariat, Atosn, IC Components,
+      Sierra, Green Light, Chipsea) e por Preduo (SKU WP00067, "Density: 64+32"). Bate com
+      pn[4:6]='53'→64GB e pn[6:8]='AC'→4GB, já mapeados.
+
+  - part_number: "H9HQ53ACPMMDAR-KMM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/umcp/ufs-lpddr4x/254ball_ufs-lpd4x/h9hq53acpmmdar-kmm"
+    notes: >
+      Variante de sufixo "-KMM" do PN alvo (mesma densidade "64+32"), achada como item da
+      "Latest catalogue" do Preduo na própria página do alvo (fetch direto), depois confirmada
+      na página dedicada dela (SKU WP01818). Página rotula "Type: eMCP" mas "Sub-Type:
+      UFS+LPDDR4x" — inconsistência de categorização do site, não de capacidade; o produto é
+      uMCP real (mesma densidade do par -KEM já certo). Só 1 fonte direta.
+
+  - part_number: "H9HQ53AECMMDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 64GB"
+    emcp_ram: "LPDDR4X 6GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/umcp/ufs-lpddr4x/254ball_ufs-lpd4x/h9hq53aecmmdar-kem"
+    notes: >
+      DUPLO confirmado, ambos fetch direto: Preduo (SKU WP00040, "Density: 64+48") e Puris
+      (puris.net/archives/5752, "规格：64+48 uMCP-D4x"). 64GB UFS + 48Gb÷8=6GB LPDDR4X. Bate
+      com pn[4:6]='53'→64GB (já mapeado) e pn[6:8]='AE'→6GB (já mapeado, 1ª vez confirmado
+      especificamente para o par NAND 53/54 — só tinha sido visto com NAND 15/16/21/22 antes).
+
+  - part_number: "H9HQ53ADAMMDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 64GB"
+    emcp_ram: "LPDDR4X 3GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/umcp/ufs-lpddr4x/254ball_ufs-lpd4x/h9hq53adammdar-kem"
+    notes: >
+      Achado como "Related product" do Preduo na página de H9HQ53AECMMDAR-KEM (fetch direto),
+      depois confirmado na própria página dedicada (SKU WP00401, "Density: 64+24"). 64GB UFS +
+      24Gb÷8=3GB LPDDR4X. Bate com pn[4:6]='53'→64GB e pn[6:8]='AD'→3GB, já mapeados. Só 1
+      fonte direta (não achei corroboração noutro distribuidor).
+
+  - part_number: "H9HQ54ACPMMDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7721"
+    notes: >
+      Página dedicada do Puris, fetch direto: "规格：64+32 UFS+LPDDR4x 64GB UFS2.2+4GB
+      LPDDR4X 4GB LPDDR4X 64GB" — confirma 64GB UFS + 4GB LPDDR4X explicitamente (não precisa
+      nem dividir Gbit, já vem em GB). Bate com pn[4:6]='54'→64GB e pn[6:8]='AC'→4GB, já
+      mapeados. ⚠ Nota "UFS2.2" (não 2.1) — detalhe de versão que a gramática não decodifica,
+      não afeta capacidade. Só 1 fonte direta.

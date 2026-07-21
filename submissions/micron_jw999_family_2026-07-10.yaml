@@ -1,0 +1,668 @@
+# Submissão de known_parts — Micron, FBGA JW999 + família MTFC2G (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA JW999
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (JW299, JW699, JW899, JW919, JW929) IGNORADO
+# por construção — já são KnownPart aprovado.
+#
+# ACHADO: JW999 → MTFC2GMDEA-0M WT. Família MTFC (eMMC), mesma base do
+# lote JZ067 (2026-07-08). Capacidade: convenção do PN "MTFC2G" = 2GB
+# direto — confirmado pelo próprio part-name da Micron: "EMMC 16G
+# WFBGA" (2GB×8=16Gb, bate exato).
+#
+# Forward-lookup no prefixo "MTFC2G" (2026-07-10) achou 61 PNs: 35 com
+# fbga_code "JW*" (produção) + 1 "JQ*" (qualification sample, EXCLUÍDO)
+# + 25 "JY*" (Engineering Sample — quase todos com "ES" literal no PN;
+# UM caso, JY443 "MTFC2GMGDQ-AIT", não tem "ES" no texto apesar do
+# prefixo JY — fora do escopo mesmo assim, por consistência de critério
+# com o resto da leva "JY", não investigado a fundo). Dos 35 "JW", 2 têm
+# "ES" literal no PRÓPRIO part-number apesar do prefixo "JW" (JW602,
+# JW603 — mesmo padrão de exceção já visto no lote JW738/JWC10) e foram
+# EXCLUÍDOS. Restam 33 PNs de produção limpos.
+#
+# Só 2 dos 33 têm part-name direto da Micron (o alvo JW999 e o irmão
+# JWD12, mesmo corpo de PN + sufixo "A") — mas AQUI a capacidade é
+# extensível por fórmula com segurança (diferente das famílias MCP/NAND
+# processadas antes nesta sessão): "MTFC2G" é uma convenção de PN já
+# Tier-1 confirmada de forma GERAL (numemmc.pdf, ciclo JZ067) — não há
+# atributo independente e imprevisível tipo célula NAND (MLC/SLC) ou
+# tecnologia de RAM (DDR/SDR) que dependa de confirmação por PN
+# individual. A versão exata do eMMC (4.5/5.0/5.1) fica de fora — não
+# inventada, interface genérica "eMMC" em todos, igual ao padrão já
+# usado no JZ067/NW813.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_jw999_family_2026-07-10.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_jw999_family_2026-07-10.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MTFC2GMDEA-0M WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW999"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-emmc/part-catalog/part-detail/mtfc2gmdea-0m-wt"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (2026-07-10): "EMMC 16G WFBGA", sub-category "obsolete-emmc", com
+      página própria no catálogo de obsoletos da Micron. Capacidade:
+      convenção do PN "MTFC2G" = 2GB direto (regra já confirmada Tier-1 no
+      numbering guide oficial numemmc.pdf, ciclo JZ067/2026-07-08,
+      reaplicada aqui). Cross-check: 2GB × 8 = 16Gb bate EXATO com "16G"
+      do part-name oficial (mesma dupla confirmação PN-convenção + part-
+      name que já validou a regra antes). chip_type="eMMC", interface
+      genérica "eMMC" (sem número de versão — não achei confirmação de
+      4.5/5.0/5.1 específica pra esta peça, não invento).
+
+  - part_number: "MTFC2GCCDF-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW185"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW185"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GCFDI-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW198"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW198"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GCFDF-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW204"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW204"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GCFDI-ET"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW239"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW239"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GDKDM-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW242"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW242"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GDKDM-ET"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW274"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW274"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GDKDQ-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW310"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW310"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GDKDQ-ET"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW311"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW311"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GDKDI-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW320"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW320"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GDKDI-ET"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW321"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW321"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGQDM-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW322"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW322"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGQDM-IT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW323"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW323"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGQDI-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW324"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW324"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGQDI-IT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW325"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW325"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GDKDU-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW364"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW364"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGQDQ-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW428"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW428"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGQDQ-IT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW429"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW429"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGQDR-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW434"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW434"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGQDR-IT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW435"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW435"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGADQ-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW549"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW549"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGADQ-IT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW550"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW550"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGADM-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW601"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW601"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GGADM-IT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW604"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW604"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GMREA-IT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW652"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW652"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GMTEA-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW724"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW724"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GMUEA-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW790"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW790"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GMTEA-0F WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW864"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW864"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GMXEA-WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW865"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW865"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GMVEA-0M WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW896"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW896"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GMVAM-0M WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JW926"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW926"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GMVEA-L1 WT"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JWA40"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JWA40"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MTFC2G, 2026-07-10). Sem part-name individual da Micron para ESTE
+      fbga_code — capacidade apoiada na convenção do PN "MTFC2G" = 2GB
+      direto, já confirmada Tier-1 no numbering guide oficial numemmc.pdf
+      (ciclo JZ067) e reconfirmada nesta mesma leva pelo alvo JW999 +
+      irmão JWD12 (ambos com part-name oficial "EMMC 16G" = 2GB×8, batendo
+      exato). Mesmo prefixo de PN ("MTFC2G") → mesma capacidade, sem
+      exceção observada em toda a família. chip_type="eMMC", interface
+      genérica "eMMC" (sem versão confirmada, não invento).
+
+  - part_number: "MTFC2GMDEA-0M WT A"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    fbga_code: "JWD12"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-emmc/part-catalog/part-detail/mtfc2gmdea-0m-wt-a"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MTFC2G, 2026-07-10): "EMMC 16G WFBGA",
+      sub-category "obsolete-emmc". Mesmo corpo de PN do alvo JW999
+      ("MTFC2GMDEA-0M WT", só sufixo "A" de revisão a mais): confirma de
+      novo 2GB × 8 = 16Gb = "16G" do part-name. chip_type="eMMC" (mesma
+      base do JW999).

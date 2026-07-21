@@ -1,0 +1,71 @@
+# Submissão known_parts — Foresee (Longsys), categoria eMMC (1a entrega, 2026-07-15).
+# Fonte Tier-1: catálogo oficial "FORESEE Embedded Storage Product Catalogue" (longsys.com)
+# + listagens/datasheets LCSC por PN. Capacidade LITERAL no PN (pn[6:9]=GB) — a gramática
+# (foresee.yaml, família FEMD/FEMK/FEMJ) já decodifica; estes known_parts dão AUTORIDADE.
+# Rodar (o DONO): submit_known_parts submissions/foresee_emmc_2026-07-15.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_emmc_2026-07-15.yaml --commit    # grava (submitted) → aprovar no admin
+brand: "Foresee"
+known_parts:
+  - part_number: "FEMDNN032G-A3A55"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys (FORESEE Embedded Storage Product Catalogue) + LCSC C5117593. Comercial, 3D TLC, FBGA153 11.5x13x0.8mm, 1.8V/3.3V, -25~85C. Capacidade literal 032G=32GB (não Gbit)."
+    source_url: "https://www.lcsc.com/product-detail/emmc_foresee-femdnn032g-a3a55_C5117593.html"
+  - part_number: "FEMDNN064G-A3A56"
+    chip_type: "eMMC"
+    capacity: "64GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys. Comercial, 3D TLC, FBGA153, eMMC 5.1. 064G=64GB literal."
+    source_url: "https://www.longsys.com"
+  - part_number: "FEMDNN128G-A3A56"
+    chip_type: "eMMC"
+    capacity: "128GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys + LCSC C5117596. Comercial, 3D TLC, FBGA153, eMMC 5.1. 128G=128GB literal."
+    source_url: "https://www.lcsc.com/product-detail/emmc_foresee-femdnn128g-a3a56_C5117596.html"
+  - part_number: "FEMDNN256G-A3A56"
+    chip_type: "eMMC"
+    capacity: "256GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys. Comercial, 3D TLC, FBGA153, eMMC 5.1. 256G=256GB literal."
+    source_url: "https://www.longsys.com"
+  - part_number: "FEMDME004G-A8A39"
+    chip_type: "eMMC"
+    capacity: "4GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys + LCSC C3249971. Automotivo Grade2 (AEC-Q100), pSLC, FBGA153, -40~105C, eMMC 5.1. Grade ME no pn[4:6]; 004G=4GB literal."
+    source_url: "https://www.lcsc.com/product-detail/emmc_foresee-femdme004g-a8a39_C3249971.html"
+  - part_number: "FEMDRM032G-A3A55"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys + LCSC C3249965. Industrial, 3D NAND, FBGA153, -25~85C, eMMC 5.1 (IATF 16949). Grade RM no pn[4:6]; equivalente legado FSEIASLD-32G. 032G=32GB literal."
+    source_url: "https://www.lcsc.com/product-detail/eMMC_FORESEE-FEMDRM032G-A3A55_C3249965.html"
+  - part_number: "FEMDRM0128G-A3A56"
+    chip_type: "eMMC"
+    capacity: "128GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys (seção Industrial eMMC): FEMDRM0128G-A3A56, 128GB, 3D NAND, FBGA153, -25~85C, eMMC 5.1 (IATF 16949). Equivalente legado FSEIASLD-128G. ⚠ FORMATO 4-DÍGITOS '0128' (único da grade RM 128GB) NÃO decodifica na gramática posicional (pn[6:9]='012'→INDETERMINADO); por isso entra como known_part exato. 128GB literal (0128G)."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "FEMKNN004G-58A42"
+    chip_type: "eMMC"
+    capacity: "4GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys + LCSC C719488. Comercial SUBSIZE (FEMK), MLC, FBGA153 pacote 9x7.5x0.8mm, -25~85C, eMMC 5.1. 004G=4GB literal."
+    source_url: "https://datasheet.lcsc.com/lcsc/2008121142_FORESEE-FEMDNN004G-58A42_C719488.pdf"
+  - part_number: "FEMJNM032G-58C29"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys. Comercial SUBSIZE TLC (FEMJ), 3D TLC, FBGA153, eMMC 5.1. 032G=32GB literal."
+    source_url: "https://www.longsys.com"

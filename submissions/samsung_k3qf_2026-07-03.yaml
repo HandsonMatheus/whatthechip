@@ -1,0 +1,150 @@
+# Submissão de known_parts — Samsung, família K3QF (LPDDR3 alta-densidade)
+# Gerado pelo chat de marca Samsung a partir do PN não identificado K3QF2F2DE
+# (busca em: 2026-07-03). Uso:
+#   python manage.py submit_known_parts submissions/samsung_k3qf_2026-07-03.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/samsung_k3qf_2026-07-03.yaml --commit --user <seu_usuario>
+#
+brand: "Samsung"
+known_parts:
+  # ── PN original (bancada) — corrigido após confirmação do operador ──────────────────
+  - part_number: "K3QF2F20DE"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "2GB"
+    confidence: manual
+    notes: >
+      PN original buscado foi digitado "K3QF2F2DE" (9 chars) — não batia com nenhum
+      irmão real (todo K3QF2F2xxx confirmado tem um '0' extra antes do sufixo de 2
+      letras: 20DA/20DM/20EM/200A/200B/200C/200E). Operador confirmou na bancada
+      (releitura do chip físico, 2026-07-03) que o '0' realmente está presente.
+      PN corrigido: K3QF2F20DE. Capacidade 2GB por posição (key '2' do K3QF_CAP),
+      consistente com os 6 irmãos confirmados desta submissão.
+
+  # ── Tier 1 direto (semiconductor.samsung.com / Samsung MemoryLink) ──────────────────
+  - part_number: "K3QF3F30BM"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr3/k3qf3f30bm-agcg/"
+    notes: >
+      Samsung Semiconductor Global oficial — título da página "(16 Gb)" (também
+      /k3qf3f30bm-agcf/). 16Gb = 2GB. Key '3' do mapa K3QF_CAP (revisão de die —
+      NÃO é 3GB, mesma densidade da key '2'). Variantes de grade encontradas:
+      -AGCG/-AGCF/-FGCF/-QGCF/-BGCF (velocidade/temperatura, mesma densidade).
+
+  - part_number: "K3QFAFA0CM"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.samsung.com/semiconductor/dram/lpddr3/K3QFAFA0CM-AGCF/"
+    notes: >
+      Samsung Semiconductor Global oficial — título "(64 Gb)". 64Gb = 8GB.
+      Key 'A' do mapa K3QF_CAP (geração C, o maior da família).
+
+  - part_number: "K3QF2F20DM"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://memorylink.samsung.com/ecomobile/mem/ecomobile/product/productDetail.do?partNo=K3QF2F20DM-AGCF&partSetLabel=LPDDR3&partSetNo=LPDDR3&subMenu=mobileDram&topMenu=P"
+    notes: >
+      Samsung MemoryLink (base oficial de DRAM móvel Samsung) lista
+      K3QF2F20DM-AGCF. 16Gb = 2GB, key '2' do K3QF_CAP — consistente com os
+      irmãos K3QF2F20DA/K3QF2F20EM.
+
+  - part_number: "K3QF1F100G"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://memorylink.samsung.com/ecomobile/mem/ecomobile/product/productDetail.do?appLabel=Smart+Phones&appNo=smartPhones&partNo=K3QF1F100G-PGCE&partSetNo=LPDDR3&subMenu=smartPhones&topMenu=A"
+    notes: >
+      Samsung MemoryLink lista K3QF1F100G-PGCE. 8Gb = 1GB, key '1' do
+      K3QF_CAP. Variante PoP (216-FBGA 15x15, DDP/dual-die) — mesma
+      densidade, empacotamento diferente do K3QF1F10EM.
+
+  # ── Confirmado por cruzamento (PSG Samsung / categorização própria do Octopart) ─────
+  - part_number: "K3QF2F20DA"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/samsung/K3QF2F20DA-QGCF"
+    notes: >
+      Octopart categoriza como "DRAM Chip Mobile LPDDR3 DRAM 16Gbit" (dado
+      próprio do Octopart, não texto de distribuidor). Cruzado com
+      alldatasheet + 8 distribuidores independentes (Win Source, Worldway,
+      ICPartonline, IC-Components, Censtry, Lisleapex…). 16Gb = 2GB, key '2'.
+
+  - part_number: "K3QF2F20EM"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425737/SAMSUNG/K3QF2F20EM-QGCE.html"
+    notes: >
+      Samsung PSG (Product Selection Guide, edição 1H 2015) via alldatasheet —
+      datasheet #1425737, 28pg, fabricante "Samsung semiconductor". Cruzado
+      com Puris ("16Gbit LPDDR3 1866MHz 216ball"), Preduo (2 sufixos:
+      -QGCF/-AGCF) e datasheets.com. 16Gb = 2GB, key '2'.
+
+  # ── Distributor (fonte única — sinalizado para revisão antes de aprovar) ───────────
+  - part_number: "K3QF2F200A"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "2GB"
+    confidence: distributor
+    notes: >
+      Jotrin (K3QF2F200A-XGCE) + alldatasheet. Sem cruzamento independente de
+      densidade — capacidade inferida por consistência posicional (key '2')
+      com os irmãos confirmados acima. Revisar antes de aprovar.
+
+  - part_number: "K3QF2F200B"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "2GB"
+    confidence: distributor
+    notes: >
+      Puris (K3QF2F200B-XGCE, "16Gbit 216ball LPD3 Samsung"). Fonte única —
+      revisar antes de aprovar.
+
+  - part_number: "K3QF2F200C"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "2GB"
+    confidence: distributor
+    notes: >
+      Worldway Electronics (K3QF2F200C-XGCE). Fonte única — revisar antes de
+      aprovar.
+
+  - part_number: "K3QF2F200E"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "2GB"
+    confidence: distributor
+    notes: >
+      IC-Components + Worldway Electronics (K3QF2F200E-XGCB). Sem cruzamento
+      independente — revisar antes de aprovar.
+
+  - part_number: "K3QF1F10EM"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "1GB"
+    confidence: distributor
+    notes: >
+      IC-Components + Preduo (K3QF1F10EM-AGCE, pacote 253-ball). 8Gb = 1GB,
+      key '1'. Sem Tier-1 direto — revisar antes de aprovar.

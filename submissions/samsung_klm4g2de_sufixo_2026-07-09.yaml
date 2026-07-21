@@ -1,0 +1,69 @@
+# Submissão de known_parts — Samsung, família KLM, grupo "KLM4G2DE*" (forma COM sufixo)
+# Gerado a partir do PN KLM4G2DEFDA301 (busca em 2026-07-09, 20:02) — o MESMO
+# chip do submissions/samsung_klm4g2de_2026-07-09.yaml (registrado mais cedo
+# hoje como "KLM4G2DEFD", 10 chars), só que desta vez o operador buscou a
+# string completa com o sufixo de grade/lote "-A301" grudado (sem hífen:
+# "A301"), 14 chars.
+#
+# Convenção de PN desta sessão: registrar a string EXATA buscada (não só a
+# base de pn_length=10). Como já vimos os dois formatos aparecerem em buscas
+# reais (base sozinha E base+sufixo), registro os dois pra o "não achou"
+# não voltar não importa qual o operador digitar. Mesma pesquisa/evidência
+# do arquivo de mais cedo hoje (DigiPart + distribuidores) — só mudou o
+# formato do PN armazenado, nenhuma informação nova. Mesma ressalva: geração
+# de eMMC (pn[6]='D') não confirmada, interface genérica "eMMC".
+brand: "Samsung"
+known_parts:
+  - part_number: "KLM4G2DEFDA301"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.digipart.com/part/KLM4G2DEFD-A301"
+    notes: >
+      Mesmo PN de submissions/samsung_klm4g2de_2026-07-09.yaml
+      (KLM4G2DEFD), buscado desta vez com o sufixo de grade "-A301"
+      incluído. Registro a forma completa também — mesma fonte/evidência
+      (DigiPart, Samsung, 4 distribuidores com estoque), mesma ressalva
+      (geração de eMMC não confirmada).
+
+  - part_number: "KLM4G2DEDDA101"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: >
+      Forma com sufixo do irmão KLM4G2DEDD (já registrado sem sufixo hoje
+      mais cedo). Mesma fonte/evidência, mesma ressalva.
+
+  - part_number: "KLM4G2DEJEA001"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: >
+      Forma com sufixo do irmão KLM4G2DEJE (já registrado sem sufixo hoje
+      mais cedo). Mesma fonte/evidência, mesma ressalva.
+
+  - part_number: "KLM4G2DEHEB101"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: >
+      Forma com sufixo do irmão KLM4G2DEHE (já registrado sem sufixo hoje
+      mais cedo). Mesma fonte/evidência, mesma ressalva.
+
+  - part_number: "KLMAG8DEFDA301"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "16GB"
+    confidence: confirmed
+    notes: >
+      Forma com sufixo da prima de 16GB KLMAG8DEFD (já registrada sem
+      sufixo hoje mais cedo). Mesma fonte/evidência, mesma ressalva.

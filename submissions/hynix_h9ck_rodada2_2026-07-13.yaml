@@ -1,0 +1,170 @@
+# Submissão de known_parts — SK Hynix, família H9CK (LPDDR3 standalone x64).
+# Gerado a partir da investigação do PN H9CKNNNBPTAT (busca na bancada, 2026-07-13).
+#
+# RODADA 2 da família H9CK nesta sessão — a rodada 1 (submissions/hynix_h9ck_2026-07-13.yaml)
+# só tinha 1 known_part (código 'A'=1.5GB, que também exigiu fix de gramática). Pedido
+# explícito do dono: "só 2? colete mais" — desta vez cobri o CLUSTER inteiro da família,
+# não só o PN alvo. Gramática já decodifica TODOS os 6 PNs abaixo corretamente (grammar_
+# complete=true pra todos, confirmado em sandbox) — zero mudança de gramática, é
+# known_parts-only (Trilha B).
+#
+# COBERTURA DO CLUSTER (pn[7] = código de densidade, por chip_types.py/tip da família):
+#   código '4'=512MB  → NÃO achei PN real em nenhuma fonte pesquisada (provavelmente SKU
+#                        de baixíssimo volume/muito antiga — não incluí, seria adivinhar).
+#   código '8'=1GB    → 2 PNs confirmados (H9CKNNN8GTMP, H9CKNNN8KTMRLR).
+#   código 'A'=1.5GB  → já confirmado na rodada 1 (H9CKNNNAETAP) — não repeti aqui.
+#   código 'B'=2GB    → 2 PNs confirmados, incluindo o PN ALVO (H9CKNNNBPTAT, H9CKNNNBJTMPLR).
+#   código 'C'=4GB    → 1 PN confirmado (H9CKNNNCPTMR).
+#   código 'D'=3GB    → 1 PN confirmado (H9CKNNNDATMT).
+#   código 'E'=6GB / 'F'=8GB → NÃO achei NENHUM PN real com esses códigos em nenhuma fonte
+#     pesquisada (só o contexto genérico dos press releases da própria SK Hynix, que fala
+#     em "6Gb"/"8Gb" como DIE, não como código de densidade H9CK). ⚠ SINALIZANDO PRO DONO:
+#     a aritmética de empilhamento que confirma A/C/D (2×6Gb=12Gb=A, 4×8Gb=32Gb=C, 4×6Gb=
+#     24Gb=D — bate com os press releases oficiais da SK Hynix) não tem equivalente óbvio
+#     e plausível pra E=6GB/F=8GB num único encapsulamento LPDDR3 dessa era (2013-2017) —
+#     8GB num único chip LPDDR3 seria maior que o RAM TOTAL da maioria dos flagships da
+#     época. Pode ser código nunca confirmado no mapa (herdado de outra rodada, não
+#     lembro a origem) — não mexi no mapa (fora do escopo, "não modificar sem perguntar"),
+#     só documentando que näo achei evidência real pra esses dois códigos apesar de
+#     pesquisa dedicada.
+#
+# DISCIPLINA DE FONTE (igual rodada 1 — distribuidor não é Tier-1, mas aqui a aritmética
+# Gb→GB é simples potência-de-2 e CONVERGE entre múltiplas fontes independentes + o PN
+# alvo em si está confirmado como estoque real, não just campo de descrição):
+#   - H9CKNNNBPTAT (ALVO): confirmado DIRETO (sem sufixo de grade) em 2 distribuidores
+#     (OMO Electronic, Chipsea — "manufacturer: SKHYNIX", "in stock"), e o sufixo de
+#     grade "-DR" (H9CKNNNBPTATDR-NTH/-NUH/-NTHR/-NUHR) aparece em MAIS DE 20
+#     distribuidores independentes (YST, Conevo, Shengyu "FBGA216", WinSource, Zeano,
+#     Sunether, RX, Atosn, Metaverse, Semicon, Wanwei, YIC, Ariat, MountainView, Hongte,
+#     Kepictronics, Unicom, Sense, SILITECH, NewStrength, IC Components, Chipsea) — parte
+#     genuína e amplamente distribuída, não é erro de catálogo isolado.
+#   - H9CKNNNBJTMPLR: WinSource (via DigiPart) tem campo ESTRUTURADO "LPDDR3-1866 x32
+#     (16Gb)" — 16Gb÷8=2GB, bate com código 'B'. 18+ distribuidores independentes.
+#   - H9CKNNN8GTMP / H9CKNNN8KTMRLR: código '8' já é o "8Gb LPDDR3" da própria SK Hynix
+#     (chip histórico, "world's first 8Gb LPDDR3", news.skhynix.com) — 8Gb÷8=1GB, die
+#     ÚNICO (não empilhado). Múltiplos distribuidores pra cada PN (GTMP: GreenTree $4.71,
+#     TIST, Conevo, Atosn, Chipsea; KTMRLR: YST "POP168", Sunether, RX, Wanwei,
+#     NewStrength, OMO, Green Light, Chipsea).
+#   - H9CKNNNDATMT: Quest Components (via DigiPart) tem campo ESTRUTURADO "24GB192MX32
+#     BANK, 1.8V/1.2V/1.2V" — "24GB" aqui é claramente Gb (distribuidor confunde Gb/GB,
+#     padrão já visto nesta sessão), 24Gb÷8=3GB, bate com código 'D' e bate com o press
+#     release da SK Hynix ("quatro 6Gb empilhados = 3GB"). 7 distribuidores.
+#   - H9CKNNNCPTMR: listado no inventário próprio da OMO Electronic (manufacturer=
+#     SKHYNIX, "New and Original"), com 5 siblings de mesmo código (CPTMRPR-NUH,
+#     CPTMRRR-NUH, CPTMTDR-NUH, CPTMTLR-NUH, CTUMUBR-NLH) — 32Gb÷8=4GB, bate com código
+#     'C' e bate com o press release da SK Hynix ("quatro 8Gb empilhados = 4GB").
+#
+# ⚠ ACHADO RECORRENTE (já visto na rodada 1 — H9CKNNNAETAP): pelo menos 1 listing
+# (H9CKNNN8GTMP-LRNCH via Allchip/OMO/Chipsea) rotula o fabricante como "SAMSUNG" —
+# claramente errado (é SK Hynix, confirmado por 5+ outras fontes pro mesmo PN). Mesmo
+# padrão de contaminação de dado já documentado — não usei essa fonte isolada pra nada,
+# só corrobora que esse pool de distribuidor tem qualidade de dado inconsistente em
+# alguns campos (mas os campos ESTRUTURADOS de densidade/organização, que são o que
+# uso aqui, batem entre si e com a aritmética).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9ck_rodada2_2026-07-13.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9ck_rodada2_2026-07-13.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9CKNNNBPTAT"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/1d8/h9cknnnbptat-1190.html"
+    notes: >
+      PN ALVO desta rodada, buscado na bancada (2026-07-13). Confirmado DIRETO (sem
+      sufixo de grade) em 2 distribuidores independentes: OMO Electronic
+      (manufacturer=SKHYNIX, "in stock") e Chipsea Electronics (BGA, DC:SKHYNIX). O
+      sufixo de grade "-DR" (H9CKNNNBPTATDR-NTH/-NUH/-NTHR/-NUHR) aparece em mais de
+      20 distribuidores independentes adicionais (DigiPart), incluindo pelo menos um
+      com tag "POP"/"POP216" (package-on-package — variante física de encapsulamento,
+      não afeta capacidade/tipo). Código pn[7]='B'=2GB já documentado no tip da
+      família (confirmado nesta rodada via H9CKNNNBJTMPLR, ver abaixo). confidence=
+      manual (distribuidor estruturado + convergência multi-fonte, não datasheet
+      oficial lido na íntegra).
+
+  - part_number: "H9CKNNNBJTMPLR"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9cknnnbjtmplr-nuhr.html"
+    notes: >
+      Irmão do PN alvo (mesmo código de densidade 'B', mid-fill diferente: "JTMP" em
+      vez de "PTAT"). WinSource (via DigiPart) tem campo ESTRUTURADO de descrição:
+      "LPDDR3-1866 x32 (16Gb)" — 16Gb÷8=2GB, bate com código 'B'=2GB do tip. 18+
+      distribuidores independentes confirmam o PN (GreenTree, Shengyu "FBGA168",
+      WinSource, Zeano, RX, Atosn, Wanwei, YIC, Ariat, MountainView, Kepictronics,
+      Unicom, SILITECH, NewStrength, OMO, IC Components, Haode, Green Light, Chipsea).
+      ⚠ Mesma nota da rodada 1: a descrição WinSource diz "x32", família H9CK tem
+      convenção "x64" no tip — discrepância sinalizada, não resolvida (mesma
+      observação já registrada em hynix_h9ck_2026-07-13.yaml). confidence=manual.
+
+  - part_number: "H9CKNNN8GTMP"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: manual
+    source_url: "https://www.tist.hk/"
+    notes: >
+      Código pn[7]='8'=1GB. Corresponde ao die histórico "8Gb LPDDR3" da própria SK
+      Hynix (SK hynix Developed the World's First High Density 8Gb LPDDR3,
+      news.skhynix.com) — die ÚNICO, não empilhado. 8Gb÷8=1GB. Confirmado em 5
+      distribuidores independentes (GreenTree Electronics, TIST Technology $4.71430,
+      Conevo Electronics, Atosn Technology, Chipsea Electronics), manufacturer
+      SKHYNIX/Hynix consistente na maioria (1 outlier "SAMSUNG" via Allchip/OMO —
+      mesmo padrão de contaminação de dado já visto na rodada 1, não usado como fonte).
+      confidence=manual.
+
+  - part_number: "H9CKNNN8KTMRLR"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    confidence: manual
+    source_url: "https://www.wanweichip.com/"
+    notes: >
+      Irmão do H9CKNNN8GTMP (mesmo código '8'=1GB, mid-fill diferente: "KTMR" em vez
+      de "GTMP"). Confirmado em 7 distribuidores independentes (HK YST "POP168",
+      Sunether Technology, RX Electronics, Wanwei Electronics "POP168", New Strength
+      Electronic, OMO Electronic, Green Light Electronics, Chipsea Electronics) — tag
+      "POP168" indica variante package-on-package de 168 balls (não afeta capacidade).
+      8Gb÷8=1GB, mesma densidade do GTMP. confidence=manual.
+
+  - part_number: "H9CKNNNDATMT"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "3GB"
+    confidence: manual
+    source_url: "http://www.questcomp.com/questdetails.aspx?pn=H9CKNNNDATMTDR-NUH"
+    notes: >
+      Código pn[7]='D'=3GB (densidade assimétrica já documentada no tip). Quest
+      Components (via DigiPart) tem campo ESTRUTURADO: "24GB192MX32 BANK, 1.8V /
+      1.2V / 1.2V" — o "24GB" aqui é Gb mal-rotulado pelo distribuidor (padrão já
+      visto nesta sessão — confunde Gb/GB), 24Gb÷8=3GB. Bate com o press release da
+      própria SK Hynix ("SK hynix Developed Industry-Leading 6Gb LPDDR3":
+      "four 6Gb LPDDR3 products can be stacked to realize a maximum 3GB solution")
+      — 4×6Gb=24Gb=3GB, aritmética exata. Confirmado em 7 distribuidores (NetSource
+      Technology, TIST $10.00, Conevo Electronics, Atosn Technology, Quest
+      Components, New Strength Electronic, OMO Electronic, Chipsea Electronics).
+      confidence=manual.
+
+  - part_number: "H9CKNNNCPTMR"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/ef9/h9cknnncptmr-1190.html"
+    notes: >
+      Código pn[7]='C'=4GB (teto confirmado do tip). Listado no inventário próprio
+      da OMO Electronic (manufacturer=SKHYNIX, "New and Original", categoria
+      Memory), com 5 PNs-irmãos do mesmo código de densidade indexados na mesma
+      página (H9CKNNNCPTMRPR-NUH, H9CKNNNCPTMRRR-NUH, H9CKNNNCPTMTDR-NUH,
+      H9CKNNNCPTMTLR-NUH, H9CKNNNCTUMUBR-NLH) — família de PNs reais, não isolado.
+      32Gb÷8=4GB. Bate com o press release da própria SK Hynix ("SK hynix Developed
+      the World's First High Density 8Gb LPDDR3": "stacked up and realize a high
+      density of maximum 4GB(Gigabytes, 32Gb) solution in a single package") —
+      4×8Gb=32Gb=4GB, aritmética exata, mesma fonte que já confirmou o código '8'.
+      confidence=manual.

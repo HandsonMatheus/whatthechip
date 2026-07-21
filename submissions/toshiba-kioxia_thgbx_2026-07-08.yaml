@@ -1,0 +1,114 @@
+# Submissão de known_parts — Toshiba-Kioxia, família THGBX (NAND Flash raw p/ Apple, família NOVA)
+# Gerado pelo chat de marca Toshiba-Kioxia a partir da investigação do PN THGBX2G8B4JLA01
+# (busca na bancada, 2026-07-08) — prefixo THGBX não constava na gramática (nem como família
+# magra). Diferente do THGBM (eMMC padrão), o THGBX é NAND Flash RAW soldado ao controlador
+# proprietário da Apple (confirmado 3x em teardowns iFixit lidos diretamente — "NAND Flash",
+# nunca "eMMC"). Família adicionada em chips/knowledge/toshiba-kioxia.yaml (Trilha A) com
+# decode_cap_map PARCIAL: só as 3 chaves (7B2, 7D2, 8D4) com fonte Tier-1 direta entraram no
+# mapa; "8B4" (mesma faixa "8" que 8D4) e "9B8"/"9D8" (~64GB) ficam de fora do decode por
+# enquanto — sem PN-âncora Tier-1 próprio, só inferência estrutural. Ver golden em
+# chips/tests.py (_TK_GOLDEN["THGBX2G7B2JLA01"]).
+#
+# ⚠ Achado de negócio relevante: chip_type="NAND Flash" (raw, sem controlador eMMC/UFS) é
+# SEMPRE "NÃO RENTÁVEL" no assess_profitability, independente da capacidade (chips/engine.py,
+# regra "resíduo por tipo") — ou seja, TODO PN desta família cai em NÃO RENTÁVEL, inclusive os
+# de 32GB confirmados. Não é bug, é a regra de negócio já existente para NAND raw.
+#
+# Hierarquia de fonte usada: Tier-1 = teardown iFixit lido diretamente por mim (texto exato da
+# página, não resumo de busca) ou artigo de imprensa técnica (AppleInsider) citando/linkando o
+# teardown original. Tier-3 = distribuidores chineses (Alibaba, ssfkg, all-spares, GSM-forum) —
+# só corroboram, nunca são fonte única de capacidade.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbx_2026-07-08.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbx_2026-07-08.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  # ── Confirmados via teardown iFixit lido diretamente (Tier-1) ──────────────────────────
+  - part_number: "THGBX2G7B2JLA01"
+    chip_type: "NAND Flash"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.ifixit.com/Teardown/iPad+Air+LTE+Teardown/18907"
+    notes: >
+      "Toshiba THGBX2G7B2JLA01 16 GB NAND Flash" — texto exato do Step 17 do iPad Air LTE
+      Teardown (iFixit, nov/2013). MESMO PN e MESMA descrição também no iPad Mini 2 Teardown
+      (https://www.ifixit.com/Teardown/iPad+Mini+2+Teardown/19374, Step 15) — 2 teardowns
+      independentes, ambos lidos diretamente por mim (não resumo de busca), texto idêntico.
+      Chave de capacidade pn[7:10]="7B2" → 16GB (nova entrada em THGBX_CAP).
+
+  - part_number: "THGBX2G7D2JLA01"
+    chip_type: "NAND Flash"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://appleinsider.com/articles/12/10/16/teardown-of-apples-7th-gen-ipod-nano-discovers-toshiba-nand-flash-broadcom-bluetooth"
+    notes: >
+      "Leading the way is the Toshiba THGBX2G7D2JLA01, which includes 16 gigabytes of NAND
+      flash" — texto exato da AppleInsider (out/2012), reportando o teardown oficial do iPod
+      nano 7ª geração feito pela iFixit (link direto no artigo:
+      ifixit.com/Teardown/iPod+Nano+7th+Generation+Teardown/10826/1). Achado importante: mesma
+      capacidade (16GB) que o THGBX2G7B2JLA01 acima, só trocando a letra de stack B→D na chave
+      pn[7:10] ("7B2" vs "7D2") — prova DENTRO da própria família THGBX que a letra de stack não
+      afeta a capacidade (mesmo padrão já documentado no THGBM). Chave "7D2" → 16GB (nova
+      entrada em THGBX_CAP).
+
+  - part_number: "THGBX5G8D4KLDXG"
+    chip_type: "NAND Flash"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.ifixit.com/Teardown/iPad+Pro+12.9-Inch+Teardown/52599"
+    notes: >
+      "Toshiba THGBX5G8D4KLDXG 32 GB NAND Flash" — texto exato do Step 16 do iPad Pro 12.9"
+      Teardown (iFixit, nov/2015). Prefixo comercial diferente do original ("5G..." em vez de
+      "2G...", sufixo "KLDXG" em vez de "JLA01"), mas MESMA chave de capacidade pn[7:10]="8D4" —
+      prova que a chave de capacidade se repete entre variantes/gerações comerciais do THGBX,
+      dando base para o decode posicional. Chave "8D4" → 32GB (nova entrada em THGBX_CAP).
+
+  # ── Irmão real com a MESMA chave já confirmada acima (corroboração estrutural + existência
+  #    de mercado, mas sem teardown individual lido por mim) ──────────────────────────────
+  - part_number: "THGBX2G8D4JLA01"
+    chip_type: "NAND Flash"
+    capacity: "32GB"
+    confidence: distributor
+    source_url: "https://all-spares.com/en/memory-ic-thgbx2g8d4jla01-for-apple-iphone-5-cell-phone-32-gb/"
+    notes: >
+      Distribuidor especializado em peças de reparo (all-spares.com) anuncia explicitamente
+      "Memory IC THGBX2G8D4JLA01 for Apple iPhone 5, (32 GB)" — o "(32 GB)" está no próprio
+      título da página. Bate com a chave "8D4" já confirmada em Tier-1 nesta submissão (via
+      THGBX5G8D4KLDXG). Sem teardown iFixit individual encontrado para este PN específico —
+      por isso distributor, não confirmed.
+
+  # ── PN original da bancada — capacidade NÃO está no decode_cap_map (chave "8B4" excluída de
+  #    propósito, ver header). confidence=estimated: fica OCULTO da triagem até confirmação
+  #    manual, mas registra a pesquisa feita para quem for investigar depois. ────────────────
+  - part_number: "THGBX2G8B4JLA01"
+    chip_type: "NAND Flash"
+    capacity: "32GB"
+    confidence: estimated
+    source_url: "https://www.alibaba.com/product-detail/New-Original-THGBMBG5D1KBAIL-4GB-BGA-EMMC_1601524332989.html"
+    notes: >
+      PN buscado na bancada (motivou a família THGBX inteira). NÃO tenho fonte Tier-1/2
+      individual para a capacidade deste PN específico — só inferência estrutural: a chave
+      pn[7:10]="8B4" está na MESMA faixa "8" que "8D4" (confirmado Tier-1 = 32GB via
+      THGBX5G8D4KLDXG), e a letra de stack (B vs D) já foi PROVADA sem impacto na capacidade
+      dentro do próprio THGBX (ver THGBX2G7B2JLA01 vs THGBX2G7D2JLA01, ambos 16GB). Múltiplos
+      distribuidores (Jotrin, Veswin, GSM-Forum, Alibaba) e um fórum de reparo confirmam a
+      EXISTÊNCIA do PN e seu uso em iPad Mini 2-4/Air 2/5/6 e iPhone 5S/6/6 Plus, mas nenhum com
+      datasheet ou teardown citável. Estimativa: 32GB. Marcado como estimated de propósito —
+      não decide sozinho, fica oculto até o dono confirmar (ex.: achando o teardown do iPhone
+      6/6 Plus ou iPad Mini 3/4 que deveria usar este PN exato).
+
+# ── NÃO submetidos (ficam de fora de propósito) ──────────────────────────────
+# THGBX2G9D8JLA01 e THGBX2G9B8JLA01 — aparecem em múltiplos catálogos de distribuidor (ssfkg,
+# findcomponents) e buscas sugerem ~64GB (consistente com a progressão 7→16GB/8→32GB/9→64GB,
+# dies dobrando 2→4→8), mas SEM nenhuma fonte Tier-1/2 individual encontrada (nem iFixit nem
+# Octopart/Mouser com specs). Diferente do caso 8B4→8D4, aqui nem a chave "9" tem uma âncora
+# Tier-1 direta dentro do THGBX (só por analogia ao THGBM, marca diferente). Não incluí nem como
+# estimated — fica para quando aparecer uma fonte melhor (ex.: teardown do iPhone 6 Plus, que
+# usa 64GB e é candidato óbvio a usar um destes PNs).
+#
+# THGBX3G7D2KLA0C, THGBX3G6D2KLA0D, THGBX2T0BBJLA03 e a série "T0T8"/"T1TB" de maior densidade
+# (THGBX4T0T8KLD0E, THGBX5T0T8LLDXF etc.) — aparecem em catálogos de distribuidor mas usam
+# combinações de pn[5]/pn[6] (dígitos 3-6, letra T) fora do que consegui confirmar; ficam para
+# pesquisa futura quando/se aparecerem PNs assim na bancada.

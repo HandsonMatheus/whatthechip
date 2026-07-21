@@ -1,0 +1,36 @@
+# Submissão de known_parts — Toshiba-Kioxia, família THGBM (chave nova "7A4" no THGBM_CAP)
+# Gerado pelo chat de marca Toshiba-Kioxia a partir da investigação do PN THGBM5G7A4JBA4W
+# (busca na bancada, 2026-07-09). Família THGBM já madura (várias submissões anteriores) —
+# esta é só 1 PN, chave de capacidade nova ("7A4") que não estava no THGBM_CAP.
+#
+# Fonte Tier-1 direta: iFixit Samsung Galaxy S4 Teardown (publicado abr/2013, David Hodson +
+# 14 contribuidores, 767k views), Step 13, lido diretamente — texto exato: "Toshiba
+# THGBM5G7A4JBA4W 16 GB eMMC (eMMC integrates a NAND flash memory and a controller chip in a
+# single package)". Mesmo padrão de fonte já usado pra THGBX nesta marca (teardown iFixit
+# lido diretamente, não resumo de busca).
+#
+# Achado estrutural relevante (documentado no tip/reasoning da família em
+# chips/knowledge/toshiba-kioxia.yaml): esta é a PRIMEIRA vez que se vê dies=4 (pn[9]) no
+# dígito de densidade pn[7]=7 — e a capacidade continua 16GB, igual a 7A2 (dies=2). Isso
+# descarta a hipótese de que "número de dies" multiplica a capacidade; confirma que só o
+# dígito pn[7] determina a faixa de capacidade dentro do THGBM.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_7a4_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_7a4_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "THGBM5G7A4JBA4W"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.ifixit.com/Teardown/Samsung+Galaxy+S4+Teardown/13947"
+    notes: >
+      "Toshiba THGBM5G7A4JBA4W 16 GB eMMC" — texto exato do Step 13 do Samsung Galaxy S4
+      Teardown (iFixit, abr/2013), lido diretamente (não resumo de busca). Chave de
+      capacidade pn[7:10]="7A4" → 16GB (nova entrada em THGBM_CAP). pn[5]="5" já
+      confirmado eMMC 4.41(α) nesta sessão (2026-07-09, datasheet THGBM5G6A2JBAIR).
+      Achado estrutural: 7A4 (dies=4) tem a mesma capacidade que 7A2 (dies=2) = 16GB —
+      confirma que pn[9] (dies) não multiplica capacidade, só pn[7] (densidade)
+      determina a faixa.

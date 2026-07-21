@@ -1,0 +1,90 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT6CL256M32AM"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    interface: "x32"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145669/NANYA/NT6CL256M32AM.html"
+    notes: >
+      PN EXATO do debug ao vivo do estoque (15/07/2026 16:27) -- forma base, sem sufixo de
+      grade/pacote, indexada como entrada de catalogo propria no Alldatasheet (mesmo padrao
+      ja visto em NT5CB64M16FP). Familia NT6CL = LPDDR3 mobile Nanya, empilhamento SDP/DDP/QDP
+      (nao existia no yaml antes desta submissao -- ChipFamily nova adicionada, ver nanya.yaml
+      `reasoning`). Confirmado via tabela "Ordering Information" do datasheet oficial (pagina 2
+      de 159, NT6CL256M32AM-H1 v1.6, 02/2019), aberta diretamente:
+      "8Gb (SDP) 256M x 32 -> NT6CL256M32AQ-H11 / NT6CL256M32AM-H01 / NT6CL256M32AM-H1".
+      A letra "M" logo apos a profundidade indica SDP (1 die) -- ver nota de metodo no dossie.
+      Aritmetica: 256M x 32bit = 8192Mbit = 8Gb (densidade do die) / 8 = 1GB (capacidade do
+      pacote -- convencao "LPDDR avulso" do CLAUDE.md §6 usa `capacity` em GB, nao
+      `density_gbit`, campo que e so pra DDR/GDDR/SDRAM discreta).
+
+  - part_number: "NT6CL256M32AM-H01"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    interface: "x32"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145686/NANYA/NT6CL256M32AM-H0NA.html"
+    notes: >
+      Variante de grade de velocidade (178-Ball, 0.938ns/2133Mb-s-pin/RL16) da MESMA linha da
+      tabela "Ordering Information" do PN do caso -- mesma densidade 8Gb(SDP), mesma
+      organizacao 256M x 32. Aritmetica: 256M x 32bit = 8192Mbit = 8Gb/8 = 1GB.
+
+  - part_number: "NT6CL256M32AM-H1"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1GB"
+    interface: "x32"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145677/NANYA/NT6CL256M32AM-H1.html"
+    notes: >
+      Variante de grade de velocidade (178-Ball, 1.071ns/1866Mb-s-pin/RL14) da MESMA linha da
+      tabela "Ordering Information" -- o datasheet-fonte principal desta rodada (pagina 2 lida
+      diretamente). Mesma densidade 8Gb(SDP), mesma organizacao 256M x 32. Aritmetica: 256M x
+      32bit = 8192Mbit = 8Gb/8 = 1GB.
+
+  - part_number: "NT6CL512T32AM-H1"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "2GB"
+    interface: "x32"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/view.jsp?Searchword=NT6CL512T32AM-H1"
+    notes: >
+      Contraparte DDP (2 dies empilhados) do PN do caso, MESMA tabela "Ordering Information"
+      (pagina 2 do datasheet NT6CL256M32AM-H1 -- o mesmo documento cobre as duas densidades):
+      "16Gb (DDP) 512M(T) x 32 -> NT6CL512T32AQ-H11 / NT6CL512T32AM-H01 / NT6CL512T32AM-H1".
+      A letra "T" (em vez de "M") na profundidade sinaliza DDP -- por isso NAO e o mesmo PN do
+      caso, e uma peca fisicamente diferente (2x dies no encapsulamento). Aritmetica (tratando
+      T na mesma escala numerica de M, como o proprio datasheet documenta): 512 x 32bit =
+      16384Mbit = 16Gb de die-density total / 8 = 2GB de capacidade de pacote.
+
+  - part_number: "NT6CL128M32DM"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "512MB"
+    interface: "x32"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145668/NANYA/NT6CL128M32DM.html"
+    notes: >
+      Densidade menor do cluster NT6CL (bucket NT6CL1*, mesma familia): Alldatasheet descreve
+      como "Commercial Mobile LPDDR3 4Gb / 8Gb(DDP) SDRAM" -- aplicando o mesmo padrao de letra
+      confirmado no PN do caso (M=SDP), este PN especifico (letra "M") e o lado 4Gb/SDP dessa
+      dupla (o lado 8Gb/DDP teria profundidade "256T", nao verificado individualmente nesta
+      rodada). Aritmetica: 128M x 32bit = 4096Mbit = 4Gb/8 = 0.5GB = 512MB.
+
+  - part_number: "NT6CL1024F32AP"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "4GB"
+    interface: "x32"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145670/NANYA/NT6CL1024F32AP.html"
+    notes: >
+      Topo do cluster NT6CL (bucket NT6CL1*, QDP = 4 dies empilhados): Alldatasheet descreve
+      como "Commercial Mobile LPDDR3 32Gb(QDP) SDRAM" -- SEM dupla-cotacao (diferente do
+      padrao SDP/DDP visto nos outros PNs desta submissao), a letra "F" na profundidade e o
+      3o multiplicador confirmado (M=1 die, T=2 dies, F=4 dies). Aritmetica: 1024 x 32bit =
+      32768Mbit = 32Gb/8 = 4GB.

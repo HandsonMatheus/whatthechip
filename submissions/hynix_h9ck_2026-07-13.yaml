@@ -1,0 +1,54 @@
+# Submissão de known_parts — SK Hynix, família H9CK (LPDDR3 standalone, x64).
+# Gerado a partir da investigação do PN H9CKNNNAETAP (busca na bancada, 2026-07-13).
+#
+# GRAMÁTICA TAMBÉM MUDOU NESTA RODADA (Trilha A + Trilha B juntas, caso raro): o código de
+# densidade 'A' (pn[7]) NÃO estava no mapa HYX_LPDDR3_CAP (compartilhado por H9CC e H9CK) —
+# grammar_complete=false, capacity=None, INDETERMINADO no debug da bancada. Pesquisei, achei
+# fonte, e ACRESCENTEI `[A, 1.5GB, '']` ao mapa em chips/knowledge/hynix.yaml (afeta as duas
+# famílias H9CC e H9CK) + reasoning citando a fonte + golden anchor novo em chips/tests.py
+# (H9CKNNNAETAP → LPDDR3/1.5GB/NÃO RENTÁVEL, valor real observado em sandbox, não estimado).
+#
+# FONTE da densidade 'A'=1.5GB (12Gb):
+#   PRINCIPAL: WinSource (via DigiPart, fetch direto da página do order-code completo
+#   H9CKNNNAETAPLR-NUH — a página SEM sufixo de order-code não tem essa info, só a COM sufixo)
+#   descreve o PN como "LPDDR3-1866 x32 (12Gb)" — campo estruturado do distribuidor, não prosa
+#   de FAQ. 12Gb÷8=1.5GB.
+#   CORROBORAÇÃO 1: post de teardown no fórum XDA identifica H9CKNNNAETAP como o chip de RAM
+#   físico do Amazon Fire HD 8 (2017) (não consegui abrir o post original — site não renderizou
+#   no fetch direto — citando via o que o dono já tinha visto/indicado).
+#   CORROBORAÇÃO 2: a especificação pública do Fire HD 8 (2017) (GSMArena e outras fontes de
+#   review) documenta 1.5GB de RAM total no aparelho — bate com um único chip de 1.5GB (design
+#   típico de tablet MediaTek MT8163 dessa faixa, não usa múltiplos chips de RAM).
+#   PADRÃO CONHECIDO: densidade "ímpar" (não-binária) já documentada pela própria SK Hynix —
+#   o mesmo fenômeno do código 'D'=3GB (die de 6Gbit×4=24Gbit) já mapeado nesta família. 'A'
+#   é a mesma família de die assimétrico (6Gbit×2=12Gbit=1.5GB), só com metade do stack.
+#
+# ⚠ DISCREPÂNCIA SINALIZADA, NÃO RESOLVIDA: a descrição do WinSource diz "x32", mas o tip da
+# família H9CK documenta barramento x64 (contraste com H9CC=x32). Não mexi na convenção
+# x32/x64 nem no campo `interface` por causa disso — pode ser erro de catálogo do distribuidor
+# (o mesmo lote de dados tinha outro erro claro: 3 revendedores diferentes rotulavam esse PN
+# como fabricante "SAMSUNG", claramente errado — é SK Hynix, confirmado por 6+ outras fontes).
+# Sinalizando pro dono avaliar se vale investigar mais.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9ck_2026-07-13.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9ck_2026-07-13.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9CKNNNAETAP"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    capacity: "1.5GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9CKNNNAETAP-LRNUH"
+    notes: >
+      PN buscado na bancada (2026-07-13), sinalizado pn_not_in_db=true/grammar_complete=false
+      (código de densidade 'A' ausente do mapa até esta rodada). WinSource (via DigiPart, fetch
+      direto do order-code completo H9CKNNNAETAPLR-NUH): "LPDDR3-1866 x32 (12Gb)" — campo
+      estruturado. 12Gb÷8=1.5GB. Corroborado por identificação de teardown (fórum XDA) do chip
+      como a RAM física do Amazon Fire HD 8 (2017), cuja especificação pública documenta 1.5GB
+      de RAM total (GSMArena) — mesmo valor, duas linhas de evidência independentes convergindo.
+      confidence=manual (distribuidor estruturado, não datasheet oficial lido na íntegra).
+      Mesma pesquisa que motivou a adição do código 'A' ao mapa HYX_LPDDR3_CAP (Trilha A) —
+      ver reasoning da família H9CK em chips/knowledge/hynix.yaml.

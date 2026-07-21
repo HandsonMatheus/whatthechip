@@ -1,0 +1,170 @@
+# Submissão de known_parts — SK Hynix, família H9HK (LPDDR4/LPDDR4X standalone x64, JÁ EXISTENTE)
+# Gerado a partir da investigação do PN H9HKNNNCRMMU (busca na bancada, 2026-07-14) — fragmento
+# truncado de 12 caracteres, mesmo padrão já visto nesta família (CTUM/CPMMU também eram
+# fragmentos). pn[7]='C'→4GB, já mapeado e o código mais confirmado da família (6 known_parts
+# antes desta rodada). SEM fix de gramática — puro reforço Trilha B.
+#
+# ⚠ VERIFICAÇÃO DE IDENTIDADE (não assumido, checado): o fragmento "CRMMU" é parecido mas
+# DIFERENTE do já confirmado "CRMMVBR-NEH" (submissions/hynix_h9hk_2026-07-09.yaml — U vs V na
+# mesma posição). Confirmei que são PNs REALMENTE DISTINTOS: "H9HKNNNCRMMUER-NMH" é o PN
+# completo por trás do fragmento desta rodada, atestado em 5 distribuidores independentes,
+# nenhum overlap com o CRMMVBR-NEH já submetido.
+#
+# ⚠ EXPANDIDO (pedido explícito do dono: "colete mais da mesma família, não só 1" — a
+# rodada original checou só o prefixo estreito "H9HKNNNCRM" e achou o cluster já saturado, mas
+# não olhou a FAMÍLIA inteira). Ampliei a varredura via catálogo próprio da OMO Electronic
+# pros prefixos mais largos "H9HKNNN8" (que a busca da OMO redirecionou pro geral "H9HKNNN",
+# 50 PNs indexados) e "H9HKNNNB" (11 PNs). Cruzando contra os 8 known_parts já submetidos
+# (2026-07-09 + 2026-07-10 + este arquivo), os códigos MAIS FINOS da família eram B=2GB e
+# D=3GB — só 1 confirmação CADA antes desta expansão (contra 7 do código C). Adicionei 5 PNs
+# novos, priorizando mid-fills genuinamente distintos (não só variação de sufixo de grade do
+# mesmo PN já confirmado): 2 pro código B, 2 pro código D, 1 reforço pro código E (já tinha 2,
+# agora 3). 2 das 5 fontes têm campo ESTRUTURADO de densidade batendo exato (não só presença
+# em massa de distribuidor):
+#   - H9HKNNNBTUMUAR-NLH: WinSource "LPDDR4-3200 (16Gb)" — 16Gb÷8=2GB, bate com 'B'.
+#   - H9HKNNNDGUMUAR-NLH: WinSource "LPDDR4-3200 (24Gb)" — 24Gb÷8=3GB, bate com 'D'.
+# Os outros 3 (BRMMUUR-NEH, DBUMUBR-NMH, EBMMUER-NMH) não tinham campo estruturado de
+# densidade próprio, mas têm 8-12 distribuidores independentes cada, manufacturer HYNIX/
+# SKHYNIX/"HY" (abreviação, não fabricante diferente) consistente — capacidade inferida do
+# código pn[7] já mapeado e confirmado por múltiplas outras fontes na família.
+#
+# ⚠ Mesmo padrão de mislabel de fabricante já visto nesta sessão: Allchip Electronic e
+# SILITECH rotularam H9HKNNNDGUMUAR-NLH como "SAMSUNG" — 8 outras fontes convergem em SK
+# Hynix/SKHYNIX/Hynix, não usado como fonte.
+#
+# Também observado (NÃO incluído, fonte única): "H9HKNNNCRMMUER-NMN" (sufixo "-NMN" em vez de
+# "-NMH") aparece só na Conevo, sem 2ª fonte — mesmo padrão de sufixo de grade já visto na
+# família (NLH/NMH), mas sem corroboração suficiente pra submeter agora.
+#
+# ⚠ 2ª RODADA (novo PN buscado na bancada, mesma família, 2026-07-14): H9HKNNNCRMMUDRNMH —
+# desta vez o PN veio COMPLETO (18 caracteres, não é fragmento truncado como os anteriores).
+# Mesmo mid-fill "RMMU" do H9HKNNNCRMMUER-NMH já submetido acima, mas código final "DR" em vez
+# de "ER" — PN genuinamente diferente (mesmo padrão de variante final já visto na família:
+# BR/AR em TUMU e GUMU). 9ª confirmação do código 'C'→4GB.
+#
+# Checagem de cluster (código '8'=1GB, o mais fino da família — só 1 known_part desde sempre):
+# voltei ao catálogo da OMO Electronic com prefixos "H9HKNNN8" e "H9HKNNN8K" — as duas buscas
+# caíram de volta pro geral "H9HKNNN" (50 PNs), e NENHUM dos 50 tem código '8'. Mesma ausência
+# do código '4'=512MB já documentada no arquivo de 2026-07-10 ("pode ser um SKU que nunca
+# existiu comercialmente nesta família"). Não é lacuna de pesquisa — é ausência real de dado
+# no maior catálogo disponível. Não force incluído.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hk_2026-07-14.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hk_2026-07-14.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HKNNNCRMMUER-NMH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9HKNNNCRMMU"
+    notes: >
+      PN original buscado na bancada foi "H9HKNNNCRMMU" (fragmento truncado de 12 caracteres)
+      — este é o PN completo. Checado contra os 6 known_parts de código 'C' já submetidos
+      (CPMMUJR-NMH, CTUMUBR-NMH, CUUMUBR-NMH, CRMAUDR-NEH, CRMMVBR-NEH, CRMAVAR-NEH): NÃO é
+      duplicata (mid-fill "RMMU"+sufixo "ER-NMH" é combinação nova). 5 distribuidores
+      independentes confirmam: NetSource (manufacturer HYNIX, DC:1645/1644/1640), Conevo
+      (SKHYNIX, DC:24+/FBGA), Hongte (SKHYNIX, BGA), Atosn (SKHYNIX, 3 linhas), Zeano
+      (Skhynix, PN bare "H9HKNNNCRMMU" também catalogado). OMO Electronic (catálogo próprio)
+      confirma como 1 dos só 2 PNs indexados sob o prefixo "H9HKNNNCRM" — o outro é o
+      CRMAVAR-NEH já confirmado. Sem campo estruturado de densidade específico encontrado;
+      capacidade inferida do código pn[7]='C'→4GB, já confirmado 6x nesta família (o mais
+      saturado). confidence=manual.
+
+  - part_number: "H9HKNNNBRMMUUR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9HKNNNBRMMUUR-NEH"
+    notes: >
+      Código 'B'→2GB (só 1 known_part antes desta rodada: H9HKNNNBTUMUBR-NLH, 2026-07-09).
+      Mid-fill "RMMU", genuinamente distinto do "TUMU" já confirmado. 8 distribuidores
+      independentes: YIC, Ariat, Atosn, Sense Electronic, IC Components, Sierra IC, Green
+      Light, Chipsea — manufacturer "HY" (abreviação de Hynix) na maioria + OMO Electronic
+      confirma "SK Hynix Inc" por extenso. Sem campo estruturado de densidade próprio;
+      capacidade inferida do código já mapeado. confidence=manual.
+
+  - part_number: "H9HKNNNBTUMUAR-NLH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9hknnnbtumuar-nlh.html"
+    notes: >
+      2ª confirmação do código 'B'→2GB nesta rodada. Mid-fill "TUMUA" (irmão do já confirmado
+      "TUMUB" — sufixo final diferente, não é duplicata). WinSource (via DigiPart, fetch
+      direto) tem campo ESTRUTURADO: "LPDDR4-3200 (16Gb)" — 16Gb÷8=2GB, confirmação direta,
+      não inferência. 12 distribuidores independentes no total (Conevo, WinSource, Sunether,
+      Zeano, RX, Semicon, Hongte, GlobalTek, Unicom, New Strength, OMO, Sierra, Green Light,
+      Chipsea). confidence=manual.
+
+  - part_number: "H9HKNNNDBUMUBR-NMH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "3GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9HKNNNDBUMUBR-NMH"
+    notes: >
+      Código 'D'→3GB (só 1 known_part antes desta rodada: H9HKNNNDGUMUBR-NMH, 2026-07-10).
+      Mid-fill "DBUMU", genuinamente distinto do "DGUMU" já confirmado. 12 distribuidores
+      independentes: NetSource, Tist, Depu, YIC, Ariat, Kepictronics, GlobalTek, New
+      Strength, OMO, IC Components, Sierra, Green Light, Chipsea — manufacturer SK Hynix/
+      SKHYNIX/HYNIX consistente. Sem campo estruturado de densidade próprio; capacidade
+      inferida do código já mapeado. confidence=manual.
+
+  - part_number: "H9HKNNNDGUMUAR-NLH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "3GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9hknnndgumuar-nlh.html"
+    notes: >
+      2ª confirmação do código 'D'→3GB nesta rodada. Irmão de sufixo do já confirmado
+      "DGUMUBR-NMH" (mesmo mid-fill "DGUMU", sufixo final "AR-NLH" em vez de "BR-NMH" — PN
+      diferente). WinSource (via DigiPart, fetch direto) tem campo ESTRUTURADO: "LPDDR4-3200
+      (24Gb)" — 24Gb÷8=3GB, confirmação direta. 10 distribuidores independentes (Conevo,
+      WinSource, Zeano, Shengyu, Semicon, New Strength, OMO, Sierra, Green Light, Chipsea).
+      ⚠ Allchip e SILITECH rotularam manufacturer "SAMSUNG" — mesmo padrão de mislabel já
+      visto nesta sessão, não usado como fonte (8 outras fontes convergem em SK Hynix).
+      confidence=manual.
+
+  - part_number: "H9HKNNNEBMMUER-NMH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "6GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9HKNNNEBMMUER-NMH"
+    notes: >
+      Reforço do código 'E'→6GB (2 known_parts antes: H9HKNNNEBUMUBR-NMH e H9HKNNNEBMAVAR-NEH,
+      2026-07-09). Mid-fill "BMMU", distinto de "BUMU"/"BMAV" já confirmados. 12
+      distribuidores independentes (KaiLiYuan, Zeano, Shengyu, Depu, Hongte, YIC, Ariat, New
+      Strength, OMO "SK Hynix Inc", IC Components, Sierra, Haode, Chipsea). Sem campo
+      estruturado de densidade próprio; capacidade inferida do código já mapeado (agora 3ª
+      confirmação do 'E' nesta família). confidence=manual.
+
+  - part_number: "H9HKNNNCRMMUDR-NMH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9hknncrmmudr-nmh.html"
+    notes: >
+      PN buscado na bancada numa 2ª rodada do dia (2026-07-14), desta vez completo (18
+      caracteres, sem truncamento). Mesmo mid-fill "RMMU" do H9HKNNNCRMMUER-NMH já submetido
+      acima, código final "DR" em vez de "ER" — PN diferente. WinSource (via DigiPart, fetch
+      direto) tem campo ESTRUTURADO muito específico: "LPDDR4X-3733 x64 (32Gb)" — 32Gb÷8=4GB,
+      bate exato com pn[7]='C'→4GB, e o "x64" confirma a arquitetura de barramento da família
+      (tip: "Era 1 barramento x64"). Também em Sierra IC e Green Light Electronics
+      (manufacturer "SKHY", abreviação). 9ª confirmação do código 'C' nesta família.
+      confidence=manual.

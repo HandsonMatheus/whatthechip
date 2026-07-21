@@ -1,0 +1,104 @@
+# Submissão known_parts — SanDisk, família SDAD (eMCP)
+# Origem: investigação a partir do PN SDADL2BP32G (debug do estoque, 13/07/2026).
+# Ver INVESTIGACAO_sandisk_sdad_2026-07-13.md para o mapa completo do cluster.
+#
+# 1 PN confidence=manual (fonte forte não-tradicional, coreboot) + 4 PNs confidence=distributor
+# (EXCEÇÃO DE SOURCING aprovada pelo dono 2026-07-13 especificamente pra família SDAD, que
+# aparenta não ter datasheet público/ser NDA-only — ver §6 da investigação). Os demais ~8 PNs do
+# cluster (< 3 fontes convergentes, ou identidade ambígua) continuam de fora — regra "excluir, não
+# adivinhar" ainda vale pra esses.
+#
+# Uso (o DONO roda, nunca o chat):
+#   python manage.py submit_known_parts submissions/sandisk_sdad_2026-07-13.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/sandisk_sdad_2026-07-13.yaml --commit    # grava (submitted, oculto) + aprovar no admin depois
+#
+# ⚠ 2026-07-13, retry: "SDADB48K16G" PUXADO FORA deste arquivo — o --commit quebrou com
+# IntegrityError (uniq_knownpart_part_number_norm), ou seja, já existe um KnownPart com esse PN
+# normalizado no banco local, salvo com outra formatação (provável "SDADB48K-16G", com traço) —
+# o lookup por part_number EXATO do comando não achou a linha existente, tentou inserir de novo e
+# o banco barrou. Rode o precheck (comando dado no chat) pra ver o que já existe antes de decidir
+# se readiciona esse PN aqui (ele não pode voltar com a MESMA grafia sem traço — vai colidir de
+# novo; teria que ser corrigido direto no admin, não por este comando).
+
+brand: "SanDisk"
+known_parts:
+  - part_number: "SDADA4CR128G"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    emcp_nand: "128GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: manual
+    notes: >
+      NAND 128GB: sufixo declarativo padrão SanDisk (-128G), convenção já usada e confirmada em
+      toda a marca (ver SANDISK.md §2). RAM LPDDR4X 4GB: confirmada via coreboot (firmware Google
+      ChromeOS, board "kukui", MediaTek MT8183), commit
+      640ca69c0589b2337d2f319c59dd937767be6036 — arquivo
+      sdram-lpddr4x-SDADA4CR-128G-4GB.c com parametros reais de inicializacao DDR (impedancia,
+      write-leveling), mensagem do commit "Support SANDISK SDADA4CR-128G ... EMCP LPDDR4X DDR
+      bootup ... TEST=Boots correctly on EMCP DRAM", revisado por engenheiro Chromium/Google.
+      NAO e datasheet SanDisk oficial (nenhum foi encontrado publicamente para a familia SDAD
+      apos pesquisa em 6 frentes independentes, 2026-07-13 — familia provavelmente OEM/NDA-only)
+      — e evidencia de engenharia de terceiro testada funcionalmente, tratada como equivalente a
+      Tier-1 pela natureza da fonte. Sinalizado para revisao do dono por ser fonte atipica.
+    source_url: "https://github.com/coreboot/coreboot/commit/640ca69c0589b2337d2f319c59dd937767be6036"
+
+  - part_number: "SDADL2BP32G"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    emcp_nand: "32GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: distributor
+    notes: >
+      EXCEÇÃO DE SOURCING aprovada pelo dono 2026-07-13 (família SDAD sem datasheet público —
+      ver INVESTIGACAO_sandisk_sdad_2026-07-13.md). NAND 32GB: sufixo declarativo padrão SanDisk.
+      RAM: notação de mercado "32+3" (convenção BR/PY = ambos já em GB, ver SANDISK.md §3) = 3GB;
+      GERAÇÃO LPDDR3 é PRESUMIDA pela convenção de ball-count do setor (221-ball/221FBGA citado
+      nas fontes) — nenhuma fonte nomeia "LPDDR3" explicitamente. Fontes convergentes
+      (não-Tier-1, 5 domínios independentes): censtry.com, jotrin.com, win-source.net, arrow.com
+      (sob marca Western Digital), omo-ic.com — todas concordam em "32+3, 221(F)BGA". Cross-ref
+      de dispositivo (não-Tier-1, só apoio): serviceemmc.com lista SDADL2BP-32G = FIG-LA1 (Huawei
+      P Smart 2017), que segundo GSMArena tem variante oficial 32GB/3GB RAM — consistente, não
+      confirmatório. ATENÇÃO: existe PN "SDADL28P-32G" com specs idênticas em outras 3 fontes
+      (ebay.com, chinahao.com, worldwayid.com) — pode ser o MESMO chip com grafia B/8 divergente
+      entre bases de distribuidor, ou SKU distinto; NÃO submetido por essa ambiguidade de
+      identidade (não por falta de fonte) — ver decisão em §4 da investigação.
+    source_url: "https://www.censtry.com/product/sandisk/sdadl2bp-32g.html"
+
+  - part_number: "SDADF4AP16G"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: distributor
+    notes: >
+      EXCEÇÃO DE SOURCING aprovada pelo dono 2026-07-13 (mesma família SDAD, ver
+      INVESTIGACAO_sandisk_sdad_2026-07-13.md). NAND 16GB: sufixo declarativo. RAM: notação
+      "16+2" (convenção BR/PY = GB, ver SANDISK.md §3) = 2GB; GERAÇÃO LPDDR3 presumida por
+      ball-count (221-ball/221 balls citado nas fontes) — uma fonte (yoycart.com) diz "3rd
+      generation" (única a quase nomear a geração diretamente). Fontes convergentes
+      (não-Tier-1, 4 domínios): octopart.com (existência + distribuidores reais: ICPartonline,
+      Fmall, Shengyu Electronics), chinahao.com, yoycart.com, hkinventory.com — todas concordam
+      em "16+2, 16G EMCP, 221 ball". Cross-ref de dispositivo (não-Tier-1, só apoio):
+      serviceemmc.com lista SDADF4AP-16G = DRA-LX2 (Huawei Y5 Prime 2018, MediaTek MT6739,
+      2GB RAM/16GB ROM conforme specs públicas do aparelho) — consistente.
+    source_url: "https://octopart.com/sdadf4ap-16g-sandisk-84695914"
+
+  - part_number: "SDADA4CR64G"
+    chip_type: "eMCP"
+    subtype: "LPDDR4"
+    emcp_nand: "64GB"
+    emcp_ram: "LPDDR4 4GB"
+    confidence: distributor
+    notes: >
+      EXCEÇÃO DE SOURCING aprovada pelo dono 2026-07-13 (mesma família SDAD, ver
+      INVESTIGACAO_sandisk_sdad_2026-07-13.md). NAND 64GB: sufixo declarativo. RAM: notação
+      "64+32" (32 em Gb ÷ 8 = 4GB); MÚLTIPLAS fontes nomeiam "LPDDR4" explicitamente (não só
+      ball-count): yoycart.com ("SanDisk EMCP 64GB 4GB spot SDADA4CR-64G LPDDR4 chip"),
+      rlitl.com ("EMCP64GB+32Gb"), aliexpress.com, alibaba.com, win-source.net — 5 domínios
+      convergentes. ⚠ CONFLITO NÃO RESOLVIDO: ball-count aparece como "254FBGA" na maioria das
+      fontes mas "BGA153" em pelo menos 1 anúncio Alibaba — 153 não bate com nenhum dos dois
+      tamanhos padrão da família (221/254), provável erro de digitação numa das fontes, mas não
+      confirmado qual. Revisar com atenção extra por causa desse conflito antes de aprovar.
+      (⚠ NÃO confundir com SDADA4DR-64G — sufixo DR, PN diferente, esse sim com NAND/pacote
+      confirmados via LCSC estruturado mas SEM nenhuma fonte de RAM — ficou de fora da submissão.)
+    source_url: "http://www.rlitl.com/product/showproduct.php?id=1744"

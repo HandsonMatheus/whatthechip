@@ -1,0 +1,201 @@
+# Submissão de known_parts — SK Hynix, família H26M (eMMC standalone, JÁ EXISTENTE)
+# Gerado a partir da investigação do PN H26M42002GSR (busca na bancada, 2026-07-10).
+# SEM fix de gramática — todas as chaves usadas (3/4/5/6/7/8) já estavam no mapa HYX_EMMC_CAP.
+#
+# ⚠ CORREÇÃO DE PROCESSO (pedido do dono, 2026-07-10): a 1ª versão desta rodada entregou só o
+# PN alvo, com a racionalização "o código já está bem confirmado". O dono corrigiu: o objetivo
+# nunca é achar 1 PN, é achar OUTROS da mesma família que ainda não temos — mesmo quando a chave
+# já é sólida. Voltei e fiz varredura ampla: descobri que a família tinha DOIS códigos de
+# capacidade NUNCA confirmados por known_part nenhum (código '3'=4GB e '8'=128GB, apesar de
+# mapeados desde sempre) + uma linha automotiva inteira (sufixo "103", organização SDP/DDP/QDP/
+# ODP) que não tinha nenhuma representação. Esta versão fecha essas lacunas.
+#
+# FONTES NOVAS desta rodada:
+#   [A] Elnec (fabricante de programadores de chip, fetch direto) — mesmo tipo de fonte usada
+#       no PN alvo, tabela de decodificação de part number confirma "3x = Density: 4GB".
+#   [B] Octopart (fetch direto) — título+descrição do distribuidor WinSource: "4GB eMMC Nand
+#       Flash memory chip". ⚠ O resumo em prosa do WebSearch tinha errado aqui, afirmando
+#       "32 gigabytes" pro mesmo PN — só confiei depois de abrir a fonte direto (Elnec+Octopart
+#       batendo em 4GB, contradizendo o resumo automático).
+#   [C] DigiPart (fetch direto, distribuidores WinSource + Quest Components com descrição
+#       própria): H26M42002GMR = 8GB.
+#   [D] Preduo — página estruturada "SKhynix Part Number List" (fetch direto, tabela dedicada,
+#       não é anúncio de produto único). Cruzei TODAS as entradas que já tinham datasheet
+#       oficial confirmado nesta e em rodadas anteriores (H26M41208HPR=8GB, H26M52208FPR=16GB,
+#       H26M51002KPR=16GB, H26M64208EMR=32GB, H26M62002JPR=32GB, H26M78208CMR=64GB,
+#       H26M74002HMR=64GB) — todas batem exatamente com o datasheet, o que dá confiança na
+#       tabela como um todo. Usei essa tabela pra achar os PNs genuinamente novos abaixo,
+#       incluindo o único código '8'=128GB (H26M88002AMR) que existe pra esta família — ele
+#       simplesmente não aparecia em nenhum dos datasheets oficiais que eu já tinha achado
+#       (2015/2017/2020), mas está documentado aqui como NAND "3D-V2", geração diferente das
+#       datasheets anteriores.
+#
+# Todos confidence=manual (broker estruturado ou fonte técnica de terceiro, não datasheet do
+# fabricante em si — mesmo padrão já usado nesta família pra fontes não-datasheet).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h26m_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h26m_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H26M42002GSR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.elnec.com/en/device/Hynix/H26M42002GSR%20[FBGA153]"
+    notes: >
+      PN original buscado na bancada. Elnec (fabricante de programadores de chip, fetch
+      direto): tabela de part number description confirma "e-NAND Multi-type: 4x = Density:
+      8GB" pra este PN especificamente. Bate com pn[4]='4'→8GB, já mapeado e confirmado 5x
+      via datasheet oficial em rodadas anteriores.
+
+  - part_number: "H26M42002GMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h26m42002gmr.html"
+    notes: >
+      Irmão do alvo (mesmo miolo "42002", sufixo "GMR" em vez de "GSR" — variante de package
+      material). WinSource (via DigiPart, fetch direto): "Managed NAND Flash Serial e-MMC 3.3V
+      64G-bit 16G/8G x 4-bit/8-bit 153-Pin FBGA" — 64Gbit÷8=8GB. Corroborado por Quest
+      Components (via DigiPart): "8GB EMMC MEMORY, NAND FLASH, FBGA153" — explícito, sem conta.
+      Também vários distribuidores rotulam o PN com "(8GB)"/"8GB" no próprio nome do SKU
+      (Chipsea, GlobalTek).
+
+  - part_number: "H26M31002GPR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.elnec.com/en/device/SK%20Hynix/H26M31002GPR%20[FBGA153]"
+    notes: >
+      Chave '3'→4GB NUNCA tinha sido confirmada nesta família (mapeada desde sempre, mas sem
+      known_part). Elnec (fetch direto): "e-NAND Multi-type: 3x = Density: 4GB". Corroborado
+      por Octopart (fetch direto): título oficial "Hynix H26M31002GPR — 4GB eMMC Nand Flash
+      memory chip" + descrição do distribuidor Win Source "4GB eMMC Nand Flash memory chip".
+      ⚠ O resumo em prosa do WebSearch tinha afirmado errado "32 gigabytes" pra este PN — só
+      confiei depois de abrir Elnec e Octopart diretamente e ver os dois batendo em 4GB.
+
+  - part_number: "H26M31001HPR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/part-number-list/skhynix-part-number-list"
+    notes: >
+      2ª confirmação independente da chave '3'→4GB, PN DIFERENTE do anterior (sufixo "1HPR" em
+      vez de "2GPR" — geração/processo diferente: "eMMC4.5, 1ynm 32Gb" vs a geração eMMC5.x mais
+      nova). Tabela "SKhynix Part Number List" do Preduo (fetch direto) — todas as outras 7
+      linhas dessa mesma tabela pra H26M batem exatamente com datasheet oficial já confirmado
+      em rodadas anteriores, o que dá confiança na tabela como fonte.
+
+  - part_number: "H26M88002AMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "128GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/part-number-list/skhynix-part-number-list"
+    notes: >
+      Chave '8'→128GB NUNCA tinha sido confirmada nesta família (só H26T, família irmã mais
+      nova, tinha essa capacidade confirmada). Mesma tabela Preduo (fetch direto): "H26M88002AMR
+      128GB eMMC5.1 3D-V2 128Gb 11.5x13x1.0 153ball FBGA". Geração NAND "3D-V2", diferente dos
+      datasheets 1ynm/1znm já usados nesta família — explica por que não apareceu nos
+      datasheets de 2015/2017/2020 já achados (são de gerações NAND anteriores).
+
+  - part_number: "H26M41103HPRA"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/part-number-list/skhynix-part-number-list"
+    notes: >
+      Linha automotiva "103" (organização SDP, single-die) — sufixo diferente da linha "208"
+      já toda confirmada em rodada anterior. Mesma tabela Preduo, seção "eMMC Automotive Product
+      Part Number": "H26M41103HPRA 8GB SDP -40°C~85°C AT". Bate com pn[4]='4'→8GB, já mapeado.
+
+  - part_number: "H26M41103HPRI"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/part-number-list/skhynix-part-number-list"
+    notes: >
+      Mesma linha "103"/SDP do PN acima, grade IT em vez de AT. Tabela Preduo: "H26M41103HPRI
+      8GB SDP -40°C~85°C IT". Bate com pn[4]='4'→8GB.
+
+  - part_number: "H26M52103FMRA"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "16GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/part-number-list/skhynix-part-number-list"
+    notes: >
+      Linha automotiva "103" (organização DDP, dual-die). Tabela Preduo: "H26M52103FMRA 16GB
+      DDP -40°C~85°C AT". Bate com pn[4]='5'→16GB, já mapeado.
+
+  - part_number: "H26M52103FMRI"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "16GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/part-number-list/skhynix-part-number-list"
+    notes: >
+      Mesma linha "103"/DDP, grade IT. Tabela Preduo: "H26M52103FMRI 16GB DDP -40°C~85°C IT".
+      Bate com pn[4]='5'→16GB.
+
+  - part_number: "H26M64103EMRA"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/part-number-list/skhynix-part-number-list"
+    notes: >
+      Linha automotiva "103" (organização QDP, quad-die). Tabela Preduo: "H26M64103EMRA 32GB
+      QDP -40°C~85°C AT". Bate com pn[4]='6'→32GB — reforça de novo a ressalva do tip
+      "H26M64...=32GB, NÃO 64GB".
+
+  - part_number: "H26M64103EMRI"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/part-number-list/skhynix-part-number-list"
+    notes: >
+      Mesma linha "103"/QDP, grade IT. Tabela Preduo: "H26M64103EMRI 32GB QDP -40°C~85°C IT".
+      Bate com pn[4]='6'→32GB.
+
+  - part_number: "H26M78103CCRA"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "64GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/part-number-list/skhynix-part-number-list"
+    notes: >
+      Linha automotiva "103" (organização ODP, octal-die). Tabela Preduo: "H26M78103CCRA 64GB
+      ODP -40°C~85°C AT". Bate com pn[4]='7'→64GB, já mapeado.
+
+  - part_number: "H26M78103CCRI"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "64GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/part-number-list/skhynix-part-number-list"
+    notes: >
+      Mesma linha "103"/ODP, grade IT. Tabela Preduo: "H26M78103CCRI 64GB ODP -40°C~85°C IT".
+      Bate com pn[4]='7'→64GB. Fecha o par AT/IT da linha "103" pras 4 capacidades (8/16/32/64GB).

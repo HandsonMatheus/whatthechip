@@ -1,0 +1,83 @@
+# Submissão de known_parts — Samsung, família KLM, cap 'A'(16GB) + gen 'F'(eMMC 4.5/4.41)
+# PN alvo: KLMAG4FE4B (busca 2026-07-10). Grammar já decodifica certo (SAM_FLASH_CAP['A']=16GB,
+# SAM_EMMC_GEN['F']=eMMC 4.5, pn_length=10 ✓) — cluster completo coletado no mesmo combo cap+gen.
+#
+# 4 PNs confirmados diretamente (fonte cita a string exata) + 1 (o alvo) por composição:
+#   - KLMAG4FE3B-A001: Tier-1 — datasheet Samsung oficial (alldatasheet ID 1132355, 37 páginas,
+#     link direto samsung.com/Products/Semiconductor, "e.MMC 4.41 Specification compatibility").
+#   - KLMAG4FEJA-A001/-A002/-B001: Preduo (tier abaixo de "distribuidor B2B rastreável" na
+#     hierarquia do projeto) — cada um confirmado individualmente na ficha de produto
+#     (Manufacturer=Samsung, Type=eMMC, Sub-Type=eMMC 4.41, Package=BGA, Density=16GB).
+#   - KLMAG4FE4B (ALVO): ⚠ SEM fonte citando a string exata — decisão do dono (2026-07-10,
+#     mesmo padrão do caso K3QF5F50AMEGCE) de registrar por composição: mesma base "KLMAG4F"
+#     (cap 'A'=16GB + gen 'F'=eMMC4.5) confirmada 4x acima; só o código de die "E4B" difere de
+#     "E3B" (Tier-1 confirmado) por 1 caractere — mesmo padrão dos códigos E4A/EJA/E3B/EAB, todos
+#     reais nesta família. confidence=distributor, nota deixa a composição explícita.
+brand: "Samsung"
+known_parts:
+  - part_number: "KLMAG4FE3BA001"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1132355/SAMSUNG/KLMAG4FE3B-A001.html"
+    notes: >
+      Tier-1: datasheet Samsung oficial via alldatasheet (ID 1132355, 37 páginas,
+      1251.44 Kbytes, Direct Link http://www.samsung.com/Products/Semiconductor).
+      Descrição: "e.MMC 4.41 Specification compatibility". pn[3]='A'→16GB
+      (SAM_FLASH_CAP), pn[6]='F'→eMMC 4.5 (SAM_EMMC_GEN). Base do cluster
+      'KLMAG4F' — mesma combinação cap+gen do PN alvo (KLMAG4FE4B).
+
+  - part_number: "KLMAG4FEJAA001"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.preduo.com/product/emmc/emmc-4-41/klmag4feja-a001"
+    notes: >
+      Preduo SKU WP01258 — ficha de produto individual confirma Manufacturer=Samsung,
+      Type=eMMC, Sub-Type=eMMC 4.41, Package=BGA, Density=16GB. Mesma base 'KLMAG4F'
+      do cluster (cap 'A'=16GB, gen 'F'=eMMC4.5), die "EJA".
+
+  - part_number: "KLMAG4FEJAA002"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.preduo.com/product/emmc/emmc-4-41/klmag4feja-a002"
+    notes: >
+      Preduo SKU WP01259 — ficha de produto individual confirma Manufacturer=Samsung,
+      Type=eMMC, Sub-Type=eMMC 4.41, Package=BGA, Density=16GB. Variante de sufixo
+      irmã de KLMAG4FEJA-A001 (mesmo die "EJA").
+
+  - part_number: "KLMAG4FEJAB001"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.preduo.com/product/emmc/emmc-4-41/klmag4feja-b001"
+    notes: >
+      Preduo SKU WP01249 — ficha de produto individual confirma Manufacturer=Samsung,
+      Type=eMMC, Sub-Type=eMMC 4.41, Package=BGA, Density=16GB. Variante de sufixo
+      irmã de KLMAG4FEJA-A001/A002 (mesmo die "EJA"), cross-referenciada na própria
+      página do KLMAG4FE3B-A001 como "related product".
+
+  - part_number: "KLMAG4FE4B"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: distributor
+    notes: >
+      PN original buscado. SEM fonte citando a string exata "KLMAG4FE4B" — busca
+      exaustiva (Samsung oficial, alldatasheet, Octopart, Preduo, LCSC, distribuidores)
+      não encontrou. Registrado por composição (decisão do dono 2026-07-10, mesmo
+      padrão do caso K3QF5F50AMEGCE): mesma base "KLMAG4F" (cap 'A'=16GB + gen
+      'F'=eMMC4.5) confirmada 4x nesta submissão — só o código de die "E4B" difere
+      de "E3B" (Tier-1, KLMAG4FE3B-A001) por 1 caractere, mesmo padrão dos códigos
+      E4A/EJA/E3B/EAB, todos reais e documentados nesta família. Grammar já decodifica
+      certo hoje (16GB, eMMC4.5) — este known_part só formaliza o PN exato no banco.

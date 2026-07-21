@@ -1,0 +1,84 @@
+# Submissão de known_parts — SK Hynix, família H9TQ (eMCP LPDDR3, JÁ EXISTENTE).
+# Gerado a partir da investigação do PN H9TQ64A8JTMC (busca na bancada, 2026-07-14) — pn[4:6]
+# ='64' (NAND 8GB) e pn[6:8]='A8' (RAM 1GB), ambos já mapeados e já decodificando certo
+# (grammar_complete=true, RENTÁVEL). SEM fix de gramática — puro reforço Trilha B. Este é o
+# primeiro known_part confirmado especificamente pra combinação NAND 64/65 + RAM A8 (1GB) —
+# o tip já documentava o código A8=1GB no mapa, mas os exemplos confirmados citados nele eram
+# todos de outras combinações (AA/AB/AC/AD com NAND 17/18/26/27/52/64).
+#
+# ⚠ ACHADO (mesmo padrão do H26M64208EMR desta sessão): o fuzzy_suggestions do debug só
+# oferecia variantes com "G" no meio (H9TQ64A8GTMC/GTAC/GTCC/GTDC) — o PN da bancada tem "J"
+# (H9TQ64A8JTMC). Confirmei que "J" é uma forma real e distinta, não erro de leitura: Sunether
+# (via DigiPart) tem entrada PRÓPRIA "H9TQ64A8JTMCUR-KUM" (SK Hynix, 30025un); MountainView,
+# Sense Electronic e SILITECH também confirmam "H9TQ64A8JTMC" (manufacturer "HYNYX" — parece
+# troca de letras de "HYNIX", mesmo tipo de erro tipográfico já visto com outras grafias
+# nesta sessão, não é um fabricante diferente real); Chipsea confirma limpo ("SKHYNIX", BGA,
+# 31000un). O "G"/"J" nesta posição fica FORA do range que a gramática decodifica (pn[4:6] e
+# pn[6:8] só cobrem NAND+RAM) — é zona de sufixo/variante de fab, não afeta capacidade.
+#
+# CLUSTER (pedido permanente do dono — nunca parar em 1 PN): além do alvo, o próprio
+# catálogo da OMO Electronic (prefixo "H9TQ64A8") e o "see also" do DigiPart confirmaram a
+# variante "G" com fartura de fontes — incluída aqui. Também achei H9TQ65A8GTMC (código NAND
+# '65', mesma capacidade 8GB que '64' — o tip já documentava essa dualidade de código, esta é
+# a primeira vez que ela é confirmada com PN real e específico pra esta combinação com RAM A8).
+#
+# NÃO incluídos (evidência de fonte única, "excluir não adivinhar"): H9TQ64A8GTACUR-KUM,
+# H9TQ64A8GTBCUR-KUM, H9TQ64A8GTCCUR-KUM, H9TQ64A8GTDCUR-KUM — apareceram só no catálogo da
+# OMO (fonte única, sem cross-check em outro distribuidor) e têm uma 3ª posição de letra
+# (A/B/C/D) cujo significado não identifiquei — não adivinho o que essa posição codifica.
+# H9TQ64A8GTMCUR-KTM (só a Conevo lista, sem 2ª fonte independente — diferente do -KUM que
+# tem 6+ fontes) — mesmo critério, não incluído por ora.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9tq_2026-07-14.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9tq_2026-07-14.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9TQ64A8JTMCUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "eMMC 5.x 8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9TQ64A8JTMCUR-KUM"
+    notes: >
+      PN original buscado na bancada foi "H9TQ64A8JTMC" (base sem sufixo de order code) —
+      mesmo decode. Sunether (via DigiPart) tem entrada própria "H9TQ64A8JTMCUR-KUM" (SK
+      Hynix, 30025un). Confirmado também em MountainView, Sense Electronic (2 linhas) e
+      SILITECH pro PN base "H9TQ64A8JTMC" (manufacturer "HYNYX", provável erro tipográfico
+      de "HYNIX") e Chipsea (limpo, "SKHYNIX", BGA, 31000un). Bate com pn[4:6]='64'→8GB e
+      pn[6:8]='A8'→1GB, já mapeados — primeira confirmação de known_part especificamente pra
+      essa combinação NAND+RAM nesta família. confidence=manual.
+
+  - part_number: "H9TQ64A8GTMCUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "eMMC 5.x 8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/9c0/h9tq64a8gtmc-1190.html"
+    notes: >
+      Irmão do PN alvo (mesma chave NAND 64/RAM A8, mid-fill "G" em vez de "J" — variante de
+      fab/linha, fora do range que a gramática decodifica). Era o PN sugerido pelo próprio
+      fuzzy_suggestions do debug original. 6+ distribuidores independentes confirmam o
+      sufixo "-UR-KUM": Tist, Sunether, Atosn, Au Ling ("BGA"), Chipsea, OMO (catálogo
+      próprio, manufacturer HYNIX/"SK Hynix Inc"), Jiayi (103507un). confidence=manual.
+
+  - part_number: "H9TQ65A8GTMCUR-KTM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "eMMC 5.x 8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: manual
+    source_url: "https://www.nstechnology.com/parts/memory/h9tq65a8gtmc/"
+    notes: >
+      Irmão do PN alvo (código NAND '65' em vez de '64' — o tip já documentava "64/65=8GB"
+      como dualidade normal de código; esta é a 1ª confirmação com PN real e específico pra
+      essa combinação com RAM A8). 5+ distribuidores confirmam o sufixo "-UR-KTM": NetSource
+      ("DC:1432,1429"), Conevo, Sunether, Atosn (2 linhas), Grand power — todos manufacturer
+      SK HYNIX/SKHYNIX/HYNIX. Também listado (sem sufixo) em GlobalTek, New Strength, OMO,
+      Sierra IC, Haode, Chipsea. Bate com pn[4:6]='65'→8GB e pn[6:8]='A8'→1GB. confidence=manual.

@@ -1,0 +1,188 @@
+# Submissão de known_parts — SK Hynix, família H26M (eMMC standalone, JÁ EXISTENTE)
+# Gerado pelo chat de marca SK Hynix a partir da investigação do PN H26M41208HPRN
+# (busca na bancada, 2026-07-09). Família H26M e mapa HYX_EMMC_CAP JÁ EXISTIAM e já
+# decodificavam o PN buscado certo (known=true, grammar_complete=true, RENTÁVEL).
+# SEM fix de gramática nesta rodada — só Trilha B (known_parts) + reasoning novo no yaml.
+#
+# FONTE: datasheet OFICIAL SK Hynix "e-NAND Product Family eMMC5.1 Compatible -
+# Automotive" (Rev 1.8, Sep/2020, hospedado na DigiKey — é o datasheet do
+# FABRICANTE, não catálogo de terceiro):
+#   https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf
+# A seção "1.2 Product Line-up" (p.4) lista o Product Family INTEIRO: 4 capacidades
+# (8/16/32/64GB) × 4 grades de temperatura (AAT/AIT/IT/CT), com PN completo de cada
+# combinação — é uma tabela oficial do fabricante, não inferência. Por isso
+# confidence=confirmed (mesmo padrão do exemplo no docstring do submit_known_parts:
+# "datasheet SK Hynix rev.1.2" → confirmed).
+#
+# A tabela também corrobora, com prova direta do fabricante, a ressalva já existente
+# no tip da família: "H26M64...=32GB (NÃO 64GB)" — H26M64208EMRN é código pn[4]='6'
+# e a tabela confirma 32GB (Density column), não 64GB.
+#
+# Todos eMMC standalone: sem RAM (emcp_nand/emcp_ram vazios), capacity em GB.
+# Suffix final (Q/A/I/N) = grade de temperatura (AAT/AIT/IT/CT) — não tem campo
+# próprio no modelo, fica só documentado aqui e no reasoning da família.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h26m_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h26m_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  # --- CT (-25°C ~ 85°C, Commercial Temperature) ---
+  - part_number: "H26M41208HPRN"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: >
+      PN original buscado na bancada. Datasheet oficial SK Hynix, Product Line-up
+      (p.4), grade CT: "8GB H26M41208HPRN 64Gb x 1 11.5x13x0.8 153FBGA". pn[4]='4'
+      → 8GB, bate com o mapa HYX_EMMC_CAP já existente.
+
+  - part_number: "H26M52208FPRN"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: >
+      Datasheet oficial SK Hynix, Product Line-up (p.4), grade CT: "16GB
+      H26M52208FPRN 64Gb x 2". pn[4]='5' → 16GB, bate com o mapa.
+
+  - part_number: "H26M64208EMRN"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: >
+      Datasheet oficial SK Hynix, Product Line-up (p.4), grade CT: "32GB
+      H26M64208EMRN 64Gb x 4". pn[4]='6' → 32GB — confirma DIRETO do fabricante a
+      ressalva do tip "H26M64...=32GB (NÃO 64GB)".
+
+  - part_number: "H26M78208CMRN"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: >
+      Datasheet oficial SK Hynix, Product Line-up (p.4), grade CT: "64GB
+      H26M78208CMRN 64Gb x 8". pn[4]='7' → 64GB, bate com o golden já existente
+      (H26M74002HMR, mesmo código '7').
+
+  # --- AAT (-40°C ~ 105°C, Automotive) ---
+  - part_number: "H26M41208HPRQ"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade AAT: \"8GB H26M41208HPRQ\". Mesmo pn[4]='4'→8GB, grade automotiva -40~105°C."
+
+  - part_number: "H26M52208FPRQ"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade AAT: \"16GB H26M52208FPRQ\"."
+
+  - part_number: "H26M64208EMRQ"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade AAT: \"32GB H26M64208EMRQ\"."
+
+  - part_number: "H26M78208CMRQ"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade AAT: \"64GB H26M78208CMRQ\"."
+
+  # --- AIT (-40°C ~ 85°C, Automotive Industrial) ---
+  - part_number: "H26M41208HPRA"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade AIT: \"8GB H26M41208HPRA\"."
+
+  - part_number: "H26M52208FPRA"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade AIT: \"16GB H26M52208FPRA\"."
+
+  - part_number: "H26M64208EMRA"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade AIT: \"32GB H26M64208EMRA\"."
+
+  - part_number: "H26M78208CMRA"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade AIT: \"64GB H26M78208CMRA\"."
+
+  # --- IT (-40°C ~ 85°C, Industrial) ---
+  - part_number: "H26M41208HPRI"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade IT: \"8GB H26M41208HPRI\"."
+
+  - part_number: "H26M52208FPRI"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade IT: \"16GB H26M52208FPRI\"."
+
+  - part_number: "H26M64208EMRI"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade IT: \"32GB H26M64208EMRI\"."
+
+  - part_number: "H26M78208CMRI"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H26M%20Series.pdf"
+    notes: "Datasheet oficial SK Hynix, Product Line-up (p.4), grade IT: \"64GB H26M78208CMRI\"."

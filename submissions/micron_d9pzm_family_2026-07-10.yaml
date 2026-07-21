@@ -1,0 +1,327 @@
+# Submissão de known_parts — Micron, FBGA D9PZM + família MT41J256M16 (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9PZM
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9GZM, D9PCM, D9PTM, D9PXM, D9PZC) IGNORADO
+# por construção — já são KnownPart aprovado.
+#
+# ACHADO: D9PZM → MT41J256M16HA-093G:E. Prefixo MT41J = DDR3 padrão
+# (1,5V), mesma família já vista em D9LGQ. Capacidade: 256M × 16bit =
+# 4096Mb = 4Gb — confirmado via Octopart ("4Gb", "256M x 16",
+# "1.425V~1.575V"). chip_type="DDR3", interface="x16",
+# density_gbit="4Gb".
+#
+# Forward-lookup no prefixo "MT41J256M16" (2026-07-10) achou 28 PNs: 15
+# com fbga_code "D9*" (produção) + 13 "Z9*" (Engineering Sample,
+# EXCLUÍDOS). Um dos 15 "D9" (D9SMQ, "MT41J256M16LY-091G ES:N") tem
+# "ES" literal no PRÓPRIO part-number apesar do prefixo "D9" — mesmo
+# padrão de exceção já visto nos lotes JW738/JW999 (JWC10/JW602/JW603)
+# — EXCLUÍDO também. Restam 14 PNs de produção limpos (alvo + 13
+# irmãos). Nenhum tem part-name direto da Micron (campo vazio em toda a
+# leva) — capacidade e tipo apoiados na fórmula + confirmação Octopart
+# do alvo + convenção MT41J já estabelecida.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente —
+# regex ajustada pra pegar "ES:" além de "ES " isolado, depois do
+# incidente D9RZH). Sem sobreposição com nenhuma submissão anterior
+# (grep em submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9pzm_family_2026-07-10.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9pzm_family_2026-07-10.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41J256M16HA-093G:E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZM"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=MT41J256M16HA-093G%3AE"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-10): D9PZM → MT41J256M16HA-093G:E. Prefixo MT41J = DDR3
+      padrão (1,5V), mesma convenção já estabelecida nos lotes
+      D9LGQ/anteriores — diferente de MT41K (DDR3L, 1,35V). CAPACIDADE por
+      fórmula: 256M (profundidade) × 16bit (largura) = 4096Mb = 4Gb.
+      Confirmado via Octopart, campo estruturado direto: "4Gb", "256M x
+      16", "1.425V~1.575V" (faixa de tensão de DDR3 padrão, não DDR3L) —
+      fonte: https://octopart.com/search?q=MT41J256M16HA-093G%3AE. Campo
+      density_gbit (Gb), interface x16, convenção DDR discreta (CLAUDE.md
+      §6).
+
+  - part_number: "MT41J256M16RE-125:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9NZR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9NZR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16RE-125G:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9NZT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9NZT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16RE-15E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PBW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PBW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16RE-107:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PCZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PCZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16RE-107G:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PDH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PDH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16RE-15E IT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PWF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PWF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16HA-125:E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PXW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PXW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16HA-093:E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16HA-107G:E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9QGJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QGJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16HA-107:E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9QWN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QWN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16HA-093 J:E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9RZF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RZF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16LY-091G:N"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9SMP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SMP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M16HA-093 JP:E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "4Gb"
+    fbga_code: "D9SMW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SMW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M16, 2026-07-10). Mesma organização do alvo D9PZM
+      (MT41J256M16HA-093G:E): 256M × 16bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M16). Tipo DDR3 padrão confirmado pelo alvo via Octopart
+      ("1.425V~1.575V") + convenção MT41J já estabelecida nesta série. Sem
+      part-name individual da Micron para nenhum PN desta família (campo
+      vazio em todos os 15 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.

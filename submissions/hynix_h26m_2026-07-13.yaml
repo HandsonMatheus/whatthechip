@@ -1,0 +1,121 @@
+# Submissão de known_parts — SK Hynix, família H26M (eMMC standalone, JÁ EXISTENTE).
+# Gerado a partir da investigação do PN H26M31003GMR (busca na bancada, 2026-07-13).
+# SEM fix de gramática — chave '3'=4GB já está no mapa HYX_EMMC_CAP desde sempre.
+# pn[4]='3'→4GB bate exatamente com o decode atual (capacity='4GB' no debug da bancada).
+#
+# CONTEXTO: a chave '3'=4GB nunca apareceu em nenhum datasheet oficial encontrado até hoje
+# (ver reasoning da família no hynix.yaml: "códigos 3=4GB e 8=128GB não aparecem na lineup
+# oficial — mantidos por já estarem na gramática"). Só tinha 2 known_parts confirmando essa
+# chave (H26M31002GPR, H26M31001HPR, ambos manual, rodada 2026-07-10). Esta rodada soma mais
+# 2 PNs REAIS e DISTINTOS pra mesma chave — mais pontos de prova pra uma chave que nunca teve
+# datasheet oficial.
+#
+# BUSCA POR SIMILARES (pedido permanente do dono — nunca 1 só PN): a comparação estruturada do
+# Lisleapex listou 19 PNs sob o prefixo "H26M3" (todos com pn[4]='3', logo todos nominalmente
+# 4GB pela gramática). Verifiquei individualmente ~10 candidatos com maior chance de dado real
+# (páginas de produto Lisleapex/Octopart/Datasheets360/Censtry/Avaq). Critério: só entram PNs
+# com CAMPO ESTRUTURADO explícito (Memory Density/Organization/JESD-30, ou descrição de
+# distribuidor tipo "4G X 8 Flash... PBGA153"), nunca prosa narrativa da própria página.
+#
+# ⚠ ACHADO METODOLÓGICO (contaminação por IA em site de distribuidor): a página do Lisleapex
+# pra H26M31001FPR tem uma seção "Description"/FAQ claramente gerada por IA e ERRADA —
+# afirma fabricante "Samsung" (é Hynix) e capacidade "32GB"/"128GB" em blocos de texto
+# diferentes da MESMA página, se contradizendo. A TABELA de especificações estruturada da
+# mesma página (Memory Density/Organization/JESD-30 — dado de banco de peças, não prosa)
+# ficou consistente e bateu com outras 2 fontes independentes (ver notes do PN). Tratei a
+# prosa como ruído e só usei os campos estruturados — mesmo padrão de rigor já usado nesta
+# família (H8AC, rodada 2026-07-10, ignorou texto de FAQ corrompido/de outro produto).
+#
+# RODADA 2 (pedido do dono "só 2? colete mais", mesma sessão): ampliei a varredura com mais
+# fontes (Preduo tabela completa, Elnec, DigiPart "see also", AliExpress/imall) e achei mais
+# 1 PN real com dado específico de capacidade: H26M31002GRR.
+#
+# NÃO incluídos (dado insuficiente, contraditório, ou fonte única de baixo tier — "excluir não
+# adivinhar"):
+#   H26M31003FPR — aparece listado (Lisleapex comparison, Censtry, Octopart, DigiPart) mas
+#     NENHUMA fonte, em 2 rodadas de busca, tem campo estruturado de capacidade/densidade
+#     preenchido para ele especificamente.
+#     ↳ ATUALIZAÇÃO (2026-07-13/14, mesma sessão, técnica de busca melhor — OMO tag-browsing
+#       + fetch direto do DigiPart, testadas depois desta rodada em outras famílias): achado
+#       com fartura — 20+ distribuidores no DigiPart + inclusão no catálogo próprio da OMO.
+#       CONFIRMADO em submissions/hynix_h26m_rodada2_2026-07-13.yaml — a exclusão acima ficou
+#       desatualizada, mantida aqui só como histórico do que se sabia na hora.
+#   H26M31001EFR — pacote "FBGA-169"/169 pinos (Avaq), DIVERGENTE do padrão da família
+#     (BGA-153/FBGA-153 em todo o resto do H26M) e descrição genérica "Microprocessor
+#     Circuit"/"DRAM solutions" — sinal de dado cruzado/errado na base do distribuidor. Não
+#     incluí — pacote incompatível com a família não pode ser adivinhado como certo.
+#   H26M32001CAR, H26M34002AAR, H26M3A001AMR — apareceram na lista de 19 do Lisleapex mas as
+#     páginas de produto individuais não carregaram nenhum conteúdo (sem specs, sem descrição).
+#   H26M32001DAR — tem página própria em vários distribuidores (Octopart, WinSource, Kynix)
+#     mas nenhuma com campo de capacidade preenchido; aparece ao lado de "H26M31002GRR ...4G"
+#     num anúncio-pacote da AliExpress, mas o rótulo "4G"/"8G" desse anúncio específico não dá
+#     pra saber com certeza a qual dos PNs do pacote se aplica (o "8G" claramente é do
+#     H26M44001ECR, código '4'=8GB — mas "4G" pode ser só do GRR). Ambíguo — não incluí.
+#   H26M31001EFRR — só apareceu em listagens tipo "see also" de agregador (DigiPart), sem
+#     nenhuma fonte com dado próprio; um WebSearch tentou inferir "mesma capacidade que
+#     H26M31001HPR" por semelhança de nome — é especulação da ferramenta de busca, não uma
+#     fonte, então não usei.
+#
+# ARITMÉTICA: 4Gb×8=32Gbit total (organização "4GX8" = 4G endereços × 8 bits) = 4GB — bate com
+# "Memory Density: 34359738368 bit" (÷8 = 4.294.967.296 bytes = 4GiB) nas duas fontes estruturadas.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h26m_2026-07-13.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h26m_2026-07-13.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H26M31003GMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://octopart.com/h26m31003gmr-hynix-75605824"
+    notes: >
+      PN original buscado na bancada (2026-07-13), já decodificado corretamente pela gramática
+      (pn[4]='3'→4GB), só faltava known_part. 3 fontes estruturadas independentes convergem em
+      4GB: (1) Octopart/WinSource: "Managed NAND Flash Serial e-MMC 3.3V 32G-bit 8G/4G x
+      4-bit/8-bit" (32Gbit total = 4GB); (2) Lisleapex, tabela de especificações: "Memory
+      Density: 34359738368 bit" (÷8=4GB) + "Organization: 4GX8" + "JESD-30 Code: R-PBGA-B153"
+      (pacote igual ao resto da família); (3) AllDataSheet: datasheet oficial de 5 páginas
+      existente, Direct Link=skhynix.com (não abri o corpo do PDF — por isso confidence=manual,
+      não confirmed). Package BGA-153/VFBGA, 11.5×13mm — consistente com o resto do H26M.
+
+  - part_number: "H26M31001FPR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.lisleapex.com/product-h26m31001fpr"
+    notes: >
+      Irmão do PN alvo (mesma chave de capacidade '3', miolo "31001" em vez de "31003"). 3
+      fontes estruturadas independentes convergem em 4GB: (1) Lisleapex, tabela de
+      especificações: "Memory Density: 34359738368 bit" (÷8=4GB) + "Organization: 4GX8" +
+      "JESD-30 Code: R-PBGA-B153"; (2) Datasheets360: "Description: 4GX8, PBGA153" (campo
+      estruturado, PDF datasheet listado); (3) Octopart/Component Stockers USA: "4G X 8 Flash
+      3.3V Prom PBGA153". As 3 fontes batem exatamente no mesmo código de organização (4GX8) e
+      pacote (PBGA153). ⚠ A seção "Description"/FAQ em prosa da MESMA página Lisleapex está
+      contaminada por conteúdo gerado por IA e incorreta (afirma fabricante "Samsung" e
+      capacidades "32GB"/"128GB" contraditórias entre si) — ignorada; usei só a tabela de
+      especificações estruturada, que é consistente e bate com as outras 2 fontes.
+
+  - part_number: "H26M31002GRR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://imall.com/product/H26M31002GRR-EMMC-BGA153-4G-H26M32001DAR-H26M44001ECR-8G/Security-Protection-Consumer-Electronics-Games-Accessories/aliexpress.com/4000302190320/144-76171993/en"
+    notes: >
+      Achado na 2ª rodada de busca (dono pediu mais cobertura além dos 2 PNs iniciais). Irmão
+      do PN alvo (mesma chave '3', miolo "31002" — mesmo miolo do já confirmado H26M31002GPR,
+      sufixo "GRR" em vez de "GPR"). Fonte: anúncio de revenda AliExpress (mirror imall.com),
+      título do próprio vendedor "H26M31002GRR EMMC BGA153 4G" — campo estruturado (não prosa
+      de FAQ), pacote BGA153 bate com o resto da família. ⚠ Fonte ÚNICA e de tier mais baixo
+      que os outros 2 PNs desta submissão (revenda avulsa, não catálogo de distribuidor
+      B2B/agregador técnico) — tentei achar 2ª fonte independente (Octopart, WinSource,
+      Datasheets.com, Elnec) sem sucesso (páginas sem dado ou não carregaram). Consistente com
+      pn[4]='3'→4GB da gramática, sem contradição. Sinalizando o tier mais baixo para o dono
+      avaliar se quer aprovar mesmo assim ou pedir reforço de fonte.

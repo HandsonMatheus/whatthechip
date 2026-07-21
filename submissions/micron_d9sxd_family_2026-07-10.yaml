@@ -1,0 +1,159 @@
+# Submissão de known_parts — Micron, FBGA D9SXD + família MT51J256M32 (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9SXD
+# (não identificado na bancada, fila de revisão — SearchLog 10/07/2026 14:26).
+#
+# fuzzy_sugest. do debug (D9SDD, D9SFD, D9SHD, D9SND, D9SXB) IGNORADO por
+# construção — já são KnownPart aprovado (D9SDD e D9SFD, aliás, são da
+# família MT41K256M16 do lote anterior — puro acaso visual, nada a ver com
+# D9SXD; ver memória wtc-fuzzy-sugest-ja-confirmado-nao-pesquisar).
+#
+# ACHADO: D9SXD é GDDR5 — família MT51J, a MESMA já identificada no lote
+# D9SXC (2026-07-09: D9SXC → MT51J256M32HF-60:A, já submetido em
+# micron_d9sxc_family_2026-07-09.yaml). Aquele lote já tinha mapeado os
+# irmãos via forward-lookup mas não submeteu nenhum além do alvo da vez —
+# D9SXD é um desses irmãos, agora ele mesmo o alvo. Reaproveitei o
+# forward-lookup: prefixo "MT51J256M32" tem 13 PNs (7 produção "D9*" + 6
+# Engineering Sample "Z9*"), TODOS 256M×32bit=8192Mb=8Gb — variam só em
+# speed grade (-50/-60/-60S/-70/-80) e revisão (:A/:B). D9SXC (já
+# submetido) excluído daqui. Entram os outros 6 (alvo + 5 irmãos), todos
+# produção. NÃO inclui D9XGP (128M32HF-70:B, 4Gb — organização DIFERENTE,
+# metade da densidade, mencionado na investigação do lote D9SXC mas fora
+# do escopo desta busca por prefixo "256M32" — nenhum dos fuzzy_sugest./
+# alvo aponta pra ele, não pesquisei).
+#
+# ⚠ PENDENTE — rodei a query read-only de pré-checagem (aprendida no lote
+# D9PZQ) ANTES de finalizar esta submissão. Resultado ainda não recebido
+# do dono no momento em que este arquivo foi escrito — ver chat. Pode
+# precisar de edição pós-resultado (remover qualquer PN que colidir).
+#
+# METODOLOGIA: capacidade do alvo (D9SXD) confirmada por 3 fontes
+# independentes (Octopart campo estruturado "Density: 8 Gb" + AAA Chips
+# "GDDR5 SGRAM 8G-Bit" + IHS "8Gb") — bate exato com 256M×32bit=8192Mb=8Gb.
+# Os 5 irmãos usam a MESMA fórmula (organização invariante "256M32" dentro
+# do prefixo) sem verificação individual de distribuidor — mesmo padrão já
+# validado no lote D9PZQ/MT41K256M16. Campo density_gbit (Gb), convenção
+# GDDR/DDR discreta (CLAUDE.md §6) — mesma convenção usada em D9SXC e
+# D9TXS/MT58K. ⚠ Nota herdada do lote D9SXC: NÃO testei se o engine
+# roteia decode_density_type=micron pro campo density_gbit (vs capacity)
+# quando a família for aplicada na gramática — isso é só sobre o
+# known_part individual, que tem o campo certo independente da gramática.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9sxd_family_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/micron_d9sxd_family_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT51J256M32HF-70:A"
+    chip_type: "GDDR5"
+    subtype: "GDDR5"
+    interface: "x32"
+    density_gbit: "8Gb"
+    fbga_code: "D9SXD"
+    confidence: confirmed
+    source_url: "https://octopart.com/mt51j256m32hf-70:a-micron-66500227"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto, 2026-07-10):
+      D9SXD → MT51J256M32HF-70:A. Capacidade: conta pelo PN — 256M
+      (profundidade) × 32bit (largura) = 8192Mb = 8Gb. Confirmado por 3
+      fontes independentes na página estruturada do Octopart para ESTE PN
+      exato: campo técnico "Density: 8 Gb"; descrição do distribuidor AAA
+      Chips "DRAM Chip GDDR5 SGRAM 8G-Bit 256x32 1.5V 170-Pin FBGA"
+      (confirma GDDR5 e 8Gb); descrição IHS "...Volatile ic memory
+      0C~95C TC 1.3095V 8Gb 14mm". Mesma família/organização já confirmada
+      no lote D9SXC (2026-07-09, MT51J256M32HF-60:A, mesma densidade
+      8Gb — só muda o speed grade -60→-70). Campo density_gbit (Gb),
+      convenção DDR/GDDR discreta (CLAUDE.md §6). Obsoleto (Octopart:
+      "Lifecycle Status: Obsolete", introduzido 2017-01-31).
+
+  - part_number: "MT51J256M32HF-80:A"
+    chip_type: "GDDR5"
+    subtype: "GDDR5"
+    interface: "x32"
+    density_gbit: "8Gb"
+    fbga_code: "D9TCB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TCB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT51J256M32, 2026-07-10). Mesma organização do alvo D9SXD
+      (MT51J256M32HF-70:A): 256M × 32bit = 8192Mb = 8Gb — capacidade
+      invariante nesta família (muda só speed grade/revisão, nunca a
+      organização 256M32). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula já validada 2x nesta família
+      (D9SXC no lote D9SXC, D9SXD via Octopart neste lote) + identidade
+      direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT51J256M32HF-50:A"
+    chip_type: "GDDR5"
+    subtype: "GDDR5"
+    interface: "x32"
+    density_gbit: "8Gb"
+    fbga_code: "D9TNP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TNP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT51J256M32, 2026-07-10). Mesma organização do alvo D9SXD
+      (MT51J256M32HF-70:A): 256M × 32bit = 8192Mb = 8Gb — capacidade
+      invariante nesta família (muda só speed grade/revisão, nunca a
+      organização 256M32). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula já validada 2x nesta família
+      (D9SXC no lote D9SXC, D9SXD via Octopart neste lote) + identidade
+      direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT51J256M32HF-60S:A"
+    chip_type: "GDDR5"
+    subtype: "GDDR5"
+    interface: "x32"
+    density_gbit: "8Gb"
+    fbga_code: "D9TRZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TRZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT51J256M32, 2026-07-10). Mesma organização do alvo D9SXD
+      (MT51J256M32HF-70:A): 256M × 32bit = 8192Mb = 8Gb — capacidade
+      invariante nesta família (o sufixo "S" após o speed grade é variante
+      de pacote/processo, não afeta a organização 256M32). Sem verificação
+      individual em distribuidor para este PN específico; apoiado na
+      fórmula já validada 2x nesta família (D9SXC no lote D9SXC, D9SXD via
+      Octopart neste lote) + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT51J256M32HF-70:B"
+    chip_type: "GDDR5"
+    subtype: "GDDR5"
+    interface: "x32"
+    density_gbit: "8Gb"
+    fbga_code: "D9VVQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9VVQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT51J256M32, 2026-07-10). Mesma organização do alvo D9SXD
+      (MT51J256M32HF-70:A, mesmo speed grade -70, revisão ":B" em vez de
+      ":A"): 256M × 32bit = 8192Mb = 8Gb — capacidade invariante nesta
+      família (revisão de die não afeta densidade). Sem verificação
+      individual em distribuidor para este PN específico; apoiado na
+      fórmula já validada 2x nesta família (D9SXC no lote D9SXC, D9SXD via
+      Octopart neste lote) + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT51J256M32HF-80:B"
+    chip_type: "GDDR5"
+    subtype: "GDDR5"
+    interface: "x32"
+    density_gbit: "8Gb"
+    fbga_code: "D9VVR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9VVR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT51J256M32, 2026-07-10). Mesma organização do alvo D9SXD
+      (MT51J256M32HF-70:A, speed grade -80, revisão ":B"): 256M × 32bit =
+      8192Mb = 8Gb — capacidade invariante nesta família. Sem verificação
+      individual em distribuidor para este PN específico; apoiado na
+      fórmula já validada 2x nesta família (D9SXC no lote D9SXC, D9SXD via
+      Octopart neste lote) + identidade direta da API oficial Micron para
+      ESTE fbga_code.

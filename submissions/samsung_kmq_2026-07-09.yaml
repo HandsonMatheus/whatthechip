@@ -1,0 +1,58 @@
+# Submissão de known_parts — Samsung, família KMQ (eMCP LPDDR3 + eMMC 5.1)
+# Gerado a partir do PN não identificado KMQN10006A (busca em 2026-07-09).
+#
+# ⚠ CORREÇÃO — mesmo dia (2026-07-09): a primeira versão deste arquivo tinha
+# emcp_ram="LPDDR3 1.5GB" pra estes PNs, baseado em fontes web (yoycart
+# "1.5G+8G" + Preduo "8+12" + cruzamento com specs de aparelho J500F/J320).
+# Ao checar dados JÁ EXISTENTES localmente (seed_known_parts.json, que tem
+# known_parts de sessões anteriores), achei DUAS confirmações FÍSICAS
+# independentes da chave 'N1' = 1GB, não 1.5GB: KMQN10006B (esteira eMiner,
+# nota "chip físico confirmado", 2026-05-13) e KMFN10012A-B214 (família KMF,
+# mesma chave 'N1', "primeira confirmação física" segundo a nota da própria
+# KMQN10006B). Chip físico lido na esteira > eco de listagem de distribuidor
+# (yoycart/Preduo/Alibaba podem estar repetindo o mesmo erro original — o
+# projeto já viu isso antes). SUBSTITUÍ 1.5GB por 1GB. Ver correção completa
+# no addendum 2026-07-09 de INVESTIGACAO_sam_emcp_cap_X6_2026-07-03.md.
+#
+# Resultado: a chave 'N1' do SAM_EMCP_CAP (hoje [N1, 8GB, 1GB]) estava CERTA
+# desde o início — não é um bug. Esta submissão não corrige capacidade
+# nenhuma; só registra os PNs buscados como known_parts confirmados (o alvo
+# original "não achou" e ficava pn_not_in_db=True, mesmo com a gramática já
+# calculando o valor certo). KMQN10006B eu NÃO reincluí aqui — já existe
+# como known_part confirmado (seed_known_parts.json, 2026-05-13); resubmeter
+# seria redundante (submit_known_parts pula automaticamente se já approved).
+#
+# Convenção de PN: string completa sem hífen, igual ao buscado (pn_length=10
+# da família KMQ = já é o PN completo).
+brand: "Samsung"
+known_parts:
+  - part_number: "KMQN10006A"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: confirmed
+    notes: >
+      PN original buscado (família/mapa já cadastrados, PN exato não estava
+      no banco — só por isso "não achou"; a capacidade que a gramática já
+      calculava pra ele, via SAM_EMCP_CAP['N1'], está correta). 8GB+1GB
+      confirmado por 2 leituras físicas independentes na esteira eMiner:
+      KMQN10006B (2026-05-13, mesma raiz "KMQN1000", só sufixo A→B) e
+      KMFN10012A-B214 (família KMF, mesma chave 'N1', confirmação física
+      anterior, registrada em seed_known_parts.json). Revisão de sufixo
+      (A/B/M) não muda capacidade nesta chave — mesmo padrão já visto em
+      K3QF/KLM nesta sessão.
+
+  - part_number: "KMQN10006M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: confirmed
+    notes: >
+      Irmão de família (mesma raiz "KMQN1000", sufixo M) — mesma chave 'N1',
+      mesma lógica de confirmação do KMQN10006A acima (2 leituras físicas
+      independentes: KMQN10006B esteira 2026-05-13 + KMFN10012A-B214,
+      família KMF).

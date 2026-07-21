@@ -1,0 +1,310 @@
+# Submissão de known_parts — Samsung, família K3KL (LPDDR5X discreta standalone, VDDQ=0.5V)
+# PN alvo: K3KL4L40DM (busca 2026-07-14). Grammar já decodifica certo (pn[4:6]='4L'→12GB via
+# LPDDR5_CAP; a própria linha do mapa já cita "K3KL4L40DM-BGCU (Samsung Global ✓ '96 Gb')" como
+# fonte da correção 2026-05-27) — faltava formalizar o PN exato + irmãos no banco.
+#
+# ACHADO IMPORTANTE (dados locais): data/psg/samsung_global_lpddr5x_k3kl_{extended,large}.csv
+# já tinham 13 combinações base (cap-key × geração) pesquisadas e confirmadas via Samsung
+# Semiconductor Global numa sessão anterior (confidence=confirmed, status=enriched) — cobrindo
+# TODAS as 10 chaves do mapa LPDDR5_CAP — mas NUNCA tinham sido submetidas como known_parts.
+# Reverifiquei todas via busca indexada (site:semiconductor.samsung.com) nesta rodada: todas
+# batem. ⚠ As páginas de produto individuais do Samsung Semiconductor Global redirecionam para
+# a categoria genérica /lpddr5x/ ao vivo nesta data (fetch direto confirma) — a fonte é o título
+# indexado pelo Google (metadado <title> real da Samsung, não fabricado) + consistência entre
+# múltiplos sufixos por PN base + a pesquisa local prévia já ter sido feita com acesso direto.
+#
+# ACHADO NOVO (2026-07-14) — densidade varia por SUFIXO dentro da MESMA chave, não só entre
+# famílias/chaves (ver memória wtc-mesma-chave-densidade-diferente-dentro-familia — este é um
+# 3º padrão, mais fundo: aqui é STACK multi-die vs single-die, refletido só no sufixo, que a
+# gramática NÃO decodifica, decode_gen_pos=null):
+#   - K3KL9L90DM: sufixo -MGCU = single-die = 16Gb=2GB (bate a chave '9L' do mapa). Sufixos
+#     -MFCU/-MHCU = stack multi-die = 64Gb=8GB (4x). O CSV local já sinalizava isso na nota
+#     ("Stacks multi-die usam sufixo MHCU/MFCU") mas não tinha os PNs stack registrados.
+#   - K3KL8L80DM: inverso — sufixo -MGCU = single-die = 16Gb=2GB (EXCEÇÃO), mas -MUCU/-MFCU/
+#     -MHCU = stack = 32Gb=4GB (bate a chave '8L' do mapa, que é a maioria). O CSV local já
+#     tinha escolhido MUCU (4GB) como representante da base — mantido.
+# Base (sem sufixo) registra a densidade que bate com a MAIORIA/mapa; a exceção do sufixo
+# stack/single-die vira known_part individual (só ele resolve — a gramática não lê sufixo).
+#
+# known_parts CONFIRMED (13, do CSV local prévio + reverificados via Samsung Global indexado):
+#   9L=2GB(K3KL9L90DM) · 6L=2GB(K3KL6L60GM) · 1L=4GB(K3KL1L10GM) · 8L-DM=4GB(K3KL8L80DM) ·
+#   8L-EM=4GB(K3KL8L80EM) · 7L=3GB(K3KL7L70DM) · 2L=6GB(K3KL2L20DM) · 3L-CM=8GB(K3KL3L30CM) ·
+#   4L-FM=12GB(K3KL4L40FM, irmã de geração do alvo) · 5L-DM=16GB(K3KL5L50DM) ·
+#   5L-CM=16GB(K3KL5L50CM) · DL-FM=6GB(K3KLDLD0FM) · DL-EM=6GB(K3KLDLD0EM).
+#
+# known_parts MANUAL (9, achados NOVOS nesta rodada via busca indexada Samsung Global, sem
+# passagem pelo CSV local prévio — inclui o alvo + variantes + 2 gerações novas + as 3 exceções
+# de densidade-por-sufixo):
+#   K3KL4L40DM (alvo, base) · K3KL4L40DM-BGCU · K3KL4L40DM-BGCT · K3KL3L30DM (geração nova p/
+#   3L, 8GB) · K3KL8L80CM (geração nova p/ 8L, 4GB) · K3KL7L70EM-MUCU (geração nova p/ 7L, 3GB)
+#   · K3KL9L90DM-MFCU (exceção stack, 8GB) · K3KL9L90DM-MHCU (exceção stack, 8GB) ·
+#   K3KL8L80DM-MGCU (exceção single-die, 2GB).
+brand: "Samsung"
+known_parts:
+  - part_number: "K3KL9L90DM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl9l90dm-mgcu/"
+    notes: >
+      Pesquisa local prévia (data/psg/samsung_global_lpddr5x_k3kl_extended.csv, confirmed):
+      16Gb=2GB via sufixo -MGCU (single-die), geração DM. Reverificado 2026-07-14 (busca
+      indexada site:semiconductor.samsung.com). Base registra o single-die (majoritário);
+      sufixos -MFCU/-MHCU são stack multi-die 64Gb=8GB, registrados à parte nesta submissão.
+
+  - part_number: "K3KL6L60GM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl6l60gm-mgct/"
+    notes: >
+      Pesquisa local prévia (CSV extended): 16Gb=2GB, geração GM (7500 Mbps, wearable/
+      ultra-compact). Reverificado 2026-07-14: 4 sufixos indexados (MUCT/MGCT/MFCT/MHCT),
+      todos "(16 Gb)" — sem divergência de densidade por sufixo nesta chave.
+
+  - part_number: "K3KL1L10GM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl1l10gm-jgct/"
+    notes: >
+      Pesquisa local prévia (CSV extended): 32Gb=4GB — ⚠ CORRIGIDO 2026-05-28 na gramática
+      (era 8GB/64Gb, bug de distribuidor). Reverificado 2026-07-14: 3 sufixos indexados
+      (JGCT/JUCT/JHCT), todos "(32 Gb)" + Amazon confirma "4GB DRAM Chip" pro JHCT.
+
+  - part_number: "K3KL8L80DM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl8l80dm-mucu/"
+    notes: >
+      Pesquisa local prévia (CSV extended): 32Gb=4GB via sufixo -MUCU (stack), geração DM.
+      Reverificado 2026-07-14: -MUCU/-MFCU/-MHCU todos "(32 Gb)". ⚠ Sufixo -MGCU é EXCEÇÃO
+      single-die 16Gb=2GB (achado novo nesta rodada) — registrado à parte.
+
+  - part_number: "K3KL8L80EM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl8l80em-mgcu/"
+    notes: >
+      Pesquisa local prévia (CSV extended): 32Gb=4GB, geração EM (8533 Mbps). Reverificado
+      2026-07-14: sufixos -MUCV/-MGCU/-MFCV todos "(32 Gb)" — sem divergência nesta chave/geração.
+
+  - part_number: "K3KL7L70DM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "3GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl7l70dm-mgct/"
+    notes: >
+      Pesquisa local prévia (CSV extended): 24Gb=3GB, geração DM. Reverificado 2026-07-14:
+      sufixo -MGCT indexado "(24 Gb)". Bônus: achada geração EM nova (K3KL7L70EM-MUCU,
+      também 24Gb) — registrada à parte nesta submissão.
+
+  - part_number: "K3KL2L20DM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "6GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl2l20dm-jgct/"
+    notes: >
+      Pesquisa local prévia (CSV large... extended): 48Gb=6GB, geração DM, sufixo JGCT
+      confirmado 2026-05-28. Reverificado 2026-07-14: -JGCT "(48 Gb)" + Amazon confirma
+      "6G Memory" pro -BGCT (sufixo irmão, mesma chave).
+
+  - part_number: "K3KL3L30CM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl3l30cm-bgcu/"
+    notes: >
+      Pesquisa local prévia (CSV large): 64Gb=8GB, geração CM (7500 Mbps), Galaxy S22/S23.
+      Reverificado 2026-07-14: -BGCU indexado (site global) + -BGCT (site JP). Bônus: achada
+      geração DM nova (K3KL3L30DM, também 64Gb) — registrada à parte nesta submissão.
+
+  - part_number: "K3KL4L40FM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "12GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/"
+    notes: >
+      Pesquisa local prévia (CSV large): 96Gb=12GB, geração FM (9600 Mbps, flagship 2023+).
+      Confirmado Samsung Semiconductor Global (sufixos BGCV e EFCV, per nota do CSV). Mesma
+      chave '4L' do PN alvo (K3KL4L40DM), geração mais nova.
+
+  - part_number: "K3KL5L50DM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl5l50dm-bgcu/"
+    notes: >
+      Pesquisa local prévia (CSV large): 128Gb=16GB, geração DM, Galaxy S22 Ultra/S23 Ultra.
+      Reverificado 2026-07-14: -BGCU + -JUCU indexados, ambos "(128 Gb)".
+
+  - part_number: "K3KL5L50CM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl5l50cm-bgct/"
+    notes: >
+      Pesquisa local prévia (CSV large): 128Gb=16GB, geração CM (7500 Mbps), variante CM do
+      16GB. Reverificado 2026-07-14: -BGCT + -BGCU indexados, ambos "(128 Gb)".
+
+  - part_number: "K3KLDLD0FM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "6GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kldld0fm-mucv/"
+    notes: >
+      Pesquisa local prévia (CSV large): 48Gb=6GB, geração FM (9600 Mbps), código DL = processo
+      diferente do 2L (mesma capacidade). Reverificado 2026-07-14: -MUCV/-MGCV/-MFCV indexados,
+      todos "(48 Gb)".
+
+  - part_number: "K3KLDLD0EM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "6GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kldld0em-tgct/"
+    notes: >
+      Pesquisa local prévia (CSV large): 48Gb=6GB, geração EM (8533 Mbps; TGCT=grau
+      automotivo AEC-Q100). Reverificado 2026-07-14: -MFCU/-TGCT indexados, ambos "(48 Gb)".
+
+  - part_number: "K3KL4L40DM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "12GB"
+    confidence: manual
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl4l40dm-bgcu/"
+    notes: >
+      PN alvo (base). A própria gramática (LPDDR5_CAP, chave '4L') já cita esta string como
+      fonte Tier-1 da correção 2026-05-27 ("K3KL4L40DM-BGCU, Samsung Global ✓, '96 Gb'").
+      Reverificado 2026-07-14: título indexado Samsung Semiconductor Global "(96 Gb)" para
+      2 sufixos (-BGCU, -BGCT — ver entradas próprias) + Amazon "12GB LPDDR5X DRAM Chip" +
+      Alibaba "Lpddr5x 12gb" pro -BGCT. Página individual redireciona ao vivo hoje para a
+      categoria genérica (produto arquivado) — por isso manual, não confirmed (sem leitura
+      direta do datasheet completo, só título indexado + corroboração consistente).
+
+  - part_number: "K3KL4L40DMBGCU"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "12GB"
+    confidence: manual
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl4l40dm-bgcu/"
+    notes: >
+      Título indexado Samsung Semiconductor Global: "K3KL4L40DM-BGCU(96 Gb)". Amazon (Hailue):
+      "K3KL4L40DM-BGCU 12GB LPDDR5X DRAM Chip IC .8533Mbps 496bgall". Página ao vivo redireciona
+      pra categoria genérica hoje — manual (título + corroboração, sem datasheet completo lido).
+
+  - part_number: "K3KL4L40DMBGCT"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "12GB"
+    confidence: manual
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl4l40dm-bgct/"
+    notes: >
+      Título indexado Samsung Semiconductor Global: "K3KL4L40DM-BGCT(96 Gb)". Alibaba:
+      "K3kl4l40dm-bgct Original New Lpddr5x 12gb". Sufixo irmão do -BGCU (mesma chave/geração).
+
+  - part_number: "K3KL3L30DM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://semiconductor.samsung.com/us/dram/lpddr/lpddr5x/k3kl3l30dm-ehcu/"
+    notes: >
+      Bônus — geração NOVA para a chave '3L' (local só tinha 3L-CM). Títulos indexados
+      Samsung Semiconductor Global (US/EMEA/Global): -EHCU, -BGCU, -EUCU, todos "(64 Gb)"
+      = 8GB — mesma densidade do 3L-CM (K3KL3L30CM), só geração DM em vez de CM.
+
+  - part_number: "K3KL8L80CM"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl8l80cm-mgct/"
+    notes: >
+      Bônus — geração NOVA para a chave '8L' (local só tinha 8L-DM e 8L-EM). Título indexado
+      Samsung Semiconductor Global: "K3KL8L80CM-MGCT(32 Gb)" = 4GB — mesma densidade
+      majoritária do 8L (stack), geração CM.
+
+  - part_number: "K3KL7L70EMMUCU"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "3GB"
+    confidence: manual
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl7l70em-mucu/"
+    notes: >
+      Bônus — geração NOVA para a chave '7L' (local só tinha 7L-DM). Título indexado Samsung
+      Semiconductor Global: "K3KL7L70EM-MUCU(24 Gb)" = 3GB — mesma densidade do 7L-DM, geração
+      EM. Só 1 sufixo achado até agora, registrado com sufixo (não como base).
+
+  - part_number: "K3KL9L90DMMFCU"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl9l90dm-mfcu/"
+    notes: >
+      EXCEÇÃO de densidade-por-sufixo (achado novo 2026-07-14): mesma chave '9L' do
+      K3KL9L90DM (base=single-die=2GB), mas sufixo -MFCU é stack multi-die = 64Gb=8GB.
+      Título indexado Samsung Semiconductor Global "(64 Gb)" + Preduo (ficha própria,
+      confirma fabricante Samsung). A gramática não lê sufixo — só este known_part resolve
+      corretamente um chip físico com este sufixo exato.
+
+  - part_number: "K3KL9L90DMMHCU"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl9l90dm-mhcu/"
+    notes: >
+      EXCEÇÃO de densidade-por-sufixo — irmã do -MFCU acima (mesmo stack 64Gb=8GB). Título
+      indexado Samsung Semiconductor Global "K3KL9L90DM-MHCU(64 Gb)" + ssfkg.com (ficha
+      própria, fabricante Samsung).
+
+  - part_number: "K3KL8L80DMMGCU"
+    chip_type: "LPDDR5X"
+    subtype: "LPDDR5X"
+    interface: ""
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr5x/k3kl8l80dm-mgcu/"
+    notes: >
+      EXCEÇÃO de densidade-por-sufixo (achado novo 2026-07-14): mesma chave '8L' do
+      K3KL8L80DM (base=stack=4GB), mas sufixo -MGCU é single-die = 16Gb=2GB (inverso do
+      padrão do 9L). Título indexado Samsung Semiconductor Global "(16Gb)" (Global + EMEA).
+      A gramática não lê sufixo — só este known_part resolve corretamente um chip físico
+      com este sufixo exato.

@@ -1,0 +1,88 @@
+# Submissão known_parts — Foresee (Longsys), eMMC industrial grade RM, 2026-07-16.
+# Origem: PN buscado na bancada "FEMDRM008G" (debug estoque 16/07/2026) — SEM o sufixo de 5 chars
+# que toda a família FEMD/FEMK/FEMJ tem ("-XXXXX"). A gramática já classifica CORRETO mesmo sem o
+# sufixo (pn[6:9]="008"→8GB, eMMC, RENTÁVEL) — known_part não conserta bug nenhum, só dá AUTORIDADE
+# a PNs que hoje só existem via gramática (pn_not_in_db=true).
+#
+# ENTREGA AMPLIADA (pedido do dono: "colete mais da familia, busque mais em tier1, mesmo submit").
+# Cobertura agora: TODAS as 5 densidades da grade industrial RM (8/16/32/64/128GB), somando com
+# FEMDRM032G-A3A55 e FEMDRM0128G-A3A56 já confirmados em submissions/foresee_emmc_2026-07-15.yaml.
+#
+# AUTOCORREÇÃO sobre a entrega anterior: eu tinha descartado o sufixo "-A3A55" pra 8GB citando
+# "evidência fraca" (só uma fonte terciária, restarframos, ilegível). Na real, o catálogo oficial
+# Longsys — que eu MESMO já tinha em mãos desde a construção da marca (é a fonte-mãe de todo
+# foresee.yaml) — sempre teve essa linha, explícita e legível. Foi falha de não cruzar com fonte
+# própria já coletada, não fraqueza genuína da fonte. Corrigido abaixo: "-A3A55" entra confirmed,
+# como SEGUNDA variante real (não duplicata) da capacidade 8GB — MLC + status "Sampling" no
+# catálogo, distinta de "-58A39" (já submetida, 2 fontes distribuidor, sem menção de memory tech).
+#
+# ⚠ ACHADO LATERAL (não é sobre PN, é sobre estado do catálogo): o "reasoning" que o debug do
+# estoque mostrava pra família FEMD, ao vivo, era DIFERENTE do texto hoje em chips/knowledge/
+# foresee.yaml (o do disco já está resolvido/atualizado, batendo com FEMDRM0128G-A3A56). Sinal de
+# catalog_version desatualizado — sugiro rodar `load_brands --brand foresee --commit` pra sincronizar
+# (comando do dono, não meu).
+#
+# Rodar (o DONO): submit_known_parts submissions/foresee_emmc_femdrm008g_2026-07-16.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_emmc_femdrm008g_2026-07-16.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "FEMDRM008G-58A39"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: >
+      PN buscado na bancada foi o fragmento "FEMDRM008G" (sem sufixo) — este é o PN completo mais
+      bem confirmado pra esse fragmento. 2 fontes estruturadas independentes, mesmo componente
+      (LCSC C719499 e JLCPCB C719499): Memory Size=8GB (campo estruturado, não inferido), Package
+      FBGA-153, Protocol eMMC 5.1, Manufacturer FORESEE, -25~85°C, VCCQ 1.7-1.95V/2.7-3.6V, VCCF
+      2.7-3.6V, leitura 230MB/S, escrita 105MB/S. Datasheet original "Industrial eMMC Datasheet
+      FEMDRM008G-58A39" (Longsys) arquivado em datasheet4u.com (não abri o PDF diretamente, mas as
+      2 fontes estruturadas convergem exatas). Grade industrial (RM no pn[4:6]), mesma família do
+      já confirmado FEMDRM032G-A3A55. Capacidade literal 008G=8GB (não Gbit) — regra padrão FEMD.
+    source_url: "https://lcsc.com/product-detail/eMMC_FORESEE-FEMDRM008G-58A39_C719499.html"
+  - part_number: "FEMDRM008G-A3A55"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: >
+      Catálogo oficial Longsys (FORESEE Embedded Storage Product Catalogue, seção "Industrial
+      eMMC"): linha explícita "FEMDRM008G-A3A55 / 1.8V-3.3V / MLC / -25°C to 85°C / eMMC 5.1 /
+      FBGA153 / Tray / 11.5x13x1.0mm / Sampling". Segunda variante real e distinta pra mesma
+      capacidade nominal do PN buscado na bancada (a outra é FEMDRM008G-58A39, acima) — não é
+      duplicata: memory tech MLC (não 3D NAND como as demais densidades RM) e status "Sampling" no
+      snapshot do catálogo (2023-04-23; pode ter mudado desde então). Corroborado por listagem
+      JLCPCB (componente FORESEE catalogado, ainda que fora de estoque pra compra). Capacidade
+      literal 008G=8GB (não Gbit) — mesma regra da família.
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "FEMDRM016G-A3A55"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: >
+      Catálogo oficial Longsys (FORESEE Embedded Storage Product Catalogue, seção "Industrial
+      eMMC"), linha "FEMDRM016G-A3A55 / 1.8V-3.3V / 3D NAND / -25°C to 85°C / eMMC 5.1 / FBGA153 /
+      Tray / 11.5x13x1.0mm". Completa, junto com 008G/032G/064G/0128G, o range inteiro de densidade
+      da grade industrial RM. Capacidade literal 016G=16GB (não Gbit) — mesma regra da família.
+      ⚠ Um resumo de busca automático tentou atribuir "8GB" a este PN (confundiu com a linha
+      vizinha 008G na extração da tabela do catálogo) — descartado; a leitura direta do PDF e a
+      própria codificação literal do PN (consistente com toda a família) confirmam 16GB.
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "FEMDRM064G-A3A56"
+    chip_type: "eMMC"
+    capacity: "64GB"
+    interface: "eMMC 5.1"
+    confidence: confirmed
+    notes: >
+      Catálogo oficial Longsys (FORESEE Embedded Storage Product Catalogue, seção "Industrial
+      eMMC"), linha "FEMDRM064G-A3A56 / 1.8V-3.3V / 3D NAND / -25°C to 85°C / eMMC 5.1 / FBGA153 /
+      Tray / 11.5x13x1.0mm". Equivalente legado FSEIASLD-64G (mesmo padrão de par legado↔novo já
+      usado em FEMDRM032G-A3A55↔FSEIASLD-32G e FEMDRM0128G-A3A56↔FSEIASLD-128G na submissão
+      anterior), com listagem própria na JLCPCB (C719922). ⚠ Um resumo de busca automático alegou
+      um link/preço JLCPCB direto pra "FEMDRM064G-A3A56" que não apareceu nos resultados brutos (só
+      a variante comercial FEMDNN064G-A3A56 e o legado FSEIASLD-64G apareceram de fato) — descartei
+      essa alegação por não achar a fonte primária; a confirmação aqui se apoia só no catálogo
+      oficial + legado. Capacidade literal 064G=64GB (não Gbit).
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"

@@ -1,0 +1,118 @@
+# Submissão de known_parts — SK Hynix, família H9HCN (LPDDR4X standalone, JÁ EXISTENTE)
+# Gerado pelo chat de marca SK Hynix a partir da investigação do PN H9HCNNN8KUMLHRNLE
+# (busca na bancada, 2026-07-08). Família H9HCN e mapa HYX_LPDDR4_H9HC_CAP JÁ EXISTIAM
+# e já decodificavam certo (known=true, grammar_complete=true) — não houve necessidade
+# de tocar em chips/knowledge/hynix.yaml aqui. Isto é SÓ Trilha B: promover PNs que a
+# gramática já acerta de "estimated" pra confirmados no banco.
+#
+# Fui atrás de TODOS os irmãos que consegui confirmar com fonte razoável no caminho
+# (não só o PN original) — a família H9HCN tem uma lista enorme de PNs reais (ver
+# "See Also" do DigiPart), cobri um exemplo de CADA código de capacidade pn[7] que
+# já está no tip (4/8/B/C/E), pra corroborar o mapa inteiro de uma vez, não só o
+# PN buscado. pn[7]='D' (3GB) e pn[7]='F' (8GB) ficam SEM PN novo confirmado hoje —
+# não achei fonte independente boa o suficiente na busca; a gramática já os decodifica
+# (não mudou), só não ganharam known_part ainda. pn[7]='E' (6GB) TINHA um PN aqui
+# (H9HCNNNECMMLTR-NEE) mas foi RETIRADO após revisão mais rigorosa — ver nota no
+# final do arquivo (a "confirmação" era só título de anúncio, não conteúdo
+# verificado). Ficaram 5 known_parts nesta submissão, não 6.
+#
+# confidence=distributor (não manual/confirmed): cada PN abaixo tem 2+ fontes de
+# marketplace/distribuidor concordando (Alibaba, AliExpress, Amazon, eBay, Worldway,
+# JLCPCB/LCSC, WinSource-via-DigiPart, Puris, dzsc.com, Wolfchip) mas NENHUMA é
+# datasheet oficial SK Hynix nem Octopart com specs parseadas — por isso fica no
+# degrau abaixo de manual/confirmed na hierarquia de fontes. O revisor pode promover
+# se achar suficiente.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hcn_2026-07-08.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hcn_2026-07-08.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HCNNN8KUMLHR-NLE"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "1GB"
+    confidence: distributor
+    source_url: "https://www.digipart.com/part/H9HCNNN8KUMLHR-NLE"
+    notes: >
+      PN original buscado na bancada foi "H9HCNNN8KUMLHRNLE" (sem hífen) — mesmo
+      order code, só formatação (grammar já decodifica igual, hífen não afeta).
+      DigiPart agrega a descrição da WinSource sem precisar renderizar JS: "LPDDR4-3200
+      (8Gb) DDP" = 8Gbit = 1GB, batendo com pn[7]='8' do tip (8=1GB). PN real e
+      amplamente distribuído (20+ distribuidores listados no DigiPart, milhares em
+      estoque).
+
+  - part_number: "H9HCNNN8KUMLHR-NME"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "1GB"
+    confidence: distributor
+    source_url: "https://www.lcsc.com/product-detail/DDR-SDRAM_SK-HYNIX-H9HCNNN8KUMLHR-NME_C2912103.html"
+    notes: >
+      Irmão do PN buscado (mesmo prefixo/capacidade, sufixo de grade diferente —
+      NME em vez de NLE). JLCPCB/LCSC confirma: "8 Gb LPDDR4 (x16, 2 Channel, 2 CS)"
+      = 1GB, batendo com pn[7]='8'. Também era a sugestão fuzzy do engine pro PN
+      buscado — confirma que é um PN real e próximo, não coincidência.
+
+  - part_number: "H9HCNNNBKUMLHR-NME"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "2GB"
+    confidence: distributor
+    source_url: "https://www.wolfchip.com/sk-hynix/h9hcnnnbkumlhr-nme.html"
+    notes: >
+      Corrobora pn[7]='B'→2GB do tip. 3 fontes independentes concordam: dzsc.com
+      ("BGA200 2GB"), Puris.net ("16Gbit 200ball" = 16Gb = 2GB), eBay ("16G package"
+      = 2GB). Nenhuma é datasheet oficial, mas convergência forte.
+
+  - part_number: "H9HCNNN4KUMLHR-NME"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "512MB"
+    confidence: distributor
+    source_url: "https://www.worldwayelec.com/pro/hynix/h9hcnnn4kumlhr-nme/4231219"
+    notes: >
+      Corrobora pn[7]='4'→512MB do tip. Worldway Electronics: "Mobile LPDDR4 SDRAM
+      with 4G-Bit capacity (128M x 32)... 4Gb capacity (0.5GB)" — explícito em GB,
+      sem ambiguidade Gb/GB. profitable=NÃO RENTÁVEL (abaixo do limiar pra esta
+      geração, capacidade pequena) — consistente com a rentabilidade já calculada.
+
+  - part_number: "H9HCNNNCPUMLHR-NME"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: distributor
+    source_url: "https://www.preduo.com/product/lpddr/lpddr4/200ball-lpddr4/h9hcnnncpumlhr-nme"
+    notes: >
+      Corrobora pn[7]='C'→4GB do tip. 5 fontes concordam em 4GB (Alibaba x2,
+      AliExpress x3, indasina, Preduo cataloga o PN). ⚠ UMA fonte (harddiskdirect.com)
+      anuncia "(32GB)" no título — descartei: a mesma página descreve a organização
+      como "2Gx16" (2G palavras × 16 bits = 32Gbit = 4GB), ou seja, o próprio dado
+      técnico da página contradiz o título e bate com as outras 5 fontes + o tip.
+      Clássico erro de distribuidor confundindo Gb/GB no título de marketing.
+
+# ── H9HCNNNECMMLTR-NEE — RETIRADO desta submissão em 2026-07-08 (revisão a pedido
+#    do dono) ──────────────────────────────────────────────────────────────────
+# Motivo: a "confirmação" original (Amazon + Alibaba concordando em "6GB") não
+# resistiu a uma segunda olhada. Nenhuma das duas páginas abriu no fetch (Amazon
+# veio vazia, Alibaba só meta-tags — ambas JS-only); o "6GB" que eu tinha eram só
+# os TÍTULOS/slugs dos anúncios do vendedor, não conteúdo de página verificado.
+# DigiPart não tem nenhum distribuidor com descrição parseada pra este PN
+# específico (diferente dos outros 5 desta submissão, onde achei WinSource/JLCPCB/
+# Worldway com specs reais). Octopart e JLCPCB não indexam este PN exato.
+# Zeano/Sierra/GreenLight (os 3 do DigiPart) também não renderizaram no fetch.
+# CONCLUSÃO: capacidade 6GB é consistente com a gramática (pn[7]='E', mesma regra
+# já usada pelo golden pré-existente "H9HCNNNECMML" = 6GB — fonte "SK Hynix PN
+# Guide + manifesto aduaneiro", citada no tip ANTES desta conversa) — os 12
+# primeiros caracteres são IDÊNTICOS entre os dois PNs, e só pn[7] importa pro
+# decode. Ou seja: o classify() já retorna 6GB certo pra esse PN, sem precisar de
+# known_part nenhum. Mas eu NÃO tenho uma fonte fresca e independente pra ESTE
+# sufixo "-TR-NEE" específico — só a analogia estrutural com o golden antigo.
+# Por isso não virou known_part hoje. Se aparecer datasheet/distribuidor com
+# specs reais pra esse PN, volto e submeto.

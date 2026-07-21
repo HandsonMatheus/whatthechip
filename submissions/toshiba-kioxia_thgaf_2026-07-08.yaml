@@ -1,0 +1,242 @@
+# Submissão de known_parts — Toshiba-Kioxia, família THGAF (UFS 2.1, promovida a decode posicional)
+# Gerado pelo chat de marca Toshiba-Kioxia a partir da investigação do PN THGAF4T0N8LBAIR
+# (busca na bancada, 2026-07-08) — família já existia como "magra" (só prefixo, sem decode de
+# capacidade, adicionada 2026-06-26). Nesta rodada encontrei DUAS tabelas oficiais Kioxia
+# (consumer + automotive) que usam a MESMA chave de 2 caracteres pn[6:8] para capacidade,
+# permitindo promover a família a decode posicional (Trilha A, ver
+# chips/knowledge/toshiba-kioxia.yaml) além desta submissão de known_parts (Trilha B).
+#
+# Chave descoberta: pn[6:8] (2 chars) → G7=16GB · G8=32GB · G9=64GB · T0=128GB · T1=256GB ·
+# T2=512GB (progressão binária, cada passo dobra). Confirmada IDÊNTICA nas duas tabelas nos 4
+# pontos em que se sobrepõem (G8/G9/T0/T1) — prova que pn[5] (grade: 8=consumer · 9/B/E=automotive
+# · 4=variante de campo) NÃO afeta a capacidade, só a chave pn[6:8] importa.
+#
+# Hierarquia de fonte usada: Tier-1 = PDF oficial KIOXIA lido diretamente (Managed Flash Memory
+# Highlight Q1/2021, hospedado no servidor oficial de documentos da DigiKey — distribuidor
+# autorizado espelhando o documento do fabricante; e Automotive Managed Flash Solutions Product
+# Brief Rev.2.0 out/2020, hospedado em americas.kioxia.com — site oficial do fabricante).
+# confidence=manual = capacidade derivada da MESMA chave pn[6:8] já provada 2-3x em fontes Tier-1
+# para PNs de grade diferente, mas SEM sighting direto dessa variante específica (pn[5]="4") em
+# nenhuma tabela oficial encontrada — mesmo padrão de "concordância entre múltiplas fontes
+# independentes sem 1 datasheet nomeando o PN exato" usado no THGBM (THGBMBG5D1KBAIL).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgaf_2026-07-08.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgaf_2026-07-08.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  # ── Consumer grade — Kioxia Managed Flash Memory Highlight | Q1/2021 (Tier-1, PDF oficial via
+  #    DigiKey, lido diretamente) ──────────────────────────────────────────────────────────
+  - part_number: "THGAF8G8T23BAIL"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7559/1853_KIOXIAManagedFlashMemoryHighlight.pdf"
+    notes: >
+      Tabela "MANAGED FLASH | UFS" do Kioxia Managed Flash Memory Highlight Q1/2021 (PDF oficial
+      KIOXIA, © 2020, hospedado no servidor de documentos da DigiKey): "THGAF8G8T23BAIL 32GB 2.1
+      1160 2.7 to 3.6 ... 11.5 × 13 × 0.8" — Consumer Grade. Chave de capacidade pn[6:8]="G8"
+      (nova entrada em THGAF_CAP).
+
+  - part_number: "THGAF8G9T43BAIR"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7559/1853_KIOXIAManagedFlashMemoryHighlight.pdf"
+    notes: >
+      Mesma tabela Tier-1 acima: "THGAF8G9T43BAIR 64GB". Chave pn[6:8]="G9" → 64GB (nova entrada
+      em THGAF_CAP). Corroborado por Xecor: item relacionado descrito como "512 billion bits of
+      data storage" = 512 Gigabit ÷ 8 = 64 GB — bate com a fonte Tier-1.
+
+  - part_number: "THGAF8T0T43BAIR"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "128GB"
+    confidence: confirmed
+    source_url: "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7559/1853_KIOXIAManagedFlashMemoryHighlight.pdf"
+    notes: >
+      Mesma tabela Tier-1 acima: "THGAF8T0T43BAIR 128GB". Corroborado também por datasheet
+      individual completo da irmã THGJFAT0T44BAIL (Arrow.com, PDF oficial KIOXIA Ago/2020,
+      §2.3 Part Number: "128GB · 4 x 256Gbit BiCS FLASH Gen.4" — 4×256Gbit=1024Gbit=128GB,
+      mesma aritmética). Chave pn[6:8]="T0" → 128GB (nova entrada em THGAF_CAP).
+
+  - part_number: "THGAF8T1T83BAIR"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "256GB"
+    confidence: confirmed
+    source_url: "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7559/1853_KIOXIAManagedFlashMemoryHighlight.pdf"
+    notes: >
+      Mesma tabela Tier-1 acima: "THGAF8T1T83BAIR 256GB". Chave pn[6:8]="T1" → 256GB (nova
+      entrada em THGAF_CAP).
+
+  # ── Automotive grade AEC-Q100 Grade 2 — Kioxia Automotive Managed Flash Solutions Product
+  #    Brief Rev.2.0, out/2020 (Tier-1, PDF oficial americas.kioxia.com, lido diretamente) ────
+  - part_number: "THGAF9G7L1LBAB7"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf"
+    notes: >
+      Tabela "Automotive UFS | AEC-Q100 Grade 2" do Product Brief oficial KIOXIA (Rev.2.0,
+      out/2020): "THGAF9G7L1LBAB7 16 GB · 2.1 · 1166 MB/s · -40 to 105°C". Chave pn[6:8]="G7" →
+      16GB — primeira confirmação dessa chave, nova entrada em THGAF_CAP (progressão G7<G8,
+      metade de 32GB).
+
+  - part_number: "THGAFBG8T13BAB7"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf"
+    notes: >
+      Mesma tabela Tier-1 acima: "THGAFBG8T13BAB7 32 GB". Chave pn[6:8]="G8" → 32GB — MESMA
+      chave que THGAF8G8T23BAIL (consumer, acima), confirmando que pn[5] (grade: B=automotive vs
+      8=consumer) não afeta a capacidade.
+
+  - part_number: "THGAFEG8T13BAB7"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf"
+    notes: >
+      Mesma tabela Tier-1, variante "E" (nota de rodapé 4: pré-load máximo = 100% da área do
+      usuário) do THGAFBG8T13BAB7 acima — mesma capacidade (32GB), mesma chave "G8". Confirma
+      2ª vez que pn[5] (B vs E) não afeta capacidade.
+
+  - part_number: "THGAFBG9T23BAB8"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf"
+    notes: >
+      Mesma tabela Tier-1: "THGAFBG9T23BAB8 64 GB". Chave pn[6:8]="G9" → 64GB — MESMA chave que
+      THGAF8G9T43BAIR (consumer).
+
+  - part_number: "THGAFEG9T23BAB8"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf"
+    notes: >
+      Variante "E" (nota de rodapé 4) do THGAFBG9T23BAB8 acima — mesma capacidade (64GB), mesma
+      chave "G9".
+
+  - part_number: "THGAFBT0T43BAB8"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "128GB"
+    confidence: confirmed
+    source_url: "https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf"
+    notes: >
+      Mesma tabela Tier-1: "THGAFBT0T43BAB8 128 GB". Chave pn[6:8]="T0" → 128GB — MESMA chave
+      que THGAF8T0T43BAIR (consumer) — 3ª confirmação independente dessa chave específica.
+
+  - part_number: "THGAFET0T43BAB8"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "128GB"
+    confidence: confirmed
+    source_url: "https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf"
+    notes: >
+      Variante "E" (nota de rodapé 4) do THGAFBT0T43BAB8 acima — mesma capacidade (128GB), mesma
+      chave "T0". 4ª confirmação dessa chave.
+
+  - part_number: "THGAFBT1T83BAB5"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "256GB"
+    confidence: confirmed
+    source_url: "https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf"
+    notes: >
+      Mesma tabela Tier-1 (nota de rodapé 5: "New product"): "THGAFBT1T83BAB5 256 GB". Chave
+      pn[6:8]="T1" → 256GB — MESMA chave que THGAF8T1T83BAIR (consumer).
+
+  - part_number: "THGAFET1T83BAB5"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "256GB"
+    confidence: confirmed
+    source_url: "https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf"
+    notes: >
+      Variante "E" do THGAFBT1T83BAB5 acima — mesma capacidade (256GB), mesma chave "T1".
+
+  - part_number: "THGAFBT2T83BABI"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "512GB"
+    confidence: confirmed
+    source_url: "https://americas.kioxia.com/content/dam/kioxia/shared/business/memory/automotive/asset/productbrief/KIOXIA_Automotive_Solutions_Product_Brief.pdf"
+    notes: >
+      Mesma tabela Tier-1 (nota de rodapé 5: "New product", maior densidade automotive):
+      "THGAFBT2T83BABI 512 GB · pkg 14.0 x 18.0 x 1.2mm" (pacote maior, único desse tamanho na
+      tabela — condizente com a maior densidade). Chave pn[6:8]="T2" → 512GB — só confirmada em
+      grade automotive, sem equivalente na tabela consumer (não encontrei THGAF nGnnT8 3 GB
+      consumer). Progressão binária consistente com T0=128GB→T1=256GB→T2=512GB (dobra a cada
+      passo).
+
+  # ── PN da bancada + irmãos de campo (pn[5]="4") — capacidade derivada da MESMA chave pn[6:8]
+  #    já confirmada 2-3x acima em Tier-1, mas SEM sighting direto dessa variante específica em
+  #    nenhuma tabela oficial encontrada. confidence=manual (não confirmed): grade "4" não
+  #    aparece nos 2 PDFs oficiais, só a chave de capacidade se repete. ───────────────────────
+  - part_number: "THGAF4T0N8LBAIR"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "128GB"
+    confidence: manual
+    source_url: "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7559/1853_KIOXIAManagedFlashMemoryHighlight.pdf"
+    notes: >
+      PN buscado na bancada (motivou a promoção da família THGAF a decode posicional). Chave
+      pn[6:8]="T0" — MESMA chave confirmada 3x em Tier-1 para 128GB (THGAF8T0T43BAIR consumer +
+      THGAFBT0T43BAB8/THGAFET0T43BAB8 automotive, todos nesta submissão). Não encontrei
+      THGAF4T0N8LBAIR citado em nenhuma tabela oficial Kioxia — pn[5]="4" é uma variante de grade
+      não coberta pelos 2 PDFs oficiais localizados (nem consumer "8" nem automotive "9/B/E").
+      Distribuidores (Xecor, Mouser, DigiKey, Kaimeite) confirmam a EXISTÊNCIA do PN em estoque,
+      e o campo estruturado "Memory Size" da Xecor diz 128GB (bate), mas o restante do texto
+      dessas páginas é claramente conteúdo gerado/templated (menciona "8-inch display", "rear-
+      facing camera" — coisas que um chip de memória não tem), então não conto isso como
+      confirmação — só a chave pn[6:8] Tier-1 sustenta os 128GB. confidence=manual (derivado da
+      gramática Tier-1, não sighting direto desse PN).
+
+  - part_number: "THGAF4G9N4LBAIR"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "64GB"
+    confidence: manual
+    source_url: "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7559/1853_KIOXIAManagedFlashMemoryHighlight.pdf"
+    notes: >
+      Irmão do PN da bancada (mesmo pn[5]="4", achado via Mouser/DigiElectronics ao pesquisar a
+      família). Chave pn[6:8]="G9" — mesma chave confirmada 2x em Tier-1 para 64GB
+      (THGAF8G9T43BAIR consumer + THGAFBG9T23BAB8/THGAFEG9T23BAB8 automotive). Mesma ressalva do
+      THGAF4T0N8LBAIR acima: sem sighting direto dessa variante em tabela oficial.
+      confidence=manual.
+
+  - part_number: "THGAF4T1N8LBAIR"
+    chip_type: "UFS"
+    interface: "UFS 2.1"
+    capacity: "256GB"
+    confidence: manual
+    source_url: "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/7559/1853_KIOXIAManagedFlashMemoryHighlight.pdf"
+    notes: >
+      Irmão do PN da bancada (mesmo pn[5]="4", achado via Mouser ao pesquisar a família). Chave
+      pn[6:8]="T1" — mesma chave confirmada 2x em Tier-1 para 256GB (THGAF8T1T83BAIR consumer +
+      THGAFBT1T83BAB5/THGAFET1T83BAB5 automotive). Mesma ressalva acima. confidence=manual.
+
+# ── NÃO submetidos (ficam de fora de propósito) ──────────────────────────────
+# THGAF9G9L4LBAB8 — aparece no catálogo DiGi-Electronics (lista de PNs Toshiba em estoque), sufixo
+# "BAB8" sugere automotive grade, mas pn[6:8]="G9" (mesma chave de 64GB) não bate com o "L4L" que
+# viria depois — a estrutura não é limpa o suficiente pra eu confiar sem uma tabela oficial que
+# cite esse PN especificamente. Fica de fora até confirmar.
+#
+# THGAF9G7L1LBAB74, THGAFEG8T13BAB74 etc. (com dígito de nota de rodapé colado ao final) — os PDFs
+# oficiais concatenam marcadores de nota de rodapé (¹²³⁴⁵) ao PN durante a extração de texto; usei
+# a contagem de caracteres (pn_length=15) pra separar o PN real do marcador em cada caso. Documento
+# isso aqui pra quem for conferir a fonte original: a leitura direta do PDF é necessária, cópias de
+# texto simples (ex. de um OCR) podem grudar o número da nota no PN.

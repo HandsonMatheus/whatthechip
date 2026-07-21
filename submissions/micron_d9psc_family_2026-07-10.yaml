@@ -1,0 +1,335 @@
+# Submissão de known_parts — Micron, FBGA D9PSC + família MT41K512M4 (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9PSC
+# (não identificado na bancada, fila de revisão — SearchLog 10/07/2026 14:32).
+#
+# fuzzy_sugest. do debug (D9PSF, D9PSH, D9PSK, D9PSL, D9PSN) IGNORADO por
+# construção — já são KnownPart aprovado (ver memória
+# wtc-fuzzy-sugest-ja-confirmado-nao-pesquisar).
+#
+# ACHADO: D9PSC → MT41K512M4DA-125:K, DDR3L. Identidade com confirmação
+# FORTE: a própria API FBGA da Micron devolveu part-name preenchido —
+# "DDR3 2G X4 FBGA" (raro; a maioria dos FBGA não tem esse campo) — bate
+# EXATO com a conta pelo PN: 512M × 4bit = 2048Mb = 2Gb ("2G X4"). Forward-
+# lookup no prefixo "MT41K512M4" achou 35 PNs/FBGAs (17 produção "D9*" + 18
+# Engineering Sample "Z9*"), TODOS a mesma organização 512M4 = 2Gb —
+# variam em pacote (THR/THV/HX/DA/EF), speed grade (-107/-125/-15E/-187E)
+# e die-rev (:D/:F/:H/:J/:K/:M/:N). Entram aqui os 17 de produção (alvo +
+# 16 irmãos), seguindo o mesmo padrão já validado nos lotes D9PZQ e D9SXD
+# (densidade invariante por organização, fórmula já Tier-1-confirmada pro
+# alvo, irmãos apoiados na mesma fórmula + identidade individual via API).
+#
+# ⚠ PENDENTE — ainda não rodei/recebi a query read-only de pré-checagem
+# (aprendida no lote D9PZQ — ver memória
+# wtc-precheck-part-number-norm-antes-de-bulk) pra estes 17 PNs. Ver
+# comando no chat. Pode precisar de edição pós-resultado.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9psc_family_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/micron_d9psc_family_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41K512M4DA-125:K"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9PSC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PSC"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (2026-07-10): "DDR3 2G X4 FBGA", sub-category "obsolete-ddr3-sdram",
+      pageurl próprio no catálogo de obsoletos da Micron (confirma
+      identidade direto da fonte primária, sem precisar de distribuidor).
+      Capacidade: conta pelo PN — 512M (profundidade) × 4bit (largura) =
+      2048Mb = 2Gb — bate EXATO com "2G X4" do part-name oficial. Prefixo
+      MT41K = DDR3L (já estabelecido nesta conversa, lotes D9PZQ/D9TXS).
+      Campo density_gbit (Gb), convenção DDR discreta (CLAUDE.md §6).
+
+  - part_number: "MT41K512M4THR-187E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9KPF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KPF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K): 512M × 4bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (muda só pacote/velocidade/die-rev, nunca a
+      organização 512M4). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula confirmada pelo alvo (part-
+      name oficial "2G X4") + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41K512M4THR-15E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9KPH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KPH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K): 512M × 4bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (muda só pacote/velocidade/die-rev, nunca a
+      organização 512M4). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula confirmada pelo alvo (part-
+      name oficial "2G X4") + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41K512M4THV-187E:F"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9LCL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LCL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K): 512M × 4bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (muda só pacote/velocidade/die-rev, nunca a
+      organização 512M4). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula confirmada pelo alvo (part-
+      name oficial "2G X4") + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41K512M4THV-15E:F"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9LCN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LCN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K): 512M × 4bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (muda só pacote/velocidade/die-rev, nunca a
+      organização 512M4). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula confirmada pelo alvo (part-
+      name oficial "2G X4") + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41K512M4HX-187E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LGW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K): 512M × 4bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (muda só pacote/velocidade/die-rev, nunca a
+      organização 512M4). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula confirmada pelo alvo (part-
+      name oficial "2G X4") + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41K512M4HX-15E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LGX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K): 512M × 4bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (muda só pacote/velocidade/die-rev, nunca a
+      organização 512M4). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula confirmada pelo alvo (part-
+      name oficial "2G X4") + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41K512M4HX-125:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LGZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K): 512M × 4bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (muda só pacote/velocidade/die-rev, nunca a
+      organização 512M4). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula confirmada pelo alvo (part-
+      name oficial "2G X4") + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41K512M4DA-15E:H"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9MKB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MKB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K): 512M × 4bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (muda só pacote/velocidade/die-rev, nunca a
+      organização 512M4). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula confirmada pelo alvo (part-
+      name oficial "2G X4") + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41K512M4DA-187E:H"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9MQV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MQV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K): 512M × 4bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (muda só pacote/velocidade/die-rev, nunca a
+      organização 512M4). Sem verificação individual em distribuidor para
+      este PN específico; apoiado na fórmula confirmada pelo alvo (part-
+      name oficial "2G X4") + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41K512M4DA-125:H"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9MSB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MSB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K, mesmo corpo "DA-125", die-rev ":H" em vez de
+      ":K"): 512M × 4bit = 2048Mb = 2Gb — capacidade invariante nesta
+      família (die-rev não afeta densidade). Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula confirmada
+      pelo alvo (part-name oficial "2G X4") + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M4DA-125:M"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9PFK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PFK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K, mesmo corpo "DA-125", die-rev ":M" em vez de
+      ":K"): 512M × 4bit = 2048Mb = 2Gb — capacidade invariante nesta
+      família (die-rev não afeta densidade). Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula confirmada
+      pelo alvo (part-name oficial "2G X4") + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M4DA-107:K"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9PRZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PRZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K, mesmo die-rev ":K", speed grade -107 em vez de
+      -125): 512M × 4bit = 2048Mb = 2Gb — capacidade invariante nesta
+      família (speed grade não afeta densidade). Sem verificação
+      individual em distribuidor para este PN específico; apoiado na
+      fórmula confirmada pelo alvo (part-name oficial "2G X4") +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M4DA-125:J"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9PTS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PTS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K, mesmo corpo "DA-125", die-rev ":J" em vez de
+      ":K"): 512M × 4bit = 2048Mb = 2Gb — capacidade invariante nesta
+      família (die-rev não afeta densidade). Sem verificação individual em
+      distribuidor para este PN específico; apoiado na fórmula confirmada
+      pelo alvo (part-name oficial "2G X4") + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M4DA-107:M"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9PXH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PXH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K, speed grade -107 e die-rev ":M"): 512M × 4bit =
+      2048Mb = 2Gb — capacidade invariante nesta família. Sem verificação
+      individual em distribuidor para este PN específico; apoiado na
+      fórmula confirmada pelo alvo (part-name oficial "2G X4") +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M4DA-15E:K"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9QMT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QMT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K, mesmo die-rev ":K", speed grade -15E em vez de
+      -125): 512M × 4bit = 2048Mb = 2Gb — capacidade invariante nesta
+      família. Sem verificação individual em distribuidor para este PN
+      específico; apoiado na fórmula confirmada pelo alvo (part-name
+      oficial "2G X4") + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41K512M4EF-107:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x4"
+    density_gbit: "2Gb"
+    fbga_code: "D9TTG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TTG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M4, 2026-07-10). Mesma organização do alvo D9PSC
+      (MT41K512M4DA-125:K; pacote "EF" em vez de "DA", die-rev ":N"):
+      512M × 4bit = 2048Mb = 2Gb — capacidade invariante nesta família
+      (pacote não afeta densidade, só formato físico). Sem verificação
+      individual em distribuidor para este PN específico; apoiado na
+      fórmula confirmada pelo alvo (part-name oficial "2G X4") +
+      identidade direta da API oficial Micron para ESTE fbga_code.

@@ -1,0 +1,61 @@
+# Submissão de known_parts — SK Hynix, prefixo H2JT (NAND Flash raw, MESMA família sem gramática
+# do hynix_h2jt_2026-07-10.yaml — "a" leva do dia). 2ª leva, gerada a partir da investigação do
+# PN H2JTDG8UD1BMS (busca na bancada, 2026-07-10) — mesmo dia, rodada seguinte.
+#
+# ⭐ RESOLVE uma exclusão em aberto da leva "a": aquele arquivo excluiu explicitamente
+# H2JTDG8UD1BMS por "aparecer em revendedores como peça de iPhone 6 16GB... e por falta de fonte
+# tão forte quanto as 3 [PNs] incluídas" (só tinha evidência de revendedor pra esse PN). Esta
+# rodada achou a fonte que faltava: iFixit tem teardown FÍSICO dedicado do iPhone 6 Plus (não só
+# revendedor) confirmando exatamente esse PN. Incluído agora.
+#
+# SEM fix de gramática (mesma razão da leva "a", ver cabeçalho de hynix_h2jt_2026-07-10.yaml):
+# os PNs desta família variam por geração/aplicação do iPhone, não por uma posição de capacidade
+# decodificável — sufixos diferentes (2MBR / 8UD3MBR / 8UD1BMS) mas MESMA capacidade (16GB) nas
+# 3 rodadas. known_parts individuais (Trilha B), sem ChipFamily.
+#
+# TIPO: mesma convenção da leva "a" — chip_type="NAND Flash", subtype="MLC NAND" (a leva "a"
+# confirmou "2 bit/cell"=MLC via TechInsights pra esta mesma família/geração de processo; mantida
+# a consistência em vez de reabrir a dúvida sem evidência nova em contrário).
+#
+# FONTES: 2 teardowns físicos do iFixit (fetch direto de cada página, com participação da
+# Chipworks na identificação dos componentes — citada explicitamente nos dois teardowns).
+# confidence=manual nos dois (teardown+Chipworks, não datasheet do fabricante aberto/lido
+# diretamente — mas o PN alvo linka pro databook OFICIAL da SK Hynix no próprio texto do iFixit).
+#
+# Cruzado contra hynix_h2jt_2026-07-10.yaml antes de finalizar — nenhum PN abaixo é duplicata.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h2jt_2026-07-10b.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h2jt_2026-07-10b.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H2JTDG8UD1BMS"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: ""
+    capacity: "16GB"
+    confidence: manual
+    source_url: "https://www.ifixit.com/Teardown/iPhone+6+Plus+Teardown/29206"
+    notes: >
+      PN buscado na bancada. iFixit iPhone 6 Plus Teardown (fetch direto, Step 21, "Back of the
+      logic board"): "SK Hynix H2JTDG8UD1BMS 128 Gb (16 GB) NAND Flash" — 128Gb÷8=16GB, já
+      pronta na fonte. O próprio texto do iFixit linka pro databook OFICIAL SK Hynix
+      (skhynix.com/inc/pdfDownload.jsp?path=/datasheet/Databook/Databook_2Q'2014_All.pdf).
+      Identificação feita com a Chipworks (citada explicitamente no teardown, mesma equipe que
+      confirmou a leva "a"). RESOLVE a exclusão em aberto da leva "a" (só tinha revendedor antes;
+      agora tem teardown físico dedicado).
+
+  - part_number: "H2JTDG2MBR"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: ""
+    capacity: "16GB"
+    confidence: manual
+    source_url: "https://www.ifixit.com/Teardown/iPhone+5+Teardown/10525"
+    notes: >
+      Irmão de 2 gerações antes do alvo (iPhone 5, 2012 — vs iPhone 6 Plus, 2014). iFixit iPhone
+      5 Teardown (fetch direto, Step 15, "More chips on the underside of the logic board"):
+      "Hynix H2JTDG2MBR 128 Gb (16 GB) NAND flash". PN mais curto que os outros já submetidos
+      (sem o segmento "8UD") — geração de nomenclatura Hynix mais antiga, mesma capacidade
+      (16GB). Identificação feita com a Chipworks (citada explicitamente no teardown).

@@ -1,0 +1,47 @@
+# Submissão de known_parts — Samsung, família KMR (eMCP LPDDR3 + eMMC 5.1). PN alvo:
+# KMR210008M (busca 2026-07-15, 3º round desta família nesta sessão — ver
+# submissions/samsung_kmr_2026-07-13.yaml e samsung_kmr_h6_2026-07-14.yaml pros rounds
+# anteriores). Chave '21' já mapeada (SAM_EMCP_CAP_KMR: 32GB+3GB) desde o round 1 —
+# ⚠ a saída do debug tool colada pelo usuário (RAM=2GB) reflete o banco ANTES dessa
+# correção: o banco que ele consultou não rodou `load_brands --brand samsung --commit`
+# desde o commit 63be087 (2026-07-13). O valor correto (3GB) já está no yaml commitado;
+# só falta re-rodar load_brands no banco que o debug tool usa.
+#
+# PESQUISA DO ALVO: KMR210008M-A805 é um chip AMPLAMENTE documentado — é o eMCP do
+# Samsung Galaxy Note4 (N910/N915F/N910P), usado em milhares de listagens de reparo/
+# recuperação de dados (adaptadores BGA529, chip-off). Confirmado por 3 fontes
+# convergentes: (1) filewale.com/firmwaredrive.com — dump de firmware nomeado
+# literalmente "KMR210008M-A805-32GB_BGA529..." (NAND=32GB explícito, package BGA529
+# bate a família); (2) GSMArena (specs oficiais do Galaxy Note4): "32GB storage, 3GB
+# RAM" — e o Note4 não tem chip de RAM discreto separado, é tudo neste eMCP; (3) já
+# bate o default do mapa da chave '21' (32GB+3GB) E o known_part irmão já confirmado
+# KMR21000BM (seed, mesma chave, Puris "32+24"=3GB) — sem NENHUMA fonte conflitante
+# (diferente dos casos já documentados de exceção dentro-da-família nas chaves 31/C1).
+#
+# NÃO registrados (varredura da chave '21' achou vários sufixos-irmãos, mas SEM
+# confirmação individual segura — "excluir, não adivinhar"): KMR21000AM-A805 achado
+# em listagens, MAS o firmware dele é BGA280 (não BGA529, pacote DIFERENTE) e está
+# associado a "Galaxy Note4 Alpha / Galaxy Alpha" (SM-G850, que historicamente tem
+# 2GB RAM, não 3GB) — sinal real de possível densidade/pacote diferente, não é
+# invariância simples de sufixo. KMR210009M-A803, KMR210013M-B809, KMR21000BA-B614,
+# KMR210000BM-B809, KMR2100BM-B809: existem em listagens/agregadores mas sem fonte
+# estruturada com NAND+RAM explícitos própria — ficam pra uma rodada futura se
+# aparecer fonte melhor.
+brand: "Samsung"
+known_parts:
+  - part_number: "KMR210008M"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: confirmed
+    source_url: "https://filewale.com/files/kmr210008m-a805-32gb-bga529-rev0x0-andrei-d1978/27320"
+    notes: >
+      PN alvo. Firmware dump nomeado explicitamente "KMR210008M-A805-32GB_BGA529"
+      (filewale/firmwaredrive) confirma NAND=32GB + pacote BGA529 (bate a família).
+      Chip do Samsung Galaxy Note4 (N910/N915F/N910P) — GSMArena confirma specs
+      oficiais do aparelho: 32GB storage + 3GB RAM (Note4 não tem RAM discreta
+      separada, é só este eMCP). Bate o default da chave '21' do SAM_EMCP_CAP_KMR
+      (32GB+3GB) e o irmão já confirmado KMR21000BM (seed, mesma chave, Puris
+      "32+24"=3GB) — sem fonte conflitante.

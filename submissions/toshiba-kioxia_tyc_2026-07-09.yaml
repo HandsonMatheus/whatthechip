@@ -1,0 +1,107 @@
+# Submissão de known_parts — Toshiba-Kioxia, família TYC (eMCP LPDDR2 legado, já existente)
+# Gerado pelo chat de marca Toshiba-Kioxia a partir da investigação do PN TYC0FH121660RA
+# (busca na bancada, 2026-07-09). Família TYC já documentada na gramática desde 2026-06-26 —
+# esta submissão NÃO muda gramática, só adiciona known_parts.
+#
+# Pesquisa: tentei achar fonte melhor que a já documentada no tip da família (Octopart — sem
+# dado pra nenhum PN dessa família, diferente do que aconteceu com THGBF; YIC/Allelco/Kynix —
+# listagens de estoque vazias ou com descrição toda errada/mismatched; findcomponents.net — só
+# confirma que os PNs existem em catálogo; AliExpress — só confirma pacote FBGA162 + tipo EMCP).
+# Não achei nada NOVO além do que já estava no tip da família (Tier 2-3, nunca Tier-1).
+#
+# 2ª rodada (a pedido do dono "só achou 1 PN de novo?"): o tip da família já documentava o
+# cluster "TYC0FH12[XXXX]RA = mesmas specs, só lote diferente" — revisitei os resultados de
+# busca (YIC "You May Be Also Be Interested In" + catálogo findcomponents.net) e achei mais 4
+# PNs do MESMO cluster, só lote diferente: TYC0FH121597RA, TYC0FH121626RA, TYC0FH121642RA,
+# TYC0FH121645RA. Batch/lote (pn[8:12]) não encode specs (já documentado no reasoning da
+# família) — mesma capacidade/RAM que o TYC0FH121660RA já submetido. TYC0FH121638RA (outro
+# irmão do cluster, já é o golden anchor da família em chips/tests.py) NÃO entrou aqui — o
+# golden roda com --skip-known-parts (não conflita), mas fica de fora desta submissão só por
+# já ser a âncora de teste; pode ser submetido depois se fizer sentido.
+#
+# Lead NÃO incluído: TYC0GH131619RA (cluster "0G"=8GB, capacidade DIFERENTE) — só 1 sighting
+# (YIC), sem segunda fonte independente. Fica pra pesquisa futura.
+#
+# confidence=distributor em todos (não confirmed/manual — capacidade exata sem fonte individual;
+# não estimated — decisão do dono 2026-07-09: LPDDR2 eMCP é SEMPRE NÃO RENTÁVEL independente da
+# capacidade exata, "não importa a capacidade dele, ele já é lixo eletrônico" — então o padrão de
+# confiança pode ser mais permissivo aqui, já que a imprecisão na capacidade não muda o destino
+# comercial do chip. Capacidade/RAM seguem o padrão já documentado no tip da família (0F=4GB
+# NAND, H=LPDDR2 512MB), não uma reconfirmação individual nova por PN.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tyc_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_tyc_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "TYC0FH121660RA"
+    chip_type: "eMCP"
+    subtype: "LPDDR2"
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR2 512MB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/TYC0FH121660RA"
+    notes: >
+      PN da bancada, cluster já documentado no tip da família TYC: "TYC0FH12[XXXX]RA =
+      mesmas specs, só lote diferente" — bate exatamente (TYC0FH12 + lote "1660" + RA).
+      Confirmação de EXISTÊNCIA/pacote via múltiplos distribuidores (YIC Electronics,
+      Allelco, findcomponents.net, AliExpress — "FBGA162 EMCP memory CHIP IC"), nenhum
+      com capacidade individual explícita. Capacidade (4GB NAND / LPDDR2 512MB) segue o
+      padrão já estabelecido no tip da família (pn[3:5]="0F"=4GB, pn[5]="H"=LPDDR2
+      512MB). confidence=distributor por decisão do dono (2026-07-09): eMCP LPDDR2 é
+      SEMPRE NÃO RENTÁVEL independente da capacidade exata.
+
+  - part_number: "TYC0FH121597RA"
+    chip_type: "eMCP"
+    subtype: "LPDDR2"
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR2 512MB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/TYC0FH121597RA"
+    notes: >
+      Irmão de lote do TYC0FH121660RA — mesmo cluster "TYC0FH12[XXXX]RA", só lote
+      "1597" diferente. Batch (pn[8:12]) não encode specs (já documentado no reasoning
+      da família). Visto em findcomponents.net e no sidebar "relacionados" da YIC
+      Electronics; sem capacidade individual explícita, mesma base do 121660RA.
+      confidence=distributor pelo mesmo motivo (LPDDR2 sempre NÃO RENTÁVEL).
+
+  - part_number: "TYC0FH121626RA"
+    chip_type: "eMCP"
+    subtype: "LPDDR2"
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR2 512MB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/TYC0FH121626RA"
+    notes: >
+      Irmão de lote do TYC0FH121660RA — mesmo cluster, lote "1626". Mesma base de
+      evidência que os demais desta submissão (existência confirmada em múltiplos
+      catálogos de distribuidor, sem capacidade individual explícita, capacidade
+      seguindo o padrão já documentado da família). confidence=distributor.
+
+  - part_number: "TYC0FH121642RA"
+    chip_type: "eMCP"
+    subtype: "LPDDR2"
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR2 512MB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/TYC0FH121642RA"
+    notes: >
+      Irmão de lote do TYC0FH121660RA — mesmo cluster, lote "1642". Mesma base de
+      evidência que os demais desta submissão. confidence=distributor.
+
+  - part_number: "TYC0FH121645RA"
+    chip_type: "eMCP"
+    subtype: "LPDDR2"
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR2 512MB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/TYC0FH121645RA"
+    notes: >
+      Irmão de lote do TYC0FH121660RA — mesmo cluster, lote "1645". Mesma base de
+      evidência que os demais desta submissão. confidence=distributor.
+
+# ── NÃO submetidos (ficam de fora de propósito) ──────────────────────────────
+# TYC0GH131619RA — cluster "0G" (8GB NAND, capacidade DIFERENTE do "0F"=4GB). Só 1 sighting
+# (sidebar YIC), sem segunda fonte independente. Fica para quando aparecer confirmação melhor
+# ou um PN real da bancada desse cluster.

@@ -1,0 +1,119 @@
+# Submissão de known_parts — Samsung, família KMD (eMCP LPDDR4X + eMMC 5.1)
+# Gerado pelo chat de marca Samsung a partir do PN não identificado KMDD6001BM
+# (busca em: 2026-07-03). Uso:
+#   python manage.py submit_known_parts submissions/samsung_kmd_2026-07-03.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/samsung_kmd_2026-07-03.yaml --commit --user <seu_usuario>
+brand: "Samsung"
+known_parts:
+  - part_number: "KMDD6001BM"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR4X 3GB"
+    confidence: confirmed
+    notes: >
+      PN original buscado. Compartilha "KMDD6" (posições 0-4, as que a gramática
+      decodifica: gen 'D'=LPDDR4X, cap-key 'D6'=32GB+3GB) com KMDD60018M-B320,
+      confirmado pelo próprio Octopart ("eMCP 32GB eMMC + LPDDR4 24Gb" = 24Gb÷8=3GB).
+      Sufixo "BM" (posições 8-9) não achado isoladamente, mas não afeta a
+      capacidade — mesma lógica de suffix não-decodificado do caso K3QF anterior.
+
+  - part_number: "KMDD60018M"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR4X 3GB"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/samsung/KMDD60018M-B320"
+    notes: >
+      Octopart — título próprio "eMCP 32GB eMMC + LPDDR4 24Gb" (24Gb÷8=3GB).
+      Cap-key 'D6' do SAM_EMCP_CAP = 32GB+3GB — bate exatamente com a gramática.
+
+  - part_number: "KMDX60018M"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR4X 3GB"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/samsung/KMDX60018M-B425"
+    notes: >
+      Octopart — título próprio "eMCP 32GB eMMC5.1 + 24Gb LPDDR4X-4266"
+      (24Gb÷8=3GB). [2026-07-06: gramática corrigida em 04/07 — SAM_EMCP_RAM_KMD
+      já mapeia X6=3GB corretamente. Este known_part era a correção antes do
+      fix; hoje é só reforço/confirmação, mantido pela fonte Tier-2 direta.]
+
+  - part_number: "KMDP6001DA"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    notes: >
+      Múltiplos distribuidores consistentes (Wolfchip, Lisleapex, AB Sunshine,
+      Indasina, Polaris/pmspte): "64GB eMMC5.1 + 32Gb LPDDR4X-4266" (32Gb÷8=4GB).
+      Cap-key 'P6' do SAM_EMCP_CAP = 64GB+4GB — bate exatamente com a gramática.
+
+  # ── Rodada 2026-07-06: PN KMDD60018M pedido de novo (não commitado ainda?) ───────
+  - part_number: "KMDH6001DA"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    notes: >
+      Múltiplos distribuidores consistentes (Puris, Wolfchip, Lisleapex, AB
+      Sunshine, Ovaga): "64GB eMMC v5.1 + 32Gb LPDDR4X-3733" (32Gb÷8=4GB).
+      Cap-key 'H6' — bate com SAM_EMCP_RAM_KMD (H6=LPDDR4X 4GB, mesmo valor
+      de P6 no KMD).
+
+  # ── Bônus: família vizinha KMG (LPDDR3) — achado ao pesquisar KMDD6001BM ──────────
+  - part_number: "KMGD6001BM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: confirmed
+    notes: >
+      Datasheet Samsung datado "KMGD6001BM-B421 Rev. 0.0, Jan. 2017" (família
+      KMG, não KMD — LPDDR3, não LPDDR4X). Mesmo cap-key 'D6' (32GB+3GB, igual
+      KMD) mas geração de RAM diferente (G≠D em SAM_EMCP_GEN). ⚠ Visualmente
+      quase idêntico a KMDD6001BM (D↔G na 3ª posição) — é o par que o fuzzy
+      matcher já sinaliza e o tip da família KMG já avisa para não confundir.
+
+  - part_number: "KMGP6001BM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: confirmed
+    notes: >
+      Múltiplos distribuidores consistentes (Puris "64+24 eMCP-D3", Alibaba,
+      Octopart categoriza como "eMCP eMMC 5.1 64GB LPDDR3"): 64GB+24Gb(3GB).
+      Cap-key 'P6' no KMG = 3GB (⚠ diferente de P6 no KMD = 4GB — mesma chave,
+      família diferente, exatamente o padrão do bug X6/per-família).
+
+  - part_number: "KMDP60018M"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR4X 3GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/6235"
+    notes: >
+      Confirmado manualmente pelo dono (2026-07-06) — 3GB. Puris (fetch direto)
+      lista "64+24" = 64GB+24Gb=3GB. ⚠ Diverge do golden atual (chips/tests.py
+      _SAM_GOLDEN diz LPDDR4X 4GB via chave 'P6' do SAM_EMCP_RAM_KMD — mesma
+      chave que KMDP6001DA, confirmado 4GB). Ou seja, P6 no KMD NÃO é uniforme
+      por chave — depende do PN exato (KMDP6001DA=4GB vs KMDP60018M=3GB), algo
+      além do padrão "mesma chave, família diferente" do bug X6/V8. Golden e
+      mapa da gramática podem precisar de revisão — sinalizado em
+      INVESTIGACAO_sam_emcp_cap_X6_2026-07-03.md. Este known_part já corrige
+      a exibição para ESTE PN especificamente (autoridade vence a gramática).

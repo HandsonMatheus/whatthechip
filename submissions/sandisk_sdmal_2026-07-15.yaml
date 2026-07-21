@@ -1,0 +1,66 @@
+# Submissão known_parts — SanDisk, PN isolado SDMALBB2-016G (NAND Apple-proprietária)
+# Origem: leitura de bancada "SDMALBB2C16G" (debug do estoque, 15/07/2026), família não reconhecida.
+# Ver INVESTIGACAO_sandisk_sdmal_2026-07-15.md para a análise completa — inclusive por que NÃO é a
+# família "SDMAG" já cadastrada (fantasma, zero evidência real) e a ambiguidade de leitura entre
+# 3 candidatos visualmente parecidos (SDMALBB2 escolhido por ser o mais corroborado).
+#
+# 1 PN confidence=distributor — decisão explícita do dono 2026-07-15 ("aplicar essas specs pra
+# SDMAL em tier mais baixo, já que ele é antigo mesmo"). Sem datasheet Tier-1 possível (peça
+# Apple-proprietária, nunca documentada publicamente pela SanDisk).
+#
+# ⚠ chip_type="NAND Flash" (não eMMC) → profit_family="dead" em chips/chip_types.py: este PN fica
+# AUTOMATICAMENTE NÃO RENTÁVEL, independente da capacidade. Decisão técnica minha (não foi
+# perguntada explicitamente ao dono) — ver §4 da investigação. Reversível facilmente no admin se
+# não for a intenção.
+#
+# ⚠ RODAR O PRECHECK ABAIXO ANTES DO --commit:
+#
+#   python manage.py shell <<'EOF'
+#   from chips.normalize import normalize_pn
+#   from chips.models import KnownPart
+#   pns = ["SDMALBB2016G"]
+#   for pn in pns:
+#       norm = normalize_pn(pn)
+#       existing = KnownPart.objects.filter(part_number_norm=norm)
+#       if existing.exists():
+#           for e in existing:
+#               print(f"COLISÃO {pn} (norm={norm}) -> já existe id={e.id} part_number={e.part_number!r} "
+#                     f"review_status={e.review_status} confidence={e.confidence}")
+#       else:
+#           print(f"livre    {pn}")
+#   EOF
+#
+# Uso (o DONO roda, nunca o chat):
+#   python manage.py submit_known_parts submissions/sandisk_sdmal_2026-07-15.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/sandisk_sdmal_2026-07-15.yaml --commit    # grava (submitted, oculto) + aprovar no admin depois
+#
+# Sem golden test afetado (nenhum PN "SDMA*" está em chips/tests.py::_SD_GOLDEN).
+
+brand: "SanDisk"
+known_parts:
+  - part_number: "SDMALBB2016G"
+    chip_type: "NAND Flash"
+    subtype: ""
+    capacity: "16GB"
+    interface: "PPN (protocolo proprietário Apple, NÃO é eMMC JEDEC padrão)"
+    device: "iPad Air 2013 (A1474/A1475/A1476), posição de placa U1600"
+    confidence: distributor
+    notes: >
+      PN lido na bancada como "SDMALBB2C16G" — normaliza pra SDMALBB2016G, que diverge do PN real
+      "SDMALBB2-016G" só na posição do separador (hífen+zero lido como "C", hipótese não confirmada
+      visualmente — ver INVESTIGACAO_sandisk_sdmal_2026-07-15.md §2). NÃO é a família "SDMAG" já
+      cadastrada no yaml (busca ampla 2026-07-15 não achou nenhuma evidência real de "SDMAG" em
+      lugar nenhum). Identidade confirmada como SanDisk explicitamente em: Jotrin Electronics
+      (títulos "SDMALBB4 032G SANDISK" e "SDMALBB8 064G SANDISK", família de capacidade irmã),
+      rflashdata.com, eBay (listing "iPad Air, U1600, SDMALLBB2"), Parts4Cells, LeoParts,
+      xfix.co.uk (guia de reballing, confirma posição U1600 = NAND do iPad Air). SEM datasheet
+      Tier-1 (peça sob contrato exclusivo Apple, nunca documentada publicamente pela SanDisk) — por
+      isso confidence=distributor, não manual/confirmed; decisão explícita do dono de aceitar esse
+      tier mais baixo dado a idade/baixo valor esperado da peça. Ambiguidade de leitura entre 3
+      candidatos visuais parecidos (SDMALBB2/SDMFLBCB2/SDMDLBCB2, todos 16GB) — SDMALBB2 escolhido
+      por ter a corroboração mais forte (5 fontes + família de capacidade confirmada). chip_type
+      "NAND Flash" (não eMMC): é NAND com protocolo proprietário Apple (PPN), tipicamente só
+      acessível via ferramenta JTAG especializada (ex. EasyJTAG), não socket eMMC padrão — decisão
+      técnica que classifica este PN como NÃO RENTÁVEL por tipo (profit_family="dead" em
+      chips/chip_types.py), independente da capacidade.
+    source_url: "https://www.jotrin.com/product/parts/SDMALBB4_032G"

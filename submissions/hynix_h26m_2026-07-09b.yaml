@@ -1,0 +1,100 @@
+# Submissão de known_parts — SK Hynix, família H26M (eMMC standalone, JÁ EXISTENTE)
+# 2ª leva do dia. Gerado a partir da investigação do PN H26M42001FMR (busca na
+# bancada, 2026-07-09). Mesma família/mapa da leva anterior (hynix_h26m_2026-07-09.yaml)
+# — decode já estava certo (known=true, grammar_complete=true, RENTÁVEL). SEM fix de
+# gramática. 2 datasheets OFICIAIS NOVOS achados (gerações mais antigas, 2015/2017),
+# que não tinha na leva anterior (só cobria a geração Automotive 2020).
+#
+# FONTES:
+#   [A] Datasheet oficial SK Hynix, Rev 1.0/Ago-2015 (via bulcomp-eng.com) — PN único
+#       H26M41204HPR, geração mais antiga (sem grade de temperatura no PN).
+#   [B] Datasheet oficial SK Hynix, Rev 1.0/Set-2017 (via LCSC) — Product Line-up com
+#       H26M51002KPR (16GB), H26M62002JPR (32GB), H26M74002HMR (64GB), geração 128Gb/die.
+#   [C] Kynix (distribuidor, dados estruturados) para H26M42001FMR — sem datasheet
+#       oficial dedicado achado; confidence=manual (não confirmed) por isso.
+#
+# H26M74002HMR já é o golden anchor em chips/tests.py (pré-existente, sem fonte
+# documentada até agora) — esta submissão dá a ele o primeiro known_part + fonte Tier-1.
+#
+# EXCLUÍDOS desta leva (achados no caminho, mas SEM capacidade verificável):
+#   H26M41103HPR, H26M52103FMR — só aparecem como stub de listagem JLCPCB
+#   ("JLCPCB Assembly"/"New Arrivals", só package/PN, zero specs) — sem fonte
+#   independente de capacidade. Mesmo pn[4] já decodificando via gramática
+#   (4→8GB, 5→16GB), não têm confirmação real — não viram known_part (regra:
+#   nunca adivinhar, excluir quando não há como confirmar).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h26m_2026-07-09b.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h26m_2026-07-09b.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H26M42001FMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.kynix.com/productdetails/23853946/hynix/h26m42001fmr.html"
+    notes: >
+      PN original buscado na bancada. Sem datasheet oficial dedicado encontrado —
+      confidence=manual (não confirmed). Kynix (dados estruturados, página fetchada
+      direto): descrição "8GX8" + atributo "Number of Words: 8,589,934,592 words".
+      Aritmética: 8.589.934.592 = 8 × 2^30 = 8G words; 8G words × 8 bits/word = 64Gbit;
+      64Gbit ÷ 8 = 8GB — bate com pn[4]='4'→8GB da gramática. Também corroborado por
+      snippets de busca concordantes (AB Sunshine, Datasheets360, ElectronicsDatasheets,
+      Censtry, Worldway) todos citando 8GB, embora essas páginas não tenham sido
+      abertas/lidas por completo. Kynix marca "Part Life Cycle Code: Obsolete".
+
+  - part_number: "H26M41204HPR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://bulcomp-eng.com/datasheet/H26M41204HPR%20(BGA153)%20-%20Datasheet.pdf"
+    notes: >
+      Datasheet OFICIAL SK Hynix, Rev 1.0/Ago-2015 ("1st Official release", PN único
+      nesta revisão): "Density Part Number NAND Stack ... 8GB H26M41204HPR 64Gb x 1
+      11.5x13x0.8 153FBGA". pn[4]='4'→8GB, bate com o mapa HYX_EMMC_CAP.
+
+  - part_number: "H26M51002KPR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/29d3fddf80ceb970047a1f6fa3375d7e.pdf?productCode=C3002775"
+    notes: >
+      Datasheet OFICIAL SK Hynix, Rev 1.0/Set-2017 ("Official release Sep. 07, 2017"),
+      Product Line-up: "16GB H26M51002KPR 128Gb x 1 11.5x13x0.8 153FBGA". pn[4]='5'→16GB,
+      bate com o mapa. Geração 128Gb/die (mais nova que a de 2015, mais antiga que a
+      Automotive 2020 já submetida).
+
+  - part_number: "H26M62002JPR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/a7fa4fafa34cea887e243bbd07850242.pdf?productCode=C3002776"
+    notes: >
+      Mesmo datasheet oficial (Rev 1.0/Set-2017): "32GB H26M62002JPR 128Gb x 2".
+      pn[4]='6'→32GB — 3ª confirmação independente (nesta e na leva anterior) da
+      ressalva do tip "H26M64...=32GB, NÃO 64GB".
+
+  - part_number: "H26M74002HMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/a7fa4fafa34cea887e243bbd07850242.pdf?productCode=C3002776"
+    notes: >
+      Mesmo datasheet oficial (Rev 1.0/Set-2017): "64GB H26M74002HMR 128Gb x 4". PN
+      já é o golden anchor de H26M em chips/tests.py (pré-existente) — não tinha
+      known_part nem fonte documentada até agora; esta submissão fecha essa lacuna.
+      2ª fonte independente (apontada pelo dono, 2026-07-09): Octopart
+      (octopart.com/part/hynix/H26M74002HMR), página fetchada e lida direto —
+      descrição do distribuidor Win Source: "64GB eMMC5.1 EG510". Bate exatamente
+      com o datasheet oficial.

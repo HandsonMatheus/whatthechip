@@ -1,0 +1,69 @@
+# Submissão de known_parts — SK Hynix, família H5TQ (DDR3 standard-voltage, PC/servidor).
+# Gerado a partir da investigação do PN H5TQ4G63CFR (busca na bancada, 2026-07-13,
+# mesma sessão da rodada H5TQ anterior — submissions/hynix_h5tq_2026-07-13.yaml).
+#
+# PN BEM FORMADO — sem suspeita de leitura errada desta vez (ao contrário da rodada
+# anterior "H9TQ1G63EFR"→H5TQ1G63EFR). H5TQ4G63CFR já decodifica CORRETAMENTE pela
+# gramática existente (debug da bancada: capacity=512MB, dram_density="4Gb = 512MB
+# por die [✓]", grammar_complete=true, profitable=RENTÁVEL) — zero mudança de
+# gramática necessária, é known_parts-only (Trilha B).
+#
+# O QUE É "CFR" — é um irmão de DIE REVISION do H5TQ4G63EFR já submetido na rodada
+# anterior: mesma família (H5TQ), mesma densidade (4Gb), mesma interface (pn[6:8]=
+# "63"=x16), só a letra em pn[8] muda ("C" em vez de "E") — é revisão de processo/
+# silício, não afeta capacidade nem tipo. A gramática não decodifica essa letra
+# (decode_cap_pos/len cobre só pn[4:6]) — por isso ambas batem no mesmo resultado
+# de capacidade, corretamente.
+#
+# FONTE (Tier-1 — datasheet oficial SK Hynix, DIFERENTE do datasheet da rev. E):
+#   Abri o PDF completo (fetch direto, hospedado LCSC) — "4Gb DDR3 SDRAM" Rev.1.3/
+#   June.2015 (documento distinto do Rev.1.2/Sep.2016 da rev. E) — cobre
+#   H5TQ4G63CFR (x16) e H5TQ4G83CFR (x8) no mesmo documento. Li o corpo técnico
+#   inteiro (Ordering Information, ball-out, IDD spec, timing). confidence=confirmed.
+#   Ordering Information confirma: H5TQ4G63CFR-*xxC/I/L/J = "256M x 16" (x16),
+#   96ball FBGA; H5TQ4G83CFR-*xxC/I/L/J = "512M x 8" (x8), 78ball FBGA. Mesmo
+#   VDD=VDDQ=1.5V, mesma família elétrica JEDEC 78/96ball FBGA do datasheet da
+#   rev. E. 4,294,967,296-bit = 4Gb ÷8 = 512MB — idêntico ao já confirmado.
+#
+# Coletei ambas as interfaces (x16 pedida na bancada + x8 irmã) — mesmo padrão da
+# rodada anterior. Não fui atrás de revisão "C" nas outras densidades (1G/2G/8G)
+# nesta rodada — fora do escopo do PN pedido; se aparecer na bancada, mesmo
+# processo se aplica.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tq_4g63cfr_2026-07-13.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tq_4g63cfr_2026-07-13.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TQ4G63CFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/lcsc/1908161803_SK-HYNIX-H5TQ4G63CFR-RDC_C390898.pdf"
+    notes: >
+      PN ALVO desta rodada, buscado na bancada (2026-07-13). Datasheet oficial SK
+      Hynix "4Gb DDR3 SDRAM" Rev.1.3/June.2015 (documento próprio da rev. "C",
+      diferente do Rev.1.2/Sep.2016 usado pra rev. "E"), lido na íntegra via fetch
+      direto do PDF (hospedado LCSC). Ordering Information confirma: H5TQ4G63CFR-
+      *xxC/I/L/J = "256M x 16" (x16), 96ball FBGA, VDD=VDDQ=1.5V. 4Gb ÷8 = 512MB —
+      bate exato com o decode ATUAL da gramática (mesmo valor do H5TQ4G63EFR já
+      confirmado). confidence=confirmed (li o corpo técnico completo do datasheet).
+
+  - part_number: "H5TQ4G83CFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/lcsc/1908161803_SK-HYNIX-H5TQ4G63CFR-RDC_C390898.pdf"
+    notes: >
+      Mesmo datasheet oficial do H5TQ4G63CFR (Rev.1.3/June.2015) — documento único
+      cobre as duas variantes de interface. Ordering Information: H5TQ4G83CFR-*xxC/
+      I/L/J = "512M x 8" (x8), 78ball FBGA. Mesma densidade total (4Gb ÷8 = 512MB),
+      só a largura de barramento muda. confidence=confirmed (li o corpo técnico
+      completo do datasheet).

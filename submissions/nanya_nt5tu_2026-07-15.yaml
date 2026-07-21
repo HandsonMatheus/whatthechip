@@ -1,0 +1,78 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5TU32M16FG-AC"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "512Mb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145608/NANYA/NT5TU32M16FG-AC.html"
+    notes: >
+      PN EXATO do debug ao vivo do estoque (15/07/2026 17:54) -- prefixo NT5TU nao existia no
+      yaml (nenhuma das 4 familias Nanya ja cadastradas cobria; era um dos "leads CMS"
+      sinalizados na priorizacao original do dono). Familia NOVA adicionada (DDR2 SDRAM,
+      PC/desktop legado). Confirmado via Alldatasheet, pagina aberta diretamente (nao resumo de
+      busca): "Description: Commercial and Industrial DDR2 512Mb SDRAM", Manufacturer=NANYA,
+      Direct Link=nanya.com. Aritmetica: 32M x 16bit = 512Mbit = 512Mb (bate).
+      DDR2 esta ABAIXO do minimo comercial do projeto (ddr_min_gen=3, ou seja DDR3+) --
+      NAO RENTAVEL independente da capacidade (ver ProfitabilityConfig / assess_profitability).
+
+  - part_number: "NT5TU32M16EG-AC"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "512Mb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145592/NANYA/NT5TU32M16EG-AC.html"
+    notes: >
+      Variante de die (letra "E" em vez de "F") do PN do caso, mesma organizacao/densidade.
+      Alldatasheet: "Commercial, Industrial and Automotive DDR2 512Mb SDRAM". Aritmetica:
+      32M x 16bit = 512Mbit = 512Mb (bate).
+
+  - part_number: "NT5TU32M16CG-25C"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "512Mb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1820402/NANYA/NT5TU32M16CG-25C.html"
+    notes: >
+      Variante de die mais antiga ("C-Die", REV 1.0 10/2007) do mesmo cluster 32M16, mesma
+      densidade. Alldatasheet: "512Mb DDR2 SDRAM C-Die". Aritmetica: 32M x 16bit = 512Mbit =
+      512Mb (bate).
+
+  - part_number: "NT5TU64M16HG"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145659/NANYA/NT5TU64M16HG.html"
+    notes: >
+      Densidade NOVA do cluster NT5TU (bucket NT5TU6*, 72 resultados, todos "Commercial,
+      Industrial and Automotive DDR2 1Gb SDRAM"). Aritmetica: 64M x 16bit = 1024Mbit = 1Gb
+      (bate).
+
+  - part_number: "NT5TU64M16GG"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1772685/NANYA/NT5TU64M16GG.html"
+    notes: >
+      Variante de die ("G-Die", REV 2.0 02/2013) do mesmo cluster 64M16, mesma densidade.
+      Alldatasheet: "1Gb DDR2 SDRAM". Aritmetica: 64M x 16bit = 1024Mbit = 1Gb (bate).
+
+  - part_number: "NT5TU128M8HE"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    density_gbit: "1Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145658/NANYA/NT5TU128M8HE.html"
+    notes: >
+      Mesma densidade (1Gb) via organizacao/largura diferente (x8 em vez de x16) -- bucket
+      NT5TU1* (mistura 128M4=512Mb legado C-die e 128M8=1Gb G/H-die; este PN e o lado 1Gb/x8).
+      Alldatasheet: "Commercial, Industrial and Automotive DDR2 1Gb SDRAM". Aritmetica:
+      128M x 8bit = 1024Mbit = 1Gb (bate).

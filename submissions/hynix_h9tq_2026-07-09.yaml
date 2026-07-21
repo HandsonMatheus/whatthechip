@@ -1,0 +1,101 @@
+# Submissão de known_parts — SK Hynix, família H9TQ (eMCP LPDDR3, JÁ EXISTENTE)
+# Gerado pelo chat de marca SK Hynix a partir da investigação do PN H9TQ27ADFTMC
+# (busca na bancada, 2026-07-09). Família H9TQ e mapas HYX_EMCP_NAND_CAP/
+# HYX_H9TQ_RAM_CAP JÁ EXISTIAM e já decodificavam o PN buscado certo (known=true,
+# grammar_complete=true, RENTÁVEL). Trilha B (known_parts) + 1 fix pontual de
+# Trilha A (ver abaixo).
+#
+# Fui atrás dos irmãos reais encontrados no caminho (Preduo + Puris, catálogos
+# estruturados de broker, ambos fetchados direto — Preduo já é tratado como
+# tier-1 neste projeto). Os dois concordam de forma independente pra cada PN
+# abaixo (formato "NAND+RAM" tipo "32+24" = 32GB eMMC + 24Gb(÷8)=3GB LPDDR3).
+#
+# ACHADO / FIX DE GRAMÁTICA: H9TQ18ABJTMCUR-KTM tem pn[4:6]='18', que NÃO estava
+# no mapa HYX_EMCP_NAND_CAP (só tinha '16'/'17'→16GB). Preduo E Puris concordam,
+# de forma independente: "16+16" (16GB eMMC + 16Gb÷8=2GB LPDDR3) — bate com o
+# padrão já visto na família (16/17 já eram um par pra 16GB; 26/27 pra 32GB;
+# 64/65 pra 8GB), então '18'→16GB foi ADICIONADO ao mapa (compartilhado com
+# H9TP) em chips/knowledge/hynix.yaml. Golden novo em chips/tests.py prova o fix.
+# Mesmo padrão do fix '22'→256GB no H9HQ (2026-07-09, submissão anterior).
+#
+# LIÇÃO DO H9HCNNNECMMLTR-NEE (aplicada aqui de novo): só uso fonte que eu de
+# fato abri e li o conteúdo (Preduo e Puris, ambos fetchados diretamente — não
+# só título/slug de anúncio).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9tq_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9tq_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9TQ27ADFTMCUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "32GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/h9tq27adftmcur-kum"
+    notes: >
+      PN original buscado na bancada foi "H9TQ27ADFTMC" (base sem sufixo de order
+      code) — mesmo decode. Preduo (tier-1 neste projeto, "Density: 32+24") e Puris
+      (puris.net/archives/3897, "32+24 eMCP-D3") concordam de forma independente:
+      32GB eMMC + 24Gb(÷8)=3GB LPDDR3. Também achei um PDF de especificação técnica
+      pra este PN (quec-mall-prod.oss..., "32GB eMMC (x8) + 24Gb LPDDR3 (x32)") —
+      não abri o arquivo inteiro (muito grande), mas o título já bate com Preduo/Puris.
+
+  - part_number: "H9TQ27ACLTACUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "32GB"
+    emcp_ram: "LPDDR3 4GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/h9tq27acltacur-kum"
+    notes: >
+      Achado nos "Related products" do Preduo (e também aparece como post anterior
+      do Puris, mesma listagem). Preduo: "32+32" = 32GB eMMC + 32Gb(÷8)=4GB LPDDR3.
+      Corrobora pn[4:6]='27'→32GB (mesmo do PN principal) e pn[6:8]='AC'→4GB, já
+      no tip.
+
+  - part_number: "H9TQ18ABJTMCUR-KTM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/2980"
+    notes: >
+      Achado nos "Related products" do Preduo E nos "Similar Posts" do Puris —
+      motivou o FIX de gramática desta submissão (chave NAND '18' não existia no
+      mapa, só '16'/'17'). Preduo: "16+16". Puris: "16+16 221ball eMCP-D3". Duas
+      fontes independentes concordando + padrão de códigos múltiplos já
+      estabelecido na família (16/17 pra 16GB, 26/27 pra 32GB, 64/65 pra 8GB) →
+      confiança suficiente pra adicionar '18'→16GB ao HYX_EMCP_NAND_CAP
+      (compartilhado com H9TP).
+
+  - part_number: "H9TQ64A8GTACUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/h9tq64a8gtacur-kum"
+    notes: >
+      Achado nos "Related products" do Preduo. Preduo: "8+8" = 8GB eMMC + 8Gb(÷8)=1GB
+      LPDDR3. Corrobora pn[4:6]='64'→8GB e pn[6:8]='A8'→1GB, ambos já no tip.
+
+  - part_number: "H9TQ65A8GTMCUR-KTM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/2965"
+    notes: >
+      Achado nos "Similar Posts" do Puris. Puris: "8+8 221ball eMCP-D3". Segunda
+      confirmação independente de pn[4:6]='65'→8GB (par de '64', mesmo padrão da
+      família) e pn[6:8]='A8'→1GB.

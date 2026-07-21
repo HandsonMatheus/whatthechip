@@ -1,0 +1,172 @@
+# Submissão de known_parts — SK Hynix, família H5TC (DDR3L standalone, PC/servidor).
+# Gerado a partir da investigação do PN H5TC4G63EFR (busca na bancada, 2026-07-13).
+# Família H5TC JÁ EXISTE na gramática (chips/knowledge/hynix.yaml) e decodifica
+# CORRETAMENTE — confirmado abaixo com 4 dos 5 pontos de densidade documentados
+# no tip da família (51/1G/2G/4G/8G). Não precisa de ChipFamily nova nem golden
+# anchor — é known_parts-only (Trilha B), igual ao tratamento dado a H26M/H9TQ
+# nesta mesma sessão (famílias já mapeadas, só confirmando PNs reais).
+#
+# FONTE (Tier-1 — datasheet oficial SK Hynix):
+#   4Gb e 2Gb: abri o PDF completo (fetch direto do PDF hospedado em LCSC/DigiKey,
+#   texto técnico completo — pinout, tabelas de timing, ratings — não só metadado
+#   de agregador). H5TC4G(6/8)3EFR Rev.1.4/1.5 (Apr.2017/Oct.2020); H5TC2G(6/8)3GFR
+#   Rev.1.3 (Nov.2015). confidence=confirmed.
+#   1Gb e 8Gb: AllDataSheet — metadado estruturado (Part#, Description="1Gb/8Gb
+#   DDR3L SDRAM", contagem de páginas consistente com datasheet real de 33/35 pág.,
+#   "Direct Link" apontando pro domínio oficial skhynix.com) mas NÃO consegui abrir
+#   o corpo do PDF em si (hosts com viewer JS não retornam texto no fetch). Por
+#   rigor, confidence=manual (não confirmed) — não abri o datasheet, só o índice
+#   estruturado do agregador. H5TC1G83EFR (1Gb); H5TC8G63AMR-PBA (8Gb).
+#
+# ARITMÉTICA (Gb→GB/MB, conforme convenção do projeto — density_gbit, NÃO capacity,
+# ver CLAUDE.md §6/§7 "Densidade DDR fora do lugar" — DDR discreta usa density_gbit,
+# nunca capacity, senão o pricing fica cego ao chip [NO_KEY]):
+#   1Gb → density_gbit=1  (128MB)
+#   2Gb → density_gbit=2  (256MB)
+#   4Gb → density_gbit=4  (512MB)  ← bate com o decode ATUAL da gramática (dram_density
+#                                     já mostrava "4Gb = 512MB por die [✓]" no debug da bancada)
+#   8Gb → density_gbit=8  (1GB)
+#
+# INTERFACE (x8 vs x16 — bus width): pn[6:8] = "63"→x16, "83"→x8, no PN completo.
+# Coletei AMBAS as variantes em cada densidade onde encontrei confirmação Tier-1
+# de cada uma — são chips fisicamente diferentes que o operador pode achar na
+# bancada. ⚠ ACHADO (validação em sandbox, 2026-07-13): preenchi `interface` em
+# cada known_part, mas descobri que o engine NÃO propaga esse campo pra
+# classify() no caminho com família casada — `_result_from_known` (chips/
+# engine.py:888-897, branch não-eMCP) copia known.capacity/dram_density/device
+# do KnownPart, mas nunca lê known.interface (só o caminho SEM família, ex.
+# chips/engine.py:1421/1468/1521/1565, lê known.interface corretamente). Isto é
+# um bug PRÉ-EXISTENTE do motor (não causado por esta submissão, não fixável
+# por chat de marca — fora do escopo, ver "não modificar código sem perguntar")
+# — afeta qualquer KnownPart DDR/LPDDR/GDDR/SDRAM standalone (não-eMCP) com
+# família casada que tente preencher `interface`. Mantive o campo preenchido
+# nesta submissão porque o dado está correto e fica salvo no banco mesmo sem
+# aparecer em classify() hoje — se o dono corrigir o bug depois, o known_part já
+# está com o dado certo, sem precisar resubmeter. Sinalizando pro dono avaliar.
+#
+# density_gbit/density_gb PRECISAM vir com unidade já formatada na STRING (ex.:
+# "4Gb"/"512MB"), não só o número ("4"). `_known_dram_density` (chips/engine.py:
+# 699-709) só concatena os campos crus — não adiciona unidade nem converte nada;
+# o contrato está documentado em chips/models.py:211-212 e chips/knowledge/
+# schema.py:180-181. Descobri isso ao vivo: minha 1ª tentativa usou só "4" e o
+# dram_density pós-aprovação saiu malformado ("4 por die [✓]" em vez de "4Gb =
+# 512MB por die [✓]") — corrigido abaixo.
+#
+# COBERTURA DA FAMÍLIA (pedido permanente do dono — nunca 1 só PN): dos 5 pontos
+# de densidade citados no tip da família (51=64MB · 1G=128MB · 2G=256MB · 4G=512MB
+# · 8G=1GB), confirmei 4 com PN real: 1G/2G/4G/8G. O ponto "51" (512Mb/64MB) — NÃO
+# achei nenhum PN real H5TC com esse código em nenhuma fonte pesquisada; pode ser
+# um código que nunca chegou a produção sob o prefixo H5TC, ou existe só sob outro
+# prefixo. Não incluí — seria adivinhar. Sinalizando para o dono como gap conhecido.
+#
+# PN sem sufixo de grade/velocidade (ex.: "-RDA"/"-PBA"/"-H9A"): a gramática casa
+# no PN base de 11 caracteres (mesmo padrão da busca na bancada, que retornou
+# "H5TC4G63EFR" sem sufixo); o sufixo é grade de velocidade/temperatura/consumo,
+# não afeta capacidade (mesmo padrão de outras famílias Hynix neste yaml).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tc_2026-07-13.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tc_2026-07-13.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TC4G63EFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H5TC4Gx3EFR%20Series.pdf"
+    notes: >
+      Datasheet oficial SK Hynix "4Gb DDR3L SDRAM" Rev.1.5/Oct.2020 (mesmo doc.
+      cobre H5TC4G63EFR e H5TC4G83EFR), lido na íntegra via fetch direto do PDF
+      (hospedado DigiKey/LCSC). Ordering Information confirma: H5TC4G63EFR-*xxA/I/
+      K/L/J = "256M x 16" (x16), 96ball FBGA. 4Gb ÷8 = 512MB — bate exato com o
+      decode ATUAL da gramática (pn[4:6]="4G", dram_density já mostrava "4Gb =
+      512MB por die [✓]" no debug da bancada que originou esta rodada). Também
+      confirmado por 10+ distribuidores independentes (LCSC, DigiKey/Netlist,
+      Datasheets360, Datasheets.com, JLCPCB, memory-distributor.com) todos
+      convergindo em "4Gb, 256Mx16, DDR3L-1866, BGA96, 0~95°C". confidence=confirmed
+      (li o corpo técnico completo do datasheet, não só metadado de agregador).
+
+  - part_number: "H5TC4G83EFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    density_gb: "512MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Netlist%20Inc%20PDF/H5TC4Gx3EFR%20Series.pdf"
+    notes: >
+      Mesmo datasheet oficial do H5TC4G63EFR (Rev.1.5/Oct.2020) — documento único
+      cobre as duas variantes de interface. Ordering Information: H5TC4G83EFR-*xxA/
+      I/K/L/J = "512M x 8" (x8), 78ball FBGA. Mesma densidade total (4Gb ÷8 =
+      512MB), só a largura de barramento muda (x8 em vez de x16). confidence=confirmed
+      (li o corpo técnico completo do datasheet).
+
+  - part_number: "H5TC2G63GFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/32d3aed2572f59d67f3f2b5ee6929364.pdf?productCode=C390896"
+    notes: >
+      Datasheet oficial SK Hynix "2Gb DDR3L SDRAM" Rev.1.3/Nov.2015 (mesmo doc.
+      cobre H5TC2G63GFR e H5TC2G83GFR), lido na íntegra via fetch direto do PDF
+      (hospedado LCSC). Ordering Information confirma: H5TC2G63GFR-*xxA/I/L/J =
+      "128M x 16" (x16), 96ball FBGA. 2Gb ÷8 = 256MB — bate com "2G=256MB" no tip
+      da família. confidence=confirmed (li o corpo técnico completo).
+
+  - part_number: "H5TC2G83GFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://datasheet.lcsc.com/datasheet/pdf/32d3aed2572f59d67f3f2b5ee6929364.pdf?productCode=C390896"
+    notes: >
+      Mesmo datasheet oficial do H5TC2G63GFR (Rev.1.3/Nov.2015). Ordering
+      Information: H5TC2G83GFR-*xxA/I/L/J = "256M x 8" (x8), 78ball FBGA. Mesma
+      densidade total (2Gb ÷8 = 256MB), largura de barramento x8. confidence=confirmed
+      (li o corpo técnico completo do datasheet).
+
+  - part_number: "H5TC1G83EFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/534194/HYNIX/H5TC1G83EFR.html"
+    notes: >
+      AllDataSheet: Part#=H5TC1G83EFR, Description="1Gb DDR3L SDRAM", 33 páginas,
+      Manufacturer=HYNIX, Direct Link=skhynix.com (oficial). NÃO consegui abrir o
+      corpo do PDF (host com viewer JS não retorna texto no fetch direto, só
+      testei 2 mirrors sem sucesso) — por isso confidence=manual, não confirmed
+      (é metadado estruturado de agregador confiável, mas não li o datasheet em
+      si). Não achei nenhuma variante x16 ("H5TC1G63xFR") documentada em nenhuma
+      fonte pesquisada para esta densidade — só x8 ("83") e x4 ("43") parecem
+      existir em 1Gb sob o prefixo H5TC; o x16 só aparece a partir de 2Gb. 1Gb
+      ÷8 = 128MB — bate com "1G=128MB" no tip da família.
+
+  - part_number: "H5TC8G63AMR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "8Gb"
+    density_gb: "1GB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/533427/HYNIX/H5TC8G63AMR-PBA.html"
+    notes: >
+      AllDataSheet: Part#=H5TC8G63AMR-PBA, Description="8Gb DDR3L SDRAM", 35
+      páginas, Manufacturer=HYNIX, Direct Link=skhynix.com (oficial). Mesma
+      ressalva do H5TC1G83EFR: não consegui abrir o corpo do PDF (tentei mirror
+      datasheet.iiic.cc, só retornou viewer JS sem texto extraível) — confidence=
+      manual. Nome-base sem sufixo "-PBA" (grade de velocidade), mantendo o
+      padrão de PN-base-de-11-caracteres usado nos outros known_parts deste
+      arquivo. 8Gb ÷8 = 1GB — bate com "8G=1GB" no tip da família (é o teto físico
+      DDR3 mencionado no próprio tip: "Teto físico DDR3: 8Gb (1GB) por chip").

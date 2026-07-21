@@ -1,0 +1,81 @@
+# Submissão de known_parts — Toshiba-Kioxia, VARREDURA AMPLA da família THGBM (+ 1 THGBX)
+# Gerado a pedido explícito do dono (2026-07-09): "Vc precisa encontrar mais da mesma familia,
+# nao esqueca mais por favor. de 1 em 1 só vamos terminar toshiba em 5 anos" — em vez de pesquisar
+# 1 PN por rodada, esta submissão nasceu de uma busca SITE-WIDE (não 1 teardown por vez):
+# WebSearch "site:ifixit.com THGBM" + "site:ifixit.com THGAF OR THGBX OR THGBF" trouxe 9 teardowns
+# citando a família numa tacada só. Cada um foi ABERTO e LIDO DIRETAMENTE (Tier-1, não resumo de
+# busca) via web_fetch — o próprio resumo do WebSearch errou uma capacidade nesta rodada
+# (THGBM1G5D2EBAI7 "4GB" contradiz 5D2=8GB já confirmado; PDF-fonte não pôde ser lido diretamente
+# → PN descartado, não usado, ver rodapé "NÃO submetidos").
+#
+# Das 9 fontes abertas, 5 PNs já batiam com known_parts JÁ SUBMETIDOS (THGBMHG8C2LBAIL,
+# THGBM5G6A2JBAIR, THGBM5G5A1JBAIR, THGBMAG7A2JBAIR, THGBX2G7B2JLA01) — só corroboram (Tier-1
+# adicional, não precisam resubmissão, o portão já pula PN aprovado). 4 são GENUINAMENTE NOVOS:
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_varredura_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_varredura_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "THGBMDG5D1LBAIT"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.ifixit.com/Teardown/Playdate+Teardown/143811"
+    notes: >
+      "4 GB of Kioxia (formerly Toshiba) THGBMDG5D1LBAIT eMMC NAND flash memory" — texto exato
+      do Step 9 do Playdate Teardown (iFixit, ago/2021), lido diretamente. Chave pn[7:10]="5D1"
+      já existente no THGBM_CAP (4GB) — só confirma o PN individual, não é chave nova. pn[5]="D"
+      → eMMC 5.0 (já confirmado no THGBM_GEN). Encontrado na varredura ampla 2026-07-09
+      (site:ifixit.com THGBM), não pesquisa isolada de 1 PN.
+
+  - part_number: "THGBM2G8D8FBAIB"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.ifixit.com/Teardown/Motorola+Xoom+Teardown/4989"
+    notes: >
+      "Toshiba THGBM2G8D8FBAIB 32GB eMMC NAND Flash" — texto exato do Step 14 do Motorola Xoom
+      Teardown (iFixit, fev/2011), lido diretamente. Chave pn[7:10]="8D8" É NOVA — não estava no
+      THGBM_CAP (tinha 8A4/8B4/8C2/8C4/8D4/8T4, todos 32GB). Adicionada à gramática nesta rodada:
+      [8D8, 32GB, '']. pn[5]="2" não está no THGBM_GEN (só 5/A/B/D/F/G/H/J/N/T/U confirmados) —
+      geração eMMC NÃO submetida (sem fonte pra confirmar), só a capacidade, que É explícita e
+      inequívoca no texto do teardown. Encontrado na varredura ampla 2026-07-09.
+
+  - part_number: "THGBM4G7D2GBAIE"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.ifixit.com/News/14330/motorola-droid-razr-teardown"
+    notes: >
+      "Toshiba THGBM4G7D2GBAIE 16GB EMMC Flash Memory" — texto exato do artigo "Motorola Droid
+      RAZR Teardown" (iFixit News, nov/2011), lido diretamente. Chave pn[7:10]="7D2" já existente
+      no THGBM_CAP (16GB) — só confirma o PN individual. pn[5]="4" não está no THGBM_GEN —
+      geração eMMC NÃO submetida (sem fonte), só a capacidade confirmada no texto. Encontrado na
+      varredura ampla 2026-07-09.
+
+  - part_number: "THGBX5G7D2KLDXG"
+    chip_type: "NAND Flash"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.ifixit.com/Teardown/iPhone+SE+Teardown/60902"
+    notes: >
+      "Toshiba THGBX5G7D2KLDXG 16 GB NAND Flash" — texto exato do Step 12 do iPhone SE Teardown
+      (iFixit, mar/2016), lido diretamente. Família THGBX = NAND Flash raw (sem controlador eMMC),
+      já documentada (2026-07-08) — chave pn[7:10]="7D2" já existente no THGBX_CAP (16GB), só
+      confirma PN individual novo (diferente do THGBX2G7B2JLA01/THGBX2G7D2JLA01/THGBX2G8B4JLA01/
+      THGBX2G8D4JLA01/THGBX5G8D4KLDXG já submetidos). chip_type="NAND Flash" = SEMPRE NÃO RENTÁVEL
+      (regra de negócio já existente, independe de capacidade). Encontrado na varredura ampla
+      2026-07-09 (site:ifixit.com THGAF OR THGBX OR THGBF).
+
+# ── NÃO submetidos (descartados nesta varredura) ───────────────────────────────────────────
+# THGBM1G8D8EBAI2, THGBM1G7D8EBAI0, THGBM1G7D4EBAI2, THGBM1G6D4EBAI4, THGBM1G5D2EBAI7,
+# THGBM4G5D1HBAIR, THGBMJG9C8LBAU8, THGBMJG6C1LBAIL — todos apareceram em resultados de WebSearch
+# apontando pra datasheets Octopart/OMO-IC, mas o fetch do PDF (THGBM1G8D8EBAI2) voltou vazio (o
+# tool não extraiu texto de PDF binário) e não consegui abrir os demais diretamente. O resumo do
+# próprio WebSearch é NÃO CONFIÁVEL aqui — chegou a afirmar THGBM1G5D2EBAI7="4GB", contradizendo
+# a chave "5D2"=8GB já confirmada Tier-1 nesta mesma família. Sem conseguir ler a fonte primária
+# diretamente, nenhum desses 8 PNs entrou nesta submissão — ficam como lead para pesquisa futura
+# (tentar o datasheet Octopart por outra via, ex. Google cache ou mirror texto-plano).

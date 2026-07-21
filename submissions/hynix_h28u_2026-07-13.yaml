@@ -1,0 +1,98 @@
+# Submissão de known_parts — SK Hynix, família H28U (UFS standalone, era de transição).
+# Gerado a partir da investigação do PN H28U74301AMR (busca na bancada, 2026-07-13).
+#
+# Lição aplicada desde já (feedback do dono nesta mesma sessão: "nosso objetivo nunca
+# é coletar somente 1"): cobri o cluster inteiro da família na primeira passada, não
+# só o PN alvo. Gramática já decodifica os 4 PNs abaixo corretamente (pn[4]=capacidade:
+# 6=32GB · 7=64GB · 8=128GB, grammar_complete=true pra todos) — zero mudança de
+# gramática, é known_parts-only (Trilha B).
+#
+# TÉCNICA: página de catálogo próprio da OMO Electronic pro prefixo "H28U" (18 PNs
+# indexados) revelou candidatos nos 3 códigos de capacidade documentados no tip de
+# uma vez. Dois dos PNs abaixo (H28U62301AMR, H28U88301AMR) já apareciam como
+# fuzzy_suggestions no próprio debug da bancada que originou esta rodada — sinal de
+# que o engine já os reconhecia como estruturalmente plausíveis.
+#
+# FONTE PRINCIPAL (Tier-1 — press release oficial SK Hynix, cita as 3 capacidades
+# JUNTAS): "SK hynix Mass Produces In-house UFS 2.1 Solution" (news.skhynix.com,
+# 18/ago/2016): "SK hynix Inc... announced it has started to mass produce UFS
+# (Universal Flash Storage) 2.1 128/64/32GB(Gigabytes) solution based on its own 2nd
+# generation 3D NAND Flash, in-house firmware and controller." — confirma OFICIALMENTE
+# que os 3 códigos (6/7/8 → 32/64/128GB) são as 3 capacidades reais do produto UFS 2.1
+# da SK Hynix, não invenção de mapa. Complementado por distribuidor estruturado
+# por PN (abaixo).
+#
+# PACOTE: y-ic.com e ic-components.com confirmam "BGA-153" pra H28U74301AMR — bate
+# com o aviso de segurança do tip da família (⚠⚠ mesmo encapsulamento do eMMC H26M,
+# NÃO inserir no socket errado). Reforça que o tip já documentado está correto.
+#
+# ⚠ Mesmo padrão de mislabel já visto 3x nesta sessão: Allchip Electronic (via
+# DigiPart) rotula H28U74301AMR como fabricante "SAMSUNG" — claramente errado (20+
+# outras fontes confirmam SK Hynix). Não usado como fonte.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h28u_2026-07-13.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h28u_2026-07-13.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H28U74301AMR"
+    chip_type: "UFS"
+    subtype: ""
+    capacity: "64GB"
+    confidence: manual
+    source_url: "https://www.apogeeweb.net/productdetail/sk-hynix-inc-h28u74301amr-2jhljqwk"
+    notes: >
+      PN ALVO desta rodada, buscado na bancada (2026-07-13). 20+ distribuidores
+      independentes confirmam (NetSource, TIST $11.43, Conevo, Shengyu, WinSource,
+      Zeano, Depu, Sunether, RX, Atosn, Metaverse, Semicon, YIC "BGA-153", Ariat
+      "BGA-153", MountainView, GlobalTek, Hongte, Kepictronics, Unicom, Sense,
+      NewStrength, IC Components "BGA-153", Sierra, Haode, Chipsea), manufacturer
+      SKHYNIX/Hynix consistente (1 outlier "SAMSUNG" via Allchip — mesmo padrão de
+      mislabel já visto 3x nesta sessão). Apogeeweb descreve "Memory 64GB UFS 2.1".
+      Pacote BGA-153 confirmado — bate com o aviso de segurança do tip da família
+      (mesmo encapsulamento do eMMC H26M). Bate com press release oficial SK Hynix
+      (ver cabeçalho do arquivo: "UFS 2.1 128/64/32GB solution"). confidence=manual.
+
+  - part_number: "H28U74303AMR"
+    chip_type: "UFS"
+    subtype: ""
+    capacity: "64GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h28u74303amr.html"
+    notes: >
+      Irmão do PN alvo (mesmo código pn[4]='7'=64GB, sufixo final "303" em vez de
+      "301" — variante de firmware/revisão, não afeta capacidade). WinSource (via
+      DigiPart) tem campo ESTRUTURADO: "64GB UFS2.1" — confirmação direta, não
+      inferência. 10 distribuidores independentes (WinSource, Atosn, YIC, Ariat,
+      Kepictronics, Sense, SILITECH, NewStrength, IC Components, Sierra, Green
+      Light, Chipsea). confidence=manual.
+
+  - part_number: "H28U62301AMR"
+    chip_type: "UFS"
+    subtype: ""
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.reverse-costing.com/teardowns/components/hynix_h28u62301amr/"
+    notes: >
+      Código pn[4]='6'=32GB (menor capacidade da família). Indexado em banco de dados
+      de teardown profissional (reverse-costing.com — identificação de componente
+      físico real, não catálogo de distribuidor) + Octopart + múltiplos distribuidores
+      (Jotrin e outros). Já aparecia como fuzzy_suggestion no debug original da
+      bancada (evidência de que o engine já reconhecia a forma do PN como plausível).
+      Bate com press release oficial SK Hynix (32GB é uma das 3 capacidades
+      oficialmente anunciadas para esta linha UFS 2.1). confidence=manual.
+
+  - part_number: "H28U88301AMR"
+    chip_type: "UFS"
+    subtype: ""
+    capacity: "128GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/ufs/ufs-2-1/h28u88301amr"
+    notes: >
+      Código pn[4]='8'=128GB (teto documentado no tip). Preduo descreve "SK Hynix
+      FLASH-NAND-UFS 128GB NAND UFS device... FBGA-153 package" — pacote BGA-153
+      bate com o aviso de segurança do tip (mesmo encapsulamento do eMMC H26M). Já
+      aparecia como fuzzy_suggestion no debug original da bancada. Bate com press
+      release oficial SK Hynix (128GB é a capacidade máxima oficialmente anunciada
+      para esta linha UFS 2.1). confidence=manual.

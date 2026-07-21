@@ -1,0 +1,62 @@
+# Submissão de known_parts — SK Hynix, família H9TQ (eMCP LPDDR3, JÁ EXISTENTE)
+# Gerado a partir da investigação do PN H9TQ26ABJTAC (busca na bancada, 2026-07-10) — pn[4:6]
+# ='26' (NAND 32GB) e pn[6:8]='AB' (RAM 2GB), ambos já mapeados e já decodificando certo
+# (grammar_complete=true, RENTÁVEL). SEM fix de gramática nesta rodada — puro reforço Trilha B.
+#
+# FONTES: WinSource (via DigiPart, fetch direto) + Preduo e Puris (fetch direto). Todos com
+# descrição textual explícita de densidade — aritmética Gbit→GB mostrada em cada nota.
+#
+# ⚠ 2 PNs achados no cluster já tinham sido submetidos em rodadas anteriores — NÃO incluídos
+# aqui de novo (evitar duplicata): H9TQ27ADFTMCUR-KUM (submissions/hynix_h9tq_2026-07-09.yaml)
+# e H9TQ17ABJTMCUR-KUM (submissions/hynix_h9tq_2026-07-06.yaml). Ambos já confirmavam os mesmos
+# valores que reencontrei agora (AD=3GB e AB=2GB respectivamente) — checados, batem.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9tq_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9tq_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9TQ26ABJTACUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "eMMC 5.x 32GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9tq26abjtacur-kum.html"
+    notes: >
+      PN original buscado na bancada foi "H9TQ26ABJTAC" (base sem sufixo de order code) — mesmo
+      decode. WinSource (via DigiPart, fetch direto) descreve "eMCP 32GB eMMC5.1 + 16Gb
+      LPDDR3-1866" — 16Gb÷8=2GB. Bate com pn[4:6]='26'→32GB e pn[6:8]='AB'→2GB, já mapeados.
+      Também listado em ~20 outros distribuidores no DigiPart (Depu, Sunether, Conevo, Shengyu,
+      Semicon, YIC, Zeano, Ariat, RX Electronics, Atosn, IC Components, Dxway, Sierra, Haode,
+      Chipsea etc.), sem descrição própria mas confirmando a existência em massa do PN.
+
+  - part_number: "H9TQ26ACLTMCUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "eMMC 5.x 32GB"
+    emcp_ram: "LPDDR3 4GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/3528"
+    notes: >
+      Achado pesquisando o cluster da família (fetch direto): Puris descreve "32+32 eMCP-D3" —
+      32GB NAND + 32Gb÷8=4GB LPDDR3. Bate com pn[4:6]='26'→32GB (mesmo código do alvo) e
+      pn[6:8]='AC'→4GB, já mapeados — confirma a combinação NAND 26 + RAM AC especificamente
+      (diferente do H9TQ27ACLTACUR-KUM já submetido antes, que era NAND 27).
+
+  - part_number: "H9TQ26ADFTACUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "eMMC 5.x 32GB"
+    emcp_ram: "LPDDR3 3GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr3/221ball_emmc-lpd3/h9tq26adftacur-kum"
+    notes: >
+      Achado nos "Related products" do Preduo (fetch direto, página do H9TQ27ADFTMCUR-KUM):
+      "32+24" — 32GB NAND + 24Gb÷8=3GB LPDDR3. Bate com pn[4:6]='26'→32GB (mesmo código do alvo)
+      e pn[6:8]='AD'→3GB, já mapeados. Também listado em ~15 distribuidores via DigiPart (sem
+      descrição própria lá, mas confirmado aqui pela fonte estruturada do Preduo).

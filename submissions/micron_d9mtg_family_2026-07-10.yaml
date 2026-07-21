@@ -1,0 +1,749 @@
+# Submissão de known_parts — Micron, FBGA D9MTG + família MT47H256M8 (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9MTG
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9MGG, D9MHG, D9MQG, D9RTG, D9TTG) IGNORADO
+# por construção — já são KnownPart aprovado (D9MGG, aliás, é do lote
+# D9LGQ já commitado — família DDR3 diferente, puro acaso visual).
+#
+# ACHADO: D9MTG → MT47H256M8EB-25E:C. Família MT47H (DDR2), mesma base
+# do lote D9RZH (2026-07-10) — organização "256M8" (2Gb, x8) em vez de
+# "64M16" (1Gb, x16) do D9RZH. Capacidade: 256M × 8bit = 2048Mb = 2Gb —
+# bate exato com o part-name direto da Micron "DDR2 2G X8 FBGA".
+#
+# Forward-lookup no prefixo "MT47H256M8" (2026-07-10) achou 67 PNs: 37
+# de produção ("D9*") + 30 Engineering Sample ("Z9*", EXCLUÍDOS). 5 dos
+# 37 têm part-name direto da Micron confirmando tipo+capacidade; os
+# outros 32 herdam a mesma organização por construção do próprio
+# prefixo buscado (verificado programaticamente: todos os 37
+# part-numbers começam literalmente por "MT47H256M8", mesma lógica já
+# usada no D9RZH/D9LGQ/D9PQL). Sem PN duplicado, sem fbga_code
+# duplicado, sem colisão de part_number_norm dentro da própria lista
+# (checado programaticamente — lição do incidente D9RZH original, onde
+# "P-AIT" vs "P AIT" colidiam; não se repete aqui). Sem sobreposição com
+# nenhuma submissão anterior (grep em submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9mtg_family_2026-07-10.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9mtg_family_2026-07-10.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT47H256M8EB-25E:C"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MTG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr2-sdram/part-catalog/part-detail/mt47h256m8eb-25e-c"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-10): D9MTG → MT47H256M8EB-25E:C. Família MT47H (DDR2), mesma
+      base do lote D9RZH (2026-07-10) — organização diferente (256M×8 em
+      vez de 64M×16). TIPO + CAPACIDADE confirmados diretamente pelo campo
+      part-name da própria Micron: "DDR2 2G X8 FBGA", sub-category
+      "ddr2-sdram" (em produção, não obsoleto). CAPACIDADE por fórmula:
+      256M (profundidade) × 8bit (largura) = 2048Mb = 2Gb — bate exato com
+      o "2G" do part-name. Campo density_gbit (Gb), convenção DDR discreta
+      (CLAUDE.md §6).
+
+  - part_number: "MT47H256M8HG-5E ES:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9GBF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GBF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8HG-37E ES:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9GBG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GBG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8HG-5E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9GBH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GBH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8HG-37E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9GBJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GBJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THJ-37E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9GQC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GQC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THJ-5E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9GQD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GQD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THJ-3:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9GTF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THL-25E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9HBR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HBR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8SHK-5E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9HKC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HKC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8SHK-37E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9HKD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HKD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THL-3:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9HPJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HPJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THL-37E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9HPK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HPK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THL-5E:D"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9HPR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HPR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THN-5E:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9JBZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JBZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8HG-3:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9JFK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JFK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THN-3 L:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9JVB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JVB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THN-37E L:E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9JVN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JVN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8HG-25:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9JXG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JXG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8HG-25E:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9JXJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JXJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THN-3:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9KSV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KSV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8HG-37E IT:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9KWD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KWD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THN-3 L:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9KWL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KWL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THN-3 IT:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9LBD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LBD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THN-25E:G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9LKR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LKR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8PG-3 IT:A"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9LNW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LNW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THN-3 IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MDV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MDV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THN-3:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MGC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h256m8thn-3-h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H256M8, 2026-07-10): "DDR2 2G X8
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 2Gb diretamente da Micron. 256M × 8bit =
+      2048Mb = 2Gb bate exato.
+
+  - part_number: "MT47H256M8EB-25:C"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MJR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MJR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8EB-3:C"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MJT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h256m8eb-3-c"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H256M8, 2026-07-10): "DDR2 2G X8
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 2Gb diretamente da Micron. 256M × 8bit =
+      2048Mb = 2Gb bate exato.
+
+  - part_number: "MT47H256M8THN-25E:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MKL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MKL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8EB-187E:C"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9MVG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h256m8eb-187e-c"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H256M8, 2026-07-10): "DDR2 2G X8
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 2Gb diretamente da Micron. 256M × 8bit =
+      2048Mb = 2Gb bate exato.
+
+  - part_number: "MT47H256M8THN-25E IT:H"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9NHZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9NHZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8EB-25E IT:C"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9NXS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9NXS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8EB-25E S:C"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9QLZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QLZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8EB-25E XIT:C"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9QNH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QNH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H256M8, 2026-07-10). Mesma organização do alvo D9MTG
+      (MT47H256M8EB-25E:C): 256M × 8bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H256M8, verificado programaticamente: todos os 37 part-numbers
+      começam literalmente por "MT47H256M8"). Tipo DDR2 confirmado pelo
+      alvo + irmãos com part-name direto da Micron nesta mesma leva. Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H256M8THN-25E:M"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x8"
+    density_gbit: "2Gb"
+    fbga_code: "D9RVG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr2-sdram/part-catalog/part-detail/mt47h256m8thn-25e-m"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT47H256M8, 2026-07-10): "DDR2 2G X8
+      FBGA"/"TFBGA", sub-category "obsolete-ddr2-sdram" (obsoleto) —
+      confirma DDR2 e a densidade 2Gb diretamente da Micron. 256M × 8bit =
+      2048Mb = 2Gb bate exato.

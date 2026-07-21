@@ -1,0 +1,69 @@
+# Submissão de known_parts — Toshiba-Kioxia, chave "7D4" (16GB) com fonte real de distribuidor
+# Origem: PN da bancada digitado como "THGBMBG7D4KBAIR" (busca exaustiva não achou NADA — zero
+# rastro web, situação anômala vs. todo o resto do cluster). O dono confirmou depois: era erro de
+# digitação no FINAL do PN. Corrigido para "THGBMBG7D4KBAIR" -> ainda não achado -> 2ª tentativa
+# "THGBMBG7D4KBAIW" (I maiúsculo, não dígito 1 — mesma confusão já vista no irmão 7D2: catálogos
+# grafam "KBAIL"/"KBA1L" pro mesmo chip) -> ESTE resolveu.
+#
+# ⚠ Isto substitui a inferência puramente estrutural da rodada anterior (chave "7D4"=16GB adicionada
+# à gramática só por padrão, sem fonte pro PN exato — ver chips/knowledge/toshiba-kioxia.yaml,
+# reasoning 2026-07-10). Agora HÁ fonte real: confidence=distributor (Tier-3), não mais pura
+# inferência. A chave "7D4" continua na gramática (não muda), mas agora os PNs abaixo têm
+# known_part de verdade — é isso que o dono pediu ("precisamos confirmar este e outros PNs no
+# banco, corrigir gramática apenas não resolve o problema").
+#
+# Fontes (Tier-3, distribuidor — não datasheet/teardown, por isso confidence=distributor):
+# 1. Censtry.com: página de PRODUTO DEDICADA (não é busca vazia) pra ambos os PNs — confirma
+#    EXISTÊNCIA real como peça catalogada. THGBM4G7D4HBAIR tem estoque explícito (1981 PCS).
+#    Nenhuma das duas páginas Censtry declara capacidade em texto (só fabricante/pacote/categoria).
+# 2. Daraz.com.bd (distribuidor Bangladesh): listagem "(1piece)100% New THGBM5G7A4JBA4W
+#    THGBMBG7D4KBAIW THGBMFG7C2LBAIW THGBMBG7D2KBAIL THGBM4G7D4HBAIR KLUAG2G1BD-B0B2 BGA Chipset"
+#    — campo ESTRUTURADO "Model Number: 16 Gigabyte" (site em bengali: "মডেল নম্বর: ১৬ গিগাবাইট").
+#    Todos os OUTROS chips do MESMO pacote já são 16GB confirmados (THGBM5G7A4JBA4W, THGBMBG7D2KBAIL
+#    — Tier-1 confirmados em rodadas anteriores; THGBMFG7C2LBAIW usa a chave "7C2" já=16GB) — o
+#    pacote inteiro é um kit de reposição "classe 16GB" pro mesmo tipo de placa, reforçando que
+#    THGBMBG7D4KBAIW e THGBM4G7D4HBAIR (ambos chave "7D4") também são 16GB, consistente com o padrão
+#    estrutural já confirmado (pn[7]="7" sempre 16GB, agora com corroboração de mercado real).
+# 3. Múltiplas listagens adicionais (Amazon.com, Amazon.ca — "Davitu Electrical Equipments
+#    Supplies", Alibaba) mostram THGBMBG7D4KBAIW no MESMO agrupamento de SKUs 16GB confirmados —
+#    padrão consistente em 4+ fontes independentes de distribuidor.
+#
+# pn[5]="B" (THGBMBG7D4KBAIW) já confirmado eMMC 5.0 no THGBM_GEN — interface incluída.
+# pn[5]="4" (THGBM4G7D4HBAIR) NÃO está no THGBM_GEN (mesmo padrão de "2"/"4" vistos na varredura
+# anterior) — capacidade apenas, sem reivindicar interface.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_7d4_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_7d4_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "THGBMBG7D4KBAIW"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.daraz.com.bd/products/1piece100-new-thgbm5g7a4jba4w-thgbmbg7d4kbaiw-thgbmfg7c2lbaiw-thgbmbg7d2kbail-thgbm4g7d4hbair-kluag2g1bd-b0b2-bga-chipset-i304520758.html"
+    notes: >
+      PN da bancada (corrigido: erro de digitação no final — "1"/"I" trocados, mesma confusão já
+      vista no irmão THGBMBG7D2KBAIL/THGBMBG7D2KBA1L). Página de produto dedicada na Censtry
+      (censtry.com/product/toshiba/thgbmbg7d4kbaiw.html) confirma existência real como peça
+      catalogada. Listagem Daraz.com.bd tem campo estruturado "Model Number: 16 Gigabyte" pro
+      pacote inteiro — todos os outros 4 chips do mesmo kit já são 16GB confirmados Tier-1
+      (THGBM5G7A4JBA4W, THGBMBG7D2KBAIL) ou usam chave já=16GB (THGBMFG7C2LBAIW, chave "7C2").
+      Corroborado por chave "7D4" já presente na gramática (pn[7]="7" sempre 16GB, confirmado em
+      6 outras variantes de stack) — agora com fonte real de mercado, não só inferência estrutural.
+      confidence=distributor (Tier-3: distribuidor, não datasheet/teardown individual).
+
+  - part_number: "THGBM4G7D4HBAIR"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.daraz.com.bd/products/1piece100-new-thgbm5g7a4jba4w-thgbmbg7d4kbaiw-thgbmfg7c2lbaiw-thgbmbg7d2kbail-thgbm4g7d4hbair-kluag2g1bd-b0b2-bga-chipset-i304520758.html"
+    notes: >
+      Irmão encontrado no mesmo pacote/pesquisa (mesma chave "7D4", gen letter "4" em vez de "B").
+      Página de produto dedicada na Censtry (censtry.com/product/toshiba/thgbm4g7d4hbair.html),
+      estoque explícito 1981 PCS. Mesmo campo Daraz "Model Number: 16 Gigabyte" do kit. pn[5]="4"
+      NÃO está no THGBM_GEN (mesmo padrão já visto em THGBM2G8D8FBAIB/THGBM4G7D2GBAIE da varredura
+      2026-07-09 — geração eMMC não confirmada nessas fontes) — só capacidade, sem interface.
+      confidence=distributor.

@@ -1,0 +1,67 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CB64M16FP"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145458/NANYA/NT5CB64M16FP.html"
+    notes: >
+      PN do debug ao vivo do estoque (15/07/2026, known=false, 100% invisivel — NT5CB nao tem
+      ChipFamily na gramatica, so existe via known_part individual). Alldatasheet (indexa o
+      datasheet oficial Nanya): "Commercial, Industrial and Automotive DDR3(L) 1Gb SDRAM" — a
+      PROPRIA forma base "NT5CB64M16FP" (sem sufixo) e uma entrada de catalogo direta, nao um PN
+      inventado por mim. Aritmetica: 64M x 16bit = 1024Mbit = 1Gb (bate). NT5CB = DDR3 1.5V (nao
+      NT5CC/DDR3L 1.35V) por convencao ja estabelecida do projeto (5a letra do prefixo).
+
+  - part_number: "NT5CB64M16FP-DH"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145464/NANYA/NT5CB64M16FP-DH.html"
+    notes: >
+      Variante de sufixo (grade de velocidade/pacote) do mesmo PN do caso, mesma organizacao.
+      Alldatasheet: "Commercial, Industrial and Automotive DDR3(L) 1Gb SDRAM". Aritmetica: 64M x
+      16bit = 1024Mbit = 1Gb (bate).
+
+  - part_number: "NT5CB64M16FN-DHA"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145617/NANYA/NT5CB64M16FN-DHA.html"
+    notes: >
+      Mesma organizacao/densidade do PN do caso, die letter irma "FN" (em vez de "FP") — cobre a
+      outra metade do cluster 64M16 (Alldatasheet lista FN e FP como series paralelas, mesma
+      capacidade). Alldatasheet: "Commercial, Industrial and Automotive DDR3(L) 1Gb SDRAM".
+      Aritmetica: 64M x 16bit = 1024Mbit = 1Gb (bate).
+
+  - part_number: "NT5CB512M8CN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145481/NANYA/NT5CB512M8CN.html"
+    notes: >
+      Densidade NOVA para NT5CB (nao havia nenhum known_part de 512M/4Gb confirmado antes desta
+      submissao — so 128M16/256M16/256M8 apareciam no catalogo local). Alldatasheet (indexa o
+      datasheet oficial Nanya): "Commercial, Industrial and Automotive DDR3(L) 4Gb SDRAM".
+      Aritmetica: 512M x 8bit = 4096Mbit = 4Gb (bate). Maior densidade confirmada para NT5CB — o
+      cluster nao tem variante 1024M/8Gb (bucket "NT5CB1*" no Alldatasheet e 100% 128M, nao 1024M).
+
+  - part_number: "NT5CB512M8CN-DI"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145485/NANYA/NT5CB512M8CN-DI.html"
+    notes: >
+      Variante de sufixo do 512M8CN acima, mesma organizacao. Alldatasheet: "Commercial,
+      Industrial and Automotive DDR3(L) 4Gb SDRAM". Aritmetica: 512M x 8bit = 4096Mbit = 4Gb
+      (bate).

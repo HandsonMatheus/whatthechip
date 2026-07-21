@@ -1,0 +1,66 @@
+# Submissão de known_parts — SK Hynix, família H9TQ (eMCP LPDDR3)
+# Gerado pelo chat de marca SK Hynix a partir da investigação do PN H9TQ64AAETMC
+# (busca na bancada, 2026-07-06) — achado: a chave RAM 'AA' estava errada na
+# gramática (gravada como 2GB, sinônimo de 'AB'; corrigida pra 1.5GB, valor
+# distinto). Ver diff em chips/knowledge/hynix.yaml e chips/tests.py (_HYX_GOLDEN).
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9tq_2026-07-06.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9tq_2026-07-06.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  # ── PN original da bancada — motivou a correção da chave 'AA' ──────────────
+  - part_number: "H9TQ64AAETMCUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 1.5GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9TQ64AAETMCUR-KUM"
+    notes: >
+      PN buscado na bancada (H9TQ64AAETMC). Motivou a correção da chave 'AA' no
+      mapa HYX_H9TQ_RAM_CAP (hynix.yaml) de 2GB → 1.5GB — estava tratada como
+      sinônimo de 'AB' (2GB), mas são capacidades diferentes (AA só existe
+      emparelhada com NAND '64'; testei NAND 17/26/52 com 'AA' e nenhum existe
+      comercialmente). Fonte: WinSource (via agregador DigiPart), descrição
+      "eMCP 8GB eMMC5.1 + 12Gb LPDDR3-1866" = 1.5GB (12Gb ÷ 8).
+      ⚠ WinSource normalmente é fonte a EVITAR p/ capacidade (SK_HYNIX.md §6,
+      mesma categoria do Jotrin — inverte Gb/GB). Usado aqui como EXCEÇÃO
+      aprovada explicitamente pelo dono (2026-07-06) só para este PN, depois de
+      eu não conseguir confirmar via fetch direto (a página do WinSource só
+      renderiza a ficha técnica via Javascript, meu fetch não executa JS — não
+      houve segunda fonte independente pra esse valor específico). Cross-check
+      de consistência: 'AB' (que SIM tem 2 fontes independentes batendo, ver
+      abaixo) ficou intocado — só 'AA' mudou.
+
+  # ── Achados no caminho — confirmam 'AB' (2 fontes independentes, sem mudança) ──
+  - part_number: "H9TQ17ABJTMCUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9TQ17ABJTMCUR-KUM"
+    notes: >
+      Achado no caminho da investigação do PN acima, usado para confirmar a
+      chave 'AB' (distinta de 'AA'). Fonte: WinSource (via DigiPart), "eMCP
+      16GB eMMC5.1 + 16Gb LPDDR3-1866" = 2GB. Bate com a gramática já existente
+      (sem mudança nela). Mesma ressalva sobre WinSource do PN acima — aqui
+      mitigada por ter uma 2ª confirmação independente (próximo PN, NAND
+      diferente, mesma leitura de RAM).
+
+  - part_number: "H9TQ64ABJTMCUR-KUM"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    interface: ""
+    emcp_nand: "8GB"
+    emcp_ram: "LPDDR3 2GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9TQ64ABJTMCUR-KUM"
+    notes: >
+      Segunda confirmação independente da chave 'AB' (NAND diferente do PN
+      acima — 8GB em vez de 16GB —, mesma leitura de RAM). Fonte: WinSource
+      (via DigiPart), "eMCP 8GB eMMC5.1 + 16Gb LPDDR3-1866" = 2GB. Bate com a
+      gramática já existente (sem mudança nela).

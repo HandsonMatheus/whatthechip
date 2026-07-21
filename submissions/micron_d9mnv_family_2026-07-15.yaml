@@ -1,0 +1,959 @@
+# Submissão de known_parts — Micron, FBGA D9MNV + família MT41J128M8 (2026-07-15)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9MNV
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9HNV, D9MDV, D9MNG, D9MNJ, D9MNN) IGNORADO
+# por construção — já são KnownPart aprovado.
+#
+# ACHADO: D9MNV → MT41J128M8JP-15E IT:G. Prefixo MT41J = DDR3 padrão
+# (1,5V), mesma convenção já estabelecida (D9LGQ/D9PZM/D9MNT/D9NMW).
+# Capacidade: 128M × 8bit = 1024Mb = 1Gb — confirmada via Octopart,
+# MESMO PN com MESMA revisão ":G" e sufixo "IT": "DRAM Chip DDR3 SDRAM
+# 1G-Bit 128Mx8 1.5V 78-Pin FBGA Tray".
+#
+# Coleta máxima da família (regra vigente desde Z9DNC — D9 e Z9 tratados
+# igual, só exclui quem tem "ES" no próprio texto do PN): forward-lookup
+# no prefixo "MT41J128M8" (2026-07-15) achou 69 PNs. 28 têm "ES" no
+# próprio texto (checado programaticamente, regex `(?:^| )ES(?:$|[ :])`)
+# — EXCLUÍDOS (neste caso específico, coincidem 100% com o bloco "Z9",
+# mas o filtro foi aplicado ao TEXTO, não ao prefixo). Restam 41 PNs de
+# produção real (alvo + 40 irmãos). 2 têm part-name direto da Micron
+# confirmando tipo+capacidade ("DDR3 1G X8 FBGA": D9MNL, D9MNR); os
+# outros 39 herdam a mesma organização por construção do próprio prefixo
+# buscado (verificado programaticamente: todos os 41 part-numbers
+# começam literalmente por "MT41J128M8").
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9mnv_family_2026-07-15.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9mnv_family_2026-07-15.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41J128M8JP-15E IT:G"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MNV"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=MT41J128M8JP-15E%20IT%3AG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-15): D9MNV → MT41J128M8JP-15E IT:G. Prefixo MT41J = DDR3
+      padrão (1,5V), mesma convenção já estabelecida
+      (D9LGQ/D9PZM/D9MNT/D9NMW). CAPACIDADE por fórmula: 128M
+      (profundidade) × 8bit (largura) = 1024Mb = 1Gb. Confirmado via
+      Octopart, MESMA revisão ":G" e MESMO sufixo "IT" listados
+      diretamente: "MT41J128M8JP-15EIT:G — DRAM Chip DDR3 SDRAM 1G-Bit
+      128Mx8 1.5V 78-Pin FBGA Tray" — bate exato em organização (128Mx8)
+      e densidade (1G-Bit). Campo density_gbit (Gb), interface x8,
+      convenção DDR discreta (CLAUDE.md §6).
+
+  - part_number: "MT41J128M8JP-15E:G"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MNL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41j128m8jp-15e-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT41J128M8, 2026-07-15): "DDR3 1G X8 FBGA",
+      sub-category "obsolete-ddr3-sdram" — confirma DDR3 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT41J128M8JP-125:G"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MNR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41j128m8jp-125-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT41J128M8, 2026-07-15): "DDR3 1G X8 FBGA",
+      sub-category "obsolete-ddr3-sdram" — confirma DDR3 e a densidade
+      1024Mb (1Gb) diretamente da Micron. 128M × 8bit = 1024Mb = 1Gb bate
+      exato.
+
+  - part_number: "MT41J128M8BY-125:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D955F"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D955F"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BY-25:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BY-25E:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BY-187:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BY-187E:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BY-15E:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BY-15F:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BZ-25:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BZ-25E:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BZ-187:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BZ-187E:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BZ-15E:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BZ-15F:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BY-15:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9HZL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HZL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8HX-25:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JNJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JNJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8HX-25E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JNK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JNK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8HX-187E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JNL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JNL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8HX-15E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JNM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JNM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8HX-15F:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9JZF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JZF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8HX-125:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KNX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KNX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-125:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KPR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KPR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-15E:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KPT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KPT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-187E:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KPV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KPV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-187E:G"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KRR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KRR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-25:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KTF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KTF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8HX-15E IT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KZJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KZJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8HX-187E IT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9KZK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KZK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-187E:E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LDN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LDN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-15E:E"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LDQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LDQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-15E IT:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LFC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LFC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-187E IT:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LFD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LFD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-107E:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9LRM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LRM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-107:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MMK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MMK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-15E AIT:G"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MQC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MQC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8JP-107:G"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9MSS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MSS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8DA-093:J"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "D9RQC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RQC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8BY-0 MS:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "Z9JLB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/Z9JLB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M8HX-0 MS:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    density_gbit: "1Gb"
+    fbga_code: "Z9JXD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/Z9JXD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J128M8, 2026-07-15). Mesma organização do alvo D9MNV
+      (MT41J128M8JP-15E IT:G): 128M × 8bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J128M8, verificado programaticamente: todos os 41 part-numbers
+      produção começam literalmente por "MT41J128M8"). Tipo DDR3 padrão
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9MNL/D9MNR: "DDR3 1G X8 FBGA"). Sem "ES"
+      no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, conforme regra
+      vigente desde Z9DNC). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.

@@ -1,0 +1,75 @@
+# Submissão de known_parts — Samsung, família K4U (LPDDR4X standalone)
+# PN alvo: K4UBE3S4AMMGCL (busca 2026-07-13). Local (seed + PSG
+# data/psg/samsung_global_lpddr4_2017_2020.csv, 25 known_parts K4U reais)
+# tinha cobertura RICA da família (6E/8E/CE/JE em gen S/D/Q, BE só em gen D)
+# — mas ZERO entrada com o cap-code 'BE' combinado com gen 'S' (o alvo). PN
+# tem 14 chars: K4U+BE(cap)+3+S(gen)+4+AM(rev)+MG(pkg)+CL. Grammar já
+# decodifica certo hoje (pn[3:5]='BE'→LPDDR4_CAP→4GB) — a família tem um
+# padrão de EXCEÇÕES documentado no PSG local (rev 'AM' + pkg 'GF'/'GH'
+# sobrescreve a capacidade base — ex.: BE+AM-GHCL=6GB, não 4GB) — por isso
+# NÃO assumi 4GB só pela gramática: busquei confirmação direta da capacidade
+# real do 'AM-MGCL' especificamente (pkg 'MG', que em TODAS as outras
+# ocorrências already-confirmadas nunca disparou exceção, diferente de
+# GF/GH) antes de registrar.
+#
+# K4UBE3S4AMMGCL (alvo): confirmado via TechInsights (firma de reverse-
+# engineering/análise física de chip, terceiro independente — não é
+# fabricante nem distribuidor) — blog cita o PN literal e descreve
+# "package features two 16 Gb LPDDR4X dies" = 2×16Gb=32Gb÷8=4GB. Bate com a
+# capacidade padrão da gramática (BE=4GB, SEM exceção neste pkg). Reforçado
+# por múltiplos anúncios AliExpress/Alibaba com texto explícito "LPDDR4X
+# 4GB 4266Mbps 200FBGA" citando o PN exato, + DigiPart (4 revendedores:
+# Depu, Zeano, Kaian, Sierra IC) + HKInventory. confidence=confirmed (fonte
+# terceira independente de análise física + specs explícitos convergentes).
+#
+# K4UBE3D4AMMGCJ: ACHADO BÔNUS via cross-referência (apareceu no "See Also"
+# do DigiPart do alvo) — irmã em gen D (não S) do mesmo cap-code BE, sufixo
+# 'MGCJ' (variante de orientação de die, só o último char difere de 'MGCL').
+# 3 distribuidores independentes (IC-Components, Ariat-Tech, NX
+# Electronics/Nextron) confirmam "32Gb"=4GB — bate com BE base (gen D já
+# teria exceção documentada só em AM-GFCL/AM-GHCL/AM-THCL/AM-TFCL, não em
+# MG). SEM fonte terceira tipo TechInsights — confidence=distributor.
+#
+# Busquei também K4UBE3S4AA-MGCL/AB-MGCL/AM-GFCL/AM-GHCL (paralelos aos já
+# confirmados em gen D) — NENHUM encontrado em nenhuma fonte (nem Samsung
+# oficial nem distribuidor) apesar de buscas diretas e via site oficial
+# Samsung (URLs guessed pelo padrão confirmado noutros PNs da família
+# redirecionam pra página genérica — não existem como página própria). Não
+# registrado — sem evidência, não invento.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4UBE3S4AMMGCL"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.techinsights.com/blog/samsung-k4ube3s4am-mgcl-d1z-16gb-lpddr4x-dram-memory-floorplan-analysis"
+    notes: >
+      PN buscado originalmente (família/mapa já cadastrados — grammar
+      já decodifica BE=4GB certo — PN exato não estava no banco).
+      TechInsights (reverse-engineering/análise física de chip, fonte
+      terceira independente) confirma o PN literal e descreve o
+      pacote como "two 16 Gb LPDDR4X dies" — 2×16Gb=32Gb÷8=4GB, bate
+      com a gramática (pkg 'MG' nunca dispara a exceção de capacidade
+      desta família, diferente de GF/GH). Reforçado por anúncios
+      AliExpress/Alibaba com texto explícito "LPDDR4X 4GB 4266Mbps
+      200FBGA" + DigiPart (4 revendedores: Depu, Zeano, Kaian, Sierra
+      IC) + HKInventory.
+
+  - part_number: "K4UBE3D4AMMGCJ"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: distributor
+    source_url: "https://www.ic-components.com/products/Samsung-Semiconductor/K4UBE3D4AM-MGCJ.jsp"
+    notes: >
+      Achado bônus (não era o alvo): irmã em gen D do mesmo cap-code
+      BE, sufixo 'MGCJ' (variante de orientação de die vs 'MGCL'),
+      achada via cross-referência ("See Also") nas páginas DigiPart
+      do PN alvo. 3 distribuidores independentes (IC-Components,
+      Ariat-Tech, NX Electronics/Nextron) confirmam "32Gb"=4GB — bate
+      com a capacidade base BE (gen D), sem exceção (pkg 'MG', mesmo
+      raciocínio do alvo). Não achei o equivalente em gen S
+      (K4UBE3S4AM-MGCJ) em nenhuma fonte — não registrado.

@@ -1,0 +1,74 @@
+# Submissão de known_parts — Toshiba-Kioxia, família "TY_" (eMCP muito legado, era MSM7227A/2010-11)
+# Gerado a partir da investigação de TY8A0A111173KC (PN da bancada, known=false, sem família
+# nenhuma no engine). Ver submissions/INVESTIGACAO_toshiba_ty8a0a_memory_stack_2026-07-09.md pro
+# histórico completo da pesquisa (várias rodadas, "MCP" só confirmado nesta 3ª rodada).
+#
+# ⚠ Confidence=distributor por decisão EXPLÍCITA do dono (2026-07-09): "como é LPDDR2 possivelmente
+# e vejo chip parece muito antigo, pode aceitar fontes TIER3 para esse" — mesma lógica já aplicada
+# à família TYC (geração de RAM antiga = sempre NÃO RENTÁVEL, capacidade exata não muda o destino
+# comercial). Reforçado pelo fix do assess_profitability de 2026-07-09 (capacidade reprova ANTES do
+# bail de geração desconhecida) — então mesmo sem confirmar a tecnologia exata da RAM (SDRAM? PSRAM?
+# LPDDR1? LPDDR2?), a capacidade ínfima (32-128MB de RAM) garante NÃO RENTÁVEL sozinha.
+#
+# Fonte Tier-3: tabela de referência rf-china.com (http://www.rf-china.com/n22/TY.asp, lida
+# diretamente via fetch — não resumo de busca) — lista de cross-reference de chips de placa de
+# celular (contexto: aparece ao lado de Qualcomm MSM7625A-0-AA-576NSP/MSM7227A-1-AA-576NSP, ARM11
+# single-core ~2010-2011, típica de smartphone/feature-phone entry-level). A tabela rotula
+# explicitamente "MCP" pra TY8A0A111173KC/TY9A0A111174KC/TY890A111229KC/TY6801111190KC/
+# TY6701111184KC/TY5701111183KC/TY00680002ARGQ — confirma que a família inteira é MCP (RAM+NAND),
+# não RAM pura (descarta a hipótese anterior de "PoP LPDDR2 standalone" que eu tinha levantado
+# comparando com a posição física no OMAP4430 do Droid RAZR).
+#
+# Capacidade: a MESMA tabela dá "2GNAND+1G" pro irmão TYAB0A111128KC — rótulo EXPLÍCITO
+# "NAND" no primeiro número prova a ORDEM da notação (NAND primeiro, RAM depois, ambos em
+# Gb/Mb — não GB/MB). Aplicando essa mesma ordem ao PN da bancada: a notação "(1G+256)" que o
+# dono achou (print de uma lista de reparo de celular, mesmo padrão de fonte) vira NAND=1Gb=128MB
+# + RAM=256Mb=32MB. TY890A111229KC também aparece na tabela rf-china com "MCP512+25" — mas o
+# número corta exatamente aí na fonte (confirmei 2x, não é truncamento meu) — "25" sozinho não é
+# capacidade válida, então ESTE PN FICA DE FORA (ver rodapé).
+#
+# Não criei família nova na gramática (Trilha A) — só 2 pares chave-capacidade confirmados
+# (TY8A0A→1G+256, TYAB0A→2G+1G), chaves DIFERENTES cada uma, não dá pra generalizar um
+# decode_cap_map com 1 exemplo por chave (mesmo padrão de disciplina já usado nesta marca: só
+# generaliza depois de ver a MESMA chave repetir). Os PNs abaixo resolvem via known_part exato
+# (camada 1 do engine), sem precisar de família reconhecendo o prefixo.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_ty_family_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_ty_family_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  - part_number: "TY8A0A111173KC"
+    chip_type: "eMCP"
+    emcp_nand: "128MB"
+    emcp_ram: "32MB"
+    confidence: distributor
+    source_url: "http://www.rf-china.com/n22/TY.asp"
+    notes: >
+      PN da bancada. Tabela rf-china.com (lida diretamente): "TY8A0A111173KC TOSHIBA BGA 11+ 881
+      MCP" — confirma tipo MCP (RAM+NAND). Capacidade "(1G+256)" vista pelo dono em print de lista
+      de reparo de celular (mesmo PN, mesmo formato de notação da tabela rf-china) — aplicando a
+      ordem NAND-primeiro comprovada no irmão TYAB0A111128KC ("2GNAND+1G" explícito): NAND=1Gb=
+      128MB, RAM=256Mb=32MB. Tecnologia exata da RAM (SDRAM/PSRAM/LPDDR) NÃO confirmada — capacidade
+      ínfima garante NÃO RENTÁVEL de qualquer forma (fix 2026-07-09 do assess_profitability:
+      capacidade reprova antes do bail de geração desconhecida). Contexto de bancada: aparece junto
+      com Qualcomm MSM7625A/MSM7227A (ARM11 single-core, ~2010-2011) — chip muito antigo.
+
+  - part_number: "TYAB0A111128KC"
+    chip_type: "eMCP"
+    emcp_nand: "256MB"
+    emcp_ram: "128MB"
+    confidence: distributor
+    source_url: "http://www.rf-china.com/n22/TY.asp"
+    notes: >
+      Irmão estrutural do PN da bancada (mesma família "TY_A0A111...", chave de variante "AB0A"
+      em vez de "8A0A"). Tabela rf-china.com rotula EXPLICITAMENTE "TYAB0A111128KC toshiba BGA
+      1042 610 2GNAND+1G" — "2GNAND" nomeia o NAND (2Gb=256MB), "+1G" implícito é RAM (1Gb=128MB).
+      É a fonte-âncora que confirma a ordem NAND-primeiro usada em toda a tabela.
+
+# ── NÃO submetido (fica de fora de propósito) ──────────────────────────────────────────────
+# TY890A111229KC — mesma tabela rf-china diz "MCP512+25" mas o número corta exatamente em "25"
+# na fonte (não é truncamento da minha extração, confirmei 2x); "25" sozinho não é capacidade
+# válida (25Mb? 250-alguma-coisa?). NAND=512Mb parece sólido, mas RAM fica sem confirmação —
+# excluído até aparecer fonte melhor ou a tabela corrigir esse dado.

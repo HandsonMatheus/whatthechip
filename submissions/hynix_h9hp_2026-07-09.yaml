@@ -1,0 +1,80 @@
+# Submissão de known_parts — SK Hynix, família H9HP (eMCP LPDDR4X, JÁ EXISTENTE)
+# Gerado a partir da investigação do PN H9HP16ACPMMD (busca na bancada, 2026-07-09).
+# Família H9HP e mapas HYX_H9HP_NAND_CAP/HYX_LPDDR4X_RAM_CAP JÁ EXISTIAM e já
+# decodificavam o PN buscado certo (known=true, grammar_complete=true, RENTÁVEL).
+#
+# ACHADO / FIX DE GRAMÁTICA: H9HP27ABUMMDAR-KEM tem pn[6:8]='AB', que NÃO estava no
+# mapa HYX_LPDDR4X_RAM_CAP (só tinha AC/AD/AE/AF). Preduo E Puris concordam, de forma
+# independente: "32+16" (32GB eMMC + 16Gb÷8=2GB LPDDR4X). 'AB'→2GB foi ADICIONADO ao
+# mapa (compartilhado com H9HQ) em chips/knowledge/hynix.yaml. Golden novo em
+# chips/tests.py prova o fix. Mesmo padrão dos fixes '22' (H9HQ) e '18' (H9TQ) de
+# hoje mais cedo — chave nova só depois de 2 fontes estruturadas concordando.
+#
+# Todos os 4 PNs abaixo vêm de Preduo (tier-1 neste projeto) e/ou Puris — catálogos
+# de broker estruturados, fetchados direto (não snippet de busca). Aritmética Gb→GB
+# confirmada em cada um: NAND já em GB, RAM em Gb bruto (÷8 = GB).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hp_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hp_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HP16ACPMMDAR-KMM"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 128GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr4x/254ball_emmc-lpd4x/h9hp16acpmmdar-kmm"
+    notes: >
+      PN original buscado na bancada foi "H9HP16ACPMMD" (base sem sufixo de order
+      code) — mesmo decode. Preduo ("Density: 128+32") e Puris (puris.net/archives/3906,
+      "128+32 254ball eMCP-D4x") concordam de forma independente: 128GB eMMC +
+      32Gb(÷8)=4GB LPDDR4X. Bate com pn[4:6]='16'→128GB e pn[6:8]='AC'→4GB, já no tip.
+
+  - part_number: "H9HP52AECMMDAR-KMM"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR4X 6GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr4x/254ball_emmc-lpd4x/h9hp52aecmmdar-kmm"
+    notes: >
+      Achado nos "Related products" do Preduo (página do PN principal, fetchada
+      direto): "64+48" = 64GB eMMC + 48Gb(÷8)=6GB LPDDR4X. Corrobora pn[4:6]='52'→64GB
+      e pn[6:8]='AE'→6GB, já no tip. Só 1 fonte direta nesta rodada (não motivou fix,
+      chave já mapeada) — confidence=manual por já ter fonte estruturada.
+
+  - part_number: "H9HP27ADAMADAR-KMM"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR4X 3GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/emcp/emmc-lpddr4x/h9hp27adamadar-kmm"
+    notes: >
+      Achado nos "Related products" do Preduo E nos "Similar Posts" do Puris
+      (puris.net/archives/5949, título "32+24 eMMC+LPDDR4x"). Duas fontes
+      independentes: 32GB eMMC + 24Gb(÷8)=3GB LPDDR4X. Bate com pn[4:6]='27'→32GB e
+      pn[6:8]='AD'→3GB, já no tip.
+
+  - part_number: "H9HP27ABUMMDAR-KEM"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "eMMC 5.1 32GB"
+    emcp_ram: "LPDDR4X 2GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/5948"
+    notes: >
+      Motivou o FIX de gramática desta submissão (chave RAM 'AB' não existia no
+      mapa). Preduo (página dedicada, fetchada direto: "Density: 32+16") E Puris
+      (página dedicada, fetchada direto: "规格：32+16 eMMC+LPDDR4x") concordam de
+      forma independente: 32GB eMMC + 16Gb(÷8)=2GB LPDDR4X. pn[4:6]='27'→32GB (já
+      mapeado); pn[6:8]='AB'→2GB (chave nova, adicionada ao HYX_LPDDR4X_RAM_CAP,
+      compartilhado com H9HQ). Suffix "-KEM" (não "-KMM" como os outros H9HP desta
+      leva) — variante de vendor/grade, não afeta a chave de capacidade.

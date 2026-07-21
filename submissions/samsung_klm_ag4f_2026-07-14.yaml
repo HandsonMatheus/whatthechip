@@ -1,0 +1,75 @@
+# Submissão de known_parts — Samsung, família KLM, cap 'A'(16GB) + gen 'F'(eMMC 4.5)
+# PN alvo: KLMAG4FEAB (busca 2026-07-14). Grammar já decodifica certo (SAM_FLASH_CAP['A']=16GB,
+# SAM_EMMC_GEN['F']=eMMC 4.5, pn_length=10 ✓) — mesmo combo cap+gen "KLMAG4F" já trabalhado no
+# round de 2026-07-10 (KLMAG4FE3B Tier-1, KLMAG4FEJA Preduo, KLMAG4FE4B por composição). Naquele
+# round eu já tinha citado "EAB" como um dos die-codes reais desta família ("E4A/EJA/E3B/EAB,
+# todos reais nesta família") — hoje confirmo com evidência direta.
+#
+# KLMAG4FEAB (alvo, base): SEM fonte citando a string exata SEM sufixo — mesmo padrão do caso
+# KLMAG4FE4B (2026-07-10): registrado por composição (mesma base 'KLMAG4F' confirmada, die "EAB"
+# difere por sufixo de EJA/E3B), agora reforçado por evidência DIRETA do sufixo -B002 (abaixo).
+#
+# KLMAG4FEAB-B002: existência confirmada por DigiPart (página dedicada, 8 distribuidores
+# independentes — GlobalTek, Allchip, New Strength, OMO, Sierra IC, Haode, Green Light, Chipsea —
+# todos atribuindo fabricante=SAMSUNG) + dr-emmc.org (URL/título dedicado "samsung-klmag4feab-
+# b002-16g", 16G) + Amazon (listagem "Anncus 5pcs/lot KLMAG4FEAB-B002 EMMC 16G BGA Flash Memory
+# IC Genuine", 16G explícito) + halabtech.com (firmware, uso real em reparo). Bate com a
+# gramática (16GB, eMMC4.5). Busquei Octopart e Preduo dedicados — SEM hit direto (Octopart:
+# "No exact matches found"; Preduo: sem página própria) — por isso confidence=distributor, não
+# confirmed (múltiplos distribuidores convergentes, mas sem datasheet Tier-1/Octopart).
+#
+# --- BÔNUS (varredura do cluster, cross-reference DigiPart "See Also" do alvo) ---
+# KLMAG4FEAC-B002: mesma base 'KLMAG4F' (cap 'A'=16GB + gen 'F'=eMMC4.5), die "EAC" em vez de
+# "EAB" — 1 caractere de diferença, mesmo padrão da família. DigiPart página dedicada: 17+
+# distribuidores independentes (Atosn, Besen, Wanwei, YIC, Ariat, MountainView, Allchip,
+# Kepictronics, Sense, SILITECH, New Strength, IC Components, Green Light, Chipsea...), todos
+# SAMSUNG. Win Source (linha da própria tabela DigiPart): "16GB eMMC" explícito. Jotrin também
+# tem página dedicada (Jotrin Electronics). Sem hit Octopart/Preduo direto → distributor.
+brand: "Samsung"
+known_parts:
+  - part_number: "KLMAG4FEAB"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: distributor
+    notes: >
+      PN original buscado (sem sufixo). SEM fonte citando a string exata "KLMAG4FEAB"
+      isolada — registrado por composição, mesmo padrão do caso KLMAG4FE4B (2026-07-10):
+      mesma base "KLMAG4F" (cap 'A'=16GB + gen 'F'=eMMC4.5) já confirmada nesta família
+      (KLMAG4FE3B Tier-1, KLMAG4FEJA Preduo). Reforçado por evidência direta do sufixo
+      -B002 (ver KLMAG4FEABB002 nesta submissão): 8 distribuidores DigiPart convergentes
+      + Amazon + dr-emmc.org confirmam "16G". Grammar já decodifica certo hoje (16GB,
+      eMMC4.5) — este known_part só formaliza o PN exato no banco.
+
+  - part_number: "KLMAG4FEABB002"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.digipart.com/part/KLMAG4FEAB-B002"
+    notes: >
+      DigiPart página dedicada: 8 distribuidores independentes (GlobalTek, Allchip, New
+      Strength, OMO, Sierra IC, Haode, Green Light, Chipsea), todos fabricante=SAMSUNG.
+      dr-emmc.org: página/URL dedicada "samsung-klmag4feab-b002-16g" (16G). Amazon:
+      "Anncus 5pcs/lot KLMAG4FEAB-B002 EMMC 16G BGA Flash Memory IC Genuine" (16G
+      explícito). halabtech.com: firmware dedicado (uso real em reparo de celular).
+      Sem hit Octopart ("No exact matches found") nem Preduo dedicado — por isso
+      distributor, não confirmed. pn[3]='A'→16GB, pn[6]='F'→eMMC4.5, bate com gramática.
+
+  - part_number: "KLMAG4FEACB002"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.digipart.com/part/KLMAG4FEAC-B002"
+    notes: >
+      Bônus — achado no cross-reference DigiPart "See Also" do alvo. Mesma base
+      "KLMAG4F" (cap 'A'=16GB + gen 'F'=eMMC4.5), die "EAC" (1 char diferente de "EAB").
+      DigiPart página dedicada: 17+ distribuidores independentes (Atosn, Besen, Wanwei,
+      YIC, Ariat, MountainView, Allchip, Kepictronics, Sense, SILITECH, New Strength, IC
+      Components, Green Light, Chipsea...), todos SAMSUNG. Win Source (linha da própria
+      tabela): "16GB eMMC" explícito. Jotrin também tem página dedicada própria. Sem hit
+      Octopart/Preduo direto → distributor.

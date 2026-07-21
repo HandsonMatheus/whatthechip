@@ -1,0 +1,25 @@
+# Submissão known_parts — Foresee (Longsys), categoria uMCP (2026-07-15).
+# Fonte Tier-1: catálogo oficial "FORESEE Embedded Storage Product Catalogue" (longsys.com),
+# seção uMCP + página oficial umcp-memory.html. A linha uMCP tem SÓ 2 PNs (ambos uMCP4x).
+# RAM LPDDR4X CONFIRMADA (não inferida): linha "uMCP4x" + voltagem 0.6V + página oficial diz "LPDDR4x uMCP".
+# ⚠ uMCP: NAND(UFS) em GB + LPDDR em Gb no MESMO PN — emcp_ram já convertido p/ GB (Gb÷8).
+# Rodar (o DONO): submit_known_parts submissions/foresee_umcp_2026-07-15.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_umcp_2026-07-15.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "FUPRB6432-C2A56N1"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    emcp_nand: "UFS 2.2 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys (FORESEE Embedded Storage Product Catalogue), seção uMCP: FUPRB6432-C2A56N1, uMCP4x, UFS 2.2 64GB + LPDDR4X 32Gb (=4GB), FBGA254 11.5x13mm, 3D NAND+1anm, x8+x32, -25~85C. LPDDR4X confirmado (linha uMCP4x + voltagem LPDDR 0.6V + página oficial umcp-memory.html). NAND 64GB + LPDDR 32Gb/8=4GB. UFS 2.2 confirmado na página oficial de uMCP."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "FUPRFA832-C2A56N1"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    emcp_nand: "UFS 2.2 128GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção uMCP: FUPRFA832-C2A56N1, uMCP4x, UFS 2.2 128GB + LPDDR4X 32Gb (=4GB), FBGA254 11.5x13mm, 3D NAND+1anm, x8+x32, -25~85C. LPDDR4X confirmado (linha uMCP4x + 0.6V + página oficial). NAND 128GB (código A8 no PN) + LPDDR 32Gb/8=4GB."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"

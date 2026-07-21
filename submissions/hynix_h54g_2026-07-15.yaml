@@ -1,0 +1,73 @@
+# Submissão de known_parts — SK Hynix, família H54G (LPDDR4X standalone, JÁ EXISTENTE).
+# Gerado a partir da investigação do PN H54GD6AYRBX273 (busca na bancada, 2026-07-15).
+# SEM fix de gramática nesta rodada — a chave pn[4]='D'→3GB JÁ foi adicionada ao mapa
+# HYX_LPDDR4X_H54G_CAP em 2026-07-10 (ver submissions/hynix_h54g_2026-07-10.yaml), já está
+# commitada no git. grammar_complete deve ficar true assim que o dono publicar essa gramática
+# em prod (load_brands --brand hynix --commit contra o DATABASE_URL do Render) — o debug da
+# bancada (rodando contra prod) ainda mostra capacity=null porque essa publicação não
+# aconteceu ainda, não porque a gramática local esteja errada.
+#
+# ⚠ OBSERVAÇÃO DO DONO (motivo desta rodada): "esse daqui é a versao desse N, mas sem o N,
+# indica que tem mais variacoes dele, colete este e todos os similares possivel" — o
+# fuzzy_suggestions do debug só oferecia "H54GD6AYRBX273N" (o PN já confirmado em
+# 2026-07-10). O dono confirmou por leitura direta que o PN da bancada não tem essa letra.
+#
+# ⚠⚠ CONFLITO NÃO TOTALMENTE RESOLVIDO (sinalizado, não escondido — mesmo padrão do
+# "x32 vs x64" do H9CK em 2026-07-13): WinSource (via DigiPart, fetch direto da página do PN
+# SEM sufixo) descreve "LPDDR4-4266 (8Gb)" — 8Gb÷8=1GB, CONTRADIZENDO os 3GB esperados
+# (mesma chave 'D' do irmão -N, já confirmado por 2 fontes independentes em 2026-07-10:
+# Preduo "24Gbit" + título Alibaba "3GB"). Optei por manter capacity=3GB nesta submissão,
+# não pela leitura literal da WinSource, pelos seguintes motivos: (1) em TODAS as famílias
+# Hynix investigadas nesta sessão (H26M, H9HK, H9TQ, H9CK...), o sufixo além da posição
+# decodificada (aqui, tudo depois de pn[4]) nunca mudou capacidade — é sempre
+# grade/qualificação/order-code; (2) a chave 'D' já tem 2 fontes Tier-1-qualidade
+# concordando em 3GB pro PN irmão idêntico exceto o sufixo; (3) WinSource já mostrou
+# problemas de qualidade de dado nesta sessão (campo truncado no H26M64208EMR, "x32 vs x64"
+# no H9CK) — é uma fonte ÚNICA e isolada aqui, sem corroboração (busquei em OMO — sem
+# cobertura nenhuma dessa família —, Sinobest, nstechnology, Puris/Preduo — nenhum teve
+# entrada própria pro PN sem sufixo). Ainda assim, ESTE PN TEM COBERTURA DE DISTRIBUIDOR MUITO
+# MAIS FINA que os casos H26M de hoje mais cedo (só 1 fonte real, não 20-30+) — se o dono
+# quiser tratar isso como não resolvido e não confirmar, entendo perfeitamente; sinalizando
+# para decisão.
+#
+# CLUSTER (pedido do dono — "colete... todos os similares possível"): busquei variantes de
+# sufixo do tipo H26M (letra única tipo "A"/"Q"/"I" direto após X273) — NENHUMA existe
+# (H54GD6AYRBX273A não retorna nada no DigiPart). Diferente do H26M/H9HK, esta família não
+# tem um cluster amplo de sufixos pra este order-code específico: só 2 formas reais
+# encontradas — a already-confirmada "H54GD6AYRBX273N" (2026-07-10) e o alvo desta rodada,
+# "H54GD6AYRBX273" (bare). Não há mais o que coletar por enquanto nesse order-code
+# específico — família mapeada tem baixíssima presença pública de distribuidor.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h54g_2026-07-15.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h54g_2026-07-15.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H54GD6AYRBX273"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "3GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h54gd6ayrbx273.html"
+    notes: >
+      PN ALVO buscado na bancada (2026-07-15), lido SEM a letra "N" final (dono confirmou por
+      leitura direta do chip — "acaba ai [sem o N]"). Fuzzy_suggestions do debug só oferecia
+      "H54GD6AYRBX273N", o irmão já confirmado em 2026-07-10 (3GB, Preduo 24Gbit + Alibaba
+      "3GB"). Chave pn[4]='D' já está mapeada pra 3GB desde 2026-07-10 (2 fontes Tier-1
+      independentes no PN irmão). ⚠ CONFLITO: WinSource (via DigiPart, fetch direto) descreve
+      ESTE PN especificamente como "LPDDR4-4266 (8Gb)" — 8Gb÷8=1GB, contradizendo os 3GB
+      esperados. Mantive 3GB (não a leitura literal da WinSource) por 3 motivos — ver
+      cabeçalho do arquivo para o raciocínio completo: (1) padrão universal desta sessão de
+      que sufixo-além-da-posição-decodificada nunca muda capacidade; (2) a chave D já tem 2
+      fontes Tier-1 concordando em 3GB no PN irmão; (3) WinSource tem histórico de dado
+      problemático nesta sessão (truncamento no H26M64208EMR, discrepância x32/x64 no H9CK) e
+      aqui é fonte ÚNICA e ISOLADA, sem corroboração em nenhuma outra fonte pesquisada (OMO,
+      Sinobest, nstechnology, Puris, Preduo — nenhum tem entrada própria pro PN sem sufixo).
+      ⚠⚠ Sinalizado para o dono decidir se quer tratar como não resolvido — não decidi isso
+      sozinho de forma definitiva, é uma leitura razoável mas não uma certeza. confidence=manual.
+
+# NÃO incluído: H54GD6AYRBX273A (nem outras variantes de letra única no padrão H26M) — não
+# existe no DigiPart nem em nenhuma fonte pesquisada. Diferente de H26M/H9HK, este order-code
+# específico não tem cluster amplo — só bare + N (já confirmado antes).

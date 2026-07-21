@@ -1,0 +1,129 @@
+# Submissão de known_parts — SK Hynix, família H9HQ (uMCP LPDDR4X, JÁ EXISTENTE)
+# 2ª leva do dia pra H9HQ. Gerado a partir da investigação do PN H9HQ15AECMBD (busca
+# na bancada, 2026-07-09). Família/mapas JÁ EXISTIAM (inclusive já com o fix da chave
+# '22' feito hoje mais cedo) — decode do PN buscado já estava certo (UFS 2.1 128GB /
+# LPDDR4X 6GB / RENTÁVEL). SEM fix de gramática nesta rodada — todas as chaves usadas
+# (NAND 15/21/54, RAM AC/AE/AF) já existiam.
+#
+# H9HQ15AECMBDAR-KEM (PN principal) é um PN REAL DISTINTO de H9HQ15AECMADAR-KEM (já
+# confirmado numa leva anterior) — diferem só na posição 10 ('B' vs 'A', fora do range
+# decodificado pela gramática), mas são dois part numbers de catálogo diferentes,
+# mesma capacidade resultante (128GB/6GB) por coincidência de estrutura.
+#
+# FONTES: Preduo e Puris, catálogos de broker estruturados. O PN principal foi
+# confirmado por AMBOS (páginas dedicadas, fetchadas direto, concordando "128+48").
+# Os 6 irmãos abaixo vieram das seções "Related products"/"Similar Posts"/"Post
+# navigation" da MESMA página fetchada (conteúdo real renderizado pelo site, não
+# snippet de busca) — mas só 1 fonte cada (não abri a página dedicada de cada um
+# separadamente). Confidence=manual em todos; notas indicam a fonte exata de cada.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hq_2026-07-09b.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hq_2026-07-09b.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HQ15AECMBDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 128GB"
+    emcp_ram: "LPDDR4X 6GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/umcp/ufs-lpddr4x/254ball_ufs-lpd4x/h9hq15aecmbdar-kem"
+    notes: >
+      PN original buscado na bancada foi "H9HQ15AECMBD" (base sem sufixo de order
+      code) — mesmo decode. Preduo ("Density: 128+48") e Puris (puris.net/archives/7431,
+      "128+48 254ball UFS+LPDDR4x") concordam de forma independente, ambos fetchados
+      direto: 128GB UFS + 48Gb(÷8)=6GB LPDDR4X. Bate com pn[4:6]='15'→128GB e
+      pn[6:8]='AE'→6GB, já no tip.
+
+  - part_number: "H9HQ15ACPMADAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 128GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/umcp/ufs-lpddr4x/254ball_ufs-lpd4x/h9hq15acpmadar-kem"
+    notes: >
+      Achado nos "Related products" do Preduo (página do PN principal, fetchada
+      direto): "128+32" = 128GB UFS + 32Gb(÷8)=4GB LPDDR4X. É o PN citado como
+      exemplo no tip da família ("Ex: H9HQ15ACPMADAR-KEM = 128GB UFS + 4GB LPDDR4X"),
+      mas ainda não tinha known_part — esta submissão fecha isso. pn[4:6]='15'→128GB,
+      pn[6:8]='AC'→4GB, ambos já mapeados.
+
+  - part_number: "H9HQ15ACPMBDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 128GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7430"
+    notes: >
+      Achado nos "Similar Posts" do Puris (título completo na página do PN principal,
+      fetchada direto): "H9HQ15ACPMBDAR-KEM 128+32 254ball UFS+LPDDR4x uMCP SKhynix".
+      128GB UFS + 32Gb(÷8)=4GB LPDDR4X. Variante "CMBD" (mesmo padrão do PN principal)
+      combinada com RAM 'AC'. Só 1 fonte direta (não abri a página dedicada).
+
+  - part_number: "H9HQ54AECMMDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 64GB"
+    emcp_ram: "LPDDR4X 6GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7429"
+    notes: >
+      Achado na navegação "Previous" do Puris (título completo na página do PN
+      principal, fetchada direto): "H9HQ54AECMMDAR-KEM 64+48 254ball UFS+LPDDR4x
+      uMCP SKhynix". 64GB UFS + 48Gb(÷8)=6GB LPDDR4X. pn[4:6]='54'→64GB, pn[6:8]='AE'→6GB,
+      ambos já mapeados. Diferente dos H9HQ54 já confirmados numa leva anterior
+      (ACPM=4GB, ADKM=? — este usa AECM=6GB). Só 1 fonte direta.
+
+  - part_number: "H9HQ15AFAMBDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 128GB"
+    emcp_ram: "LPDDR4X 8GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7432"
+    notes: >
+      Achado na navegação "Next" do Puris (título completo na página do PN principal,
+      fetchada direto): "H9HQ15AFAMBDAR-KEM 128+64 254ball UFS+LPDDR4x uMCP SKhynix".
+      128GB UFS + 64Gb(÷8)=8GB LPDDR4X. pn[4:6]='15'→128GB, pn[6:8]='AF'→8GB, ambos já
+      mapeados. Só 1 fonte direta.
+
+  - part_number: "H9HQ21AECMZDAR-KEM"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 256GB"
+    emcp_ram: "LPDDR4X 6GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7720"
+    notes: >
+      Achado nos "Similar Posts" do Puris (título completo: "H9HQ21AECMZDAR-KEM
+      256+48 BGA UFS+LPDDR4x uMCP SKhynix"). 256GB UFS + 48Gb(÷8)=6GB LPDDR4X.
+      pn[4:6]='21'→256GB, pn[6:8]='AE'→6GB, ambos já mapeados. Variante "CMZD" (novo
+      caractere de device, fora do range decodificado). Só 1 fonte direta.
+
+  - part_number: "H9HQ21AFAMADAR-KEMR"
+    chip_type: "uMCP"
+    subtype: "LPDDR4X"
+    interface: ""
+    emcp_nand: "UFS 2.1 256GB"
+    emcp_ram: "LPDDR4X 8GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/11739"
+    notes: >
+      Achado nos "Similar Posts" do Puris (título completo: "H9HQ21AFAMADAR-KEMR
+      256+64 254ball UFS+LPD4x SKHYNIX"). 256GB UFS + 64Gb(÷8)=8GB LPDDR4X.
+      pn[4:6]='21'→256GB, pn[6:8]='AF'→8GB, ambos já mapeados. Sufixo "-KEMR" (R extra
+      no final, fora do range decodificado). Só 1 fonte direta.
+
+# NÃO incluído: H9QT1GGBN6X129R e H9QT0GEEN6X202N, achados nos relacionados/similares
+# — prefixo DIFERENTE (H9QT, não H9HQ). Confirma a família H9QT/H9QG já flagada (mas
+# não investigada) numa leva anterior. Fora do escopo desta rodada H9HQ.

@@ -1,0 +1,143 @@
+# Submissão de known_parts — SK Hynix, família H26M (eMMC standalone).
+# Gerado a partir da investigação do PN H26M64208EMR (busca na bancada, 2026-07-14).
+# SEM fix de gramática — pn[4]='6'→32GB já está correto no tip/mapa (grammar_complete=true,
+# capacity='32GB', profitable='RENTÁVEL' no debug da bancada e revalidado em sandbox).
+#
+# ⚠ OBSERVAÇÃO DO DONO (motivo desta rodada): o fuzzy_suggestions do debug só listava as
+# variantes COM letra de sufixo (EMRA/EMRI/EMRN/EMRQ) — o dono confirmou por leitura direta
+# do chip que o PN da bancada NÃO tem essa letra. Investiguei: a forma SEM letra
+# ("H26M64208EMR" puro) é um PN real e distinto, catalogado independentemente —
+#   - Catálogo próprio da OMO Electronic (omo-ic.com/tags/H26M64208.html) lista os 3 como
+#     itens SEPARADOS ("H26M64208EMRQ vs H26M64208EMR vs H26M64208EMR E-NAND"), e só o PN
+#     sem letra tem descrição própria preenchida: "Flash Card 32G-byte -888V Embedded MMC
+#     153-Pin FBGA" — confirma 32GB (byte, não bit) direto no campo estruturado.
+#   - DigiPart: 30+ distribuidores carregam o PN sem letra como entrada PRÓPRIA (não como
+#     alias/redirecionamento das variantes com letra) — Conevo, por exemplo, lista bare-EMR
+#     e cada uma das 4 letras (A/I/N/Q) como 5 LINHAS SEPARADAS no próprio catálogo deles.
+# Ou seja: a letra de sufixo (A/I/N/Q) é uma grade/qualificação (industrial/automotivo/etc.,
+# mesmo padrão de sufixo de grade já visto nesta sessão — H9CK "-LR"/"-NUH", SanDisk "-XA1"),
+# e o PN sem letra é a forma comercial/padrão — exatamente o que se espera de um chip de
+# bancada sem qualificação especial. O fuzzy só sugeriu as formas com letra provavelmente
+# porque é a forma que estava no corpus dele até agora — sinalizando pro dono, não é algo
+# que eu mexo (fuzzy é código do engine, fora do escopo de um chat de marca).
+#
+# ⚠ ACHADO METODOLÓGICO (WinSource, texto truncado): o campo estruturado da WinSource pra
+# H26M64208EMR diz só "Managed NAND Flash Serial e-MMC 32G-bit" (sem o resto do template) —
+# à primeira vista parece contradizer 32GB (32Gbit÷8=4GB). Comparei com o PN-irmão
+# H26M64103EMR (mesma chave pn[4]='6', investigado nesta mesma rodada): a WinSource dele tem
+# o template COMPLETO — "Managed NAND Flash Serial e-MMC 3.3V 256G-bit 64G/32G x
+# 4-bit/8-bit" (256Gbit÷8=32GB, bate exato). Concluo que o campo do H26M64208EMR está
+# TRUNCADO/incompleto no sistema da WinSource (erro de dado deles), não que a capacidade
+# real seja diferente — meu barometer é a consistência ENTRE fontes, não uma frase isolada.
+# Reforçado por 3 SKUs de distribuidor que embutem "32GB" direto no part-number:
+# GlobalTek "H26M64103EMR32GB", Chipsea "H26M64103EMR 32GB" e "H26M64103EMR(32GB)" — todos
+# pro PN-irmão desta mesma rodada, mesma chave.
+#
+# ⚠ Mesmo padrão de mislabel de fabricante já visto nesta sessão (Allchip→"SAMSUNG"), com 2
+# reincidências novas nesta rodada: SILITECH também rotulou H26M64208EMR como "SAMSUNG", e
+# Unicom Electronics rotulou tanto H26M64208EMR quanto H26M64103EMR como "VISHAY" (fabricante
+# de discretos/passivos — claramente errado). 25+ outras fontes convergem em SK Hynix/
+# SKHYNIX/Hynix pros 2 PNs — não usei os outliers como fonte.
+#
+# CLUSTER (pedido permanente do dono — nunca parar em 1 PN): além do alvo, submeti as 4
+# variantes de grade já confirmadas em fonte própria/dedicada no DigiPart (não só "see also")
+# + o PN-irmão H26M64103EMR (que também aparecia no fuzzy_suggestions do debug original,
+# mesma chave '6'=32GB, evidência mais forte de todo o lote — "32GB" embutido em 3 SKUs).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h26m_64208_2026-07-14.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h26m_64208_2026-07-14.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H26M64208EMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/32b/h26m64208emr-1151.html"
+    notes: >
+      PN ALVO buscado na bancada (2026-07-14), lido SEM letra de sufixo (dono confirmou por
+      leitura direta do chip). Catálogo próprio da OMO Electronic tem descrição estruturada
+      própria: "Flash Card 32G-byte -888V Embedded MMC 153-Pin FBGA" — 32G-byte=32GB, bate
+      com pn[4]='6' da gramática. 30+ distribuidores independentes no DigiPart carregam como
+      entrada própria (não alias), manufacturer SKHYNIX/SK Hynix/Hynix consistente (2
+      outliers "SAMSUNG"/"VISHAY", mesmo padrão de mislabel já visto nesta sessão, não
+      usados). Campo da WinSource ("32G-bit") aparenta truncado/incompleto — ver cabeçalho
+      do arquivo pra comparação com o PN-irmão H26M64103EMR, que tem o mesmo template
+      completo e bate exato em 32GB. confidence=manual.
+
+  - part_number: "H26M64208EMRA"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H26M64208EMRA"
+    notes: >
+      Irmão do PN alvo (mesma chave '6'=32GB, sufixo de grade "A" — provável industrial/
+      automotivo, não afeta capacidade). Hightech Semiconductor (via DigiPart) tem entrada
+      PRÓPRIA e dedicada: "SK HYNIX BGA153", 20500 unidades. Também confirmado por Tist
+      ($13.57), Atosn (8390un) e Conevo (linha separada do bare-EMR, mesmo DC:24+/BGA153).
+      confidence=manual.
+
+  - part_number: "H26M64208EMRI"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.weylan-d.com/goods/detail/5183408/"
+    notes: >
+      Irmão do PN alvo (mesma chave '6'=32GB, sufixo de grade "I"). Weyland Electronics Group
+      (via DigiPart) tem entrada PRÓPRIA e dedicada, manufacturer "Hynix", 2579 unidades.
+      Também confirmado por Tist ($6.57), Atosn (10000un), Sunether (manufacturer HYNIX) e
+      Conevo (linha separada). confidence=manual.
+
+  - part_number: "H26M64208EMRN"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H26M64208EMRN"
+    notes: >
+      Irmão do PN alvo (mesma chave '6'=32GB, sufixo de grade "N"). 2 distribuidores
+      independentes confirmam entrada própria: Atosn (manufacturer SKHYNIX, 12000un) e Conevo
+      (manufacturer SKHYNIX, linha separada, DC:24+/FBGA). Evidência mais magra que os outros
+      3 sufixos desta rodada (só 2 fontes, sem descrição estruturada de capacidade própria) —
+      capacidade inferida da chave pn[4]='6' já confirmada por 5 outros PNs desta submissão.
+      confidence=manual.
+
+  - part_number: "H26M64208EMRQ"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/e4d/h26m64208emrq-1190.html"
+    notes: >
+      Irmão do PN alvo (mesma chave '6'=32GB, sufixo de grade "Q"). Feture Technology (via
+      DigiPart) tem entrada PRÓPRIA e dedicada: "SK Hynix FBGA DC:25+", 5000 unidades. Também
+      é o próprio PN em destaque na página de catálogo da OMO Electronic (título da página
+      cita "H26M64208EMRQ"), confirmado por Tist ($7.86) e Atosn (12000un). confidence=manual.
+
+  - part_number: "H26M64103EMR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "32GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h26m64103emr.html"
+    notes: >
+      Irmão do PN alvo (mesma chave pn[4]='6'=32GB, miolo "64103" em vez de "64208" — também
+      aparecia no fuzzy_suggestions do debug original da bancada). EVIDÊNCIA MAIS FORTE desta
+      submissão: WinSource tem campo estruturado COMPLETO — "Managed NAND Flash Serial e-MMC
+      3.3V 256G-bit 64G/32G x 4-bit/8-bit" (256Gbit÷8=32GB, bate exato); GlobalTek tem SKU
+      próprio "H26M64103EMR32GB" (32GB embutido no part-number); Chipsea tem 2 SKUs próprios
+      "H26M64103EMR 32GB" e "H26M64103EMR(32GB)". 3 fontes INDEPENDENTES embutindo "32GB"
+      explicitamente, mais 20+ distribuidores adicionais (Conevo, Tist, Dechoele, Sunether,
+      Zeano, Shengyu, First Choice, Depu, Besen, RX, Kaian, Semicon, Wanwei, MountainView,
+      YIC, Ariat, Kepictronics, Atosn, Yuanxinai, Nexxon, New Strength, IC Components, Sierra,
+      Haode, Green Light) com manufacturer SKHYNIX/SK Hynix consistente. confidence=manual.

@@ -1,0 +1,72 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5AD256M16D4-HR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://octopart.com/nt5ad256m16d4-hr-nanya-96079452"
+    notes: >
+      Octopart (categorização própria, não descrição de distribuidor): "DRAM Chip DDR4 SDRAM 4Gbit
+      256Mx16 1.2V 96-Pin TFBGA". Corroborado na MESMA página por 3 fontes independentes: Verical
+      ("DDR4 4Gb 256Mx16 1333MHz BGA96"), Rutronik ("DDR4 DRAM, 256MX16, CMOS, PBGA96"), IHS
+      ("DDR4-2666 256Mx16 (4Gb)"). Aritmética: 256M x 16bit = 4096Mbit = 4Gb (bate as 4 fontes).
+      1.2V nominal (1.14-1.26V), 96-ball TFBGA.
+
+  - part_number: "NT5AD512M8D3-HRI"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145460/NANYA/NT5AD512M8D3-HRI.html"
+    notes: >
+      Alldatasheet (indexa o datasheet oficial Nanya — "Direct Link: nanya.com" na própria página):
+      "Commercial and Industrial DDR4 4Gb SDRAM". Aritmética: 512M x 8bit = 4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5AD1024M4D3-HRNA"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "4Gb"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145464/NANYA/NT5AD1024M4D3-HRNA.html"
+    notes: >
+      Alldatasheet (indexa o datasheet oficial Nanya): "Commercial and Industrial DDR4 4Gb SDRAM".
+      Aritmética: 1024M x 4bit = 4096Mbit = 4Gb (bate).
+
+  - part_number: "NT5AD512M16A3-GZI"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145489/NANYA/NT5AD512M16A3-GZI.html"
+    notes: >
+      Alldatasheet: "Commercial and Industrial DDR4 8Gb SDRAM". Aritmética: 512M x 16bit = 8192Mbit
+      = 8Gb (bate).
+
+  - part_number: "NT5AD1024M8C3-HR"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/nanya/NT5AD1024M8C3-HR"
+    notes: >
+      Octopart (categorização própria): "DDR4 Dram, 1GX8, Cmos, PBGA78". Corroborado na mesma
+      página por IHS: "DDR4-2666 1Gx8 (8Gb)". Aritmética: 1024M x 8bit = 8192Mbit = 8Gb (bate as
+      2 fontes). 1.2V nominal (1.14-1.26V), 78-ball TFBGA.
+
+  - part_number: "NT5AD2048M4A3"
+    chip_type: "DDR4"
+    subtype: "DDR4"
+    density_gbit: "8Gb"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145456/NANYA/NT5AD2048M4A3.html"
+    notes: >
+      Alldatasheet: "Commercial and Industrial DDR4 8Gb SDRAM". Aritmética: 2048M x 4bit = 8192Mbit
+      = 8Gb (bate). PN irmão NT5AD2048M4C3-JR confirmado com a mesma densidade/organização
+      diretamente na página oficial nanya.com.tw (título "8Gb DDR4... x4... 78-ball BGA... 3200Mbps").

@@ -1,0 +1,49 @@
+# Submissão known_parts — Foresee (Longsys), categoria eMCP (2026-07-15).
+# Fonte Tier-1: datasheet oficial FEPRF6432-58A1930 (eMCP4x, community.nxp.com) + catálogo
+# oficial Longsys. Famílias FEPR (eMCP4x, LPDDR4X confirmado) e FEPN (eMCP3, LPDDR3 INFERIDO
+# do ePOP do próprio catálogo — aceito pelo dono). Capacidade vem daqui (a gramática é magra).
+# ⚠ eMCP: NAND em GB + LPDDR em Gb no PN — emcp_ram já convertido p/ GB (Gb÷8).
+# Rodar (o DONO): submit_known_parts submissions/foresee_emcp_2026-07-15.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_emcp_2026-07-15.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "FEPRF6432-58A1930"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    emcp_nand: "64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    notes: "Datasheet oficial FEPRF6432-58A1930 (Longsys, espelho community.nxp.com): eMCP4x, eMMC 5.1 64GB + LPDDR4X 32Gb (=4GB, 3733Mbps), FBGA254 11.5x13mm. RAM LPDDR4X confirmada na seção 8 LPDDR4X Functional Description. NAND 64GB + LPDDR 32Gb/8=4GB."
+    source_url: "https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/imx-processors/173296/2/E-00784%20FORESEE_eMCP_FEPRF6432-58A1930%20%20.pdf"
+  - part_number: "FEPRB6432-A3A56N1"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    emcp_nand: "64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção eMCP4x. eMMC + LPDDR4X, 64GB+32Gb (=4GB), FBGA254, 3D NAND+1anm. Mesma linha eMCP4x do FEPRF6432 (datasheet confirma LPDDR4X)."
+    source_url: "https://www.longsys.com"
+  - part_number: "FEPRFA832-A3A56N1"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    emcp_nand: "128GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção eMCP4x. eMMC + LPDDR4X, 128GB+32Gb (=4GB), FBGA254, 3D NAND+1anm. Linha eMCP4x (LPDDR4X confirmado no datasheet FEPRF6432)."
+    source_url: "https://www.longsys.com"
+  - part_number: "FEPNA1608-58A4302"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    emcp_nand: "16GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: manual
+    notes: "Catálogo oficial Longsys, seção eMCP3: FEPNA1608-58A4302, 16GB eMMC + 8Gb LPDDR (=1GB), FBGA221, MLC+20nm. ⚠ Capacidade (16GB+1GB) confirmada no catálogo; a GERAÇÃO LPDDR3 é INFERIDA da nomenclatura do próprio catálogo Foresee (ePOP3=+1.2V=LPDDR3 vs ePOP4x=+0.6V=LPDDR4X → 3=LPDDR3), não de datasheet FEPNA. Inferência aceita pelo dono 2026-07-15."
+    source_url: "https://www.longsys.com"
+  - part_number: "FEPNA3208-58A1924"
+    chip_type: "eMCP"
+    subtype: "LPDDR3"
+    emcp_nand: "32GB"
+    emcp_ram: "LPDDR3 1GB"
+    confidence: manual
+    notes: "Catálogo oficial Longsys, seção eMCP3: FEPNA3208-58A1924, 32GB eMMC + 8Gb LPDDR (=1GB), FBGA221, 3D NAND+20nm. ⚠ Capacidade confirmada no catálogo; GERAÇÃO LPDDR3 INFERIDA do ePOP do próprio catálogo (não datasheet FEPNA). Aceito pelo dono 2026-07-15."
+    source_url: "https://www.longsys.com"

@@ -1,0 +1,73 @@
+# Submissão known_parts — Foresee (Longsys), categoria LPDDR4X standalone (2026-07-15).
+# Fonte Tier-1: catálogo oficial "FORESEE Embedded Storage Product Catalogue" (longsys.com),
+# seção LPDDR4x + DigiKey (2 anchors independentes confirmados). RAM pura, zero NAND.
+# Regra de capacidade CONFIRMADA: o dígito antes do "G" (pn[7]) = GB do pacote.
+#   FLXC2002G-N2 = 2GB (512M×32 = 16Gbit) [DigiKey] · FLXC2004G-30 = 4GByte (32Gbit) [DigiKey]
+#   3/6/8 do catálogo oficial (24/48/64Gb), casa 1-a-1 com a regra. capacity = GB do pacote.
+# Rodar (o DONO): submit_known_parts submissions/foresee_lpddr4x_2026-07-15.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_lpddr4x_2026-07-15.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "FLXC2002G-N2"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "2GB"
+    confidence: confirmed
+    notes: "DigiKey (Lexar Enterprise FLXC2002G-N2): SDRAM Mobile LPDDR4X 2GByte, organização 512M×32 (=16Gbit=2GB), 1866MHz, 0.6V/1.1V, FBGA200 x32, -25~85C. Cross-check: catálogo oficial Longsys seção LPDDR4x (16Gb). 2 fontes independentes."
+    source_url: "https://www.digikey.be/en/products/detail/lexar-enterprise/FLXC2002G-N2/23567822"
+  - part_number: "FLXC2002G-C4"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "2GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys (FORESEE Embedded Storage Product Catalogue), seção LPDDR4x: 16Gbit=2GB, FBGA200 x32. Mesma capacidade do FLXC2002G-N2 (variante -C4 = die/processo). Regra pn[7]=GB."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "FLXC2003G-49"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "3GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção LPDDR4x: 24Gbit=3GB, FBGA200 x32. Regra pn[7]='3'=3GB (confirmada por FLXC2002G/2004G na DigiKey)."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "FLXC2003G-C7"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "3GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção LPDDR4x: 24Gbit=3GB, FBGA200 x32. Variante -C7 (die/processo) do FLXC2003G. Regra pn[7]='3'=3GB."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "FLXC4003G-50"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "3GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção LPDDR4x: 24Gbit=3GB, FBGA200 x32. Config de canal '4' (vs '2'); capacidade é só pn[7]='3'=3GB (o dígito após FLXC não é capacidade)."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "FLXC2004G-N1"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção LPDDR4x: 32Gbit=4GB, FBGA200 x32. Irmão do FLXC2004G-30 (confirmado 4GByte na DigiKey). Regra pn[7]='4'=4GB."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "FLXC2004G-30"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: "DigiKey (Lexar Enterprise FLXC2004G-30): SDRAM Mobile LPDDR4X 4GByte (=32Gbit), 1866MHz, FBGA200 x32. Cross-check: catálogo oficial Longsys (32Gb). 2 fontes independentes. Âncora principal da regra pn[7]=GB."
+    source_url: "https://www.digikey.com/en/products/detail/lexar-enterprise/FLXC2004G-30/23567825"
+  - part_number: "FLXC4006G-20"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "6GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção LPDDR4x: 48Gbit=6GB, FBGA200 x32. Regra pn[7]='6'=6GB (confirmada por FLXC2002G/2004G na DigiKey)."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"
+  - part_number: "FLXC4008G-30"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    capacity: "8GB"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção LPDDR4x: 64Gbit=8GB, FBGA200 x32, 4266Mbps. Regra pn[7]='8'=8GB. Maior capacidade da linha LPDDR4x."
+    source_url: "https://www.longsys.com/uploads/BP_FORESEE_Embedded-Storage-Product-Catalogue_20230423_R_1704768357.pdf"

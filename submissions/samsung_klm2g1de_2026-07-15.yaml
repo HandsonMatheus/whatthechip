@@ -1,0 +1,103 @@
+# Submissão de known_parts — Samsung, família KLM (eMMC puro), grupo "KLM2G1DE*".
+# PN alvo: KLM2G1DEHE (busca 2026-07-15) — pn_not_in_db=true, gramática já decodifica
+# 2GB corretamente (SAM_FLASH_CAP['2']), mas chave 'D' (pos6, geração) não está no mapa
+# SAM_EMMC_GEN — MESMA lacuna já documentada no round KLM4G2DE (2026-07-09, ver
+# submissions/samsung_klm4g2de_2026-07-09.yaml): "DECISÃO DO DONO: registrar só o que
+# dá pra confirmar — capacidade — e deixar a versão de eMMC em aberto (interface
+# genérica 'eMMC'). Não inventar geração." Aplico a MESMA decisão aqui — é literalmente
+# a mesma família/chave, só grupo de capacidade diferente (2GB em vez de 4GB/16GB).
+#
+# PESQUISA DO ALVO — MELHOR fonte que o round anterior: achei um datasheet dedicado
+# ("eMMC moviNAND", Samsung, doc. jan/2010) + um DECODER POSICIONAL estruturado da
+# Elnec (fabricante de programadores de chip, tabela caractere-por-caractere da
+# nomenclatura "moviNAND/MCP" da Samsung): pos[3:5]="2G" → "Embedded NAND Density:
+# 2GByte" (bate exatamente a gramática) e pos[6]='D' → "NAND Small Classification:
+# D = MLC/16GBit" (16Gb÷8=2GB — AUTO-CONSISTENTE com a densidade total). ⚠ Essa tabela
+# confirma que pos[6] NÃO é "geração eMMC" nessa nomenclatura moviNAND — é classificação
+# do die NAND interno (redundante com a capacidade, não a versão do protocolo eMMC).
+# Reforça a decisão do dono de não inventar "eMMC 4.5/5.0/5.1" a partir dessa posição.
+# Capacidade 2GB confirmada por: Elnec (decoder estruturado) + resumo de datasheet
+# moviNAND (via datasheetspdf.com) + existência real em Jotrin/Veswin/OMO (BGA-153,
+# categoria Memory, Samsung).
+#
+# CLUSTER: mesmo grupo "KLM2G1DE*" (paralelo ao "KLM4G2DE*" já confirmado) — achei via
+# OMO Electronic (tag KLM2G1D, 5 PNs catalogados): KLM2G1DEDD, KLM2G1DEDD-A101,
+# KLM2G1DEFD-A301, KLM2G1DEHE-B101, KLM2G1DEHE-B101002. Registro as 3 identidades base
+# (DD/FD/HE) + as 2 formas com sufixo já vistas em busca real (mesma convenção do round
+# 4G2DE: registrar a forma exata que o operador pode digitar). Não achei um irmão "JE"
+# pra esse grupo de 2GB (o grupo 4G2DE tinha; esse não, aparentemente).
+brand: "Samsung"
+known_parts:
+  - part_number: "KLM2G1DEHE"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://elnec.com/en/device/Samsung/KLM2G1DEHE-B101+[FBGA153]"
+    notes: >
+      PN alvo. Decoder posicional Elnec: pos[3:5]="2G"=2GByte (bate SAM_FLASH_CAP['2']
+      da gramática), pos[6]='D'=NAND MLC/16Gbit (auto-consistente: 16Gb÷8=2GB — não é
+      versão de eMMC, ver comentário no yaml). Datasheet "eMMC moviNAND" (jan/2010) via
+      datasheetspdf.com. Existência real: Jotrin, Veswin (BGA-153, Memory, Samsung, em
+      estoque), OMO. Interface deixada genérica "eMMC" — mesma decisão do dono já
+      tomada pro grupo irmão KLM4G2DE (chave 'D' não permite confirmar geração
+      eMMC 4.5/5.0/5.1 sem inventar).
+
+  - part_number: "KLM2G1DEHEB101"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://elnec.com/en/device/Samsung/KLM2G1DEHE-B101+[FBGA153]"
+    notes: >
+      Forma com sufixo de grade "-B101" do alvo KLM2G1DEHE (mesma evidência).
+      Registrado também porque o operador pode digitar a string completa.
+
+  - part_number: "KLM2G1DEFD"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://www.omo-ic.com/chip/eb2/klm2g1defd-a301-1190.html"
+    notes: >
+      Irmão de família (mesma raiz "KLM2G1DE", mesma chave 'D' na posição 6, sufixo
+      "FD" — paralelo ao já-confirmado KLM4G2DEFD). PN real (OMO Electronic, tag
+      KLM2G1D, fabricante Samsung, categoria IC Chips). Capacidade 2GB bate com a
+      gramática (mesma posição de capacidade que o alvo). Mesma ressalva: geração de
+      eMMC não confirmada.
+
+  - part_number: "KLM2G1DEFDA301"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://www.omo-ic.com/chip/eb2/klm2g1defd-a301-1190.html"
+    notes: >
+      Forma com sufixo de grade "-A301" do irmão KLM2G1DEFD. Mesma evidência.
+
+  - part_number: "KLM2G1DEDD"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://www.omo-ic.com/chip/2ed/klm2g1dedd-1190.html"
+    notes: >
+      Irmão de família (mesma raiz "KLM2G1DE", mesma chave 'D', sufixo "DD" — paralelo
+      ao já-confirmado KLM4G2DEDD). PN real (OMO Electronic, tag KLM2G1D, fabricante
+      Samsung, categoria IC Chips). Capacidade 2GB bate com a gramática. Mesma
+      ressalva: geração de eMMC não confirmada.
+
+  - part_number: "KLM2G1DEDDA101"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://www.omo-ic.com/chip/a48/klm2g1dedd-a101-1190.html"
+    notes: >
+      Forma com sufixo de grade "-A101" do irmão KLM2G1DEDD. Mesma evidência.

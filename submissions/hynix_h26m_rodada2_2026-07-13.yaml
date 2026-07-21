@@ -1,0 +1,89 @@
+# Submissão de known_parts — SK Hynix, família H26M (eMMC standalone).
+# Gerado a partir da investigação do PN H26M31003FPR (busca na bancada, 2026-07-13/14).
+# SEM fix de gramática — mesma chave '3'=4GB do resto da família (grammar_complete=true,
+# capacity='4GB', profitable='RENTÁVEL' no debug da bancada e revalidado em sandbox).
+#
+# ⚠ HISTÓRICO IMPORTANTE (transparência): este PN foi buscado e EXCLUÍDO duas vezes nesta
+# mesma sessão, documentado em submissions/hynix_h26m_2026-07-13.yaml ("NÃO incluídos" —
+# "nenhuma fonte, em 2 rodadas de busca, tem campo estruturado de capacidade/densidade
+# preenchido para ele especificamente"). Esta 3ª tentativa usa duas técnicas desenvolvidas
+# DEPOIS daquela rodada original (provadas nas rodadas H9CK/H28U desta mesma sessão):
+#   (1) página de catálogo próprio de um distribuidor por PREFIXO (omo-ic.com/tags/<prefixo>)
+#       — revela todo o catálogo indexado dele pra um prefixo em 1 fetch só;
+#   (2) fetch direto da página agregadora do DigiPart por PN exato (digipart.com/part/<PN>)
+#       — retorna todos os distribuidores que carregam aquele PN específico, sem precisar
+#       adivinhar qual distribuidor individual vai ter a página carregável.
+# Achado com fartura de evidência que as 2 rodadas anteriores não tinham encontrado — não é
+# invenção nem relaxamento de critério, é técnica de busca melhor achando dado que já existia.
+#
+# CLUSTER JÁ CHECADO (pedido permanente do dono — nunca parar em 1 PN sem checar os irmãos):
+# os outros 3 candidatos do próprio debug da bancada (fuzzy_suggestions) e da chave '3' desta
+# família JÁ ESTÃO confirmados — não precisam (e não devem) ser resubmetidos:
+#   H26M31003GMR — já confirmado no arquivo original (hynix_h26m_2026-07-13.yaml).
+#   H26M31001FPR — já confirmado no arquivo original (hynix_h26m_2026-07-13.yaml).
+#   H26M31001HPR, H26M31002GPR — já confirmados numa rodada AINDA MAIS ANTIGA (2026-07-10,
+#     citada no cabeçalho do arquivo original). Revalidei via classify() em sandbox: os 5 PNs
+#     do cluster (os 4 já confirmados + o alvo desta rodada) decodificam TODOS pra capacity=
+#     '4GB'/grammar_complete=true de forma idêntica — sem ambiguidade de capacidade entre eles.
+# Ou seja: H26M31003FPR era literalmente a ÚLTIMA peça faltante do cluster já mapeado — por
+# isso esta submissão tem só 1 PN nomeado (não é "parei em 1 sem checar", é "os outros 4 já
+# estavam feitos antes desta rodada começar").
+#
+# EVIDÊNCIA (H26M31003FPR):
+#   - OMO Electronic (catálogo próprio, omo-ic.com/tags/H26M31003.html): indexado como
+#     "New and Original", categoria Memory, manufacturer=HYNIX — junto de 4 variantes-irmãs
+#     de H26M31003GMR (já confirmado) sob o mesmo prefixo.
+#   - DigiPart (agregador): 23 distribuidores independentes, manufacturer consistente HYNIX/
+#     SK Hynix/SKHYNIX (WinSource, TIST $5.00, Shengyu "BGA", Depu $5, Grand power, Kaian $5,
+#     Besen "BGA DC:16+12", Wanwei "BGA DC:16+12", MountainView, Ariat $5.015, YIC $5.020,
+#     Kepictronics, Metaverse, Atosn 50000un, GlobalTek, Unicom, SILITECH, NewStrength,
+#     IC Components $5.020, Sierra, Haode, Green Light, Chipsea). Preço convergindo em
+#     ~$5.00-$5.02/un entre 6+ distribuidores independentes — sinal forte de peça real
+#     ativamente negociada, não artefato de banco de dados.
+#   - Lisleapex (comparação estruturada H26M31003GMR vs H26M31003FPR vs H26M31001HPR):
+#     H26M31003FPR listado como entrada própria e distinta (Manufacturer: SK Hynix, Package:
+#     BGA, Stock: 6412, Product Category: IC Chips) — confirma catalogação separada e real,
+#     mesmo com os campos de densidade dessa tabela específica vazios para a coluna do FPR
+#     (a mesma tabela tem "Organization: 4GX8"/"Memory Density: 34359738368 bit"=4GB
+#     preenchido pras colunas de GMR e HPR, ambos já confirmados com a mesma chave '3'/'1').
+#   - Package: Besen e Wanwei confirmam "BGA" com formato de date-code "DC:16+12" — mesmo
+#     padrão do resto da família H26M (BGA-153).
+#   - Variante de fab/sufixo: FPR (F) vs GMR (G) é o mesmo padrão já visto nesta sessão de
+#     letra de revisão/fábrica não afetando capacidade (ex.: H5TQ4G63CFR vs H5TQ4G63EFR) —
+#     aqui reforçado pelo fato de a gramática (não tocada) já decodificar os dois PNs pra
+#     exatamente a mesma capacidade.
+#
+# confidence=manual (mesmo padrão dos outros 4 PNs desta chave — nenhum tem datasheet oficial
+# lido na íntegra; todos são distribuidor estruturado + agregador, nunca fonte única).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h26m_rodada2_2026-07-13.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h26m_rodada2_2026-07-13.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H26M31003FPR"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.x"
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H26M31003FPR"
+    notes: >
+      PN buscado na bancada (2026-07-13/14) — EXCLUÍDO duas vezes antes nesta sessão por
+      falta de dado (ver hynix_h26m_2026-07-13.yaml, seção "NÃO incluídos"). Nesta 3ª
+      tentativa, com técnica de busca melhor (catálogo por prefixo da OMO + fetch direto do
+      DigiPart), achado em 23 distribuidores independentes (WinSource, TIST, Shengyu, Depu,
+      Grand power, Kaian, Besen "BGA", Wanwei "BGA", MountainView, Ariat, YIC, Kepictronics,
+      Metaverse, Atosn, GlobalTek, Unicom, SILITECH, NewStrength, IC Components, Sierra,
+      Haode, Green Light, Chipsea) + catálogo próprio da OMO Electronic (manufacturer=HYNIX,
+      "New and Original"). Preço convergindo em ~$5.00-$5.02 entre 6+ fontes independentes.
+      Lisleapex confirma como entrada de catálogo distinta e real (Manufacturer: SK Hynix,
+      Package: BGA, Stock: 6412), na mesma tabela comparativa onde os PNs-irmãos GMR/HPR
+      (já confirmados, mesma chave '3'/'1'→4GB) têm "Organization: 4GX8"/"Memory Density:
+      34359738368 bit"=4GB. Mesma chave pn[4]='3' já confirmada 4x nesta família
+      (GMR/FPR-1001/HPR/GPR, todos manual). Bate exatamente com o decode atual da gramática
+      (capacity='4GB', grammar_complete=true, profitable='RENTÁVEL') — zero mudança de
+      gramática, é known_parts-only (Trilha B). confidence=manual (distribuidor estruturado +
+      agregador, sem datasheet oficial lido na íntegra — mesmo padrão dos outros 4 PNs desta
+      chave).

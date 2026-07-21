@@ -1,0 +1,98 @@
+# Submissão de known_parts — SK Hynix, família H54G (LPDDR4X standalone, JÁ EXISTENTE)
+# Gerado a partir da investigação do PN H54GD6AYRB (busca na bancada, 2026-07-10) — pn[4]='D'
+# não estava na tabela alfabética (só A/C/E/G/J), grammar_complete=false, capacity=null.
+#
+# FIX DE GRAMÁTICA #1 (Trilha A, já aplicado em chips/knowledge/hynix.yaml): adicionada a chave
+# [D, 3GB, ''] ao mapa HYX_LPDDR4X_H54G_CAP. D duplica a capacidade de C (3GB) — coerente com o
+# padrão "die-revision + fracionados" que a família já documentava para o lado alfabético.
+# Golden anchor novo em chips/tests.py: H54GD6AYRBX273N (a família já tinha 1 golden, H54GE6CYRB,
+# mas cobria só a chave E — D é chave nova, exige âncora própria).
+#
+# FIX DE GRAMÁTICA #2 — CORREÇÃO DA CHAVE E (autorizado pelo dono em 2026-07-10, "a gramatica
+# pode corrigir"): pesquisando o cluster da família, encontrei via Puris (fetch direto,
+# https://www.puris.net/archives/9010) que H54GE6CYRBX262N = 48Gbit = 6GB. Isso CONTRADIZIA o
+# valor antigo da chave E no mapa (4GB), cujo único exemplo registrado no tip era "H54GE6CYRB-
+# X252 = 4GB (Helio G80/G85, broker B2B SEA)" — fonte antiga sem URL registrada, NÃO rastreável
+# em nova busca (sufixo "X252" não retornou nenhum resultado; uma página da iBuyXS pra variante
+# X262 não trouxe spec nenhuma). Sinalizei o conflito ao dono sem decidir sozinho; ele autorizou
+# a correção. Mapa alterado para E=6GB, golden anchor atualizado, tip/reasoning documentam a
+# mudança. E passa a duplicar a capacidade de G (6GB) — mesmo padrão die-revision do par C/D.
+#
+# FONTES (known_parts efetivamente incluídos): Preduo e Puris (catálogos de broker estruturados,
+# fetch direto) + 1 título de listagem Alibaba. Aritmética Gbit→GB mostrada em cada nota.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h54g_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h54g_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H54GD6AYRBX273N"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "3GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/lpddr/lpddr4x/200ball_4x-lpddr4x/h54gd6ayrbx273n"
+    notes: >
+      PN original buscado na bancada foi "H54GD6AYRB" (base sem sufixo) — este é o PN completo.
+      DUPLO confirmado: Preduo (fetch direto, "Density: 24Gbit") e um título de listagem Alibaba
+      ("H54GD6AYRBX273N LPDDR4X 3GB 4266mbps 200FBGA DDR" — já diz "3GB" explicitamente).
+      24Gbit÷8=3GB, batendo com as duas fontes. Chave 'D' era NOVA no mapa
+      HYX_LPDDR4X_H54G_CAP (só existiam A/C/E/G/J do lado alfabético) — adicionada nesta rodada.
+      D=3GB duplica a capacidade de C (já mapeado), consistente com o padrão "die-revision +
+      fracionados" que a família já documentava.
+
+  - part_number: "H54G56CYRBX247N"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/lpddr/lpddr4x/200ball_4x-lpddr4x/h54g56cyrbx247n"
+    notes: >
+      Achado pesquisando o cluster numérico da família (fetch direto): Preduo mostra "32Gbit"
+      ÷8=4GB. Reconfirma pn[4]='5'→4GB (lado numérico, já mapeado) — o tip da família já citava
+      um exemplo TechInsights pra esse mesmo código; esta é uma 2ª fonte independente.
+
+  - part_number: "H54G26AYRBX256"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "512MB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/8272"
+    notes: >
+      Achado pesquisando o cluster numérico da família (fetch direto): Puris mostra "4Gbit"
+      ÷8=512MB. Confirma pn[4]='2'→512MB (lado numérico, já mapeado). 1ª confirmação registrada
+      desse código nesta família.
+
+  - part_number: "H54G66AYZGX106N"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/9015"
+    notes: >
+      Achado pesquisando o cluster numérico da família (fetch direto): Puris mostra "64Gbit"
+      ÷8=8GB. Confirma pn[4]='6'→8GB (lado numérico, já mapeado). 1ª confirmação registrada
+      desse código nesta família.
+
+  - part_number: "H54GE6CYRBX262N"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "6GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/9010"
+    notes: >
+      PN que motivou a correção da chave E (ver cabeçalho) — Puris (fetch direto): "48Gbit"
+      ÷8=6GB. Contradisse o valor antigo do mapa (4GB, exemplo "H54GE6CYRB-X252" sem fonte
+      rastreável) — dono autorizou a correção em 2026-07-10 ("a gramatica pode corrigir").
+      Mapa corrigido para E=6GB antes desta submissão; este PN confirma o novo valor.
+
+# NÃO incluído: variante antiga "H54GE6CYRB-X252" (exemplo original do tip, capacidade 4GB) —
+# não localizada em nenhuma busca desta rodada, presumivelmente erro/fonte obsoleta. Como o
+# mapa mudou para E=6GB, esse PN específico (se existir de fato) precisaria de reverificação
+# antes de qualquer submissão futura.

@@ -1,0 +1,79 @@
+brand: "Nanya"
+known_parts:
+  - part_number: "NT5CC64M16FN-DHA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145618/NANYA/NT5CC64M16FN-DHA.html"
+    notes: >
+      Densidade NOVA para NT5CC (catalogo local so tinha 128M16/256M16/256M8 antes desta
+      submissao). Cluster inteiro mapeado no Alldatasheet (busca do prefixo "NT5CC", 610
+      resultados totais, quebrados por sub-prefixo: NT5CC1*=182(128M), NT5CC2*=204(256M),
+      NT5CC5*=124(512M8), NT5CC6*=100(64M) — soma 182+204+124+100=610, bate exato, zero
+      sobra). Este PN e do bucket NT5CC6* (100 resultados, TODOS "Commercial, Industrial and
+      Automotive DDR3(L) 1Gb SDRAM"). Aritmetica: 64M x 16bit = 1024Mbit = 1Gb (bate).
+
+  - part_number: "NT5CC64M16FP-DHA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145622/NANYA/NT5CC64M16FP-DHA.html"
+    notes: >
+      Mesma organizacao/densidade do PN acima, die letter irma "FP" (em vez de "FN") — mesmo
+      padrao ja visto em NT5CB64M16 (FN/FP paralelas, mesma capacidade). Alldatasheet:
+      "Commercial, Industrial and Automotive DDR3(L) 1Gb SDRAM". Aritmetica: 64M x 16bit =
+      1024Mbit = 1Gb (bate).
+
+  - part_number: "NT5CC512M8CN-DI"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145491/NANYA/NT5CC512M8CN-DI.html"
+    notes: >
+      Densidade NOVA para NT5CC (mesmo padrao do achado NT5CB512M8CN na rodada anterior —
+      familias irmas, mesmas organizacoes). Bucket NT5CC5* (124 resultados, TODOS
+      "Commercial, Industrial and Automotive DDR3(L) 4Gb SDRAM", nenhum 512M4 — ver nota de
+      exclusao no dossie). Aritmetica: 512M x 8bit = 4096Mbit = 4Gb (bate). Maior densidade
+      confirmada para NT5CC — cluster vai de 1Gb (64M16) a 4Gb (256M16/256M8/512M8), sem
+      variante 1024M/8Gb (nenhum sub-prefixo "NT5CC10*" existe nos 610 resultados).
+
+  - part_number: "NT5CC512M8CN-DIA"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1145573/NANYA/NT5CC512M8CN-DIA.html"
+    notes: >
+      Variante de sufixo do 512M8CN-DI acima, mesma organizacao. Alldatasheet: "Commercial,
+      Industrial and Automotive DDR3(L) 4Gb SDRAM". Aritmetica: 512M x 8bit = 4096Mbit = 4Gb
+      (bate).
+
+  - part_number: "NT5CC512M4GN-CG"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    interface: "x4"
+    confidence: confirmed
+    source_url: "https://www.datasheets360.com/part/detail/nt5cc512m4gn-cg/-804841350957475624/"
+    notes: >
+      PN do debug ao vivo do estoque (die "GN"), variante com sufixo "-CG" -- fonte aberta e
+      verificada diretamente (nao so resumo de busca) apos o usuario indicar a URL. Pagina
+      dedicada Datasheets360 (nao e resumo de IA generico): Manufacturer="NANYA TECHNOLOGY
+      CORP", Part Category="DRAMs", Description="DDR3L DRAM, 512MX4, 0.255ns, CMOS, PBGA78",
+      Status="Discontinued", Clock Frequency-Max=667MHz. Aritmetica: 512M x 4bit = 2048Mbit =
+      2Gb (bate). Explica por que nao apareceu no indice Alldatasheet usado no resto desta
+      submissao (peca descontinuada, fora do crawl mais recente daquele indice).
+      IMPORTANTE p/ o dono: normalize_pn remove "-" mas NAO remove "CG" -- o PN exato escaneado
+      na bancada ("NT5CC512M4GN", sem sufixo) normaliza para "NT5CC512M4GN", enquanto este
+      known_part normaliza para "NT5CC512M4GNCG". Sao strings diferentes: este known_part NAO
+      da match exato automatico no PN da bancada a menos que o "-CG" esteja de fato na marcacao
+      fisica (comum em codigos de grade/velocidade nao gravados a laser no encapsulamento).
+      A fonte confirmada tambem NAO valida a atribuicao de prefixo "NT5CB512M4BN-CG" vista em
+      outras fontes de baixo nivel (die "BN") -- essa continua nao submetida (ver dossie).

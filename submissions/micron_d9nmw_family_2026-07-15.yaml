@@ -1,0 +1,601 @@
+# Submissão de known_parts — Micron, FBGA D9NMW + família MT41J256M4 (2026-07-15)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9NMW
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9NZW, D9SMW, D9WMW, D9XMW, D9ZMW) IGNORADO
+# por construção — já são KnownPart aprovado.
+#
+# ACHADO: D9NMW → MT41J256M4JP-15E:G. Prefixo MT41J = DDR3 padrão
+# (1,5V), mesma família já vista em D9LGQ/D9PZM/D9MNT. Capacidade:
+# 256M × 4bit = 1024Mb = 1Gb — confirmado via Octopart ("DRAM Chip DDR3
+# SDRAM 1G-Bit 256Mx4 1.5V 78-Pin F-BGA"). chip_type="DDR3",
+# interface="x4", density_gbit="1Gb".
+#
+# Coleta máxima da família (conforme padrão desta sessão): forward-
+# lookup no prefixo "MT41J256M4" (2026-07-15) achou 47 PNs: 26 com
+# fbga_code "D9*" (produção, ZERO com "ES" no próprio texto do PN — 
+# checado programaticamente) + 21 "Z9*" (Engineering Sample, 
+# EXCLUÍDOS). Nenhum dos 26 tem part-name direto da Micron (campo
+# vazio em toda a leva) — TODOS os 26 entram apoiados na fórmula +
+# confirmação Octopart do alvo + convenção MT41J já estabelecida.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9nmw_family_2026-07-15.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9nmw_family_2026-07-15.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41J256M4JP-15E:G"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9NMW"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=MT41J256M4JP-15E%3AG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-15): D9NMW → MT41J256M4JP-15E:G. Prefixo MT41J = DDR3 padrão
+      (1,5V), mesma convenção já estabelecida (D9LGQ/D9PZM/D9MNT).
+      CAPACIDADE por fórmula: 256M (profundidade) × 4bit (largura) =
+      1024Mb = 1Gb. Confirmado via Octopart, campo estruturado direto:
+      "DRAM Chip DDR3 SDRAM 1G-Bit 256Mx4 1.5V 78-Pin F-BGA" — bate exato
+      em organização (256Mx4) e densidade (1G-Bit) — fonte:
+      https://octopart.com/search?q=MT41J256M4JP-15E%3AG. Campo
+      density_gbit (Gb), interface x4, convenção DDR discreta (CLAUDE.md
+      §6).
+
+  - part_number: "MT41J256M4BY-25:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BY-25E:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BY-187:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BY-187E:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BY-15E:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BY-15F:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GTM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GTM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BZ-25:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BZ-25E:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BZ-187:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BZ-187E:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BZ-15E:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BZ-15F:C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9GVK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GVK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4BY-15:B"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9HZN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HZN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4HX-25:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9JMX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JMX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4HX-25E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9JMZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JMZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4HX-187E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9JNB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JNB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4HX-15E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9JNC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9JNC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4JP-15E:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9KPX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KPX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4JP-187E:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9KQB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KQB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4JP-125:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9KQK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KQK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4HX-125:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9KRH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KRH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4JP-25:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9KTH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KTH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4JP-107E:F"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9LRK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LRK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4JP-125:G"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9MNZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MNZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.
+
+  - part_number: "MT41J256M4JP-107:G"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x4"
+    density_gbit: "1Gb"
+    fbga_code: "D9PJF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PJF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41J256M4, 2026-07-15). Mesma organização do alvo D9NMW
+      (MT41J256M4JP-15E:G): 256M × 4bit = 1024Mb = 1Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41J256M4, verificado programaticamente: todos os 26 part-numbers
+      começam literalmente por "MT41J256M4"). Tipo DDR3 padrão confirmado
+      pelo alvo via Octopart + convenção MT41J já estabelecida nesta
+      série. Nenhum PN desta família tem part-name direto da Micron (campo
+      vazio em todos os 26 retornos do forward-lookup) nem verificação
+      distribuidor específica para este PN; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron para
+      ESTE fbga_code.

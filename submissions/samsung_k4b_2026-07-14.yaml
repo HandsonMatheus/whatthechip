@@ -1,0 +1,113 @@
+# Submissão de known_parts — Samsung, família K4B (DDR3/DDR3L discreta standalone)
+# PN alvo: K4B2G1646C (busca 2026-07-14). Local (seed) já tinha cobertura MUITO
+# rica da família (49 known_parts confirmados, quase todas as densidades/larguras/
+# gens: 1G/2G/4G/8G × 08/16 × C/D/E/F/I/Q) — mas a combinação exata "2G"+"16"+"C"
+# (a chave do alvo) NÃO existia local, apesar de gens vizinhas (E/F/Q) já cobertas
+# para essa mesma densidade+largura. Grammar já decodifica certo hoje (pn[3:5]='2G'
+# via DRAM_PC global → 2Gb=256MB — mapa JEDEC compartilhado, sem bug de família) —
+# só faltava o PN exato confirmado no banco.
+#
+# K4B2G1646C (alvo, base): datasheet OFICIAL Samsung existe pro PN base ("K4B2G1646C
+# Product Guide", Apr.2010, 15 páginas, mirror alldatasheet/ciiva) + derivativos
+# dedicados K4B2G1646C-HCF8000 (Samsung, alldatasheet: "2Gb C-die DDR3 SDRAM Only x16
+# 96FBGA") e K4B2G1646C-HCK0 (ciiva.com, mesma família de datasheet Rev.1.11 Nov.2010).
+# 2Gbit÷8=256MB — bate com a gramática. HC = DDR3 1.5V (não DDR3L — não achei par HY
+# confirmado pra esta densidade+largura específica, só pra 2G0846 — ver abaixo).
+# confidence=confirmed (datasheet oficial Samsung, Tier-1 direto).
+#
+# K4B2G1646C-HCH9: sufixo mais citado (Win Source: "DRAM Chip DDR3 SDRAM 2Gbit
+# 128Mx16 1.5V 96-Pin FBGA" — spec explícito) + datasheet dedicado (ciiva.com Rev.
+# 1.11) + múltiplos distribuidores convergentes (DigiPart: 30+ revendedores).
+#
+# K4B2G1646C-HCK0: outro sufixo com datasheet Samsung dedicado (ciiva.com, mesma
+# revisão) + Octopart/Datasheets.com: "2Gb DDR3 C-die, 128Mx16, 96FBGA, DDR3-800~
+# DDR3-2133".
+#
+# --- BÔNUS (varredura da família, mesma densidade 2Gb, largura x8 em vez de x16) ---
+# K4B2G0846C: achado no cross-reference do DigiPart "See Also" do alvo — mesma
+# densidade (2Gb) e gen (C-die), largura x8 em vez de x16. NÃO estava local (seed só
+# tinha K4B2G0846F, não o C-die). Confirmado par de tensão completo:
+#   - K4B2G0846C-HCH9 (DDR3 1.5V): Octopart + Datasheets.com + Jotrin + veswin +
+#     avaq convergentes ("2G-Bit 256Mx8 1.5V", 78-ball FBGA).
+#   - K4B2G0846C-HYH9 (DDR3L 1.35V): Jotrin ("SAMSUNG Memory") — par de tensão
+#     completo, mesmo padrão de outras chaves da família (ex.: K4B2G1646F local já
+#     tem ambos BC/BY confirmados).
+# 2Gbit÷8=256MB — mesma aritmética do alvo, só largura diferente.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4B2G1646C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/347917/SAMSUNG/K4B2G1646C.html"
+    notes: >
+      PN alvo (base). Datasheet oficial Samsung "K4B2G1646C Product Guide"
+      (Apr.2010, 15 páginas, mirror alldatasheet #347917) — deriva de
+      K4B2G1646C-HCH9/HCK0/HCF8000, todos confirmados individualmente.
+      2Gbit÷8=256MB/die. C-die, x16, DDR3 1.5V (HC).
+
+  - part_number: "K4B2G1646CHCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.win-source.net/products/detail/samsung/k4b2g1646c-hch9.html"
+    notes: >
+      Win Source: "DRAM Chip DDR3 SDRAM 2Gbit 128Mx16 1.5V 96-Pin FBGA" (spec
+      explícito). Datasheet Samsung dedicado (ciiva.com Rev.1.11 Nov.2010) +
+      derivativo oficial K4B2G1646C-HCF8000 (alldatasheet, "2Gb C-die DDR3
+      SDRAM Only x16 96FBGA"). HC = DDR3 1.5V.
+
+  - part_number: "K4B2G1646CHCK0"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://datasheet.ciiva.com/26786/k4b2g1646c-hck0-26786973.pdf"
+    notes: >
+      Datasheet Samsung dedicado (ciiva.com, mesma revisão 1.11 Nov.2010 do
+      HCH9) + Octopart/Datasheets.com: "2Gb DDR3 C-die, 128Mx16, 96FBGA,
+      DDR3-800~DDR3-2133". HC = DDR3 1.5V.
+
+  - part_number: "K4B2G0846C"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://octopart.com/k4b2g0846c-hch9-samsung-27952999"
+    notes: >
+      Achado bônus (varredura da família K4B, cross-reference DigiPart "See
+      Also" do alvo) — mesma densidade 2Gb/C-die do alvo, largura x8 em vez
+      de x16. NÃO estava local (seed só tinha K4B2G0846F). Base deriva de
+      K4B2G0846C-HCH9 (DDR3 1.5V) + K4B2G0846C-HYH9 (DDR3L 1.35V), par de
+      tensão completo confirmado. Octopart/Datasheets.com/Jotrin/veswin/avaq
+      convergentes: "2G-Bit 256Mx8 1.5V", 78-ball FBGA. 2Gbit÷8=256MB/die.
+
+  - part_number: "K4B2G0846CHCH9"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x8"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://octopart.com/k4b2g0846c-hch9-samsung-27952999"
+    notes: >
+      Bônus — par DDR3 1.5V do K4B2G0846C. Octopart/Datasheets.com/Jotrin/
+      veswin/avaq convergentes: "DRAM Chip DDR3 SDRAM 2G-Bit 256Mx8 1.5V",
+      78-ball FBGA.
+
+  - part_number: "K4B2G0846CHYH9"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.jotrin.com/product/parts/K4B2G0846C_HYH9.html"
+    notes: >
+      Bônus — par DDR3L 1.35V do K4B2G0846C (Jotrin). Mesmo padrão de par de
+      tensão já visto na família local (K4B2G1646F tem BC/BY, K4B1G0846I tem
+      BC/BY). HY = DDR3L 1.35V.

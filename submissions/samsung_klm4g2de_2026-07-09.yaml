@@ -1,0 +1,95 @@
+# Submissão de known_parts — Samsung, família KLM (eMMC puro), grupo "KLM4G2DE*"
+# Gerado a partir do PN não identificado KLM4G2DEFD (busca em 2026-07-09).
+#
+# ⚠ LACUNA NA GRAMÁTICA (não corrigida aqui — fora do meu escopo, Trilha A):
+# pn[6]='D' (chave de geração) NÃO existe no mapa SAM_EMMC_GEN (hoje só tem
+# E/F/G/J/K/R/U/W). Achei 4 PNs REAIS (DigiPart + distribuidores com estoque)
+# com essa mesma chave 'D' na posição 6, e um 5º PN irmão revela outra chave
+# ausente ('H', em KLM4G2DEHE). Ou seja, não é 1 PN excêntrico — é uma lacuna
+# real de cobertura na família toda. Pesquisei ~12 buscas + fetches diretos
+# (DigiPart, Jotrin, dzsc, datasheetarchive, dois "decoders" genéricos de
+# eMMC) e NÃO achei datasheet/Octopart/página Samsung que diga qual versão
+# de eMMC essas chaves representam — só um blog claramente gerado por IA
+# (gsm4files.com, mistura PNs de famílias diferentes sem sentido, mesmo
+# padrão de lixo do Allelco já documentado no SAMSUNG.md), que descartei
+# inteiro, nem como Tier 3.
+#
+# DECISÃO DO DONO (2026-07-09): registrar só o que dá pra confirmar —
+# capacidade (bate com a gramática) — e deixar a versão de eMMC em aberto
+# (interface genérica "eMMC", sem "4.5"/"5.0"/"5.1"). Não inventar geração.
+#
+# Convenção de PN: string completa sem hífen, igual ao buscado (pn_length=10
+# da família KLM = já é o PN completo).
+brand: "Samsung"
+known_parts:
+  - part_number: "KLM4G2DEFD"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.digipart.com/part/KLM4G2DEFD-A301"
+    notes: >
+      PN original buscado (família/mapa já cadastrados, PN exato não estava
+      no banco). Confirmado REAL via DigiPart (fabricante Samsung, estoque
+      em 4 distribuidores: Sunether, RX Electronics, Allchip, New Strength).
+      Capacidade 4GB bate com a gramática (SAM_FLASH_CAP['4']) — sem
+      divergência. ⚠ Geração de eMMC NÃO confirmada: pn[6]='D' não existe no
+      mapa SAM_EMMC_GEN e não achei datasheet/Octopart que diga qual versão
+      é. Interface deixada genérica "eMMC" (mesmo valor que a gramática já
+      produz por padrão) — decisão do dono, não inventar "4.5"/"5.0"/"5.1"
+      sem fonte.
+
+  - part_number: "KLM4G2DEDD"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: >
+      Irmão de família (mesma raiz "KLM4G2DE", mesma chave 'D' na posição 6,
+      só sufixo final "FD"→"DD"). PN real (DigiPart "see also" do alvo +
+      distribuidor independente confirmando estoque). Capacidade 4GB bate
+      com a gramática. Mesma ressalva do KLM4G2DEFD: geração de eMMC não
+      confirmada.
+
+  - part_number: "KLM4G2DEJE"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: >
+      Irmão de família (mesma raiz "KLM4G2DE", mesma chave 'D' na posição 6,
+      sufixo "JE"). PN real (DigiPart "see also" do alvo, citado como usado
+      em dispositivos móveis). Capacidade 4GB bate com a gramática. Mesma
+      ressalva: geração de eMMC não confirmada.
+
+  - part_number: "KLM4G2DEHE"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    confidence: confirmed
+    notes: >
+      Irmão de família (mesma raiz "KLM4G2DE", mesma chave 'D' na posição 6,
+      sufixo "HE"). PN real (DigiPart "see also" + Jotrin + dzsc, estoque
+      confirmado). Capacidade 4GB bate com a gramática. Revela MAIS uma
+      chave de geração ausente do mapa (a posição 8 deste PN, 'H', também
+      não está documentada — mas essa posição não é decodificada pela
+      gramática atual, só registro pra contexto). Mesma ressalva: geração de
+      eMMC (chave 'D', posição 6) não confirmada.
+
+  - part_number: "KLMAG8DEFD"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "16GB"
+    confidence: confirmed
+    notes: >
+      Prima de capacidade diferente (prefixo "KLMAG8DE", mesmo sufixo final
+      "DEFD-A301" do alvo, mesma chave 'D' na posição 6) — achada via Jotrin
+      ao pesquisar o alvo. Cap-key pn[3]='A' → 16GB (SAM_FLASH_CAP), bate com
+      a gramática. Prova que a chave 'D' não é exclusiva do grupo 4GB — é
+      uma lacuna real da família toda, não um caso isolado. Mesma ressalva:
+      geração de eMMC não confirmada.

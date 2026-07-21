@@ -1,0 +1,74 @@
+# Submissão de known_parts — Samsung, família K4W (gDDR3) — ADDENDUM
+# Continuação de submissions/samsung_k4w_2026-07-09.yaml (mesmo dia). O usuário
+# pediu pra sempre coletar o MÁXIMO de PNs da família, não parar em 1. Varri
+# datasheetarchive + alldatasheet mais a fundo (K4W1G/K4W2G/K4W4G) e achei 2
+# die-letters REAIS que não estavam nem no seed nem na primeira submissão de
+# hoje:
+#
+# - B em 2Gb (só existia B em 4Gb antes) — datasheet Samsung genuíno
+#   (datasheetarchive: "Rev. 1.22, Apr. 2010, K4W2G1646B 2Gb B-die gDDR3
+#   SDRAM") + Bristol Electronics ("2Gbit 128Mx16").
+# - E em 4Gb (só existia E em 1Gb/2Gb antes) — datasheet Samsung genuíno
+#   (alldatasheet.com, PDF direto do fabricante, página de um Product
+#   Selection Guide) + 4 distribuidores independentes (cpuprocessorchip,
+#   worldwayelec, ic-components, aliexpress), todos "256Mx16" (4Gbit÷8=512MB).
+#
+# Com isso a família K4W fica coberta nas 3 classes de densidade:
+#   1Gb (128MB): D, E, G
+#   2Gb (256MB): B, C, E, Q, S
+#   4Gb (512MB): B, D, E, Q
+# Não achei evidência de outras combinações (K4W1G+B/Q/C, K4W4G+G/C/S) nem de
+# uma classe de densidade 8Gb — não incluí nada não confirmado.
+brand: "Samsung"
+known_parts:
+  - part_number: "K4W2G1646B"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/347885/SAMSUNG/K4W2G1646B/600/2/K4W2G1646B.html"
+    notes: >
+      Base PN — gDDR3 Samsung 2Gb x16 (B-die), NOVO die-letter (B só existia
+      em 4Gb nos known_parts já existentes). Datasheet Samsung real
+      (datasheetarchive, "Rev. 1.22, Apr. 2010, K4W2G1646B 2Gb B-die gDDR3
+      SDRAM, 96 FBGA") + alldatasheet + Bristol Electronics ("DRAM Chip
+      GDDR3 SDRAM 2Gbit 128Mx16 1.5V 96-Pin FBGA"). 2Gbit÷8=256MB — bate com
+      a gramática.
+
+  - part_number: "K4W2G1646BHC12"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "256MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/347885/SAMSUNG/K4W2G1646B/600/2/K4W2G1646B.html"
+    notes: >
+      Forma completa (base+sufixo) do item acima — mesmas fontes. HC12 =
+      grade de speed/temp.
+
+  - part_number: "K4W4G1646E"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425713/SAMSUNG/K4W4G1646E-BC.html"
+    notes: >
+      Base PN — gDDR3 Samsung 4Gb x16 (E-die), NOVO die-letter (E só existia
+      em 1Gb/2Gb antes). Datasheet Samsung real (alldatasheet, PDF direto,
+      página de um Product Selection Guide do fabricante) + 4 distribuidores
+      independentes (cpuprocessorchip, worldwayelec, ic-components,
+      aliexpress), todos "GDDR3 256Mx16" (4Gbit÷8=512MB/die) — bate com a
+      gramática.
+
+  - part_number: "K4W4G1646EBC1A"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    interface: "x16"
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1425713/SAMSUNG/K4W4G1646E-BC.html"
+    notes: >
+      Forma completa (base+sufixo) do item acima — mesmas fontes. BC1A =
+      grade de speed/temp.

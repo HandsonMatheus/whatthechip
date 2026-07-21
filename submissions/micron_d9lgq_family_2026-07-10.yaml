@@ -1,0 +1,360 @@
+# Submissão de known_parts — Micron, FBGA D9LGQ + família MT41J128M16 (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9LGQ
+# (não identificado na bancada, fila de revisão — SearchLog 10/07/2026 15:24).
+#
+# fuzzy_sugest. do debug (D9LGW, D9LGX, D9LGZ, D9SGQ, D9VGQ) IGNORADO por
+# construção — já são KnownPart aprovado (D9LGW/D9LGX/D9LGZ, aliás, são do
+# lote D9PSC/MT41K512M4 já commitado — puro acaso visual, família
+# diferente).
+#
+# ⚠ ACHADO: D9LGQ → MT41J128M16HA-15E:D. Prefixo MT41J — DIFERENTE do
+# MT41K que apareceu em todos os lotes anteriores (D9PZQ/D9TXS/D9PSC).
+# MT41J = DDR3 PADRÃO (1,5V) — MT41K = DDR3L (1,35V, baixa tensão).
+# Confirmado via Octopart (campo estruturado "Memory Type: DDR3 SDRAM,
+# RAM" + "Nominal Supply Voltage (DC): 1.5 V" + "Max Supply Voltage:
+# 1.575V" — tensão de DDR3 padrão, não DDR3L) e reforçado por 3 PNs
+# irmãos com part-name direto da própria Micron ("DDR3 2G X16 FBGA",
+# sem "L"). chip_type="DDR3" (não "DDR3L") nesta submissão — primeira
+# vez que este prefixo aparece nesta conversa, atenção pra não repetir
+# o padrão DDR3L por hábito.
+#
+# Capacidade: 128M × 16bit = 2048Mb = 2Gb — bate exato com o campo
+# estruturado "Density: 2 Gb" do Octopart.
+#
+# Forward-lookup no prefixo "MT41J128M16" (2026-07-10) achou 31 PNs (20
+# produção "D9*" + 11 Engineering Sample "Z9*"), TODOS a mesma
+# organização 128M16 = 2Gb — variam em pacote (HA/JT), speed grade
+# (-107/-125/-15E/-187E/-093), temperatura (IT/AIT/AAT/XIT/P) e sufixo
+# de revisão (G/D). Entram aqui os 20 de produção (alvo + 19 irmãos).
+# 3 deles (D9PRS/D9PRW/D9PSL) têm part-name Micron direto confirmando
+# "DDR3 2G X16" — reforça a convenção pra família toda.
+#
+# ⚠ PENDENTE — ainda não rodei/recebi a query read-only de pré-checagem
+# (ver memória wtc-precheck-part-number-norm-antes-de-bulk) pra estes 20
+# PNs. Ver comando no chat.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9lgq_family_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/micron_d9lgq_family_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41J128M16HA-15E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGQ"
+    confidence: confirmed
+    source_url: "https://octopart.com/mt41j128m16ha-15e:d-micron-12682905"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-10): D9LGQ → MT41J128M16HA-15E:D. TIPO: prefixo MT41J = DDR3
+      PADRÃO (1,5V), diferente de MT41K (DDR3L, 1,35V) já visto nos lotes
+      anteriores — confirmado via Octopart campo estruturado "Memory
+      Type: DDR3 SDRAM, RAM" + "Nominal Supply Voltage (DC): 1.5 V" +
+      "Max Supply Voltage: 1.575V" (tensão de DDR3 padrão). CAPACIDADE:
+      conta pelo PN — 128M (profundidade) × 16bit (largura) = 2048Mb =
+      2Gb — bate exato com o campo estruturado "Density: 2 Gb" do
+      Octopart. Campo density_gbit (Gb), convenção DDR discreta
+      (CLAUDE.md §6). Obsoleto (Octopart: "Lifecycle Status: Obsolete").
+
+  - part_number: "MT41J128M16HA-187E:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LGP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ
+      (MT41J128M16HA-15E:D): 128M × 16bit = 2048Mb = 2Gb — capacidade
+      invariante nesta família. Prefixo MT41J = DDR3 padrão (1,5V, ver
+      nota do alvo). Sem verificação individual em distribuidor para este
+      PN específico; apoiado na fórmula + tipo confirmados pelo alvo +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-125:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9LGR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LGR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V, ver
+      nota do alvo). Sem verificação individual em distribuidor; apoiado
+      na fórmula + tipo confirmados pelo alvo + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-125G:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9MGG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MGG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V, ver
+      nota do alvo). Sem verificação individual em distribuidor; apoiado
+      na fórmula + tipo confirmados pelo alvo + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-15E IT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9MHD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MHD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V, ver
+      nota do alvo). Sem verificação individual em distribuidor; apoiado
+      na fórmula + tipo confirmados pelo alvo + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-15E AIT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9MHF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MHF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V, ver
+      nota do alvo). Sem verificação individual em distribuidor; apoiado
+      na fórmula + tipo confirmados pelo alvo + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-15E AAT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9MHG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MHG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V, ver
+      nota do alvo). Sem verificação individual em distribuidor; apoiado
+      na fórmula + tipo confirmados pelo alvo + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-125 IT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9NZQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9NZQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V, ver
+      nota do alvo). Sem verificação individual em distribuidor; apoiado
+      na fórmula + tipo confirmados pelo alvo + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-107G:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9PFS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PFS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V, ver
+      nota do alvo). Sem verificação individual em distribuidor; apoiado
+      na fórmula + tipo confirmados pelo alvo + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-107G D:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9PGR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PGR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V, ver
+      nota do alvo). Sem verificação individual em distribuidor; apoiado
+      na fórmula + tipo confirmados pelo alvo + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-125G D:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9PGS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PGS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V, ver
+      nota do alvo). Sem verificação individual em distribuidor; apoiado
+      na fórmula + tipo confirmados pelo alvo + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16JT-107:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9PRR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PRR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Pacote "JT" em vez de "HA", mesma
+      organização do alvo D9LGQ: 128M × 16bit = 2048Mb = 2Gb. Prefixo
+      MT41J = DDR3 padrão (1,5V). Sem verificação individual em
+      distribuidor; apoiado na fórmula + tipo confirmados pelo alvo +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16JT-107G:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9PRS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41j128m16jt-107g-k"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (2026-07-10): "DDR3 2G X16 FBGA", sub-category "obsolete-ddr3-
+      sdram" — confirma DDR3 (não DDR3L) e a densidade 2Gb diretamente da
+      Micron, sem precisar do Octopart. 128M × 16bit = 2048Mb = 2Gb bate
+      exato.
+
+  - part_number: "MT41J128M16JT-125G:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9PRV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PRV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V). Sem
+      verificação individual em distribuidor; apoiado na fórmula + tipo
+      confirmados pelo alvo/irmãos com part-name + identidade direta da
+      API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16JT-093:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9PRW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41j128m16jt-093-k"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (2026-07-10): "DDR3 2G X16 FBGA", sub-category "ddr3-sdram" (não
+      obsoleto no catálogo — ainda em produção) — confirma DDR3 e 2Gb
+      diretamente da Micron. 128M × 16bit = 2048Mb = 2Gb bate exato.
+
+  - part_number: "MT41J128M16JT-125:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9PSL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41j128m16jt-125-k"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (2026-07-10): "DDR3 2G X16 FBGA", sub-category "ddr3-sdram" (não
+      obsoleto — ainda em produção) — confirma DDR3 e 2Gb diretamente da
+      Micron. 128M × 16bit = 2048Mb = 2Gb bate exato.
+
+  - part_number: "MT41J128M16JT-093G:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9PTD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PTD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V). Sem
+      verificação individual em distribuidor; apoiado na fórmula + tipo
+      confirmados pelo alvo/irmãos com part-name + identidade direta da
+      API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-15E P AIT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9PXM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PXM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V). Sem
+      verificação individual em distribuidor; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron
+      para ESTE fbga_code.
+
+  - part_number: "MT41J128M16HA-15E XIT:D"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9QNK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QNK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V). Sem
+      verificação individual em distribuidor; apoiado na fórmula + tipo
+      confirmados pelo alvo + identidade direta da API oficial Micron
+      para ESTE fbga_code.
+
+  - part_number: "MT41J128M16JT-093 J:K"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    interface: "x16"
+    density_gbit: "2Gb"
+    fbga_code: "D9RVQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RVQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no
+      prefixo MT41J128M16, 2026-07-10). Mesma organização do alvo D9LGQ:
+      128M × 16bit = 2048Mb = 2Gb. Prefixo MT41J = DDR3 padrão (1,5V). Sem
+      verificação individual em distribuidor; apoiado na fórmula + tipo
+      confirmados pelo alvo/irmãos com part-name + identidade direta da
+      API oficial Micron para ESTE fbga_code.

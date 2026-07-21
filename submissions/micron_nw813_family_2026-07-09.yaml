@@ -1,0 +1,165 @@
+# Submissão de known_parts — Micron, FBGA NW813 e vizinhos fuzzy (2026-07-09)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA NW813
+# (não identificado na bancada, fila de revisão). Mesmo processo dos lotes
+# JZ067 (2026-07-08) e D9SXC (2026-07-09): resolvido via API FBGA oficial da
+# Micron + as 5 sugestões fuzzy do próprio motor (JW813/JWB13/JW313/JW413/
+# JW713), cada capacidade com aritmética mostrada e 2+ fontes batendo — nunca
+# só o número final (ver memória wtc-mostrar-aritmetica-gb-gbit).
+#
+# ⚠ ACHADO PRINCIPAL: NW813 (o alvo) é NAND Flash CRU (família MT29F, já
+# existente na gramática) — NÃO é uMCP como a heurística de prefixo do
+# MICRON.md ("NWxxx=uMCP") sugeriria. Prefixo FBGA é tendência, não regra
+# determinística: aqui confirmamos via API em vez de assumir pelo prefixo, e
+# o resultado quebrou a heurística documentada. Vale considerar uma nota no
+# MICRON.md deixando isso explícito (não fiz a edição — fora do escopo deste
+# chat, é Trilha A/documentação, sinalizando pro dono).
+#
+# Todos os 6 códigos deste lote fecharam com confiança alta — sem itens
+# bloqueados/ambíguos desta vez (diferente do lote JZ067), então não abri um
+# INVESTIGACAO_*.md separado; qualquer achado lateral relevante está nas
+# notes de cada known_part abaixo.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_nw813_family_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/micron_nw813_family_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  # ── NW813 — o alvo original, NAND Flash cru (MT29F), NÃO uMCP ─────────────
+  - part_number: "MT29F256G08CBCBBJ4-5M:B"
+    chip_type: "NAND Flash"
+    subtype: "MLC NAND"
+    interface: "Async/ONFI"
+    capacity: "32GB"
+    fbga_code: "NW813"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/micron/MT29F256G08CBCBBJ4-5M:B"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto, 2026-07-09).
+      ⚠ ACHADO: contraria a heurística de prefixo documentada em MICRON.md
+      ("NWxxx=uMCP") — este FBGA é NAND Flash CRU (raw), não um MCP/combo.
+      Prefixo FBGA não é regra determinística, só tendência; sempre
+      confirmar via API, nunca assumir pelo prefixo (foi o que fizemos aqui,
+      e o resultado surpreendeu). Capacidade: 256Gb ÷ 8 = 32GB — 3 fontes
+      batendo: Octopart campo estruturado "256Gb" + "32G x 8" (mesma conta,
+      dupla notação no próprio card); DigiKey alias "MLC 256G 32GX8 VBGA"
+      (256G aqui = Gbit, mesma convenção); AAA Chips "IC FLASH 256GBIT"
+      (bit explícito, zero ambiguidade). Forward-lookup na família (prefixo
+      MT29F256G08, 2026-07-09) trouxe ~190 PNs irmãos — dezenas com
+      part-name oficial Micron populado, TODOS dizendo "256G X8" + célula
+      (MLC/SLC/TLC conforme a variante) = mesma conta 256Gb÷8=32GB, sem uma
+      única exceção em toda a amostra. Célula MLC confirmada especificamente
+      para ESTE PN via DigiKey (acima) — outras variantes 256G08 da família
+      são SLC ou TLC, célula não é fixa pelo prefixo, por isso subtype
+      explícito aqui em vez de herdar da família. Família MT29F já existe na
+      gramática (chips/knowledge/micron.yaml, chip_type=NAND Flash,
+      interface=Async/ONFI) mas SEM decode de capacidade (decode_cap_pos
+      vazio) — por isso capacity e subtype explícitos neste known_part.
+
+  # ── Sugestões fuzzy do motor — 3× MTFC (eMMC) + 2× MT29P (eMCP) ───────────
+  - part_number: "MTFC4GMTEA-1F WT ES"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    fbga_code: "JW813"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW813"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Capacidade: convenção
+      do PN MTFC4G=4GB direto (regra já confirmada Tier-1 no numbering
+      guide oficial numemmc.pdf, ciclo JZ067). Cross-check: irmão de
+      produção MTFC4GMTEA-WT (mesmo corpo de PN, sem sufixo "-1F"/ES — FBGA
+      JW729, achado no forward-lookup 2026-07-09) tem part-name oficial
+      Micron "MLC EMMC 32G WFBGA" = 32Gb ÷ 8 = 4GB, batendo exato com a
+      convenção do PN. Sufixo "-1F WT ES" = Engineering Sample; assumo que
+      compartilha capacidade do corpo de produção (mesma lógica já usada
+      pro ES da família JZ067/JZ068). Interface deixada genérica "eMMC"
+      (sem número de versão) — não achei confirmação da versão exata
+      (4.5/5.0/5.1) pra esta peça específica, prefiro não inventar.
+
+  - part_number: "MT29PZZZ4D4BKESK-18 W.94H"
+    chip_type: "eMCP"
+    subtype: "LPDDR2"
+    interface: "eMMC + LPDDR2"
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR2 512MB"
+    fbga_code: "JWB13"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-emmc/part-catalog/part-detail/mt29pzzz4d4bkesk-18-w.94h"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (2026-07-09): "SLC EMMC/LPDDR2 36G VFBGA", sub-category
+      "obsolete-emmc-based-mcp". Conta: 36Gb ÷ 8 = 4.5GB total = 4GB NAND +
+      0.5GB(512MB) RAM — bate exato com a chave '4D4' já mapeada em
+      MIC_MCP_CAP (chips/knowledge/micron.yaml linha 12: [4D4, 4GB,
+      512MB]). ⚠ Este PN é LITERALMENTE o exemplo usado no próprio tip da
+      família MT29P no yaml ("Ex: MT29PZZZ4D4BKESK → 4=32Gb NAND (4GB) /
+      4=4Gb DRAM (512MB)", linha 72) — confiança máxima, é o caso de
+      referência que o autor da gramática já validou, não um PN novo sendo
+      forçado no mapa. LPDDR2 confirmado diretamente no part-name (a
+      família MT29P é uniformemente LPDDR2, sem variação de geração).
+
+  - part_number: "MTFC8GEKDQ-ET"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "8GB"
+    fbga_code: "JW313"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/micron/MTFC8GEKDQ-ET"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Capacidade: convenção
+      do PN MTFC8G=8GB direto (regra Tier-1, numemmc.pdf). Cross-check
+      Octopart: Avnet descreve "8GX8 MCP PLASTIC EXT TEMP GREEN LBGA 3.3V
+      MASS STORAGE" — "8GX8" bate com 8GB×8bit, "MASS STORAGE" confirma
+      armazenamento (não RAM). ⚠ "MCP" aqui é "multi-chip package" genérico
+      (flash + controller no mesmo encapsulamento, terminologia comum de
+      distribuidor) — NÃO é eMCP no sentido WTC (flash+RAM); o
+      forward-lookup na família MTFC8G (2026-07-09, ~180 PNs irmãos) mostra
+      dezenas de siblings com part-name oficial Micron confirmado, TODOS
+      "EMMC 64G..." (64Gb÷8=8GB), nenhuma exceção — reforça que MTFC8G é
+      eMMC puro, sem componente RAM. Interface genérica "eMMC" (versão não
+      confirmada pra este PN específico).
+
+  - part_number: "MTFC4GGQDM-WT ES"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC"
+    capacity: "4GB"
+    fbga_code: "JW413"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW413"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Capacidade: convenção
+      do PN MTFC4G=4GB direto (regra Tier-1, numemmc.pdf) — mesma regra do
+      JW813 acima. Sem part-name direto pra "GQDM" especificamente, mas o
+      forward-lookup na família MTFC4G (2026-07-09, ~150 PNs irmãos) mostra
+      dezenas de siblings confirmados via part-name oficial Micron, TODOS
+      "EMMC 32G..." (32Gb÷8=4GB) — nenhuma exceção em toda a família
+      MTFC4G amostrada. Sufixo "-WT ES" = Engineering Sample. Interface
+      genérica "eMMC" (versão não confirmada).
+
+  - part_number: "MT29PZZZ8D4RKKEQ-3 W.6V4"
+    chip_type: "eMCP"
+    subtype: "LPDDR2"
+    interface: "eMMC + LPDDR2"
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR2 1GB"
+    fbga_code: "JW713"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/JW713"
+    notes: >
+      Identidade via API FBGA oficial (2026-07-09). Capacidade: chave '8D4'
+      já mapeada em MIC_MCP_CAP (chips/knowledge/micron.yaml linha 15:
+      [8D4, 4GB, 1GB]) — NAND 4GB + LPDDR2 1GB = 5GB total. Sem
+      distribuidor com dados pra "RKKEQ" especificamente (Octopart e
+      DigiKey sem listagem pra este PN exato), mas a MESMA chave posicional
+      '8D4' (pn[8:11], bloco logo após "ZZZ") aparece no PN-irmão
+      MT29PZZZ8D4BKFSK-18 (FBGA JWB12, mesma família, achado no
+      forward-lookup 2026-07-09), que TEM part-name oficial Micron direto:
+      "MLC EMMC/LPDDR2 40G VFBGA" = 40Gb ÷ 8 = 5GB = 4GB+1GB — bate exato
+      com o valor do mapa. RKKEQ vs BKFSK é variação de
+      encapsulamento/velocidade (fora do bloco de capacidade, que é sempre
+      pn[8:11]), não afeta a conta. LPDDR2 confirmado pela família
+      (uniforme) + part-name do irmão JWB12.

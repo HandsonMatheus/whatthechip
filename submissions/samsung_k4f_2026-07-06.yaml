@@ -1,0 +1,99 @@
+# Submissão de known_parts — Samsung, família K4F (LPDDR4 standalone, não-eMCP)
+# Gerado pelo chat de marca Samsung a partir do PN não identificado K4FBE3D4HMAGCJ
+# (busca em: 2026-07-06). Uso:
+#   python manage.py submit_known_parts submissions/samsung_k4f_2026-07-06.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/samsung_k4f_2026-07-06.yaml --commit --user <seu_usuario>
+#
+# NOTA DE CONVENÇÃO (difere do submissions/samsung_k3qf_*.yaml): lá o PN foi
+# truncado à base de 10 chars (sufixo pós-hífen omitido). Aqui mantive a string
+# COMPLETA sem hífen (base + sufixo), pelos dois motivos: (1) o PN buscado pelo
+# operador já veio assim, 14 chars ("K4FBE3D4HMAGCJ") — truncar não bateria com
+# uma busca repetida do mesmo PN; (2) pn_length da família K4F é null (igual
+# K3QF), então não há constraint estrutural nem a favor nem contra. Mantive os
+# irmãos no mesmo padrão por consistência dentro deste arquivo.
+#
+# NOTA DE VERIFICAÇÃO (2026-07-06): os 6 source_url abaixo são páginas oficiais
+# semiconductor.samsung.com, mas HOJE redirecionam para o hub genérico da linha
+# LPDDR4 (Samsung parece ter descontinuado as páginas individuais desses SKUs,
+# comuns em parts de ~2015-2018). A confirmação Tier-1 vem do TÍTULO indexado
+# pelo buscador no momento da pesquisa (ex.: "K4FBE3D4HM-GHCL(32 Gb) | DRAM |
+# Samsung Semiconductor Global") — ainda é fonte Samsung, não distribuidor —,
+# só não é mais clicável/re-verificável ao vivo. Dono cross-checou os 6 PNs via
+# Google de forma independente (2026-07-06) e confirmou. Ver SAMSUNG.md §3.
+brand: "Samsung"
+known_parts:
+  # ── PN original (bancada) ────────────────────────────────────────────────────────
+  - part_number: "K4FBE3D4HMAGCJ"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr4/k4fbe3d4hm-ghcl/"
+    notes: >
+      PN original buscado. Base "K4FBE3D4HM" confirmada em Samsung Semiconductor
+      Global oficial sob 6 variantes de sufixo (-GHCL/-TFCL/-THCL/-GFCL/-GUCL/-TUCL),
+      todas tituladas "(32 Gb)" = 4GB — bate exatamente com a gramática (cap-key
+      'BE' do LPDDR4_CAP = 4GB/32Gb). O sufixo exato do PN buscado, "-AGCJ", não
+      está entre as 6 variantes indexadas por Samsung, mas aparece confirmado
+      independentemente na EET Group (distribuidor/revenda, Tier-2): listagem
+      "K4FBE3D4HM-AGCJ,4GB,X32,FB" — mesma capacidade, mesmo pacote (X32).
+      Suffix não muda capacidade (mesma lógica já aplicada em K3QF/KMD).
+
+  # ── Similares — mesma família K4F, cap-keys diferentes, todos Tier-1 direto ────────
+  - part_number: "K4F4E3S4HFGUCJ"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "512MB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr4/k4f4e3s4hf-gucj/"
+    notes: >
+      Samsung Semiconductor Global oficial — título "(4 Gb)". Cap-key '4E' do
+      LPDDR4_CAP = 512MB/4Gb — bate exatamente. Menor capacidade da família.
+
+  - part_number: "K4F8E3S4HBMHCJ"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "1GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/us/dram/lpddr/lpddr4/k4f8e3s4hb-mhcj/"
+    notes: >
+      Samsung Semiconductor US oficial — título "(8 Gb)". Cap-key '8E' do
+      LPDDR4_CAP = 1GB/8Gb — bate exatamente.
+
+  - part_number: "K4F2E3S4HMMHCJ"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "1.5GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/emea/dram/lpddr/lpddr4/k4f2e3s4hm-mhcj/"
+    notes: >
+      Samsung Semiconductor EMEA oficial — título "(12 Gb)". Cap-key '2E' do
+      LPDDR4_CAP = 1.5GB/12Gb — bate exatamente. Único valor não-múltiplo de
+      2 da família (die de 12Gb).
+
+  - part_number: "K4F6E3S4HMMGCJ"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr4/k4f6e3s4hm-mgcj/"
+    notes: >
+      Samsung Semiconductor Global oficial — título "(16 Gb)". Cap-key '6E' do
+      LPDDR4_CAP = 2GB/16Gb — bate exatamente.
+
+  - part_number: "K4FHE3D4HAGUCL"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    interface: ""
+    capacity: "3GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/dram/lpddr/lpddr4/k4fhe3d4ha-gucl/"
+    notes: >
+      Samsung Semiconductor Global oficial — título "(24Gb)". Cap-key 'HE' do
+      LPDDR4_CAP = 3GB/24Gb — bate exatamente. ⚠ Não confundir com 'BE' (4GB/32Gb)
+      — mesmo aviso já presente no tip da família K4F (HE=24Gb vs BE=32Gb).

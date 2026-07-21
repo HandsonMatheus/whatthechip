@@ -1,0 +1,287 @@
+# Submissão de known_parts — Toshiba-Kioxia, sub-família THGBM "5G/AG" (eMMC 4.41/4.5, era 2012-13)
+# Gerado pelo chat de marca Toshiba-Kioxia a partir da investigação do PN THGBM5G5A1JBAIR (busca
+# na bancada, 2026-07-09). THGBM já tinha decode completo, mas só pra era BiCS/2015+ (letras
+# B/D/F/G/H/J/N/T/U em pn[5] → eMMC 5.0/5.1). Este PN usa pn[5]="5" (DÍGITO) — um esquema mais
+# antigo (2012-2013, NAND FG, não BiCS) que não batia com nenhuma chave mapeada.
+#
+# Achado: existe uma tabela oficial de produto Toshiba ("Card Interface : e-MMC", capturada da
+# semicon-storage.co.jp via mirror Arrow.com, dez/2013) cobrindo 4GB→64GB desta sub-família em
+# TRÊS classes comerciais — Premium ("5G..."=eMMC 4.41α / "AG..."=eMMC 4.5, mesma capacidade,
+# só a versão muda), Supreme ("5G..xBy.."/"AG..xBy..", pacote maior VFBGA169/TFBGA169) e Prime
+# ("7G..xTy..").
+#
+# ⚠ 2026-07-09 (pedido do dono): pesquisa adicional dedicada aos 2 PNs da classe Prime
+# (THGBM7G8T4JBAIR 32GB, THGBM7G9T8JBAIG 64GB) pra confirmar a versão eMMC antes de submeter —
+# regra do dono: "não sobe nenhum chip sem essa informação". Resultado: NÃO CONSEGUI CONFIRMAR.
+# A própria tabela oficial (única fonte encontrada com esses 2 PNs citados) deixa a coluna de
+# versão em BRANCO especificamente nas linhas Prime (Premium/Supreme têm "4.41α"/"4.5" ao lado;
+# Prime não tem nada). Busquei datasheet individual (não achei nenhum, diferente de Premium/
+# Supreme que têm datasheets completos no boardcon.com/Arrow.com), busquei catálogo Toshiba mais
+# recente (FAB_201611, Q4/2016, mouser.com/catalog/specsheets/tosc-s-a0002841067-1.pdf) — a
+# classe "Prime" SUMIU desse catálogo (só sobrou Premium/Supreme com JEDEC 5.0/5.1), o que sugere
+# que Prime foi descontinuada/substituída pouco depois de dez/2013, possivelmente nunca chegou a
+# ter datasheet individual publicado. Por isso os DOIS PNs Prime FICARAM DE FORA desta submissão
+# (ver rodapé "NÃO submetidos") — a capacidade (32GB/64GB) permanece na gramática (THGBM_CAP:
+# 8T4/9T8, fonte é a mesma tabela, capacidade não estava em branco), mas nenhum known_part foi
+# criado pra esses 2 PNs, e pn[5]="7" continua fora do THGBM_GEN.
+#
+# Promovi a gramática (chips/knowledge/toshiba-kioxia.yaml): THGBM_GEN += 5=eMMC 4.41 · A=eMMC 4.5;
+# THGBM_CAP += 5A1=4GB · 6A2=8GB · 7A2=16GB · 7B2=16GB · 8A4=32GB · 8B4=32GB · 8T4=32GB · 9A8=64GB
+# · 9B8=64GB · 9T8=64GB. Esta submissão (Trilha B) registra 21 PNs individuais da mesma tabela
+# (23 confirmados menos os 2 Prime sem versão).
+#
+# Hierarquia de fonte: Tier-1 = (1) datasheet COMPLETO oficial Toshiba de THGBM5G6A2JBAIR
+# (boardcon.com, PDF genuíno "Preliminary THGBM5G6A2JBAIR, June 7th 2012, TOSHIBA e-MMC Module",
+# rev0.2) — confirma 8GB + "JEDEC/MMCA Version 4.41" (com nota "V4.41α", compatível com 4.41 e
+# parte das features de 4.5); (2) página oficial de produto Toshiba semicon-storage.co.jp "Card
+# Interface : e-MMC" (mirror Arrow.com, capturada dez/2013) — tabela completa PN×capacidade×
+# classe×versão×pacote pra toda a sub-família 4GB-64GB, incluindo a nota de rodapé "Ver.4.41α is
+# compatible with Ver.4.41 and has some of the major features of Ver.4.5" que distingue as 2
+# versões. confidence=confirmed para os 21 PNs: todos aparecem na MESMA tabela oficial, com
+# capacidade E versão explícitas (nenhum campo em branco ou "T.B.D." — os "T.B.D." do datasheet
+# individual são só de performance/corrente, não de capacidade/versão).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm5g_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm5g_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  # ── 4GB — classe Premium ────────────────────────────────────────────────────────────────
+  - part_number: "THGBM5G5A1JBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 4.41"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      PN buscado na bancada (motivou a promoção desta sub-família). Tabela oficial Toshiba "Card
+      Interface : e-MMC" (semicon-storage.co.jp, dez/2013): linha 4GB, classe Premium,
+      "THGBM5G5A1JBAIR · 4.41α · 200MHz · P-VFBGA153-1113-0.50-002". Chave pn[7:10]="5A1" (nova
+      entrada THGBM_CAP=4GB) confirmada também via datasheet completo do irmão THGBM5G6A2JBAIR
+      (mesma família, mesma linha de produto, mesmo pn[5]="5"=eMMC 4.41α — fonte usada como
+      source_url por ser o datasheet completo que li diretamente, não só a tabela-resumo).
+      Geração pn[5]="5" → eMMC 4.41(α) (nova entrada THGBM_GEN).
+
+  - part_number: "THGBMAG5A1JBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Mesma tabela oficial, mesma linha 4GB/Premium, variante "AG" (novo produto *):
+      "THGBMAG5A1JBAIR · 4.5". MESMA chave de capacidade "5A1" que o irmão "5G" acima — prova que
+      pn[5] (dígito "5" vs letra "A") só muda a VERSÃO eMMC (4.41α vs 4.5), não a capacidade.
+      Corroborado por spec estruturada da Lisleapex (Memory Density 34.359.738.368 bit ÷ 8 =
+      4.294.967.296 bytes = 4GB exatos — bate). Geração pn[5]="A" → eMMC 4.5 (nova entrada
+      THGBM_GEN).
+
+  - part_number: "THGBM5G5A1JBAIT"
+    chip_type: "eMMC"
+    interface: "eMMC 4.41"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Mesma tabela oficial: "THGBM5G5A1JBAIT · Premium · 4.41α · P-WFBGA153-1110-0.50-001" — só
+      pacote diferente (WFBGA em vez de VFBGA), mesma chave "5A1"=4GB, mesma versão.
+
+  - part_number: "THGBMAG5A1JBAIT"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Mesma tabela oficial: "THGBMAG5A1JBAIT · Premium · 4.5" — variante WFBGA da linha acima.
+
+  - part_number: "THGBMAG5A1JBAWR"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Mesma tabela oficial: "THGBMAG5A1JBAWR · Premium · I-Ver. · 4.5 · -40 to 85°C" — grade
+      industrial (I-Ver.), marcado "Under development" (**) na tabela de dez/2013. Capacidade
+      explícita na tabela (4GB, mesma chave "5A1"), não é T.B.D. — só o status de produção que
+      era preliminar na data da fonte.
+
+  # ── 8GB — classe Premium ────────────────────────────────────────────────────────────────
+  - part_number: "THGBM5G6A2JBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 4.41"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Datasheet COMPLETO oficial Toshiba (lido diretamente, não resumo): "THGBM5G6A2JBAIR is
+      8-GByte density... 2 x 32Gbit MLC 19nm" e tabela "Density Specifications": "8-Gbytes ·
+      THGBM5G6A2JBAIR · Interleave · User Area Density 7.818.182.656 Bytes". Interface "JEDEC/MMCA
+      Version 4.41" (texto exato: "has the JEDEC/MMCA Version 4.41 interface"; seção posterior
+      rotula o dispositivo como "V4.41α", compatível com 4.41 + parte das features de 4.5). Chave
+      pn[7:10]="6A2" → 8GB (nova entrada THGBM_CAP). Esta é a fonte-âncora de toda a submissão.
+
+  - part_number: "THGBMAG6A2JBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBMAG6A2JBAIR · Premium · 4.5" — mesma chave "6A2"=8GB, versão mais nova.
+
+  - part_number: "THGBMAG6A2JBAWR"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBMAG6A2JBAWR · Premium · I-Ver. · 4.5 · -40 to 85°C" — grade industrial,
+      "Under development" (**) em dez/2013, mesma ressalva do THGBMAG5A1JBAWR acima.
+
+  # ── 16GB — classes Premium e Supreme ────────────────────────────────────────────────────
+  - part_number: "THGBM5G7A2JBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 4.41"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBM5G7A2JBAIR · Premium · 4.41α". Chave pn[7:10]="7A2" → 16GB (nova
+      entrada THGBM_CAP) — mesma capacidade que a chave "7C1"/"7C2"/"7D2" já existente no mapa
+      (letra do meio não afeta capacidade, mesmo padrão já visto em toda a família).
+
+  - part_number: "THGBMAG7A2JBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBMAG7A2JBAIR · Premium · 4.5" — mesma chave "7A2"=16GB.
+
+  - part_number: "THGBM5G7B2JBAIM"
+    chip_type: "eMMC"
+    interface: "eMMC 4.41"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBM5G7B2JBAIM · Supreme · 4.41α · P-VFBGA169-1216-0.50-001" (pacote maior,
+      169 bolas). Chave pn[7:10]="7B2" → 16GB (nova entrada THGBM_CAP) — MESMA capacidade que
+      "7A2" acima (classe Premium), confirmando que a letra de stack (A vs B) reflete a CLASSE
+      comercial (Premium/Supreme), não a capacidade.
+
+  - part_number: "THGBMAG7B2JBAIM"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBMAG7B2JBAIM · Supreme · 4.5" — mesma chave "7B2"=16GB.
+
+  - part_number: "THGBMAG7B2JBAWM"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBMAG7B2JBAWM · Supreme · I-Ver. · 4.5 · -40 to 85°C" — grade industrial,
+      "Under development" (**) em dez/2013, mesma ressalva das outras variantes WR/WM.
+
+  # ── 32GB — classes Premium e Supreme (Prime excluído — ver rodapé "NÃO submetidos") ───────
+  - part_number: "THGBM5G8A4JBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 4.41"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBM5G8A4JBAIR · Premium · 4.41α". Chave pn[7:10]="8A4" → 32GB (nova
+      entrada THGBM_CAP) — mesma capacidade que "8C2"/"8C4"/"8D4" já existentes no mapa.
+
+  - part_number: "THGBMAG8A4JBA4R"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBMAG8A4JBA4R · Premium · 4.5" — mesma chave "8A4"=32GB. Suffix "4R" em
+      vez de "IR" (variante de qualificação, não afeta capacidade nem versão).
+
+  - part_number: "THGBM5G8B4JBAIM"
+    chip_type: "eMMC"
+    interface: "eMMC 4.41"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBM5G8B4JBAIM · Supreme · 4.41α · P-VFBGA169-1216-0.50-001". Chave
+      pn[7:10]="8B4" → 32GB (nova entrada THGBM_CAP) — mesma capacidade que "8A4" (Premium),
+      confirmando de novo que a letra reflete a classe, não a capacidade.
+
+  - part_number: "THGBMAG8B4JBAIM"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBMAG8B4JBAIM · Supreme · 4.5" — mesma chave "8B4"=32GB.
+
+  # ── 64GB — classes Premium e Supreme (Prime excluído — ver rodapé "NÃO submetidos") ───────
+  - part_number: "THGBM5G9A8JBAIG"
+    chip_type: "eMMC"
+    interface: "eMMC 4.41"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBM5G9A8JBAIG · Premium · 4.41α". Chave pn[7:10]="9A8" → 64GB (nova
+      entrada THGBM_CAP) — mesma capacidade que "9C4"/"9C8" já existentes no mapa.
+
+  - part_number: "THGBMAG9A8JBA4G"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBMAG9A8JBA4G · Premium · 4.5" — mesma chave "9A8"=64GB.
+
+  - part_number: "THGBM5G9B8JBAIE"
+    chip_type: "eMMC"
+    interface: "eMMC 4.41"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBM5G9B8JBAIE · Supreme · 4.41α · P-TFBGA169-1216-0.50A4". Chave
+      pn[7:10]="9B8" → 64GB (nova entrada THGBM_CAP) — mesma capacidade que "9A8" (Premium).
+
+  - part_number: "THGBMAG9B8JBAIE"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://www.boardcon.com/download/THGBM5G6A2JBAIR-19nm-8GB-e-MMC_E_rev0.2_120607.pdf"
+    notes: >
+      Tabela oficial: "THGBMAG9B8JBAIE · Supreme · 4.5" — mesma chave "9B8"=64GB.
+
+# ── NÃO submetidos: classe Prime (pn[5]="7") — versão eMMC não confirmada ──────────────────
+# THGBM7G8T4JBAIR (32GB, chave "8T4") e THGBM7G9T8JBAIG (64GB, chave "9T8") — capacidade
+# confirmada na mesma tabela oficial Toshiba (por isso 8T4/9T8 ENTRARAM no THGBM_CAP, decode de
+# capacidade funciona pra esses PNs), mas a coluna de versão eMMC fica em BRANCO nas linhas Prime
+# dessa tabela — não é erro de leitura, conferi 2x. Pesquisa adicional (2026-07-09, a pedido do
+# dono): sem datasheet individual pra nenhum PN "7G..." (diferente de Premium/Supreme, que têm);
+# catálogo Toshiba mais recente (Q4/2016) não lista mais a classe Prime — sugere descontinuação
+# rápida, possivelmente sem datasheet individual publicado. NÃO submeti como known_part (regra do
+# dono: não sobe chip sem a informação de versão/interface confirmada). Se aparecer um datasheet
+# individual de algum PN "7G..." no futuro, ou o dono aceitar confirmar por outro canal (ex.
+# contato direto com a Toshiba/Kioxia), volto e submeto os dois.

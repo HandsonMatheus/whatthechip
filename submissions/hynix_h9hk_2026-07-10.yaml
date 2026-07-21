@@ -1,0 +1,119 @@
+# Submissão de known_parts — SK Hynix, família H9HK (LPDDR4/LPDDR4X standalone x64, JÁ EXISTENTE)
+# Gerado a partir da investigação do PN H9HKNNNCPMMU (busca na bancada, 2026-07-10) — fragmento
+# truncado do PN completo H9HKNNNCPMMUJR-NMH, atestado em ~10 distribuidores via agregador
+# DigiPart. Mapa HYX_LPDDR4_H9HC_CAP (compartilhado com H9HC/H9HCN) JÁ EXISTIA e já decodificava
+# certo (C=4GB, RENTÁVEL) — SEM fix de gramática nesta rodada.
+#
+# ⚠ CORREÇÃO DE PROCESSO aplicada PROATIVAMENTE (pedido do dono, rodada anterior H26M,
+# 2026-07-10): mesmo com o código 'C' já sendo o mais confirmado da família inteira (5
+# known_parts antes desta rodada), a rodada foi framed desde o início em torno de "fechar
+# lacunas" da família — códigos 'D' e '8' JAMAIS tinham known_part apesar de mapeados desde
+# sempre no HYX_LPDDR4_H9HC_CAP. Resultado: 5 known_parts novos (não 1), fechando as duas
+# lacunas + reforçando C/F com PNs genuinamente novos (variante de package 556ball_4x, ainda
+# não coberta — só 366/320ball estavam representados antes).
+#
+# FONTES: Preduo e Puris (catálogos de broker estruturados, fetch direto) + WinSource via
+# agregador DigiPart. Aritmética Gbit→GB mostrada em cada nota (todas em Gbit bruto ÷8=GB).
+# Cruzado contra hynix_h9hk_2026-07-09.yaml antes de finalizar — nenhum PN abaixo é duplicata
+# (mesmo quando o sufixo é parecido: ex. CRMAVAR-NEH é diferente de CRMAUDR-NEH/CRMMVBR-NEH já
+# submetidos; FBMAVAR-NEH é diferente de FBMAUDR-NEH/FBMBUDR-NEH já submetidos).
+#
+# LACUNA NÃO FECHADA — código '4' (512MB): busca extensa (WebSearch ampla ×3, DigiPart,
+# Octopart agregado, Puris/Preduo site-search dedicado) não encontrou nenhum PN real usando
+# esse código nesta família. Diferente do caso H26M (onde a lacuna foi fechada via página
+# "Part Number List"), aqui não há evidência de que a SK Hynix tenha produzido essa densidade
+# (512MB) no formato H9HK x64 366/556ball — pode ser um SKU que nunca existiu comercialmente
+# nesta família específica (families vizinhas tipicamente pulam a densidade mais baixa quando
+# não há demanda). Não incluído — não inventar.
+#
+# ACHADO PARALELO (fora do escopo desta submissão, não resolvido) — possível código NOVO 'I':
+# H9HKNNNIAMMVAR-NEH aparece no mapa de navegação do Puris (nunca visto antes na família).
+# Puris (fetch direto, archives/6036): "80Gbit" (÷8=10GB). Alibaba (título de listagem,
+# NÃO aberto/confirmado como página de produto real): "LPDDR4X 16GB". As duas fontes DIVERGEM
+# (10GB vs 16GB) para um código que não existe ainda no HYX_LPDDR4_H9HC_CAP — não é possível
+# decidir sozinho qual está certa (ou se ambas erram). NÃO adicionado à gramática. Fica como
+# achado para o dono decidir se vale investir mais pesquisa numa rodada futura.
+#
+# ACHADO PARALELO 2 — TechInsights confirma existência de H9HKNNNEBMBUDRNEH: a rodada anterior
+# (2026-07-09) excluiu esse PN por suspeita de erro de transcrição do Puris (Puris citava
+# "64Gbit", mas o sufixo "BMBUDR-NEH" é idêntico ao irmão F=8GB já confirmado, então parecia
+# cópia indevida). Nesta rodada, encontrei 3 produtos pagos da TechInsights (analyses técnicas
+# reais, não listagem de marketplace) titulados exatamente "SK Hynix H9HKNNNEBMBUDRNEH" —
+# forte evidência de que o PN em si é genuíno (TechInsights faz decap físico, não replica typo
+# de distribuidor). Isso NÃO resolve a capacidade (a página paga não expõe a spec; o único
+# dado numérico que já tínhamos pra esse PN específico continua sendo o "64Gbit" isolado do
+# Puris, não corroborado por mais ninguém). Mantido EXCLUÍDO desta submissão — identidade agora
+# parece real, mas capacidade ainda sem 2ª fonte independente. Não decidido sozinho.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hk_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hk_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HKNNNCPMMUJR-NMH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/lpddr/lpddr4x/320ball_4x-lpddr4x/h9hknnncpmmujr-nmh"
+    notes: >
+      PN original buscado na bancada foi "H9HKNNNCPMMU" (fragmento truncado de 12 caracteres)
+      — este é o PN completo, confirmado como real via ~10 distribuidores no agregador DigiPart
+      (Ariat, YIC, Atosn, Kepictronics, Sense Electronic, SILITECH, IC Components, Sierra IC,
+      Green Light, Chipsea). Preduo (fetch direto, página dedicada SKU WP00369): "Density:
+      32Gbit" — 32Gbit÷8=4GB. Bate com pn[7]='C'→4GB, já mapeado e o código mais confirmado
+      da família (5 known_parts antes desta rodada).
+
+  - part_number: "H9HKNNNDGUMUBR-NMH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "3GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/3074"
+    notes: >
+      Código 'D'→3GB NUNCA tinha sido confirmado nesta família (mapeado desde sempre no
+      HYX_LPDDR4_H9HC_CAP, citado informalmente no tip da família, mas sem known_part). DUPLO
+      confirmado, fetch direto cada um: Puris (archives/3074, "规格：24Gbit LPD4") e WinSource
+      via DigiPart ("LPDDR4-3733 (24Gb)") — 24Gbit÷8=3GB nas duas. Fecha essa lacuna.
+
+  - part_number: "H9HKNNN8KUMUVR-NLH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "1GB"
+    confidence: manual
+    source_url: "https://www.digipart.com/part/H9HKNNN8KUMUVR-NLH"
+    notes: >
+      Código '8'→1GB NUNCA tinha sido confirmado nesta família (mapeado desde sempre, sem
+      known_part). WinSource via DigiPart (fetch direto): "LPDDR4-3200 (8Gb)" — 8Gbit÷8=1GB.
+      Bate com pn[7]='8'→1GB. Fecha essa lacuna.
+
+  - part_number: "H9HKNNNCRMAVAR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/4035"
+    notes: >
+      Irmão de código 'C' em variante de package NUNCA vista antes na família (556ball_4x —
+      as 5 confirmações anteriores eram todas 366/320ball). Puris (fetch direto): "规格：32Gbit
+      LPD4x" — 32Gbit÷8=4GB. Confirma 'C'→4GB pela 6ª vez, agora também no package 556ball_4x.
+      PN diferente dos irmãos C já submetidos (CRMAUDR-NEH, CRMMVBR-NEH, CTUMUBR-NMH,
+      CUUMUBR-NMH) — checado contra hynix_h9hk_2026-07-09.yaml, não é duplicata.
+
+  - part_number: "H9HKNNNFBMAVAR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7377"
+    notes: >
+      Irmão de código 'F' também no package 556ball_4x (os 2 já confirmados eram package
+      diferente). Puris (fetch direto): "规格：64Gbit 556ball_4x LPDDR4x" — 64Gbit÷8=8GB.
+      Confirma 'F'→8GB pela 3ª vez. PN diferente dos irmãos F já submetidos (FBMAUDR-NEH,
+      FBMBUDR-NEH) — checado contra hynix_h9hk_2026-07-09.yaml, não é duplicata.

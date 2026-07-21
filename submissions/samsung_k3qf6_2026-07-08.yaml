@@ -1,0 +1,87 @@
+# Submissão de known_parts — Samsung, família K3QF, cap-key '6' (LPDDR3 24Gb/3GB)
+# Gerado a partir do PN não identificado K3QF6F60MMQGCF (busca em 2026-07-08).
+# A família K3QF e o mapa K3QF_CAP já eram conhecidos (trabalhados antes nesta mesma
+# sessão) — a chave '6' já estava confirmada no yaml (PSG 1H2017 + 2H2014), esta
+# submissão só adiciona os PNs completos (base+sufixo) como known_parts. Uso:
+#   python manage.py submit_known_parts submissions/samsung_k3qf6_2026-07-08.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/samsung_k3qf6_2026-07-08.yaml --commit --user <seu_usuario>
+#
+# Convenção de PN: string completa sem hífen (base+sufixo, 14 chars), igual ao que
+# o operador buscou — mesmo padrão do samsung_k4f_2026-07-06.yaml, não do k3qf
+# original (que truncava pra base de 10). Duas bases de die confirmadas pro key
+# '6': "K3QF6F60MM" e "K3QF6F60AM" (M/A = revisão de die, mesma lógica já
+# documentada pro key '3' vs '2' no K3QF_CAP — não muda capacidade).
+brand: "Samsung"
+known_parts:
+  - part_number: "K3QF6F60MMQGCF"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "3GB"
+    confidence: confirmed
+    notes: >
+      PN original buscado (família/mapa já cadastrados, mas este PN exato não
+      estava no banco). Base "K3QF6F60MM" já é o próprio exemplo citado no
+      K3QF_CAP do yaml (key '6' = 3GB/24Gb, fonte PSG 1H2017+2H2014). Sufixo
+      "-QGCF" confirmado via Puris (distribuidor) + URL do Samsung MemoryLink
+      com partNo=K3QF6F60MM-QGCF (conteúdo não pôde ser lido — JS — mas a URL
+      indexada é evidência de registro real na base da Samsung).
+
+  - part_number: "K3QF6F60MMQGCE"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "3GB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1975769/SAMSUNG/K3QF6F60MM-QGCE.html"
+    notes: >
+      Datasheet Samsung — "PRODUCT SELECTION GUIDE, 2H 2014" (28 páginas),
+      hospedado no alldatasheet, fabricante confirmado "Samsung semiconductor".
+      É a MESMA PSG 2H2014 já citada como fonte da key '6' no K3QF_CAP do yaml.
+
+  - part_number: "K3QF6F60AMFGCF"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "3GB"
+    confidence: confirmed
+    source_url: "https://www.lcsc.com/datasheet/C2847502.pdf"
+    notes: >
+      Já é o próprio exemplo citado no K3QF_CAP do yaml pra key '6' (base "A",
+      revisão de die diferente de "M", mesma capacidade — mesma lógica do key
+      '3'/'2'). Datasheet Samsung hospedado na LCSC (distribuidor sério, PDF
+      real do fabricante, não texto gerado). 24Gbit confirmado = 3GB.
+
+  - part_number: "K3QF6F60AMQGCF"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "3GB"
+    confidence: confirmed
+    notes: >
+      Mesma base "K3QF6F60AM" do item acima (já com datasheet Samsung/LCSC),
+      só sufixo de grade diferente. Cruzado em 5 distribuidores independentes
+      (Puris, Preduo, HardDiskDirect, PicClick, Mingrui Micro-Tech) — todos
+      "24Gbit/3Gx32", sem divergência.
+
+  - part_number: "K3QF6F60MMFGCF"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "3GB"
+    confidence: confirmed
+    notes: >
+      Mesma base "K3QF6F60MM" (datasheet PSG já citado nos itens acima), só
+      sufixo de grade diferente. Cruzado em HardDiskDirect + Preduo
+      ("LPDDR3-1866MHz 3Gx32").
+
+  - part_number: "K3QF6F60MMJGCE"
+    chip_type: "LPDDR3"
+    subtype: "LPDDR3"
+    interface: ""
+    capacity: "3GB"
+    confidence: confirmed
+    notes: >
+      Mesma base "K3QF6F60MM". Fonte única (HardDiskDirect, "LPDDR3 3Gx32") —
+      mais fraca que os demais desta submissão, mas a base já tem datasheet
+      Samsung confirmado nos outros itens.

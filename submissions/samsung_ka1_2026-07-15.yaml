@@ -1,0 +1,22 @@
+# RETRATADO (2026-07-15) — NÃO RODAR.
+#
+# Submissão original registrava KA1000015E como known_part SEM capacidade
+# confirmada (só chip_type=MCP, distributor). O dono cortou: "NAO podemos
+# subir PNs sem capacidade no banco de dados, NUNCA!" — regra absoluta, sem
+# exceção mesmo quando o tipo já é sempre NÃO RENTÁVEL independente de
+# capacidade (MCP/dead). Ver [[wtc-excluir-nao-adivinhar-known-part]].
+#
+# KA1000015E-BJTT: pesquisa exaustiva (Jotrin/WinSource/IC-Components/DigiPart/
+# eBay/Amazon/Octopart) não achou capacidade em fonte Tier-1 — só a descrição
+# de distribuidor "4G NAND + 4G mDDR", sem confirmação de unidade (Gb vs GB).
+# Por isso NÃO submetido, seguindo "excluir, não adivinhar".
+#
+# A GRAMÁTICA (família "KA1" em chips/knowledge/samsung.yaml, commit fa8306d)
+# continua válida — isso não é um PN "subindo no banco de dados", é regra de
+# decode (mesmo padrão de K5L/K5N, famílias MCP legadas irmãs, já no código
+# antes desta sessão). Ela já classifica KA1000015E e o cluster de sufixos
+# corretamente (MCP → NÃO RENTÁVEL) sem depender de known_part algum.
+#
+# known_parts desta rodada: nenhum.
+brand: "Samsung"
+known_parts: []

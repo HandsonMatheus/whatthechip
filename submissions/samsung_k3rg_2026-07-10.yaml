@@ -1,0 +1,152 @@
+# Submissão de known_parts — Samsung, família K3RG (LPDDR4 Multi-Channel)
+# Gerado a partir do PN não identificado K3RG2G20BMDGCH (busca em 2026-07-10, 10:36).
+#
+# Dados locais (seed_known_parts.json) já cobriam bem a família: base K3RG2G20BM
+# (bare) + sufixos 0G0J/CGCJ já confirmados a 4GB (iFixit Pixel XL + LG G5 +
+# Octopart); dies CA/CM também 4GB (PSG 1H 2017); K3RG3G3/K3RG4G4/K3RG6G6
+# (3GB/3GB/6GB, PSG + iFixit Galaxy S6). O mapa K3RG_CAP (2G/3G/4G/6G) está
+# bem fundamentado — não precisei mexer nele pro alvo.
+#
+# NOVO SUFIXO do alvo: "DGCH" não estava nos known_parts locais (só 0G0J/CGCJ).
+# Confirmado como PN real via Octopart/Worldway/Sierra IC/DigiPart — mesma base
+# BM já confirmada a 4GB. Varrendo "todos os similares" da família encontrei
+# MAIS 2 sufixos novos da mesma base BM (AGCH, MGCH) e — achado maior — TRÊS
+# cap_keys que NÃO EXISTEM no mapa K3RG_CAP (só tem 2G/3G/4G/6G):
+#   - "1G" → 16Gb = 2GB  (K3RG1G10BM-MGCH — Preduo Density + 3 distribuidores)
+#   - "8G" → 64Gb = 8GB  (K3RG8G80MM-MGCJ — Preduo Density + catálogo OFICIAL
+#     Samsung no DirectIndustry, que lista K3RG2G20BM/K3RG5G50MM/K3RG8G80MM
+#     como os 3 representantes LPDDR4 da linha K3RG)
+#   - "5G" → 32Gb = 4GB  (K3RG5G50MM-FGCJ — confirmado como PN genuíno no
+#     catálogo oficial Samsung/DirectIndustry, mas a DENSIDADE numérica só
+#     achei em título de listagem Alibaba — fonte única e mais fraca que as
+#     outras duas, por isso confidence=distributor aqui, não confirmed)
+# NÃO toquei no mapa K3RG_CAP (gramática) — mantive a prática desta sessão de
+# só registrar known_parts; sinalizando pro dono que 1G/5G/8G são candidatos a
+# entrar no mapa como correção de gramática futura, se quiser.
+brand: "Samsung"
+known_parts:
+  - part_number: "K3RG2G20BMDGCH"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://octopart.com/part/samsung/K3RG2G20BM-DGCH"
+    notes: >
+      PN original buscado. Base K3RG2G20BM já confirmada 4GB (iFixit Pixel XL
+      + LG G5, known_part local); sufixo "DGCH" (grade/lote) não estava
+      registrado. Confirmado como PN real via Octopart, Worldway Electronics,
+      Sierra IC e DigiPart (4 distribuidores independentes, mesma família
+      366-ball). pn[4:6]='2G' → K3RG_CAP='4GB'. Mesmo padrão dos sufixos
+      0G0J/CGCJ já confirmados nesta base.
+
+  - part_number: "K3RG2G20BMAGCH"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://ariat-tech.com/parts/samsung-semiconductor/K3RG2G20BM-AGCH"
+    notes: >
+      Sufixo irmão do alvo (mesma base K3RG2G20BM, grade "AGCH"). Achado
+      varrendo a família — Ariat-Tech + Kynix + listagem Alibaba (agrupada com
+      DGCH/CGCJ/MGCH/HGCJ como variantes da mesma base). 4GB, mesmo cap_key '2G'.
+
+  - part_number: "K3RG2G20BMMGCH"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1975772/SAMSUNG/K3RG2G20BM-MGCH.html"
+    notes: >
+      Sufixo irmão do alvo (mesma base K3RG2G20BM, grade "MGCH"). Datasheet
+      Samsung genuíno no alldatasheet (PRODUCT SELECTION GUIDE, 28 páginas,
+      fabricante SAMSUNG) + página própria Preduo + Censtry + Kynix. 4GB,
+      mesmo cap_key '2G'.
+
+  - part_number: "K3RG2G20BMMGCJ"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.directindustry.com/prod/samsung-semiconductor/product-34290-2020705.html"
+    notes: >
+      Forma completa (base+sufixo) do PN JÁ confirmado como "K3RG2G20BM"
+      (bare, sem sufixo) nos known_parts locais — a nota original já citava
+      "-MGCJ" como o sufixo lido pelo iFixit (Pixel XL + LG G5), mas só a
+      forma bare tinha sido registrada. Completo aqui pra cobrir operador que
+      lê a etiqueta com sufixo. Também é o representante K3RG oficial no
+      catálogo Samsung/DirectIndustry. Mesma fonte/evidência, 4GB.
+
+  - part_number: "K3RG1G1"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/lpddr/lpddr4/366ball-lpddr4/k3rg1g10bm-mgch"
+    notes: >
+      NOVO cap_key '1G' — NÃO existe no mapa K3RG_CAP (só tem 2G/3G/4G/6G).
+      Preduo (campo Density estruturado: "16Gbit") + HKInventory + Win-Source
+      + Censtry (4 distribuidores independentes carregando o mesmo PN
+      K3RG1G10BM-MGCH). 16Gb÷8=2GB. Forma de 7 chars — convenção de bancada
+      já usada nesta família (operador lê só a 1ª linha do laser), mesmo
+      padrão de K3RG3G3/K3RG4G4/K3RG6G6 já confirmados.
+
+  - part_number: "K3RG1G10BMMGCH"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "2GB"
+    confidence: confirmed
+    source_url: "https://www.preduo.com/product/lpddr/lpddr4/366ball-lpddr4/k3rg1g10bm-mgch"
+    notes: >
+      Forma completa (base+sufixo) do item acima — mesmas fontes. 16Gb÷8=2GB.
+
+  - part_number: "K3RG8G8"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.directindustry.com/prod/samsung-semiconductor/product-34290-2020709.html"
+    notes: >
+      NOVO cap_key '8G' — NÃO existe no mapa K3RG_CAP. Preduo (Density
+      estruturado: "64Gbit", K3RG8G80MM-MGCJ) + catálogo OFICIAL Samsung
+      Semiconductor no DirectIndustry (K3RG8G80MM-MGCJ é 1 dos 3
+      representantes LPDDR4 da linha K3RG no catálogo oficial do
+      fabricante, junto com K3RG2G20BM-MGCJ e K3RG5G50MM-FGCJ — confirma
+      que a linha K3RG tem mais densidades que as 4 já mapeadas). 64Gb÷8=8GB.
+      Forma de 7 chars, mesma convenção de bancada da família.
+
+  - part_number: "K3RG8G80MMMGCJ"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.directindustry.com/prod/samsung-semiconductor/product-34290-2020709.html"
+    notes: >
+      Forma completa (base+sufixo) do item acima — mesmas fontes. 64Gb÷8=8GB.
+
+  - part_number: "K3RG5G5"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "4GB"
+    confidence: distributor
+    source_url: "https://www.alibaba.com/product-detail/K3RG5G50MM-FGCJ-LPDDR4-4GB-3733Mbps-432FBGA_1601291659746.html"
+    notes: >
+      NOVO cap_key '5G' — NÃO existe no mapa K3RG_CAP. PN genuíno confirmado
+      no catálogo OFICIAL Samsung/DirectIndustry (3º representante LPDDR4 da
+      linha K3RG, junto com 2G e 8G acima) — mas a DENSIDADE numérica
+      ("32Gb"/"4GB") só achei em título de listagem Alibaba, fonte única e
+      mais fraca (distribuidor, sem campo estruturado tipo Preduo Density).
+      confidence=distributor propositalmente — mesmo critério já usado nesta
+      sessão pra fonte única (K4W2G1646Q). 32Gb÷8=4GB, mesmo valor do cap_key
+      '2G' — plausível (já visto 3G=4G nesta família, chaves diferentes
+      podem repetir capacidade). Recomendo confirmação adicional antes de
+      promover a confirmed.
+
+  - part_number: "K3RG5G50MMFGCJ"
+    chip_type: "LPDDR4"
+    subtype: "LPDDR4"
+    capacity: "4GB"
+    confidence: distributor
+    source_url: "https://www.alibaba.com/product-detail/K3RG5G50MM-FGCJ-LPDDR4-4GB-3733Mbps-432FBGA_1601291659746.html"
+    notes: >
+      Forma completa (base+sufixo) do item acima — mesma fonte única
+      (Alibaba), mesma ressalva de confidence=distributor.

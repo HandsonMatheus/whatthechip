@@ -1,0 +1,277 @@
+# Submissão de known_parts — Toshiba-Kioxia, VARREDURA AMPLA nº2 da família THGBM
+# Gerada a pedido do dono: "só achou esses 2 dessa família? procure mais" (2026-07-10), depois de
+# eu ter entregado só THGBMBG7D4KBAIW + THGBM4G7D4HBAIR na rodada anterior.
+#
+# Método: catálogo COMPLETO eMMC/UFS da Puris (puris.net/emmclist — fonte já usada antes neste
+# projeto pra THGBMGT0T8LBAIG) lista TODOS os PNs Toshiba que eles vendem numa tabela só. Cruzei
+# contra os 488 known_parts já submetidos (grep em submissions/*.yaml) — sobraram 20 PNs
+# genuinamente novos. Dois achados TIER-1 (fabricante) fecharam a maior parte de uma vez:
+#
+# FONTE TIER-1 #1 — tabela oficial Toshiba/TAEC via DigiKey (media.digikey.com, PDF "Card
+# Interface e-MMC", datado 16/ago/2012, Copyright TOSHIBA CORPORATION) — tabela COMPLETA
+# 2GB-128GB com Capacidade/PN/Classificação/Versão/Velocidade/Pacote. 7 PNs novos aqui.
+#
+# FONTE TIER-1 #2 — press release OFICIAL da KIOXIA (kioxia.com/en-jp/business/news/2014/
+# 20141002-1.html, "Toshiba Launches World's Smallest-class Embedded NAND Flash Memory
+# Products", 2/out/2014, lido diretamente na página oficial) — tabela "New Product Line-up"
+# completa: 12 PNs com Capacidade/Categoria/Pacote/Data de produção. 8 PNs novos aqui (os outros
+# 4 já eram known_part de rodadas anteriores — THGBMFG7C1LBAIL/8C2LBAIL/9C4LBAIR já existiam).
+#
+# FONTE TIER-3 (distribuidor) — página dedicada da Puris (puris.net/archives/NNNN, formato
+# "品牌/型号/规格/封装" já usado e aceito antes neste projeto) pra 1 PN com chave nova, e
+# existência na lista master Puris (cruzada com chave JÁ multiplamente confirmada Tier-1/2 em
+# outros PNs da mesma chave) pra mais 4 PNs.
+#
+# Chaves NOVAS adicionadas ao THGBM_CAP nesta rodada: 0DB=128GB, 6D2=8GB, 9T4=64GB (todas com
+# fonte — 0DB e 6D2 são Tier-1 DigiKey, 9T4 é Tier-3 Puris direto).
+#
+# 2 PNs ficaram DE FORA (sem fonte confiável, ver rodapé): THGBH5G7A2JBAIH, THGBM1G5D2EBAI7.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_varredura2_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/toshiba-kioxia_thgbm_varredura2_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Toshiba-Kioxia"
+known_parts:
+  # ── Tabela oficial Toshiba/TAEC via DigiKey (Tier-1, ago/2012) ──────────────────────────────
+  - part_number: "THGBM4G6D2HBAIR"
+    chip_type: "eMMC"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Toshiba%20PDFs/Card_Interface_e%EF%BD%A5MMC_Web.pdf"
+    notes: >
+      Tabela oficial Toshiba "Product list of e-MMC" (DigiKey, PDF, ago/2012): linha "8 GB |
+      THGBM4G6D2HBAIR | - | 4.41 to 52 | ... | P-VFBGA153-1113-0.50-002". Corroborado por 2
+      listagens eBay independentes ("New original thgbm4g6d2hbair storage EMMC 8g"). Chave
+      pn[7:10]="6D2" é NOVA no THGBM_CAP (tinha 6A2/6C1/6D1, todos 8GB) — adicionada [6D2, 8GB,
+      '']. pn[5]="4" NÃO está no THGBM_GEN (mesmo padrão de "2"/"4" já visto) — só capacidade.
+
+  - part_number: "THGBM5G7A2JBAIM"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Toshiba%20PDFs/Card_Interface_e%EF%BD%A5MMC_Web.pdf"
+    notes: >
+      Tabela oficial Toshiba/DigiKey: "16 GB | THGBM5G7A2JBAIM * Premium | 4.41α to 200 | ...".
+      Chave "7A2" já existente (16GB) — só confirma PN individual (variante de sufixo "M", já
+      havia THGBM5G7A2JBAIR e THGBM5G7A2JBAIR já known_part). pn[5]="5" já confirmado eMMC 4.41α.
+
+  - part_number: "THGBM5G7B2JBAIM"
+    chip_type: "eMMC"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Toshiba%20PDFs/Card_Interface_e%EF%BD%A5MMC_Web.pdf"
+    notes: >
+      Tabela oficial Toshiba/DigiKey: "16 GB | THGBM5G7B2JBAIM * Supreme | 4.41α to 200 | ...".
+      Chave "7B2" já existente (16GB). pn[5]="5" já confirmado eMMC 4.41α.
+
+  - part_number: "THGBM4G8D4GBAIE"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Toshiba%20PDFs/Card_Interface_e%EF%BD%A5MMC_Web.pdf"
+    notes: >
+      Tabela oficial Toshiba/DigiKey: "32 GB | THGBM4G8D4GBAIE | - | 4.41 to 52 | ... |
+      P-TFBGA169-1216-0.50A4". Chave "8D4" já existente (32GB). pn[5]="4" NÃO está no THGBM_GEN
+      — só capacidade.
+
+  - part_number: "THGBM5G8B4JBAIM"
+    chip_type: "eMMC"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Toshiba%20PDFs/Card_Interface_e%EF%BD%A5MMC_Web.pdf"
+    notes: >
+      Tabela oficial Toshiba/DigiKey: "32 GB | THGBM5G8B4JBAIM * Supreme | 4.41α to 200 | ...".
+      Chave "8B4" já existente (32GB). pn[5]="5" já confirmado eMMC 4.41α.
+
+  - part_number: "THGBM4G9D8GBAII"
+    chip_type: "eMMC"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Toshiba%20PDFs/Card_Interface_e%EF%BD%A5MMC_Web.pdf"
+    notes: >
+      Tabela oficial Toshiba/DigiKey: "64 GB | THGBM4G9D8GBAII | - | 4.41 to 52 | ... |
+      P-TFBGA169-1418-0.50A4". Chave "9D8" já existente (64GB, confirmada 2026-07-10 via catálogo
+      Toshiba FAB_eMMC_1405 pro irmão THGBMBG9D8KBAIG) — esta fonte reconfirma a mesma chave por
+      via independente. pn[5]="4" NÃO está no THGBM_GEN — só capacidade.
+
+  - part_number: "THGBM4T0DBGBAIJ"
+    chip_type: "eMMC"
+    capacity: "128GB"
+    confidence: confirmed
+    source_url: "https://media.digikey.com/pdf/Data%20Sheets/Toshiba%20PDFs/Card_Interface_e%EF%BD%A5MMC_Web.pdf"
+    notes: >
+      Tabela oficial Toshiba/DigiKey: "128 GB | THGBM4T0DBGBAIJ | - | 4.41 to 52 | ... |
+      P-FBGA169-1418-0.50-001". Chave pn[7:10]="0DB" é NOVA — não existia no THGBM_CAP (tinha
+      0C8/0CB/0T8, todos 128GB). Adicionada à gramática: [0DB, 128GB, '']. Nota estrutural:
+      pn[6]="T" aqui em vez do "G" usual — não afeta o decode (posição 6 não é lida pelo engine,
+      decode_cap_pos=7 extrai direto pn[7:10]). pn[5]="4" NÃO está no THGBM_GEN — só capacidade.
+
+  # ── Press release oficial KIOXIA (Tier-1, 2/out/2014) ───────────────────────────────────────
+  - part_number: "THGBMFG6C1LBAIT"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.kioxia.com/en-jp/business/news/2014/20141002-1.html"
+    notes: >
+      Press release oficial KIOXIA "Toshiba Launches World's Smallest-class Embedded NAND Flash
+      Memory Products" (2/out/2014), tabela "New Product Line-up": "THGBMFG6C1LBAIT | 8GB |
+      Supreme | 11x10x0.8mm | 2Q 2015". Chave "6C1" já existente (8GB) — variante de pacote do já
+      known THGBMFG6C1LBAIL. pn[5]="F" já confirmado eMMC 5.0 — a mesma release confirma
+      "Interface: JEDEC e-MMC V5.0 standard" pra toda a linha, batendo com a gramática.
+
+  - part_number: "THGBMFG7C2LBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.kioxia.com/en-jp/business/news/2014/20141002-1.html"
+    notes: >
+      Mesma press release oficial KIOXIA: "THGBMFG7C2LBAIL | 16GB | Supreme | 11.5x13x0.8mm | 1Q
+      2015". Corroborado independentemente por página dedicada Puris (puris.net/archives/1573:
+      "型号：THGBMFG7C2LBAIL / 规格：16GB eMMC 5.0"), Avnet (distribuidor autorizado KIOXIA), e
+      múltiplas listagens Alibaba/AliExpress/Jotrin ("16GB eMMC5.0 153FBGA"). Chave "7C2" já
+      existente (16GB). pn[5]="F" já confirmado eMMC 5.0.
+
+  - part_number: "THGBMFG7C2LBAIW"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: confirmed
+    source_url: "https://www.kioxia.com/en-jp/business/news/2014/20141002-1.html"
+    notes: >
+      Mesma press release oficial KIOXIA: "THGBMFG7C2LBAIW | 16GB | Supreme | 11x10x1.0mm | 1Q
+      2015" — variante de pacote (11x10 em vez de 11.5x13) do PN acima. Encontrado originalmente
+      na mesma pesquisa que resolveu THGBMBG7D4KBAIW (bundle Daraz.com.bd com campo "Model Number:
+      16 Gigabyte") — agora com confirmação Tier-1 direta. Chave "7C2" já existente. pn[5]="F" já
+      confirmado eMMC 5.0.
+
+  - part_number: "THGBMFG8C4LBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.kioxia.com/en-jp/business/news/2014/20141002-1.html"
+    notes: >
+      Press release oficial KIOXIA: "THGBMFG8C4LBAIR | 32GB | Supreme | 11.5x13x1.0mm | 1Q 2015".
+      Chave "8C4" já existente (32GB). pn[5]="F" já confirmado eMMC 5.0.
+
+  - part_number: "THGBMFG8C4LBAIW"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "32GB"
+    confidence: confirmed
+    source_url: "https://www.kioxia.com/en-jp/business/news/2014/20141002-1.html"
+    notes: >
+      Press release oficial KIOXIA: "THGBMFG8C4LBAIW | 32GB | Supreme | 11x10x1.0mm | 1Q 2015" —
+      variante de pacote do PN acima. Chave "8C4" já existente. pn[5]="F" já confirmado eMMC 5.0.
+
+  - part_number: "THGBMFG9C8LBAIG"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://www.kioxia.com/en-jp/business/news/2014/20141002-1.html"
+    notes: >
+      Press release oficial KIOXIA: "THGBMFG9C8LBAIG | 64GB | Supreme | 11.5x13x1.2mm | 1Q 2015".
+      Chave "9C8" já existente (64GB). pn[5]="F" já confirmado eMMC 5.0.
+
+  - part_number: "THGBMFG9C8LBAIX"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "64GB"
+    confidence: confirmed
+    source_url: "https://www.kioxia.com/en-jp/business/news/2014/20141002-1.html"
+    notes: >
+      Press release oficial KIOXIA: "THGBMFG9C8LBAIX | 64GB | Supreme | 11x10x1.2mm | 1Q 2015" —
+      variante de pacote do PN acima. Chave "9C8" já existente. pn[5]="F" já confirmado eMMC 5.0.
+
+  - part_number: "THGBMFT0CBLBAIS"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "128GB"
+    confidence: confirmed
+    source_url: "https://www.kioxia.com/en-jp/business/news/2014/20141002-1.html"
+    notes: >
+      Press release oficial KIOXIA: "THGBMFT0CBLBAIS | 128GB | Supreme | 11.5x13x1.4mm | 2Q
+      2015". Chave pn[7:10]="0CB" já existente (128GB) — reconfirma via fonte independente.
+      pn[6]="T" (não "G") — mesma nota estrutural do THGBM4T0DBGBAIJ, não afeta decode. pn[5]="F"
+      já confirmado eMMC 5.0.
+
+  # ── Puris — página dedicada com chave nova (Tier-3) ─────────────────────────────────────────
+  - part_number: "THGBMGG9T4LBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "64GB"
+    confidence: distributor
+    source_url: "https://www.puris.net/archives/3162"
+    notes: >
+      Página dedicada Puris (lida diretamente): "THGBMGG9T4LBAIR 64GB TLC eMMC 5.1 Toshiba".
+      Chave pn[7:10]="9T4" é NOVA — não existia no THGBM_CAP (tinha 9A8/9B8/9C4/9C8/9D8, todos
+      64GB). Adicionada à gramática: [9T4, 64GB, '']. pn[5]="G" já confirmado eMMC 5.1 — bate com
+      a fonte. Nota: célula TLC (vs MLC nos demais) — chip_type continua "eMMC" (convenção da
+      família, célula não é campo rastreado separadamente pro THGBM).
+
+  # ── Puris — existência na lista master + chave já confirmada (Tier-3) ───────────────────────
+  - part_number: "THGBMAG8B4JBAWM"
+    chip_type: "eMMC"
+    interface: "eMMC 4.5"
+    capacity: "32GB"
+    confidence: distributor
+    source_url: "https://www.puris.net/emmclist"
+    notes: >
+      Lista master Puris (catálogo completo eMMC/UFS, lida diretamente) confirma existência.
+      Chave "8B4" já existente (32GB, múltiplas fontes Tier-1). pn[5]="A" já confirmado eMMC 4.5.
+      Variante extended-temp (sufixo "W", família THGBMAG já documentada).
+
+  - part_number: "THGBMBG7C2KBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.0"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.puris.net/emmclist"
+    notes: >
+      Lista master Puris confirma existência; corroborado por listagem Amazon (bundle "THGBM5G7A2
+      JBAIR THGBMAG7A2JBAIR THGBMFG7C1LBAIL THGBMBG7C2KBAIL THGBMHG7C2LBAIL THGBMFG7C2LBAIL Bga
+      Chipset"). Chave "7C2" já existente (16GB). pn[5]="B" já confirmado eMMC 5.0.
+
+  - part_number: "THGBMHG7C2LBAIL"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "16GB"
+    confidence: distributor
+    source_url: "https://www.puris.net/emmclist"
+    notes: >
+      Lista master Puris confirma existência; mesmo bundle Amazon do PN acima. Chave "7C2" já
+      existente (16GB). pn[5]="H" já confirmado eMMC 5.1.
+
+  - part_number: "THGBMHG8C4LBAIR"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "32GB"
+    confidence: distributor
+    source_url: "https://www.puris.net/emmclist"
+    notes: >
+      Lista master Puris confirma existência. Chave "8C4" já existente (32GB, confirmada Tier-1
+      nesta mesma rodada via THGBMFG8C4LBAIR/W). pn[5]="H" já confirmado eMMC 5.1.
+
+  - part_number: "THGBMHG9C8LBAIG"
+    chip_type: "eMMC"
+    interface: "eMMC 5.1"
+    capacity: "64GB"
+    confidence: distributor
+    source_url: "https://www.puris.net/emmclist"
+    notes: >
+      Lista master Puris confirma existência. Chave "9C8" já existente (64GB, confirmada Tier-1
+      nesta mesma rodada via THGBMFG9C8LBAIG/X). pn[5]="H" já confirmado eMMC 5.1.
+
+# ── NÃO submetidos (fora de propósito, sem fonte confiável) ────────────────────────────────────
+# THGBH5G7A2JBAIH — prefixo "THGBH", não "THGBM" (única ocorrência assim em toda a pesquisa).
+# Nenhuma fonte direta confirma tipo/capacidade; pode ser erro de digitação da própria Puris
+# (que só listou o PN, sem página dedicada). Excluído até aparecer fonte melhor.
+#
+# THGBM1G5D2EBAI7 — já excluído uma vez na varredura 2026-07-09 pelo mesmo motivo: resumo do
+# WebSearch afirma 4GB, CONTRADIZ a chave "5D2"=8GB já confirmada Tier-1 (múltiplas fontes).
+# Apareceu de novo na lista master Puris (só existência, sem página dedicada com capacidade
+# legível encontrada). Mantido fora — 2ª tentativa, mesmo resultado.

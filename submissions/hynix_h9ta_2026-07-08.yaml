@@ -1,0 +1,118 @@
+# Submissão de known_parts — SK Hynix, família H9TA (eMCP LPDDR1, família NOVA)
+# Gerado pelo chat de marca SK Hynix a partir da investigação do PN H9TA4GH2GDAC
+# (busca na bancada, 2026-07-08) — prefixo H9TA não constava na gramática (hynix.yaml
+# tinha 35 prefixos, nenhum H9TA). Família adicionada em chips/knowledge/hynix.yaml
+# (Trilha A) espelhando o esquema posicional do irmão H9DA. Depois de confirmar o
+# primeiro PN, fui atrás de TODOS os irmãos H9TA achados no catálogo do
+# findcomponents.net (mesma família, prefixo real e consistente) em vez de coletar
+# um PN por vez — a gramática expandida (NAND 1/2/4, RAM 1G/2G/51, todas batendo
+# exatamente com o mapa já tier-1 do H9DA) já decodifica 6 dos 8 PNs irmãos achados.
+# Os outros 2 (RAM '4G') ficam DE FORA desta submissão — '4G' não existe no mapa
+# H9DA e não achei corroboração cruzada, então fica pendente (ver notas no final
+# do arquivo e o tip da família em hynix.yaml). Ver diff em chips/knowledge/hynix.yaml
+# e chips/tests.py (_HYX_GOLDEN, 5 âncoras H9TA agora, incluindo o caso não-mapeado).
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9ta_2026-07-08.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9ta_2026-07-08.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  # ── PN original da bancada — motivou a família nova, confirmação INDIVIDUAL (WinSource) ──
+  - part_number: "H9TA4GH2GDACPR-4GM"
+    chip_type: "eMCP"
+    subtype: "LPDDR1"
+    interface: ""
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR1 256MB"
+    confidence: manual
+    source_url: "https://www.win-source.net/products/detail/hynix-semiconductor/h9ta4gh2gdacpr-4gm.html"
+    notes: >
+      PN base buscado na bancada foi "H9TA4GH2GDAC" (sem sufixo) — este é o order
+      code completo confirmado via WinSource (dono verificou o conteúdo renderizado
+      via JS em 2026-07-08; meu fetch não executa JS, mesma limitação já documentada
+      no caso H9TQ AA/AB de 2026-07-06 — usada aqui como exceção equivalente,
+      aprovada pelo dono). WinSource confirma: eMCP eMMC4.x + LPDDR1, mesma leitura
+      do irmão já confirmado H9DA4GH2GJAM (posições pn[4:8]="4GH2G" idênticas —
+      pn[4]='4'→4GB NAND, pn[7:9]='2G'→LPDDR1 256MB). Único PN desta família com
+      confirmação INDIVIDUAL — daí confidence=manual (os demais abaixo são
+      confidence=distributor, ver nota geral).
+
+  # ── Irmãos achados no catálogo findcomponents.net — corroboração ESTRUTURAL,
+  #    NÃO confirmação individual por-PN. confidence=distributor (mais baixo que
+  #    manual de propósito): a EXISTÊNCIA do PN vem de um distribuidor real
+  #    (findcomponents.net), o VALOR vem de bater exatamente com o mapa H9DA
+  #    (já tier-1/Preduo) + a gramática expandida decodificar de forma consistente.
+  #    Não é fonte Tier-1 por-PN individual — revisor pode rebaixar ou pedir mais
+  #    verificação se achar necessário. ──
+  - part_number: "H9TA1GH1GBMMVR4GM"
+    chip_type: "eMCP"
+    subtype: "LPDDR1"
+    interface: ""
+    emcp_nand: "1GB"
+    emcp_ram: "LPDDR1 1GB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/catalog/cat/H9T"
+    notes: >
+      Irmão do H9TA4GH2GDAC (mesma família, catálogo findcomponents.net). Corrobora
+      as chaves NAND '1'→1GB e RAM '1G'→1GB, ambas já existentes no mapa H9DA
+      (tier-1/Preduo) e agora replicadas em hynix.yaml (HYX_H9TA_NAND_CAP/RAM_CAP).
+      Sem confirmação individual (WinSource não verificado para este PN específico).
+
+  - part_number: "H9TA1GG51BMMVR4DM"
+    chip_type: "eMCP"
+    subtype: "LPDDR1"
+    interface: ""
+    emcp_nand: "1GB"
+    emcp_ram: "LPDDR1 512MB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/catalog/cat/H9T"
+    notes: >
+      Irmão do H9TA4GH2GDAC. Corrobora a chave RAM '51'→512MB (já existente no
+      mapa H9DA, tier-1/Preduo). Sem confirmação individual.
+
+  - part_number: "H9TA2GG1GDACPR4DM"
+    chip_type: "eMCP"
+    subtype: "LPDDR1"
+    interface: ""
+    emcp_nand: "2GB"
+    emcp_ram: "LPDDR1 1GB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/catalog/cat/H9T"
+    notes: >
+      Irmão do H9TA4GH2GDAC. Corrobora a chave NAND '2'→2GB (já existente no mapa
+      H9DA, tier-1/Preduo). Sem confirmação individual.
+
+  - part_number: "H9TA4GG2GDMCPR4GM"
+    chip_type: "eMCP"
+    subtype: "LPDDR1"
+    interface: ""
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR1 256MB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/catalog/cat/H9T"
+    notes: >
+      Irmão do H9TA4GH2GDAC — mesmas chaves NAND '4' e RAM '2G' já confirmadas
+      individualmente no PN principal desta submissão. Sem confirmação individual
+      própria (só a corroboração cruzada com H9TA4GH2GDAC).
+
+  - part_number: "H9TA4GH2GDMCPR4GM"
+    chip_type: "eMCP"
+    subtype: "LPDDR1"
+    interface: ""
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR1 256MB"
+    confidence: distributor
+    source_url: "https://findcomponents.net/catalog/cat/H9T"
+    notes: >
+      Irmão do H9TA4GH2GDAC — mesmas chaves NAND '4' e RAM '2G' já confirmadas
+      individualmente no PN principal desta submissão. Sem confirmação individual
+      própria.
+
+# ── NÃO submetidos (ficam de fora de propósito) ──────────────────────────────
+# H9TA4GG4GDMCPR4GM e H9TA4GH4GDBCPR4GM também aparecem no catálogo findcomponents.net
+# (mesma família H9TA), mas ambos usam a chave RAM '4G', que NÃO existe no mapa H9DA
+# (que tem '4J'→512MB, não '4G') — sem corroboração cruzada. A gramática já reflete
+# isso corretamente: classify() retorna "código não mapeado" pra RAM nesses dois PNs
+# (ver golden H9TA4GG4GDMCPR4GM em chips/tests.py, âncora que PROVA a não-adivinhação).
+# Se o dono conseguir confirmar '4G' via WinSource (mesmo processo do PN principal
+# desta submissão) ou outra fonte tier-1, aviso e completo o mapa + submeto os 2 PNs.

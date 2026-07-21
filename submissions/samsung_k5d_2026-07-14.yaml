@@ -1,0 +1,31 @@
+# Submissão de known_parts — Samsung, família K5D (OneNAND, resíduo — sem liquidez B2B).
+# PN alvo: K5D5657ACB (busca 2026-07-14). Grammar já decodifica certo (pn[3:5]='56' via
+# DRAM_PC → "256Mb" — confirmado datasheet oficial via Octopart: "K5D5657ACB-D0900000... 256Mb
+# OneNAND, 1.8V/1.8V, x8/x16, 107FBGA". Convenção OneNAND usa Mb (megabit) como rótulo de
+# capacidade — diferente de eMMC/NAND (GB) — por isso reaproveitar DRAM_PC (val_primary em
+# Gb/Mb) funciona aqui, mesmo sem ser tecnicamente DRAM.
+#
+# ⚠ TRABALHO DE GRAMÁTICA (código-fonte, não yaml) NESTA RODADA: bug de rentabilidade achado
+# junto com a pesquisa do PN — ver commit em chips/chip_types.py. OneNAND estava com
+# profit_family="indeterminado", mas o próprio tip do engine já dizia "Sem liquidez B2B...
+# Destino: fluxo de resíduo (moagem/refino)" — ou seja, deveria ser SEMPRE NÃO RENTÁVEL (mesma
+# classe de NOR Flash/MCP/ePoP, que já usam profit_family="dead" no MESMO arquivo). Corrigido
+# via o processo de HANDSHAKE descrito em AUTORIA.md (chat declara a regra em chip_types.py —
+# é o canal sancionado, não um desvio de escopo): profit_family "indeterminado"→"dead". Golden
+# pré-existente K5D1G12ACD (esperava INDETERMINADO) atualizado pra NÃO RENTÁVEL + novo golden
+# K5D5657ACB adicionado como âncora do PN alvo.
+brand: "Samsung"
+known_parts:
+  - part_number: "K5D5657ACB"
+    chip_type: "OneNAND"
+    subtype: "Samsung OneNAND Flash"
+    interface: "NOR (async)"
+    capacity: "256Mb"
+    confidence: confirmed
+    source_url: "https://datasheet.octopart.com/KFG1216U2A-DIB6000-Samsung-datasheet-542191.pdf"
+    notes: >
+      PN alvo. Datasheet Samsung oficial (via Octopart): "K5D5657ACB-D0900000 = 256Mb
+      OneNAND, 1.8V/1.8V, x8/x16, 10.5x13x1.4mm 107FBGA". Bate a chave '56' do mapa
+      (DRAM_PC, reaproveitado — convenção OneNAND usa Mb como a própria Samsung rotula
+      o produto, ex.: "OneNAND512"=512Mb). Tipo sempre NÃO RENTÁVEL (resíduo, sem
+      liquidez B2B) — ver fix de profit_family em chips/chip_types.py nesta mesma rodada.

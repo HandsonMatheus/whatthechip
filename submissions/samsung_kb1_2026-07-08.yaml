@@ -1,0 +1,117 @@
+# Submissão de known_parts — Samsung, família "KB1"/KB100D00 (LPDDR1 legado, ~2010)
+# Gerado a partir do PN não identificado KB100D00WM (nem a família estava cadastrada
+# na gramática — deep research, busca em 2026-07-08). Uso:
+#   python manage.py submit_known_parts submissions/samsung_kb1_2026-07-08.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/samsung_kb1_2026-07-08.yaml --commit --user <seu_usuario>
+#
+# ⚠ NOTA DE SOURCING (exceção autorizada pelo dono, 2026-07-08): esta família é um
+# chip LPDDR1 (confirmado pelo dono) — geração morta, SEMPRE NÃO RENTÁVEL via
+# is_dead_by_generation, independente da capacidade exata. Por isso o dono autorizou
+# confirmar capacidade via fonte de tier mais baixo que o normal do projeto (a
+# imprecisão não muda o resultado comercial). MESMO ASSIM: nenhum datasheet Samsung
+# nem página oficial (semiconductor.samsung.com) foi encontrado para NENHUM PN desta
+# família apesar de busca extensa — é um chip obscuro de ~2010, mal documentado
+# publicamente. A capacidade (512MB) vem de specs de APARELHO (Nexus S, Galaxy Tab
+# GT-P1000), não de datasheet do CHIP — por isso confidence=distributor (não
+# confirmed/manual) nos 2 PNs com correlação de teardown, e confidence=estimated
+# nos 5 PNs que só têm existência em catálogo de distribuidor (mesma raiz de 8
+# caracteres "KB100D00", capacidade assumida por padrão estrutural, sem fonte
+# própria). ⚠ Descartei a página da Allelco (allelcoelec.com) como fonte — o
+# conteúdo "specs"/FAQ dela pra esse PN é lixo gerado por IA (descreve um MOSFET,
+# não um chip de memória; reviews de cliente genéricos/fake). Ver SAMSUNG.md §3.
+#
+# NÃO submeti KB100D011B / KB100D011B-A459 (achados no mesmo catálogo OMO) — raiz
+# de PN estruturalmente diferente ("...D011B" vs "...D00XX"), sem base pra assumir
+# mesma capacidade/tipo. Também NÃO propus família/gramática nova (Trilha A) — a
+# estrutura exata de decode (o que cada posição 8-10 significa: grade? die rev?)
+# não ficou clara na pesquisa, e como o resultado comercial é sempre NÃO RENTÁVEL
+# de qualquer forma, o ganho de construir a gramática é baixo. known_parts direto
+# resolve o caso de uso (reconhecer o PN, classificar, rejeitar automaticamente).
+brand: "Samsung"
+known_parts:
+  - part_number: "KB100D00WM"
+    chip_type: "LPDDR1"
+    subtype: "LPDDR1"
+    interface: ""
+    capacity: "512MB"
+    confidence: distributor
+    notes: >
+      PN original buscado (não achado nem a família cadastrada). Samsung
+      KB100D00WM-A453 — memória do Google Nexus S (2010), teardown iFixit,
+      citado de forma consistente em múltiplas fontes secundárias (TechInsights
+      tem Device Profile próprio, pago). Nexus S: 512MB RAM (Mobile DDR/LPDDR1)
+      + NAND separado (SanDisk). Nenhum datasheet Samsung encontrado — capacidade
+      é spec de APARELHO, não de chip. Tipo LPDDR1 confirmado pelo dono
+      (2026-07-08); geração morta → NÃO RENTÁVEL independente da capacidade
+      exata, dono autorizou fonte de tier mais baixo por isso.
+
+  - part_number: "KB100D00YM"
+    chip_type: "LPDDR1"
+    subtype: "LPDDR1"
+    interface: ""
+    capacity: "512MB"
+    confidence: distributor
+    source_url: "https://commons.wikimedia.org/wiki/File:Samsung_Galaxy_Tab_GT-P1000_-_motherboard_-_Samsung_KB100D00YM-A453-8980.jpg"
+    notes: >
+      Irmão de família (mesma raiz "KB100D00", 8 chars — só "WM"→"YM" na
+      posição 9-10). Samsung KB100D00YM-A453 — foto de teardown real (Wikimedia
+      Commons) na motherboard do Samsung Galaxy Tab GT-P1000 (2010, outro
+      aparelho Hummingbird/S5PC110, mesma geração). Mesma ressalva do
+      KB100D00WM: capacidade é spec de aparelho, não datasheet do chip.
+
+  - part_number: "KB100D00WA"
+    chip_type: "LPDDR1"
+    subtype: "LPDDR1"
+    interface: ""
+    capacity: "512MB"
+    confidence: estimated
+    notes: >
+      Catalogado por distribuidor (OMO Electronic, variantes -A453/-A457/-A459)
+      com a mesma raiz "KB100D00" dos 2 PNs acima — SEM fonte própria de spec
+      ou teardown. Capacidade assumida por padrão estrutural (mesma raiz de 8
+      chars), não confirmada individualmente. Geração morta → resultado
+      comercial não muda mesmo se a capacidade real for outra.
+
+  - part_number: "KB100D00WB"
+    chip_type: "LPDDR1"
+    subtype: "LPDDR1"
+    interface: ""
+    capacity: "512MB"
+    confidence: estimated
+    notes: >
+      Catalogado por distribuidor (OMO Electronic, variante -A459), mesma raiz
+      "KB100D00". Mesma ressalva do KB100D00WA — sem fonte própria, capacidade
+      assumida por padrão estrutural.
+
+  - part_number: "KB100D00YA"
+    chip_type: "LPDDR1"
+    subtype: "LPDDR1"
+    interface: ""
+    capacity: "512MB"
+    confidence: estimated
+    notes: >
+      Catalogado por distribuidor (OMO Electronic, variante -A457), mesma raiz
+      "KB100D00". Mesma ressalva do KB100D00WA — sem fonte própria, capacidade
+      assumida por padrão estrutural.
+
+  - part_number: "KB100D00YB"
+    chip_type: "LPDDR1"
+    subtype: "LPDDR1"
+    interface: ""
+    capacity: "512MB"
+    confidence: estimated
+    notes: >
+      Catalogado por distribuidor (OMO Electronic, variante -A459), mesma raiz
+      "KB100D00". Mesma ressalva do KB100D00WA — sem fonte própria, capacidade
+      assumida por padrão estrutural.
+
+  - part_number: "KB100D00ZM"
+    chip_type: "LPDDR1"
+    subtype: "LPDDR1"
+    interface: ""
+    capacity: "512MB"
+    confidence: estimated
+    notes: >
+      Catalogado por distribuidor (OMO Electronic, variante -A453), mesma raiz
+      "KB100D00". Mesma ressalva do KB100D00WA — sem fonte própria, capacidade
+      assumida por padrão estrutural.

@@ -1,0 +1,43 @@
+# Submissão known_parts — Foresee (Longsys), categoria UFS (2026-07-15).
+# Fonte Tier-1: catálogo oficial "FORESEE Embedded Storage Product Catalogue" (longsys.com).
+# Capacidade LITERAL no PN (pn[6:9]=GB) — a gramática (foresee.yaml, FEUDNN/FEUDME) já
+# decodifica; estes known_parts dão AUTORIDADE. UFS 2.2 (comercial) / UFS 2.1 Gear3 (automotivo).
+# Rodar (o DONO): submit_known_parts submissions/foresee_ufs_2026-07-15.yaml            # dry-run = portão
+#                 submit_known_parts submissions/foresee_ufs_2026-07-15.yaml --commit    # grava (submitted) → aprovar
+brand: "Foresee"
+known_parts:
+  - part_number: "FEUDNN064G-C2A56"
+    chip_type: "UFS"
+    capacity: "64GB"
+    interface: "UFS 2.2"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys (FORESEE Embedded Storage Product Catalogue), seção Commercial UFS. Comercial, 3D NAND, FBGA153 11.5x13x1.0mm, 1.8V/3.3V, -25~85C, UFS 2.2 (LDPC/Write Booster/HPB). 064G=64GB literal."
+    source_url: "https://www.longsys.com"
+  - part_number: "FEUDNN128G-C2A56"
+    chip_type: "UFS"
+    capacity: "128GB"
+    interface: "UFS 2.2"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, Commercial UFS. 3D NAND, FBGA153, UFS 2.2. 128G=128GB literal."
+    source_url: "https://www.longsys.com"
+  - part_number: "FEUDNN256G-C2A44"
+    chip_type: "UFS"
+    capacity: "256GB"
+    interface: "UFS 2.2"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, Commercial UFS. 3D NAND, FBGA153, UFS 2.2. 256G=256GB literal."
+    source_url: "https://www.longsys.com"
+  - part_number: "FEUDME064G-B8A19"
+    chip_type: "UFS"
+    capacity: "64GB"
+    interface: "UFS 2.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, seção Automotive UFS. Automotivo (AEC-Q100), 3D NAND, FBGA153 11.5x13x1.2mm, -40~105C, UFS 2.1 Gear3 2-lane. Grade ME no pn[4:6]; 064G=64GB literal."
+    source_url: "https://www.longsys.com"
+  - part_number: "FEUDME128G-B8A19"
+    chip_type: "UFS"
+    capacity: "128GB"
+    interface: "UFS 2.1"
+    confidence: confirmed
+    notes: "Catálogo oficial Longsys, Automotive UFS. AEC-Q100, 3D NAND, FBGA153, UFS 2.1 Gear3. 128G=128GB literal."
+    source_url: "https://www.longsys.com"

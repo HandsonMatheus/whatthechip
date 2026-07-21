@@ -1,0 +1,1577 @@
+# Submissão de known_parts — Micron, FBGA D9RVX + família MT41K512M8 (2026-07-15)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9RVX
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (D9GVX, D9RFX, D9RPX, D9RQX, D9RTX) IGNORADO
+# por construção — já são KnownPart aprovado.
+#
+# ACHADO: D9RVX → MT41K512M8RG-107:N. Prefixo MT41K = DDR3L (1,35V) —
+# primeira família MT41K desta sessão (as anteriores eram MT41J = DDR3
+# padrão 1,5V). Capacidade: 512M × 8bit = 4096Mb = 4Gb — confirmada via
+# Octopart, MESMO PN com MESMA revisão ":N": "DRAM Chip DDR3L SDRAM
+# 4G-Bit 512Mx8 1.35V 78-Pin F-BGA" (a tensão 1,35V no próprio Octopart
+# confirma DDR3L, não DDR3 padrão).
+#
+# Coleta máxima da família (regra vigente desde Z9DNC — D9 e Z9 tratados
+# igual, só exclui quem tem "ES" no próprio texto do PN): forward-lookup
+# no prefixo "MT41K512M8" (2026-07-15) achou 109 PNs. 43 têm "ES" no
+# próprio texto (checado programaticamente) — EXCLUÍDOS. Restam 66 PNs
+# de produção real (alvo + 65 irmãos) — neste caso, TODOS os 66
+# sobreviventes têm fbga_code "D9*"; nenhum "Z9*" sobrou (todos os Z9
+# desta família específica tinham "ES" no próprio PN — confirmado
+# programaticamente, diferente do lote Z9DNC/D9MNV onde alguns Z9
+# sobreviviam). 6 têm part-name direto da Micron confirmando
+# tipo+capacidade ("DDR3 4G X8 TFBGA": D9SGQ, D9SGR, D9SGT, D9SGX,
+# D9SHB, D9TRQ); os outros 60 herdam a mesma organização por construção
+# do próprio prefixo buscado (verificado programaticamente: todos os 66
+# part-numbers começam literalmente por "MT41K512M8").
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9rvx_family_2026-07-15.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9rvx_family_2026-07-15.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT41K512M8RG-107:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RVX"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=MT41K512M8RG-107%3AN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-15): D9RVX → MT41K512M8RG-107:N. Prefixo MT41K = DDR3L
+      (1,35V) — primeira família MT41K desta sessão (as anteriores eram
+      MT41J = DDR3 padrão 1,5V: D9LGQ/D9PZM/D9MNT/D9NMW/D9MNV).
+      CAPACIDADE por fórmula: 512M (profundidade) × 8bit (largura) =
+      4096Mb = 4Gb. Confirmado via Octopart, MESMO PN com MESMA revisão
+      ":N": "MT41K512M8RG-107:N — DRAM Chip DDR3L SDRAM 4G-Bit 512Mx8
+      1.35V 78-Pin F-BGA" — bate exato em organização (512Mx8), densidade
+      (4G-Bit) e tensão (1,35V, confirma DDR3L e não DDR3 padrão). Campo
+      density_gbit (Gb), interface x8, chip_type="DDR3L" (geração
+      distinta de "DDR3" — convenção Opção 1, CLAUDE.md §6/§12).
+
+  - part_number: "MT41K512M8DA-107:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SGQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m8da-107-p"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT41K512M8, 2026-07-15): "DDR3 4G X8 TFBGA",
+      sub-category "ddr3-sdram" — confirma DDR3 (part-name da
+      Micron não distingue "L" no texto, mas o prefixo MT41K + a tensão
+      1,35V confirmada no alvo via Octopart fixam DDR3L) e a densidade
+      4096Mb (4Gb) diretamente da Micron. 512M × 8bit = 4096Mb = 4Gb bate
+      exato.
+
+  - part_number: "MT41K512M8DA-107 IT:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SGR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m8da-107-it-p"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT41K512M8, 2026-07-15): "DDR3 4G X8 TFBGA",
+      sub-category "ddr3-sdram" — confirma DDR3 (part-name da
+      Micron não distingue "L" no texto, mas o prefixo MT41K + a tensão
+      1,35V confirmada no alvo via Octopart fixam DDR3L) e a densidade
+      4096Mb (4Gb) diretamente da Micron. 512M × 8bit = 4096Mb = 4Gb bate
+      exato.
+
+  - part_number: "MT41K512M8DA-107 AIT:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SGT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k512m8da-107-ait-p"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT41K512M8, 2026-07-15): "DDR3 4G X8 TFBGA",
+      sub-category "obsolete-ddr3-sdram" — confirma DDR3 (part-name da
+      Micron não distingue "L" no texto, mas o prefixo MT41K + a tensão
+      1,35V confirmada no alvo via Octopart fixam DDR3L) e a densidade
+      4096Mb (4Gb) diretamente da Micron. 512M × 8bit = 4096Mb = 4Gb bate
+      exato.
+
+  - part_number: "MT41K512M8DA-107 AAT:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SGX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m8da-107-aat-p"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT41K512M8, 2026-07-15): "DDR3 4G X8 TFBGA",
+      sub-category "ddr3-sdram" — confirma DDR3 (part-name da
+      Micron não distingue "L" no texto, mas o prefixo MT41K + a tensão
+      1,35V confirmada no alvo via Octopart fixam DDR3L) e a densidade
+      4096Mb (4Gb) diretamente da Micron. 512M × 8bit = 4096Mb = 4Gb bate
+      exato.
+
+  - part_number: "MT41K512M8DA-093:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SHB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m8da-093-p"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT41K512M8, 2026-07-15): "DDR3 4G X8 TFBGA",
+      sub-category "ddr3-sdram" — confirma DDR3 (part-name da
+      Micron não distingue "L" no texto, mas o prefixo MT41K + a tensão
+      1,35V confirmada no alvo via Octopart fixam DDR3L) e a densidade
+      4096Mb (4Gb) diretamente da Micron. 512M × 8bit = 4096Mb = 4Gb bate
+      exato.
+
+  - part_number: "MT41K512M8DA-107 XIT:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TRQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k512m8da-107-xit-p"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT41K512M8, 2026-07-15): "DDR3 4G X8 TFBGA",
+      sub-category "obsolete-ddr3-sdram" — confirma DDR3 (part-name da
+      Micron não distingue "L" no texto, mas o prefixo MT41K + a tensão
+      1,35V confirmada no alvo via Octopart fixam DDR3L) e a densidade
+      4096Mb (4Gb) diretamente da Micron. 512M × 8bit = 4096Mb = 4Gb bate
+      exato.
+
+  - part_number: "MT41K512M8THD-187E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9LSD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LSD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8THD-15E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9LSG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9LSG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8THV-125:H"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9MQS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MQS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8THV-187E:H"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9MRG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9MRG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RA-15E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9NZZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9NZZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RA-125:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PCP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PCP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8THV-15E:H"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PDK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PDK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8THV-15E:M"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PFN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PFN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8THV-125:M"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PHJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PHJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RA-187E:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PJK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PJK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8HX-125:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PXS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PXS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8HX-107:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8HX-093:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8HX-125 IT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8HX-107 IT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8HX-125 AIT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8HX-107 AIT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9PZZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PZZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8HX-125 AAT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QBC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QBC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8HX-107 AAT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QBF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QBF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QBJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QBJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-107:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QBN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QBN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-093:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QBS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QBS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125 IT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QBV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QBV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-107 IT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QBX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QBX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125 AIT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QCB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QCB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-107 AIT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QCD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QCD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125 AAT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QCG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QCG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-107 AAT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QCJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QCJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RA-15E M:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QDL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QDL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RA-125 M:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QDM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QDM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RA-107:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QFG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QFG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125 M:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QLR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QLR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RA-125 S:D"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QMD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QMD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-15E M:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QNW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QNW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125:J"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QVG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QVG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-107:J"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QVL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QVL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125 M:J"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9QVS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9QVS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-15E:J"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RCD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RCD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-B:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RKP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RKP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-B:J"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RKQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RKQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125 S:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RMW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RMW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RG-093:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9RWC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9RWC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125 V:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SCR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SCR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125 M AIT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SFN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SFN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-0 K:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SLF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SLF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RG-0 K:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SLG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SLG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RG-107 K:N"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SLM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SLM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125 K:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SLN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SLN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8RH-125 XIT:E"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9SXJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9SXJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8DA-125:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TCL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TCL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8DA-107:R"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TDD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TDD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8DA-093:R"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TDG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TDG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8DA-107 IT:R"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TDP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TDP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8DA-107 AIT:R"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TDQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TDQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8DA-107 XIT:R"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TDR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TDR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8DA-093 IT:R"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TDS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TDS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8DA-093 IT:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TRR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TRR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8DA-107 C:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9TSB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9TSB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT41K512M8DA-107 V:P"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    interface: "x8"
+    density_gbit: "4Gb"
+    fbga_code: "D9VNJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9VNJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT41K512M8, 2026-07-15). Mesma organização do alvo D9RVX
+      (MT41K512M8RG-107:N): 512M × 8bit = 4096Mb = 4Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT41K512M8, verificado programaticamente: todos os 66 part-numbers
+      produção começam literalmente por "MT41K512M8"). Tipo DDR3L (1,35V)
+      confirmado pelo alvo (Octopart) + irmãos com part-name direto da
+      Micron nesta mesma leva (D9SGQ e outros: "DDR3 4G X8 TFBGA"). Sem
+      "ES" no próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])` aplicada a D9 e Z9 igualmente, regra vigente
+      desde Z9DNC — nesta família específica, todos os Z9 tinham "ES",
+      então sobrevivem só D9). Sem verificação individual em distribuidor
+      para este PN específico; apoiado na fórmula + tipo confirmados +
+      identidade direta da API oficial Micron para ESTE fbga_code.

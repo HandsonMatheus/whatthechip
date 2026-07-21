@@ -1,0 +1,154 @@
+# Submissão de known_parts — SK Hynix, família H9HK (LPDDR4/LPDDR4X standalone x64, JÁ EXISTENTE)
+# Gerado a partir da investigação do PN H9HKNNNCTUM (busca na bancada, 2026-07-09) — fragmento
+# truncado do PN completo H9HKNNNCTUMUBR-NMH, atestado em ~25 distribuidores via agregador
+# DigiPart. Família H9HK e mapa HYX_LPDDR4_H9HC_CAP (compartilhado com H9HC/H9HCN) JÁ EXISTIAM
+# e já decodificavam certo (C=4GB, RENTÁVEL) — SEM fix de gramática nesta rodada. Família não
+# tinha NENHUM golden anchor até hoje — adicionado 1 em chips/tests.py (H9HKNNNCTUMUBR-NMH).
+#
+# FONTES: Preduo e Puris (catálogos de broker estruturados, fetch direto) + WinSource via
+# agregador DigiPart. Aritmética Gbit→GB mostrada em cada nota (todas em Gbit bruto ÷8=GB).
+#
+# ⚠ ACHADO — erro de unidade em distribuidor (Censtry): descreve H9HKNNNCTUMUBR-NMH como
+# "LPDDR4 32GB 256Mx16 PC3733", mas WinSource (mesmo PN, via DigiPart) mostra corretamente
+# "LPDDR4-3733 (32Gb)" — 32Gb÷8=4GB, batendo com o código 'C' já mapeado. Tratado como erro de
+# descrição da Censtry (confundiu Gb com GB), não como conflito real — não afeta a submissão.
+#
+# ⚠ ATUALIZAÇÃO (pedido do dono: pesquisar mais PNs do código 'E' pra resolver 6 vs 8GB):
+# RESOLVIDO — código 'E' = 6GB confirmado por 4 fontes/distribuidores independentes em 2 PNs
+# reais: H9HKNNNEBUMUBR-NMH (Preduo "48Gbit" + Chipsea/DigiPart "LPDDR4373348GbFBG") e
+# H9HKNNNEBMAVAR-NEH (Preduo E Puris, ambos "48Gbit", + WinSource/DigiPart "LPDDR4X-4266
+# (48Gb)") — todos ÷8=6GB. O PN H9HKNNNEBMBUDR-NEH (a fonte da dúvida original, Puris "64Gbit")
+# NÃO tem nenhuma corroboração: os outros 3 distribuidores que vendem esse PN exato (Ariat/YIC/
+# IC Components, via DigiPart) não mostram capacidade nenhuma. Esse PN difere por 1 único
+# caractere do irmão de código F já confirmado em 8GB (H9HKNNNFBMBUDR-NEH, mesmo sufixo
+# "BMBUDR-NEH") — muito provável erro de transcrição do Puris (confundiu E com F). Continua
+# excluído da submissão por identidade incerta, mas o código E=6GB está confirmado com
+# confiança alta agora (mapa não muda).
+#
+# Também achado: H9HKNNNEBMAVAR-NEHR (sufixo com "R" extra) aparece na AB Sunshine Electronics
+# como "8GB LPDDR4" — fonte única, distribuidor menor sem precedente de confiabilidade no
+# projeto, campo "Part No" genérico (parece categorização, não spec verificada). Não incluído
+# (nem como 6GB nem como 8GB) por identidade/fonte fraca — PN diferente do "-NEH" confirmado.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h9hk_2026-07-09.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h9hk_2026-07-09.yaml --commit --user <seu_usuario>
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H9HKNNNCTUMUBR-NMH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.win-source.net/search/H9HKNNNCTUMUBR-NMH"
+    notes: >
+      PN original buscado na bancada foi "H9HKNNNCTUM" (fragmento truncado) — este é o PN
+      completo, atestado em ~25 distribuidores via agregador DigiPart. WinSource (via DigiPart,
+      fetch direto) descreve "LPDDR4-3733 (32Gb)" — 32Gb÷8=4GB. Bate com pn[7]='C'→4GB, já
+      mapeado. Censtry (fetch direto) descreve o mesmo PN como "32GB" — unidade errada (Gb
+      malescrito GB), tratado como erro de descrição de distribuidor, não como conflito.
+
+  - part_number: "H9HKNNNCUUMUBR-NMH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/lpddr4x/x64/h9hknnncuumubr-nmh"
+    notes: >
+      Achado nos "Related products" do Preduo (página do PN principal, fetch direto):
+      "32Gbit" ÷8=4GB. Variante "CUUM" (difere do target em pn[8], fora do range decodificado).
+      Confirma código 'C'→4GB pela 2ª vez nesta rodada.
+
+  - part_number: "H9HKNNNBTUMUBR-NLH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "2GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/lpddr4x/x64/h9hknnnbtumubr-nlh"
+    notes: >
+      Achado nos "Related products" do Preduo (mesma página, fetch direto): "16Gbit" ÷8=2GB.
+      Confirma pn[7]='B'→2GB, já mapeado.
+
+  - part_number: "H9HKNNNEBUMUBR-NMH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "6GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/lpddr4x/x64/h9hknnnebumubr-nmh"
+    notes: >
+      Achado nos "Related products" do Preduo (mesma página, fetch direto): "48Gbit" ÷8=6GB.
+      Corroborado por Chipsea via DigiPart: descrição literal "LPDDR4373348GbFBG" (48Gb÷8=6GB).
+      Confirma pn[7]='E'→6GB, já mapeado. Ver resolução do código 'E' no cabeçalho — 4 fontes
+      independentes concordam em 6GB; só 1 PN de identidade duvidosa (excluído) discordou.
+
+  - part_number: "H9HKNNNEBMAVAR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "6GB"
+    confidence: manual
+    source_url: "https://www.preduo.com/product/lpddr/lpddr4x/556ball_4x-lpddr4x/h9hknnnebmavar-neh"
+    notes: >
+      TRIPLO confirmado, todos fetch direto: Preduo ("Density: 48Gbit"), Puris
+      (puris.net/archives/3886, "规格：48Gb LPD4x") e WinSource via DigiPart ("LPDDR4X-4266
+      (48Gb)"). 48Gbit÷8=6GB nas 3. Confirma pn[7]='E'→6GB pela 2ª vez nesta rodada, com a
+      fonte mais forte de toda a submissão H9HK. ⚠ Não confundir com o sufixo "-NEHR" (1
+      caractere a mais), que aparece isolado numa fonte fraca (AB Sunshine) como "8GB" — PN
+      diferente, não incluído, ver aviso no cabeçalho.
+
+  - part_number: "H9HKNNNFBMAUDR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7681"
+    notes: >
+      Página dedicada do Puris, fetch direto: campo de especificação "64Gbit" ÷8=8GB.
+      Confirma pn[7]='F'→8GB, já mapeado.
+
+  - part_number: "H9HKNNNFBMBUDR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "8GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7681"
+    notes: >
+      Achado na navegação "Similar Posts"/"Next" do Puris (mesma página do PN acima, fetch
+      direto): título "H9HKNNNFBMBUDR-NEH ... 64Gbit" ÷8=8GB. Confirma 'F'→8GB pela 2ª vez.
+
+  - part_number: "H9HKNNNCRMAUDR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7682"
+    notes: >
+      Achado na navegação "Similar Posts" do Puris (página do PN H9HKNNNEBMBUDR-NEH, fetch
+      direto): título "H9HKNNNCRMAUDR-NEH ... 32Gbit" ÷8=4GB. Confirma 'C'→4GB pela 3ª vez.
+
+  - part_number: "H9HKNNNCRMMVBR-NEH"
+    chip_type: "LPDDR4X"
+    subtype: "LPDDR4X"
+    interface: ""
+    capacity: "4GB"
+    confidence: manual
+    source_url: "https://www.puris.net/archives/7681"
+    notes: >
+      Achado na navegação "Next"/post-navigation do Puris (página do PN H9HKNNNFBMAUDR-NEH,
+      fetch direto): título "H9HKNNNCRMMVBR-NEH ... 32Gbit 290ball_4x" ÷8=4GB. Confirma
+      'C'→4GB pela 4ª vez nesta rodada.
+
+# NÃO incluído: H9HKNNNEBMBUDR-NEH — código 'E' já RESOLVIDO em 6GB (4 fontes, ver cabeçalho),
+# mas este PN específico continua de fora por identidade duvidosa (provável erro de
+# transcrição do Puris, confundindo com o irmão F=8GB de sufixo idêntico).
+# NÃO incluído: H9HKNNNEBMAVAR-NEHR — sufixo "-NEHR" (1 caractere a mais que o "-NEH"
+# confirmado acima), única fonte é a AB Sunshine ("8GB"), distribuidor sem precedente no
+# projeto. Ver aviso completo no cabeçalho do arquivo.

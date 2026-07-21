@@ -1,0 +1,86 @@
+# Submissão known_parts — SanDisk, família SD5DH (eMMC legado)
+# Origem: investigação a partir do PN SD5DH26A4G (debug do estoque, 14/07/2026).
+# Ver INVESTIGACAO_sandisk_sd5dh_2026-07-14.md para a análise completa, INCLUSIVE a ambiguidade
+# de tipo do SD5DH26A4G (eMMC vs eMCP) e a decisão do dono de tratá-lo como eMCP (§2).
+#
+# 3 PNs confidence=manual: 2 eMMC (24A/24C, já documentados no tip da família, capacidade+device
+# confirmados via cross-ref de reparo) + 1 eMCP (26A, decisão explícita do dono — triangulação via
+# substituto Samsung pino-a-pino + aritmética de RAM batendo com o total do aparelho, não datasheet).
+#
+# ⚠ RODAR O PRECHECK ABAIXO ANTES DO --commit:
+#
+#   python manage.py shell <<'EOF'
+#   from chips.normalize import normalize_pn
+#   from chips.models import KnownPart
+#   pns = ["SD5DH24A4G","SD5DH24C4G","SD5DH26A4G"]
+#   for pn in pns:
+#       norm = normalize_pn(pn)
+#       existing = KnownPart.objects.filter(part_number_norm=norm)
+#       if existing.exists():
+#           for e in existing:
+#               print(f"COLISÃO {pn} (norm={norm}) -> já existe id={e.id} part_number={e.part_number!r} "
+#                     f"review_status={e.review_status} confidence={e.confidence}")
+#       else:
+#           print(f"livre    {pn}")
+#   EOF
+#
+# Uso (o DONO roda, nunca o chat):
+#   python manage.py submit_known_parts submissions/sandisk_sd5dh_2026-07-14.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/sandisk_sd5dh_2026-07-14.yaml --commit    # grava (submitted, oculto) + aprovar no admin depois
+#
+# ⚠ Golden test: SD5DH24A4G já é âncora de INDETERMINADO em chips/tests.py::_SD_GOLDEN — vai
+# desatualizar após aprovação (esperado); characterize_baseline --diff acusa, dono atualiza.
+
+brand: "SanDisk"
+known_parts:
+  - part_number: "SD5DH24A4G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    device: "Samsung GT-S6802 (Galaxy Ace Duos / S Advance)"
+    confidence: manual
+    notes: >
+      Já documentado no tip da família (device S6802). Confirmado via lista de equivalência de
+      reparo independente serviceemmc.com: "SANDISK = SD5DH24A-4G = S6802". Capacidade 4GB = sufixo
+      declarativo padrão SanDisk. Sem datasheet oficial localizado (busca ativa, nenhum PDF
+      80-36-XXXXX pra esta família) — interface eMMC 4.3/4.4 permanece ESTIMADA, não confirmada por
+      este known_part (capacidade sim, interface não).
+    source_url: "https://www.serviceemmc.com/2020/08/support-ic-emmcufs-all-brandnew-update.html"
+
+  - part_number: "SD5DH24C4G"
+    chip_type: "eMMC"
+    subtype: ""
+    capacity: "4GB"
+    device: "Samsung GT-S5301 (Galaxy Pocket Plus), GT-S6810 (Galaxy Fame)"
+    confidence: manual
+    notes: >
+      Já documentado no tip da família (devices S5301/S6810). Confirmado via mesma lista de
+      equivalência serviceemmc.com: "SANDISK = SD5DH24C-4G = S5301 = S6810". Capacidade 4GB =
+      sufixo declarativo padrão. Mesma ressalva de SD5DH24A4G quanto à interface (estimada, sem
+      datasheet).
+    source_url: "https://www.serviceemmc.com/2020/08/support-ic-emmcufs-all-brandnew-update.html"
+
+  - part_number: "SD5DH26A4G"
+    chip_type: "eMCP"
+    subtype: "LPDDR1"
+    emcp_nand: "4GB"
+    emcp_ram: "LPDDR1 768MB"
+    interface: ""
+    device: "FBGA153; HTC Desire X (T328e/T328w), Huawei U8950/Ascend G600, LG Optimus L7 II P715 — todos 768MB RAM total"
+    confidence: manual
+    notes: >
+      PN do caso original (debug do estoque 14/07/2026). ⚠ TIPO DECIDIDO PELO DONO 2026-07-14 —
+      evidência de fonte era contraditória (eBay chama de "eMCP 4GB eMMC + 6G LPDDR"; AliExpress e 2
+      lojas russas chamam só de "EMMC NAND memory", sem RAM). Dono optou por tratar como eMCP,
+      aceitando a triangulação: (1) substituto Samsung PINO-A-PINO confirmado nos MESMOS aparelhos
+      (KMJ5U000WA-B409/KMJJS000WM-B409, achado via lista de equivalência kiagsm.ir) é eMCP genuíno,
+      verificado no índice Puris ("KMJ5U000WM-B409 4+6 153ball eMCP-D1 Samsung",
+      puris.net/archives/2719) e Alibaba ("...Lpddr1 Emcp Memory..."); um substituto pino-a-pino só
+      funciona se a arquitetura elétrica bater, o que exige RAM embutida também no SanDisk. (2) RAM
+      total documentada dos 3 aparelhos (HTC Desire X, Huawei U8950, LG P715 — fonte GSMArena/specs
+      de aparelho, não revenda de componente) é EXATAMENTE 768MB = 6Gb ÷ 8 — a mesma conta de
+      "6G LPDDR" do anúncio eBay. Geração LPDDR1 inferida do substituto Samsung confirmado (não
+      confirmada direto no PN SanDisk). SEM datasheet oficial SanDisk pra esta família (busca ativa
+      sem sucesso) — é a evidência mais indireta usada numa submissão desta marca até agora,
+      registrada por extenso para revisão cuidadosa.
+    source_url: "https://www.puris.net/archives/2719"

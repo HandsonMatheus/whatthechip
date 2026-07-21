@@ -1,0 +1,304 @@
+# Submissão de known_parts — Micron, FBGA JW614 + família MT29C1G12M (2026-07-10)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA JW614
+# (não identificado na bancada, fila de revisão — SearchLog 10/07/2026 14:42).
+#
+# fuzzy_sugest. do debug (JW314, JW414, JW654, JW694, JW714) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ACHADO: JW614 → MT29C1G12MAADYAKD-5 IT. Família MT29C (mesma do lote
+# JW500, 2026-07-09 — chip_type="MCP", NAND+LPDRAM raw em PoP, ver
+# MICRON.md §4 e a investigação daquele lote). Densidade "1G12M" = NAND
+# 1Gb + LPDRAM código "12M"=0,5Gb — a MESMA progressão geométrica do
+# datasheet oficial já usada no JW500 (lá era "8G96M"=8Gb+4Gb). Conta:
+# NAND 1Gb÷8=128MB, LPDRAM 0,5Gb÷8=64MB. Confirmado pelo PRÓPRIO part-name
+# da Micron: "MASSFLASH/MOBILE DDR 1.5G TFBGA" — 1Gb+0,5Gb=1,5Gb bate
+# EXATO com "1.5G" (mesmo padrão de cross-check que funcionou pro JW500:
+# lá "12G"=8Gb+4Gb).
+#
+# ⚠⚠ ESCALA + ACHADO NOVO: forward-lookup no prefixo "MT29C1G12M"
+# (2026-07-10) devolveu 119 PNs de produção (+ dezenas de ES, não
+# contados). Só 17 têm part-name preenchido pela própria Micron (a
+# "confirmação forte" desta família, igual ao padrão AP-vs-BA/BB já
+# documentado no lote JW500) — os outros ~100+ NÃO têm NENHUMA fonte
+# Tier-1 (nem part-name, nem distribuidor achado) e por isso NÃO entram
+# aqui (mesma regra do JW500: sem fonte, fora da submissão).
+#
+# Dos 17 com part-name, um NOVO PADRÃO apareceu que o lote JW500 não tinha
+# visto: 10 dizem "MASSFLASH/MOBILE DDR" (RAM tipo mDDR1, igual ao JW500),
+# mas 5 dizem "MASSFLASH/MOBILE SDR" (RAM tipo SDR — Single Data Rate,
+# tecnologia MAIS ANTIGA que DDR — real, não é erro de digitação) e 2
+# dizem só "NAND MCP" genérico (sem especificar DDR/SDR). Tratei cada um
+# conforme o PRÓPRIO part-name diz — não copiei "mDDR1" pros SDR nem pros
+# genéricos (seria inventar o tipo de RAM).
+#
+# ⚠ EXCLUÍDO E SINALIZADO (não decidido sozinho): JW658
+# (MT29C1G12MAACAFAMD-6 IT) tem sub-category DIFERENTE de todos os outros
+# 16 — "obsolete-emmc-based-mcp" (pageurl em /obsolete-emmc/...) em vez de
+# "obsolete-nand-mcp-catalog" (pageurl em /obsolete-nand-mcp-catalog/...).
+# O PN-irmão quase idêntico JW657 (MT29C1G12MAACAEAMD-6 IT — só a 5ª
+# posição do config muda, "E"→"F") ESTÁ em obsolete-nand-mcp-catalog
+# normal. Pode ser (a) capricho de catalogação da Micron sem significado
+# técnico, ou (b) esse PN específico tem controller eMMC de verdade — o
+# que mudaria o chip_type de MCP(dead) pra eMCP(comercial), com IMPACTO
+# REAL na rentabilidade. Não decidi — fica de fora desta submissão até o
+# dono decidir/pesquisar.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_jw614_family_2026-07-10.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/micron_jw614_family_2026-07-10.yaml --commit --user <seu_usuario>
+#
+brand: "Micron"
+known_parts:
+  # ── DDR (10, inclui o alvo) — mDDR1, mesmo padrão do JW500 ─────────────────
+  - part_number: "MT29C1G12MAADYAKD-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + mDDR1 64MB"
+    interface: ""
+    fbga_code: "JW614"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maadyakd-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (2026-07-10): "MASSFLASH/MOBILE DDR 1.5G TFBGA", sub-category
+      "obsolete-nand-mcp-catalog", com página própria no catálogo de
+      obsoletos da Micron. Capacidade: densidade "1G12M" = NAND 1Gb +
+      LPDRAM código "12M" = 0,5Gb (mesma progressão geométrica do
+      datasheet oficial já usada no lote JW500: lá "8G96M" = NAND 8Gb +
+      LPDRAM 4Gb). NAND 1Gb÷8=128MB; LPDRAM 0,5Gb÷8=64MB. Cross-check:
+      1Gb+0,5Gb=1,5Gb bate EXATO com "1.5G" do part-name oficial (mesmo
+      padrão de validação que funcionou no JW500, lá "12G"=8Gb+4Gb).
+      chip_type=MCP (categoria "catalog", profit_family="dead",
+      commercial=False — já resolvido no lote JW500 com o dono, ver
+      chips/chip_types.py e MICRON.md §4).
+
+  - part_number: "MT29C1G12MAURAJA-6 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + mDDR1 64MB"
+    interface: ""
+    fbga_code: "JW420"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12mauraja-6-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE DDR 1.5G TFBGA", sub-category "obsolete-nand-mcp-catalog".
+      Mesma densidade do alvo JW614 (bloco "1G12M" idêntico): NAND
+      1Gb=128MB + LPDRAM 0,5Gb=64MB, total 1,5Gb confirmado pelo próprio
+      part-name. chip_type=MCP (mesma base do JW614/JW500).
+
+  - part_number: "MT29C1G12MAACVAMD-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + mDDR1 64MB"
+    interface: ""
+    fbga_code: "JW578"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maacvamd-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE DDR 1.5G VFBGA", sub-category "obsolete-nand-mcp-catalog".
+      Mesma densidade do alvo JW614: NAND 1Gb=128MB + LPDRAM 0,5Gb=64MB,
+      total 1,5Gb confirmado pelo próprio part-name. chip_type=MCP.
+
+  - part_number: "MT29C1G12MAADVAMD-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + mDDR1 64MB"
+    interface: ""
+    fbga_code: "JW579"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maadvamd-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE DDR 1.5G VFBGA", sub-category "obsolete-nand-mcp-catalog".
+      Mesma densidade do alvo JW614: NAND 1Gb=128MB + LPDRAM 0,5Gb=64MB,
+      total 1,5Gb confirmado pelo próprio part-name. chip_type=MCP.
+
+  - part_number: "MT29C1G12MAACYAMD-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + mDDR1 64MB"
+    interface: ""
+    fbga_code: "JW580"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maacyamd-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE DDR 1.5G VFBGA", sub-category "obsolete-nand-mcp-catalog".
+      Mesma densidade do alvo JW614: NAND 1Gb=128MB + LPDRAM 0,5Gb=64MB,
+      total 1,5Gb confirmado pelo próprio part-name. chip_type=MCP.
+
+  - part_number: "MT29C1G12MAADYAMD-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + mDDR1 64MB"
+    interface: ""
+    fbga_code: "JW581"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maadyamd-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE DDR 1.5G VFBGA", sub-category "obsolete-nand-mcp-catalog".
+      Mesma densidade do alvo JW614: NAND 1Gb=128MB + LPDRAM 0,5Gb=64MB,
+      total 1,5Gb confirmado pelo próprio part-name. chip_type=MCP.
+
+  - part_number: "MT29C1G12MAACYAKD-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + mDDR1 64MB"
+    interface: ""
+    fbga_code: "JW613"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maacyakd-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE DDR 1.5G TFBGA", sub-category "obsolete-nand-mcp-catalog".
+      PN-irmão quase idêntico ao alvo JW614 (só a config muda AC→AD).
+      Mesma densidade: NAND 1Gb=128MB + LPDRAM 0,5Gb=64MB, total 1,5Gb
+      confirmado pelo próprio part-name. chip_type=MCP.
+
+  - part_number: "MT29C1G12MAAIYAMD-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + mDDR1 64MB"
+    interface: ""
+    fbga_code: "JW804"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maaiyamd-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE DDR 1.5G VFBGA", sub-category "obsolete-nand-mcp-catalog".
+      Mesma densidade do alvo JW614: NAND 1Gb=128MB + LPDRAM 0,5Gb=64MB,
+      total 1,5Gb confirmado pelo próprio part-name. chip_type=MCP.
+
+  - part_number: "MT29C1G12MAAJYAMD-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + mDDR1 64MB"
+    interface: ""
+    fbga_code: "JW806"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maajyamd-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE DDR 1.5G VFBGA", sub-category "obsolete-nand-mcp-catalog".
+      Mesma densidade do alvo JW614: NAND 1Gb=128MB + LPDRAM 0,5Gb=64MB,
+      total 1,5Gb confirmado pelo próprio part-name. chip_type=MCP.
+
+  - part_number: "MT29C1G12MAADVAMD-5 E IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + mDDR1 64MB"
+    interface: ""
+    fbga_code: "JW832"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maadvamd-5-e-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE DDR 1.5G VFBGA", sub-category "obsolete-nand-mcp-catalog"
+      (sufixo "E" = variante Engineering, mas com página de produção
+      normal, diferente dos "ES" que não têm part-name). Mesma densidade
+      do alvo JW614: NAND 1Gb=128MB + LPDRAM 0,5Gb=64MB, total 1,5Gb
+      confirmado pelo próprio part-name. chip_type=MCP.
+
+  # ── SDR (4) — RAM tipo DIFERENTE (Single Data Rate, mais antigo que DDR) ───
+  - part_number: "MT29C1G12MAACAEAMD-6 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + SDR RAM 64MB"
+    interface: ""
+    fbga_code: "JW657"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maacaeamd-6-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE SDR 1.5G VFBGA" — ⚠ SDR, não DDR (Single Data Rate, RAM
+      móvel mais antiga que mDDR1; confirmado pelo próprio part-name da
+      Micron, não é erro/suposição). Sub-category "obsolete-nand-mcp-
+      catalog" (igual aos DDR — só o irmão JW658, config "F" em vez de
+      "E", tem sub-category diferente, sinalizado à parte). Mesma
+      densidade total do alvo JW614: NAND 1Gb=128MB + RAM 0,5Gb=64MB,
+      total 1,5Gb confirmado pelo próprio part-name. chip_type=MCP (a
+      categoria "dead"/não-comercial vale independente do tipo de RAM
+      ser SDR ou DDR — ambos são pré-eMMC, sem liquidez B2B).
+
+  - part_number: "MT29C1G12MAACAFAKD-6 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + SDR RAM 64MB"
+    interface: ""
+    fbga_code: "JW659"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maacafakd-6-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE SDR 1.5G TFBGA" — SDR confirmado pelo part-name (ver nota
+      do JW657 sobre SDR vs DDR). Sub-category "obsolete-nand-mcp-
+      catalog" (normal, não é o caso anômalo do JW658). Mesma densidade
+      total do alvo JW614: NAND 1Gb=128MB + RAM 0,5Gb=64MB, total 1,5Gb
+      confirmado pelo próprio part-name. chip_type=MCP.
+
+  - part_number: "MT29C1G12MAADAFAKD-6 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + SDR RAM 64MB"
+    interface: ""
+    fbga_code: "JW660"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maadafakd-6-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE SDR 1.5G TFBGA" — SDR confirmado pelo part-name (ver nota
+      do JW657). Sub-category "obsolete-nand-mcp-catalog" normal. Mesma
+      densidade total do alvo JW614: NAND 1Gb=128MB + RAM 0,5Gb=64MB,
+      total 1,5Gb confirmado pelo próprio part-name. chip_type=MCP.
+
+  - part_number: "MT29C1G12MAADAFAMD-6 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + SDR RAM 64MB"
+    interface: ""
+    fbga_code: "JW663"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maadafamd-6-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "MASSFLASH/
+      MOBILE SDR 1.5G VFBGA" — SDR confirmado pelo part-name (ver nota
+      do JW657). Sub-category "obsolete-nand-mcp-catalog" normal. Mesma
+      densidade total do alvo JW614: NAND 1Gb=128MB + RAM 0,5Gb=64MB,
+      total 1,5Gb confirmado pelo próprio part-name. chip_type=MCP.
+
+  # ── "NAND MCP" genérico (2) — tipo de RAM NÃO especificado pelo part-name ──
+  - part_number: "MT29C1G12MAAIVAMD-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + RAM 64MB (tipo não especificado)"
+    interface: ""
+    fbga_code: "JW803"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maaivamd-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "NAND MCP 1.5G
+      VFBGA" — ⚠ este part-name NÃO especifica DDR ou SDR (diferente dos
+      outros 15 desta submissão), só confirma "NAND MCP" genérico +
+      densidade total. Por isso NÃO escrevi "mDDR1" nem "SDR" no
+      subtype — seria inventar o tipo de RAM sem fonte. Densidade total
+      1,5Gb bate com a mesma conta do alvo JW614 (NAND 1Gb=128MB + RAM
+      0,5Gb=64MB). Sub-category "obsolete-nand-mcp-catalog" normal (não
+      é o caso anômalo do JW658). chip_type=MCP.
+
+  - part_number: "MT29C1G12MAAJVAMD-5 IT"
+    chip_type: "MCP"
+    subtype: "Raw MCP — NAND 128MB + RAM 64MB (tipo não especificado)"
+    interface: ""
+    fbga_code: "JW805"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-nand-mcp-catalog/part-catalog/part-detail/mt29c1g12maajvamd-5-it"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT29C1G12M, 2026-07-10): "NAND MCP 1.5G
+      VFBGA" — mesmo caso do JW803 acima: part-name não especifica DDR
+      ou SDR, só o "NAND MCP" genérico + densidade total. Subtype sem
+      tipo de RAM inventado. Densidade: NAND 1Gb=128MB + RAM 0,5Gb=64MB,
+      total 1,5Gb. Sub-category "obsolete-nand-mcp-catalog" normal.
+      chip_type=MCP.

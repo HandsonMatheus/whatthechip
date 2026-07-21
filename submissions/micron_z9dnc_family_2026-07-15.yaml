@@ -1,0 +1,722 @@
+# Submissão de known_parts — Micron, FBGA Z9DNC + família MT47H16M16 (2026-07-15)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA Z9DNC
+# (não identificado na bancada, fila de revisão).
+#
+# fuzzy_sugest. do debug (Z8DNC, Z9SNC, Z9XNC, Z9ZNC, Z9SNG) IGNORADO por
+# construção — já são KnownPart aprovado.
+#
+# ACHADO: Z9DNC → MT47H16M16BG-3:B. Família MT47H (DDR2), mesma base de
+# D9RZH/D9MTG/D9KJP/D9KSL — aqui organização "16M16" (256Mb, x16).
+# Capacidade: 16M × 16bit = 256Mbit = 0,25Gb — confirmada via Octopart
+# ("Ddr Dram, 16MX16, 0.45NS..." + "DDR2 SDRAM 256M-Bit 16Mx16 1.8V
+# 84-Pin FBGA Tray", ambos o MESMO PN exato).
+#
+# *** MUDANÇA DE METODOLOGIA NESTA RODADA ***
+# Até este PN, a sessão tratava TODO fbga_code com prefixo "Z9" como
+# Engineering Sample e excluía em bloco (sem checar o texto do PN),
+# baseado no padrão observado nas famílias MT47H64M8/MT47H128M8/etc.
+# onde Z9 era majoritariamente amostra. Z9DNC quebrou essa suposição:
+# Octopart confirma ESTE PN exato (MT47H16M16BG-3:B) como produção
+# ativa/RoHS, sem qualquer marca de amostra — e o próprio texto do PN
+# não tem "ES". Verificado no forward-lookup: Z9DNC (sem ES) está ao
+# lado de Z9DNB "...3 ES:B" e Z9DND "...37E ES:B" (ambos COM ES) — ou
+# seja, o pool "Z9" mistura produção e amostra, igual o pool "D9" já
+# fazia. Dono decidiu (2026-07-15): daqui em diante, D9 e Z9 recebem o
+# MESMO tratamento — só exclui quem tem "ES" no PRÓPRIO texto do PN
+# (regex `(?:^| )ES(?:$|[ :])`), não mais por prefixo do fbga_code.
+# Lotes anteriores desta sessão (D9RZH, D9MTG, D9PZM, D9MNT, D9NMW,
+# D9KJP, D9KSL, D9PQL, JW738, NW814, JW999) NÃO foram revisitados —
+# mudança vale só daqui pra frente, por decisão explícita do dono.
+#
+# Coleta máxima da família: forward-lookup no prefixo "MT47H16M16"
+# (2026-07-15) achou 49 PNs (30 "D9*" + 19 "Z9*", SEM separar por
+# prefixo desta vez). Aplicado SÓ o filtro "ES no próprio texto do PN"
+# (checado programaticamente) — excluídos 20 (3 do bloco D9, 17 do
+# bloco Z9). Restam 29 PNs de produção real (alvo + 28 irmãos), TODOS
+# com a mesma organização "16M16" por construção do prefixo buscado
+# (verificado programaticamente). Nenhum tem part-name direto da Micron
+# (campo vazio em toda a leva) — todos apoiados na fórmula + confirmação
+# Octopart do alvo, mesmo padrão do lote D9NMW.
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_z9dnc_family_2026-07-15.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_z9dnc_family_2026-07-15.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT47H16M16BG-3:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "Z9DNC"
+    confidence: confirmed
+    source_url: "https://octopart.com/search?q=MT47H16M16BG-3%3AB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (fetch direto,
+      2026-07-15): Z9DNC → MT47H16M16BG-3:B. Família MT47H (DDR2), mesma
+      base de D9RZH/D9MTG/D9KJP/D9KSL — aqui organização "16M16" (256Mb,
+      x16). ACHADO METODOLÓGICO desta rodada: fbga_code começa com "Z9"
+      — até este PN, a sessão tratava TODO prefixo "Z9" como Engineering
+      Sample e excluía em bloco. Octopart confirma este PN EXATO como
+      ATIVO/RoHS, em estoque em múltiplos distribuidores ("Ddr Dram,
+      16MX16, 0.45NS, Cmos, PBGA84... Rohs Compliant"), e outra listagem
+      do MESMO PN diz "DRAM Chip DDR2 SDRAM 256M-Bit 16Mx16 1.8V 84-Pin
+      FBGA Tray" — sem qualquer marca de amostra/pré-produção. O próprio
+      texto do PN ("MT47H16M16BG-3:B") também não tem "ES". Decisão do
+      dono (2026-07-15): o prefixo Z9 NÃO é sinal confiável de amostra —
+      só o "ES" no PRÓPRIO texto do PN é (mesmo critério já usado pros
+      D9). Regra aplicada a partir desta rodada em diante (lotes
+      anteriores desta sessão não foram revisitados). CAPACIDADE por
+      fórmula: 16M (profundidade) × 16bit (largura) = 256Mbit = 0,25Gb —
+      bate exato com "256M-Bit" do Octopart. Campo density_gbit (Gb),
+      interface x16, convenção DDR discreta (CLAUDE.md §6).
+
+  - part_number: "MT47H16M16FG-37E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BQG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BQG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16FG-5E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BQH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BQH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-37E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CHN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CHN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-5E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CHP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CHP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16FG-3"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CZN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CZN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-3"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CZP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CZP"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-3E"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DHD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DHD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-28G"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DHN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DHN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-25:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DMV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DMV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-25E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DMW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DMW"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-28G:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DMZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DMZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-3E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DNH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DNH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-5E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DNK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DNK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16FG-3:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FJX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FJX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-5E IT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FRF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FRF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-37E IT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FRG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FRG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16FG-37E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FWD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FWD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16FG-5E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FXF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FXF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16FG-37E IT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FZQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FZQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16FG-5E IT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FZR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FZR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-37V:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9GCH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9GCH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-3 IT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9HGC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HGC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-0 MS:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9HQR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HQR"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-37E AT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9HZH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HZH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-5E AT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9HZJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HZJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-3 AT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9HZK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9HZK"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16FG-3 IT:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9KBG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9KBG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT47H16M16BG-37E:B"
+    chip_type: "DDR2"
+    subtype: "DDR2"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "Z9DNF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/Z9DNF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT47H16M16, 2026-07-15). Mesma organização do alvo Z9DNC
+      (MT47H16M16BG-3:B): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT47H16M16, verificado programaticamente: todos os 29 part-numbers
+      produção começam literalmente por "MT47H16M16"). Tipo DDR2
+      confirmado pelo alvo (Octopart) + convenção MT47H já estabelecida
+      nesta sessão. Sem "ES" no próprio texto do PN (checado
+      programaticamente, regex `(?:^| )ES(?:$|[ :])` — aplicada aos
+      prefixos D9 E Z9 igualmente nesta rodada, não mais só a D9). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.

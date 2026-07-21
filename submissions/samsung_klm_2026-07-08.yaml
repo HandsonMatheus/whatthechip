@@ -1,0 +1,69 @@
+# Submissão de known_parts — Samsung, família KLM (eMMC puro, sem RAM embutida)
+# Gerado a partir do PN não identificado KLM8G2FE3B (busca em 2026-07-08). Família
+# e mapas (SAM_FLASH_CAP, SAM_EMMC_GEN) já cadastrados no yaml — só faltavam os
+# PNs completos como known_parts. Uso:
+#   python manage.py submit_known_parts submissions/samsung_klm_2026-07-08.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/samsung_klm_2026-07-08.yaml --commit --user <seu_usuario>
+#
+# PN completo sem hífen (base+sufixo), mesmo padrão do samsung_k4f_2026-07-06.yaml
+# e samsung_k3qf6_2026-07-08.yaml.
+brand: "Samsung"
+known_parts:
+  - part_number: "KLM8G2FE3B"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1132354/SAMSUNG/KLM8G2FE3B-B001.html"
+    notes: >
+      PN original buscado (família/mapa já cadastrados, PN exato não estava no
+      banco). Datasheet Samsung real (37 páginas, "e.MMC 4.41 Specification
+      compatibility", fabricante "Samsung semiconductor") no alldatasheet, para
+      o sufixo exato "-B001". Cap-key '8' do SAM_FLASH_CAP = 8GB — bate. Gen-key
+      'F' do SAM_EMMC_GEN = eMMC 4.5 — bate com o "4.41" do datasheet.
+
+  - part_number: "KLM4G1FE3B"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "4GB"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1132353/SAMSUNG/KLM4G1FE3B-B001.html"
+    notes: >
+      Irmão de família (mesma raiz "KLM...FE3B", só cap-key '4'≠'8') — é a
+      própria sugestão fuzzy do engine para o PN buscado. Datasheet Samsung
+      real (37 páginas, mesma série "e.MMC 4.41"), sufixo exato "-B001". Cap-key
+      '4' do SAM_FLASH_CAP = 4GB — bate.
+
+  - part_number: "KLM8G2FEJA"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 4.5"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://octopart.com/klm8g2feja-a001-samsung-30947857"
+    notes: >
+      ⚠ CORRIGIDO na validação: eu tinha lido errado o 'J' (posição 8, fora do
+      decode_gen_pos=6) como se fosse a chave de geração — não é. pn[6] desta
+      PN é 'F', igual ao PN buscado (as duas começam "KLM8G2FE", só o sufixo
+      final "3B"/"JA" muda). É eMMC 4.5, mesma geração do original, não 5.1.
+      Mesma capacidade (cap-key '8'=8GB) — reforço/confirmação, não um eixo
+      diferente. Octopart categorização própria + datasheet PDF hospedado no
+      próprio Octopart, sufixo exato "-A001".
+
+  - part_number: "KLM8G1GETF"
+    chip_type: "eMMC"
+    subtype: ""
+    interface: "eMMC 5.1"
+    capacity: "8GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/estorage/emmc/emmc-5-1/klm8g1getf-b041/"
+    notes: >
+      Samsung Semiconductor Global oficial — página indexada como "Samsung eMMC
+      Product family eMMC 5.1 Specification compatibility" (cruzado via
+      alldatasheet). ⚠ Mesmo padrão já documentado no SAMSUNG.md §3: a página
+      individual desse SKU parece descontinuada (redireciona pro hub genérico
+      da linha ao ser acessada agora) — a confirmação vem do título indexado
+      pelo buscador, não de um fetch ao vivo. Cap-key '8'=8GB, gen-key
+      'G'=eMMC 5.1 — bate com a gramática.
