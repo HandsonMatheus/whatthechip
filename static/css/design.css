@@ -76,6 +76,18 @@ a:hover { color:var(--blue-70); }
 [data-theme="dark"] a:hover { color:var(--blue-40); }
 
 /* =============================================================================
+   HOME ESTÁTICA (landing sem busca — logo + frase centralizados)
+   ============================================================================= */
+.home-static { flex:1; display:flex; align-items:center; justify-content:center; padding:48px 24px 72px; }
+.home-static__inner { display:flex; flex-direction:column; align-items:center; text-align:center; gap:24px; max-width:620px; }
+.home-static__logo { display:flex; justify-content:center; }
+.home-static__logo img { height:64px; width:auto; max-width:100%; display:block; user-select:none; -webkit-user-drag:none; }
+.home-static__logo .is-dark { display:none; }
+[data-theme="dark"] .home-static__logo .is-light { display:none; }
+[data-theme="dark"] .home-static__logo .is-dark { display:block; }
+@media (max-width:600px) { .home-static { padding:32px 20px 56px; } .home-static__logo img { height:48px; } }
+
+/* =============================================================================
    TOP NAV — barra 56px, sticky, blur (classes .topnav* do base.html)
    ============================================================================= */
 .topnav {

@@ -53,8 +53,6 @@
     <a class="topnav__link{% if current_slug == 'index' %} is-active{% endif %}"
        href="{% url 'home' %}">{% trans "Início" %}</a>
 
-    <button class="topnav__navbtn" type="button" data-open-submit>{% trans "Adicionar chip" %}</button>
-
     <a class="topnav__link{% if current_slug == 'contato' %} is-active{% endif %}"
        href="{% url 'page' 'contato' %}">{% trans "Contato" %}</a>
   </nav>
