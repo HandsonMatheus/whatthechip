@@ -732,7 +732,7 @@ class RoleMatrixTests(TestCase):
         Exportar; gerente vê. (UX — a barreira real é a matriz acima.)"""
         self._as('operator')
         body = self.client.get(reverse('estoque:index')).content.decode()
-        self.assertNotIn('Novo Lote', body)
+        self.assertNotIn('Novo lote', body)
         detail = self.client.get(
             reverse('estoque:lot_detail', args=[self.lot.pk])).content.decode()
         self.assertNotIn('Fechar Lote', detail)
@@ -740,7 +740,7 @@ class RoleMatrixTests(TestCase):
 
         self._as('manager')
         body = self.client.get(reverse('estoque:index')).content.decode()
-        self.assertIn('Novo Lote', body)
+        self.assertIn('Novo lote', body)
         detail = self.client.get(
             reverse('estoque:lot_detail', args=[self.lot.pk])).content.decode()
         self.assertIn('Fechar Lote', detail)
@@ -787,11 +787,11 @@ class LotPaginationTests(TestCase):
         url = reverse('estoque:lot_detail', args=[self.lot.pk])
         resp = self.client.get(url)
         # class=" — o seletor .wtc-stock-row do CSS não entra na conta.
-        self.assertEqual(resp.content.decode().count('class="wtc-stock-row"'), 100)
+        self.assertEqual(resp.content.decode().count('class="erow"'), 100)
         self.assertContains(resp, 'página 1 de 2')
         self.assertContains(resp, 'Próxima')
         resp2 = self.client.get(url, {'p': '2'})
-        self.assertEqual(resp2.content.decode().count('class="wtc-stock-row"'), 5)
+        self.assertEqual(resp2.content.decode().count('class="erow"'), 5)
         self.assertContains(resp2, 'página 2 de 2')
         self.assertContains(resp2, 'Anterior')
 
@@ -799,7 +799,7 @@ class LotPaginationTests(TestCase):
         self.client.force_login(self.op)
         url = reverse('estoque:lot_detail', args=[self.lot.pk])
         resp = self.client.get(url, {'q': 'PG0001'}, HTTP_HX_REQUEST='true')
-        self.assertEqual(resp.content.decode().count('class="wtc-stock-row"'), 1)
+        self.assertEqual(resp.content.decode().count('class="erow"'), 1)
         self.assertNotContains(resp, 'página 1 de')     # 1 página → sem rodapé
 
 
@@ -859,7 +859,7 @@ class PainelTests(TestCase):
                                     operator=self.op)
         self.client.force_login(self.op)
         resp = self.client.get(reverse('painel'))
-        self.assertContains(resp, 'Tipos lançados hoje')
+        self.assertContains(resp, 'Números de hoje')
         self.assertEqual(resp.status_code, 200)
 
 

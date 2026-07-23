@@ -125,8 +125,8 @@ msgstr "已通过"
 
 #: pricing/templates/pricing/partner_notifications.html:8
 msgid ""
-"As decisões do WhatTheChip sobre as suas mudanças de preço — aprovadas passam"
-" a valer na hora; rejeitadas mantêm o valor anterior."
+"As decisões do WhatTheChip sobre as suas mudanças de preço — aprovadas "
+"passam a valer na hora; rejeitadas mantêm o valor anterior."
 msgstr "WhatTheChip 对您价格修改的决定 — 通过的立即生效；被拒绝的保持原价。"
 
 #: pricing/templates/pricing/partner_home.html:6
@@ -165,9 +165,9 @@ msgstr "芯片"
 #: chips/templates/chips/partials/decode_card.html:252
 msgid ""
 "Chip fora das famílias catalogadas ou PN possivelmente mal lido "
-"(OCR/scanner). Confira o PN diretamente no encapsulamento e tente novamente. "
-"Se o prefixo for desconhecido, o chip pode ser de fabricante não catalogado "
-"ou linha proprietária."
+"(OCR/scanner). Confira o PN diretamente no encapsulamento e tente novamente."
+" Se o prefixo for desconhecido, o chip pode ser de fabricante não catalogado"
+" ou linha proprietária."
 msgstr ""
 "该芯片不属于已收录的产品系列，或 PN 可能读取有误（OCR/扫描）。请直接核对芯片封装上的 PN "
 "后重试。若前缀未知，则可能是未收录厂商或专有产品线的芯片。"
@@ -261,8 +261,8 @@ msgstr "请使用上方表单创建第一个批次。"
 
 #: pricing/templates/pricing/partner_base.html:149
 msgid ""
-"Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre "
-"em USD."
+"Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre"
+" em USD."
 msgstr "参考汇率（欧洲央行/市场，约每日更新）。系统价格始终以美元（USD）计。"
 
 #: chips/templates/chips/partials/decode_card.html:200
@@ -367,7 +367,8 @@ msgstr "服务器错误"
 
 #: pricing/templates/pricing/partner_list.html:12
 msgid ""
-"Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em USD."
+"Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em "
+"USD."
 msgstr "请为每一行选择状态；<strong>已报价</strong>必须填写美元（USD）价格。"
 
 #: templates/base.html:188
@@ -384,8 +385,8 @@ msgstr "此操作无法撤销。"
 
 #: pricing/templates/pricing/partner_list.html:79
 msgid ""
-"Esta mudança será enviada para REVISÃO do WhatTheChip e só passa a valer após"
-" a aprovação. Confirmar o envio?"
+"Esta mudança será enviada para REVISÃO do WhatTheChip e só passa a valer "
+"após a aprovação. Confirmar o envio?"
 msgstr "此修改将提交 WhatTheChip 审核，审核通过后才生效。确认提交吗？"
 
 #: pricing/templates/pricing/partner_list.html:26
@@ -562,7 +563,7 @@ msgstr "批次"
 msgid ""
 "Lote <strong>fechado</strong> — adições bloqueadas. Reabra para retomar a "
 "triagem."
-msgstr "批次<strong>已关闭</strong> — 无法录入。请重新开启以继续分拣。"
+msgstr "批次<strong>已关闭</strong>——禁止添加。重新开启以恢复分拣。"
 
 #: estoque/templates/estoque/painel.html:78
 msgid "Lote aberto — triagem em andamento"
@@ -804,7 +805,7 @@ msgstr "待审核"
 msgid ""
 "Peça ao gerente para abrir o lote do dia — a triagem acontece sempre dentro "
 "de um lote."
-msgstr "请让经理开启今日批次 — 分拣始终在批次内进行。"
+msgstr "请经理开当天的批次——分拣总是在批次内进行。"
 
 #: estoque/templates/estoque/lotes.html:405
 msgid "Peça ao gerente para abrir um lote de triagem."
@@ -847,8 +848,9 @@ msgstr "价格"
 
 #: pricing/templates/pricing/partner_home.html:44
 msgid ""
-"Preços por chip, em <strong>dólar (USD)</strong>. Os preços de <strong>Outras"
-" marcas</strong> valem para todo chip de marca que não tem tabela própria."
+"Preços por chip, em <strong>dólar (USD)</strong>. Os preços de "
+"<strong>Outras marcas</strong> valem para todo chip de marca que não tem "
+"tabela própria."
 msgstr ""
 "每颗芯片的价格，以<strong>美元（USD）</strong>计。<strong>其他品牌</strong>的价格适用于所有没有专属价目表的品牌芯片。"
 
@@ -862,8 +864,8 @@ msgstr "移除数量"
 
 #: templates/base.html:170
 msgid ""
-"Quanto mais informação você enviar, mais rápido conseguimos identificar. Uma "
-"foto nítida do chip ajuda muito."
+"Quanto mais informação você enviar, mais rápido conseguimos identificar. Uma"
+" foto nítida do chip ajuda muito."
 msgstr "您提供的信息越多，我们识别得越快。一张清晰的芯片照片会非常有帮助。"
 
 #: chips/labels.py:27
@@ -1278,7 +1280,9 @@ msgstr "使用说明"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em USD, sempre atualizada, sem planilhas."
+msgid ""
+"Aqui você mantém a sua tabela de preços de compra de chips de memória — "
+"sempre em USD, sempre atualizada, sem planilhas."
 msgstr "在这里维护您的存储芯片收购价格表——始终以 USD 计价，随时更新，无需表格文件。"
 
 #. Como funciona (partner_how) — 2026-07-09
@@ -1298,7 +1302,8 @@ msgstr "确认提交——您的修改将交由 WhatTheChip 审核。"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Aprovada, ela passa a valer na hora. Acompanhe a decisão nas notificações."
+msgid ""
+"Aprovada, ela passa a valer na hora. Acompanhe a decisão nas notificações."
 msgstr "审核通过后立即生效。请在通知中查看结果。"
 
 #. Como funciona (partner_how) — 2026-07-09
@@ -1333,12 +1338,16 @@ msgstr "温馨提示"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Os preços de “Outras marcas” valem para todo chip de marca que não tem tabela própria."
+msgid ""
+"Os preços de “Outras marcas” valem para todo chip de marca que não tem "
+"tabela própria."
 msgstr "“其他品牌”的价格适用于所有没有独立价格表的品牌芯片。"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "O câmbio no topo (1 ¥ → USD) é só uma referência — todos os preços são em USD."
+msgid ""
+"O câmbio no topo (1 ¥ → USD) é só uma referência — todos os preços são em "
+"USD."
 msgstr "顶部汇率（1 ¥ → USD）仅供参考——所有价格均以 USD 计价。"
 
 #. Como funciona (partner_how) — 2026-07-09
@@ -1358,7 +1367,9 @@ msgstr "用什么货币填写价格？"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Sempre em USD (dólar americano), por chip. O câmbio exibido no topo é apenas uma referência."
+msgid ""
+"Sempre em USD (dólar americano), por chip. O câmbio exibido no topo é apenas"
+" uma referência."
 msgstr "始终以 USD（美元）按单颗芯片填写。顶部显示的汇率仅供参考。"
 
 #. Como funciona (partner_how) — 2026-07-09
@@ -1368,7 +1379,9 @@ msgstr "我的价格会立即生效吗？"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Não. Toda mudança passa primeiro pela revisão do WhatTheChip. Depois de aprovada, vale na hora — e você recebe uma notificação."
+msgid ""
+"Não. Toda mudança passa primeiro pela revisão do WhatTheChip. Depois de "
+"aprovada, vale na hora — e você recebe uma notificação."
 msgstr "不会。所有修改需先经 WhatTheChip 审核。审核通过后立即生效，并会向您发送通知。"
 
 #. Como funciona (partner_how) — 2026-07-09
@@ -1378,7 +1391,9 @@ msgstr "“审核中”是什么意思？"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Sua mudança foi enviada e aguarda aprovação. Até lá, o valor antigo continua valendo."
+msgid ""
+"Sua mudança foi enviada e aguarda aprovação. Até lá, o valor antigo continua"
+" valendo."
 msgstr "您的修改已提交，正在等待审核。在此之前，仍按原价格执行。"
 
 #. Como funciona (partner_how) — 2026-07-09
@@ -1388,7 +1403,9 @@ msgstr "价格填错了，可以改吗？"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Sim. Envie o valor certo na mesma linha — o novo pedido substitui o anterior."
+msgid ""
+"Sim. Envie o valor certo na mesma linha — o novo pedido substitui o "
+"anterior."
 msgstr "可以。在同一行提交正确的价格，新申请会替换旧申请。"
 
 #. Como funciona (partner_how) — 2026-07-09
@@ -1398,7 +1415,9 @@ msgstr "黄色的行是什么？"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "É um chip sem cotação — falta você dar o preço. O contador da página Início mostra quantos faltam."
+msgid ""
+"É um chip sem cotação — falta você dar o preço. O contador da página Início "
+"mostra quantos faltam."
 msgstr "表示尚未报价的芯片——等您填写价格。首页的计数会显示还剩多少。"
 
 #. Como funciona (partner_how) — 2026-07-09
@@ -1408,7 +1427,9 @@ msgstr "“其他品牌”价格表有什么用？"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "É a sua tabela geral. Esses preços valem para chips de qualquer marca que não tem tabela própria."
+msgid ""
+"É a sua tabela geral. Esses preços valem para chips de qualquer marca que "
+"não tem tabela própria."
 msgstr "这是您的通用价格表，适用于所有没有独立价格表的品牌芯片。"
 
 #. Como funciona (partner_how) — 2026-07-09
@@ -1418,7 +1439,9 @@ msgstr "价格表里缺少某个芯片？"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você cotar."
+msgid ""
+"Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você "
+"cotar."
 msgstr "请联系 WhatTheChip——我们会添加该行，您即可报价。"
 
 #. Catálogo PDF do comprador (F9) — 2026-07-10
@@ -1428,7 +1451,9 @@ msgstr "价格目录（PDF）"
 
 #. Catálogo PDF do comprador (F9) — 2026-07-10
 #: pricing/pdf.py pricing/templates/pricing/partner_home.html
-msgid "Todas as suas tabelas num único arquivo — pronto para enviar aos seus clientes."
+msgid ""
+"Todas as suas tabelas num único arquivo — pronto para enviar aos seus "
+"clientes."
 msgstr "您的所有价格表汇总为一个文件——可直接发送给您的客户。"
 
 #. Catálogo PDF do comprador (F9) — 2026-07-10
@@ -1468,7 +1493,9 @@ msgstr "由 WhatTheChip 生成"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_base.html
-msgid "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥ em US$. Muda só quando o contrato mudar."
+msgid ""
+"Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
+" em US$. Muda só quando o contrato mudar."
 msgstr "与 WhatTheChip 合同中的汇率——用于把您的 ¥ 换算成 US$。只有合同变更时才会改变。"
 
 #. F10 RMB canônico — 2026-07-16
@@ -1498,12 +1525,19 @@ msgstr "目录货币"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_home.html
-msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. Os preços de <strong>Outras marcas</strong> valem para todo chip de marca que não tem tabela própria."
-msgstr "价格按芯片计，以<strong>人民币（¥ RMB）</strong>计价——US$ 按顶部显示的合同汇率换算。<strong>其他品牌</strong>的价格适用于所有没有专属价格表的品牌芯片。"
+msgid ""
+"Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa"
+" a taxa do contrato, exibida no topo. Os preços de <strong>Outras "
+"marcas</strong> valem para todo chip de marca que não tem tabela própria."
+msgstr ""
+"价格按芯片计，以<strong>人民币（¥ RMB）</strong>计价——US$ "
+"按顶部显示的合同汇率换算。<strong>其他品牌</strong>的价格适用于所有没有专属价格表的品牌芯片。"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_list.html
-msgid "Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em ¥ (RMB)."
+msgid ""
+"Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em ¥ "
+"(RMB)."
 msgstr "选择每行的状态；<strong>已报价</strong>必须填写 ¥（RMB）价格。"
 
 #. F10 RMB canônico — 2026-07-16
@@ -1513,7 +1547,9 @@ msgstr "价格 ¥"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_how.html
-msgid "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em ¥ (RMB), sempre atualizada, sem planilhas."
+msgid ""
+"Aqui você mantém a sua tabela de preços de compra de chips de memória — "
+"sempre em ¥ (RMB), sempre atualizada, sem planilhas."
 msgstr "在这里维护您的存储芯片收购价格表——始终以 ¥（RMB）计价，随时更新，无需表格文件。"
 
 #. F10 RMB canônico — 2026-07-16
@@ -1523,12 +1559,20 @@ msgstr "输入 ¥（RMB）价格并选择该行的状态。"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_how.html
-msgid "A taxa no topo (1 ¥ → US$) é a do seu contrato com o WhatTheChip — é ela que converte os seus ¥ em US$. Ela só muda quando o contrato mudar, e os seus ¥ nunca mudam junto."
-msgstr "顶部汇率（1 ¥ → US$）是您与 WhatTheChip 合同中的汇率——由它把您的 ¥ 换算成 US$。只有合同变更时才会改变，而您的 ¥ 价格不会随之变动。"
+msgid ""
+"A taxa no topo (1 ¥ → US$) é a do seu contrato com o WhatTheChip — é ela que"
+" converte os seus ¥ em US$. Ela só muda quando o contrato mudar, e os seus ¥"
+" nunca mudam junto."
+msgstr ""
+"顶部汇率（1 ¥ → US$）是您与 WhatTheChip 合同中的汇率——由它把您的 ¥ 换算成 US$。只有合同变更时才会改变，而您的 ¥ "
+"价格不会随之变动。"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_how.html
-msgid "Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado — a conversão para US$ é feita pelo sistema, com a taxa do contrato exibida no topo."
+msgid ""
+"Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado "
+"— a conversão para US$ é feita pelo sistema, com a taxa do contrato exibida "
+"no topo."
 msgstr "始终以 ¥（RMB）计价，按芯片计。您输入的数字就是系统保存的数字——US$ 由系统按顶部显示的合同汇率换算。"
 
 #. F10 RMB canônico — 2026-07-16
@@ -1538,7 +1582,9 @@ msgstr "如果合同汇率变了怎么办？"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_how.html
-msgid "Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula a partir deles."
+msgid ""
+"Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula "
+"a partir deles."
 msgstr "您的 ¥ 价格不会变，变的只是系统据此计算出的 US$ 金额。"
 
 #. F10 RMB canônico — 2026-07-16
@@ -1567,7 +1613,9 @@ msgstr "第 %(a)s 页，共 %(b)s 页"
 msgid "Vendas"
 msgstr "销售"
 
-msgid "Fechar um lote gera a cotação (valores vivos); confirmar congela ¥, taxa e US$ — a ordem confirmada nunca muda (ajustes entram como acerto)."
+msgid ""
+"Fechar um lote gera a cotação (valores vivos); confirmar congela ¥, taxa e "
+"US$ — a ordem confirmada nunca muda (ajustes entram como acerto)."
 msgstr "关闭批次会生成报价单（实时价格）；确认后冻结 ¥、汇率和 US$——已确认的订单不再变动（调整以结算单形式录入）。"
 
 msgid "Ordem"
@@ -1629,10 +1677,13 @@ msgid "Total"
 msgstr "总计"
 
 #, python-format
-msgid "%(n)s linha(s) sem preço — complete o grid do comprador para poder confirmar"
+msgid ""
+"%(n)s linha(s) sem preço — complete o grid do comprador para poder confirmar"
 msgstr "%(n)s 行没有价格——请先完成买家的报价表再确认"
 
-msgid "Confirmar congela o ¥, a taxa do contrato e o US$ desta ordem — ela não muda mais (ajustes do resultado entram como acerto). Confirmar?"
+msgid ""
+"Confirmar congela o ¥, a taxa do contrato e o US$ desta ordem — ela não muda"
+" mais (ajustes do resultado entram como acerto). Confirmar?"
 msgstr "确认后将冻结这张订单的 ¥、合同汇率和 US$——不再变动（结果的调整以结算单形式录入）。确认吗？"
 
 msgid "Confirmar ordem"
@@ -1647,16 +1698,22 @@ msgstr "订单已确认——价格已冻结（¥ + 合同汇率 + US$）。"
 msgid "Ordem cancelada."
 msgstr "订单已取消。"
 
-msgid "Este lote tem uma Ordem de Venda CONFIRMADA — cancele a ordem no menu Vendas antes de reabrir."
+msgid ""
+"Este lote tem uma Ordem de Venda CONFIRMADA — cancele a ordem no menu Vendas"
+" antes de reabrir."
 msgstr "该批次有一张已确认的销售订单——请先在销售菜单取消订单再重新打开。"
 
 #. F11.2 type-to-confirm do fechamento — 2026-07-16
 #: estoque/templates/estoque/estoque.html estoque/views.py
-msgid "Fechar o lote gera a cotação de venda e trava a bancada. Digite o código completo do lote para confirmar:"
+msgid ""
+"Fechar o lote gera a cotação de venda e trava a bancada. Digite o código "
+"completo do lote para confirmar:"
 msgstr "关闭批次将生成销售报价单并锁定工作台。请输入完整的批次编号以确认："
 
 #, python-format
-msgid "Código de confirmação não confere — digite o código completo do lote (ex.: %(code)s). O lote NÃO foi fechado."
+msgid ""
+"Código de confirmação não confere — digite o código completo do lote (ex.: "
+"%(code)s). O lote NÃO foi fechado."
 msgstr "确认编号不一致——请输入完整的批次编号（例如 %(code)s）。批次未被关闭。"
 
 #. F11.2c modal de fechamento + smart buttons + PDF da OV — 2026-07-16
@@ -1675,7 +1732,10 @@ msgstr "结算"
 msgid "Resultado do comprador"
 msgstr "买家验收结果"
 
-msgid "Informe o que o comprador reportou: unidades rejeitadas (mortos) e/ou novo ¥ unitário por categoria. Campos vazios mantêm o combinado. A ordem não muda — a fatura sai com o valor final."
+msgid ""
+"Informe o que o comprador reportou: unidades rejeitadas (mortos) e/ou novo ¥"
+" unitário por categoria. Campos vazios mantêm o combinado. A ordem não muda "
+"— a fatura sai com o valor final."
 msgstr "填写买家反馈的结果：每个类别的不良（坏件）数量和/或新的 ¥ 单价。留空则保持原约定。订单不会变动——发票按最终金额开出。"
 
 msgid "Un. rejeitadas"
@@ -1787,3 +1847,219 @@ msgstr "批次中已有：%(n)s 件"
 
 msgid "Separar para verificação — segue para a fila do gestor."
 msgstr "请单独放置待核验——将进入主管的待审队列。"
+
+msgid "Abertos"
+msgstr "开启中"
+
+msgid "Abrir novo lote"
+msgstr "新开批次"
+
+msgid "Adicionar ao lote"
+msgstr "加入批次"
+
+msgid "Ajuste a busca ou o filtro de status."
+msgstr "请调整搜索或状态筛选。"
+
+msgid "Atalhos"
+msgstr "快捷方式"
+
+msgid "Ações"
+msgstr "操作"
+
+msgid "Buscar nº ou descrição…"
+msgstr "搜索编号或描述…"
+
+msgid "Cada chip identificado na bancada entra em um lote aberto."
+msgstr "工作台识别的每颗芯片都进入一个开启的批次。"
+
+msgid "Categorias"
+msgstr "类别"
+
+msgid "Categorias hoje"
+msgstr "今日类别"
+
+msgid "Chips pendentes de revisão"
+msgstr "待审芯片"
+
+msgid "Conferência"
+msgstr "核对"
+
+msgid "Confirmada"
+msgstr "已确认"
+
+msgid "Continue de onde parou"
+msgstr "从上次继续"
+
+msgid "Contraparte"
+msgstr "对手方"
+
+msgid "Criar e abrir"
+msgstr "创建并开启"
+
+msgid "Crie o primeiro lote pelo botão “Novo lote”."
+msgstr "用“新批次”按钮创建第一个批次。"
+
+msgid "Debug"
+msgstr "调试"
+
+msgid "Descarte"
+msgstr "报废"
+
+msgid "Descrição do lote (opcional)"
+msgstr "批次描述（可选）"
+
+msgid "Destino"
+msgstr "去向"
+
+msgid "Em triagem agora"
+msgstr "正在分拣"
+
+msgid "Escanear chip"
+msgstr "扫描芯片"
+
+msgid "Fabricante"
+msgstr "制造商"
+
+msgid "Faturada"
+msgstr "已开票"
+
+msgid "Fechados"
+msgstr "已关闭"
+
+msgid "Fechar lote"
+msgstr "关闭批次"
+
+msgid "Fila de conferência"
+msgstr "核对队列"
+
+msgid "Fonte"
+msgstr "来源"
+
+msgid "Geral · avaliação"
+msgstr "通用 · 评估"
+
+msgid "Indeterminado"
+msgstr "待定"
+
+msgid "Iniciar uma triagem"
+msgstr "开始分拣"
+
+msgid "Leia o código gravado no chip e digite acima."
+msgstr "读取芯片上刻印的编码，在上方输入。"
+
+msgid "Linhas da ordem"
+msgstr "订单明细"
+
+msgid "Lote aberto · triagem em andamento"
+msgstr "批次开启 · 分拣进行中"
+
+msgid "Lote de origem"
+msgstr "来源批次"
+
+msgid "Mais"
+msgstr "增加"
+
+msgid "Mais recentes"
+msgstr "最新"
+
+msgid "Mais unidades"
+msgstr "单位最多"
+
+msgid "Menos"
+msgstr "减少"
+
+msgid "Menos unidades"
+msgstr "单位最少"
+
+msgid "Na fila"
+msgstr "队列中"
+
+msgid "Nenhum lote aberto. Abra um lote para a bancada começar a triar."
+msgstr "没有开启的批次。开一个批次让工作台开始分拣。"
+
+msgid "Nenhum lote encontrado"
+msgstr "未找到批次"
+
+msgid "Novo lote"
+msgstr "新批次"
+
+msgid "Não identificado"
+msgstr "未识别"
+
+msgid "Números de hoje"
+msgstr "今日数据"
+
+msgid "Ordenar"
+msgstr "排序"
+
+msgid "Paga"
+msgstr "已支付"
+
+msgid "Período"
+msgstr "期间"
+
+msgid "Rascunho"
+msgstr "草稿"
+
+msgid "Separe para verificação — segue para a fila do gestor."
+msgstr "留待核对——进入经理队列。"
+
+msgid "Sucata · resíduo eletrônico"
+msgstr "废料 · 电子垃圾"
+
+msgid "Tipos hoje"
+msgstr "今日类型"
+
+msgid "Todos os lotes"
+msgstr "全部批次"
+
+msgid "Todos os lotes e triagem"
+msgstr "全部批次与分拣"
+
+msgid "Total da ordem"
+msgstr "订单总额"
+
+msgid "Triar este lote"
+msgstr "分拣此批次"
+
+msgid "Unidades"
+msgstr "数量"
+
+msgid "Valor"
+msgstr "金额"
+
+msgid "Valoração"
+msgstr "估值"
+
+msgid "Você recebe a caixa de destino na hora."
+msgstr "立即获得去向箱号。"
+
+msgid "categorias"
+msgstr "类别"
+
+msgid "congelada"
+msgstr "已冻结"
+
+msgid "origem"
+msgstr "来源"
+
+msgid "por geração"
+msgstr "按世代"
+
+msgid "preço em ¥"
+msgstr "价格（¥）"
+
+msgid "tipos"
+msgstr "类型"
+
+msgid "un."
+msgstr "件"
+
+msgid "cob."
+msgstr "覆盖"
+
+msgid "aberto desde %(d)s"
+msgstr "开启于 %(d)s"
+
+msgid "desde %(d)s"
+msgstr "自 %(d)s"

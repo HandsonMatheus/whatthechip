@@ -1,15 +1,75 @@
 <!-- ══════════════════════════════════════════════════════
-     INDEX — WhatTheChip · 什么芯片   (landing estática — só a logo)
-     Injetado por pages/views.home. Sem busca/stats/frase no momento.
-     Nav e footer em base.html; visual (.home-static) em design.css.
-     (Idêntico nos 4 idiomas — sem texto traduzível por ora.)
+     INDEX — WhatTheChip · 什么芯片   (home pública enxuta: herói + contato)
+     Injetado por pages/views.home. HTML puro (sem tags Django).
+     Só um herói + botão que abre o formulário de contato (mailto).
      ══════════════════════════════════════════════════════ -->
+<style>
+  .hp{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:72px 24px 64px;max-width:860px;margin:0 auto}
+  .hp__logo{height:48px;width:auto;display:block;margin:0 auto 30px}
+  .hp__h1{font-size:clamp(32px,5.4vw,56px);font-weight:800;letter-spacing:-.025em;line-height:1.04;color:#161616;margin:0}
+  .hp__lead{font-size:clamp(16px,2.1vw,21px);color:#4d5358;margin:24px 0 0;max-width:660px;line-height:1.5}
+  .hp__lead b{color:#161616;font-weight:700}
+  .hp__cta{margin-top:38px}
+  .hp-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:56px;padding:0 32px;border-radius:14px;background:#0f62fe;color:#fff;font-size:17px;font-weight:600;border:0;cursor:pointer;text-decoration:none;font-family:inherit;transition:background .12s,transform .12s;box-shadow:0 8px 20px -8px rgba(15,98,254,.5)}
+  .hp-btn:hover{background:#0353e9;transform:translateY(-1px);text-decoration:none;color:#fff}
+  .hp-btn svg{width:19px;height:19px}
+  /* modal de contato */
+  .hpm{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(16,24,40,.55)}
+  .hpm.is-on{display:flex}
+  .hpm__card{width:100%;max-width:460px;background:#fff;border-radius:18px;box-shadow:0 30px 60px -24px rgba(16,24,40,.5);padding:28px 28px 26px;position:relative;text-align:left}
+  .hpm__x{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:9px;border:0;background:#f2f4f8;color:#4d5358;font-size:20px;line-height:1;cursor:pointer}
+  .hpm__x:hover{background:#e8ecf3;color:#161616}
+  .hpm__t{font-size:22px;font-weight:800;letter-spacing:-.01em;color:#161616;margin:0 0 4px}
+  .hpm__s{font-size:14px;color:#697077;margin:0 0 18px}
+  .hpm__l{display:block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#697077;margin-bottom:6px}
+  .hpm__field{margin-bottom:14px}
+  .hpm__i{width:100%;height:46px;padding:0 14px;font-size:15px;color:#161616;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:11px;outline:0;font-family:inherit;transition:border-color .12s,box-shadow .12s}
+  .hpm__i:focus{border-color:#0f62fe;box-shadow:0 0 0 4px #edf5ff;background:#fff}
+  textarea.hpm__i{height:auto;padding:12px 14px;resize:vertical;min-height:96px}
+  .hpm__submit{width:100%;margin-top:6px;height:52px}
+</style>
 
-<section class="home-static">
-  <div class="home-static__inner">
-    <div class="home-static__logo" aria-label="WhatTheChip 什么芯片">
-      <img class="is-light" src="/static/img/wtc-logo-light.svg" alt="WhatTheChip 什么芯片" />
-      <img class="is-dark" src="/static/img/wtc-logo-dark.svg" alt="" aria-hidden="true" />
-    </div>
+<section class="hp">
+  <img class="hp__logo" src="/static/img/whatthechip-lightmode.svg" alt="WhatTheChip 什么芯片">
+  <h1 class="hp__h1">Potencie os lucros da sua recicladora com o exclusivo mercado de chips.</h1>
+  <p class="hp__lead">A <b>#1</b> e única plataforma de classificação e precificação de chips de memória do continente.</p>
+  <div class="hp__cta">
+    <button type="button" class="hp-btn" onclick="hpOpen()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.2L4 17.2z"/></svg>
+      Entrar em contato
+    </button>
   </div>
 </section>
+
+<div class="hpm" id="hp-modal" role="dialog" aria-modal="true" aria-label="Contato">
+  <div class="hpm__card">
+    <button type="button" class="hpm__x" onclick="hpClose()" aria-label="Fechar">×</button>
+    <h2 class="hpm__t">Fale com a gente</h2>
+    <p class="hpm__s">Conte da sua operação — respondemos rápido.</p>
+    <form class="hpm__form" onsubmit="return hpSend(event)">
+      <div class="hpm__field"><label class="hpm__l" for="hp-nome">Nome</label><input class="hpm__i" id="hp-nome" required></div>
+      <div class="hpm__field"><label class="hpm__l" for="hp-empresa">Empresa</label><input class="hpm__i" id="hp-empresa"></div>
+      <div class="hpm__field"><label class="hpm__l" for="hp-email">E-mail</label><input class="hpm__i" id="hp-email" type="email" required></div>
+      <div class="hpm__field"><label class="hpm__l" for="hp-msg">Mensagem</label><textarea class="hpm__i" id="hp-msg" rows="4"></textarea></div>
+      <button type="submit" class="hp-btn hpm__submit">Enviar</button>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  var m=document.getElementById('hp-modal');
+  window.hpOpen=function(){m.classList.add('is-on');document.body.style.overflow='hidden';setTimeout(function(){var n=document.getElementById('hp-nome');if(n)n.focus();},60);};
+  window.hpClose=function(){m.classList.remove('is-on');document.body.style.overflow='';};
+  window.hpSend=function(e){e.preventDefault();
+    var g=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
+    var nome=g('hp-nome'), emp=g('hp-empresa'), email=g('hp-email'), msg=g('hp-msg');
+    var sub=encodeURIComponent('WhatTheChip — contato · '+(emp||nome));
+    var body=encodeURIComponent('Nome: '+nome+'\nEmpresa: '+emp+'\nE-mail: '+email+'\n\n'+msg);
+    window.location.href='mailto:eminerparaguay@gmail.com?subject='+sub+'&body='+body;
+    return false;
+  };
+  if(m){m.addEventListener('click',function(e){if(e.target===m)hpClose();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')hpClose();});}
+})();
+</script>

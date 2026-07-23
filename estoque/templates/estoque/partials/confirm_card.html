@@ -22,8 +22,8 @@
   .rc__dest--x{background:#fff1f1;color:#a2191f}.rc__dest--m{background:#fdf3d6;color:#8a6a00}
   .rc__destcode{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:15px;color:#161616}
   .rc__debug{margin-left:auto}
-  .rc .est-debug-btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;border:1px solid #c1c7cd;background:#fff;color:#697077;font-size:12px;font-weight:600;cursor:pointer;font-family:'IBM Plex Mono',monospace}
-  .rc .est-debug-btn:hover{color:#161616;background:#f2f4f8}
+  .rc .rc__dbg{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;border:1px solid #c1c7cd;background:#fff;color:#697077;font-size:12px;font-weight:600;cursor:pointer;font-family:'IBM Plex Mono',monospace}
+  .rc .rc__dbg:hover{color:#161616;background:#f2f4f8}
   /* add row (dentro do card) */
   .rc__add{display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #dde1e6;background:#f7f8fb;flex-wrap:wrap}
   .rc-qty{display:inline-flex;align-items:center;border:1px solid #c1c7cd;border-radius:12px;overflow:hidden;background:#fff;flex:none}
@@ -174,7 +174,7 @@
       {% else %}→ {% trans "Não identificado" %}{% endif %}
       {% if user.is_superuser %}
       <span class="rc__debug">
-        <button type="button" class="est-debug-btn" title="{% trans 'Copiar diagnóstico' %}">📋 {% trans "Debug" %}</button>
+        <button type="button" class="rc__dbg est-debug-btn" title="{% trans 'Copiar diagnóstico' %}">📋 {% trans "Debug" %}</button>
       </span>
       {% endif %}
     </div>

@@ -270,14 +270,13 @@ class CmsConteudoPorIdiomaTests(TestCase):
     (_content/<slug>.<código>.html, escolhido pelo idioma ativo, fallback
     pt-br) e os METADADOS (title…) vêm do modeltranslation no banco."""
 
-    # A home virou landing só com a logo (sem texto traduzível) — os 4 idiomas
-    # servem conteúdo idêntico; o probe comum confirma que a home renderiza em
-    # cada idioma (o mecanismo de escolha/fallback de arquivo segue exercido).
+    # A home é enxuta (herói + botão de contato) — headline traduzível por idioma;
+    # o probe é uma frase distintiva de cada idioma (confirma o arquivo servido).
     HOME_PROBES = {
-        'pt-br':   'home-static__logo',
-        'es':      'home-static__logo',
-        'en':      'home-static__logo',
-        'zh-hans': 'home-static__logo',
+        'pt-br':   'Potencie os lucros',
+        'es':      'Potencia las ganancias',
+        'en':      'Power your recycler',
+        'zh-hans': '放大您回收厂的利润',
     }
 
     def _client_em(self, lng):

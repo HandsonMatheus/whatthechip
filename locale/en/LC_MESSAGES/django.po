@@ -128,8 +128,8 @@ msgstr "Approved"
 
 #: pricing/templates/pricing/partner_notifications.html:8
 msgid ""
-"As decisões do WhatTheChip sobre as suas mudanças de preço — aprovadas passam"
-" a valer na hora; rejeitadas mantêm o valor anterior."
+"As decisões do WhatTheChip sobre as suas mudanças de preço — aprovadas "
+"passam a valer na hora; rejeitadas mantêm o valor anterior."
 msgstr ""
 "WhatTheChip's decisions on your price changes — approved ones take effect "
 "immediately; rejected ones keep the previous value."
@@ -170,9 +170,9 @@ msgstr "Chip"
 #: chips/templates/chips/partials/decode_card.html:252
 msgid ""
 "Chip fora das famílias catalogadas ou PN possivelmente mal lido "
-"(OCR/scanner). Confira o PN diretamente no encapsulamento e tente novamente. "
-"Se o prefixo for desconhecido, o chip pode ser de fabricante não catalogado "
-"ou linha proprietária."
+"(OCR/scanner). Confira o PN diretamente no encapsulamento e tente novamente."
+" Se o prefixo for desconhecido, o chip pode ser de fabricante não catalogado"
+" ou linha proprietária."
 msgstr ""
 "Chip outside the cataloged families, or the PN may have been misread "
 "(OCR/scanner). Check the PN directly on the package and try again. If the "
@@ -269,8 +269,8 @@ msgstr "Create the first lot using the form above."
 
 #: pricing/templates/pricing/partner_base.html:149
 msgid ""
-"Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre "
-"em USD."
+"Câmbio de referência (ECB/mercado, ~diário). Os preços do sistema são sempre"
+" em USD."
 msgstr ""
 "Reference exchange rate (ECB/market, ~daily). System prices are always in "
 "USD."
@@ -377,10 +377,11 @@ msgstr "Server error"
 
 #: pricing/templates/pricing/partner_list.html:12
 msgid ""
-"Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em USD."
-msgstr ""
-"Choose the state of each line; <strong>Quoted</strong> requires the price in "
+"Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em "
 "USD."
+msgstr ""
+"Choose the state of each line; <strong>Quoted</strong> requires the price in"
+" USD."
 
 #: templates/base.html:188
 msgid "Escolher imagem…"
@@ -396,8 +397,8 @@ msgstr "This action cannot be undone."
 
 #: pricing/templates/pricing/partner_list.html:79
 msgid ""
-"Esta mudança será enviada para REVISÃO do WhatTheChip e só passa a valer após"
-" a aprovação. Confirmar o envio?"
+"Esta mudança será enviada para REVISÃO do WhatTheChip e só passa a valer "
+"após a aprovação. Confirmar o envio?"
 msgstr ""
 "This change will be sent for WhatTheChip REVIEW and only takes effect after "
 "approval. Confirm submission?"
@@ -506,8 +507,8 @@ msgid ""
 "Foi enviado para a <strong>fila de conferência</strong> do gestor (qtd. "
 "acumulada: %(qty)s)."
 msgstr ""
-"It was sent to the manager's <strong>review queue</strong> (accumulated qty: "
-"%(qty)s)."
+"It was sent to the manager's <strong>review queue</strong> (accumulated qty:"
+" %(qty)s)."
 
 #: chips/templates/chips/partials/decode_card.html:170
 msgid "Fonte ↗"
@@ -582,7 +583,7 @@ msgid ""
 "Lote <strong>fechado</strong> — adições bloqueadas. Reabra para retomar a "
 "triagem."
 msgstr ""
-"Lot <strong>closed</strong> — additions blocked. Reopen to resume sorting."
+"Lot <strong>closed</strong> — additions blocked. Reopen to resume triage."
 
 #: estoque/templates/estoque/painel.html:78
 msgid "Lote aberto — triagem em andamento"
@@ -778,7 +779,8 @@ msgid ""
 "PN adicionado à fila de chips desconhecidos. Obrigado por contribuir com o "
 "banco de dados."
 msgstr ""
-"PN added to the unknown-chips queue. Thanks for contributing to the database."
+"PN added to the unknown-chips queue. Thanks for contributing to the "
+"database."
 
 #: chips/templates/chips/partials/decode_card.html:245
 msgid "PN começa com K — espaço Samsung / SK Hynix."
@@ -831,7 +833,7 @@ msgid ""
 "Peça ao gerente para abrir o lote do dia — a triagem acontece sempre dentro "
 "de um lote."
 msgstr ""
-"Ask the manager to open today's lot — sorting always happens inside a lot."
+"Ask the manager to open the day’s lot — triage always happens inside a lot."
 
 #: estoque/templates/estoque/lotes.html:405
 msgid "Peça ao gerente para abrir um lote de triagem."
@@ -875,8 +877,9 @@ msgstr "Prices"
 
 #: pricing/templates/pricing/partner_home.html:44
 msgid ""
-"Preços por chip, em <strong>dólar (USD)</strong>. Os preços de <strong>Outras"
-" marcas</strong> valem para todo chip de marca que não tem tabela própria."
+"Preços por chip, em <strong>dólar (USD)</strong>. Os preços de "
+"<strong>Outras marcas</strong> valem para todo chip de marca que não tem "
+"tabela própria."
 msgstr ""
 "Prices per chip, in <strong>US dollars (USD)</strong>. <strong>Other "
 "brands</strong> prices apply to every chip of a brand without its own table."
@@ -891,8 +894,8 @@ msgstr "Quantity to remove"
 
 #: templates/base.html:170
 msgid ""
-"Quanto mais informação você enviar, mais rápido conseguimos identificar. Uma "
-"foto nítida do chip ajuda muito."
+"Quanto mais informação você enviar, mais rápido conseguimos identificar. Uma"
+" foto nítida do chip ajuda muito."
 msgstr ""
 "The more information you send, the faster we can identify it. A sharp photo "
 "of the chip helps a lot."
@@ -988,8 +991,8 @@ msgid ""
 "Se o prefixo não consta acima, pode ser chip de linha especial ou leitura "
 "incorreta do PN na placa."
 msgstr ""
-"If the prefix is not listed above, it may be a special-line chip or a misread"
-" PN on the board."
+"If the prefix is not listed above, it may be a special-line chip or a "
+"misread PN on the board."
 
 #: pricing/templates/pricing/partner_home.html:26
 msgid "Sem cotação"
@@ -1317,8 +1320,12 @@ msgstr "How it works"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em USD, sempre atualizada, sem planilhas."
-msgstr "Here you keep your memory-chip purchase price table — always in USD, always up to date, no spreadsheets."
+msgid ""
+"Aqui você mantém a sua tabela de preços de compra de chips de memória — "
+"sempre em USD, sempre atualizada, sem planilhas."
+msgstr ""
+"Here you keep your memory-chip purchase price table — always in USD, always "
+"up to date, no spreadsheets."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
@@ -1337,8 +1344,11 @@ msgstr "Confirm — your change goes to WhatTheChip for review."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Aprovada, ela passa a valer na hora. Acompanhe a decisão nas notificações."
-msgstr "Once approved, it takes effect immediately. Follow the decision in the notifications."
+msgid ""
+"Aprovada, ela passa a valer na hora. Acompanhe a decisão nas notificações."
+msgstr ""
+"Once approved, it takes effect immediately. Follow the decision in the "
+"notifications."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
@@ -1372,13 +1382,20 @@ msgstr "Good to know"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Os preços de “Outras marcas” valem para todo chip de marca que não tem tabela própria."
-msgstr "“Other brands” prices apply to any chip whose brand has no table of its own."
+msgid ""
+"Os preços de “Outras marcas” valem para todo chip de marca que não tem "
+"tabela própria."
+msgstr ""
+"“Other brands” prices apply to any chip whose brand has no table of its own."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "O câmbio no topo (1 ¥ → USD) é só uma referência — todos os preços são em USD."
-msgstr "The exchange rate at the top (1 ¥ → USD) is just a reference — all prices are in USD."
+msgid ""
+"O câmbio no topo (1 ¥ → USD) é só uma referência — todos os preços são em "
+"USD."
+msgstr ""
+"The exchange rate at the top (1 ¥ → USD) is just a reference — all prices "
+"are in USD."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
@@ -1397,8 +1414,12 @@ msgstr "In which currency do I enter prices?"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Sempre em USD (dólar americano), por chip. O câmbio exibido no topo é apenas uma referência."
-msgstr "Always in USD (US dollars), per chip. The exchange rate shown at the top is only a reference."
+msgid ""
+"Sempre em USD (dólar americano), por chip. O câmbio exibido no topo é apenas"
+" uma referência."
+msgstr ""
+"Always in USD (US dollars), per chip. The exchange rate shown at the top is "
+"only a reference."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
@@ -1407,8 +1428,12 @@ msgstr "Does my price take effect immediately?"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Não. Toda mudança passa primeiro pela revisão do WhatTheChip. Depois de aprovada, vale na hora — e você recebe uma notificação."
-msgstr "No. Every change first goes through WhatTheChip review. Once approved, it takes effect immediately — and you get a notification."
+msgid ""
+"Não. Toda mudança passa primeiro pela revisão do WhatTheChip. Depois de "
+"aprovada, vale na hora — e você recebe uma notificação."
+msgstr ""
+"No. Every change first goes through WhatTheChip review. Once approved, it "
+"takes effect immediately — and you get a notification."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
@@ -1417,8 +1442,12 @@ msgstr "What does “under review” mean?"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Sua mudança foi enviada e aguarda aprovação. Até lá, o valor antigo continua valendo."
-msgstr "Your change was submitted and awaits approval. Until then, the previous value remains in effect."
+msgid ""
+"Sua mudança foi enviada e aguarda aprovação. Até lá, o valor antigo continua"
+" valendo."
+msgstr ""
+"Your change was submitted and awaits approval. Until then, the previous "
+"value remains in effect."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
@@ -1427,8 +1456,12 @@ msgstr "I entered a wrong price. Can I fix it?"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Sim. Envie o valor certo na mesma linha — o novo pedido substitui o anterior."
-msgstr "Yes. Submit the correct value on the same row — the new request replaces the previous one."
+msgid ""
+"Sim. Envie o valor certo na mesma linha — o novo pedido substitui o "
+"anterior."
+msgstr ""
+"Yes. Submit the correct value on the same row — the new request replaces the"
+" previous one."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
@@ -1437,8 +1470,12 @@ msgstr "What is the yellow row?"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "É um chip sem cotação — falta você dar o preço. O contador da página Início mostra quantos faltam."
-msgstr "It is a chip without a quote — the price is still missing. The counter on the Home page shows how many are left."
+msgid ""
+"É um chip sem cotação — falta você dar o preço. O contador da página Início "
+"mostra quantos faltam."
+msgstr ""
+"It is a chip without a quote — the price is still missing. The counter on "
+"the Home page shows how many are left."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
@@ -1447,8 +1484,12 @@ msgstr "What is the “Other brands” table for?"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "É a sua tabela geral. Esses preços valem para chips de qualquer marca que não tem tabela própria."
-msgstr "It is your general table. Those prices apply to chips from any brand that has no table of its own."
+msgid ""
+"É a sua tabela geral. Esses preços valem para chips de qualquer marca que "
+"não tem tabela própria."
+msgstr ""
+"It is your general table. Those prices apply to chips from any brand that "
+"has no table of its own."
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
@@ -1457,7 +1498,9 @@ msgstr "Is a chip missing from my table?"
 
 #. Como funciona (partner_how) — 2026-07-09
 #: pricing/templates/pricing/partner_how.html
-msgid "Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você cotar."
+msgid ""
+"Fale com o WhatTheChip — nós adicionamos a linha e ela aparece para você "
+"cotar."
 msgstr "Contact WhatTheChip — we add the row and it appears for you to quote."
 
 #. Catálogo PDF do comprador (F9) — 2026-07-10
@@ -1467,7 +1510,9 @@ msgstr "Price catalog (PDF)"
 
 #. Catálogo PDF do comprador (F9) — 2026-07-10
 #: pricing/pdf.py pricing/templates/pricing/partner_home.html
-msgid "Todas as suas tabelas num único arquivo — pronto para enviar aos seus clientes."
+msgid ""
+"Todas as suas tabelas num único arquivo — pronto para enviar aos seus "
+"clientes."
 msgstr "All your tables in a single file — ready to send to your clients."
 
 #. Catálogo PDF do comprador (F9) — 2026-07-10
@@ -1507,8 +1552,12 @@ msgstr "Generated by WhatTheChip"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_base.html
-msgid "Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥ em US$. Muda só quando o contrato mudar."
-msgstr "Contract rate with WhatTheChip — the rate used to convert your ¥ into US$. It changes only when the contract changes."
+msgid ""
+"Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥"
+" em US$. Muda só quando o contrato mudar."
+msgstr ""
+"Contract rate with WhatTheChip — the rate used to convert your ¥ into US$. "
+"It changes only when the contract changes."
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_base.html
@@ -1537,13 +1586,23 @@ msgstr "Catalog currency"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_home.html
-msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. Os preços de <strong>Outras marcas</strong> valem para todo chip de marca que não tem tabela própria."
-msgstr "Prices per chip, in <strong>yuan (¥ RMB)</strong> — the US$ conversion uses the contract rate shown at the top. <strong>Other brands</strong> prices apply to any chip from a brand without its own table."
+msgid ""
+"Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa"
+" a taxa do contrato, exibida no topo. Os preços de <strong>Outras "
+"marcas</strong> valem para todo chip de marca que não tem tabela própria."
+msgstr ""
+"Prices per chip, in <strong>yuan (¥ RMB)</strong> — the US$ conversion uses "
+"the contract rate shown at the top. <strong>Other brands</strong> prices "
+"apply to any chip from a brand without its own table."
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_list.html
-msgid "Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em ¥ (RMB)."
-msgstr "Choose the state of each row; <strong>Quoted</strong> requires the price in ¥ (RMB)."
+msgid ""
+"Escolha o estado de cada linha; <strong>Cotado</strong> exige o preço em ¥ "
+"(RMB)."
+msgstr ""
+"Choose the state of each row; <strong>Quoted</strong> requires the price in "
+"¥ (RMB)."
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_list.html
@@ -1552,8 +1611,12 @@ msgstr "Price ¥"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_how.html
-msgid "Aqui você mantém a sua tabela de preços de compra de chips de memória — sempre em ¥ (RMB), sempre atualizada, sem planilhas."
-msgstr "Here you keep your memory-chip purchase price table — always in ¥ (RMB), always up to date, no spreadsheets."
+msgid ""
+"Aqui você mantém a sua tabela de preços de compra de chips de memória — "
+"sempre em ¥ (RMB), sempre atualizada, sem planilhas."
+msgstr ""
+"Here you keep your memory-chip purchase price table — always in ¥ (RMB), "
+"always up to date, no spreadsheets."
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_how.html
@@ -1562,13 +1625,25 @@ msgstr "Enter the price in ¥ (RMB) and choose the row status."
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_how.html
-msgid "A taxa no topo (1 ¥ → US$) é a do seu contrato com o WhatTheChip — é ela que converte os seus ¥ em US$. Ela só muda quando o contrato mudar, e os seus ¥ nunca mudam junto."
-msgstr "The rate at the top (1 ¥ → US$) is the one in your contract with WhatTheChip — it is what converts your ¥ into US$. It only changes when the contract changes, and your ¥ never change with it."
+msgid ""
+"A taxa no topo (1 ¥ → US$) é a do seu contrato com o WhatTheChip — é ela que"
+" converte os seus ¥ em US$. Ela só muda quando o contrato mudar, e os seus ¥"
+" nunca mudam junto."
+msgstr ""
+"The rate at the top (1 ¥ → US$) is the one in your contract with WhatTheChip"
+" — it is what converts your ¥ into US$. It only changes when the contract "
+"changes, and your ¥ never change with it."
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_how.html
-msgid "Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado — a conversão para US$ é feita pelo sistema, com a taxa do contrato exibida no topo."
-msgstr "Always in ¥ (RMB), per chip. The number you type is what gets stored — the US$ conversion is done by the system, using the contract rate shown at the top."
+msgid ""
+"Sempre em ¥ (RMB), por chip. O número que você digita é o que fica guardado "
+"— a conversão para US$ é feita pelo sistema, com a taxa do contrato exibida "
+"no topo."
+msgstr ""
+"Always in ¥ (RMB), per chip. The number you type is what gets stored — the "
+"US$ conversion is done by the system, using the contract rate shown at the "
+"top."
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_how.html
@@ -1577,8 +1652,12 @@ msgstr "What if the contract rate changes?"
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/templates/pricing/partner_how.html
-msgid "Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula a partir deles."
-msgstr "Your ¥ prices do not change. Only the US$ value the system calculates from them changes."
+msgid ""
+"Os seus preços em ¥ não mudam. Só muda o valor em US$ que o sistema calcula "
+"a partir deles."
+msgstr ""
+"Your ¥ prices do not change. Only the US$ value the system calculates from "
+"them changes."
 
 #. F10 RMB canônico — 2026-07-16
 #: pricing/pdf.py
@@ -1606,8 +1685,13 @@ msgstr "page %(a)s of %(b)s"
 msgid "Vendas"
 msgstr "Sales"
 
-msgid "Fechar um lote gera a cotação (valores vivos); confirmar congela ¥, taxa e US$ — a ordem confirmada nunca muda (ajustes entram como acerto)."
-msgstr "Closing a lot creates the quotation (live values); confirming freezes ¥, rate and US$ — a confirmed order never changes (adjustments come in as a settlement)."
+msgid ""
+"Fechar um lote gera a cotação (valores vivos); confirmar congela ¥, taxa e "
+"US$ — a ordem confirmada nunca muda (ajustes entram como acerto)."
+msgstr ""
+"Closing a lot creates the quotation (live values); confirming freezes ¥, "
+"rate and US$ — a confirmed order never changes (adjustments come in as a "
+"settlement)."
 
 msgid "Ordem"
 msgstr "Order"
@@ -1668,11 +1752,17 @@ msgid "Total"
 msgstr "Total"
 
 #, python-format
-msgid "%(n)s linha(s) sem preço — complete o grid do comprador para poder confirmar"
-msgstr "%(n)s line(s) without a price — complete the buyer's grid before confirming"
+msgid ""
+"%(n)s linha(s) sem preço — complete o grid do comprador para poder confirmar"
+msgstr ""
+"%(n)s line(s) without a price — complete the buyer's grid before confirming"
 
-msgid "Confirmar congela o ¥, a taxa do contrato e o US$ desta ordem — ela não muda mais (ajustes do resultado entram como acerto). Confirmar?"
-msgstr "Confirming freezes this order's ¥, contract rate and US$ — it no longer changes (result adjustments come in as a settlement). Confirm?"
+msgid ""
+"Confirmar congela o ¥, a taxa do contrato e o US$ desta ordem — ela não muda"
+" mais (ajustes do resultado entram como acerto). Confirmar?"
+msgstr ""
+"Confirming freezes this order's ¥, contract rate and US$ — it no longer "
+"changes (result adjustments come in as a settlement). Confirm?"
 
 msgid "Confirmar ordem"
 msgstr "Confirm order"
@@ -1686,17 +1776,29 @@ msgstr "Order confirmed — values frozen (¥ + contract rate + US$)."
 msgid "Ordem cancelada."
 msgstr "Order cancelled."
 
-msgid "Este lote tem uma Ordem de Venda CONFIRMADA — cancele a ordem no menu Vendas antes de reabrir."
-msgstr "This lot has a CONFIRMED Sales Order — cancel the order in the Sales menu before reopening."
+msgid ""
+"Este lote tem uma Ordem de Venda CONFIRMADA — cancele a ordem no menu Vendas"
+" antes de reabrir."
+msgstr ""
+"This lot has a CONFIRMED Sales Order — cancel the order in the Sales menu "
+"before reopening."
 
 #. F11.2 type-to-confirm do fechamento — 2026-07-16
 #: estoque/templates/estoque/estoque.html estoque/views.py
-msgid "Fechar o lote gera a cotação de venda e trava a bancada. Digite o código completo do lote para confirmar:"
-msgstr "Closing the lot creates the sales quotation and locks the bench. Type the full lot code to confirm:"
+msgid ""
+"Fechar o lote gera a cotação de venda e trava a bancada. Digite o código "
+"completo do lote para confirmar:"
+msgstr ""
+"Closing the lot creates the sales quotation and locks the bench. Type the "
+"full lot code to confirm:"
 
 #, python-format
-msgid "Código de confirmação não confere — digite o código completo do lote (ex.: %(code)s). O lote NÃO foi fechado."
-msgstr "Confirmation code does not match — type the full lot code (e.g., %(code)s). The lot was NOT closed."
+msgid ""
+"Código de confirmação não confere — digite o código completo do lote (ex.: "
+"%(code)s). O lote NÃO foi fechado."
+msgstr ""
+"Confirmation code does not match — type the full lot code (e.g., %(code)s). "
+"The lot was NOT closed."
 
 #. F11.2c modal de fechamento + smart buttons + PDF da OV — 2026-07-16
 #: estoque/templates/estoque/estoque.html vendas/
@@ -1714,8 +1816,14 @@ msgstr "Settlement"
 msgid "Resultado do comprador"
 msgstr "Buyer result"
 
-msgid "Informe o que o comprador reportou: unidades rejeitadas (mortos) e/ou novo ¥ unitário por categoria. Campos vazios mantêm o combinado. A ordem não muda — a fatura sai com o valor final."
-msgstr "Enter what the buyer reported: rejected units (dead) and/or a new unit ¥ per category. Empty fields keep the agreed values. The order does not change — the invoice carries the final amount."
+msgid ""
+"Informe o que o comprador reportou: unidades rejeitadas (mortos) e/ou novo ¥"
+" unitário por categoria. Campos vazios mantêm o combinado. A ordem não muda "
+"— a fatura sai com o valor final."
+msgstr ""
+"Enter what the buyer reported: rejected units (dead) and/or a new unit ¥ per"
+" category. Empty fields keep the agreed values. The order does not change — "
+"the invoice carries the final amount."
 
 msgid "Un. rejeitadas"
 msgstr "Rejected units"
@@ -1775,7 +1883,8 @@ msgid "Cancelar fatura"
 msgstr "Cancel invoice"
 
 msgid "Cancelar esta fatura? (só sem pagamentos; um novo acerto reemite)"
-msgstr "Cancel this invoice? (only without payments; a new settlement re-issues)"
+msgstr ""
+"Cancel this invoice? (only without payments; a new settlement re-issues)"
 
 msgid "Resultado registrado — fatura emitida com o valor final."
 msgstr "Result recorded — invoice issued with the final amount."
@@ -1826,3 +1935,219 @@ msgstr "already in the lot: %(n)s units"
 
 msgid "Separar para verificação — segue para a fila do gestor."
 msgstr "Set aside for verification — goes to the manager queue."
+
+msgid "Abertos"
+msgstr "Open"
+
+msgid "Abrir novo lote"
+msgstr "Open new lot"
+
+msgid "Adicionar ao lote"
+msgstr "Add to lot"
+
+msgid "Ajuste a busca ou o filtro de status."
+msgstr "Adjust the search or the status filter."
+
+msgid "Atalhos"
+msgstr "Shortcuts"
+
+msgid "Ações"
+msgstr "Actions"
+
+msgid "Buscar nº ou descrição…"
+msgstr "Search no. or description…"
+
+msgid "Cada chip identificado na bancada entra em um lote aberto."
+msgstr "Every chip identified at the bench enters an open lot."
+
+msgid "Categorias"
+msgstr "Categories"
+
+msgid "Categorias hoje"
+msgstr "Categories today"
+
+msgid "Chips pendentes de revisão"
+msgstr "Chips pending review"
+
+msgid "Conferência"
+msgstr "Review"
+
+msgid "Confirmada"
+msgstr "Confirmed"
+
+msgid "Continue de onde parou"
+msgstr "Pick up where you left off"
+
+msgid "Contraparte"
+msgstr "Counterparty"
+
+msgid "Criar e abrir"
+msgstr "Create and open"
+
+msgid "Crie o primeiro lote pelo botão “Novo lote”."
+msgstr "Create the first lot with the “New lot” button."
+
+msgid "Debug"
+msgstr "Debug"
+
+msgid "Descarte"
+msgstr "Discard"
+
+msgid "Descrição do lote (opcional)"
+msgstr "Lot description (optional)"
+
+msgid "Destino"
+msgstr "Destination"
+
+msgid "Em triagem agora"
+msgstr "In triage now"
+
+msgid "Escanear chip"
+msgstr "Scan chip"
+
+msgid "Fabricante"
+msgstr "Manufacturer"
+
+msgid "Faturada"
+msgstr "Invoiced"
+
+msgid "Fechados"
+msgstr "Closed"
+
+msgid "Fechar lote"
+msgstr "Close lot"
+
+msgid "Fila de conferência"
+msgstr "Review queue"
+
+msgid "Fonte"
+msgstr "Source"
+
+msgid "Geral · avaliação"
+msgstr "General · review"
+
+msgid "Indeterminado"
+msgstr "Undetermined"
+
+msgid "Iniciar uma triagem"
+msgstr "Start a triage"
+
+msgid "Leia o código gravado no chip e digite acima."
+msgstr "Read the code marked on the chip and type it above."
+
+msgid "Linhas da ordem"
+msgstr "Order lines"
+
+msgid "Lote aberto · triagem em andamento"
+msgstr "Open lot · triage in progress"
+
+msgid "Lote de origem"
+msgstr "Source lot"
+
+msgid "Mais"
+msgstr "More"
+
+msgid "Mais recentes"
+msgstr "Most recent"
+
+msgid "Mais unidades"
+msgstr "Most units"
+
+msgid "Menos"
+msgstr "Less"
+
+msgid "Menos unidades"
+msgstr "Fewest units"
+
+msgid "Na fila"
+msgstr "In queue"
+
+msgid "Nenhum lote aberto. Abra um lote para a bancada começar a triar."
+msgstr "No open lot. Open a lot so the bench can start triaging."
+
+msgid "Nenhum lote encontrado"
+msgstr "No lot found"
+
+msgid "Novo lote"
+msgstr "New lot"
+
+msgid "Não identificado"
+msgstr "Not identified"
+
+msgid "Números de hoje"
+msgstr "Today’s numbers"
+
+msgid "Ordenar"
+msgstr "Sort"
+
+msgid "Paga"
+msgstr "Paid"
+
+msgid "Período"
+msgstr "Period"
+
+msgid "Rascunho"
+msgstr "Draft"
+
+msgid "Separe para verificação — segue para a fila do gestor."
+msgstr "Set aside for review — goes to the manager’s queue."
+
+msgid "Sucata · resíduo eletrônico"
+msgstr "Scrap · e-waste"
+
+msgid "Tipos hoje"
+msgstr "Types today"
+
+msgid "Todos os lotes"
+msgstr "All lots"
+
+msgid "Todos os lotes e triagem"
+msgstr "All lots and triage"
+
+msgid "Total da ordem"
+msgstr "Order total"
+
+msgid "Triar este lote"
+msgstr "Triage this lot"
+
+msgid "Unidades"
+msgstr "Units"
+
+msgid "Valor"
+msgstr "Value"
+
+msgid "Valoração"
+msgstr "Valuation"
+
+msgid "Você recebe a caixa de destino na hora."
+msgstr "You get the destination box instantly."
+
+msgid "categorias"
+msgstr "categories"
+
+msgid "congelada"
+msgstr "frozen"
+
+msgid "origem"
+msgstr "origin"
+
+msgid "por geração"
+msgstr "by generation"
+
+msgid "preço em ¥"
+msgstr "price in ¥"
+
+msgid "tipos"
+msgstr "types"
+
+msgid "un."
+msgstr "u."
+
+msgid "cob."
+msgstr "cov."
+
+msgid "aberto desde %(d)s"
+msgstr "open since %(d)s"
+
+msgid "desde %(d)s"
+msgstr "since %(d)s"

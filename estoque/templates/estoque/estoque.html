@@ -1220,7 +1220,7 @@ table.est-table td { padding: var(--s5) var(--s5); }
     {# Export/Fechar/Reabrir são de gerente+ (§8) — barreira real na view. #}
     {% if wtc_is_manager %}
     <div class="contents__foot">
-      {% if valuations %}{% for v in valuations %}<span class="valuation">💰 US$ {{ v.total_mid }} <small>({% blocktrans trimmed with cov=v.coverage_units|floatformat:0 %}{{ cov }}% cob.{% endblocktrans %})</small></span>{% endfor %}{% endif %}
+      {% if valuations %}{% for v in valuations %}<span class="valuation">💰 US$ {{ v.total_mid }} <small>({{ v.coverage_units|floatformat:0 }}% {% trans "cob." %})</small></span>{% endfor %}{% endif %}
       <a class="uib uib--ghost" style="margin-left:auto" href="{% url 'estoque:export' lot.pk %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg>{% trans "Exportar" %}</a>
     </div>
