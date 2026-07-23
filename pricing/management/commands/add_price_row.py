@@ -24,7 +24,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
 from pricing.models import (Buyer, KIND_UNIT, KINDS, Price, PriceList,
-                            STATUS_NOT_MADE, STATUS_UNQUOTED, valid_gen)
+                            STATUS_NOT_MADE, STATUS_UNQUOTED, fold_gen,
+                            valid_gen)
 from tenancy.scope import scope_command_to_company
 
 
@@ -60,7 +61,9 @@ class Command(BaseCommand):
             raise CommandError(f"Comprador {opts['buyer']!r} não existe.")
 
         kind = opts['kind'].strip().lower()
-        gen = opts['gen'].strip()
+        # Fold (dono 2026-07-21): aceita a variante no CLI, grava/da match na
+        # geração-BASE (grid canônico — DDR3L→DDR3, LPDDR4X→LPDDR4).
+        gen = fold_gen(kind, opts['gen'].strip())
         if kind not in KINDS:
             raise CommandError(f'kind inválido: {kind!r} (use {sorted(KINDS)}).')
         if not valid_gen(kind, gen):

@@ -48,7 +48,7 @@ from chips.chip_types import canonical_chip_type, is_generic, label_kind
 
 from .models import (KIND_UNIT, KINDS, Price, PriceList, PricingConfig,
                      STATUS_NO_BUY, STATUS_NOT_MADE, STATUS_QUOTED,
-                     STATUS_UNQUOTED, valid_gen)
+                     STATUS_UNQUOTED, fold_gen, valid_gen)
 
 # ── Status do PriceQuote (§5 do PRECIFICACAO) ──────────────────────────────────
 PRICED   = 'PRICED'     # linha cotada encontrada
@@ -192,7 +192,10 @@ def derive_price_key(result: dict):
         return _no_key(kind, f'tipo {canon or chip_type or "desconhecido"!r} '
                              'fora do mercado de preço (triagem descarta)'), None
 
-    # geração da chave
+    # geração da chave — sempre DOBRADA na geração-base da categoria
+    # (fold_gen, fonte única em pricing/models.py): DDR3L/DDR3U→DDR3 (dono
+    # 2026-07-11), LPDDR4X→LPDDR4 avulso (dono 2026-07-21 — "uma só caixa").
+    # eMCP/uMCP mantêm a geração da RAM intacta; GDDR nunca dobra.
     if kind in ('emmc', 'ufs'):
         gen = ''
     elif kind in ('emcp', 'umcp', 'lpddr'):
@@ -201,20 +204,13 @@ def derive_price_key(result: dict):
         gen = (result.get('ram_gen') or '').strip()
         if kind == 'lpddr' and not gen and not is_generic(canon):
             gen = canon
+        gen = fold_gen(kind, gen)
         if not valid_gen(kind, gen):
             return _no_key(kind, 'geração LPDDR indeterminada — não keia preço'), None
     else:  # ddr / gddr
         if is_generic(canon):
             return _no_key(kind, f'geração {canon} genérica — não keia preço'), None
-        gen = canon
-        if kind == 'ddr':
-            # Variantes de TENSÃO precificam como a geração-base (dono,
-            # 2026-07-11: "DDR3L e DDR3 são a mesma coisa em termos de
-            # preço"). Cobre DDR3L/DDR3U/DDR4L… — só sufixo L/U; GDDR5X
-            # etc. NÃO entram (são chips de outro mercado, não tensão).
-            m = re.match(r'^(DDR\d+)[LU]$', gen)
-            if m:
-                gen = m.group(1)
+        gen = fold_gen(kind, canon)
         if not valid_gen(kind, gen):
             return _no_key(kind, f'geração {gen!r} inválida para {kind}'), None
 
@@ -395,6 +391,10 @@ class BuyerPricingContext:
         if not kind or tier_value is None:
             return _no_key(kind or '',
                            no_key_reason or 'chave de preço ausente')
+        # Fold na LEITURA (dono 2026-07-21): chave materializada antes do
+        # fold (price_gen='LPDDR4X'/'DDR3L' gravado) resolve na linha-base
+        # do grid sem exigir resnapshot — leitor acompanha o escritor.
+        gen = fold_gen(kind, gen or '')
         chain = self._chain(brand_name or '')
         if not chain:
             return _quote_no_list(self.buyer, kind, gen, tier_value, tier_unit)

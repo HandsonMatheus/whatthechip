@@ -50,7 +50,8 @@ from django.db import transaction
 
 from chips.models import Brand
 from pricing.models import (Buyer, KIND_UNIT, Price, PriceList,
-                            STATUS_NO_BUY, STATUS_QUOTED, STATUS_UNQUOTED)
+                            STATUS_NO_BUY, STATUS_QUOTED, STATUS_UNQUOTED,
+                            fold_gen)
 from tenancy.scope import scope_command_to_company
 
 # Abas que não são de preço.
@@ -207,7 +208,11 @@ class Command(BaseCommand):
                     skipped.append((where, f'tipo {col_type!r} desconhecido'))
                     continue
 
+                # Fold (dono 2026-07-21): planilha grafada na variante
+                # (DDR3L/LPDDR4X em ddr/lpddr) entra como a geração-BASE —
+                # o grid é canônico (fold_gen; eMCP/uMCP mantêm a RAM).
                 gen = '' if col_gen in ('—', '-', '') else col_gen
+                gen = fold_gen(kind, gen)
                 tier, err = self._parse_tier(kind, col_cap)
                 if err:
                     skipped.append((where, err))

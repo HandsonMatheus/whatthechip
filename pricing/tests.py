@@ -388,8 +388,10 @@ class PriceGoldenTests(TestCase):
         row(cls.l_samsung, 'emmc', '', 64, 'GB', '40', '40', qd=hoje)          # → 5.60
         row(cls.l_samsung, 'emcp', 'LPDDR4X', 64, 'GB', '90', '90')  # sem data → ≈; → 12.60
         row(cls.l_samsung, 'lpddr', 'LPDDR4', 4, 'GB', '25', '25', qd=hoje)    # → 3.50
-        row(cls.l_samsung, 'lpddr', 'LPDDR4X', 4, 'GB', '17', '17', qd=hoje)   # → 2.38
-        row(cls.l_samsung, 'ddr', 'DDR3L', 4, 'Gb', '4', '4', qd=hoje)         # → 0.56
+        # (2026-07-21: a linha LPDDR4X 4GB ¥17 SAIU — "LPDDR4X e LPDDR4 são a
+        # mesma coisa, uma só caixa": o fold no save fundiria as duas na mesma
+        # chave e o twin-check barra a duplicata.)
+        row(cls.l_samsung, 'ddr', 'DDR3L', 4, 'Gb', '4', '4', qd=hoje)         # grava DDR3 (fold no save) → 0.56
         row(cls.l_samsung, 'ddr', 'DDR4', 8, 'Gb', '13', '13', qd=velho)       # → 1.82
         row(cls.l_samsung, 'gddr', 'GDDR5', 8, 'Gb', status=STATUS_NO_BUY)
         row(cls.l_samsung, 'ufs', '', 256, 'GB', status=STATUS_UNQUOTED)
@@ -444,28 +446,36 @@ class PriceGoldenTests(TestCase):
         row = Price.all_companies.get(price_list=self.l_samsung, kind='emcp')
         self.assertEqual(row.price_min, Decimal('90'))
 
-    def test_lpddr4_e_4x_tem_precos_diferentes(self):
+    def test_lpddr4x_dobra_para_lpddr4_na_chave(self):
+        # POLÍTICA NOVA (dono, 2026-07-21): "LPDDR4X e LPDDR4 são a mesma
+        # coisa, uma só caixa" — o X dobra na base no LPDDR AVULSO (eMCP/uMCP
+        # mantêm a geração da RAM: 'manter o formato'). Até 20/07 este golden
+        # afirmava o oposto (4X tinha linha e preço próprios ¥17).
         q4 = self._price(chip_type='LPDDR4', brand='Samsung', cap_gb=4.0,
                          ram_gen='LPDDR4')
         q4x = self._price(chip_type='LPDDR4X', brand='Samsung', cap_gb=4.0,
                           ram_gen='LPDDR4X')
         self.assertEqual(q4.price_min, Decimal('3.50'))    # ¥25 × 0.14
-        self.assertEqual(q4x.price_min, Decimal('2.38'))   # ¥17 × 0.14 — subtype é bug de preço
+        self.assertEqual(q4x.price_min, Decimal('3.50'))   # MESMA chave/caixa
 
     def test_ddr3l_dobra_para_ddr3_na_chave(self):
-        # POLÍTICA NOVA (dono, 2026-07-11): "DDR3L e DDR3 são a mesma coisa em
+        # POLÍTICA (dono, 2026-07-11): "DDR3L e DDR3 são a mesma coisa em
         # termos de preço" — variante de TENSÃO dobra para a geração-base na
-        # chave. (Até 10/07 o golden afirmava o oposto — atualizado junto com
-        # a decisão; a linha DDR3L 0.60 do fixture fica inalcançável de
-        # propósito: grade real não tem linhas DDR3L.)
+        # chave. Desde 2026-07-21 o GRID também é canônico (Price.save dobra):
+        # a linha DDR3L do fixture GRAVOU como DDR3 na lista Samsung — antes
+        # ficava inalcançável e o decode caía na genérica (¥5/0.70).
         q = self._price(chip_type='DDR3L', brand='Samsung', density_gbit_num=4.0)
         self.assertEqual(q.status, 'PRICED')
-        self.assertEqual(q.price_min, Decimal('0.70'))   # DDR3 4Gb da genérica (¥5)
-        self.assertEqual(q.via, 'genérica')
+        self.assertEqual(q.price_min, Decimal('0.56'))   # ¥4 × 0.14 — via marca
+        self.assertEqual(q.via, 'marca')
         # DDR3 puro segue idêntico — mesma chave, mesmo preço.
         q2 = self._price(chip_type='DDR3', brand='Samsung', density_gbit_num=4.0)
-        self.assertEqual(q2.price_min, Decimal('0.70'))
-        self.assertEqual(q2.via, 'genérica')
+        self.assertEqual(q2.price_min, Decimal('0.56'))
+        self.assertEqual(q2.via, 'marca')
+        # E a linha se canonizou de fato no banco:
+        self.assertTrue(Price.all_companies.filter(
+            price_list=self.l_samsung, kind='ddr', gen='DDR3').exists())
+        self.assertFalse(Price.all_companies.filter(gen='DDR3L').exists())
 
     def test_tres_estados_de_sem_preco(self):
         no_buy = self._price(chip_type='GDDR5', brand='Samsung', density_gbit_num=8.0)
@@ -870,16 +880,16 @@ class BenchAndLotPricingTests(TestCase):
             self.assertEqual(lp.company_id, self.company.pk)
             self.assertEqual(lp.lines[0]['pn'], 'KLMCG8GEAC')
             self.assertEqual(lp.lines[0]['min'], '5.60')        # USD, não ¥
-            # gerente NÃO vê o painel de valoração
+            # gerente NÃO vê o chip de valoração (redesenho e7f7cf9: a
+            # valoração no lote virou o chip 💰 do rodapé; gate segue na view
+            # — valuations chega vazio pra gerente).
             resp_m = self.client.get(f'/estoque/lote/{lot.pk}/')
-            self.assertNotContains(resp_m, 'Valoração do lote')
-            # admin vê o CONGELADO
+            self.assertNotContains(resp_m, '💰')
+            # admin vê o CONGELADO (lote fechado serve o snapshot)
             self.client.logout()
             self.client.force_login(self.users['admin'])
             resp_a = self.client.get(f'/estoque/lote/{lot.pk}/')
-            self.assertContains(resp_a, 'Valoração do lote')
-            self.assertContains(resp_a, 'congelada no fechamento')
-            self.assertContains(resp_a, 'US$ 56')               # 10 × US$ 5.60
+            self.assertContains(resp_a, '💰 US$ 56')            # 10 × US$ 5.60
 
     def test_lote_aberto_mostra_estimativa_ao_vivo_para_admin(self):
         from unittest.mock import patch
@@ -887,8 +897,7 @@ class BenchAndLotPricingTests(TestCase):
         with patch('chips.engine.classify', return_value=self._fake_result()):
             self.client.force_login(self.users['admin'])
             resp = self.client.get(f'/estoque/lote/{lot.pk}/')
-            self.assertContains(resp, 'estimativa ao vivo')
-            self.assertContains(resp, 'US$ 28')                 # 5 × US$ 5.60
+            self.assertContains(resp, '💰 US$ 28')              # 5 × US$ 5.60 ao vivo
 
 
 class SeedPriceGridTests(TestCase):
@@ -1538,3 +1547,77 @@ class MigratePricesToRmbTests(TestCase):
             import os
             if os.path.exists('migrate_prices_to_rmb_revert.json'):
                 os.unlink('migrate_prices_to_rmb_revert.json')
+
+
+class FoldGenTests(TestCase):
+    """Fold da geração na CATEGORIA comercial (dono 2026-07-11 e 2026-07-21):
+    DDR3L/DDR3U→DDR3 e LPDDR4X→LPDDR4 (avulso) são a MESMA caixa/preço;
+    eMCP/uMCP mantêm a geração da RAM ("manter o formato") e GDDR nunca
+    dobra (GDDR5X é outro mercado). Fonte única: pricing.models.fold_gen."""
+
+    def test_fold_unitario(self):
+        from .models import fold_gen, gen_spellings
+        self.assertEqual(fold_gen('ddr', 'DDR3L'), 'DDR3')
+        self.assertEqual(fold_gen('ddr', 'DDR4U'), 'DDR4')
+        self.assertEqual(fold_gen('ddr', 'DDR3'), 'DDR3')
+        self.assertEqual(fold_gen('lpddr', 'LPDDR4X'), 'LPDDR4')
+        self.assertEqual(fold_gen('lpddr', 'LPDDR5X'), 'LPDDR5')
+        self.assertEqual(fold_gen('lpddr', 'LPDDR4'), 'LPDDR4')
+        # eMCP/uMCP: intactos ("manter o formato", dono 2026-07-21).
+        self.assertEqual(fold_gen('emcp', 'LPDDR4X'), 'LPDDR4X')
+        self.assertEqual(fold_gen('umcp', 'LPDDR5X'), 'LPDDR5X')
+        # GDDR nunca dobra (lição GDDR5X, 2026-07-11).
+        self.assertEqual(fold_gen('gddr', 'GDDR5X'), 'GDDR5X')
+        # gen_spellings cobre as grafias que dobram na base:
+        self.assertIn('DDR3L', gen_spellings('ddr', 'DDR3'))
+        self.assertIn('LPDDR4X', gen_spellings('lpddr', 'LPDDR4'))
+        self.assertEqual(gen_spellings('emcp', 'LPDDR4X'), ['LPDDR4X'])
+
+    def test_derive_dobra_lpddr_avulso_e_preserva_emcp(self):
+        from .engine import derive_price_key
+        err, key = derive_price_key({'chip_type': 'LPDDR4X',
+                                     'subtype': 'LPDDR4X',
+                                     'ram_gen': 'LPDDR4X', 'cap_gb': 4.0})
+        self.assertIsNone(err)
+        self.assertEqual(key, ('lpddr', 'LPDDR4', Decimal('4.0'), 'GB'))
+        err, key = derive_price_key({'chip_type': 'eMCP',
+                                     'subtype': 'LPDDR4X',
+                                     'ram_gen': 'LPDDR4X', 'nand_gb': 64.0})
+        self.assertIsNone(err)
+        self.assertEqual(key, ('emcp', 'LPDDR4X', Decimal('64.0'), 'GB'))
+
+    def test_chave_materializada_pre_fold_resolve_na_linha_base(self):
+        # price_from_key dobra na LEITURA: entrada do estoque gravada com
+        # price_gen='LPDDR4X' (pré-fold) acha a linha LPDDR4 do grid sem
+        # precisar de resnapshot.
+        from .engine import BuyerPricingContext
+        co = Company.objects.create(name='FoldCo', slug='fold-co')
+        buyer = Buyer.all_companies.create(company=co, name='Wu F',
+                                           slug='wu-fold')
+        pl = PriceList.all_companies.create(buyer=buyer, brand=None)
+        Price.all_companies.create(
+            price_list=pl, kind='lpddr', gen='LPDDR4',
+            tier_value=Decimal('4'), tier_unit='GB', status='quoted',
+            price_min=Decimal('25'), price_max=Decimal('25'),
+            quote_date=date.today())
+        q = BuyerPricingContext(buyer).price_from_key(
+            'lpddr', 'LPDDR4X', Decimal('4.0'), 'GB')
+        self.assertEqual(q.status, 'PRICED')
+        self.assertEqual(q.rmb, Decimal('25'))
+
+    def test_grid_canoniza_no_save_e_colisao_e_amigavel(self):
+        co = Company.objects.create(name='FoldCo2', slug='fold-co2')
+        buyer = Buyer.all_companies.create(company=co, name='Wu F2',
+                                           slug='wu-fold2')
+        pl = PriceList.all_companies.create(buyer=buyer, brand=None)
+        p = Price.all_companies.create(
+            price_list=pl, kind='ddr', gen='DDR3L',
+            tier_value=Decimal('2'), tier_unit='Gb', status='unquoted')
+        p.refresh_from_db()
+        self.assertEqual(p.gen, 'DDR3')            # canonizou sozinho
+        # Variante com a linha-base JÁ presente → ValidationError amigável
+        # (nunca IntegrityError seco — o merge de ¥ é decisão do dono).
+        with self.assertRaises(ValidationError):
+            Price.all_companies.create(
+                price_list=pl, kind='ddr', gen='DDR3U',
+                tier_value=Decimal('2'), tier_unit='Gb', status='unquoted')

@@ -1333,16 +1333,16 @@ class MaskingTests(TestCase):
 
 
 class SeedCategoryCodesTests(TestCase):
-    """F12: o seed numera as categorias existentes (grid + estoque) em ordem
-    SORTEADA, é idempotente, e categoria nova ganha o próximo sequencial."""
+    """F12 v2 (dono 2026-07-21): caixa SÓ para categoria VENDÁVEL do grid —
+    o seed v1 varria o estoque e cunhou DDR1/DDR2 (descarte). O seed numera
+    em ordem SORTEADA, é idempotente; categoria vendável nova ganha o próximo
+    sequencial; categoria FORA do grid cai no C-000; a geração DOBRA na base
+    (LPDDR4X = LPDDR4, mesma caixa); --reset ressemeia do zero."""
 
-    def test_seed_e_sequencial(self):
+    def _grid(self):
         from decimal import Decimal
-        from io import StringIO
-        from django.core.management import call_command
         from chips.models import Brand as ChipBrand
-        from pricing.models import (Buyer, CategoryCode, Price, PriceList,
-                                    STATUS_QUOTED)
+        from pricing.models import Buyer, Price, PriceList, STATUS_QUOTED
         co = Company.objects.create(name='SeedCd', slug='seed-cd')
         buyer = Buyer.all_companies.create(company=co, name='Wu SC',
                                            slug='wu-seedcd')
@@ -1353,18 +1353,73 @@ class SeedCategoryCodesTests(TestCase):
                 price_list=pl, kind='emmc', gen='', tier_value=Decimal(tier),
                 tier_unit='GB', status=STATUS_QUOTED,
                 price_min=Decimal('10'), price_max=Decimal('10'))
+        return co, pl
+
+    def test_seed_grid_only_fold_e_reset(self):
+        from decimal import Decimal
+        from io import StringIO
+        from django.core.management import call_command
+        from pricing.models import (CategoryCode, Price, STATUS_NO_BUY,
+                                    STATUS_UNQUOTED)
+        co, pl = self._grid()
+        # Linha no_buy NÃO vira caixa (não é vendável) …
+        Price.all_companies.create(
+            price_list=pl, kind='gddr', gen='GDDR5', tier_value=Decimal('8'),
+            tier_unit='Gb', status=STATUS_NO_BUY)
+        # … e chave materializada no ESTOQUE tampouco é fonte (era o furo
+        # que cunhou DDR1/DDR2): entrada DDR2 keyada não gera código.
+        user = get_user_model().objects.create_user('seed_op', password='x')
+        _scope(self, co)
+        lot = Lot.all_companies.create(number=901, operator=user, company=co)
+        from chips.models import CatalogVersion
+        InventoryEntry.all_companies.create(
+            lot=lot, part_number='SEEDDDR2', quantity=1, chip_type='DDR2',
+            company=co, snapshot_catalog_version=CatalogVersion.current(),
+            price_kind='ddr', price_gen='DDR2',
+            price_tier_value=Decimal('1'), price_tier_unit='Gb')
+
         out = StringIO()
         call_command('seed_category_codes', stdout=out)          # dry-run
         self.assertEqual(CategoryCode.objects.count(), 0)
         call_command('seed_category_codes', commit=True, stdout=out)
-        self.assertEqual(CategoryCode.objects.count(), 3)
+        self.assertEqual(CategoryCode.objects.count(), 3)        # só as eMMC
         codes = set(CategoryCode.objects.values_list('code', flat=True))
         self.assertEqual(codes, {1, 2, 3})                       # sequencial…
         call_command('seed_category_codes', commit=True, stdout=out)
         self.assertEqual(CategoryCode.objects.count(), 3)        # idempotente
-        # Categoria INÉDITA ganha o próximo número automaticamente:
+        self.assertFalse(CategoryCode.objects.filter(kind='ddr').exists())
+        self.assertFalse(CategoryCode.objects.filter(kind='gddr').exists())
+
+        # Categoria FORA do grid → C-000 e NADA é criado:
+        lbl = CategoryCode.label_for_key('ddr', 'DDR2', Decimal('1'), 'Gb')
+        self.assertEqual(lbl, CategoryCode.GENERAL_LABEL)
+        self.assertEqual(CategoryCode.objects.count(), 3)
+
+        # Categoria vendável INÉDITA (não-cotado conta: está no vocabulário
+        # do comprador) ganha o próximo número automaticamente:
+        Price.all_companies.create(
+            price_list=pl, kind='ufs', gen='', tier_value=Decimal('256'),
+            tier_unit='GB', status=STATUS_UNQUOTED)
         lbl = CategoryCode.label_for_key('ufs', '', Decimal('256'), 'GB')
         self.assertEqual(lbl, 'C-004')
+
+        # Fold: LPDDR4X e LPDDR4 = MESMA caixa (grafada na base):
+        from datetime import date
+        Price.all_companies.create(
+            price_list=pl, kind='lpddr', gen='LPDDR4',
+            tier_value=Decimal('4'), tier_unit='GB', status='quoted',
+            price_min=Decimal('25'), price_max=Decimal('25'),
+            quote_date=date.today())
+        l4x = CategoryCode.label_for_key('lpddr', 'LPDDR4X', Decimal('4'), 'GB')
+        l4 = CategoryCode.label_for_key('lpddr', 'LPDDR4', Decimal('4'), 'GB')
+        self.assertEqual(l4x, l4)
+        self.assertEqual(CategoryCode.objects.filter(kind='lpddr').count(), 1)
+        self.assertEqual(CategoryCode.objects.get(kind='lpddr').gen, 'LPDDR4')
+
+        # --reset: apaga e renumera SÓ o vendável (pré-deploy).
+        call_command('seed_category_codes', commit=True, reset=True, stdout=out)
+        self.assertEqual(CategoryCode.objects.count(), 5)   # 3 eMMC+ufs+lpddr
+        self.assertFalse(CategoryCode.objects.filter(kind='ddr').exists())
 
 
 class DebugButtonGateTests(TestCase):

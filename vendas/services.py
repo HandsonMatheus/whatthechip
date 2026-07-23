@@ -50,11 +50,21 @@ def create_draft_for_lot(lot, user=None):
             return None
 
         # Agregação por (marca, chave) — o resumo por categoria do dono; a
-        # marca entra porque o comprador cota POR MARCA (grid da F6).
-        keyed = (lot.entries.filter(price_tier_value__isnull=False)
-                 .values('brand', 'price_kind', 'price_gen',
-                         'price_tier_value', 'price_tier_unit')
-                 .annotate(qty=Sum('quantity')).order_by())
+        # marca entra porque o comprador cota POR MARCA (grid da F6). O gen
+        # DOBRA na base (fold_gen, dono 2026-07-21): LPDDR4 e LPDDR4X são a
+        # MESMA categoria comercial — chaves gravadas pré-fold se fundem na
+        # mesma linha aqui (em Python: o fold não é expressável no values()).
+        from pricing.models import fold_gen
+        raw = (lot.entries.filter(price_tier_value__isnull=False)
+               .values('brand', 'price_kind', 'price_gen',
+                       'price_tier_value', 'price_tier_unit')
+               .annotate(qty=Sum('quantity')).order_by())
+        merged = {}
+        for row in raw:
+            k = (row['brand'] or '', row['price_kind'],
+                 fold_gen(row['price_kind'], row['price_gen']),
+                 row['price_tier_value'], row['price_tier_unit'])
+            merged[k] = merged.get(k, 0) + row['qty']
         unkeyed = (lot.entries.filter(price_tier_value__isnull=True)
                    .aggregate(t=Sum('quantity'))['t'] or 0)
 
@@ -64,13 +74,10 @@ def create_draft_for_lot(lot, user=None):
                 number=DocSequence.next_number(lot.company, SEQ_SO),
                 unkeyed_units=unkeyed)
             so.save()
-            for row in keyed:
+            for (brand, kind, gen, tv, tu), qty in merged.items():
                 SalesOrderLine.all_companies.create(
-                    order=so, brand=row['brand'] or '',
-                    kind=row['price_kind'], gen=row['price_gen'],
-                    tier_value=row['price_tier_value'],
-                    tier_unit=row['price_tier_unit'],
-                    quantity=row['qty'])
+                    order=so, brand=brand, kind=kind, gen=gen,
+                    tier_value=tv, tier_unit=tu, quantity=qty)
         return so
     except Exception:
         logger.exception('vendas: falha ao criar cotação do lote %s', lot.pk)

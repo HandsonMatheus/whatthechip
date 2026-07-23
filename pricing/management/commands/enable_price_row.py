@@ -28,7 +28,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
 from pricing.models import (Buyer, KIND_UNIT, KINDS, Price, PriceList,
-                            STATUS_NOT_MADE, STATUS_QUOTED, STATUS_UNQUOTED)
+                            STATUS_NOT_MADE, STATUS_QUOTED, STATUS_UNQUOTED,
+                            fold_gen)
 from tenancy.scope import scope_command_to_company
 
 
@@ -71,7 +72,7 @@ class Command(BaseCommand):
                 raise InvalidOperation
         except InvalidOperation:
             raise CommandError(f"tier ilegível: {opts['tier']!r}")
-        gen = opts['gen'].strip()
+        gen = fold_gen(opts['kind'].strip().lower(), opts['gen'].strip())   # grid canônico (2026-07-21)
 
         pl = (PriceList.all_companies
               .filter(buyer=buyer, active=True, brand__name=opts['brand'])

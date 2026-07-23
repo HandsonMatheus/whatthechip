@@ -175,30 +175,33 @@ def _price_key_fields(result: dict) -> dict:
 
 def _masked_category(result: dict):
     """F12: (código C-###, é_geral?) do resultado — o rótulo que a empresa-
-    CLIENTE vê no lugar de tipo/specs. Com chave de preço → C-### (cria o
-    código na 1ª aparição da categoria — permanente); sem chave → C-000
-    'Geral' (balde de avaliação)."""
+    CLIENTE vê no lugar de tipo/specs. Categoria VENDÁVEL → C-### (código
+    permanente, criado na 1ª aparição pela plataforma); sem chave OU fora do
+    mercado de preço (dono 2026-07-21) → C-000 'Geral' (balde de avaliação)."""
     from pricing.engine import derive_price_key
     from pricing.models import CategoryCode
     err, key = derive_price_key(result or {})
     if err is not None:
         return CategoryCode.GENERAL_LABEL, True
-    return CategoryCode.label_for_key(*key), False
+    label = CategoryCode.label_for_key(*key)
+    return label, label == CategoryCode.GENERAL_LABEL
 
 
 def _masked_entry_labels(entries):
     """F12: anexa ``entry.category_label`` (C-###/C-000) numa passada só —
-    lookup em lote (sem N+1) pros renders mascarados da tabela do lote."""
-    from pricing.models import CategoryCode
+    lookup em lote (sem N+1) pros renders mascarados da tabela do lote. A
+    geração da chave gravada DOBRA na base (fold_gen — chave pré-fold tipo
+    'LPDDR4X' cai na caixa 'LPDDR4', dono 2026-07-21)."""
+    from pricing.models import CategoryCode, fold_gen
     keyed = {(c.kind, c.gen, c.tier_value, c.tier_unit): f'C-{c.code:03d}'
              for c in CategoryCode.objects.all()}
     for e in entries:
         if e.price_tier_value is None:
             e.category_label = CategoryCode.GENERAL_LABEL
         else:
-            k = (e.price_kind, e.price_gen, e.price_tier_value,
-                 e.price_tier_unit)
-            # Categoria inédita (entrada anterior ao seed): cria na hora.
+            k = (e.price_kind, fold_gen(e.price_kind, e.price_gen),
+                 e.price_tier_value, e.price_tier_unit)
+            # Inédita: label_for_key decide (vendável cria; morta → C-000).
             e.category_label = keyed.get(k) or CategoryCode.label_for_key(*k)
     return entries
 

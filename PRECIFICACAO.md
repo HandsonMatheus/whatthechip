@@ -885,6 +885,36 @@ correto); máscara testada com empresa-cliente própria (`MaskingTests` +
 is_platform) → smoke com usuário de empresa-CLIENTE (bancada = "Caixa
 C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
 
+**Refinos do teste do dono (2026-07-20/21; suíte 388/388):**
+- **Debug 📋 (copiar diagnóstico) = SÓ superuser** — nem admin de empresa
+  (`confirm_card.html`, gate `user.is_superuser`; `DebugButtonGateTests`).
+- **Card mascarado recuperou o diff verde do fuzzy** (parte digitada vs
+  faltante — só caracteres do PN; `MaskedFuzzyDiffTests`).
+- **Caixa SÓ para categoria VENDÁVEL (v2):** o seed v1 varria as chaves do
+  ESTOQUE e cunhou DDR1/DDR2 (descarte). Agora `seed_category_codes` lê **só
+  o grid** (lista ativa + comprador ativo, status cotado/não-cotado — no_buy
+  e not_made ficam fora) e `CategoryCode.label_for_key` só CRIA código de
+  chave vendável (`key_is_sellable`); fora do grid → **C-000 Geral**. Código
+  já atribuído sempre vale (caixa é física). `--reset` ressemeia (SÓ
+  pré-deploy). Sob RLS, requisição de cliente nunca cria código (a cunhagem
+  é do seed/plataforma).
+- **Fold de geração na categoria comercial** (`pricing.models.fold_gen`,
+  fonte única): **DDR3L/DDR3U→DDR3** (já valia no derive desde 12.16) e
+  agora **LPDDR4X→LPDDR4 / LPDDR5X→LPDDR5 no LPDDR AVULSO** — "mesma coisa,
+  uma só caixa" (dono 2026-07-21), mantendo a separação por capacidade.
+  **eMCP/uMCP mantêm a geração da RAM** na chave ("manter o formato" — a
+  caixa divide pelo NAND, a RAM fica fora do tier desde a F11.1) e **GDDR
+  nunca dobra** (GDDR5X é outro mercado). O fold aplica em: derive (escrita),
+  `price_from_key` (LEITURA — chave materializada pré-fold resolve na
+  linha-base sem resnapshot), agregação da OV (4 e 4X fundem na mesma linha),
+  `label_for_key`/máscara, e o **grid se canoniza no save** (`Price.save`
+  dobra o gen; variante com linha-base já presente → ValidationError amigável
+  — o merge de ¥ é decisão do dono; `import_price_xlsx`/`add_price_row`/
+  `enable_price_row` dobram na entrada). Goldens invertidos registrados:
+  `test_lpddr4x_dobra_para_lpddr4_na_chave` (antes 4X tinha ¥ próprio) e
+  `test_ddr3l_dobra_para_ddr3_na_chave` (linha DDR3L do grid agora é
+  alcançável como DDR3 da marca). `FoldGenTests` cobre o contrato.
+
 ### 12.19 F11 — VENDAS (plano fechado 2026-07-16; **EXECUÇÃO INICIADA no local** — dono deu o "vai" 2026-07-16; publicação em prod só com runbook próprio)
 
 **Motivação:** o incidente dos lotes 41/42 (valoração on-read = classify × PN

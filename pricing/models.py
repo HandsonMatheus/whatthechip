@@ -106,6 +106,43 @@ def valid_gen(kind: str, gen: str) -> bool:
     return bool(rule and rule.match(gen or ''))
 
 
+# ── Fold de geração na CATEGORIA COMERCIAL (dono, 2026-07-11 e 2026-07-21) ────
+# "DDR3L e DDR3 são a mesma coisa" · "LPDDR4X e LPDDR4 são a mesma coisa,
+# uma só caixa" — variantes de tensão (L/U) e o sufixo X precificam e
+# ENCAIXOTAM como a geração-base. FONTE ÚNICA: derive (escrita da chave),
+# price_from_key (leitura de chave legada gravada), CategoryCode (caixa) e
+# o grid (Price.save) dobram AQUI — leitor e escritor nunca divergem.
+# ⚠ eMCP/uMCP mantêm a geração da RAM como está ("manter o formato", dono
+# 2026-07-21) e GDDR NUNCA dobra (GDDR5X é outro mercado — lição 2026-07-11).
+_FOLD_DDR   = re.compile(r'^(DDR\d+)[LU]$')
+_FOLD_LPDDR = re.compile(r'^(LPDDR\d+)X$')
+
+
+def fold_gen(kind: str, gen: str) -> str:
+    """Geração-base da CATEGORIA comercial (caixa/preço) para este kind."""
+    g = (gen or '').strip()
+    if kind == KIND_DDR:
+        m = _FOLD_DDR.match(g)
+        if m:
+            return m.group(1)
+    elif kind == KIND_LPDDR:
+        m = _FOLD_LPDDR.match(g)
+        if m:
+            return m.group(1)
+    return g
+
+
+def gen_spellings(kind: str, gen: str) -> list[str]:
+    """Todas as grafias que DOBRAM nesta geração-base (p/ consultas em dado
+    ainda não canonizado — grid antigo, chave materializada pré-fold)."""
+    out = [gen]
+    if kind == KIND_DDR:
+        out += [f'{gen}L', f'{gen}U']
+    elif kind == KIND_LPDDR:
+        out += [f'{gen}X']
+    return out
+
+
 @pghistory.track()  # auditoria: criar/desativar comprador é evento comercial
 class Buyer(models.Model):
     """O comprador de chips (ex.: Wuquan). Dono das listas de preço."""
@@ -420,6 +457,25 @@ class Price(models.Model):
             raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
+        # Fold da geração (dono 2026-07-21): o grid guarda a geração-BASE da
+        # categoria (DDR3L→DDR3, LPDDR4X→LPDDR4 — fold_gen, fonte única).
+        # Fill-forward silencioso: linha antiga se canoniza no próximo save.
+        # Se a linha-BASE já existe na mesma lista, ValidationError amigável
+        # (não IntegrityError seco): o merge de preços divergentes é decisão
+        # do dono, no admin — o seed lista as linhas dobráveis de antemão.
+        _gen_original = (self.gen or '').strip()
+        self.gen = fold_gen(self.kind, _gen_original)
+        if self.gen != _gen_original and self.price_list_id:
+            twin = Price.all_companies.filter(
+                price_list_id=self.price_list_id, kind=self.kind,
+                gen=self.gen, tier_value=self.tier_value,
+                tier_unit=self.tier_unit).exclude(pk=self.pk)
+            if twin.exists():
+                raise ValidationError({'gen': (
+                    f'{_gen_original!r} dobra na geração-base {self.gen!r} '
+                    f'(mesma categoria — dono 2026-07-21) e esta lista JÁ tem '
+                    f'a linha-base. Funda as duas no admin (decida o ¥) e '
+                    f'apague esta.')})
         # company denormalizada: herda da lista; mismatch é bug de chamador.
         if self.price_list_id:
             list_company_id = PriceList.all_companies.values_list(
@@ -671,18 +727,40 @@ class CategoryCode(models.Model):
         """``C-###`` — canônico universal, NUNCA traduz."""
         return f'C-{self.code:03d}'
 
-    GENERAL_LABEL = 'C-000'          # balde "Geral" (aprovado sem chave)
+    GENERAL_LABEL = 'C-000'          # balde "Geral" (sem categoria vendável)
+
+    @classmethod
+    def key_is_sellable(cls, kind, gen, tier_value, tier_unit) -> bool:
+        """A chave (JÁ dobrada) existe no grid comercial? Caixa só nasce de
+        categoria que o sistema de preços NEGOCIA (dono, 2026-07-21 — o seed
+        v1 varria o estoque e cunhou DDR1/DDR2, que são descarte): linha em
+        lista ATIVA de comprador ATIVO, com status cotado/não-cotado
+        (não-fabricado e não-compro ficam fora). ``gen_spellings`` cobre grid
+        ainda não canonizado (linha antiga grafada DDR3L/LPDDR4X)."""
+        return Price.all_companies.filter(
+            price_list__active=True, price_list__buyer__active=True,
+            status__in=(STATUS_QUOTED, STATUS_UNQUOTED),
+            kind=kind, gen__in=gen_spellings(kind, gen),
+            tier_value=tier_value, tier_unit=tier_unit).exists()
 
     @classmethod
     def label_for_key(cls, kind, gen, tier_value, tier_unit) -> str:
-        """Código da chave — cria com o PRÓXIMO sequencial se a categoria é
-        inédita (categoria nova ganha código na hora, permanente)."""
+        """Código da chave. A geração DOBRA na base (fold_gen — LPDDR4X e
+        LPDDR4 são a MESMA caixa; DDR3L idem, dono 2026-07-21). Código já
+        atribuído SEMPRE vale (caixa é física — nunca renomeia); inédito só
+        nasce se a categoria é VENDÁVEL no grid — senão cai no C-000 'Geral'.
+        Obs.: sob RLS (prod), requisição de empresa-cliente não enxerga o
+        grid → nunca CRIA código (least-privilege); a cunhagem acontece no
+        seed ou no primeiro uso da plataforma."""
         from django.db import IntegrityError, transaction
         from django.db.models import Max
+        gen = fold_gen(kind, gen or '')
         obj = cls.objects.filter(kind=kind, gen=gen, tier_value=tier_value,
                                  tier_unit=tier_unit).first()
         if obj:
             return obj.label
+        if not cls.key_is_sellable(kind, gen, tier_value, tier_unit):
+            return cls.GENERAL_LABEL
         for _tentativa in range(2):      # corrida rara: retry único
             try:
                 with transaction.atomic():

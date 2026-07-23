@@ -106,6 +106,26 @@ class SalesOrderFlowTests(TestCase):
         # Re-fechar sem reabrir NÃO duplica:
         self.assertIsNone(services.create_draft_for_lot(lot, self.user))
 
+    def test_draft_funde_lpddr4_e_4x_na_mesma_linha(self):
+        # Fold (dono 2026-07-21): "LPDDR4X e LPDDR4 são a mesma coisa, uma só
+        # caixa" — entradas com chave gravada PRÉ-fold (gen 'LPDDR4X') fundem
+        # com as 'LPDDR4' na MESMA linha da OV (agregação dobra o gen).
+        from decimal import Decimal as D
+        from chips.models import CatalogVersion
+        lot = Lot.open_for_company(self.company, self.user, 'lote fold')
+        for pn, gen, qty in (('LPFOLD4', 'LPDDR4', 2), ('LPFOLD4X', 'LPDDR4X', 3)):
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number=pn, quantity=qty, brand='Samsung VD',
+                chip_type='LPDDR4', company=self.company,
+                snapshot_catalog_version=CatalogVersion.current(),
+                price_kind='lpddr', price_gen=gen,
+                price_tier_value=D('4'), price_tier_unit='GB')
+        so = services.create_draft_for_lot(lot, self.user)
+        linhas = list(so.lines.filter(kind='lpddr'))
+        self.assertEqual(len(linhas), 1)                    # UMA linha/caixa
+        self.assertEqual(linhas[0].gen, 'LPDDR4')           # grafada na base
+        self.assertEqual(linhas[0].quantity, 5)             # 2 + 3
+
     def test_confirmar_congela_yuan_taxa_e_usd(self):
         lot = self._lot()
         so = services.create_draft_for_lot(lot, self.user)
