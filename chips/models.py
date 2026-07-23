@@ -528,17 +528,9 @@ class ProfitabilityConfig(models.Model):
         help_text="Para DDR4 ou superior: abaixo de X Gb por die → NÃO RENTÁVEL.  (1 Gb = 128 MB | 2 Gb = 256 MB | 8 Gb = 1 GB)"
     )
 
-    # ── GDDR standalone (memória de GPU) ──────────────────────────────────────
-    gddr_min_gen = models.IntegerField(
-        default=3,
-        verbose_name="GDDR — Geração mínima",
-        help_text="Gerações abaixo deste valor → NÃO RENTÁVEL.  (3 = GDDR3 é o mínimo; GDDR2 e sem número → NÃO RENTÁVEL)"
-    )
-    gddr_min_gbit = models.FloatField(
-        default=2.0,
-        verbose_name="GDDR — Densidade mínima (Gb por die)",
-        help_text="Para GDDR3+: abaixo de X Gb por die → NÃO RENTÁVEL; ≥ X → RENTÁVEL.  (2 Gb = 256 MB | 4 Gb = 512 MB)"
-    )
+    # (GDDR: sem limiares desde 2026-07-23 — morto POR TIPO no
+    #  assess_profitability, fora do mercado; gddr_min_gen/gddr_min_gbit
+    #  removidos na migração 0023.)
 
     # ── Metadados ─────────────────────────────────────────────────────────────
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Última atualização")

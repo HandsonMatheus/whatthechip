@@ -148,13 +148,13 @@ def _no_key(kind: str, reason: str) -> PriceQuote:
     return PriceQuote(status=NO_KEY, reason=reason, kind=kind)
 
 
-# ── Fallback de densidade DDR/GDDR (bug lote 40, 2026-07-11) ───────────────────
+# ── Fallback de densidade DDR (bug lote 40, 2026-07-11) ────────────────────────
 # `density_gbit_num` (F0) só nasce de `dram_density` — que Samsung (decode
 # próprio) e Micron (FBGA) preenchem, mas as famílias DDR de SK Hynix/Nanya
 # NÃO: a gramática delas põe os BYTES POR DIE no `capacity` ('256MB'), e os
 # confirmados via bless_base carregam a convenção da caixa ('2G' = 2 Gbit,
 # density_gbit vazio). Nos dois casos a densidade está no `capacity` — só que
-# em outra roupa. Este fallback a despe, SÓ para kind ddr/gddr:
+# em outra roupa. Este fallback a despe, SÓ para kind ddr:
 #   '2Gb'   → 2.0   (Gbit explícito — raro, mas _extract_gbit-style)
 #   '2G'    → 2.0   (Gbit da convenção da caixa; 'G' sem B, case-sensitive)
 #   '256MB' → 2.0   (bytes por die × 8 ÷ 1024)
@@ -195,7 +195,7 @@ def derive_price_key(result: dict):
     # geração da chave — sempre DOBRADA na geração-base da categoria
     # (fold_gen, fonte única em pricing/models.py): DDR3L/DDR3U→DDR3 (dono
     # 2026-07-11), LPDDR4X→LPDDR4 avulso (dono 2026-07-21 — "uma só caixa").
-    # eMCP/uMCP mantêm a geração da RAM intacta; GDDR nunca dobra.
+    # eMCP/uMCP mantêm a geração da RAM intacta.
     if kind in ('emmc', 'ufs'):
         gen = ''
     elif kind in ('emcp', 'umcp', 'lpddr'):
@@ -207,7 +207,7 @@ def derive_price_key(result: dict):
         gen = fold_gen(kind, gen)
         if not valid_gen(kind, gen):
             return _no_key(kind, 'geração LPDDR indeterminada — não keia preço'), None
-    else:  # ddr / gddr
+    else:  # ddr
         if is_generic(canon):
             return _no_key(kind, f'geração {canon} genérica — não keia preço'), None
         gen = fold_gen(kind, canon)
@@ -217,7 +217,7 @@ def derive_price_key(result: dict):
     # tier (capacidade da faixa) — SEMPRE dos campos numéricos da F0
     if kind in ('emcp', 'umcp'):
         tier, faltou = result.get('nand_gb'), 'NAND (GB) indisponível'
-    elif kind in ('ddr', 'gddr'):
+    elif kind == 'ddr':
         tier = result.get('density_gbit_num') or _gbit_from_capacity(result)
         faltou = 'densidade (Gb) indisponível'
     else:

@@ -60,13 +60,17 @@ from tenancy.scope import CompanyScopedManager
 # ── Vocabulário da CHAVE DE PREÇO (consumido também pelo engine na F3) ─────────
 # kind = label_kind do chips/chip_types.py (fonte única de tipos). A unidade do
 # tier segue a convenção inviolável do produto: pacote em GB, die em Gb.
+# (GDDR saiu do mercado em 2026-07-23 — dono: "não rentável, remover do
+#  backend". O kind não existe mais: derive_price_key devolve NO_KEY "tipo
+#  fora do mercado" e a triagem descarta por tipo no assess_profitability.
+#  Linhas gddr remanescentes do grid são apagadas pelo runbook.)
 KIND_EMMC, KIND_UFS, KIND_EMCP, KIND_UMCP = 'emmc', 'ufs', 'emcp', 'umcp'
-KIND_LPDDR, KIND_DDR, KIND_GDDR = 'lpddr', 'ddr', 'gddr'
+KIND_LPDDR, KIND_DDR = 'lpddr', 'ddr'
 
 KIND_CHOICES = [
     (KIND_EMMC,  'eMMC'), (KIND_UFS, 'UFS'),
     (KIND_EMCP,  'eMCP'), (KIND_UMCP, 'uMCP'),
-    (KIND_LPDDR, 'LPDDR'), (KIND_DDR, 'DDR'), (KIND_GDDR, 'GDDR'),
+    (KIND_LPDDR, 'LPDDR'), (KIND_DDR, 'DDR'),
 ]
 KINDS = frozenset(k for k, _ in KIND_CHOICES)
 
@@ -75,7 +79,7 @@ UNIT_CHOICES = [(UNIT_GB, 'GB (pacote)'), (UNIT_GBIT, 'Gb (die)')]
 KIND_UNIT = {                            # unidade OBRIGATÓRIA do tier por kind
     KIND_EMMC: UNIT_GB, KIND_UFS: UNIT_GB, KIND_EMCP: UNIT_GB,
     KIND_UMCP: UNIT_GB, KIND_LPDDR: UNIT_GB,
-    KIND_DDR: UNIT_GBIT, KIND_GDDR: UNIT_GBIT,
+    KIND_DDR: UNIT_GBIT,
 }
 _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
     KIND_EMMC:  re.compile(r'^$'),           # eMMC/UFS não têm geração na chave
@@ -84,7 +88,6 @@ _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
     KIND_UMCP:  re.compile(r'^LPDDR\d'),
     KIND_LPDDR: re.compile(r'^LPDDR\d'),
     KIND_DDR:   re.compile(r'^DDR\d'),       # DDR3/DDR3L/DDR4/DDR5…
-    KIND_GDDR:  re.compile(r'^GDDR\d'),
 }
 
 STATUS_QUOTED, STATUS_NO_BUY, STATUS_UNQUOTED = 'quoted', 'no_buy', 'unquoted'
@@ -113,7 +116,7 @@ def valid_gen(kind: str, gen: str) -> bool:
 # price_from_key (leitura de chave legada gravada), CategoryCode (caixa) e
 # o grid (Price.save) dobram AQUI — leitor e escritor nunca divergem.
 # ⚠ eMCP/uMCP mantêm a geração da RAM como está ("manter o formato", dono
-# 2026-07-21) e GDDR NUNCA dobra (GDDR5X é outro mercado — lição 2026-07-11).
+# 2026-07-21). (GDDR saiu do mercado em 2026-07-23 — kind extinto.)
 _FOLD_DDR   = re.compile(r'^(DDR\d+)[LU]$')
 _FOLD_LPDDR = re.compile(r'^(LPDDR\d+)X$')
 
@@ -325,12 +328,12 @@ class Price(models.Model):
     kind = models.CharField(max_length=8, choices=KIND_CHOICES, verbose_name='Tipo')
     gen  = models.CharField(
         max_length=12, blank=True, default='', verbose_name='Geração',
-        help_text='Token canônico: LPDDR4X / DDR3L / GDDR6… '
+        help_text='Token canônico: LPDDR4X / DDR3L… '
                   'Vazio para eMMC/UFS. Em eMCP/uMCP é a geração da RAM.')
     tier_value = models.DecimalField(
         max_digits=6, decimal_places=1, verbose_name='Faixa de capacidade',
         help_text='eMCP/uMCP: GB do NAND (a RAM fica FORA da chave — regra do '
-                  'comprador). DDR/GDDR: densidade do die em Gb.')
+                  'comprador). DDR: densidade do die em Gb.')
     tier_unit = models.CharField(max_length=2, choices=UNIT_CHOICES,
                                  verbose_name='Unidade')
 
@@ -441,7 +444,7 @@ class Price(models.Model):
             else:
                 errors['gen'] = (f'Geração inválida para {self.kind}: '
                                  f'{self.gen!r} (esperado token canônico, '
-                                 f'ex.: LPDDR4X / DDR3L / GDDR6).')
+                                 f'ex.: LPDDR4X / DDR3L).')
         # Espelho amigável das CheckConstraints (mensagem melhor que IntegrityError).
         if self.status == STATUS_QUOTED:
             if self.price_min is None or self.price_max is None:

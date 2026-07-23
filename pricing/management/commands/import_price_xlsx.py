@@ -26,7 +26,7 @@ Regras encodadas (§6 — todas verificadas na planilha REAL):
      RAM da MESMA faixa COLAPSAM numa linha. Combos com preços DIFERENTES na
      mesma (gen, faixa) = CONFLITO → o import ABORTA com relatório (contradiz a
      regra "cota por faixa"; quem decide é o dono, nunca o código).
-  4. DDR/GDDR: "2Gb" → tier em Gb (die). eMMC/UFS/LPDDR: GB ("1TB" = 1024). A
+  4. DDR: "2Gb" → tier em Gb (die). eMMC/UFS/LPDDR: GB ("1TB" = 1024). A
      unidade da célula TEM que casar o tipo (Gb≠GB — case-sensitive); não casou
      → linha pulada com motivo.
   5. Linha malformada NÃO derruba o import (vira "pulada" no relatório);
@@ -64,8 +64,10 @@ _BRAND_ALIASES = {
 }
 _GENERIC_SHEET = 'other brands'
 
+# (GDDR fora do mercado desde 2026-07-23: linha GDDR da planilha é PULADA
+#  com motivo — nunca vira linha de grid.)
 _TYPE_TO_KIND = {'emmc': 'emmc', 'ufs': 'ufs', 'emcp': 'emcp', 'umcp': 'umcp',
-                 'lpddr': 'lpddr', 'ddr': 'ddr', 'gddr': 'gddr'}
+                 'lpddr': 'lpddr', 'ddr': 'ddr'}
 
 _RANGE_RE = re.compile(r'^\s*(\d+(?:\.\d+)?)\s*[-–]\s*(\d+(?:\.\d+)?)\s*$')
 _NUM_RE   = re.compile(r'^\s*(\d+(?:\.\d+)?)\s*$')

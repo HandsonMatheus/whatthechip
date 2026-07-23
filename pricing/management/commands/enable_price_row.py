@@ -44,7 +44,7 @@ class Command(BaseCommand):
         parser.add_argument('--brand', required=True,
                             help='Nome EXATO da marca da lista (ex.: "SK Hynix").')
         parser.add_argument('--kind', required=True,
-                            help='emmc | ufs | emcp | umcp | lpddr | ddr | gddr')
+                            help='emmc | ufs | emcp | umcp | lpddr | ddr')
         parser.add_argument('--gen', default='',
                             help='Geração canônica (LPDDR4, DDR3…); vazio p/ eMMC/UFS.')
         parser.add_argument('--tier', required=True,

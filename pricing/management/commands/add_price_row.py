@@ -39,9 +39,9 @@ class Command(BaseCommand):
         parser.add_argument('--company', default=None,
                             help='Slug da empresa (obrigatório se houver 2+ ativas).')
         parser.add_argument('--kind', required=True,
-                            help='emmc | ufs | emcp | umcp | lpddr | ddr | gddr')
+                            help='emmc | ufs | emcp | umcp | lpddr | ddr')
         parser.add_argument('--gen', default='',
-                            help='Geração canônica (LPDDR4X, DDR3L, GDDR6…); '
+                            help='Geração canônica (LPDDR4X, DDR3L…); '
                                  'vazio para eMMC/UFS.')
         parser.add_argument('--tier', required=True,
                             help='Faixa de capacidade (GB de pacote/NAND; Gb de die).')
@@ -69,7 +69,7 @@ class Command(BaseCommand):
         if not valid_gen(kind, gen):
             raise CommandError(
                 f'gen {gen!r} não casa o kind {kind!r} (eMMC/UFS = vazio; '
-                'eMCP/uMCP/LPDDR = LPDDRx; DDR = DDRx; GDDR = GDDRx).')
+                'eMCP/uMCP/LPDDR = LPDDRx; DDR = DDRx).')
         if opts['unit'] != KIND_UNIT[kind]:
             raise CommandError(
                 f'{kind} usa {KIND_UNIT[kind]} (pacote em GB, die em Gb).')

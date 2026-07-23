@@ -1085,8 +1085,7 @@ def assess_profitability(result: dict) -> str:
             → NÃO RENTÁVEL (sucata por tipo, independente de capacidade)
 
         GDDR standalone (GPU memory):
-            - GDDR2 ou inferior       → NÃO RENTÁVEL
-            - GDDR3+: < cfg.gddr_min_gbit Gb/die → NÃO RENTÁVEL; ≥ → RENTÁVEL
+            → NÃO RENTÁVEL (morto POR TIPO — fora do mercado; dono 2026-07-23)
 
         Outros tipos (SoC, SDRAM puro, etc.):
             → INDETERMINADO
@@ -1212,28 +1211,17 @@ def assess_profitability(result: dict) -> str:
             return "NÃO RENTÁVEL"
         return "RENTÁVEL"
 
-    # ── GDDR (memória de GPU) ─────────────────────────────────────────────────
-    # "DDR" in combined é True para "GDDR2" (substring) → o bloco DDR abaixo seria
-    # atingido, mas _ddr_generation usa (?<![A-Z])DDR: lookbehind falha em "GDDR2"
-    # (G precede DDR) → ddr_gen=None → INDETERMINADO. Solução: bloco GDDR próprio
-    # verificado ANTES do DDR para interceptar e tratar corretamente.
-    # GDDR2 e abaixo (ou sem número de geração): NÃO RENTÁVEL.
-    # GDDR3+: raro no fluxo — sem threshold de densidade definido → INDETERMINADO.
+    # ── GDDR (memória de GPU) — SEMPRE NÃO RENTÁVEL (dono, 2026-07-23) ───────
+    # Decisão de negócio: GDDR saiu do mercado (o comprador não compra memória
+    # de GPU) — morto POR TIPO, independente de geração/densidade, igual ePoP.
+    # Com isso `is_dead_by_generation` vira True → a triagem manda GDDR ao
+    # DESCARTE mesmo sem confirmação no banco. (Até 2026-07-23 GDDR3+ era
+    # avaliado por cfg.gddr_min_gen/gddr_min_gbit — campos removidos.)
+    # ⚠ O bloco FICA NESTA POSIÇÃO (antes do DDR): "DDR" in combined é True
+    # para "GDDR2" (substring) e _ddr_generation usa (?<![A-Z])DDR — sem a
+    # interceptação aqui, GDDR cairia no bloco DDR como INDETERMINADO.
     if _fam == "gddr":
-        m = re.search(r'GDDR(\d+)', combined)
-        gddr_gen = int(m.group(1)) if m else None
-        if gddr_gen is None or gddr_gen < cfg.gddr_min_gen:
-            return "NÃO RENTÁVEL"
-        # GDDR3+: RENTÁVEL se densidade ≥ cfg.gddr_min_gbit (Gb por die). Espelho do
-        # bloco DDR — fonte primária dram_density ("4Gb = 512MB por die"), fallback GB.
-        min_gbit = cfg.gddr_min_gbit
-        gbit = _extract_gbit(result.get("dram_density") or "")
-        if gbit is not None:
-            return "RENTÁVEL" if gbit >= min_gbit - 0.01 else "NÃO RENTÁVEL"
-        cap_gb = _extract_gib(result.get("capacity") or "")
-        if cap_gb is None:
-            return "INDETERMINADO"
-        return "RENTÁVEL" if cap_gb >= min_gbit * 0.125 - 0.01 else "NÃO RENTÁVEL"
+        return "NÃO RENTÁVEL"
 
     # ── DDR standalone ────────────────────────────────────────────────────────
     # Threshold em Gigabits (não Gigabytes): DDR3 ≥ cfg.ddr3_min_gbit; DDR4+ ≥ cfg.ddr4plus_min_gbit.

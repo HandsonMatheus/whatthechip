@@ -688,21 +688,18 @@ class ProfitabilityTests(TestCase):
             'chip_type': 'ePoP', 'is_emcp': True, 'emcp_ram': '', 'emcp_nand': '',
         }), 'NÃO RENTÁVEL')
 
-    def test_gddr2_nao_rentavel(self):
+    def test_gddr_sempre_nao_rentavel(self):
+        # Decisão de negócio (dono, 2026-07-23): GDDR saiu do mercado — morto
+        # POR TIPO, independente de geração/densidade (até 22/07 GDDR3+ era
+        # avaliado por gddr_min_gen/gddr_min_gbit, removidos). E é DEAD por
+        # tipo → triagem descarta mesmo sem confirmação no banco.
         self.assertEqual(self._assess({'chip_type': 'GDDR2'}), 'NÃO RENTÁVEL')
-
-    def test_gddr3_alta_densidade_rentavel(self):
-        # F1a: GDDR3+ com densidade ≥ cfg.gddr_min_gbit (2Gb) → RENTÁVEL (fix K4W4G1646Q).
         self.assertEqual(self._assess(
-            {'chip_type': 'GDDR3', 'dram_density': '4Gb = 512MB por die'}), 'RENTÁVEL')
-
-    def test_gddr3_baixa_densidade_nao_rentavel(self):
+            {'chip_type': 'GDDR3', 'dram_density': '4Gb = 512MB por die'}), 'NÃO RENTÁVEL')
         self.assertEqual(self._assess(
-            {'chip_type': 'GDDR3', 'dram_density': '1Gb = 128MB por die'}), 'NÃO RENTÁVEL')
-
-    def test_gddr6_rentavel(self):
-        self.assertEqual(self._assess(
-            {'chip_type': 'GDDR6', 'dram_density': '8Gb = 1GB por die'}), 'RENTÁVEL')
+            {'chip_type': 'GDDR6', 'dram_density': '8Gb = 1GB por die'}), 'NÃO RENTÁVEL')
+        self.assertTrue(self._dead({'chip_type': 'GDDR6',
+                                    'dram_density': '8Gb = 1GB por die'}))
 
     def test_ddr3_baixa_densidade_nao_rentavel(self):
         self.assertEqual(self._assess({
@@ -1708,7 +1705,7 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H5AN8G8NAFR-UHC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
     "H5AN8G8NAFR-VKC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
     "H5CG48MEBDX014N":   ("DDR5", "2GB",  "", "", "", "RENTÁVEL"),
-    "H5GQ4H24AJR":       ("GDDR5", "512MB", "", "", "4Gb = 512MB por die [✓]", "RENTÁVEL"),  # âncora H5GQ; densidade DERIVADA (2026-07-11)
+    "H5GQ4H24AJR":       ("GDDR5", "512MB", "", "", "4Gb = 512MB por die [✓]", "NÃO RENTÁVEL"),  # âncora H5GQ; GDDR morto por tipo (2026-07-23)
     "H5PS1G83EFR-S6C":   ("DDR2", "128MB", "", "", "1Gb = 128MB por die [✓]", "NÃO RENTÁVEL"),
     "H5TC4G83CFR-PBA":   ("DDR3L", "512MB", "", "", "4Gb = 512MB por die [✓]", "RENTÁVEL"),
     "H5TQ2G63GFR":       ("DDR3", "256MB", "", "", "2Gb = 256MB por die [✓]", "RENTÁVEL"),
@@ -1773,11 +1770,11 @@ _SAM_GOLDEN = {
     'K4FHE30': ('LPDDR4', '3GB', '', '', '', 'RENTÁVEL'),
     'K4FHE3D': ('LPDDR4', '3GB', '', '', '', 'RENTÁVEL'),
     'K4G10325': ('GDDR5', '', '', '', '1Gb = 128MB por die [~]', 'NÃO RENTÁVEL'),
-    'K4G80325FB': ('GDDR5', '', '', '', '8Gb = 1GB por die [✓]', 'RENTÁVEL'),
+    'K4G80325FB': ('GDDR5', '', '', '', '8Gb = 1GB por die [✓]', 'NÃO RENTÁVEL'),  # GDDR morto por tipo (2026-07-23)
     'K4H510438G': ('DDR1', '', '', '', '512Mb = 64MB por die [~]', 'NÃO RENTÁVEL'),
     'K4H560838D': ('DDR1', '', '', '', '256Mb = 32MB por die [~]', 'NÃO RENTÁVEL'),
-    'K4J10324KE': ('GDDR3', '', '', '', '', 'INDETERMINADO'),
-    'K4J55323QF': ('GDDR3', '', '', '', '', 'INDETERMINADO'),
+    'K4J10324KE': ('GDDR3', '', '', '', '', 'NÃO RENTÁVEL'),  # GDDR morto por tipo (2026-07-23)
+    'K4J55323QF': ('GDDR3', '', '', '', '', 'NÃO RENTÁVEL'),
     'K4M1G1646DBC': ('LPDDR1', '', '', '', '', 'NÃO RENTÁVEL'),
     'K4N51163': ('GDDR2', '', '', '', '', 'NÃO RENTÁVEL'),
     'K4N51163Q': ('GDDR2', '', '', '', '', 'NÃO RENTÁVEL'),
@@ -1796,12 +1793,12 @@ _SAM_GOLDEN = {
     'K4T1G084QJ': ('DDR2', '', '', '', '1Gb = 128MB por die [~]', 'NÃO RENTÁVEL'),
     'K4UHE3D': ('LPDDR4X', '3GB', '', '', '', 'RENTÁVEL'),
     'K4UHE3S': ('LPDDR4X', '3GB', '', '', '', 'RENTÁVEL'),
-    'K4W4G1646': ('GDDR3', '', '', '', '4Gb = 512MB por die [✓]', 'RENTÁVEL'),
-    'K4W4G1646D': ('GDDR3', '', '', '', '4Gb = 512MB por die [✓]', 'RENTÁVEL'),
+    'K4W4G1646': ('GDDR3', '', '', '', '4Gb = 512MB por die [✓]', 'NÃO RENTÁVEL'),  # GDDR morto por tipo (2026-07-23)
+    'K4W4G1646D': ('GDDR3', '', '', '', '4Gb = 512MB por die [✓]', 'NÃO RENTÁVEL'),
     'K4XXXXXX': ('LPDDR1', '', '', '', "Código 'XX' não mapeado — consultar datasheet", 'NÃO RENTÁVEL'),
     'K4XXXXXX-BCPB': ('LPDDR1', '', '', '', "Código 'XX' não mapeado — consultar datasheet", 'NÃO RENTÁVEL'),
-    'K4ZAF325B': ('GDDR6', '', '', '', '', 'INDETERMINADO'),
-    'K4ZAF325BC': ('GDDR6', '', '', '', '', 'INDETERMINADO'),
+    'K4ZAF325B': ('GDDR6', '', '', '', '', 'NÃO RENTÁVEL'),  # GDDR morto por tipo (2026-07-23)
+    'K4ZAF325BC': ('GDDR6', '', '', '', '', 'NÃO RENTÁVEL'),
     'K524G2G': ('NOR Flash', '', '', '', '', 'NÃO RENTÁVEL'),
     'K524G2GACJ': ('NOR Flash', '', '', '', '', 'NÃO RENTÁVEL'),
     'K5D1G12ACD': ('OneNAND', '1Gb', '', '', '', 'NÃO RENTÁVEL'),

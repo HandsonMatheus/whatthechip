@@ -192,33 +192,31 @@ INDETERMINADO antes de checar geração.
 
 Chips afetados antes do fix: K3PE, K4P, K4E8E (todos LPDDR2).
 
-### 3.9 Bloco 6 — GDDR (GPU memory)
+### 3.9 Bloco 6 — GDDR (GPU memory) — **SEMPRE NÃO RENTÁVEL (dono, 2026-07-23)**
 
 ```python
-if "GDDR" in combined:
-    m = re.search(r'GDDR(\d+)', combined)
-    gddr_gen = int(m.group(1)) if m else None
-    if gddr_gen is None or gddr_gen < cfg.gddr_min_gen:
-        return "NÃO RENTÁVEL"
-    return "INDETERMINADO"
+if _fam == "gddr":
+    return "NÃO RENTÁVEL"
 ```
 
-**Por que antes do DDR:** `"DDR" in combined` é True para "GDDR2" (substring).
-O bloco DDR usa `_ddr_generation` com `(?<![A-Z])DDR` — o lookbehind falha em
-"GDDR2" (G precede DDR) → ddr_gen=None → INDETERMINADO. O bloco GDDR intercepta
-antes que isso aconteça.
+**Decisão de negócio (2026-07-23):** GDDR **saiu do mercado** — o comprador
+não compra memória de GPU. Morto **POR TIPO** (igual ePoP/NOR), independente
+de geração e densidade. Consequências: `is_dead_by_generation` = True →
+triagem manda ao **DESCARTE mesmo sem confirmação no banco**; o kind `gddr`
+foi **extinto do pricing** (fora de `KIND_CHOICES`/`KINDS` — `derive_price_key`
+devolve `NO_KEY "tipo fora do mercado"`; `import_price_xlsx` PULA linha GDDR;
+linhas gddr remanescentes do grid são apagadas no runbook). Os campos
+`gddr_min_gen`/`gddr_min_gbit` do `ProfitabilityConfig` foram **removidos**
+(migração chips/0023). Histórico: até 22/07 GDDR3+ era avaliado por
+geração+densidade (fix K4W4G1646Q, 2026-06-20/07-11).
 
-**Convenção de campos:** dois padrões coexistem no banco:
-- Gramática (ChipFamily K4N): `chip_type="GDDR2"`, `subtype="GDDR2 (legacy)"`
-- KnownPart confirmado (fix_known_parts K4J/K4W/K4G/K4Z/H5RS): `chip_type="RAM"`, `subtype="GDDR3"` etc.
-
-Ambos funcionam porque `"GDDR" in combined` captura as duas situações:
-- `"GDDR2 GDDR2 (LEGACY)"` → True
-- `"RAM GDDR3"` → True
-
-GDDR3+ com `gddr_gen >= gddr_min_gen` retorna INDETERMINADO (sem threshold de
-densidade definido por enquanto). Se o negócio decidir que GDDR3 também é
-sucata, basta mudar `gddr_min_gen` para 4 no admin.
+**Por que o bloco FICA nesta posição (antes do DDR), mesmo trivial:**
+`"DDR" in combined` é True para "GDDR2" (substring). O bloco DDR usa
+`_ddr_generation` com `(?<![A-Z])DDR` — o lookbehind falha em "GDDR2"
+(G precede DDR) → ddr_gen=None → INDETERMINADO. O bloco GDDR intercepta
+antes que isso aconteça. O vocabulário GDDR/GDDR5X **segue existindo no
+classificador** (chip_types.py) — o chip é identificado; só o veredito é
+fixo.
 
 ### 3.10 Bloco 7 — DDR standalone
 
@@ -276,7 +274,7 @@ a cada chamada via `get_config()`).
 | `ddr_min_gen` | 3 | — | Geração DDR mínima standalone |
 | `ddr3_min_gbit` | 2.0 | Gb/die | Densidade mínima DDR3 |
 | `ddr4plus_min_gbit` | 1.0 | Gb/die | Densidade mínima DDR4+ |
-| `gddr_min_gen` | 3 | — | Geração GDDR mínima standalone |
+(GDDR: sem limiares desde 2026-07-23 — morto POR TIPO; `gddr_min_gen`/`gddr_min_gbit` removidos na migração chips/0023.)
 
 ### 4.3 O singleton e migrations
 
@@ -337,7 +335,7 @@ DRAM_MOBILE (corrigido via FIX 2026-06-19 no bloco LPDDR).
 - Qualquer tipo no bloco 1 (nand flash, nor flash, mcp, epop)
 - eMCP/uMCP com LPDDR2 (lpddr_gen < emcp_min_lpddr_gen): `emcp_ram="LPDDR2"` → sem número → não muda → still `< 3` → True
 - LPDDR standalone com gen < lpddr_min_gen: `dram_density` esvaziado → gen check ainda dispara
-- GDDR com gen < gddr_min_gen: `gddr_gen < 3` → True
+- GDDR (qualquer geração — morto POR TIPO desde 2026-07-23) → True
 - DDR com gen < ddr_min_gen: `ddr_gen < 3` → True
 
 ### 5.5 Casos onde `is_dead_by_generation` retorna False mas profitable="NÃO RENTÁVEL"
@@ -562,12 +560,13 @@ que exige dados de capacidade e não os encontra.
 
 ## 9. Limitações e casos pendentes
 
-### 9.1 GDDR3+ sem threshold de densidade
+### 9.1 GDDR — RESOLVIDO por decisão de negócio (2026-07-23)
 
-Chips com `gddr_gen >= gddr_min_gen` (padrão: GDDR3, GDDR5, GDDR6) retornam
-INDETERMINADO. Não há threshold de densidade definido para GPU memory ainda.
-Se o negócio decidir que GDDR3 também é sucata → `gddr_min_gen = 4` no admin.
-Se quiser classificar GDDR5/6 por densidade → novo sub-bloco dentro do bloco GDDR.
+~~GDDR3+ sem threshold de densidade retornava INDETERMINADO~~ → superado:
+**GDDR é SEMPRE NÃO RENTÁVEL** (morto por tipo — fora do mercado; ver §3.9).
+Não há mais limiares de GDDR (`gddr_min_gen`/`gddr_min_gbit` removidos).
+Se um dia o mercado voltar a comprar GDDR: recriar os limiares + reintroduzir
+o kind no pricing (`KIND_CHOICES`) + reverter os goldens — decisão do dono.
 
 ### 9.2 Capacidade grammar não confiável para auto-descarte
 

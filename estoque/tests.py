@@ -1364,7 +1364,7 @@ class SeedCategoryCodesTests(TestCase):
         co, pl = self._grid()
         # Linha no_buy NÃO vira caixa (não é vendável) …
         Price.all_companies.create(
-            price_list=pl, kind='gddr', gen='GDDR5', tier_value=Decimal('8'),
+            price_list=pl, kind='ddr', gen='DDR3', tier_value=Decimal('1'),
             tier_unit='Gb', status=STATUS_NO_BUY)
         # … e chave materializada no ESTOQUE tampouco é fonte (era o furo
         # que cunhou DDR1/DDR2): entrada DDR2 keyada não gera código.

@@ -914,6 +914,19 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   `test_lpddr4x_dobra_para_lpddr4_na_chave` (antes 4X tinha ¥ próprio) e
   `test_ddr3l_dobra_para_ddr3_na_chave` (linha DDR3L do grid agora é
   alcançável como DDR3 da marca). `FoldGenTests` cobre o contrato.
+- **GDDR FORA DO NEGÓCIO (dono 2026-07-23):** sempre **NÃO RENTÁVEL** (morto
+  POR TIPO no `assess_profitability` — o bloco fica na posição, interceptando
+  o substring "DDR"; `is_dead_by_generation`=True → descarte mesmo sem
+  confirmação) e **extinto do pricing**: kind `gddr` fora de
+  `KIND_CHOICES`/`KINDS`/`KIND_UNIT`/`_GEN_RULE` → `derive_price_key` devolve
+  NO_KEY "tipo fora do mercado"; `import_price_xlsx` PULA linha GDDR da
+  planilha; `gddr_min_gen`/`gddr_min_gbit` removidos (migração chips/0023);
+  8 goldens GDDR flipados p/ NÃO RENTÁVEL (H5GQ, K4G, K4J, K4W, K4Z). O
+  vocabulário GDDR/GDDR5X segue no CLASSIFICADOR (chip é identificado; o
+  veredito é fixo). **Runbook:** apagar as linhas `kind='gddr'` do grid
+  (local agora; prod no deploy) + reseed dos códigos (os C-### de GDDR somem
+  — pré-deploy, renumeração livre). Bíblia atualizada: RENTABILIDADE.md §3.9
+  e §9.1.
 
 ### 12.19 F11 — VENDAS (plano fechado 2026-07-16; **EXECUÇÃO INICIADA no local** — dono deu o "vai" 2026-07-16; publicação em prod só com runbook próprio)
 

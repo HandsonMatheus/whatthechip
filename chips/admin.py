@@ -325,13 +325,7 @@ class ProfitabilityConfigAdmin(admin.ModelAdmin):
             ),
             "fields": ("ddr_min_gen", "ddr3_min_gbit", "ddr4plus_min_gbit"),
         }),
-        ("GDDR standalone (memória de GPU)", {
-            "description": (
-                "VRAM de GPU (Samsung K4W/K4G/K4J/K4Z…). GDDR3+ é rentável a partir da "
-                "densidade mínima; GDDR2 e sem número → NÃO RENTÁVEL. Gb ≠ GB."
-            ),
-            "fields": ("gddr_min_gen", "gddr_min_gbit"),
-        }),
+        # (GDDR saiu do mercado em 2026-07-23 — morto POR TIPO, sem limiares.)
         ("Histórico", {
             "classes": ("collapse",),
             "fields": ("updated_at", "notes"),

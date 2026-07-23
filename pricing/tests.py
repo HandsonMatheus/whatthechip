@@ -79,7 +79,8 @@ class PriceGateTests(TestCase):
         with self.assertRaises(ValidationError):
             self._price(status=STATUS_NO_BUY)                       # no_buy com USD
         # os três estados de sem-preço/preço são distintos e válidos:
-        self._price(kind='gddr', gen='GDDR5', tier_unit='Gb', status=STATUS_NO_BUY,
+        self._price(kind='ddr', gen='DDR2', tier_value=Decimal('1'),
+                    tier_unit='Gb', status=STATUS_NO_BUY,
                     price_min=None, price_max=None)                 # "NO"
         self._price(kind='ufs', tier_value=Decimal('256'), status=STATUS_UNQUOTED,
                     price_min=None, price_max=None)                 # célula amarela
@@ -290,7 +291,9 @@ class ImportPriceXlsxTests(TestCase):
         # faixa "90-110" RMB → ponto médio ¥100 (preço FIXO; sem × câmbio)
         self.assertEqual((emcp.price_min, emcp.price_max),
                          (Decimal('100.00'), Decimal('100.00')))
-        self.assertEqual(P.get(kind='gddr').status, STATUS_NO_BUY)
+        # GDDR fora do mercado (dono 2026-07-23): a linha da planilha é
+        # PULADA — nunca vira linha de grid.
+        self.assertFalse(P.filter(kind='gddr').exists())
         self.assertEqual(P.get(kind='ufs').status, STATUS_UNQUOTED)
         # Normalização de marca: Toshiba/Kioxia → Toshiba-Kioxia.
         toshiba = P.get(kind='emmc', tier_value=Decimal('16'))
@@ -393,7 +396,9 @@ class PriceGoldenTests(TestCase):
         # chave e o twin-check barra a duplicata.)
         row(cls.l_samsung, 'ddr', 'DDR3L', 4, 'Gb', '4', '4', qd=hoje)         # grava DDR3 (fold no save) → 0.56
         row(cls.l_samsung, 'ddr', 'DDR4', 8, 'Gb', '13', '13', qd=velho)       # → 1.82
-        row(cls.l_samsung, 'gddr', 'GDDR5', 8, 'Gb', status=STATUS_NO_BUY)
+        # (a linha gddr NO_BUY do fixture virou DDR3 16Gb: GDDR saiu do
+        # mercado em 2026-07-23 — kind extinto no pricing.)
+        row(cls.l_samsung, 'ddr', 'DDR3', 16, 'Gb', status=STATUS_NO_BUY)
         row(cls.l_samsung, 'ufs', '', 256, 'GB', status=STATUS_UNQUOTED)
         # Nanya (o "curinga" DRAM, agora como dado):
         row(cls.l_nanya, 'ddr', 'DDR3', 2, 'Gb', '3', '3', qd=hoje)            # → 0.42
@@ -478,13 +483,19 @@ class PriceGoldenTests(TestCase):
         self.assertFalse(Price.all_companies.filter(gen='DDR3L').exists())
 
     def test_tres_estados_de_sem_preco(self):
-        no_buy = self._price(chip_type='GDDR5', brand='Samsung', density_gbit_num=8.0)
+        no_buy = self._price(chip_type='DDR3', brand='Samsung',
+                             density_gbit_num=16.0)
         self.assertEqual(no_buy.status, 'NO_BUY')
         unq = self._price(chip_type='UFS', brand='Samsung', cap_gb=256.0)
         self.assertEqual(unq.status, 'UNQUOTED')
         fora = self._price(chip_type='eMMC', brand='Samsung', cap_gb=24.0)
         self.assertEqual(fora.status, 'NO_ROW')
         self.assertIn('24GB', fora.reason)
+        # GDDR: fora do MERCADO (dono 2026-07-23) — nem chave gera.
+        gddr = self._price(chip_type='GDDR5', brand='Samsung',
+                           density_gbit_num=8.0)
+        self.assertEqual(gddr.status, 'NO_KEY')
+        self.assertIn('fora do mercado', gddr.reason)
 
     def test_generico_e_sem_capacidade_nao_keiam(self):
         self.assertEqual(self._price(chip_type='DDR', brand='Samsung',
@@ -1367,7 +1378,7 @@ class DdrDensityFallbackTests(TestCase):
     dessas famílias põe os bytes POR DIE no `capacity` ('256MB') sem
     `dram_density`, e os confirmados via bless_base carregam a convenção da
     caixa ('2G' = Gbit) com `density_gbit` vazio. O `derive_price_key` agora
-    despe a densidade do `capacity` (fallback SÓ para ddr/gddr)."""
+    despe a densidade do `capacity` (fallback SÓ para ddr)."""
 
     def test_fallback_de_densidade_no_capacity(self):
         from .engine import NO_KEY as NK, derive_price_key
@@ -1405,13 +1416,14 @@ class DdrDensityFallbackTests(TestCase):
             {'chip_type': 'DDR3L', 'subtype': 'DDR3L', 'capacity': '4G'})
         self.assertIsNone(err)
         self.assertEqual(key, ('ddr', 'DDR3', Decimal('4'), 'Gb'))
-        # GDDR5X NÃO dobra para GDDR5 (mercado distinto, não é tensão) — e tem
-        # vocabulário próprio desde 2026-07-11 (antes caía pra 'GDDR' genérico
-        # e mudava a triagem).
+        # GDDR: fora do MERCADO desde 2026-07-23 (dono) — não keia preço,
+        # nenhuma geração (o vocabulário GDDR5X segue existindo no
+        # CLASSIFICADOR; a triagem descarta por tipo).
         err, key = derive_price_key(
             {'chip_type': 'GDDR5X', 'subtype': 'GDDR5X', 'capacity': '8G'})
-        self.assertIsNone(err)
-        self.assertEqual(key, ('gddr', 'GDDR5X', Decimal('8'), 'Gb'))
+        self.assertIsNone(key)
+        self.assertEqual(err.status, 'NO_KEY')
+        self.assertIn('fora do mercado', err.reason)
 
 
 class EnablePriceRowTests(TestCase):
@@ -1566,8 +1578,6 @@ class FoldGenTests(TestCase):
         # eMCP/uMCP: intactos ("manter o formato", dono 2026-07-21).
         self.assertEqual(fold_gen('emcp', 'LPDDR4X'), 'LPDDR4X')
         self.assertEqual(fold_gen('umcp', 'LPDDR5X'), 'LPDDR5X')
-        # GDDR nunca dobra (lição GDDR5X, 2026-07-11).
-        self.assertEqual(fold_gen('gddr', 'GDDR5X'), 'GDDR5X')
         # gen_spellings cobre as grafias que dobram na base:
         self.assertIn('DDR3L', gen_spellings('ddr', 'DDR3'))
         self.assertIn('LPDDR4X', gen_spellings('lpddr', 'LPDDR4'))
