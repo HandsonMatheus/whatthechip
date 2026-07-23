@@ -599,6 +599,10 @@ def painel(request):
     T3: tudo aqui passa a ser escopado por empresa via manager."""
     today = timezone.localdate()
     open_lots = list(Lot.objects.filter(status=Lot.STATUS_OPEN))
+    # F8: valor aproximado (ao vivo) do lote-herói — SÓ admin (mesmo gate do preço).
+    if getattr(request, 'company_role', None) == 'admin' and open_lots:
+        vals = _lot_valuations(request, open_lots[0])
+        open_lots[0].val_mid = vals[0]['total_mid'] if vals else None
     ctx = {
         'open_lots': open_lots,
         'stats': {
@@ -617,8 +621,27 @@ def painel(request):
 def lot_list(request):
     # Todos os lotes (da empresa — T3 escopa via manager; hoje há uma empresa).
     # Antes filtrava por operator=request.user; ver docstring de _get_lot.
-    lots = Lot.objects.all()
-    return render(request, 'estoque/lotes.html', {'lots': lots})
+    lots = list(Lot.objects.all())
+
+    # F8 (PRECIFICACAO §7): valoração por lote — SÓ admin da empresa (mesmo gate
+    # do lot_detail). Fechado = CONGELADO (LotPricing.total_mid, 1 query em bloco);
+    # aberto = ao vivo (poucos lotes abertos). Anexa lot.val_mid (Decimal|None).
+    is_admin = getattr(request, 'company_role', None) == 'admin'
+    if is_admin:
+        from pricing.models import LotPricing
+        frozen = {}
+        for lp in (LotPricing.objects.filter(lot__in=lots)
+                   .order_by('lot_id', '-created_at')):
+            frozen.setdefault(lp.lot_id, lp.total_mid)   # mais recente por lote
+        for lot in lots:
+            if lot.status == Lot.STATUS_CLOSED:
+                lot.val_mid = frozen.get(lot.pk)
+            else:
+                vals = _lot_valuations(request, lot)
+                lot.val_mid = vals[0]['total_mid'] if vals else None
+
+    return render(request, 'estoque/lotes.html',
+                  {'lots': lots, 'show_valuation': is_admin})
 
 
 # ─── lot create ─────────────────────────────────────────────────────────────
