@@ -1017,181 +1017,217 @@ table.est-table td { padding: var(--s5) var(--s5); }
 
 {% block main %}
 
-{# ── Breadcrumb ──────────────────────────────────────────────── #}
-<div style="font-size:13px;color:#6f6f6f;margin-bottom:14px;">
-  <a href="{% url 'estoque:index' %}" style="font-weight:500;">{% trans "Lotes" %}</a>
-  <span style="color:#a8a8a8;margin:0 6px;">/</span>
-  <span style="color:#393939;font-family:'IBM Plex Mono',monospace;">{{ lot.code }}</span>
+<style>
+/* ═══ Bancada — LAYOUT do protótipo screens/triagem.html (.lothead/.bench/.console/.contents/.erow).
+   Só layout novo; componentes (#pn-input, botões, toast, modais) seguem no <style> acima + style.css.
+   Cores literais (não depende de vars). ═══ */
+.crumbs{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#878d96;font-family:'IBM Plex Mono',monospace;margin-bottom:14px;flex-wrap:wrap}
+.crumbs a{color:#878d96;text-decoration:none}.crumbs a:hover{color:#697077}.crumbs .sep{opacity:.5}
+.lothead{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);padding:16px 20px;margin-bottom:20px}
+.lothead__id{display:flex;align-items:center;gap:12px;min-width:0;flex-wrap:wrap}
+.lothead__code{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;letter-spacing:-.01em;line-height:1;white-space:nowrap}
+.lothead__desc{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#697077;letter-spacing:.04em}
+.lothead__neutral{display:flex;align-items:center;gap:16px;color:#697077;font-size:13px}
+.lothead__neutral b{font-family:'IBM Plex Mono',monospace;color:#161616}
+.lothead__actions{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 11px;border-radius:999px}
+.badge .dot{width:7px;height:7px;border-radius:50%}
+.badge--open{background:#e6f7ec;color:#0e6027}.badge--open .dot{background:#24a148}
+.badge--closed{background:#e0e0e0;color:#525252}.badge--closed .dot{background:#8d8d8d}
+.smart{display:flex;flex-direction:column;gap:2px;padding:7px 16px;border:1px solid #c1c7cd;border-radius:12px;background:#fff;text-decoration:none;transition:background .12s}
+.smart:hover{background:#f2f4f8;text-decoration:none}
+.smart__k{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#697077}
+.smart__v{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#161616}
+.lothead .uib,.contents .uib{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 16px;border-radius:8px;font-size:13.5px;font-weight:600;border:0;cursor:pointer;white-space:nowrap;text-decoration:none;font-family:inherit}
+.uib svg{width:15px;height:15px}
+.uib--danger{background:#fff;color:#da1e28;border:1px solid #da1e28}.uib--danger:hover{background:#fff1f1}
+.uib--primary{background:#0f62fe;color:#fff}.uib--primary:hover{background:#0353e9}
+.uib--ghost{background:#fff;color:#161616;border:1px solid #c1c7cd}.uib--ghost:hover{background:#f2f4f8;text-decoration:none}
+.lot-locked{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #dde1e6;border-left:4px solid #697077;border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:14px;color:#393939}
+.bench{display:grid;grid-template-columns:minmax(0,1.6fr) 1fr;gap:20px;align-items:start}
+@media(max-width:980px){.bench{grid-template-columns:1fr}.console{position:static}}
+.console{position:sticky;top:80px;display:flex;flex-direction:column;gap:14px}
+.panel{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05)}
+.panel__head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #e0e0e0}
+.panel__title{font-size:13px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:9px;color:#161616}
+.panel__title svg{width:17px;height:17px;color:#0f62fe}
+.panel__hint{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#878d96;font-weight:500}
+.scan{padding:16px 18px}
+.finder{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #c1c7cd;border-radius:12px;padding:6px 6px 6px 14px;transition:border-color .12s,box-shadow .12s}
+.finder:focus-within{border-color:#0f62fe;box-shadow:0 0 0 4px #edf5ff}
+.finder__mag{width:18px;height:18px;color:#878d96;flex:none}
+.finder input{flex:1;min-width:0;border:0;outline:0;background:none;font-family:'IBM Plex Mono',monospace;font-size:clamp(18px,3vw,22px);font-weight:500;letter-spacing:.03em;color:#161616;text-transform:uppercase}
+.finder input::placeholder{color:#a2a9b0;text-transform:none;letter-spacing:0}
+.finder__mic{width:40px;height:40px;flex:none;background:#f7f8fb;border:1px solid #dde1e6;border-radius:8px;color:#525252;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.finder__go{height:44px;flex:none;display:flex;align-items:center;gap:7px;padding:0 18px;border-radius:8px;background:#0f62fe;color:#fff;font-size:14px;font-weight:600;border:0;cursor:pointer;transition:background .12s;font-family:inherit}
+.finder__go:hover:not(:disabled){background:#0353e9}
+.finder__go:disabled{background:#e0e0e0;color:#a2a9b0;cursor:not-allowed}
+.finder__go.pin-btn--loading{color:transparent;position:relative}
+.finder__go.pin-btn--loading::after{content:"";position:absolute;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:wtcspin .6s linear infinite}
+@keyframes wtcspin{to{transform:rotate(360deg)}}
+.scan__kbd{margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:20px}
+.pin-actions-hint{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#878d96;flex:1}
+.pin-actions-hint--warn{color:#8a6a00}
+.scan__clear{border:0;background:none;color:#697077;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;padding:4px 6px}
+.scan__clear:hover:not(:disabled){color:#161616}.scan__clear:disabled{color:#c1c7cd;cursor:not-allowed}
+.res-idle{padding:36px 18px 40px;text-align:center;color:#a2a9b0}
+.res-idle svg{width:38px;height:38px;opacity:.4;margin-bottom:12px;stroke:#c1c7cd}
+.res-idle p{margin:0;font-size:13.5px;line-height:1.5}
+#confirm-area{padding:0 18px 20px}
+.contents{display:flex;flex-direction:column;overflow:hidden}
+.contents__tools{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid #e0e0e0}
+.contents__tools input[type=search]{flex:1;min-width:0;height:40px;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:10px;padding:0 12px;font-size:14px;color:#161616}
+.contents__tools select{width:108px;flex:none;height:40px;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:10px;padding:0 8px;font-size:14px;color:#161616;cursor:pointer}
+.rows{flex:1;overflow-y:auto;max-height:560px}
+.contents__foot{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid #e0e0e0;background:#f7f8fb;font-size:12px;color:#697077;flex-wrap:wrap}
+.valuation{font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1d6b2f}.valuation small{color:#557a5e;font-weight:400}
+.erow{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #e0e0e0}
+.erow:last-child{border-bottom:0}.erow.is-new{background:#defbe6}
+.erow__qty{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;min-width:44px;color:#161616;text-align:right}
+.erow__qty small{color:#a2a9b0;font-weight:400}
+.erow__main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.erow__pn{font-family:'IBM Plex Mono',monospace;font-size:13.5px;font-weight:600;color:#0f62fe;background:none;border:0;padding:0;text-align:left;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.erow__pn:hover{text-decoration:underline}
+.erow__meta{font-size:11.5px;color:#878d96;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cat{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;white-space:nowrap;flex:none}
+.cat--code{background:#f2f4f8;color:#161616}.cat--type{background:#edf5ff;color:#0f62fe}
+.erow__rm{width:30px;height:30px;border-radius:8px;border:0;background:none;color:#a2a9b0;cursor:pointer;display:grid;place-items:center;flex:none}
+.erow__rm:hover{background:#fff1f1;color:#da1e28}.erow__rm svg{width:15px;height:15px}
+.rows__empty{padding:54px 24px;text-align:center;color:#a2a9b0}.rows__empty svg{width:40px;height:40px;opacity:.4;margin-bottom:10px;stroke:#d0d0d0}
+.rows__pager{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-top:1px solid #e0e0e0;background:#fafafa}
+.rows__pager button{background:#fff;border:1px solid #c1c7cd;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+.rows__pager span{font-size:12px;color:#697077}
+</style>
+
+{# ── Migalhas ─────────────────────────────────────────────────── #}
+<div class="crumbs">
+  <a href="{% url 'estoque:index' %}">{% trans "Lotes" %}</a>
+  <span class="sep">/</span>
+  <span>{{ lot.code }}</span>
 </div>
 
-{# ── Cabeçalho do lote ───────────────────────────────────────── #}
-<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;">
-  <h1 style="margin:0;font-size:clamp(26px,3.4vw,32px);font-weight:300;letter-spacing:-0.01em;white-space:nowrap;"><span style="font-family:'IBM Plex Mono',monospace;font-weight:500;">{{ lot.code }}</span></h1>
-  {% if lot.status == 'closed' %}
-  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.08em;padding:4px 9px;background:#e0e0e0;color:#525252;">{% trans "FECHADO" %}</span>
-  {% else %}
-  <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:0.08em;padding:4px 9px;background:#defbe6;color:#198038;">{% trans "ABERTO" %}</span>
-  {% endif %}
-  {% if lot.description %}
-  <span style="width:1px;height:18px;background:#c6c6c6;"></span>
-  <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#6f6f6f;letter-spacing:0.04em;">{{ lot.description|upper }}</span>
-  {% endif %}
-  <span style="flex:1;"></span>
-  {% if sales_order %}
-  {% comment %} Smart button (padrão Odoo, F11.2c): a venda deste lote — só admin
-     (a view só põe sales_order no ctx para admin). {% endcomment %}
-  <a href="{% url 'vendas:so_detail' sales_order.pk %}"
-     style="display:inline-flex;flex-direction:column;gap:2px;padding:8px 16px;background:#fff;border:1px solid #0f62fe;text-decoration:none;line-height:1.2;">
-    <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Ordem de venda" %}</span>
-    <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ sales_order.code }}</span>
-  </a>
-  {% endif %}
-</div>
-
-{% if lot.status == 'closed' %}
-<div style="display:flex;align-items:center;gap:12px;background:#fff;border-left:4px solid #6f6f6f;padding:14px 18px;margin-bottom:20px;font-size:14px;color:#393939;">
-  🔒 <span>{% blocktrans trimmed %}Lote <strong>fechado</strong> — adições bloqueadas. Reabra para retomar a triagem.{% endblocktrans %}</span>
-</div>
-{% endif %}
-
-{% comment %}
-  Valoração do lote (F8 — SÓ admin; PRECIFICACAO §7). `valuations` só entra no
-  contexto para papel admin (gate na view). Fechado = CONGELADO no fechamento;
-  aberto = estimativa on-read da tabela viva. ⚠ {# #} do Django NÃO é multilinha
-  — comentário longo é SEMPRE {% templatetag opencomment %}comment{% templatetag closecomment %}.
-{% endcomment %}
-{% if valuations %}
-<div style="background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
-  <div style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">
-    💰 {% trans "Valoração do lote" %} {% if lot.status == 'closed' %}· {% trans "congelada no fechamento" %}{% else %}· {% trans "estimativa ao vivo" %}{% endif %}
+{# ── Cabeçalho do lote (.lothead) ─────────────────────────────── #}
+<div class="lothead">
+  <div class="lothead__id">
+    <span class="lothead__code">{{ lot.code }}</span>
+    {% if lot.status == 'closed' %}
+      <span class="badge badge--closed"><span class="dot"></span>{% trans "Fechado" %}</span>
+    {% else %}
+      <span class="badge badge--open"><span class="dot"></span>{% trans "Aberto" %}</span>
+    {% endif %}
+    {% if lot.description %}<span class="lothead__desc">{{ lot.description|upper }}</span>{% endif %}
   </div>
-  {% for v in valuations %}
-  <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;{% if not forloop.last %}margin-bottom:8px;{% endif %}">
-    {# F11.3: a contraparte da empresa é o WhatTheChip — comprador não existe aqui. #}
-    <span style="font-size:13px;font-weight:700;color:#1d6b2f;">WhatTheChip</span>
-    <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#1d6b2f;">US$ {{ v.total_mid }}</span>
-    <span style="font-size:12px;color:#557a5e;">{% blocktrans trimmed with cov=v.coverage_units|floatformat:0 priced=v.priced_units total=v.total_units %}cobertura {{ cov }}% ({{ priced }}/{{ total }} unid.){% endblocktrans %}</span>
-    {% if v.frozen %}<span style="font-size:11px;color:#6f6f6f;">🔒 {{ v.created_at|date:"d/m/Y H:i" }}</span>{% endif %}
-  </div>
-  {% endfor %}
-</div>
-{% endif %}
 
-{# ── Duas colunas: console (esquerda) + estoque (direita) ─────── #}
-<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:stretch;">
-
-  {# ── LEFT: console de triagem ──────────────────────────────── #}
-  <div style="flex:2 1 540px;min-width:0;background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);padding:28px;">
-
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <span style="font-size:12px;font-weight:600;letter-spacing:0.1em;color:#6f6f6f;">{% trans "PART NUMBER" %}</span>
-      <span style="height:1px;background:#e0e0e0;flex:1;"></span>
-    </div>
-
-    <input id="pn-input" name="pn" type="text" value=""
-           placeholder="KMQ310006M-B421" spellcheck="false" autocomplete="off" inputmode="text" autofocus
-           hx-get="{% url 'estoque:preview' lot.pk %}" hx-trigger="pn-ready" hx-target="#confirm-area" hx-swap="innerHTML" hx-include="[name='pn']"
-           style="width:100%;height:76px;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:12px;padding:0 18px;font-family:'IBM Plex Mono',monospace;font-size:clamp(28px,4vw,40px);color:#161616;letter-spacing:0.02em;text-transform:uppercase;" />
-
-    <div style="display:flex;gap:8px;margin-top:14px;">
-      <button type="button" id="est-decode-btn" class="wtc-decode-btn" disabled>{% trans "Decodificar" %} <span style="font-size:18px;">→</span></button>
-      <button type="button" id="est-clear-btn" class="wtc-clear-btn" disabled>{% trans "Limpar" %}</button>
-      <button type="button" id="est-mic-btn" class="wtc-mic-btn"
-              data-mic-target="pn-input" data-mic-hint="est-pin-hint" data-mic-cta="est-decode-btn"
-              title="{% trans 'Ditar por voz' %}" aria-label="{% trans 'Ditar por voz' %}"
-              style="width:52px;height:52px;flex:none;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:12px;color:#525252;cursor:pointer;display:flex;align-items:center;justify-content:center;"></button>
-    </div>
-
-    {# hints ocultos — mantidos para o JS de decode/voz #}
-    <span id="est-pin-hint" class="pin-actions-hint" style="display:none;"></span>
-    <span id="ocr-status" style="display:none;"></span>
-
-    {# Resultado / estado vazio — alvo HTMX #}
-    <div id="confirm-area">
-      <div style="margin-top:28px;border:1px dashed #c1c7cd;border-radius:16px;padding:44px 24px;text-align:center;">
-        <svg width="40" height="40" viewBox="0 0 32 32" fill="none" stroke="#d0d0d0" stroke-width="1.5" style="margin-bottom:12px;"><path d="M16 4 28 10v12L16 28 4 22V10z"/><path d="M4 10l12 6 12-6M16 16v12"/></svg>
-        <div style="font-size:14px;color:#a8a8a8;">{% trans "Nenhum chip lido ainda" %}</div>
-      </div>
-    </div>
+  {# masked e unmasked veem contagens neutras (a barra de rentabilidade exige dados de breakdown que a view não passa hoje) #}
+  <div class="lothead__neutral">
+    <span><b>{{ lot.chip_count }}</b> {% trans "tipos" %}</span>
+    <span><b>{{ lot.total_qty }}</b> {% trans "un." %}</span>
   </div>
 
-  {# ── RIGHT: wrapper (brands strip + widget) ──────────────────── #}
-  <div style="flex:1 1 360px;min-width:0;display:flex;flex-direction:column;gap:10px;align-self:stretch;">
-
-    {# ── Marcas suportadas — solto acima do widget ── #}
-    <div style="padding:14px 16px;background:#f7f8fb;border:1px solid #dde1e6;border-radius:12px;">
-      <div style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#6f6f6f;margin-bottom:10px;">{% trans "Marcas suportadas" %}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;">
-        {% for brand in brands %}
-        <span style="font-size:11px;font-weight:700;color:#161616;padding:3px 10px;border:1px solid #c6c6c6;background:#fff;letter-spacing:0.02em;">{{ brand }}{% if brand == "Foresee" %}<sup style="font-size:8px;font-weight:800;letter-spacing:.06em;color:#fff;background:#198038;padding:1px 5px;border-radius:3px;margin-left:5px;vertical-align:top;">{% trans "NOVO" %}</sup>{% endif %}</span>
-        {% endfor %}
-      </div>
-    </div>
-
-    {# ── Widget de estoque do lote ── #}
-    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);display:flex;flex-direction:column;flex:1;">
-
-    <div style="padding:22px 20px 14px;border-bottom:1px solid #e0e0e0;">
-      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:16px;">
-        <h2 style="margin:0;font-size:18px;font-weight:600;white-space:nowrap;">{% trans "Estoque do lote" %}</h2>
-        <span style="font-size:12px;color:#6f6f6f;white-space:nowrap;">{% blocktrans trimmed with n1=lot.chip_count n2=lot.total_qty %}{{ n1 }} tipos · {{ n2 }} un.{% endblocktrans %}</span>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <input id="search-q" name="q" type="search" value="{{ q }}" placeholder="{% trans 'Filtrar por PN…' %}"
-               hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="input changed delay:300ms" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#tipo-filter"
-               style="flex:1;min-width:0;height:40px;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:10px;padding:0 12px;font-size:14px;color:#161616;" />
-        {% if not masked %}
-        {% comment %} F12: filtro por TIPO só faz sentido pra quem vê tipos
-           (plataforma). Empresa-cliente enxerga códigos C-###. {% endcomment %}
-        <select id="tipo-filter" name="tipo"
-                hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="change" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#search-q"
-                style="width:108px;flex:none;height:40px;background:#f7f8fb;border:1px solid #c1c7cd;border-radius:10px;padding:0 8px;font-size:14px;color:#161616;cursor:pointer;">
-          <option value="">{% trans "Todos" %}</option>
-          <option value="eMCP" {% if tipo == "eMCP" %}selected{% endif %}>eMCP</option>
-          <option value="uMCP" {% if tipo == "uMCP" %}selected{% endif %}>uMCP</option>
-          <option value="eMMC" {% if tipo == "eMMC" %}selected{% endif %}>eMMC</option>
-          <option value="UFS"  {% if tipo == "UFS"  %}selected{% endif %}>UFS</option>
-          <option value="RAM"  {% if tipo == "RAM"  %}selected{% endif %}>RAM</option>
-          <option value="NAND" {% if tipo == "NAND" %}selected{% endif %}>NAND</option>
-        </select>
-        {% endif %}
-      </div>
-    </div>
-
-    <div id="table-body-wrap" style="flex:1;overflow-y:auto;max-height:560px;">
-      {% include "estoque/partials/table_body.html" %}
-    </div>
-
-    {# Export/Fechar/Reabrir são de gerente+ (§8) — a barreira real é a view. #}
+  <div class="lothead__actions">
+    {% if sales_order %}
+    {# Smart button (F11.2c) — a venda deste lote (só admin põe sales_order no ctx). #}
+    <a class="smart" href="{% url 'vendas:so_detail' sales_order.pk %}" title="{% trans 'Ordem de venda' %}">
+      <span class="smart__k">{% trans "Ordem de venda" %}</span>
+      <span class="smart__v">{{ sales_order.code }}</span>
+    </a>
+    {% endif %}
     {% if wtc_is_manager %}
-    <div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid #e0e0e0;">
-      <a href="{% url 'estoque:export' lot.pk %}"
-         style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:44px;background:#fff;border:1px solid #c1c7cd;border-radius:10px;color:#161616;font-size:14px;font-weight:600;text-decoration:none;">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#161616" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 19h14"/></svg>
-        {% trans "Exportar" %}
-      </a>
       {% if lot.status == 'open' %}
-      {% comment %} F11.2c: fechar é IRREVERSÍVEL na prática (gera a cotação de venda) —
-         modal da CASA (est-modal, Carbon) com resumo do lote e type-to-confirm
-         do código COMPLETO. A barreira real é a VIEW (confere confirm_code). {% endcomment %}
+      <button type="button" class="uib uib--danger" onclick="openCloseModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>{% trans "Fechar lote" %}</button>
+      {# Form oculto que o modal de confirmação submete (mantido do original). #}
       <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" id="close-lot-form" style="display:none;">
         {% csrf_token %}
         <input type="hidden" name="confirm_code" id="close-confirm-code" value="">
       </form>
-      <button type="button" onclick="openCloseModal()" style="height:44px;padding:0 18px;background:#fff;border:1px solid #da1e28;color:#da1e28;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Fechar Lote" %}</button>
       {% else %}
-      <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="flex:none;margin:0;">
+      <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="margin:0;">
         {% csrf_token %}
-        <button type="submit" style="height:44px;padding:0 18px;background:#0f62fe;border:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Reabrir" %}</button>
+        <button type="submit" class="uib uib--primary">{% trans "Reabrir" %}</button>
       </form>
       {% endif %}
+    {% endif %}
+  </div>
+</div>
+
+{% if lot.status == 'closed' %}
+<div class="lot-locked">🔒 <span>{% blocktrans trimmed %}Lote <strong>fechado</strong> — adições bloqueadas. Reabra para retomar a triagem.{% endblocktrans %}</span></div>
+{% endif %}
+
+{# ── Bancada (.bench): console de scan (esq) + estoque do lote (dir) ── #}
+<div class="bench">
+
+  {# LEFT: console de triagem #}
+  <div class="console">
+    <div class="panel">
+      <div class="panel__head">
+        <span class="panel__title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.3-4.3"/></svg>{% trans "Escanear chip" %}</span>
+        <span class="panel__hint">{{ lot.code }}</span>
+      </div>
+      <div class="scan">
+        <div class="finder">
+          <svg class="finder__mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input id="pn-input" name="pn" type="text" value=""
+                 placeholder="KMQ310006M-B421" spellcheck="false" autocomplete="off" inputmode="text" autofocus
+                 hx-get="{% url 'estoque:preview' lot.pk %}" hx-trigger="pn-ready" hx-target="#confirm-area" hx-swap="innerHTML" hx-include="[name='pn']" />
+          <button type="button" id="est-mic-btn" class="wtc-mic-btn finder__mic"
+                  data-mic-target="pn-input" data-mic-hint="est-pin-hint" data-mic-cta="est-decode-btn"
+                  title="{% trans 'Ditar por voz' %}" aria-label="{% trans 'Ditar por voz' %}"></button>
+          <button type="button" id="est-decode-btn" class="finder__go" disabled>{% trans "Decodificar" %} <span style="font-size:16px;">→</span></button>
+        </div>
+        <div class="scan__kbd">
+          <span id="est-pin-hint" class="pin-actions-hint"></span>
+          <button type="button" id="est-clear-btn" class="scan__clear" disabled>{% trans "Limpar" %}</button>
+        </div>
+        <span id="ocr-status" style="display:none;"></span>
+      </div>
+      {# Resultado / estado vazio — alvo HTMX #}
+      <div id="confirm-area">
+        <div class="res-idle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M15 4v16M4 9h5M4 15h5M15 9h5M15 15h5"/></svg>
+          <p>{% trans "Leia o código gravado no chip e digite acima." %}<br>{% trans "Você recebe a caixa de destino na hora." %}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# RIGHT: estoque do lote (.contents) #}
+  <div class="panel contents">
+    <div class="panel__head">
+      <span class="panel__title">{% trans "Estoque do lote" %} <span class="panel__hint" style="margin-left:6px">{% blocktrans trimmed with n1=lot.chip_count n2=lot.total_qty %}{{ n1 }} tipos · {{ n2 }} un.{% endblocktrans %}</span></span>
+    </div>
+    <div class="contents__tools">
+      <input id="search-q" name="q" type="search" value="{{ q }}" placeholder="{% trans 'Filtrar por PN…' %}"
+             hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="input changed delay:300ms" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#tipo-filter" />
+      {% if not masked %}
+      {# F12: filtro por TIPO só p/ quem vê tipos (plataforma). Cliente vê C-###. #}
+      <select id="tipo-filter" name="tipo"
+              hx-get="{% url 'estoque:lot_detail' lot.pk %}" hx-trigger="change" hx-target="#table-body-wrap" hx-swap="innerHTML" hx-include="#search-q">
+        <option value="">{% trans "Todos" %}</option>
+        <option value="eMCP" {% if tipo == "eMCP" %}selected{% endif %}>eMCP</option>
+        <option value="uMCP" {% if tipo == "uMCP" %}selected{% endif %}>uMCP</option>
+        <option value="eMMC" {% if tipo == "eMMC" %}selected{% endif %}>eMMC</option>
+        <option value="UFS"  {% if tipo == "UFS"  %}selected{% endif %}>UFS</option>
+        <option value="RAM"  {% if tipo == "RAM"  %}selected{% endif %}>RAM</option>
+        <option value="NAND" {% if tipo == "NAND" %}selected{% endif %}>NAND</option>
+      </select>
+      {% endif %}
+    </div>
+    <div class="rows" id="table-body-wrap">
+      {% include "estoque/partials/table_body.html" %}
+    </div>
+    {# Export/Fechar/Reabrir são de gerente+ (§8) — barreira real na view. #}
+    {% if wtc_is_manager %}
+    <div class="contents__foot">
+      {% if valuations %}{% for v in valuations %}<span class="valuation">💰 US$ {{ v.total_mid }} <small>({% blocktrans trimmed with cov=v.coverage_units|floatformat:0 %}{{ cov }}% cob.{% endblocktrans %})</small></span>{% endfor %}{% endif %}
+      <a class="uib uib--ghost" style="margin-left:auto" href="{% url 'estoque:export' lot.pk %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg>{% trans "Exportar" %}</a>
     </div>
     {% endif %}
-    </div>{# /widget estoque #}
+  </div>
 
-  </div>{# /right wrapper #}
-
-</div>{# /duas colunas #}
+</div>{# /.bench #}
 
 {# Token CSRF acessível ao JS para htmx.ajax #}
 <div id="est-lot-data" data-lot-pk="{{ lot.pk }}" style="display:none"></div>
@@ -1571,25 +1607,25 @@ function closeCloseModal(){document.getElementById('close-modal-overlay').style.
 
   // Event delegation — funciona mesmo após HTMX substituir o card
   document.addEventListener('click', function(e) {
-    var btn = e.target.closest('.est-debug-btn');
+    var uib = e.target.closest('.est-debug-btn');
     if (!btn) return;
-    var card = btn.closest('[data-debug]');
+    var card = uib.closest('[data-debug]');
     if (!card) return;
     var rawJson = card.getAttribute('data-debug');
     var d;
     try { d = JSON.parse(rawJson); } catch(err) { return; }
     // Sincroniza PN com o valor atual do input
     if (pnInput) d.pn = pnInput.value || d.pn;
-    btn.disabled    = true;
-    btn.textContent = '…';
+    uib.disabled    = true;
+    uib.textContent = '…';
     _copyText(buildDebugText(d))
       .then(function() {
-        btn.textContent = '✓ Copiado!';
-        setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
+        uib.textContent = '✓ Copiado!';
+        setTimeout(function() { uib.textContent = '📋 Debug'; uib.disabled = false; }, 2000);
       })
       .catch(function() {
-        btn.textContent = 'Erro';
-        setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
+        uib.textContent = 'Erro';
+        setTimeout(function() { uib.textContent = '📋 Debug'; uib.disabled = false; }, 2000);
       });
   });
 

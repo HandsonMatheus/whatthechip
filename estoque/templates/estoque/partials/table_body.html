@@ -1,57 +1,55 @@
 {% load i18n %}
 {% comment %}
-  Lista do estoque (coluna direita, Carbon v2). Alvo HTMX #table-body-wrap.
-  Clicar no PN re-decodifica (goto); lixeira abre o modal de remoção.
+  Lista do estoque (alvo HTMX #table-body-wrap). Visual .erow do protótipo
+  screens/triagem.html — a marcação usa as classes do <style> do estoque.html
+  (frame). Clicar no PN re-decodifica (goto); lixeira abre o modal de remoção.
 {% endcomment %}
 {% if entries %}
   {% for entry in entries %}
-  <div class="wtc-stock-row" style="padding:14px 20px;border-bottom:1px solid #e0e0e0;{% if just_added == entry.part_number %}background:#defbe6;{% endif %}">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <button type="button"
-              onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ entry.part_number|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;"
-              style="background:none;border:none;padding:0;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500;color:#0f62fe;text-align:left;">{{ entry.part_number }}</button>
-      {% if masked %}
-      {# F12: empresa-cliente vê o CÓDIGO da categoria — nunca o tipo. #}
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:#161616;background:#f2f4f8;padding:3px 8px;border-radius:6px;flex:none;">{{ entry.category_label }}</span>
-      {% elif entry.chip_type %}
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:#0f62fe;background:#edf5ff;padding:3px 8px;border-radius:6px;flex:none;">{{ entry.chip_type }}</span>
+  <div class="erow{% if just_added == entry.part_number %} is-new{% endif %}">
+    <span class="erow__qty">{{ entry.quantity }}<small>×</small></span>
+    <span class="erow__main">
+      <button type="button" class="erow__pn"
+              onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ entry.part_number|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;">{{ entry.part_number }}</button>
+      {% if not masked %}
+        <span class="erow__meta">{{ entry.brand|default:"—" }} · {{ entry.display_capacity }}{% if entry.last_updated %} · {% blocktrans trimmed with d=entry.last_updated|date:"d/m/y H:i" %}atualizado {{ d }}{% endblocktrans %}{% endif %}</span>
+      {% elif entry.last_updated %}
+        <span class="erow__meta">{% blocktrans trimmed with d=entry.last_updated|date:"d/m/y H:i" %}atualizado {{ d }}{% endblocktrans %}</span>
       {% endif %}
-      <span style="flex:1;"></span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;min-width:36px;text-align:right;">{{ entry.quantity }}<span style="font-size:11px;color:#a8a8a8;font-weight:400;"> {% trans "un" %}</span></span>
-      <button type="button" title="{% blocktrans trimmed with pn_esc=entry.part_number|escapejs %}Remover {{ pn_esc }}{% endblocktrans %}"
-              onclick="openDeleteModal({{ entry.pk }}, '{{ entry.part_number|escapejs }}', {{ entry.quantity }})"
-              style="width:30px;height:30px;background:transparent;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:none;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#da1e28" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>
-      </button>
-    </div>
-    <div style="font-size:12px;color:#6f6f6f;margin-top:5px;">{% if not masked %}{{ entry.brand|default:"—" }} · {{ entry.display_capacity }}{% endif %}{% if entry.last_updated %}<span style="color:#a8a8a8;">{% if not masked %} · {% endif %}{% blocktrans trimmed with d=entry.last_updated|date:"d/m/y H:i" %}atualizado {{ d }}{% endblocktrans %}</span>{% endif %}</div>
+    </span>
+    {% if masked %}
+    {# F12: empresa-cliente vê o CÓDIGO da categoria — nunca o tipo. #}
+    <span class="cat cat--code">{{ entry.category_label }}</span>
+    {% elif entry.chip_type %}
+    <span class="cat cat--type">{{ entry.chip_type }}</span>
+    {% endif %}
+    <button type="button" class="erow__rm"
+            title="{% blocktrans trimmed with pn_esc=entry.part_number|escapejs %}Remover {{ pn_esc }}{% endblocktrans %}"
+            onclick="openDeleteModal({{ entry.pk }}, '{{ entry.part_number|escapejs }}', {{ entry.quantity }})">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>
+    </button>
   </div>
   {% endfor %}
   {% if page_obj and page_obj.paginator.num_pages > 1 %}
-  {% comment %}
-    F11.0b: paginação (100 linhas/página — lote grande gerava 700KB de HTML).
-    Os botões usam o MESMO padrão HTMX dos filtros (hx-get parcial no
-    #table-body-wrap); q/tipo preservados na URL; filtros resetam p/ pág. 1.
-  {% endcomment %}
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 20px;border-top:1px solid #e0e0e0;background:#fafafa;">
+  {% comment %} F11.0b: paginação (100 linhas/página). Mesmo padrão HTMX dos
+     filtros (hx-get parcial no #table-body-wrap); q/tipo preservados na URL. {% endcomment %}
+  <div class="rows__pager">
     {% if page_obj.has_previous %}
     <button type="button" class="wtc-page-btn"
             hx-get="{% url 'estoque:lot_detail' lot.pk %}?p={{ page_obj.previous_page_number }}&q={{ q|default:''|urlencode }}&tipo={{ tipo|default:''|urlencode }}"
-            hx-target="#table-body-wrap" hx-swap="innerHTML"
-            style="background:#fff;border:1px solid #c1c7cd;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;">‹ {% trans "Anterior" %}</button>
+            hx-target="#table-body-wrap" hx-swap="innerHTML">‹ {% trans "Anterior" %}</button>
     {% else %}<span></span>{% endif %}
-    <span style="font-size:12px;color:#6f6f6f;">{% blocktrans trimmed with a=page_obj.number b=page_obj.paginator.num_pages %}página {{ a }} de {{ b }}{% endblocktrans %}</span>
+    <span>{% blocktrans trimmed with a=page_obj.number b=page_obj.paginator.num_pages %}página {{ a }} de {{ b }}{% endblocktrans %}</span>
     {% if page_obj.has_next %}
     <button type="button" class="wtc-page-btn"
             hx-get="{% url 'estoque:lot_detail' lot.pk %}?p={{ page_obj.next_page_number }}&q={{ q|default:''|urlencode }}&tipo={{ tipo|default:''|urlencode }}"
-            hx-target="#table-body-wrap" hx-swap="innerHTML"
-            style="background:#fff;border:1px solid #c1c7cd;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;">{% trans "Próxima" %} ›</button>
+            hx-target="#table-body-wrap" hx-swap="innerHTML">{% trans "Próxima" %} ›</button>
     {% else %}<span></span>{% endif %}
   </div>
   {% endif %}
 {% else %}
-  <div style="text-align:center;padding:56px 24px;color:#a8a8a8;">
-    <svg width="40" height="40" viewBox="0 0 32 32" fill="none" stroke="#d0d0d0" stroke-width="1.5" style="margin-bottom:10px;"><path d="M16 4 28 10v12L16 28 4 22V10z"/><path d="M4 10l12 6 12-6M16 16v12"/></svg>
+  <div class="rows__empty">
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 4 28 10v12L16 28 4 22V10z"/><path d="M4 10l12 6 12-6M16 16v12"/></svg>
     <div style="font-size:14px;">{% trans "Nenhum chip encontrado" %}</div>
   </div>
 {% endif %}

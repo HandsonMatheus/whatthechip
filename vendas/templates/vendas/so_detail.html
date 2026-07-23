@@ -2,126 +2,183 @@
 {% load i18n l10n %}
 {% block title %}{{ so.code }} — WhatTheChip?{% endblock %}
 {% block nav_vendas %} wtc-header__nav--active{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ═══ Vendas · Ordem de venda — LAYOUT do protótipo screens/vendas.html ═══
+   Moeda dual ¥+US$ SEMPRE (dono); o NOME do comprador nunca aparece (sigilo —
+   contraparte = WhatTheChip). Cores literais. */
+.vd-wrap{max-width:1100px;margin:0 auto}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#878d96;font-family:'IBM Plex Mono',monospace;margin-bottom:14px;flex-wrap:wrap}
+.crumbs a{color:#878d96;text-decoration:none}.crumbs a:hover{color:#697077}.crumbs .sep{opacity:.5}
+.sohead{display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.sohead__l{min-width:0}
+.sohead__code{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:700;letter-spacing:-.01em;line-height:1.1}
+.sohead__party{font-size:13.5px;color:#697077;margin-top:5px}.sohead__party b{color:#161616;font-weight:600}.sohead__party .mono{font-family:'IBM Plex Mono',monospace}
+.so-badge{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;margin-left:10px;vertical-align:3px}
+.so-badge--draft{background:#fff1c2;color:#8a6d00}.so-badge--ok{background:#defbe6;color:#0e6027}.so-badge--cancel{background:#e8e8e8;color:#525252}
+.sohead__actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap}
+.smart{display:flex;border:1px solid #c1c7cd;border-radius:12px;overflow:hidden}
+.smart a{display:flex;flex-direction:column;justify-content:center;padding:7px 16px;border-right:1px solid #dde1e6;background:#fff;text-decoration:none;transition:background .12s}
+.smart a:last-child{border-right:0}.smart a:hover{background:#f2f4f8;text-decoration:none}.smart a.is-current{background:#edf5ff}
+.smart__k{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#878d96}
+.smart__v{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#161616;margin-top:2px}
+.pdfbtn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;background:#fff;border:1px solid #c1c7cd;border-radius:10px;color:#161616;font-size:13px;font-weight:600;text-decoration:none}
+.pdfbtn:hover{background:#f2f4f8;text-decoration:none}.pdfbtn svg{width:14px;height:14px}
+.sod-steps{display:flex;align-items:center;gap:0;background:#fff;border:1px solid #dde1e6;border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.06);padding:4px;margin-bottom:22px;overflow:hidden}
+.step{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;height:40px;font-size:13px;font-weight:600;color:#878d96}
+.step .n{width:20px;height:20px;border-radius:50%;background:#f2f4f8;color:#878d96;display:grid;place-items:center;font-size:11px;font-family:'IBM Plex Mono',monospace}
+.step.is-done{color:#0e6027}.step.is-done .n{background:#24a148;color:#fff}
+.step.is-current{color:#0043ce;background:#edf5ff;border-radius:8px}.step.is-current .n{background:#0f62fe;color:#fff}
+.step.is-future{color:#a2a9b0}
+.step__sep{width:16px;height:1px;background:#c1c7cd;flex:none}
+.panel{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);overflow:hidden;margin-bottom:16px}
+.panel__head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #e0e0e0}
+.panel__title{font-size:13px;font-weight:700;letter-spacing:.02em}
+.panel__hint{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#878d96}
+.vd-table{width:100%;border-collapse:collapse}
+.vd-table thead th{background:#f2f4f8;text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#878d96;padding:10px 18px;border-bottom:1px solid #dde1e6;white-space:nowrap}
+.vd-table th.num,.vd-table td.num{text-align:right}
+.vd-table tbody td{padding:12px 18px;font-size:13.5px;border-bottom:1px solid #f2f4f8;vertical-align:middle}
+.vd-table tbody tr:last-child td{border-bottom:0}
+.vd-table tbody tr.unpriced{background:#fffbea}
+.mono{font-family:'IBM Plex Mono',monospace}
+.tfoot{display:flex;flex-direction:column;gap:6px;padding:14px 18px;border-top:2px solid #e0e0e0}
+.tfoot__row{display:flex;align-items:baseline;justify-content:space-between;font-size:13px;color:#697077}
+.tfoot__row.total{font-size:16px;color:#161616;font-weight:700;margin-top:2px}
+.tfoot__usd{font-family:'IBM Plex Mono',monospace;color:#697077;font-size:12.5px}
+.tfoot__warn{font-size:12px;color:#8a6d00}
+.actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px}
+.uib{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;border-radius:10px;font-size:14px;font-weight:600;border:0;cursor:pointer;white-space:nowrap;text-decoration:none;font-family:inherit}
+.uib--primary{background:#0f62fe;color:#fff}.uib--primary:hover{background:#0353e9}
+.uib--success{background:#198038;color:#fff}.uib--success:hover{background:#0e6027;text-decoration:none}
+.uib--danger{background:#fff;color:#da1e28;border:1px solid #da1e28}.uib--danger:hover{background:#fff1f1}
+</style>
+{% endblock %}
+
 {% block main %}
 {% comment %}
-  Detalhe da Cotação/OV (F11.2). Moeda dual ¥ + US$ SEMPRE visível (decisão do
-  dono: "deve ser possível visualizar em ambas") — draft deriva pela taxa
-  ATUAL do contrato; confirmada usa a taxa CONGELADA. {% localize off %} em
-  dinheiro (ponto decimal em qualquer idioma). O nome do comprador NÃO aparece
-  (sigilo de plataforma — F11.3 formaliza o codinome).
+  Detalhe da Cotação/OV (F11.2). Moeda dual ¥ + US$ SEMPRE visível (dono);
+  draft deriva pela taxa ATUAL do contrato, confirmada usa a CONGELADA.
+  localize-off em dinheiro. O NOME do comprador NÃO aparece (sigilo —
+  contraparte = WhatTheChip; F11.3). Visual = protótipo screens/vendas.html.
 {% endcomment %}
-<div style="max-width:1100px;margin:0 auto;padding:28px 24px;">
+<div class="vd-wrap">
 
-  {% comment %} Messages são renderizadas pelo SHELL (base_estoque, F11.2) —
-     bloco local removido (duplicava o aviso; revisão do dono 2026-07-16). {% endcomment %}
-  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:4px;">
-    <h1 style="font-weight:300;font-size:28px;margin:0;font-family:'IBM Plex Mono',monospace;">{{ so.code }}</h1>
-    {% if so.status == 'draft' %}<span style="font-size:12px;font-weight:700;background:#fff1c2;color:#8a6d00;padding:3px 10px;border-radius:10px;">{% trans "cotação — valores vivos" %}</span>
-    {% elif so.status == 'confirmed' %}<span style="font-size:12px;font-weight:700;background:#defbe6;color:#0e6027;padding:3px 10px;border-radius:10px;">{% trans "confirmada — valores congelados" %}</span>
-    {% else %}<span style="font-size:12px;font-weight:700;background:#e8e8e8;color:#525252;padding:3px 10px;border-radius:10px;">{% trans "cancelada" %}</span>{% endif %}
-    <span style="flex:1;"></span>
-    <a href="{% url 'vendas:so_pdf' so.pk %}"
-       style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;background:#fff;border:1px solid #c1c7cd;border-radius:10px;color:#161616;font-size:13px;font-weight:600;text-decoration:none;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#161616" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 11l5 4 5-4M5 19h14"/></svg>
-      {% trans "Baixar PDF" %}
-    </a>
-    {% if invoice %}
-    {# Smart button FATURA (F11.4 — o "fatura relacionada" do Odoo). #}
-    <a href="{% url 'vendas:invoice_detail' invoice.pk %}"
-       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;border-radius:12px;text-decoration:none;line-height:1.2;">
-      <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Fatura" %}</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ invoice.code }}</span>
-    </a>
-    {% endif %}
-    {# Smart button (padrão Odoo, F11.2c): o lote desta venda. #}
-    <a href="{% url 'estoque:lot_detail' so.lot.pk %}"
-       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;border-radius:12px;text-decoration:none;line-height:1.2;">
-      <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Lote" %}</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ so.lot.code }}</span>
-    </a>
+  <div class="crumbs">
+    <a href="{% url 'estoque:lot_detail' so.lot.pk %}">{{ so.lot.code }}</a><span class="sep">/</span>
+    <a href="{% url 'vendas:so_list' %}">{% trans "Vendas" %}</a><span class="sep">/</span><span>{{ so.code }}</span>
   </div>
 
-  <p style="font-size:13px;color:#6f6f6f;margin:0 0 18px;">
-    <a href="{% url 'estoque:lot_detail' so.lot.pk %}" style="color:#0f62fe;font-weight:600;">← {{ so.lot.code }}</a>
-    · {% trans "taxa" %} {% localize off %}1 ¥ = US$ {{ fx_rate }}{% endlocalize %}
-    {% if so.status == 'confirmed' %}({% trans "congelada na confirmação" %}){% else %}({% trans "contrato vigente" %}){% endif %}
-    {% if so.unkeyed_units %} · ⚠ {% blocktrans trimmed with n=so.unkeyed_units %}{{ n }} un. sem chave de preço (fora do mercado — ver inventário){% endblocktrans %}{% endif %}
-  </p>
+  {# ── Cabeçalho da OV + smart buttons ─────────────────────────── #}
+  <div class="sohead">
+    <div class="sohead__l">
+      <div class="sohead__code">{{ so.code }}{% if so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "cotação — valores vivos" %}</span>{% elif so.status == 'confirmed' %}<span class="so-badge so-badge--ok">{% trans "confirmada — valores congelados" %}</span>{% else %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% endif %}</div>
+      <div class="sohead__party">{% trans "Contraparte" %} <b>WhatTheChip</b> · {% trans "origem" %} <span class="mono">{{ so.lot.code }}</span> · {% trans "taxa" %} {% localize off %}1 ¥ = US$ {{ fx_rate }}{% endlocalize %} {% if so.status == 'confirmed' %}({% trans "congelada" %}){% else %}({% trans "contrato vigente" %}){% endif %}</div>
+    </div>
+    <div class="sohead__actions">
+      <div class="smart">
+        <a href="{% url 'estoque:lot_detail' so.lot.pk %}" title="{% trans 'Lote de origem' %}"><span class="smart__k">{% trans "Lote" %}</span><span class="smart__v">{{ so.lot.code }}</span></a>
+        <a href="#" class="is-current" title="{% trans 'Ordem de venda' %}"><span class="smart__k">{% trans "Ordem de venda" %}</span><span class="smart__v">{{ so.code }}</span></a>
+        {% if invoice %}<a href="{% url 'vendas:invoice_detail' invoice.pk %}" title="{% trans 'Fatura' %}"><span class="smart__k">{% trans "Fatura" %}</span><span class="smart__v">{{ invoice.code }}</span></a>{% endif %}
+      </div>
+      <a class="pdfbtn" href="{% url 'vendas:so_pdf' so.pk %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 11l5 4 5-4M5 19h14"/></svg>{% trans "Baixar PDF" %}</a>
+    </div>
+  </div>
 
-  <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;overflow:hidden;margin-bottom:16px;">
-    <table style="width:100%;border-collapse:collapse;">
+  {# ── Stepper: Rascunho → Confirmada → Faturada → Paga ─────────── #}
+  <div class="sod-steps">
+    {% if so.status == 'draft' %}
+      <div class="step is-current"><span class="n">1</span>{% trans "Rascunho" %}</div><span class="step__sep"></span>
+      <div class="step is-future"><span class="n">2</span>{% trans "Confirmada" %}</div><span class="step__sep"></span>
+      <div class="step is-future"><span class="n">3</span>{% trans "Faturada" %}</div><span class="step__sep"></span>
+      <div class="step is-future"><span class="n">4</span>{% trans "Paga" %}</div>
+    {% elif so.status == 'confirmed' %}
+      <div class="step is-done"><span class="n">✓</span>{% trans "Rascunho" %}</div><span class="step__sep"></span>
+      <div class="step is-done"><span class="n">✓</span>{% trans "Confirmada" %}</div><span class="step__sep"></span>
+      {% if invoice %}
+        <div class="step is-done"><span class="n">✓</span>{% trans "Faturada" %}</div><span class="step__sep"></span>
+        <div class="step is-current"><span class="n">4</span>{% trans "Paga" %}</div>
+      {% else %}
+        <div class="step is-current"><span class="n">3</span>{% trans "Faturada" %}</div><span class="step__sep"></span>
+        <div class="step is-future"><span class="n">4</span>{% trans "Paga" %}</div>
+      {% endif %}
+    {% else %}
+      <div class="step is-done"><span class="n">✓</span>{% trans "Rascunho" %}</div><span class="step__sep"></span>
+      <div class="step is-future"><span class="n">✕</span>{% trans "Confirmada" %}</div><span class="step__sep"></span>
+      <div class="step is-future"><span class="n">3</span>{% trans "Faturada" %}</div><span class="step__sep"></span>
+      <div class="step is-future"><span class="n">4</span>{% trans "Paga" %}</div>
+    {% endif %}
+  </div>
+
+  {# ── Linhas da ordem ─────────────────────────────────────────── #}
+  <div class="panel">
+    <div class="panel__head"><span class="panel__title">{% trans "Linhas da ordem" %}</span><span class="panel__hint">{% trans "preço em ¥" %}</span></div>
+    <table class="vd-table">
       <thead>
-        <tr style="border-bottom:2px solid #e0e0e0;">
-          <th style="text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Categoria" %}</th>
-          <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Qtd." %}</th>
-          <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "¥ unit." %}</th>
-          <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Total ¥" %}</th>
-          <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Total US$" %}</th>
+        <tr>
+          <th>{% trans "Categoria" %}</th><th class="num">{% trans "Qtd." %}</th>
+          <th class="num">{% trans "¥ unit." %}</th><th class="num">{% trans "Total ¥" %}</th><th class="num">{% trans "Total US$" %}</th>
         </tr>
       </thead>
       <tbody>
         {% localize off %}
         {% if so.status == 'draft' %}
           {% for row in rows %}
-          <tr style="border-bottom:1px solid #eee;{% if not row.priced %}background:#fffbea;{% endif %}">
-            <td style="padding:9px 14px;font-weight:600;">{{ row.line.display_label }}</td>
-            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{{ row.line.quantity }}</td>
+          <tr class="{% if not row.priced %}unpriced{% endif %}">
+            <td style="font-weight:600">{{ row.line.display_label }}</td>
+            <td class="num mono">{{ row.line.quantity }}</td>
             {% if row.priced %}
-            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">¥ {{ row.unit_rmb }}</td>
-            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">¥ {{ row.total_rmb }}</td>
-            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">US$ {{ row.total_usd }}</td>
+            <td class="num mono">¥ {{ row.unit_rmb }}</td><td class="num mono">¥ {{ row.total_rmb }}</td><td class="num mono">US$ {{ row.total_usd }}</td>
             {% else %}
-            <td colspan="3" style="padding:9px 14px;text-align:right;font-size:12px;color:#8a6d00;">{{ row.reason }}</td>
+            <td colspan="3" class="num" style="font-size:12px;color:#8a6d00;">{{ row.reason }}</td>
             {% endif %}
           </tr>
           {% endfor %}
         {% else %}
           {% for line in lines %}
-          <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:9px 14px;font-weight:600;">{{ line.display_label }}</td>
-            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{{ line.quantity }}</td>
-            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if line.unit_rmb is not None %}¥ {{ line.unit_rmb }}{% else %}—{% endif %}</td>
-            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if line.total_rmb is not None %}¥ {{ line.total_rmb }}{% else %}—{% endif %}</td>
-            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if line.total_usd is not None %}US$ {{ line.total_usd }}{% else %}—{% endif %}</td>
+          <tr>
+            <td style="font-weight:600">{{ line.display_label }}</td>
+            <td class="num mono">{{ line.quantity }}</td>
+            <td class="num mono">{% if line.unit_rmb is not None %}¥ {{ line.unit_rmb }}{% else %}—{% endif %}</td>
+            <td class="num mono">{% if line.total_rmb is not None %}¥ {{ line.total_rmb }}{% else %}—{% endif %}</td>
+            <td class="num mono">{% if line.total_usd is not None %}US$ {{ line.total_usd }}{% else %}—{% endif %}</td>
           </tr>
           {% endfor %}
         {% endif %}
         {% endlocalize %}
       </tbody>
     </table>
-  </div>
-
-  <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
-    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;overflow:hidden;padding:14px 22px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Total" %}</div>
+    <div class="tfoot">
       {% localize off %}
       {% if so.status == 'draft' %}
-      <div style="font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;">¥ {{ live_total_rmb }} <span style="font-size:15px;color:#525252;">· US$ {{ live_total_usd }}</span></div>
-      {% if pending %}<div style="font-size:12px;color:#8a6d00;">⚠ {% blocktrans trimmed with n=pending|length %}{{ n }} linha(s) sem preço — complete o grid do comprador para poder confirmar{% endblocktrans %}</div>{% endif %}
+        <div class="tfoot__row total"><span>{% trans "Total da ordem" %}</span><span><span class="mono">¥ {{ live_total_rmb }}</span> <span class="tfoot__usd">· US$ {{ live_total_usd }}</span></span></div>
+        {% if pending %}<div class="tfoot__warn">⚠ {% blocktrans trimmed with n=pending|length %}{{ n }} linha(s) sem preço — complete o grid do comprador para poder confirmar{% endblocktrans %}</div>{% endif %}
       {% else %}
-      <div style="font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;">{% if so.total_rmb is not None %}¥ {{ so.total_rmb }} <span style="font-size:15px;color:#525252;">· US$ {{ so.total_usd }}</span>{% else %}—{% endif %}</div>
+        <div class="tfoot__row total"><span>{% trans "Total da ordem" %}</span><span>{% if so.total_rmb is not None %}<span class="mono">¥ {{ so.total_rmb }}</span> <span class="tfoot__usd">· US$ {{ so.total_usd }}</span>{% else %}—{% endif %}</span></div>
       {% endif %}
       {% endlocalize %}
+      {% if so.unkeyed_units %}<div class="tfoot__warn">⚠ {% blocktrans trimmed with n=so.unkeyed_units %}{{ n }} un. sem chave de preço (fora do mercado — ver inventário){% endblocktrans %}</div>{% endif %}
     </div>
+  </div>
 
+  {# ── Ações ───────────────────────────────────────────────────── #}
+  <div class="actions">
     {% if so.status == 'draft' %}
     <form method="post" action="{% url 'vendas:so_confirm' so.pk %}" style="margin:0;"
           onsubmit="return confirm('{% trans "Confirmar congela o ¥, a taxa do contrato e o US$ desta ordem — ela não muda mais (ajustes do resultado entram como acerto). Confirmar?" %}');">
       {% csrf_token %}
-      <button type="submit" style="height:44px;padding:0 22px;background:#0f62fe;color:#fff;border:0;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Confirmar ordem" %}</button>
+      <button type="submit" class="uib uib--primary">{% trans "Confirmar ordem" %}</button>
     </form>
     {% endif %}
     {% if can_settle %}
-    <a href="{% url 'vendas:settlement_new' so.pk %}"
-       style="height:44px;display:inline-flex;align-items:center;padding:0 22px;background:#198038;color:#fff;font-size:14px;font-weight:600;text-decoration:none;">
-      {% trans "Registrar resultado e faturar" %}
-    </a>
+    <a href="{% url 'vendas:settlement_new' so.pk %}" class="uib uib--success">{% trans "Registrar resultado e faturar" %}</a>
     {% endif %}
     {% if so.status != 'cancelled' %}
     <form method="post" action="{% url 'vendas:so_cancel' so.pk %}" style="margin:0;"
           onsubmit="return confirm('{% trans "Cancelar esta ordem? (auditado; o lote poderá ser reaberto)" %}');">
       {% csrf_token %}
-      <button type="submit" style="height:44px;padding:0 18px;background:#fff;color:#da1e28;border:1px solid #da1e28;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;">{% trans "Cancelar" %}</button>
+      <button type="submit" class="uib uib--danger">{% trans "Cancelar" %}</button>
     </form>
     {% endif %}
   </div>

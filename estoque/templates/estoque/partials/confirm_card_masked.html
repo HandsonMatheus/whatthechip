@@ -3,95 +3,99 @@
   F12 — card de triagem MASCARADO (empresa-CLIENTE; dono 2026-07-17).
   WHITELIST: este template mostra APENAS pn, destino opaco (C-###/baldes),
   quantidade e — para admin da empresa — o bloco de preço. NADA de specs,
-  tipo, marca decodificada, veredito comercial nem data-debug (o card cheio
-  carrega o result inteiro num atributo — aqui NÃO). O conhecimento
-  "PN → o que é" é o ativo da plataforma; o operador vê o DESTINO, não o
-  porquê. Rótulos reais: só plataforma (tenancy.access.is_unmasked).
-  Visual: redesenho flat do handoff (kit triagem.html) — estilos com escopo no
+  tipo, marca decodificada, veredito comercial nem data-debug. O conhecimento
+  "PN → o que é" é o ativo da plataforma; o operador vê o DESTINO, não o porquê.
+  Visual: protótipo screens/triagem.html (card .dcard). Estilos com escopo no
   próprio partial (o swap HTMX substitui o card inteiro, então há 1 <style> só).
 {% endcomment %}
 <style>
-  .mc{margin-top:24px;max-width:640px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif}
-  .mc__dest{border-radius:16px;padding:26px 28px;display:flex;flex-direction:column;gap:9px;border-left:6px solid transparent;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05)}
-  .mc__dest--box{background:#e6f7ec;border-color:#24a148}
-  .mc__dest--conf{background:#fdf3d6;border-color:#f1c21b}
-  .mc__dest--desc{background:#fff1f1;border-color:#da1e28}
-  .mc__dest--unk{background:#f2f4f8;border:2px dashed #c1c7cd;border-left:2px dashed #c1c7cd}
-  .mc__eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
-  .mc__dest--box .mc__eyebrow{color:#0e6027}
-  .mc__dest--conf .mc__eyebrow{color:#8a6a00}
-  .mc__dest--desc .mc__eyebrow{color:#a2191f}
-  .mc__dest--unk .mc__eyebrow{color:#697077}
-  .mc__row{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-  .mc__cap{font-size:14px;font-weight:600;color:#4d5358}
-  .mc__code{font-family:'IBM Plex Mono',monospace;font-weight:700;line-height:1;color:#161616}
-  .mc__code--box{font-size:clamp(44px,5vw,62px)}
-  .mc__code--word{font-size:clamp(34px,4vw,52px)}
-  .mc__general{font-size:14px;font-weight:600;color:#4d5358}
-  .mc__note{font-size:13px}
-  .mc__dest--box .mc__note{color:#0e6027}
-  .mc__dest--conf .mc__note{color:#8a6a00}
-  /* Sugestões de typo (só caracteres do PN — zero spec) */
-  .mc__typo{margin-top:16px}
-  .mc__typo-lbl{font-size:11px;font-weight:600;letter-spacing:.08em;color:#697077;margin-bottom:10px}
-  .mc__chips{display:flex;flex-wrap:wrap;gap:8px}
-  .mc__chip{display:inline-flex;align-items:center;padding:9px 14px;background:#f2f4f8;border:1px solid #dde1e6;border-radius:8px;text-decoration:none;cursor:pointer;transition:border-color .12s,background .12s}
-  .mc__chip:hover{border-color:#c1c7cd;background:#e8ecf3}
-  .mc__chip .wtc-fuzzy-pn{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:#0f62fe}
-  /* Ações */
-  .mc__actions{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:22px}
-  .mc__qty-lbl{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;color:#697077;margin-bottom:7px}
-  .mc__qty{display:flex;align-items:center;height:52px;border:1px solid #c1c7cd;border-radius:12px;overflow:hidden;background:#fff}
-  .mc__qty input{width:60px;border:none;background:transparent;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:18px;color:#161616;outline:none}
-  .mc__qty-steppers{display:flex;flex-direction:column;border-left:1px solid #dde1e6}
-  .mc__qty-steppers button{flex:1;width:34px;border:none;background:#f7f8fb;cursor:pointer;color:#4d5358;font-size:10px}
-  .mc__qty-steppers button:first-child{border-bottom:1px solid #dde1e6}
-  .mc__qty-steppers button:hover{background:#eef1f6}
-  .mc__btn{height:52px;padding:0 24px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-family:inherit}
-  .mc__btn--box{background:#0f62fe;color:#fff}.mc__btn--box:hover{background:#0353e9}
-  .mc__btn--conf{background:#f1c21b;color:#161616}
-  .mc__btn--desc{background:#da1e28;color:#fff}
-  .mc__btn--cancel{background:#fff;border:1px solid #c1c7cd;color:#161616;height:52px;padding:0 22px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
-  .mc__btn--cancel:hover{background:#f2f4f8}
+  .dcard{margin-top:24px;max-width:520px;border-radius:16px;overflow:hidden;border:1px solid #dde1e6;text-align:center;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05)}
+  .dcard__body{padding:28px 22px 24px}
+  .dcard__eyebrow{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+  .dcard__code{font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:-.01em;line-height:.95}
+  .dcard__code--num{font-size:clamp(46px,6vw,64px)}
+  .dcard__code--word{font-size:clamp(30px,4.6vw,40px);letter-spacing:.01em}
+  .dcard__sub{font-size:13.5px;margin-top:10px;font-weight:500}
+  .dcard__pn{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#697077;margin-top:14px}
+  .dcard--box{background:linear-gradient(180deg,#e6f7ec,#fff 78%)}
+  .dcard--box .dcard__eyebrow,.dcard--box .dcard__code{color:#0e6027}.dcard--box .dcard__sub{color:#198038}
+  .dcard--geral{background:linear-gradient(180deg,#eef6f0,#fff 78%)}
+  .dcard--geral .dcard__eyebrow{color:#198038}.dcard--geral .dcard__code{color:#21272a}.dcard--geral .dcard__sub{color:#697077}
+  .dcard--conf{background:linear-gradient(180deg,#fdf3d6,#fff 78%)}
+  .dcard--conf .dcard__eyebrow,.dcard--conf .dcard__code,.dcard--conf .dcard__sub{color:#8a6a00}
+  .dcard--desc{background:linear-gradient(180deg,#fff1f1,#fff 78%)}
+  .dcard--desc .dcard__eyebrow,.dcard--desc .dcard__code,.dcard--desc .dcard__sub{color:#a2191f}
+  .dcard--unk{background:#f2f4f8;border:2px dashed #c1c7cd}
+  .dcard--unk .dcard__eyebrow,.dcard--unk .dcard__code{color:#697077}
+  /* typo chips (só caracteres do PN — zero spec) */
+  .dcard-typo{max-width:520px;margin:16px 0 0}
+  .dcard-typo__lbl{font-size:11px;font-weight:700;letter-spacing:.08em;color:#697077;margin-bottom:10px}
+  .dcard-chips{display:flex;flex-wrap:wrap;gap:8px}
+  .dcard-chip{display:inline-flex;align-items:center;padding:9px 14px;background:#f2f4f8;border:1px solid #dde1e6;border-radius:8px;text-decoration:none;cursor:pointer;transition:border-color .12s,background .12s}
+  .dcard-chip:hover{border-color:#c1c7cd;background:#e8ecf3}
+  .dcard-chip .wtc-fuzzy-pn{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:#0f62fe}
+  /* add row */
+  .dcard-add{display:flex;align-items:center;gap:12px;max-width:520px;margin:16px 0 0;flex-wrap:wrap}
+  .dcard-qty{display:inline-flex;align-items:center;border:1px solid #c1c7cd;border-radius:12px;overflow:hidden;background:#fff;flex:none}
+  .dcard-qty button{width:40px;height:48px;border:0;background:#fff;color:#4d5358;font-size:20px;cursor:pointer;line-height:1}
+  .dcard-qty button:hover{background:#f2f4f8;color:#161616}
+  .dcard-qty input{width:58px;height:48px;border:0;border-left:1px solid #dde1e6;border-right:1px solid #dde1e6;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;color:#161616;outline:0;-moz-appearance:textfield}
+  .dcard-qty input::-webkit-outer-spin-button,.dcard-qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .dcard-btn{flex:1;min-width:190px;height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;font-size:15px;font-weight:600;color:#fff;cursor:pointer;transition:filter .12s;font-family:inherit}
+  .dcard-btn:hover{filter:brightness(.96)}
+  .dcard-btn--box{background:#0f62fe}.dcard-btn--conf{background:#b28600}.dcard-btn--desc{background:#da1e28}.dcard-btn--unk{background:#697077}
+  .dcard-cancel{height:48px;padding:0 20px;background:#fff;border:1px solid #c1c7cd;border-radius:12px;color:#161616;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+  .dcard-cancel:hover{background:#f2f4f8}
 </style>
 
-<div class="mc est-confirm est-confirm--{{ gateway_dest }}">
+{% comment %} Root .est-confirm mantido: o contrato JS (syncConfirmPn) procura
+   "#confirm-area .est-confirm". {% endcomment %}
+<div class="est-confirm est-confirm--{{ gateway_dest }}">
 
   {% if gateway_dest == 'aprovado' %}
-    <div class="mc__dest mc__dest--box">
-      <span class="mc__eyebrow">✓ {% trans "IDENTIFICADO" %} · {{ pn }}</span>
-      <div class="mc__row">
-        <span class="mc__cap">{% trans "Caixa" %}</span>
-        <span class="mc__code mc__code--box">{{ masked_code }}</span>
-        {% if masked_general %}<span class="mc__general">{% trans "Geral (avaliação)" %}</span>{% endif %}
+    <div class="dcard dcard--{% if masked_general %}geral{% else %}box{% endif %}">
+      <div class="dcard__body">
+        <div class="dcard__eyebrow">{% trans "Destino" %}</div>
+        <div class="dcard__code dcard__code--num">{{ masked_code }}</div>
+        <div class="dcard__sub">{% if masked_general %}{% trans "Geral · avaliação" %}{% else %}{% trans "Caixa" %}{% endif %}</div>
+        <div class="dcard__pn">{{ pn }}{% if current_qty %} · {% blocktrans trimmed with n=current_qty %}já no lote: {{ n }} un.{% endblocktrans %}{% endif %}</div>
       </div>
-      {% if current_qty %}<div class="mc__note">{% blocktrans trimmed with n=current_qty %}já no lote: {{ n }} un.{% endblocktrans %}</div>{% endif %}
     </div>
   {% elif gateway_dest == 'fila' %}
-    <div class="mc__dest mc__dest--conf">
-      <span class="mc__eyebrow">⏳ {{ pn }}</span>
-      <span class="mc__code mc__code--word">{% trans "CONFERÊNCIA" %}</span>
-      <div class="mc__note">{% trans "Separar para verificação — segue para a fila do gestor." %}</div>
+    <div class="dcard dcard--conf">
+      <div class="dcard__body">
+        <div class="dcard__eyebrow">{% trans "Destino" %}</div>
+        <div class="dcard__code dcard__code--word">{% trans "CONFERÊNCIA" %}</div>
+        <div class="dcard__sub">{% trans "Separe para verificação — segue para a fila do gestor." %}</div>
+        <div class="dcard__pn">{{ pn }}</div>
+      </div>
     </div>
   {% elif gateway_dest == 'reprovado' %}
-    <div class="mc__dest mc__dest--desc">
-      <span class="mc__eyebrow">✗ {{ pn }}</span>
-      <span class="mc__code mc__code--word">{% trans "DESCARTE" %}</span>
+    <div class="dcard dcard--desc">
+      <div class="dcard__body">
+        <div class="dcard__eyebrow">{% trans "Destino" %}</div>
+        <div class="dcard__code dcard__code--word">{% trans "DESCARTE" %}</div>
+        <div class="dcard__sub">{% trans "Sucata · resíduo eletrônico" %}</div>
+        <div class="dcard__pn">{{ pn }}</div>
+      </div>
     </div>
   {% else %}
-    <div class="mc__dest mc__dest--unk">
-      <span class="mc__eyebrow">{% trans "NÃO IDENTIFICADO" %} · {{ pn }}</span>
-      <div class="mc__code mc__code--word">?</div>
+    <div class="dcard dcard--unk">
+      <div class="dcard__body">
+        <div class="dcard__eyebrow">{% trans "Não identificado" %}</div>
+        <div class="dcard__code dcard__code--word">?</div>
+        <div class="dcard__pn">{{ pn }}</div>
+      </div>
     </div>
   {% endif %}
 
   {% comment %} Sugestão de TYPO (só PNs — correção operacional; nenhuma spec). {% endcomment %}
   {% if gateway.typo.has %}
-  <div class="mc__typo">
-    <div class="mc__typo-lbl">{% trans "VOCÊ QUIS DIZER?" %}</div>
-    <div class="mc__chips">
+  <div class="dcard-typo">
+    <div class="dcard-typo__lbl">{% trans "VOCÊ QUIS DIZER?" %}</div>
+    <div class="dcard-chips">
       {% for s in gateway.typo.suggestions %}
-      <a class="mc__chip" href="#"
+      <a class="dcard-chip" href="#"
          onclick="(function(){var i=document.getElementById('pn-input');if(!i)return;i.value='{{ s|escapejs }}';i.dispatchEvent(new Event('input'));htmx.trigger(i,'pn-ready');})();return false;">
         <span class="wtc-fuzzy-pn" data-typed="{{ pn }}" data-suggestion="{{ s }}">{{ s }}</span>
       </a>
@@ -100,7 +104,7 @@
   </div>
   <script>
   (function(){
-    document.querySelectorAll('.wtc-fuzzy-pn').forEach(function(el){
+    document.querySelectorAll('.dcard-typo .wtc-fuzzy-pn').forEach(function(el){
       var t=el.dataset.typed||'', s=el.dataset.suggestion||'', i=0;
       while(i<t.length&&i<s.length&&s[i]===t[i])i++;
       var pre=s.slice(0,i), dif=s.slice(i);
@@ -114,7 +118,7 @@
   {% comment %} Preço: SÓ admin da empresa (price_quotes chega vazio pros demais
      — gate na view); mesmo bloco dual, sem identidade. {% endcomment %}
   {% if gateway_dest == 'aprovado' or gateway_dest == 'fila' %}
-  <div style="margin-top:14px;">{% include "pricing/price_block.html" %}</div>
+  <div style="max-width:520px;margin-top:14px;">{% include "pricing/price_block.html" %}</div>
   {% endif %}
 
   <form class="est-confirm-form"
@@ -128,31 +132,26 @@
     <input type="hidden" name="pn"      value="{{ pn }}">
     <input type="hidden" name="has_cap" value="{{ has_cap|yesno:'true,false' }}">
 
-    <div class="mc__actions">
+    <div class="dcard-add">
       {% if gateway_dest != 'desconhecido' %}
-      <div>
-        <label class="mc__qty-lbl">{% trans "QTD." %}</label>
-        <div class="mc__qty">
-          <input id="confirm-qty" name="qty" type="number" value="1" min="1" max="9999" inputmode="numeric" />
-          <div class="mc__qty-steppers">
-            <button type="button" onclick="document.getElementById('confirm-qty').stepUp()">▲</button>
-            <button type="button" onclick="document.getElementById('confirm-qty').stepDown()">▼</button>
-          </div>
-        </div>
+      <div class="dcard-qty">
+        <button type="button" aria-label="{% trans 'Menos' %}" onclick="document.getElementById('confirm-qty').stepDown()">−</button>
+        <input id="confirm-qty" name="qty" type="number" value="1" min="1" max="9999" inputmode="numeric" />
+        <button type="button" aria-label="{% trans 'Mais' %}" onclick="document.getElementById('confirm-qty').stepUp()">+</button>
       </div>
       {% endif %}
 
       {% if gateway_dest == 'aprovado' %}
-        <button type="submit" class="mc__btn mc__btn--box">+ {% trans "Adicionar ao estoque" %}</button>
+        <button type="submit" class="dcard-btn dcard-btn--box">+ {% trans "Adicionar ao lote" %}</button>
       {% elif gateway_dest == 'fila' %}
-        <button type="submit" class="mc__btn mc__btn--conf">⏳ {% trans "Enviar para conferência" %}</button>
+        <button type="submit" class="dcard-btn dcard-btn--conf">⏳ {% trans "Enviar para conferência" %}</button>
       {% elif gateway_dest == 'reprovado' %}
-        <button type="submit" class="mc__btn mc__btn--desc">✗ {% trans "Registrar descarte" %}</button>
+        <button type="submit" class="dcard-btn dcard-btn--desc">✗ {% trans "Registrar descarte" %}</button>
       {% else %}
-        <button type="submit" class="mc__btn mc__btn--conf">{% trans "Registrar como desconhecido" %}</button>
+        <button type="submit" class="dcard-btn dcard-btn--unk">{% trans "Registrar como desconhecido" %}</button>
       {% endif %}
 
-      <button type="button" class="mc__btn--cancel"
+      <button type="button" class="dcard-cancel"
               onclick="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('pn-input').focus();">{% trans "Cancelar" %}</button>
     </div>
   </form>

@@ -1,417 +1,268 @@
 {% extends "estoque/base_estoque.html" %}
-{% load static i18n %}
+{% load static i18n l10n %}
 
-{% block title %}{% trans "Lotes" %} — WhatTheChip?{% endblock %}
+{% block title %}{% trans "Estoque" %} — WhatTheChip?{% endblock %}
 {% block nav_estoque %} wtc-header__nav--active{% endblock %}
 
 {% block extra_head %}
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   PAINEL DE LOTES — estilos específicos
-   Design System WTC v2.0 · IBM Carbon White
-   ═══════════════════════════════════════════════════════════════ */
-
-.pnl-main { padding: var(--s5) var(--s6) var(--s8) !important; }
-
-/* ── Cabeçalho ──────────────────────────────────────────────── */
-.lots-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s4);
-  margin-bottom: var(--s5);
-  border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: var(--s4);
-}
-
-.lots-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
-  letter-spacing: -0.01em;
-}
-
-/* ── Botões ─────────────────────────────────────────────────── */
-.lot-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 40px;
-  padding: 0 var(--s5);
-  font-size: 14px;
-  font-weight: 600;
-  font-family: var(--font);
-  letter-spacing: 0.16px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  white-space: nowrap;
-  text-decoration: none;
-  transition: background .12s;
-}
-
-.lot-btn--primary {
-  background: var(--interactive);
-  color: #ffffff;
-}
-.lot-btn--primary:hover  { background: var(--interactive-hover); }
-.lot-btn--primary:active { background: var(--interactive-active); }
-
-.lot-btn--secondary {
-  background: var(--surface-2);
-  color: var(--text-primary);
-  border: 1px solid var(--border-default);
-}
-.lot-btn--secondary:hover { background: var(--surface-3); }
-
-.lot-btn--danger {
-  background: transparent;
-  color: #da1e28;
-  border: 1px solid #da1e28;
-  font-size: 12px;
-  height: 32px;
-  padding: 0 12px;
-}
-.lot-btn--danger:hover { background: #fff1f1; }
-
-.lot-btn--success {
-  background: transparent;
-  color: #198038;
-  border: 1px solid #42be65;
-  font-size: 12px;
-  height: 32px;
-  padding: 0 12px;
-}
-.lot-btn--success:hover { background: #defbe6; }
-
-[data-theme="dark"] .lot-btn--danger:hover  { background: #2d0709; }
-[data-theme="dark"] .lot-btn--success:hover { background: #022d0d; }
-
-/* ── Formulário de criação ──────────────────────────────────── */
-.lots-create-card {
-  background: var(--surface);
-  border: 1px solid #dde1e6;
-  border-left: 3px solid var(--interactive);
-  border-radius: 16px;
-  box-shadow: 0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);
-  padding: var(--s5);
-  margin-bottom: var(--s6);
-}
-
-.lots-create-title {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-helper);
-  margin-bottom: var(--s4);
-}
-
-.lots-create-row {
-  display: flex;
-  gap: var(--s4);
-  align-items: flex-end;
-}
-
-.lots-create-field {
-  flex: 1;
-}
-
-.lot-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
-}
-
-.lot-input {
-  display: block;
-  width: 100%;
-  height: 40px;
-  padding: 0 var(--s4);
-  font-size: 14px;
-  font-family: var(--font);
-  color: var(--text-primary);
-  background: var(--surface-2);
-  border: 1px solid var(--border-default);
-  border-radius: 10px;
-  outline: none;
-  transition: border-color .12s, box-shadow .12s;
-  letter-spacing: 0.16px;
-}
-
-.lot-input:focus {
-  background: var(--surface);
-  border-color: var(--interactive);
-  box-shadow: 0 0 0 3px rgba(15,98,254,.12);
-}
-
-[data-theme="dark"] .lot-input { background: #393939; color: #f4f4f4; }
-
-/* ── Grid de cards ──────────────────────────────────────────── */
-.lots-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--s4);
-}
-
-/* ── Card de lote ───────────────────────────────────────────── */
-.lot-card {
-  background: var(--surface);
-  border: 1px solid #dde1e6;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);
-  display: flex;
-  flex-direction: column;
-  transition: border-color .12s, box-shadow .12s;
-}
-
-.lot-card:hover {
-  border-color: var(--interactive);
-  box-shadow: 0 2px 8px rgba(15, 98, 254, 0.10);
-}
-
-.lot-card--closed {
-  opacity: 0.78;
-  border-style: dashed;
-}
-
-.lot-card-top {
-  padding: var(--s5);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--s3);
-}
-
-.lot-card-number-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s3);
-}
-
-.lot-card-number {
-  font-family: var(--font-mono);
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.lot-badge {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 6px;
-  flex-shrink: 0;
-}
-.lot-badge--open   { background: #defbe6; color: #0e6027; }
-.lot-badge--closed { background: #e0e0e0; color: #525252; }
-
-[data-theme="dark"] .lot-badge--open   { background: #022d0d; color: #42be65; }
-[data-theme="dark"] .lot-badge--closed { background: #393939; color: #a8a8a8; }
-
-.lot-card-desc {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.4;
-  min-height: 18px;
-}
-
-.lot-card-desc--empty {
-  color: var(--text-helper);
-  font-style: italic;
-}
-
-.lot-card-meta {
-  display: flex;
-  gap: var(--s5);
-  margin-top: var(--s2);
-}
-
-.lot-meta-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.lot-meta-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-helper);
-}
-
-.lot-meta-val {
-  font-size: 15px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  color: var(--text-primary);
-}
-
-.lot-card-date {
-  font-size: 11px;
-  color: var(--text-helper);
-  font-family: var(--font-mono);
-  margin-top: auto;
-}
-
-/* ── Footer do card ─────────────────────────────────────────── */
-.lot-card-footer {
-  border-top: 1px solid var(--border-subtle);
-  padding: var(--s3) var(--s5);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s3);
-  background: var(--surface-2);
-}
-
-/* ── Empty state ─────────────────────────────────────────────── */
-.lots-empty {
-  padding: 80px var(--s5);
-  text-align: center;
-  color: var(--text-helper);
-  border: 1px dashed var(--border-subtle);
-  border-radius: 16px;
-  margin-top: var(--s4);
-}
-.lots-empty-icon  { font-size: 32px; margin-bottom: var(--s4); opacity: .35; }
-.lots-empty-title { font-size: 15px; font-weight: 600; color: var(--text-secondary); margin-bottom: var(--s2); }
-.lots-empty-sub   { font-size: 13px; line-height: 1.5; }
-
-@media (max-width: 600px) {
-  .lots-create-row { flex-direction: column; align-items: stretch; }
-  .lots-grid { grid-template-columns: 1fr; }
-  .lots-header { flex-direction: column; align-items: flex-start; }
-}
+/* ═══ Estoque / Lotes — LAYOUT do protótipo screens/estoque.html (ledger). ═══
+   Cores literais; sem dependência de vars externas. */
+.pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:20px}
+.pagehead h1{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:0 0 4px;color:#161616}
+.pagehead p{margin:0;font-size:14px;color:#697077}
+.section-label{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#697077;margin:0 0 14px}
+.section-label .n{font-family:'IBM Plex Mono',monospace;color:#878d96;font-weight:600;letter-spacing:0}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 11px;border-radius:999px;white-space:nowrap}
+.badge .dot{width:7px;height:7px;border-radius:50%}
+.badge--open{background:#e6f7ec;color:#0e6027}.badge--open .dot{background:#24a148}
+.badge--closed{background:#f2f4f8;color:#697077}.badge--closed .dot{background:#a2a9b0}
+.uib{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:12px;font-size:14.5px;font-weight:600;border:0;cursor:pointer;white-space:nowrap;text-decoration:none;font-family:inherit;transition:background .12s,border-color .12s,color .12s}
+.uib svg{width:16px;height:16px}
+.uib--primary{background:#0f62fe;color:#fff}.uib--primary:hover{background:#0353e9;text-decoration:none}
+.uib--sm{height:34px;padding:0 13px;font-size:13px;border-radius:8px}
+.uib--ghost{background:#fff;color:#161616;border:1px solid #c1c7cd}.uib--ghost:hover{background:#f2f4f8;text-decoration:none}
+.uib--danger{background:#fff;color:#da1e28;border:1px solid #da1e28}.uib--danger:hover{background:#fff1f1;text-decoration:none}
+.uib--success{background:#fff;color:#198038;border:1px solid #42be65}.uib--success:hover{background:#e6f7ec;text-decoration:none}
+/* em triagem agora (lotes abertos) */
+.lg-active{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:34px}
+.olot{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.olot__row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.olot__code{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.olot__desc{font-size:13px;color:#697077}.olot__desc--empty{color:#a2a9b0;font-style:italic}
+.olot__meta{display:flex;gap:24px}
+.olot__meta-l{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a2a9b0}
+.olot__meta-v{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#161616;line-height:1.2}
+.olot__foot{display:flex;align-items:center;gap:12px;margin-top:2px}
+.olot__since{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#a2a9b0;margin-left:auto}
+.lg-active-empty{background:#fff;border:1px solid #dde1e6;border-radius:16px;padding:20px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:34px}
+.lg-active-empty p{margin:0;font-size:13.5px;color:#697077;flex:1;min-width:200px}
+/* toolbar */
+.toolbar{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.tabs{display:inline-flex;background:#f2f4f8;border:1px solid #dde1e6;border-radius:12px;padding:3px}
+.tab{border:0;background:none;height:32px;padding:0 14px;border-radius:8px;font-size:13px;font-weight:600;color:#697077;cursor:pointer;display:flex;align-items:center;gap:7px;font-family:inherit}
+.tab:hover{color:#161616}
+.tab.is-active{background:#fff;color:#161616;box-shadow:0 1px 2px rgba(16,24,40,.06)}
+.tab .cnt{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#878d96}.tab.is-active .cnt{color:#0f62fe}
+.search{position:relative;flex:1;min-width:180px;max-width:320px}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#878d96}
+.search input{width:100%;height:40px;padding:0 12px 0 36px;font-size:14px;color:#161616;background:#fff;border:1px solid #c1c7cd;border-radius:12px;outline:0;transition:border-color .12s,box-shadow .12s}
+.search input:focus{border-color:#0f62fe;box-shadow:0 0 0 4px #edf5ff}
+.selctrl{height:40px;padding:0 30px 0 12px;font-size:13.5px;color:#161616;background:#fff;border:1px solid #c1c7cd;border-radius:12px;cursor:pointer;outline:0}
+.toolbar__spacer{flex:1}
+/* create panel */
+.create{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06);padding:16px 18px;margin-bottom:16px;display:none}
+.create.is-open{display:block}
+.create__row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.field{flex:1;min-width:200px}
+.field label{display:block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#697077;margin-bottom:7px}
+.field input{width:100%;height:44px;padding:0 14px;font-size:14.5px;color:#161616;background:#fff;border:1px solid #c1c7cd;border-radius:12px;outline:0;transition:border-color .12s,box-shadow .12s}
+.field input:focus{border-color:#0f62fe;box-shadow:0 0 0 4px #edf5ff}
+/* ledger table */
+.ledger{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);overflow:hidden}
+.ledger table{width:100%;border-collapse:collapse}
+.ledger thead th{background:#f2f4f8;text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#878d96;padding:11px 18px;border-bottom:1px solid #dde1e6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ledger th.num,.ledger td.num{text-align:right}
+.c-val{font-family:'IBM Plex Mono',monospace;font-size:13.5px;font-weight:600;color:#161616}.c-val--none{color:#a2a9b0;font-weight:400}
+.c-when__to{color:#a2a9b0}.c-lot__d--empty{font-style:italic}
+.ledger tbody tr{border-bottom:1px solid #dde1e6;cursor:pointer;transition:background .12s}
+.ledger tbody tr:last-child{border-bottom:0}
+.ledger tbody tr:hover{background:#f7f8fb}
+.ledger tbody tr.is-closed{color:#697077}
+.ledger td{padding:14px 18px;font-size:13.5px;vertical-align:middle;white-space:nowrap}
+.c-lot{display:flex;flex-direction:column;gap:3px}
+.c-lot__n{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;color:#161616}
+.c-lot{min-width:0}
+.c-lot__d{font-size:12px;color:#a2a9b0;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-cats{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700}
+.c-units{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700}
+.c-when{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#697077;white-space:nowrap}.c-when small{color:#a2a9b0}
+.c-act{display:flex;align-items:center;justify-content:flex-end;gap:7px}
+.ledger__empty{padding:60px 24px;text-align:center;color:#a2a9b0}
+.ledger__empty svg{width:32px;height:32px;opacity:.4;margin-bottom:10px;stroke:#c1c7cd}
+.ledger__empty h3{font-size:15px;font-weight:600;color:#697077;margin:0 0 5px}.ledger__empty p{font-size:13px;margin:0}
+@media(max-width:600px){.create__row{flex-direction:column;align-items:stretch}.pagehead{flex-direction:column;align-items:flex-start}}
 </style>
 {% endblock %}
 
 {% block main %}
 
-{# ── Cabeçalho ─────────────────────────────────────────────── #}
-<div class="lots-header">
-  <h1 class="lots-title">{% trans "Lotes" %}</h1>
-</div>
-
-{# ── Formulário de criação — gerente+ (a barreira real é a view) ── #}
-{% if wtc_is_manager %}
-<div class="lots-create-card">
-  <div class="lots-create-title">{% trans "Novo Lote" %}</div>
-  <form method="post" action="{% url 'estoque:lot_create' %}">
-    {% csrf_token %}
-    <div class="lots-create-row">
-      <div class="lots-create-field">
-        <label class="lot-label" for="lot-desc">{% trans "Descrição (opcional)" %}</label>
-        <input class="lot-input"
-               type="text"
-               id="lot-desc"
-               name="description"
-               placeholder="Ex: Compra Mai/2026 — Fornecedor X"
-               maxlength="255"
-               autocomplete="off">
-      </div>
-      <button class="lot-btn lot-btn--primary" type="submit">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2.5"
-             stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"/>
-          <line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
-        {% trans "Criar Lote" %}
-      </button>
-    </div>
-  </form>
-</div>
-{% endif %}
-
-{# ── Lista de lotes ────────────────────────────────────────── #}
-{% if lots %}
-<div class="lots-grid">
-  {% for lot in lots %}
-  <div class="lot-card {% if lot.status == 'closed' %}lot-card--closed{% endif %}">
-
-    <div class="lot-card-top">
-      <div class="lot-card-number-row">
-        <span class="lot-card-number">{{ lot.code }}</span>
-        {% if lot.status == 'open' %}
-          <span class="lot-badge lot-badge--open">{% trans "Aberto" %}</span>
-        {% else %}
-          <span class="lot-badge lot-badge--closed">{% trans "Fechado" %}</span>
-        {% endif %}
-      </div>
-
-      {% if lot.description %}
-        <div class="lot-card-desc">{{ lot.description }}</div>
-      {% else %}
-        <div class="lot-card-desc lot-card-desc--empty">{% trans "Sem descrição" %}</div>
-      {% endif %}
-
-      <div class="lot-card-meta">
-        <div class="lot-meta-item">
-          <span class="lot-meta-label">{% trans "Tipos" %}</span>
-          <span class="lot-meta-val">{{ lot.chip_count }}</span>
-        </div>
-        <div class="lot-meta-item">
-          <span class="lot-meta-label">{% trans "Total un." %}</span>
-          <span class="lot-meta-val">{{ lot.total_qty }}</span>
-        </div>
-      </div>
-
-      <div class="lot-card-date">
-        {% blocktrans trimmed with d=lot.created_at|date:"d/m/Y H:i" %}Aberto em {{ d }}{% endblocktrans %}
-        {% if lot.closed_at %}
-          · {% blocktrans trimmed with d2=lot.closed_at|date:"d/m/Y H:i" %}Fechado em {{ d2 }}{% endblocktrans %}
-        {% endif %}
-      </div>
-    </div>
-
-    <div class="lot-card-footer">
-      <a class="lot-btn lot-btn--primary" style="color:#fff;"
-         href="{% url 'estoque:lot_detail' lot.pk %}">
-        {% trans "Abrir" %} →
-      </a>
-
-      {% if wtc_is_manager %}
-        {% if lot.status == 'open' %}
-        <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="margin:0">
-          {% csrf_token %}
-          <button type="submit" class="lot-btn lot-btn--danger">{% trans "Fechar" %}</button>
-        </form>
-        {% else %}
-        <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="margin:0">
-          {% csrf_token %}
-          <button type="submit" class="lot-btn lot-btn--success">{% trans "Reabrir" %}</button>
-        </form>
-        {% endif %}
-      {% endif %}
-    </div>
-
+<div class="crumbs" style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#878d96;margin-bottom:12px;">{% trans "Estoque" %}</div>
+<div class="pagehead">
+  <div>
+    <h1>{% trans "Estoque" %}</h1>
+    <p>{% trans "Cada chip identificado na bancada entra em um lote aberto." %}</p>
   </div>
-  {% endfor %}
 </div>
 
-{% else %}
-<div class="lots-empty">
-  <div class="lots-empty-icon">◻</div>
-  <div class="lots-empty-title">{% trans "Nenhum lote ainda" %}</div>
+{# ── Em triagem agora (lotes abertos) ──────────────────────────── #}
+<h2 class="section-label">{% trans "Em triagem agora" %}</h2>
+<div class="lg-active" id="lg-active-grid">
+  {% for lot in lots %}{% if lot.status == 'open' %}
+  <div class="olot">
+    <div class="olot__row">
+      <div>
+        <div class="olot__code">{{ lot.code }}</div>
+        {% if lot.description %}<div class="olot__desc">{{ lot.description }}</div>{% else %}<div class="olot__desc olot__desc--empty">{% trans "Sem descrição" %}</div>{% endif %}
+      </div>
+      <span class="badge badge--open"><span class="dot"></span>{% trans "Aberto" %}</span>
+    </div>
+    <div class="olot__meta">
+      <div><div class="olot__meta-l">{% trans "Unidades" %}</div><div class="olot__meta-v">{{ lot.total_qty }}</div></div>
+      <div><div class="olot__meta-l">{% trans "Tipos" %}</div><div class="olot__meta-v">{{ lot.chip_count }}</div></div>
+      {% if access.can_see_price and lot.val_mid is not None %}<div><div class="olot__meta-l">{% trans "Valor" %} ≈</div><div class="olot__meta-v" style="white-space:nowrap">{% localize off %}US$ {{ lot.val_mid|floatformat:2 }}{% endlocalize %}</div></div>{% endif %}
+    </div>
+    <div class="olot__foot">
+      <a class="uib uib--primary uib--sm" href="{% url 'estoque:lot_detail' lot.pk %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>{% trans "Continuar triagem" %}</a>
+      <span class="olot__since">{% blocktrans trimmed with d=lot.created_at|date:"d/m H:i" %}desde {{ d }}{% endblocktrans %}</span>
+    </div>
+  </div>
+  {% endif %}{% endfor %}
+</div>
+<div class="lg-active-empty" id="lg-active-empty" style="display:none">
+  <p>{% trans "Nenhum lote aberto. Abra um lote para a bancada começar a triar." %}</p>
+  {% if wtc_is_manager %}<button type="button" class="uib uib--primary uib--sm" onclick="openCreate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>{% trans "Novo lote" %}</button>{% endif %}
+</div>
+
+{# ── Todos os lotes (ledger) ───────────────────────────────────── #}
+<h2 class="section-label">{% trans "Todos os lotes" %}</h2>
+<div class="toolbar">
+  <div class="tabs" id="lot-tabs">
+    <button type="button" class="tab is-active" data-f="all">{% trans "Todos" %} <span class="cnt">{{ lots|length }}</span></button>
+    <button type="button" class="tab" data-f="open">{% trans "Abertos" %} <span class="cnt" id="c-open">0</span></button>
+    <button type="button" class="tab" data-f="closed">{% trans "Fechados" %} <span class="cnt" id="c-closed">0</span></button>
+  </div>
+  <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.3-4.3"/></svg><input type="text" id="lot-search" placeholder="{% trans 'Buscar nº ou descrição…' %}" autocomplete="off"></div>
+  <select class="selctrl" id="lot-sort" aria-label="{% trans 'Ordenar' %}">
+    <option value="num">{% trans "Mais recentes" %}</option>
+    <option value="units_desc">{% trans "Mais unidades" %}</option>
+    <option value="units_asc">{% trans "Menos unidades" %}</option>
+  </select>
+  <div class="toolbar__spacer"></div>
   {% if wtc_is_manager %}
-  <div class="lots-empty-sub">{% trans "Crie o primeiro lote usando o formulário acima." %}</div>
-  {% else %}
-  <div class="lots-empty-sub">{% trans "Peça ao gerente para abrir um lote de triagem." %}</div>
+  <button type="button" class="uib uib--primary uib--sm" onclick="openCreate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>{% trans "Novo lote" %}</button>
   {% endif %}
 </div>
+
+{% if wtc_is_manager %}
+<form class="create" id="lot-create" method="post" action="{% url 'estoque:lot_create' %}">
+  {% csrf_token %}
+  <div class="create__row">
+    <div class="field"><label for="lot-desc">{% trans "Descrição do lote (opcional)" %}</label><input type="text" id="lot-desc" name="description" placeholder="Ex: Compra Jul/2026 — Fornecedor Shenzhen" maxlength="255" autocomplete="off"></div>
+    <button class="uib uib--primary" type="submit">{% trans "Criar e abrir" %}</button>
+    <button class="uib uib--ghost" type="button" onclick="closeCreate()">{% trans "Cancelar" %}</button>
+  </div>
+</form>
 {% endif %}
 
+<div class="ledger">
+  <table>
+    <thead>
+      <tr>
+        <th>{% trans "Lote" %}</th>
+        <th>{% trans "Status" %}</th>
+        <th class="num">{% trans "Tipos" %}</th>
+        <th class="num">{% trans "Unidades" %}</th>
+        {% if show_valuation %}<th class="num">{% trans "Valoração" %}</th>{% endif %}
+        <th>{% trans "Período" %}</th>
+        <th class="num">{% trans "Ações" %}</th>
+      </tr>
+    </thead>
+    <tbody id="lot-rows">
+      {% for lot in lots %}
+      <tr class="{% if lot.status == 'closed' %}is-closed{% endif %}"
+          data-status="{{ lot.status }}" data-n="{{ lot.pk }}" data-units="{{ lot.total_qty }}"
+          data-search="{{ lot.code|lower }} {{ lot.description|lower }}"
+          onclick="location.href='{% url 'estoque:lot_detail' lot.pk %}'">
+        <td><div class="c-lot"><span class="c-lot__n">{{ lot.code }}</span>{% if lot.description %}<span class="c-lot__d">{{ lot.description }}</span>{% else %}<span class="c-lot__d c-lot__d--empty">{% trans "Sem descrição" %}</span>{% endif %}</div></td>
+        <td><span class="badge badge--{% if lot.status == 'open' %}open{% else %}closed{% endif %}"><span class="dot"></span>{% if lot.status == 'open' %}{% trans "Aberto" %}{% else %}{% trans "Fechado" %}{% endif %}</span></td>
+        <td class="num"><span class="c-cats">{{ lot.chip_count }}</span></td>
+        <td class="num"><span class="c-units">{{ lot.total_qty }}</span></td>
+        {% if show_valuation %}<td class="num"><span class="c-val">{% localize off %}{% if lot.val_mid is not None %}US$ {{ lot.val_mid|floatformat:2 }}{% else %}<span class="c-val--none">—</span>{% endif %}{% endlocalize %}</span></td>{% endif %}
+        <td><span class="c-when">{{ lot.created_at|date:"d/m/y" }}{% if lot.closed_at %} <span class="c-when__to">→ {{ lot.closed_at|date:"d/m/y" }}</span>{% endif %}</span></td>
+        <td onclick="event.stopPropagation()">
+          <div class="c-act">
+            <a class="uib uib--ghost uib--sm" href="{% url 'estoque:lot_detail' lot.pk %}">{% trans "Abrir" %}</a>
+            {% if wtc_is_manager %}
+              {% if lot.status == 'open' %}
+              <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="margin:0"><button type="submit" class="uib uib--danger uib--sm">{% trans "Fechar" %}</button></form>
+              {% else %}
+              <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="margin:0"><button type="submit" class="uib uib--success uib--sm">{% trans "Reabrir" %}</button></form>
+              {% endif %}
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="ledger__empty" id="lot-empty" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7.5"/><path d="M21 21l-4.3-4.3"/></svg>
+    <h3>{% trans "Nenhum lote encontrado" %}</h3><p>{% trans "Ajuste a busca ou o filtro de status." %}</p>
+  </div>
+</div>
+
+{% if not lots %}
+<div class="ledger__empty" style="border:1px dashed #dde1e6;border-radius:16px;margin-top:16px;padding:60px 24px;">
+  <h3>{% trans "Nenhum lote ainda" %}</h3>
+  {% if wtc_is_manager %}<p>{% trans "Crie o primeiro lote pelo botão “Novo lote”." %}</p>{% else %}<p>{% trans "Peça ao gerente para abrir um lote de triagem." %}</p>{% endif %}
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function(){
+  "use strict";
+  var tabs=document.getElementById('lot-tabs');
+  var search=document.getElementById('lot-search');
+  var sort=document.getElementById('lot-sort');
+  var body=document.getElementById('lot-rows');
+  var empty=document.getElementById('lot-empty');
+  if(!body) return;
+  var filter='all', query='';
+
+  // Contagens dos tabs + seção "Em triagem agora" derivadas das linhas
+  // renderizadas (a view lot_list não passa open_count/has_open — evita tocar .py).
+  var allRows0=Array.prototype.slice.call(body.querySelectorAll('tr'));
+  var openN=allRows0.filter(function(r){return r.getAttribute('data-status')==='open';}).length;
+  var cOpen=document.getElementById('c-open'), cClosed=document.getElementById('c-closed');
+  if(cOpen)cOpen.textContent=openN;
+  if(cClosed)cClosed.textContent=allRows0.length-openN;
+  var ag=document.getElementById('active-grid'), ae=document.getElementById('active-empty');
+  if(ag&&ae){var hasOpen=ag.querySelectorAll('.olot').length>0;ag.style.display=hasOpen?'':'none';ae.style.display=hasOpen?'none':'';}
+
+  function apply(){
+    var rows=Array.prototype.slice.call(body.querySelectorAll('tr'));
+    var shown=0;
+    rows.forEach(function(r){
+      var okF = filter==='all' || r.getAttribute('data-status')===filter;
+      var okQ = !query || (r.getAttribute('data-search')||'').indexOf(query)>=0;
+      var on = okF && okQ; r.style.display = on?'':'none'; if(on) shown++;
+    });
+    if(empty) empty.style.display = shown?'none':'block';
+  }
+  function sortRows(){
+    var mode=sort?sort.value:'num';
+    var rows=Array.prototype.slice.call(body.querySelectorAll('tr'));
+    rows.sort(function(a,b){
+      if(mode==='units_desc') return (+b.getAttribute('data-units'))-(+a.getAttribute('data-units'));
+      if(mode==='units_asc')  return (+a.getAttribute('data-units'))-(+b.getAttribute('data-units'));
+      return (+b.getAttribute('data-n'))-(+a.getAttribute('data-n'));
+    });
+    rows.forEach(function(r){body.appendChild(r);});
+  }
+  if(tabs) tabs.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){
+    tabs.querySelectorAll('.tab').forEach(function(x){x.classList.remove('is-active');});
+    t.classList.add('is-active'); filter=t.getAttribute('data-f'); apply();
+  };});
+  if(search) search.addEventListener('input',function(e){query=(e.target.value||'').toLowerCase().trim();apply();});
+  if(sort) sort.onchange=function(){sortRows();apply();};
+  sortRows();
+})();
+window.openCreate=function(){var c=document.getElementById('lot-create');if(!c)return;c.classList.add('is-open');var i=document.getElementById('lot-desc');if(i)i.focus();};
+window.closeCreate=function(){var c=document.getElementById('lot-create');if(c)c.classList.remove('is-open');var i=document.getElementById('lot-desc');if(i)i.value='';};
+</script>
 {% endblock %}

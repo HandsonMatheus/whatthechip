@@ -23,7 +23,7 @@
   /* ═══ Shell interno WhatTheChip (redesenho — navbar escura #101317, nav em pills) ═══
      Fase 0 do handoff: só o SHELL mudou de visual; o conteúdo (block main) segue
      no style.css até o redesenho por tela (fases 1-3). Nomes de classe mantidos
-     (.wtc-header*/.wtc-work) p/ não tocar os 7 templates de conteúdo. */
+     (.wtc-header e .wtc-work) p/ não tocar os 7 templates de conteúdo. */
   :root{
     --ink-100:#161616;--ink-60:#697077;--ink-40:#a2a9b0;--white:#fff;
     --blue-40:#78a9ff;--blue-60:#0f62fe;--blue-60h:#0353e9;--blue-70:#0043ce;
@@ -86,7 +86,12 @@
   .wtc-header__nav--active:visited { color: #fff; }
   .wtc-header__btn, .wtc-header__btn:visited { color: var(--shell-text); }
   .wtc-header__btn--logout, .wtc-header__btn--logout:visited { color: #ff8389; }
-  .wtc-work a, .wtc-work a:visited { color: var(--blue-60); }
+  .wtc-work a:not(.uib), .wtc-work a:not(.uib):visited { color: var(--blue-60); }
+  /* Botões-link (.uib) usam a cor da VARIANTE, nunca a cor de link/:visited (style.css) */
+  .wtc-work a.uib--primary, .wtc-work a.uib--primary:visited { color: #fff; }
+  .wtc-work a.uib--ghost,   .wtc-work a.uib--ghost:visited   { color: #161616; }
+  .wtc-work a.uib--danger,  .wtc-work a.uib--danger:visited  { color: #da1e28; }
+  .wtc-work a.uib--success, .wtc-work a.uib--success:visited { color: #198038; }
 
   /* Área de trabalho centralizada */
   .wtc-work { max-width: 1340px; width: 100%; margin: 0 auto; padding: 28px 24px 72px; flex: 1; }

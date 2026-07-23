@@ -2,57 +2,80 @@
 {% load i18n l10n %}
 {% block title %}{{ inv.code }} — WhatTheChip?{% endblock %}
 {% block nav_vendas %} wtc-header__nav--active{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ═══ Vendas · Fatura — LAYOUT do protótipo screens/vendas.html (kv + pay + saldo). ═══ */
+.vd-wrap{max-width:1100px;margin:0 auto}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#878d96;font-family:'IBM Plex Mono',monospace;margin-bottom:14px;flex-wrap:wrap}
+.crumbs a{color:#878d96;text-decoration:none}.crumbs a:hover{color:#697077}.crumbs .sep{opacity:.5}
+.ivhead{display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:6px}
+.ivhead__code{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:700;letter-spacing:-.01em;line-height:1.1}
+.so-badge{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;margin-left:10px;vertical-align:3px}
+.so-badge--draft{background:#fff1c2;color:#8a6d00}.so-badge--ok{background:#defbe6;color:#0e6027}.so-badge--cancel{background:#e8e8e8;color:#525252}
+.ivhead__smart{display:flex;border:1px solid #c1c7cd;border-radius:12px;overflow:hidden;margin-left:auto}
+.ivhead__smart a{display:flex;flex-direction:column;justify-content:center;padding:7px 16px;border-right:1px solid #dde1e6;background:#fff;text-decoration:none}
+.ivhead__smart a:last-child{border-right:0}.ivhead__smart a:hover{background:#f2f4f8;text-decoration:none}
+.smart__k{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#878d96}
+.smart__v{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#161616;margin-top:2px}
+.iv-sub{font-size:13px;color:#697077;margin:0 0 18px}
+.cards{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.ivd-card{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06);padding:14px 22px;min-width:180px}
+.card__l{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#878d96}
+.card__v{font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;margin-top:4px;color:#161616}
+.card__v small{font-size:14px;color:#697077}
+.ivd-card--paid .card__v{color:#0e6027}.ivd-card--due .card__v{color:#8a6d00}.ivd-card--zero .card__v{color:#0e6027}
+.panel{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06);overflow:hidden;margin-bottom:18px}
+.panel__head{padding:12px 18px;border-bottom:1px solid #e0e0e0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#878d96}
+.vd-table{width:100%;border-collapse:collapse}
+.vd-table td{padding:11px 18px;font-size:13.5px;border-bottom:1px solid #f2f4f8;vertical-align:middle}
+.vd-table tr:last-child td{border-bottom:0}
+.mono{font-family:'IBM Plex Mono',monospace}.num{text-align:right}
+.pay__form{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#fff;border:1px solid #dde1e6;border-radius:16px;padding:14px}
+.pay__form input{height:40px;padding:0 10px;border:1px solid #c1c7cd;border-radius:10px;font-size:13px}
+.pay__form input[type=number]{width:130px;font-family:'IBM Plex Mono',monospace;text-align:right}
+.pay__form input[type=text]{flex:1;min-width:180px}
+.uib{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border-radius:10px;font-size:13px;font-weight:600;border:0;cursor:pointer;text-decoration:none;font-family:inherit}
+.uib--primary{background:#0f62fe;color:#fff}.uib--primary:hover{background:#0353e9}
+.uib--danger{background:#fff;color:#da1e28;border:1px solid #da1e28;height:36px;padding:0 14px}.uib--danger:hover{background:#fff1f1}
+</style>
+{% endblock %}
+
 {% block main %}
-<div style="max-width:1100px;margin:0 auto;padding:28px 24px;">
-
-  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:4px;">
-    <h1 style="font-weight:300;font-size:28px;margin:0;font-family:'IBM Plex Mono',monospace;">{{ inv.code }}</h1>
-    {% if inv.status == 'open' %}<span style="font-size:12px;font-weight:700;background:#fff1c2;color:#8a6d00;padding:3px 10px;border-radius:10px;">{% trans "em aberto" %}</span>
-    {% elif inv.status == 'paid' %}<span style="font-size:12px;font-weight:700;background:#defbe6;color:#0e6027;padding:3px 10px;border-radius:10px;">{% trans "paga" %}</span>
-    {% else %}<span style="font-size:12px;font-weight:700;background:#e8e8e8;color:#525252;padding:3px 10px;border-radius:10px;">{% trans "cancelada" %}</span>{% endif %}
-    <span style="flex:1;"></span>
-    {% comment %} Smart buttons (padrão Odoo): a OV e o lote desta fatura. {% endcomment %}
-    <a href="{% url 'vendas:so_detail' inv.order.pk %}"
-       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;border-radius:12px;text-decoration:none;line-height:1.2;">
-      <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Ordem de venda" %}</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ inv.order.code }}</span>
-    </a>
-    <a href="{% url 'estoque:lot_detail' inv.order.lot.pk %}"
-       style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 16px;background:#fff;border:1px solid #0f62fe;border-radius:12px;text-decoration:none;line-height:1.2;">
-      <span style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0f62fe;">{% trans "Lote" %}</span>
-      <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:#161616;">{{ inv.order.lot.code }}</span>
-    </a>
+{% localize off %}
+<div class="vd-wrap">
+  <div class="crumbs">
+    <a href="{% url 'estoque:lot_detail' inv.order.lot.pk %}">{{ inv.order.lot.code }}</a><span class="sep">/</span>
+    <a href="{% url 'vendas:so_detail' inv.order.pk %}">{{ inv.order.code }}</a><span class="sep">/</span><span>{{ inv.code }}</span>
   </div>
-  {% localize off %}
-  <p style="font-size:13px;color:#6f6f6f;margin:0 0 18px;">
-    {% trans "taxa" %} 1 ¥ = US$ {{ inv.fx_usd_rate }} ({% trans "congelada na emissão" %}) · {% trans "Emitido em" %} {{ inv.issued_at|date:"d/m/Y" }}
-  </p>
 
-  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px;">
-    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;padding:14px 22px;min-width:200px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Total" %}</div>
-      <div style="font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;">¥ {{ inv.total_rmb }} <span style="font-size:14px;color:#525252;">· US$ {{ inv.total_usd }}</span></div>
+  <div class="ivhead">
+    <div>
+      <div class="ivhead__code">{{ inv.code }}{% if inv.status == 'open' %}<span class="so-badge so-badge--draft">{% trans "em aberto" %}</span>{% elif inv.status == 'paid' %}<span class="so-badge so-badge--ok">{% trans "paga" %}</span>{% else %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% endif %}</div>
     </div>
-    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;padding:14px 22px;min-width:180px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Recebido" %}</div>
-      <div style="font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;color:#0e6027;">US$ {{ inv.paid_usd }}</div>
+    <div class="ivhead__smart">
+      <a href="{% url 'vendas:so_detail' inv.order.pk %}" title="{% trans 'Ordem de venda' %}"><span class="smart__k">{% trans "Ordem de venda" %}</span><span class="smart__v">{{ inv.order.code }}</span></a>
+      <a href="{% url 'estoque:lot_detail' inv.order.lot.pk %}" title="{% trans 'Lote' %}"><span class="smart__k">{% trans "Lote" %}</span><span class="smart__v">{{ inv.order.lot.code }}</span></a>
     </div>
-    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;padding:14px 22px;min-width:180px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;">{% trans "Saldo" %}</div>
-      <div style="font-size:22px;font-family:'IBM Plex Mono',monospace;font-weight:600;color:{% if inv.balance_usd > 0 %}#8a6d00{% else %}#0e6027{% endif %};">US$ {{ inv.balance_usd }}</div>
-    </div>
+  </div>
+  <p class="iv-sub">{% trans "taxa" %} 1 ¥ = US$ {{ inv.fx_usd_rate }} ({% trans "congelada na emissão" %}) · {% trans "Emitido em" %} {{ inv.issued_at|date:"d/m/Y" }}</p>
+
+  <div class="cards">
+    <div class="ivd-card"><div class="card__l">{% trans "Total" %}</div><div class="card__v">¥ {{ inv.total_rmb }} <small>· US$ {{ inv.total_usd }}</small></div></div>
+    <div class="ivd-card ivd-card--paid"><div class="card__l">{% trans "Recebido" %}</div><div class="card__v">US$ {{ inv.paid_usd }}</div></div>
+    <div class="ivd-card {% if inv.balance_usd > 0 %}ivd-card--due{% else %}ivd-card--zero{% endif %}"><div class="card__l">{% trans "Saldo" %}</div><div class="card__v">US$ {{ inv.balance_usd }}</div></div>
   </div>
 
   {% if adjustments %}
-  <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;margin-bottom:18px;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;padding:12px 14px 0;">{% trans "Ajustes do acerto" %}</div>
-    <table style="width:100%;border-collapse:collapse;">
+  <div class="panel">
+    <div class="panel__head">{% trans "Ajustes do acerto" %}</div>
+    <table class="vd-table">
       <tbody>
         {% for a in adjustments %}
-        <tr style="border-bottom:1px solid #eee;">
-          <td style="padding:8px 14px;font-weight:600;">{{ a.order_line.display_label }}</td>
-          <td style="padding:8px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;color:#a2191f;">{% if a.qty_rejected %}−{{ a.qty_rejected }} {% trans "un" %}{% endif %}</td>
-          <td style="padding:8px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{% if a.new_unit_rmb is not None %}¥ {{ a.order_line.unit_rmb }} → ¥ {{ a.new_unit_rmb }}{% endif %}</td>
+        <tr>
+          <td style="font-weight:600">{{ a.order_line.display_label }}</td>
+          <td class="num mono" style="color:#a2191f">{% if a.qty_rejected %}−{{ a.qty_rejected }} {% trans "un" %}{% endif %}</td>
+          <td class="num mono">{% if a.new_unit_rmb is not None %}¥ {{ a.order_line.unit_rmb }} → ¥ {{ a.new_unit_rmb }}{% endif %}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -60,41 +83,38 @@
   </div>
   {% endif %}
 
-  <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;margin-bottom:18px;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f6f6f;padding:12px 14px 0;">{% trans "Pagamentos" %}</div>
-    <table style="width:100%;border-collapse:collapse;">
+  <div class="panel">
+    <div class="panel__head">{% trans "Pagamentos" %}</div>
+    <table class="vd-table">
       <tbody>
         {% for p in payments %}
-        <tr style="border-bottom:1px solid #eee;">
-          <td style="padding:8px 14px;font-family:'IBM Plex Mono',monospace;">{{ p.paid_at|date:"d/m/Y" }}</td>
-          <td style="padding:8px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:600;">US$ {{ p.amount_usd }}</td>
-          <td style="padding:8px 14px;color:#6f6f6f;">{{ p.reference }}</td>
+        <tr>
+          <td class="mono">{{ p.paid_at|date:"d/m/Y" }}</td>
+          <td class="num mono" style="font-weight:600">US$ {{ p.amount_usd }}</td>
+          <td style="color:#697077">{{ p.reference }}</td>
         </tr>
         {% empty %}
-        <tr><td style="padding:14px;color:#6f6f6f;">{% trans "Nenhum pagamento ainda." %}</td></tr>
+        <tr><td style="color:#697077;padding:14px 18px">{% trans "Nenhum pagamento ainda." %}</td></tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 
   {% if inv.status == 'open' %}
-  <form method="post" action="{% url 'vendas:invoice_pay' inv.pk %}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:#fff;border:1px solid #dde1e6;border-radius:16px;padding:14px;">
+  <form method="post" action="{% url 'vendas:invoice_pay' inv.pk %}" class="pay__form">
     {% csrf_token %}
     <span style="font-size:13px;font-weight:600;">{% trans "Registrar pagamento" %} (US$):</span>
-    <input type="number" name="amount" step="0.01" min="0.01" required placeholder="0.00"
-           style="width:130px;height:40px;padding:0 10px;border:1px solid #c1c7cd;border-radius:10px;font-family:'IBM Plex Mono',monospace;text-align:right;">
-    <input type="date" name="paid_at" value="{% now 'Y-m-d' %}"
-           style="height:40px;padding:0 10px;border:1px solid #c1c7cd;border-radius:10px;font-size:13px;">
-    <input type="text" name="reference" maxlength="120" placeholder="{% trans 'Referência (opcional)' %}"
-           style="flex:1;min-width:180px;height:40px;padding:0 10px;border:1px solid #c1c7cd;border-radius:10px;font-size:13px;">
-    <button type="submit" style="height:40px;padding:0 18px;background:#0f62fe;color:#fff;border:0;font-size:13px;font-weight:600;cursor:pointer;">{% trans "Registrar" %}</button>
+    <input type="number" name="amount" step="0.01" min="0.01" required placeholder="0.00">
+    <input type="date" name="paid_at" value="{% now 'Y-m-d' %}">
+    <input type="text" name="reference" maxlength="120" placeholder="{% trans 'Referência (opcional)' %}">
+    <button type="submit" class="uib uib--primary">{% trans "Registrar" %}</button>
   </form>
   <form method="post" action="{% url 'vendas:invoice_cancel' inv.pk %}" style="margin-top:10px;"
         onsubmit="return confirm('{% trans "Cancelar esta fatura? (só sem pagamentos; um novo acerto reemite)" %}');">
     {% csrf_token %}
-    <button type="submit" style="height:36px;padding:0 14px;background:#fff;color:#da1e28;border:1px solid #da1e28;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;">{% trans "Cancelar fatura" %}</button>
+    <button type="submit" class="uib uib--danger">{% trans "Cancelar fatura" %}</button>
   </form>
   {% endif %}
-  {% endlocalize %}
 </div>
+{% endlocalize %}
 {% endblock %}

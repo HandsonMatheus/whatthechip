@@ -2,60 +2,77 @@
 {% load i18n l10n %}
 {% block title %}{% trans "Acerto" %} — {{ so.code }}{% endblock %}
 {% block nav_vendas %} wtc-header__nav--active{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ═══ Vendas · Acerto (resultado do comprador) — mesma linguagem do protótipo. ═══ */
+.vd-wrap{max-width:1100px;margin:0 auto}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#878d96;font-family:'IBM Plex Mono',monospace;margin-bottom:14px;flex-wrap:wrap}
+.crumbs a{color:#878d96;text-decoration:none}.crumbs a:hover{color:#697077}.crumbs .sep{opacity:.5}
+.pagehead h1{font-size:24px;font-weight:700;letter-spacing:-.01em;margin:0 0 4px;color:#161616}
+.pagehead h1 .mono{font-family:'IBM Plex Mono',monospace}
+.pagehead p{margin:0 0 18px;font-size:13px;color:#697077;max-width:80ch}
+.panel{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06);overflow:hidden;margin-bottom:16px}
+.vd-table{width:100%;border-collapse:collapse}
+.vd-table thead th{background:#f2f4f8;text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#878d96;padding:10px 18px;border-bottom:1px solid #dde1e6;white-space:nowrap}
+.vd-table th.num,.vd-table td.num{text-align:right}
+.vd-table tbody td{padding:11px 18px;font-size:13.5px;border-bottom:1px solid #f2f4f8;vertical-align:middle}
+.vd-table tbody tr:last-child td{border-bottom:0}
+.mono{font-family:'IBM Plex Mono',monospace}
+.vd-table input{height:36px;padding:0 10px;border:1px solid #c1c7cd;border-radius:10px;font-family:'IBM Plex Mono',monospace;text-align:right}
+.set-actions{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.set-actions .notes{flex:1;min-width:280px;height:44px;padding:0 12px;border:1px solid #c1c7cd;border-radius:10px;font-size:14px}
+.uib{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;border-radius:10px;font-size:14px;font-weight:600;border:0;cursor:pointer;text-decoration:none;font-family:inherit}
+.uib--primary{background:#0f62fe;color:#fff}.uib--primary:hover{background:#0353e9}
+.uib--ghost{background:#fff;color:#161616;border:1px solid #c1c7cd}.uib--ghost:hover{background:#f2f4f8;text-decoration:none}
+</style>
+{% endblock %}
+
 {% block main %}
 {% comment %}
-  F11.4 — RESULTADO do comprador (padrão Odoo): a OV confirmada NÃO muda;
-  aqui se registram os deltas (mortos por categoria, repreço) e a FATURA
-  nasce com o valor final. Campos vazios = linha sem ajuste.
+  F11.4 — RESULTADO do comprador (padrão Odoo): a OV confirmada NÃO muda; aqui
+  se registram os deltas (mortos por categoria, repreço) e a FATURA nasce com o
+  valor final. Campos vazios = linha sem ajuste. Visual = protótipo.
 {% endcomment %}
-<div style="max-width:1100px;margin:0 auto;padding:28px 24px;">
-  <h1 style="font-weight:300;font-size:28px;margin:0 0 4px;">{% trans "Resultado do comprador" %} · <span style="font-family:'IBM Plex Mono',monospace;">{{ so.code }}</span></h1>
-  <p style="font-size:13px;color:#6f6f6f;margin:0 0 18px;">
-    {% trans "Informe o que o comprador reportou: unidades rejeitadas (mortos) e/ou novo ¥ unitário por categoria. Campos vazios mantêm o combinado. A ordem não muda — a fatura sai com o valor final." %}
-  </p>
+<div class="vd-wrap">
+  <div class="crumbs">
+    <a href="{% url 'vendas:so_detail' so.pk %}">{{ so.code }}</a><span class="sep">/</span><span>{% trans "Acerto" %}</span>
+  </div>
+  <div class="pagehead">
+    <h1>{% trans "Resultado do comprador" %} · <span class="mono">{{ so.code }}</span></h1>
+    <p>{% trans "Informe o que o comprador reportou: unidades rejeitadas (mortos) e/ou novo ¥ unitário por categoria. Campos vazios mantêm o combinado. A ordem não muda — a fatura sai com o valor final." %}</p>
+  </div>
 
   <form method="post">
     {% csrf_token %}
-    <div style="background:#fff;border:1px solid #dde1e6;border-radius:16px;margin-bottom:16px;">
-      <table style="width:100%;border-collapse:collapse;">
+    <div class="panel">
+      <table class="vd-table">
         <thead>
-          <tr style="border-bottom:2px solid #e0e0e0;">
-            <th style="text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Categoria" %}</th>
-            <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Qtd." %}</th>
-            <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "¥ unit." %}</th>
-            <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Un. rejeitadas" %}</th>
-            <th style="text-align:right;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f6f6f;padding:10px 14px;">{% trans "Novo ¥ unitário" %}</th>
+          <tr>
+            <th>{% trans "Categoria" %}</th><th class="num">{% trans "Qtd." %}</th><th class="num">{% trans "¥ unit." %}</th>
+            <th class="num">{% trans "Un. rejeitadas" %}</th><th class="num">{% trans "Novo ¥ unitário" %}</th>
           </tr>
         </thead>
         <tbody>
           {% localize off %}
           {% for line in lines %}
-          <tr style="border-bottom:1px solid #eee;">
-            <td style="padding:9px 14px;font-weight:600;">{{ line.display_label }}</td>
-            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">{{ line.quantity }}</td>
-            <td style="padding:9px 14px;text-align:right;font-family:'IBM Plex Mono',monospace;">¥ {{ line.unit_rmb }}</td>
-            <td style="padding:9px 14px;text-align:right;">
-              <input type="number" name="rej_{{ line.pk }}" min="0" max="{{ line.quantity }}" placeholder="0"
-                     style="width:90px;height:36px;padding:0 10px;border:1px solid #c1c7cd;border-radius:10px;font-family:'IBM Plex Mono',monospace;text-align:right;">
-            </td>
-            <td style="padding:9px 14px;text-align:right;">
-              <input type="number" name="price_{{ line.pk }}" min="0" step="0.01" placeholder="{{ line.unit_rmb }}"
-                     style="width:110px;height:36px;padding:0 10px;border:1px solid #c1c7cd;border-radius:10px;font-family:'IBM Plex Mono',monospace;text-align:right;">
-            </td>
+          <tr>
+            <td style="font-weight:600">{{ line.display_label }}</td>
+            <td class="num mono">{{ line.quantity }}</td>
+            <td class="num mono">¥ {{ line.unit_rmb }}</td>
+            <td class="num"><input type="number" name="rej_{{ line.pk }}" min="0" max="{{ line.quantity }}" placeholder="0" style="width:90px"></td>
+            <td class="num"><input type="number" name="price_{{ line.pk }}" min="0" step="0.01" placeholder="{{ line.unit_rmb }}" style="width:110px"></td>
           </tr>
           {% endfor %}
           {% endlocalize %}
         </tbody>
       </table>
     </div>
-    <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
-      <input type="text" name="notes" maxlength="500" placeholder="{% trans 'Observações (opcional)' %}"
-             style="flex:1;min-width:280px;height:44px;padding:0 12px;border:1px solid #c1c7cd;border-radius:10px;font-size:14px;">
-      <button type="submit" style="height:44px;padding:0 22px;background:#0f62fe;color:#fff;border:0;font-size:14px;font-weight:600;cursor:pointer;"
-              onclick="return confirm('{% trans "Registrar o resultado e emitir a fatura com o valor final?" %}');">
-        {% trans "Registrar resultado e faturar" %}
-      </button>
-      <a href="{% url 'vendas:so_detail' so.pk %}" style="height:44px;display:inline-flex;align-items:center;padding:0 18px;background:#fff;border:1px solid #c1c7cd;border-radius:10px;color:#161616;font-size:14px;font-weight:600;text-decoration:none;">{% trans "Voltar" %}</a>
+    <div class="set-actions">
+      <input class="notes" type="text" name="notes" maxlength="500" placeholder="{% trans 'Observações (opcional)' %}">
+      <button type="submit" class="uib uib--primary"
+              onclick="return confirm('{% trans "Registrar o resultado e emitir a fatura com o valor final?" %}');">{% trans "Registrar resultado e faturar" %}</button>
+      <a href="{% url 'vendas:so_detail' so.pk %}" class="uib uib--ghost">{% trans "Voltar" %}</a>
     </div>
   </form>
 </div>
