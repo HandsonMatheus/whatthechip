@@ -125,4 +125,7 @@ FOUNDING_TABLE = (
     ('lpddr', 'LPDDR3', '3',  'GB', 15),
     ('lpddr', 'LPDDR5', '4',  'GB', 16),
     ('lpddr', 'LPDDR4', '2',  'GB', 17),
+    ('lpddr', 'LPDDR4', '1.5', 'GB', 18),  # anexada 2026-07-24 — chips reais
+                                           # (MT53B384M32/192M64 = 12Gb = 1.5GB;
+                                           # OV do LOT/043 expôs a lacuna)
 )
