@@ -1632,3 +1632,72 @@ class FoldGenTests(TestCase):
             Price.all_companies.create(
                 price_list=pl, kind='ddr', gen='DDR3U',
                 tier_value=Decimal('2'), tier_unit='Gb', status='unquoted')
+
+
+class CanonizePriceGridTests(TestCase):
+    """canonize_price_grid (convenção v3): funde gêmeas L/X→base numa passada
+    — vence o status mais informativo (variante COTADA vence base vazia; dois
+    cotados divergentes → base prevalece + relatório); variante sem gêmea só
+    renomeia; dry-run não grava; --revert restaura tudo."""
+
+    def test_fusao_renomeio_dry_run_e_revert(self):
+        import os
+        from io import StringIO
+        from django.core.management import call_command
+        from tenancy.scope import set_current_company
+        co = Company.objects.create(name='CanonCo', slug='canon-co')
+        buyer = Buyer.all_companies.create(company=co, name='Wu CN',
+                                           slug='wu-canon')
+        pl = PriceList.all_companies.create(buyer=buyer, brand=None)
+
+        def row(kind, gen, tier, unit, status='unquoted', mn=None):
+            p = Price(price_list=pl, company=co, kind=kind, gen=gen,
+                      tier_value=Decimal(tier), tier_unit=unit, status=status,
+                      price_min=Decimal(mn) if mn else None,
+                      price_max=Decimal(mn) if mn else None)
+            # grava CRU (bulk pula o save → sem fold): grid LEGADO pré-v3.
+            # (company setada à mão — o save é quem denormaliza da lista.)
+            Price.all_companies.bulk_create([p])
+            return p
+
+        base_vazia = row('lpddr', 'LPDDR4', '4', 'GB')             # unquoted
+        var_cotada = row('lpddr', 'LPDDR4X', '4', 'GB', 'quoted', '17')
+        base_cot   = row('ddr', 'DDR3', '2', 'Gb', 'quoted', '3')
+        var_cot    = row('ddr', 'DDR3L', '2', 'Gb', 'quoted', '4')  # diverge
+        solitaria  = row('umcp', 'LPDDR5X', '512', 'GB', 'quoted', '30')
+
+        try:
+            out = StringIO()
+            call_command('canonize_price_grid', company='canon-co', stdout=out)
+            self.assertIn('DRY-RUN', out.getvalue())
+            self.assertEqual(Price.all_companies.count(), 5)       # nada mudou
+
+            out = StringIO()
+            call_command('canonize_price_grid', company='canon-co',
+                         commit=True, stdout=out)
+            texto = out.getvalue()
+            self.assertEqual(Price.all_companies.count(), 3)       # 2 gêmeas fundidas
+            base_vazia.refresh_from_db()
+            self.assertEqual(base_vazia.status, 'quoted')          # variante venceu
+            self.assertEqual(base_vazia.price_min, Decimal('17'))
+            base_cot.refresh_from_db()
+            self.assertEqual(base_cot.price_min, Decimal('3'))     # base prevaleceu
+            self.assertIn('DIVERGÊNCIA', texto)
+            self.assertIn('DDR3L', texto)                          # par no relatório
+            solitaria.refresh_from_db()
+            self.assertEqual(solitaria.gen, 'LPDDR5')              # renomeada
+            self.assertFalse(Price.all_companies.filter(
+                gen__in=('LPDDR4X', 'DDR3L', 'LPDDR5X')).exists())
+
+            out = StringIO()
+            call_command('canonize_price_grid', company='canon-co',
+                         revert='canonize_price_grid_backup.json', stdout=out)
+            self.assertEqual(Price.all_companies.count(), 5)       # variantes de volta
+            base_vazia.refresh_from_db()
+            self.assertEqual(base_vazia.status, 'unquoted')        # base restaurada
+            solitaria.refresh_from_db()
+            self.assertEqual(solitaria.gen, 'LPDDR5X')
+        finally:
+            set_current_company(None)
+            if os.path.exists('canonize_price_grid_backup.json'):
+                os.unlink('canonize_price_grid_backup.json')

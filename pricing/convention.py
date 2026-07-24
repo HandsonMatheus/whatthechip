@@ -89,6 +89,8 @@ FOUNDING_TABLE = (
     ('ufs', '', '1024', 'GB', 3),
     ('ufs', '', '32',   'GB', 4),
     ('ufs', '', '512',  'GB', 5),
+    ('ufs', '', '128',  'GB', 6),   # caiu na transcrição da fundação; anexada
+                                    # 2026-07-23 (regra de append: nº novo, nada renumera)
     # E — DDR (tier em Gb/die; variantes L/U dobradas)
     ('ddr', 'DDR4', '4',  'Gb', 1),
     ('ddr', 'DDR5', '16', 'Gb', 2),
