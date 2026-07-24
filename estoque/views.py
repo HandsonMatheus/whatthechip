@@ -430,6 +430,12 @@ def _compute_destination(result: dict) -> tuple:
         label = f"EMCP{nand}+{ram}" if nand else 'eMCP'
         return label, 'emcp'
 
+    if kind == 'ssd':
+        # SSD BGA/NVMe (dono 2026-07-24): comprado por GB; caixa SSD+capacidade.
+        cap   = _format_cap(result.get('capacity', ''))
+        label = f"SSD{cap}" if cap else 'SSD'
+        return label, 'ssd'
+
     if kind == 'ufs' or 'ufs' in ct:
         # _format_cap preserva a unidade original: "128GB"→"128GB", "1TB"→"1TB".
         # Antes usava _extract_gb + "GB" hardcoded, o que produzia "UFS" (label vazio)

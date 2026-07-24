@@ -1187,6 +1187,16 @@ def assess_profitability(result: dict) -> str:
             return "INDETERMINADO"
         return "RENTÁVEL" if cap_gb >= cfg.ufs_min_cap_gb - 0.01 else "NÃO RENTÁVEL"
 
+    # ── SSD (BGA/NVMe — Micron MTFD…) ────────────────────────────────────────
+    # Dono, 2026-07-24: o comprador COMPRA SSD, precificado LINEAR por GB
+    # ("512GB×0.1=51rmb"). Com capacidade conhecida → RENTÁVEL (não há limiar:
+    # o ¥ escala com o GB); sem capacidade → INDETERMINADO (nunca chute).
+    if _fam == "ssd":
+        cap_gb = _extract_gib(result.get("capacity") or "")
+        if cap_gb is None:
+            return "INDETERMINADO"
+        return "RENTÁVEL"
+
     # ── LPDDR standalone ─────────────────────────────────────────────────────
     if _fam == "lpddr":
         lpddr_gen = _lpddr_generation(combined)

@@ -51,6 +51,9 @@ KIND_LETTER = {
     'ufs':   'D',
     'ddr':   'E',
     'lpddr': 'F',
+    # SSD BGA/NVMe (dono 2026-07-24 — comprador paga LINEAR ¥/GB). A letra G
+    # deixa de ser livre; próximo tipo novo pega I (H/R reservadas).
+    'ssd':   'G',
 }
 
 RESERVED_LETTERS = frozenset({'H', 'R'})   # baldes especiais — nunca categoria
@@ -128,4 +131,9 @@ FOUNDING_TABLE = (
     ('lpddr', 'LPDDR4', '1.5', 'GB', 18),  # anexada 2026-07-24 — chips reais
                                            # (MT53B384M32/192M64 = 12Gb = 1.5GB;
                                            # OV do LOT/043 expôs a lacuna)
+    # G — SSD BGA/NVMe (2026-07-24): capacidades REAIS descobertas no estoque;
+    #     novas capacidades anexam na aprovação (preço é linear ¥/GB — a caixa
+    #     separa por capacidade como todo o resto).
+    ('ssd', '', '440', 'GB', 1),
+    ('ssd', '', '220', 'GB', 2),
 )

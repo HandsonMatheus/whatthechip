@@ -2070,7 +2070,7 @@ msgstr "无类别 — 请单独存放，等待分析"
 
 #: vendas/templates/vendas/so_detail.html
 msgid "valores em US$"
-msgstr "金额以美元计"
+msgstr "金额以 US$ 计"
 
 #: vendas/templates/vendas/so_detail.html
 msgid "US$ unit."

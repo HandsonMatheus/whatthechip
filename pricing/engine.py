@@ -196,7 +196,7 @@ def derive_price_key(result: dict):
     # (fold_gen, fonte única em pricing/models.py): DDR3L/DDR3U→DDR3 (dono
     # 2026-07-11), LPDDR4X→LPDDR4 avulso (dono 2026-07-21 — "uma só caixa").
     # eMCP/uMCP mantêm a geração da RAM intacta.
-    if kind in ('emmc', 'ufs', 'emcp', 'umcp'):
+    if kind in ('emmc', 'ufs', 'emcp', 'umcp', 'ssd'):
         # v3.1 (dono 2026-07-24, planilha v9 "unified by cap"): eMCP/uMCP
         # keiam SÓ pelo NAND — a geração da RAM fica nas specs/rótulo, fora
         # da chave (igual eMMC/UFS).
@@ -229,6 +229,26 @@ def derive_price_key(result: dict):
         return _no_key(kind, f'{faltou} — não keia preço'), None
 
     return None, (kind, gen, Decimal(str(tier)), KIND_UNIT[kind])
+
+
+def _ssd_quote(buyer, tier_value, tier_unit):
+    """SSD é LINEAR (dono 2026-07-24: '512GB×0.1=51rmb'): ¥ = GB ×
+    Buyer.ssd_rmb_per_gb, arredondado ao ¥ INTEIRO (128×0.1=12.8→13, meio
+    pra cima); US$ derivado do ¥ como sempre. SEM linhas de grid; taxa
+    ausente → sem preço COM MOTIVO (nunca chute). Taxa é contratual →
+    nunca 'velha' (is_stale=False)."""
+    rate = buyer.ssd_rmb_per_gb
+    if rate is None:
+        return PriceQuote(status=UNQUOTED,
+                          reason='SSD sem taxa ¥/GB — defina no comprador (admin)',
+                          kind='ssd', gen='', tier_value=tier_value,
+                          tier_unit=tier_unit)
+    rmb = (Decimal(tier_value) * rate).quantize(Decimal('1'), ROUND_HALF_UP)
+    usd = (rmb * buyer.fx_usd_rate).quantize(_CENT, ROUND_HALF_UP)
+    return PriceQuote(status=PRICED, kind='ssd', gen='',
+                      tier_value=tier_value, tier_unit=tier_unit,
+                      price_min=usd, price_max=usd, rmb_min=rmb, rmb_max=rmb,
+                      quote_date=None, is_stale=False, via='por GB')
 
 
 def _chain_from_lists(lists, brand_name: str):
@@ -323,6 +343,8 @@ def price(result: dict, buyer) -> PriceQuote:
     if err is not None:
         return err
     kind, gen, tier_value, tier_unit = key
+    if kind == 'ssd':                       # LINEAR ¥/GB — sem grid (2026-07-24)
+        return _ssd_quote(buyer, tier_value, tier_unit)
 
     chain = _resolution_chain(buyer, result.get('brand') or '')
     if not chain:
@@ -398,6 +420,8 @@ class BuyerPricingContext:
         # fold (price_gen='LPDDR4X'/'DDR3L' gravado) resolve na linha-base
         # do grid sem exigir resnapshot — leitor acompanha o escritor.
         gen = fold_gen(kind, gen or '')
+        if kind == 'ssd':                   # LINEAR ¥/GB — sem grid (2026-07-24)
+            return _ssd_quote(self.buyer, tier_value, tier_unit)
         chain = self._chain(brand_name or '')
         if not chain:
             return _quote_no_list(self.buyer, kind, gen, tier_value, tier_unit)

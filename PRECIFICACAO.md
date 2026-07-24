@@ -954,6 +954,19 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   linha por NAND; vencedor = status mais informativo; divergência de ¥ →
   relatório). ⚠ `import_price_xlsx` lê o formato ANTIGO multi-aba — a v9 é
   aba única; leitor novo só se o dono pedir.
+- **SSD ENTROU NO NEGÓCIO (dono 2026-07-24 — WeChat do comprador: "SSD
+  chips are priced per GB… 512GB×0.1=51rmb / 128GB×0.1=13rmb"):** tipo
+  canônico **`SSD`** no vocabulário (chips/chip_types.py; aliases bga/nvme) —
+  os MTFD da Micron são **BGA SSD**, não eMMC (59 registros contaminados no
+  catálogo, curadoria via shell do dono). Rentabilidade: cap conhecida →
+  RENTÁVEL (¥ escala com GB); sem cap → INDETERMINADO. Pricing: kind `ssd`
+  **LINEAR** — SEM linhas de grid: ¥ = GB × **`Buyer.ssd_rmb_per_gb`**
+  (contratual, migração pricing/0016; NULL = sem preço com motivo), ¥ INTEIRO
+  HALF_UP (512→¥51, 128→¥13 conferidos), US$ derivado, is_stale=False,
+  via='por GB'; hook em price() e price_from_key ANTES da cadeia de listas.
+  Convenção: **letra G = ssd** (deixa de ser livre; próximo tipo pega I);
+  fundadoras G-01=440GB, G-02=220GB (capacidades reais do estoque; novas
+  anexam na aprovação). Caixa unmasked: "SSD440GB". `SsdLinearPricingTests`.
 - **GDDR FORA DO NEGÓCIO (dono 2026-07-23):** sempre **NÃO RENTÁVEL** (morto
   POR TIPO no `assess_profitability` — o bloco fica na posição, interceptando
   o substring "DDR"; `is_dead_by_generation`=True → descarte mesmo sem

@@ -19,9 +19,9 @@ _CATEGORIES = {
     "dram_gpu", "dram_legacy", "dram_unknown", "catalog",
 }
 _LABEL_KINDS = {"emmc", "ufs", "emcp", "umcp", "nand", "ddr", "lpddr", "gddr",
-                "sdram", "rdram", "none"}
+                "sdram", "rdram", "none", "ssd"}   # ssd: BGA/NVMe (2026-07-24)
 _PROFIT_FAMILIES = {"emcp", "emmc", "ufs", "ddr", "lpddr", "gddr", "dead",
-                    "indeterminado"}
+                    "indeterminado", "ssd"}
 
 
 class RegistryWellFormedTests(SimpleTestCase):

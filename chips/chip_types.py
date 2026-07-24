@@ -55,6 +55,11 @@ CHIP_TYPES: dict[str, ChipTypeSpec] = {
     # ── Memória gerenciada — geração NÃO vai no chip_type ────────────────────
     "eMMC": ChipTypeSpec("managed_nand", "emmc", "emmc", aliases=("emmc",)),
     "UFS":  ChipTypeSpec("managed_nand", "ufs",  "ufs",  aliases=("ufs",)),
+    # SSD em BGA/NVMe (Micron MTFD…): comprado por GB pelo comprador (dono,
+    # 2026-07-24 — "SSD chips are priced per GB"). Colhido de placa como chip;
+    # NÃO é eMMC (protocolo NVMe). Preço LINEAR ¥/GB (Buyer.ssd_rmb_per_gb).
+    "SSD":  ChipTypeSpec("managed_nand", "ssd",  "ssd",
+                         aliases=("ssd", "bga ssd", "nvme ssd", "nvme")),
     "eMCP": ChipTypeSpec("managed_mcp",  "emcp", "emcp", is_emcp=True, aliases=("emcp",)),
     "uMCP": ChipTypeSpec("managed_mcp",  "umcp", "emcp", is_emcp=True, aliases=("umcp",)),
     "NAND Flash": ChipTypeSpec("nand_raw", "nand", "dead", aliases=("nand flash", "nand")),

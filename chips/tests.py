@@ -707,6 +707,13 @@ class ProfitabilityTests(TestCase):
             'dram_density': '1Gb = 128MB por die [✓]',
         }), 'NÃO RENTÁVEL')
 
+    def test_ssd_rentavel_por_gb(self):
+        # SSD BGA/NVMe (dono 2026-07-24): comprado por GB — com capacidade é
+        # RENTÁVEL (o ¥ escala com o GB); sem capacidade, INDETERMINADO.
+        self.assertEqual(self._assess({'chip_type': 'SSD',
+                                       'capacity': '440GB'}), 'RENTÁVEL')
+        self.assertEqual(self._assess({'chip_type': 'SSD'}), 'INDETERMINADO')
+
     def test_nand_flash_raw_nao_rentavel(self):
         self.assertEqual(self._assess({'chip_type': 'NAND Flash', 'capacity': '512MB'}), 'NÃO RENTÁVEL')
 

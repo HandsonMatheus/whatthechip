@@ -65,12 +65,15 @@ from tenancy.scope import CompanyScopedManager
 #  fora do mercado" e a triagem descarta por tipo no assess_profitability.
 #  Linhas gddr remanescentes do grid são apagadas pelo runbook.)
 KIND_EMMC, KIND_UFS, KIND_EMCP, KIND_UMCP = 'emmc', 'ufs', 'emcp', 'umcp'
-KIND_LPDDR, KIND_DDR = 'lpddr', 'ddr'
+KIND_LPDDR, KIND_DDR, KIND_SSD = 'lpddr', 'ddr', 'ssd'
 
 KIND_CHOICES = [
     (KIND_EMMC,  'eMMC'), (KIND_UFS, 'UFS'),
     (KIND_EMCP,  'eMCP'), (KIND_UMCP, 'uMCP'),
     (KIND_LPDDR, 'LPDDR'), (KIND_DDR, 'DDR'),
+    # SSD (BGA/NVMe — dono 2026-07-24): preço LINEAR ¥/GB (Buyer.ssd_rmb_per_gb),
+    # SEM linhas de grid — o kind existe p/ chave/caixa; o engine calcula.
+    (KIND_SSD, 'SSD'),
 ]
 KINDS = frozenset(k for k, _ in KIND_CHOICES)
 
@@ -79,7 +82,7 @@ UNIT_CHOICES = [(UNIT_GB, 'GB (pacote)'), (UNIT_GBIT, 'Gb (die)')]
 KIND_UNIT = {                            # unidade OBRIGATÓRIA do tier por kind
     KIND_EMMC: UNIT_GB, KIND_UFS: UNIT_GB, KIND_EMCP: UNIT_GB,
     KIND_UMCP: UNIT_GB, KIND_LPDDR: UNIT_GB,
-    KIND_DDR: UNIT_GBIT,
+    KIND_DDR: UNIT_GBIT, KIND_SSD: UNIT_GB,
 }
 _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
     KIND_EMMC:  re.compile(r'^$'),           # eMMC/UFS não têm geração na chave
@@ -90,6 +93,7 @@ _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
     KIND_UMCP:  re.compile(r'^$'),
     KIND_LPDDR: re.compile(r'^LPDDR\d'),
     KIND_DDR:   re.compile(r'^DDR\d'),       # DDR3/DDR3L/DDR4/DDR5…
+    KIND_SSD:   re.compile(r'^$'),           # SSD: sem geração na chave
 }
 
 STATUS_QUOTED, STATUS_NO_BUY, STATUS_UNQUOTED = 'quoted', 'no_buy', 'unquoted'
@@ -191,6 +195,14 @@ class Buyer(models.Model):
         default=False, verbose_name='Preços já em ¥ (RMB)',
         help_text='Trava do migrate_prices_to_rmb: marcado = a migração F10 '
                   'já rodou neste banco — re-rodar multiplicaria os valores.')
+    # SSD (dono 2026-07-24): o comprador compra SSD LINEAR por GB
+    # ("512GB×0.1=51rmb") — taxa contratual, igual à fx_usd_rate. NULL =
+    # ainda sem taxa → SSD fica "sem preço" com motivo (nunca chute).
+    ssd_rmb_per_gb = models.DecimalField(
+        max_digits=6, decimal_places=3, null=True, blank=True,
+        verbose_name='SSD — ¥ por GB',
+        help_text='Preço linear do SSD: ¥ por GB (ex.: 0.10 → 512GB = ¥51). '
+                  'Arredonda ao ¥ inteiro. Vazio = SSD sem preço.')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
 
     objects       = CompanyScopedManager()

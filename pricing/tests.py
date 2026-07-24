@@ -1707,3 +1707,52 @@ class CanonizePriceGridTests(TestCase):
             set_current_company(None)
             if os.path.exists('canonize_price_grid_backup.json'):
                 os.unlink('canonize_price_grid_backup.json')
+
+
+class SsdLinearPricingTests(TestCase):
+    """SSD (dono 2026-07-24): comprador paga LINEAR por GB — "512GB×0.1=51rmb",
+    "128GB×0.1=13rmb" (¥ INTEIRO, meio pra cima) — SEM linhas de grid; taxa
+    contratual em Buyer.ssd_rmb_per_gb; ausente → sem preço COM motivo."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company = Company.objects.create(name='SsdCo', slug='ssd-co')
+        cls.buyer = Buyer.all_companies.create(
+            company=cls.company, name='Wu SSD', slug='wu-ssd',
+            ssd_rmb_per_gb=Decimal('0.10'))
+
+    def _quote(self, cap):
+        from .engine import price
+        return price({'chip_type': 'SSD', 'capacity': f'{cap}GB',
+                      'cap_gb': float(cap)}, self.buyer)
+
+    def test_aritmetica_do_comprador(self):
+        # Os DOIS exemplos do WeChat, conferidos: 512×0.1=51.2→¥51 ·
+        # 128×0.1=12.8→¥13; US$ derivado @0.14.
+        q = self._quote(512)
+        self.assertEqual(q.status, 'PRICED')
+        self.assertEqual(q.rmb, Decimal('51'))
+        self.assertEqual(q.price_min, Decimal('7.14'))     # 51 × 0.14
+        self.assertFalse(q.is_stale)                       # taxa contratual
+        self.assertEqual(q.via, 'por GB')
+        q = self._quote(128)
+        self.assertEqual(q.rmb, Decimal('13'))
+        self.assertEqual(q.price_min, Decimal('1.82'))     # 13 × 0.14
+        q = self._quote(440)                               # capacidade real do lote
+        self.assertEqual(q.rmb, Decimal('44'))
+
+    def test_sem_taxa_e_sem_preco_com_motivo(self):
+        self.buyer.ssd_rmb_per_gb = None
+        self.buyer.save()
+        q = self._quote(512)
+        self.assertEqual(q.status, 'UNQUOTED')
+        self.assertIn('sem taxa', q.reason)
+
+    def test_chave_e_contexto(self):
+        from .engine import BuyerPricingContext, derive_price_key
+        err, key = derive_price_key({'chip_type': 'SSD', 'cap_gb': 440.0})
+        self.assertIsNone(err)
+        self.assertEqual(key, ('ssd', '', Decimal('440.0'), 'GB'))
+        q = BuyerPricingContext(self.buyer).price_from_key(
+            'ssd', '', Decimal('440'), 'GB')
+        self.assertEqual((q.status, q.rmb), ('PRICED', Decimal('44')))
