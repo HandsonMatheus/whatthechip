@@ -1,21 +1,22 @@
 """
-canonize_price_grid — funde as GÊMEAS de geração do grid numa passada só.
+canonize_price_grid — canoniza o grid inteiro na convenção v3.1.
 
-Convenção v3 (dono, 2026-07-23): variantes L/U/X dobram na geração-base
-(fold_gen) — inclusive nos combos. O grid legado tem linhas gêmeas por lista
-(ex.: LPDDR4 4GB e LPDDR4X 4GB na MESMA lista). Este comando resolve tudo:
+Fold (fonte única ``fold_gen``): DDR3L/U→DDR3 · LPDDR4X→LPDDR4 (avulso) ·
+**eMCP/uMCP → gen VAZIO** ("unified by cap" da planilha v9 — dono 2026-07-24:
+o combo keia SÓ pelo NAND; a geração da RAM segue nas specs, fora da chave).
 
-  • gêmea (base + variante na mesma lista): mantém a linha-BASE e apaga a
-    variante. O ¥/status VENCEDOR é o mais informativo:
-        cotado > não-compro > não-fabricado > não-cotado
-    (a variante cotada vence a base vazia — o ¥ real não se perde).
-    Empate de DOIS COTADOS com ¥ diferentes → prevalece a BASE e o par sai
-    no relatório de DIVERGÊNCIA (ajuste fino é decisão do dono, no admin).
-  • variante SEM gêmea: só renomeia para a base (o save dobra sozinho).
+Cada GRUPO (lista × kind × gen-base × tier) com grafias legadas vira UMA
+linha canônica: mantém a linha já grafada na base (ou renomeia a primeira) e
+o ¥/status VENCEDOR é o mais informativo:
 
-Dry-run por padrão; --commit grava (com backup JSON antes — padrão da casa
-pós-incidente ¥); --revert <arquivo> desfaz (restaura bases e recria as
-variantes apagadas).
+    cotado > não-compro > não-fabricado > não-cotado
+
+Empate de DOIS+ COTADOS com ¥ diferentes → prevalece a linha-base (ou a de
+menor pk) e o grupo sai no relatório de DIVERGÊNCIA (ajuste fino é decisão
+do dono, no admin).
+
+Dry-run por padrão; --commit grava (backup JSON antes — padrão da casa);
+--revert <arquivo> desfaz (restaura mantidas e recria as apagadas).
 
     python manage.py canonize_price_grid --company eminer
     python manage.py canonize_price_grid --company eminer --commit
@@ -24,7 +25,7 @@ variantes apagadas).
 
 import json
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from pricing.models import (Price, STATUS_NO_BUY, STATUS_NOT_MADE,
@@ -49,8 +50,8 @@ def _dump(p):
 
 
 class Command(BaseCommand):
-    help = ('Convenção v3: canoniza o grid inteiro (renomeia variantes e '
-            'funde gêmeas L/U/X→base). Dry-run por padrão; --commit grava.')
+    help = ('Convenção v3.1: canoniza o grid (fold de gerações — inclusive '
+            'combos → gen vazio) fundindo grupos numa linha. Dry-run padrão.')
 
     def add_arguments(self, parser):
         parser.add_argument('--company', default=None)
@@ -63,44 +64,33 @@ class Command(BaseCommand):
         from decimal import Decimal as _D
         with open(path) as fh:
             log = json.load(fh)
-
-        def _restore(p, d):
-            p.gen = d['gen']
-            p.status = d['status']
-            p.price_min = _D(d['price_min']) if d['price_min'] else None
-            p.price_max = _D(d['price_max']) if d['price_max'] else None
-            p.quote_date = _d.fromisoformat(d['quote_date']) if d['quote_date'] else None
-            p.source = d['source']
-            # bulk update SEM save(): o save dobraria o gen de novo.
-            Price.all_companies.filter(pk=p.pk).update(
-                gen=p.gen, status=p.status, price_min=p.price_min,
-                price_max=p.price_max, quote_date=p.quote_date, source=p.source)
-
         with transaction.atomic():
-            for item in log['renomeadas']:
-                p = Price.objects.get(pk=item['pk'])
-                _restore(p, item)
             recriar = []
-            for item in log['fundidas']:
-                base = Price.objects.get(pk=item['base']['pk'])
-                _restore(base, item['base'])
-                v = item['variante']
-                # bulk_create pula o save() — recriar a VARIANTE via save
-                # dobraria o gen de novo e colidiria com a base.
-                recriar.append(Price(
-                    pk=v['pk'], price_list_id=v['price_list_id'],
-                    company_id=v['company_id'],
-                    kind=v['kind'], gen=v['gen'],
-                    tier_value=_D(v['tier_value']), tier_unit=v['tier_unit'],
-                    status=v['status'],
-                    price_min=_D(v['price_min']) if v['price_min'] else None,
-                    price_max=_D(v['price_max']) if v['price_max'] else None,
-                    quote_date=_d.fromisoformat(v['quote_date']) if v['quote_date'] else None,
-                    source=v['source']))
+            for grupo in log['grupos']:
+                m = grupo['mantida']
+                Price.all_companies.filter(pk=m['pk']).update(
+                    gen=m['gen'], status=m['status'],
+                    price_min=_D(m['price_min']) if m['price_min'] else None,
+                    price_max=_D(m['price_max']) if m['price_max'] else None,
+                    quote_date=(_d.fromisoformat(m['quote_date'])
+                                if m['quote_date'] else None),
+                    source=m['source'])
+                for v in grupo['apagadas']:
+                    # bulk_create pula o save() — recriar via save dobraria o
+                    # gen de novo e colidiria com a linha canônica.
+                    recriar.append(Price(
+                        pk=v['pk'], price_list_id=v['price_list_id'],
+                        company_id=v['company_id'], kind=v['kind'],
+                        gen=v['gen'], tier_value=_D(v['tier_value']),
+                        tier_unit=v['tier_unit'], status=v['status'],
+                        price_min=_D(v['price_min']) if v['price_min'] else None,
+                        price_max=_D(v['price_max']) if v['price_max'] else None,
+                        quote_date=(_d.fromisoformat(v['quote_date'])
+                                    if v['quote_date'] else None),
+                        source=v['source']))
             Price.all_companies.bulk_create(recriar)
         self.stdout.write(self.style.SUCCESS(
-            f"↩ revertido: {len(log['renomeadas'])} renomeada(s) + "
-            f"{len(log['fundidas'])} fusão(ões) desfeitas."))
+            f"↩ revertido: {len(log['grupos'])} grupo(s) restaurados."))
 
     # ── pipeline ─────────────────────────────────────────────────────────────
     def handle(self, *args, **opts):
@@ -108,38 +98,45 @@ class Command(BaseCommand):
         if opts['revert']:
             return self._revert(opts['revert'])
 
-        variantes = [p for p in Price.objects.select_related('price_list')
-                     if fold_gen(p.kind, p.gen) != p.gen]
-        renomear, fundir, divergencias = [], [], []
-        for v in variantes:
-            base = Price.objects.filter(
-                price_list_id=v.price_list_id, kind=v.kind,
-                gen=fold_gen(v.kind, v.gen), tier_value=v.tier_value,
-                tier_unit=v.tier_unit).first()
-            if base is None:
-                renomear.append(v)
-                continue
-            vence_variante = _SCORE[v.status] > _SCORE[base.status]
-            if (v.status == base.status == STATUS_QUOTED
-                    and v.price_min != base.price_min):
+        grupos = {}
+        for p in Price.objects.select_related('price_list__brand').order_by('pk'):
+            k = (p.price_list_id, p.kind, fold_gen(p.kind, p.gen),
+                 p.tier_value, p.tier_unit)
+            grupos.setdefault(k, []).append(p)
+
+        plano, divergencias = [], []
+        for (pl_id, kind, base_gen, tv, tu), rows in grupos.items():
+            if len(rows) == 1 and rows[0].gen == base_gen:
+                continue                       # já canônica
+            # mantida = a já grafada na base; senão a 1ª (menor pk, renomeia)
+            mantida = next((r for r in rows if r.gen == base_gen), rows[0])
+            resto = [r for r in rows if r.pk != mantida.pk]
+            vencedora = max(rows, key=lambda r: (_SCORE[r.status],
+                                                 r.pk == mantida.pk))
+            cotadas = {r.price_min for r in rows
+                       if r.status == STATUS_QUOTED}
+            if len(cotadas) > 1:
+                lista = mantida.price_list
+                precos = ' / '.join(
+                    f'{r.gen or "—"} ¥{r.price_min}' for r in rows
+                    if r.status == STATUS_QUOTED)
                 divergencias.append(
-                    f'{v.kind} {fold_gen(v.kind, v.gen)} {v.tier_value}'
-                    f'{v.tier_unit} [{v.price_list}]: base ¥{base.price_min} '
-                    f'MANTIDA · variante {v.gen} ¥{v.price_min} descartada')
-            fundir.append((base, v, vence_variante))
+                    f'{kind} {base_gen or "—"} {tv}{tu} [{lista}]: {precos} '
+                    f'→ fica ¥{vencedora.price_min}')
+            plano.append((mantida, resto, vencedora))
 
         self.stdout.write(f'=== canonize_price_grid '
                           f"({'COMMIT' if opts['commit'] else 'DRY-RUN'}) ===")
-        self.stdout.write(f'  variantes no grid: {len(variantes)} · '
-                          f'renomear: {len(renomear)} · '
-                          f'fundir (gêmeas): {len(fundir)}')
+        n_apagar = sum(len(r) for _, r, _ in plano)
+        self.stdout.write(f'  grupos a canonizar: {len(plano)} · '
+                          f'linhas a fundir/apagar: {n_apagar}')
         if divergencias:
             self.stdout.write(self.style.WARNING(
-                f'⚠ {len(divergencias)} DIVERGÊNCIA(s) de ¥ (dois cotados; '
-                'prevalece a BASE — ajuste no admin se discordar):'))
+                f'⚠ {len(divergencias)} DIVERGÊNCIA(s) de ¥ (2+ cotados no '
+                'grupo; ajuste no admin se discordar):'))
             for d in sorted(divergencias):
                 self.stdout.write(f'    {d}')
-        if not variantes:
+        if not plano:
             self.stdout.write(self.style.SUCCESS('Grid já canônico.'))
             return
         if not opts['commit']:
@@ -147,22 +144,20 @@ class Command(BaseCommand):
                 'DRY-RUN — nada gravado. Re-rode com --commit.'))
             return
 
-        backup = {'renomeadas': [_dump(v) for v in renomear],
-                  'fundidas': [{'base': _dump(b), 'variante': _dump(v)}
-                               for b, v, _ in fundir]}
+        backup = {'grupos': [{'mantida': _dump(m),
+                              'apagadas': [_dump(r) for r in resto]}
+                             for m, resto, _ in plano]}
         with open(_BACKUP, 'w') as fh:
             json.dump(backup, fh, ensure_ascii=False, indent=1)
 
         with transaction.atomic():
-            for base, v, vence_variante in fundir:
-                if vence_variante:
-                    for f in _FIELDS:
-                        setattr(base, f, getattr(v, f))
-                v.delete()          # some ANTES do save (libera a chave-base)
-                base.save()         # valida + (no-op de fold: já é base)
-            for v in renomear:
-                v.save()            # o próprio save dobra o gen
+            for mantida, resto, vencedora in plano:
+                campos = {f: getattr(vencedora, f) for f in _FIELDS}
+                for r in resto:
+                    r.delete()      # some ANTES do save (libera a chave-base)
+                for f, val in campos.items():
+                    setattr(mantida, f, val)
+                mantida.save()      # o save dobra o gen p/ a base
         self.stdout.write(self.style.SUCCESS(
-            f'✅ grid canonizado: {len(renomear)} renomeada(s), '
-            f'{len(fundir)} gêmea(s) fundida(s). Backup: {_BACKUP} '
-            f'(--revert desfaz).'))
+            f'✅ grid canonizado: {len(plano)} grupo(s), {n_apagar} linha(s) '
+            f'fundida(s). Backup: {_BACKUP} (--revert desfaz).'))

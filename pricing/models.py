@@ -84,8 +84,10 @@ KIND_UNIT = {                            # unidade OBRIGATÓRIA do tier por kind
 _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
     KIND_EMMC:  re.compile(r'^$'),           # eMMC/UFS não têm geração na chave
     KIND_UFS:   re.compile(r'^$'),
-    KIND_EMCP:  re.compile(r'^LPDDR\d'),     # geração da RAM (LPDDR3/4/4X/5/5X)
-    KIND_UMCP:  re.compile(r'^LPDDR\d'),
+    # v3.1 (dono 2026-07-24, planilha v9 "unified by cap"): eMCP/uMCP também
+    # SEM geração — a chave é SÓ o NAND (fold_gen esvazia qualquer LPDDRx).
+    KIND_EMCP:  re.compile(r'^$'),
+    KIND_UMCP:  re.compile(r'^$'),
     KIND_LPDDR: re.compile(r'^LPDDR\d'),
     KIND_DDR:   re.compile(r'^DDR\d'),       # DDR3/DDR3L/DDR4/DDR5…
 }
@@ -109,17 +111,17 @@ def valid_gen(kind: str, gen: str) -> bool:
     return bool(rule and rule.match(gen or ''))
 
 
-# ── Fold de geração na CATEGORIA COMERCIAL (dono, 2026-07-11/21/23) ───────────
+# ── Fold de geração na CATEGORIA COMERCIAL (dono, 2026-07-11/21/23/24) ────────
 # "DDR3L e DDR3 são a mesma coisa" · "LPDDR4X e LPDDR4 são a mesma coisa,
 # uma só caixa" — variantes de tensão (L/U) e o sufixo X precificam e
-# ENCAIXOTAM como a geração-base. Desde 2026-07-23 vale TAMBÉM dentro dos
-# combos eMCP/uMCP (convenção v3: "LPDDR e LPDDRx devem ser unidos").
+# ENCAIXOTAM como a geração-base. v3.1 (2026-07-24, planilha v9 "unified by
+# cap"): nos combos eMCP/uMCP a chave é SÓ o NAND — QUALQUER geração de RAM
+# dobra pra VAZIO (a geração segue nas specs/rótulo real; sai só da chave).
 # FONTE ÚNICA: derive (escrita da chave), price_from_key (leitura de chave
 # legada gravada), CategoryCode (caixa) e o grid (Price.save) dobram AQUI —
 # leitor e escritor nunca divergem. (GDDR: kind extinto em 2026-07-23.)
 _FOLD_DDR   = re.compile(r'^(DDR\d+)[LU]$')
 _FOLD_LPDDR = re.compile(r'^(LPDDR\d+)X$')
-_LPDDR_KINDS = (KIND_LPDDR, KIND_EMCP, KIND_UMCP)   # gen = geração LPDDR
 
 
 def fold_gen(kind: str, gen: str) -> str:
@@ -129,20 +131,24 @@ def fold_gen(kind: str, gen: str) -> str:
         m = _FOLD_DDR.match(g)
         if m:
             return m.group(1)
-    elif kind in _LPDDR_KINDS:
+    elif kind == KIND_LPDDR:
         m = _FOLD_LPDDR.match(g)
         if m:
             return m.group(1)
+    elif kind in (KIND_EMCP, KIND_UMCP):
+        return ''                    # v3.1: combo keia SÓ pelo NAND
     return g
 
 
 def gen_spellings(kind: str, gen: str) -> list[str]:
     """Todas as grafias que DOBRAM nesta geração-base (p/ consultas em dado
-    ainda não canonizado — grid antigo, chave materializada pré-fold)."""
+    ainda não canonizado — grid antigo, chave materializada pré-fold).
+    ⚠ eMCP/uMCP: a base é '' e as grafias legadas são QUALQUER LPDDRx —
+    não-enumerável; consultas nesses kinds devem ignorar o gen."""
     out = [gen]
     if kind == KIND_DDR:
         out += [f'{gen}L', f'{gen}U']
-    elif kind in _LPDDR_KINDS:
+    elif kind == KIND_LPDDR:
         out += [f'{gen}X']
     return out
 
@@ -329,12 +335,12 @@ class Price(models.Model):
     kind = models.CharField(max_length=8, choices=KIND_CHOICES, verbose_name='Tipo')
     gen  = models.CharField(
         max_length=12, blank=True, default='', verbose_name='Geração',
-        help_text='Token canônico: LPDDR4X / DDR3L… '
-                  'Vazio para eMMC/UFS. Em eMCP/uMCP é a geração da RAM.')
+        help_text='Token canônico: LPDDR4 / DDR3… Vazio para eMMC/UFS/eMCP/'
+                  'uMCP (v3.1: combo keia SÓ pelo NAND — planilha v9).')
     tier_value = models.DecimalField(
         max_digits=6, decimal_places=1, verbose_name='Faixa de capacidade',
-        help_text='eMCP/uMCP: GB do NAND (a RAM fica FORA da chave — regra do '
-                  'comprador). DDR: densidade do die em Gb.')
+        help_text='eMCP/uMCP: GB do NAND (RAM — tamanho E geração — fora da '
+                  'chave; v3.1). DDR: densidade do die em Gb.')
     tier_unit = models.CharField(max_length=2, choices=UNIT_CHOICES,
                                  verbose_name='Unidade')
 
@@ -440,8 +446,9 @@ class Price(models.Model):
         # kind × gen: forma canônica obrigatória (nunca genérico na chave).
         rule = _GEN_RULE.get(self.kind)
         if rule and not rule.match(self.gen or ''):
-            if self.kind in (KIND_EMMC, KIND_UFS):
-                errors['gen'] = 'eMMC/UFS não têm geração na chave — deixe vazio.'
+            if self.kind in (KIND_EMMC, KIND_UFS, KIND_EMCP, KIND_UMCP):
+                errors['gen'] = ('eMMC/UFS/eMCP/uMCP não têm geração na chave '
+                                 '— deixe vazio (combo keia SÓ pelo NAND).')
             else:
                 errors['gen'] = (f'Geração inválida para {self.kind}: '
                                  f'{self.gen!r} (esperado token canônico, '

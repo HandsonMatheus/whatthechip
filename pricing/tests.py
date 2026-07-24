@@ -68,8 +68,9 @@ class PriceGateTests(TestCase):
     def test_kind_x_gen_erra_e_rejeitado(self):
         with self.assertRaises(ValidationError):
             self._price(kind='emmc', gen='eMMC 5.1')     # eMMC: gen vazio
-        with self.assertRaises(ValidationError):
-            self._price(kind='emcp', gen='DDR3')         # eMCP: gen é LPDDRx
+        # v3.1: eMCP ignora gen (dobra pra vazio no save — combo é só NAND):
+        p = self._price(kind='emcp', gen='DDR3')
+        self.assertEqual(p.gen, '')
         with self.assertRaises(ValidationError):
             self._price(kind='lpddr', gen='LPDDR')       # genérico não keia preço
 
@@ -504,8 +505,12 @@ class PriceGoldenTests(TestCase):
                                      brand='Samsung').status, 'NO_KEY')
         self.assertEqual(self._price(chip_type='eMMC', brand='Samsung',
                                      cap_gb=None).status, 'NO_KEY')
+        # v3.1: eMCP SEM geração de RAM keia normal (chave é só NAND) —
+        # o que não keia é ficar sem o NAND:
         self.assertEqual(self._price(chip_type='eMCP', brand='Samsung',
-                                     nand_gb=64.0, ram_gen='').status, 'NO_KEY')
+                                     nand_gb=64.0, ram_gen='').status, 'PRICED')
+        self.assertEqual(self._price(chip_type='eMCP', brand='Samsung',
+                                     nand_gb=None).status, 'NO_KEY')
 
     def test_cadeia_de_heranca_completa(self):
         # SK herda da Samsung ("SK = Samsung" como dado):
@@ -1473,8 +1478,8 @@ class EnablePriceRowTests(TestCase):
         return Price.all_companies.get(price_list=pl, **key).status
 
     def test_flip_com_generica_e_idempotencia(self):
-        key = dict(kind='emcp', gen='LPDDR3', tier_value=Decimal('8'),
-                   tier_unit='GB')
+        key = dict(kind='emcp', gen='', tier_value=Decimal('8'),
+                   tier_unit='GB')   # v3.1: combo sem gen na chave
         out = self._run(commit=False)                      # dry-run: nada muda
         self.assertIn('não fabricado → não cotado', out)
         self.assertEqual(self._status(self.l_sk, **key), STATUS_NOT_MADE)
@@ -1575,13 +1580,14 @@ class FoldGenTests(TestCase):
         self.assertEqual(fold_gen('lpddr', 'LPDDR4X'), 'LPDDR4')
         self.assertEqual(fold_gen('lpddr', 'LPDDR5X'), 'LPDDR5')
         self.assertEqual(fold_gen('lpddr', 'LPDDR4'), 'LPDDR4')
-        # v3 (dono 2026-07-23): o X dobra TAMBÉM nos combos eMCP/uMCP.
-        self.assertEqual(fold_gen('emcp', 'LPDDR4X'), 'LPDDR4')
-        self.assertEqual(fold_gen('umcp', 'LPDDR5X'), 'LPDDR5')
+        # v3.1 (dono 2026-07-24, planilha v9 "unified by cap"): o combo keia
+        # SÓ pelo NAND — QUALQUER geração dobra pra VAZIO.
+        self.assertEqual(fold_gen('emcp', 'LPDDR4X'), '')
+        self.assertEqual(fold_gen('emcp', 'LPDDR3'), '')
+        self.assertEqual(fold_gen('umcp', 'LPDDR5X'), '')
         # gen_spellings cobre as grafias que dobram na base:
         self.assertIn('DDR3L', gen_spellings('ddr', 'DDR3'))
         self.assertIn('LPDDR4X', gen_spellings('lpddr', 'LPDDR4'))
-        self.assertIn('LPDDR4X', gen_spellings('emcp', 'LPDDR4'))
 
     def test_derive_dobra_lpddr_avulso_e_combo(self):
         from .engine import derive_price_key
@@ -1590,12 +1596,12 @@ class FoldGenTests(TestCase):
                                      'ram_gen': 'LPDDR4X', 'cap_gb': 4.0})
         self.assertIsNone(err)
         self.assertEqual(key, ('lpddr', 'LPDDR4', Decimal('4.0'), 'GB'))
-        # v3: o combo também dobra — eMCP LPDDR4X keia como LPDDR4.
+        # v3.1: o combo keia SÓ pelo NAND — gen VAZIO, qualquer RAM.
         err, key = derive_price_key({'chip_type': 'eMCP',
                                      'subtype': 'LPDDR4X',
                                      'ram_gen': 'LPDDR4X', 'nand_gb': 64.0})
         self.assertIsNone(err)
-        self.assertEqual(key, ('emcp', 'LPDDR4', Decimal('64.0'), 'GB'))
+        self.assertEqual(key, ('emcp', '', Decimal('64.0'), 'GB'))
 
     def test_chave_materializada_pre_fold_resolve_na_linha_base(self):
         # price_from_key dobra na LEITURA: entrada do estoque gravada com
@@ -1685,7 +1691,7 @@ class CanonizePriceGridTests(TestCase):
             self.assertIn('DIVERGÊNCIA', texto)
             self.assertIn('DDR3L', texto)                          # par no relatório
             solitaria.refresh_from_db()
-            self.assertEqual(solitaria.gen, 'LPDDR5')              # renomeada
+            self.assertEqual(solitaria.gen, '')                    # v3.1: combo → vazio
             self.assertFalse(Price.all_companies.filter(
                 gen__in=('LPDDR4X', 'DDR3L', 'LPDDR5X')).exists())
 

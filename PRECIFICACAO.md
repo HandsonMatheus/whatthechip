@@ -940,6 +940,20 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   até canonizar (re-save dobra sozinho; GÊMEA com a linha-base →
   ValidationError, dono funde no admin decidindo o ¥) — comando de
   canonização no runbook.
+- **v3.1 — COMBOS SÓ PELO NAND (dono 2026-07-24, planilha `WuQuan_price_
+  sheet_EN_v9.xlsx` "unified by cap"):** eMCP/uMCP perderam a geração de RAM
+  na CHAVE (grid + caixa + OV): `fold_gen(emcp|umcp, *) = ''`,
+  `_GEN_RULE` = vazio, derive keia só NAND — a geração segue nas specs e no
+  rótulo real da plataforma. Fundação renumerada PRÉ-deploy: **A = 6 caixas**
+  (eMCP 8/16/32/64/128/256GB — 256 entrou da v9) e **C = 4** (uMCP
+  64/128/256/512GB); **E anexou E-12 DDR4 2Gb e E-13 DDR4 1Gb** (v9;
+  rentáveis ≥1Gb). **DDR3 1Gb da v9 ficou FORA de propósito** (morto por
+  densidade — mínimo DDR3 = 2Gb → nunca aprovado → R-00). Tabela = 53.
+  Cruzamento planilha×convenção: UFS/eMMC/LPDDR/DDR restante = 1:1.
+  `canonize_price_grid` virou GRUPO-a-grupo (várias gerações de combo → uma
+  linha por NAND; vencedor = status mais informativo; divergência de ¥ →
+  relatório). ⚠ `import_price_xlsx` lê o formato ANTIGO multi-aba — a v9 é
+  aba única; leitor novo só se o dono pedir.
 - **GDDR FORA DO NEGÓCIO (dono 2026-07-23):** sempre **NÃO RENTÁVEL** (morto
   POR TIPO no `assess_profitability` — o bloco fica na posição, interceptando
   o substring "DDR"; `is_dead_by_generation`=True → descarte mesmo sem

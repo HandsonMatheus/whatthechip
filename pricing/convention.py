@@ -12,6 +12,9 @@ Gramática da convenção (INVIOLÁVEL):
                          + faixa de capacidade, o que o decoder busca no
                          banco). Existe COM ou SEM preço no grid: "preço até
                          pode ficar sem, categoria não" (dono, 2026-07-23).
+                         ⚠ eMCP/uMCP: SÓ pelo NAND — sem geração de RAM na
+                         chave ("unified by cap", planilha v9 do comprador;
+                         dono, 2026-07-24).
     H-00 · HOLD        = fila de conferência — NÃO embarca; aguarda o gestor.
                          (Também exibida p/ aprovado raro SEM categoria
                          derivável: dado incompleto → separar p/ análise.)
@@ -59,15 +62,15 @@ REFINE_LABEL = 'R-00'                      # reprovado → refino
 # na fundação, números embaralhados na autoria e ETERNOS. Unidades: GB=pacote,
 # Gb=die (case-sensitive, regra da casa).
 FOUNDING_TABLE = (
-    # A — eMCP (gen = geração da RAM, X dobrado; tier = NAND GB)
-    ('emcp', 'LPDDR4', '32',   'GB', 1),
-    ('emcp', 'LPDDR3', '16',   'GB', 2),
-    ('emcp', 'LPDDR3', '64',   'GB', 3),
-    ('emcp', 'LPDDR4', '128',  'GB', 4),
-    ('emcp', 'LPDDR3', '8',    'GB', 5),
-    ('emcp', 'LPDDR4', '64',   'GB', 6),
-    ('emcp', 'LPDDR3', '32',   'GB', 7),
-    ('emcp', 'LPDDR4', '16',   'GB', 8),
+    # A — eMCP (v3.1, dono 2026-07-24: SÓ pelo NAND — gen vazio; "unified
+    #     by cap" da planilha v9. A renumerou pré-deploy; fundação anterior
+    #     por geração foi substituída ANTES de qualquer caixa física.)
+    ('emcp', '', '16',  'GB', 1),
+    ('emcp', '', '64',  'GB', 2),
+    ('emcp', '', '256', 'GB', 3),
+    ('emcp', '', '8',   'GB', 4),
+    ('emcp', '', '128', 'GB', 5),
+    ('emcp', '', '32',  'GB', 6),
     # B — eMMC
     ('emmc', '', '8',    'GB', 1),
     ('emmc', '', '128',  'GB', 2),
@@ -76,13 +79,11 @@ FOUNDING_TABLE = (
     ('emmc', '', '4',    'GB', 5),
     ('emmc', '', '16',   'GB', 6),
     ('emmc', '', '64',   'GB', 7),
-    # C — uMCP (gen = geração da RAM, X dobrado; tier = NAND GB)
-    ('umcp', 'LPDDR4', '128', 'GB', 1),
-    ('umcp', 'LPDDR5', '128', 'GB', 2),
-    ('umcp', 'LPDDR5', '512', 'GB', 3),
-    ('umcp', 'LPDDR4', '64',  'GB', 4),
-    ('umcp', 'LPDDR5', '256', 'GB', 5),
-    ('umcp', 'LPDDR4', '256', 'GB', 6),
+    # C — uMCP (v3.1: SÓ pelo NAND — gen vazio; renumerou pré-deploy)
+    ('umcp', '', '128', 'GB', 1),
+    ('umcp', '', '512', 'GB', 2),
+    ('umcp', '', '64',  'GB', 3),
+    ('umcp', '', '256', 'GB', 4),
     # D — UFS
     ('ufs', '', '64',   'GB', 1),
     ('ufs', '', '256',  'GB', 2),
@@ -103,6 +104,9 @@ FOUNDING_TABLE = (
     ('ddr', 'DDR4', '64', 'Gb', 9),
     ('ddr', 'DDR3', '8',  'Gb', 10),
     ('ddr', 'DDR4', '16', 'Gb', 11),
+    ('ddr', 'DDR4', '2',  'Gb', 12),   # planilha v9 (2026-07-24; rentável ≥1Gb)
+    ('ddr', 'DDR4', '1',  'Gb', 13),   # idem. (DDR3 1Gb ficou FORA: morto por
+                                       # densidade — nunca é aprovado → R-00)
     # F — LPDDR avulso (X dobrado; tier = pacote GB)
     ('lpddr', 'LPDDR4', '6',  'GB', 1),
     ('lpddr', 'LPDDR3', '4',  'GB', 2),

@@ -196,13 +196,16 @@ def derive_price_key(result: dict):
     # (fold_gen, fonte única em pricing/models.py): DDR3L/DDR3U→DDR3 (dono
     # 2026-07-11), LPDDR4X→LPDDR4 avulso (dono 2026-07-21 — "uma só caixa").
     # eMCP/uMCP mantêm a geração da RAM intacta.
-    if kind in ('emmc', 'ufs'):
+    if kind in ('emmc', 'ufs', 'emcp', 'umcp'):
+        # v3.1 (dono 2026-07-24, planilha v9 "unified by cap"): eMCP/uMCP
+        # keiam SÓ pelo NAND — a geração da RAM fica nas specs/rótulo, fora
+        # da chave (igual eMMC/UFS).
         gen = ''
-    elif kind in ('emcp', 'umcp', 'lpddr'):
-        # eMCP/uMCP: geração da RAM (F0: ram_gen). LPDDR avulso: o próprio
-        # chip_type canônico carrega a geração — ram_gen da F0 espelha os dois.
+    elif kind == 'lpddr':
+        # LPDDR avulso: o chip_type canônico carrega a geração — ram_gen da
+        # F0 espelha; X dobra na base.
         gen = (result.get('ram_gen') or '').strip()
-        if kind == 'lpddr' and not gen and not is_generic(canon):
+        if not gen and not is_generic(canon):
             gen = canon
         gen = fold_gen(kind, gen)
         if not valid_gen(kind, gen):

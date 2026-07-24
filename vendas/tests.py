@@ -96,8 +96,8 @@ class SalesOrderFlowTests(TestCase):
         lines = {(l.kind, l.gen, str(l.tier_value)): l.quantity
                  for l in so.lines.all()}
         self.assertEqual(lines[('emmc', '', '16.0')], 5)
-        # v3: gen dobrado no combo — a linha sai LPDDR4 (era LPDDR4X).
-        self.assertEqual(lines[('emcp', 'LPDDR4', '64.0')], 4)
+        # v3.1: combo keia SÓ pelo NAND — gen vazio na linha.
+        self.assertEqual(lines[('emcp', '', '64.0')], 4)
         # Nomenclatura canônica SO/NUM/MM/YY (número perpétuo por empresa):
         self.assertEqual(so.number, 1)
         self.assertTrue(so.code.startswith('SO/001/'))

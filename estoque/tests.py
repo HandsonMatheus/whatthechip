@@ -1356,12 +1356,14 @@ class SeedCategoryCodesTests(TestCase):
         # Determinístico: re-rodar não muda NADA (e confere linha a linha).
         call_command('seed_category_codes', commit=True, stdout=out)
         self.assertEqual(CategoryCode.objects.count(), len(FOUNDING_TABLE))
-        # A convenção do dono: eMCP LPDDR4 64GB = A-06 (tabela fundadora).
+        # A convenção do dono (v3.1): eMCP 64GB = A-02 — SÓ pelo NAND.
         self.assertEqual(CategoryCode.label_for_key(
-            'emcp', 'LPDDR4', Decimal('64'), 'GB'), 'A-06')
-        # Fold no COMBO (v3): eMCP LPDDR4X 64GB é a MESMA caixa A-06.
+            'emcp', '', Decimal('64'), 'GB'), 'A-02')
+        # Qualquer geração de RAM cai na MESMA caixa (fold → vazio):
         self.assertEqual(CategoryCode.label_for_key(
-            'emcp', 'LPDDR4X', Decimal('64'), 'GB'), 'A-06')
+            'emcp', 'LPDDR4X', Decimal('64'), 'GB'), 'A-02')
+        self.assertEqual(CategoryCode.label_for_key(
+            'emcp', 'LPDDR3', Decimal('64'), 'GB'), 'A-02')
         # Números são POR LETRA: A-06 e B-06 coexistem (emmc 16GB = B-06).
         self.assertEqual(CategoryCode.label_for_key(
             'emmc', '', Decimal('16'), 'GB'), 'B-06')
