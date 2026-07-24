@@ -2155,3 +2155,15 @@ msgstr "since %(d)s"
 #: estoque/templates/estoque/partials/confirm_card_masked.html
 msgid "Sem categoria — separar para análise"
 msgstr "No category — set aside for review"
+
+#: vendas/templates/vendas/so_detail.html
+msgid "valores em US$"
+msgstr "amounts in US$"
+
+#: vendas/templates/vendas/so_detail.html
+msgid "US$ unit."
+msgstr "Unit US$"
+
+#: vendas/templates/vendas/so_detail.html
+msgid "Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não muda mais; ajustes do resultado entram como acerto. Confirmar?"
+msgstr "Confirming freezes this order's values (price and contract rate) — it no longer changes; result adjustments come in as a settlement. Confirm?"

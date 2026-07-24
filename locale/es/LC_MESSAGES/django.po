@@ -2171,3 +2171,15 @@ msgstr "desde %(d)s"
 #: estoque/templates/estoque/partials/confirm_card_masked.html
 msgid "Sem categoria — separar para análise"
 msgstr "Sin categoría — separar para análisis"
+
+#: vendas/templates/vendas/so_detail.html
+msgid "valores em US$"
+msgstr "valores en US$"
+
+#: vendas/templates/vendas/so_detail.html
+msgid "US$ unit."
+msgstr "US$ unit."
+
+#: vendas/templates/vendas/so_detail.html
+msgid "Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não muda mais; ajustes do resultado entram como acerto. Confirmar?"
+msgstr "Confirmar congela los valores de esta orden (precio y tasa del contrato) — ya no cambia; los ajustes del resultado entran como liquidación. ¿Confirmar?"

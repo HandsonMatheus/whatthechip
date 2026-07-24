@@ -2067,3 +2067,15 @@ msgstr "自 %(d)s"
 #: estoque/templates/estoque/partials/confirm_card_masked.html
 msgid "Sem categoria — separar para análise"
 msgstr "无类别 — 请单独存放，等待分析"
+
+#: vendas/templates/vendas/so_detail.html
+msgid "valores em US$"
+msgstr "金额以美元计"
+
+#: vendas/templates/vendas/so_detail.html
+msgid "US$ unit."
+msgstr "单价 US$"
+
+#: vendas/templates/vendas/so_detail.html
+msgid "Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não muda mais; ajustes do resultado entram como acerto. Confirmar?"
+msgstr "确认后将冻结本订单的数值（价格与合同汇率）——订单不再变动；买家结果的调整将以结算方式录入。确认吗？"

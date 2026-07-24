@@ -440,8 +440,9 @@ class VendasGateTests(TestCase):
         resp = self.client.get(reverse('vendas:so_list'))
         self.assertContains(resp, so.code)
         detail = self.client.get(reverse('vendas:so_detail', args=[so.pk]))
-        self.assertContains(detail, '¥ 15')                  # draft vivo, ¥
-        self.assertContains(detail, 'US$')
+        # Moeda: SÓ US$ na página da OV (dono, 2026-07-24) — ¥15 @0.14 = 2.10.
+        self.assertContains(detail, 'US$ 2.10')
+        self.assertNotContains(detail, '¥ 15')
         for role in ('manager', 'operator'):
             self.client.force_login(self.users[role])
             self.assertEqual(

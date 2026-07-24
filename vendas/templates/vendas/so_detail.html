@@ -6,7 +6,8 @@
 {% block extra_head %}
 <style>
 /* ═══ Vendas · Ordem de venda — LAYOUT do protótipo screens/vendas.html ═══
-   Moeda dual ¥+US$ SEMPRE (dono); o NOME do comprador nunca aparece (sigilo —
+   Moeda: SÓ US$ na página (dono 2026-07-24; ¥/taxa seguem congelados no banco);
+   o NOME do comprador nunca aparece (sigilo —
    contraparte = WhatTheChip). Cores literais. */
 .vd-wrap{max-width:1100px;margin:0 auto}
 .crumbs{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#878d96;font-family:'IBM Plex Mono',monospace;margin-bottom:14px;flex-wrap:wrap}
@@ -58,7 +59,7 @@
 
 {% block main %}
 {% comment %}
-  Detalhe da Cotação/OV (F11.2). Moeda dual ¥ + US$ SEMPRE visível (dono);
+  Detalhe da Cotação/OV (F11.2). Moeda: SÓ US$ (dono, 2026-07-24);
   draft deriva pela taxa ATUAL do contrato, confirmada usa a CONGELADA.
   localize-off em dinheiro. O NOME do comprador NÃO aparece (sigilo —
   contraparte = WhatTheChip; F11.3). Visual = protótipo screens/vendas.html.
@@ -113,12 +114,15 @@
 
   {# ── Linhas da ordem ─────────────────────────────────────────── #}
   <div class="panel">
-    <div class="panel__head"><span class="panel__title">{% trans "Linhas da ordem" %}</span><span class="panel__hint">{% trans "preço em ¥" %}</span></div>
+    {% comment %} Moeda: SÓ US$ na página da OV (dono, 2026-07-24 — antes era
+       dual ¥+US$). O ¥ e a taxa continuam CONGELADOS no banco (auditoria);
+       aqui só muda a exibição. {% endcomment %}
+    <div class="panel__head"><span class="panel__title">{% trans "Linhas da ordem" %}</span><span class="panel__hint">{% trans "valores em US$" %}</span></div>
     <table class="vd-table">
       <thead>
         <tr>
           <th>{% trans "Categoria" %}</th><th class="num">{% trans "Qtd." %}</th>
-          <th class="num">{% trans "¥ unit." %}</th><th class="num">{% trans "Total ¥" %}</th><th class="num">{% trans "Total US$" %}</th>
+          <th class="num">{% trans "US$ unit." %}</th><th class="num">{% trans "Total US$" %}</th>
         </tr>
       </thead>
       <tbody>
@@ -129,9 +133,9 @@
             <td style="font-weight:600">{{ row.line.display_label }}</td>
             <td class="num mono">{{ row.line.quantity }}</td>
             {% if row.priced %}
-            <td class="num mono">¥ {{ row.unit_rmb }}</td><td class="num mono">¥ {{ row.total_rmb }}</td><td class="num mono">US$ {{ row.total_usd }}</td>
+            <td class="num mono">US$ {{ row.unit_usd }}</td><td class="num mono">US$ {{ row.total_usd }}</td>
             {% else %}
-            <td colspan="3" class="num" style="font-size:12px;color:#8a6d00;">{{ row.reason }}</td>
+            <td colspan="2" class="num" style="font-size:12px;color:#8a6d00;">{{ row.reason }}</td>
             {% endif %}
           </tr>
           {% endfor %}
@@ -140,8 +144,7 @@
           <tr>
             <td style="font-weight:600">{{ line.display_label }}</td>
             <td class="num mono">{{ line.quantity }}</td>
-            <td class="num mono">{% if line.unit_rmb is not None %}¥ {{ line.unit_rmb }}{% else %}—{% endif %}</td>
-            <td class="num mono">{% if line.total_rmb is not None %}¥ {{ line.total_rmb }}{% else %}—{% endif %}</td>
+            <td class="num mono">{% if line.unit_usd is not None %}US$ {{ line.unit_usd }}{% else %}—{% endif %}</td>
             <td class="num mono">{% if line.total_usd is not None %}US$ {{ line.total_usd }}{% else %}—{% endif %}</td>
           </tr>
           {% endfor %}
@@ -152,10 +155,10 @@
     <div class="tfoot">
       {% localize off %}
       {% if so.status == 'draft' %}
-        <div class="tfoot__row total"><span>{% trans "Total da ordem" %}</span><span><span class="mono">¥ {{ live_total_rmb }}</span> <span class="tfoot__usd">· US$ {{ live_total_usd }}</span></span></div>
+        <div class="tfoot__row total"><span>{% trans "Total da ordem" %}</span><span class="mono">US$ {{ live_total_usd }}</span></div>
         {% if pending %}<div class="tfoot__warn">⚠ {% blocktrans trimmed with n=pending|length %}{{ n }} linha(s) sem preço — complete o grid do comprador para poder confirmar{% endblocktrans %}</div>{% endif %}
       {% else %}
-        <div class="tfoot__row total"><span>{% trans "Total da ordem" %}</span><span>{% if so.total_rmb is not None %}<span class="mono">¥ {{ so.total_rmb }}</span> <span class="tfoot__usd">· US$ {{ so.total_usd }}</span>{% else %}—{% endif %}</span></div>
+        <div class="tfoot__row total"><span>{% trans "Total da ordem" %}</span><span class="mono">{% if so.total_usd is not None %}US$ {{ so.total_usd }}{% else %}—{% endif %}</span></div>
       {% endif %}
       {% endlocalize %}
       {% if so.unkeyed_units %}<div class="tfoot__warn">⚠ {% blocktrans trimmed with n=so.unkeyed_units %}{{ n }} un. sem chave de preço (fora do mercado — ver inventário){% endblocktrans %}</div>{% endif %}
@@ -166,7 +169,7 @@
   <div class="actions">
     {% if so.status == 'draft' %}
     <form method="post" action="{% url 'vendas:so_confirm' so.pk %}" style="margin:0;"
-          onsubmit="return confirm('{% trans "Confirmar congela o ¥, a taxa do contrato e o US$ desta ordem — ela não muda mais (ajustes do resultado entram como acerto). Confirmar?" %}');">
+          onsubmit="return confirm('{% trans "Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não muda mais; ajustes do resultado entram como acerto. Confirmar?" %}');">
       {% csrf_token %}
       <button type="submit" class="uib uib--primary">{% trans "Confirmar ordem" %}</button>
     </form>

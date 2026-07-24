@@ -47,6 +47,7 @@ def so_detail(request, pk):
             rows.append({
                 'line': line, 'priced': priced, 'reason': q.reason,
                 'unit_rmb': q.rmb_display if priced else None,
+                'unit_usd': q.price_min if priced else None,
                 'total_rmb': (q.rmb * line.quantity) if priced else None,
                 'total_usd': (q.price_min * line.quantity) if priced else None,
             })
