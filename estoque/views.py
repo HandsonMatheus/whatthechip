@@ -174,35 +174,43 @@ def _price_key_fields(result: dict) -> dict:
 
 
 def _masked_category(result: dict):
-    """F12: (código C-###, é_geral?) do resultado — o rótulo que a empresa-
-    CLIENTE vê no lugar de tipo/specs. Categoria VENDÁVEL → C-### (código
-    permanente, criado na 1ª aparição pela plataforma); sem chave OU fora do
-    mercado de preço (dono 2026-07-21) → C-000 'Geral' (balde de avaliação)."""
+    """F12 v3: (código da caixa, é_hold?) do resultado — o rótulo que a
+    empresa-CLIENTE vê no lugar de tipo/specs. A categoria deriva do CHIP
+    (convenção universal LETRA-##, pricing/convention.py) e existe COM ou
+    SEM preço — "preço até pode ficar sem, categoria não" (dono 2026-07-23).
+    Categoria inédita é cunhada AQUI (caminho da aprovação — próximo número
+    livre da letra). Sem categoria derivável (dado incompleto, raro) →
+    **H-00 HOLD**: não está pronto pra prateleira, separar p/ análise (o
+    conceito 'Geral/C-000' foi DESFEITO — dono 2026-07-23)."""
+    from pricing.convention import HOLD_LABEL
     from pricing.engine import derive_price_key
     from pricing.models import CategoryCode
     err, key = derive_price_key(result or {})
-    if err is not None:
-        return CategoryCode.GENERAL_LABEL, True
-    label = CategoryCode.label_for_key(*key)
-    return label, label == CategoryCode.GENERAL_LABEL
+    if err is None:
+        label = CategoryCode.label_for_key(*key)
+        if label is not None:
+            return label, False
+    return HOLD_LABEL, True
 
 
 def _masked_entry_labels(entries):
-    """F12: anexa ``entry.category_label`` (C-###/C-000) numa passada só —
+    """F12 v3: anexa ``entry.category_label`` (LETRA-##) numa passada só —
     lookup em lote (sem N+1) pros renders mascarados da tabela do lote. A
-    geração da chave gravada DOBRA na base (fold_gen — chave pré-fold tipo
-    'LPDDR4X' cai na caixa 'LPDDR4', dono 2026-07-21)."""
+    geração da chave gravada DOBRA na base (fold_gen). LEITURA NUNCA CUNHA
+    código (cunhagem é só na aprovação — evita ressuscitar categoria morta
+    de entrada legada); sem código/sem chave → '—'."""
+    from pricing.convention import KIND_LETTER
     from pricing.models import CategoryCode, fold_gen
-    keyed = {(c.kind, c.gen, c.tier_value, c.tier_unit): f'C-{c.code:03d}'
-             for c in CategoryCode.objects.all()}
+    keyed = {(c.kind, c.gen, c.tier_value, c.tier_unit):
+             f'{KIND_LETTER[c.kind]}-{c.code:02d}'
+             for c in CategoryCode.objects.all() if c.kind in KIND_LETTER}
     for e in entries:
         if e.price_tier_value is None:
-            e.category_label = CategoryCode.GENERAL_LABEL
+            e.category_label = '—'
         else:
             k = (e.price_kind, fold_gen(e.price_kind, e.price_gen),
                  e.price_tier_value, e.price_tier_unit)
-            # Inédita: label_for_key decide (vendável cria; morta → C-000).
-            e.category_label = keyed.get(k) or CategoryCode.label_for_key(*k)
+            e.category_label = keyed.get(k, '—')
     return entries
 
 

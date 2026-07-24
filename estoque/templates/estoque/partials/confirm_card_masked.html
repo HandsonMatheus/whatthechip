@@ -55,9 +55,13 @@
   {% if gateway_dest == 'aprovado' %}
     <div class="dcard dcard--{% if masked_general %}geral{% else %}box{% endif %}">
       <div class="dcard__body">
+        {% comment %} v3 (convenção universal, dono 2026-07-23): o CÓDIGO da
+           caixa é canônico (LETRA-## / H-00 — nunca traduz); a explicação
+           embaixo é localizada. masked_general=True = aprovado SEM categoria
+           derivável (raro) → H-00, separar p/ análise (Geral foi desfeito). {% endcomment %}
         <div class="dcard__eyebrow">{% trans "Destino" %}</div>
         <div class="dcard__code dcard__code--num">{{ masked_code }}</div>
-        <div class="dcard__sub">{% if masked_general %}{% trans "Geral · avaliação" %}{% else %}{% trans "Caixa" %}{% endif %}</div>
+        <div class="dcard__sub">{% if masked_general %}{% trans "Sem categoria — separar para análise" %}{% else %}{% trans "Caixa" %}{% endif %}</div>
         <div class="dcard__pn">{{ pn }}{% if current_qty %} · {% blocktrans trimmed with n=current_qty %}já no lote: {{ n }} un.{% endblocktrans %}{% endif %}</div>
       </div>
     </div>
@@ -65,8 +69,8 @@
     <div class="dcard dcard--conf">
       <div class="dcard__body">
         <div class="dcard__eyebrow">{% trans "Destino" %}</div>
-        <div class="dcard__code dcard__code--word">{% trans "CONFERÊNCIA" %}</div>
-        <div class="dcard__sub">{% trans "Separe para verificação — segue para a fila do gestor." %}</div>
+        <div class="dcard__code dcard__code--num">H-00</div>
+        <div class="dcard__sub">{% trans "CONFERÊNCIA" %} · {% trans "Separe para verificação — segue para a fila do gestor." %}</div>
         <div class="dcard__pn">{{ pn }}</div>
       </div>
     </div>
@@ -74,8 +78,8 @@
     <div class="dcard dcard--desc">
       <div class="dcard__body">
         <div class="dcard__eyebrow">{% trans "Destino" %}</div>
-        <div class="dcard__code dcard__code--word">{% trans "DESCARTE" %}</div>
-        <div class="dcard__sub">{% trans "Sucata · resíduo eletrônico" %}</div>
+        <div class="dcard__code dcard__code--num">R-00</div>
+        <div class="dcard__sub">{% trans "DESCARTE" %} · {% trans "Sucata · resíduo eletrônico" %}</div>
         <div class="dcard__pn">{{ pn }}</div>
       </div>
     </div>

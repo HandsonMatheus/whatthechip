@@ -1575,26 +1575,27 @@ class FoldGenTests(TestCase):
         self.assertEqual(fold_gen('lpddr', 'LPDDR4X'), 'LPDDR4')
         self.assertEqual(fold_gen('lpddr', 'LPDDR5X'), 'LPDDR5')
         self.assertEqual(fold_gen('lpddr', 'LPDDR4'), 'LPDDR4')
-        # eMCP/uMCP: intactos ("manter o formato", dono 2026-07-21).
-        self.assertEqual(fold_gen('emcp', 'LPDDR4X'), 'LPDDR4X')
-        self.assertEqual(fold_gen('umcp', 'LPDDR5X'), 'LPDDR5X')
+        # v3 (dono 2026-07-23): o X dobra TAMBÉM nos combos eMCP/uMCP.
+        self.assertEqual(fold_gen('emcp', 'LPDDR4X'), 'LPDDR4')
+        self.assertEqual(fold_gen('umcp', 'LPDDR5X'), 'LPDDR5')
         # gen_spellings cobre as grafias que dobram na base:
         self.assertIn('DDR3L', gen_spellings('ddr', 'DDR3'))
         self.assertIn('LPDDR4X', gen_spellings('lpddr', 'LPDDR4'))
-        self.assertEqual(gen_spellings('emcp', 'LPDDR4X'), ['LPDDR4X'])
+        self.assertIn('LPDDR4X', gen_spellings('emcp', 'LPDDR4'))
 
-    def test_derive_dobra_lpddr_avulso_e_preserva_emcp(self):
+    def test_derive_dobra_lpddr_avulso_e_combo(self):
         from .engine import derive_price_key
         err, key = derive_price_key({'chip_type': 'LPDDR4X',
                                      'subtype': 'LPDDR4X',
                                      'ram_gen': 'LPDDR4X', 'cap_gb': 4.0})
         self.assertIsNone(err)
         self.assertEqual(key, ('lpddr', 'LPDDR4', Decimal('4.0'), 'GB'))
+        # v3: o combo também dobra — eMCP LPDDR4X keia como LPDDR4.
         err, key = derive_price_key({'chip_type': 'eMCP',
                                      'subtype': 'LPDDR4X',
                                      'ram_gen': 'LPDDR4X', 'nand_gb': 64.0})
         self.assertIsNone(err)
-        self.assertEqual(key, ('emcp', 'LPDDR4X', Decimal('64.0'), 'GB'))
+        self.assertEqual(key, ('emcp', 'LPDDR4', Decimal('64.0'), 'GB'))
 
     def test_chave_materializada_pre_fold_resolve_na_linha_base(self):
         # price_from_key dobra na LEITURA: entrada do estoque gravada com

@@ -2063,3 +2063,7 @@ msgstr "开启于 %(d)s"
 
 msgid "desde %(d)s"
 msgstr "自 %(d)s"
+
+#: estoque/templates/estoque/partials/confirm_card_masked.html
+msgid "Sem categoria — separar para análise"
+msgstr "无类别 — 请单独存放，等待分析"

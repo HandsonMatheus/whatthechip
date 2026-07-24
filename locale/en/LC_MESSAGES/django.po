@@ -2151,3 +2151,7 @@ msgstr "open since %(d)s"
 
 msgid "desde %(d)s"
 msgstr "since %(d)s"
+
+#: estoque/templates/estoque/partials/confirm_card_masked.html
+msgid "Sem categoria — separar para análise"
+msgstr "No category — set aside for review"

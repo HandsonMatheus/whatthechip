@@ -914,6 +914,32 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   `test_lpddr4x_dobra_para_lpddr4_na_chave` (antes 4X tinha ¥ próprio) e
   `test_ddr3l_dobra_para_ddr3_na_chave` (linha DDR3L do grid agora é
   alcançável como DDR3 da marca). `FoldGenTests` cobre o contrato.
+- **CONVENÇÃO UNIVERSAL v3 (dono 2026-07-23 — CONGELADA; fonte:
+  `pricing/convention.py`):** os códigos viraram **`LETRA-##`** — letra FIXA
+  por tipo (A=eMCP, B=eMMC, C=uMCP, D=UFS, E=DDR, F=LPDDR — anti-mnemônica
+  de propósito), número CONGELADO pela **TABELA FUNDADORA** (55 categorias,
+  embaralhada UMA vez na autoria — número nunca é ranking; append-only;
+  nunca reordena/reusa). Baldes especiais: **H-00 HOLD** (fila de
+  conferência — não embarca; também exibido p/ aprovado raro sem categoria
+  derivável) e **R-00 REFINO** (reprovado); `00` reservado em toda letra;
+  letras H/R reservadas (tipo novo pega G, I, J…). **O conceito
+  "Geral/C-000" foi DESFEITO** (dono: "todos os chips devem ter categoria —
+  preço até pode ficar sem, categoria não"): a categoria deriva do CHIP
+  (decoder), nunca do grid — `key_is_sellable` removido; cunhagem de
+  categoria inédita acontece na APROVAÇÃO da bancada (`label_for_key`,
+  próximo número livre da letra, sem depender de preço); **leitura nunca
+  cunha** (tabela do lote/OV usam `create=False` → '—' p/ legado sem
+  código — é o que impede DDR1/DDR2 ressuscitarem: categoria morta nunca é
+  aprovada). Fold do X estendido aos COMBOS (eMCP/uMCP LPDDR4X→LPDDR4,
+  5X→5 — "LPDDR e LPDDRx devem ser unidos"). Roteamento da triagem
+  INALTERADO (confirmado pelo dono: não confirmado → H-00, salvo gramática
+  denunciando morte → R-00; confirmado + rentável → estoque). Seed v3 é
+  DETERMINÍSTICO (carrega a fundadora; divergência banco×convenção = erro
+  alto; `--reset` pré-deploy). Migração pricing/0015 (número por letra).
+  ⚠ Transição do grid: linhas eMCP grafadas `LPDDR4X` ficam inalcançáveis
+  até canonizar (re-save dobra sozinho; GÊMEA com a linha-base →
+  ValidationError, dono funde no admin decidindo o ¥) — comando de
+  canonização no runbook.
 - **GDDR FORA DO NEGÓCIO (dono 2026-07-23):** sempre **NÃO RENTÁVEL** (morto
   POR TIPO no `assess_profitability` — o bloco fica na posição, interceptando
   o substring "DDR"; `is_dead_by_generation`=True → descarte mesmo sem

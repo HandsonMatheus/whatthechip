@@ -164,8 +164,10 @@ def cancel(so, user):
 
 def annotate_labels(lines, unmasked: bool):
     """F12 (máscara, dono 2026-07-17): anexa ``display_label`` — plataforma
-    vê o rótulo REAL ("Samsung · eMCP LPDDR4X 64GB"); empresa-CLIENTE vê o
-    código opaco C-### (mesma tabela global da bancada/export)."""
+    vê o rótulo REAL ("Samsung · eMCP LPDDR4 64GB"); empresa-CLIENTE vê o
+    código universal LETRA-## (convenção v3 — mesma tabela global da
+    bancada/export). Leitura NUNCA cunha código (create=False): linha de
+    categoria sem código (legado/kind extinto) mostra '—'."""
     if unmasked:
         for l in lines:
             l.display_label = l.label
@@ -173,7 +175,7 @@ def annotate_labels(lines, unmasked: bool):
     from pricing.models import CategoryCode
     for l in lines:
         l.display_label = CategoryCode.label_for_key(
-            l.kind, l.gen, l.tier_value, l.tier_unit)
+            l.kind, l.gen, l.tier_value, l.tier_unit, create=False) or '—'
     return lines
 
 

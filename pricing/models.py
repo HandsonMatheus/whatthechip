@@ -109,16 +109,17 @@ def valid_gen(kind: str, gen: str) -> bool:
     return bool(rule and rule.match(gen or ''))
 
 
-# ── Fold de geração na CATEGORIA COMERCIAL (dono, 2026-07-11 e 2026-07-21) ────
+# ── Fold de geração na CATEGORIA COMERCIAL (dono, 2026-07-11/21/23) ───────────
 # "DDR3L e DDR3 são a mesma coisa" · "LPDDR4X e LPDDR4 são a mesma coisa,
 # uma só caixa" — variantes de tensão (L/U) e o sufixo X precificam e
-# ENCAIXOTAM como a geração-base. FONTE ÚNICA: derive (escrita da chave),
-# price_from_key (leitura de chave legada gravada), CategoryCode (caixa) e
-# o grid (Price.save) dobram AQUI — leitor e escritor nunca divergem.
-# ⚠ eMCP/uMCP mantêm a geração da RAM como está ("manter o formato", dono
-# 2026-07-21). (GDDR saiu do mercado em 2026-07-23 — kind extinto.)
+# ENCAIXOTAM como a geração-base. Desde 2026-07-23 vale TAMBÉM dentro dos
+# combos eMCP/uMCP (convenção v3: "LPDDR e LPDDRx devem ser unidos").
+# FONTE ÚNICA: derive (escrita da chave), price_from_key (leitura de chave
+# legada gravada), CategoryCode (caixa) e o grid (Price.save) dobram AQUI —
+# leitor e escritor nunca divergem. (GDDR: kind extinto em 2026-07-23.)
 _FOLD_DDR   = re.compile(r'^(DDR\d+)[LU]$')
 _FOLD_LPDDR = re.compile(r'^(LPDDR\d+)X$')
+_LPDDR_KINDS = (KIND_LPDDR, KIND_EMCP, KIND_UMCP)   # gen = geração LPDDR
 
 
 def fold_gen(kind: str, gen: str) -> str:
@@ -128,7 +129,7 @@ def fold_gen(kind: str, gen: str) -> str:
         m = _FOLD_DDR.match(g)
         if m:
             return m.group(1)
-    elif kind == KIND_LPDDR:
+    elif kind in _LPDDR_KINDS:
         m = _FOLD_LPDDR.match(g)
         if m:
             return m.group(1)
@@ -141,7 +142,7 @@ def gen_spellings(kind: str, gen: str) -> list[str]:
     out = [gen]
     if kind == KIND_DDR:
         out += [f'{gen}L', f'{gen}U']
-    elif kind == KIND_LPDDR:
+    elif kind in _LPDDR_KINDS:
         out += [f'{gen}X']
     return out
 
@@ -688,16 +689,16 @@ class PriceChangeRequest(models.Model):
 
 
 class CategoryCode(models.Model):
-    """F12 — apelido OPACO e GLOBAL da categoria comercial (a chave de preço).
+    """F12 v3 — o código UNIVERSAL da categoria comercial (convenção mundial).
 
-    O conhecimento "PN → o que é → quanto vale" é o ativo do negócio (dono,
-    2026-07-17): empresa-CLIENTE vê só ``C-###``; os rótulos reais ficam na
-    plataforma. Regras: **um código por chave** (kind/gen/tier — a mesma da
-    F11.1/OV); **global e estável** (caixa é física: nunca renomeia, nunca
-    reutiliza); numeração inicial SORTEADA (`seed_category_codes` — se fosse
-    na ordem da grade, o número viraria quase-ordinal e vazaria estrutura);
-    categoria nova ganha o próximo sequencial automaticamente. ``C-000`` é
-    reservado ao balde "Geral" (aprovado sem chave) — nunca atribuído aqui.
+    A convenção (dono, 2026-07-23) vive em ``pricing/convention.py`` — FIXA,
+    global e eterna: ``LETRA-##`` com letra fixa por tipo (KIND_LETTER) e
+    número congelado da TABELA FUNDADORA. A categoria **deriva do CHIP**
+    (tipo + geração + faixa — o que o decoder busca no banco), NUNCA do grid:
+    "preço até pode ficar sem, categoria não". Categoria inédita ganha o
+    próximo número livre DA LETRA na primeira aprovação (append-only; número
+    nunca reordena nem se reusa). ``00`` é reservado (H-00 fila / R-00
+    refino — baldes especiais, não são linhas desta tabela).
     """
 
     kind = models.CharField(max_length=8, verbose_name='Tipo')
@@ -706,17 +707,20 @@ class CategoryCode(models.Model):
     tier_value = models.DecimalField(max_digits=6, decimal_places=1,
                                      verbose_name='Faixa')
     tier_unit = models.CharField(max_length=2, verbose_name='Unidade')
-    code = models.PositiveIntegerField(unique=True, verbose_name='Código')
+    code = models.PositiveIntegerField(verbose_name='Número (na letra)')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
 
     class Meta:
         verbose_name = 'Código de categoria (F12)'
         verbose_name_plural = 'Códigos de categoria (F12)'
-        ordering = ['code']
+        ordering = ['kind', 'code']
         constraints = [
             models.UniqueConstraint(
                 fields=['kind', 'gen', 'tier_value', 'tier_unit'],
                 name='unique_categorycode_key'),
+            # v3: o número é POR LETRA (kind) — A-07 e B-07 coexistem.
+            models.UniqueConstraint(fields=['kind', 'code'],
+                                    name='unique_categorycode_kind_code'),
             models.CheckConstraint(name='categorycode_positive',
                                    condition=Q(code__gt=0)),
         ]
@@ -727,34 +731,23 @@ class CategoryCode(models.Model):
 
     @property
     def label(self) -> str:
-        """``C-###`` — canônico universal, NUNCA traduz."""
-        return f'C-{self.code:03d}'
-
-    GENERAL_LABEL = 'C-000'          # balde "Geral" (sem categoria vendável)
-
-    @classmethod
-    def key_is_sellable(cls, kind, gen, tier_value, tier_unit) -> bool:
-        """A chave (JÁ dobrada) existe no grid comercial? Caixa só nasce de
-        categoria que o sistema de preços NEGOCIA (dono, 2026-07-21 — o seed
-        v1 varria o estoque e cunhou DDR1/DDR2, que são descarte): linha em
-        lista ATIVA de comprador ATIVO, com status cotado/não-cotado
-        (não-fabricado e não-compro ficam fora). ``gen_spellings`` cobre grid
-        ainda não canonizado (linha antiga grafada DDR3L/LPDDR4X)."""
-        return Price.all_companies.filter(
-            price_list__active=True, price_list__buyer__active=True,
-            status__in=(STATUS_QUOTED, STATUS_UNQUOTED),
-            kind=kind, gen__in=gen_spellings(kind, gen),
-            tier_value=tier_value, tier_unit=tier_unit).exists()
+        """``LETRA-##`` (ex.: A-07) — canônico universal, NUNCA traduz."""
+        from .convention import KIND_LETTER
+        return f'{KIND_LETTER[self.kind]}-{self.code:02d}'
 
     @classmethod
-    def label_for_key(cls, kind, gen, tier_value, tier_unit) -> str:
-        """Código da chave. A geração DOBRA na base (fold_gen — LPDDR4X e
-        LPDDR4 são a MESMA caixa; DDR3L idem, dono 2026-07-21). Código já
-        atribuído SEMPRE vale (caixa é física — nunca renomeia); inédito só
-        nasce se a categoria é VENDÁVEL no grid — senão cai no C-000 'Geral'.
-        Obs.: sob RLS (prod), requisição de empresa-cliente não enxerga o
-        grid → nunca CRIA código (least-privilege); a cunhagem acontece no
-        seed ou no primeiro uso da plataforma."""
+    def label_for_key(cls, kind, gen, tier_value, tier_unit,
+                      create: bool = True):
+        """Código da chave (ou ``None`` se o tipo está fora da convenção —
+        ex.: kind extinto em chave legada gravada). A geração DOBRA na base
+        (fold_gen). Código já atribuído SEMPRE vale (caixa é física — nunca
+        renomeia). Categoria inédita: com ``create=True`` (caminho da
+        APROVAÇÃO na bancada) ganha o próximo número livre da letra — SEM
+        depender de preço/grid (v3, dono 2026-07-23); com ``create=False``
+        (renders de tabela/OV — leitura nunca cunha) devolve ``None``."""
+        from .convention import KIND_LETTER
+        if kind not in KIND_LETTER:
+            return None
         from django.db import IntegrityError, transaction
         from django.db.models import Max
         gen = fold_gen(kind, gen or '')
@@ -762,12 +755,13 @@ class CategoryCode(models.Model):
                                  tier_unit=tier_unit).first()
         if obj:
             return obj.label
-        if not cls.key_is_sellable(kind, gen, tier_value, tier_unit):
-            return cls.GENERAL_LABEL
+        if not create:
+            return None
         for _tentativa in range(2):      # corrida rara: retry único
             try:
                 with transaction.atomic():
-                    nxt = (cls.objects.aggregate(m=Max('code'))['m'] or 0) + 1
+                    nxt = (cls.objects.filter(kind=kind)
+                           .aggregate(m=Max('code'))['m'] or 0) + 1
                     obj = cls.objects.create(kind=kind, gen=gen,
                                              tier_value=tier_value,
                                              tier_unit=tier_unit, code=nxt)
