@@ -1,35 +1,36 @@
 {% comment %}
   Bloco de preço do comprador (F5/F8 — PRECIFICACAO §7). Fonte ÚNICA do markup:
-  incluído pelo decode_card.html (busca /chips/) e pelo confirm_card.html
-  (bancada do lote). Espera `price_quotes` = [(Buyer, PriceQuote)] no contexto —
-  que chega VAZIO para operador/gerente/anônimo (gate na VIEW, nunca só aqui).
-  ≈ = faixa/cotação velha (staleness, princípio #4 do plano).
-  F10 (§12.18): exibição DUAL "¥ 90 · US$ 12.60" — o ¥ é o armazenado (a
-  língua do comprador); o US$ é derivado pela taxa contratual. Valores com
-  {% localize off %} (dinheiro sempre com PONTO, em qualquer idioma da UI).
+  incluído pelo confirm_card.html (bancada completa) e confirm_card_masked.html
+  (bancada do admin da empresa). Espera `price_quotes` = [(Buyer, PriceQuote)] no
+  contexto — que chega VAZIO para operador/gerente/anônimo (gate na VIEW, nunca só
+  aqui). ≈ = faixa/cotação velha (staleness, princípio #4 do plano).
+
+  Visual (dono 2026-07-25): USD-ONLY, grande e direto. Removidos o rótulo de
+  marca ("WhatTheChip"), o via ("· marca") e o preço em ¥ (RMB) — o admin da
+  empresa quer só o valor em US$. O ¥ (língua do comprador) segue existindo no
+  BACKEND (JSON do search_api, snapshot do lote, telas de precificação) — aqui é
+  só EXIBIÇÃO. `q.price_min` é o US$ derivado da taxa contratual; {% localize off %}
+  mantém o dinheiro com PONTO em qualquer idioma. A classe `dc2-price-block` é
+  contrato de teste (pricing/tests.py) — NÃO remover.
 {% endcomment %}
 {% load i18n l10n %}
 {% if price_quotes %}
-<div class="dc2-price-block" style="margin:0 16px 12px 16px;padding:10px 14px;background:#f0f9f1;border:1px solid #bfe3c5;border-left:4px solid #2e9e44;border-radius:6px;">
+<div class="dc2-price-block" style="padding:16px 18px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   {% for buyer, q in price_quotes %}
-  <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;{% if not forloop.last %}margin-bottom:6px;{% endif %}">
-    {# F11.3: a contraparte da empresa é o WhatTheChip — comprador não existe aqui. #}
-    <span style="font-size:11px;font-weight:700;color:#2e7d3a;text-transform:uppercase;letter-spacing:.04em;">💰 WhatTheChip</span>
+  <div style="{% if not forloop.last %}margin-bottom:14px;{% endif %}">
     {% if q.status == "PRICED" %}
-      <span style="font-size:16px;font-weight:800;color:#1d6b2f;">
-        {% localize off %}{% if q.is_stale %}≈ {% endif %}¥ {{ q.rmb_display }} <span style="font-weight:600;color:#2e7d3a;">· US$ {{ q.price_min }}</span>{% endlocalize %}
-      </span>
-      <span style="font-size:11px;color:#557a5e;">
-        {% if q.quote_date %}{% trans "cotado" %} {{ q.quote_date|date:"d/m/Y" }}{% else %}{% trans "referência (sem data)" %}{% endif %} · {{ q.via }}
-      </span>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:700;color:#0e6027;letter-spacing:-.02em;line-height:1;">{% localize off %}{% if q.is_stale %}≈ {% endif %}US$ {{ q.price_min }}{% endlocalize %}</div>
+      <div style="font-size:12px;color:#697077;margin-top:8px;">
+        {% if q.quote_date %}{% trans "cotado" %} {{ q.quote_date|date:"d/m/Y" }}{% else %}{% trans "referência (sem data)" %}{% endif %}
+      </div>
     {% elif q.status == "NO_BUY" %}
-      <span style="font-size:13px;font-weight:700;color:#a33;">{% trans "não compra este item" %}</span>
+      <div style="font-size:14px;font-weight:700;color:#a2191f;">{% trans "não compra este item" %}</div>
     {% elif q.status == "NOT_MADE" %}
-      <span style="font-size:13px;font-weight:600;color:#6f6f6f;">{% trans "não fabricado pela marca" %}</span>
+      <div style="font-size:14px;font-weight:600;color:#697077;">{% trans "não fabricado pela marca" %}</div>
     {% elif q.status == "UNQUOTED" %}
-      <span style="font-size:13px;font-weight:600;color:#b8860b;">{% trans "aguardando cotação" %}</span>
+      <div style="font-size:14px;font-weight:600;color:#8a6a00;">{% trans "aguardando cotação" %}</div>
     {% else %}
-      <span style="font-size:12px;color:#777;">{% trans "sem preço —" %} {{ q.reason }}</span>
+      <div style="font-size:13px;color:#697077;">{% trans "sem preço —" %} {{ q.reason }}</div>
     {% endif %}
   </div>
   {% endfor %}

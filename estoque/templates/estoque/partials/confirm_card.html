@@ -182,7 +182,7 @@
     {% comment %} Preço do comprador (F8 — SÓ admin; PRECIFICACAO §7). Não
        renderiza em reprovado/desconhecido — preço de sucata não orienta. {% endcomment %}
     {% if gateway_dest == 'aprovado' or gateway_dest == 'fila' %}
-    <div style="padding:0 16px 4px;border-top:1px solid #dde1e6;">{% include "pricing/price_block.html" %}</div>
+    <div style="border-top:1px solid #dde1e6;">{% include "pricing/price_block.html" %}</div>
     {% endif %}
 
     {# ── Ações (dentro do card) ──────────────────────────────────── #}
