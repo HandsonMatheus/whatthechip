@@ -95,6 +95,8 @@ FOUNDING_TABLE = (
     ('ufs', '', '512',  'GB', 5),
     ('ufs', '', '128',  'GB', 6),   # caiu na transcrição da fundação; anexada
                                     # 2026-07-23 (regra de append: nº novo, nada renumera)
+    ('ufs', '', '16',   'GB', 7),   # anexada 2026-07-24 — lastro: THGAF9G7L1LBAB7
+                                    # (Kioxia, confirmed) + caixa física antiga
     # E — DDR (tier em Gb/die; variantes L/U dobradas)
     ('ddr', 'DDR4', '4',  'Gb', 1),
     ('ddr', 'DDR5', '16', 'Gb', 2),
@@ -108,8 +110,12 @@ FOUNDING_TABLE = (
     ('ddr', 'DDR3', '8',  'Gb', 10),
     ('ddr', 'DDR4', '16', 'Gb', 11),
     ('ddr', 'DDR4', '2',  'Gb', 12),   # planilha v9 (2026-07-24; rentável ≥1Gb)
-    ('ddr', 'DDR4', '1',  'Gb', 13),   # idem. (DDR3 1Gb ficou FORA: morto por
-                                       # densidade — nunca é aprovado → R-00)
+    ('ddr', 'DDR4', '1',  'Gb', 13),   # ⚠ suspeita (JEDEC DDR4 mínimo = 2Gb);
+                                       # aposentar se o estoque confirmar zero
+    ('ddr', 'DDR3', '1',  'Gb', 14),   # anexada 2026-07-24 — dono: "DDR3 é
+                                       # rentável sim"; lastro: 173 registros
+                                       # (H5TQ1G/K4B1G…). Requer ddr3_min_gbit
+                                       # = 1.0 no admin (config, não código).
     # F — LPDDR avulso (X dobrado; tier = pacote GB)
     ('lpddr', 'LPDDR4', '6',  'GB', 1),
     ('lpddr', 'LPDDR3', '4',  'GB', 2),
