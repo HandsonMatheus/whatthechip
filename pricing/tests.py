@@ -870,8 +870,10 @@ class BenchAndLotPricingTests(TestCase):
             resp = self.client.get(f'/estoque/lote/{lot.pk}/preview/',
                                    {'pn': 'KLMCG8GEAC'})
             self.assertContains(resp, 'dc2-price-block')
-            self.assertContains(resp, '¥ 40')            # dual (F10.5)
+            # Máscara v3.1 (interface): admin de empresa vê SÓ US$ — o ¥ é a
+            # língua do COMPRADOR e sumiu do card (segue no banco/parceiro).
             self.assertContains(resp, 'US$ 5.60')
+            self.assertNotContains(resp, '¥ 40')
             self.client.logout()
             self.client.force_login(self.users['operator'])
             resp2 = self.client.get(f'/estoque/lote/{lot.pk}/preview/',

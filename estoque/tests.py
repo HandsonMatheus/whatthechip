@@ -36,9 +36,9 @@ from .views import _compute_gateway
 def _grant(user, role=Membership.ROLE_OPERATOR):
     """Vincula o usuário de teste a uma empresa com papel (T1: as views do
     estoque exigem Membership ativo — tenancy.access.role_required)."""
-    # F12: a eMiner dos testes é a PLATAFORMA (vê rótulos reais) — os
-    # testes de vista completa continuam valendo; máscara testada à parte
-    # (MaskingTests, com empresa-CLIENTE própria).
+    # v3.1 (dono 2026-07-23): is_platform NÃO desmascara mais (só superuser).
+    # A eMiner dos testes segue is_platform (campo mantido p/ outros usos), mas
+    # os testes que precisam da VISÃO COMPLETA marcam o usuário is_superuser.
     company, _ = Company.objects.get_or_create(
         name='eMiner', defaults={'slug': 'eminer', 'is_platform': True})
     Membership.objects.update_or_create(
@@ -428,7 +428,11 @@ class PreviewFuzzyPopupTests(TestCase):
     fila (pedido 2026-07-13). Em aprovado NÃO auto-abre (não incomoda decode válido)."""
 
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username='op55', password='x')
+        # v3.1 (dono 2026-07-23): o popup fuzzy vive no card COMPLETO (não
+        # mascarado). Só o superuser vê o card completo → o usuário de
+        # visão-plena aqui é superuser (não afrouxa a máscara; ver is_unmasked).
+        self.user = get_user_model().objects.create_user(
+            username='op55', password='x', is_superuser=True)
         self.company = _grant(self.user)
         _scope(self, self.company)
         self.client.force_login(self.user)
@@ -562,7 +566,9 @@ class OnReadDisplayTests(TestCase):
     das entradas defasadas — sem gravar — e exibe a data de última atualização."""
 
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username='op3', password='x')
+        # v3.1 (dono 2026-07-23): visão completa (specs on-read) = só superuser.
+        self.user = get_user_model().objects.create_user(username='op3', password='x',
+                                                         is_superuser=True)
         self.company = _grant(self.user)       # T1: operador precisa de vínculo
         _scope(self, self.company)             # T3
         self.client.force_login(self.user)
@@ -1189,8 +1195,10 @@ class ExportPriceColumnsTests(TestCase):
         User = get_user_model()
         cls.company = Company.objects.create(name='eMiner', slug='eminer',
                                              is_platform=True)   # F12
-        cls.adm = User.objects.create_user('xp_adm', password='x')
-        cls.mgr = User.objects.create_user('xp_mgr', password='x')
+        # v3.1: visão completa (colunas de spec) = só superuser; os papéis
+        # (admin/gerente) seguem valendo pro gate SEPARADO de preço.
+        cls.adm = User.objects.create_user('xp_adm', password='x', is_superuser=True)
+        cls.mgr = User.objects.create_user('xp_mgr', password='x', is_superuser=True)
         Membership.objects.create(user=cls.adm, company=cls.company,
                                   role=Membership.ROLE_ADMIN)
         Membership.objects.create(user=cls.mgr, company=cls.company,
@@ -1249,9 +1257,9 @@ class ExportPriceColumnsTests(TestCase):
 
 class MaskingTests(TestCase):
     """F12 (dono, 2026-07-17): o conhecimento "PN → o que é → quanto vale" é
-    o ativo do negócio. Empresa-CLIENTE vê só o código C-### (bancada com
-    card whitelist SEM data-debug, tabela, export); a PLATAFORMA
-    (Company.is_platform / superuser) vê tudo."""
+    o ativo do negócio. Empresa-CLIENTE vê só o código de caixa (bancada com
+    card whitelist SEM data-debug, tabela, export); só o SUPERUSER (v3.1,
+    dono 2026-07-23) vê tudo — nem membro da eMiner mais."""
 
     @classmethod
     def setUpTestData(cls):
@@ -1263,7 +1271,10 @@ class MaskingTests(TestCase):
         cls.cli = Company.objects.create(name='Cliente X', slug='mask-cli')
         cls.users = {}
         for tag, co in (('plat', cls.plat), ('cli', cls.cli)):
-            u = User.objects.create_user(f'mask_{tag}', password='x')
+            # v3.1 (dono 2026-07-23): SÓ superuser vê tudo — o membro da
+            # plataforma vira superuser; o cliente segue mascarado.
+            u = User.objects.create_user(f'mask_{tag}', password='x',
+                                         is_superuser=(tag == 'plat'))
             Membership.objects.create(user=u, company=co,
                                       role=Membership.ROLE_MANAGER)  # export
             cls.users[tag] = u
@@ -1395,8 +1406,9 @@ class SeedCategoryCodesTests(TestCase):
 class DebugButtonGateTests(TestCase):
     """O 📋 (copiar diagnóstico) é ferramenta de suporte da PLATAFORMA — só
     SUPERUSER vê (dono, 2026-07-20): nem admin de empresa, nem operador da
-    plataforma. O card completo continua com data-debug (só plataforma o
-    recebe; cliente mascarado nunca — MaskingTests)."""
+    plataforma. v3.1 (dono 2026-07-23): o card COMPLETO (com data-debug) agora
+    também é só do superuser — o admin de empresa passou a receber o card
+    MASCARADO (sem data-debug e sem o botão). Superuser recebe os dois."""
 
     def setUp(self):
         self.user = get_user_model().objects.create_user(username='dbg_op',
@@ -1416,8 +1428,11 @@ class DebugButtonGateTests(TestCase):
             return self.client.get(self.url, {'pn': 'KLMAG1JETD'}).content.decode()
 
     def test_admin_de_empresa_nao_ve_o_botao(self):
+        # v3.1: admin de empresa é MASCARADO — não recebe o card completo
+        # (data-debug) nem o botão 📋. Antes (is_platform) via o card completo
+        # sem o botão; agora não vê nenhum dos dois.
         body = self._body(self.user)
-        self.assertIn('data-debug', body)            # card completo (plataforma)
+        self.assertNotIn('data-debug', body)         # card MASCARADO (cliente)
         self.assertNotIn('est-debug-btn', body)      # botão 📋 NÃO
 
     def test_superuser_ve_o_botao(self):

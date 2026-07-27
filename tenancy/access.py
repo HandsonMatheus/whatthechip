@@ -22,17 +22,21 @@ from django.core.exceptions import PermissionDenied
 
 
 def is_unmasked(request) -> bool:
-    """F12 (máscara de categoria, dono 2026-07-17): quem vê rótulos REAIS de
-    categoria (specs/tipo) — o admin do SISTEMA (superuser) e os membros de
-    empresa marcada ``is_platform`` (eMiner). Todo mundo de empresa-CLIENTE
-    vê apenas o código opaco ``C-###`` em bancada/tabela/export/OV/fatura.
-    Fonte única da política — consumida por estoque e vendas."""
+    """v3.1 (dono 2026-07-23): SÓ o superuser (admin Django) vê rótulos REAIS
+    de chip (specs/tipo/marca/veredito). NINGUÉM mais — nem admin de empresa,
+    nem gerente/operador, nem membros da eMiner. Para todos eles bancada/
+    tabela/export/OV mostram só o DESTINO (código de caixa canônico LETRA-## /
+    H-00 / R-00), nunca o que o chip É: o conhecimento "PN → o que é → quanto
+    vale" é o ativo da plataforma.
+
+    ⚠ O campo ``Company.is_platform`` CONTINUA existindo (outros usos futuros),
+    mas NÃO entra mais nesta função. O PREÇO é gate SEPARADO (``quotes_for_admin``
+    — admin de empresa vê preço, specs não). Fonte única da máscara: não invente
+    lógica de máscara por página — bancada/tabela/export/OV/fatura derivam daqui."""
     user = getattr(request, 'user', None)
-    if user is not None and getattr(user, 'is_authenticated', False) \
-            and user.is_superuser:
-        return True
-    m = getattr(request, 'membership', None)
-    return bool(m and m.company.is_platform)
+    return bool(user is not None
+                and getattr(user, 'is_authenticated', False)
+                and user.is_superuser)
 
 
 def role_required(min_role: str):
