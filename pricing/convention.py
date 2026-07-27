@@ -137,6 +137,10 @@ FOUNDING_TABLE = (
     ('lpddr', 'LPDDR4', '1.5', 'GB', 18),  # anexada 2026-07-24 — chips reais
                                            # (MT53B384M32/192M64 = 12Gb = 1.5GB;
                                            # OV do LOT/043 expôs a lacuna)
+    ('lpddr', 'LPDDR3', '1.5', 'GB', 19),  # AUTO-CUNHADA na bancada de PROD
+                                           # 2026-07-24 (K4E2E304EA, LPDDR3
+                                           # 1.5GB) — registrada aqui a posteriori,
+                                           # como manda a regra do append
     # G — SSD BGA/NVMe (2026-07-24): capacidades REAIS descobertas no estoque;
     #     novas capacidades anexam na aprovação (preço é linear ¥/GB — a caixa
     #     separa por capacidade como todo o resto).
