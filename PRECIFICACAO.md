@@ -1014,6 +1014,18 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   legada `lists/<pk>/`. OK-por-célula e JS extintos. 7 msgids (es/en/zh).
   `PartnerKindNavTests` = 10 (batch x/vazio/número, diff só-do-que-mudou,
   faixa+ilegível, selo sem dropdown).
+- **HOME + CATÁLOGO PDF na convenção (dono, mesma data):** `catalog_data`
+  REESCRITO — devolve SEÇÕES na ordem do painel (`_SECTION_KINDS`), cada
+  uma com as PRÓPRIAS colunas: unificada (eMCP/uMCP/LPDDR) SEM coluna de
+  marca (tabela capacidade → preço único, título "— preço único para todas
+  as marcas"; **faixa '90–100'** nos combos, en-dash WinAnsi); por marca
+  (eMMC/UFS/DDR) em matriz ENXUTA (só marcas com linha do tipo + Outras);
+  **SSD entra como linha "por GB"** quando o contrato tem `ssd_rmb_per_gb`
+  (não há grid de SSD). ¥ inteiro/sem zeros; USD derivado 2 casas (faixa
+  nas duas moedas). `render_catalog_pdf` perdeu o param `columns` (cada
+  seção traz o seu). Home: rodapé explica a convenção (unificado × por
+  marca × coluna «Outras») e o card do PDF fala "tabela completa" (era
+  "todas as tabelas", jargão da era por-marca). 4 msgids es/en/zh.
 - **REPACTUAÇÃO 2026-07-27 (planilha final do comprador — aba única):**
   **eMCP/uMCP em FAIXA** (os ÚNICOS: `price_fixed_only` liberou min≤max só
   p/ esses kinds + `price_range_ordered`; migração pricing/0017; portão

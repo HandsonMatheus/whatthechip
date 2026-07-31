@@ -1,11 +1,14 @@
 """Catálogo de preços do comprador em PDF (F9, dono 2026-07-10).
 
-O comprador baixa da home do /partner/ um PDF com TODAS as suas tabelas —
+O comprador baixa da home do /partner/ um PDF com a tabela COMPLETA —
 é o documento que ele repassa aos clientes dele, então o desenho persegue
-duas coisas: CLAREZA e COMPACIDADE. Em vez de listar 600+ linhas, o layout
-é a MATRIZ da planilha original (que o comprador e os clientes dele já
-conhecem): uma seção por tipo, marcas nas colunas, capacidades nas linhas —
-uma célula por preço.
+duas coisas: CLAREZA e COMPACIDADE. O layout segue a CONVENÇÃO da
+repactuação (2026-07-27), a mesma do painel por tipo:
+- eMCP/uMCP/LPDDR (UNIFICADOS): tabela simples capacidade → preço único
+  (todas as marcas); combos em FAIXA mín–máx.
+- eMMC/UFS/DDR (POR MARCA): matriz — marcas nas colunas (só as que têm
+  linha do tipo + "Outras marcas"), capacidades nas linhas.
+- SSD (linear): uma linha "por GB", quando o contrato tem a taxa.
 
 Separação deliberada em duas funções:
 - ``catalog_data(buyer)``    → consulta o banco e devolve estrutura pura
@@ -69,68 +72,107 @@ def _fmt_tier(value):
     return s
 
 
+#: Ordem das seções = a do PAINEL POR TIPO (views._NAV_KINDS; repactuação
+#: 2026-07-27): combos+LPDDR unificados primeiro, depois os por-marca.
+_SECTION_KINDS = ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr')
+
+
+def _money(mn, mx, currency, rate):
+    """Valor pronto na moeda: ¥ inteiro/sem zeros ('90'; faixa '90–100' com
+    en-dash, que EXISTE em WinAnsi) ou USD derivado 2 casas ('12.60')."""
+    if currency == 'rmb':
+        lo, hi = f'{mn.normalize():f}', f'{mx.normalize():f}'
+    else:
+        q = Decimal('0.01')
+        lo = f'{(mn * rate).quantize(q, ROUND_HALF_UP):.2f}'
+        hi = f'{(mx * rate).quantize(q, ROUND_HALF_UP):.2f}'
+    return lo if lo == hi else f'{lo}\u2013{hi}'
+
+
+def _cell(p, currency, rate):
+    if p.status == STATUS_QUOTED:
+        return ('quoted', _money(p.price_min, p.price_max, currency, rate))
+    if p.status == STATUS_NO_BUY:
+        return ('no_buy', None)
+    if p.status == STATUS_NOT_MADE:
+        return ('not_made', None)
+    return ('unquoted', None)
+
+
 def catalog_data(buyer, currency='usd'):
-    """Estrutura pura do catálogo: ``(columns, sections)``.
+    """Estrutura pura do catálogo, na CONVENÇÃO da repactuação (2026-07-27).
 
-    - ``columns``: nomes das listas, marcas em ordem alfabética e a genérica
-      ("Outras marcas") por último — mesma ordem da sidebar do /partner/.
-    - ``sections``: por kind (ordem da planilha), linhas (gen, tier) ascend.,
-      cada linha com ``label`` e ``cells`` alinhadas às colunas; célula =
-      ``('quoted', '6.00')`` | ``('no_buy', None)`` | ``('not_made', None)``
-      | ``('unquoted', None)``.
-    - ``currency`` (F10.6): ``'usd'`` = DERIVADO (¥ armazenado × taxa
-      contratual ``buyer.fx_usd_rate``, 2 casas — o documento que circula em
-      dólar); ``'rmb'`` = o ¥ armazenado cru, sem zeros à direita ('90').
+    Devolve a LISTA DE SEÇÕES na ordem do painel (`_SECTION_KINDS` + SSD):
+    - UNIFICADA (eMCP/uMCP/LPDDR): ``unified=True``, ``columns=[]``, rows
+      ``{'label', 'cell'}`` — as linhas moram SÓ na lista genérica
+      (unificação estrutural); a faixa dos combos vira ``'90–100'``.
+    - POR MARCA (eMMC/UFS/DDR): ``unified=False``, ``columns`` SÓ com as
+      marcas que têm linha do tipo (+ "Outras marcas" por último), rows
+      ``{'label', 'cells'}`` alinhadas às colunas.
+    - SSD (linear, sem grid): seção de UMA linha "por GB" quando o contrato
+      tem ``ssd_rmb_per_gb``.
+
+    ``currency`` (F10.6): ``'usd'`` = DERIVADO (¥ × ``fx_usd_rate``, 2
+    casas); ``'rmb'`` = o ¥ armazenado, inteiro/sem zeros à direita.
     """
+    from .models import UNIFIED_KINDS
     lists = list(PriceList.all_companies.filter(buyer=buyer, active=True)
-                 .select_related('brand').order_by('brand__name'))
-    lists.sort(key=lambda pl: (pl.brand_id is None,
-                               pl.brand.name if pl.brand_id else ''))
-    columns = [pl.brand.name if pl.brand_id else _('Outras marcas')
-               for pl in lists]
-    col_idx = {pl.pk: i for i, pl in enumerate(lists)}
-
-    # Uma query; monta o grid em memória (centenas de linhas, nada de N+1).
-    grid = {}          # (kind, gen, tier_value, tier_unit) -> [cell] * n
-    n = len(lists)
+                 .select_related('brand'))
     rate = buyer.fx_usd_rate            # taxa CONTRATUAL (F10) — só p/ 'usd'
-    for p in Price.all_companies.filter(price_list__in=lists):
-        key = (p.kind, p.gen, p.tier_value, p.tier_unit)
-        cells = grid.setdefault(key, [('unquoted', None)] * n)
-        if p.status == STATUS_QUOTED:
-            if currency == 'rmb':
-                # ¥ armazenado, sem zeros à direita (o comprador pensa em ¥
-                # redondo). ⚠ normalize() sem :f imprimiria 9E+1.
-                cell = ('quoted', f'{p.price_min.normalize():f}')
-            else:
-                usd = (p.price_min * rate).quantize(Decimal('0.01'),
-                                                    ROUND_HALF_UP)
-                cell = ('quoted', f'{usd:.2f}')
-        elif p.status == STATUS_NO_BUY:
-            cell = ('no_buy', None)
-        elif p.status == STATUS_NOT_MADE:
-            cell = ('not_made', None)
-        else:
-            cell = ('unquoted', None)
-        cells[col_idx[p.price_list_id]] = cell
+    por_kind = {}
+    for p in (Price.all_companies.filter(price_list__in=lists)
+              .select_related('price_list__brand')):
+        por_kind.setdefault(p.kind, []).append(p)
 
     sections = []
-    for kind, _label in KIND_CHOICES:
-        keys = sorted((k for k in grid if k[0] == kind),
-                      key=lambda k: (k[1], k[2]))          # (gen, tier)
-        if not keys:
+    for kind in _SECTION_KINDS:
+        prices = por_kind.get(kind, [])
+        if not prices:
             continue
-        rows = []
-        for _k, gen, tier, unit in keys:
-            label = f'{gen} {_fmt_tier(tier)}{unit}' if gen \
-                else f'{_fmt_tier(tier)}{unit}'
-            rows.append({'label': label, 'cells': grid[(_k, gen, tier, unit)]})
-        # eMCP/uMCP: a chave é por NAND (regra do comprador) — o título avisa.
         title = _KIND_LABEL[kind]
         if kind in ('emcp', 'umcp'):
             title += ' · NAND'
-        sections.append({'title': title, 'rows': rows})
-    return columns, sections
+        if kind in UNIFIED_KINDS:
+            # Unificado: só a genérica (o portão do modelo garante que linha
+            # de marca não existe; o filtro aqui é defensivo).
+            unifs = sorted((p for p in prices
+                            if p.price_list.brand_id is None),
+                           key=lambda p: (p.gen, p.tier_value))
+            rows = [{'label': (f'{p.gen} ' if p.gen else '')
+                              + f'{_fmt_tier(p.tier_value)}{p.tier_unit}',
+                     'cell': _cell(p, currency, rate)} for p in unifs]
+            sections.append({'title': title, 'unified': True,
+                             'columns': [], 'rows': rows})
+            continue
+        pls = sorted({p.price_list for p in prices},
+                     key=lambda pl: (pl.brand_id is None,
+                                     pl.brand.name if pl.brand_id else ''))
+        col_idx = {pl.pk: i for i, pl in enumerate(pls)}
+        columns = [pl.brand.name if pl.brand_id else _('Outras marcas')
+                   for pl in pls]
+        grid = {}
+        for p in prices:
+            key = (p.gen, p.tier_value, p.tier_unit)
+            cells = grid.setdefault(key, [('unquoted', None)] * len(pls))
+            cells[col_idx[p.price_list_id]] = _cell(p, currency, rate)
+        rows = [{'label': (f'{gen} ' if gen else '')
+                          + f'{_fmt_tier(tv)}{tu}',
+                 'cells': grid[(gen, tv, tu)]}
+                for gen, tv, tu in sorted(grid, key=lambda k: (k[0], k[1]))]
+        sections.append({'title': title, 'unified': False,
+                         'columns': columns, 'rows': rows})
+
+    # SSD (linear, F12.20): não tem grid — a linha nasce da taxa contratual.
+    if buyer.ssd_rmb_per_gb is not None:
+        v = buyer.ssd_rmb_per_gb
+        if currency == 'rmb':
+            money = f'{v.normalize():f}'
+        else:
+            money = f'{(v * rate).quantize(Decimal("0.001"), ROUND_HALF_UP).normalize():f}'
+        sections.append({'title': 'SSD', 'unified': True, 'columns': [],
+                         'rows': [{'label': _('por GB'),
+                                   'cell': ('quoted', money)}]})
+    return sections
 
 
 #: Fonte CJK EMBUTIDA (subset automático do reportlab → PDF continua pequeno).
@@ -185,10 +227,11 @@ def _draw_mixed(canvas, x, y, text, size, base, cjk):
         x += pdfmetrics.stringWidth(part, f, size)
 
 
-def render_catalog_pdf(buyer_name, columns, sections, currency='usd'):
+def render_catalog_pdf(buyer_name, sections, currency='usd'):
     """Monta o PDF (bytes). Sem banco — recebe a estrutura de catalog_data.
-    ``currency`` (F10.6) decide título/legenda/prefixo das células — os
-    VALORES já vêm prontos na moeda certa de catalog_data.
+    Cada seção traz as PRÓPRIAS colunas (convenção 2026-07-27): unificada =
+    tabela simples capacidade → preço; por marca = matriz. ``currency``
+    (F10.6) decide título/legenda/prefixo — os VALORES já vêm prontos.
 
     ⚠ i18n: os ``_()`` ficam FORA das f-strings de propósito — no Python 3.11
     o tokenizer vê a f-string como um token só e o extractor/portão
@@ -201,6 +244,7 @@ def render_catalog_pdf(buyer_name, columns, sections, currency='usd'):
         t_unit = _('Preços em USD por chip (unitário).')
         cur_prefix, cur_tag = 'US$ ', 'US$'
     t_no_buy = _('Não compro')
+    t_unified = _('preço único para todas as marcas')
     t_not_made = _('Não fabricado')
     t_blank = _('em branco: ainda sem cotação')
     t_issued = _('Emitido em')
@@ -241,12 +285,53 @@ def render_catalog_pdf(buyer_name, columns, sections, currency='usd'):
         Spacer(0, 4),
     ]
 
-    label_w = 0.16 * avail
-    data_w = (avail - label_w) / max(len(columns), 1)
-    head = [''] + [Paragraph(_rich(c, cjk), st_th) for c in columns]
+    base_style = [
+        ('FONT', (0, 0), (-1, -1), font, 7, 8.4),
+        ('TEXTCOLOR', (0, 0), (-1, -1), _INK),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('GRID', (0, 0), (-1, -1), 0.4, _LINE),
+        ('TOPPADDING', (0, 0), (-1, -1), 1.6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 1.6),
+        ('LEFTPADDING', (0, 0), (-1, -1), 3),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 3),
+    ]
 
     for sec in sections:
-        story.append(Paragraph(sec['title'], st_sec))
+        title = sec['title'] + (f' — {t_unified}' if sec['unified'] else '')
+        story.append(Paragraph(_rich(title, cjk), st_sec))
+
+        if sec['unified']:
+            # ── UNIFICADA: capacidade → preço único (sem colunas de marca) ──
+            data, styles = [], []
+            for r_i, row in enumerate(sec['rows']):
+                state, value = row['cell']
+                if state == 'quoted':
+                    val = f'{cur_prefix}{value}'
+                elif state == 'no_buy':
+                    val = _SYM_NO_BUY
+                    styles.append(('TEXTCOLOR', (1, r_i), (1, r_i), _RED))
+                elif state == 'not_made':
+                    val = _SYM_NOT_MADE
+                    styles.append(('TEXTCOLOR', (1, r_i), (1, r_i), _GREY))
+                else:
+                    val = ''
+                data.append([row['label'], val])
+                if r_i % 2 == 1:
+                    styles.append(('BACKGROUND', (0, r_i), (-1, r_i), _ZEBRA))
+            t = Table(data, colWidths=[0.24 * avail, 0.24 * avail],
+                      hAlign='LEFT')
+            t.setStyle(TableStyle(base_style + [
+                ('FONT', (0, 0), (0, -1), bold, 7, 8.4),
+                ('ALIGN', (1, 0), (1, -1), 'CENTER'),
+            ] + styles))
+            story.append(t)
+            continue
+
+        # ── POR MARCA: matriz com as colunas DA seção ──
+        columns = sec['columns']
+        label_w = 0.16 * avail
+        data_w = (avail - label_w) / max(len(columns), 1)
+        head = [''] + [Paragraph(_rich(c, cjk), st_th) for c in columns]
         data, styles = [head], []
         for r_i, row in enumerate(sec['rows'], start=1):
             line = [row['label']]
@@ -268,18 +353,10 @@ def render_catalog_pdf(buyer_name, columns, sections, currency='usd'):
                 styles.append(('BACKGROUND', (0, r_i), (-1, r_i), _ZEBRA))
         t = Table(data, colWidths=[label_w] + [data_w] * len(columns),
                   repeatRows=1)
-        t.setStyle(TableStyle([
-            ('FONT', (0, 0), (-1, -1), font, 7, 8.4),
+        t.setStyle(TableStyle(base_style + [
             ('FONT', (0, 1), (0, -1), bold, 7, 8.4),      # rótulos de linha
-            ('TEXTCOLOR', (0, 0), (-1, -1), _INK),
             ('ALIGN', (1, 0), (-1, -1), 'CENTER'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('GRID', (0, 0), (-1, -1), 0.4, _LINE),
             ('LINEBELOW', (0, 0), (-1, 0), 0.8, _INK),
-            ('TOPPADDING', (0, 0), (-1, -1), 1.6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 1.6),
-            ('LEFTPADDING', (0, 0), (-1, -1), 3),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 3),
         ] + styles))
         story.append(t)
 

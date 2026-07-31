@@ -2167,3 +2167,16 @@ msgstr "%(item)s：保存冲突 — 请重试"
 
 msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Só as linhas alteradas são enviadas."
 msgstr "数字 = ¥（人民币）价格 · x = 不收 · 留空 = 未报价 · — = 无此型号。仅提交被修改的行。"
+
+# ── Home + catálogo na convenção nova (2026-07-27) ──
+msgid "por GB"
+msgstr "每 GB"
+
+msgid "preço único para todas as marcas"
+msgstr "所有品牌统一价"
+
+msgid "Sua tabela de preços completa num único arquivo — pronta para enviar aos seus clientes."
+msgstr "完整价格表汇成一个文件 — 可直接发给您的客户。"
+
+msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP e LPDDR</strong> têm preço único, válido para todas as marcas; <strong>eMMC, UFS e DDR</strong> têm preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
+msgstr "价格按芯片计，单位为<strong>人民币（¥ RMB）</strong> — 折算 US$ 使用合同汇率（见顶部）。<strong>eMCP、uMCP 和 LPDDR</strong> 为统一价，适用于所有品牌；<strong>eMMC、UFS 和 DDR</strong> 按品牌定价 — «其他» 列适用于没有单独列的品牌。"

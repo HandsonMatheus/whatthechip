@@ -984,22 +984,46 @@ class PartnerDashboardTests(TestCase):
         self.assertNotContains(resp, 'er-api.com')       # cotação viva removida
 
     def test_catalogo_pdf(self):
-        # F9: catálogo em PDF — matriz (colunas=listas, seções=kind) + seletor
-        # de idioma do DOCUMENTO (?lang=, independe da sessão).
-        # F10.6: seletor de MOEDA (?currency=rmb|usd; default usd = derivado).
+        # F9 + convenção 2026-07-27: seções na ordem do PAINEL; unificados
+        # (eMCP/uMCP/LPDDR) SEM colunas de marca (célula única, faixa nos
+        # combos); eMMC/UFS/DDR em matriz SÓ com as marcas que têm linha;
+        # SSD linear como linha "por GB". Moeda ?currency (F10.6).
         from pricing.pdf import catalog_data
-        columns, sections = catalog_data(self.buyer)                 # default: usd
-        # Ordem = a da sidebar (sort Python por nome, ASCII): 'SK' < 'Sa'.
-        self.assertEqual(columns, ['SK Hynix P6', 'Samsung P6'])
-        self.assertEqual([s['title'] for s in sections], ['eMMC', 'UFS'])
-        emmc = sections[0]['rows'][0]
-        self.assertEqual(emmc['label'], '64GB')
+        generica = PriceList.all_companies.create(buyer=self.buyer, brand=None)
+        Price.all_companies.create(
+            price_list=generica, kind='emcp', gen='', tier_value=Decimal('16'),
+            tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('90.00'), price_max=Decimal('100.00'))
+        self.buyer.ssd_rmb_per_gb = Decimal('0.10')
+        self.buyer.save(update_fields=['ssd_rmb_per_gb'])
+
+        sections = catalog_data(self.buyer)                          # default: usd
+        self.assertEqual([s['title'] for s in sections],
+                         ['eMCP · NAND', 'eMMC', 'UFS', 'SSD'])
+        emcp = sections[0]
+        self.assertTrue(emcp['unified'])
+        self.assertEqual(emcp['columns'], [])                # sem coluna de marca
+        # FAIXA em USD derivado: ¥90–100 × 0.14 = 12.60–14.00
+        self.assertEqual(emcp['rows'][0]['label'], '16GB')
+        self.assertEqual(emcp['rows'][0]['cell'], ('quoted', '12.60\u201314.00'))
+        emmc = sections[1]
+        self.assertFalse(emmc['unified'])
+        # Matriz enxuta: SÓ a marca com linha do tipo (SK Hynix caiu fora).
+        self.assertEqual(emmc['columns'], ['Samsung P6'])
+        self.assertEqual(emmc['rows'][0]['label'], '64GB')
         # USD DERIVADO: ¥6 × 0.14 = 0.84 (o fixture guarda ¥ 6.00).
-        self.assertEqual(emmc['cells'][1], ('quoted', '0.84'))
-        self.assertEqual(emmc['cells'][0], ('unquoted', None))   # SK sem linha
-        # Moeda RMB: o ¥ armazenado cru, sem zeros à direita.
-        _cols, sections_rmb = catalog_data(self.buyer, currency='rmb')
-        self.assertEqual(sections_rmb[0]['rows'][0]['cells'][1], ('quoted', '6'))
+        self.assertEqual(emmc['rows'][0]['cells'][0], ('quoted', '0.84'))
+        ssd = sections[3]
+        self.assertTrue(ssd['unified'])
+        self.assertEqual(ssd['rows'][0]['cell'][0], 'quoted')
+        # Moeda RMB: o ¥ armazenado cru, sem zeros à direita — faixa inteira.
+        sections_rmb = catalog_data(self.buyer, currency='rmb')
+        self.assertEqual(sections_rmb[0]['rows'][0]['cell'],
+                         ('quoted', '90\u2013100'))
+        self.assertEqual(sections_rmb[1]['rows'][0]['cells'][0],
+                         ('quoted', '6'))
+        self.assertEqual(sections_rmb[3]['rows'][0]['cell'],
+                         ('quoted', '0.1'))                  # SSD ¥/GB
 
         self.client.force_login(self.partner)
         resp = self.client.get('/partner/catalog.pdf')

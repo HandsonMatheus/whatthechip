@@ -338,8 +338,8 @@ def partner_catalog_pdf(request):
     if currency not in ('rmb', 'usd'):
         currency = 'usd'
     with translation.override(lang):
-        columns, sections = catalog_data(request.buyer, currency=currency)
-        pdf = render_catalog_pdf(request.buyer.name, columns, sections,
+        sections = catalog_data(request.buyer, currency=currency)
+        pdf = render_catalog_pdf(request.buyer.name, sections,
                                  currency=currency)
 
     resp = HttpResponse(pdf, content_type='application/pdf')
