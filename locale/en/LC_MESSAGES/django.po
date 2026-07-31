@@ -2183,3 +2183,15 @@ msgstr "UNIFIED PRICE — applies to all brands"
 #: pricing/views.py
 msgid "Faixa invertida: máx menor que mín."
 msgstr "Inverted range: max lower than min."
+
+#: pricing/templates/pricing/partner_base.html
+msgid "Unificado · Outras marcas"
+msgstr "Unified · Other brands"
+
+#: pricing/templates/pricing/partner_base.html
+msgid "Suas tabelas de preço"
+msgstr "Your price tables"
+
+#: pricing/templates/pricing/partner_base.html
+msgid "SUAS TABELAS DE PREÇO"
+msgstr "YOUR PRICE TABLES"

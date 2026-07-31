@@ -2095,3 +2095,15 @@ msgstr "统一价 — 适用于所有品牌"
 #: pricing/views.py
 msgid "Faixa invertida: máx menor que mín."
 msgstr "区间颠倒：最高价低于最低价。"
+
+#: pricing/templates/pricing/partner_base.html
+msgid "Unificado · Outras marcas"
+msgstr "统一价 · 其他品牌"
+
+#: pricing/templates/pricing/partner_base.html
+msgid "Suas tabelas de preço"
+msgstr "您的价格表"
+
+#: pricing/templates/pricing/partner_base.html
+msgid "SUAS TABELAS DE PREÇO"
+msgstr "您的价格表"

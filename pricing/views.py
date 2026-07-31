@@ -107,7 +107,9 @@ def _lists_with_stats(buyer):
     for pl in lists:
         pl.stats = per_list.get(pl.pk, {'total': 0, 'pending': 0, 'quoted': 0})
     # Genérica por último (a sidebar lista marcas primeiro).
-    lists.sort(key=lambda pl: (pl.brand_id is None,
+    # Repactuação 2026-07-27: a GENÉRICA vem PRIMEIRO — é onde vivem os
+    # preços UNIFICADOS (eMCP/uMCP/LPDDR), o coração da tabela nova.
+    lists.sort(key=lambda pl: (pl.brand_id is not None,
                                pl.brand.name if pl.brand_id else ''))
     return lists
 

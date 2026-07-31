@@ -59,7 +59,7 @@
     <tbody>
       {% for pl in lists %}
       <tr>
-        <td style="font-weight:600;">{% if pl.brand %}{{ pl.brand.name }}{% else %}{% trans "Outras marcas" %}{% endif %}</td>
+        <td style="font-weight:600;">{% if pl.brand %}{{ pl.brand.name }}{% else %}<span style="background:#edf5ff;color:#0043ce;font-weight:700;padding:2px 8px;border-radius:8px;">{% trans "Unificado · Outras marcas" %}</span>{% endif %}</td>
         <td>{% if pl.stats.quoted %}<span class="ptn-tag ptn-tag--quoted">{{ pl.stats.quoted }}</span>{% else %}—{% endif %}</td>
         <td>{% if pl.stats.pending %}<span class="ptn-tag ptn-tag--pending">{{ pl.stats.pending }}</span>{% else %}—{% endif %}</td>
         <td><a href="{% url 'pricing:partner_list' pl.pk %}" style="color:#0f62fe;font-weight:600;">{% trans "Editar" %} →</a></td>
