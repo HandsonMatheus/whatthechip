@@ -1320,8 +1320,15 @@ class DdrDensityFallbackTests(TestCase):
         self.assertIsNone(err)
         self.assertEqual(key, ('ddr', 'DDR3', Decimal('4'), 'Gb'))
 
-        # 'GB' é BYTE de pacote — NUNCA vira densidade (Gb≠GB, regra da casa).
+        # REVISADO (lote 042, 2026-07-31): dentro de kind-DDR o capacity é
+        # PER-DIE por convenção (§6) — 'NGB' também (dies ≥ 1GB: HYX_DDR4_CAP
+        # tem 8G→'1GB', AG→'2GB'). 2GB/die × 8 = 16Gb. Fora de kind-DDR,
+        # 'GB' segue sendo pacote (o fallback só roda no branch ddr).
         err, key = derive_price_key({**base, 'capacity': '2GB'})
+        self.assertIsNone(err)
+        self.assertEqual(key, ('ddr', 'DDR3', Decimal('16.0'), 'Gb'))
+        # minúsculo/misto continua fora (case-sensitive: 'gb' não é nada)
+        err, key = derive_price_key({**base, 'capacity': '2gb'})
         self.assertIsNone(key)
         self.assertEqual(err.status, NK)
 
@@ -2060,3 +2067,69 @@ class PartnerKindNavTests(TestCase):
         resp = self.client.get('/partner/tipo/emcp/')
         self.assertEqual(resp.status_code, 302)
         self.assertIn('/login/', resp['Location'])
+
+
+class PerDieGbDensityTests(TestCase):
+    """Caso H5AN (lote 042, 2026-07-31): família DDR-kind com cap_map em
+    BYTES POR DIE ≥ 1GB ('8G'→'1GB') deixava o chip SEM chave de preço
+    ('densidade indisponível') — o derive per-die de 2026-07-11 aceitava só
+    'NNNMB' e Gbit pelado. Dentro de kind-DDR o capacity é per-die por
+    convenção (§6), então '1GB'/die × 8 = 8Gb é seguro (o tip do yaml
+    valida: 4G=512MB=4Gb · 8G=1GB=8Gb · AG=2GB=16Gb). Cobre os 3 caminhos:
+    gramática pura, confirmado COM família e confirmado SEM família."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from chips.models import Brand as ChipBrand, ChipFamily, DecodeMap
+        cls.hynix = ChipBrand.objects.create(name='SK Hynix PD', code='HYXPD')
+        for key, cap in (('4G', '512MB'), ('8G', '1GB'), ('AG', '2GB')):
+            DecodeMap.objects.create(map_name='HYX_DDR4_CAP_PD', char_key=key,
+                                     val_primary=cap, val_secondary='',
+                                     brand=cls.hynix)
+        ChipFamily.objects.create(
+            brand=cls.hynix, prefix='H5AN', chip_type='DDR4', subtype='DDR4',
+            decode_cap_pos=4, decode_cap_len=2,
+            decode_cap_map='HYX_DDR4_CAP_PD', is_emcp=False, active=True,
+            priority=50)
+
+    def test_gramatica_deriva_densidade_de_die_em_gb(self):
+        from chips.engine import classify
+        from pricing.engine import derive_price_key
+        r = classify('H5AN8G8NCJR')
+        # 1GB/die × 8 = 8Gb — a MESMA aritmética do caso MB (×8÷1024)
+        self.assertIn('8Gb = 1GB por die', str(r.get('dram_density')))
+        self.assertEqual(r.get('density_gbit_num'), 8.0)
+        err, key = derive_price_key(r)
+        self.assertIsNone(err)
+        self.assertEqual((key[0], key[1], float(key[2]), key[3]),
+                         ('ddr', 'DDR4', 8.0, 'Gb'))
+        # AG = 2GB/die → 16Gb (teto Era 1, confirmado no tip do yaml)
+        r2 = classify('H5ANAG8NCJR')
+        self.assertEqual(r2.get('density_gbit_num'), 16.0)
+
+    def test_known_confirmado_com_familia_keia(self):
+        # O clone do bug: KnownPart confirmado cap='1GB' + density_gbit VAZIO
+        # (legado pré-regra-4). O banco vence, mas a densidade derivada serve.
+        from chips.models import KnownPart
+        from chips.engine import classify
+        from pricing.engine import derive_price_key
+        KnownPart.objects.create(
+            brand=self.hynix, part_number='H5AN8G8NCJR-VKC',
+            chip_type='DDR4', subtype='DDR4', capacity='1GB',
+            confidence='confirmed', review_status='approved',
+            notes='fixture regressão lote 042')
+        r = classify('H5AN8G8NCJR-VKC')
+        self.assertTrue(r.get('known_exact'))
+        err, key = derive_price_key(r)
+        self.assertIsNone(err, f'sem chave: {err and err.reason}')
+        self.assertEqual((key[0], float(key[2])), ('ddr', 8.0))
+
+    def test_known_sem_familia_keia_pelo_fallback(self):
+        # Sem família alguma: o fallback de leitura do pricing despe o '1GB'.
+        from pricing.engine import _gbit_from_capacity
+        self.assertEqual(_gbit_from_capacity({'capacity': '1GB'}), 8.0)
+        self.assertEqual(_gbit_from_capacity({'capacity': '2GB'}), 16.0)
+        self.assertEqual(_gbit_from_capacity({'capacity': '512MB'}), 4.0)
+        self.assertEqual(_gbit_from_capacity({'capacity': '2G'}), 2.0)
+        # e o que NUNCA pode: minúsculo/misto não é densidade nem per-die
+        self.assertIsNone(_gbit_from_capacity({'capacity': '1gb'}))

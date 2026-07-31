@@ -33,7 +33,8 @@ from django.db.models.functions import Length, Replace
 from .models import Brand, ChipFamily, DecodeMap, KnownPart, ProfitabilityConfig, SearchLog, Source, UnknownChip
 from .chip_types import canonical_chip_type, label_kind, profit_family
 from .conventions import canonical_gen
-from .knowledge.convention import DENSITY_KINDS, RX_DENSITY_BARE, RX_DIE_MB
+from .knowledge.convention import (DENSITY_KINDS, RX_DENSITY_BARE, RX_DIE_GB,
+                                   RX_DIE_MB)
 from .normalize import normalize_pn
 
 
@@ -677,8 +678,11 @@ def _result_from_family(pn: str, fam) -> dict:
     # MESMA informação em outra unidade (MB × 8 ÷ 1024 = Gb), então derivamos
     # aqui — UMA vez, para todas as marcas — em vez de operar cada yaml (as
     # posições de PN variam por marca; o decode 'pc' fixo em pn[3:5] não
-    # serve pra elas — foi por isso que nasceram com cap_map). Guarda: só
-    # per-die ('NNNMB') ou Gbit pelado ('2G'/'2Gb'); 'GB' NUNCA (pacote).
+    # serve pra elas — foi por isso que nasceram com cap_map). Guarda: dentro
+    # de DENSITY_KINDS o capacity é PER-DIE por convenção (§6), então além de
+    # 'NNNMB' e Gbit pelado ('2G'/'2Gb') aceitamos 'NGB' per-die (GB×8=Gb —
+    # caso H5AN, lote 042: 8G→'1GB'→8Gb; o tip do yaml valida AG=2GB=16Gb).
+    # Fora deste escopo 'GB' segue sendo PACOTE e nunca vira densidade.
     if not r.get("dram_density") and not fam.is_emcp and r.get("capacity"):
         _kind = label_kind(canonical_chip_type(r.get("chip_type") or "",
                                                r.get("subtype") or ""))
@@ -689,9 +693,14 @@ def _result_from_family(pn: str, fam) -> dict:
                 _g = float(_m.group(1)) * 8 / 1024
                 r["dram_density"] = f"{_g:g}Gb = {_cap} por die [✓]"
             else:
-                _m = RX_DENSITY_BARE.match(_cap)
+                _m = RX_DIE_GB.match(_cap)
                 if _m:
-                    r["dram_density"] = f"{_m.group(1)}Gb por die [✓]"
+                    _g = float(_m.group(1)) * 8
+                    r["dram_density"] = f"{_g:g}Gb = {_cap} por die [✓]"
+                else:
+                    _m = RX_DENSITY_BARE.match(_cap)
+                    if _m:
+                        r["dram_density"] = f"{_m.group(1)}Gb por die [✓]"
 
     # ── Sufixo ───────────────────────────────────────────────────────────────
     if fam.suffix_rules:

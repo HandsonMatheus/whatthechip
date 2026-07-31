@@ -1709,9 +1709,9 @@ _HYX_GOLDEN = {  # SK Hynix: 37 famílias (populate_hynix + add_chip_families). 
     "H28U88301AMR":      ("UFS",  "128GB", "", "", "", "RENTÁVEL"),
     "H54GE6CYRB":        ("LPDDR4X", "6GB", "", "", "", "RENTÁVEL"),  # CORRIGIDO 2026-07-10 (autorização do dono): era 4GB (fonte antiga não rastreável); Puris fetch direto de H54GE6CYRBX262N confirma 48Gbit=6GB
     "H54GD6AYRBX273N":   ("LPDDR4X", "3GB", "", "", "", "RENTÁVEL"),  # 2ª âncora H54G, chave 'D' nova (2026-07-10) — Preduo (24Gbit) + título Alibaba ("3GB") confirmam D=3GB
-    "H5AN8G8NAFR-UHC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
-    "H5AN8G8NAFR-VKC":   ("DDR4", "1GB",  "", "", "", "RENTÁVEL"),
-    "H5CG48MEBDX014N":   ("DDR5", "2GB",  "", "", "", "RENTÁVEL"),
+    "H5AN8G8NAFR-UHC":   ("DDR4", "1GB",  "", "", "8Gb = 1GB por die [✓]", "RENTÁVEL"),   # densidade per-die GB (lote 042): 1GB=1024MB×8÷1024=8Gb — bate com o 8G do PN
+    "H5AN8G8NAFR-VKC":   ("DDR4", "1GB",  "", "", "8Gb = 1GB por die [✓]", "RENTÁVEL"),
+    "H5CG48MEBDX014N":   ("DDR5", "2GB",  "", "", "16Gb = 2GB por die [✓]", "RENTÁVEL"),  # 2GB=2048MB→16Gb (die DDR5 padrão)
     "H5GQ4H24AJR":       ("GDDR5", "512MB", "", "", "4Gb = 512MB por die [✓]", "NÃO RENTÁVEL"),  # âncora H5GQ; GDDR morto por tipo (2026-07-23)
     "H5PS1G83EFR-S6C":   ("DDR2", "128MB", "", "", "1Gb = 128MB por die [✓]", "NÃO RENTÁVEL"),
     "H5TC4G83CFR-PBA":   ("DDR3L", "512MB", "", "", "4Gb = 512MB por die [✓]", "RENTÁVEL"),

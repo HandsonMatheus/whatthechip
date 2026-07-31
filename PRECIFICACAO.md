@@ -1026,6 +1026,23 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   seção traz o seu). Home: rodapé explica a convenção (unificado × por
   marca × coluna «Outras») e o card do PDF fala "tabela completa" (era
   "todas as tabelas", jargão da era por-marca). 4 msgids es/en/zh.
+- **BUG do lote 042 (2026-07-31) — chip aprovado SEM categoria (H-00 na
+  máscara):** H5AN8G8NCJR(-VKC) entrou no estoque com `price_kind='ddr'`
+  mas motivo "densidade (Gb) indisponível" → sem chave → sem caixa. Causa:
+  cap_map per-die com die ≥ 1GB ('8G'→'1GB') — o derive de densidade
+  (2026-07-11) aceitava só 'NNNMB'/Gbit pelado; a guarda anti-GB era larga
+  demais DENTRO de kind-DDR (lá capacity é per-die por convenção §6; o
+  próprio tip do yaml valida 4G=512MB=4Gb · 8G=1GB=8Gb · AG=2GB=16Gb).
+  Fix de LEITURA em 3 pontos com fonte única: `RX_DIE_GB` em convention.py
+  + branch GB×8 no engine (família) e no `_gbit_from_capacity` (known sem
+  família). Escrita intacta (regra 4 segue recusando 'GB').
+  `PerDieGbDensityTests` (3 caminhos); goldens H5AN/H5CG atualizados com a
+  conta; guard antigo do `DdrDensityFallbackTests` revisado ('2GB'→16Gb,
+  minúsculo continua fora). Prod: deploy + `resnapshot_lote` re-keia (o
+  `validate_convention` dava 0 porque cobria só a forma Gbit — dado não
+  precisa migrar, a densidade é derivada na leitura). PENDENTES do lote:
+  JW/JZ eMCP identity-only (spec Tier-1), GDDR físico → R-00, decisão do
+  portão "aprovado sem chave → fila".
 - **REPACTUAÇÃO 2026-07-27 (planilha final do comprador — aba única):**
   **eMCP/uMCP em FAIXA** (os ÚNICOS: `price_fixed_only` liberou min≤max só
   p/ esses kinds + `price_range_ordered`; migração pricing/0017; portão

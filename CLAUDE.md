@@ -744,7 +744,14 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   (NT5AD/NT5CC/NT5PA) e PieceMakers (PMA/PMD/PME/PMS/PMF) — estas últimas
   decodificam só o TIPO pelo prefixo e dependem de KnownParts para specs
   (que a regra 4 + `_known_dram_density` já servem); decidir na reforma de
-  dado se ganham mapas próprios.
+  dado se ganham mapas próprios. **Extensão per-die GB (lote 042,
+  2026-07-31):** o derive aceitava só 'NNNMB' e Gbit pelado — die ≥ 1GB
+  ('1GB'/'2GB', ex.: HYX_DDR4_CAP 8G→1GB, H5CG DDR5 2GB) ficava SEM chave
+  de preço ('densidade indisponível') e o chip entrava no estoque sem
+  categoria (H-00 na máscara). `RX_DIE_GB` (convention.py) + GB×8=Gb no
+  engine e no `_gbit_from_capacity`: dentro de kind-DDR capacity é per-die
+  por convenção, então é seguro; fora, 'GB' segue pacote (regra 4 de
+  ESCRITA continua recusando 'GB' — a conversão é só de LEITURA).
 
 ---
 

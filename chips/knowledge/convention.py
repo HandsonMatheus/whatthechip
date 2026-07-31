@@ -31,6 +31,15 @@ RX_DENSITY_BARE = re.compile(r"^(\d+(?:\.\d+)?)\s*G(?:b)?$")
 #: gravam o capacity). Gb = MB × 8 ÷ 1024. Compartilhado engine + pricing.
 RX_DIE_MB = re.compile(r"^(\d+(?:\.\d+)?)\s*MB$")
 
+#: Bytes POR DIE em GB ('1GB' — a MESMA convenção per-die acima, dies ≥ 1GB:
+#: HYX_DDR4_CAP tem 8G→'1GB', AG→'2GB'; o próprio tip valida AG=2GB=16Gb).
+#: Gb = GB × 8. ⚠ SÓ é seguro DENTRO de escopo kind-DDR (lá capacity é
+#: per-die por convenção §6); fora dele '1GB' é PACOTE (LPDDR/eMMC) — por
+#: isso este regex nunca entra na regra 4 de escrita cega. Caso H5AN
+#: (lote 042, 2026-07-31): confirmado cap='1GB' + dens vazio ficava sem
+#: chave de preço enquanto a caixa mostrava 8G.
+RX_DIE_GB = re.compile(r"^(\d+(?:\.\d+)?)\s*GB$")
+
 #: kinds cuja capacidade comercial é DENSIDADE de die em Gb (CLAUDE.md §6:
 #: campo `density_gbit`) — DDR/GDDR/SDRAM/RDRAM. Consumido também pelo
 #: validate/normalize_convention.

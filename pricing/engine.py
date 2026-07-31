@@ -158,10 +158,13 @@ def _no_key(kind: str, reason: str) -> PriceQuote:
 #   '2Gb'   → 2.0   (Gbit explícito — raro, mas _extract_gbit-style)
 #   '2G'    → 2.0   (Gbit da convenção da caixa; 'G' sem B, case-sensitive)
 #   '256MB' → 2.0   (bytes por die × 8 ÷ 1024)
-# '2GB' NÃO entra (GB = byte de pacote, nunca densidade — Gb≠GB, regra da casa).
+#   '1GB'   → 8.0   (bytes por die × 8 — caso H5AN, lote 042: dies ≥ 1GB)
+# ⚠ o caso 'GB' SÓ é seguro aqui porque este fallback roda DENTRO do branch
+# kind == 'ddr' do derive_price_key (lá capacity é per-die por convenção §6);
+# fora de kind-DDR, 'GB' segue sendo pacote e nunca vira densidade.
 # O padrão bare-Gbit é COMPARTILHADO com o portão de ESCRITA (convention.py,
 # regra 4): leitor e escritor nunca podem divergir sobre o que é densidade.
-from chips.knowledge.convention import RX_DENSITY_BARE  # noqa: E402
+from chips.knowledge.convention import RX_DENSITY_BARE, RX_DIE_GB  # noqa: E402
 
 _RX_MB_DIE = re.compile(r'^(\d+(?:\.\d+)?)\s*MB$')
 
@@ -174,6 +177,9 @@ def _gbit_from_capacity(result: dict):
     m = _RX_MB_DIE.match(cap)
     if m:
         return float(m.group(1)) * 8 / 1024
+    m = RX_DIE_GB.match(cap)
+    if m:
+        return float(m.group(1)) * 8
     return None
 
 
