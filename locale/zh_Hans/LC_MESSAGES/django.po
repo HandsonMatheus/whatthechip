@@ -2145,3 +2145,25 @@ msgstr "¥ · x = 不收 · 留空 = 未报价"
 
 msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Alterou uma célula? Aperte OK (ou Enter) — a mudança vai para revisão do WhatTheChip."
 msgstr "数字 = ¥（人民币）价格 · x = 不收 · 留空 = 未报价 · — = 无此型号。改了某格？按 OK（或 Enter 键）— 修改将由 WhatTheChip 审核。"
+
+# ── Painel do parceiro v3 — envio único p/ revisão (2026-07-27) ──
+msgid "Enviar para revisão"
+msgstr "提交审核"
+
+msgid "Nada a enviar — nenhuma linha mudou."
+msgstr "无可提交 — 没有任何行被修改。"
+
+msgid "%(n)s mudança(s) enviadas para REVISÃO do WhatTheChip — passam a valer após a aprovação."
+msgstr "%(n)s 项修改已提交 WhatTheChip 审核 — 批准后生效。"
+
+msgid "%(item)s: preço ilegível — use números ou \"x\""
+msgstr "%(item)s：价格无法识别 — 请输入数字或 \"x\""
+
+msgid "%(item)s: faixa invertida (máx menor que mín)"
+msgstr "%(item)s：区间颠倒（最高低于最低）"
+
+msgid "%(item)s: conflito ao salvar — tente de novo"
+msgstr "%(item)s：保存冲突 — 请重试"
+
+msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Só as linhas alteradas são enviadas."
+msgstr "数字 = ¥（人民币）价格 · x = 不收 · 留空 = 未报价 · — = 无此型号。仅提交被修改的行。"

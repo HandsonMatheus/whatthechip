@@ -996,6 +996,24 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   zooma). Legenda única embaixo. 3 msgids (es/en/zh; zh manteve "Enter"
   literal — glossário). Testes: 8 em `PartnerKindNavTests` (célula x/vazio/
   número vira pedido certo).
+- **v3 (dono, mesma data: "bota um botão no final pra enviar… gostei da
+  abordagem minimalista, faz o mesmo nos outros tipos… o dropdown vira
+  bullet de informação"):** a página do tipo é **UM formulário** — rodapé
+  FIXO (sticky bottom) com o botão **"Enviar para revisão"** + legenda
+  única; o endpoint novo **`partner_kind_save`** (`tipo/<kind>/enviar/`,
+  POST) faz o **DIFF no servidor**: só linha ALTERADA vira
+  `PriceChangeRequest` (mesma moderação; "nada mudou" não gera pedido
+  fantasma; not_made ignorada mesmo forjada no POST; erros por linha —
+  ilegível/faixa invertida — voltam como messages sem travar o resto).
+  Páginas UNIFICADAS (eMCP/uMCP/LPDDR) ganharam a MESMA linguagem da
+  matriz: célula estilo planilha (x/vazio/número; par p<pk>/pmax<pk> nos
+  combos), **LPDDR agrupa por geração** em linha de seção, e o dropdown de
+  estado virou **SELO informativo** (Cotado/Não cotado/Não compro/Não
+  fabricado — tags coloridas). O `mode=cell` do save unitário (v2) foi
+  REMOVIDO — superado pelo batch; `partner_save` segue intacto p/ a rota
+  legada `lists/<pk>/`. OK-por-célula e JS extintos. 7 msgids (es/en/zh).
+  `PartnerKindNavTests` = 10 (batch x/vazio/número, diff só-do-que-mudou,
+  faixa+ilegível, selo sem dropdown).
 - **REPACTUAÇÃO 2026-07-27 (planilha final do comprador — aba única):**
   **eMCP/uMCP em FAIXA** (os ÚNICOS: `price_fixed_only` liberou min≤max só
   p/ esses kinds + `price_range_ordered`; migração pricing/0017; portão

@@ -1906,9 +1906,14 @@ class PartnerKindNavTests(TestCase):
         self.assertContains(resp, 'value="100"')
         self.assertNotContains(resp, '90.00')
         self.assertNotContains(resp, '100.00')
-        # o form posta na GENÉRICA (estrutura unificada) e volta pro tipo
-        self.assertContains(resp, f'/partner/save/{self.l_gen.pk}/')
-        self.assertContains(resp, 'name="from_kind"')
+        # v3: página inteira é UM form → botão único "Enviar para revisão";
+        # estado é SELO informativo (sem dropdown de estado)
+        self.assertContains(resp, '/partner/tipo/emcp/enviar/')
+        self.assertContains(resp, 'Enviar para revisão')
+        self.assertNotContains(resp, 'name="state"')
+        self.assertContains(resp, 'Cotado')                 # selo da linha
+        self.assertContains(resp, f'name="p{self.p_emcp.pk}"')
+        self.assertContains(resp, f'name="pmax{self.p_emcp.pk}"')
 
     def test_pagina_matriz_ddr_coluna_por_marca(self):
         self.client.force_login(self.partner)
@@ -1918,9 +1923,11 @@ class PartnerKindNavTests(TestCase):
         self.assertContains(resp, 'Outras')                 # coluna genérica
         self.assertContains(resp, 'value="3"')              # ¥ inteiro
         self.assertNotContains(resp, '3.00')
-        # cada célula posta na LISTA dela (moderação por lista intacta)
-        self.assertContains(resp, f'/partner/save/{self.l_samsung.pk}/')
-        self.assertContains(resp, f'/partner/save/{self.l_gen.pk}/')
+        # v3: um input POR CÉLULA (p<pk>), tudo num form só → botão único
+        self.assertContains(resp, f'name="p{self.p_ddr_sam.pk}"')
+        self.assertContains(resp, f'name="p{self.p_ddr_gen.pk}"')
+        self.assertContains(resp, '/partner/tipo/ddr/enviar/')
+        self.assertContains(resp, 'Enviar para revisão')
         # v2 (dono 2026-07-27): DDR agrupa por GERAÇÃO em linha de seção…
         self.assertContains(resp, 'class="ptn-matrix__gen"')
         self.assertContains(resp, 'DDR3')
@@ -1928,7 +1935,6 @@ class PartnerKindNavTests(TestCase):
         # (o único <select> da página é o de idioma, no header do base)
         self.assertNotContains(resp, 'name="state"')
         self.assertNotContains(resp, '↑')
-        self.assertContains(resp, 'name="mode"')            # semântica planilha
         self.assertContains(resp, 'Todos os preços em ¥ (RMB)')
 
     def test_pagina_matriz_emmc_sem_coluna_geracao(self):
@@ -1945,26 +1951,65 @@ class PartnerKindNavTests(TestCase):
         self.assertNotContains(resp, 'class="ptn-matrix__gen"')   # sem seção
         self.assertNotContains(resp, 'name="state"')
 
-    def test_celula_modo_planilha(self):
-        # mode=cell: o estado sai do PRÓPRIO campo — x = não compro,
-        # vazio = sem cotação, número = cotado (convenção da planilha dele).
+    def test_batch_celula_estilo_planilha(self):
+        # v3: o estado sai do PRÓPRIO campo — x = não compro, vazio = sem
+        # cotação, número = cotado (a convenção da planilha do comprador).
         from pricing.models import PriceChangeRequest
         self.client.force_login(self.partner)
-        url = f'/partner/save/{self.l_samsung.pk}/'
-        base = dict(kind='ddr', gen='DDR3', tier_value='2', tier_unit='Gb',
-                    mode='cell', from_kind='ddr')
-        resp = self.client.post(url, {**base, 'price': 'x'})
+        url = '/partner/tipo/ddr/enviar/'
+        pk = self.p_ddr_sam.pk
+        resp = self.client.post(url, {f'p{pk}': 'x'})
         self.assertEqual(resp['Location'], '/partner/tipo/ddr/')
         req = PriceChangeRequest.all_companies.get(price=self.p_ddr_sam,
                                                    review_status='pending')
         self.assertEqual(req.new_status, 'no_buy')
-        self.client.post(url, {**base, 'price': ''})        # vazio → sem cotação
+        self.client.post(url, {f'p{pk}': ''})               # vazio → sem cotação
         req.refresh_from_db()
         self.assertEqual(req.new_status, 'unquoted')
-        self.client.post(url, {**base, 'price': '7'})       # número → cotado ¥7
+        self.client.post(url, {f'p{pk}': '7'})              # número → cotado ¥7
         req.refresh_from_db()
         self.assertEqual((req.new_status, req.new_price),
                          ('quoted', Decimal('7')))
+        # célula AUSENTE do POST (not_made/não renderizada) fica intocada:
+        self.assertFalse(PriceChangeRequest.all_companies.filter(
+            price=self.p_ddr_gen).exists())
+
+    def test_batch_diff_so_altera_o_que_mudou(self):
+        # Duas células no POST, uma igual ao atual → só UMA vira pedido.
+        from pricing.models import PriceChangeRequest
+        self.client.force_login(self.partner)
+        resp = self.client.post('/partner/tipo/ddr/enviar/', {
+            f'p{self.p_ddr_sam.pk}': '3',                   # igual (¥3) → pulada
+            f'p{self.p_ddr_gen.pk}': '2',                   # nova cotação
+        }, follow=True)
+        self.assertContains(resp, '1 mudança(s)')
+        self.assertFalse(PriceChangeRequest.all_companies.filter(
+            price=self.p_ddr_sam).exists())
+        req = PriceChangeRequest.all_companies.get(price=self.p_ddr_gen,
+                                                   review_status='pending')
+        self.assertEqual((req.new_status, req.new_price),
+                         ('quoted', Decimal('2')))
+
+    def test_batch_faixa_emcp_e_ilegivel(self):
+        from pricing.models import PriceChangeRequest
+        self.client.force_login(self.partner)
+        url = '/partner/tipo/emcp/enviar/'
+        pk = self.p_emcp.pk
+        # faixa mín–máx via par p/pmax
+        self.client.post(url, {f'p{pk}': '95', f'pmax{pk}': '105'})
+        req = PriceChangeRequest.all_companies.get(price=self.p_emcp,
+                                                   review_status='pending')
+        self.assertEqual((req.new_price, req.new_price_max),
+                         (Decimal('95'), Decimal('105')))
+        # faixa invertida → erro, pedido NÃO muda
+        resp = self.client.post(url, {f'p{pk}': '105', f'pmax{pk}': '95'},
+                                follow=True)
+        self.assertContains(resp, 'faixa invertida')
+        # lixo → erro amigável, nada gravado
+        resp = self.client.post(url, {f'p{pk}': 'abc'}, follow=True)
+        self.assertContains(resp, 'ilegível')
+        req.refresh_from_db()
+        self.assertEqual(req.new_price, Decimal('95'))
 
     def test_save_da_pagina_do_tipo_volta_pra_ela(self):
         self.client.force_login(self.partner)

@@ -10,6 +10,7 @@ urlpatterns = [
     path('',                      views.partner_home, name='partner_home'),
     path('lists/<int:list_pk>/',  views.partner_list, name='partner_list'),
     path('tipo/<str:kind>/',      views.partner_kind, name='partner_kind'),
+    path('tipo/<str:kind>/enviar/', views.partner_kind_save, name='partner_kind_save'),
     path('save/<int:list_pk>/',   views.partner_save, name='partner_save'),
     path('notifications/',        views.partner_notifications,
          name='partner_notifications'),

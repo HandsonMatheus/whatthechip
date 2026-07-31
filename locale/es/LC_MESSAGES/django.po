@@ -2249,3 +2249,25 @@ msgstr "¥ · x = no compro · vacío = sin cotizar"
 
 msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Alterou uma célula? Aperte OK (ou Enter) — a mudança vai para revisão do WhatTheChip."
 msgstr "número = precio en ¥ (RMB) · x = no compro · vacío = sin cotizar · — = no fabricado. ¿Cambió una celda? Pulse OK (o Enter) — el cambio pasa a revisión de WhatTheChip."
+
+# ── Painel do parceiro v3 — envio único p/ revisão (2026-07-27) ──
+msgid "Enviar para revisão"
+msgstr "Enviar a revisión"
+
+msgid "Nada a enviar — nenhuma linha mudou."
+msgstr "Nada que enviar — ninguna línea cambió."
+
+msgid "%(n)s mudança(s) enviadas para REVISÃO do WhatTheChip — passam a valer após a aprovação."
+msgstr "%(n)s cambio(s) enviados a REVISIÓN de WhatTheChip — entran en vigor tras la aprobación."
+
+msgid "%(item)s: preço ilegível — use números ou \"x\""
+msgstr "%(item)s: precio ilegible — use números o \"x\""
+
+msgid "%(item)s: faixa invertida (máx menor que mín)"
+msgstr "%(item)s: rango invertido (máx menor que mín)"
+
+msgid "%(item)s: conflito ao salvar — tente de novo"
+msgstr "%(item)s: conflicto al guardar — intente de nuevo"
+
+msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Só as linhas alteradas são enviadas."
+msgstr "número = precio en ¥ (RMB) · x = no compro · vacío = sin cotizar · — = no fabricado. Solo se envían las líneas modificadas."

@@ -182,7 +182,13 @@ def partner_kind(request, kind):
             p.pending = pendentes.get(p.pk)
             p.pend_disp = _pend_disp(p.pending)
             p.tier_disp = _fmt(p.tier_value)
-            p.min_disp, p.max_disp = _fmt(p.price_min), _fmt(p.price_max)
+            # Célula estilo PLANILHA (v3): número = ¥ · "x" = não compro ·
+            # vazio = sem cotação; nos combos o máx tem campo próprio.
+            p.cell_disp = ('x' if p.status == STATUS_NO_BUY
+                           else _fmt(p.price_min)
+                           if p.status == STATUS_QUOTED else '')
+            p.maxin_disp = (_fmt(p.price_max)
+                            if p.status == STATUS_QUOTED else '')
         ctx.update({'rows': rows, 'generica': generica})
         return render(request, 'pricing/partner_kind.html', ctx)
 
@@ -381,6 +387,81 @@ def partner_notifications(request):
 
 @partner_required
 @require_POST
+def partner_kind_save(request, kind):
+    """v3 (dono, 2026-07-27: "bota um botão no final pra enviar"): a página do
+    tipo é UM formulário — o botão "Enviar para revisão" manda tudo e o
+    servidor faz o DIFF: só linha ALTERADA vira `PriceChangeRequest` (a
+    moderação segue idêntica). Semântica de célula = a da PLANILHA do
+    comprador: número = ¥ cotado · "x" = não compro · vazio = sem cotação;
+    faixa (só eMCP/uMCP) usa o par p<pk>/pmax<pk>. Linha not_made não
+    renderiza campo e é IGNORADA aqui mesmo se vier forjada no POST."""
+    if kind not in _NAV_KINDS:
+        from django.http import Http404
+        raise Http404
+    ranged = kind in ('emcp', 'umcp')
+    enviados, erros = 0, []
+    rows = Price.all_companies.filter(price_list__buyer=request.buyer,
+                                      kind=kind)
+    for p in rows:
+        raw = request.POST.get(f'p{p.pk}')
+        if raw is None or p.status == STATUS_NOT_MADE:
+            continue                      # célula não renderizada / protegida
+        raw = raw.strip().replace(',', '.')
+        rotulo = (f'{_KIND_LABEL[kind]} {p.gen + " " if p.gen else ""}'
+                  f'{p.tier_value.normalize():f}{p.tier_unit}')
+        if raw.lower() in ('x', '×', '✗'):
+            st, mn, mx = STATUS_NO_BUY, None, None
+        elif raw == '':
+            st, mn, mx = STATUS_UNQUOTED, None, None
+        else:
+            try:
+                mn = mx = Decimal(raw)
+                raw_max = (request.POST.get(f'pmax{p.pk}') or '') \
+                    .strip().replace(',', '.')
+                if ranged and raw_max:
+                    mx = Decimal(raw_max)
+            except InvalidOperation:
+                erros.append(_('%(item)s: preço ilegível — use números ou '
+                               '"x"') % {'item': rotulo})
+                continue
+            if mx < mn:
+                erros.append(_('%(item)s: faixa invertida (máx menor que '
+                               'mín)') % {'item': rotulo})
+                continue
+            st = STATUS_QUOTED
+        # Nada mudou? Não gera pedido fantasma (mesma regra do save unitário).
+        if st == p.status and (st != STATUS_QUOTED
+                               or (mn, mx) == (p.price_min, p.price_max)):
+            continue
+        try:
+            with transaction.atomic():
+                PriceChangeRequest.all_companies.update_or_create(
+                    price=p,
+                    review_status=PriceChangeRequest.REVIEW_PENDING,
+                    defaults={
+                        'new_status': st, 'new_price': mn,
+                        'new_price_max': (mx if mx != mn else None),
+                        'old_status': p.status, 'old_price': p.price_min,
+                        'requested_by': request.user,
+                    })
+        except (ValidationError, IntegrityError):
+            erros.append(_('%(item)s: conflito ao salvar — tente de novo')
+                         % {'item': rotulo})
+        else:
+            enviados += 1
+    if enviados:
+        messages.success(request, _(
+            '%(n)s mudança(s) enviadas para REVISÃO do WhatTheChip — passam '
+            'a valer após a aprovação.') % {'n': enviados})
+    elif not erros:
+        messages.info(request, _('Nada a enviar — nenhuma linha mudou.'))
+    for e in erros:
+        messages.error(request, e)
+    return redirect('pricing:partner_kind', kind=kind)
+
+
+@partner_required
+@require_POST
 def partner_save(request, list_pk):
     """F6.1 — MODERAÇÃO: o parceiro NÃO grava o preço — grava um PEDIDO
     (`PriceChangeRequest`, pendente) que o admin aprova/rejeita no Django
@@ -411,16 +492,6 @@ def partner_save(request, list_pk):
     raw = (request.POST.get('price') or '').strip().replace(',', '.')
     state_req = (request.POST.get('state') or '').strip()
 
-    # MODO CÉLULA (matriz por tipo, 2026-07-27): a célula é UM campo só, com a
-    # semântica da PLANILHA do comprador — número = cotado · "x" = não compro ·
-    # vazio = sem cotação. Sem seletor de estado: ele é DERIVADO do campo.
-    if (request.POST.get('mode') or '') == 'cell':
-        if raw.lower() in ('x', '×', '✗'):
-            state_req, raw = STATUS_NO_BUY, ''
-        elif raw == '':
-            state_req = STATUS_UNQUOTED
-        else:
-            state_req = STATUS_QUOTED
 
     def _volta():
         if from_kind in _NAV_KINDS:
