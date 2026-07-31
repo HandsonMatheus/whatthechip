@@ -204,7 +204,11 @@ def partner_kind(request, kind):
             if p is not None:
                 p.pending = pendentes.get(p.pk)
                 p.pend_disp = _pend_disp(p.pending)
-                p.min_disp = _fmt(p.price_min)
+                # Célula estilo PLANILHA (v2): número = ¥ · "x" = não compro ·
+                # vazio = sem cotação (mesma convenção da planilha do comprador).
+                p.cell_disp = ('x' if p.status == STATUS_NO_BUY
+                               else _fmt(p.price_min)
+                               if p.status == STATUS_QUOTED else '')
             cells.append((pl, p))
         linhas.append({'gen': gen, 'tier': _fmt(tier), 'unit': unit,
                        'cells': cells})
@@ -406,6 +410,17 @@ def partner_save(request, list_pk):
     # estado no select; "Cotado" exige o preço (um valor só — min = max interno).
     raw = (request.POST.get('price') or '').strip().replace(',', '.')
     state_req = (request.POST.get('state') or '').strip()
+
+    # MODO CÉLULA (matriz por tipo, 2026-07-27): a célula é UM campo só, com a
+    # semântica da PLANILHA do comprador — número = cotado · "x" = não compro ·
+    # vazio = sem cotação. Sem seletor de estado: ele é DERIVADO do campo.
+    if (request.POST.get('mode') or '') == 'cell':
+        if raw.lower() in ('x', '×', '✗'):
+            state_req, raw = STATUS_NO_BUY, ''
+        elif raw == '':
+            state_req = STATUS_UNQUOTED
+        else:
+            state_req = STATUS_QUOTED
 
     def _volta():
         if from_kind in _NAV_KINDS:

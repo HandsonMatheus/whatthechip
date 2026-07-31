@@ -123,11 +123,39 @@
                background:#fff; border:1px solid #e0e0e0; min-width:170px; }
     .ptn-kpi b { font-size:30px; font-family:'IBM Plex Mono',monospace; }
 
+    /* ── MATRIZ POR MARCA (v2, dono 2026-07-27: compacta + celular) ──
+       1ª coluna GRUDA na esquerda; as marcas rolam horizontalmente.
+       Célula = UM campo (número = ¥ · x = não compro · vazio = sem cotação);
+       o OK só aparece quando o valor muda. */
+    .ptn-matrix { width:auto; min-width:100%; }
+    .ptn-matrix th { text-align:center; padding:8px 6px; white-space:nowrap; }
+    .ptn-matrix td { padding:5px 6px; text-align:center; white-space:nowrap; }
+    .ptn-matrix th:first-child, .ptn-matrix td:first-child {
+      position:sticky; left:0; background:#fff; text-align:left; z-index:2;
+      box-shadow:2px 0 0 #e0e0e0; font-family:'IBM Plex Mono',monospace; }
+    .ptn-matrix__gen td { background:#f4f4f4; font-weight:700; font-size:12px;
+      letter-spacing:.06em; color:#525252; position:static; box-shadow:none; }
+    .ptn-matrix__gen td:first-child { position:sticky; left:0; background:#f4f4f4; }
+    .ptn-cell { display:inline-flex; flex-direction:column; gap:3px;
+                align-items:center; margin:0; }
+    .ptn-cell__in { width:58px; padding:5px 4px; text-align:center;
+      border:1px solid #c6c6c6; font-family:'IBM Plex Mono',monospace;
+      font-size:14px; }
+    .ptn-cell__in:focus { border-color:#0f62fe; outline:2px solid #0f62fe;
+                          outline-offset:-2px; }
+    .ptn-cell--nobuy .ptn-cell__in { background:#fff1f1; }
+    .ptn-cell--unquoted .ptn-cell__in { background:#fffbea; }
+    .ptn-cell__ok { padding:3px 10px; border:none; background:#0f62fe;
+      color:#fff; font-weight:700; font-size:12px; cursor:pointer; }
+
     @media (max-width: 860px) {
       .wtc-work { flex-direction:column; }
       .ptn-side { width:100%; position:static; }
       .wtc-header__fx { display:none !important; }
       .wtc-header__who { display:none; }
+      .ptn-card { padding:12px; }
+      .ptn-matrix th, .ptn-matrix td { padding:4px 4px; font-size:12px; }
+      .ptn-cell__in { width:52px; font-size:16px; }  /* 16px: iOS não dá zoom */
     }
   </style>
 </head>

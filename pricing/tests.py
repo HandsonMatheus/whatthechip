@@ -1921,6 +1921,50 @@ class PartnerKindNavTests(TestCase):
         # cada célula posta na LISTA dela (moderação por lista intacta)
         self.assertContains(resp, f'/partner/save/{self.l_samsung.pk}/')
         self.assertContains(resp, f'/partner/save/{self.l_gen.pk}/')
+        # v2 (dono 2026-07-27): DDR agrupa por GERAÇÃO em linha de seção…
+        self.assertContains(resp, 'class="ptn-matrix__gen"')
+        self.assertContains(resp, 'DDR3')
+        # …célula SEM seletor de estado e SEM botão de seta — um campo só
+        # (o único <select> da página é o de idioma, no header do base)
+        self.assertNotContains(resp, 'name="state"')
+        self.assertNotContains(resp, '↑')
+        self.assertContains(resp, 'name="mode"')            # semântica planilha
+        self.assertContains(resp, 'Todos os preços em ¥ (RMB)')
+
+    def test_pagina_matriz_emmc_sem_coluna_geracao(self):
+        # eMMC/UFS não têm geração — a coluna sumiu (v2); sem linha de seção.
+        Price.all_companies.create(
+            price_list=self.l_samsung, kind='emmc', gen='',
+            tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('6.00'), price_max=Decimal('6.00'))
+        self.client.force_login(self.partner)
+        resp = self.client.get('/partner/tipo/emmc/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, '64GB')
+        self.assertContains(resp, 'value="6"')              # ¥ inteiro
+        self.assertNotContains(resp, 'class="ptn-matrix__gen"')   # sem seção
+        self.assertNotContains(resp, 'name="state"')
+
+    def test_celula_modo_planilha(self):
+        # mode=cell: o estado sai do PRÓPRIO campo — x = não compro,
+        # vazio = sem cotação, número = cotado (convenção da planilha dele).
+        from pricing.models import PriceChangeRequest
+        self.client.force_login(self.partner)
+        url = f'/partner/save/{self.l_samsung.pk}/'
+        base = dict(kind='ddr', gen='DDR3', tier_value='2', tier_unit='Gb',
+                    mode='cell', from_kind='ddr')
+        resp = self.client.post(url, {**base, 'price': 'x'})
+        self.assertEqual(resp['Location'], '/partner/tipo/ddr/')
+        req = PriceChangeRequest.all_companies.get(price=self.p_ddr_sam,
+                                                   review_status='pending')
+        self.assertEqual(req.new_status, 'no_buy')
+        self.client.post(url, {**base, 'price': ''})        # vazio → sem cotação
+        req.refresh_from_db()
+        self.assertEqual(req.new_status, 'unquoted')
+        self.client.post(url, {**base, 'price': '7'})       # número → cotado ¥7
+        req.refresh_from_db()
+        self.assertEqual((req.new_status, req.new_price),
+                         ('quoted', Decimal('7')))
 
     def test_save_da_pagina_do_tipo_volta_pra_ela(self):
         self.client.force_login(self.partner)

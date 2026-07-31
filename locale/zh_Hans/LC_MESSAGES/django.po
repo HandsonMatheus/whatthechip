@@ -2135,3 +2135,13 @@ msgstr "统一价"
 
 msgid "¥ = cotado · ? = não cotado · ✗ = não compro · — = não fabricado. Envio vai para revisão do WhatTheChip."
 msgstr "¥ = 已报价 · ? = 未报价 · ✗ = 不收 · — = 无此型号。提交后由 WhatTheChip 审核。"
+
+# ── Matriz do parceiro v2 — célula estilo planilha (2026-07-27) ──
+msgid "Todos os preços em ¥ (RMB)"
+msgstr "所有价格均为 ¥（人民币）"
+
+msgid "¥ · x = não compro · vazio = sem cotação"
+msgstr "¥ · x = 不收 · 留空 = 未报价"
+
+msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Alterou uma célula? Aperte OK (ou Enter) — a mudança vai para revisão do WhatTheChip."
+msgstr "数字 = ¥（人民币）价格 · x = 不收 · 留空 = 未报价 · — = 无此型号。改了某格？按 OK（或 Enter 键）— 修改将由 WhatTheChip 审核。"

@@ -982,6 +982,20 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   `{% localize off %}` (vírgula pt-br quebrava o Decimal do save). Rotas
   antigas `lists/<pk>/` seguem no ar (legado/testes). `PartnerKindNavTests`
   (6); 9 msgids novos traduzidos es/en/zh no mesmo commit.
+- **MATRIZ v2 (dono, mesma data: "muita informação… seletor confuso… seta
+  sem ideia… compacta e responsiva"):** célula da matriz vira **UM campo
+  estilo planilha** — número = ¥ · `x` = não compro · vazio = sem cotação
+  (a MESMA convenção da planilha que o comprador já usa; `partner_save`
+  ganha `mode=cell` que DERIVA o estado do campo — seletor extinto). Botão
+  ↑ extinto: **OK aparece só na célula editada** (JS de 4 linhas, sem
+  strings) e Enter também envia. Coluna Geração REMOVIDA (eMMC/UFS não têm;
+  **DDR agrupa por linhas de seção** `ptn-matrix__gen`). Selo verde "Todos
+  os preços em ¥ (RMB)" no topo de toda página de tipo. Responsivo: 1ª
+  coluna **sticky** + rolagem horizontal das marcas (padrão mobile), célula
+  58px, fundo amarelo/vermelho por estado, input 16px no celular (iOS não
+  zooma). Legenda única embaixo. 3 msgids (es/en/zh; zh manteve "Enter"
+  literal — glossário). Testes: 8 em `PartnerKindNavTests` (célula x/vazio/
+  número vira pedido certo).
 - **REPACTUAÇÃO 2026-07-27 (planilha final do comprador — aba única):**
   **eMCP/uMCP em FAIXA** (os ÚNICOS: `price_fixed_only` liberou min≤max só
   p/ esses kinds + `price_range_ordered`; migração pricing/0017; portão

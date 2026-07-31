@@ -2223,3 +2223,13 @@ msgstr "unified"
 
 msgid "¥ = cotado · ? = não cotado · ✗ = não compro · — = não fabricado. Envio vai para revisão do WhatTheChip."
 msgstr "¥ = quoted · ? = unquoted · ✗ = no buy · — = not made. Submissions go to WhatTheChip review."
+
+# ── Matriz do parceiro v2 — célula estilo planilha (2026-07-27) ──
+msgid "Todos os preços em ¥ (RMB)"
+msgstr "All prices in ¥ (RMB)"
+
+msgid "¥ · x = não compro · vazio = sem cotação"
+msgstr "¥ · x = no buy · empty = no quote"
+
+msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Alterou uma célula? Aperte OK (ou Enter) — a mudança vai para revisão do WhatTheChip."
+msgstr "number = price in ¥ (RMB) · x = no buy · empty = no quote · — = not made. Changed a cell? Press OK (or Enter) — the change goes to WhatTheChip review."
