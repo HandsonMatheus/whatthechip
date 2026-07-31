@@ -1,0 +1,130 @@
+{% extends "pricing/partner_base.html" %}
+{% load i18n l10n %}
+{% block title %}{{ kind_label }} — WhatTheChip{% endblock %}
+{% block content %}
+{% comment %}
+  Página de UM TIPO (dono, 2026-07-27): eMCP/uMCP/LPDDR = preço UNIFICADO
+  (coluna única; faixa mín–máx só nos combos). eMMC/UFS/DDR = MATRIZ por
+  marca (linha = geração+faixa; célula posta no partner_save da lista dela —
+  moderação intacta). ¥ é INTEIRO na exibição/entrada (dono: "RMB não tem
+  casas decimais"); o banco segue Decimal. Valores formatados na VIEW
+  (min_disp/max_disp — floatformat ignora localize-off, pegadinha F10).
+{% endcomment %}
+
+<div class="ptn-card" style="margin-bottom:14px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;">
+  <h1 style="margin:0;font-size:22px;font-weight:600;">{{ kind_label }}</h1>
+  {% if unified %}
+  <span style="background:#edf5ff;color:#0043ce;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px;">{% trans "PREÇO UNIFICADO — vale para todas as marcas" %}</span>
+  {% else %}
+  <span style="color:#6f6f6f;font-size:13px;">{% trans "preço por marca" %}</span>
+  {% endif %}
+  {% if ranged %}<span style="color:#6f6f6f;font-size:13px;">{% trans "faixa mín–máx em ¥" %}</span>{% endif %}
+</div>
+
+{% if unified %}
+{# ── COLUNA ÚNICA (eMCP/uMCP/LPDDR) ─────────────────────────────── #}
+<div class="ptn-card" style="padding:0;">
+  <table class="ptn-table">
+    <thead><tr>
+      <th>{% trans "Geração" %}</th><th>{% trans "Faixa" %}</th>
+      <th>{% trans "Preço ¥" %}</th><th>{% trans "Estado" %}</th>
+      <th>{% trans "Última atualização" %}</th><th></th>
+    </tr></thead>
+    <tbody>
+      {% for r in rows %}
+      <tr class="{% if r.status == 'unquoted' %}ptn-row--unquoted{% elif r.status == 'no_buy' %}ptn-row--nobuy{% endif %}">
+        <td style="font-family:'IBM Plex Mono',monospace;">{{ r.gen|default:"—" }}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;">{{ r.tier_disp }}{% if ranged %}GB (NAND){% else %}{{ r.tier_unit }}{% endif %}</td>
+        <td>
+          {% if ranged %}
+          <span style="display:inline-flex;align-items:center;gap:4px;">
+            <input class="ptn-input" form="k{{ forloop.counter }}" type="number" step="1" min="0" name="price" value="{{ r.min_disp }}" title="{% trans 'mínimo da faixa' %}" style="width:72px;">
+            <span style="color:#8d8d8d;">–</span>
+            <input class="ptn-input" form="k{{ forloop.counter }}" type="number" step="1" min="0" name="price_max" value="{{ r.max_disp }}" title="{% trans 'máximo da faixa' %}" style="width:72px;">
+          </span>
+          {% else %}
+          <input class="ptn-input" form="k{{ forloop.counter }}" type="number" step="1" min="0" name="price" value="{{ r.min_disp }}">
+          {% endif %}
+        </td>
+        <td>
+          <select form="k{{ forloop.counter }}" name="state" class="ptn-input" style="width:auto;">
+            <option value="quoted"   {% if r.status == 'quoted' %}selected{% endif %}>{% trans "Cotado" %}</option>
+            <option value="unquoted" {% if r.status == 'unquoted' %}selected{% endif %}>{% trans "Não cotado" %}</option>
+            <option value="no_buy"   {% if r.status == 'no_buy' %}selected{% endif %}>{% trans "Não compro" %}</option>
+          </select>
+          {% if r.pending %}
+          <div style="margin-top:4px;"><span class="ptn-tag ptn-tag--review">⏳ {% trans "em revisão:" %} {{ r.pend_disp }}</span></div>
+          {% endif %}
+        </td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#525252;">{% if r.status == 'quoted' and r.quote_date %}{{ r.quote_date|date:"d/m/y" }}{% else %}—{% endif %}</td>
+        <td>
+          <form id="k{{ forloop.counter }}" method="post" action="{% url 'pricing:partner_save' generica.pk %}">
+            {% csrf_token %}{% localize off %}
+            <input type="hidden" name="kind"       value="{{ r.kind }}">
+            <input type="hidden" name="gen"        value="{{ r.gen }}">
+            <input type="hidden" name="tier_value" value="{{ r.tier_value }}">
+            <input type="hidden" name="tier_unit"  value="{{ r.tier_unit }}">
+            <input type="hidden" name="from_kind"  value="{{ kind }}">
+            {% endlocalize %}<button type="submit" class="ptn-btn">{% trans "Enviar" %}</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% else %}
+{# ── MATRIZ POR MARCA (eMMC/UFS/DDR) ────────────────────────────── #}
+<div class="ptn-card" style="padding:0;overflow-x:auto;">
+  <table class="ptn-table" style="min-width:720px;">
+    <thead><tr>
+      <th>{% trans "Geração" %}</th><th>{% trans "Faixa" %}</th>
+      {% for pl in col_lists %}
+      <th style="text-align:center;">{% if pl.brand %}{{ pl.brand.name }}{% else %}{% trans "Outras" %}{% endif %}</th>
+      {% endfor %}
+    </tr></thead>
+    <tbody>
+      {% for linha in linhas %}
+      <tr>
+        <td style="font-family:'IBM Plex Mono',monospace;">{{ linha.gen|default:"—" }}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;">{{ linha.tier }}{{ linha.unit }}</td>
+        {% for pl, p in linha.cells %}
+        <td style="text-align:center;vertical-align:top;">
+          {% if p %}
+            {% if p.status == 'not_made' %}
+            <span style="color:#a8a8a8;" title="{% trans 'Não fabricado' %}">—</span>
+            {% else %}
+            <form method="post" action="{% url 'pricing:partner_save' pl.pk %}" style="display:inline-flex;flex-direction:column;gap:3px;align-items:center;">
+              {% csrf_token %}{% localize off %}
+              <input type="hidden" name="kind"       value="{{ p.kind }}">
+              <input type="hidden" name="gen"        value="{{ p.gen }}">
+              <input type="hidden" name="tier_value" value="{{ p.tier_value }}">
+              <input type="hidden" name="tier_unit"  value="{{ p.tier_unit }}">
+              <input type="hidden" name="from_kind"  value="{{ kind }}">
+              {% endlocalize %}
+              <span style="display:inline-flex;gap:4px;align-items:center;">
+                <input class="ptn-input" type="number" step="1" min="0" name="price" value="{{ p.min_disp }}" style="width:64px;" placeholder="{% if p.status == 'no_buy' %}x{% endif %}">
+                <select name="state" class="ptn-input" style="width:auto;font-size:11px;padding:2px;">
+                  <option value="quoted"   {% if p.status == 'quoted' %}selected{% endif %}>¥</option>
+                  <option value="unquoted" {% if p.status == 'unquoted' %}selected{% endif %}>?</option>
+                  <option value="no_buy"   {% if p.status == 'no_buy' %}selected{% endif %}>✗</option>
+                </select>
+                <button type="submit" class="ptn-btn" style="padding:4px 8px;">↑</button>
+              </span>
+              {% if p.pending %}<span class="ptn-tag ptn-tag--review" style="font-size:10px;">⏳ {{ p.pend_disp }}</span>{% endif %}
+            </form>
+            {% endif %}
+          {% else %}
+          <span style="color:#e0e0e0;">·</span>
+          {% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p style="font-size:12px;color:#6f6f6f;margin-top:10px;">{% trans "¥ = cotado · ? = não cotado · ✗ = não compro · — = não fabricado. Envio vai para revisão do WhatTheChip." %}</p>
+{% endif %}
+{% endblock %}

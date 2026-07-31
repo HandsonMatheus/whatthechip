@@ -1848,3 +1848,102 @@ class UnifiedStructureTests(TestCase):
             set_current_company(None)
             if os.path.exists('unify_price_rows_backup.json'):
                 os.unlink('unify_price_rows_backup.json')
+
+
+class PartnerKindNavTests(TestCase):
+    """Painel POR TIPO (dono, 2026-07-27): sidebar lista tipos de chip;
+    eMCP/uMCP/LPDDR = página de coluna única (linhas da GENÉRICA — estrutura
+    unificada; faixa mín–máx só nos combos); eMMC/UFS/DDR = MATRIZ com uma
+    coluna por marca (+ Outras). ¥ exibido INTEIRO (RMB não tem centavos —
+    formatado na view: floatformat ignora localize-off)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company = Company.objects.create(name='PKCo', slug='pkco')
+        cls.buyer = Buyer.all_companies.create(company=cls.company,
+                                               name='Wu PK', slug='wu-pk')
+        cls.samsung = Brand.objects.create(name='Samsung PK', code='SAMPK')
+        cls.l_samsung = PriceList.all_companies.create(buyer=cls.buyer,
+                                                       brand=cls.samsung)
+        cls.l_gen = PriceList.all_companies.create(buyer=cls.buyer, brand=None)
+        # Unificado: eMCP em FAIXA, na genérica (única casa possível pós-b22810c)
+        cls.p_emcp = Price.all_companies.create(
+            price_list=cls.l_gen, kind='emcp', gen='', tier_value=Decimal('16'),
+            tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('90.00'), price_max=Decimal('100.00'))
+        # Por marca: DDR3 2Gb — Samsung cotada, Outras sem cotação
+        cls.p_ddr_sam = Price.all_companies.create(
+            price_list=cls.l_samsung, kind='ddr', gen='DDR3',
+            tier_value=Decimal('2'), tier_unit='Gb', status=STATUS_QUOTED,
+            price_min=Decimal('3.00'), price_max=Decimal('3.00'))
+        cls.p_ddr_gen = Price.all_companies.create(
+            price_list=cls.l_gen, kind='ddr', gen='DDR3',
+            tier_value=Decimal('2'), tier_unit='Gb', status=STATUS_UNQUOTED)
+        User = get_user_model()
+        cls.partner = User.objects.create_user('parceiro_pk')
+        cls.buyer.users.add(cls.partner)
+
+    def test_sidebar_e_home_por_tipo(self):
+        self.client.force_login(self.partner)
+        resp = self.client.get('/partner/')
+        # sidebar: um link por TIPO (não mais por marca)
+        for kind in ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr'):
+            self.assertContains(resp, f'/partner/tipo/{kind}/')
+        # home: resumo por tipo com o rótulo do modelo de compra
+        self.assertContains(resp, 'Tipo de chip')
+        self.assertContains(resp, 'unificado')
+        self.assertContains(resp, 'por marca')
+        # badge de pendências do DDR (1 sem cotação na genérica)
+        self.assertContains(resp, 'ptn-side__badge')
+
+    def test_pagina_unificada_emcp_coluna_unica_e_faixa(self):
+        self.client.force_login(self.partner)
+        resp = self.client.get('/partner/tipo/emcp/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'PREÇO UNIFICADO')
+        # faixa em DOIS inputs, ¥ INTEIRO (90/100 — nunca 90.00)
+        self.assertContains(resp, 'value="90"')
+        self.assertContains(resp, 'value="100"')
+        self.assertNotContains(resp, '90.00')
+        self.assertNotContains(resp, '100.00')
+        # o form posta na GENÉRICA (estrutura unificada) e volta pro tipo
+        self.assertContains(resp, f'/partner/save/{self.l_gen.pk}/')
+        self.assertContains(resp, 'name="from_kind"')
+
+    def test_pagina_matriz_ddr_coluna_por_marca(self):
+        self.client.force_login(self.partner)
+        resp = self.client.get('/partner/tipo/ddr/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Samsung PK')             # coluna da marca
+        self.assertContains(resp, 'Outras')                 # coluna genérica
+        self.assertContains(resp, 'value="3"')              # ¥ inteiro
+        self.assertNotContains(resp, '3.00')
+        # cada célula posta na LISTA dela (moderação por lista intacta)
+        self.assertContains(resp, f'/partner/save/{self.l_samsung.pk}/')
+        self.assertContains(resp, f'/partner/save/{self.l_gen.pk}/')
+
+    def test_save_da_pagina_do_tipo_volta_pra_ela(self):
+        self.client.force_login(self.partner)
+        resp = self.client.post(f'/partner/save/{self.l_gen.pk}/', dict(
+            kind='emcp', gen='', tier_value='16.00', tier_unit='GB',
+            state='quoted', price='95', price_max='105', from_kind='emcp'))
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['Location'], '/partner/tipo/emcp/')
+        from pricing.models import PriceChangeRequest
+        req = PriceChangeRequest.all_companies.get(price=self.p_emcp,
+                                                   review_status='pending')
+        self.assertEqual((req.new_price, req.new_price_max),
+                         (Decimal('95'), Decimal('105')))
+        # …e a página do tipo mostra o pedido pendente formatado inteiro
+        resp = self.client.get('/partner/tipo/emcp/')
+        self.assertContains(resp, '¥ 95–105')
+
+    def test_tipo_fora_da_navegacao_404(self):
+        self.client.force_login(self.partner)
+        self.assertEqual(self.client.get('/partner/tipo/ssd/').status_code, 404)
+        self.assertEqual(self.client.get('/partner/tipo/nand/').status_code, 404)
+
+    def test_gate_anonimo(self):
+        resp = self.client.get('/partner/tipo/emcp/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn('/login/', resp['Location'])

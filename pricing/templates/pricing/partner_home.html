@@ -51,18 +51,25 @@
   </form>
 </div>
 
+{% comment %}
+  Navegação POR TIPO (dono, 2026-07-27): a home resume por tipo de chip —
+  combos/LPDDR são preço unificado; eMMC/UFS/DDR abrem a matriz por marca.
+  Nomes de tipo são canônicos, nunca traduzem.
+{% endcomment %}
 <div class="ptn-card">
   <table class="ptn-table">
     <thead>
-      <tr><th>{% trans "Marca" %}</th><th>{% trans "Cotados" %}</th><th>{% trans "Sem cotação" %}</th><th></th></tr>
+      <tr><th>{% trans "Tipo de chip" %}</th><th>{% trans "Cotados" %}</th><th>{% trans "Sem cotação" %}</th><th></th></tr>
     </thead>
     <tbody>
-      {% for pl in lists %}
+      {% for k in kinds_resumo %}
       <tr>
-        <td style="font-weight:600;">{% if pl.brand %}{{ pl.brand.name }}{% else %}<span style="background:#edf5ff;color:#0043ce;font-weight:700;padding:2px 8px;border-radius:8px;">{% trans "Unificado · Outras marcas" %}</span>{% endif %}</td>
-        <td>{% if pl.stats.quoted %}<span class="ptn-tag ptn-tag--quoted">{{ pl.stats.quoted }}</span>{% else %}—{% endif %}</td>
-        <td>{% if pl.stats.pending %}<span class="ptn-tag ptn-tag--pending">{{ pl.stats.pending }}</span>{% else %}—{% endif %}</td>
-        <td><a href="{% url 'pricing:partner_list' pl.pk %}" style="color:#0f62fe;font-weight:600;">{% trans "Editar" %} →</a></td>
+        <td style="font-weight:600;">{{ k.label }}
+          {% if k.kind == 'emcp' or k.kind == 'umcp' or k.kind == 'lpddr' %}<span style="background:#edf5ff;color:#0043ce;font-weight:700;font-size:11px;padding:2px 8px;border-radius:8px;margin-left:6px;">{% trans "unificado" %}</span>
+          {% else %}<span style="color:#6f6f6f;font-size:11px;margin-left:6px;">{% trans "por marca" %}</span>{% endif %}</td>
+        <td>{% if k.quoted %}<span class="ptn-tag ptn-tag--quoted">{{ k.quoted }}</span>{% else %}—{% endif %}</td>
+        <td>{% if k.pending %}<span class="ptn-tag ptn-tag--pending">{{ k.pending }}</span>{% else %}—{% endif %}</td>
+        <td><a href="{% url 'pricing:partner_kind' k.kind %}" style="color:#0f62fe;font-weight:600;">{% trans "Editar" %} →</a></td>
       </tr>
       {% empty %}
       <tr><td colspan="4" style="color:#6f6f6f;">{% trans "Nenhuma lista ainda — fale com a equipe WhatTheChip." %}</td></tr>

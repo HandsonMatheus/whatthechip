@@ -2211,3 +2211,31 @@ msgstr "Sus tablas de precios"
 #: pricing/templates/pricing/partner_base.html
 msgid "SUAS TABELAS DE PREÇO"
 msgstr "SUS TABLAS DE PRECIOS"
+
+# ── Painel do parceiro POR TIPO (2026-07-27) ──
+msgid "Enviar"
+msgstr "Enviar"
+
+msgid "Outras"
+msgstr "Otras"
+
+msgid "Preços por tipo de chip"
+msgstr "Precios por tipo de chip"
+
+msgid "Tipo de chip"
+msgstr "Tipo de chip"
+
+msgid "faixa mín–máx em ¥"
+msgstr "rango mín–máx en ¥"
+
+msgid "por marca"
+msgstr "por marca"
+
+msgid "preço por marca"
+msgstr "precio por marca"
+
+msgid "unificado"
+msgstr "unificado"
+
+msgid "¥ = cotado · ? = não cotado · ✗ = não compro · — = não fabricado. Envio vai para revisão do WhatTheChip."
+msgstr "¥ = cotizado · ? = sin cotizar · ✗ = no compro · — = no fabricado. El envío pasa a revisión de WhatTheChip."

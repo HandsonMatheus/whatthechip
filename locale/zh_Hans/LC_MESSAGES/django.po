@@ -2107,3 +2107,31 @@ msgstr "您的价格表"
 #: pricing/templates/pricing/partner_base.html
 msgid "SUAS TABELAS DE PREÇO"
 msgstr "您的价格表"
+
+# ── Painel do parceiro POR TIPO (2026-07-27) ──
+msgid "Enviar"
+msgstr "提交"
+
+msgid "Outras"
+msgstr "其他"
+
+msgid "Preços por tipo de chip"
+msgstr "按芯片类型的价格"
+
+msgid "Tipo de chip"
+msgstr "芯片类型"
+
+msgid "faixa mín–máx em ¥"
+msgstr "¥ 最低–最高区间"
+
+msgid "por marca"
+msgstr "按品牌"
+
+msgid "preço por marca"
+msgstr "按品牌定价"
+
+msgid "unificado"
+msgstr "统一价"
+
+msgid "¥ = cotado · ? = não cotado · ✗ = não compro · — = não fabricado. Envio vai para revisão do WhatTheChip."
+msgstr "¥ = 已报价 · ? = 未报价 · ✗ = 不收 · — = 无此型号。提交后由 WhatTheChip 审核。"

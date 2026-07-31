@@ -968,6 +968,20 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   SÓ a genérica; `enable_price_row` recusa kind unificado; **import_price_xlsx
   (formato multi-aba velho) APOSENTADO/apagado** — o v2 grava unificados só
   na genérica. Fixtures da suíte migradas pra estrutura nova.
+- **/partner/ POR TIPO (dono 2026-07-27: "menu lateral com cada marca ficou
+  confuso… no menu lateral fica cada tipo de chip… RMB não tem casas
+  decimais"):** sidebar/​home viram navegação por TIPO (`partner_kind`, rota
+  `tipo/<kind>/`; SSD fora — é linear, sem grid). **eMCP/uMCP/LPDDR** =
+  página de COLUNA ÚNICA (linhas da genérica; faixa mín–máx nos combos);
+  **eMMC/UFS/DDR** = MATRIZ linha=geração+faixa × coluna=marca (+Outras=
+  genérica; not_made vira "—" sem form) — cada célula posta no
+  `partner_save` da lista DELA (moderação intacta; `from_kind` devolve à
+  página do tipo). **¥ INTEIRO em todo o painel** (inputs `step=1`; valores
+  formatados NA VIEW via `normalize():f` — floatformat ignora localize-off;
+  notificações idem, com faixa "¥ a–b"); hiddens de `tier_value` sob
+  `{% localize off %}` (vírgula pt-br quebrava o Decimal do save). Rotas
+  antigas `lists/<pk>/` seguem no ar (legado/testes). `PartnerKindNavTests`
+  (6); 9 msgids novos traduzidos es/en/zh no mesmo commit.
 - **REPACTUAÇÃO 2026-07-27 (planilha final do comprador — aba única):**
   **eMCP/uMCP em FAIXA** (os ÚNICOS: `price_fixed_only` liberou min≤max só
   p/ esses kinds + `price_range_ordered`; migração pricing/0017; portão

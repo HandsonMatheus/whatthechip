@@ -114,6 +114,104 @@ def _lists_with_stats(buyer):
     return lists
 
 
+# ── Navegação POR TIPO (dono, 2026-07-27: "no menu lateral fica cada tipo") ──
+# Só DDR/eMMC/UFS são por marca (matriz); eMCP/uMCP/LPDDR são unificados
+# (coluna única, linha na genérica). SSD é linear ¥/GB (sem grid) — fora.
+_NAV_KINDS = ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr')
+_MATRIX_KINDS = ('emmc', 'ufs', 'ddr')
+
+
+def _kind_nav(buyer):
+    """[(kind, label, pendentes)] p/ a sidebar — badge = não-cotados do tipo."""
+    from django.db.models import Count
+    pend = {d['kind']: d['n']
+            for d in Price.all_companies
+            .filter(price_list__buyer=buyer, status=STATUS_UNQUOTED)
+            .values('kind').annotate(n=Count('id'))}
+    return [(k, _KIND_LABEL[k], pend.get(k, 0)) for k in _NAV_KINDS]
+
+
+@partner_required
+def partner_kind(request, kind):
+    """Grid de UM TIPO de chip. Unificado (eMCP/uMCP/LPDDR): coluna única —
+    linhas da genérica (faixa mín–máx nos combos). Por marca (eMMC/UFS/DDR):
+    MATRIZ — linha = geração+faixa, coluna = marca (+ Outras); cada célula
+    posta no partner_save da lista dela (moderação intacta)."""
+    if kind not in _NAV_KINDS:
+        from django.http import Http404
+        raise Http404
+    from .models import UNIFIED_KINDS
+
+    def _fmt(v):
+        return f'{v.normalize():f}' if v is not None else ''
+
+    listas = list(PriceList.all_companies.filter(buyer=request.buyer,
+                                                 active=True)
+                  .select_related('brand'))
+    generica = next((pl for pl in listas if pl.brand_id is None), None)
+    pendentes = {
+        r.price_id: r
+        for r in PriceChangeRequest.all_companies.filter(
+            price__price_list__buyer=request.buyer, price__kind=kind,
+            review_status=PriceChangeRequest.REVIEW_PENDING)}
+
+    ctx = {'buyer': request.buyer, 'kind': kind,
+           'kind_label': _KIND_LABEL[kind],
+           'unified': kind in UNIFIED_KINDS,
+           'ranged': kind in ('emcp', 'umcp'),
+           'kind_nav': _kind_nav(request.buyer), 'active_kind': kind,
+           'active_pk': None}
+
+    def _pend_disp(q):
+        """Texto do pedido pendente, formatado em Python (floatformat
+        ignora localize-off — pegadinha F10)."""
+        if q is None:
+            return None
+        if q.new_status != STATUS_QUOTED:
+            return q.get_new_status_display()
+        txt = f'¥ {_fmt(q.new_price)}'
+        if q.new_price_max is not None and q.new_price_max != q.new_price:
+            txt += f'–{_fmt(q.new_price_max)}'
+        return txt
+
+    if kind in UNIFIED_KINDS:
+        rows = sorted(Price.all_companies.filter(price_list=generica,
+                                                 kind=kind),
+                      key=lambda p: (p.gen, p.tier_value))
+        for p in rows:
+            p.pending = pendentes.get(p.pk)
+            p.pend_disp = _pend_disp(p.pending)
+            p.tier_disp = _fmt(p.tier_value)
+            p.min_disp, p.max_disp = _fmt(p.price_min), _fmt(p.price_max)
+        ctx.update({'rows': rows, 'generica': generica})
+        return render(request, 'pricing/partner_kind.html', ctx)
+
+    # matriz: colunas = marcas com linha deste tipo (+ Outras/genérica)
+    all_rows = list(Price.all_companies.filter(price_list__buyer=request.buyer,
+                                               kind=kind)
+                    .select_related('price_list__brand'))
+    col_lists = sorted({p.price_list for p in all_rows},
+                       key=lambda pl: (pl.brand_id is None,
+                                       pl.brand.name if pl.brand_id else ''))
+    chaves = sorted({(p.gen, p.tier_value, p.tier_unit) for p in all_rows},
+                    key=lambda c: (c[0], c[1]))
+    celulas = {(p.price_list_id, p.gen, p.tier_value): p for p in all_rows}
+    linhas = []
+    for gen, tier, unit in chaves:
+        cells = []
+        for pl in col_lists:
+            p = celulas.get((pl.pk, gen, tier))
+            if p is not None:
+                p.pending = pendentes.get(p.pk)
+                p.pend_disp = _pend_disp(p.pending)
+                p.min_disp = _fmt(p.price_min)
+            cells.append((pl, p))
+        linhas.append({'gen': gen, 'tier': _fmt(tier), 'unit': unit,
+                       'cells': cells})
+    ctx.update({'linhas': linhas, 'col_lists': col_lists})
+    return render(request, 'pricing/partner_kind.html', ctx)
+
+
 @partner_required
 def partner_home(request):
     """Home do parceiro: o RESUMO — pendências primeiro (mata a planilha) e a
@@ -128,8 +226,19 @@ def partner_home(request):
              + rows.filter(status=STATUS_QUOTED, quote_date__lt=cutoff).count())
     quoted = rows.filter(status=STATUS_QUOTED).count()
 
+    from django.db.models import Count
+    por_kind = {}
+    for d in rows.values('kind', 'status').annotate(n=Count('id')):
+        por_kind.setdefault(d['kind'], {})[d['status']] = d['n']
+    kinds_resumo = [
+        {'kind': k, 'label': lbl,
+         'quoted': por_kind.get(k, {}).get(STATUS_QUOTED, 0),
+         'pending': pend}
+        for k, lbl, pend in _kind_nav(buyer)]
     return render(request, 'pricing/partner_home.html', {
         'buyer': buyer, 'lists': lists, 'nav_lists': lists, 'active_pk': None,
+        'kind_nav': _kind_nav(buyer), 'active_kind': None,
+        'kinds_resumo': kinds_resumo,
         'pending': pending, 'stale': stale, 'quoted': quoted,
         'staleness_days': PricingConfig.get_config().staleness_days,
     })
@@ -182,6 +291,7 @@ def partner_list(request, list_pk):
         'f_kind': f_kind, 'f_state': f_state,
         'kind_choices': kind_choices, 'state_choices': STATUS_CHOICES,
         'nav_lists': _lists_with_stats(request.buyer), 'active_pk': pl.pk,
+        'kind_nav': _kind_nav(request.buyer), 'active_kind': None,
     })
 
 
@@ -193,6 +303,7 @@ def partner_how(request):
     return render(request, 'pricing/partner_how.html', {
         'buyer': request.buyer,
         'nav_lists': _lists_with_stats(request.buyer), 'active_pk': 'how',
+        'kind_nav': _kind_nav(request.buyer), 'active_kind': None,
     })
 
 
@@ -248,13 +359,19 @@ def partner_notifications(request):
         it.resumo = f'{marca} · {_KIND_LABEL.get(p.kind, p.kind)} ' \
                     f'{p.gen + " " if p.gen else ""}{faixa}'
         # F10: o pedido do parceiro é em ¥ (a moeda dele) — nunca convertido.
-        it.novo = (f'¥ {it.new_price}' if it.new_status == STATUS_QUOTED
-                   else dict(STATUS_CHOICES).get(it.new_status, it.new_status))
+        # ¥ INTEIRO na exibição (dono 2026-07-27: RMB não tem casas decimais).
+        if it.new_status == STATUS_QUOTED:
+            it.novo = f'¥ {it.new_price.normalize():f}'
+            if it.new_price_max is not None and it.new_price_max != it.new_price:
+                it.novo += f'–{it.new_price_max.normalize():f}'
+        else:
+            it.novo = dict(STATUS_CHOICES).get(it.new_status, it.new_status)
 
     _unseen_decisions(buyer).update(seen_by_partner=True)   # zera o badge
     return render(request, 'pricing/partner_notifications.html', {
         'buyer': buyer, 'itens': itens,
         'nav_lists': _lists_with_stats(buyer), 'active_pk': 'notifications',
+        'kind_nav': _kind_nav(buyer), 'active_kind': None,
     })
 
 
@@ -275,8 +392,14 @@ def partner_save(request, list_pk):
         tier_value = Decimal(request.POST.get('tier_value', ''))
     except InvalidOperation:
         tier_value = None
+    # Navegação por TIPO (2026-07-27): envio vindo de /partner/tipo/<kind>/
+    # volta pra lá (from_kind); sem ela, comportamento antigo (partner_list).
+    from_kind = (request.POST.get('from_kind') or '').strip()
+
     if kind not in KINDS or tier_value is None or tier_unit not in ('GB', 'Gb'):
         messages.error(request, _('Linha inválida — recarregue a página.'))
+        if from_kind in _NAV_KINDS:
+            return redirect('pricing:partner_kind', kind=from_kind)
         return redirect('pricing:partner_list', list_pk=pl.pk)
 
     # PREÇO FIXO + ESTADO EXPLÍCITO (decisões 2026-07-07): o parceiro escolhe o
@@ -285,6 +408,8 @@ def partner_save(request, list_pk):
     state_req = (request.POST.get('state') or '').strip()
 
     def _volta():
+        if from_kind in _NAV_KINDS:
+            return redirect('pricing:partner_kind', kind=from_kind)
         url = redirect('pricing:partner_list', list_pk=pl.pk)
         f_kind, f_state = request.POST.get('f_kind', ''), request.POST.get('f_state', '')
         if f_kind or f_state:                      # preserva os filtros ativos
