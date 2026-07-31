@@ -29,7 +29,7 @@ from django.db import transaction
 
 from pricing.models import (Buyer, KIND_UNIT, KINDS, Price, PriceList,
                             STATUS_NOT_MADE, STATUS_QUOTED, STATUS_UNQUOTED,
-                            fold_gen)
+                            UNIFIED_KINDS, fold_gen)
 from tenancy.scope import scope_command_to_company
 
 
@@ -72,6 +72,9 @@ class Command(BaseCommand):
                 raise InvalidOperation
         except InvalidOperation:
             raise CommandError(f"tier ilegível: {opts['tier']!r}")
+        if opts['kind'].strip().lower() in UNIFIED_KINDS:
+            raise CommandError('Kind UNIFICADO (eMCP/uMCP/LPDDR) não tem linha '
+                               'por marca desde 2026-07-27 — nada a habilitar.')
         gen = fold_gen(opts['kind'].strip().lower(), opts['gen'].strip())   # grid canônico (2026-07-21)
 
         pl = (PriceList.all_companies

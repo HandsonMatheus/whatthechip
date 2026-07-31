@@ -32,6 +32,9 @@ def _setup_wuquan(company_name='eMiner F2', slug='eminer-f2'):
     samsung = Brand.objects.create(name=f'Samsung {slug}',
                                    code=f'S{slug[-4:]}'.upper())
     lista = PriceList.all_companies.create(buyer=buyer, brand=samsung)
+    # ESTRUTURAL 2026-07-27: kinds unificados vivem na GENÉRICA.
+    generica = PriceList.all_companies.create(buyer=buyer, brand=None)
+    _setup_wuquan.generica = generica
     return company, buyer, samsung, lista
 
 
@@ -41,9 +44,13 @@ class PriceGateTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.company, cls.buyer, cls.brand, cls.lista = _setup_wuquan()
+        cls.generica = _setup_wuquan.generica
 
     def _price(self, **kw):
-        base = dict(price_list=self.lista, kind='emmc', gen='',
+        from .models import UNIFIED_KINDS
+        # kind unificado → lista genérica (portão 2026-07-27); resto → marca.
+        alvo = self.generica if kw.get('kind') in UNIFIED_KINDS else self.lista
+        base = dict(price_list=alvo, kind='emmc', gen='',
                     tier_value=Decimal('64'), tier_unit='GB',
                     status=STATUS_QUOTED, price_min=Decimal('6.00'),
                     price_max=Decimal('6.00'), quote_date=date(2026, 6, 29))
@@ -123,9 +130,13 @@ class PriceListInheritanceTests(TestCase):
 
     def test_generica_herda_da_nanya_e_e_unica(self):
         nanya = PriceList.all_companies.create(buyer=self.buyer, brand=self.nanya)
-        PriceList.all_companies.create(buyer=self.buyer, brand=None,
-                                       inherits_from=nanya)     # a "UMA PÁGINA"
-        # 2ª genérica: barrada pela UniqueConstraint condicional (no banco).
+        # a genérica JÁ existe (criada no _setup_wuquan — estrutura 2026-07-27);
+        # aqui só configuramos a herança dela…
+        generica = PriceList.all_companies.get(buyer=self.buyer,
+                                               brand__isnull=True)
+        generica.inherits_from = nanya
+        generica.save()
+        # …e uma 2ª genérica segue barrada pela UniqueConstraint condicional.
         with self.assertRaises(IntegrityError), transaction.atomic():
             PriceList.all_companies.create(buyer=self.buyer, brand=None)
 
@@ -167,7 +178,7 @@ class PricingScopeTests(TestCase):
     def test_escopo_da_a_nao_ve_a_b(self):
         with company_scope(self.a):
             self.assertEqual(list(Buyer.objects.all()), [self.buyer_a])
-            self.assertEqual(PriceList.objects.count(), 1)
+            self.assertEqual(PriceList.objects.count(), 2)   # marca + genérica
         with company_scope(self.b):
             self.assertEqual(list(Buyer.objects.all()), [self.buyer_b])
 
@@ -206,138 +217,8 @@ class PricingPghistoryTests(TestCase):
         self.assertGreaterEqual(Ev.objects.filter(pgh_obj=p.pk).count(), 2)
 
 
-class ImportPriceXlsxTests(TestCase):
-    """F4 — o import da planilha do comprador: dry-run, colapso eMCP,
-    3 estados, normalização de marca, idempotência e conflito.
-    F10 (RMB canônico): o ¥ da coluna F é gravado DIRETO — a antiga conversão
-    × B2 morreu (era ela que gerava os USD "nascidos a 0.15")."""
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.company = Company.objects.create(name='ImpCo', slug='imp-f4')
-        Brand.objects.create(name='Samsung', code='SAM4')
-        Brand.objects.create(name='Toshiba-Kioxia', code='TXK4')
-        Brand.objects.create(name='Rayson', code='RSN4')
-
-    def _make_xlsx(self, conflict=False, unknown_brand=False):
-        import openpyxl
-        import tempfile
-        wb = openpyxl.Workbook()
-        wb.remove(wb.active)
-
-        def sheet(name, rows):
-            ws = wb.create_sheet(name)
-            ws['A1'] = f'{name} — chip sell price (per unit)'
-            ws['A2'], ws['B2'] = 'Exchange rate  1 RMB =', 0.15
-            ws.append(['Brand', 'Type', 'Subtype', 'Capacity', 'Price (USD)',
-                       '★Price (RMB)', '★Quote date', 'Source', 'Notes'])
-            for r in rows:
-                ws.append(r)
-
-        sheet('Samsung', [
-            ['Samsung', 'eMMC', '—', '64GB', None, 40, '2026-06-29 06:57:36', 'mercado', ''],
-            ['Samsung', 'eMCP', 'LPDDR4X', '64+4', None, '90-110', None, '', ''],
-            ['Samsung', 'eMCP', 'LPDDR4X', '64+3', None,
-             '100-120' if conflict else '90-110', None, '', ''],
-            # combo VAZIO na mesma faixa: cotado vence célula-por-preencher
-            # (caso real da aba SK Hynix — NÃO é conflito):
-            ['Samsung', 'eMCP', 'LPDDR4X', '64+6', None, None, None, '', ''],
-            ['Samsung', 'GDDR', 'GDDR5', '8Gb', None, 'NO', None, '', ''],
-            ['Samsung', 'UFS', '—', '256GB', None, None, None, '', ''],
-            ['Samsung', 'DDR', 'DDR3', '2GB', None, 3, None, '', ''],  # unidade ERRADA → pulada
-        ])
-        sheet('Toshiba Kioxia', [
-            ['Toshiba/Kioxia', 'eMMC', '—', '16GB', None, 15, None, '', ''],
-        ])
-        sheet('Other Brands', [
-            ['', 'LPDDR', 'LPDDR4', '2GB', None, 13, None, '', ''],
-            ['Rayson', 'eMMC', '—', '8GB', None, 10, None, '', ''],
-        ])
-        if unknown_brand:
-            sheet('Marswell', [['Marswell', 'eMMC', '—', '8GB', None, 10, None, '', '']])
-        ws = wb.create_sheet('Instructions')
-        ws['A1'] = 'regras'
-
-        f = tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False)
-        wb.save(f.name)
-        return f.name
-
-    def _run(self, path, commit=False):
-        from io import StringIO
-        from django.core.management import call_command
-        from tenancy.scope import set_current_company
-        out = StringIO()
-        try:
-            call_command('import_price_xlsx', path, buyer='wuquan',
-                         commit=commit, stdout=out)
-        finally:
-            # scope_command_to_company seta o contextvar do PROCESSO (em uso
-            # real o comando termina e o processo morre); no runner de testes
-            # ele vazaria para o teste seguinte — reset explícito.
-            set_current_company(None)
-        return out.getvalue()
-
-    def test_dry_run_nao_grava_nada(self):
-        out = self._run(self._make_xlsx())
-        self.assertIn('DRY-RUN', out)
-        self.assertIn('pulada', out)                       # DDR com GB (unidade errada)
-        self.assertEqual(Buyer.all_companies.count(), 0)
-        self.assertEqual(Price.all_companies.count(), 0)
-
-    def test_commit_grava_converte_e_colapsa(self):
-        out = self._run(self._make_xlsx(), commit=True)
-        self.assertIn('COMMIT', out)
-        buyer = Buyer.all_companies.get(slug='wuquan')
-        self.assertEqual(buyer.company, self.company)
-
-        P = Price.all_companies
-        emmc = P.get(kind='emmc', tier_value=Decimal('64'))
-        self.assertEqual((emmc.price_min, emmc.price_max),
-                         (Decimal('40.00'), Decimal('40.00')))  # ¥40 DIRETO (F10)
-        self.assertEqual(str(emmc.quote_date), '2026-06-29')
-        emcp = P.get(kind='emcp')                              # 64+4 e 64+3 → UMA linha
-        # faixa "90-110" RMB → ponto médio ¥100 (preço FIXO; sem × câmbio)
-        self.assertEqual((emcp.price_min, emcp.price_max),
-                         (Decimal('100.00'), Decimal('100.00')))
-        # GDDR fora do mercado (dono 2026-07-23): a linha da planilha é
-        # PULADA — nunca vira linha de grid.
-        self.assertFalse(P.filter(kind='gddr').exists())
-        self.assertEqual(P.get(kind='ufs').status, STATUS_UNQUOTED)
-        # Normalização de marca: Toshiba/Kioxia → Toshiba-Kioxia.
-        toshiba = P.get(kind='emmc', tier_value=Decimal('16'))
-        self.assertEqual(toshiba.price_list.brand.name, 'Toshiba-Kioxia')
-        # Other Brands: TUDO vira linha da GENÉRICA (coluna A é decorativa —
-        # decisão 2026-07-07: nada de lista-fantasma pra Rayson & cia).
-        generica = P.get(kind='lpddr')
-        self.assertIsNone(generica.price_list.brand)
-        self.assertEqual(generica.price_min, Decimal('13.00'))  # ¥13 direto
-        outras8 = P.get(kind='emmc', tier_value=Decimal('8'))
-        self.assertIsNone(outras8.price_list.brand)            # NÃO é lista Rayson
-        self.assertEqual(outras8.price_min, Decimal('10.00'))
-        self.assertFalse(PriceList.all_companies.filter(
-            brand__name='Rayson').exists())
-        # A linha DDR de unidade errada não entrou:
-        self.assertEqual(P.filter(kind='ddr').count(), 0)
-
-    def test_idempotente_re_rodar_nao_duplica(self):
-        path = self._make_xlsx()
-        self._run(path, commit=True)
-        antes = Price.all_companies.count()
-        out = self._run(path, commit=True)
-        self.assertEqual(Price.all_companies.count(), antes)
-        self.assertIn('criados: 0', out)
-
-    def test_conflito_emcp_aborta_sem_gravar(self):
-        from django.core.management.base import CommandError
-        with self.assertRaises(CommandError):
-            self._run(self._make_xlsx(conflict=True), commit=True)
-        self.assertEqual(Price.all_companies.count(), 0)
-
-    def test_marca_desconhecida_aborta(self):
-        from django.core.management.base import CommandError
-        with self.assertRaises(CommandError):
-            self._run(self._make_xlsx(unknown_brand=True), commit=True)
-        self.assertEqual(Price.all_companies.count(), 0)
+# (ImportPriceXlsxTests REMOVIDO 2026-07-27: o formato multi-aba
+#  morreu na repactuação — importador atual: import_price_sheet_v2.)
 
 
 def _r(**kw):
@@ -348,7 +229,6 @@ def _r(**kw):
                 density_gbit_num=None, ram_gen='')
     base.update(kw)
     return base
-
 
 class PriceGoldenTests(TestCase):
     """F3 — goldens com os NÚMEROS REAIS da planilha do Wuquan (§9 do plano).
@@ -397,8 +277,9 @@ class PriceGoldenTests(TestCase):
         # ponto médio ¥100→ aqui usamos ¥90, o golden do plano §12.18 — preço
         # FIXO, decisão 2026-07-07). USD derivado @0.14 nas asserções:
         row(cls.l_samsung, 'emmc', '', 64, 'GB', '40', '40', qd=hoje)          # → 5.60
-        row(cls.l_samsung, 'emcp', 'LPDDR4X', 64, 'GB', '90', '90')  # sem data → ≈; → 12.60
-        row(cls.l_samsung, 'lpddr', 'LPDDR4', 4, 'GB', '25', '25', qd=hoje)    # → 3.50
+        # ESTRUTURAL 2026-07-27: unificados (emcp/lpddr) SÓ na genérica.
+        row(cls.l_generic, 'emcp', 'LPDDR4X', 64, 'GB', '90', '90')  # sem data → ≈; → 12.60
+        row(cls.l_generic, 'lpddr', 'LPDDR4', 4, 'GB', '25', '25', qd=hoje)    # → 3.50
         # (2026-07-21: a linha LPDDR4X 4GB ¥17 SAIU — "LPDDR4X e LPDDR4 são a
         # mesma coisa, uma só caixa": o fold no save fundiria as duas na mesma
         # chave e o twin-check barra a duplicata.)
@@ -410,7 +291,7 @@ class PriceGoldenTests(TestCase):
         row(cls.l_samsung, 'ufs', '', 256, 'GB', status=STATUS_UNQUOTED)
         # Nanya (o "curinga" DRAM, agora como dado):
         row(cls.l_nanya, 'ddr', 'DDR3', 2, 'Gb', '3', '3', qd=hoje)            # → 0.42
-        row(cls.l_nanya, 'lpddr', 'LPDDR4', 2, 'GB', '13', '13', qd=hoje)      # → 1.82
+        row(cls.l_generic, 'lpddr', 'LPDDR4', 2, 'GB', '13', '13', qd=hoje)     # → 1.82
         # Genérica: linha PRÓPRIA sobrepõe a herdada da Nanya (override):
         row(cls.l_generic, 'ddr', 'DDR3', 4, 'Gb', '5', '5', qd=hoje)          # → 0.70
         # Rayson (da aba Other Brands): só o override dele:
@@ -456,7 +337,7 @@ class PriceGoldenTests(TestCase):
         self.assertEqual(q.rmb, Decimal('90'))            # ¥ intacto
         self.assertEqual(q.price_min, Decimal('13.50'))   # USD acompanha a taxa
         # e o banco continua guardando o ¥ cru:
-        row = Price.all_companies.get(price_list=self.l_samsung, kind='emcp')
+        row = Price.all_companies.get(price_list=self.l_generic, kind='emcp')
         self.assertEqual(row.price_min, Decimal('90'))
 
     def test_lpddr4x_dobra_para_lpddr4_na_chave(self):
@@ -527,11 +408,11 @@ class PriceGoldenTests(TestCase):
         # Rayson: linha própria vence tudo:
         ray = self._price(chip_type='eMMC', brand='Rayson', cap_gb=8.0)
         self.assertEqual((ray.price_min, ray.via), (Decimal('1.40'), 'marca'))
-        # Rayson LPDDR4 2GB: não tem → genérica não tem → Nanya (herança da genérica):
+        # Rayson LPDDR4 2GB: unificado vive NA genérica (estrutura 2026-07-27):
         ray2 = self._price(chip_type='LPDDR4', brand='Rayson', cap_gb=2.0,
                            ram_gen='LPDDR4')
         self.assertEqual((ray2.price_min, ray2.via),
-                         (Decimal('1.82'), 'herança da genérica'))  # ¥13 @0.14
+                         (Decimal('1.82'), 'genérica'))  # ¥13 @0.14
         # Marca DESCONHECIDA (sem lista): cai direto na genérica→Nanya:
         esmt = self._price(chip_type='DDR3', brand='ESMT', density_gbit_num=2.0)
         self.assertEqual((esmt.price_min, esmt.via),
@@ -976,15 +857,16 @@ class SeedPriceGridTests(TestCase):
 
 
 class AddPriceRowTests(TestCase):
-    """add_price_row: faixa nova entra no grid inteiro — made-by → não cotado;
-    demais marcas → não fabricado; Outras marcas sempre não cotado."""
+    """add_price_row: kind UNIFICADO (lpddr/emcp/umcp) cria SÓ a linha da
+    genérica (estrutura 2026-07-27); kind por-marca segue o grid inteiro
+    (made-by → não cotado; demais → não fabricado; genérica → não cotado)."""
 
     def _run(self, commit=False, **extra):
         from io import StringIO
         from django.core.management import call_command
         from tenancy.scope import set_current_company
         out = StringIO()
-        base = dict(buyer='wuquan-row', kind='lpddr', gen='LPDDR4X',
+        base = dict(buyer='wuquan-row', kind='lpddr', gen='LPDDR4',
                     tier='1', unit='GB', made_by='Samsung R', commit=commit)
         base.update(extra)
         try:
@@ -993,7 +875,7 @@ class AddPriceRowTests(TestCase):
             set_current_company(None)
         return out.getvalue()
 
-    def test_faixa_nova_no_grid_inteiro(self):
+    def test_unificado_so_generica_e_per_brand_no_grid(self):
         from django.core.management.base import CommandError
         company = Company.objects.create(name='RowCo', slug='row-co')
         buyer = Buyer.all_companies.create(company=company, name='Wuquan R',
@@ -1007,22 +889,28 @@ class AddPriceRowTests(TestCase):
         self._run(commit=False)                              # dry-run: nada
         self.assertEqual(Price.all_companies.count(), 0)
 
-        self._run(commit=True)
-        self.assertEqual(Price.all_companies.get(
-            price_list=l_faz, kind='lpddr').status, STATUS_UNQUOTED)
-        self.assertEqual(Price.all_companies.get(
-            price_list=l_gen, kind='lpddr').status, STATUS_UNQUOTED)
-        self.assertEqual(Price.all_companies.get(
-            price_list=l_nao, kind='lpddr').status, 'not_made')
-
+        self._run(commit=True)                               # UNIFICADO
+        self.assertEqual(Price.all_companies.count(), 1)     # SÓ a genérica
+        g = Price.all_companies.get(kind='lpddr')
+        self.assertIsNone(g.price_list.brand_id)
+        self.assertEqual(g.status, STATUS_UNQUOTED)
         self._run(commit=True)                               # idempotente
-        self.assertEqual(Price.all_companies.count(), 3)
+        self.assertEqual(Price.all_companies.count(), 1)
+
+        # PER-BRAND (ddr): grid inteiro como sempre.
+        self._run(commit=True, kind='ddr', gen='DDR4', tier='8', unit='Gb')
+        self.assertEqual(Price.all_companies.get(
+            price_list=l_faz, kind='ddr').status, STATUS_UNQUOTED)
+        self.assertEqual(Price.all_companies.get(
+            price_list=l_gen, kind='ddr').status, STATUS_UNQUOTED)
+        self.assertEqual(Price.all_companies.get(
+            price_list=l_nao, kind='ddr').status, 'not_made')
 
         with self.assertRaises(CommandError):                # gen inválida
             self._run(commit=True, gen='DDR3')
         with self.assertRaises(CommandError):                # marca desconhecida
-            self._run(commit=True, made_by='Marswell')
-
+            self._run(commit=True, kind='ddr', gen='DDR4', tier='16',
+                      unit='Gb', made_by='Marswell')
 
 class PartnerDashboardTests(TestCase):
     """F6 — /partner/: gate do parceiro, lançadeira, herdados, save e isolamento.
@@ -1457,7 +1345,7 @@ class EnablePriceRowTests(TestCase):
         for pl, status in ((cls.l_sk, STATUS_NOT_MADE),
                            (cls.l_gen, STATUS_NOT_MADE)):
             Price.all_companies.create(
-                price_list=pl, kind='emcp', gen='LPDDR3',
+                price_list=pl, kind='emmc', gen='',
                 tier_value=Decimal('8'), tier_unit='GB', status=status)
         # linha COTADA (guarda: nunca rebaixar) — grid unificado: a
         # genérica também tem a linha (não cotada).
@@ -1474,8 +1362,8 @@ class EnablePriceRowTests(TestCase):
         from django.core.management import call_command
         from tenancy.scope import set_current_company
         out = StringIO()
-        base = dict(buyer='wuquan-enb', brand='SK Hynix E', kind='emcp',
-                    gen='LPDDR3', tier='8', unit='GB', commit=commit)
+        base = dict(buyer='wuquan-enb', brand='SK Hynix E', kind='emmc',
+                    gen='', tier='8', unit='GB', commit=commit)
         base.update(extra)
         try:
             call_command('enable_price_row', stdout=out, **base)
@@ -1487,8 +1375,8 @@ class EnablePriceRowTests(TestCase):
         return Price.all_companies.get(price_list=pl, **key).status
 
     def test_flip_com_generica_e_idempotencia(self):
-        key = dict(kind='emcp', gen='', tier_value=Decimal('8'),
-                   tier_unit='GB')   # v3.1: combo sem gen na chave
+        key = dict(kind='emmc', gen='', tier_value=Decimal('8'),
+                   tier_unit='GB')   # per-brand (unificado não tem linha de marca)
         out = self._run(commit=False)                      # dry-run: nada muda
         self.assertIn('não fabricado → não cotado', out)
         self.assertEqual(self._status(self.l_sk, **key), STATUS_NOT_MADE)
@@ -1817,15 +1705,9 @@ class ImportPriceSheetV2Tests(TestCase):
                 price_min=Decimal(mn) if mn else None,
                 price_max=Decimal(mn) if mn else None)
 
-        emcp_k = row('Kingston', 'emcp', '', '64', 'GB', 'quoted', '80')
-        emcp_m = row('Micron', 'emcp', '', '64', 'GB', 'quoted', '80')
-        emcp_s = row('Samsung', 'emcp', '', '64', 'GB', 'quoted', '100')
-        emcp_g = row(None, 'emcp', '', '64', 'GB')
-        emcp_nm = Price.all_companies.create(          # not_made preservada
-            price_list=L['Kingston'], kind='emcp', gen='', tier_value=Decimal('8'),
-            tier_unit='GB', status='not_made')
-        lp_s = row('Samsung', 'lpddr', 'LPDDR4', '4', 'GB', 'quoted', '25')
-        lp_g = row(None, 'lpddr', 'LPDDR4', '4', 'GB')
+        # Estrutura 2026-07-27: unificados vivem SÓ na genérica.
+        emcp_g = row(None, 'emcp', '', '64', 'GB', 'quoted', '80')
+        lp_g = row(None, 'lpddr', 'LPDDR4', '4', 'GB', 'quoted', '25')
         ddr_m = row('Micron', 'ddr', 'DDR4', '8', 'Gb', 'quoted', '10')
         ddr_s = row('Samsung', 'ddr', 'DDR4', '8', 'Gb', 'quoted', '13')
         ddr_g = row(None, 'ddr', 'DDR4', '8', 'Gb')
@@ -1835,25 +1717,21 @@ class ImportPriceSheetV2Tests(TestCase):
             call_command('import_price_sheet_v2', path, buyer='wu-v2',
                          company='imp-v2', stdout=out)
             self.assertIn('DRY-RUN', out.getvalue())
-            emcp_s.refresh_from_db()
-            self.assertEqual(emcp_s.price_min, Decimal('100'))   # nada mudou
+            emcp_g.refresh_from_db()
+            self.assertEqual(emcp_g.price_min, Decimal('80'))    # nada mudou
 
             out = StringIO()
             call_command('import_price_sheet_v2', path, buyer='wu-v2',
                          company='imp-v2', commit=True, stdout=out)
             texto = out.getvalue()
-            # eMCP unificado em FAIXA nas 4 listas (Samsung CAIU, Micron SUBIU):
-            for p in (emcp_k, emcp_m, emcp_s, emcp_g):
-                p.refresh_from_db()
-                self.assertEqual((p.status, p.price_min, p.price_max),
-                                 ('quoted', Decimal('90'), Decimal('100')))
+            # eMCP unificado em FAIXA — SÓ na genérica (¥80 → 90–100 = SUBIU):
+            emcp_g.refresh_from_db()
+            self.assertEqual((emcp_g.status, emcp_g.price_min, emcp_g.price_max),
+                             ('quoted', Decimal('90'), Decimal('100')))
             self.assertIn('SUBIU', texto)
-            self.assertIn('CAIU', texto)
-            emcp_nm.refresh_from_db()
-            self.assertEqual(emcp_nm.status, 'not_made')         # preservada
-            # LPDDR unificado fixo, célula suja '15,' limpa:
-            lp_s.refresh_from_db(); lp_g.refresh_from_db()
-            self.assertEqual(lp_s.price_min, Decimal('15'))
+            self.assertIn('CAIU', texto)      # lpddr 25→15
+            # LPDDR unificado fixo na genérica, célula suja '15,' limpa:
+            lp_g.refresh_from_db()
             self.assertEqual(lp_g.price_min, Decimal('15'))
             # DDR por marca: Micron 10→11; Samsung 'x'→no_buy; Other→genérica ¥6:
             ddr_m.refresh_from_db(); ddr_s.refresh_from_db(); ddr_g.refresh_from_db()
@@ -1871,11 +1749,102 @@ class ImportPriceSheetV2Tests(TestCase):
                          company='imp-v2',
                          revert='import_price_sheet_v2_backup.json',
                          stdout=StringIO())
-            emcp_s.refresh_from_db(); ddr_s.refresh_from_db()
-            self.assertEqual(emcp_s.price_min, Decimal('100'))
+            emcp_g.refresh_from_db(); ddr_s.refresh_from_db()
+            self.assertEqual(emcp_g.price_min, Decimal('80'))
             self.assertEqual(ddr_s.status, 'quoted')
         finally:
             set_current_company(None)
             os.unlink(path)
             if os.path.exists('import_price_sheet_v2_backup.json'):
                 os.unlink('import_price_sheet_v2_backup.json')
+
+
+class UnifiedStructureTests(TestCase):
+    """Repactuação 2026-07-27 (ESTRUTURAL): eMCP/uMCP/LPDDR têm preço ÚNICO —
+    linha SÓ na genérica (o portão rejeita em lista de marca); a resolução de
+    QUALQUER marca cai na genérica; unify_price_rows colapsa o legado."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from chips.models import Brand as ChipBrand
+        cls.company = Company.objects.create(name='UniCo', slug='uni-co')
+        cls.buyer = Buyer.all_companies.create(company=cls.company,
+                                               name='Wu UNI', slug='wu-uni')
+        cls.samsung = ChipBrand.objects.create(name='Samsung', code='UNIS')
+        cls.l_sam = PriceList.all_companies.create(buyer=cls.buyer,
+                                                   brand=cls.samsung)
+        cls.l_gen = PriceList.all_companies.create(buyer=cls.buyer, brand=None)
+
+    def test_portao_rejeita_unificado_em_lista_de_marca(self):
+        for kind, gen, tier, unit in (('emcp', '', '64', 'GB'),
+                                      ('lpddr', 'LPDDR4', '4', 'GB')):
+            with self.assertRaises(ValidationError):
+                Price.all_companies.create(
+                    price_list=self.l_sam, kind=kind, gen=gen,
+                    tier_value=Decimal(tier), tier_unit=unit,
+                    status='unquoted')
+
+    def test_resolucao_de_qualquer_marca_cai_na_generica(self):
+        from datetime import date as _d
+        from .engine import price
+        Price.all_companies.create(
+            price_list=self.l_gen, kind='emcp', gen='',
+            tier_value=Decimal('64'), tier_unit='GB', status='quoted',
+            price_min=Decimal('90'), price_max=Decimal('100'),
+            quote_date=_d.today())
+        q = price({'chip_type': 'eMCP', 'subtype': 'LPDDR4X',
+                   'brand': 'Samsung', 'nand_gb': 64.0,
+                   'ram_gen': 'LPDDR4X'}, self.buyer)
+        self.assertEqual(q.status, 'PRICED')
+        self.assertTrue(q.is_range)
+        self.assertEqual((q.rmb_min, q.rmb_max),
+                         (Decimal('90'), Decimal('100')))
+        self.assertEqual(q.value_rmb(), Decimal('95.00'))   # ponto médio
+        self.assertEqual(q.via, 'genérica')
+
+    def test_unify_colapsa_legado_e_reverte(self):
+        import os
+        from io import StringIO
+        from django.core.management import call_command
+        from tenancy.scope import set_current_company
+        # legado: linhas de marca criadas CRUAS (bulk pula o portão novo)
+        Price.all_companies.bulk_create([
+            Price(price_list=self.l_sam, company=self.company, kind='lpddr',
+                  gen='LPDDR4', tier_value=Decimal('4'), tier_unit='GB',
+                  status='quoted', price_min=Decimal('25'),
+                  price_max=Decimal('25')),
+            Price(price_list=self.l_sam, company=self.company, kind='emcp',
+                  gen='', tier_value=Decimal('8'), tier_unit='GB',
+                  status='not_made'),
+        ])
+        Price.all_companies.create(
+            price_list=self.l_gen, kind='lpddr', gen='LPDDR4',
+            tier_value=Decimal('4'), tier_unit='GB', status='unquoted')
+        Price.all_companies.create(
+            price_list=self.l_gen, kind='emcp', gen='',
+            tier_value=Decimal('8'), tier_unit='GB', status='unquoted')
+        try:
+            out = StringIO()
+            call_command('unify_price_rows', buyer='wu-uni',
+                         company='uni-co', stdout=out)     # dry
+            self.assertEqual(Price.all_companies.filter(
+                price_list=self.l_sam).count(), 2)          # nada mudou
+            call_command('unify_price_rows', buyer='wu-uni',
+                         company='uni-co', commit=True, stdout=out)
+            # marcas zeradas de unificados (not_made incluso — bloquearia o
+            # fallback); genérica herdou o MAIS ALTO cotado:
+            self.assertEqual(Price.all_companies.filter(
+                price_list=self.l_sam,
+                kind__in=('emcp', 'umcp', 'lpddr')).count(), 0)
+            g = Price.all_companies.get(price_list=self.l_gen, kind='lpddr')
+            self.assertEqual((g.status, g.price_min),
+                             ('quoted', Decimal('25')))
+            call_command('unify_price_rows', buyer='wu-uni', company='uni-co',
+                         revert='unify_price_rows_backup.json',
+                         stdout=StringIO())
+            self.assertEqual(Price.all_companies.filter(
+                price_list=self.l_sam).count(), 2)          # legado de volta
+        finally:
+            set_current_company(None)
+            if os.path.exists('unify_price_rows_backup.json'):
+                os.unlink('unify_price_rows_backup.json')

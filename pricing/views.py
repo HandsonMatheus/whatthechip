@@ -145,12 +145,18 @@ def partner_list(request, list_pk):
     f_kind = request.GET.get('kind', '')
     f_state = request.GET.get('state', '')
     qs = Price.all_companies.filter(price_list=pl)
+    # Repactuação 2026-07-27 (ESTRUTURAL): kinds unificados (eMCP/uMCP/LPDDR)
+    # vivem SÓ na genérica — aba de MARCA nem os oferece no filtro.
+    from .models import UNIFIED_KINDS
+    if pl.brand_id is not None:
+        qs = qs.exclude(kind__in=UNIFIED_KINDS)
     if f_kind in KINDS:
         qs = qs.filter(kind=f_kind)
     if f_state in {s for s, _ in STATUS_CHOICES}:
         qs = qs.filter(status=f_state)
 
-    rows = sorted(qs, key=lambda p: (_KIND_ORDER.get(p.kind, 99),
+    rows = sorted(qs, key=lambda p: (p.kind not in UNIFIED_KINDS,
+                                     _KIND_ORDER.get(p.kind, 99),
                                      p.gen, p.tier_value))
     # F6.1: mudanças EM REVISÃO — o parceiro precisa ver que o pedido existe
     # (o valor vigente só muda quando o admin aprovar).
@@ -163,11 +169,16 @@ def partner_list(request, list_pk):
     for p in rows:
         p.kind_label = _KIND_LABEL.get(p.kind, p.kind)
         p.pending = pendentes.get(p.pk)
+        p.unified = p.kind in UNIFIED_KINDS
+        p.ranged = p.kind in ('emcp', 'umcp')   # únicos em FAIXA (2026-07-27)
 
+    kind_choices = (KIND_CHOICES if pl.brand_id is None else
+                    [(k, l) for k, l in KIND_CHOICES
+                     if k not in UNIFIED_KINDS])
     return render(request, 'pricing/partner_list.html', {
         'buyer': request.buyer, 'price_list': pl, 'rows': rows,
         'f_kind': f_kind, 'f_state': f_state,
-        'kind_choices': KIND_CHOICES, 'state_choices': STATUS_CHOICES,
+        'kind_choices': kind_choices, 'state_choices': STATUS_CHOICES,
         'nav_lists': _lists_with_stats(request.buyer), 'active_pk': pl.pk,
     })
 
@@ -286,6 +297,14 @@ def partner_save(request, list_pk):
             # F10 (RMB canônico): o ¥ digitado entra CRU no pedido — nenhuma
             # conversão aqui; o USD é derivado na leitura pelo engine.
             mn = mx = Decimal(raw)
+            # Repactuação 2026-07-27: eMCP/uMCP são os ÚNICOS em FAIXA — o
+            # form manda price_max separado; vazio = preço fixo (max = min).
+            raw_max = (request.POST.get('price_max') or '').strip().replace(',', '.')
+            if kind in ('emcp', 'umcp') and raw_max:
+                mx = Decimal(raw_max)
+                if mx < mn:
+                    messages.error(request, _('Faixa invertida: máx menor que mín.'))
+                    return _volta()
         except InvalidOperation:
             messages.error(request, _('Preço ilegível — use números (ex.: 90).'))
             return _volta()
@@ -306,7 +325,8 @@ def partner_save(request, list_pk):
         return _volta()
 
     # Nada mudou? Não gera pedido fantasma.
-    if status == obj.status and (status != STATUS_QUOTED or mn == obj.price_min):
+    if status == obj.status and (status != STATUS_QUOTED
+                                 or (mn, mx) == (obj.price_min, obj.price_max)):
         messages.info(request, _('Nada a enviar — a linha já está assim.'))
         return _volta()
 
@@ -317,6 +337,8 @@ def partner_save(request, list_pk):
                 review_status=PriceChangeRequest.REVIEW_PENDING,
                 defaults={
                     'new_status': status, 'new_price': mn,
+                    # Faixa (2026-07-27, só eMCP/uMCP): NULL = fixo (max=min).
+                    'new_price_max': (mx if mx != mn else None),
                     'old_status': obj.status, 'old_price': obj.price_min,
                     'requested_by': request.user,
                 })
@@ -327,7 +349,8 @@ def partner_save(request, list_pk):
         messages.error(request, _('Conflito ao salvar — tente de novo.'))
     else:
         # i18n: os rótulos exibidos traduzem; STATUS_* (chaves) nunca.
-        rot = {STATUS_QUOTED: _('cotado em ¥ %s') % mn,
+        _val = f'{mn}–{mx}' if mx != mn else f'{mn}'
+        rot = {STATUS_QUOTED: _('cotado em ¥ %s') % _val,
                STATUS_NO_BUY: '"%s"' % _('não compro'),
                STATUS_UNQUOTED: _('não cotado'),
                STATUS_NOT_MADE: _('não fabricado')}

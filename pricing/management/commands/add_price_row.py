@@ -24,8 +24,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
 from pricing.models import (Buyer, KIND_UNIT, KINDS, Price, PriceList,
-                            STATUS_NOT_MADE, STATUS_UNQUOTED, fold_gen,
-                            valid_gen)
+                            STATUS_NOT_MADE, STATUS_UNQUOTED, UNIFIED_KINDS,
+                            fold_gen, valid_gen)
 from tenancy.scope import scope_command_to_company
 
 
@@ -83,6 +83,12 @@ class Command(BaseCommand):
         made_by = {b.strip() for b in opts['made_by'].split(',') if b.strip()}
         lists = list(PriceList.all_companies.filter(buyer=buyer, active=True)
                      .select_related('brand'))
+        # ESTRUTURAL (2026-07-27): kind unificado vive SÓ na genérica —
+        # made_by é irrelevante e listas de marca ficam de fora.
+        if kind in UNIFIED_KINDS:
+            lists = [pl for pl in lists if pl.brand_id is None]
+            made_by = set()
+            self.stdout.write('  (kind UNIFICADO: linha só na genérica)')
         nomes = {pl.brand.name for pl in lists if pl.brand_id}
         desconhecidas = made_by - nomes
         if desconhecidas:

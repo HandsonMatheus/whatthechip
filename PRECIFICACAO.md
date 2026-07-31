@@ -954,6 +954,20 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   linha por NAND; vencedor = status mais informativo; divergência de ¥ →
   relatório). ⚠ `import_price_xlsx` lê o formato ANTIGO multi-aba — a v9 é
   aba única; leitor novo só se o dono pedir.
+- **REPACTUAÇÃO — parte ESTRUTURAL (dono 2026-07-27, cobrança em prod: "a
+  convenção mudou de FORMATO"):** eMCP/uMCP/LPDDR viraram preço ÚNICO
+  brand-agnostic DE VERDADE — **a linha vive SÓ na lista GENÉRICA**
+  (`UNIFIED_KINDS` em pricing/models; portão no save rejeita em lista de
+  marca; a resolução de qualquer marca cai na genérica). **`unify_price_rows`**
+  colapsa o legado (apaga linhas de marca — incl. not_made, que bloquearia o
+  fallback; genérica sem ¥ herda o MAIS ALTO cotado; dry/backup/revert).
+  **/partner/**: aba de marca só mostra eMMC/UFS/DDR; genérica ganha a seção
+  "PREÇO UNIFICADO — vale para todas as marcas" no topo; eMCP/uMCP com DOIS
+  campos (mín–máx) e `PriceChangeRequest.new_price_max` (migração 0018) —
+  a moderação/approve aplica a faixa. `add_price_row` p/ kind unificado cria
+  SÓ a genérica; `enable_price_row` recusa kind unificado; **import_price_xlsx
+  (formato multi-aba velho) APOSENTADO/apagado** — o v2 grava unificados só
+  na genérica. Fixtures da suíte migradas pra estrutura nova.
 - **REPACTUAÇÃO 2026-07-27 (planilha final do comprador — aba única):**
   **eMCP/uMCP em FAIXA** (os ÚNICOS: `price_fixed_only` liberou min≤max só
   p/ esses kinds + `price_range_ordered`; migração pricing/0017; portão

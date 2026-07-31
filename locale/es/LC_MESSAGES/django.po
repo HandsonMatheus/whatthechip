@@ -2183,3 +2183,19 @@ msgstr "US$ unit."
 #: vendas/templates/vendas/so_detail.html
 msgid "Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não muda mais; ajustes do resultado entram como acerto. Confirmar?"
 msgstr "Confirmar congela los valores de esta orden (precio y tasa del contrato) — ya no cambia; los ajustes del resultado entran como liquidación. ¿Confirmar?"
+
+#: pricing/templates/pricing/partner_list.html
+msgid "mínimo da faixa"
+msgstr "mínimo del rango"
+
+#: pricing/templates/pricing/partner_list.html
+msgid "máximo da faixa"
+msgstr "máximo del rango"
+
+#: pricing/templates/pricing/partner_list.html
+msgid "PREÇO UNIFICADO — vale para todas as marcas"
+msgstr "PRECIO UNIFICADO — vale para todas las marcas"
+
+#: pricing/views.py
+msgid "Faixa invertida: máx menor que mín."
+msgstr "Rango invertido: máx menor que mín."

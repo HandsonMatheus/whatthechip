@@ -37,7 +37,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
 from pricing.models import (Buyer, KIND_EMCP, KIND_UMCP, Price, PriceList,
-                            STATUS_NO_BUY, STATUS_QUOTED, fold_gen)
+                            STATUS_NO_BUY, STATUS_QUOTED, UNIFIED_KINDS,
+                            fold_gen)
 from tenancy.scope import scope_command_to_company
 
 _BACKUP = 'import_price_sheet_v2_backup.json'
@@ -46,7 +47,6 @@ _TYPE_TO_KIND = {'emcp': 'emcp', 'umcp': 'umcp', 'ufs': 'ufs', 'emmc': 'emmc',
 # coluna → marca (índices 0-based da linha); 11 = Other → genérica (None).
 _BRAND_COLS = {4: 'Kingston', 5: 'Micron', 6: 'Nanya', 7: 'SK Hynix',
                8: 'Samsung', 9: 'SanDisk', 10: 'Toshiba-Kioxia', 11: None}
-_UNIFIED_KINDS = {'emcp', 'umcp', 'lpddr'}
 _RANGE_RE = re.compile(r'^(\d+(?:\.\d+)?)\s*[-–]\s*(\d+(?:\.\d+)?)$')
 _NUM_RE = re.compile(r'^(\d+(?:\.\d+)?)$')
 _CAP_RE = re.compile(r'^(\d+(?:\.\d+)?)(TB|GB|Gb)$')
@@ -166,13 +166,14 @@ class Command(BaseCommand):
                     f'  ⚠ capacidade ilegível, pulada: {kind} {cap!r}'))
                 continue
             gen = self._gen(kind, row[1])
-            if kind in _UNIFIED_KINDS:
+            if kind in UNIFIED_KINDS:
                 v = self._valor(kind, row[3])
-                if v is None:
+                if v is None or None not in listas:
                     continue
-                # unificado: aplica em TODAS as listas não-not_made + genérica
-                for nome, pl in listas.items():
-                    plano_celulas[(pl.pk, kind, gen, tier)] = v
+                # ESTRUTURAL (2026-07-27): unificado vive SÓ na GENÉRICA — a
+                # resolução de qualquer marca cai nela; linhas de marca desses
+                # kinds foram extintas (unify_price_rows + portão do modelo).
+                plano_celulas[(listas[None].pk, kind, gen, tier)] = v
             else:
                 for idx, marca in _BRAND_COLS.items():
                     v = self._valor(kind, row[idx])
@@ -193,7 +194,7 @@ class Command(BaseCommand):
             if p is None:
                 ausentes.append(f'{kind} {gen or "—"} {tier} [{nome_por_pk[pl_pk]}]')
                 continue
-            if p.status == 'not_made' and kind in _UNIFIED_KINDS:
+            if p.status == 'not_made' and kind in UNIFIED_KINDS:
                 protegidas += 1                      # unificado não ressuscita not_made
                 continue
             if (p.status, p.price_min, p.price_max) == (st, mn, mx):

@@ -32,12 +32,14 @@ def _setup(slug):
     samsung = Brand.objects.create(name=f'Samsung {slug}',
                                    code=f'V{slug[-3:]}'.upper())
     pl = PriceList.all_companies.create(buyer=buyer, brand=samsung)
+    generica = PriceList.all_companies.create(buyer=buyer, brand=None)
     Price.all_companies.create(
         price_list=pl, kind='emmc', gen='', tier_value=Decimal('16'),
         tier_unit='GB', status=STATUS_QUOTED,
         price_min=Decimal('15'), price_max=Decimal('15'))      # ¥15 → US$ 2.10
+    # ESTRUTURAL 2026-07-27: eMCP é UNIFICADO — linha SÓ na genérica.
     Price.all_companies.create(
-        price_list=pl, kind='emcp', gen='LPDDR4X', tier_value=Decimal('64'),
+        price_list=generica, kind='emcp', gen='', tier_value=Decimal('64'),
         tier_unit='GB', status=STATUS_QUOTED,
         price_min=Decimal('90'), price_max=Decimal('90'))      # ¥90 → US$ 12.60
     return company, buyer, samsung.name

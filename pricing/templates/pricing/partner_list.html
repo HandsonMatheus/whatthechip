@@ -52,12 +52,25 @@
     </thead>
     <tbody>
       {% for r in rows %}
+      {% ifchanged r.unified %}{% if r.unified %}
+      <tr><td colspan="7" style="background:#edf5ff;font-weight:700;font-size:12px;letter-spacing:.04em;padding:8px 14px;">{% trans "PREÇO UNIFICADO — vale para todas as marcas" %}</td></tr>
+      {% endif %}{% endifchanged %}
       <tr class="{% if r.status == 'not_made' %}ptn-row--inherited{% elif r.status == 'unquoted' %}ptn-row--unquoted{% elif r.status == 'no_buy' %}ptn-row--nobuy{% endif %}">
         <td style="font-weight:600;">{{ r.kind_label }}</td>
         <td style="font-family:'IBM Plex Mono',monospace;">{{ r.gen|default:"—" }}</td>
         <td style="font-family:'IBM Plex Mono',monospace;">{{ r.tier_value|floatformat:"-1" }}{% if r.kind == 'emcp' or r.kind == 'umcp' %}GB (NAND){% else %}{{ r.tier_unit }}{% endif %}</td>
         {% localize off %}
-        <td><input class="ptn-input" form="f{{ forloop.counter }}" type="number" step="0.01" min="0" name="price" value="{{ r.price_min|default_if_none:'' }}" {% if r.status == 'not_made' %}disabled{% endif %}></td>
+        <td>
+          {% if r.ranged %}
+          <span style="display:inline-flex;align-items:center;gap:4px;">
+            <input class="ptn-input" form="f{{ forloop.counter }}" type="number" step="0.01" min="0" name="price" value="{{ r.price_min|default_if_none:'' }}" title="{% trans 'mínimo da faixa' %}" style="width:76px;">
+            <span style="color:#8d8d8d;">–</span>
+            <input class="ptn-input" form="f{{ forloop.counter }}" type="number" step="0.01" min="0" name="price_max" value="{{ r.price_max|default_if_none:'' }}" title="{% trans 'máximo da faixa' %}" style="width:76px;">
+          </span>
+          {% else %}
+          <input class="ptn-input" form="f{{ forloop.counter }}" type="number" step="0.01" min="0" name="price" value="{{ r.price_min|default_if_none:'' }}" {% if r.status == 'not_made' %}disabled{% endif %}>
+          {% endif %}
+        </td>
         {% endlocalize %}
         <td>
           <select form="f{{ forloop.counter }}" name="state" class="ptn-input" style="width:auto;">
@@ -67,7 +80,7 @@
             <option value="no_buy"   {% if r.status == 'no_buy' %}selected{% endif %}>{% trans "Não compro" %}</option>
           </select>
           {% if r.pending %}
-          <div style="margin-top:4px;"><span class="ptn-tag ptn-tag--review" title="{% trans 'Aguardando aprovação do WhatTheChip — o valor vigente ainda é o exibido.' %}">⏳ {% trans "em revisão:" %} {% if r.pending.new_status == 'quoted' %}{% localize off %}¥ {{ r.pending.new_price }}{% endlocalize %}{% else %}{{ r.pending.get_new_status_display }}{% endif %}</span></div>
+          <div style="margin-top:4px;"><span class="ptn-tag ptn-tag--review" title="{% trans 'Aguardando aprovação do WhatTheChip — o valor vigente ainda é o exibido.' %}">⏳ {% trans "em revisão:" %} {% if r.pending.new_status == 'quoted' %}{% localize off %}¥ {{ r.pending.new_price }}{% if r.pending.new_price_max %}–{{ r.pending.new_price_max }}{% endif %}{% endlocalize %}{% else %}{{ r.pending.get_new_status_display }}{% endif %}</span></div>
           {% endif %}
         </td>
         <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#525252;">

@@ -2079,3 +2079,19 @@ msgstr "单价 US$"
 #: vendas/templates/vendas/so_detail.html
 msgid "Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não muda mais; ajustes do resultado entram como acerto. Confirmar?"
 msgstr "确认后将冻结本订单的数值（价格与合同汇率）——订单不再变动；买家结果的调整将以结算方式录入。确认吗？"
+
+#: pricing/templates/pricing/partner_list.html
+msgid "mínimo da faixa"
+msgstr "区间最低价"
+
+#: pricing/templates/pricing/partner_list.html
+msgid "máximo da faixa"
+msgstr "区间最高价"
+
+#: pricing/templates/pricing/partner_list.html
+msgid "PREÇO UNIFICADO — vale para todas as marcas"
+msgstr "统一价 — 适用于所有品牌"
+
+#: pricing/views.py
+msgid "Faixa invertida: máx menor que mín."
+msgstr "区间颠倒：最高价低于最低价。"

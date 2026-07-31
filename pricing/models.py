@@ -96,6 +96,11 @@ _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
     KIND_SSD:   re.compile(r'^$'),           # SSD: sem geração na chave
 }
 
+# Repactuação 2026-07-27 (ESTRUTURAL): eMCP/uMCP/LPDDR têm preço ÚNICO,
+# brand-agnostic — a linha vive SÓ na lista GENÉRICA (a resolução de qualquer
+# marca cai nela). Marca segue dimensão de preço APENAS em eMMC/UFS/DDR.
+UNIFIED_KINDS = frozenset({KIND_EMCP, KIND_UMCP, KIND_LPDDR})
+
 STATUS_QUOTED, STATUS_NO_BUY, STATUS_UNQUOTED = 'quoted', 'no_buy', 'unquoted'
 STATUS_NOT_MADE = 'not_made'
 STATUS_CHOICES = [
@@ -516,8 +521,15 @@ class Price(models.Model):
                     f'apague esta.')})
         # company denormalizada: herda da lista; mismatch é bug de chamador.
         if self.price_list_id:
-            list_company_id = PriceList.all_companies.values_list(
-                'company_id', flat=True).get(pk=self.price_list_id)
+            _brand_id, list_company_id = PriceList.all_companies.values_list(
+                'brand_id', 'company_id').get(pk=self.price_list_id)
+            # Repactuação 2026-07-27 (ESTRUTURAL): preço unificado NÃO tem
+            # marca — linha de eMCP/uMCP/LPDDR só existe na lista GENÉRICA.
+            if self.kind in UNIFIED_KINDS and _brand_id is not None:
+                raise ValidationError({'kind': (
+                    f'{self.kind}: preço UNIFICADO (repactuação 2026-07-27) — '
+                    f'a linha vive só na lista genérica; listas de marca não '
+                    f'têm mais este tipo.')})
             if self.company_id and list_company_id != self.company_id:
                 raise ValidationError(
                     {'company': 'O preço pertence a uma empresa diferente da lista.'})
@@ -623,6 +635,11 @@ class PriceChangeRequest(models.Model):
     # O PEDIDO (para onde o comprador quer levar a linha) — em ¥ (F10):
     new_status = models.CharField(max_length=10, choices=STATUS_CHOICES,
                                   verbose_name='Novo estado')
+    # Faixa (repactuação 2026-07-27, só eMCP/uMCP): new_price = mínimo e
+    # new_price_max = máximo; NULL em new_price_max = preço fixo (min = max).
+    new_price_max = models.DecimalField(
+        max_digits=8, decimal_places=2, null=True, blank=True,
+        verbose_name='¥ máx. proposto (faixa)')
     new_price = models.DecimalField(max_digits=8, decimal_places=2,
                                     null=True, blank=True, verbose_name='Novo ¥')
     # Snapshot do ANTES (para o admin decidir vendo o delta):
@@ -703,7 +720,9 @@ class PriceChangeRequest(models.Model):
         p = self.price
         p.status = self.new_status
         if self.new_status == STATUS_QUOTED:
-            p.price_min = p.price_max = self.new_price
+            p.price_min = self.new_price
+            p.price_max = (self.new_price_max
+                           if self.new_price_max is not None else self.new_price)
             p.quote_date = _date.today()
         else:
             p.price_min = p.price_max = None
