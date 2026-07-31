@@ -54,10 +54,17 @@ class PriceGateTests(TestCase):
         p = self._price()
         self.assertEqual(p.company_id, self.company.pk)   # denormalizada da lista
         self.assertFalse(p.is_range)
-        # PREÇO FIXO (decisão 2026-07-07): FAIXA é rejeitada pelo portão.
+        # Repactuação 2026-07-27: eMCP/uMCP são os ÚNICOS em FAIXA…
+        rng = self._price(kind='emcp', gen='LPDDR4X', tier_value=Decimal('64'),
+                          price_min=Decimal('90.00'), price_max=Decimal('100.00'))
+        self.assertTrue(rng.is_range)
+        # …o resto segue FIXO (faixa rejeitada) e faixa invertida é barrada.
         with self.assertRaises(ValidationError):
-            self._price(kind='emcp', gen='LPDDR4X', tier_value=Decimal('64'),
+            self._price(kind='emmc', tier_value=Decimal('32'),
                         price_min=Decimal('13.50'), price_max=Decimal('16.50'))
+        with self.assertRaises(ValidationError):
+            self._price(kind='umcp', tier_value=Decimal('128'),
+                        price_min=Decimal('110.00'), price_max=Decimal('100.00'))
 
     def test_kind_x_unidade_erra_e_rejeitado(self):
         with self.assertRaises(ValidationError):
@@ -1758,3 +1765,117 @@ class SsdLinearPricingTests(TestCase):
         q = BuyerPricingContext(self.buyer).price_from_key(
             'ssd', '', Decimal('440'), 'GB')
         self.assertEqual((q.status, q.rmb), ('PRICED', Decimal('44')))
+
+
+class ImportPriceSheetV2Tests(TestCase):
+    """Repactuação 2026-07-27: o importador da planilha NOVA (aba única) —
+    unified em FAIXA nos combos (todas as listas não-not_made + genérica),
+    LPDDR unified fixo (célula suja limpa), eMMC/UFS/DDR por marca com
+    Other=GENÉRICA e 'x'=no_buy; '—'/vazio não mexe; dry-run diff; revert."""
+
+    def _xlsx(self):
+        import tempfile
+        import openpyxl
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = 'Prices'
+        ws.append(['Wu Quan — Price'])
+        ws.append(['header'])
+        ws.append(['legenda'])
+        ws.append(['Type', 'Subtype', 'Capacity', 'Unified', 'Kingston',
+                   'Micron', 'Nanya', 'SK Hynix', 'Samsung', 'SanDisk',
+                   'Toshiba-Kioxia', 'Other'])
+        ws.append(['eMCP', '', '', 'UNIFIED', '', '', '', '', '', '', '', ''])
+        ws.append(['', '—', '64GB', '90-100', '', '', '', '', '', '', '', ''])
+        ws.append(['LPDDR', 'LPDDR4/4X', '4GB', '15,', '', '', '', '', '', '', '', ''])
+        ws.append(['DDR', 'DDR4', '8Gb', '', '—', '11', '', '', 'x', '', '', '6'])
+        f = tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False)
+        wb.save(f.name)
+        return f.name
+
+    def test_ciclo_completo(self):
+        import os
+        from io import StringIO
+        from django.core.management import call_command
+        from tenancy.scope import set_current_company
+        from chips.models import Brand as ChipBrand
+        co = Company.objects.create(name='ImpV2', slug='imp-v2')
+        buyer = Buyer.all_companies.create(company=co, name='Wu V2',
+                                           slug='wu-v2')
+        L, marcas = {}, {}
+        for nome in ('Kingston', 'Micron', 'Samsung'):
+            marcas[nome] = ChipBrand.objects.create(name=nome,
+                                                    code=f'V2{nome[:3].upper()}')
+            L[nome] = PriceList.all_companies.create(buyer=buyer,
+                                                     brand=marcas[nome])
+        L[None] = PriceList.all_companies.create(buyer=buyer, brand=None)
+
+        def row(nome, kind, gen, tier, unit, status='unquoted', mn=None):
+            return Price.all_companies.create(
+                price_list=L[nome], kind=kind, gen=gen,
+                tier_value=Decimal(tier), tier_unit=unit, status=status,
+                price_min=Decimal(mn) if mn else None,
+                price_max=Decimal(mn) if mn else None)
+
+        emcp_k = row('Kingston', 'emcp', '', '64', 'GB', 'quoted', '80')
+        emcp_m = row('Micron', 'emcp', '', '64', 'GB', 'quoted', '80')
+        emcp_s = row('Samsung', 'emcp', '', '64', 'GB', 'quoted', '100')
+        emcp_g = row(None, 'emcp', '', '64', 'GB')
+        emcp_nm = Price.all_companies.create(          # not_made preservada
+            price_list=L['Kingston'], kind='emcp', gen='', tier_value=Decimal('8'),
+            tier_unit='GB', status='not_made')
+        lp_s = row('Samsung', 'lpddr', 'LPDDR4', '4', 'GB', 'quoted', '25')
+        lp_g = row(None, 'lpddr', 'LPDDR4', '4', 'GB')
+        ddr_m = row('Micron', 'ddr', 'DDR4', '8', 'Gb', 'quoted', '10')
+        ddr_s = row('Samsung', 'ddr', 'DDR4', '8', 'Gb', 'quoted', '13')
+        ddr_g = row(None, 'ddr', 'DDR4', '8', 'Gb')
+        path = self._xlsx()
+        try:
+            out = StringIO()
+            call_command('import_price_sheet_v2', path, buyer='wu-v2',
+                         company='imp-v2', stdout=out)
+            self.assertIn('DRY-RUN', out.getvalue())
+            emcp_s.refresh_from_db()
+            self.assertEqual(emcp_s.price_min, Decimal('100'))   # nada mudou
+
+            out = StringIO()
+            call_command('import_price_sheet_v2', path, buyer='wu-v2',
+                         company='imp-v2', commit=True, stdout=out)
+            texto = out.getvalue()
+            # eMCP unificado em FAIXA nas 4 listas (Samsung CAIU, Micron SUBIU):
+            for p in (emcp_k, emcp_m, emcp_s, emcp_g):
+                p.refresh_from_db()
+                self.assertEqual((p.status, p.price_min, p.price_max),
+                                 ('quoted', Decimal('90'), Decimal('100')))
+            self.assertIn('SUBIU', texto)
+            self.assertIn('CAIU', texto)
+            emcp_nm.refresh_from_db()
+            self.assertEqual(emcp_nm.status, 'not_made')         # preservada
+            # LPDDR unificado fixo, célula suja '15,' limpa:
+            lp_s.refresh_from_db(); lp_g.refresh_from_db()
+            self.assertEqual(lp_s.price_min, Decimal('15'))
+            self.assertEqual(lp_g.price_min, Decimal('15'))
+            # DDR por marca: Micron 10→11; Samsung 'x'→no_buy; Other→genérica ¥6:
+            ddr_m.refresh_from_db(); ddr_s.refresh_from_db(); ddr_g.refresh_from_db()
+            self.assertEqual(ddr_m.price_min, Decimal('11'))
+            self.assertEqual((ddr_s.status, ddr_s.price_min), ('no_buy', None))
+            self.assertEqual((ddr_g.status, ddr_g.price_min),
+                             ('quoted', Decimal('6')))
+            # Idempotente:
+            out = StringIO()
+            call_command('import_price_sheet_v2', path, buyer='wu-v2',
+                         company='imp-v2', commit=True, stdout=out)
+            self.assertIn('Nada a mudar', out.getvalue())
+            # Revert restaura tudo:
+            call_command('import_price_sheet_v2', buyer='wu-v2',
+                         company='imp-v2',
+                         revert='import_price_sheet_v2_backup.json',
+                         stdout=StringIO())
+            emcp_s.refresh_from_db(); ddr_s.refresh_from_db()
+            self.assertEqual(emcp_s.price_min, Decimal('100'))
+            self.assertEqual(ddr_s.status, 'quoted')
+        finally:
+            set_current_company(None)
+            os.unlink(path)
+            if os.path.exists('import_price_sheet_v2_backup.json'):
+                os.unlink('import_price_sheet_v2_backup.json')

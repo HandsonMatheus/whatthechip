@@ -423,9 +423,17 @@ class Price(models.Model):
             # cotado exige min == max. As duas colunas ficam (representação
             # interna reversível); reativar faixa = remover esta trava + a
             # regra no clean() (migração 0005 achatou as faixas no ponto médio).
+            # Repactuação 2026-07-27: eMCP/uMCP são os ÚNICOS em FAIXA
+            # (mín ≤ máx); todo o resto segue preço FIXO (mín = máx).
             models.CheckConstraint(
                 name='price_fixed_only',
-                condition=~Q(status=STATUS_QUOTED) | Q(price_min=F('price_max'))),
+                condition=~Q(status=STATUS_QUOTED)
+                          | Q(price_min=F('price_max'))
+                          | Q(kind__in=(KIND_EMCP, KIND_UMCP))),
+            models.CheckConstraint(
+                name='price_range_ordered',
+                condition=Q(price_min__isnull=True)
+                          | Q(price_min__lte=F('price_max'))),
             # quoted ⇒ tem valor; no_buy/unquoted ⇒ NÃO tem valor (nunca 0).
             models.CheckConstraint(
                 name='price_quoted_has_value',
@@ -469,9 +477,16 @@ class Price(models.Model):
         if self.status == STATUS_QUOTED:
             if self.price_min is None or self.price_max is None:
                 errors['price_min'] = 'Cotado exige o preço em ¥ (RMB).'
-            elif self.price_min != self.price_max:
-                errors['price_min'] = ('Preço é FIXO (decisão 2026-07-07): não há '
-                                       'faixa — informe UM valor (mín = máx).')
+            elif self.price_min > self.price_max:
+                errors['price_min'] = 'Faixa invertida: mín > máx.'
+            elif (self.price_min != self.price_max
+                    and self.kind not in (KIND_EMCP, KIND_UMCP)):
+                # Repactuação 2026-07-27 (planilha final do comprador):
+                # eMCP/uMCP são os ÚNICOS em FAIXA (ex.: ¥90–100); todo o
+                # resto segue FIXO (decisão 2026-07-07 preservada).
+                errors['price_min'] = ('Preço é FIXO para este tipo — faixa '
+                                       'só em eMCP/uMCP (repactuação '
+                                       '2026-07-27). Informe UM valor.')
         else:
             if self.price_min is not None or self.price_max is not None:
                 errors['status'] = ('Sem-preço (não cotado / não fabricado / '

@@ -106,8 +106,11 @@ def draft_totals(pairs):
     pending = []
     for line, q in pairs:
         if q.status == 'PRICED':
-            total_rmb += q.rmb * line.quantity
-            total_usd += q.price_min * line.quantity
+            # Faixa (eMCP/uMCP, repactuação 2026-07-27): draft/OV usam o
+            # PONTO MÉDIO (value_rmb/value = mid; em preço fixo, é o próprio
+            # valor — zero mudança para os demais). O acerto ajusta ao real.
+            total_rmb += q.value_rmb() * line.quantity
+            total_usd += q.value() * line.quantity
         else:
             pending.append((line, q))
     return total_rmb, total_usd, pending
@@ -132,8 +135,10 @@ def confirm(so, user):
         total_rmb = Decimal('0.00')
         total_usd = Decimal('0.00')
         for line, q in pairs:
-            line.unit_rmb = q.rmb
-            line.unit_usd = (q.rmb * rate).quantize(_CENT, ROUND_HALF_UP)
+            # Faixa → congela o PONTO MÉDIO (repactuação 2026-07-27); fixo →
+            # o próprio valor. O acerto (F11.4) ajusta ao pago real.
+            line.unit_rmb = q.value_rmb()
+            line.unit_usd = (line.unit_rmb * rate).quantize(_CENT, ROUND_HALF_UP)
             line.save()
             total_rmb += line.unit_rmb * line.quantity
             # Total US$ = SOMA das linhas congeladas (estilo fatura: quem

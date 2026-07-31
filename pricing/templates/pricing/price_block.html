@@ -19,7 +19,7 @@
   {% for buyer, q in price_quotes %}
   <div style="{% if not forloop.last %}margin-bottom:14px;{% endif %}">
     {% if q.status == "PRICED" %}
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:700;color:#0e6027;letter-spacing:-.02em;line-height:1;">{% localize off %}{% if q.is_stale %}≈ {% endif %}US$ {{ q.price_min }}{% endlocalize %}</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:700;color:#0e6027;letter-spacing:-.02em;line-height:1;">{% localize off %}{% if q.is_stale %}≈ {% endif %}US$ {{ q.price_min }}{% if q.is_range %}–{{ q.price_max }}{% endif %}{% endlocalize %}</div>
       <div style="font-size:12px;color:#697077;margin-top:8px;">
         {% if q.quote_date %}{% trans "cotado" %} {{ q.quote_date|date:"d/m/Y" }}{% else %}{% trans "referência (sem data)" %}{% endif %}
       </div>

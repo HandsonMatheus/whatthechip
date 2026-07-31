@@ -954,6 +954,20 @@ C-###"; nada de eMMC/specs no HTML; export com Category; OV com C-###).
   linha por NAND; vencedor = status mais informativo; divergência de ¥ →
   relatório). ⚠ `import_price_xlsx` lê o formato ANTIGO multi-aba — a v9 é
   aba única; leitor novo só se o dono pedir.
+- **REPACTUAÇÃO 2026-07-27 (planilha final do comprador — aba única):**
+  **eMCP/uMCP em FAIXA** (os ÚNICOS: `price_fixed_only` liberou min≤max só
+  p/ esses kinds + `price_range_ordered`; migração pricing/0017; portão
+  clean() idem) — **vendas usam o PONTO MÉDIO** (`value_rmb()`/`value()` em
+  draft/confirm; fixo = próprio valor, zero mudança; acerto ajusta ao real);
+  card mostra "US$ mín–máx". **`import_price_sheet_v2`**: unified em faixa
+  nos combos gravado em TODAS as listas não-not_made + genérica; LPDDR
+  unified fixo (limpa sujeira "3,"/"8;"); eMMC/UFS/DDR por marca + coluna
+  **Other = genérica**; "x" = no_buy; "—"/vazio não mexe; dry-run com diff
+  célula a célula (NOVO/SUBIU/CAIU); backup + --revert; idempotente;
+  quote_date = hoje. DEFERIDO: edição de faixa no /partner/ (parceiro
+  editando uma faixa hoje colapsa em valor único — pendência). Panorama da
+  repactuação: LPDDR −40…−80%, combos convergem (Samsung/SK ↓, Micron/
+  Kingston ↑), UFS/eMMC/DDR praticamente estáveis + preenchimentos novos.
 - **SSD ENTROU NO NEGÓCIO (dono 2026-07-24 — WeChat do comprador: "SSD
   chips are priced per GB… 512GB×0.1=51rmb / 128GB×0.1=13rmb"):** tipo
   canônico **`SSD`** no vocabulário (chips/chip_types.py; aliases bga/nvme) —

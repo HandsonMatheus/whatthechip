@@ -46,10 +46,11 @@ def so_detail(request, pk):
             priced = q.status == 'PRICED'
             rows.append({
                 'line': line, 'priced': priced, 'reason': q.reason,
-                'unit_rmb': q.rmb_display if priced else None,
-                'unit_usd': q.price_min if priced else None,
-                'total_rmb': (q.rmb * line.quantity) if priced else None,
-                'total_usd': (q.price_min * line.quantity) if priced else None,
+                # mid = valor exato quando fixo; ponto médio quando faixa.
+                'unit_rmb': f'{q.value_rmb().normalize():f}' if priced else None,
+                'unit_usd': q.value() if priced else None,
+                'total_rmb': (q.value_rmb() * line.quantity) if priced else None,
+                'total_usd': (q.value() * line.quantity) if priced else None,
             })
         ctx.update({'rows': rows, 'live_total_rmb': total_rmb,
                     'live_total_usd': total_usd, 'pending': pending,
