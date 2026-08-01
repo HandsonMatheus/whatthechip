@@ -585,6 +585,49 @@ class Price(models.Model):
         return super().save(*args, **kwargs)
 
 
+class FxRate(models.Model):
+    """Taxa CNY→USD **mid-market DIÁRIA** (PLANO_FX, decisões 2026-08-01).
+
+    O acordo com o comprador é taxa de MERCADO travada no fechamento do
+    lote — o aberto exibe "≈ US$" vivo derivado DAQUI. A taxa contratual
+    morreu; `Buyer.fx_usd_rate` ficou como BOOTSTRAP (última defesa
+    enquanto esta tabela está vazia — sai do caminho no 1º fetch).
+
+    Um número POR DIA, de referência pública (verificável pelos dois lados
+    — mata disputa; intradia do CNY é banda administrada ±2%). Histórico
+    append-only auditável; `is_fallback` marca dia em que a fonte caiu e a
+    última taxa conhecida foi repetida. Tabela GLOBAL (dado de plataforma,
+    como o catálogo — declarada no TenancyDeclarationTests)."""
+
+    date = models.DateField(unique=True, verbose_name='Data')
+    rate = models.DecimalField(max_digits=8, decimal_places=4,
+                               verbose_name='CNY→USD',
+                               help_text='Mid-market do dia (4 casas — '
+                                         'PLANO_FX §1.7).')
+    source = models.CharField(max_length=80, blank=True, default='',
+                              verbose_name='Fonte')
+    is_fallback = models.BooleanField(
+        default=False, verbose_name='Fallback',
+        help_text='Fonte fora do ar — repetiu a última taxa conhecida.')
+    fetched_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name='Buscada em')
+
+    class Meta:
+        verbose_name = 'Taxa de câmbio (dia)'
+        verbose_name_plural = 'Taxas de câmbio'
+        ordering = ['-date']
+
+    def __str__(self):
+        fb = ' (fallback)' if self.is_fallback else ''
+        return f'{self.date}: 1 ¥ = US$ {self.rate}{fb}'
+
+    @classmethod
+    def current(cls):
+        """A taxa vigente = a mais recente (hoje, ou a última que entrou).
+        None com a tabela vazia (aí vale o bootstrap contratual)."""
+        return cls.objects.order_by('-date').first()
+
+
 @pghistory.track()  # auditoria: o congelamento é o registro "vendi com qual tabela"
 class LotPricing(models.Model):
     """F8 — valoração CONGELADA de um lote no fechamento (PRECIFICACAO §1.7).

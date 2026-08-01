@@ -1,17 +1,18 @@
 {% comment %}
   Bloco de preço do comprador (F5/F8 — PRECIFICACAO §7). Fonte ÚNICA do markup:
   incluído pelo confirm_card.html (bancada completa) e confirm_card_masked.html
-  (bancada do admin da empresa). Espera `price_quotes` = [(Buyer, PriceQuote)] no
-  contexto — que chega VAZIO para operador/gerente/anônimo (gate na VIEW, nunca só
-  aqui). ≈ = faixa/cotação velha (staleness, princípio #4 do plano).
+  (bancada do admin da empresa). Espera `price_quotes` = [(Buyer, PriceQuote)]
+  e, opcional, `fx_info` (carimbo da taxa — PLANO_FX). O gate segue na VIEW
+  (operador/gerente/anônimo chegam com price_quotes vazio), nunca só aqui.
 
-  Visual (dono 2026-07-25): USD-ONLY, grande e direto. Removidos o rótulo de
-  marca ("WhatTheChip"), o via ("· marca") e o preço em ¥ (RMB) — o admin da
-  empresa quer só o valor em US$. O ¥ (língua do comprador) segue existindo no
-  BACKEND (JSON do search_api, snapshot do lote, telas de precificação) — aqui é
-  só EXIBIÇÃO. `q.price_min` é o US$ derivado da taxa contratual; {% localize off %}
-  mantém o dinheiro com PONTO em qualquer idioma. A classe `dc2-price-block` é
-  contrato de teste (pricing/tests.py) — NÃO remover.
+  Visual ¥-PRIMEIRO (PLANO_FX Fase A, dono 2026-08-01): o ¥ é a PROMESSA
+  (tabela do comprador, fixa); o US$ é tradução de MERCADO, vivo e rotulado
+  "≈" com o carimbo da taxa do dia. Revoga o "USD-only" de 2026-07-25 e a
+  ocultação do ¥ pro admin de empresa (máscara v3.1 — opção (a) do dono,
+  2026-08-01: cliente também vê o ¥). Valores formatados em PYTHON
+  (rmb_range_display — floatformat ignora localize-off); {% localize off %}
+  mantém o dinheiro com PONTO em qualquer idioma. A classe `dc2-price-block`
+  é contrato de teste (pricing/tests.py) — NÃO remover.
 {% endcomment %}
 {% load i18n l10n %}
 {% if price_quotes %}
@@ -19,9 +20,10 @@
   {% for buyer, q in price_quotes %}
   <div style="{% if not forloop.last %}margin-bottom:14px;{% endif %}">
     {% if q.status == "PRICED" %}
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:700;color:#0e6027;letter-spacing:-.02em;line-height:1;">{% localize off %}{% if q.is_stale %}≈ {% endif %}US$ {{ q.price_min }}{% if q.is_range %}–{{ q.price_max }}{% endif %}{% endlocalize %}</div>
-      <div style="font-size:12px;color:#697077;margin-top:8px;">
-        {% if q.quote_date %}{% trans "cotado" %} {{ q.quote_date|date:"d/m/Y" }}{% else %}{% trans "referência (sem data)" %}{% endif %}
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:700;color:#0e6027;letter-spacing:-.02em;line-height:1;">{% if q.is_stale %}≈ {% endif %}¥ {{ q.rmb_range_display }}</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:#697077;margin-top:6px;">{% localize off %}≈ US$ {{ q.price_min }}{% if q.is_range %}–{{ q.price_max }}{% endif %}{% endlocalize %}</div>
+      <div style="font-size:12px;color:#697077;margin-top:6px;">
+        {% if q.quote_date %}{% trans "cotado" %} {{ q.quote_date|date:"d/m/Y" }}{% else %}{% trans "referência (sem data)" %}{% endif %}{% if fx_info.is_market %} · {% blocktrans trimmed with rate=fx_info.rate_disp d=fx_info.date|date:"d/m" %}taxa mid-market {{ d }}: 1 ¥ ≈ US$ {{ rate }}{% endblocktrans %}{% if fx_info.is_fallback %} ⚠{% endif %}{% endif %}
       </div>
     {% elif q.status == "NO_BUY" %}
       <div style="font-size:14px;font-weight:700;color:#a2191f;">{% trans "não compra este item" %}</div>

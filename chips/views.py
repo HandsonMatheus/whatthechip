@@ -97,6 +97,19 @@ def _price_quotes_for_admin(request, result):
     return quotes_for_admin(request, result)
 
 
+def _fx_info_for_card(request):
+    """Carimbo da taxa de mercado p/ o card (PLANO_FX Fase A) — só quando
+    o preço aparece (mesmo gate do quotes_for_admin)."""
+    user = getattr(request, 'user', None)
+    pode = bool((user is not None and user.is_authenticated
+                 and user.is_superuser)
+                or getattr(request, 'company_role', None) == 'admin')
+    if not pode:
+        return None
+    from pricing.engine import fx_display
+    return fx_display()
+
+
 def decode_html(request):
     """
     Classifica um Part Number e retorna HTML parcial para o HTMX.
@@ -146,6 +159,7 @@ def decode_html(request):
         # F5 (PRECIFICACAO §7): preço do comprador — lista VAZIA para quem não
         # é admin da empresa (operador/gerente/anônimo nunca veem preço).
         "price_quotes":        _price_quotes_for_admin(request, result),
+        "fx_info":             _fx_info_for_card(request),
     }
 
     return render(request, "chips/partials/decode_card.html", context)

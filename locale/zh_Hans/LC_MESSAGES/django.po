@@ -2228,3 +2228,10 @@ msgstr "手机 eMMC — 统一价，所有品牌"
 
 msgid "eMMC de PCB — preço por marca (set-top box, TV, notebook…)"
 msgstr "PCB eMMC — 按品牌定价（机顶盒、电视、笔记本…）"
+
+# ── PLANO_FX Fase A — ¥ primeiro + taxa de mercado (2026-08-01) ──
+msgid "congelado"
+msgstr "已冻结"
+
+msgid "taxa mid-market %(d)s: 1 ¥ ≈ US$ %(rate)s"
+msgstr "%(d)s 中间价：1 ¥ ≈ US$ %(rate)s"

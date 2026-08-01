@@ -628,6 +628,7 @@ def painel(request):
     if getattr(request, 'company_role', None) == 'admin' and open_lots:
         vals = _lot_valuations(request, open_lots[0])
         open_lots[0].val_mid = vals[0]['total_mid'] if vals else None
+        open_lots[0].val_mid_rmb = vals[0].get('total_mid_rmb') if vals else None
     ctx = {
         'open_lots': open_lots,
         'stats': {
@@ -664,6 +665,7 @@ def lot_list(request):
             else:
                 vals = _lot_valuations(request, lot)
                 lot.val_mid = vals[0]['total_mid'] if vals else None
+                lot.val_mid_rmb = vals[0].get('total_mid_rmb') if vals else None
 
     return render(request, 'estoque/lotes.html',
                   {'lots': lots, 'show_valuation': is_admin})
@@ -762,6 +764,10 @@ def _lot_valuations(request, lot):
             'buyer': buyer, 'frozen': False, 'created_at': None,
             'total_low': rep.totals['low'], 'total_mid': rep.totals['mid'],
             'total_high': rep.totals['high'],
+            # PLANO_FX (Fase A): o ¥ é o valor PRIMÁRIO; o US$ vira "≈".
+            'total_mid_rmb': rep.totals_rmb['mid'],
+            'total_low_rmb': rep.totals_rmb['low'],
+            'total_high_rmb': rep.totals_rmb['high'],
             'priced_units': rep.priced_units, 'total_units': rep.total_units,
             'coverage_units': rep.coverage_units,
         })
@@ -905,8 +911,9 @@ def preview_chip(request, lot_pk):
 
     # F8 (PRECIFICACAO §7/§12): preço do comprador na bancada — SÓ admin.
     # quotes_for_admin devolve [] para operador/gerente sem nem consultar preço.
-    from pricing.engine import quotes_for_admin
+    from pricing.engine import fx_display, quotes_for_admin
     ctx['price_quotes'] = quotes_for_admin(request, result, origin=lot.origin)
+    ctx['fx_info'] = fx_display() if ctx['price_quotes'] else None
 
     # F12 (máscara de categoria, dono 2026-07-17): empresa-CLIENTE recebe o
     # card MASCARADO (template whitelist: PN + destino C-###/baldes + qtd +
@@ -1160,6 +1167,8 @@ def _export_price_maps(request, lot):
                     'status': l.quote.status,
                     'min': str(l.quote.price_min) if l.quote.price_min is not None else None,
                     'max': str(l.quote.price_max) if l.quote.price_max is not None else None,
+                    # PLANO_FX (Fase A): o ¥ é o unitário PRIMÁRIO do export.
+                    'rmb': str(l.quote.value_rmb()) if l.quote.status == 'PRICED' else None,
                 }
                 for l in rep.lines
             }
@@ -1172,17 +1181,20 @@ def _export_price_maps(request, lot):
 
 
 def _export_price_cells(line, qty):
-    """(preço unitário, total da linha) para a planilha. PRICED → números
-    (ponto médio da faixa — igual ao cenário default 'médio' da config); sem
-    valor → rótulo curto no lugar do unitário e total vazio."""
+    """(¥ unitário, US$ unitário, US$ total) p/ a planilha (PLANO_FX Fase A:
+    ¥ primeiro). PRICED → números (cenário default da config já embutido no
+    min/max congelado do report); sem valor → rótulo curto no ¥ e resto
+    vazio. Congelados LEGADOS (sem 'rmb') mostram '—' no ¥."""
     from decimal import Decimal
     if line and line.get('status') == 'PRICED' and line.get('min') is not None:
         low  = Decimal(str(line['min']))
         high = Decimal(str(line.get('max') or line['min']))
         unit = (low + high) / 2
-        return float(round(unit, 2)), float(round(unit * (qty or 0), 2))
+        rmb = float(Decimal(str(line['rmb']))) if line.get('rmb') else '—'
+        return (rmb, float(round(unit, 2)),
+                float(round(unit * (qty or 0), 2)))
     status = line.get('status') if line else None
-    return _EXPORT_PRICE_LABEL.get(status, 'sem preço'), None
+    return _EXPORT_PRICE_LABEL.get(status, 'sem preço'), None, None
 
 
 @role_required('manager')   # §8: exportar lote é de gerente+
@@ -1224,10 +1236,13 @@ def export_xls(request, lot_pk):
     qty_col = 3 if masked else 6
     # Colunas de preço por comprador (só chegam aqui para admin). "Unit." é o
     # ponto médio da faixa em USD (cenário default); fechado = congelado (F8).
+    # PLANO_FX (Fase A): ¥ primeiro — o unitário em ¥ ganha coluna própria;
+    # o USD segue como tradução (≈ mercado no aberto; congelado no fechado).
     for buyer_name, _lines in price_maps:
-        headers    += [f'Preço unit. — {buyer_name} (USD)',
-                       f'Total — {buyer_name} (USD)']
-        col_widths += [24, 20]
+        headers    += [f'Preço unit. — {buyer_name} (¥ RMB)',
+                       f'Preço unit. — {buyer_name} (US$ ≈)',
+                       f'Total — {buyer_name} (US$ ≈)']
+        col_widths += [24, 24, 20]
 
     for col_idx, (h, w) in enumerate(zip(headers, col_widths), start=1):
         cell = ws.cell(row=1, column=col_idx, value=h)
@@ -1258,9 +1273,9 @@ def export_xls(request, lot_pk):
                 _quando,
             ]
         for i, (_buyer_name, lines) in enumerate(price_maps):
-            unit, line_total = _export_price_cells(
+            rmb_unit, unit, line_total = _export_price_cells(
                 lines.get(entry.part_number), entry.quantity)
-            data += [unit, line_total]
+            data += [rmb_unit, unit, line_total]
             if line_total is not None:
                 buyer_totals[i] += line_total
         for col_idx, value in enumerate(data, start=1):
@@ -1279,7 +1294,8 @@ def export_xls(request, lot_pk):
     ws.cell(row=total_row, column=qty_col, value=sum(e.quantity for e in entries_list)).font = total_font
     # Total geral em USD por comprador (na coluna "Total" dele).
     for i, total in enumerate(buyer_totals):
-        cell = ws.cell(row=total_row, column=base_n + 2 + i * 2, value=round(total, 2))
+        # PLANO_FX: 3 colunas por comprador (¥ unit · US$ unit · US$ total)
+        cell = ws.cell(row=total_row, column=base_n + 3 + i * 3, value=round(total, 2))
         cell.font = total_font
         cell.number_format = '#,##0.00'
 

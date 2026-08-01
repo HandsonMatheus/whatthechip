@@ -144,6 +144,18 @@ class PriceQuote:
             return None
         return f'{self.rmb.normalize():f}'
 
+    @property
+    def rmb_range_display(self) -> str | None:
+        """¥ pronto pro card ¥-PRIMEIRO (PLANO_FX Fase A): '90' ou, na
+        faixa dos combos, '90–100' — formatado em Python (floatformat
+        ignora localize-off)."""
+        if self.rmb_min is None:
+            return None
+        lo = f'{self.rmb_min.normalize():f}'
+        if self.rmb_max is not None and self.rmb_max != self.rmb_min:
+            return f'{lo}–{self.rmb_max.normalize():f}'
+        return lo
+
 
 def _no_key(kind: str, reason: str) -> PriceQuote:
     return PriceQuote(status=NO_KEY, reason=reason, kind=kind)
@@ -251,7 +263,9 @@ def _ssd_quote(buyer, tier_value, tier_unit):
                           kind='ssd', gen='', tier_value=tier_value,
                           tier_unit=tier_unit)
     rmb = (Decimal(tier_value) * rate).quantize(Decimal('1'), ROUND_HALF_UP)
-    usd = (rmb * buyer.fx_usd_rate).quantize(_CENT, ROUND_HALF_UP)
+    # PLANO_FX (2026-08-01): USD pela taxa de MERCADO vigente.
+    usd = (rmb * (current_fx_rate(buyer)[0] or Decimal('0'))
+           ).quantize(_CENT, ROUND_HALF_UP)
     return PriceQuote(status=PRICED, kind='ssd', gen='',
                       tier_value=tier_value, tier_unit=tier_unit,
                       price_min=usd, price_max=usd, rmb_min=rmb, rmb_max=rmb,
@@ -300,7 +314,8 @@ def _quote_no_list(buyer, kind, gen, tier_value, tier_unit) -> PriceQuote:
 
 
 def _quote_from_candidates(rows, chain, buyer, cfg,
-                           kind, gen, tier_value, tier_unit) -> PriceQuote:
+                           kind, gen, tier_value, tier_unit,
+                           fx_rate=None) -> PriceQuote:
     """Cauda compartilhada de price() e do caminho de LOTE: escolhe a linha
     (1ª da cadeia vence) e monta o PriceQuote — status, staleness e a
     derivação ¥→US$ vivem SÓ aqui (fonte única)."""
@@ -329,17 +344,47 @@ def _quote_from_candidates(rows, chain, buyer, cfg,
 
     stale = (row.quote_date is None or
              (date.today() - row.quote_date).days > cfg.staleness_days)
-    # F10 (RMB canônico): o banco guarda ¥; o USD é DERIVADO AQUI — ¥ × taxa
-    # CONTRATUAL do comprador (Buyer.fx_usd_rate; mudar a taxa nunca toca os
-    # ¥). Derivar na construção mantém TODOS os consumidores de USD intactos
-    # (value()/mid, valoração, export, congelamento F8).
-    rate = buyer.fx_usd_rate
+    # F10 (RMB canônico): o banco guarda ¥; o USD é DERIVADO AQUI. PLANO_FX
+    # (2026-08-01): a taxa é a de MERCADO vigente (mid-market diária) — o
+    # contratual 0.14 morreu (bootstrap só com a tabela FxRate vazia).
+    # Derivar na construção mantém TODOS os consumidores de USD intactos.
+    rate = fx_rate if fx_rate is not None else current_fx_rate(buyer)[0]
     return PriceQuote(
         status=PRICED,
         rmb_min=row.price_min, rmb_max=row.price_max,
         price_min=(row.price_min * rate).quantize(_CENT, ROUND_HALF_UP),
         price_max=(row.price_max * rate).quantize(_CENT, ROUND_HALF_UP),
         is_stale=stale, **base)
+
+
+def current_fx_rate(buyer=None):
+    """A taxa CNY→USD vigente — FONTE ÚNICA (PLANO_FX, 2026-08-01).
+
+    Mercado mid-market diário (`FxRate.current()`); com a tabela ainda
+    VAZIA, cai no bootstrap contratual `buyer.fx_usd_rate` (única função
+    que restou ao campo — sai do caminho no 1º `fetch_fx_rate`).
+    Devolve (rate, fx|None) — o fx alimenta o carimbo de exibição."""
+    from .models import FxRate
+    fx = FxRate.current()
+    if fx is not None:
+        return fx.rate, fx
+    return (buyer.fx_usd_rate if buyer is not None else None), None
+
+
+def fx_display(buyer=None):
+    """Dict pronto p/ template: taxa + carimbo ('mid-market de DD/MM' ou
+    'contrato — bootstrap'). Consumido pelo card da bancada, cabeçalho do
+    parceiro e página da OV (rascunho)."""
+    rate, fx = current_fx_rate(buyer)
+    if rate is None:
+        return None
+    return {
+        'rate': rate,
+        'rate_disp': f'{rate.normalize():f}',
+        'date': fx.date if fx else None,
+        'is_market': fx is not None,
+        'is_fallback': bool(fx and fx.is_fallback),
+    }
 
 
 def _row_origin(kind, origin):
@@ -375,7 +420,8 @@ def price(result: dict, buyer, origin='') -> PriceQuote:
         origin=_row_origin(kind, origin),
     ).select_related('price_list'))
     return _quote_from_candidates(rows, chain, buyer, PricingConfig.get_config(),
-                                  kind, gen, tier_value, tier_unit)
+                                  kind, gen, tier_value, tier_unit,
+                                  fx_rate=current_fx_rate(buyer)[0])
 
 
 class BuyerPricingContext:
@@ -394,6 +440,8 @@ class BuyerPricingContext:
     def __init__(self, buyer):
         self.buyer = buyer
         self.cfg = PricingConfig.get_config()
+        # PLANO_FX: taxa de MERCADO resolvida UMA vez pro lote inteiro.
+        self.fx_rate = current_fx_rate(buyer)[0]
         self._lists = _active_lists(buyer)
         #: (price_list_id, kind, gen, tier_value, tier_unit, origin) → Price
         #  (Decimal hasheia por VALOR: 64 == 64.0 → a chave derivada casa a
@@ -429,7 +477,8 @@ class BuyerPricingContext:
                             for pl, _via in chain)
                 if r is not None]
         return _quote_from_candidates(rows, chain, self.buyer, self.cfg,
-                                      kind, gen, tier_value, tier_unit)
+                                      kind, gen, tier_value, tier_unit,
+                                      fx_rate=self.fx_rate)
 
     def price_from_key(self, kind, gen, tier_value, tier_unit,
                        brand_name='', no_key_reason='', origin=''):
@@ -456,7 +505,8 @@ class BuyerPricingContext:
                             for pl, _via in chain)
                 if r is not None]
         return _quote_from_candidates(rows, chain, self.buyer, self.cfg,
-                                      kind, gen, tier_value, tier_unit)
+                                      kind, gen, tier_value, tier_unit,
+                                      fx_rate=self.fx_rate)
 
 
 def quotes_for_admin(request, result, origin=''):
@@ -516,7 +566,8 @@ class LotQuoteLine:
 @dataclass
 class LotPricingReport:
     lines: list = field(default_factory=list)         # [LotQuoteLine]
-    totals: dict = field(default_factory=dict)        # {low|mid|high: Decimal}
+    totals: dict = field(default_factory=dict)        # {low|mid|high: Decimal} USD
+    totals_rmb: dict = field(default_factory=dict)    # idem em ¥ (PLANO_FX: primário)
     total_lines: int = 0
     priced_lines: int = 0
     total_units: int = 0
@@ -581,11 +632,17 @@ def price_lot_multi(lot, buyers) -> list:
     out = []
     for buyer in buyers:
         ctx = BuyerPricingContext(buyer)
-        report = LotPricingReport(totals={
-            PricingConfig.SCENARIO_LOW: Decimal('0.00'),
-            PricingConfig.SCENARIO_MID: Decimal('0.00'),
-            PricingConfig.SCENARIO_HIGH: Decimal('0.00'),
-        })
+        report = LotPricingReport(
+            totals={
+                PricingConfig.SCENARIO_LOW: Decimal('0.00'),
+                PricingConfig.SCENARIO_MID: Decimal('0.00'),
+                PricingConfig.SCENARIO_HIGH: Decimal('0.00'),
+            },
+            totals_rmb={
+                PricingConfig.SCENARIO_LOW: Decimal('0.00'),
+                PricingConfig.SCENARIO_MID: Decimal('0.00'),
+                PricingConfig.SCENARIO_HIGH: Decimal('0.00'),
+            })
         for entry in entries:
             if entry.part_number in results:
                 q = ctx.price(results[entry.part_number], origin=lot_origin)
@@ -605,6 +662,7 @@ def price_lot_multi(lot, buyers) -> list:
                 report.priced_units += qty
                 for scenario in report.totals:
                     report.totals[scenario] += q.value(scenario) * qty
+                    report.totals_rmb[scenario] += q.value_rmb(scenario) * qty
             else:
                 report.unpriced.append((entry.part_number, qty,
                                         q.status, q.reason))

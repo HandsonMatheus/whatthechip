@@ -532,7 +532,9 @@ class PriceLotTests(TestCase):
             from pricing import engine as peng
             with patch('chips.engine.classify',
                        side_effect=lambda pn: dict(fake)):
-                with self.assertNumQueries(4):
+                # PLANO_FX: +1 query fixa (FxRate.current — a taxa de
+                # mercado do contexto). Segue CONSTANTE, não O(linhas).
+                with self.assertNumQueries(5):
                     report = peng.price_lot(lot, buyer)
         self.assertEqual(report.priced_lines, 30)
         self.assertEqual(report.totals['mid'], Decimal('168.00'))  # 30 × 5.60
@@ -680,7 +682,7 @@ class PriceCardGateTests(TestCase):
             resp = self._decode(who)
             self.assertEqual(resp.status_code, 200)
             self.assertNotContains(resp, 'US$ 5.60')
-            self.assertNotContains(resp, '¥ 40')
+            self.assertNotContains(resp, '¥ 40')     # sigilo total no parcial
             self.assertNotContains(resp, 'dc2-price-block')
             self.assertNotContains(resp, 'Wuquan C')
 
@@ -778,10 +780,11 @@ class BenchAndLotPricingTests(TestCase):
             resp = self.client.get(f'/estoque/lote/{lot.pk}/preview/',
                                    {'pn': 'KLMCG8GEAC'})
             self.assertContains(resp, 'dc2-price-block')
-            # Máscara v3.1 (interface): admin de empresa vê SÓ US$ — o ¥ é a
-            # língua do COMPRADOR e sumiu do card (segue no banco/parceiro).
+            # PLANO_FX Fase A (opção (a) do dono, 2026-08-01): ¥ é a PROMESSA
+            # — visível pro admin de empresa também (revoga o USD-only da
+            # v3.1); o US$ vira tradução "≈" de mercado.
+            self.assertContains(resp, '¥ 40')
             self.assertContains(resp, 'US$ 5.60')
-            self.assertNotContains(resp, '¥ 40')
             self.client.logout()
             self.client.force_login(self.users['operator'])
             resp2 = self.client.get(f'/estoque/lote/{lot.pk}/preview/',
@@ -823,7 +826,9 @@ class BenchAndLotPricingTests(TestCase):
         with patch('chips.engine.classify', return_value=self._fake_result()):
             self.client.force_login(self.users['admin'])
             resp = self.client.get(f'/estoque/lote/{lot.pk}/')
-            self.assertContains(resp, '💰 US$ 28')              # 5 × US$ 5.60 ao vivo
+            # PLANO_FX Fase A: ¥ primário (5 × ¥40 = ¥200) + US$ como "≈"
+            self.assertContains(resp, '¥ 200')
+            self.assertContains(resp, '≈ US$ 28')               # 5 × US$ 5.60 ao vivo
 
 
 class SeedPriceGridTests(TestCase):
@@ -1008,13 +1013,23 @@ class PartnerDashboardTests(TestCase):
         self.client.force_login(self.operator)
         self.assertEqual(self.client.get('/partner/how/').status_code, 403)
 
-    def test_header_mostra_taxa_contratual(self):
-        # F10.3: o header troca a cotação viva pela taxa do CONTRATO
-        # (Buyer.fx_usd_rate, default 0.14) — e o script de API morreu.
+    def test_header_mostra_taxa_vigente(self):
+        # PLANO_FX (2026-08-01): o header mostra a taxa VIGENTE — mercado
+        # (FxRate mais recente, com carimbo) ou, tabela vazia, o bootstrap
+        # contratual 0.14 SEM carimbo. Nunca script de API no cliente.
         self.client.force_login(self.partner)
         resp = self.client.get('/partner/')
-        self.assertContains(resp, '1 ¥ = US$ 0.14')
-        self.assertNotContains(resp, 'er-api.com')       # cotação viva removida
+        self.assertContains(resp, '1 ¥ ≈ US$ 0.14')      # bootstrap (sem FxRate)
+        self.assertNotContains(resp, 'mid-market')
+        self.assertNotContains(resp, 'er-api.com')       # nada de JS de cotação
+        # com taxa de MERCADO no banco, ela assume — com carimbo:
+        from datetime import date as _d
+        from pricing.models import FxRate
+        FxRate.objects.create(date=_d.today(), rate=Decimal('0.1389'),
+                              source='teste')
+        resp = self.client.get('/partner/')
+        self.assertContains(resp, '1 ¥ ≈ US$ 0.1389')
+        self.assertContains(resp, 'mid-market')
 
     def test_catalogo_pdf(self):
         # F9 + convenção 2026-07-27: seções na ordem do PAINEL; unificados
@@ -2286,3 +2301,90 @@ class OrigemEmmcTests(TestCase):
                                      Decimal('0.01')))
         finally:
             set_current_company(None)
+
+
+class FxRateTests(TestCase):
+    """PLANO_FX Fase B (2026-08-01): taxa CNY→USD mid-market DIÁRIA. O USD de
+    todo o sistema deriva da FxRate mais recente; o contratual 0.14 virou
+    BOOTSTRAP (só com a tabela vazia). Fetch diário idempotente + fallback."""
+
+    def test_current_e_bootstrap(self):
+        from datetime import date, timedelta
+        from pricing.models import FxRate
+        from pricing.engine import current_fx_rate
+        co = Company.objects.create(name='FxCo', slug='fx-co')
+        buyer = Buyer.all_companies.create(company=co, name='Wu FX',
+                                           slug='wu-fx')
+        # tabela vazia → bootstrap contratual (0.14 default do Buyer)
+        rate, fx = current_fx_rate(buyer)
+        self.assertEqual(rate, Decimal('0.1400'))
+        self.assertIsNone(fx)
+        # com linhas, vale a MAIS RECENTE
+        FxRate.objects.create(date=date.today() - timedelta(days=1),
+                              rate=Decimal('0.1350'), source='t')
+        FxRate.objects.create(date=date.today(), rate=Decimal('0.1389'),
+                              source='t')
+        rate, fx = current_fx_rate(buyer)
+        self.assertEqual(rate, Decimal('0.1389'))
+        self.assertEqual(fx.date, date.today())
+
+    def test_usd_do_quote_deriva_do_mercado(self):
+        # A prova de que o 0.14 morreu: mesmo grid, taxa nova → US$ novo,
+        # ¥ intacto (F10 preservado; só a FONTE da taxa mudou).
+        from datetime import date
+        from pricing.models import FxRate
+        from pricing.engine import price
+        company, buyer, _sam, _l = _setup_wuquan('FxQ', 'fx-q')
+        Price.all_companies.create(
+            price_list=_setup_wuquan.generica, kind='emmc', gen='',
+            origin='phone', tier_value=Decimal('64'), tier_unit='GB',
+            status=STATUS_QUOTED, price_min=Decimal('40'),
+            price_max=Decimal('40'), quote_date=date.today())
+        q1 = price(_r(chip_type='eMMC', brand='X', cap_gb=64.0), buyer)
+        self.assertEqual(q1.price_min, Decimal('5.60'))    # bootstrap 0.14
+        FxRate.objects.create(date=date.today(), rate=Decimal('0.1500'),
+                              source='t')
+        q2 = price(_r(chip_type='eMMC', brand='X', cap_gb=64.0), buyer)
+        self.assertEqual(q2.rmb, Decimal('40'))            # ¥ intacto
+        self.assertEqual(q2.price_min, Decimal('6.00'))    # ¥40 × 0.15 mercado
+
+    def test_fetch_fx_rate_grava_e_e_idempotente(self):
+        import io
+        from datetime import date
+        from unittest.mock import patch
+        from django.core.management import call_command
+        from pricing.models import FxRate
+
+        with patch('pricing.management.commands.fetch_fx_rate.Command._busca',
+                   return_value=Decimal('0.1389')):
+            call_command('fetch_fx_rate', stdout=io.StringIO())
+            call_command('fetch_fx_rate', stdout=io.StringIO())   # re-rodar
+        self.assertEqual(FxRate.objects.count(), 1)               # 1 linha/dia
+        fx = FxRate.objects.get()
+        self.assertEqual((fx.date, fx.rate, fx.is_fallback),
+                         (date.today(), Decimal('0.1389'), False))
+
+    def test_fetch_fallback_repete_a_ultima(self):
+        import io
+        import urllib.error
+        from datetime import date, timedelta
+        from unittest.mock import patch
+        from django.core.management import call_command
+        from django.core.management.base import CommandError
+        from pricing.models import FxRate
+
+        boom = urllib.error.URLError('rede fora')
+        # tabela vazia + fonte fora = erro claro (nada a repetir)
+        with patch('pricing.management.commands.fetch_fx_rate.Command._busca',
+                   side_effect=boom):
+            with self.assertRaises(CommandError):
+                call_command('fetch_fx_rate', stdout=io.StringIO())
+        # com histórico: repete a última, marcada como fallback
+        FxRate.objects.create(date=date.today() - timedelta(days=1),
+                              rate=Decimal('0.1380'), source='t')
+        with patch('pricing.management.commands.fetch_fx_rate.Command._busca',
+                   side_effect=boom):
+            call_command('fetch_fx_rate', stdout=io.StringIO())
+        hoje = FxRate.objects.get(date=date.today())
+        self.assertTrue(hoje.is_fallback)
+        self.assertEqual(hoje.rate, Decimal('0.1380'))

@@ -2316,3 +2316,10 @@ msgstr "PHONE eMMC — single price, all brands"
 
 msgid "eMMC de PCB — preço por marca (set-top box, TV, notebook…)"
 msgstr "PCB eMMC — price per brand (set-top box, TV, laptop…)"
+
+# ── PLANO_FX Fase A — ¥ primeiro + taxa de mercado (2026-08-01) ──
+msgid "congelado"
+msgstr "frozen"
+
+msgid "taxa mid-market %(d)s: 1 ¥ ≈ US$ %(rate)s"
+msgstr "mid-market rate %(d)s: 1 ¥ ≈ US$ %(rate)s"

@@ -118,7 +118,10 @@ def catalog_data(buyer, currency='usd'):
     from .models import UNIFIED_KINDS
     lists = list(PriceList.all_companies.filter(buyer=buyer, active=True)
                  .select_related('brand'))
-    rate = buyer.fx_usd_rate            # taxa CONTRATUAL (F10) — só p/ 'usd'
+    # PLANO_FX (2026-08-01): USD derivado pela taxa de MERCADO vigente
+    # (mid-market diária); bootstrap contratual só com a FxRate vazia.
+    from .engine import current_fx_rate
+    rate = current_fx_rate(buyer)[0]
     por_kind = {}
     for p in (Price.all_companies.filter(price_list__in=lists)
               .select_related('price_list__brand')):

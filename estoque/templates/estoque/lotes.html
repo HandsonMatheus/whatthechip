@@ -111,7 +111,7 @@
     <div class="olot__meta">
       <div><div class="olot__meta-l">{% trans "Unidades" %}</div><div class="olot__meta-v">{{ lot.total_qty }}</div></div>
       <div><div class="olot__meta-l">{% trans "Tipos" %}</div><div class="olot__meta-v">{{ lot.chip_count }}</div></div>
-      {% if access.can_see_price and lot.val_mid is not None %}<div><div class="olot__meta-l">{% trans "Valor" %} ≈</div><div class="olot__meta-v" style="white-space:nowrap">{% localize off %}US$ {{ lot.val_mid|floatformat:2 }}{% endlocalize %}</div></div>{% endif %}
+      {% if access.can_see_price and lot.val_mid is not None %}<div><div class="olot__meta-l">{% trans "Valor" %}</div><div class="olot__meta-v" style="white-space:nowrap">{% localize off %}{% if lot.val_mid_rmb is not None %}¥ {{ lot.val_mid_rmb|floatformat:0 }} <small style="color:#697077;font-weight:500;">≈ US$ {{ lot.val_mid|floatformat:2 }}</small>{% else %}US$ {{ lot.val_mid|floatformat:2 }}{% endif %}{% endlocalize %}</div></div>{% endif %}
     </div>
     <div class="olot__foot">
       <a class="uib uib--primary uib--sm" href="{% url 'estoque:lot_detail' lot.pk %}">
@@ -195,7 +195,7 @@
         <td><span class="badge badge--{% if lot.status == 'open' %}open{% else %}closed{% endif %}"><span class="dot"></span>{% if lot.status == 'open' %}{% trans "Aberto" %}{% else %}{% trans "Fechado" %}{% endif %}</span></td>
         <td class="num"><span class="c-cats">{{ lot.chip_count }}</span></td>
         <td class="num"><span class="c-units">{{ lot.total_qty }}</span></td>
-        {% if show_valuation %}<td class="num"><span class="c-val">{% localize off %}{% if lot.val_mid is not None %}US$ {{ lot.val_mid|floatformat:2 }}{% else %}<span class="c-val--none">—</span>{% endif %}{% endlocalize %}</span></td>{% endif %}
+        {% if show_valuation %}<td class="num"><span class="c-val">{% localize off %}{% if lot.val_mid_rmb is not None %}¥ {{ lot.val_mid_rmb|floatformat:0 }} <small style="color:#697077;">≈ US$ {{ lot.val_mid|floatformat:2 }}</small>{% elif lot.val_mid is not None %}US$ {{ lot.val_mid|floatformat:2 }}{% else %}<span class="c-val--none">—</span>{% endif %}{% endlocalize %}</span></td>{% endif %}
         <td><span class="c-when">{{ lot.created_at|date:"d/m/y" }}{% if lot.closed_at %} <span class="c-when__to">→ {{ lot.closed_at|date:"d/m/y" }}</span>{% endif %}</span></td>
         <td onclick="event.stopPropagation()">
           <div class="c-act">

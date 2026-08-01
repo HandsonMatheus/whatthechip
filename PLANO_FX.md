@@ -62,7 +62,19 @@ todos os pagamentos daquele lote nas duas pontas.**
 - 1 centésimo de taxa ≈ ±7% do lote (ex. real: lote de ¥63k → ±US$ 630) —
   maior que a margem de vários tipos; por isso a trava é vital.
 
-## 4. Fases de execução
+## 4. Fases de execução — **A e B ENTREGUES local (2026-08-01)**
+
+> Fase A: card da bancada/busca ¥-PRIMEIRO (`¥ 40` grande + `≈ US$ 5.60` +
+> carimbo "taxa mid-market DD/MM"); máscara v3.1 revogada (cliente vê ¥ —
+> opção (a)); valoração/cards de lote `¥ N ≈ US$ M`; export com coluna
+> "Preço unit. (¥ RMB)" antes do "US$ ≈"; header do parceiro com taxa viva
+> carimbada. Fase B: modelo `FxRate` (1 linha/dia, fonte, is_fallback,
+> histórico; GLOBAL) + `fetch_fx_rate` (er-api via urllib, idempotente,
+> fallback repete última com ⚠) + `current_fx_rate()` fonte única no engine
+> (mercado → bootstrap contratual só com a tabela vazia) — consumida por
+> quote/contexto (cacheada 1×/lote), SSD, catálogo PDF, vendas
+> (rascunho + congelamento na confirmação). `FxRateTests` (4) + flips de
+> máscara/header/export. Falta: agendar o fetch (Render Cron, 1×/dia).
 
 - **Fase A — exibição ¥-primeiro:** bancada, página do lote, valoração,
   export: `¥ N (≈ US$ M)`; máscara v3.1 revista (¥ visível ao cliente);

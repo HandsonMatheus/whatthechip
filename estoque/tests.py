@@ -1261,9 +1261,13 @@ class ExportPriceColumnsTests(TestCase):
         ws = self._sheet(self.adm)
         headers = [c.value for c in ws[1]]
         # F11.3: contraparte é o WhatTheChip — nome do comprador nunca sai.
-        self.assertIn('Preço unit. — WhatTheChip (USD)', headers)
-        self.assertIn('Total — WhatTheChip (USD)', headers)
-        unit_col = headers.index('Preço unit. — WhatTheChip (USD)') + 1
+        # PLANO_FX Fase A: ¥ primeiro (coluna própria) + US$ como "≈"
+        self.assertIn('Preço unit. — WhatTheChip (¥ RMB)', headers)
+        self.assertIn('Preço unit. — WhatTheChip (US$ ≈)', headers)
+        self.assertIn('Total — WhatTheChip (US$ ≈)', headers)
+        rmb_col = headers.index('Preço unit. — WhatTheChip (¥ RMB)') + 1
+        self.assertEqual(ws.cell(row=2, column=rmb_col).value, 15.0)  # ¥15
+        unit_col = headers.index('Preço unit. — WhatTheChip (US$ ≈)') + 1
         # USD DERIVADO (F10): ¥15 × 0.14 = 2.10 — o export NUNCA vê ¥.
         self.assertEqual(ws.cell(row=2, column=unit_col).value, 2.1)
         self.assertEqual(ws.cell(row=2, column=unit_col + 1).value, 6.3)  # 3 × 2,10
@@ -1561,6 +1565,7 @@ class TenancyDeclarationTests(TestCase):
         # ProfitabilityConfig; PRECIFICACAO §3.4). Buyer/PriceList/Price são
         # ESCOPADOS (company + CompanyScopedManager + RLS em pricing/0002).
         'pricing.PricingConfig',
+        'pricing.FxRate',           # câmbio mid-market diário — dado de plataforma (PLANO_FX)
         # F12: dicionário GLOBAL código C-### ↔ categoria (chave de
         # preço) — mesma tabela para todo cliente (decisão do dono:
         # auditabilidade > embaralhamento por empresa).

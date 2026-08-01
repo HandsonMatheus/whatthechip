@@ -122,6 +122,12 @@ _NAV_KINDS = ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr')
 _MATRIX_KINDS = ('ddr',)
 
 
+def _fx_info(buyer):
+    """Carimbo da taxa p/ o header (PLANO_FX): mercado vivo + data."""
+    from .engine import fx_display
+    return fx_display(buyer)
+
+
 def _kind_nav(buyer):
     """[(kind, label, pendentes)] p/ a sidebar — badge = não-cotados do tipo."""
     from django.db.models import Count
@@ -161,6 +167,7 @@ def partner_kind(request, kind):
            'unified': kind in UNIFIED_KINDS,
            'ranged': kind in ('emcp', 'umcp'),
            'kind_nav': _kind_nav(request.buyer), 'active_kind': kind,
+           'fx_info': _fx_info(request.buyer),
            'active_pk': None}
 
     def _pend_disp(q):
@@ -267,6 +274,7 @@ def partner_home(request):
     return render(request, 'pricing/partner_home.html', {
         'buyer': buyer, 'lists': lists, 'nav_lists': lists, 'active_pk': None,
         'kind_nav': _kind_nav(buyer), 'active_kind': None,
+        'fx_info': _fx_info(buyer),
         'kinds_resumo': kinds_resumo,
         'pending': pending, 'stale': stale, 'quoted': quoted,
         'staleness_days': PricingConfig.get_config().staleness_days,
@@ -321,6 +329,7 @@ def partner_list(request, list_pk):
         'kind_choices': kind_choices, 'state_choices': STATUS_CHOICES,
         'nav_lists': _lists_with_stats(request.buyer), 'active_pk': pl.pk,
         'kind_nav': _kind_nav(request.buyer), 'active_kind': None,
+        'fx_info': _fx_info(request.buyer),
     })
 
 
@@ -333,6 +342,7 @@ def partner_how(request):
         'buyer': request.buyer,
         'nav_lists': _lists_with_stats(request.buyer), 'active_pk': 'how',
         'kind_nav': _kind_nav(request.buyer), 'active_kind': None,
+        'fx_info': _fx_info(request.buyer),
     })
 
 
@@ -401,6 +411,7 @@ def partner_notifications(request):
         'buyer': buyer, 'itens': itens,
         'nav_lists': _lists_with_stats(buyer), 'active_pk': 'notifications',
         'kind_nav': _kind_nav(buyer), 'active_kind': None,
+        'fx_info': _fx_info(buyer),
     })
 
 
