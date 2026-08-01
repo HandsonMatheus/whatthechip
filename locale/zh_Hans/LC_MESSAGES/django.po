@@ -2187,3 +2187,7 @@ msgstr "未评估盈利性 — 数据补全前不能入库。"
 
 msgid "Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o dado ficar completo. Sinalize ao gestor."
 msgstr "未评估盈利性 — 数据补全前该芯片不能入库。请通知管理员。"
+
+# ── eMMC/UFS unificados — rodapé da home (2026-08-01) ──
+msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e UFS</strong> têm preço único, válido para todas as marcas; só o <strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
+msgstr "价格按芯片计，单位为<strong>人民币（¥ RMB）</strong> — 折算 US$ 使用合同汇率（见顶部）。<strong>eMCP、uMCP、LPDDR、eMMC 和 UFS</strong> 为统一价，适用于所有品牌；仅 <strong>DDR</strong> 按品牌定价 — «其他» 列适用于没有单独列的品牌。"

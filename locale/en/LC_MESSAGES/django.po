@@ -2275,3 +2275,7 @@ msgstr "No profitability assessment — cannot enter stock until the data is com
 
 msgid "Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o dado ficar completo. Sinalize ao gestor."
 msgstr "No profitability assessment — this chip cannot enter stock until the data is complete. Flag it to the manager."
+
+# ── eMMC/UFS unificados — rodapé da home (2026-08-01) ──
+msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e UFS</strong> têm preço único, válido para todas as marcas; só o <strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
+msgstr "Prices per chip, in <strong>yuan (¥ RMB)</strong> — conversion to US$ uses the contract rate, shown at the top. <strong>eMCP, uMCP, LPDDR, eMMC and UFS</strong> have a single price, valid for all brands; only <strong>DDR</strong> is priced per brand — the \"Others\" column applies to brands without their own column."

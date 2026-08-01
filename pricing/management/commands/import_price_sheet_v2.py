@@ -11,8 +11,11 @@ Toshiba-Kioxia|Other. Regras POR KIND (a "simplificação" do comprador):
                  (+ a genérica) — o preço deixa de variar por marca.
   • LPDDR      → UNIFIED **fixo** (sujeira "3," / "8;" é limpa), mesma
                  gravação em todas as listas não-`not_made` + genérica.
-  • eMMC/UFS/DDR → POR MARCA (colunas E..K) + coluna **Other = GENÉRICA**.
-                 O UNIFIED dessas seções é só referência — IGNORADO.
+  • eMMC/UFS    → UNIFIED **fixo** (correção do comprador 2026-08-01: "eMMC
+                 e UFS estavam errados, são unificados" — a coluna Unified
+                 sempre esteve preenchida; as colunas por marca IGNORADAS).
+  • DDR         → POR MARCA (colunas E..K) + coluna **Other = GENÉRICA**.
+                 O UNIFIED da seção é só referência — IGNORADO.
 
 Semântica de célula: número = cotado · "a-b" = faixa (só combos) ·
 "x" = **no_buy** (limpa o ¥) · "—" ou vazio = NÃO MEXE (mantém o estado

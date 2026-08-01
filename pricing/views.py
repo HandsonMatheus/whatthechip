@@ -115,10 +115,11 @@ def _lists_with_stats(buyer):
 
 
 # ── Navegação POR TIPO (dono, 2026-07-27: "no menu lateral fica cada tipo") ──
-# Só DDR/eMMC/UFS são por marca (matriz); eMCP/uMCP/LPDDR são unificados
-# (coluna única, linha na genérica). SSD é linear ¥/GB (sem grid) — fora.
+# Correção do comprador 2026-08-01: eMMC/UFS também são UNIFICADOS (a
+# planilha sempre disse — coluna Unified). Só DDR é por marca (matriz);
+# SSD é linear ¥/GB (sem grid) — fora.
 _NAV_KINDS = ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr')
-_MATRIX_KINDS = ('emmc', 'ufs', 'ddr')
+_MATRIX_KINDS = ('ddr',)
 
 
 def _kind_nav(buyer):
@@ -240,8 +241,9 @@ def partner_home(request):
     por_kind = {}
     for d in rows.values('kind', 'status').annotate(n=Count('id')):
         por_kind.setdefault(d['kind'], {})[d['status']] = d['n']
+    from .models import UNIFIED_KINDS
     kinds_resumo = [
-        {'kind': k, 'label': lbl,
+        {'kind': k, 'label': lbl, 'unified': k in UNIFIED_KINDS,
          'quoted': por_kind.get(k, {}).get(STATUS_QUOTED, 0),
          'pending': pend}
         for k, lbl, pend in _kind_nav(buyer)]

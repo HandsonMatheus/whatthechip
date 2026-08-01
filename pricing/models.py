@@ -99,7 +99,8 @@ _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
 # Repactuação 2026-07-27 (ESTRUTURAL): eMCP/uMCP/LPDDR têm preço ÚNICO,
 # brand-agnostic — a linha vive SÓ na lista GENÉRICA (a resolução de qualquer
 # marca cai nela). Marca segue dimensão de preço APENAS em eMMC/UFS/DDR.
-UNIFIED_KINDS = frozenset({KIND_EMCP, KIND_UMCP, KIND_LPDDR})
+UNIFIED_KINDS = frozenset({KIND_EMCP, KIND_UMCP, KIND_LPDDR, KIND_EMMC,
+                           KIND_UFS})
 
 STATUS_QUOTED, STATUS_NO_BUY, STATUS_UNQUOTED = 'quoted', 'no_buy', 'unquoted'
 STATUS_NOT_MADE = 'not_made'

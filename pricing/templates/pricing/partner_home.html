@@ -65,7 +65,7 @@
       {% for k in kinds_resumo %}
       <tr>
         <td style="font-weight:600;">{{ k.label }}
-          {% if k.kind == 'emcp' or k.kind == 'umcp' or k.kind == 'lpddr' %}<span style="background:#edf5ff;color:#0043ce;font-weight:700;font-size:11px;padding:2px 8px;border-radius:8px;margin-left:6px;">{% trans "unificado" %}</span>
+          {% if k.unified %}<span style="background:#edf5ff;color:#0043ce;font-weight:700;font-size:11px;padding:2px 8px;border-radius:8px;margin-left:6px;">{% trans "unificado" %}</span>
           {% else %}<span style="color:#6f6f6f;font-size:11px;margin-left:6px;">{% trans "por marca" %}</span>{% endif %}</td>
         <td>{% if k.quoted %}<span class="ptn-tag ptn-tag--quoted">{{ k.quoted }}</span>{% else %}—{% endif %}</td>
         <td>{% if k.pending %}<span class="ptn-tag ptn-tag--pending">{{ k.pending }}</span>{% else %}—{% endif %}</td>
@@ -79,7 +79,7 @@
 </div>
 
 <p style="font-size:13px;color:#6f6f6f;line-height:1.6;">
-  {% blocktrans trimmed %}Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP e LPDDR</strong> têm preço único, válido para todas as marcas; <strong>eMMC, UFS e DDR</strong> têm preço por marca — a coluna «Outras» vale para as marcas sem coluna própria.{% endblocktrans %}
+  {% blocktrans trimmed %}Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e UFS</strong> têm preço único, válido para todas as marcas; só o <strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as marcas sem coluna própria.{% endblocktrans %}
 </p>
 
 {% endblock %}

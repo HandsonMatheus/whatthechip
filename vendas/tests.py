@@ -33,8 +33,9 @@ def _setup(slug):
                                    code=f'V{slug[-3:]}'.upper())
     pl = PriceList.all_companies.create(buyer=buyer, brand=samsung)
     generica = PriceList.all_companies.create(buyer=buyer, brand=None)
+    # correção 2026-08-01: eMMC é UNIFICADO — linha na GENÉRICA
     Price.all_companies.create(
-        price_list=pl, kind='emmc', gen='', tier_value=Decimal('16'),
+        price_list=generica, kind='emmc', gen='', tier_value=Decimal('16'),
         tier_unit='GB', status=STATUS_QUOTED,
         price_min=Decimal('15'), price_max=Decimal('15'))      # ¥15 → US$ 2.10
     # ESTRUTURAL 2026-07-27: eMCP é UNIFICADO — linha SÓ na genérica.

@@ -2291,3 +2291,7 @@ msgstr "Sin evaluación de rentabilidad — no entra al inventario hasta complet
 
 msgid "Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o dado ficar completo. Sinalize ao gestor."
 msgstr "Sin evaluación de rentabilidad — este chip no puede entrar al inventario hasta completar el dato. Avise al gestor."
+
+# ── eMMC/UFS unificados — rodapé da home (2026-08-01) ──
+msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e UFS</strong> têm preço único, válido para todas as marcas; só o <strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
+msgstr "Precios por chip, en <strong>yuanes (¥ RMB)</strong> — la conversión a US$ usa la tasa del contrato, mostrada arriba. <strong>eMCP, uMCP, LPDDR, eMMC y UFS</strong> tienen precio único, válido para todas las marcas; solo el <strong>DDR</strong> tiene precio por marca — la columna «Otras» vale para las marcas sin columna propia."

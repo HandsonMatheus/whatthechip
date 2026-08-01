@@ -22,7 +22,8 @@ padrão (regra de ouro #1: o dono roda o --commit).
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from pricing.models import Buyer, Price, PriceList, STATUS_NOT_MADE, STATUS_UNQUOTED
+from pricing.models import (Buyer, Price, PriceList, STATUS_NOT_MADE,
+                            STATUS_UNQUOTED, UNIFIED_KINDS)
 from tenancy.scope import scope_command_to_company
 
 
@@ -63,6 +64,11 @@ class Command(BaseCommand):
         plan = []
         for pl in lists:
             faltam = sorted(master - existing.get(pl.pk, set()))
+            # Estrutura unificada (b22810c + correção 2026-08-01: eMMC/UFS
+            # também): kind unificado SÓ existe na genérica — lista de marca
+            # nunca ganha essas linhas (o portão do modelo rejeitaria).
+            if pl.brand_id is not None:
+                faltam = [c for c in faltam if c[0] not in UNIFIED_KINDS]
             status = STATUS_UNQUOTED if pl.brand_id is None else STATUS_NOT_MADE
             plan.append((pl, faltam, status))
             rotulo = pl.brand.name if pl.brand_id else 'Outras marcas'
