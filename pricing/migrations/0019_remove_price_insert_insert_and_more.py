@@ -4,11 +4,23 @@ import pgtrigger.compiler
 import pgtrigger.migrations
 
 
+def _liberar_rls(schema_editor):
+    """⚠ pricing_price tem RLS ENABLE+FORCE fail-closed (0002_rls): sem GUC a
+    policy devolve ZERO linhas. O ``migrate`` do build (Render) roda sem GUC e
+    com usuário NÃO-superuser → o backfill atualizava 0 linhas em silêncio e a
+    ``price_origin_emmc_only`` (DDL enxerga tudo) explodia — deploy quebrado em
+    2026-08-01. Local passava POR ACIDENTE: conexão superuser bypassa RLS mesmo
+    com FORCE. SET LOCAL = vale só até o fim da transação desta migração."""
+    if schema_editor.connection.vendor == 'postgresql':
+        schema_editor.execute("SET LOCAL app.platform = '1'")
+
+
 def _backfill_emmc_origin(apps, schema_editor):
     """2026-08-01: linhas eMMC pré-existentes ganham a origem correta ANTES
     da constraint. Semântica exata do acordo: as linhas da GENÉRICA eram os
     preços unificados (= celular); as linhas de LISTA DE MARCA eram as colunas
     por marca da planilha (= a tabela de PCB do comprador)."""
+    _liberar_rls(schema_editor)
     # modelo histórico: managers custom não migram — usa o _default_manager
     Price = apps.get_model('pricing', 'Price')
     Price._default_manager.filter(kind='emmc', price_list__brand__isnull=True
@@ -18,6 +30,7 @@ def _backfill_emmc_origin(apps, schema_editor):
 
 
 def _reverse_emmc_origin(apps, schema_editor):
+    _liberar_rls(schema_editor)
     apps.get_model('pricing', 'Price')._default_manager.filter(
         kind='emmc').update(origin='')
 from django.conf import settings
