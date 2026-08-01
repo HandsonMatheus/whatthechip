@@ -2191,3 +2191,40 @@ msgstr "未评估盈利性 — 数据补全前该芯片不能入库。请通知�
 # ── eMMC/UFS unificados — rodapé da home (2026-08-01) ──
 msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e UFS</strong> têm preço único, válido para todas as marcas; só o <strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
 msgstr "价格按芯片计，单位为<strong>人民币（¥ RMB）</strong> — 折算 US$ 使用合同汇率（见顶部）。<strong>eMCP、uMCP、LPDDR、eMMC 和 UFS</strong> 为统一价，适用于所有品牌；仅 <strong>DDR</strong> 按品牌定价 — «其他» 列适用于没有单独列的品牌。"
+
+# ── v4 origem do lote — celular × PCB (2026-08-01) ──
+msgid "Celular"
+msgstr "手机"
+
+msgid "celular"
+msgstr "手机"
+
+msgid "celular × PCB"
+msgstr "手机 × PCB"
+
+msgid "Origem: celular"
+msgstr "来源：手机"
+
+msgid "Origem: PCB"
+msgstr "来源：PCB"
+
+msgid "Origem das placas"
+msgstr "板卡来源"
+
+msgid "Celular (placas de telefone)"
+msgstr "手机（手机主板）"
+
+msgid "PCB (set-top box, TV, notebook, industrial…)"
+msgstr "PCB（机顶盒、电视、笔记本、工业设备…）"
+
+msgid "Escolha a ORIGEM do lote (celular ou PCB) — obrigatória, sem padrão."
+msgstr "请选择批次来源（手机或 PCB）— 必填，无默认值。"
+
+msgid "DUAS TABELAS — celular (unificado) × PCB (por marca)"
+msgstr "两套价格表 — 手机（统一价）× PCB（按品牌）"
+
+msgid "eMMC de CELULAR — preço unificado, todas as marcas"
+msgstr "手机 eMMC — 统一价，所有品牌"
+
+msgid "eMMC de PCB — preço por marca (set-top box, TV, notebook…)"
+msgstr "PCB eMMC — 按品牌定价（机顶盒、电视、笔记本…）"

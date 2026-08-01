@@ -79,7 +79,7 @@
     </div>
     <div class="sohead__actions">
       <div class="smart">
-        <a href="{% url 'estoque:lot_detail' so.lot.pk %}" title="{% trans 'Lote de origem' %}"><span class="smart__k">{% trans "Lote" %}</span><span class="smart__v">{{ so.lot.code }}</span></a>
+        <a href="{% url 'estoque:lot_detail' so.lot.pk %}" title="{% trans 'Lote de origem' %}"><span class="smart__k">{% trans "Lote" %}</span><span class="smart__v">{{ so.lot.code }} · {% if so.lot.origin == 'pcb' %}PCB{% else %}{% trans "Celular" %}{% endif %}</span></a>
         <a href="#" class="is-current" title="{% trans 'Ordem de venda' %}"><span class="smart__k">{% trans "Ordem de venda" %}</span><span class="smart__v">{{ so.code }}</span></a>
         {% if invoice %}<a href="{% url 'vendas:invoice_detail' invoice.pk %}" title="{% trans 'Fatura' %}"><span class="smart__k">{% trans "Fatura" %}</span><span class="smart__v">{{ invoice.code }}</span></a>{% endif %}
       </div>

@@ -235,7 +235,7 @@ class AddChipHardBlockTests(TestCase):
         self.user = User.objects.create_user(username='op', password='x')
         self.company = _grant(self.user)       # T1: operador precisa de vínculo
         _scope(self, self.company)             # T3: asserts diretos no ORM
-        self.lot = Lot.objects.create(number=0, operator=self.user,
+        self.lot = Lot.objects.create(number=0, origin='phone', operator=self.user,
                                       company=self.company)
         self.client.login(username='op', password='x')
         self.url = reverse('estoque:add', args=[self.lot.pk])
@@ -427,7 +427,7 @@ class RefreshLoteRelabelTests(TestCase):
         self.user = get_user_model().objects.create_user(username='op41', password='x')
         self.company = _grant(self.user)
         _scope(self, self.company)
-        self.lot = Lot.objects.create(number=41, operator=self.user,
+        self.lot = Lot.objects.create(number=41, origin='phone', operator=self.user,
                                       company=self.company)
 
     @patch('estoque.management.commands.refresh_lote.classify')
@@ -458,7 +458,7 @@ class PreviewFuzzyPopupTests(TestCase):
         self.company = _grant(self.user)
         _scope(self, self.company)
         self.client.force_login(self.user)
-        self.lot = Lot.objects.create(number=55, operator=self.user,
+        self.lot = Lot.objects.create(number=55, origin='phone', operator=self.user,
                                       company=self.company)
 
     @patch('estoque.views.classify')
@@ -497,7 +497,7 @@ class ResnapshotLoteTests(TestCase):
         self.user = get_user_model().objects.create_user(username='op2', password='x')
         self.company = _grant(self.user)
         _scope(self, self.company)
-        self.lot = Lot.objects.create(number=77, operator=self.user,
+        self.lot = Lot.objects.create(number=77, origin='phone', operator=self.user,
                                       company=self.company)
 
     @patch('chips.engine.classify')
@@ -594,7 +594,7 @@ class OnReadDisplayTests(TestCase):
         self.company = _grant(self.user)       # T1: operador precisa de vínculo
         _scope(self, self.company)             # T3
         self.client.force_login(self.user)
-        self.lot = Lot.objects.create(number=88, operator=self.user,
+        self.lot = Lot.objects.create(number=88, origin='phone', operator=self.user,
                                       company=self.company)
 
     def _get_table(self):
@@ -670,7 +670,7 @@ class RoleMatrixTests(TestCase):
         # Logado mas SEM vínculo com empresa (ex.: conta órfã) → 403 em tudo.
         cls.users['none'] = User.objects.create_user(username='mx_orfao', password='x')
         # Lote aberto por um GERENTE — o operador trabalha nele (lote é da empresa).
-        cls.lot = Lot.all_companies.create(number=900, operator=cls.users['manager'],
+        cls.lot = Lot.all_companies.create(number=900, origin='phone', operator=cls.users['manager'],
                                            company=cls.company)
 
     def setUp(self):
@@ -701,7 +701,8 @@ class RoleMatrixTests(TestCase):
              {'operator': 403, 'manager': 302, 'admin': 302, 'none': 403}),
             ('lot_reopen', 'post', reverse('estoque:lot_reopen', args=[lot_pk]), {},
              {'operator': 403, 'manager': 302, 'admin': 302, 'none': 403}),
-            ('lot_create', 'post', reverse('estoque:lot_create'), {'description': 't'},
+            ('lot_create', 'post', reverse('estoque:lot_create'),
+             {'description': 't', 'origin': 'phone'},
              {'operator': 403, 'manager': 302, 'admin': 302, 'none': 403}),
         ]
         for name, method, url, data, expected in matrix:
@@ -797,7 +798,7 @@ class LotPaginationTests(TestCase):
         cls.op = User.objects.create_user('pg_op', password='x')
         Membership.objects.create(user=cls.op, company=cls.company,
                                   role=Membership.ROLE_OPERATOR)
-        cls.lot = Lot.all_companies.create(number=700, operator=cls.op,
+        cls.lot = Lot.all_companies.create(number=700, origin='phone', operator=cls.op,
                                            company=cls.company)
         cur = CatalogVersion.current()
         for i in range(105):
@@ -850,7 +851,7 @@ class PainelTests(TestCase):
         _scope(self, self.company)   # T3
 
     def test_hero_mostra_lote_aberto_com_cta(self):
-        lot = Lot.objects.create(number=500, operator=self.mgr,
+        lot = Lot.objects.create(number=500, origin='phone', operator=self.mgr,
                                  company=self.company,
                                  description='Compra Jul/26')
         self.client.force_login(self.op)
@@ -860,7 +861,7 @@ class PainelTests(TestCase):
         self.assertContains(resp, reverse('estoque:lot_detail', args=[lot.pk]))
 
     def test_lote_fechado_nao_vira_hero(self):
-        Lot.objects.create(number=501, operator=self.mgr, company=self.company,
+        Lot.objects.create(number=501, origin='phone', operator=self.mgr, company=self.company,
                            status=Lot.STATUS_CLOSED)
         self.client.force_login(self.op)
         resp = self.client.get(reverse('painel'))
@@ -880,7 +881,7 @@ class PainelTests(TestCase):
         self.assertContains(resp, 'Peça ao gerente')
 
     def test_stats_do_dia(self):
-        lot = Lot.objects.create(number=502, operator=self.mgr,
+        lot = Lot.objects.create(number=502, origin='phone', operator=self.mgr,
                                  company=self.company)
         InventoryEntry.objects.create(lot=lot, part_number='PNHOJE1')
         PendingEntry.objects.create(lot=lot, part_number='PNFILA1',
@@ -904,21 +905,21 @@ class LotNumberSequenceTests(TestCase):
         self.company = Company.objects.create(name='SeqCo', slug='seqco')
 
     def test_empresa_nova_comeca_no_lote_1(self):
-        lot = Lot.open_for_company(self.company, self.user, 'primeiro')
+        lot = Lot.open_for_company(self.company, self.user, 'primeiro', origin='phone')
         self.assertEqual(lot.number, 1)          # "Lote #001" (§5.2 do plano)
-        self.assertEqual(Lot.open_for_company(self.company, self.user).number, 2)
+        self.assertEqual(Lot.open_for_company(self.company, self.user, origin='phone').number, 2)
 
     def test_herda_seed_do_bootstrap(self):
         Company.objects.filter(pk=self.company.pk).update(last_lot_number=40)
         self.company.refresh_from_db()
-        self.assertEqual(Lot.open_for_company(self.company, self.user).number, 41)
+        self.assertEqual(Lot.open_for_company(self.company, self.user, origin='phone').number, 41)
 
     def test_auto_cura_drift_do_contador(self):
         """Lote criado POR FORA do contador (legado/manual) não gera colisão:
         o guard max(contador, Max(number)) pula para depois dele."""
-        Lot.all_companies.create(number=77, operator=self.user,
+        Lot.all_companies.create(number=77, origin='phone', operator=self.user,
                                  company=self.company)      # fora do contador
-        lot = Lot.open_for_company(self.company, self.user)
+        lot = Lot.open_for_company(self.company, self.user, origin='phone')
         self.assertEqual(lot.number, 78)
         self.company.refresh_from_db()
         self.assertEqual(self.company.last_lot_number, 78)  # contador curado
@@ -952,7 +953,7 @@ class LotNumberRaceTests(TransactionTestCase):
                 # company_scope (T4): além do contextvar, seta o GUC do RLS na
                 # conexão DESTA thread — com FORCE RLS o insert seria rejeitado.
                 with company_scope(company):
-                    lot = Lot.open_for_company(company, user)
+                    lot = Lot.open_for_company(company, user, origin='phone')
                 numbers.append(lot.number)
             except Exception as exc:                  # IntegrityError incluso
                 errors.append(exc)
@@ -1020,8 +1021,8 @@ class TenancyHandshakeTests(TestCase):
                                   role=Membership.ROLE_MANAGER)
         Membership.objects.create(user=cls.mgr_b, company=cls.b,
                                   role=Membership.ROLE_MANAGER)
-        cls.lot_a = Lot.open_for_company(cls.a, cls.mgr_a, 'lote da eMiner')
-        cls.lot_b = Lot.open_for_company(cls.b, cls.mgr_b, 'lote da Brasil')
+        cls.lot_a = Lot.open_for_company(cls.a, cls.mgr_a, 'lote da eMiner', origin='phone')
+        cls.lot_b = Lot.open_for_company(cls.b, cls.mgr_b, 'lote da Brasil', origin='phone')
         # company dos filhos herda do lote no save() (CompanyBoundByLot).
         cls.entry_a = InventoryEntry.all_companies.create(
             lot=cls.lot_a, part_number='PN_DA_EMINER', quantity=3)
@@ -1116,10 +1117,10 @@ class RLSHandshakeTests(TransactionTestCase):
         ua = User.objects.create_user('rls_ua')
         ub = User.objects.create_user('rls_ub')
         with company_scope(a):
-            lot_a = Lot.open_for_company(a, ua, 'lote RLS A')
+            lot_a = Lot.open_for_company(a, ua, 'lote RLS A', origin='phone')
             InventoryEntry.objects.create(lot=lot_a, part_number='RLSPN_A')
         with company_scope(b):
-            lot_b = Lot.open_for_company(b, ub, 'lote RLS B')
+            lot_b = Lot.open_for_company(b, ub, 'lote RLS B', origin='phone')
 
         def _clear_gucs():
             with connection.cursor() as c:
@@ -1186,7 +1187,7 @@ class PlatformAdminFormTests(TestCase):
         resp = self.client.post('/admin/estoque/lot/add/', {
             'number': '77', 'company': str(self.company.pk),
             'operator': str(operador.pk), 'description': 'via admin',
-            'status': 'open',
+            'status': 'open', 'origin': 'phone',
         })
         # Sucesso = redirect pro changelist (antes: CompanyScopeMissing/500).
         self.assertEqual(resp.status_code, 302)
@@ -1225,7 +1226,7 @@ class ExportPriceColumnsTests(TestCase):
                                   role=Membership.ROLE_ADMIN)
         Membership.objects.create(user=cls.mgr, company=cls.company,
                                   role=Membership.ROLE_MANAGER)
-        cls.lot = Lot.all_companies.create(number=600, operator=cls.adm,
+        cls.lot = Lot.all_companies.create(number=600, origin='phone', operator=cls.adm,
                                            company=cls.company)
         InventoryEntry.all_companies.create(
             lot=cls.lot, part_number='KLMAG1JETD',
@@ -1243,7 +1244,7 @@ class ExportPriceColumnsTests(TestCase):
         buyer = Buyer.all_companies.create(name='Wuquan', slug='wuquan',
                                            company=cls.company)
         pl = PriceList.all_companies.create(buyer=buyer, company=cls.company)
-        Price.all_companies.create(price_list=pl, kind='emmc', gen='',
+        Price.all_companies.create(price_list=pl, kind='emmc', gen='', origin='phone',
                                    tier_value=16, tier_unit='GB',
                                    status='quoted', price_min='15',
                                    price_max='15', company=cls.company)
@@ -1315,7 +1316,7 @@ class MaskingTests(TestCase):
     def _lot(self, company, user):
         set_current_company(company.pk)
         self.addCleanup(set_current_company, None)
-        lot = Lot.all_companies.create(number=800 + company.pk,
+        lot = Lot.all_companies.create(number=800 + company.pk, origin='phone',
                                        operator=user, company=company)
         return lot
 
@@ -1437,7 +1438,7 @@ class DebugButtonGateTests(TestCase):
                                                          password='x')
         self.company = _grant(self.user, role=Membership.ROLE_ADMIN)
         _scope(self, self.company)
-        self.lot = Lot.objects.create(number=571, operator=self.user,
+        self.lot = Lot.objects.create(number=571, origin='phone', operator=self.user,
                                       company=self.company)
         self.url = reverse('estoque:preview', args=[self.lot.pk])
 
@@ -1479,7 +1480,7 @@ class MaskedFuzzyDiffTests(TestCase):
         Membership.objects.create(user=self.user, company=self.cli,
                                   role=Membership.ROLE_OPERATOR)
         _scope(self, self.cli)
-        self.lot = Lot.all_companies.create(number=572, operator=self.user,
+        self.lot = Lot.all_companies.create(number=572, origin='phone', operator=self.user,
                                             company=self.cli)
         self.client.force_login(self.user)
 
@@ -1638,7 +1639,7 @@ class ReplicateLotXlsxTests(TestCase):
         from io import StringIO
         out = StringIO()
         call_command('replicate_lot_xlsx', self.xlsx, '--company', 'repco',
-                     stdout=out)
+                     '--origin', 'phone', stdout=out)
         self.assertIn('2 PNs · 9 un.', out.getvalue())
         self.assertIn('DRY-RUN', out.getvalue())
         set_current_company(self.company)
@@ -1652,7 +1653,7 @@ class ReplicateLotXlsxTests(TestCase):
         from io import StringIO
         out = StringIO()
         call_command('replicate_lot_xlsx', self.xlsx, '--company', 'repco',
-                     '--commit', stdout=out)
+                     '--origin', 'phone', '--commit', stdout=out)
         self.assertIn('✅', out.getvalue())
         set_current_company(self.company)
         try:
@@ -1670,3 +1671,35 @@ class ReplicateLotXlsxTests(TestCase):
             self.assertTrue(zz.price_key_reason)
         finally:
             set_current_company(None)
+
+
+class LotOriginTests(TestCase):
+    """v4 (dono, 2026-08-01): origem do lote OBRIGATÓRIA e sem default na
+    abertura — celular × PCB; define a tabela de preço do eMMC."""
+
+    def setUp(self):
+        User = get_user_model()
+        self.mgr = User.objects.create_user(username='orig_mgr', password='x')
+        self.company = _grant(self.mgr, role='manager')
+        self.client.login(username='orig_mgr', password='x')
+
+    def test_abrir_sem_origem_nao_cria(self):
+        resp = self.client.post(reverse('estoque:lot_create'),
+                                {'description': 'sem origem'}, follow=True)
+        self.assertContains(resp, 'ORIGEM')
+        _scope(self, self.company)
+        self.assertFalse(Lot.objects.filter(description='sem origem').exists())
+
+    def test_abrir_com_origem_pcb(self):
+        self.client.post(reverse('estoque:lot_create'),
+                         {'description': 'lote pcb', 'origin': 'pcb'})
+        _scope(self, self.company)
+        lot = Lot.objects.get(description='lote pcb')
+        self.assertEqual(lot.origin, 'pcb')
+
+    def test_open_for_company_valida_origem(self):
+        from django.core.exceptions import ValidationError
+        with self.assertRaises(ValidationError):
+            Lot.open_for_company(self.company, self.mgr, 'x', origin='')
+        with self.assertRaises(ValidationError):
+            Lot.open_for_company(self.company, self.mgr, 'x', origin='misto')

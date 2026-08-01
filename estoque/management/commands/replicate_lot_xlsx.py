@@ -42,6 +42,8 @@ class Command(SafeWriteCommand):
                             help='Slug da empresa (obrigatório se houver 2+ ativas).')
         parser.add_argument('--operator', default='',
                             help='Username do operador do lote (default: 1º superuser).')
+        parser.add_argument('--origin', required=True, choices=['phone', 'pcb'],
+                            help='Origem do lote replicado (acordo 2026-08-01).')
         parser.add_argument('--commit', action='store_true',
                             help='Cria o lote de verdade (sem isto: dry-run).')
 
@@ -126,7 +128,8 @@ class Command(SafeWriteCommand):
             lot = Lot.open_for_company(
                 company, operator,
                 f'réplica de {os.path.basename(opts["xlsx"])} (teste da '
-                f'convenção nova — replicate_lot_xlsx)')
+                f'convenção nova — replicate_lot_xlsx)',
+                origin=opts['origin'])
             for pn, qty, snap, key in preparadas:
                 InventoryEntry.objects.create(
                     lot=lot, part_number=pn, quantity=qty,

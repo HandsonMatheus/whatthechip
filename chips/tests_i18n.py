@@ -229,6 +229,8 @@ class I18nChoicesDeclarationTests(TestCase):
         'chips.CorrectionRequest.status',
         'chips.ChipSubmission.status',
         'estoque.Lot.status',            # UI usa chave (lot.status) + trans no template
+        'estoque.Lot.origin',            # idem: templates comparam a CHAVE e usam trans
+        'pricing.Price.origin',          # admin-only (phone/pcb — 2026-08-01)
         'pricing.PricingConfig.default_scenario',
         # ── Rótulo = DADO técnico, idêntico em qualquer idioma (glossário):
         'pricing.Price.kind',            # eMMC / UFS / eMCP…

@@ -35,7 +35,7 @@ def _setup(slug):
     generica = PriceList.all_companies.create(buyer=buyer, brand=None)
     # correção 2026-08-01: eMMC é UNIFICADO — linha na GENÉRICA
     Price.all_companies.create(
-        price_list=generica, kind='emmc', gen='', tier_value=Decimal('16'),
+        price_list=generica, kind='emmc', gen='', origin='phone', tier_value=Decimal('16'),
         tier_unit='GB', status=STATUS_QUOTED,
         price_min=Decimal('15'), price_max=Decimal('15'))      # ¥15 → US$ 2.10
     # ESTRUTURAL 2026-07-27: eMCP é UNIFICADO — linha SÓ na genérica.
@@ -84,7 +84,7 @@ class SalesOrderFlowTests(TestCase):
         self.addCleanup(set_current_company, None)
 
     def _lot(self):
-        lot = Lot.open_for_company(self.company, self.user, 'lote VD')
+        lot = Lot.open_for_company(self.company, self.user, 'lote VD', origin='phone')
         _entries(lot, self.brand)
         return lot
 
@@ -116,7 +116,7 @@ class SalesOrderFlowTests(TestCase):
         # com as 'LPDDR4' na MESMA linha da OV (agregação dobra o gen).
         from decimal import Decimal as D
         from chips.models import CatalogVersion
-        lot = Lot.open_for_company(self.company, self.user, 'lote fold')
+        lot = Lot.open_for_company(self.company, self.user, 'lote fold', origin='phone')
         for pn, gen, qty in (('LPFOLD4', 'LPDDR4', 2), ('LPFOLD4X', 'LPDDR4X', 3)):
             InventoryEntry.all_companies.create(
                 lot=lot, part_number=pn, quantity=qty, brand='Samsung VD',
@@ -190,7 +190,7 @@ class LotCloseReopenTests(TestCase):
     def setUp(self):
         set_current_company(self.company.pk)
         self.addCleanup(set_current_company, None)
-        self.lot = Lot.open_for_company(self.company, self.mgr, 'VD hook')
+        self.lot = Lot.open_for_company(self.company, self.mgr, 'VD hook', origin='phone')
         _entries(self.lot, self.brand, com_emcp=False)
 
     def test_fechar_cria_draft_e_reabrir_cancela(self):
@@ -280,7 +280,7 @@ class SettlementInvoicePaymentTests(TestCase):
     def setUp(self):
         set_current_company(self.company.pk)
         self.addCleanup(set_current_company, None)
-        lot = Lot.open_for_company(self.company, self.adm, 'set')
+        lot = Lot.open_for_company(self.company, self.adm, 'set', origin='phone')
         _entries(lot, self.brand)                 # 5 eMMC16 + 4 eMCP64 + SoC
         self.so = services.create_draft_for_lot(lot, self.adm)
         services.confirm(self.so, self.adm)       # ¥435 · US$ 60.90
@@ -384,7 +384,7 @@ class BackfillSalesOrdersTests(TestCase):
         set_current_company(company.pk)
         self.addCleanup(set_current_company, None)
 
-        lot = Lot.open_for_company(company, u, 'histórico')
+        lot = Lot.open_for_company(company, u, 'histórico', origin='phone')
         _entries(lot, brand, com_emcp=False)          # 5 un. eMMC + 7 sem chave
         lot.status, lot.closed_at = Lot.STATUS_CLOSED, timezone.now()
         lot.save(update_fields=['status', 'closed_at'])
@@ -435,7 +435,7 @@ class VendasGateTests(TestCase):
         self.addCleanup(set_current_company, None)
 
     def test_admin_ve_e_demais_nao(self):
-        lot = Lot.open_for_company(self.company, self.users['manager'], 'g')
+        lot = Lot.open_for_company(self.company, self.users['manager'], 'g', origin='phone')
         _entries(lot, self.brand, com_emcp=False)
         so = services.create_draft_for_lot(lot, self.users['manager'])
 

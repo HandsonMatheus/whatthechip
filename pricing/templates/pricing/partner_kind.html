@@ -19,6 +19,8 @@
   <span style="background:#defbe6;color:#0e6027;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px;">{% trans "Todos os preços em ¥ (RMB)" %}</span>
   {% if unified %}
   <span style="background:#edf5ff;color:#0043ce;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px;">{% trans "PREÇO UNIFICADO — vale para todas as marcas" %}</span>
+  {% elif dual %}
+  <span style="background:#fff1c2;color:#8a6d00;font-weight:700;font-size:12px;padding:3px 10px;border-radius:8px;">{% trans "DUAS TABELAS — celular (unificado) × PCB (por marca)" %}</span>
   {% endif %}
   {% if ranged %}<span style="color:#6f6f6f;font-size:13px;">{% trans "faixa mín–máx em ¥" %}</span>{% endif %}
 </div>
@@ -26,8 +28,9 @@
 <form method="post" action="{% url 'pricing:partner_kind_save' kind %}">
 {% csrf_token %}
 
-{% if unified %}
-{# ── COLUNA ÚNICA (eMCP/uMCP/LPDDR) — LPDDR agrupa por geração ──── #}
+{% if unified or dual %}
+{# ── COLUNA ÚNICA (eMCP/uMCP/LPDDR; eMMC = subset CELULAR) ──────── #}
+{% if dual %}<h2 style="font-size:14px;font-weight:700;margin:0 0 8px;color:#525252;">📱 {% trans "eMMC de CELULAR — preço unificado, todas as marcas" %}</h2>{% endif %}
 <div class="ptn-card" style="padding:0;overflow-x:auto;">
   <table class="ptn-table ptn-matrix">
     <thead><tr>
@@ -72,8 +75,10 @@
   </table>
 </div>
 
-{% else %}
-{# ── MATRIZ POR MARCA (eMMC/UFS/DDR) — DDR agrupa por geração ───── #}
+{% endif %}
+{% if not unified %}
+{# ── MATRIZ POR MARCA (DDR; eMMC = subset PCB) ──────────────────── #}
+{% if dual %}<h2 style="font-size:14px;font-weight:700;margin:14px 0 8px;color:#525252;">🔌 {% trans "eMMC de PCB — preço por marca (set-top box, TV, notebook…)" %}</h2>{% endif %}
 <div class="ptn-card" style="padding:0;overflow-x:auto;">
   <table class="ptn-table ptn-matrix">
     <thead><tr>

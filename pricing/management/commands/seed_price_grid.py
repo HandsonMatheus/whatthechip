@@ -52,11 +52,11 @@ class Command(BaseCommand):
 
         rows = list(Price.all_companies.filter(price_list__buyer=buyer)
                     .values_list('price_list_id', 'kind', 'gen',
-                                 'tier_value', 'tier_unit'))
-        master = {(k, g, tv, tu) for _, k, g, tv, tu in rows}
+                                 'tier_value', 'tier_unit', 'origin'))
+        master = {(k, g, tv, tu, o) for _, k, g, tv, tu, o in rows}
         existing = {}
-        for pl_id, k, g, tv, tu in rows:
-            existing.setdefault(pl_id, set()).add((k, g, tv, tu))
+        for pl_id, k, g, tv, tu, o in rows:
+            existing.setdefault(pl_id, set()).add((k, g, tv, tu, o))
 
         self.stdout.write(f'Grade-mestra: {len(master)} combos '
                           f'(união das {len(lists)} listas do {buyer.name}).')
@@ -64,11 +64,13 @@ class Command(BaseCommand):
         plan = []
         for pl in lists:
             faltam = sorted(master - existing.get(pl.pk, set()))
-            # Estrutura unificada (b22810c + correção 2026-08-01: eMMC/UFS
-            # também): kind unificado SÓ existe na genérica — lista de marca
-            # nunca ganha essas linhas (o portão do modelo rejeitaria).
+            # Estrutura unificada: kind unificado SÓ na genérica; eMMC dual
+            # (2026-08-01): o subset PHONE também é só-genérica — marca só
+            # recebe o subset PCB (o portão do modelo rejeitaria o resto).
             if pl.brand_id is not None:
-                faltam = [c for c in faltam if c[0] not in UNIFIED_KINDS]
+                faltam = [c for c in faltam
+                          if c[0] not in UNIFIED_KINDS
+                          and not (c[0] == 'emmc' and c[4] == 'phone')]
             status = STATUS_UNQUOTED if pl.brand_id is None else STATUS_NOT_MADE
             plan.append((pl, faltam, status))
             rotulo = pl.brand.name if pl.brand_id else 'Outras marcas'
@@ -84,10 +86,10 @@ class Command(BaseCommand):
         criadas = 0
         with transaction.atomic():
             for pl, faltam, status in plan:
-                for (k, g, tv, tu) in faltam:
+                for (k, g, tv, tu, o) in faltam:
                     Price.all_companies.create(
                         price_list=pl, kind=k, gen=g, tier_value=tv,
-                        tier_unit=tu, status=status,
+                        tier_unit=tu, origin=o, status=status,
                         source='seed_price_grid (grid unificado)')
                     criadas += 1
         self.stdout.write(self.style.SUCCESS(

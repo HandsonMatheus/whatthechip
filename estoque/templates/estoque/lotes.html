@@ -103,6 +103,7 @@
     <div class="olot__row">
       <div>
         <div class="olot__code">{{ lot.code }}</div>
+        <div style="margin:2px 0 4px;"><span class="badge" style="background:{% if lot.origin == 'pcb' %}#e8f4ff;color:#00539a{% else %}#f2f4f8;color:#4d5358{% endif %};">{% if lot.origin == 'pcb' %}🔌 PCB{% else %}📱 {% trans "Celular" %}{% endif %}</span></div>
         {% if lot.description %}<div class="olot__desc">{{ lot.description }}</div>{% else %}<div class="olot__desc olot__desc--empty">{% trans "Sem descrição" %}</div>{% endif %}
       </div>
       <span class="badge badge--open"><span class="dot"></span>{% trans "Aberto" %}</span>
@@ -148,6 +149,21 @@
 {% if wtc_is_manager %}
 <form class="create" id="lot-create" method="post" action="{% url 'estoque:lot_create' %}">
   {% csrf_token %}
+  {% comment %} Origem OBRIGATÓRIA, sem default (dono 2026-08-01): a promessa
+     comercial do lote — eMMC de lote PCB vale a tabela por marca. {% endcomment %}
+  <div class="field" style="margin-bottom:12px;">
+    <label>{% trans "Origem das placas" %} *</label>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:4px;">
+      <label style="display:flex;align-items:center;gap:7px;font-size:14px;cursor:pointer;text-transform:none;letter-spacing:0;color:#21272a;">
+        <input type="radio" name="origin" value="phone" required>
+        📱 {% trans "Celular (placas de telefone)" %}
+      </label>
+      <label style="display:flex;align-items:center;gap:7px;font-size:14px;cursor:pointer;text-transform:none;letter-spacing:0;color:#21272a;">
+        <input type="radio" name="origin" value="pcb" required>
+        🔌 {% trans "PCB (set-top box, TV, notebook, industrial…)" %}
+      </label>
+    </div>
+  </div>
   <div class="create__row">
     <div class="field"><label for="lot-desc">{% trans "Descrição do lote (opcional)" %}</label><input type="text" id="lot-desc" name="description" placeholder="Ex: Compra Jul/2026 — Fornecedor Shenzhen" maxlength="255" autocomplete="off"></div>
     <button class="uib uib--primary" type="submit">{% trans "Criar e abrir" %}</button>

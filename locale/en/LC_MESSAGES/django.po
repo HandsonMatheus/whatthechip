@@ -2279,3 +2279,40 @@ msgstr "No profitability assessment — this chip cannot enter stock until the d
 # ── eMMC/UFS unificados — rodapé da home (2026-08-01) ──
 msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e UFS</strong> têm preço único, válido para todas as marcas; só o <strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
 msgstr "Prices per chip, in <strong>yuan (¥ RMB)</strong> — conversion to US$ uses the contract rate, shown at the top. <strong>eMCP, uMCP, LPDDR, eMMC and UFS</strong> have a single price, valid for all brands; only <strong>DDR</strong> is priced per brand — the \"Others\" column applies to brands without their own column."
+
+# ── v4 origem do lote — celular × PCB (2026-08-01) ──
+msgid "Celular"
+msgstr "Phone"
+
+msgid "celular"
+msgstr "phone"
+
+msgid "celular × PCB"
+msgstr "phone × PCB"
+
+msgid "Origem: celular"
+msgstr "Origin: phone"
+
+msgid "Origem: PCB"
+msgstr "Origin: PCB"
+
+msgid "Origem das placas"
+msgstr "Board origin"
+
+msgid "Celular (placas de telefone)"
+msgstr "Phone (phone boards)"
+
+msgid "PCB (set-top box, TV, notebook, industrial…)"
+msgstr "PCB (set-top box, TV, laptop, industrial…)"
+
+msgid "Escolha a ORIGEM do lote (celular ou PCB) — obrigatória, sem padrão."
+msgstr "Choose the lot ORIGIN (phone or PCB) — required, no default."
+
+msgid "DUAS TABELAS — celular (unificado) × PCB (por marca)"
+msgstr "TWO TABLES — phone (unified) × PCB (per brand)"
+
+msgid "eMMC de CELULAR — preço unificado, todas as marcas"
+msgstr "PHONE eMMC — single price, all brands"
+
+msgid "eMMC de PCB — preço por marca (set-top box, TV, notebook…)"
+msgstr "PCB eMMC — price per brand (set-top box, TV, laptop…)"

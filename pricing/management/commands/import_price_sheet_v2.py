@@ -11,9 +11,15 @@ Toshiba-Kioxia|Other. Regras POR KIND (a "simplificação" do comprador):
                  (+ a genérica) — o preço deixa de variar por marca.
   • LPDDR      → UNIFIED **fixo** (sujeira "3," / "8;" é limpa), mesma
                  gravação em todas as listas não-`not_made` + genérica.
-  • eMMC/UFS    → UNIFIED **fixo** (correção do comprador 2026-08-01: "eMMC
-                 e UFS estavam errados, são unificados" — a coluna Unified
-                 sempre esteve preenchida; as colunas por marca IGNORADAS).
+  • UFS         → UNIFIED **fixo** ("PCB motherboards don't have UFS" —
+                 comprador, 2026-08-01); colunas por marca IGNORADAS.
+  • eMMC        → **DUAL-ORIGEM (2026-08-01)**: coluna Unified = eMMC de
+                 CELULAR (origin='phone', genérica); a TABELA À DIREITA
+                 (colunas M..T, marcador "The price of the eMMC on the PCB
+                 motherboard") = eMMC de PCB (origin='pcb', POR MARCA +
+                 Other→genérica). Linhas eMMC ausentes são CRIADAS (bootstrap
+                 da dimensão de origem — exceção documentada ao "linha sempre
+                 existe").
   • DDR         → POR MARCA (colunas E..K) + coluna **Other = GENÉRICA**.
                  O UNIFIED da seção é só referência — IGNORADO.
 
@@ -50,6 +56,11 @@ _TYPE_TO_KIND = {'emcp': 'emcp', 'umcp': 'umcp', 'ufs': 'ufs', 'emmc': 'emmc',
 # coluna → marca (índices 0-based da linha); 11 = Other → genérica (None).
 _BRAND_COLS = {4: 'Kingston', 5: 'Micron', 6: 'Nanya', 7: 'SK Hynix',
                8: 'Samsung', 9: 'SanDisk', 10: 'Toshiba-Kioxia', 11: None}
+# Tabela do eMMC de PCB (à direita, 2026-08-01): capacidade na col 12 (M),
+# marcas nas 13..20 (N..U); 20 = Other → genérica.
+_PCB_COLS = {13: 'Kingston', 14: 'Micron', 15: 'Nanya', 16: 'SK Hynix',
+             17: 'Samsung', 18: 'SanDisk', 19: 'Toshiba-Kioxia', 20: None}
+_PCB_MARKER = 'the price of the emmc on the pcb motherboard'
 _RANGE_RE = re.compile(r'^(\d+(?:\.\d+)?)\s*[-–]\s*(\d+(?:\.\d+)?)$')
 _NUM_RE = re.compile(r'^(\d+(?:\.\d+)?)$')
 _CAP_RE = re.compile(r'^(\d+(?:\.\d+)?)(TB|GB|Gb)$')
@@ -150,11 +161,30 @@ class Command(BaseCommand):
             listas[pl.brand.name if pl.brand else None] = pl
 
         ws = openpyxl.load_workbook(opts['xlsx'], data_only=True)['Prices']
-        # (lista, kind, gen, tier) → (status, min, max)
+        # (lista, kind, gen, tier, origin) → (status, min, max)
         plano_celulas = {}
         secao = ''
+        pcb_ativo = False        # dentro da tabela lateral do eMMC de PCB?
         for row in ws.iter_rows(min_row=5, values_only=True):
-            row = list(row) + [None] * (12 - len(row))
+            row = list(row) + [None] * (21 - len(row))
+            # ── tabela LATERAL do eMMC de PCB (colunas M..U) ────────────
+            lateral = ' '.join(_clean(c).lower() for c in row[12:21] if c)
+            if _PCB_MARKER in lateral:
+                pcb_ativo = True
+            elif pcb_ativo:
+                cap_pcb = _clean(row[12])
+                tier_pcb = self._tier('emmc', cap_pcb)
+                if tier_pcb is not None:
+                    for idx, marca in _PCB_COLS.items():
+                        v = self._valor('emmc', row[idx])
+                        if v is None or marca not in listas:
+                            continue
+                        plano_celulas[(listas[marca].pk, 'emmc', '', tier_pcb,
+                                       'pcb')] = v
+                elif cap_pcb and not cap_pcb.lower().startswith(
+                        ('kingston', 'note')):
+                    pass                              # header/nota da lateral
+            # ── tabela PRINCIPAL ────────────────────────────────────────
             tipo = _clean(row[0]).lower()
             cap = _clean(row[2])
             if tipo and not cap:                      # linha de cabeçalho de seção
@@ -169,32 +199,45 @@ class Command(BaseCommand):
                     f'  ⚠ capacidade ilegível, pulada: {kind} {cap!r}'))
                 continue
             gen = self._gen(kind, row[1])
-            if kind in UNIFIED_KINDS:
+            if kind == 'emmc':
+                # DUAL (2026-08-01): Unified = CELULAR → genérica/phone.
+                v = self._valor('emmc', row[3])
+                if v is not None and None in listas:
+                    plano_celulas[(listas[None].pk, 'emmc', '', tier,
+                                   'phone')] = v
+            elif kind in UNIFIED_KINDS:
                 v = self._valor(kind, row[3])
                 if v is None or None not in listas:
                     continue
                 # ESTRUTURAL (2026-07-27): unificado vive SÓ na GENÉRICA — a
                 # resolução de qualquer marca cai nela; linhas de marca desses
                 # kinds foram extintas (unify_price_rows + portão do modelo).
-                plano_celulas[(listas[None].pk, kind, gen, tier)] = v
+                plano_celulas[(listas[None].pk, kind, gen, tier, '')] = v
             else:
                 for idx, marca in _BRAND_COLS.items():
                     v = self._valor(kind, row[idx])
                     if v is None or marca not in listas:
                         continue
-                    plano_celulas[(listas[marca].pk, kind, gen, tier)] = v
+                    plano_celulas[(listas[marca].pk, kind, gen, tier, '')] = v
 
         # cruza com o banco
-        rows_db = {(p.price_list_id, p.kind, p.gen, p.tier_value): p
+        rows_db = {(p.price_list_id, p.kind, p.gen, p.tier_value, p.origin): p
                    for p in Price.objects.filter(price_list__buyer=buyer)}
         nome_por_pk = {pl.pk: (nome or 'GENERICA')
                        for nome, pl in listas.items()}
-        mudancas, iguais, ausentes, protegidas = [], 0, [], 0
-        for (pl_pk, kind, gen, tier), (st, mn, mx) in sorted(
+        pl_por_pk = {pl.pk: pl for pl in listas.values()}
+        mudancas, iguais, ausentes, protegidas, criadas = [], 0, [], 0, []
+        for (pl_pk, kind, gen, tier, origin), (st, mn, mx) in sorted(
                 plano_celulas.items(),
-                key=lambda kv: (kv[0][1], kv[0][2], kv[0][3], nome_por_pk[kv[0][0]])):
-            p = rows_db.get((pl_pk, kind, gen, tier))
+                key=lambda kv: (kv[0][1], kv[0][2], kv[0][3], kv[0][4],
+                                nome_por_pk[kv[0][0]])):
+            p = rows_db.get((pl_pk, kind, gen, tier, origin))
             if p is None:
+                if kind == 'emmc':
+                    # bootstrap da dimensão de ORIGEM (2026-08-01): as linhas
+                    # phone/pcb ainda não existem — o import as CRIA.
+                    criadas.append((pl_pk, kind, gen, tier, origin, st, mn, mx))
+                    continue
                 ausentes.append(f'{kind} {gen or "—"} {tier} [{nome_por_pk[pl_pk]}]')
                 continue
             if p.status == 'not_made' and kind in UNIFIED_KINDS:
@@ -214,8 +257,9 @@ class Command(BaseCommand):
                 tag = 'NOVO'
             else:
                 tag = 'no_buy'
+            _og = f' {origin}' if origin else ''
             mudancas.append((p, st, mn, mx,
-                             f'[{tag:>5}] {kind} {gen or "—"} {tier}'
+                             f'[{tag:>5}] {kind}{_og} {gen or "—"} {tier}'
                              f'{p.tier_unit} [{nome_por_pk[pl_pk]}]: '
                              f'{antes} → {depois}'))
 
@@ -223,14 +267,19 @@ class Command(BaseCommand):
                           f"({'COMMIT' if opts['commit'] else 'DRY-RUN'}) ===")
         self.stdout.write(f'  células na planilha: {len(plano_celulas)} · '
                           f'mudanças: {len(mudancas)} · iguais: {iguais} · '
-                          f'not_made preservadas: {protegidas}')
+                          f'not_made preservadas: {protegidas} · '
+                          f'eMMC a criar (origem): {len(criadas)}')
+        for pl_pk, kind, gen, tier, origin, st, mn, mx in criadas[:12]:
+            self.stdout.write(f'  [ CRIA] emmc {origin} {tier}GB '
+                              f'[{nome_por_pk[pl_pk]}]: '
+                              f'{st if st != STATUS_QUOTED else f"¥{mn}" + (f"–{mx}" if mx != mn else "")}')
         if ausentes:
             self.stdout.write(self.style.WARNING(
                 f'  ⚠ {len(ausentes)} chave(s) SEM linha no grid (crie via '
                 f'add_price_row): ' + '; '.join(sorted(set(ausentes))[:10])))
         for *_resto, txt in mudancas:
             self.stdout.write('  ' + txt)
-        if not mudancas:
+        if not mudancas and not criadas:
             self.stdout.write(self.style.SUCCESS('Nada a mudar.'))
             return
         if not opts['commit']:
@@ -246,6 +295,14 @@ class Command(BaseCommand):
                 p.status, p.price_min, p.price_max = st, mn, mx
                 p.quote_date = hoje if st == STATUS_QUOTED else None
                 p.save()
+            for pl_pk, kind, gen, tier, origin, st, mn, mx in criadas:
+                Price.all_companies.create(
+                    price_list=pl_por_pk[pl_pk], kind=kind, gen=gen,
+                    tier_value=tier, tier_unit='GB', origin=origin,
+                    status=st, price_min=mn, price_max=mx,
+                    quote_date=hoje if st == STATUS_QUOTED else None,
+                    source='import_price_sheet_v2 (origem eMMC 2026-08-01)')
         self.stdout.write(self.style.SUCCESS(
-            f'✅ {len(mudancas)} linha(s) atualizadas. Backup: {_BACKUP} '
-            f'(--revert desfaz).'))
+            f'✅ {len(mudancas)} linha(s) atualizadas · {len(criadas)} eMMC '
+            f'criada(s). Backup: {_BACKUP} (--revert desfaz; criadas não '
+            f'entram no backup — apagar no admin se preciso).'))

@@ -7,11 +7,24 @@ Modelo de inventário por lote.
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
+from django.utils.translation import gettext_lazy as _lazy
 
 from tenancy.scope import CompanyScopedManager
 
 
 class Lot(models.Model):
+    # Origem do lote (acordo com o comprador, 2026-08-01): TODO lote declara
+    # de que classe de placa os chips saíram — celular × PCB (set-top, TV,
+    # notebook, industrial…). Escolha OBRIGATÓRIA na abertura, sem default
+    # (é a promessa comercial: eMMC de lote PCB vale a tabela por marca).
+    # Chave canônica NUNCA traduz; o rótulo sim (i18n).
+    ORIGIN_PHONE  = 'phone'
+    ORIGIN_PCB    = 'pcb'
+    ORIGIN_CHOICES = [
+        (ORIGIN_PHONE, _lazy('Celular')),
+        (ORIGIN_PCB,   'PCB'),
+    ]
+
     STATUS_OPEN   = 'open'
     STATUS_CLOSED = 'closed'
     STATUS_CHOICES = [
@@ -40,6 +53,11 @@ class Lot(models.Model):
         help_text='Quem abriu o lote (o lote pertence à EMPRESA, não a ele).',
     )
     description = models.CharField(max_length=255, blank=True, default='', verbose_name='Descrição')
+    origin      = models.CharField(max_length=5, choices=ORIGIN_CHOICES,
+                                   verbose_name='Origem',
+                                   help_text='Classe de placa de onde os chips '
+                                             'saíram (celular × PCB) — define a '
+                                             'tabela de preço do eMMC.')
     status      = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_OPEN, verbose_name='Status')
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name='Aberto em')
 
@@ -78,6 +96,11 @@ class Lot(models.Model):
             # coexiste com o #001 da eMiner). Substitui o unique global.
             models.UniqueConstraint(fields=['company', 'number'],
                                     name='unique_lot_company_number'),
+            # Origem obrigatória e canônica (2026-08-01) — pega criação por
+            # fora do open_for_company (shell/teste) ainda no INSERT.
+            models.CheckConstraint(
+                name='lot_origin_vocab',
+                condition=models.Q(origin__in=['phone', 'pcb'])),
         ]
         indexes = [
             # Toda consulta do app começa por company (§5.2).
@@ -97,7 +120,8 @@ class Lot(models.Model):
         return super().save(*args, **kwargs)
 
     @classmethod
-    def open_for_company(cls, company, operator, description='', branch=None):
+    def open_for_company(cls, company, operator, description='', branch=None,
+                         *, origin):
         """T2 (PLANO_MULTITENANT.md §7): abre um lote com numeração ATÔMICA por
         empresa. Substitui o antigo ``next_number()`` (``Max('number')+1``), que
         era uma CORRIDA real: dois gerentes clicando juntos liam o mesmo max e um
@@ -125,9 +149,14 @@ class Lot(models.Model):
                      .aggregate(Max('number'))['number__max'])
             next_n = max(locked.last_lot_number,
                          floor if floor is not None else -1) + 1
+            if origin not in (cls.ORIGIN_PHONE, cls.ORIGIN_PCB):
+                raise ValidationError({'origin': (
+                    'Origem do lote é OBRIGATÓRIA (celular ou PCB) — acordo '
+                    'com o comprador, 2026-08-01. Sem default de propósito.')})
             locked.last_lot_number = next_n
             locked.save(update_fields=['last_lot_number'])
             return cls.all_companies.create(number=next_n, company=locked,
+                                            origin=origin,
                                             branch=branch, operator=operator,
                                             description=description)
 

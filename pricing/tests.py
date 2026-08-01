@@ -48,12 +48,14 @@ class PriceGateTests(TestCase):
 
     def _price(self, **kw):
         from .models import UNIFIED_KINDS
-        # kind unificado → lista genérica (portão 2026-07-27); resto → marca.
-        # ⚠ kw.get('kind') puro ignorava o DEFAULT ('emmc' da base) — com a
-        # correção 2026-08-01 (eMMC/UFS unificados) o default também roteia.
+        # kind unificado → genérica (2026-07-27); eMMC-phone idem (dual,
+        # 2026-08-01: subset celular é unificado; PCB é que vive na marca).
+        _kind = kw.get('kind', 'emmc')
+        _orig = kw.get('origin', 'phone' if _kind == 'emmc' else '')
         alvo = (self.generica
-                if kw.get('kind', 'emmc') in UNIFIED_KINDS else self.lista)
-        base = dict(price_list=alvo, kind='emmc', gen='',
+                if _kind in UNIFIED_KINDS
+                or (_kind == 'emmc' and _orig == 'phone') else self.lista)
+        base = dict(price_list=alvo, kind=_kind, gen='', origin=_orig,
                     tier_value=Decimal('64'), tier_unit='GB',
                     status=STATUS_QUOTED, price_min=Decimal('6.00'),
                     price_max=Decimal('6.00'), quote_date=date(2026, 6, 29))
@@ -211,7 +213,7 @@ class PricingPghistoryTests(TestCase):
         from django.apps import apps as django_apps
         _, _, _, lista = _setup_wuquan('PgHist', 'pghist-f2')
         p = Price.all_companies.create(          # eMMC é UNIFICADO (2026-08-01)
-            price_list=_setup_wuquan.generica, kind='emmc', gen='',
+            price_list=_setup_wuquan.generica, kind='emmc', gen='', origin='phone',
             tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
             price_min=Decimal('6.00'), price_max=Decimal('6.00'))
@@ -269,9 +271,12 @@ class PriceGoldenTests(TestCase):
         hoje, velho = date.today(), date.today() - timedelta(days=200)
 
         def row(lista, kind, gen, tier, unit, mn=None, mx=None,
-                status=STATUS_QUOTED, qd=None):
+                status=STATUS_QUOTED, qd=None, origin=''):
+            # eMMC (2026-08-01) exige origem — default do fixture: 'phone'
+            if kind == 'emmc' and not origin:
+                origin = 'phone'
             return Price.all_companies.create(
-                price_list=lista, kind=kind, gen=gen,
+                price_list=lista, kind=kind, gen=gen, origin=origin,
                 tier_value=Decimal(str(tier)), tier_unit=unit, status=status,
                 price_min=Decimal(str(mn)) if mn is not None else None,
                 price_max=Decimal(str(mx)) if mx is not None else None,
@@ -466,14 +471,14 @@ class PriceLotTests(TestCase):
         # eMMC é UNIFICADO (2026-08-01): a linha vive na GENÉRICA
         lista = PriceList.all_companies.create(buyer=buyer, brand=None)
         Price.all_companies.create(
-            price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
+            price_list=lista, kind='emmc', gen='', origin='phone', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
             price_min=Decimal('40'), price_max=Decimal('40'))   # ¥40 → US$ 5.60
 
         User = get_user_model()
         u = User.objects.create_user('lot_f3')
         with company_scope(company):
-            lot = Lot.open_for_company(company, u, 'lote F3')
+            lot = Lot.open_for_company(company, u, 'lote F3', origin='phone')
             InventoryEntry.objects.create(lot=lot, part_number='PNOK', quantity=10)
             InventoryEntry.objects.create(lot=lot, part_number='PNSEM', quantity=5)
 
@@ -511,7 +516,7 @@ class PriceLotTests(TestCase):
         # eMMC é UNIFICADO (2026-08-01): a linha vive na GENÉRICA
         lista = PriceList.all_companies.create(buyer=buyer, brand=None)
         Price.all_companies.create(
-            price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
+            price_list=lista, kind='emmc', gen='', origin='phone', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
             price_min=Decimal('40'), price_max=Decimal('40'))
         PricingConfig.get_config()      # singleton nasce FORA da contagem
@@ -519,7 +524,7 @@ class PriceLotTests(TestCase):
         User = get_user_model()
         u = User.objects.create_user('lot_nq')
         with company_scope(company):
-            lot = Lot.open_for_company(company, u, 'lote NQ')
+            lot = Lot.open_for_company(company, u, 'lote NQ', origin='phone')
             for i in range(30):
                 InventoryEntry.objects.create(lot=lot, part_number=f'PN{i:03d}',
                                               quantity=1)
@@ -546,13 +551,13 @@ class PriceLotTests(TestCase):
         # eMMC é UNIFICADO (2026-08-01): a linha vive na GENÉRICA
         lista = PriceList.all_companies.create(buyer=buyer, brand=None)
         Price.all_companies.create(
-            price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
+            price_list=lista, kind='emmc', gen='', origin='phone', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
             price_min=Decimal('40'), price_max=Decimal('40'))   # ¥40 → US$ 5.60
         User = get_user_model()
         u = User.objects.create_user('key_u')
         with company_scope(company):
-            lot = Lot.open_for_company(company, u, 'lote K')
+            lot = Lot.open_for_company(company, u, 'lote K', origin='phone')
             InventoryEntry.objects.create(          # COM chave (intake F11.1)
                 lot=lot, part_number='KEYED64', quantity=2, brand='Samsung K',
                 price_kind='emmc', price_gen='',
@@ -588,14 +593,14 @@ class PriceLotTests(TestCase):
             # eMMC é UNIFICADO (2026-08-01): genérica de cada comprador
             pl = PriceList.all_companies.create(buyer=buyer, brand=None)
             Price.all_companies.create(
-                price_list=pl, kind='emmc', gen='', tier_value=Decimal('64'),
+                price_list=pl, kind='emmc', gen='', origin='phone', tier_value=Decimal('64'),
                 tier_unit='GB', status=STATUS_QUOTED,
                 price_min=Decimal(preco), price_max=Decimal(preco))
 
         User = get_user_model()
         u = User.objects.create_user('multi_u')
         with company_scope(company):
-            lot = Lot.open_for_company(company, u, 'lote M')
+            lot = Lot.open_for_company(company, u, 'lote M', origin='phone')
             for i in range(10):
                 InventoryEntry.objects.create(lot=lot, part_number=f'PM{i:03d}',
                                               quantity=1)
@@ -630,7 +635,7 @@ class PriceCardGateTests(TestCase):
         # eMMC é UNIFICADO (2026-08-01): a linha vive na GENÉRICA
         lista = PriceList.all_companies.create(buyer=buyer, brand=None)
         Price.all_companies.create(
-            price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
+            price_list=lista, kind='emmc', gen='', origin='phone', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
             price_min=Decimal('40'), price_max=Decimal('40'))   # ¥40 → US$ 5.60
 
@@ -694,7 +699,7 @@ class BenchAndLotPricingTests(TestCase):
         # eMMC é UNIFICADO (2026-08-01): a linha vive na GENÉRICA
         lista = PriceList.all_companies.create(buyer=cls.buyer, brand=None)
         Price.all_companies.create(
-            price_list=lista, kind='emmc', gen='', tier_value=Decimal('64'),
+            price_list=lista, kind='emmc', gen='', origin='phone', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
             price_min=Decimal('40'), price_max=Decimal('40'))   # ¥40 → US$ 5.60
 
@@ -722,7 +727,7 @@ class BenchAndLotPricingTests(TestCase):
     def _lot(self, qty=10):
         from estoque.models import InventoryEntry, Lot
         with company_scope(self.company):
-            lot = Lot.open_for_company(self.company, self.users['manager'], 'F8')
+            lot = Lot.open_for_company(self.company, self.users['manager'], 'F8', origin='phone')
             InventoryEntry.objects.create(lot=lot, part_number='KLMCG8GEAC',
                                           quantity=qty)
         return lot
@@ -854,7 +859,7 @@ class SeedPriceGridTests(TestCase):
                                    tier_value=Decimal('8'), tier_unit='Gb',
                                    status=STATUS_UNQUOTED)
         # kind UNIFICADO na genérica: a marca NÃO pode ganhá-lo no seed
-        Price.all_companies.create(price_list=l_gen, kind='emmc', gen='',
+        Price.all_companies.create(price_list=l_gen, kind='emmc', gen='', origin='phone',
                                    tier_value=Decimal('64'), tier_unit='GB',
                                    status=STATUS_UNQUOTED)
 
@@ -956,7 +961,7 @@ class PartnerDashboardTests(TestCase):
         # correção 2026-08-01: eMMC/UFS são UNIFICADOS — linhas na GENÉRICA
         cls.l_gen = PriceList.all_companies.create(buyer=cls.buyer, brand=None)
         Price.all_companies.create(
-            price_list=cls.l_gen, kind='emmc', gen='', tier_value=Decimal('64'),
+            price_list=cls.l_gen, kind='emmc', gen='', origin='phone', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
             price_min=Decimal('6.00'), price_max=Decimal('6.00'))
         Price.all_companies.create(
@@ -1025,23 +1030,32 @@ class PartnerDashboardTests(TestCase):
         self.buyer.ssd_rmb_per_gb = Decimal('0.10')
         self.buyer.save(update_fields=['ssd_rmb_per_gb'])
 
+        # eMMC DUAL (2026-08-01): pcb por marca — linha na lista Samsung
+        Price.all_companies.create(
+            price_list=self.l_samsung, kind='emmc', gen='', origin='pcb',
+            tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('40'), price_max=Decimal('40'))
         sections = catalog_data(self.buyer)                          # default: usd
         self.assertEqual([s['title'] for s in sections],
-                         ['eMCP · NAND', 'eMMC', 'UFS', 'SSD'])
+                         ['eMCP · NAND', 'eMMC · celular', 'eMMC · PCB',
+                          'UFS', 'SSD'])
         emcp = sections[0]
         self.assertTrue(emcp['unified'])
         self.assertEqual(emcp['columns'], [])                # sem coluna de marca
         # FAIXA em USD derivado: ¥90–100 × 0.14 = 12.60–14.00
         self.assertEqual(emcp['rows'][0]['label'], '16GB')
         self.assertEqual(emcp['rows'][0]['cell'], ('quoted', '12.60\u201314.00'))
-        emmc = sections[1]
-        # correção 2026-08-01: eMMC também é UNIFICADO (sem coluna de marca)
-        self.assertTrue(emmc['unified'])
-        self.assertEqual(emmc['columns'], [])
-        self.assertEqual(emmc['rows'][0]['label'], '64GB')
+        fone = sections[1]
+        self.assertTrue(fone['unified'])                     # celular = unificado
+        self.assertEqual(fone['columns'], [])
+        self.assertEqual(fone['rows'][0]['label'], '64GB')
         # USD DERIVADO: ¥6 × 0.14 = 0.84 (o fixture guarda ¥ 6.00).
-        self.assertEqual(emmc['rows'][0]['cell'], ('quoted', '0.84'))
-        ssd = sections[3]
+        self.assertEqual(fone['rows'][0]['cell'], ('quoted', '0.84'))
+        pcb = sections[2]
+        self.assertFalse(pcb['unified'])                     # PCB = por marca
+        self.assertEqual(pcb['columns'], ['Samsung P6'])
+        self.assertEqual(pcb['rows'][0]['cells'][0], ('quoted', '5.60'))
+        ssd = sections[4]
         self.assertTrue(ssd['unified'])
         self.assertEqual(ssd['rows'][0]['cell'][0], 'quoted')
         # Moeda RMB: o ¥ armazenado cru, sem zeros à direita — faixa inteira.
@@ -1050,7 +1064,7 @@ class PartnerDashboardTests(TestCase):
                          ('quoted', '90\u2013100'))
         self.assertEqual(sections_rmb[1]['rows'][0]['cell'],
                          ('quoted', '6'))
-        self.assertEqual(sections_rmb[3]['rows'][0]['cell'],
+        self.assertEqual(sections_rmb[4]['rows'][0]['cell'],
                          ('quoted', '0.1'))                  # SSD ¥/GB
 
         self.client.force_login(self.partner)
@@ -1105,7 +1119,7 @@ class PartnerDashboardTests(TestCase):
         # pendente; só a aprovação do admin aplica.
         from pricing.models import PriceChangeRequest
         url = f'/partner/save/{self.l_gen.pk}/'
-        key = dict(kind='emmc', gen='', tier_value='64', tier_unit='GB')
+        key = dict(kind='emmc', gen='', origin='phone', tier_value='64', tier_unit='GB')
         row = Price.all_companies.get(price_list=self.l_gen, kind='emmc')
 
         # 1) pede cotação nova → Price INTACTO + pedido pendente
@@ -1172,11 +1186,11 @@ class PartnerDashboardTests(TestCase):
         self.client.force_login(self.partner)
         url = f'/partner/save/{self.l_gen.pk}/'
         antes = Price.all_companies.get(price_list=self.l_gen, kind='emmc')
-        resp = self.client.post(url, dict(kind='emmc', gen='', tier_value='64',
+        resp = self.client.post(url, dict(kind='emmc', gen='', origin='phone', tier_value='64',
                                           tier_unit='GB', state='quoted',
                                           price='abc'), follow=True)
         self.assertContains(resp, 'Preço ilegível')
-        resp2 = self.client.post(url, dict(kind='emmc', gen='', tier_value='64',
+        resp2 = self.client.post(url, dict(kind='emmc', gen='', origin='phone', tier_value='64',
                                            tier_unit='GB', state='quoted'),
                                  follow=True)
         self.assertContains(resp2, 'exige o preço')          # Cotado sem USD
@@ -1188,7 +1202,7 @@ class PartnerDashboardTests(TestCase):
         self.assertEqual(
             self.client.get(f'/partner/lists/{self.l_samsung.pk}/').status_code, 404)
         resp = self.client.post(f'/partner/save/{self.l_gen.pk}/',
-                                dict(kind='emmc', gen='', tier_value='64',
+                                dict(kind='emmc', gen='', origin='phone', tier_value='64',
                                      tier_unit='GB', state='quoted',
                                      price='1.00'))
         self.assertEqual(resp.status_code, 404)              # lista de OUTRO comprador
@@ -1230,7 +1244,7 @@ class PricingRLSTests(TransactionTestCase):
         generica_a = _setup_wuquan.generica      # eMMC unificado (2026-08-01)
         b, buyer_b, _, _ = _setup_wuquan('RlsPB', 'rls-pb')
         Price.all_companies.create(
-            price_list=generica_a, kind='emmc', gen='', tier_value=Decimal('64'),
+            price_list=generica_a, kind='emmc', gen='', origin='phone', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
             price_min=Decimal('6.00'), price_max=Decimal('6.00'))
 
@@ -1481,7 +1495,7 @@ class MigratePricesToRmbTests(TestCase):
         # eMMC é UNIFICADO (2026-08-01): a linha vive na genérica
         pl = PriceList.all_companies.create(buyer=buyer, brand=None)
         p = Price.all_companies.create(
-            price_list=pl, kind='emmc', gen='', tier_value=Decimal('64'),
+            price_list=pl, kind='emmc', gen='', origin='phone', tier_value=Decimal('64'),
             tier_unit='GB', status=STATUS_QUOTED,
             price_min=Decimal('13.50'), price_max=Decimal('13.50'))
         try:
@@ -2003,22 +2017,34 @@ class PartnerKindNavTests(TestCase):
         self.assertNotContains(resp, '↑')
         self.assertContains(resp, 'Todos os preços em ¥ (RMB)')
 
-    def test_pagina_emmc_agora_unificada(self):
-        # correção do comprador 2026-08-01: eMMC/UFS são UNIFICADOS — a
-        # página deixa de ser matriz por marca e vira coluna única (genérica).
+    def test_pagina_emmc_dual_celular_e_pcb(self):
+        # DUAL (acordo 2026-08-01): eMMC de CELULAR = unificado (genérica);
+        # eMMC de PCB = matriz por marca — a MESMA página mostra as duas.
         Price.all_companies.create(
-            price_list=self.l_gen, kind='emmc', gen='',
+            price_list=self.l_gen, kind='emmc', gen='', origin='phone',
             tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
             price_min=Decimal('6.00'), price_max=Decimal('6.00'))
+        pcb = Price.all_companies.create(
+            price_list=self.l_samsung, kind='emmc', gen='', origin='pcb',
+            tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('40'), price_max=Decimal('40'))
         self.client.force_login(self.partner)
         resp = self.client.get('/partner/tipo/emmc/')
         self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, 'PREÇO UNIFICADO')
-        self.assertContains(resp, '64GB')
-        self.assertContains(resp, 'value="6"')              # ¥ inteiro
-        self.assertNotContains(resp, 'Samsung PK')          # sem coluna de marca
-        self.assertNotContains(resp, 'class="ptn-matrix__gen"')   # sem seção
+        self.assertContains(resp, 'DUAS TABELAS')
+        self.assertContains(resp, 'eMMC de CELULAR')
+        self.assertContains(resp, 'eMMC de PCB')
+        self.assertContains(resp, 'value="6"')              # celular ¥6
+        self.assertContains(resp, 'value="40"')             # PCB Samsung ¥40
+        self.assertContains(resp, 'Samsung PK')             # coluna da matriz
+        self.assertContains(resp, f'name="p{pcb.pk}"')
         self.assertNotContains(resp, 'name="state"')
+        # batch: editar a célula PCB vira pedido normal (pk cobre a origem)
+        self.client.post('/partner/tipo/emmc/enviar/', {f'p{pcb.pk}': '38'})
+        from pricing.models import PriceChangeRequest
+        req = PriceChangeRequest.all_companies.get(price=pcb,
+                                                   review_status='pending')
+        self.assertEqual(req.new_price, Decimal('38'))
 
     def test_batch_celula_estilo_planilha(self):
         # v3: o estado sai do PRÓPRIO campo — x = não compro, vazio = sem
@@ -2171,3 +2197,92 @@ class PerDieGbDensityTests(TestCase):
         self.assertEqual(_gbit_from_capacity({'capacity': '2G'}), 2.0)
         # e o que NUNCA pode: minúsculo/misto não é densidade nem per-die
         self.assertIsNone(_gbit_from_capacity({'capacity': '1gb'}))
+
+
+class OrigemEmmcTests(TestCase):
+    """v4 (acordo com o comprador, 2026-08-01): o MESMO eMMC vale diferente
+    conforme a placa de origem — celular (unificado, genérica) × PCB (por
+    marca). A origem é do LOTE; aqui provamos a resolução nas duas pontas e
+    o default conservador (sem origem → phone)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.samsung, cls.lista = _setup_wuquan(
+            'OrigCo', 'orig-co')
+        cls.generica = _setup_wuquan.generica
+        from datetime import date as _d
+        Price.all_companies.create(
+            price_list=cls.generica, kind='emmc', gen='', origin='phone',
+            tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('30'), price_max=Decimal('30'),
+            quote_date=_d.today())
+        Price.all_companies.create(
+            price_list=cls.lista, kind='emmc', gen='', origin='pcb',
+            tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('40'), price_max=Decimal('40'),
+            quote_date=_d.today())
+        # Other da tabela PCB: genérica também tem linha pcb (¥20)
+        Price.all_companies.create(
+            price_list=cls.generica, kind='emmc', gen='', origin='pcb',
+            tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('20'), price_max=Decimal('20'),
+            quote_date=_d.today())
+
+    def _q(self, origin='', brand='Samsung OrigCo'):
+        from .engine import price
+        return price(_r(chip_type='eMMC', brand=brand, cap_gb=64.0),
+                     self.buyer, origin=origin)
+
+    def test_lote_celular_usa_a_tabela_unificada(self):
+        q = self._q(origin='phone')
+        self.assertEqual((q.rmb, q.via), (Decimal('30'), 'genérica'))
+
+    def test_lote_pcb_usa_a_tabela_por_marca(self):
+        # A marca da fixture é 'Samsung OrigCo' (slug no _setup_wuquan)
+        q = self._q(origin='pcb', brand='Samsung orig-co')
+        self.assertEqual((q.rmb, q.via), (Decimal('40'), 'marca'))
+        # marca sem linha PCB → cai na genérica-Other (¥20)
+        q2 = self._q(origin='pcb', brand='Kingston')
+        self.assertEqual((q2.rmb, q2.via), (Decimal('20'), 'genérica'))
+
+    def test_sem_origem_e_conservador_phone(self):
+        # Busca avulsa (fora de lote): assume celular — o preço BAIXO, a
+        # mesma suposição do comprador p/ material sem origem declarada.
+        q = self._q(origin='')
+        self.assertEqual(q.rmb, Decimal('30'))
+
+    def test_origem_nao_muda_os_outros_kinds(self):
+        from .engine import price
+        Price.all_companies.create(
+            price_list=self.generica, kind='lpddr', gen='LPDDR4',
+            tier_value=Decimal('4'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('15'), price_max=Decimal('15'))
+        r = _r(chip_type='LPDDR4', brand='Samsung', cap_gb=4.0,
+               ram_gen='LPDDR4')
+        self.assertEqual(price(r, self.buyer, origin='pcb').rmb,
+                         price(r, self.buyer, origin='phone').rmb)
+
+    def test_lote_inteiro_resolve_pela_origem(self):
+        from tenancy.scope import set_current_company
+        from .engine import price_lot
+        from estoque.models import InventoryEntry, Lot
+        User = get_user_model()
+        u = User.objects.create_user('orig_u')
+        set_current_company(self.company)
+        try:
+            for origem, esperado in (('phone', Decimal('30')),
+                                     ('pcb', Decimal('40'))):
+                lot = Lot.open_for_company(self.company, u, f'l-{origem}',
+                                           origin=origem)
+                InventoryEntry.objects.create(
+                    lot=lot, part_number=f'EMMCORIG{origem.upper()}',
+                    quantity=2, chip_type='eMMC', brand='Samsung orig-co',
+                    price_kind='emmc', price_gen='',
+                    price_tier_value=Decimal('64'), price_tier_unit='GB')
+                rep = price_lot(lot, self.buyer)
+                # ¥ → US$ @0.14: 30→4.20 · 40→5.60 (× 2 un.)
+                self.assertEqual(rep.totals['mid'],
+                                 (esperado * Decimal('0.14') * 2).quantize(
+                                     Decimal('0.01')))
+        finally:
+            set_current_company(None)

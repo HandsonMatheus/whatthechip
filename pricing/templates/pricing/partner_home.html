@@ -66,6 +66,7 @@
       <tr>
         <td style="font-weight:600;">{{ k.label }}
           {% if k.unified %}<span style="background:#edf5ff;color:#0043ce;font-weight:700;font-size:11px;padding:2px 8px;border-radius:8px;margin-left:6px;">{% trans "unificado" %}</span>
+          {% elif k.dual %}<span style="background:#fff1c2;color:#8a6d00;font-weight:700;font-size:11px;padding:2px 8px;border-radius:8px;margin-left:6px;">{% trans "celular × PCB" %}</span>
           {% else %}<span style="color:#6f6f6f;font-size:11px;margin-left:6px;">{% trans "por marca" %}</span>{% endif %}</td>
         <td>{% if k.quoted %}<span class="ptn-tag ptn-tag--quoted">{{ k.quoted }}</span>{% else %}—{% endif %}</td>
         <td>{% if k.pending %}<span class="ptn-tag ptn-tag--pending">{{ k.pending }}</span>{% else %}—{% endif %}</td>

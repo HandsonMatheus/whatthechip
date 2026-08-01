@@ -90,10 +90,13 @@ def live_quotes(so):
     congelados da própria linha (unit_rmb/unit_usd)."""
     from pricing.engine import BuyerPricingContext
     ctx = BuyerPricingContext(so.buyer)
+    # Origem do LOTE da ordem (2026-08-01): decide a tabela do eMMC.
+    _origin = so.lot.origin if so.lot_id else ''
     out = []
     for line in so.lines.all():
         q = ctx.price_from_key(line.kind, line.gen, line.tier_value,
-                               line.tier_unit, brand_name=line.brand)
+                               line.tier_unit, brand_name=line.brand,
+                               origin=_origin)
         out.append((line, q))
     return out
 

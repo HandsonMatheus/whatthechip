@@ -46,7 +46,8 @@ from decimal import ROUND_HALF_UP, Decimal
 
 from chips.chip_types import canonical_chip_type, is_generic, label_kind
 
-from .models import (KIND_UNIT, KINDS, Price, PriceList, PricingConfig,
+from .models import (KIND_UNIT, KINDS, ORIGIN_PCB, ORIGIN_PHONE, Price,
+                     PriceList, PricingConfig,
                      STATUS_NO_BUY, STATUS_NOT_MADE, STATUS_QUOTED,
                      STATUS_UNQUOTED, fold_gen, valid_gen)
 
@@ -341,10 +342,22 @@ def _quote_from_candidates(rows, chain, buyer, cfg,
         is_stale=stale, **base)
 
 
-def price(result: dict, buyer) -> PriceQuote:
+def _row_origin(kind, origin):
+    """Origem efetiva da LINHA (2026-08-01): só o eMMC carrega origem na
+    chave — celular (unificado) × PCB (por marca). ``origin`` vem do LOTE;
+    fora de lote (busca avulsa) o default é 'phone' (o preço CONSERVADOR —
+    o mesmo que o comprador assume para material sem origem declarada)."""
+    if kind != 'emmc':
+        return ''
+    return origin if origin in (ORIGIN_PHONE, ORIGIN_PCB) else ORIGIN_PHONE
+
+
+def price(result: dict, buyer, origin='') -> PriceQuote:
     """Quanto o ``buyer`` paga pelo chip do ``result``. Fonte única (§5).
     Caminho de 1 CHIP (card/busca): consulta estreita por chave. Para LOTES,
-    use ``BuyerPricingContext`` — mesmo resultado, I/O constante."""
+    use ``BuyerPricingContext`` — mesmo resultado, I/O constante.
+    ``origin`` (2026-08-01) = origem do LOTE ('phone'|'pcb') — só muda o
+    eMMC; vazio = 'phone' (conservador)."""
     err, key = derive_price_key(result or {})
     if err is not None:
         return err
@@ -359,6 +372,7 @@ def price(result: dict, buyer) -> PriceQuote:
     rows = list(Price.all_companies.filter(
         price_list_id__in=[pl.pk for pl, _via in chain], kind=kind, gen=gen,
         tier_value=tier_value, tier_unit=tier_unit,
+        origin=_row_origin(kind, origin),
     ).select_related('price_list'))
     return _quote_from_candidates(rows, chain, buyer, PricingConfig.get_config(),
                                   kind, gen, tier_value, tier_unit)
@@ -381,11 +395,13 @@ class BuyerPricingContext:
         self.buyer = buyer
         self.cfg = PricingConfig.get_config()
         self._lists = _active_lists(buyer)
-        #: (price_list_id, kind, gen, tier_value, tier_unit) → Price
+        #: (price_list_id, kind, gen, tier_value, tier_unit, origin) → Price
         #  (Decimal hasheia por VALOR: 64 == 64.0 → a chave derivada casa a
         #  armazenada mesmo diferindo em casas decimais, como no filtro SQL.)
+        #  origin (2026-08-01): '' exceto eMMC (phone|pcb).
         self._rows = {
-            (r.price_list_id, r.kind, r.gen, r.tier_value, r.tier_unit): r
+            (r.price_list_id, r.kind, r.gen, r.tier_value, r.tier_unit,
+             r.origin): r
             for r in Price.all_companies.filter(
                 price_list_id__in=[pl.pk for pl in self._lists])
         }
@@ -396,8 +412,8 @@ class BuyerPricingContext:
             self._chains[brand_name] = _chain_from_lists(self._lists, brand_name)
         return self._chains[brand_name]
 
-    def price(self, result: dict) -> PriceQuote:
-        """Equivalente a ``price(result, self.buyer)`` — sem tocar o banco."""
+    def price(self, result: dict, origin='') -> PriceQuote:
+        """Equivalente a ``price(result, self.buyer, origin)`` — sem banco."""
         err, key = derive_price_key(result or {})
         if err is not None:
             return err
@@ -407,18 +423,21 @@ class BuyerPricingContext:
         if not chain:
             return _quote_no_list(self.buyer, kind, gen, tier_value, tier_unit)
 
+        _og = _row_origin(kind, origin)
         rows = [r for r in (self._rows.get((pl.pk, kind, gen, tier_value,
-                                            tier_unit)) for pl, _via in chain)
+                                            tier_unit, _og))
+                            for pl, _via in chain)
                 if r is not None]
         return _quote_from_candidates(rows, chain, self.buyer, self.cfg,
                                       kind, gen, tier_value, tier_unit)
 
     def price_from_key(self, kind, gen, tier_value, tier_unit,
-                       brand_name='', no_key_reason=''):
+                       brand_name='', no_key_reason='', origin=''):
         """Quote a partir da CHAVE MATERIALIZADA na entrada do estoque
         (F11.1) — ZERO classify, zero query: a chave foi derivada no
         lançamento (a bancada já classifica) e aqui só resolve contra a
-        tabela viva. Chave ausente com motivo = NO_KEY gravado."""
+        tabela viva. Chave ausente com motivo = NO_KEY gravado.
+        ``origin`` (2026-08-01) = origem do LOTE — só muda o eMMC."""
         if not kind or tier_value is None:
             return _no_key(kind or '',
                            no_key_reason or 'chave de preço ausente')
@@ -431,14 +450,16 @@ class BuyerPricingContext:
         chain = self._chain(brand_name or '')
         if not chain:
             return _quote_no_list(self.buyer, kind, gen, tier_value, tier_unit)
+        _og = _row_origin(kind, origin)
         rows = [r for r in (self._rows.get((pl.pk, kind, gen, tier_value,
-                                            tier_unit)) for pl, _via in chain)
+                                            tier_unit, _og))
+                            for pl, _via in chain)
                 if r is not None]
         return _quote_from_candidates(rows, chain, self.buyer, self.cfg,
                                       kind, gen, tier_value, tier_unit)
 
 
-def quotes_for_admin(request, result):
+def quotes_for_admin(request, result, origin=''):
     """[(Buyer, PriceQuote)] para o card — papel ADMIN da empresa OU admin do
     SISTEMA (superuser — dono, 2026-07-17: a plataforma vê o preço no card
     mesmo sem Membership; é a única exceção ao "plataforma navega com
@@ -457,7 +478,10 @@ def quotes_for_admin(request, result):
     # Plataforma SEM membership: sem escopo de request → o manager escopado
     # explodiria (fail-closed); usa o cru — plataforma enxerga todas.
     manager = Buyer.objects if is_company_admin else Buyer.all_companies
-    return [(b, price(result, b)) for b in manager.filter(active=True)]
+    # origin (2026-08-01): origem do LOTE quando o card está na bancada;
+    # na busca avulsa (sem lote) fica '' → eMMC assume 'phone' (conservador).
+    return [(b, price(result, b, origin=origin))
+            for b in manager.filter(active=True)]
 
 
 def serialize_quote(buyer, q) -> dict:
@@ -550,6 +574,10 @@ def price_lot_multi(lot, buyers) -> list:
         if _legacy(e) and e.part_number not in results:
             results[e.part_number] = classify(e.part_number)
 
+    # Origem do LOTE (2026-08-01): decide a tabela do eMMC (celular
+    # unificado × PCB por marca) — os demais kinds ignoram.
+    lot_origin = lot.origin
+
     out = []
     for buyer in buyers:
         ctx = BuyerPricingContext(buyer)
@@ -560,13 +588,14 @@ def price_lot_multi(lot, buyers) -> list:
         })
         for entry in entries:
             if entry.part_number in results:
-                q = ctx.price(results[entry.part_number])
+                q = ctx.price(results[entry.part_number], origin=lot_origin)
             else:
                 q = ctx.price_from_key(
                     entry.price_kind, entry.price_gen,
                     entry.price_tier_value, entry.price_tier_unit,
                     brand_name=entry.brand,
-                    no_key_reason=entry.price_key_reason)
+                    no_key_reason=entry.price_key_reason,
+                    origin=lot_origin)
             qty = entry.quantity or 0
             report.lines.append(LotQuoteLine(entry.part_number, qty, q))
             report.total_lines += 1

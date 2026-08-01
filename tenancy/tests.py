@@ -129,7 +129,7 @@ class MiddlewareTests(TestCase):
         Membership.objects.create(user=self.user, company=self.company,
                                   role=Membership.ROLE_MANAGER)
         # T3: all_companies — setUp roda fora de request (sem escopo ambiente).
-        Lot.all_companies.create(number=1, operator=self.user,
+        Lot.all_companies.create(number=1, origin='phone', operator=self.user,
                                  company=self.company)
 
     def test_publica_company_e_role_no_contexto(self):
@@ -234,7 +234,7 @@ class BootstrapTenancyTests(TestCase):
         # T3: o lote precisa de empresa — pré-cria a eMiner (o comando então
         # acha "já existia" e só completa papéis/contador; mesmo nome/slug).
         eminer = Company.objects.create(name='eMiner', slug='eminer')
-        Lot.all_companies.create(number=41, operator=self.op1,
+        Lot.all_companies.create(number=41, origin='phone', operator=self.op1,
                                  company=eminer)           # seed do contador
         self.client.login(username='op1', password='x')    # cria uma sessão
         self.assertTrue(Session.objects.exists())

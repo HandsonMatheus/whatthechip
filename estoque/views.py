@@ -675,11 +675,18 @@ def lot_list(request):
 @require_POST
 def lot_create(request):
     description = request.POST.get('description', '').strip()
+    # Origem OBRIGATÓRIA e sem default (dono, 2026-08-01): a promessa
+    # comercial do lote — celular × PCB — nasce na abertura.
+    origin = (request.POST.get('origin') or '').strip()
+    if origin not in (Lot.ORIGIN_PHONE, Lot.ORIGIN_PCB):
+        messages.error(request, _('Escolha a ORIGEM do lote (celular ou '
+                                  'PCB) — obrigatória, sem padrão.'))
+        return redirect('estoque:index')
     # T2: numeração atômica por empresa (lock no contador da Company) — elimina
     # a corrida do antigo Max+1. request.company existe: o gate exige Membership.
     # T3: o lote nasce com a empresa (e a filial do gerente, se houver — §9).
     lot = Lot.open_for_company(request.company, request.user, description,
-                               branch=request.membership.branch)
+                               branch=request.membership.branch, origin=origin)
     return redirect('estoque:lot_detail', lot_pk=lot.pk)
 
 
@@ -899,7 +906,7 @@ def preview_chip(request, lot_pk):
     # F8 (PRECIFICACAO §7/§12): preço do comprador na bancada — SÓ admin.
     # quotes_for_admin devolve [] para operador/gerente sem nem consultar preço.
     from pricing.engine import quotes_for_admin
-    ctx['price_quotes'] = quotes_for_admin(request, result)
+    ctx['price_quotes'] = quotes_for_admin(request, result, origin=lot.origin)
 
     # F12 (máscara de categoria, dono 2026-07-17): empresa-CLIENTE recebe o
     # card MASCARADO (template whitelist: PN + destino C-###/baldes + qtd +
@@ -1193,7 +1200,9 @@ def export_xls(request, lot_pk):
 
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = f'Lote {lot.number:03d}'
+    # Origem no título da aba (2026-08-01): 'PHONE'/'PCB' — o rótulo que o
+    # comprador confere no recebimento (canônico, nunca traduz).
+    ws.title = f'Lote {lot.number:03d} {lot.origin.upper()}'
 
     header_fill  = PatternFill('solid', fgColor='0F62FE')
     header_font  = Font(name='Calibri', bold=True, color='FFFFFF', size=11)

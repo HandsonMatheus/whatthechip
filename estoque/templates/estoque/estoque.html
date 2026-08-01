@@ -1115,6 +1115,13 @@ table.est-table td { padding: var(--s5) var(--s5); }
     {% else %}
       <span class="badge badge--open"><span class="dot"></span>{% trans "Aberto" %}</span>
     {% endif %}
+    {% comment %} Origem (2026-08-01): a promessa comercial do lote — decide a
+       tabela do eMMC (celular unificado × PCB por marca). {% endcomment %}
+    {% if lot.origin == 'pcb' %}
+      <span class="badge" style="background:#e8f4ff;color:#00539a;">🔌 {% trans "Origem: PCB" %}</span>
+    {% else %}
+      <span class="badge" style="background:#f2f4f8;color:#4d5358;">📱 {% trans "Origem: celular" %}</span>
+    {% endif %}
     {% if lot.description %}<span class="lothead__desc">{{ lot.description|upper }}</span>{% endif %}
   </div>
 

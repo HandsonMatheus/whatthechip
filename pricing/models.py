@@ -99,8 +99,18 @@ _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
 # Repactuação 2026-07-27 (ESTRUTURAL): eMCP/uMCP/LPDDR têm preço ÚNICO,
 # brand-agnostic — a linha vive SÓ na lista GENÉRICA (a resolução de qualquer
 # marca cai nela). Marca segue dimensão de preço APENAS em eMMC/UFS/DDR.
-UNIFIED_KINDS = frozenset({KIND_EMCP, KIND_UMCP, KIND_LPDDR, KIND_EMMC,
-                           KIND_UFS})
+#: Origem do eMMC (acordo com o comprador, 2026-08-01): o MESMO PN vale
+#: diferente conforme a placa de onde saiu — celular (desgastado, preço
+#: unificado) × PCB (set-top/TV/notebook…, preço POR MARCA). A origem é
+#: atributo do LOTE (declarada na abertura); aqui ela vira a dimensão extra
+#: da chave de preço DO eMMC (os demais kinds têm origin='').
+ORIGIN_PHONE, ORIGIN_PCB = 'phone', 'pcb'
+ORIGIN_CHOICES = [(ORIGIN_PHONE, _lazy('Celular')), (ORIGIN_PCB, 'PCB')]
+
+# eMMC SAIU do clube em 2026-08-01: ele é DUAL — subset phone unificado
+# (genérica) + subset pcb por marca. UFS segue unificado ("PCB motherboards
+# don't have UFS" — comprador, 2026-08-01).
+UNIFIED_KINDS = frozenset({KIND_EMCP, KIND_UMCP, KIND_LPDDR, KIND_UFS})
 
 STATUS_QUOTED, STATUS_NO_BUY, STATUS_UNQUOTED = 'quoted', 'no_buy', 'unquoted'
 STATUS_NOT_MADE = 'not_made'
@@ -361,6 +371,11 @@ class Price(models.Model):
                   'chave; v3.1). DDR: densidade do die em Gb.')
     tier_unit = models.CharField(max_length=2, choices=UNIT_CHOICES,
                                  verbose_name='Unidade')
+    origin = models.CharField(
+        max_length=5, blank=True, default='',
+        choices=[('', '—')] + ORIGIN_CHOICES, verbose_name='Origem',
+        help_text='SÓ para eMMC (2026-08-01): celular = preço unificado '
+                  '(genérica); PCB = por marca. Demais tipos: vazio.')
 
     # ── O VALOR (¥ RMB, Decimal — nunca float; §1.3/§1.4 + §12.18) ──────────
     status = models.CharField(max_length=10, choices=STATUS_CHOICES,
@@ -406,8 +421,18 @@ class Price(models.Model):
         ]
         constraints = [
             models.UniqueConstraint(
-                fields=['price_list', 'kind', 'gen', 'tier_value', 'tier_unit'],
-                name='unique_price_key'),
+                fields=['price_list', 'kind', 'gen', 'tier_value', 'tier_unit',
+                        'origin'],
+                name='unique_price_key_origin'),
+            # origem: vocabulário + só eMMC a carrega (2026-08-01)
+            models.CheckConstraint(
+                name='price_origin_vocab',
+                condition=Q(origin__in=['', ORIGIN_PHONE, ORIGIN_PCB])),
+            models.CheckConstraint(
+                name='price_origin_emmc_only',
+                condition=(Q(kind=KIND_EMMC,
+                             origin__in=[ORIGIN_PHONE, ORIGIN_PCB])
+                           | (~Q(kind=KIND_EMMC) & Q(origin='')))),
             # sorted(): ordem ESTÁVEL — frozenset cru mudaria a ordem a cada
             # processo e o makemigrations veria a constraint como "alterada".
             models.CheckConstraint(name='price_kind_vocab',
@@ -479,6 +504,14 @@ class Price(models.Model):
                 errors['gen'] = (f'Geração inválida para {self.kind}: '
                                  f'{self.gen!r} (esperado token canônico, '
                                  f'ex.: LPDDR4X / DDR3L).')
+        # Origem (2026-08-01): eMMC EXIGE phone|pcb; os demais, vazio.
+        if self.kind == KIND_EMMC:
+            if self.origin not in (ORIGIN_PHONE, ORIGIN_PCB):
+                errors['origin'] = ('eMMC exige a origem: celular (phone) ou '
+                                    'PCB — acordo de 2026-08-01.')
+        elif (self.origin or ''):
+            errors['origin'] = (f'{self.kind} não carrega origem — ela é '
+                                f'exclusiva do eMMC (2026-08-01).')
         # Espelho amigável das CheckConstraints (mensagem melhor que IntegrityError).
         if self.status == STATUS_QUOTED:
             if self.price_min is None or self.price_max is None:
@@ -513,7 +546,8 @@ class Price(models.Model):
             twin = Price.all_companies.filter(
                 price_list_id=self.price_list_id, kind=self.kind,
                 gen=self.gen, tier_value=self.tier_value,
-                tier_unit=self.tier_unit).exclude(pk=self.pk)
+                tier_unit=self.tier_unit,
+                origin=self.origin or '').exclude(pk=self.pk)
             if twin.exists():
                 raise ValidationError({'gen': (
                     f'{_gen_original!r} dobra na geração-base {self.gen!r} '
@@ -531,6 +565,14 @@ class Price(models.Model):
                     f'{self.kind}: preço UNIFICADO (repactuação 2026-07-27) — '
                     f'a linha vive só na lista genérica; listas de marca não '
                     f'têm mais este tipo.')})
+            # eMMC dual (2026-08-01): o subset CELULAR é unificado — só na
+            # genérica; o subset PCB é por marca (marca OU genérica-Other).
+            if (self.kind == KIND_EMMC and self.origin == ORIGIN_PHONE
+                    and _brand_id is not None):
+                raise ValidationError({'origin': (
+                    'eMMC de CELULAR é unificado — a linha vive só na lista '
+                    'genérica (acordo 2026-08-01); listas de marca só têm o '
+                    'subset PCB.')})
             if self.company_id and list_company_id != self.company_id:
                 raise ValidationError(
                     {'company': 'O preço pertence a uma empresa diferente da lista.'})

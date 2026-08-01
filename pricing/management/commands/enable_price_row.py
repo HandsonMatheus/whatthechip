@@ -55,6 +55,12 @@ class Command(BaseCommand):
                             help='Grava de verdade (sem isto: dry-run).')
 
     def handle(self, *args, **opts):
+        # eMMC é DUAL-origem (2026-08-01: celular unificado × PCB por marca) —
+        # flip cego aqui criaria linha sem origem; o caminho é import/admin.
+        if opts.get('kind') == 'emmc':
+            raise CommandError(
+                'eMMC é dual-origem (celular/PCB, 2026-08-01) — ajuste pelo '
+                'import_price_sheet_v2 ou pelo admin, não por este comando.')
         scope_command_to_company(opts['company'], self.stdout)
         buyer = Buyer.all_companies.filter(slug=opts['buyer']).first()
         if buyer is None:

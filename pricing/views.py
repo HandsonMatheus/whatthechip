@@ -175,10 +175,8 @@ def partner_kind(request, kind):
             txt += f'–{_fmt(q.new_price_max)}'
         return txt
 
-    if kind in UNIFIED_KINDS:
-        rows = sorted(Price.all_companies.filter(price_list=generica,
-                                                 kind=kind),
-                      key=lambda p: (p.gen, p.tier_value))
+    def _prep_unified(qs):
+        rows = sorted(qs, key=lambda p: (p.gen, p.tier_value))
         for p in rows:
             p.pending = pendentes.get(p.pk)
             p.pend_disp = _pend_disp(p.pending)
@@ -190,13 +188,31 @@ def partner_kind(request, kind):
                            if p.status == STATUS_QUOTED else '')
             p.maxin_disp = (_fmt(p.price_max)
                             if p.status == STATUS_QUOTED else '')
-        ctx.update({'rows': rows, 'generica': generica})
+        return rows
+
+    if kind in UNIFIED_KINDS:
+        ctx.update({'rows': _prep_unified(Price.all_companies.filter(
+            price_list=generica, kind=kind)), 'generica': generica})
         return render(request, 'pricing/partner_kind.html', ctx)
 
-    # matriz: colunas = marcas com linha deste tipo (+ Outras/genérica)
-    all_rows = list(Price.all_companies.filter(price_list__buyer=request.buyer,
-                                               kind=kind)
-                    .select_related('price_list__brand'))
+    if kind == 'emmc':
+        # DUAL (acordo 2026-08-01): CELULAR = unificado (genérica, origin
+        # phone) + PCB = matriz por marca (origin pcb). Mesma página, duas
+        # seções; o batch save é por pk — cobre as duas sem mudança.
+        from .models import ORIGIN_PCB, ORIGIN_PHONE
+        ctx.update({'dual': True,
+                    'rows': _prep_unified(Price.all_companies.filter(
+                        price_list=generica, kind='emmc',
+                        origin=ORIGIN_PHONE)),
+                    'generica': generica})
+        all_rows = list(Price.all_companies.filter(
+            price_list__buyer=request.buyer, kind='emmc', origin=ORIGIN_PCB)
+            .select_related('price_list__brand'))
+    else:
+        # matriz: colunas = marcas com linha deste tipo (+ Outras/genérica)
+        all_rows = list(Price.all_companies.filter(
+            price_list__buyer=request.buyer, kind=kind)
+            .select_related('price_list__brand'))
     col_lists = sorted({p.price_list for p in all_rows},
                        key=lambda pl: (pl.brand_id is None,
                                        pl.brand.name if pl.brand_id else ''))
@@ -244,6 +260,7 @@ def partner_home(request):
     from .models import UNIFIED_KINDS
     kinds_resumo = [
         {'kind': k, 'label': lbl, 'unified': k in UNIFIED_KINDS,
+         'dual': k == 'emmc',        # celular unificado × PCB por marca
          'quoted': por_kind.get(k, {}).get(STATUS_QUOTED, 0),
          'pending': pend}
         for k, lbl, pend in _kind_nav(buyer)]

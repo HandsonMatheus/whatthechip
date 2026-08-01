@@ -124,10 +124,48 @@ def catalog_data(buyer, currency='usd'):
               .select_related('price_list__brand')):
         por_kind.setdefault(p.kind, []).append(p)
 
+    def _unified_section(title, prices):
+        unifs = sorted((p for p in prices if p.price_list.brand_id is None),
+                       key=lambda p: (p.gen, p.tier_value))
+        return {'title': title, 'unified': True, 'columns': [],
+                'rows': [{'label': (f'{p.gen} ' if p.gen else '')
+                                   + f'{_fmt_tier(p.tier_value)}{p.tier_unit}',
+                          'cell': _cell(p, currency, rate)} for p in unifs]}
+
+    def _matrix_section(title, prices):
+        pls = sorted({p.price_list for p in prices},
+                     key=lambda pl: (pl.brand_id is None,
+                                     pl.brand.name if pl.brand_id else ''))
+        col_idx = {pl.pk: i for i, pl in enumerate(pls)}
+        columns = [pl.brand.name if pl.brand_id else _('Outras marcas')
+                   for pl in pls]
+        grid = {}
+        for p in prices:
+            key = (p.gen, p.tier_value, p.tier_unit)
+            cells = grid.setdefault(key, [('unquoted', None)] * len(pls))
+            cells[col_idx[p.price_list_id]] = _cell(p, currency, rate)
+        rows = [{'label': (f'{gen} ' if gen else '')
+                          + f'{_fmt_tier(tv)}{tu}',
+                 'cells': grid[(gen, tv, tu)]}
+                for gen, tv, tu in sorted(grid, key=lambda k: (k[0], k[1]))]
+        return {'title': title, 'unified': False, 'columns': columns,
+                'rows': rows}
+
     sections = []
     for kind in _SECTION_KINDS:
         prices = por_kind.get(kind, [])
         if not prices:
+            continue
+        # eMMC DUAL (acordo 2026-08-01): duas seções — celular (unificado)
+        # e PCB (por marca). O mesmo PN, dois preços; a origem é do LOTE.
+        if kind == 'emmc':
+            phone = [p for p in prices if p.origin == 'phone']
+            pcb = [p for p in prices if p.origin == 'pcb']
+            if phone:
+                t = 'eMMC · ' + _('celular')
+                sections.append(_unified_section(t, phone))
+            if pcb:
+                sections.append(_matrix_section('eMMC · PCB', pcb))
             continue
         title = _KIND_LABEL[kind]
         if kind in ('emcp', 'umcp'):
