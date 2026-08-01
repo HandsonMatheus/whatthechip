@@ -1,0 +1,5 @@
+{% load i18n l10n %}{% comment %}
+  Valor COMPACTO do lote (cards da listagem/painel) — resposta do polling
+  ?fmt=card (AUTO-REFRESH 2026-08-01). ¥ primário (PLANO_FX Fase A).
+{% endcomment %}
+{% if v %}{% localize off %}{% if v.total_mid_rmb is not None %}¥ {{ v.total_mid_rmb|floatformat:0 }} <small style="color:#697077;font-weight:500;">≈ US$ {{ v.total_mid|floatformat:2 }}</small>{% else %}US$ {{ v.total_mid|floatformat:2 }}{% endif %}{% endlocalize %}{% else %}—{% endif %}

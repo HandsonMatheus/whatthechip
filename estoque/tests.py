@@ -1896,3 +1896,30 @@ class AutoRefreshTests(TestCase):
                                        args=[self.lot.pk]))
         self.assertContains(resp, 'est:added from:body')
         self.assertContains(resp, 'every 60s')
+
+    def test_fmt_card_devolve_valor_compacto(self):
+        self.client.login(username='ar_adm', password='x')
+        url = reverse('estoque:lot_valuation', args=[self.lot.pk])
+        resp = self.client.get(url, {'fmt': 'card'})
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, '💰')            # formato compacto
+        self.assertContains(resp, '¥')
+
+    def test_listagem_tem_polling_e_radios_de_origem(self):
+        from django.contrib.auth import get_user_model as _gum
+        mgr = _gum().objects.create_user(username='ar_mgr', password='x')
+        Membership.objects.update_or_create(
+            user=mgr, company=self.company,
+            defaults={'role': Membership.ROLE_MANAGER, 'active': True})
+        self.client.login(username='ar_mgr', password='x')
+        resp = self.client.get(reverse('estoque:index'))
+        # radios da origem (cartões, obrigatórios)
+        self.assertContains(resp, 'name="origin"')
+        self.assertContains(resp, 'value="phone"')
+        self.assertContains(resp, 'value="pcb"')
+        # o admin vê o valor com polling nos lotes ABERTOS
+        self.client.logout()
+        self.client.login(username='ar_adm', password='x')
+        resp = self.client.get(reverse('estoque:index'))
+        self.assertContains(resp, 'fmt=card')
+        self.assertContains(resp, 'every 60s')

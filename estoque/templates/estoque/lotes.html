@@ -111,7 +111,7 @@
     <div class="olot__meta">
       <div><div class="olot__meta-l">{% trans "Unidades" %}</div><div class="olot__meta-v">{{ lot.total_qty }}</div></div>
       <div><div class="olot__meta-l">{% trans "Tipos" %}</div><div class="olot__meta-v">{{ lot.chip_count }}</div></div>
-      {% if access.can_see_price and lot.val_mid is not None %}<div><div class="olot__meta-l">{% trans "Valor" %}</div><div class="olot__meta-v" style="white-space:nowrap">{% localize off %}{% if lot.val_mid_rmb is not None %}¥ {{ lot.val_mid_rmb|floatformat:0 }} <small style="color:#697077;font-weight:500;">≈ US$ {{ lot.val_mid|floatformat:2 }}</small>{% else %}US$ {{ lot.val_mid|floatformat:2 }}{% endif %}{% endlocalize %}</div></div>{% endif %}
+      {% if access.can_see_price and lot.val_mid is not None %}<div><div class="olot__meta-l">{% trans "Valor" %}</div><div class="olot__meta-v" style="white-space:nowrap"{% if lot.status == 'open' %} hx-get="{% url 'estoque:lot_valuation' lot.pk %}?fmt=card" hx-trigger="every 60s" hx-swap="innerHTML"{% endif %}>{% localize off %}{% if lot.val_mid_rmb is not None %}¥ {{ lot.val_mid_rmb|floatformat:0 }} <small style="color:#697077;font-weight:500;">≈ US$ {{ lot.val_mid|floatformat:2 }}</small>{% else %}US$ {{ lot.val_mid|floatformat:2 }}{% endif %}{% endlocalize %}</div></div>{% endif %}
     </div>
     <div class="olot__foot">
       <a class="uib uib--primary uib--sm" href="{% url 'estoque:lot_detail' lot.pk %}">
@@ -150,17 +150,21 @@
 <form class="create" id="lot-create" method="post" action="{% url 'estoque:lot_create' %}">
   {% csrf_token %}
   {% comment %} Origem OBRIGATÓRIA, sem default (dono 2026-08-01): a promessa
-     comercial do lote — eMMC de lote PCB vale a tabela por marca. {% endcomment %}
-  <div class="field" style="margin-bottom:12px;">
-    <label>{% trans "Origem das placas" %} *</label>
-    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:4px;">
-      <label style="display:flex;align-items:center;gap:7px;font-size:14px;cursor:pointer;text-transform:none;letter-spacing:0;color:#21272a;">
-        <input type="radio" name="origin" value="phone" required>
-        📱 {% trans "Celular (placas de telefone)" %}
+     comercial do lote — eMMC de lote PCB vale a tabela por marca. Cartões
+     selecionáveis com estilo PRÓPRIO (o .field label da página é uppercase
+     11px e esmagava os radios — bug visual 2026-08-01). {% endcomment %}
+  <div style="margin-bottom:14px;">
+    <div class="field" style="margin-bottom:8px;"><label>{% trans "Origem das placas" %} *</label></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <label style="display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border:1px solid #c6c6c6;border-radius:10px;background:#fff;cursor:pointer;font-size:14px;font-weight:500;color:#21272a;text-transform:none;letter-spacing:0;white-space:nowrap;margin:0;">
+        <input type="radio" name="origin" value="phone" required
+               style="width:18px;height:18px;margin:0;accent-color:#0f62fe;flex:none;">
+        <span style="white-space:nowrap;">📱 {% trans "Celular (placas de telefone)" %}</span>
       </label>
-      <label style="display:flex;align-items:center;gap:7px;font-size:14px;cursor:pointer;text-transform:none;letter-spacing:0;color:#21272a;">
-        <input type="radio" name="origin" value="pcb" required>
-        🔌 {% trans "PCB (set-top box, TV, notebook, industrial…)" %}
+      <label style="display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border:1px solid #c6c6c6;border-radius:10px;background:#fff;cursor:pointer;font-size:14px;font-weight:500;color:#21272a;text-transform:none;letter-spacing:0;white-space:nowrap;margin:0;">
+        <input type="radio" name="origin" value="pcb" required
+               style="width:18px;height:18px;margin:0;accent-color:#0f62fe;flex:none;">
+        <span style="white-space:nowrap;">🔌 {% trans "PCB (set-top box, TV, notebook, industrial…)" %}</span>
       </label>
     </div>
   </div>
@@ -195,7 +199,7 @@
         <td><span class="badge badge--{% if lot.status == 'open' %}open{% else %}closed{% endif %}"><span class="dot"></span>{% if lot.status == 'open' %}{% trans "Aberto" %}{% else %}{% trans "Fechado" %}{% endif %}</span></td>
         <td class="num"><span class="c-cats">{{ lot.chip_count }}</span></td>
         <td class="num"><span class="c-units">{{ lot.total_qty }}</span></td>
-        {% if show_valuation %}<td class="num"><span class="c-val">{% localize off %}{% if lot.val_mid_rmb is not None %}¥ {{ lot.val_mid_rmb|floatformat:0 }} <small style="color:#697077;">≈ US$ {{ lot.val_mid|floatformat:2 }}</small>{% elif lot.val_mid is not None %}US$ {{ lot.val_mid|floatformat:2 }}{% else %}<span class="c-val--none">—</span>{% endif %}{% endlocalize %}</span></td>{% endif %}
+        {% if show_valuation %}<td class="num"><span class="c-val"{% if lot.status == 'open' %} hx-get="{% url 'estoque:lot_valuation' lot.pk %}?fmt=card" hx-trigger="every 60s" hx-swap="innerHTML"{% endif %}>{% localize off %}{% if lot.val_mid_rmb is not None %}¥ {{ lot.val_mid_rmb|floatformat:0 }} <small style="color:#697077;">≈ US$ {{ lot.val_mid|floatformat:2 }}</small>{% elif lot.val_mid is not None %}US$ {{ lot.val_mid|floatformat:2 }}{% else %}<span class="c-val--none">—</span>{% endif %}{% endlocalize %}</span></td>{% endif %}
         <td><span class="c-when">{{ lot.created_at|date:"d/m/y" }}{% if lot.closed_at %} <span class="c-when__to">→ {{ lot.closed_at|date:"d/m/y" }}</span>{% endif %}</span></td>
         <td onclick="event.stopPropagation()">
           <div class="c-act">

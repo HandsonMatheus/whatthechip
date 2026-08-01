@@ -103,7 +103,7 @@ a.sc:hover{border-color:#78a9ff;box-shadow:0 6px 16px -6px rgba(16,24,40,.14);tr
         <div class="hero__metrics">
           <div><div class="ml">{% trans "Unidades" %}</div><div class="mv">{{ lot.total_qty }}</div></div>
           <div><div class="ml">{% if access.is_unmasked %}{% trans "Tipos" %}{% else %}{% trans "Categorias" %}{% endif %}</div><div class="mv">{{ lot.chip_count }}</div></div>
-          {% if access.can_see_price and lot.val_mid is not None %}<div><div class="ml">{% trans "Valor" %}</div><div class="mv" style="white-space:nowrap">{% localize off %}{% if lot.val_mid_rmb is not None %}¥ {{ lot.val_mid_rmb|floatformat:0 }} <small style="color:#697077;font-weight:500;">≈ US$ {{ lot.val_mid|floatformat:2 }}</small>{% else %}US$ {{ lot.val_mid|floatformat:2 }}{% endif %}{% endlocalize %}</div></div>{% endif %}
+          {% if access.can_see_price and lot.val_mid is not None %}<div><div class="ml">{% trans "Valor" %}</div><div class="mv" style="white-space:nowrap" hx-get="{% url 'estoque:lot_valuation' lot.pk %}?fmt=card" hx-trigger="every 60s" hx-swap="innerHTML">{% localize off %}{% if lot.val_mid_rmb is not None %}¥ {{ lot.val_mid_rmb|floatformat:0 }} <small style="color:#697077;font-weight:500;">≈ US$ {{ lot.val_mid|floatformat:2 }}</small>{% else %}US$ {{ lot.val_mid|floatformat:2 }}{% endif %}{% endlocalize %}</div></div>{% endif %}
         </div>
         <div class="hero__since">{% blocktrans trimmed with d=lot.created_at|date:"d/m H:i" %}aberto desde {{ d }}{% endblocktrans %}</div>
       </div>

@@ -794,10 +794,16 @@ def fx_badge(request):
 def lot_valuation_live(request, lot_pk):
     """Parcial da valoração VIVA do lote — alvo do refresh em est:added e do
     polling de 60s. Mesmo gate do lot_detail: valores SÓ para admin (os
-    demais recebem parcial vazio — a view nunca vaza)."""
+    demais recebem parcial vazio — a view nunca vaza).
+    ``?fmt=card`` devolve o formato COMPACTO dos cards da listagem/painel
+    (¥ N ≈ US$ M) em vez das linhas 💰 da página do lote."""
     lot = _get_lot(request, lot_pk)
     valuations = (_lot_valuations(request, lot)
                   if getattr(request, 'company_role', None) == 'admin' else [])
+    if request.GET.get('fmt') == 'card':
+        v = valuations[0] if valuations else None
+        return render(request, 'estoque/partials/lot_value_card.html',
+                      {'v': v})
     return render(request, 'estoque/partials/lot_valuation.html',
                   {'valuations': valuations})
 
