@@ -752,6 +752,18 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   engine e no `_gbit_from_capacity`: dentro de kind-DDR capacity é per-die
   por convenção, então é seguro; fora, 'GB' segue pacote (regra 4 de
   ESCRITA continua recusando 'GB' — a conversão é só de LEITURA).
+- **RunPython que ESCREVE em tabela com RLS = 0 linhas EM SILÊNCIO no deploy
+  (2026-08-01, 1º push da repactuação):** o `migrate` do build roda SEM GUC e
+  o usuário do Render NÃO é superuser → a policy fail-closed devolve zero
+  linhas pro UPDATE/DELETE do backfill. Sintoma bom: constraint adicionada
+  depois explode o build (DDL enxerga todas as linhas — foi a
+  `price_origin_emmc_only` da pricing/0019). Sintoma PÉSSIMO: sem constraint,
+  o dado fica meio-migrado sem NENHUM erro. Local engana: conexão superuser
+  do Postgres bypassa RLS mesmo com FORCE. **Regra:** todo RunPython de dados
+  em tabela RLS abre com `SET LOCAL app.platform = '1'` (guard
+  `connection.vendor == 'postgresql'`; vale só na transação da migração —
+  modelo em `pricing/migrations/0019`, helper `_liberar_rls`), no forward E
+  no reverse.
 
 ---
 
