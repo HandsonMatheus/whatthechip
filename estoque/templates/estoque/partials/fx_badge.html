@@ -1,0 +1,14 @@
+{% load i18n l10n %}{% comment %}
+  Conteúdo do widget da taxa (header) — extraído do base_estoque p/ o
+  AUTO-REFRESH (dono 2026-08-01: "câmbio em tempo real sem F5"): o wrapper
+  no base faz polling HTMX de 60s neste parcial. Mesmos msgids do header.
+{% endcomment %}
+<div class="wtc-header__org-txt">
+  {% if wtc_fx.rate_disp %}
+  <span class="wtc-header__org-name" style="font-family:'IBM Plex Mono',monospace;">{% localize off %}1 ¥ ≈ US$ {{ wtc_fx.rate_disp }}{% endlocalize %}</span>
+  <span class="wtc-header__org-branch">{% if wtc_fx.is_market %}mid-market {{ wtc_fx.date|date:"d/m" }}{% if wtc_fx.is_fallback %} ⚠{% endif %}{% else %}{% trans "taxa de contrato (bootstrap)" %}{% endif %}</span>
+  {% else %}
+  <span class="wtc-header__org-name">¥ → US$</span>
+  <span class="wtc-header__org-branch" style="color:#f1c21b;">{% trans "sem taxa do dia — rode fetch_fx_rate" %}</span>
+  {% endif %}
+</div>

@@ -735,6 +735,9 @@ def lot_detail(request, lot_pk):
     # lote aberto calcula on-read da tabela viva (re-classifica cada PN).
     if getattr(request, 'company_role', None) == 'admin':
         ctx['valuations'] = _lot_valuations(request, lot)
+        # AUTO-REFRESH: o wrapper vivo renderiza pro admin MESMO com a lista
+        # vazia (sem comprador ainda) — o est:added/60s preenche depois.
+        ctx['show_live_valuation'] = True
         # F11.2c: smart button (padrão Odoo) — a venda ativa deste lote.
         from vendas.models import STATUS_CANCELLED, SalesOrder
         ctx['sales_order'] = (SalesOrder.all_companies.filter(lot=lot)
@@ -774,6 +777,29 @@ def _lot_valuations(request, lot):
             'coverage_units': rep.coverage_units,
         })
     return out
+
+
+# ─── auto-refresh (PLANO_FX — dono 2026-08-01: "sem F5") ────────────────────
+
+@role_required('operator')
+def fx_badge(request):
+    """Parcial do widget da taxa (header) — alvo do polling HTMX de 60s.
+    Taxa é dado público de mercado: qualquer papel logado."""
+    from pricing.engine import fx_display
+    return render(request, 'estoque/partials/fx_badge.html',
+                  {'wtc_fx': fx_display() or {'rate_disp': None}})
+
+
+@role_required('operator')
+def lot_valuation_live(request, lot_pk):
+    """Parcial da valoração VIVA do lote — alvo do refresh em est:added e do
+    polling de 60s. Mesmo gate do lot_detail: valores SÓ para admin (os
+    demais recebem parcial vazio — a view nunca vaza)."""
+    lot = _get_lot(request, lot_pk)
+    valuations = (_lot_valuations(request, lot)
+                  if getattr(request, 'company_role', None) == 'admin' else [])
+    return render(request, 'estoque/partials/lot_valuation.html',
+                  {'valuations': valuations})
 
 
 # ─── lot close / reopen ──────────────────────────────────────────────────────

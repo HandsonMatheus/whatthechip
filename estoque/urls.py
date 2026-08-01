@@ -12,5 +12,7 @@ urlpatterns = [
     path('lote/<int:lot_pk>/remove/<int:pk>/',  views.remove_entry, name='remove'),
     path('lote/<int:lot_pk>/export/',           views.export_xls,  name='export'),
     path('lote/<int:lot_pk>/fechar/',           views.lot_close,   name='lot_close'),
+    path('fx/',                                 views.fx_badge,    name='fx_badge'),
+    path('lote/<int:lot_pk>/valoracao/',        views.lot_valuation_live, name='lot_valuation'),
     path('lote/<int:lot_pk>/reabrir/',          views.lot_reopen,  name='lot_reopen'),
 ]

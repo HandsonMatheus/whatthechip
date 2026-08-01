@@ -1842,3 +1842,57 @@ class FxHeaderBadgeTests(TestCase):
         resp = self.client.get(reverse('estoque:index'))
         self.assertContains(resp, '1 ¥ ≈ US$ 0.1478')
         self.assertContains(resp, 'mid-market')
+
+
+class AutoRefreshTests(TestCase):
+    """Auto-refresh sem F5 (dono, 2026-08-01): o header faz polling do
+    parcial da taxa; a valoração do lote refaz em est:added/60s — valores
+    continuam atrás do gate de admin."""
+
+    def setUp(self):
+        from datetime import date
+        from decimal import Decimal
+        from pricing.models import FxRate
+        User = get_user_model()
+        self.op = User.objects.create_user(username='ar_op', password='x')
+        self.company = _grant(self.op)
+        self.adm = User.objects.create_user(username='ar_adm', password='x')
+        Membership.objects.update_or_create(
+            user=self.adm, company=self.company,
+            defaults={'role': Membership.ROLE_ADMIN, 'active': True})
+        FxRate.objects.create(date=date.today(), rate=Decimal('0.1478'),
+                              source='mid-market teste')
+        _scope(self, self.company)
+        from pricing.models import Buyer
+        Buyer.objects.create(company=self.company, name='Wu AR',
+                             slug='wu-ar')
+        self.lot = Lot.objects.create(number=920, origin='phone',
+                                      operator=self.op, company=self.company)
+        set_current_company(None)
+
+    def test_fx_badge_para_qualquer_papel(self):
+        self.client.login(username='ar_op', password='x')
+        resp = self.client.get(reverse('estoque:fx_badge'))
+        self.assertContains(resp, '1 ¥ ≈ US$ 0.1478')
+        self.assertContains(resp, 'mid-market')
+
+    def test_valoracao_viva_so_admin_ve_valores(self):
+        url = reverse('estoque:lot_valuation', args=[self.lot.pk])
+        # operador: parcial VAZIO (gate — nunca vaza valor)
+        self.client.login(username='ar_op', password='x')
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, '💰')
+        # admin: valoração ¥ ≈ US$
+        self.client.logout()
+        self.client.login(username='ar_adm', password='x')
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, '💰')
+
+    def test_pagina_do_lote_carrega_os_gatilhos(self):
+        self.client.login(username='ar_adm', password='x')
+        resp = self.client.get(reverse('estoque:lot_detail',
+                                       args=[self.lot.pk]))
+        self.assertContains(resp, 'est:added from:body')
+        self.assertContains(resp, 'every 60s')

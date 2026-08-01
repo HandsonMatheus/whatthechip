@@ -1238,7 +1238,13 @@ table.est-table td { padding: var(--s5) var(--s5); }
     {# Export/Fechar/Reabrir são de gerente+ (§8) — barreira real na view. #}
     {% if wtc_is_manager %}
     <div class="contents__foot">
-      {% if valuations %}{% for v in valuations %}<span class="valuation">{% localize off %}💰 {% if v.total_mid_rmb is not None %}¥ {{ v.total_mid_rmb|floatformat:0 }} <small>≈ US$ {{ v.total_mid }}</small>{% else %}US$ {{ v.total_mid }}{% if v.frozen %} <small>({% trans "congelado" %})</small>{% endif %}{% endif %} <small>({{ v.coverage_units|floatformat:0 }}% {% trans "cob." %})</small>{% endlocalize %}</span>{% endfor %}{% endif %}
+      {% comment %} AUTO-REFRESH (dono 2026-08-01): cada chip lançado
+         (est:added) e o relógio de 60s refazem a valoração — sem F5. {% endcomment %}
+      {% if show_live_valuation %}<span id="lot-valuation-live"
+            hx-get="{% url 'estoque:lot_valuation' lot.pk %}"
+            hx-trigger="every 60s, est:added from:body" hx-swap="innerHTML">
+        {% include "estoque/partials/lot_valuation.html" %}
+      </span>{% endif %}
       <a class="uib uib--ghost" style="margin-left:auto" href="{% url 'estoque:export' lot.pk %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 11l4 4 4-4M4 21h16"/></svg>{% trans "Exportar" %}</a>
     </div>
