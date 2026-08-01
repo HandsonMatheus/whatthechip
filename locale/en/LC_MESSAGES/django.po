@@ -2351,3 +2351,13 @@ msgstr "A closed lot is final — corrections go in as a sale SETTLEMENT. Reopen
 
 msgid "Lote fechado SEM taxa de câmbio no sistema — rode o fetch_fx_rate e trave manualmente com o suporte."
 msgstr "Lot closed WITHOUT an exchange rate in the system — run fetch_fx_rate and lock manually with support."
+
+# ── Câmbio no header do painel (2026-08-01) ──
+msgid "Taxa de mercado do dia — todo US$ aproximado do painel deriva dela; ela trava no fechamento do lote"
+msgstr "Today's market rate — every approximate US$ in the panel derives from it; it locks when the lot closes"
+
+msgid "sem taxa do dia — rode fetch_fx_rate"
+msgstr "no daily rate — run fetch_fx_rate"
+
+msgid "taxa de contrato (bootstrap)"
+msgstr "contract rate (bootstrap)"

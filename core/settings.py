@@ -106,6 +106,8 @@ TEMPLATES = [
                 # Papel/empresa nos templates (wtc_is_manager etc.) — navegação
                 # por papel (§9 do plano). A barreira real é o gate da view.
                 'tenancy.context_processors.tenancy',
+                # Câmbio vigente no header (PLANO_FX — dono 2026-08-01).
+                'pricing.context_processors.fx',
             ],
         },
     },

@@ -2367,3 +2367,13 @@ msgstr "El lote cerrado es definitivo — las correcciones entran como AJUSTE en
 
 msgid "Lote fechado SEM taxa de câmbio no sistema — rode o fetch_fx_rate e trave manualmente com o suporte."
 msgstr "Lote cerrado SIN tasa de cambio en el sistema — ejecute fetch_fx_rate y bloquee manualmente con el soporte."
+
+# ── Câmbio no header do painel (2026-08-01) ──
+msgid "Taxa de mercado do dia — todo US$ aproximado do painel deriva dela; ela trava no fechamento do lote"
+msgstr "Tasa de mercado del día — todo US$ aproximado del panel deriva de ella; se bloquea al cerrar el lote"
+
+msgid "sem taxa do dia — rode fetch_fx_rate"
+msgstr "sin tasa del día — ejecute fetch_fx_rate"
+
+msgid "taxa de contrato (bootstrap)"
+msgstr "tasa de contrato (bootstrap)"

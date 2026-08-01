@@ -2263,3 +2263,13 @@ msgstr "批次关闭即最终 — 修正通过销售结算处理。仅平台可�
 
 msgid "Lote fechado SEM taxa de câmbio no sistema — rode o fetch_fx_rate e trave manualmente com o suporte."
 msgstr "关单时系统内无汇率 — 请运行 fetch_fx_rate 并联系支持人员手动锁定。"
+
+# ── Câmbio no header do painel (2026-08-01) ──
+msgid "Taxa de mercado do dia — todo US$ aproximado do painel deriva dela; ela trava no fechamento do lote"
+msgstr "当日市场汇率 — 面板中所有 US$ 近似值均由其折算；批次关闭时锁定"
+
+msgid "sem taxa do dia — rode fetch_fx_rate"
+msgstr "无当日汇率 — 请运行 fetch_fx_rate"
+
+msgid "taxa de contrato (bootstrap)"
+msgstr "合同汇率（bootstrap）"

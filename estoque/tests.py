@@ -1819,3 +1819,26 @@ class FxLockOnCloseTests(TestCase):
             self.assertEqual(so.total_usd, Decimal('2.96'))
         finally:
             set_current_company(None)
+
+
+class FxHeaderBadgeTests(TestCase):
+    """Dono (2026-08-01): "deixar mais claro no frontend o câmbio em tempo
+    real" — o header do painel interno estampa a taxa vigente + carimbo."""
+
+    def test_header_mostra_taxa_do_dia(self):
+        from datetime import date
+        from decimal import Decimal
+        from pricing.models import FxRate
+        User = get_user_model()
+        u = User.objects.create_user(username='fxh_op', password='x')
+        _grant(u)
+        self.client.login(username='fxh_op', password='x')
+        # sem taxa: aviso discreto (bootstrap sem carimbo)
+        resp = self.client.get(reverse('estoque:index'))
+        self.assertContains(resp, 'rode fetch_fx_rate')
+        # com taxa: valor + carimbo mid-market
+        FxRate.objects.create(date=date.today(), rate=Decimal('0.1478'),
+                              source='mid-market teste')
+        resp = self.client.get(reverse('estoque:index'))
+        self.assertContains(resp, '1 ¥ ≈ US$ 0.1478')
+        self.assertContains(resp, 'mid-market')
