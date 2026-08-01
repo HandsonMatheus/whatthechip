@@ -97,9 +97,11 @@ class GatewayDestinationTests(TestCase):
         # (chips/chip_types.py), então usamos 'SoC', que é genuinamente INDETERMINADO.
         r = _result(chip_type='SoC', capacity='8GB', confidence='manual')
         g = _compute_gateway(r, has_cap=True)
-        self.assertEqual(g['destination'], 'aprovado')       # entra no estoque (conservador)
+        self.assertEqual(g['destination'], 'aprovado')       # não é descarte…
         self.assertEqual(g['profitable'], 'INDETERMINADO')
         self.assertEqual(g['profitable_key'], 'indeterminado')
+        # …mas NÃO lança (dono 2026-07-31): botão desabilitado no card.
+        self.assertFalse(g['can_add'])
         # F1b: o 3º passo NÃO é 'pass' (verde "sim") — é 'warn' (âmbar "indeterminado").
         # Antes mostrava "Rentável: sim" mentiroso num chip não avaliado.
         self.assertEqual([s['status'] for s in g['steps']], ['pass', 'pass', 'warn'])
@@ -122,6 +124,7 @@ class GatewayDestinationTests(TestCase):
         g = _compute_gateway(r, has_cap=True)
         self.assertEqual(g['destination'], 'aprovado')
         self.assertEqual([s['status'] for s in g['steps']], ['pass', 'pass', 'pass'])
+        self.assertTrue(g['can_add'])                        # rentável → lança
 
     def test_gramatica_pura_sem_registro_vai_para_fila(self):
         # "GRAMÁTICA JAMAIS": sem registro no banco (confidence vazio), mesmo com
@@ -275,6 +278,24 @@ class AddChipHardBlockTests(TestCase):
         self.assertFalse(RejectedEntry.objects.filter(part_number='TESTOK16').exists())
 
     @patch('estoque.views.classify')
+    def test_confirmado_indeterminado_nao_lanca(self, mock_classify):
+        # Dono 2026-07-31: sem rentabilidade AVALIADA não entra no estoque —
+        # o card desabilita o botão e ESTA é a barreira real (POST forjado).
+        # Nada é gravado (nem Rejected, nem Pending — o chip fica na bancada).
+        mock_classify.return_value = _result(
+            chip_type='SoC', capacity='8GB',
+            classification_source='banco de dados', confidence='confirmed')
+        resp = self.client.post(self.url, {'pn': 'TESTINDET01', 'qty': '1',
+                                           'has_cap': 'true'})
+        self.assertContains(resp, 'Sem avaliação de rentabilidade')
+        self.assertFalse(InventoryEntry.objects.filter(
+            part_number='TESTINDET01').exists())
+        self.assertFalse(RejectedEntry.objects.filter(
+            part_number='TESTINDET01').exists())
+        self.assertFalse(PendingEntry.objects.filter(
+            part_number='TESTINDET01').exists())
+
+    @patch('estoque.views.classify')
     def test_intake_carimba_snapshot_catalog_version(self, mock_classify):
         """Passo 2: a entrada no estoque carimba a edição ATUAL do catálogo (data de atualização)."""
         from chips.models import CatalogVersion
@@ -304,16 +325,17 @@ class AddChipHardBlockTests(TestCase):
         self.assertEqual(e.price_tier_value, Decimal('16'))
         self.assertEqual(e.price_key_reason, '')
 
-    @patch('estoque.views.classify')
-    def test_intake_sem_chave_grava_o_motivo(self, mock_classify):
-        """F11.1: chip fora do mercado de preço entra no estoque com o MOTIVO
-        do NO_KEY gravado (aparece no sem-preço da valoração/export)."""
-        mock_classify.return_value = _result(
-            chip_type='SoC', capacity='8GB', confidence='manual')
-        self.client.post(self.url, {'pn': 'TESTKEY00', 'qty': '1', 'has_cap': 'true'})
-        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTKEY00')
-        self.assertIsNone(e.price_tier_value)
-        self.assertIn('fora do mercado', e.price_key_reason)
+    def test_sem_chave_produz_o_motivo(self):
+        """F11.1: chip fora do mercado de preço carrega o MOTIVO do NO_KEY
+        nos campos de chave. Era um teste de add_chip com SoC INDETERMINADO —
+        mas desde a regra do dono (2026-07-31) indeterminado NÃO entra mais
+        no estoque, então o caminho vivo desse campo é o LEGADO (resnapshot);
+        aqui provamos a função que o produz."""
+        from estoque.views import _price_key_fields
+        campos = _price_key_fields(_result(chip_type='SoC', capacity='8GB',
+                                           confidence='manual'))
+        self.assertIsNone(campos.get('price_tier_value'))
+        self.assertIn('fora do mercado', campos['price_key_reason'])
 
     @patch('estoque.views.classify')
     def test_nao_confirmado_vai_para_pending(self, mock_classify):
@@ -1577,3 +1599,74 @@ class TenancyDeclarationTests(TestCase):
             'company + objects=CompanyScopedManager + all_companies + '
             "Meta.base_manager_name/default_manager_name='all_companies' + "
             f'caso no TenancyHandshakeTests: {faltando}')
+
+
+class ReplicateLotXlsxTests(TestCase):
+    """replicate_lot_xlsx (2026-07-31): réplica de lote a partir do export —
+    reclassifica TUDO no engine local (bypass do portão de propósito: é
+    material que JÁ ESTÁ em prod) e cria o lote com snapshot+chave daqui."""
+
+    @classmethod
+    def setUpTestData(cls):
+        import openpyxl
+        import tempfile
+        from chips.models import Brand as ChipBrand, ChipFamily, DecodeMap
+        User = get_user_model()
+        cls.su = User.objects.create_superuser('root_rep', password='x')
+        cls.company = Company.objects.create(name='RepCo', slug='repco')
+        sam = ChipBrand.objects.create(name='Samsung REP', code='SAMREP')
+        DecodeMap.objects.create(map_name='CAP_REP', char_key='A',
+                                 val_primary='16GB', val_secondary='',
+                                 brand=sam)
+        ChipFamily.objects.create(brand=sam, prefix='KLM', chip_type='eMMC',
+                                  subtype='', decode_cap_pos=3,
+                                  decode_cap_map='CAP_REP', is_emcp=False,
+                                  active=True, priority=50)
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.append(['Part Number', 'Category', 'Qty.', 'Last Added',
+                   'Preço unit.', 'Total'])
+        ws.append(['KLMAG1JETD', 'B-05', 7, '31/07/2026', 1.0, 7.0])
+        ws.append(['ZZDESCONHECIDO1', '—', 2, '31/07/2026', 'sem preço', None])
+        ws.append(['TOTAL', None, 9, None, None, None])
+        fh = tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False)
+        wb.save(fh.name)
+        cls.xlsx = fh.name
+
+    def test_dry_run_projeta_e_nao_grava(self):
+        from django.core.management import call_command
+        from io import StringIO
+        out = StringIO()
+        call_command('replicate_lot_xlsx', self.xlsx, '--company', 'repco',
+                     stdout=out)
+        self.assertIn('2 PNs · 9 un.', out.getvalue())
+        self.assertIn('DRY-RUN', out.getvalue())
+        set_current_company(self.company)
+        try:
+            self.assertFalse(Lot.objects.exists())
+        finally:
+            set_current_company(None)
+
+    def test_commit_cria_lote_com_chave_local(self):
+        from django.core.management import call_command
+        from io import StringIO
+        out = StringIO()
+        call_command('replicate_lot_xlsx', self.xlsx, '--company', 'repco',
+                     '--commit', stdout=out)
+        self.assertIn('✅', out.getvalue())
+        set_current_company(self.company)
+        try:
+            lot = Lot.objects.get()
+            self.assertEqual(lot.operator, self.su)
+            e = InventoryEntry.objects.get(lot=lot, part_number='KLMAG1JETD')
+            self.assertEqual(e.quantity, 7)
+            # a chave nasce do engine LOCAL (eMMC 16GB — grid novo)
+            self.assertEqual((e.price_kind, float(e.price_tier_value)),
+                             ('emmc', 16.0))
+            # o desconhecido entra MESMO ASSIM (réplica, não lançamento)
+            zz = InventoryEntry.objects.get(lot=lot,
+                                            part_number='ZZDESCONHECIDO1')
+            self.assertEqual(zz.quantity, 2)
+            self.assertTrue(zz.price_key_reason)
+        finally:
+            set_current_company(None)

@@ -2284,3 +2284,10 @@ msgstr "Su tabla de precios completa en un único archivo — lista para enviar 
 
 msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP e LPDDR</strong> têm preço único, válido para todas as marcas; <strong>eMMC, UFS e DDR</strong> têm preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
 msgstr "Precios por chip, en <strong>yuanes (¥ RMB)</strong> — la conversión a US$ usa la tasa del contrato, mostrada arriba. <strong>eMCP, uMCP y LPDDR</strong> tienen precio único, válido para todas las marcas; <strong>eMMC, UFS y DDR</strong> tienen precio por marca — la columna «Otras» vale para las marcas sin columna propia."
+
+# ── Portão: sem rentabilidade avaliada não lança (2026-07-31) ──
+msgid "Sem avaliação de rentabilidade — não entra no estoque até o dado ficar completo."
+msgstr "Sin evaluación de rentabilidad — no entra al inventario hasta completar el dato."
+
+msgid "Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o dado ficar completo. Sinalize ao gestor."
+msgstr "Sin evaluación de rentabilidad — este chip no puede entrar al inventario hasta completar el dato. Avise al gestor."

@@ -2268,3 +2268,10 @@ msgstr "Your complete price table in a single file — ready to send to your cli
 
 msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP e LPDDR</strong> têm preço único, válido para todas as marcas; <strong>eMMC, UFS e DDR</strong> têm preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
 msgstr "Prices per chip, in <strong>yuan (¥ RMB)</strong> — conversion to US$ uses the contract rate, shown at the top. <strong>eMCP, uMCP and LPDDR</strong> have a single price, valid for all brands; <strong>eMMC, UFS and DDR</strong> are priced per brand — the \"Others\" column applies to brands without their own column."
+
+# ── Portão: sem rentabilidade avaliada não lança (2026-07-31) ──
+msgid "Sem avaliação de rentabilidade — não entra no estoque até o dado ficar completo."
+msgstr "No profitability assessment — cannot enter stock until the data is complete."
+
+msgid "Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o dado ficar completo. Sinalize ao gestor."
+msgstr "No profitability assessment — this chip cannot enter stock until the data is complete. Flag it to the manager."

@@ -531,8 +531,12 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
       3. Rentabilidade: assess_profitability. 'NÃO RENTÁVEL' → 'reprovado';
          'RENTÁVEL' ou 'INDETERMINADO' → 'aprovado'.
 
-    Regra de negócio: INDETERMINADO conta como aprovado — melhor deixar entrar do
-    que descartar material valioso por falta de regra (ver brainstorm/CLAUDE).
+    Regra de negócio (REVISADA pelo dono, 2026-07-31): INDETERMINADO continua
+    'aprovado' no funil (não é descarte — o material fica na bancada), mas NÃO
+    pode ser LANÇADO: `can_add=False` desabilita o botão de adicionar e o
+    add_chip recusa no servidor. Entrada no estoque exige rentabilidade
+    AVALIADA ('RENTÁVEL'). Antes o INDETERMINADO entrava (regra conservadora);
+    o lote 042 mostrou o custo: chip dentro do estoque sem avaliação.
 
     O typo (fuzzy_suggestions) NÃO é uma etapa: é uma rede de segurança exibida à
     parte, válida em qualquer destino.
@@ -562,6 +566,10 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
             'profitable':           profitable,
             'profitable_key':       _PROFIT_KEY.get(profitable, 'indeterminado'),
             'reject_by_generation': by_generation,
+            # Dono 2026-07-31: lançar exige rentabilidade AVALIADA — aprovado
+            # com INDETERMINADO fica com o botão de adicionar DESABILITADO
+            # (os outros destinos têm botões próprios: fila/descarte/desconhecido).
+            'can_add': destination != 'aprovado' or profitable == 'RENTÁVEL',
         }
 
     # ── Atalho: morto por GERAÇÃO → reprovado direto ─────────────────────────
@@ -993,9 +1001,8 @@ def add_chip(request, lot_pk):
     # Chip confirmado e com specs, mas NÃO RENTÁVEL: não entra no estoque. É
     # desviado para RejectedEntry (log de auditoria) e segue para resíduo
     # eletrônico. Decisão de negócio: bloqueio real no servidor, não só na UI.
-    # INDETERMINADO/RENTÁVEL passam (regra conservadora — só barra o que é
-    # claramente não-rentável).
-    if assess_profitability(server_result) == 'NÃO RENTÁVEL':
+    profitable = assess_profitability(server_result)
+    if profitable == 'NÃO RENTÁVEL':
         RejectedEntry.objects.create(
             lot=lot, part_number=pn, quantity=qty,
             **_snapshot(server_result),
@@ -1009,6 +1016,17 @@ def add_chip(request, lot_pk):
             'capacity':  server_result.get('capacity', ''),
             'by_generation': False,
         })
+
+    # ── Sem rentabilidade AVALIADA → não lança (dono, 2026-07-31) ────────────
+    # O card já desabilita o botão (gateway.can_add=False); aqui é a barreira
+    # REAL contra POST forjado/página velha (template nunca é a única barreira).
+    # Nada é gravado: o chip fica na bancada até o dado/regra completar.
+    if profitable != 'RENTÁVEL':
+        return HttpResponse(
+            '<div class="est-msg est-msg--error" style="padding:12px 16px;border:1px solid #da1e28;color:#da1e28;margin-top:12px;">'
+            + _('Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o dado ficar completo. Sinalize ao gestor.')
+            + '</div>'
+        )
 
     # Grava SEMPRE a partir do classify do SERVIDOR (server_result), não do POST
     # do cliente — fonte autoritativa, à prova de form forjado/defasado, e idêntica

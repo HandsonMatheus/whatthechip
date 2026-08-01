@@ -148,7 +148,9 @@
         <div class="rc__type">{{ result.chip_type|default:"—" }}{% if result.subtype %} <small>{{ result.subtype }}</small>{% endif %}</div>
         {% if result.brand %}<div class="rc__mfr">{% trans "Fabricante" %} <b>{{ result.brand }}</b></div>{% else %}<div class="rc__mfr">{{ pn }}</div>{% endif %}
       </div>
-      {% if gateway_dest == 'aprovado' %}<span class="vpill vpill--r">{% trans "Rentável" %}</span>
+      {% comment %} Dono 2026-07-31: aprovado ≠ rentável — indeterminado ganha
+         pílula âmbar própria (e o botão de lançar fica desabilitado). {% endcomment %}
+      {% if gateway_dest == 'aprovado' %}{% if gateway.profitable_key == 'rentavel' %}<span class="vpill vpill--r">{% trans "Rentável" %}</span>{% else %}<span class="vpill vpill--m">{% trans "Indeterminado" %}</span>{% endif %}
       {% elif gateway_dest == 'reprovado' %}<span class="vpill vpill--x">{% trans "Não rentável" %}</span>
       {% elif gateway_dest == 'fila' %}<span class="vpill vpill--m">{% trans "Indeterminado" %}</span>{% endif %}
     </div>
@@ -213,7 +215,15 @@
         {% endif %}
 
         {% if gateway_dest == 'aprovado' %}
+          {% if gateway.can_add %}
           <button type="submit" class="rc-btn rc-btn--box">+ {% trans "Adicionar ao estoque" %}</button>
+          {% else %}
+          {% comment %} Dono 2026-07-31: sem rentabilidade avaliada não lança —
+             botão DESABILITADO (o add_chip recusa no servidor também). {% endcomment %}
+          <button type="submit" class="rc-btn rc-btn--box" disabled
+                  title="{% trans 'Sem avaliação de rentabilidade — não entra no estoque até o dado ficar completo.' %}"
+                  style="opacity:.45;cursor:not-allowed;">+ {% trans "Adicionar ao estoque" %}</button>
+          {% endif %}
         {% elif gateway_dest == 'fila' %}
           <button type="submit" title="{% trans 'PN não confirmado — vai para a fila de conferência do gestor' %}" class="rc-btn rc-btn--conf">⏳ {% trans "Enviar para conferência" %}</button>
         {% elif gateway_dest == 'reprovado' %}
