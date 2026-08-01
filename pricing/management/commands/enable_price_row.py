@@ -116,7 +116,7 @@ class Command(BaseCommand):
             elif row.status == STATUS_UNQUOTED:
                 self.stdout.write(f'  {nome}: já está "não cotado" — nada a fazer')
             elif row.status == STATUS_QUOTED:
-                self.stdout.write(f'  {nome}: já COTADA (US$ {row.price_min}) — intocada')
+                self.stdout.write(f'  {nome}: já COTADA (¥ {row.price_min}) — intocada')
             else:
                 self.stdout.write(f'  {nome}: está "não compro" — intocada '
                                   '(mudar isso é decisão de admin, no Django admin)')
