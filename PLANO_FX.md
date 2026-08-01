@@ -62,7 +62,21 @@ todos os pagamentos daquele lote nas duas pontas.**
 - 1 centésimo de taxa ≈ ±7% do lote (ex. real: lote de ¥63k → ±US$ 630) —
   maior que a margem de vários tipos; por isso a trava é vital.
 
-## 4. Fases de execução — **A e B ENTREGUES local (2026-08-01)**
+## 4. Fases de execução — **A, B e C ENTREGUES local (2026-08-01)**
+
+> Fase C: `Lot.fx_rate/fx_source/fx_locked_at/fx_is_fallback` + pghistory
+> no Lot (cada trava/retrava é evento auditável). `lot_close` captura a
+> taxa vigente ATÔMICO com o CLOSED (sem taxa no sistema NUNCA bloqueia o
+> fechamento — campos nulos + aviso); modal mostra "Câmbio que será
+> TRAVADO agora: 1 ¥ = US$ X (mid-market DD/MM)" antes do confirmar
+> (requisito explícito); selo 🔒 no lote fechado (todas os papéis — taxa é
+> dado público). **Fechou, tá fechado**: reabrir é EXCLUSIVO do superuser
+> (gate no servidor + botão some; demais veem "correções = acerto");
+> reabertura DESTRAVA (campos limpos, histórico no pghistory) e re-fechar
+> captura taxa nova. OV: `confirm()` herda `lot.fx_rate` (mercado-na-
+> confirmação só p/ lote legado sem trava); rascunho exibe a travada.
+> `FxLockOnCloseTests` (4 — incl. mercado mudando após a trava e a OV
+> mantendo a travada: ¥20 × 0.1478 = US$ 2.96).
 
 > Fase A: card da bancada/busca ¥-PRIMEIRO (`¥ 40` grande + `≈ US$ 5.60` +
 > carimbo "taxa mid-market DD/MM"); máscara v3.1 revogada (cliente vê ¥ —

@@ -2339,3 +2339,31 @@ msgstr "congelado"
 
 msgid "taxa mid-market %(d)s: 1 ¥ ≈ US$ %(rate)s"
 msgstr "tasa mid-market %(d)s: 1 ¥ ≈ US$ %(rate)s"
+
+# ── PLANO_FX Fase C — trava no fechamento (2026-08-01) ──
+msgid "Câmbio que será TRAVADO agora:"
+msgstr "Cambio que quedará BLOQUEADO ahora:"
+
+msgid "essa taxa rege a venda e os pagamentos deste lote."
+msgstr "esa tasa rige la venta y los pagos de este lote."
+
+msgid "Taxa travada no fechamento — rege OV, fatura e repasse"
+msgstr "Tasa bloqueada al cierre — rige OV, factura y liquidación"
+
+msgid "fechado sem taxa travada"
+msgstr "cerrado sin tasa bloqueada"
+
+msgid "Reabrir (plataforma)"
+msgstr "Reabrir (plataforma)"
+
+msgid "Reabertura destrava o câmbio; re-fechar captura taxa nova (auditado)"
+msgstr "Reabrir desbloquea el cambio; re-cerrar captura una tasa nueva (auditado)"
+
+msgid "Fechado é definitivo — correções entram como acerto na venda."
+msgstr "Cerrado es definitivo — las correcciones entran como ajuste en la venta."
+
+msgid "Lote fechado é definitivo — correções entram como ACERTO na venda. Reabertura é exclusiva da plataforma."
+msgstr "El lote cerrado es definitivo — las correcciones entran como AJUSTE en la venta. Reabrir es exclusivo de la plataforma."
+
+msgid "Lote fechado SEM taxa de câmbio no sistema — rode o fetch_fx_rate e trave manualmente com o suporte."
+msgstr "Lote cerrado SIN tasa de cambio en el sistema — ejecute fetch_fx_rate y bloquee manualmente con el soporte."

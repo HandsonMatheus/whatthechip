@@ -2235,3 +2235,31 @@ msgstr "已冻结"
 
 msgid "taxa mid-market %(d)s: 1 ¥ ≈ US$ %(rate)s"
 msgstr "%(d)s 中间价：1 ¥ ≈ US$ %(rate)s"
+
+# ── PLANO_FX Fase C — trava no fechamento (2026-08-01) ──
+msgid "Câmbio que será TRAVADO agora:"
+msgstr "即将锁定的汇率："
+
+msgid "essa taxa rege a venda e os pagamentos deste lote."
+msgstr "该汇率适用于本批次的销售与付款。"
+
+msgid "Taxa travada no fechamento — rege OV, fatura e repasse"
+msgstr "关单时锁定的汇率 — 适用于订单、发票与结算"
+
+msgid "fechado sem taxa travada"
+msgstr "关闭时未锁定汇率"
+
+msgid "Reabrir (plataforma)"
+msgstr "重新打开（平台）"
+
+msgid "Reabertura destrava o câmbio; re-fechar captura taxa nova (auditado)"
+msgstr "重新打开将解除汇率锁定；再次关闭会锁定新汇率（有审计）"
+
+msgid "Fechado é definitivo — correções entram como acerto na venda."
+msgstr "关闭即最终 — 修正通过销售结算处理。"
+
+msgid "Lote fechado é definitivo — correções entram como ACERTO na venda. Reabertura é exclusiva da plataforma."
+msgstr "批次关闭即最终 — 修正通过销售结算处理。仅平台可重新打开。"
+
+msgid "Lote fechado SEM taxa de câmbio no sistema — rode o fetch_fx_rate e trave manualmente com o suporte."
+msgstr "关单时系统内无汇率 — 请运行 fetch_fx_rate 并联系支持人员手动锁定。"

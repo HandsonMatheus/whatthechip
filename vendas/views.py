@@ -19,9 +19,12 @@ from .models import (INV_OPEN, Invoice, STATUS_CONFIRMED, STATUS_DRAFT,
 from . import services
 
 
-def _fx_viva(buyer):
-    """Taxa de MERCADO vigente (PLANO_FX 2026-08-01) — p/ rascunhos; OV
-    confirmada usa a taxa CONGELADA dela (so.fx_usd_rate), nunca esta."""
+def _fx_viva(buyer, so=None):
+    """Taxa exibida no RASCUNHO (PLANO_FX Fase C): a TRAVADA do lote, se o
+    fechamento já capturou; senão a de mercado vigente. OV confirmada usa a
+    congelada dela (so.fx_usd_rate), nunca esta."""
+    if so is not None and so.lot_id and so.lot.fx_rate is not None:
+        return so.lot.fx_rate
     from pricing.engine import current_fx_rate
     return current_fx_rate(buyer)[0]
 
@@ -62,7 +65,7 @@ def so_detail(request, pk):
             })
         ctx.update({'rows': rows, 'live_total_rmb': total_rmb,
                     'live_total_usd': total_usd, 'pending': pending,
-                    'fx_rate': _fx_viva(so.buyer)})
+                    'fx_rate': _fx_viva(so.buyer, so)})
     else:
         ctx.update({'lines': services.annotate_labels(
                         list(so.lines.all()), unmasked),
@@ -85,7 +88,7 @@ def so_pdf(request, pk):
         pairs = services.live_quotes(so)
         services.annotate_labels([l for l, _q in pairs], unmasked)
         total_rmb, total_usd, _pending = services.draft_totals(pairs)
-        fx_rate = _fx_viva(so.buyer)
+        fx_rate = _fx_viva(so.buyer, so)
         for line, q in pairs:
             priced = q.status == 'PRICED'
             rows.append({

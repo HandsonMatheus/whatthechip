@@ -2323,3 +2323,31 @@ msgstr "frozen"
 
 msgid "taxa mid-market %(d)s: 1 ¥ ≈ US$ %(rate)s"
 msgstr "mid-market rate %(d)s: 1 ¥ ≈ US$ %(rate)s"
+
+# ── PLANO_FX Fase C — trava no fechamento (2026-08-01) ──
+msgid "Câmbio que será TRAVADO agora:"
+msgstr "Exchange rate to be LOCKED now:"
+
+msgid "essa taxa rege a venda e os pagamentos deste lote."
+msgstr "this rate governs the sale and payments of this lot."
+
+msgid "Taxa travada no fechamento — rege OV, fatura e repasse"
+msgstr "Rate locked at closing — governs SO, invoice and payout"
+
+msgid "fechado sem taxa travada"
+msgstr "closed without a locked rate"
+
+msgid "Reabrir (plataforma)"
+msgstr "Reopen (platform)"
+
+msgid "Reabertura destrava o câmbio; re-fechar captura taxa nova (auditado)"
+msgstr "Reopening unlocks the rate; re-closing captures a new one (audited)"
+
+msgid "Fechado é definitivo — correções entram como acerto na venda."
+msgstr "Closed is final — corrections go in as a sale settlement."
+
+msgid "Lote fechado é definitivo — correções entram como ACERTO na venda. Reabertura é exclusiva da plataforma."
+msgstr "A closed lot is final — corrections go in as a sale SETTLEMENT. Reopening is platform-only."
+
+msgid "Lote fechado SEM taxa de câmbio no sistema — rode o fetch_fx_rate e trave manualmente com o suporte."
+msgstr "Lot closed WITHOUT an exchange rate in the system — run fetch_fx_rate and lock manually with support."

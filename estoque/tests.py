@@ -1708,3 +1708,114 @@ class LotOriginTests(TestCase):
             Lot.open_for_company(self.company, self.mgr, 'x', origin='')
         with self.assertRaises(ValidationError):
             Lot.open_for_company(self.company, self.mgr, 'x', origin='misto')
+
+
+class FxLockOnCloseTests(TestCase):
+    """PLANO_FX Fase C (2026-08-01): fechar o lote TRAVA a taxa de mercado do
+    dia (atômico com o CLOSED); reabrir é EXCLUSIVO do superuser (destrava;
+    re-fechar captura taxa nova — pghistory loga); OV herda a taxa travada."""
+
+    def setUp(self):
+        from datetime import date
+        from decimal import Decimal
+        from pricing.models import FxRate
+        globals()['Decimal'] = Decimal          # usado pelos testes da classe
+        User = get_user_model()
+        self.mgr = User.objects.create_user(username='fxc_mgr', password='x')
+        self.company = _grant(self.mgr, role='manager')
+        self.client.login(username='fxc_mgr', password='x')
+        FxRate.objects.create(date=date.today(), rate=Decimal('0.1478'),
+                              source='mid-market teste')
+        _scope(self, self.company)
+        self.lot = Lot.objects.create(number=910, origin='phone',
+                                      operator=self.mgr, company=self.company)
+        set_current_company(None)
+
+    def _close(self):
+        return self.client.post(reverse('estoque:lot_close',
+                                        args=[self.lot.pk]),
+                                {'confirm_code': self.lot.code})
+
+    def test_fechar_trava_a_taxa_do_dia(self):
+        self._close()
+        _scope(self, self.company)
+        self.lot.refresh_from_db()
+        set_current_company(None)
+        self.assertEqual(self.lot.status, 'closed')
+        self.assertEqual(self.lot.fx_rate, Decimal('0.1478'))
+        self.assertEqual(self.lot.fx_source, 'mid-market teste')
+        self.assertIsNotNone(self.lot.fx_locked_at)
+        self.assertFalse(self.lot.fx_is_fallback)
+        # selo na página do lote
+        resp = self.client.get(reverse('estoque:lot_detail',
+                                       args=[self.lot.pk]))
+        self.assertContains(resp, '1 ¥ = US$ 0.1478')
+
+    def test_reabrir_e_so_do_superuser_e_destrava(self):
+        self._close()
+        # gerente (e admin de empresa) NÃO reabrem mais
+        resp = self.client.post(reverse('estoque:lot_reopen',
+                                        args=[self.lot.pk]), follow=True)
+        self.assertContains(resp, 'exclusiva da plataforma')
+        _scope(self, self.company)
+        self.lot.refresh_from_db()
+        set_current_company(None)
+        self.assertEqual(self.lot.status, 'closed')       # seguiu fechado
+        # superuser reabre → destrava o câmbio
+        User = get_user_model()
+        su = User.objects.create_superuser('fxc_root', password='x')
+        Membership.objects.create(user=su, company=self.company,
+                                  role='manager')
+        self.client.logout()
+        self.client.login(username='fxc_root', password='x')
+        self.client.post(reverse('estoque:lot_reopen', args=[self.lot.pk]))
+        _scope(self, self.company)
+        self.lot.refresh_from_db()
+        set_current_company(None)
+        self.assertEqual(self.lot.status, 'open')
+        self.assertIsNone(self.lot.fx_rate)
+        self.assertIsNone(self.lot.fx_locked_at)
+
+    def test_modal_mostra_a_taxa_que_sera_travada(self):
+        resp = self.client.get(reverse('estoque:lot_detail',
+                                       args=[self.lot.pk]))
+        self.assertContains(resp, 'Câmbio que será TRAVADO')
+        self.assertContains(resp, '0.1478')
+
+    def test_ov_herda_a_taxa_travada_do_lote(self):
+        from datetime import date
+        from pricing.models import Buyer, FxRate, Price, PriceList
+        from vendas.services import confirm
+        from vendas.models import SalesOrder
+        _scope(self, self.company)
+        try:
+            buyer = Buyer.objects.create(company=self.company, name='Wu C',
+                                         slug='wu-fxc')
+            pl = PriceList.all_companies.create(buyer=buyer, brand=None)
+            Price.all_companies.create(
+                price_list=pl, kind='emmc', gen='', origin='phone',
+                tier_value=Decimal('16'), tier_unit='GB', status='quoted',
+                price_min=Decimal('10'), price_max=Decimal('10'),
+                quote_date=date.today())
+            InventoryEntry.objects.create(
+                lot=self.lot, part_number='FXCEMMC16', quantity=2,
+                chip_type='eMMC', price_kind='emmc', price_gen='',
+                price_tier_value=Decimal('16'), price_tier_unit='GB')
+        finally:
+            set_current_company(None)
+        self._close()                                    # trava 0.1478
+        # a taxa de MERCADO muda DEPOIS do fechamento (dia seguinte)…
+        from datetime import timedelta
+        FxRate.objects.create(date=date.today() + timedelta(days=1),
+                              rate=Decimal('0.1600'), source='t2')
+        _scope(self, self.company)
+        try:
+            so = SalesOrder.all_companies.get(lot=self.lot)
+            confirm(so, self.mgr)
+            so.refresh_from_db()
+            # …mas a OV usa a TRAVADA do lote (não a vigente 0.16):
+            self.assertEqual(so.fx_usd_rate, Decimal('0.1478'))
+            # ¥10 × 2 un = ¥20 → US$ 2.96 pela taxa travada
+            self.assertEqual(so.total_usd, Decimal('2.96'))
+        finally:
+            set_current_company(None)

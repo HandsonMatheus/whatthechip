@@ -1122,6 +1122,13 @@ table.est-table td { padding: var(--s5) var(--s5); }
     {% else %}
       <span class="badge" style="background:#f2f4f8;color:#4d5358;">📱 {% trans "Origem: celular" %}</span>
     {% endif %}
+    {% comment %} PLANO_FX Fase C: a TRAVA de câmbio do fechamento — imutável,
+       auditável, a taxa que rege os pagamentos das duas pontas. {% endcomment %}
+    {% if lot.fx_rate %}
+      <span class="badge" style="background:#defbe6;color:#0e6027;" title="{% trans 'Taxa travada no fechamento — rege OV, fatura e repasse' %}">🔒 {% localize off %}1 ¥ = US$ {{ lot.fx_rate }}{% endlocalize %} · {{ lot.fx_locked_at|date:"d/m" }}{% if lot.fx_is_fallback %} ⚠{% endif %}</span>
+    {% elif lot.status == 'closed' %}
+      <span class="badge" style="background:#fff1c2;color:#8a6d00;">{% trans "fechado sem taxa travada" %}</span>
+    {% endif %}
     {% if lot.description %}<span class="lothead__desc">{{ lot.description|upper }}</span>{% endif %}
   </div>
 
@@ -1148,11 +1155,15 @@ table.est-table td { padding: var(--s5) var(--s5); }
         {% csrf_token %}
         <input type="hidden" name="confirm_code" id="close-confirm-code" value="">
       </form>
-      {% else %}
+      {% elif request.user.is_superuser %}
+      {% comment %} FECHOU, TÁ FECHADO (dono 2026-07-31): reabrir é exclusivo
+         da PLATAFORMA — servidor valida; correção comum = Acerto. {% endcomment %}
       <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="margin:0;">
         {% csrf_token %}
-        <button type="submit" class="uib uib--primary">{% trans "Reabrir" %}</button>
+        <button type="submit" class="uib uib--primary" title="{% trans 'Reabertura destrava o câmbio; re-fechar captura taxa nova (auditado)' %}">{% trans "Reabrir (plataforma)" %}</button>
       </form>
+      {% else %}
+      <span style="font-size:12px;color:#6f6f6f;align-self:center;">{% trans "Fechado é definitivo — correções entram como acerto na venda." %}</span>
       {% endif %}
     {% endif %}
   </div>
@@ -1274,6 +1285,14 @@ table.est-table td { padding: var(--s5) var(--s5); }
           <div style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;">{% blocktrans trimmed with n1=lot.chip_count n2=lot.total_qty %}{{ n1 }} tipos · {{ n2 }} un.{% endblocktrans %}</div>
         </div>
       </div>
+      {% if fx_info %}
+      <div style="background:#defbe6;border:1px solid #a7f0ba;padding:10px 12px;margin:0 0 12px;font-size:13px;">
+        🔒 {% trans "Câmbio que será TRAVADO agora:" %}
+        <b style="font-family:'IBM Plex Mono',monospace;">{% localize off %}1 ¥ = US$ {{ fx_info.rate_disp }}{% endlocalize %}</b>
+        {% if fx_info.is_market %}<small>(mid-market {{ fx_info.date|date:"d/m" }}{% if fx_info.is_fallback %} ⚠ fallback{% endif %})</small>{% endif %}
+        — {% trans "essa taxa rege a venda e os pagamentos deste lote." %}
+      </div>
+      {% endif %}
       <p class="est-modal-desc" style="margin:0 0 10px;">{% trans "Fechar o lote gera a cotação de venda e trava a bancada. Digite o código completo do lote para confirmar:" %}</p>
       <input id="close-code-input" type="text" autocomplete="off" spellcheck="false"
              placeholder="{{ lot.code }}"

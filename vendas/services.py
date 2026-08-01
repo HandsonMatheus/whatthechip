@@ -133,15 +133,17 @@ def confirm(so, user):
             f'{len(pending)} linha(s) sem preço no grid do comprador — '
             f'complete a cotação antes de confirmar: {faltam}')
 
-    # PLANO_FX (2026-08-01): congela a taxa de MERCADO vigente (mid-market
-    # diária) — o contratual morreu. Fase C moverá a captura pro FECHAR lote
-    # (a OV herdará a taxa do lote); até lá, congela na confirmação.
+    # PLANO_FX Fase C (2026-08-01): a OV HERDA a taxa TRAVADA no fechamento
+    # do lote (o acordo com o comprador: mercado do dia do fechar, honrada no
+    # pagamento das DUAS pontas). Lote sem trava (legado/fechado sem FxRate)
+    # cai na taxa de mercado vigente na confirmação.
     from pricing.engine import current_fx_rate
-    rate = current_fx_rate(so.buyer)[0]
+    rate = (so.lot.fx_rate if so.lot_id and so.lot.fx_rate is not None
+            else current_fx_rate(so.buyer)[0])
     if rate is None:
         raise ValidationError(
-            'Sem taxa de câmbio no sistema (FxRate vazia e sem bootstrap) — '
-            'rode fetch_fx_rate antes de confirmar.')
+            'Sem taxa de câmbio: o lote não tem trava e a FxRate está '
+            'vazia — rode fetch_fx_rate antes de confirmar.')
     with transaction.atomic():
         total_rmb = Decimal('0.00')
         total_usd = Decimal('0.00')

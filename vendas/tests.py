@@ -180,7 +180,11 @@ class LotCloseReopenTests(TestCase):
     def setUpTestData(cls):
         cls.company, cls.buyer, cls.brand = _setup('vd-hook')
         User = get_user_model()
-        cls.mgr = User.objects.create_user('vd_mgr', password='x')
+        # PLANO_FX C (2026-08-01): REABRIR virou exclusivo do superuser —
+        # o gerente da fixture agora é superuser pra exercitar o fluxo
+        # completo fechar→reabrir (o gate em si é provado no
+        # estoque.FxLockOnCloseTests).
+        cls.mgr = User.objects.create_superuser('vd_mgr', password='x')
         cls.adm = User.objects.create_user('vd_adm', password='x')
         Membership.objects.create(user=cls.mgr, company=cls.company,
                                   role=Membership.ROLE_MANAGER)

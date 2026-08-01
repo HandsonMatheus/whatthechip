@@ -710,10 +710,12 @@ def lot_detail(request, lot_pk):
     if masked:
         _masked_entry_labels(entries)
 
+    from pricing.engine import fx_display
     ctx = {
         'lot':       lot,
         'entries':   entries,
         'page_obj':  page_obj,
+        'fx_info':   fx_display(),   # PLANO_FX C: taxa é dado PÚBLICO (modal/selo)
         'masked':    masked,
         'total_qty': total_qty,
         'q':         q,
@@ -815,9 +817,25 @@ def lot_close(request, lot_pk):
             'do lote (ex.: %(code)s). O lote NÃO foi fechado.')
             % {'code': lot.code})
         return redirect('estoque:lot_detail', lot_pk=lot.pk)
+    # ── TRAVA DE CÂMBIO (PLANO_FX Fase C, 2026-08-01): o acordo com o
+    # comprador é a taxa de MERCADO do dia do fechamento — capturada AQUI,
+    # atômica com o CLOSED. Sem taxa no sistema, o fechamento físico NUNCA
+    # bloqueia (campos ficam nulos + aviso; o comercial resolve depois). ──
+    from pricing.engine import current_fx_rate
+    _rate, _fx = current_fx_rate()
     lot.status    = Lot.STATUS_CLOSED
     lot.closed_at = timezone.now()
-    lot.save(update_fields=['status', 'closed_at'])
+    if _rate is not None:
+        lot.fx_rate      = _rate
+        lot.fx_source    = (_fx.source if _fx else 'bootstrap contratual')
+        lot.fx_locked_at = timezone.now()
+        lot.fx_is_fallback = bool(_fx and _fx.is_fallback)
+    else:
+        messages.warning(request, _(
+            'Lote fechado SEM taxa de câmbio no sistema — rode o '
+            'fetch_fx_rate e trave manualmente com o suporte.'))
+    lot.save(update_fields=['status', 'closed_at', 'fx_rate', 'fx_source',
+                            'fx_locked_at', 'fx_is_fallback'])
     # O snapshot é criado no servidor mesmo quando quem fecha é o GERENTE —
     # ele não VÊ valores (§7); o registro é para o admin/auditoria.
     _freeze_lot_pricing(request, lot)
@@ -832,10 +850,18 @@ def lot_close(request, lot_pk):
     return redirect('estoque:lot_detail', lot_pk=lot.pk)
 
 
-@role_required('manager')   # §8: reabrir lote é de gerente+
+@role_required('manager')   # o papel segue sendo o piso; o teto é o gate abaixo
 @require_POST
 def lot_reopen(request, lot_pk):
     lot = _get_lot(request, lot_pk)
+    # ── FECHOU, TÁ FECHADO (dono, 2026-07-31/PLANO_FX §1.3): a reabertura
+    # saiu do produto — só o SUPERUSER (plataforma) reverte, auditado pelo
+    # pghistory. Correção comum pós-fechamento = Acerto (padrão Odoo). ──
+    if not request.user.is_superuser:
+        messages.error(request, _(
+            'Lote fechado é definitivo — correções entram como ACERTO na '
+            'venda. Reabertura é exclusiva da plataforma.'))
+        return redirect('estoque:lot_detail', lot_pk=lot.pk)
     # F11.2 (padrão Odoo, dono 2026-07-16): OV CONFIRMADA bloqueia a
     # reabertura (cancele a ordem no menu Vendas antes — auditável);
     # cotação DRAFT é cancelada automaticamente ao reabrir.
@@ -849,9 +875,16 @@ def lot_reopen(request, lot_pk):
         return redirect('estoque:lot_detail', lot_pk=lot.pk)
     for so in SalesOrder.all_companies.filter(lot=lot, status=STATUS_DRAFT):
         cancel_so(so, request.user)
+    # Reabriu → o câmbio DESTRAVA (volta ao vivo); o re-fechamento captura
+    # taxa NOVA. As duas travas ficam no histórico (pghistory/LotEvent).
     lot.status    = Lot.STATUS_OPEN
     lot.closed_at = None
-    lot.save(update_fields=['status', 'closed_at'])
+    lot.fx_rate = None
+    lot.fx_source = ''
+    lot.fx_locked_at = None
+    lot.fx_is_fallback = False
+    lot.save(update_fields=['status', 'closed_at', 'fx_rate', 'fx_source',
+                            'fx_locked_at', 'fx_is_fallback'])
     return redirect('estoque:lot_detail', lot_pk=lot.pk)
 
 

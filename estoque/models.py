@@ -11,7 +11,10 @@ from django.utils.translation import gettext_lazy as _lazy
 
 from tenancy.scope import CompanyScopedManager
 
+import pghistory
 
+
+@pghistory.track()  # PLANO_FX Fase C: cada trava/retrava de câmbio é evento
 class Lot(models.Model):
     # Origem do lote (acordo com o comprador, 2026-08-01): TODO lote declara
     # de que classe de placa os chips saíram — celular × PCB (set-top, TV,
@@ -59,6 +62,19 @@ class Lot(models.Model):
                                              'saíram (celular × PCB) — define a '
                                              'tabela de preço do eMMC.')
     status      = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_OPEN, verbose_name='Status')
+    # ── Trava de câmbio (PLANO_FX Fase C, 2026-08-01): capturada ATOMICAMENTE
+    #    no fechamento; imutável até reabertura (só superuser), quando volta
+    #    ao vivo e o RE-fechamento captura taxa nova — o pghistory loga as
+    #    duas travas. OV/fatura/pagamentos (2 pontas) usam a taxa DAQUI. ──
+    fx_rate      = models.DecimalField(max_digits=8, decimal_places=4,
+                                       null=True, blank=True,
+                                       verbose_name='Câmbio travado (1¥→US$)')
+    fx_source    = models.CharField(max_length=80, blank=True, default='',
+                                    verbose_name='Fonte do câmbio')
+    fx_locked_at = models.DateTimeField(null=True, blank=True,
+                                        verbose_name='Câmbio travado em')
+    fx_is_fallback = models.BooleanField(default=False,
+                                         verbose_name='Câmbio de fallback')
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name='Aberto em')
 
     @property
