@@ -88,7 +88,11 @@ todos os pagamentos daquele lote nas duas pontas.**
 > (mercado → bootstrap contratual só com a tabela vazia) — consumida por
 > quote/contexto (cacheada 1×/lote), SSD, catálogo PDF, vendas
 > (rascunho + congelamento na confirmação). `FxRateTests` (4) + flips de
-> máscara/header/export. Falta: agendar o fetch (Render Cron, 1×/dia).
+> máscara/header/export. Agendamento (2026-08-02, pós-push): o Hobby do
+> Render NÃO tem Cron Jobs — o fetch diário roda via **GitHub Actions →
+> One-Off Job do Render** (`.github/workflows/fx_diario.yml`, 10:00 UTC =
+> 07:00 Assunção; secret `RENDER_API_KEY` no repo; o comando executa na
+> imagem do serviço, com as env vars dele).
 
 - **Fase A — exibição ¥-primeiro:** bancada, página do lote, valoração,
   export: `¥ N (≈ US$ M)`; máscara v3.1 revista (¥ visível ao cliente);

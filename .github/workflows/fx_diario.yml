@@ -1,0 +1,32 @@
+# FX diário — agendamento do fetch_fx_rate (PLANO_FX Fase B, 2026-08-02).
+#
+# O plano Hobby do Render não oferece Cron Jobs, mas o web service expõe
+# "One-Off Jobs" via API: este workflow dispara, 1×/dia, um job avulso que
+# roda `python manage.py fetch_fx_rate` DENTRO da imagem do serviço (com as
+# env vars dele — DATABASE_URL interna e tudo). Nenhum segredo de banco sai
+# do Render; o GitHub só guarda a RENDER_API_KEY (secret do repositório).
+#
+# Horário: 10:00 UTC = 07:00 de Assunção (antes do expediente). O scheduler
+# do GitHub pode atrasar alguns minutos — irrelevante para referência diária;
+# e se um dia falhar, o fetch_fx_rate tem fallback (repete a última taxa com
+# flag ⚠). Teste manual: aba Actions → "FX diário" → Run workflow.
+
+name: FX diário
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch-fx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispara one-off job no Render (fetch_fx_rate)
+        run: |
+          curl -sf -X POST "https://api.render.com/v1/services/srv-d80ubpt7vvec73ej4ea0/jobs" \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"startCommand": "python manage.py fetch_fx_rate"}'
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
