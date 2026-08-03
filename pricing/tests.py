@@ -187,12 +187,62 @@ class PricingScopeTests(TestCase):
         with company_scope(self.b):
             self.assertEqual(list(Buyer.objects.all()), [self.buyer_b])
 
-    def test_comprador_de_plataforma_null_fica_invisivel(self):
-        # Decisão F2 (PRECIFICACAO §12): company=NULL é reservado ao marketplace
-        # futuro — o manager escopado NÃO o mostra (fail-closed até existir regra).
-        Buyer.all_companies.create(company=None, name='Plataforma', slug='plat-f2')
+    def test_comprador_de_plataforma_null_e_visivel_a_todas(self):
+        # Dono 2026-08-03 (REVISA a F2): comprador é da PLATAFORMA — a tabela
+        # dele vale para TODAS as empresas (Camada A: PlatformSharedManager;
+        # Camada B: pricing/0021). O isolamento ENTRE empresas continua.
+        plat = Buyer.all_companies.create(company=None, name='Plataforma',
+                                          slug='plat-f2')
         with company_scope(self.a):
-            self.assertEqual(list(Buyer.objects.all()), [self.buyer_a])
+            self.assertEqual(set(Buyer.objects.all()), {self.buyer_a, plat})
+        with company_scope(self.b):
+            self.assertEqual(set(Buyer.objects.all()), {self.buyer_b, plat})
+
+
+class CompradorPlataformaTests(TestCase):
+    """Dono 2026-08-03 (revisa F2): comprador é da PLATAFORMA (company NULL).
+    A tabela dele precifica o lote de QUALQUER empresa — inclusive uma que não
+    tem comprador próprio (caso real: Mundo Metal em prod, 2026-08-03). A
+    entidade segue fora das telas de cliente (rótulo 'WhatTheChip', F11.3)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.mm = Company.objects.create(name='Mundo Metal T', slug='mm-t')
+        cls.plat = Buyer.all_companies.create(company=None, name='WuquanPlat',
+                                              slug='wuquan-plat')
+        cls.generica = PriceList.all_companies.create(buyer=cls.plat,
+                                                      brand=None)
+        Price.all_companies.create(
+            price_list=cls.generica, kind='emmc', gen='', origin='phone',
+            tier_value=Decimal('64'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('40'), price_max=Decimal('40'))
+
+    def test_pricelist_do_comprador_plataforma_denormaliza_company_nula(self):
+        # PriceList.save() herda a company do buyer — NULL propaga (leitura
+        # ampla da 0021 depende disto nas filhas).
+        self.assertIsNone(self.generica.company_id)
+
+    def test_empresa_sem_comprador_proprio_valora_pelo_da_plataforma(self):
+        from unittest.mock import patch
+
+        from estoque.models import InventoryEntry, Lot
+        from pricing.engine import price_lot_multi
+        User = get_user_model()
+        u = User.objects.create_user('mm_admin')
+        with company_scope(self.mm):
+            self.assertEqual(list(Buyer.objects.all()), [self.plat])
+            lot = Lot.open_for_company(self.mm, u, 'lote MM', origin='phone')
+            InventoryEntry.objects.create(lot=lot, part_number='PNMM',
+                                          quantity=10)
+            fake = _r(chip_type='eMMC', brand='X', cap_gb=64.0)
+            with patch('chips.engine.classify', return_value=fake):
+                (buyer, rep), = price_lot_multi(
+                    lot, Buyer.objects.filter(active=True))
+        self.assertEqual(buyer, self.plat)
+        # 10 un. × ¥40 (eMMC 64GB celular) — a tabela CHEIA, sem margem oculta
+        # (o modelo do dono é comissão sobre o total).
+        self.assertEqual(rep.priced_units, 10)
+        self.assertEqual(rep.totals_rmb['mid'], Decimal('400'))
 
 
 class PricingConfigTests(TestCase):

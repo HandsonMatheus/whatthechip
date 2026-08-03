@@ -164,3 +164,26 @@ class CompanyScopedManager(models.Manager):
                 'Use company_scope(...) ou, em código de plataforma, o manager '
                 'all_companies (explícito e auditável).')
         return super().get_queryset().filter(company_id=cid)
+
+
+class PlatformSharedManager(CompanyScopedManager):
+    """Escopado + PLATAFORMA (dono, 2026-08-03 — revisa a F2 do pricing): a
+    empresa vê os registros DELA **e** os de plataforma (``company IS NULL``).
+
+    Nasceu para o ``Buyer``: o comprador é um ATIVO DA PLATAFORMA — a tabela
+    de preços dele vale para TODAS as empresas (o modelo de negócio é comissão
+    sobre o total), mas a ENTIDADE continua invisível ao cliente (rótulo fixo
+    'WhatTheChip' nas telas de empresa, F11.3) e a gestão é só-plataforma.
+    Continua FAIL-CLOSED: sem escopo explode igual ao pai. A Camada B espelha
+    (pricing/0021: leitura de ``company IS NULL`` liberada; ESCRITA continua
+    empresa dona / plataforma / usuário-parceiro)."""
+
+    def get_queryset(self):
+        cid = _current_company_id.get()
+        if cid is None:
+            raise CompanyScopeMissing(
+                f'{self.model.__name__} consultado sem escopo de empresa. '
+                'Use company_scope(...) ou, em código de plataforma, o manager '
+                'all_companies (explícito e auditável).')
+        return models.Manager.get_queryset(self).filter(
+            models.Q(company_id=cid) | models.Q(company__isnull=True))

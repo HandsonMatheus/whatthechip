@@ -54,7 +54,7 @@ from django.db.models import F, Q
 # passam por gettext_lazy. Os VALORES ('quoted', 'no_buy'…) são chaves — nunca.
 from django.utils.translation import gettext_lazy as _lazy
 
-from tenancy.scope import CompanyScopedManager
+from tenancy.scope import CompanyScopedManager, PlatformSharedManager
 
 
 # ── Vocabulário da CHAVE DE PREÇO (consumido também pelo engine na F3) ─────────
@@ -180,8 +180,10 @@ class Buyer(models.Model):
     company = models.ForeignKey(
         'tenancy.Company', on_delete=models.PROTECT, null=True, blank=True,
         related_name='buyers', verbose_name='Empresa',
-        help_text='De quem é este comprador. VAZIO = comprador de plataforma '
-                  '(marketplace futuro) — invisível às empresas até lá.')
+        help_text='De quem é este comprador. VAZIO = comprador de PLATAFORMA '
+                  '(dono, 2026-08-03): a tabela dele precifica o lote de '
+                  'TODAS as empresas (comissão sobre o total); a entidade e a '
+                  'gestão continuam só-plataforma (cliente vê "WhatTheChip").')
     name   = models.CharField(max_length=120, verbose_name='Nome')
     slug   = models.SlugField(max_length=60, unique=True, verbose_name='Slug')
     active = models.BooleanField(default=True, verbose_name='Ativo')
@@ -221,7 +223,10 @@ class Buyer(models.Model):
                   'Arredonda ao ¥ inteiro. Vazio = SSD sem preço.')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
 
-    objects       = CompanyScopedManager()
+    # 2026-08-03 (revisa F2): comprador de PLATAFORMA (company NULL) entra na
+    # leitura escopada de QUALQUER empresa — é uma tabela só para o sistema
+    # inteiro. Fail-closed preservado; Camada B espelhada na pricing/0021.
+    objects       = PlatformSharedManager()
     all_companies = models.Manager()
 
     class Meta:

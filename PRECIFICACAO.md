@@ -1742,3 +1742,34 @@ with company_scope(Company.objects.get(slug='eminer')):
 pricing/fonte única do preço; §5: comandos `import_price_xlsx`; §6: convenção
 "preço = admin + parceiro") e promover este arquivo de plano a **bíblia
 técnica** do sistema de preços.
+
+### §12.21 — Comprador de PLATAFORMA (2026-08-03, REVISA a F2)
+
+Caso real que decidiu: **Mundo Metal** (2ª empresa, viva em prod) abriu lote e
+não via valoração — o comprador/grid eram da eMiner (comércio POR-ORG, F2). O
+dono fechou a doutrina nova: **"o comprador serve pra todo o sistema, não por
+empresa"** — a tabela do Wu Quan precifica o lote de QUALQUER empresa (cliente
+vê a tabela CHEIA; a receita da eMiner é **comissão sobre o total**); nenhum
+cliente acessa a ENTIDADE comprador (rótulo fixo 'WhatTheChip', F11.3, já
+existia). Implementação (suíte 429 OK):
+
+- **Camada A:** `tenancy.scope.PlatformSharedManager` (escopado + `company IS
+  NULL`; fail-closed preservado) — vira o `Buyer.objects`. Todos os callsites
+  (valoração, export, bancada, vendas, comandos por slug) herdam de graça.
+- **Camada B:** `pricing/0021` troca a `tenant_isolation` por par
+  leitura/escrita — leitura AMPLA (empresa OU plataforma OU NULL) em
+  buyer/pricelist/price/pcr; eventos pghistory continuam estritos; ESCRITA =
+  empresa dona OU plataforma OU usuário-parceiro (`app.user_id` ∈
+  `pricing_buyer_users` — o /partner/ grava em linha NULL sem GUC de empresa).
+  Residual documentado no arquivo da migração (multi-comprador futuro).
+- **Dados:** 0021 flipa todo Buyer + filhas denormalizadas para
+  `company=NULL` (RunPython com `SET LOCAL app.platform` — lição 2026-08-01).
+  Eventos históricos intactos; reverse de dados é manual por decisão.
+- `0022`: espelho pghistory do help_text. Teste-chave:
+  `CompradorPlataformaTests` (empresa SEM comprador próprio valora pelo da
+  plataforma; PriceList NULL propaga) + flip do antigo
+  `test_comprador_de_plataforma_null_fica_invisivel`.
+- **Fora do escopo (abertos):** cálculo/registro da COMISSÃO da plataforma
+  sobre vendas de clientes; painel do parceiro segue 1 comprador; apertar a
+  policy de escrita por-tabela se um dia houver 2+ compradores com parceiros
+  distintos.
