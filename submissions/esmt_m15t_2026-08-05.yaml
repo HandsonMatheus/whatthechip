@@ -1,0 +1,68 @@
+brand: "ESMT"
+known_parts:
+  - part_number: "M15T1G1664A"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "1Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/M15T1G1664A(2M).pdf"
+    notes: >
+      ESMT DDR3(L) SDRAM, 8M x16 x8 bancos = 8.388.608 x 16 x 8 = 1.073.741.824 bit
+      = 1Gb = 128MB. Fonte Tier-1: datasheet oficial esmt.com.tw (source_url) +
+      Alldatasheet ID 1284525 (https://www.alldatasheet.com/datasheet-pdf/pdf/1284525/ESMT/M15T1G1664A.html,
+      mesma organizacao no titulo). Identidade confirmada com o dono em 2026-08-05
+      -- PN originalmente informado "MT5T1G1664A" nao existe em nenhuma fonte (busca
+      exata sem resultado); 1 caractere de diferenca ("T5"->"15"), confirmado pelo
+      dono como M15T1G1664A (provavel erro de leitura do laser-marking).
+
+  - part_number: "M15T2G16128A"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.esmt.com.tw/upload/pdf/ESMT/datasheets/M15T2G16128A(2R).pdf"
+    notes: >
+      ESMT DDR3(L) SDRAM, 16M x16 x8 bancos = 16.777.216 x 16 x 8 = 2.147.483.648
+      bit = 2Gb = 256MB. Fonte Tier-1: Alldatasheet ID 1284524
+      (https://www.alldatasheet.com/datasheet-pdf/pdf/1284524/ESMT/M15T2G16128A.html,
+      titulo com a organizacao) + datasheet oficial esmt.com.tw (source_url).
+      Variante/sibling de M15T1G1664A, mesma familia/geracao.
+
+  - part_number: "M15T4G16256A"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1284521/ESMT/M15T4G16256A.html"
+    notes: >
+      ESMT DDR3(L) SDRAM, 32M x16 x8 bancos = 33.554.432 x 16 x 8 = 4.294.967.296
+      bit = 4Gb = 512MB. Fonte Tier-1: Alldatasheet ID 1284521 (source_url, titulo
+      com a organizacao). Variante/sibling de M15T1G1664A, mesma familia/geracao.
+
+  - part_number: "M15T8G16512A"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "8Gb"
+    interface: "x16"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/html-pdf/1284758/ESMT/M15T8G16512A/5774/47/M15T8G16512A.html"
+    notes: >
+      ESMT DDR3(L) SDRAM, 64M x16 x8 bancos = 67.108.864 x 16 x 8 = 8.589.934.592
+      bit = 8Gb = 1024MB (1GB). Fonte Tier-1: Alldatasheet ID 1284758 (source_url,
+      titulo com a organizacao). Variante/sibling de M15T1G1664A, mesma
+      familia/geracao.
+
+# NAO submetidos nesta rodada (confianca menor -- so mencao indireta, sem citacao
+# direta de "NxM x Ybit x 8 Bancos" que eu tenha visto com meus proprios olhos):
+#   - M15T2G8256A  (provavel DDR3(L) 2Gb, x8 -- organizacao por analogia/dedução
+#     aritmetica com o padrao dos outros PNs, NAO confirmada diretamente)
+#   - M15T4G8512A  (provavel DDR3(L) 4Gb, x8 -- datasheet oficial existe no
+#     esmt.com.tw confirmando que o PN e real, mas nao abri o conteudo pra
+#     confirmar a organizacao com meus proprios olhos)
+# Ambos existem como PN real (datasheet oficial/Alldatasheet os listam), mas a
+# especificacao exata (organizacao x8) so foi vista via resumo indireto de uma
+# ferramenta de busca, nao uma citacao direta que eu pudesse conferir -- por isso
+# ficam de fora desta submissao (regra: excluir, nao adivinhar).
