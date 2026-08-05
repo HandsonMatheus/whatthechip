@@ -1,0 +1,60 @@
+brand:
+  name: ESMT
+  code: ESMT
+  notes: >
+    Elite Semiconductor Memory Technology Inc. (Taiwan). Onboarding 2026-08-05.
+    Familias "magras" (mesmo padrao das familias magras da Nanya) -- o prefixo ja
+    fecha em densidade+organizacao literal (ex.: M15T1G1664A = DDR3(L) 1Gb x16);
+    capacidade vem de known_parts confirmados, nao de decode posicional.
+    RASCUNHO -- validado contra chips/knowledge/schema.py (Pydantic) fora do Django;
+    ainda falta rodar "load_brands --brand esmt" (dry-run) no ambiente local real
+    (checa colisao de prefixo entre marcas, algo que o portao standalone nao ve).
+
+families:
+  - prefix: M15T1G1664A
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    priority: 100
+    active: true
+    reasoning: >
+      ESMT M15T1G1664A -- DDR3(L) SDRAM 1Gb, 8M x16 x8 bancos (8.388.608 x 16 x 8 =
+      1.073.741.824 bit = 1Gb = 128MB). Datasheet oficial esmt.com.tw + Alldatasheet
+      ID 1284525 (mesmo titulo/organizacao). pn_length propositalmente NAO setado --
+      nao confirmei ainda como o engine trata o sufixo de pedido hifenizado (ex.
+      -DEBG2C) apos normalize_pn; verificado que normalize_pn preserva o prefixo
+      literal ("M15T1G1664A-DEBG2C" -> "M15T1G1664ADEBG2C", ainda comeca com o
+      prefixo), mas o match real do engine (_match_family) nao foi testado aqui.
+
+  - prefix: M15T2G16128A
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    priority: 100
+    active: true
+    reasoning: >
+      ESMT M15T2G16128A -- DDR3(L) SDRAM 2Gb, 16M x16 x8 bancos (16.777.216 x 16 x 8
+      = 2.147.483.648 bit = 2Gb = 256MB). Alldatasheet ID 1284524. Mesma ressalva de
+      pn_length/suffix_rules do M15T1G1664A.
+
+  - prefix: M15T4G16256A
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    priority: 100
+    active: true
+    reasoning: >
+      ESMT M15T4G16256A -- DDR3(L) SDRAM 4Gb, 32M x16 x8 bancos (33.554.432 x 16 x 8
+      = 4.294.967.296 bit = 4Gb = 512MB). Alldatasheet ID 1284521. Mesma ressalva de
+      pn_length/suffix_rules do M15T1G1664A.
+
+  - prefix: M15T8G16512A
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    priority: 100
+    active: true
+    reasoning: >
+      ESMT M15T8G16512A -- DDR3(L) SDRAM 8Gb, 64M x16 x8 bancos (67.108.864 x 16 x 8
+      = 8.589.934.592 bit = 8Gb = 1024MB/1GB). Alldatasheet ID 1284758. Mesma
+      ressalva de pn_length/suffix_rules do M15T1G1664A.

@@ -2158,6 +2158,31 @@ class ForeseeLoadBrandsTests(TestCase):
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
+_ESMT_GOLDEN = {  # ESMT — 1a entrega (onboarding 2026-08-05): 4 famílias DDR3L MAGRAS M15T
+    # (o prefixo = PN-base, com densidade+organização literal). Família magra sem decode de
+    # densidade → a gramática sozinha dá DDR3L SEM densidade → INDETERMINADO; a densidade e o
+    # veredito de rentabilidade vêm do known_part APROVADO (submissions/esmt_m15t_*). O golden
+    # prova que a família CASA o PN e classifica o tipo certo (o chat ESMT havia deixado sem).
+    "M15T1G1664A":  ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 1Gb x16
+    "M15T2G16128A": ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 2Gb x16
+    "M15T4G16256A": ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 4Gb x16
+    "M15T8G16512A": ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 8Gb x16
+}
+
+
+class ESMTLoadBrandsTests(TestCase):
+    def test_carrega_o_yaml_fielmente(self):
+        _carrega_marca_e_confere_fidelidade(self, "esmt")
+
+    def test_identifica_todos_os_pns(self):
+        from django.core.management import call_command
+        from chips.engine import clear_engine_cache
+        call_command("load_brands", "--brand", "esmt", "--commit", "--skip-known-parts", verbosity=0)
+        clear_engine_cache()  # lru_cache por versão colide entre testes (DB reinicia)
+        for pn, esperado in _ESMT_GOLDEN.items():
+            self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
+
+
 class KnownPartsLoadTests(TestCase):
     """Migração da AUTORIDADE (fix_known_parts → YAML known_parts): o loader cria os
     KnownParts e eles VENCEM a gramática (confirmed/manual). Round-trip dump→load provado
