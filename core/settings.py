@@ -16,11 +16,59 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'wtc-dev-secret-key-troque-em-p
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# Localhost para dev; em produção o Render injeta RENDER_EXTERNAL_HOSTNAME
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# Domínio próprio: whatthechip.app (registrado 2026-08-05, Hostinger). Localhost
+# para dev. O Render injeta RENDER_EXTERNAL_HOSTNAME automaticamente — mantido
+# como ROTA DE FUGA: se o DNS do domínio novo quebrar, <serviço>.onrender.com
+# continua atendendo. Só remover depois que o domínio estiver validado por dias.
+#
+# ⚠ ORDEM DE OPERAÇÃO: host que não está nesta lista devolve 400 (DisallowedHost).
+# Por isso ESTE deploy tem que ir ao ar ANTES de apontar o DNS na Hostinger —
+# caso contrário o domínio resolve, a Render entrega, e o Django recusa.
+ALLOWED_HOSTS = [
+    'localhost', '127.0.0.1',
+    'whatthechip.app', 'www.whatthechip.app',
+]
 _render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if _render_host:
     ALLOWED_HOSTS.append(_render_host)
+
+# CSRF com domínio novo (Django 4+): o check compara o header Origin da request
+# com o host servido. Sem declarar o origin aqui, TODO POST quebra com 403 CSRF
+# verification failed — login, seletor de idioma, fechar lote, OV, aprovar fila.
+# O host .onrender.com não precisa entrar: ele bate por igualdade com o próprio
+# host da request (é a lista que cobre os nomes NOVOS).
+CSRF_TRUSTED_ORIGINS = [
+    'https://whatthechip.app',
+    'https://www.whatthechip.app',
+]
+
+# TLS termina na BORDA da Render, não no gunicorn: a conexão que chega no Django
+# é http. Sem este header request.is_secure() é False, o CSRF monta a origem
+# esperada como "http://whatthechip.app" e compara com o Origin real
+# "https://whatthechip.app" → não bate → 403 em todo POST.
+# Só é seguro porque a Render SEMPRE sobrescreve X-Forwarded-Proto na borda
+# (proxy confiável); num servidor exposto direto isto seria spoofável.
+# ⚠ .app está na lista HSTS preload dos navegadores: não existe acesso http a
+# whatthechip.app: ou o certificado está emitido, ou a página não abre.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Cookie de sessão e de CSRF só trafegam por HTTPS em produção
+# (`check --deploy` W012/W016). Atrelado ao DEBUG porque o dev local roda em
+# http://localhost — com True fixo o login não gruda na máquina do dono.
+# É flag de BROWSER (não depende do Django saber o esquema): a Render e o
+# whatthechip.app são 100% https, então em prod não há cenário de lockout.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE    = not DEBUG
+
+# Os outros 4 avisos do `check --deploy` foram avaliados e NO-OP de propósito:
+#   W009 SECRET_KEY / W018 DEBUG — falso positivo do run LOCAL: em prod as env
+#       vars DJANGO_SECRET_KEY e DEBUG=False do Render sobrescrevem o fallback.
+#   W008 SECURE_SSL_REDIRECT — a borda da Render já redireciona http→https;
+#       ligar aqui só acrescenta um salto extra dentro do gunicorn.
+#   W004 SECURE_HSTS_SECONDS — redundante neste domínio: o TLD .app INTEIRO
+#       está na lista HSTS preload dos navegadores, então o http já é recusado
+#       antes de sair da máquina do usuário. Emitir o header não compra nada e
+#       max-age longo é irreversível se um dia precisar de http em algum host.
 
 INSTALLED_APPS = [
     # i18n do CMS (superfície 3 — I18N.md §9): colunas por idioma no pages.Page
