@@ -1,0 +1,1497 @@
+# Submissão de known_parts — Micron, FBGA D9DHW + família MT48LC16M16 (2026-08-05)
+# Gerado pelo chat de marca Micron a partir da investigação do FBGA D9DHW
+# (não identificado na bancada, fila de revisão — "D9DHW nao foi
+# identificado corrige ae").
+#
+# ACHADO: D9DHW → MT48LC16M16A2BG-75:D. Prefixo MT48LC = SDRAM clássica
+# (single data rate, pré-DDR) — PRIMEIRO chip_type="SDRAM" (não-DDR)
+# desta sessão. Confirmado diretamente pelo part-name da própria Micron:
+# "SDRAM 256M X16 VFBGA", sub-category "obsolete-sdram". Cross-check via
+# Octopart, mesmo PN/revisão ":D": "DRAM Chip SDRAM 256M-Bit 16Mx16 3.3V
+# 54-Pin VFBGA T/R" — bate exato. Capacidade: 16M × 16bit = 256Mbit =
+# 0,25Gb. "SDRAM" verificado como token canônico válido em
+# chips/chip_types.py antes do uso (categoria "dram_legacy", vida="dead").
+#
+# Coleta máxima da família (regra vigente desde Z9DNC — só exclui quem
+# tem "ES" no próprio texto do PN, independente do prefixo do
+# fbga_code): forward-lookup no prefixo "MT48LC16M16" (2026-08-05) achou
+# 97 PNs. 34 têm "ES" no próprio texto (checado programaticamente) —
+# EXCLUÍDOS. Restam 63 PNs de produção real (alvo + 62 irmãos). Esta
+# família trouxe um par de fbga_code FORA do padrão D9/Z9 já visto nesta
+# sessão: "DWHDF" (MT48LC16M16A2FG-75, sem "ES" → INCLUÍDO) e "ZWHDF"
+# (MT48LC16M16A2FG-75 ES, com "ES" → EXCLUÍDO) — a regra por TEXTO (não
+# por prefixo) tratou os dois corretamente sem ajuste nenhum. 19 têm
+# part-name direto da Micron confirmando tipo+capacidade ("SDRAM 256M
+# X16 VFBGA"/"TSOP" — 2 pacotes diferentes, mesma organização elétrica);
+# os outros 44 herdam a mesma organização por construção do próprio
+# prefixo buscado (verificado programaticamente: todos os 63
+# part-numbers começam literalmente por "MT48LC16M16").
+#
+# Sem PN duplicado, sem fbga_code duplicado, sem colisão de
+# part_number_norm dentro da própria lista (checado programaticamente).
+# Sem sobreposição com nenhuma submissão anterior (grep em
+# submissions/*.yaml, zero match).
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/micron_d9dhw_family_2026-08-05.yaml            # dry-run = portao
+#   python manage.py submit_known_parts submissions/micron_d9dhw_family_2026-08-05.yaml --commit
+#
+brand: "Micron"
+known_parts:
+  - part_number: "MT48LC16M16A2BG-75:D"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DHW"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2bg-75-d"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (fetch direto, 2026-08-05): D9DHW → MT48LC16M16A2BG-75:D.
+      Prefixo MT48LC = SDRAM clássica (single data rate, pré-DDR) —
+      PRIMEIRO chip_type="SDRAM" (não-DDR) desta sessão. Confirmado
+      diretamente pelo part-name da própria Micron: "SDRAM 256M X16
+      VFBGA", sub-category "obsolete-sdram". Cross-check independente
+      via Octopart, mesmo PN e mesma revisão ":D": "DRAM Chip SDRAM
+      256M-Bit 16Mx16 3.3V 54-Pin VFBGA T/R" — bate exato em organização
+      (16Mx16), densidade (256M-Bit) e tensão (3,3V, típica de SDRAM
+      clássica). CAPACIDADE por fórmula: 16M (profundidade) × 16bit
+      (largura) = 256Mbit = 0,25Gb. chip_type="SDRAM" verificado como
+      token canônico válido em chips/chip_types.py antes do uso (linha
+      97: categoria "dram_legacy", vida="dead" — geração morta por
+      construção no motor de rentabilidade, coerente com o glossário do
+      CLAUDE.md §8). Campo density_gbit (Gb), interface x16, convenção
+      DDR/SDRAM discreta (CLAUDE.md §6).
+
+  - part_number: "MT48LC16M16A2BG-75 IT:D"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DHT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2bg-75-it-d"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2BG-7E:D"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DHX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2bg-7e-d"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2FG-75 IT:D"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FCP"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2fg-75-it-d"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2FG-75:D"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FCR"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2fg-75-d"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2FG-7E:D"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FCT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2fg-7e-d"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2BG-7E IT:D"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9GWB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2bg-7e-it-d"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2BG-75 AT:D"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9HZD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2bg-75-at-d"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2B4-6A AAT:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NMV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2b4-6a-aat-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2B4-6A IT:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NMZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/sdram/part-catalog/part-detail/mt48lc16m16a2b4-6a-it-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2B4-6A:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NNB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/sdram/part-catalog/part-detail/mt48lc16m16a2b4-6a-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2F4-6A IT:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NNC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2f4-6a-it-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2F4-6A:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NND"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2f4-6a-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2P-6A IT:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NNF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/sdram/part-catalog/part-detail/mt48lc16m16a2p-6a-it-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 TSOP",
+      sub-category "sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2P-6A:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NNH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/memory/dram-components/sdram/part-catalog/part-detail/mt48lc16m16a2p-6a-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 TSOP",
+      sub-category "sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2TG-6A IT:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NNK"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2tg-6a-it-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 TSOP",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2TG-6A:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NNM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2tg-6a-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 TSOP",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2B4-6A AIT:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9PVC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2b4-6a-ait-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16A2B4-6A XIT:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9QGM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/products/obsolete/obsolete-sdram/part-catalog/part-detail/mt48lc16m16a2b4-6a-xit-g"
+    notes: >
+      Identidade + part-name direto da API FBGA oficial da Micron
+      (forward-lookup no prefixo MT48LC16M16, 2026-08-05): "SDRAM 256M X16 VFBGA",
+      sub-category "obsolete-sdram" — confirma SDRAM e a densidade
+      256Mbit (0,25Gb) diretamente da Micron. 16M × 16bit = 256Mbit =
+      0,25Gb bate exato. Pacote pode variar (VFBGA/TSOP) sem afetar
+      organização/capacidade elétrica.
+
+  - part_number: "MT48LC16M16LFFG-10"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BGX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BGX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFFG-10 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BHB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BHB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFFG-75"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BHD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BHD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFFG-75 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BHG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BHG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFFG-8"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BHJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BHJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFFG-8 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BHL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BHL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2FG-7E"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BMH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BMH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2BG-75"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BRC"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BRC"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFBG-8"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BRG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BRG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2FG-75 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9BVM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9BVM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFBG-8 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CDT"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CDT"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFBG-8 XT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CDV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CDV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2BG-7E"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CHZ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CHZ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFBG-75"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CQB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CQB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFB8-75 XT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CQQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CQQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFB8-75"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CSL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CSL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFB8-75 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CSN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CSN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFF8-75"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CSS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CSS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFF8-75 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CSV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CSV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFB8-8"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CTB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CTB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFB8-8 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CTD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CTD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFB8-8 XT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CTG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CTG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFF8-8"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CTJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CTJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFF8-8 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CTL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CTL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFF8-8 XT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CTN"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CTN"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFB8-10"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CTQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CTQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFB8-10 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CTS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CTS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFB8-10 XT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CTV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CTV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFF8-10"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CTX"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CTX"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFF8-10 IT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CVB"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CVB"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16LFF8-10 XT"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9CVD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9CVD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2BG-75:C"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9DHV"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9DHV"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2BG-7E:C"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FCM"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FCM"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2FG-75:C"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FCQ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FCQ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2FG-7E:C"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FCS"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FCS"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2BG-7E L IT:D"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9FXH"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9FXH"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2P-6A L:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NNG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9NNG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2P-6A AIT:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9NNL"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9NNL"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2B4-7E IT:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9PVD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PVD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2B4-7E:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9PVG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PVG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2F4-7E:G"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "D9PVJ"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/D9PVJ"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2FG-75"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "DWHDF"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/DWHDF"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2FG-0 MS"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "Z9BSD"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/Z9BSD"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
+
+  - part_number: "MT48LC16M16A2BG-0 MS:D"
+    chip_type: "SDRAM"
+    subtype: "SDRAM"
+    interface: "x16"
+    density_gbit: "0.25Gb"
+    fbga_code: "Z9HZG"
+    confidence: confirmed
+    source_url: "https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/-/Z9HZG"
+    notes: >
+      Identidade via API FBGA oficial da Micron (forward-lookup no prefixo
+      MT48LC16M16, 2026-08-05). Mesma organização do alvo D9DHW
+      (MT48LC16M16A2BG-75:D): 16M × 16bit = 256Mbit = 0,25Gb — capacidade
+      invariante nesta família (forward-lookup restrito ao prefixo exato
+      MT48LC16M16, verificado programaticamente: todos os 63 part-numbers
+      produção começam literalmente por "MT48LC16M16"). Tipo SDRAM
+      confirmado pelo alvo + 19 irmãos com part-name direto da Micron
+      nesta mesma leva ("SDRAM 256M X16 VFBGA"/"TSOP"). Sem "ES" no
+      próprio texto do PN (checado programaticamente, regex
+      `(?:^| )ES(?:$|[ :])`, regra vigente desde Z9DNC — aplicada
+      igualmente a TODOS os prefixos de fbga_code encontrados nesta
+      família, inclusive o par fora do padrão D9/Z9 "DWHDF"/"ZWHDF": DWHDF
+      (sem ES) entrou, ZWHDF ("...75 ES", com ES) foi excluído). Sem
+      verificação individual em distribuidor para este PN específico;
+      apoiado na fórmula + tipo confirmados + identidade direta da API
+      oficial Micron para ESTE fbga_code.
