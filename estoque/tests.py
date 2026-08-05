@@ -701,6 +701,10 @@ class RoleMatrixTests(TestCase):
              {'operator': 403, 'manager': 302, 'admin': 302, 'none': 403}),
             ('lot_reopen', 'post', reverse('estoque:lot_reopen', args=[lot_pk]), {},
              {'operator': 403, 'manager': 302, 'admin': 302, 'none': 403}),
+            # excluir é gerente+ (operador barrado); sem confirm_code o POST só
+            # redireciona (não apaga) — o efeito real é o LotDeleteTests.
+            ('lot_delete', 'post', reverse('estoque:lot_delete', args=[lot_pk]), {},
+             {'operator': 403, 'manager': 302, 'admin': 302, 'none': 403}),
             ('lot_create', 'post', reverse('estoque:lot_create'),
              {'description': 't', 'origin': 'phone'},
              {'operator': 403, 'manager': 302, 'admin': 302, 'none': 403}),
@@ -782,6 +786,42 @@ class RoleMatrixTests(TestCase):
         self._as('operator')
         resp = self.client.get(reverse('estoque:index'))
         self.assertContains(resp, 'LOT/900/')   # nomenclatura F11.2
+
+
+class LotDeleteTests(TestCase):
+    """Exclusão DEFINITIVA do lote (dono 2026-08-05). O gate de PAPEL (operador
+    barrado; gerente+ passa) está na RoleMatrixTests; aqui vão o EFEITO (apaga +
+    cascata), o type-to-confirm (código do lote) e o require_POST."""
+
+    def setUp(self):
+        self.mgr = get_user_model().objects.create_user('del_mgr', password='x')
+        self.company = _grant(self.mgr, role=Membership.ROLE_MANAGER)
+        _scope(self, self.company)
+        self.client.force_login(self.mgr)
+        self.lot = Lot.objects.create(number=930, origin='phone',
+                                      operator=self.mgr, company=self.company)
+        InventoryEntry.objects.create(lot=self.lot, part_number='DELPN1',
+                                      quantity=3)
+        self.url = reverse('estoque:lot_delete', args=[self.lot.pk])
+
+    def test_codigo_certo_apaga_e_redireciona_pra_lista(self):
+        resp = self.client.post(self.url, {'confirm_code': self.lot.code})
+        self.assertRedirects(resp, reverse('estoque:index'),
+                             fetch_redirect_response=False)
+        self.assertFalse(Lot.all_companies.filter(pk=self.lot.pk).exists())
+        # Cascata FK: as entradas do lote somem junto.
+        self.assertFalse(InventoryEntry.all_companies.filter(
+            part_number='DELPN1').exists())
+
+    def test_codigo_errado_nao_apaga(self):
+        resp = self.client.post(self.url, {'confirm_code': 'ERRADO'})
+        self.assertEqual(resp.status_code, 302)          # volta ao detalhe c/ erro
+        self.assertTrue(Lot.all_companies.filter(pk=self.lot.pk).exists())
+
+    def test_get_nao_apaga(self):
+        # require_POST: nunca apaga por GET (crawler/prefetch/link).
+        self.assertEqual(self.client.get(self.url).status_code, 405)
+        self.assertTrue(Lot.all_companies.filter(pk=self.lot.pk).exists())
 
 
 class LotPaginationTests(TestCase):

@@ -15,4 +15,5 @@ urlpatterns = [
     path('fx/',                                 views.fx_badge,    name='fx_badge'),
     path('lote/<int:lot_pk>/valoracao/',        views.lot_valuation_live, name='lot_valuation'),
     path('lote/<int:lot_pk>/reabrir/',          views.lot_reopen,  name='lot_reopen'),
+    path('lote/<int:lot_pk>/excluir/',          views.lot_delete,  name='lot_delete'),
 ]

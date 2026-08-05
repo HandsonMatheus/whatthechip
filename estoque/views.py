@@ -21,7 +21,7 @@ from difflib import get_close_matches
 
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
-from django.db.models import F
+from django.db.models import F, ProtectedError
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -918,6 +918,41 @@ def lot_reopen(request, lot_pk):
     lot.save(update_fields=['status', 'closed_at', 'fx_rate', 'fx_source',
                             'fx_locked_at', 'fx_is_fallback'])
     return redirect('estoque:lot_detail', lot_pk=lot.pk)
+
+
+@role_required('manager')   # §8: excluir é de gerente+ (admin/superuser inclusos; operador NÃO)
+@require_POST
+def lot_delete(request, lot_pk):
+    """Exclui o lote DEFINITIVAMENTE (dono 2026-08-05). Piso de papel = gerente
+    (``role_required('manager')``): admin e o superuser-da-plataforma (que navega
+    com Membership real) alcançam; o OPERADOR não. A barreira REAL é aqui — o
+    botão escondido no template nunca é a única trava (§8).
+
+    Confirmação type-to-confirm (digitar o código completo do lote), igual ao
+    fechamento; o modal é só UX. Cascata FK: ``InventoryEntry``/``PendingEntry``/
+    ``RejectedEntry`` e a valoração congelada (``LotPricing``) somem junto. Já a
+    ``vendas.SalesOrder`` referencia o lote com ``on_delete=PROTECT`` — lote com
+    venda vinculada NÃO se apaga (evita o 500 e protege o histórico financeiro):
+    o comercial cancela a ordem no menu Vendas antes."""
+    lot = _get_lot(request, lot_pk)
+    if (request.POST.get('confirm_code') or '').strip() != lot.code:
+        messages.error(request, _(
+            'Código de confirmação não confere — digite o código completo '
+            'do lote (ex.: %(code)s). O lote NÃO foi excluído.')
+            % {'code': lot.code})
+        return redirect('estoque:lot_detail', lot_pk=lot.pk)
+    code = lot.code
+    try:
+        lot.delete()
+    except ProtectedError:
+        messages.error(request, _(
+            'Não é possível excluir %(code)s: há uma venda vinculada a este '
+            'lote. Cancele a ordem no menu Vendas e tente de novo.')
+            % {'code': code})
+        return redirect('estoque:lot_detail', lot_pk=lot.pk)
+    messages.success(request, _(
+        'Lote %(code)s excluído definitivamente.') % {'code': code})
+    return redirect('estoque:index')
 
 
 # ─── preview chip ────────────────────────────────────────────────────────────

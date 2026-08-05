@@ -2181,8 +2181,12 @@ msgid "US$ unit."
 msgstr "US$ unit."
 
 #: vendas/templates/vendas/so_detail.html
-msgid "Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não muda mais; ajustes do resultado entram como acerto. Confirmar?"
-msgstr "Confirmar congela los valores de esta orden (precio y tasa del contrato) — ya no cambia; los ajustes del resultado entran como liquidación. ¿Confirmar?"
+msgid ""
+"Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela "
+"não muda mais; ajustes do resultado entram como acerto. Confirmar?"
+msgstr ""
+"Confirmar congela los valores de esta orden (precio y tasa del contrato) — "
+"ya no cambia; los ajustes del resultado entran como liquidación. ¿Confirmar?"
 
 #: pricing/templates/pricing/partner_list.html
 msgid "mínimo da faixa"
@@ -2237,8 +2241,12 @@ msgstr "precio por marca"
 msgid "unificado"
 msgstr "unificado"
 
-msgid "¥ = cotado · ? = não cotado · ✗ = não compro · — = não fabricado. Envio vai para revisão do WhatTheChip."
-msgstr "¥ = cotizado · ? = sin cotizar · ✗ = no compro · — = no fabricado. El envío pasa a revisión de WhatTheChip."
+msgid ""
+"¥ = cotado · ? = não cotado · ✗ = não compro · — = não fabricado. Envio vai "
+"para revisão do WhatTheChip."
+msgstr ""
+"¥ = cotizado · ? = sin cotizar · ✗ = no compro · — = no fabricado. El envío "
+"pasa a revisión de WhatTheChip."
 
 # ── Matriz do parceiro v2 — célula estilo planilha (2026-07-27) ──
 msgid "Todos os preços em ¥ (RMB)"
@@ -2247,8 +2255,14 @@ msgstr "Todos los precios en ¥ (RMB)"
 msgid "¥ · x = não compro · vazio = sem cotação"
 msgstr "¥ · x = no compro · vacío = sin cotizar"
 
-msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Alterou uma célula? Aperte OK (ou Enter) — a mudança vai para revisão do WhatTheChip."
-msgstr "número = precio en ¥ (RMB) · x = no compro · vacío = sin cotizar · — = no fabricado. ¿Cambió una celda? Pulse OK (o Enter) — el cambio pasa a revisión de WhatTheChip."
+msgid ""
+"número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não "
+"fabricado. Alterou uma célula? Aperte OK (ou Enter) — a mudança vai para "
+"revisão do WhatTheChip."
+msgstr ""
+"número = precio en ¥ (RMB) · x = no compro · vacío = sin cotizar · — = no "
+"fabricado. ¿Cambió una celda? Pulse OK (o Enter) — el cambio pasa a revisión"
+" de WhatTheChip."
 
 # ── Painel do parceiro v3 — envio único p/ revisão (2026-07-27) ──
 msgid "Enviar para revisão"
@@ -2257,8 +2271,12 @@ msgstr "Enviar a revisión"
 msgid "Nada a enviar — nenhuma linha mudou."
 msgstr "Nada que enviar — ninguna línea cambió."
 
-msgid "%(n)s mudança(s) enviadas para REVISÃO do WhatTheChip — passam a valer após a aprovação."
-msgstr "%(n)s cambio(s) enviados a REVISIÓN de WhatTheChip — entran en vigor tras la aprobación."
+msgid ""
+"%(n)s mudança(s) enviadas para REVISÃO do WhatTheChip — passam a valer após "
+"a aprovação."
+msgstr ""
+"%(n)s cambio(s) enviados a REVISIÓN de WhatTheChip — entran en vigor tras la"
+" aprobación."
 
 msgid "%(item)s: preço ilegível — use números ou \"x\""
 msgstr "%(item)s: precio ilegible — use números o \"x\""
@@ -2269,8 +2287,12 @@ msgstr "%(item)s: rango invertido (máx menor que mín)"
 msgid "%(item)s: conflito ao salvar — tente de novo"
 msgstr "%(item)s: conflicto al guardar — intente de nuevo"
 
-msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Só as linhas alteradas são enviadas."
-msgstr "número = precio en ¥ (RMB) · x = no compro · vacío = sin cotizar · — = no fabricado. Solo se envían las líneas modificadas."
+msgid ""
+"número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não "
+"fabricado. Só as linhas alteradas são enviadas."
+msgstr ""
+"número = precio en ¥ (RMB) · x = no compro · vacío = sin cotizar · — = no "
+"fabricado. Solo se envían las líneas modificadas."
 
 # ── Home + catálogo na convenção nova (2026-07-27) ──
 msgid "por GB"
@@ -2279,22 +2301,54 @@ msgstr "por GB"
 msgid "preço único para todas as marcas"
 msgstr "precio único para todas las marcas"
 
-msgid "Sua tabela de preços completa num único arquivo — pronta para enviar aos seus clientes."
-msgstr "Su tabla de precios completa en un único archivo — lista para enviar a sus clientes."
+msgid ""
+"Sua tabela de preços completa num único arquivo — pronta para enviar aos "
+"seus clientes."
+msgstr ""
+"Su tabla de precios completa en un único archivo — lista para enviar a sus "
+"clientes."
 
-msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP e LPDDR</strong> têm preço único, válido para todas as marcas; <strong>eMMC, UFS e DDR</strong> têm preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
-msgstr "Precios por chip, en <strong>yuanes (¥ RMB)</strong> — la conversión a US$ usa la tasa del contrato, mostrada arriba. <strong>eMCP, uMCP y LPDDR</strong> tienen precio único, válido para todas las marcas; <strong>eMMC, UFS y DDR</strong> tienen precio por marca — la columna «Otras» vale para las marcas sin columna propia."
+msgid ""
+"Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa"
+" a taxa do contrato, exibida no topo. <strong>eMCP, uMCP e LPDDR</strong> "
+"têm preço único, válido para todas as marcas; <strong>eMMC, UFS e "
+"DDR</strong> têm preço por marca — a coluna «Outras» vale para as marcas sem"
+" coluna própria."
+msgstr ""
+"Precios por chip, en <strong>yuanes (¥ RMB)</strong> — la conversión a US$ "
+"usa la tasa del contrato, mostrada arriba. <strong>eMCP, uMCP y "
+"LPDDR</strong> tienen precio único, válido para todas las marcas; "
+"<strong>eMMC, UFS y DDR</strong> tienen precio por marca — la columna "
+"«Otras» vale para las marcas sin columna propia."
 
 # ── Portão: sem rentabilidade avaliada não lança (2026-07-31) ──
-msgid "Sem avaliação de rentabilidade — não entra no estoque até o dado ficar completo."
-msgstr "Sin evaluación de rentabilidad — no entra al inventario hasta completar el dato."
+msgid ""
+"Sem avaliação de rentabilidade — não entra no estoque até o dado ficar "
+"completo."
+msgstr ""
+"Sin evaluación de rentabilidad — no entra al inventario hasta completar el "
+"dato."
 
-msgid "Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o dado ficar completo. Sinalize ao gestor."
-msgstr "Sin evaluación de rentabilidad — este chip no puede entrar al inventario hasta completar el dato. Avise al gestor."
+msgid ""
+"Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o "
+"dado ficar completo. Sinalize ao gestor."
+msgstr ""
+"Sin evaluación de rentabilidad — este chip no puede entrar al inventario "
+"hasta completar el dato. Avise al gestor."
 
 # ── eMMC/UFS unificados — rodapé da home (2026-08-01) ──
-msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e UFS</strong> têm preço único, válido para todas as marcas; só o <strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
-msgstr "Precios por chip, en <strong>yuanes (¥ RMB)</strong> — la conversión a US$ usa la tasa del contrato, mostrada arriba. <strong>eMCP, uMCP, LPDDR, eMMC y UFS</strong> tienen precio único, válido para todas las marcas; solo el <strong>DDR</strong> tiene precio por marca — la columna «Otras» vale para las marcas sin columna propia."
+msgid ""
+"Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa"
+" a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e "
+"UFS</strong> têm preço único, válido para todas as marcas; só o "
+"<strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as "
+"marcas sem coluna própria."
+msgstr ""
+"Precios por chip, en <strong>yuanes (¥ RMB)</strong> — la conversión a US$ "
+"usa la tasa del contrato, mostrada arriba. <strong>eMCP, uMCP, LPDDR, eMMC y"
+" UFS</strong> tienen precio único, válido para todas las marcas; solo el "
+"<strong>DDR</strong> tiene precio por marca — la columna «Otras» vale para "
+"las marcas sin columna propia."
 
 # ── v4 origem do lote — celular × PCB (2026-08-01) ──
 msgid "Celular"
@@ -2322,7 +2376,9 @@ msgid "PCB (set-top box, TV, notebook, industrial…)"
 msgstr "PCB (set-top box, TV, notebook, industrial…)"
 
 msgid "Escolha a ORIGEM do lote (celular ou PCB) — obrigatória, sem padrão."
-msgstr "Elija el ORIGEN del lote (celular o PCB) — obligatorio, sin valor por defecto."
+msgstr ""
+"Elija el ORIGEN del lote (celular o PCB) — obligatorio, sin valor por "
+"defecto."
 
 msgid "DUAS TABELAS — celular (unificado) × PCB (por marca)"
 msgstr "DOS TABLAS — celular (unificado) × PCB (por marca)"
@@ -2357,23 +2413,87 @@ msgid "Reabrir (plataforma)"
 msgstr "Reabrir (plataforma)"
 
 msgid "Reabertura destrava o câmbio; re-fechar captura taxa nova (auditado)"
-msgstr "Reabrir desbloquea el cambio; re-cerrar captura una tasa nueva (auditado)"
+msgstr ""
+"Reabrir desbloquea el cambio; re-cerrar captura una tasa nueva (auditado)"
 
 msgid "Fechado é definitivo — correções entram como acerto na venda."
-msgstr "Cerrado es definitivo — las correcciones entran como ajuste en la venta."
+msgstr ""
+"Cerrado es definitivo — las correcciones entran como ajuste en la venta."
 
-msgid "Lote fechado é definitivo — correções entram como ACERTO na venda. Reabertura é exclusiva da plataforma."
-msgstr "El lote cerrado es definitivo — las correcciones entran como AJUSTE en la venta. Reabrir es exclusivo de la plataforma."
+msgid ""
+"Lote fechado é definitivo — correções entram como ACERTO na venda. "
+"Reabertura é exclusiva da plataforma."
+msgstr ""
+"El lote cerrado es definitivo — las correcciones entran como AJUSTE en la "
+"venta. Reabrir es exclusivo de la plataforma."
 
-msgid "Lote fechado SEM taxa de câmbio no sistema — rode o fetch_fx_rate e trave manualmente com o suporte."
-msgstr "Lote cerrado SIN tasa de cambio en el sistema — ejecute fetch_fx_rate y bloquee manualmente con el soporte."
+msgid ""
+"Lote fechado SEM taxa de câmbio no sistema — rode o fetch_fx_rate e trave "
+"manualmente com o suporte."
+msgstr ""
+"Lote cerrado SIN tasa de cambio en el sistema — ejecute fetch_fx_rate y "
+"bloquee manualmente con el soporte."
 
 # ── Câmbio no header do painel (2026-08-01) ──
-msgid "Taxa de mercado do dia — todo US$ aproximado do painel deriva dela; ela trava no fechamento do lote"
-msgstr "Tasa de mercado del día — todo US$ aproximado del panel deriva de ella; se bloquea al cerrar el lote"
+msgid ""
+"Taxa de mercado do dia — todo US$ aproximado do painel deriva dela; ela "
+"trava no fechamento do lote"
+msgstr ""
+"Tasa de mercado del día — todo US$ aproximado del panel deriva de ella; se "
+"bloquea al cerrar el lote"
 
 msgid "sem taxa do dia — rode fetch_fx_rate"
 msgstr "sin tasa del día — ejecute fetch_fx_rate"
 
 msgid "taxa de contrato (bootstrap)"
 msgstr "tasa de contrato (bootstrap)"
+
+#: estoque/templates/estoque/estoque.html
+msgid "Excluir lote"
+msgstr "Eliminar lote"
+
+#: estoque/templates/estoque/estoque.html
+msgid "Apaga o lote e todos os seus registros definitivamente"
+msgstr "Elimina el lote y todos sus registros definitivamente"
+
+#: estoque/templates/estoque/estoque.html
+msgid "Excluir Lote"
+msgstr "Eliminar lote"
+
+#: estoque/templates/estoque/estoque.html
+msgid ""
+"Isto apaga o lote e <strong>todos os seus registros</strong> (chips, filas "
+"de conferência e descarte, valoração) <strong>definitivamente</strong>. Não "
+"há como desfazer."
+msgstr ""
+"Esto elimina el lote y <strong>todos sus registros</strong> (chips, colas de"
+" verificación y descarte, valoración) <strong>definitivamente</strong>. No "
+"se puede deshacer."
+
+#: estoque/templates/estoque/estoque.html
+msgid "Digite o código completo do lote para confirmar a exclusão:"
+msgstr "Escriba el código completo del lote para confirmar la eliminación:"
+
+#: estoque/templates/estoque/estoque.html
+msgid "Excluir definitivamente"
+msgstr "Eliminar definitivamente"
+
+#: estoque/views.py
+msgid ""
+"Código de confirmação não confere — digite o código completo do lote (ex.: "
+"%(code)s). O lote NÃO foi excluído."
+msgstr ""
+"El código de confirmación no coincide — escriba el código completo del lote "
+"(ej.: %(code)s). El lote NO fue eliminado."
+
+#: estoque/views.py
+msgid ""
+"Não é possível excluir %(code)s: há uma venda vinculada a este lote. Cancele"
+" a ordem no menu Vendas e tente de novo."
+msgstr ""
+"No es posible eliminar %(code)s: hay una venta vinculada a este lote. "
+"Cancele la orden en el menú Ventas e inténtelo de nuevo."
+
+#: estoque/views.py
+msgid "Lote %(code)s excluído definitivamente."
+msgstr "Lote %(code)s eliminado definitivamente."

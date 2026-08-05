@@ -2077,7 +2077,9 @@ msgid "US$ unit."
 msgstr "单价 US$"
 
 #: vendas/templates/vendas/so_detail.html
-msgid "Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não muda mais; ajustes do resultado entram como acerto. Confirmar?"
+msgid ""
+"Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela "
+"não muda mais; ajustes do resultado entram como acerto. Confirmar?"
 msgstr "确认后将冻结本订单的数值（价格与合同汇率）——订单不再变动；买家结果的调整将以结算方式录入。确认吗？"
 
 #: pricing/templates/pricing/partner_list.html
@@ -2133,7 +2135,9 @@ msgstr "按品牌定价"
 msgid "unificado"
 msgstr "统一价"
 
-msgid "¥ = cotado · ? = não cotado · ✗ = não compro · — = não fabricado. Envio vai para revisão do WhatTheChip."
+msgid ""
+"¥ = cotado · ? = não cotado · ✗ = não compro · — = não fabricado. Envio vai "
+"para revisão do WhatTheChip."
 msgstr "¥ = 已报价 · ? = 未报价 · ✗ = 不收 · — = 无此型号。提交后由 WhatTheChip 审核。"
 
 # ── Matriz do parceiro v2 — célula estilo planilha (2026-07-27) ──
@@ -2143,8 +2147,13 @@ msgstr "所有价格均为 ¥（人民币）"
 msgid "¥ · x = não compro · vazio = sem cotação"
 msgstr "¥ · x = 不收 · 留空 = 未报价"
 
-msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Alterou uma célula? Aperte OK (ou Enter) — a mudança vai para revisão do WhatTheChip."
-msgstr "数字 = ¥（人民币）价格 · x = 不收 · 留空 = 未报价 · — = 无此型号。改了某格？按 OK（或 Enter 键）— 修改将由 WhatTheChip 审核。"
+msgid ""
+"número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não "
+"fabricado. Alterou uma célula? Aperte OK (ou Enter) — a mudança vai para "
+"revisão do WhatTheChip."
+msgstr ""
+"数字 = ¥（人民币）价格 · x = 不收 · 留空 = 未报价 · — = 无此型号。改了某格？按 OK（或 Enter 键）— 修改将由 "
+"WhatTheChip 审核。"
 
 # ── Painel do parceiro v3 — envio único p/ revisão (2026-07-27) ──
 msgid "Enviar para revisão"
@@ -2153,7 +2162,9 @@ msgstr "提交审核"
 msgid "Nada a enviar — nenhuma linha mudou."
 msgstr "无可提交 — 没有任何行被修改。"
 
-msgid "%(n)s mudança(s) enviadas para REVISÃO do WhatTheChip — passam a valer após a aprovação."
+msgid ""
+"%(n)s mudança(s) enviadas para REVISÃO do WhatTheChip — passam a valer após "
+"a aprovação."
 msgstr "%(n)s 项修改已提交 WhatTheChip 审核 — 批准后生效。"
 
 msgid "%(item)s: preço ilegível — use números ou \"x\""
@@ -2165,7 +2176,9 @@ msgstr "%(item)s：区间颠倒（最高低于最低）"
 msgid "%(item)s: conflito ao salvar — tente de novo"
 msgstr "%(item)s：保存冲突 — 请重试"
 
-msgid "número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não fabricado. Só as linhas alteradas são enviadas."
+msgid ""
+"número = preço em ¥ (RMB) · x = não compro · vazio = sem cotação · — = não "
+"fabricado. Só as linhas alteradas são enviadas."
 msgstr "数字 = ¥（人民币）价格 · x = 不收 · 留空 = 未报价 · — = 无此型号。仅提交被修改的行。"
 
 # ── Home + catálogo na convenção nova (2026-07-27) ──
@@ -2175,22 +2188,44 @@ msgstr "每 GB"
 msgid "preço único para todas as marcas"
 msgstr "所有品牌统一价"
 
-msgid "Sua tabela de preços completa num único arquivo — pronta para enviar aos seus clientes."
+msgid ""
+"Sua tabela de preços completa num único arquivo — pronta para enviar aos "
+"seus clientes."
 msgstr "完整价格表汇成一个文件 — 可直接发给您的客户。"
 
-msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP e LPDDR</strong> têm preço único, válido para todas as marcas; <strong>eMMC, UFS e DDR</strong> têm preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
-msgstr "价格按芯片计，单位为<strong>人民币（¥ RMB）</strong> — 折算 US$ 使用合同汇率（见顶部）。<strong>eMCP、uMCP 和 LPDDR</strong> 为统一价，适用于所有品牌；<strong>eMMC、UFS 和 DDR</strong> 按品牌定价 — «其他» 列适用于没有单独列的品牌。"
+msgid ""
+"Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa"
+" a taxa do contrato, exibida no topo. <strong>eMCP, uMCP e LPDDR</strong> "
+"têm preço único, válido para todas as marcas; <strong>eMMC, UFS e "
+"DDR</strong> têm preço por marca — a coluna «Outras» vale para as marcas sem"
+" coluna própria."
+msgstr ""
+"价格按芯片计，单位为<strong>人民币（¥ RMB）</strong> — 折算 US$ 使用合同汇率（见顶部）。<strong>eMCP、uMCP"
+" 和 LPDDR</strong> 为统一价，适用于所有品牌；<strong>eMMC、UFS 和 DDR</strong> 按品牌定价 — «其他» "
+"列适用于没有单独列的品牌。"
 
 # ── Portão: sem rentabilidade avaliada não lança (2026-07-31) ──
-msgid "Sem avaliação de rentabilidade — não entra no estoque até o dado ficar completo."
+msgid ""
+"Sem avaliação de rentabilidade — não entra no estoque até o dado ficar "
+"completo."
 msgstr "未评估盈利性 — 数据补全前不能入库。"
 
-msgid "Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o dado ficar completo. Sinalize ao gestor."
+msgid ""
+"Sem avaliação de rentabilidade — este chip não pode entrar no estoque até o "
+"dado ficar completo. Sinalize ao gestor."
 msgstr "未评估盈利性 — 数据补全前该芯片不能入库。请通知管理员。"
 
 # ── eMMC/UFS unificados — rodapé da home (2026-08-01) ──
-msgid "Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e UFS</strong> têm preço único, válido para todas as marcas; só o <strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as marcas sem coluna própria."
-msgstr "价格按芯片计，单位为<strong>人民币（¥ RMB）</strong> — 折算 US$ 使用合同汇率（见顶部）。<strong>eMCP、uMCP、LPDDR、eMMC 和 UFS</strong> 为统一价，适用于所有品牌；仅 <strong>DDR</strong> 按品牌定价 — «其他» 列适用于没有单独列的品牌。"
+msgid ""
+"Preços por chip, em <strong>yuan (¥ RMB)</strong> — a conversão para US$ usa"
+" a taxa do contrato, exibida no topo. <strong>eMCP, uMCP, LPDDR, eMMC e "
+"UFS</strong> têm preço único, válido para todas as marcas; só o "
+"<strong>DDR</strong> tem preço por marca — a coluna «Outras» vale para as "
+"marcas sem coluna própria."
+msgstr ""
+"价格按芯片计，单位为<strong>人民币（¥ RMB）</strong> — 折算 US$ "
+"使用合同汇率（见顶部）。<strong>eMCP、uMCP、LPDDR、eMMC 和 UFS</strong> 为统一价，适用于所有品牌；仅 "
+"<strong>DDR</strong> 按品牌定价 — «其他» 列适用于没有单独列的品牌。"
 
 # ── v4 origem do lote — celular × PCB (2026-08-01) ──
 msgid "Celular"
@@ -2258,14 +2293,20 @@ msgstr "重新打开将解除汇率锁定；再次关闭会锁定新汇率（有
 msgid "Fechado é definitivo — correções entram como acerto na venda."
 msgstr "关闭即最终 — 修正通过销售结算处理。"
 
-msgid "Lote fechado é definitivo — correções entram como ACERTO na venda. Reabertura é exclusiva da plataforma."
+msgid ""
+"Lote fechado é definitivo — correções entram como ACERTO na venda. "
+"Reabertura é exclusiva da plataforma."
 msgstr "批次关闭即最终 — 修正通过销售结算处理。仅平台可重新打开。"
 
-msgid "Lote fechado SEM taxa de câmbio no sistema — rode o fetch_fx_rate e trave manualmente com o suporte."
+msgid ""
+"Lote fechado SEM taxa de câmbio no sistema — rode o fetch_fx_rate e trave "
+"manualmente com o suporte."
 msgstr "关单时系统内无汇率 — 请运行 fetch_fx_rate 并联系支持人员手动锁定。"
 
 # ── Câmbio no header do painel (2026-08-01) ──
-msgid "Taxa de mercado do dia — todo US$ aproximado do painel deriva dela; ela trava no fechamento do lote"
+msgid ""
+"Taxa de mercado do dia — todo US$ aproximado do painel deriva dela; ela "
+"trava no fechamento do lote"
 msgstr "当日市场汇率 — 面板中所有 US$ 近似值均由其折算；批次关闭时锁定"
 
 msgid "sem taxa do dia — rode fetch_fx_rate"
@@ -2273,3 +2314,47 @@ msgstr "无当日汇率 — 请运行 fetch_fx_rate"
 
 msgid "taxa de contrato (bootstrap)"
 msgstr "合同汇率（bootstrap）"
+
+#: estoque/templates/estoque/estoque.html
+msgid "Excluir lote"
+msgstr "删除批次"
+
+#: estoque/templates/estoque/estoque.html
+msgid "Apaga o lote e todos os seus registros definitivamente"
+msgstr "永久删除该批次及其所有记录"
+
+#: estoque/templates/estoque/estoque.html
+msgid "Excluir Lote"
+msgstr "删除批次"
+
+#: estoque/templates/estoque/estoque.html
+msgid ""
+"Isto apaga o lote e <strong>todos os seus registros</strong> (chips, filas "
+"de conferência e descarte, valoração) <strong>definitivamente</strong>. Não "
+"há como desfazer."
+msgstr ""
+"这将<strong>永久</strong>删除该批次及其<strong>所有记录</strong>（芯片、核对与丢弃队列、估值）。此操作无法撤销。"
+
+#: estoque/templates/estoque/estoque.html
+msgid "Digite o código completo do lote para confirmar a exclusão:"
+msgstr "请输入完整的批次代码以确认删除："
+
+#: estoque/templates/estoque/estoque.html
+msgid "Excluir definitivamente"
+msgstr "永久删除"
+
+#: estoque/views.py
+msgid ""
+"Código de confirmação não confere — digite o código completo do lote (ex.: "
+"%(code)s). O lote NÃO foi excluído."
+msgstr "确认代码不匹配——请输入完整的批次代码（例如：%(code)s）。批次未被删除。"
+
+#: estoque/views.py
+msgid ""
+"Não é possível excluir %(code)s: há uma venda vinculada a este lote. Cancele"
+" a ordem no menu Vendas e tente de novo."
+msgstr "无法删除 %(code)s：该批次已关联一笔销售。请先在“销售”菜单中取消订单，然后重试。"
+
+#: estoque/views.py
+msgid "Lote %(code)s excluído definitivamente."
+msgstr "批次 %(code)s 已永久删除。"
