@@ -162,7 +162,7 @@
         <div class="spec"><div class="spec__l">{% trans "Interface" %}</div><div class="spec__v">{{ result.interface|default:"—" }}</div></div>
         <div class="spec"><div class="spec__l">{% trans "Dispositivo" %}</div><div class="spec__v">{{ result.chip_type|default:"—" }}</div></div>
       {% else %}
-        <div class="spec spec--hi"><div class="spec__l">{% trans "Capacidade" %}</div><div class="spec__v">{{ display_cap|default:result.capacity|default:"—" }}</div></div>
+        <div class="spec spec--hi"><div class="spec__l">{% trans "Capacidade" %}</div><div class="spec__v">{{ display_cap|default:"—" }}</div></div>
         <div class="spec"><div class="spec__l">{% trans "Interface" %}</div><div class="spec__v">{{ result.interface|default:"—" }}</div></div>
         <div class="spec"><div class="spec__l">{% trans "Tipo" %}</div><div class="spec__v">{{ result.chip_type|default:"—" }}</div></div>
         <div class="spec"><div class="spec__l">{% trans "Fonte" %}</div><div class="spec__v">{{ result.classification_source|default:"—" }}</div></div>

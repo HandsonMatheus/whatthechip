@@ -966,6 +966,16 @@ def preview_chip(request, lot_pk):
         return HttpResponse('')
 
     result  = classify(pn)
+    # A camada "não encontrado / em fila de revisão" do classify devolve um dict REDUZIDO
+    # (só flags + campos numéricos: known/in_review_queue/nand_gb/… — SEM as chaves de spec
+    # string). Os templates confirm_card* acessam result.capacity/.interface/etc. como
+    # ARGUMENTO de filtro (ex.: `default:result.capacity`), cuja resolução é ESTRITA:
+    # VariableDoesNotExist derruba o preview (500) quando a chave falta — bug exposto ao
+    # digitar o prefixo de um PN em fila de revisão (2026-08-05). Garante as chaves-padrão
+    # (fill-only: não altera um resultado já completo, só preenche o reduzido com '').
+    for _k in ('chip_type', 'subtype', 'capacity', 'dram_density', 'interface', 'brand',
+               'emcp_ram', 'emcp_nand', 'classification_source', 'device', 'fbga_code'):
+        result.setdefault(_k, '')
     has_cap = _has_capacity(result)
 
     destination, dest_cat = _compute_destination(result)

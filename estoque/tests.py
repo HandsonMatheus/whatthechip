@@ -1385,6 +1385,18 @@ class MaskingTests(TestCase):
         self.assertIn('eMMC', body)
         self.assertIn('data-debug', body)
 
+    def test_preview_pn_nao_encontrado_nao_quebra(self):
+        """Regressão (2026-08-05): PN não classificado → classify devolve dict
+        REDUZIDO (in_review_queue, SEM as chaves de spec string). O confirm_card
+        acessava result.capacity como ARGUMENTO de filtro → VariableDoesNotExist
+        (500). A view agora garante as chaves-padrão; o preview responde 200 sem
+        specs (exposto ao digitar o prefixo de um PN em fila de revisão — ESMT M15T)."""
+        lot = self._lot(self.plat, self.users['plat'])
+        self.client.login(username='mask_plat', password='x')
+        resp = self.client.get(
+            reverse('estoque:preview', args=[lot.pk]), {'pn': 'ZZUNKNOWNPN9'})
+        self.assertEqual(resp.status_code, 200)   # antes do fix: 500
+
     def test_tabela_e_export_mascarados(self):
         from decimal import Decimal
         from chips.models import CatalogVersion
