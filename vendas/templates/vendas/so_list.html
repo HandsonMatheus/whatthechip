@@ -11,6 +11,8 @@
 .pagehead p{margin:0 0 20px;font-size:14px;color:#697077;max-width:70ch}
 .panel{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);overflow:hidden}
 .vd-table{width:100%;border-collapse:collapse}
+/* Mobile: a tabela rola na horizontal em vez de espremer/sobrepor os valores. */
+@media(max-width:760px){.panel{overflow-x:auto;-webkit-overflow-scrolling:touch}.vd-table{min-width:600px}.pagehead{flex-direction:column;align-items:flex-start;gap:10px}}
 .vd-table thead th{background:#f2f4f8;text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#878d96;padding:11px 18px;border-bottom:1px solid #dde1e6;white-space:nowrap}
 .vd-table th.num,.vd-table td.num{text-align:right}
 .vd-table tbody td{padding:13px 18px;font-size:13.5px;border-bottom:1px solid #f2f4f8;vertical-align:middle}

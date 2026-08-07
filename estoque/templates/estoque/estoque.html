@@ -1047,6 +1047,16 @@ table.est-table td { padding: var(--s5) var(--s5); }
 .lot-locked{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #dde1e6;border-left:4px solid #697077;border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:14px;color:#393939}
 .bench{display:grid;grid-template-columns:minmax(0,1.6fr) 1fr;gap:20px;align-items:start}
 @media(max-width:980px){.bench{grid-template-columns:1fr}.console{position:static}}
+/* Mobile: cabeçalho do lote e ações empilham; scan não estoura a largura. */
+@media(max-width:600px){
+  .lothead{gap:12px}
+  .lothead__actions{margin-left:0;width:100%}
+  .lothead__actions .uib{flex:1 1 auto}
+  .lothead__neutral{gap:14px}
+  .finder{flex-wrap:wrap}
+  .finder__go{flex:1 1 100%;justify-content:center}
+  .contents__tools{flex-wrap:wrap}
+}
 .console{position:sticky;top:80px;display:flex;flex-direction:column;gap:14px}
 .panel{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05)}
 .panel__head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #e0e0e0}
