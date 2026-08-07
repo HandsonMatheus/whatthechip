@@ -1,12 +1,17 @@
 """
 WhatTheChip — Chips API views
-GET  /chips/search/?pn=XXXX   →  JSON com resultado de classificação
-GET  /chips/decode/?pn=XXXX   →  HTML parcial (HTMX) com decode card
+GET  /chips/search/?pn=XXXX   →  JSON com resultado de classificação  [PLATAFORMA]
+GET  /chips/decode/?pn=XXXX   →  HTML parcial (HTMX) com decode card  [PLATAFORMA]
 POST /chips/report/            →  Registra solicitação de correção
 POST /chips/submit/            →  Recebe envio colaborativo ("Adicionar chip")
+
+⚠ CONSULTA DE PN É SUPERFÍCIE DE PLATAFORMA (decisão do dono, 2026-08-05).
+O WhatTheChip deixou de ser busca pública — "o Google dos chips" saiu do modelo
+de negócio. Decode é o ATIVO, não vitrine. Ver `platform_only` abaixo.
 """
 import json
 import re
+from functools import wraps
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_POST
@@ -32,6 +37,49 @@ _CONF_LABEL = {
 }
 
 
+def platform_only(*, as_json: bool):
+    """Portão de PLATAFORMA para os endpoints de CONSULTA de PN.
+
+    Decisão do dono em 2026-08-05: ninguém consulta PN por estes endpoints a não
+    ser a plataforma. Nem anônimo, nem comprador (`Buyer.users`), nem
+    operador/gerente/admin de empresa-cliente.
+
+    ⚠ Por que `is_unmasked` (superuser) e NÃO `role_required('operator')` — esta
+    é a parte que engana: um gate de PAPEL barraria só o anônimo, e o operador
+    de uma empresa-cliente PASSARIA. Só que `search_api` devolve o `classify()`
+    inteiro (subtype, densidade, capacidade, fonte, confiança e o veredito
+    RENTÁVEL/NÃO RENTÁVEL) — seria entregar por URL exatamente aquilo que a
+    máscara v3.1 esconde da tela dele. Gate de papel aqui = furo na F12.
+
+    **Fonte única do critério:** `tenancy.access.is_unmasked` — o MESMO que
+    bancada/tabela/export/OV/fatura usam. Não inventar lógica de máscara aqui
+    (regra do `access.py`); se a v3.1 mudar, este portão acompanha sozinho.
+
+    **A bancada NÃO passa por aqui:** o operador classifica via
+    `estoque:preview` (`estoque.views.preview_chip`), que já aplica a máscara.
+    Fechar estes dois não tira capacidade de ninguém que trabalha.
+
+    Import tardio de `tenancy`: mantém `chips` sem dependência de app no load
+    (mesmo padrão do `_price_quotes_for_admin` com o `pricing`).
+    """
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped(request, *args, **kwargs):
+            from tenancy.access import is_unmasked
+            if not is_unmasked(request):
+                if as_json:
+                    return JsonResponse(
+                        {"error": _("Consulta restrita.")}, status=403)
+                # HTMX: 4xx não faz swap por padrão — o alvo fica intacto em
+                # vez de exibir um card meio-vazio que pareceria bug.
+                return HttpResponse(
+                    '<span class="dc-denied">'
+                    + _("Consulta restrita.") + '</span>', status=403)
+            return view_func(request, *args, **kwargs)
+        return _wrapped
+    return decorator
+
+
 def _effective_conf(result: dict) -> str:
     """Retorna a chave de confiança efetiva para exibição.
     Chips grammar_complete com confidence='estimated' mostram 'grammar' —
@@ -42,9 +90,11 @@ def _effective_conf(result: dict) -> str:
 
 
 @require_GET
+@platform_only(as_json=True)
 def search_api(request):
     """
-    Classifica um Part Number e retorna JSON.
+    Classifica um Part Number e retorna JSON. **Plataforma apenas** (403 para
+    todo o resto — ver `platform_only`).
 
     Parâmetros:
         pn  — Part Number a classificar (obrigatório, mín. 4 chars)
@@ -110,9 +160,11 @@ def _fx_info_for_card(request):
     return fx_display()
 
 
+@platform_only(as_json=False)
 def decode_html(request):
     """
     Classifica um Part Number e retorna HTML parcial para o HTMX.
+    **Plataforma apenas** (403 para todo o resto — ver `platform_only`).
 
     Parâmetros:
         pn  — Part Number a classificar (obrigatório, mín. 4 chars)

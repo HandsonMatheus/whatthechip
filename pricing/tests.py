@@ -724,17 +724,34 @@ class PriceCardGateTests(TestCase):
         server-side — o preço da busca vive no JSON do search_api
         (client-side; gate testado em BenchAndLotPricingTests). Fonte
         server-side do bloco: só a BANCADA (confirm_card, teste próprio).
-        Aqui: mesmo com linha COTADA no grid, nada de preço nem de comprador
-        vaza no parcial — para NENHUM papel (sigilo F11.3 incluso)."""
+
+        RE-ESPECIFICADO na E0 (2026-08-06 — PLANO_MULTITENANT §10.7.2): com o
+        fim da busca pública, /chips/decode/ virou plataforma-only. A versão
+        antiga esperava 200 pros papéis de empresa e passou a falhar 403≠200
+        (antes disso, teria passado VACUAMENTE). Contrato novo, nas duas
+        pernas: (a) o SUPERUSER — o único que ainda renderiza o card — recebe
+        200 SEM preço/comprador no parcial (o ponto original do teste segue
+        vivo pra quem pode ver); (b) papéis de empresa e anônimo recebem 403
+        e o corpo do 403 também não vaza preço nem comprador."""
+        from django.contrib.auth import get_user_model
+        root = get_user_model().objects.create_superuser('root_f5', password='x')
+        # (a) plataforma: card renderiza, mas SEM bloco de preço server-side
+        resp = self._decode(root)
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, 'US$ 5.60')
+        self.assertNotContains(resp, '¥ 40')     # sigilo total no parcial
+        self.assertNotContains(resp, 'dc2-price-block')
+        self.assertNotContains(resp, 'Wuquan C')
+        # (b) empresa/anônimo: plataforma-only (403) e nada de preço no corpo
         for who in (self.users['admin'], self.users['manager'],
                     self.users['operator'], None):
             self.client.logout()
             resp = self._decode(who)
-            self.assertEqual(resp.status_code, 200)
-            self.assertNotContains(resp, 'US$ 5.60')
-            self.assertNotContains(resp, '¥ 40')     # sigilo total no parcial
-            self.assertNotContains(resp, 'dc2-price-block')
-            self.assertNotContains(resp, 'Wuquan C')
+            self.assertEqual(resp.status_code, 403)
+            self.assertNotContains(resp, 'US$ 5.60', status_code=403)
+            self.assertNotContains(resp, '¥ 40', status_code=403)
+            self.assertNotContains(resp, 'dc2-price-block', status_code=403)
+            self.assertNotContains(resp, 'Wuquan C', status_code=403)
 
 
 class BenchAndLotPricingTests(TestCase):
@@ -785,27 +802,33 @@ class BenchAndLotPricingTests(TestCase):
         return lot
 
     def test_search_api_json_so_tem_prices_para_admin(self):
+        """RE-ESPECIFICADO na E0 (2026-08-06 — PLANO_MULTITENANT §10.7): com o
+        fim da busca pública, /chips/search/ é plataforma-only — o admin de
+        EMPRESA não recebe mais o JSON do classify (a versão antiga esperava
+        'prices' pro admin e falhava). O caminho feliz da plataforma (superuser
+        COM 'prices' + as duas moedas F10) vive no teste vizinho
+        test_superuser_plataforma_ve_prices_no_json. Aqui, o contrato novo:
+        TODO papel de empresa e o anônimo levam 403 sem chave 'prices' e sem
+        NENHUM valor de preço vazando no corpo."""
         # ⚠ side_effect (dict NOVO por chamada): o search_api MUTA o result
-        # ("prices") — return_value compartilhado vazaria o preço do admin
-        # para a chamada seguinte do operador (em produção o classify cria
-        # um dict novo por chamada; o teste tem que imitar isso).
+        # ("prices") — return_value compartilhado vazaria preço entre chamadas
+        # (em produção o classify cria um dict novo por chamada).
         from unittest.mock import patch
         with patch('chips.views.classify',
                    side_effect=lambda pn: self._fake_result()):
-            self.client.force_login(self.users['admin'])
-            d = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'}).json()
-            self.assertIn('prices', d)
-            # F10: as DUAS moedas no JSON — USD derivado + ¥ armazenado.
-            self.assertEqual(d['prices'][0]['min'], '5.60')     # string, não float
-            self.assertEqual(d['prices'][0]['rmb'], '40')       # ¥ de exibição
-            self.assertEqual(d['prices'][0]['mid_rmb'], '40.00')
-            self.client.logout()
-            self.client.force_login(self.users['operator'])
-            d2 = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'}).json()
-            self.assertNotIn('prices', d2)
-            self.client.logout()
-            d3 = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'}).json()
-            self.assertNotIn('prices', d3)                      # anônimo idem
+            for who in ('admin', 'manager', 'operator', None):
+                self.client.logout()
+                if who is not None:
+                    self.client.force_login(self.users[who])
+                resp = self.client.get('/chips/search/', {'pn': 'KLMCG8GEAC'})
+                self.assertEqual(resp.status_code, 403, who)
+                d = resp.json()
+                self.assertNotIn('prices', d, who)
+                self.assertIn('error', d, who)          # só a negativa curta
+                corpo = resp.content.decode()
+                for vazamento in ('5.60', '40.00', 'Wuquan', 'KLMCG8GEAC',
+                                  'eMMC', 'RENTÁVEL'):
+                    self.assertNotIn(vazamento, corpo, who)  # nem specs, nem preço
 
     def test_superuser_plataforma_ve_prices_no_json(self):
         """Dono (2026-07-17): o preço da home também aparece pro admin do

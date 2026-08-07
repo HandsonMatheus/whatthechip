@@ -2158,7 +2158,7 @@ class ForeseeLoadBrandsTests(TestCase):
             self.assertEqual(_ident(pn), esperado, f"identificação mudou p/ {pn}")
 
 
-_ESMT_GOLDEN = {  # ESMT — 1a entrega (onboarding 2026-08-05): 4 famílias DDR3L MAGRAS M15T
+_ESMT_GOLDEN = {  # ESMT — 1a entrega (onboarding 2026-08-05): 6 famílias DDR3L MAGRAS M15T
     # (o prefixo = PN-base, com densidade+organização literal). Família magra sem decode de
     # densidade → a gramática sozinha dá DDR3L SEM densidade → INDETERMINADO; a densidade e o
     # veredito de rentabilidade vêm do known_part APROVADO (submissions/esmt_m15t_*). O golden
@@ -2167,6 +2167,11 @@ _ESMT_GOLDEN = {  # ESMT — 1a entrega (onboarding 2026-08-05): 4 famílias DDR
     "M15T2G16128A": ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 2Gb x16
     "M15T4G16256A": ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 4Gb x16
     "M15T8G16512A": ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 8Gb x16
+    # Par x8 da 2ª rodada 2026-08-05 (ESMT.md §3.2) — âncoras adicionadas na E0
+    # (2026-08-06): o chat ESMT registrou as famílias no yaml mas não colou o
+    # golden, e o GoldenObrigatorioTests ficou vermelho. Mesmo padrão magro.
+    "M15T2G8256A":  ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 2Gb x8
+    "M15T4G8512A":  ("DDR3L", "", "", "", "", "INDETERMINADO"),   # 4Gb x8
 }
 
 
@@ -2411,3 +2416,79 @@ class NumericSpecsWiringTests(TestCase):
         r = classify("ZZZZTESTE999")
         for k in ("nand_gb", "ram_gb", "cap_gb", "density_gbit_num", "ram_gen"):
             self.assertIn(k, r)
+
+
+class ConsultaEhPlataformaTests(TestCase):
+    """Fim da busca pública (dono, 2026-08-05 — PLANO_MULTITENANT §10.7).
+
+    /chips/search/ e /chips/decode/ devolviam o classify() INTEIRO (subtype,
+    densidade, capacidade, fonte e o veredito RENTÁVEL) pra internet aberta —
+    era o furo lateral da máscara v3.1, provado ao vivo em produção. O gate
+    `platform_only` (chips/views.py) fecha os dois com o critério
+    `tenancy.access.is_unmasked` — a MESMA fonte única da bancada/tabela/
+    export/OV. Este teste é o CADEADO permanente: se alguém "abrir pro
+    operador consultar", isto fica vermelho (seria regressão da F12).
+
+    Auto-contido de propósito (sem fixture de catálogo): o 403 nem chega a
+    chamar o classify, e o caminho 200 da plataforma funciona com PN
+    desconhecido (card "não identificado")."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from django.contrib.auth import get_user_model
+        from tenancy.models import Company, Membership
+        User = get_user_model()
+        cls.company = Company.objects.create(name='ConsultaCo', slug='consultaco')
+        cls.papeis = {}
+        for role in ('admin', 'manager', 'operator'):
+            u = User.objects.create_user(f'{role}_consulta')
+            Membership.objects.create(user=u, company=cls.company, role=role)
+            cls.papeis[role] = u
+        cls.sem_vinculo = User.objects.create_user('avulso_consulta')
+        cls.root = User.objects.create_superuser('root_consulta', password='x')
+
+    # — vazamento: nada de spec/veredito/marca pode aparecer no corpo do 403 —
+    _TERMOS_PROIBIDOS = ('RENTÁVEL', 'chip_type', 'subtype', 'capacity',
+                         'density', 'confidence', 'brand', 'Samsung', 'eMMC')
+
+    def _assert_403_sem_vazamento(self, resp, quem):
+        self.assertEqual(resp.status_code, 403, quem)
+        corpo = resp.content.decode()
+        for termo in self._TERMOS_PROIBIDOS:
+            self.assertNotIn(termo, corpo, f'{quem}: 403 vazou {termo!r}')
+
+    def test_anonimo_403_nos_dois_endpoints(self):
+        self._assert_403_sem_vazamento(
+            self.client.get('/chips/search/', {'pn': 'K4B4G16E'}), 'anon/search')
+        self._assert_403_sem_vazamento(
+            self.client.get('/chips/decode/', {'pn': 'K4B4G16E'}), 'anon/decode')
+
+    def test_logado_nao_plataforma_403_nos_dois_endpoints(self):
+        """Papel NÃO abre a consulta: nem o admin da empresa-cliente passa
+        (gate de papel barraria só o anônimo — o porquê está no docstring do
+        platform_only). Usuário sem vínculo idem."""
+        contas = dict(self.papeis, avulso=self.sem_vinculo)
+        for quem, user in contas.items():
+            self.client.logout()
+            self.client.force_login(user)
+            self._assert_403_sem_vazamento(
+                self.client.get('/chips/search/', {'pn': 'K4B4G16E'}),
+                f'{quem}/search')
+            self._assert_403_sem_vazamento(
+                self.client.get('/chips/decode/', {'pn': 'K4B4G16E'}),
+                f'{quem}/decode')
+
+    def test_search_403_e_json_com_negativa_curta(self):
+        self.client.force_login(self.papeis['operator'])
+        resp = self.client.get('/chips/search/', {'pn': 'K4B4G16E'})
+        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(list(resp.json().keys()), ['error'])   # SÓ a negativa
+
+    def test_plataforma_continua_consultando(self):
+        """Superuser (plataforma) segue com os dois endpoints — 200 mesmo com
+        PN fora do catálogo (o card 'não identificado' também é resposta)."""
+        self.client.force_login(self.root)
+        self.assertEqual(self.client.get(
+            '/chips/search/', {'pn': 'ZZZZTESTE999'}).status_code, 200)
+        self.assertEqual(self.client.get(
+            '/chips/decode/', {'pn': 'ZZZZTESTE999'}).status_code, 200)

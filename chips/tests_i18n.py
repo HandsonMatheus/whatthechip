@@ -142,9 +142,17 @@ class TemplateSmokeTests(TestCase):
             self.assertEqual(resp.status_code, 200, lng)
 
     def test_decode_card_renderiza_em_zh(self):
-        """O parcial HTMX do decode (o card da bancada) renderiza em 中文."""
+        """O parcial HTMX do decode (o card da consulta) renderiza em 中文.
+
+        Fim da busca pública (dono, 2026-08-05 — PLANO_MULTITENANT §10.7):
+        /chips/decode/ virou plataforma-only (403 até pra anônimo), então o
+        smoke agora loga o SUPERUSER — a única conta que ainda renderiza o
+        card. O 403 dos demais é coberto por ConsultaEhPlataformaTests."""
+        from django.contrib.auth import get_user_model
+        root = get_user_model().objects.create_superuser('root_zh', password='x')
         c = Client()
         c.cookies[settings.LANGUAGE_COOKIE_NAME] = 'zh-hans'
+        c.force_login(root)
         resp = c.get('/chips/decode/', {'pn': 'KMQX10006M'})
         self.assertEqual(resp.status_code, 200)
 

@@ -2474,3 +2474,7 @@ msgstr ""
 #: estoque/views.py
 msgid "Lote %(code)s excluído definitivamente."
 msgstr "Lot %(code)s permanently deleted."
+
+#: chips/views.py:72 chips/views.py:77
+msgid "Consulta restrita."
+msgstr "Restricted query."

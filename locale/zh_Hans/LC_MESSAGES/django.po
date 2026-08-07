@@ -2358,3 +2358,7 @@ msgstr "无法删除 %(code)s：该批次已关联一笔销售。请先在“销
 #: estoque/views.py
 msgid "Lote %(code)s excluído definitivamente."
 msgstr "批次 %(code)s 已永久删除。"
+
+#: chips/views.py:72 chips/views.py:77
+msgid "Consulta restrita."
+msgstr "查询受限。"
