@@ -1,0 +1,155 @@
+# Submissão de known_parts — SK Hynix, famílias H5TC (DDR3L) e H5TQ (DDR3), AMBAS
+# JÁ EXISTENTES na gramática (chips/knowledge/hynix.yaml). Gerado a partir de DOIS PNs
+# de bancada pedidos juntos na mesma rodada (2026-07-15): "H5TC2G63FFR" e "H5TQ1G63DFR",
+# com o pedido explícito do dono de coletar também os "similares" — interpretado (mesma
+# convenção já usada nas rodadas anteriores desta família, ver hynix_h5tc_2026-07-13.yaml
+# e hynix_h5tq_2026-07-13.yaml) como o par x8/x16 de cada densidade.
+#
+# SEM fix de gramática — os dois PNs alvo já decodificam CORRETAMENTE pela gramática
+# atual (H5TC: decode_cap_pos=4/len=2/map=HYX_DDR3_CAP; H5TQ: mesma estrutura). pn[4:6]
+# de "H5TC2G63FFR" = "2G" (já mapeado → 256MB); de "H5TQ1G63DFR" = "1G" (já mapeado →
+# 128MB). É known_parts-only (Trilha B) — os PNs simplesmente nunca tinham sido
+# confirmados no banco, exatamente como o dono descreveu ("nenhum deles está catalogado
+# na SK").
+#
+# ⭐ PADRÃO DIE-REVISION-LETTER (precedente direto: hynix_h5tq_4g63cfr_2026-07-13.yaml,
+# par C/E): dentro da MESMA família+densidade+interface, uma letra final diferente em
+# pn[8] representa uma REVISÃO/DOCUMENTO DE DATASHEET oficial diferente (Rev. e data
+# diferentes), NÃO uma capacidade diferente — a gramática não decodifica essa posição.
+#   - H5TC2G63FFR ("F", ALVO) é irmã de revisão do já confirmado H5TC2G63GFR ("G",
+#     Rev.1.3/Nov.2015, hynix_h5tc_2026-07-13.yaml). O PN alvo é doc. Rev.1.1/Apr.2013 —
+#     revisão/data DIFERENTE, mesma densidade (2Gb=256MB).
+#   - H5TQ1G63DFR ("D", ALVO) é irmã de revisão do já confirmado H5TQ1G63EFR ("E",
+#     hynix_h5tq_2026-07-13.yaml). O PN alvo é doc. Rev.1.1/Jan.2011 — revisão/data
+#     DIFERENTE, mesma densidade (1Gb=128MB).
+#
+# FONTE (AllDataSheet, HTML paginado — fetch direto de cada página, texto real extraído,
+# NÃO só índice/metadado do agregador): para os 4 PNs abaixo consegui ler o corpo real
+# da página de capa (título, descrição, part numbers, Rev./data) e/ou a página de
+# histórico de revisão — mas NÃO cheguei à tabela técnica "Ordering Information" (que
+# teria a organização "xxxM x xx" — o critério já usado nesta família para
+# confidence=confirmed). Por isso confidence=manual nos 4, mesmo padrão de
+# H5TC1G83EFR/H5TC8G63AMR/H5TQ2G63GFR/H5TQ8G63AMR (que tinham só metadado de índice,
+# sem nem isso) — aqui a evidência é mais forte que o precedente "manual" (texto real de
+# página, não só índice), mas ainda abaixo da barra de "confirmed" (sem Ordering Info).
+#   - LCSC (busca direta): sem resultado pros PNs exatos — o hit indexado pra
+#     "H5TC2G63FFR" era na verdade a irmã já confirmada H5TC2G63GFR-PBA, não o alvo.
+#     LCSC parece não hospedar o PDF da revisão F/D diretamente.
+#   - Mirror datasheet.iiic.cc: redireciona pra viewer JS sem texto extraível (mesmo
+#     problema já documentado nos outros PNs "manual" desta família).
+#
+# ARITMÉTICA (Gb→MB, density_gbit/density_gb como STRING PRÉ-FORMATADA — nunca só o
+# número, ver CLAUDE.md §6/§7 "Densidade DDR fora do lugar"; `_known_dram_density` só
+# concatena os campos crus, não converte):
+#   2Gb → density_gbit="2Gb", density_gb="256MB"  (H5TC2G63FFR / H5TC2G83FFR)
+#   1Gb → density_gbit="1Gb", density_gb="128MB"  (H5TQ1G63DFR / H5TQ1G83DFR)
+#
+# INTERFACE (mesma convenção já usada nesta família — pn[6:8] no PN completo): "63"→x16,
+# "83"→x8. Coletei os dois lados de cada densidade (achei confirmação de capa pros 2).
+# ⚠ MESMO BUG PRÉ-EXISTENTE já documentado em hynix_h5tc_2026-07-13.yaml/
+# hynix_h5tq_2026-07-13.yaml: `_result_from_known` (chips/engine.py, branch não-eMCP
+# com família casada) não propaga `known.interface` pro classify() — só o caminho SEM
+# família casada lê esse campo. Não é bug desta submissão, não fixável por chat de marca
+# (fora do escopo — "não modificar código sem perguntar"); mantive `interface` preenchido
+# porque o dado correto fica salvo no banco mesmo sem aparecer hoje no classify().
+#
+# ACHADO ÚTIL: as páginas de capa dos PNs x8 (H5TC2G83FFR, H5TQ1G83DFR) listam
+# EXPLICITAMENTE os dois PNs — x8 E x16 — juntos na mesma capa oficial (ex.: capa do
+# H5TC2G83FFR mostra "H5TC2G83FFR-xxA/I/L/J" E "H5TC2G63FFR-xxA/I/L/J" lado a lado) —
+# confirma que o par x8/x16 de cada densidade é o MESMO datasheet/família de produto,
+# reforçando a inferência de densidade compartilhada entre os dois. A página do
+# H5TQ1G83DFR também lista H5TQ1G63DFR na seção "Similar Description" do próprio
+# agregador, corroborando que os dois são entradas reais e distintas.
+#
+# COBERTURA DESTA RODADA (pedido do dono — "faça o trabalho de pesquisa com este e
+# também os seus similares"): 2 PNs buscados na bancada (H5TC2G63FFR, H5TQ1G63DFR) +
+# 2 "similares" x8 da mesma capa/densidade (H5TC2G83FFR, H5TQ1G83DFR) = 4 known_parts.
+# Não pesquisei outras letras de revisão além de F/D nesta rodada (ex. eventual "H5TC2G63HFR"
+# ou similar) — não apareceram em nenhuma fonte consultada; se existirem, ficam para
+# rodada futura caso surjam na bancada.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_h5tc_h5tq_2026-07-15.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_h5tc_h5tq_2026-07-15.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "H5TC2G63FFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/html-pdf/533406/HYNIX/H5TC2G63FFR/154/1/H5TC2G63FFR.html"
+    notes: >
+      PN ALVO buscado na bancada (2026-07-15), não catalogado antes desta submissão.
+      AllDataSheet id 533406, 32 páginas: capa (pág.1) lida diretamente via fetch —
+      "Rev. 1.1 / Apr. 2013", "2Gb DDR3L SDRAM", "H5TC2G63FFR-xxA". Pág.2 (histórico de
+      revisão) também lida: 0.1 Initial Release Nov.2012, 1.0 IDD Update Jan.2013, 1.1
+      Editorial PKG Dimension Apr.2013. É irmã de REVISÃO do já confirmado H5TC2G63GFR
+      ("G", Rev.1.3/Nov.2015, hynix_h5tc_2026-07-13.yaml — mesma densidade/interface,
+      documento oficial diferente). Não achei a tabela Ordering Information (LCSC não
+      hospeda esta revisão especificamente — o hit indexado era na verdade a irmã
+      -GFR); por isso confidence=manual, não confirmed. 2Gb ÷8 = 256MB — bate com "2G"
+      no mapa HYX_DDR3_CAP já existente.
+
+  - part_number: "H5TC2G83FFR"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    density_gb: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/html-pdf/534204/HYNIX/H5TC2G83FFR/154/1/H5TC2G83FFR.html"
+    notes: >
+      "Similar" (par x8) do PN alvo H5TC2G63FFR — mesma densidade, largura de barramento
+      diferente. AllDataSheet id 534204, 33 páginas: capa (pág.1) lida diretamente via
+      fetch — "Rev. 1.0 / Nov. 2012", "2Gb DDR3L SDRAM" — e lista EXPLICITAMENTE na mesma
+      capa oficial "H5TC2G83FFR-xxA/I/L/J" E "H5TC2G63FFR-xxA/I/L/J" juntos, confirmando
+      que os dois PNs (x8 e x16) pertencem ao mesmo par de produto/família. Mesma
+      densidade do irmão x16 (2Gb ÷8 = 256MB). confidence=manual (capa lida diretamente,
+      mas sem Ordering Information técnico).
+
+  - part_number: "H5TQ1G63DFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/html-pdf/534213/HYNIX/H5TQ1G63DFR/154/1/H5TQ1G63DFR.html"
+    notes: >
+      PN ALVO buscado na bancada (2026-07-15), não catalogado antes desta submissão.
+      AllDataSheet id 534213, 172 páginas, Description="1Gb DDR3 SDRAM". Pág.2 (histórico
+      de revisão) lida diretamente via fetch — "Rev. 1.1 /Jan. 2011": 0.01 Preliminary
+      Initial Release Apr.2010, 1.0 correções diversas Sep.2010, 1.1 Corrected Features
+      (added CL 12,13)/IDD wording Jan.2011. É irmã de REVISÃO do já confirmado
+      H5TQ1G63EFR ("E", hynix_h5tq_2026-07-13.yaml — mesma densidade/interface,
+      documento oficial diferente, datas de revisão distintas). Corroborado também pela
+      seção "Similar Description" da própria página do irmão x8 (H5TQ1G83DFR, ver
+      known_part abaixo), que lista "H5TQ1G63DFR" explicitamente como entrada separada
+      no agregador. Não achei a tabela Ordering Information; confidence=manual, não
+      confirmed. 1Gb ÷8 = 128MB — bate com "1G" no mapa HYX_DDR3_CAP já existente.
+
+  - part_number: "H5TQ1G83DFR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    density_gbit: "1Gb"
+    density_gb: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.alldatasheet.com/html-pdf/534216/HYNIX/H5TQ1G83DFR/154/1/H5TQ1G83DFR.html"
+    notes: >
+      "Similar" (par x8) do PN alvo H5TQ1G63DFR — mesma densidade, largura de barramento
+      diferente. AllDataSheet id 534216, 34 páginas: capa (pág.1) lida diretamente via
+      fetch — "Rev. 1.7 /Sep. 2011", "1Gb DDR3 SDRAM" — e lista EXPLICITAMENTE na mesma
+      capa oficial "H5TQ1G83DFR-xxC/I/L/J" E "H5TQ1G63DFR-xxC/I/L/J" juntos, confirmando
+      que os dois PNs (x8 e x16) pertencem ao mesmo par de produto/família. Mesma
+      densidade do irmão x16 (1Gb ÷8 = 128MB). confidence=manual (capa lida diretamente,
+      mas sem Ordering Information técnico).
+
+# NÃO incluídas outras letras de revisão (ex. eventuais "H5TC2G63xFR"/"H5TQ1G63xFR" com
+# outra letra final além de F/D) — não apareceram em nenhuma fonte consultada nesta
+# rodada. Se surgirem na bancada futuramente, seguem o mesmo padrão die-revision já
+# estabelecido (mesma densidade, documento oficial diferente).
