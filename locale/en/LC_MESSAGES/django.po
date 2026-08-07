@@ -2478,3 +2478,108 @@ msgstr "Lot %(code)s permanently deleted."
 #: chips/views.py:72 chips/views.py:77
 msgid "Consulta restrita."
 msgstr "Restricted query."
+
+msgid "Nome da empresa"
+msgstr "Company name"
+
+msgid "Nome comercial exato (ex.: \"eRecyclo\")."
+msgstr "Exact business name (e.g. \"eRecyclo\")."
+
+msgid "Slug — vira o subdomínio do cliente"
+msgstr "Slug — becomes the client subdomain"
+
+msgid ""
+"Quase-permanente: minúsculas, dígitos e hífen (ex.: \"erecyclo\" → "
+"erecyclo.whatthechip.app)."
+msgstr ""
+"Near-permanent: lowercase letters, digits and hyphen (e.g. \"erecyclo\" → "
+"erecyclo.whatthechip.app)."
+
+msgid "Filial (opcional)"
+msgstr "Branch (optional)"
+
+msgid "Empresa de uma bancada só não precisa de filial."
+msgstr "A single-bench company does not need a branch."
+
+msgid "Usuário do primeiro admin"
+msgstr "First admin username"
+
+msgid "E-mail do primeiro admin (opcional)"
+msgstr "First admin email (optional)"
+
+msgid "Senha provisória"
+msgstr "Temporary password"
+
+msgid ""
+"Mínimo 8 caracteres. Entregue ao cliente por canal seguro; a troca é feita "
+"pela plataforma (sem autosserviço no v1)."
+msgstr ""
+"At least 8 characters. Hand it to the client through a secure channel; "
+"changes are made by the platform (no self-service in v1)."
+
+msgid "Já existe empresa com este nome."
+msgstr "A company with this name already exists."
+
+msgid "Este slug já está em uso por outra empresa."
+msgstr "This slug is already used by another company."
+
+msgid ""
+"Já existe um usuário com este nome — o primeiro admin é sempre uma conta "
+"NOVA."
+msgstr ""
+"A user with this name already exists — the first admin is always a NEW "
+"account."
+
+msgid ""
+"Slug inválido para virar subdomínio: use só minúsculas, dígitos e hífen (sem"
+" \"_\", ponto, espaço ou acento; não pode começar/terminar com hífen; máx. "
+"63 caracteres)."
+msgstr ""
+"Invalid slug for a subdomain: use only lowercase letters, digits and hyphen "
+"(no \"_\", dot, space or accents; cannot start/end with a hyphen; max 63 "
+"characters)."
+
+msgid "O slug \"%(slug)s\" é reservado da plataforma — escolha outro."
+msgstr "The slug \"%(slug)s\" is reserved by the platform — choose another."
+
+msgid "Nova empresa"
+msgstr "New company"
+
+msgid "Empresa criada."
+msgstr "Company created."
+
+msgid "Empresa"
+msgstr "Company"
+
+msgid "Filial"
+msgstr "Branch"
+
+msgid "Primeiro admin"
+msgstr "First admin"
+
+msgid "Login de hoje"
+msgstr "Current login"
+
+msgid "Endereço futuro (T7)"
+msgstr "Future address (T7)"
+
+msgid ""
+"Próximo passo: entregue ao cliente o endereço de login, o usuário e a senha "
+"provisória que você definiu — por canal seguro. O primeiro lote da empresa "
+"nasce como #001."
+msgstr ""
+"Next step: hand the client the login address, the username and the temporary"
+" password you set — through a secure channel. The company’s first lot starts"
+" as #001."
+
+msgid ""
+"Superfície de plataforma: cria a empresa-cliente, a filial opcional e o "
+"primeiro admin com vínculo — em um passo. O slug é quase-permanente (vira o "
+"subdomínio do cliente)."
+msgstr ""
+"Platform surface: creates the client company, the optional branch and the "
+"first admin with membership — in one step. The slug is near-permanent (it "
+"becomes the client subdomain)."
+
+msgid "Criar empresa"
+msgstr "Create company"

@@ -2501,3 +2501,108 @@ msgstr "Lote %(code)s eliminado definitivamente."
 #: chips/views.py:72 chips/views.py:77
 msgid "Consulta restrita."
 msgstr "Consulta restringida."
+
+msgid "Nome da empresa"
+msgstr "Nombre de la empresa"
+
+msgid "Nome comercial exato (ex.: \"eRecyclo\")."
+msgstr "Nombre comercial exacto (ej.: \"eRecyclo\")."
+
+msgid "Slug — vira o subdomínio do cliente"
+msgstr "Slug — será el subdominio del cliente"
+
+msgid ""
+"Quase-permanente: minúsculas, dígitos e hífen (ex.: \"erecyclo\" → "
+"erecyclo.whatthechip.app)."
+msgstr ""
+"Casi permanente: minúsculas, dígitos y guion (ej.: \"erecyclo\" → "
+"erecyclo.whatthechip.app)."
+
+msgid "Filial (opcional)"
+msgstr "Sucursal (opcional)"
+
+msgid "Empresa de uma bancada só não precisa de filial."
+msgstr "Una empresa con una sola mesa de trabajo no necesita sucursal."
+
+msgid "Usuário do primeiro admin"
+msgstr "Usuario del primer admin"
+
+msgid "E-mail do primeiro admin (opcional)"
+msgstr "Correo del primer admin (opcional)"
+
+msgid "Senha provisória"
+msgstr "Contraseña provisional"
+
+msgid ""
+"Mínimo 8 caracteres. Entregue ao cliente por canal seguro; a troca é feita "
+"pela plataforma (sem autosserviço no v1)."
+msgstr ""
+"Mínimo 8 caracteres. Entréguela al cliente por un canal seguro; el cambio lo"
+" hace la plataforma (sin autoservicio en la v1)."
+
+msgid "Já existe empresa com este nome."
+msgstr "Ya existe una empresa con este nombre."
+
+msgid "Este slug já está em uso por outra empresa."
+msgstr "Este slug ya está en uso por otra empresa."
+
+msgid ""
+"Já existe um usuário com este nome — o primeiro admin é sempre uma conta "
+"NOVA."
+msgstr ""
+"Ya existe un usuario con este nombre — el primer admin siempre es una cuenta"
+" NUEVA."
+
+msgid ""
+"Slug inválido para virar subdomínio: use só minúsculas, dígitos e hífen (sem"
+" \"_\", ponto, espaço ou acento; não pode começar/terminar com hífen; máx. "
+"63 caracteres)."
+msgstr ""
+"Slug inválido para subdominios: use solo minúsculas, dígitos y guion (sin "
+"\"_\", punto, espacio ni acentos; no puede empezar/terminar con guion; máx. "
+"63 caracteres)."
+
+msgid "O slug \"%(slug)s\" é reservado da plataforma — escolha outro."
+msgstr "El slug \"%(slug)s\" está reservado por la plataforma — elija otro."
+
+msgid "Nova empresa"
+msgstr "Nueva empresa"
+
+msgid "Empresa criada."
+msgstr "Empresa creada."
+
+msgid "Empresa"
+msgstr "Empresa"
+
+msgid "Filial"
+msgstr "Sucursal"
+
+msgid "Primeiro admin"
+msgstr "Primer admin"
+
+msgid "Login de hoje"
+msgstr "Acceso actual"
+
+msgid "Endereço futuro (T7)"
+msgstr "Dirección futura (T7)"
+
+msgid ""
+"Próximo passo: entregue ao cliente o endereço de login, o usuário e a senha "
+"provisória que você definiu — por canal seguro. O primeiro lote da empresa "
+"nasce como #001."
+msgstr ""
+"Próximo paso: entregue al cliente la dirección de acceso, el usuario y la "
+"contraseña provisional que definió — por un canal seguro. El primer lote de "
+"la empresa nace como #001."
+
+msgid ""
+"Superfície de plataforma: cria a empresa-cliente, a filial opcional e o "
+"primeiro admin com vínculo — em um passo. O slug é quase-permanente (vira o "
+"subdomínio do cliente)."
+msgstr ""
+"Superficie de plataforma: crea la empresa cliente, la sucursal opcional y el"
+" primer admin con su vínculo — en un solo paso. El slug es casi permanente "
+"(será el subdominio del cliente)."
+
+msgid "Criar empresa"
+msgstr "Crear empresa"

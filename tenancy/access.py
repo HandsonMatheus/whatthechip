@@ -39,6 +39,25 @@ def is_unmasked(request) -> bool:
                 and user.is_superuser)
 
 
+def platform_required(view_func):
+    """Gate de PLATAFORMA (T6 — PLANO_MULTITENANT §17.2): só ``is_superuser``.
+
+    Anônimo → redirect pro login; logado sem ser plataforma (qualquer papel de
+    empresa, comprador, conta avulsa) → 403. É o irmão do ``role_required``
+    para superfícies que não são de EMPRESA nenhuma — ex.: o onboarding
+    ``/company/new/``. Critério idêntico ao do Django admin (§8: plataforma =
+    superuser; NÃO é papel de Membership).
+    """
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect_to_login(request.get_full_path())
+        if not request.user.is_superuser:
+            raise PermissionDenied('Página exclusiva da plataforma.')
+        return view_func(request, *args, **kwargs)
+    return _wrapped
+
+
 def role_required(min_role: str):
     """Decorator de view: exige login + Membership ativo + papel >= ``min_role``.
 

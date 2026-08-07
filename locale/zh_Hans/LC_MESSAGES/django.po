@@ -2362,3 +2362,93 @@ msgstr "批次 %(code)s 已永久删除。"
 #: chips/views.py:72 chips/views.py:77
 msgid "Consulta restrita."
 msgstr "查询受限。"
+
+msgid "Nome da empresa"
+msgstr "公司名称"
+
+msgid "Nome comercial exato (ex.: \"eRecyclo\")."
+msgstr "准确的公司名称（例：\"eRecyclo\"）。"
+
+msgid "Slug — vira o subdomínio do cliente"
+msgstr "Slug——将成为客户的子域名"
+
+msgid ""
+"Quase-permanente: minúsculas, dígitos e hífen (ex.: \"erecyclo\" → "
+"erecyclo.whatthechip.app)."
+msgstr "几乎永久：仅限小写字母、数字和连字符（例：\"erecyclo\" → erecyclo.whatthechip.app）。"
+
+msgid "Filial (opcional)"
+msgstr "分部（可选）"
+
+msgid "Empresa de uma bancada só não precisa de filial."
+msgstr "只有一个工作台的公司不需要分部。"
+
+msgid "Usuário do primeiro admin"
+msgstr "首位管理员的用户名"
+
+msgid "E-mail do primeiro admin (opcional)"
+msgstr "首位管理员的邮箱（可选）"
+
+msgid "Senha provisória"
+msgstr "临时密码"
+
+msgid ""
+"Mínimo 8 caracteres. Entregue ao cliente por canal seguro; a troca é feita "
+"pela plataforma (sem autosserviço no v1)."
+msgstr "至少 8 个字符。请通过安全渠道交给客户；密码更改由平台完成（v1 无自助服务）。"
+
+msgid "Já existe empresa com este nome."
+msgstr "已存在同名公司。"
+
+msgid "Este slug já está em uso por outra empresa."
+msgstr "该 slug 已被其他公司使用。"
+
+msgid ""
+"Já existe um usuário com este nome — o primeiro admin é sempre uma conta "
+"NOVA."
+msgstr "该用户名已存在——首位管理员必须是全新账户。"
+
+msgid ""
+"Slug inválido para virar subdomínio: use só minúsculas, dígitos e hífen (sem"
+" \"_\", ponto, espaço ou acento; não pode começar/terminar com hífen; máx. "
+"63 caracteres)."
+msgstr "无法用作子域名的 slug：仅限小写字母、数字和连字符（不能含\"_\"、点、空格或重音符号；不能以连字符开头/结尾；最多 63 个字符）。"
+
+msgid "O slug \"%(slug)s\" é reservado da plataforma — escolha outro."
+msgstr "slug\"%(slug)s\"为平台保留名称——请另选一个。"
+
+msgid "Nova empresa"
+msgstr "新建公司"
+
+msgid "Empresa criada."
+msgstr "公司已创建。"
+
+msgid "Empresa"
+msgstr "公司"
+
+msgid "Filial"
+msgstr "分部"
+
+msgid "Primeiro admin"
+msgstr "首位管理员"
+
+msgid "Login de hoje"
+msgstr "当前登录地址"
+
+msgid "Endereço futuro (T7)"
+msgstr "未来地址（T7）"
+
+msgid ""
+"Próximo passo: entregue ao cliente o endereço de login, o usuário e a senha "
+"provisória que você definiu — por canal seguro. O primeiro lote da empresa "
+"nasce como #001."
+msgstr "下一步：通过安全渠道将登录地址、用户名和您设置的临时密码交给客户。该公司的第一个批次编号为 #001。"
+
+msgid ""
+"Superfície de plataforma: cria a empresa-cliente, a filial opcional e o "
+"primeiro admin com vínculo — em um passo. O slug é quase-permanente (vira o "
+"subdomínio do cliente)."
+msgstr "平台界面：一步创建客户公司、可选分部及带成员关系的首位管理员。slug 几乎永久（将成为客户的子域名）。"
+
+msgid "Criar empresa"
+msgstr "创建公司"

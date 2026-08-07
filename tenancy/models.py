@@ -20,6 +20,8 @@ Regras estruturais (invioláveis):
     eMiner (decisão 2026-07-06, §14.4).
 """
 
+import re
+
 import pghistory
 
 from django.conf import settings
@@ -32,13 +34,60 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _lazy
 
 
+# ── B3 (T6/T7 — PLANO_MULTITENANT §10.4/§17.2): o slug vira HOSTNAME ─────────
+# Na T7 o slug é o subdomínio público do cliente (erecyclo.whatthechip.app) e é
+# quase-permanente. Duas travas, congeladas em CÓDIGO (não em dado):
+#
+# 1) FORMATO = rótulo DNS (RFC 1123): minúsculas/dígitos/hífen, não começa nem
+#    termina com hífen, máx. 63 chars. ⚠ O SlugField do Django ACEITA "_" e
+#    maiúsculas — hostname NÃO; por isso o validador próprio.
+# 2) RESERVADOS: nomes de infra/DNS e superfícies do produto que jamais podem
+#    virar subdomínio de cliente (o middleware da T7 trata `www` etc. à parte).
+RESERVED_COMPANY_SLUGS = frozenset({
+    # infra / DNS clássicos
+    'www', 'mail', 'email', 'ftp', 'sftp', 'smtp', 'imap', 'pop',
+    'ns1', 'ns2', 'dns', 'mx', 'cdn', 'assets', 'static', 'media',
+    # superfícies e rotas do produto (evita colisão/confusão futura)
+    'admin', 'api', 'app', 'partner', 'platform', 'status', 'docs',
+    'help', 'support', 'blog', 'dev', 'staging', 'test', 'demo',
+    'login', 'logout', 'painel', 'estoque', 'chips', 'vendas',
+    'pricing', 'company', 'whatthechip',
+})
+
+_DNS_LABEL_RE = re.compile(r'^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')
+
+
+def validate_company_slug(value):
+    """Valida o slug da empresa como FUTURO HOSTNAME (B3).
+
+    Usado em 3 camadas: o campo (admin/forms via full_clean), o formulário de
+    onboarding (T6) e o portão no ``Company.save()`` — este último cobre também
+    escrita ad-hoc por shell/ORM (padrão "portão no MODELO" do projeto).
+    """
+    v = value or ''
+    if not _DNS_LABEL_RE.match(v):
+        raise ValidationError(
+            _lazy('Slug inválido para virar subdomínio: use só minúsculas, '
+                  'dígitos e hífen (sem "_", ponto, espaço ou acento; não '
+                  'pode começar/terminar com hífen; máx. 63 caracteres).'),
+            code='slug_not_dns')
+    if v in RESERVED_COMPANY_SLUGS:
+        raise ValidationError(
+            _lazy('O slug "%(slug)s" é reservado da plataforma — escolha outro.'),
+            code='slug_reserved', params={'slug': v})
+
+
 @pghistory.track()  # auditoria: criação/desativação de empresa é evento de plataforma
 class Company(models.Model):
     """Empresa-cliente (tenant). A fronteira do isolamento comercial."""
 
     name   = models.CharField(max_length=120, unique=True, verbose_name='Nome')
     slug   = models.SlugField(max_length=60, unique=True, verbose_name='Slug',
-                              help_text='Identificador para rotas/domínio futuros (ex.: "eminer").')
+                              validators=[validate_company_slug],
+                              help_text='Identificador de rotas e o SUBDOMÍNIO '
+                                        'futuro do cliente (ex.: "eminer" → '
+                                        'eminer.whatthechip.app). Quase-permanente: '
+                                        'minúsculas, dígitos e hífen (B3).')
     active = models.BooleanField(default=True, verbose_name='Ativa',
                                  help_text='Desativar ≠ deletar — o histórico fica.')
     # F12 (máscara de categoria, dono 2026-07-17): o conhecimento de chips é o
@@ -73,6 +122,14 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        # Portão no MODELO (B3 — mesmo padrão do Membership.clean): validador
+        # de campo só roda em full_clean/forms; aqui cobre TODO caminho de
+        # escrita (shell/ORM/comando). Migrações de dados usam modelo
+        # HISTÓRICO (sem métodos custom) — backfills antigos não quebram.
+        validate_company_slug(self.slug)
+        return super().save(*args, **kwargs)
 
 
 @pghistory.track()  # auditoria: filiais fazem parte da estrutura da empresa

@@ -273,3 +273,133 @@ class BootstrapTenancyTests(TestCase):
         with self.assertRaises(CommandError):
             call_command('bootstrap_tenancy', '--company', 'eMiner',
                          '--admin', 'dono', '--operator', 'dono', '--commit')
+
+
+class CompanySlugValidatorTests(TestCase):
+    """B3 (T6/T7 — §17.2): o slug vira HOSTNAME quase-permanente na T7 —
+    formato de rótulo DNS + lista de reservados, travados em código E no
+    ``Company.save()`` (portão no modelo: shell/ORM também são barrados)."""
+
+    def test_slugs_validos_passam(self):
+        from .models import validate_company_slug
+        for ok in ('eminer', 'erecyclo', 'a2-b3', 'x' * 63, 'a', '9dragons'):
+            validate_company_slug(ok)   # não levanta
+
+    def test_formatos_invalidos_para_hostname(self):
+        from .models import validate_company_slug
+        for ruim in ('Mundo_Metal', 'mundo_metal', 'ERecyclo', '-abc', 'abc-',
+                     'a.b', 'a b', 'ação', 'x' * 64, ''):
+            with self.assertRaises(ValidationError, msg=ruim):
+                validate_company_slug(ruim)
+
+    def test_reservados_sao_barrados(self):
+        from .models import RESERVED_COMPANY_SLUGS, validate_company_slug
+        # amostra + a lista inteira precisa ser DNS-válida (reservado com typo
+        # de formato seria inalcançável e mascararia o motivo real do erro)
+        for r in ('www', 'admin', 'api', 'partner', 'estoque', 'whatthechip'):
+            self.assertIn(r, RESERVED_COMPANY_SLUGS)
+            with self.assertRaises(ValidationError, msg=r):
+                validate_company_slug(r)
+        from .models import _DNS_LABEL_RE
+        for r in RESERVED_COMPANY_SLUGS:
+            self.assertTrue(_DNS_LABEL_RE.match(r),
+                            f'reservado {r!r} nem é DNS label válido')
+
+    def test_portao_no_save_barra_escrita_adhoc(self):
+        with self.assertRaises(ValidationError):
+            Company.objects.create(name='Ruim', slug='Mundo_Metal')
+        self.assertFalse(Company.objects.filter(name='Ruim').exists())
+        # e o caminho bom continua bom (os slugs REAIS da §17.5.1):
+        Company.objects.create(name='eRecyclo T', slug='erecyclo')
+
+    def test_slugs_de_producao_da_decisao_17_5_1_sao_validos(self):
+        from .models import validate_company_slug
+        for slug in ('eminer', 'erecyclo'):
+            validate_company_slug(slug)   # decisão do dono, 2026-08-07
+
+
+class CompanyOnboardingTests(TestCase):
+    """T6 (§17.2, O5): a PLATAFORMA cria empresa + 1º admin em UM passo.
+    Gate ``platform_required``: anônimo → login; empresa/avulso → 403."""
+
+    URL = '/company/new/'
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.root = User.objects.create_superuser('root_onb', password='x')
+        cls.cia = Company.objects.create(name='JáExiste', slug='jaexiste')
+        cls.admin_cia = User.objects.create_user('admin_cia')
+        Membership.objects.create(user=cls.admin_cia, company=cls.cia,
+                                  role=Membership.ROLE_ADMIN)
+
+    def _payload(self, **extra):
+        base = {'company_name': 'eRecyclo', 'slug': 'erecyclo',
+                'branch_name': '', 'admin_username': 'erecyclo_admin',
+                'admin_email': '', 'admin_password': 'provisoria8'}
+        base.update(extra)
+        return base
+
+    def test_anonimo_redireciona_pro_login(self):
+        resp = self.client.get(self.URL)
+        self.assertEqual(resp.status_code, 302)
+        self.assertIn('/login/', resp['Location'])
+
+    def test_nao_plataforma_403_mesmo_admin_de_empresa(self):
+        self.client.force_login(self.admin_cia)
+        self.assertEqual(self.client.get(self.URL).status_code, 403)
+        self.assertEqual(self.client.post(
+            self.URL, self._payload()).status_code, 403)
+
+    def test_plataforma_cria_tudo_num_passo(self):
+        """O5: Company ativa + contador 0 (1º lote = #001) + filial opcional +
+        usuário novo + Membership ADMIN — numa transação."""
+        self.client.force_login(self.root)
+        resp = self.client.post(self.URL, self._payload(
+            branch_name='Matriz', admin_email='adm@erecyclo.com'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'erecyclo.whatthechip.app')
+        cia = Company.objects.get(slug='erecyclo')
+        self.assertTrue(cia.active)
+        self.assertEqual(cia.last_lot_number, 0)
+        filial = Branch.objects.get(company=cia)
+        self.assertEqual(filial.name, 'Matriz')
+        novo = User.objects.get(username='erecyclo_admin')
+        self.assertTrue(novo.check_password('provisoria8'))
+        m = Membership.objects.get(user=novo)
+        self.assertEqual((m.company, m.branch, m.role),
+                         (cia, filial, Membership.ROLE_ADMIN))
+        # e o admin recém-criado NAVEGA: middleware resolve o vínculo
+        self.client.logout()
+        self.client.force_login(novo)
+        self.assertEqual(self.client.get('/painel/').status_code, 200)
+
+    def test_filial_e_email_sao_opcionais(self):
+        self.client.force_login(self.root)
+        self.client.post(self.URL, self._payload())
+        cia = Company.objects.get(slug='erecyclo')
+        self.assertFalse(Branch.objects.filter(company=cia).exists())
+        self.assertIsNone(Membership.objects.get(company=cia).branch)
+
+    def test_slug_reservado_e_invalido_nao_criam_nada(self):
+        self.client.force_login(self.root)
+        for ruim in ('www', 'Mundo_Metal'):
+            resp = self.client.post(self.URL, self._payload(slug=ruim))
+            self.assertEqual(resp.status_code, 200)   # form com erro
+            self.assertFalse(Company.objects.filter(name='eRecyclo').exists(),
+                             ruim)
+
+    def test_duplicatas_dao_erro_de_form_sem_criar(self):
+        self.client.force_login(self.root)
+        casos = (self._payload(slug='jaexiste'),               # slug em uso
+                 self._payload(company_name='JáExiste'),       # nome em uso
+                 self._payload(admin_username='admin_cia'))    # usuário em uso
+        for payload in casos:
+            resp = self.client.post(self.URL, payload)
+            self.assertEqual(resp.status_code, 200)
+            self.assertFalse(Company.objects.filter(slug='erecyclo').exists())
+
+    def test_senha_curta_barra(self):
+        self.client.force_login(self.root)
+        resp = self.client.post(self.URL, self._payload(admin_password='curta'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(User.objects.filter(username='erecyclo_admin').exists())

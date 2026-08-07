@@ -22,6 +22,9 @@ urlpatterns = [
     path('partner/', include('pricing.urls', namespace='pricing')),
     # Vendas (F11.2 — PRECIFICACAO §12.19): Cotação → OV do lote; admin-only.
     path('vendas/', include('vendas.urls', namespace='vendas')),
+    # Gestão de empresa (T6 — PLANO_MULTITENANT §17.2): rota em inglês
+    # (decisão §14.5); hoje só o onboarding de PLATAFORMA (/company/new/).
+    path('company/', include('tenancy.urls', namespace='tenancy')),
     # i18n: set_language (POST) grava o idioma no cookie E, se logado, na
     # preferência do usuário (tenancy.UserLanguage — cadeia I18N.md §3).
     # Mesma rota/nome do Django puro; alimenta os seletores. ANTES do <slug>.

@@ -1,0 +1,68 @@
+{% extends "estoque/base_estoque.html" %}
+{% load i18n %}
+{% comment %}
+T6 — onboarding de empresa (PLANO_MULTITENANT §17.2, O5). Superfície de
+PLATAFORMA (gate platform_required na view); mesmo assim as strings seguem a
+convenção i18n do projeto (MULTILANGUAGE.md §7: toda string nasce marcada E
+traduzida na mesma entrega).
+{% endcomment %}
+
+{% block title %}{% trans "Nova empresa" %} — WhatTheChip?{% endblock %}
+
+{% block extra_head %}
+<style>
+  .onb-wrap  { max-width: 720px; margin: 0 auto; }
+  .onb-card  { background:#fff; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,.08);
+               padding:22px 26px; margin-bottom:18px; }
+  .onb-ok    { border-left:4px solid #198038; }
+  .onb-ok h2 { margin:0 0 10px; font-size:18px; }
+  .onb-ok dl { margin:0; display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:14px; }
+  .onb-ok dt { color:#525252; }
+  .onb-ok dd { margin:0; font-weight:600; }
+  .onb-card h1 { margin:0 0 6px; font-size:22px; }
+  .onb-intro { color:#525252; font-size:14px; margin:0 0 18px; }
+  .onb-card form p { margin:0 0 14px; }
+  .onb-card form label { display:block; font-weight:600; font-size:14px; margin-bottom:4px; }
+  .onb-card form input { width:100%; box-sizing:border-box; padding:9px 11px;
+                         border:1px solid #c6c6c6; border-radius:6px; font-size:14px; }
+  .onb-card form .helptext { display:block; color:#6f6f6f; font-size:12px; margin-top:3px; }
+  .onb-card form ul.errorlist { color:#da1e28; font-size:13px; margin:4px 0 6px; padding-left:18px; }
+  .onb-submit { padding:10px 22px; border:0; border-radius:6px; background:#0f62fe;
+                color:#fff; font-size:15px; font-weight:600; cursor:pointer; }
+  .onb-submit:hover { background:#0043ce; }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="onb-wrap">
+
+  {% if created %}
+  <div class="onb-card onb-ok">
+    <h2>✓ {% trans "Empresa criada." %}</h2>
+    <dl>
+      <dt>{% trans "Empresa" %}</dt><dd>{{ created.company.name }} ({{ created.company.slug }})</dd>
+      {% if created.branch %}<dt>{% trans "Filial" %}</dt><dd>{{ created.branch.name }}</dd>{% endif %}
+      <dt>{% trans "Primeiro admin" %}</dt><dd>{{ created.admin_username }}</dd>
+      <dt>{% trans "Login de hoje" %}</dt><dd>whatthechip.app/login/</dd>
+      <dt>{% trans "Endereço futuro (T7)" %}</dt><dd>{{ created.future_host }}</dd>
+    </dl>
+    <p class="onb-intro" style="margin:12px 0 0;">
+      {% trans "Próximo passo: entregue ao cliente o endereço de login, o usuário e a senha provisória que você definiu — por canal seguro. O primeiro lote da empresa nasce como #001." %}
+    </p>
+  </div>
+  {% endif %}
+
+  <div class="onb-card">
+    <h1>{% trans "Nova empresa" %}</h1>
+    <p class="onb-intro">
+      {% trans "Superfície de plataforma: cria a empresa-cliente, a filial opcional e o primeiro admin com vínculo — em um passo. O slug é quase-permanente (vira o subdomínio do cliente)." %}
+    </p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="onb-submit">{% trans "Criar empresa" %}</button>
+    </form>
+  </div>
+
+</div>
+{% endblock %}

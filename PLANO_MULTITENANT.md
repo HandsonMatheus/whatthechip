@@ -940,6 +940,74 @@ python manage.py guard_catalog   # com DATABASE_URL do Render (tripwire, como se
 Aceite da E0 = suíte local verde + baseline gerado + **403 confirmado em prod**
 + guard_catalog estável. Aí a E1 (T6, onboarding) pode abrir.
 
+**✅ E0 FECHADA em 2026-08-07 (~01h Caracas).** Dono rodou o runbook: suíte
+LOCAL **437 OK** (fonte da verdade, bateu com o sandbox) + `baseline_pre_t6.json`
+gravado (**7.843 PNs**; guardar, não commitar) + commit cirúrgico + push. O
+agente verificou em produção PÓS-deploy: `/chips/search/` e `/chips/decode/`
+→ **403** (o furo está FECHADO) e a home segue no ar, intacta. Observação
+registrada FORA do escopo E (trilha de qualidade de dados): avisos
+pré-existentes «JSON inválido em ChipFamily.reasoning» no test run e no
+characterize (M15T*, SDIN, SDAD, SDINB, SD5DH, H9DP, PMG6, 08/16EMCP…) — o
+campo é texto livre do yaml e algum leitor tenta `json.loads`; não bloqueia
+nada (suíte verde, baseline gravado), investigar em sessão própria.
+**→ PRÓXIMA SESSÃO: E1 (T6 — onboarding, §17.2).** Levar fechada a decisão
+§17.5.1 (slugs dos 2 clientes).
+
+### E1 — T6, onboarding de empresa (2026-08-07; código PRONTO — §17.2)
+
+**Decisão §17.5.1 fechada pelo dono na abertura:** slugs **`eminer` +
+`erecyclo`** (a 2ª empresa está em prod com o nome errado "Mundo Metal" →
+renomear para **eRecyclo**). Grep no repo: único hardcode é fixture de teste
+(`pricing/tests.py`, 'Mundo Metal T'/'mm-t' — não muda); `PRECIFICACAO.md`
+menciona o caso (atualizar quando aquele doc for revisado).
+
+**O que foi construído (suíte 449 OK no sandbox — 437 + 12 novos):**
+
+- **B3 no MODELO** (`tenancy/models.py`): `validate_company_slug` (rótulo DNS
+  RFC 1123 — ⚠ o SlugField aceitava `_`/maiúscula, hostname não) +
+  `RESERVED_COMPANY_SLUGS` congelada em CÓDIGO (infra/DNS + superfícies do
+  produto, ~30 nomes) + portão no `Company.save()` (cobre shell/ORM; migração
+  de dados usa modelo histórico → backfills antigos intactos). Migração
+  **tenancy/0005** (AlterField state-only, zero mudança de dado).
+- **`platform_required`** (`tenancy/access.py`): gate de plataforma (só
+  superuser; anônimo → login, resto → 403) — irmão do `role_required` para
+  superfícies que não pertencem a empresa nenhuma.
+- **Fluxo `/company/new/`** (`tenancy/forms.py` + `views.py` + `urls.py`
+  montado em `company/` — rota inglês, §14.5 — + template
+  `tenancy/company_new.html` no shell do app): empresa + slug + filial
+  opcional + 1º admin (senha provisória ≥8) numa TRANSAÇÃO; empresa nasce com
+  contador 0 → 1º lote **#001**; confirmação mostra o endereço futuro
+  `<slug>.whatthechip.app`; sem PRG de propósito (F5 re-post morre nos
+  uniques, nada duplica); unicidade `iexact` em nome/slug/usuário (evita
+  gêmeos por caixa: "ERecyclo" × "erecyclo").
+- **i18n na MESMA entrega** (MULTILANGUAGE §7): 25 msgids novos marcados E
+  traduzidos (es/en/zh-hans) → catálogos com 579 entradas,
+  `check_translations` verde.
+- **12 testes novos** (`tenancy/tests.py`): validador (formato × reservados ×
+  a própria lista reservada é DNS-válida × portão no save × os slugs REAIS da
+  §17.5.1), gate (anônimo→login; admin de EMPRESA→403), e2e O5 (cria tudo num
+  POST e o admin novo já navega o /painel/), opcionais, duplicatas e senha
+  curta não criam NADA.
+
+**Runbook do DONO (fecha a E1):**
+
+```bash
+python manage.py migrate tenancy      # 0005 — validador no slug (state-only)
+python manage.py test chips estoque tenancy pricing vendas --settings=core.settings_test
+python manage.py characterize_baseline --diff baseline_pre_t6.json   # esperado: diff 0
+# RENAME da 2ª empresa em PROD (admin → Tenancy → Empresas → "Mundo Metal"):
+#   nome → eRecyclo · slug → erecyclo   (pghistory audita a mudança)
+# SMOKE O5 (runserver local): logar superuser → /company/new/ → criar empresa
+#   de teste em < 5 min → abrir lote e conferir #001 → desativar no admin
+git add tenancy core/urls.py locale PLANO_MULTITENANT.md
+git commit -m "E1/T6: onboarding de empresa (plataforma) + B3 validador DNS de slug + i18n"
+git push origin main
+python manage.py guard_catalog        # DATABASE_URL do Render, como sempre
+```
+
+Aceite = suíte local verde + diff 0 + O5 provado + rename feito + guard OK.
+Depois disso: **E2 (T7 — código do subdomínio, §17.3)**.
+
 ---
 
 ## 17. Roadmap de execução — da fundação ao subdomínio dos 2 clientes (dossiê 2026-08-06)
@@ -984,9 +1052,9 @@ Fecha o §10.7 e confere a fundação antes de qualquer código novo:
 
 **Aceite:** suíte verde DE VERDADE + baseline gerado. Sem isso, nenhuma fase abre.
 
-> **Status (2026-08-07): parte do agente FEITA — suíte 437 OK no sandbox, ver
-> §16-E0 (diário). Falta o runbook do dono (suíte local + baseline + PUSH que
-> fecha o furo de prod + guard_catalog).**
+> **Status: ✅ E0 FECHADA em 2026-08-07 (§16-E0): suíte local 437 OK, baseline
+> 7.843 PNs, push feito, 403 verificado ao vivo em prod — furo fechado.
+> Próxima: E1 (§17.2).**
 
 ### 17.2 E1 — T6, o onboarding (1 sessão) — absorve o B3
 
@@ -1011,6 +1079,10 @@ primeiro admin em < 5 min sem tocar código** (O5).
 
 **Aceite:** O5 provado com empresa de teste (criada e depois desativada);
 suíte verde; `characterize --diff` = 0.
+
+> **Status: código PRONTO (2026-08-07, §16-E1) — suíte 449 OK no sandbox
+> (437 + 12 novos). Falta o runbook do dono: migrate 0005 + rename eRecyclo +
+> smoke O5 + push + guard.**
 
 ### 17.3 E2 — T7, o código (1–2 sessões) — B1/B2/B5/B6 + middleware + testes
 
@@ -1078,9 +1150,10 @@ pelos próprios subdomínios, checklist do item 6 todo verde.
 
 ### 17.5 Decisões em aberto (fechar com o dono ANTES da fase correspondente)
 
-1. **Slugs dos 2 clientes** (fecha na E1, congela na E3): confirmar por
-   escrito — viram endereço público quase-permanente. Formato DNS:
-   minúsculas/dígitos/hífen (`eminer` + o do 2º cliente).
+1. **Slugs dos 2 clientes — ✅ FECHADA (dono, 2026-08-07):** `eminer` +
+   `erecyclo`. ⚠ A 2ª empresa está em prod com o NOME ERRADO ("Mundo Metal")
+   — o certo é **eRecyclo**: renomear no admin (nome + slug `erecyclo`;
+   pghistory audita). Runbook no §16-E1; congelam de vez na E3.
 2. **`/fab-*/` públicas?** (E2/B1): auditar quanta convenção de decode expõem;
    ficam públicas no canônico ou viram plataforma-only?
 3. **Plataforma (superuser) em host de cliente** (E2): recomendação = PASSA
