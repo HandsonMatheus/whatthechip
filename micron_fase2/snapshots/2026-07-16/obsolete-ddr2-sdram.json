@@ -1,0 +1,5149 @@
+{
+ "date": "2026-07-16 12:32:11.0",
+ "response-code": "200",
+ "filter": [
+  {
+   "Bus Width": [
+    "x16, x4, x8"
+   ]
+  },
+  {
+   "CAS Latency": [
+    "CL = 5, CL = 6, CL = 7"
+   ]
+  },
+  {
+   "Component Config": [
+    "128Mb x16, 128Mb x8, 1Gb x4, 256Mb x4, 256Mb x8, 32Mb x16, 512Mb x4, 512Mb x8, 64Mb x16, 64Mb x8"
+   ]
+  },
+  {
+   "Component Density": [
+    "1Gb, 2Gb, 4Gb, 512Mb"
+   ]
+  },
+  {
+   "Family": [
+    "DRAM"
+   ]
+  },
+  {
+   "I/O Voltage": [
+    "1.8 VOLTS"
+   ]
+  },
+  {
+   "MT/s": [
+    "1066MTPS, 666MTPS, 800MTPS"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-40C to +105C, -40C to +125C, -40C to +95C, 0C to +85C"
+   ]
+  },
+  {
+   "Package": [
+    "FBGA, TFBGA"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "Obsolete"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT"
+   ]
+  },
+  {
+   "Pin Count": [
+    "60-ball, 63-ball, 84-ball"
+   ]
+  },
+  {
+   "Speed": [
+    "333MHz, 400MHz, 533MHz"
+   ]
+  },
+  {
+   "Technology": [
+    "DDR2"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mt47h64m16hr-25e-h",
+   "part-number": "MT47H64M16HR-25E:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-25e-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h512m4thn-25e-h",
+   "part-number": "MT47H512M4THN-25E:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h512m4thn-25e-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "63-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X4 FBGA"
+  },
+  {
+   "part-key": "mt47h256m8thn-3-h",
+   "part-number": "MT47H256M8THN-3:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h256m8thn-3-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "63-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-25e-l-h",
+   "part-number": "MT47H64M16HR-25E L:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-25e-l-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-3-it-h",
+   "part-number": "MT47H64M16HR-3 IT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-3-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h128m16rt-25e-xit-c",
+   "part-number": "MT47H128M16RT-25E XIT:C",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m16rt-25e-xit-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-3-aat-h",
+   "part-number": "MT47H64M16HR-3 AAT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-3-aat-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1368"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h256m8thn-25e-m",
+   "part-number": "MT47H256M8THN-25E:M",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h256m8thn-25e-m",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "63-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1518"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X8 TFBGA"
+  },
+  {
+   "part-key": "mt47h64m16nf-25e-xit-m",
+   "part-number": "MT47H64M16NF-25E XIT:M",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16nf-25e-xit-m",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1368"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 TFBGA"
+  },
+  {
+   "part-key": "mt47h128m16pk-25e-it-c",
+   "part-number": "MT47H128M16PK-25E IT:C",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m16pk-25e-it-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h64m8sh-25e-aat-h",
+   "part-number": "MT47H64M8SH-25E AAT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m8sh-25e-aat-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "512Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1518"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 512M X8 TFBGA"
+  },
+  {
+   "part-key": "mt47h128m8cf-25-h",
+   "part-number": "MT47H128M8CF-25:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m8cf-25-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 6"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h32m16nf-25e-aut-h",
+   "part-number": "MT47H32M16NF-25E AUT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h32m16nf-25e-aut-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "512Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1368"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 512M X16 TFBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-3-h",
+   "part-number": "MT47H64M16HR-3:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-3-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h512m4thn-3-h",
+   "part-number": "MT47H512M4THN-3:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h512m4thn-3-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "63-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X4 FBGA"
+  },
+  {
+   "part-key": "mt47h256m8eb-187e-c",
+   "part-number": "MT47H256M8EB-187E:C",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h256m8eb-187e-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 7"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hw-3-h",
+   "part-number": "MT47H64M16HW-3:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hw-3-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-3-ait-h",
+   "part-number": "MT47H64M16HR-3 AIT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-3-ait-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1368"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h128m8cf-3-ait-h",
+   "part-number": "MT47H128M8CF-3 AIT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m8cf-3-ait-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1518"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h128m8cf-3-h",
+   "part-number": "MT47H128M8CF-3:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m8cf-3-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h128m8jn-3-h",
+   "part-number": "MT47H128M8JN-3:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m8jn-3-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h64m8sh-25e-ait-h",
+   "part-number": "MT47H64M8SH-25E AIT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m8sh-25e-ait-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "512Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1518"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 512M X8 TFBGA"
+  },
+  {
+   "part-key": "mt47h512m8wtr-25e-c",
+   "part-number": "MT47H512M8WTR-25E:C",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h512m8wtr-25e-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "63-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1320"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 4G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h128m8cf-3-l-h",
+   "part-number": "MT47H128M8CF-3 L:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m8cf-3-l-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hw-3-it-h",
+   "part-number": "MT47H64M16HW-3 IT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hw-3-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h256m4cf-3-h",
+   "part-number": "MT47H256M4CF-3:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h256m4cf-3-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X4 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-187e-h",
+   "part-number": "MT47H64M16HR-187E:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-187e-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 7"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h512m4thn-25e-m",
+   "part-number": "MT47H512M4THN-25E:M",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h512m4thn-25e-m",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "63-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1518"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X4 TFBGA"
+  },
+  {
+   "part-key": "mt47h256m8eb-3-c",
+   "part-number": "MT47H256M8EB-3:C",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h256m8eb-3-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1320"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h128m16rt-25e-aat-c",
+   "part-number": "MT47H128M16RT-25E AAT:C",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m16rt-25e-aat-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h128m8jn-3-it-h",
+   "part-number": "MT47H128M8JN-3 IT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m8jn-3-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h256m4cf-25e-h",
+   "part-number": "MT47H256M4CF-25E:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h256m4cf-25e-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X4 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-25-h",
+   "part-number": "MT47H64M16HR-25:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-25-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 6"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hw-25e-it-h",
+   "part-number": "MT47H64M16HW-25E IT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hw-25e-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h128m8cf-25e-h",
+   "part-number": "MT47H128M8CF-25E:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m8cf-25e-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16nf-187e-m",
+   "part-number": "MT47H64M16NF-187E:M",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16nf-187e-m",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 7"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1368"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 TFBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-25e-ait-h",
+   "part-number": "MT47H64M16HR-25E AIT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-25e-ait-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1368"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h512m4eb-25e-c",
+   "part-number": "MT47H512M4EB-25E:C",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h512m4eb-25e-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1320"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X4 FBGA"
+  },
+  {
+   "part-key": "mt47h1g4wtr-25e-c",
+   "part-number": "MT47H1G4WTR-25E:C",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h1g4wtr-25e-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "63-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1320"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 4G X4 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-25e-it-h",
+   "part-number": "MT47H64M16HR-25E IT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-25e-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h128m8cf-3-it-h",
+   "part-number": "MT47H128M8CF-3 IT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m8cf-3-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1518"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-25e-aat-h",
+   "part-number": "MT47H64M16HR-25E AAT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-25e-aat-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1368"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h128m16rt-187e-c",
+   "part-number": "MT47H128M16RT-187E:C",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m16rt-187e-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 7"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 2G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h128m8cf-25e-it-h",
+   "part-number": "MT47H128M8CF-25E IT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m8cf-25e-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-25-it-h",
+   "part-number": "MT47H64M16HR-25 IT:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-25-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 6"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt47h128m8cf-187e-h",
+   "part-number": "MT47H128M8CF-187E:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h128m8cf-187e-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 7"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt47h64m16hr-3-l-h",
+   "part-number": "MT47H64M16HR-3 L:H",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr2-sdram/mt47h64m16hr-3-l-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "84-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR2 1G X16 FBGA"
+  }
+ ]
+}

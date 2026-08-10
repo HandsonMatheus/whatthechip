@@ -1,0 +1,24 @@
+{
+ "date": "2026-07-16",
+ "catalogs": [
+  {
+   "path": "storage/managed-nand/universal-flash-storage",
+   "slug": "universal-flash-storage",
+   "status": 200,
+   "count": 21,
+   "technology": [
+    "UFS TLC"
+   ]
+  },
+  {
+   "path": "obsolete/obsolete-universal-flash-storage",
+   "slug": "obsolete-universal-flash-storage",
+   "status": 200,
+   "count": 69,
+   "technology": [
+    "UFS TLC",
+    "UFS MLC"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,9425 @@
+{
+ "date": "2026-07-16 12:32:12.892",
+ "response-code": "200",
+ "filter": [
+  {
+   "Bus Width": [
+    "x16, x32, x4, x8"
+   ]
+  },
+  {
+   "CAS Latency": [
+    "CL = 2, CL = 2.5, CL = 3"
+   ]
+  },
+  {
+   "Component Config": [
+    "0b x16, 0b x32, 0b x8, 16Mb x16, 16Mb x8, 2Mb x32, 32Mb x16, 32Mb x8, 4Mb x16, 4Mb x32, 64Mb x4, 8Mb x16, 8Mb x8"
+   ]
+  },
+  {
+   "Component Density": [
+    "128Mb, 256Mb, 512Mb, 64Mb"
+   ]
+  },
+  {
+   "Family": [
+    "DRAM"
+   ]
+  },
+  {
+   "I/O Voltage": [
+    "3.3 VOLTS"
+   ]
+  },
+  {
+   "MT/s": [
+    "133MTPS, 200MTPS, 266MTPS, 332MTPS"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-40C to +105C, -40C to +85C, 0C to +70C, 0C to +95C"
+   ]
+  },
+  {
+   "Package": [
+    "FBGA, TSOP, VFBGA"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "Obsolete"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT"
+   ]
+  },
+  {
+   "Pin Count": [
+    "54-ball, 54-pin, 60-ball, 86-pin, 90-ball"
+   ]
+  },
+  {
+   "Speed": [
+    "133MHz, 166MHz, 200MHz"
+   ]
+  },
+  {
+   "Technology": [
+    "SDRAM"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mt48lc16m16a2tg-6a-it-g",
+   "part-number": "MT48LC16M16A2TG-6A IT:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2tg-6a-it-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m8a2p-6a-l",
+   "part-number": "MT48LC16M8A2P-6A:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m8a2p-6a-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2tg-7e-it-d",
+   "part-number": "MT48LC16M16A2TG-7E IT:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2tg-7e-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2bg-7e-it-d",
+   "part-number": "MT48LC16M16A2BG-7E IT:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2bg-7e-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc16m16a2p-75-d",
+   "part-number": "MT48LC16M16A2P-75:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2p-75-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc64m4a2fb-7e-d",
+   "part-number": "MT48LC64M4A2FB-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc64m4a2fb-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 16.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X4 FBGA"
+  },
+  {
+   "part-key": "mt48lc8m16a2p-6a-xit-l",
+   "part-number": "MT48LC8M16A2P-6A XIT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m16a2p-6a-xit-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc8m8a2p-6a-j",
+   "part-number": "MT48LC8M8A2P-6A:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m8a2p-6a-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc2m32b2p-6a-it-j",
+   "part-number": "MT48LC2M32B2P-6A IT:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc2m32b2p-6a-it-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "86-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X32 TSOP"
+  },
+  {
+   "part-key": "mt48lc4m16a2p-6a-aat-j",
+   "part-number": "MT48LC4M16A2P-6A AAT:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m16a2p-6a-aat-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2fb-7e-d",
+   "part-number": "MT48LC32M8A2FB-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2fb-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 16.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 FBGA"
+  },
+  {
+   "part-key": "mt48lc32m8a2p-6a-it-g",
+   "part-number": "MT48LC32M8A2P-6A IT:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2p-6a-it-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc64m4a2p-7e-d",
+   "part-number": "MT48LC64M4A2P-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc64m4a2p-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X4 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2fg-75-it-d",
+   "part-number": "MT48LC16M16A2FG-75 IT:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2fg-75-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc4m32b2p-6a-l",
+   "part-number": "MT48LC4M32B2P-6A:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m32b2p-6a-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "86-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X32 TSOP"
+  },
+  {
+   "part-key": "mt48lc2m32b2p-5-j",
+   "part-number": "MT48LC2M32B2P-5:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc2m32b2p-5-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "86-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X32 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2bb-75-d",
+   "part-number": "MT48LC32M8A2BB-75:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2bb-75-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 16.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 FBGA"
+  },
+  {
+   "part-key": "mt48lc16m16a2tg-6a-d",
+   "part-number": "MT48LC16M16A2TG-6A:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2tg-6a-d",
+   "attr": [
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MT48LC16M16A2TG-6A:D  SDRAM"
+  },
+  {
+   "part-key": "mt48lc8m16a2f4-6a-it-l",
+   "part-number": "MT48LC8M16A2F4-6A IT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m16a2f4-6a-it-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 0.60"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc16m16a2tg-6a-g",
+   "part-number": "MT48LC16M16A2TG-6A:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2tg-6a-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2fg-75-d",
+   "part-number": "MT48LC16M16A2FG-75:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2fg-75-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc32m8a2p-75-it-d",
+   "part-number": "MT48LC32M8A2P-75 IT:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2p-75-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2p-6a-g",
+   "part-number": "MT48LC32M8A2P-6A:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2p-6a-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc4m16a2p-7e-it-j",
+   "part-number": "MT48LC4M16A2P-7E IT:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m16a2p-7e-it-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "133MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2bg-75-at-d",
+   "part-number": "MT48LC16M16A2BG-75 AT:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2bg-75-at-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc32m16a2tg-75-c",
+   "part-number": "MT48LC32M16A2TG-75:C",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m16a2tg-75-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "512Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 512M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2tg-75-d",
+   "part-number": "MT48LC32M8A2TG-75:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2tg-75-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2p-6a-d",
+   "part-number": "MT48LC32M8A2P-6A:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2p-6a-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2tg-75-d",
+   "part-number": "MT48LC16M16A2TG-75:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2tg-75-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc8m32b2tg-7-it-f",
+   "part-number": "MT48LC8M32B2TG-7 IT:F",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m32b2tg-7-it-f",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MT48LC8M32B2TG-7 IT:F  SDRAM"
+  },
+  {
+   "part-key": "mt48lc4m32b2b5-6a-ait-l",
+   "part-number": "MT48LC4M32B2B5-6A AIT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m32b2b5-6a-ait-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "90-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X32 VFBGA"
+  },
+  {
+   "part-key": "mt48lc4m16a2p-7e-ait-j",
+   "part-number": "MT48LC4M16A2P-7E AIT:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m16a2p-7e-ait-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2bg-75-it-d",
+   "part-number": "MT48LC16M16A2BG-75 IT:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2bg-75-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc4m16a2tg-6a-j",
+   "part-number": "MT48LC4M16A2TG-6A:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m16a2tg-6a-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2tg-75-l-d",
+   "part-number": "MT48LC16M16A2TG-75 L:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2tg-75-l-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc64m4a2p-6a-g",
+   "part-number": "MT48LC64M4A2P-6A:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc64m4a2p-6a-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X4 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2p-7e-d",
+   "part-number": "MT48LC16M16A2P-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2p-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2b4-6a-ait-g",
+   "part-number": "MT48LC16M16A2B4-6A AIT:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2b4-6a-ait-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc16m16a2f4-6a-g",
+   "part-number": "MT48LC16M16A2F4-6A:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2f4-6a-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 0.60"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc8m16a2p-7e-it-l",
+   "part-number": "MT48LC8M16A2P-7E IT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m16a2p-7e-it-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "133MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc8m16a2b4-6a-aat-l",
+   "part-number": "MT48LC8M16A2B4-6A AAT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m16a2b4-6a-aat-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc16m8a2p-6a-ait-l",
+   "part-number": "MT48LC16M8A2P-6A AIT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m8a2p-6a-ait-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2p-7e-it-d",
+   "part-number": "MT48LC16M16A2P-7E IT:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2p-7e-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2b4-6a-aat-g",
+   "part-number": "MT48LC16M16A2B4-6A AAT:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2b4-6a-aat-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc4m16a2b4-6a-it-j",
+   "part-number": "MT48LC4M16A2B4-6A IT:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m16a2b4-6a-it-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc16m16a2p-7e-it-g",
+   "part-number": "MT48LC16M16A2P-7E IT:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2p-7e-it-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "133MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc4m32b2p-6a-xit-l",
+   "part-number": "MT48LC4M32B2P-6A XIT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m32b2p-6a-xit-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "86-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X32 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m8a2bb-6a-aat-l",
+   "part-number": "MT48LC16M8A2BB-6A AAT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m8a2bb-6a-aat-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "0b x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1650"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 16.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 0 X8 FBGA"
+  },
+  {
+   "part-key": "mt48lc16m16a2bg-7e-d",
+   "part-number": "MT48LC16M16A2BG-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2bg-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc8m16a2p-7e-l",
+   "part-number": "MT48LC8M16A2P-7E:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m16a2p-7e-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "133MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc4m32b2tg-6a-l",
+   "part-number": "MT48LC4M32B2TG-6A:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m32b2tg-6a-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "86-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X32 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2tg-75-it-d",
+   "part-number": "MT48LC32M8A2TG-75 IT:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2tg-75-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc8m16a2p-6a-aat-l",
+   "part-number": "MT48LC8M16A2P-6A AAT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m16a2p-6a-aat-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2p-7e-d",
+   "part-number": "MT48LC32M8A2P-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2p-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc4m32b2p-6a-it-l",
+   "part-number": "MT48LC4M32B2P-6A IT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m32b2p-6a-it-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "86-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X32 TSOP"
+  },
+  {
+   "part-key": "mt48lc4m32b2f5-6a-l",
+   "part-number": "MT48LC4M32B2F5-6A:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m32b2f5-6a-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "90-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X32 VFBGA"
+  },
+  {
+   "part-key": "mt48lc16m16a2f4-6a-it-g",
+   "part-number": "MT48LC16M16A2F4-6A IT:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2f4-6a-it-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 0.60"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc4m32b2p-6a-ait-l",
+   "part-number": "MT48LC4M32B2P-6A AIT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m32b2p-6a-ait-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "86-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "0b x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 0 X32 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2p-6a-xit-g",
+   "part-number": "MT48LC16M16A2P-6A XIT:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2p-6a-xit-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2bg-75-d",
+   "part-number": "MT48LC16M16A2BG-75:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2bg-75-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc8m16a2b4-6a-l",
+   "part-number": "MT48LC8M16A2B4-6A:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m16a2b4-6a-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "0b x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 0 X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc16m16a2p-75-l-d",
+   "part-number": "MT48LC16M16A2P-75 L:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2p-75-l-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m16a2p-75-it-c",
+   "part-number": "MT48LC32M16A2P-75 IT:C",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m16a2p-75-it-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "512Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 512M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2fg-7e-d",
+   "part-number": "MT48LC16M16A2FG-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2fg-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc8m16a2tg-6a-it-l",
+   "part-number": "MT48LC8M16A2TG-6A IT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m16a2tg-6a-it-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2p-6a-d",
+   "part-number": "MT48LC16M16A2P-6A:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2p-6a-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2p-7e-l-d",
+   "part-number": "MT48LC16M16A2P-7E L:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2p-7e-l-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2tg-75-l-d",
+   "part-number": "MT48LC32M8A2TG-75 L:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2tg-75-l-d",
+   "attr": [
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MT48LC32M8A2TG-75 L:D  SDRAM"
+  },
+  {
+   "part-key": "mt48lc4m32b2b5-6a-l",
+   "part-number": "MT48LC4M32B2B5-6A:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m32b2b5-6a-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "90-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X32 VFBGA"
+  },
+  {
+   "part-key": "mt48lc4m32b2f5-6a-it-l",
+   "part-number": "MT48LC4M32B2F5-6A IT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m32b2f5-6a-it-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "90-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X32 VFBGA"
+  },
+  {
+   "part-key": "mt48lc8m16a2b4-6a-xit-l",
+   "part-number": "MT48LC8M16A2B4-6A XIT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m16a2b4-6a-xit-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc32m16a2p-75-c",
+   "part-number": "MT48LC32M16A2P-75:C",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m16a2p-75-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "512Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 512M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2b4-6a-xit-g",
+   "part-number": "MT48LC16M16A2B4-6A XIT:G",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2b4-6a-xit-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc4m16a2tg-6a-it-j",
+   "part-number": "MT48LC4M16A2TG-6A IT:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m16a2tg-6a-it-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2tg-75-it-d",
+   "part-number": "MT48LC16M16A2TG-75 IT:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2tg-75-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2tg-6a-d",
+   "part-number": "MT48LC32M8A2TG-6A:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2tg-6a-d",
+   "attr": [
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MT48LC32M8A2TG-6A:D  SDRAM"
+  },
+  {
+   "part-key": "mt48lc2m32b2b5-6a-j",
+   "part-number": "MT48LC2M32B2B5-6A:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc2m32b2b5-6a-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "90-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X32 VFBGA"
+  },
+  {
+   "part-key": "mt48lc32m8a2bb-7e-d",
+   "part-number": "MT48LC32M8A2BB-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2bb-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 16.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 FBGA"
+  },
+  {
+   "part-key": "mt48lc64m4a2p-75-d",
+   "part-number": "MT48LC64M4A2P-75:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc64m4a2p-75-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X4 TSOP"
+  },
+  {
+   "part-key": "mt48lc16m16a2p-75-it-d",
+   "part-number": "MT48LC16M16A2P-75 IT:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2p-75-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc64m4a2fb-75-d",
+   "part-number": "MT48LC64M4A2FB-75:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc64m4a2fb-75-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 16.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X4 FBGA"
+  },
+  {
+   "part-key": "mt48lc2m32b2p-6a-j",
+   "part-number": "MT48LC2M32B2P-6A:J",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc2m32b2p-6a-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "86-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 22.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 64M X32 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2tg-7e-d",
+   "part-number": "MT48LC32M8A2TG-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2tg-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2p-75-d",
+   "part-number": "MT48LC32M8A2P-75:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2p-75-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 TSOP"
+  },
+  {
+   "part-key": "mt48lc8m16a2f4-6a-l",
+   "part-number": "MT48LC8M16A2F4-6A:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc8m16a2f4-6a-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 8.00 x 0.60"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X16 VFBGA"
+  },
+  {
+   "part-key": "mt48lc64m4a2tg-7e-d",
+   "part-number": "MT48LC64M4A2TG-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc64m4a2tg-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X4 TSOP"
+  },
+  {
+   "part-key": "mt48lc4m32b2b5-6a-it-l",
+   "part-number": "MT48LC4M32B2B5-6A IT:L",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc4m32b2b5-6a-it-l",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "332MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 3"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "90-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 128M X32 VFBGA"
+  },
+  {
+   "part-key": "mt48lc16m16a2tg-7e-d",
+   "part-number": "MT48LC16M16A2TG-7E:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc16m16a2tg-7e-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "54-pin"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.16 x 22.22 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TSOP"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X16 TSOP"
+  },
+  {
+   "part-key": "mt48lc32m8a2fb-75-d",
+   "part-number": "MT48LC32M8A2FB-75:D",
+   "product-tag": "micron:products/memory/dram-memory/obsolete/obsolete-sdram/mt48lc32m8a2fb-75-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "256Mb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 2.5"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "60-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 16.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "SDRAM"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SDRAM 256M X8 FBGA"
+  }
+ ]
+}

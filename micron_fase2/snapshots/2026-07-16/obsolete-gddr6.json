@@ -1,0 +1,832 @@
+{
+ "date": "2026-07-16 12:32:20.161",
+ "response-code": "200",
+ "filter": [
+  {
+   "Bus Width": [
+    "x32"
+   ]
+  },
+  {
+   "Component Config": [
+    "256Mb x32, 512Mb x32"
+   ]
+  },
+  {
+   "Component Density": [
+    "16Gb, 8Gb"
+   ]
+  },
+  {
+   "Family": [
+    "DRAM"
+   ]
+  },
+  {
+   "I/O Voltage": [
+    "1.35 VOLTS, 1.35/1.25 VOLTS"
+   ]
+  },
+  {
+   "MT/s": [
+    "12GTPS, 14GTPS, 16GTPS, 18GTPS"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-40C to +105C, 0C to +95C"
+   ]
+  },
+  {
+   "Package": [
+    "TFBGA"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "Obsolete"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT"
+   ]
+  },
+  {
+   "Pin Count": [
+    "180-ball"
+   ]
+  },
+  {
+   "Speed": [
+    "1.5GHz, 1.75GHz, 2.25GHz, 2GHz"
+   ]
+  },
+  {
+   "Technology": [
+    "GDDR6"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mt61dckpa-y31g-c",
+   "part-number": "MT61DCKPA-Y31G:C",
+   "product-tag": "micron:products/memory/hbm/gddr6/mt61dckpa-y31g-c",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "OTHER"
+  },
+  {
+   "part-key": "mt61k512m32kpa-16-c",
+   "part-number": "MT61K512M32KPA-16:C",
+   "product-tag": "micron:products/memory/hbm/gddr6/mt61k512m32kpa-16-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2GHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "16GTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "180-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "GDDR6"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "GDDR6 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt61k512m32kpa-14-b",
+   "part-number": "MT61K512M32KPA-14:B",
+   "product-tag": "micron:products/memory/hbm/gddr6/mt61k512m32kpa-14-b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1.75GHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "14GTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "180-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "GDDR6"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "GDDR6 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt61m512m32kpa-14-n-c",
+   "part-number": "MT61M512M32KPA-14 N:C",
+   "product-tag": "micron:products/memory/hbm/gddr6/mt61m512m32kpa-14-n-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1.75GHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "14GTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "180-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "GDDR6"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "GDDR6 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt61r512m32kpa-16-aat-e",
+   "part-number": "MT61R512M32KPA-16 AAT:E",
+   "product-tag": "micron:products/memory/hbm/gddr6/mt61r512m32kpa-16-aat-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2GHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "16GTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35/1.25 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "180-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "GDDR6"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "GDDR6 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt61k512m32kpa-18-c",
+   "part-number": "MT61K512M32KPA-18:C",
+   "product-tag": "micron:products/memory/hbm/gddr6/mt61k512m32kpa-18-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2.25GHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "18GTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "180-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "GDDR6"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "GDDR6 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt61k256m32je-14-a",
+   "part-number": "MT61K256M32JE-14:A",
+   "product-tag": "micron:products/memory/hbm/gddr6/mt61k256m32je-14-a",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1.75GHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "14GTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "180-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "GDDR6"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "GDDR6 8G X32 TFBGA"
+  },
+  {
+   "part-key": "mt61k256m32je-12-a",
+   "part-number": "MT61K256M32JE-12:A",
+   "product-tag": "micron:products/memory/hbm/gddr6/mt61k256m32je-12-a",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1.5GHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "12GTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "180-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "GDDR6"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "GDDR6 8G X32 TFBGA"
+  }
+ ]
+}

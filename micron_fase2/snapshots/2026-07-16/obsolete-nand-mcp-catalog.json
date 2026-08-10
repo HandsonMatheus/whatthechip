@@ -1,0 +1,8552 @@
+{
+ "date": "2026-07-16 12:32:18.141",
+ "response-code": "200",
+ "filter": [
+  {
+   "Component Config": [
+    "1.25Gb x1, 1.5Gb x1, 1.5Gb x8, 12Gb x1, 144Mb x32, 160Mb x16, 192M x8, 192Mb x16, 192Mb x32, 192Mb x8, 1Gb x8, 256M x32, 256Mb x32, 256Mb x8, 384Mb x16, 384Mb x32, 3Gb x1, 4Gb x1, 512Gb x8, 64Gb x8, 6G x1, 6Gb x1, 768Mb x8, 80Mb x16, 8Gb x1, 96Mb x32"
+   ]
+  },
+  {
+   "Component Density": [
+    "1.25Gb, 1.5Gb, 12Gb, 2.5Gb, 2Gb, 3Gb, 4.5Gb, 4096Gb, 4Gb, 512Gb, 6Gb, 8Gb"
+   ]
+  },
+  {
+   "Family": [
+    "MCP"
+   ]
+  },
+  {
+   "I/O Voltage": [
+    "0.6 VOLTS, 1.2 VOLTS, 1.8 VOLTS, 3.3 VOLTS"
+   ]
+  },
+  {
+   "MT/s": [
+    "104MTPS, 1066GTPS, 1066MTPS, 1866MTPS, 333MTPS, 3732MTPS, 400MTPS, 416MTPS, 4266MTPS, 800MTPS, NSR, NSRMTPS"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-25C to +85C, -30C to +85C, -40C to +105C, -40C to +125C, -40C to +85C, -40C to +95C"
+   ]
+  },
+  {
+   "Package": [
+    "LFBGA, TFBGA, VFBGA, WFBGA"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "Obsolete"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT"
+   ]
+  },
+  {
+   "Pin Count": [
+    "100-ball, 105-ball, 121-ball, 130-ball, 137-ball, 149-ball, 153-ball, 162-ball, 168-ball, 221-ball, 240-ball, 320-ball"
+   ]
+  },
+  {
+   "Protocol": [
+    "UFS3.1"
+   ]
+  },
+  {
+   "Speed": [
+    "166MHz, 1866MHz, 200MHz, 208MHz, 2133MHz, 400MHz, 52MHz, 533MHz, 933MHz, NSR, NSRMHz"
+   ]
+  },
+  {
+   "Technology": [
+    "ClearNAND MLC, NAND MCP SLC LPDDR, NAND MCP SLC LPDDR2, NAND MCP SLC LPDDR3, NAND MCP SLC LPDDR4, NAND MCP SLC LPSDR, NAND plus NOR MCP SLC Parallel, NOR MCP LPDDR4 SPI, UFS TLC"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mt38q50deb10dbdxau.y74-es",
+   "part-number": "MT38Q50DEB10DBDXAU.Y74-ES",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt38q50deb10dbdxau.y74-es",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1866MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3732MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.6 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "320-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "144Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1360"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.70 x 0.70"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NOR MCP LPDDR4 SPI"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NOR MCP 4.5G WFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maacyamd-5-it",
+   "part-number": "MT29C1G12MAACYAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maacyamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G VFBG"
+  },
+  {
+   "part-key": "mt29rz2b1dzzhgwd-18i.83g",
+   "part-number": "MT29RZ2B1DZZHGWD-18I.83G",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz2b1dzzhgwd-18i.83g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "3Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "3Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 3G VFBGA"
+  },
+  {
+   "part-key": "mtfc512gauatam-wt",
+   "part-number": "MTFC512GAUATAM-WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mtfc512gauatam-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4096Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/CONTROLLER 4T VFBGA"
+  },
+  {
+   "part-key": "mt29c8g96mazbadjv-5-it",
+   "part-number": "MT29C8G96MAZBADJV-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c8g96mazbadjv-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "12Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "12Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 12G VFBGA"
+  },
+  {
+   "part-key": "mt29az5a5cmgwd-18ites.87c",
+   "part-number": "MT29AZ5A5CMGWD-18ITES.87C",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29az5a5cmgwd-18ites.87c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 8.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 8G VFBGA"
+  },
+  {
+   "part-key": "mt29c4g48mazbaaks-5-wt",
+   "part-number": "MT29C4G48MAZBAAKS-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48mazbaaks-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "6Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 0.75"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 6G WFBGA"
+  },
+  {
+   "part-key": "mt29gz5a3bpgga-53ites.87k",
+   "part-number": "MT29GZ5A3BPGGA-53ITES.87K",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29gz5a3bpgga-53ites.87k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1866MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3732MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "149-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "384Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.50 x 8.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR4 6G WFBGA"
+  },
+  {
+   "part-key": "mt29fen64gdkcaaxdq-10-a",
+   "part-number": "MT29FEN64GDKCAAXDQ-10:A",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29fen64gdkcaaxdq-10-a",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "512Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "52MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "104MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "3.3 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "100-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "980"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 18.00 x 1.40"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "ClearNAND MLC"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "LFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/CONTROLLER 512G LFBG"
+  },
+  {
+   "part-key": "mt29c4g48maahbaaks-5-wt",
+   "part-number": "MT29C4G48MAAHBAAKS-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48maahbaaks-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SLC EMMC/MOBILE DDR 6G VFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maaiyamd-5-it",
+   "part-number": "MT29C1G12MAAIYAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maaiyamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1782"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G VFBG"
+  },
+  {
+   "part-key": "mt29rz1c1czzhgtn-18i.85g",
+   "part-number": "MT29RZ1C1CZZHGTN-18I.85G",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz1c1czzhgtn-18i.85g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "121-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 8.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 2G WFBGA"
+  },
+  {
+   "part-key": "mt29c4g48mazbaakq-5-it",
+   "part-number": "MT29C4G48MAZBAAKQ-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48mazbaakq-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "6Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 0.75"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 6G WFBGA"
+  },
+  {
+   "part-key": "mt29c1g56maacaaamd-5-it",
+   "part-number": "MT29C1G56MAACAAAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g56maacaaamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.25Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.25Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.25G VFB"
+  },
+  {
+   "part-key": "mt29az5a5cmgwd-18it.87c",
+   "part-number": "MT29AZ5A5CMGWD-18IT.87C",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29az5a5cmgwd-18it.87c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 8.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 8G VFBGA"
+  },
+  {
+   "part-key": "mt29rz2b1dzzhgsp-25w.418",
+   "part-number": "MT29RZ2B1DZZHGSP-25W.418",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz2b1dzzhgsp-25w.418",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "3Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "96Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 3G WFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maacaeamd-6-it",
+   "part-number": "MT29C1G12MAACAEAMD-6 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maacaeamd-6-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "333MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPSDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE SDR 1.5G VFBG"
+  },
+  {
+   "part-key": "pf58f0033m0y1bga",
+   "part-number": "PF58F0033M0Y1BGA",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/pf58f0033m0y1bga",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "3Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSRMHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSRMTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "105-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.00 x 1.20"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND plus NOR MCP SLC Parallel"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "RAWNAND/PARALLEL 3G TFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maacafakd-6-it",
+   "part-number": "MT29C1G12MAACAFAKD-6 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maacafakd-6-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "333MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPSDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE SDR 1.5G TFBG"
+  },
+  {
+   "part-key": "mt29c4g48maybbamr-48-it",
+   "part-number": "MT29C4G48MAYBBAMR-48 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/mt29c4g48maybbamr-48-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "208MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "416MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "6Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1782"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 6G VFBGA"
+  },
+  {
+   "part-key": "mt29rz4b4dzzmgwd-18i.80c",
+   "part-number": "MT29RZ4B4DZZMGWD-18I.80C",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4b4dzzmgwd-18i.80c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 8G VFBGA"
+  },
+  {
+   "part-key": "mt29rz1cvczzhgtn-18-i.85h",
+   "part-number": "MT29RZ1CVCZZHGTN-18 I.85H",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz1cvczzhgtn-18-i.85h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "121-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 8.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 1.5G WFBGA"
+  },
+  {
+   "part-key": "mt29rz1cvczzhgtn-25-w.4m0",
+   "part-number": "MT29RZ1CVCZZHGTN-25 W.4M0",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz1cvczzhgtn-25-w.4m0",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "121-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 8.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G WFBG"
+  },
+  {
+   "part-key": "mt29c4g48mazbbakb-48-it-es",
+   "part-number": "MT29C4G48MAZBBAKB-48 IT ES",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48mazbbakb-48-it-es",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "208MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "416MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "6Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 6G WFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maadyakd-5-it",
+   "part-number": "MT29C1G12MAADYAKD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maadyakd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G TFBG"
+  },
+  {
+   "part-key": "mt29c1g12maajvamd-5-it",
+   "part-number": "MT29C1G12MAAJVAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/mt29c1g12maajvamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192M x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1782"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 1.5G VFBGA"
+  },
+  {
+   "part-key": "mt29c2g24maaaakakd-5-it",
+   "part-number": "MT29C2G24MAAAAKAKD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c2g24maaaakakd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "3Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 3G TFBGA"
+  },
+  {
+   "part-key": "mt29c4g48maybaaks-5-wt",
+   "part-number": "MT29C4G48MAYBAAKS-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48maybaaks-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "6Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 0.75"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 6G WFBGA"
+  },
+  {
+   "part-key": "mt29c4g48mazbaakq-5-wt",
+   "part-number": "MT29C4G48MAZBAAKQ-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48mazbaakq-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "6Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 0.75"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 6G WFBGA"
+  },
+  {
+   "part-key": "mt29c1g12mauraja-6-it",
+   "part-number": "MT29C1G12MAURAJA-6 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12mauraja-6-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "333MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G TFBG"
+  },
+  {
+   "part-key": "mt29c4g48maybbahk-48-ait",
+   "part-number": "MT29C4G48MAYBBAHK-48 AIT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48maybbahk-48-ait",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "208MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "416MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "6Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 6G VFBGA"
+  },
+  {
+   "part-key": "mt29rz4b2dzzhhtb-18i.80f",
+   "part-number": "MT29RZ4B2DZZHHTB-18I.80F",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4b2dzzhhtb-18i.80f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 6G VFBGA"
+  },
+  {
+   "part-key": "mt29gz5a3bpgga-046it.87k",
+   "part-number": "MT29GZ5A3BPGGA-046IT.87K",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/mt29gz5a3bpgga-046it.87k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "4266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "149-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.50 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 6G VFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maadvamd-5-it",
+   "part-number": "MT29C1G12MAADVAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maadvamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1782"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G VFBG"
+  },
+  {
+   "part-key": "mt29c8g96mazbadkd-5-it",
+   "part-number": "MT29C8G96MAZBADKD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c8g96mazbadkd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "12Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "12Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 12G TFBGA"
+  },
+  {
+   "part-key": "mt29c4g96mazbbcjv-48-it",
+   "part-number": "MT29C4G96MAZBBCJV-48 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g96mazbbcjv-48-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "208MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "416MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1008"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 8G VFBGA"
+  },
+  {
+   "part-key": "mt29uz4b8dzzhgpb-107-w.84z",
+   "part-number": "MT29UZ4B8DZZHGPB-107 W.84Z",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29uz4b8dzzhgpb-107-w.84z",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "12Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-30C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "221-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "384Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 12G WFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maaivamd-5-it",
+   "part-number": "MT29C1G12MAAIVAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maaivamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1782"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 1.5G VFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maacvamd-5-it",
+   "part-number": "MT29C1G12MAACVAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maacvamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1782"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G VFBG"
+  },
+  {
+   "part-key": "mt29rz4c8dzzmhan-18w.80d",
+   "part-number": "MT29RZ4C8DZZMHAN-18W.80D",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4c8dzzmhan-18w.80d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "12Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "240-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 0.95"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 12G VFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maacyakd-5-it",
+   "part-number": "MT29C1G12MAACYAKD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maacyakd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G TFBG"
+  },
+  {
+   "part-key": "mt29rz2b2dzzhhtb-18w.88f",
+   "part-number": "MT29RZ2B2DZZHHTB-18W.88F",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz2b2dzzhhtb-18w.88f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 4G VFBGA"
+  },
+  {
+   "part-key": "mt29rz4c2dzzhgsk-18-w.80e",
+   "part-number": "MT29RZ4C2DZZHGSK-18 W.80E",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4c2dzzhgsk-18-w.80e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 6G WFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maadafakd-6-it",
+   "part-number": "MT29C1G12MAADAFAKD-6 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maadafakd-6-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "333MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPSDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE SDR 1.5G TFBG"
+  },
+  {
+   "part-key": "mt29c8g96mazbadjv-5-wt",
+   "part-number": "MT29C8G96MAZBADJV-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c8g96mazbadjv-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "12Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "12Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 12G VFBGA"
+  },
+  {
+   "part-key": "mt29c4g96mazbacjg-5-it",
+   "part-number": "MT29C4G96MAZBACJG-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g96mazbacjg-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 8G VFBGA"
+  },
+  {
+   "part-key": "mt29c4g48maagbbaks-48-it",
+   "part-number": "MT29C4G48MAAGBBAKS-48 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48maagbbaks-48-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "208MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "416MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 6G VFBGA"
+  },
+  {
+   "part-key": "mt29az5a3chhwd-18aat.84f",
+   "part-number": "MT29AZ5A3CHHWD-18AAT.84F",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29az5a3chhwd-18aat.84f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 6G VFBGA"
+  },
+  {
+   "part-key": "mt29rz4c4dzzmgmf-18w.80c",
+   "part-number": "MT29RZ4C4DZZMGMF-18W.80C",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4c4dzzmgmf-18w.80c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1008"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 0.85"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 8G VFBGA"
+  },
+  {
+   "part-key": "mt29rz2b2dzzhhtb-18i.88f",
+   "part-number": "MT29RZ2B2DZZHHTB-18I.88F",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz2b2dzzhhtb-18i.88f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 4G VFBGA"
+  },
+  {
+   "part-key": "mt29c4g96maybacjg-5-wt",
+   "part-number": "MT29C4G96MAYBACJG-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g96maybacjg-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 8G VFBGA"
+  },
+  {
+   "part-key": "mt29c4g48maagbbaks-48-wt",
+   "part-number": "MT29C4G48MAAGBBAKS-48 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48maagbbaks-48-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "208MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "416MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 6G VFBGA"
+  },
+  {
+   "part-key": "mt29c2g24maabahamd-5-it",
+   "part-number": "MT29C2G24MAABAHAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c2g24maabahamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "3Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1782"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 3G VFBGA"
+  },
+  {
+   "part-key": "mt29c2g24maabakakd-5-it",
+   "part-number": "MT29C2G24MAABAKAKD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c2g24maabakakd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "3Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 3G TFBGA"
+  },
+  {
+   "part-key": "mt29rz4b4dzzhgpl-18-w.80u",
+   "part-number": "MT29RZ4B4DZZHGPL-18 W.80U",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4b4dzzhgpl-18-w.80u",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 8G WFBGA"
+  },
+  {
+   "part-key": "mt62f3d1aeb-dc",
+   "part-number": "MT62F3D1AEB-DC",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt62f3d1aeb-dc",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.50 x 10.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "3"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "EMCP 0 0 VFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maadvamd-5-e-it",
+   "part-number": "MT29C1G12MAADVAMD-5 E IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maadvamd-5-e-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G VFBG"
+  },
+  {
+   "part-key": "mt29c8g96maybadjv-5-wt",
+   "part-number": "MT29C8G96MAYBADJV-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c8g96maybadjv-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "12Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "12Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 12G VFBGA"
+  },
+  {
+   "part-key": "mt29c4g96mazbackd-5-wt",
+   "part-number": "MT29C4G96MAZBACKD-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g96mazbackd-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 8G TFBGA"
+  },
+  {
+   "part-key": "mt29c8g96mazbbdjv-48-it",
+   "part-number": "MT29C8G96MAZBBDJV-48 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c8g96mazbbdjv-48-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "12Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "208MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "416MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "12Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1008"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 12G VFBGA"
+  },
+  {
+   "part-key": "mt29rz4b2dzzhgsk-18-w.80e",
+   "part-number": "MT29RZ4B2DZZHGSK-18 W.80E",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4b2dzzhgsk-18-w.80e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 6G WFBGA"
+  },
+  {
+   "part-key": "mt29c2g24maaaahamd-5-it",
+   "part-number": "MT29C2G24MAAAAHAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c2g24maaaahamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "3Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1782"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 3G VFBGA"
+  },
+  {
+   "part-key": "mt29rz4c4dzzhgpl-18-w.80u",
+   "part-number": "MT29RZ4C4DZZHGPL-18 W.80U",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4c4dzzhgpl-18-w.80u",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 8G WFBGA"
+  },
+  {
+   "part-key": "mt29gz5a3bpgga-046ait.87k",
+   "part-number": "MT29GZ5A3BPGGA-046AIT.87K",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29gz5a3bpgga-046ait.87k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "4266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "149-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.50 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 6G VFBGA"
+  },
+  {
+   "part-key": "mt29rz4b2dzzhhtb-18w.80f",
+   "part-number": "MT29RZ4B2DZZHHTB-18W.80F",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4b2dzzhhtb-18w.80f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 6G VFBGA"
+  },
+  {
+   "part-key": "mt29gz5a3bpgga-53aat.87k",
+   "part-number": "MT29GZ5A3BPGGA-53AAT.87K",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29gz5a3bpgga-53aat.87k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1866MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3732MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "149-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "384Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.50 x 8.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 6G WFBGA"
+  },
+  {
+   "part-key": "mt29az5a5cmgwd-18ait.87c",
+   "part-number": "MT29AZ5A5CMGWD-18AIT.87C",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29az5a5cmgwd-18ait.87c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256M x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 8G VFBGA"
+  },
+  {
+   "part-key": "mt29c4g48mazbbaks-48-at",
+   "part-number": "MT29C4G48MAZBBAKS-48 AT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48mazbbaks-48-at",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "208MHz"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 6G VFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maajyamd-5-it",
+   "part-number": "MT29C1G12MAAJYAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maajyamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1782"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G VFBG"
+  },
+  {
+   "part-key": "mt29rz4c4dzzmggm-18w.80c",
+   "part-number": "MT29RZ4C4DZZMGGM-18W.80C",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4c4dzzmggm-18w.80c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "240-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 0.85"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 8G VFBGA"
+  },
+  {
+   "part-key": "pf58f0121m0y0bfb",
+   "part-number": "PF58F0121M0Y0BFB",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/pf58f0121m0y0bfb",
+   "attr": [
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "ONENAND/PARALLEL 2.5G VFBGA"
+  },
+  {
+   "part-key": "pf58f0121m0y0bfa",
+   "part-number": "PF58F0121M0Y0BFA",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/pf58f0121m0y0bfa",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSRMHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSRMTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "105-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "160Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.00 x 1.00"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND plus NOR MCP SLC Parallel"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "ONENAND/PARALLEL 2.5G VFBGA"
+  },
+  {
+   "part-key": "mt29c4g48mazbbaks-48-it",
+   "part-number": "MT29C4G48MAZBBAKS-48 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/mt29c4g48mazbbaks-48-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "208MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "416MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "6G x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 6G VFBGA"
+  },
+  {
+   "part-key": "mt29c4g96mazbacjg-5-wt",
+   "part-number": "MT29C4G96MAZBACJG-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g96mazbacjg-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 8G VFBGA"
+  },
+  {
+   "part-key": "mt29rz1cvczzhgtn-18-w.85h",
+   "part-number": "MT29RZ1CVCZZHGTN-18 W.85H",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz1cvczzhgtn-18-w.85h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "121-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "192Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 8.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 1.5G WFBGA"
+  },
+  {
+   "part-key": "mt29c4g96maybackd-5-wt",
+   "part-number": "MT29C4G96MAYBACKD-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g96maybackd-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 8G TFBGA"
+  },
+  {
+   "part-key": "mt29gz5a3bpgga-53it.87k",
+   "part-number": "MT29GZ5A3BPGGA-53IT.87K",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29gz5a3bpgga-53it.87k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1866MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3732MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "149-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "384Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.50 x 8.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 6G WFBGA"
+  },
+  {
+   "part-key": "mt29rz4b2dzzhhwd-18i.84f",
+   "part-number": "MT29RZ4B2DZZHHWD-18I.84F",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz4b2dzzhhwd-18i.84f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "6Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 6G VFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maadafamd-6-it",
+   "part-number": "MT29C1G12MAADAFAMD-6 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maadafamd-6-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "166MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "333MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPSDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE SDR 1.5G VFBG"
+  },
+  {
+   "part-key": "mt29c4g48maagbaaks-5-wt",
+   "part-number": "MT29C4G48MAAGBAAKS-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c4g48maagbaaks-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "SLC EMMC/MOBILE DDR 6G VFBGA"
+  },
+  {
+   "part-key": "mt29c4g48mazbbakb-48-it",
+   "part-number": "MT29C4G48MAZBBAKB-48 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/mt29c4g48mazbbakb-48-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "208MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "416MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "168-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "6Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1008"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.00 x 12.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 6G WFBGA"
+  },
+  {
+   "part-key": "mt29c8g96mazbadkd-5-wt",
+   "part-number": "MT29C8G96MAZBADKD-5 WT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c8g96mazbadkd-5-wt",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "12Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "137-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "12Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 12G TFBGA"
+  },
+  {
+   "part-key": "mt29c1g56maadaaamd-5-it",
+   "part-number": "MT29C1G56MAADAAAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g56maadaaamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.25Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "80Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.25G VFB"
+  },
+  {
+   "part-key": "mt29rz1cvczzhgtn-25-i.4m0",
+   "part-number": "MT29RZ1CVCZZHGTN-25 I.4M0",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29rz1cvczzhgtn-25-i.4m0",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "121-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1560"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 8.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G WFBG"
+  },
+  {
+   "part-key": "mt29az5a3chhwd-18ait.84f",
+   "part-number": "MT29AZ5A3CHHWD-18AIT.84F",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29az5a3chhwd-18ait.84f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066GTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/LPDDR2 6G VFBGA"
+  },
+  {
+   "part-key": "mt29c1g12maadyamd-5-it",
+   "part-number": "MT29C1G12MAADYAMD-5 IT",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29c1g12maadyamd-5-it",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1.5Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "130-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x1"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MASSFLASH/MOBILE DDR 1.5G VFBG"
+  },
+  {
+   "part-key": "mt29az5a5cmgwd-18aat.87c",
+   "part-number": "MT29AZ5A5CMGWD-18AAT.87C",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29az5a5cmgwd-18aat.87c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "533MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1066MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "162-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.50 x 8.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR2"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 8G VFBGA"
+  },
+  {
+   "part-key": "mt29gz5a3bpgga-046aat.87k",
+   "part-number": "MT29GZ5A3BPGGA-046AAT.87K",
+   "product-tag": "micron:products/multichip-packages/nand-based-mcp/obsolete/obsolete-nand-mcp-catalog/mt29gz5a3bpgga-046aat.87k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "6Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2133MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "4266MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "149-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 9.50 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "NAND MCP SLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "NAND MCP 6G VFBGA"
+  }
+ ]
+}

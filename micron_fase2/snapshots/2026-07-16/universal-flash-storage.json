@@ -1,0 +1,1696 @@
+{
+ "date": "2026-07-16 12:38:53.423",
+ "response-code": "200",
+ "filter": [
+  {
+   "Capacity": [
+    "1024Gb, 128GB, 1Tb, 2048Gb, 256GB, 2Tb, 32GB, 4Tb, 512Gb, 64GB"
+   ]
+  },
+  {
+   "Component Config": [
+    "128Gb x8, 256Gb x8, 32Gb x8, 512Gb x8, 64Gb x8"
+   ]
+  },
+  {
+   "Family": [
+    "MCP"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-25C to +85C, -40C to +105C, -40C to +115C, -40C to +95C"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "Contact Sales, End of Life, Production"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT"
+   ]
+  },
+  {
+   "Pin Count": [
+    "153-ball"
+   ]
+  },
+  {
+   "Protocol": [
+    "UFS2.1, UFS2.2, UFS3.1"
+   ]
+  },
+  {
+   "Sequential READ": [
+    "1025 MB/s, 1035 MB/s, 1600 MB/s"
+   ]
+  },
+  {
+   "Sequential WRITE": [
+    "1400 MB/s, 800 MB/s, 950 MB/s"
+   ]
+  },
+  {
+   "Technology": [
+    "UFS TLC"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mtfc64gasaons-aat",
+   "part-number": "MTFC64GASAONS-AAT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc64gasaons-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "512Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS2.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 512G TFBGA"
+  },
+  {
+   "part-key": "mtfc64gbcaval-aat",
+   "part-number": "MTFC64GBCAVAL-AAT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc64gbcaval-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +115C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 512G VFBGA"
+  },
+  {
+   "part-key": "mtfc256gbcavtc-ait",
+   "part-number": "MTFC256GBCAVTC-AIT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc256gbcavtc-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "256GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 2T LFBGA"
+  },
+  {
+   "part-key": "mtfc128gbcavtc-ait",
+   "part-number": "MTFC128GBCAVTC-AIT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc128gbcavtc-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 1T LFBGA"
+  },
+  {
+   "part-key": "mtfc512gbcavtc-aat",
+   "part-number": "MTFC512GBCAVTC-AAT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc512gbcavtc-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "512GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +115C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 4T LFBGA"
+  },
+  {
+   "part-key": "mtfc128gasaons-ait",
+   "part-number": "MTFC128GASAONS-AIT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc128gasaons-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "1024Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS2.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 1T TFBGA"
+  },
+  {
+   "part-key": "mtfc128gavattc-aat",
+   "part-number": "MTFC128GAVATTC-AAT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc128gavattc-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 1T LFBGA"
+  },
+  {
+   "part-key": "mtfc128gazaotd-aat",
+   "part-number": "MTFC128GAZAOTD-AAT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc128gazaotd-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 1T TFBGA"
+  },
+  {
+   "part-key": "mtfc256gaxauea-wt",
+   "part-number": "MTFC256GAXAUEA-WT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc256gaxauea-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "2Tb"
+    },
+    {
+     "name": "Sequential READ",
+     "id": "sequential_read",
+     "value": "1035 MB/s"
+    },
+    {
+     "name": "Sequential WRITE",
+     "id": "sequential_write",
+     "value": "950 MB/s"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 2T WFBGA"
+  },
+  {
+   "part-key": "mtfc256gavattc-aat",
+   "part-number": "MTFC256GAVATTC-AAT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc256gavattc-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "256GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 2T LFBGA"
+  },
+  {
+   "part-key": "mtfc256gasaons-ait",
+   "part-number": "MTFC256GASAONS-AIT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc256gasaons-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "2048Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS2.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 2T TFBGA"
+  },
+  {
+   "part-key": "mtfc32gazaotd-aat",
+   "part-number": "MTFC32GAZAOTD-AAT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc32gazaotd-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 256G TFBGA"
+  },
+  {
+   "part-key": "mtfc256gbcavhf-wt",
+   "part-number": "MTFC256GBCAVHF-WT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc256gbcavhf-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "2Tb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1360"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.00 x 13.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 2T WFBGA"
+  },
+  {
+   "part-key": "mtfc256gbcavtc-aat",
+   "part-number": "MTFC256GBCAVTC-AAT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc256gbcavtc-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "256GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +115C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 2T LFBGA"
+  },
+  {
+   "part-key": "mtfc64gazaotd-aat",
+   "part-number": "MTFC64GAZAOTD-AAT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc64gazaotd-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 512G TFBGA"
+  },
+  {
+   "part-key": "mtfc128gbcavtc-aat",
+   "part-number": "MTFC128GBCAVTC-AAT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc128gbcavtc-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +115C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 1T LFBGA"
+  },
+  {
+   "part-key": "mtfc64gaxauea-wt",
+   "part-number": "MTFC64GAXAUEA-WT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc64gaxauea-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "512Gb"
+    },
+    {
+     "name": "Sequential READ",
+     "id": "sequential_read",
+     "value": "1600 MB/s"
+    },
+    {
+     "name": "Sequential WRITE",
+     "id": "sequential_write",
+     "value": "1400 MB/s"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 512G WFBGA"
+  },
+  {
+   "part-key": "mtfc128gaxauea-wt",
+   "part-number": "MTFC128GAXAUEA-WT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc128gaxauea-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "1Tb"
+    },
+    {
+     "name": "Sequential READ",
+     "id": "sequential_read",
+     "value": "1025 MB/s"
+    },
+    {
+     "name": "Sequential WRITE",
+     "id": "sequential_write",
+     "value": "800 MB/s"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS2.2"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 1T WFBGA"
+  },
+  {
+   "part-key": "mtfc128gbcavhf-wt",
+   "part-number": "MTFC128GBCAVHF-WT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc128gbcavhf-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "1Tb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1360"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.00 x 13.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 1T WFBGA"
+  },
+  {
+   "part-key": "mtfc512gbcavtc-ait",
+   "part-number": "MTFC512GBCAVTC-AIT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc512gbcavtc-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "512GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "MTFC512GBCAVTC-AIT 512GB Universal Flash Storage"
+  },
+  {
+   "part-key": "mtfc512gbcavhe-wt",
+   "part-number": "MTFC512GBCAVHE-WT",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mtfc512gbcavhe-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "4Tb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1360"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.00 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "UFS TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "UFS 4T VFBGA"
+  }
+ ]
+}

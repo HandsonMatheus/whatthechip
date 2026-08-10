@@ -1,0 +1,1475 @@
+{
+ "date": "2026-07-16 12:21:03.264",
+ "response-code": "200",
+ "filter": [
+  {
+   "Component Config": [
+    "130Gb x32"
+   ]
+  },
+  {
+   "Component Density": [
+    "1072Gb, 2096Gb, 2112Gb, 2144Gb, 4160Gb, 4192Gb, 536Gb, 544Gb, 560Gb"
+   ]
+  },
+  {
+   "Family": [
+    "MCP"
+   ]
+  },
+  {
+   "I/O Voltage": [
+    "1.1 VOLTS, 1.1/0.6 VOLTS, 1.2 VOLTS, 1.8 VOLTS"
+   ]
+  },
+  {
+   "MT/s": [
+    "2000MTPS, NSR"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-25C to +85C, -55C to +85C"
+   ]
+  },
+  {
+   "Package": [
+    "LFBGA, TFBGA, VFBGA"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "End of Life, Obsolete"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT"
+   ]
+  },
+  {
+   "Pin Count": [
+    "254-ball, 297-ball"
+   ]
+  },
+  {
+   "Protocol": [
+    "UFS2.1, UFS2.2, UFS3.1"
+   ]
+  },
+  {
+   "READ Performance": [
+    "45000 IOPS"
+   ]
+  },
+  {
+   "Sequential READ": [
+    "900 MB/s"
+   ]
+  },
+  {
+   "Sequential WRITE": [
+    "260 MB/s"
+   ]
+  },
+  {
+   "Speed": [
+    "4266MHz, NSR, NSRMHz"
+   ]
+  },
+  {
+   "Technology": [
+    "uMCP TLC LPDDR4, uMCP TLC LPDDR5"
+   ]
+  },
+  {
+   "WRITE Performance": [
+    "50000 IOPS"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mt29vzzzbd81slsl-046-w.22d",
+   "part-number": "MT29VZZZBD81SLSL-046 W.22D",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt29vzzzbd81slsl-046-w.22d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "560Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS2.2"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "254-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 560G VFBGA"
+  },
+  {
+   "part-key": "mt30azzzdda0tpqs-031-wl.19q",
+   "part-number": "MT30AZZZDDA0TPQS-031 WL.19Q",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt30azzzdda0tpqs-031-wl.19q",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2144Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "297-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 2144G TFBGA"
+  },
+  {
+   "part-key": "mt30azzzcda4tkxl-023-w.273",
+   "part-number": "MT30AZZZCDA4TKXL-023 W.273",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt30azzzcda4tkxl-023-w.273",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2112Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4266MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "2000MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "297-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 2112GBIT 297/456 VFBGA"
+  },
+  {
+   "part-key": "mt29vzzzbda1skpr-046-w.12o",
+   "part-number": "MT29VZZZBDA1SKPR-046 W.12O",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt29vzzzbda1skpr-046-w.12o",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2096Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS2.2"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "254-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 2096G VFBGA"
+  },
+  {
+   "part-key": "mt30azzzcdbztpeq-031-w.16d",
+   "part-number": "MT30AZZZCDBZTPEQ-031 W.16D",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt30azzzcdbztpeq-031-w.16d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4160Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "297-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "130Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "LFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 4160G LFBGA"
+  },
+  {
+   "part-key": "mt30azzzddb0tpwl-031-wl.19r",
+   "part-number": "MT30AZZZDDB0TPWL-031 WL.19R",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt30azzzddb0tpwl-031-wl.19r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4192Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "297-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 4192G TFBGA"
+  },
+  {
+   "part-key": "mt30azzzddb0tpwl-031-w.19r",
+   "part-number": "MT30AZZZDDB0TPWL-031 W.19R",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt30azzzddb0tpwl-031-w.19r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4192Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSRMHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "297-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 4192G TFBGA"
+  },
+  {
+   "part-key": "mt29vzzz7d81sfsl-046-w.22b",
+   "part-number": "MT29VZZZ7D81SFSL-046 W.22B",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt29vzzz7d81sfsl-046-w.22b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "536Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1/0.6 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS2.2"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "254-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 536G VFBGA"
+  },
+  {
+   "part-key": "mt29vzzzbd91sksm-046-w.12n",
+   "part-number": "MT29VZZZBD91SKSM-046 W.12N",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt29vzzzbd91sksm-046-w.12n",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1072Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS2.2"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "254-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 1072G VFBGA"
+  },
+  {
+   "part-key": "mt30azzzcdb0tkwl-031-w.20x",
+   "part-number": "MT30AZZZCDB0TKWL-031 W.20X",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt30azzzcdb0tkwl-031-w.20x",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4160Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "297-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 4160G TFBGA"
+  },
+  {
+   "part-key": "mt29vzzzbda1slpr-046-w.17z",
+   "part-number": "MT29VZZZBDA1SLPR-046 W.17Z",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt29vzzzbda1slpr-046-w.17z",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2096Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS2.2"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "254-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 2096G TFBGA"
+  },
+  {
+   "part-key": "mt30azzzcdaztpwl-031-w.16c",
+   "part-number": "MT30AZZZCDAZTPWL-031 W.16C",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt30azzzcdaztpwl-031-w.16c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2112Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS3.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "297-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 2112G TFBGA"
+  },
+  {
+   "part-key": "mt29vzzzad8fqfsl-046-w.g8k",
+   "part-number": "MT29VZZZAD8FQFSL-046 W.G8K",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt29vzzzad8fqfsl-046-w.g8k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "544Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "Sequential READ",
+     "id": "sequential_read",
+     "value": "900 MB/s"
+    },
+    {
+     "name": "Sequential WRITE",
+     "id": "sequential_write",
+     "value": "260 MB/s"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "READ Performance",
+     "id": "read_performance",
+     "value": "45000 IOPS"
+    },
+    {
+     "name": "WRITE Performance",
+     "id": "write_performance",
+     "value": "50000 IOPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.8 VOLTS"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "UFS2.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-55C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "254-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 544G VFBGA"
+  },
+  {
+   "part-key": "mt30azzzdda4toxm-023-w.274",
+   "part-number": "MT30AZZZDDA4TOXM-023 W.274",
+   "product-tag": "micron:products/multichip-packages/ufs-based-mcp/mt30azzzdda4toxm-023-w.274",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2144Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4266MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "2000MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "297-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "uMCP TLC LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "UMCP 2144GBIT 297/456 VFBGA"
+  }
+ ]
+}

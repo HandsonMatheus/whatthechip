@@ -1,0 +1,3906 @@
+{
+ "date": "2026-07-16 12:32:09.332",
+ "response-code": "200",
+ "filter": [
+  {
+   "Bus Width": [
+    "x16, x4, x8"
+   ]
+  },
+  {
+   "CAS Latency": [
+    "CL = 11, CL = 13, CL = 14, CL = 9"
+   ]
+  },
+  {
+   "Component Config": [
+    "128Mb x16, 128Mb x8, 1Gb x16, 1Gb x8, 256Mb x16, 256Mb x4, 256Mb x8, 2Gb x4, 512Mb x16, 512Mb x4, 512Mb x8, 64Mb x16"
+   ]
+  },
+  {
+   "Component Density": [
+    "16Gb, 1Gb, 2Gb, 4Gb, 8Gb"
+   ]
+  },
+  {
+   "Family": [
+    "DRAM"
+   ]
+  },
+  {
+   "I/O Voltage": [
+    "1.35 VOLTS, 1.5 VOLTS"
+   ]
+  },
+  {
+   "MT/s": [
+    "1333MTPS, 1600MTPS, 1866MTPS, 2133MTPS"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-40C to +105C, -40C to +125C, -40C to +95C, 0C to +95C, 95C"
+   ]
+  },
+  {
+   "Package": [
+    "FBGA, TFBGA"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "Obsolete"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT"
+   ]
+  },
+  {
+   "Pin Count": [
+    "78-ball, 96-ball"
+   ]
+  },
+  {
+   "Speed": [
+    "1066MHz, 666MHz, 800MHz, 933MHz"
+   ]
+  },
+  {
+   "Technology": [
+    "DDR3"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mt41k2g4trf-125-e",
+   "part-number": "MT41K2G4TRF-125:E",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k2g4trf-125-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1200"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.50 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X4 TFBGA"
+  },
+  {
+   "part-key": "mt41j128m8jp-125-g",
+   "part-number": "MT41J128M8JP-125:G",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41j128m8jp-125-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt41k128m16jt-125-m-k",
+   "part-number": "MT41K128M16JT-125 M:K",
+   "product-tag": "micron:products/memory/dram-components/ddr3-sdram/mt41k128m16jt-125-m-k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1224"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 2G X16 FBGA"
+  },
+  {
+   "part-key": "mt41k128m16jt-125-m-ait-k",
+   "part-number": "MT41K128M16JT-125 M AIT:K",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k128m16jt-125-m-ait-k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1224"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 2G X16 FBGA"
+  },
+  {
+   "part-key": "mt41k512m16ha-125-ait-a",
+   "part-number": "MT41K512M16HA-125 AIT:A",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k512m16ha-125-ait-a",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt41k1g8sn-125-a",
+   "part-number": "MT41K1G8SN-125:A",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k1g8sn-125-a",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 13.20 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt41k256m8da-125-aut-k",
+   "part-number": "MT41K256M8DA-125 AUT:K",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k256m8da-125-aut-k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 2G X8 FBGA"
+  },
+  {
+   "part-key": "mt41k512m16vrn-107-it-p",
+   "part-number": "MT41K512M16VRN-107 IT:P",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k512m16vrn-107-it-p",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1224"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt41k1g8sn-107-a",
+   "part-number": "MT41K1G8SN-107:A",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k1g8sn-107-a",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 13.20 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt41j256m8da-125-k",
+   "part-number": "MT41J256M8DA-125:K",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41j256m8da-125-k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 2G X8 FBGA"
+  },
+  {
+   "part-key": "mt41j64m16tw-093-j",
+   "part-number": "MT41J64M16TW-093:J",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41j64m16tw-093-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1066MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "2133MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 14"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1224"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 1G X16 TFBGA"
+  },
+  {
+   "part-key": "mt41j128m8jp-15e-g",
+   "part-number": "MT41J128M8JP-15E:G",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41j128m8jp-15e-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "666MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1333MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 9"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 1G X8 FBGA"
+  },
+  {
+   "part-key": "mt41k512m16ha-125-a",
+   "part-number": "MT41K512M16HA-125:A",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k512m16ha-125-a",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt41k1g16dga-125-a",
+   "part-number": "MT41K1G16DGA-125:A",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k1g16dga-125-a",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.50 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 16G X16 TFBGA"
+  },
+  {
+   "part-key": "mt41k256m8da-125-aat-k",
+   "part-number": "MT41K256M8DA-125 AAT:K",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k256m8da-125-aat-k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 2G X8 FBGA"
+  },
+  {
+   "part-key": "mt41k512m16tna-125-m-e",
+   "part-number": "MT41K512M16TNA-125 M:E",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k512m16tna-125-m-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X16 FBGA"
+  },
+  {
+   "part-key": "mt41k2g4trf-107-e",
+   "part-number": "MT41K2G4TRF-107:E",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k2g4trf-107-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1200"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.50 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X4 TFBGA"
+  },
+  {
+   "part-key": "mt41j64m16jt-125-g",
+   "part-number": "MT41J64M16JT-125:G",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41j64m16jt-125-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt41k128m8da-107-ait-j",
+   "part-number": "MT41K128M8DA-107 AIT:J",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k128m8da-107-ait-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 1G X8 TFBGA"
+  },
+  {
+   "part-key": "mt41k64m16jt-15e-g",
+   "part-number": "MT41K64M16JT-15E:G",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k64m16jt-15e-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "666MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1333MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 9"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt41dcjt-v89c-k",
+   "part-number": "MT41DCJT-V89C:K",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41dcjt-v89c-k",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1224"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 2G X8 TFBGA"
+  },
+  {
+   "part-key": "mt41k512m8da-107-xit-p",
+   "part-number": "MT41K512M8DA-107 XIT:P",
+   "product-tag": "micron:products/memory/dram-components/ddr3-sdram/mt41k512m8da-107-xit-p",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 4G X8 TFBGA"
+  },
+  {
+   "part-key": "mt41k512m8da-107-ait-p",
+   "part-number": "MT41K512M8DA-107 AIT:P",
+   "product-tag": "micron:products/memory/dram-components/ddr3-sdram/mt41k512m8da-107-ait-p",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 4G X8 TFBGA"
+  },
+  {
+   "part-key": "mt41k512m16tna-107-e",
+   "part-number": "MT41K512M16TNA-107:E",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k512m16tna-107-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt41k256m16tw-107-m-p",
+   "part-number": "MT41K256M16TW-107 M:P",
+   "product-tag": "micron:products/memory/dram-components/ddr3-sdram/mt41k256m16tw-107-m-p",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1224"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 4G X16 TFBGA"
+  },
+  {
+   "part-key": "mt41k1g8rkb-107-n",
+   "part-number": "MT41K1G8RKB-107:N",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k1g8rkb-107-n",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt41j64m16jt-15e-g",
+   "part-number": "MT41J64M16JT-15E:G",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41j64m16jt-15e-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "666MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1333MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 9"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1000"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 1G X16 FBGA"
+  },
+  {
+   "part-key": "mt41k512m16tna-125-e",
+   "part-number": "MT41K512M16TNA-125:E",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k512m16tna-125-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "10.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt41k1g8trf-125-e",
+   "part-number": "MT41K1G8TRF-125:E",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k1g8trf-125-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1200"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.50 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt41k256m4da-107-j",
+   "part-number": "MT41K256M4DA-107:J",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k256m4da-107-j",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "1Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 1G X4 TFBGA"
+  },
+  {
+   "part-key": "mt41k1g8trf-107-e",
+   "part-number": "MT41K1G8TRF-107:E",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k1g8trf-107-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1200"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.50 x 11.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt41j128m16jt-107g-k",
+   "part-number": "MT41J128M16JT-107G:K",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41j128m16jt-107g-k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1224"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 2G X16 FBGA"
+  },
+  {
+   "part-key": "mt41k2g4rkb-107-p",
+   "part-number": "MT41K2G4RKB-107:P",
+   "product-tag": "micron:products/memory/dram-components/ddr3-sdram/mt41k2g4rkb-107-p",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X4 TFBGA"
+  },
+  {
+   "part-key": "mt41k512m16ha-125-it-a",
+   "part-number": "MT41K512M16HA-125 IT:A",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k512m16ha-125-it-a",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 14.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt41k2g4rkb-107-n",
+   "part-number": "MT41K2G4RKB-107:N",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k2g4rkb-107-n",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "933MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1866MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 13"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 8G X4 TFBGA"
+  },
+  {
+   "part-key": "mt41k512m4da-125-k",
+   "part-number": "MT41K512M4DA-125:K",
+   "product-tag": "micron:products/memory/dram-components/obsolete/obsolete-ddr3-sdram/mt41k512m4da-125-k",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "2Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "1600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.35 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 11"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Obsolete"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1440"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 10.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR3"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "FBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR3 2G X4 FBGA"
+  }
+ ]
+}

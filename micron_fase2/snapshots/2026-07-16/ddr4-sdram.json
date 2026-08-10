@@ -1,0 +1,3831 @@
+{
+ "date": "2026-07-16 12:31:56.235",
+ "response-code": "200",
+ "filter": [
+  {
+   "Bus Width": [
+    "x16, x4, x8"
+   ]
+  },
+  {
+   "CAS Latency": [
+    "CL = 19, CL = 22"
+   ]
+  },
+  {
+   "Component Config": [
+    "1Gb x16, 1Gb x8, 256Mb x16, 2Gb x16, 2Gb x4, 2Gb x8, 4Gb x4, 4Gb x8, 512Mb x16, 512Mb x8, 8Gb x4"
+   ]
+  },
+  {
+   "Component Density": [
+    "16Gb, 32Gb, 4Gb, 8Gb"
+   ]
+  },
+  {
+   "Family": [
+    "DRAM"
+   ]
+  },
+  {
+   "I/O Voltage": [
+    "1.2 VOLTS"
+   ]
+  },
+  {
+   "MT/s": [
+    "2666MTPS, 3200MTPS"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-40C to +105C, -40C to +125C, -40C to +95C, 0C to +95C"
+   ]
+  },
+  {
+   "Package": [
+    "TFBGA"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "Contact Sales, End of Life, Production"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT, DIE"
+   ]
+  },
+  {
+   "Pin Count": [
+    "78-ball, 96-ball"
+   ]
+  },
+  {
+   "Speed": [
+    "1333MHz, 1600MHz"
+   ]
+  },
+  {
+   "Technology": [
+    "DDR4"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mt40a2g4sa-062e-r",
+   "part-number": "MT40A2G4SA-062E:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a2g4sa-062e-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X4 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g16td-062e-aat-f",
+   "part-number": "MT40A1G16TD-062E AAT:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g16td-062e-aat-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 16G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g16tb-062e-f",
+   "part-number": "MT40A1G16TB-062E:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g16tb-062e-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 16G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a2g8nea-062e-r",
+   "part-number": "MT40A2G8NEA-062E:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a2g8nea-062e-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 16G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a2g16tbb-062e-f",
+   "part-number": "MT40A2G16TBB-062E:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a2g16tbb-062e-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 32G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g8ag-062e-ait-r",
+   "part-number": "MT40A1G8AG-062E AIT:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g8ag-062e-ait-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g16tb-062e-it-f",
+   "part-number": "MT40A1G16TB-062E IT:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g16tb-062e-it-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 16G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m16ly-075-e",
+   "part-number": "MT40A512M16LY-075:E",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m16ly-075-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "2666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 19"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m16ly-062e-e",
+   "part-number": "MT40A512M16LY-062E:E",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m16ly-062e-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a2g8sa-062e-f",
+   "part-number": "MT40A2G8SA-062E:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a2g8sa-062e-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 16G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g8ag-062e-aat-r",
+   "part-number": "MT40A1G8AG-062E AAT:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g8ag-062e-aat-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m16td-062e-aut-r",
+   "part-number": "MT40A512M16TD-062E AUT:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m16td-062e-aut-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m8sa-075-f",
+   "part-number": "MT40A512M8SA-075:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m8sa-075-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1333MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "2666MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 19"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 4G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a2g8sa-062e-it-f",
+   "part-number": "MT40A2G8SA-062E IT:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a2g8sa-062e-it-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 16G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m16td-062e-aat-r",
+   "part-number": "MT40A512M16TD-062E AAT:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m16td-062e-aat-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a256m16ly-062e-f",
+   "part-number": "MT40A256M16LY-062E:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a256m16ly-062e-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 4G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g8sa-062e-it-r",
+   "part-number": "MT40A1G8SA-062E IT:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g8sa-062e-it-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m16ly-062e-it-e",
+   "part-number": "MT40A512M16LY-062E IT:E",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m16ly-062e-it-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt401aad1td-dc-z41c",
+   "part-number": "MT401AAD1TD-DC Z41C",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt401aad1td-dc-z41c",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt40a4g4jc-062e-e",
+   "part-number": "MT40A4G4JC-062E:E",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a4g4jc-062e-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 16G X4 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m16z41cwc1",
+   "part-number": "MT40A512M16Z41CWC1",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m16z41cwc1",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "DIE"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 2G X8 DIE"
+  },
+  {
+   "part-key": "mt40a512m16td-062e-ait-r",
+   "part-number": "MT40A512M16TD-062E AIT:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m16td-062e-ait-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m8sa-062e-f",
+   "part-number": "MT40A512M8SA-062E:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m8sa-062e-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 4G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g8ag-062e-r",
+   "part-number": "MT40A1G8AG-062E:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g8ag-062e-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m16tb-062e-r",
+   "part-number": "MT40A512M16TB-062E:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m16tb-062e-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m16td-062e-r",
+   "part-number": "MT40A512M16TD-062E:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m16td-062e-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a4g8nea-062e-f",
+   "part-number": "MT40A4G8NEA-062E:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a4g8nea-062e-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 32G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g8sa-062e-r",
+   "part-number": "MT40A1G8SA-062E:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g8sa-062e-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g8sa-062e-it-e",
+   "part-number": "MT40A1G8SA-062E IT:E",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g8sa-062e-it-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a256m16ly-062e-it-f",
+   "part-number": "MT40A256M16LY-062E IT:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a256m16ly-062e-it-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.50 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 4G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a4g4sa-062e-f",
+   "part-number": "MT40A4G4SA-062E:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a4g4sa-062e-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 16G X4 TFBGA"
+  },
+  {
+   "part-key": "mt40a8g4nea-062e-f",
+   "part-number": "MT40A8G4NEA-062E:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a8g4nea-062e-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 32G X4 TFBGA"
+  },
+  {
+   "part-key": "mt40a512m16tb-062e-it-r",
+   "part-number": "MT40A512M16TB-062E IT:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a512m16tb-062e-it-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g16td-062e-f",
+   "part-number": "MT40A1G16TD-062E:F",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g16td-062e-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "96-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 16G X16 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g8ag-062e-aut-r",
+   "part-number": "MT40A1G8AG-062E AUT:R",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g8ag-062e-aut-r",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "1600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "3200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 22"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X8 TFBGA"
+  },
+  {
+   "part-key": "mt40a1g8z41cwc1",
+   "part-number": "MT40A1G8Z41CWC1",
+   "product-tag": "micron:products/memory/dram-components/ddr4-sdram/mt40a1g8z41cwc1",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "8Gb"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.2 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x8"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "DIE"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR4"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR4 8G X8 DIE"
+  }
+ ]
+}

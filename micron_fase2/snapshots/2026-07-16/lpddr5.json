@@ -1,0 +1,9763 @@
+{
+ "date": "2026-07-16 12:31:52.511",
+ "response-code": "200",
+ "filter": [
+  {
+   "Bus Width": [
+    "x32, x64"
+   ]
+  },
+  {
+   "CAS Latency": [
+    "CL = NSR, CL = Programmable"
+   ]
+  },
+  {
+   "Component Config": [
+    "1.5Gb x32, 1.5Gb x64, 1Gb x32, 1Gb x64, 2Gb x32, 2Gb x64, 4Gb x32, 512Mb x32, 512Mb x64, 768Mb x32, 768Mb x64, X32, X64"
+   ]
+  },
+  {
+   "Component Density": [
+    "102.4Gb, 128Gb, 16Gb, 24Gb, 32Gb, 48Gb, 64Gb, 96Gb"
+   ]
+  },
+  {
+   "Family": [
+    "DRAM"
+   ]
+  },
+  {
+   "I/O Voltage": [
+    "0.5 VOLTS"
+   ]
+  },
+  {
+   "MT/s": [
+    "10.7GTPS, 6400MTPS, 7500MTPS, 9600MTPS, NSR"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-25C to +85C, -40C to +105C, -40C to +125C, -40C to +95C, 0C to +70C"
+   ]
+  },
+  {
+   "Package": [
+    "LFBGA, TFBGA, UFBGA, UFLGA, VFBGA, WFBGA"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "Contact Sales, End of Life, Introduction, Production, Sampling"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT"
+   ]
+  },
+  {
+   "Pin Count": [
+    "315-ball, 441-ball, 496-ball, 561-ball"
+   ]
+  },
+  {
+   "Speed": [
+    "3200MHz, 3750MHz, 4800MHz, 5.33GHz, NSR"
+   ]
+  },
+  {
+   "Technology": [
+    "LPDDR5"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mt62f1dcd4cz-dc-y6cp",
+   "part-number": "MT62F1DCD4CZ-DC Y6CP",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dcd4cz-dc-y6cp",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5"
+  },
+  {
+   "part-key": "mt62f512m32d1ds-020-wt-e",
+   "part-number": "MT62F512M32D1DS-020 WT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m32d1ds-020-wt-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f2dcd8dl-dc-x",
+   "part-number": "MT62F2DCD8DL-DC X",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2dcd8dl-dc-x",
+   "attr": [
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.51"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "UFLGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 UFLGA"
+  },
+  {
+   "part-key": "mt62f1dad4cz-dc-y6cp",
+   "part-number": "MT62F1DAD4CZ-DC Y6CP",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dad4cz-dc-y6cp",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5"
+  },
+  {
+   "part-key": "mt62f2bad2ds-dc-y5bn",
+   "part-number": "MT62F2BAD2DS-DC Y5BN",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2bad2ds-dc-y5bn",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 TFBGA"
+  },
+  {
+   "part-key": "mt62f1dd4ek-dc-y5bn",
+   "part-number": "MT62F1DD4EK-DC Y5BN",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dd4ek-dc-y5bn",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f512m64d2ek-026-wt-e",
+   "part-number": "MT62F512M64D2EK-026 WT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2ek-026-wt-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f4g32d8dv-026-wt-c",
+   "part-number": "MT62F4G32D8DV-026 WT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f4g32d8dv-026-wt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "LFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X32 LFBGA"
+  },
+  {
+   "part-key": "mt62f1g32d2ds-031rfwt-c",
+   "part-number": "MT62F1G32D2DS-031RFWT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g32d2ds-031rfwt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x32"
+    },
+    {
+     "name": "Module Box Qty",
+     "id": "mod_box_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f2dadbdm-dc-x",
+   "part-number": "MT62F2DADBDM-DC X",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2dadbdm-dc-x",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.61"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "12"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "UFLGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 UFLGA"
+  },
+  {
+   "part-key": "mt62f2dadagj-dc-x-y5bn",
+   "part-number": "MT62F2DADAGJ-DC X Y5BN",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2dadagj-dc-x-y5bn",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.41"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "16"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 XFLGA"
+  },
+  {
+   "part-key": "mt62f2g64d8cz-020faat-d",
+   "part-number": "MT62F2G64D8CZ-020FAAT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g64d8cz-020faat-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f2g32d4ds-020ait-d",
+   "part-number": "MT62F2G32D4DS-020AIT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g32d4ds-020ait-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1dzd4cz-dc-y52n",
+   "part-number": "MT62F1DZD4CZ-DC Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dzd4cz-dc-y52n",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f1bad8dv-dc-y52n",
+   "part-number": "MT62F1BAD8DV-DC Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1bad8dv-dc-y52n",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f512m64d2ek-020aut-e",
+   "part-number": "MT62F512M64D2EK-020AUT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2ek-020aut-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f512m64d2cz-020faut-e",
+   "part-number": "MT62F512M64D2CZ-020FAUT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2cz-020faut-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f512m32d1ds-020faut-e",
+   "part-number": "MT62F512M32D1DS-020FAUT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m32d1ds-020faut-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f512m64d2ek-020fait-e",
+   "part-number": "MT62F512M64D2EK-020FAIT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2ek-020fait-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f2bad2jz-dc-y62p",
+   "part-number": "MT62F2BAD2JZ-DC Y62P",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2bad2jz-dc-y62p",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.20 x 12.40 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 VFBGA"
+  },
+  {
+   "part-key": "mt62f2dd4zx-dc-y5bn",
+   "part-number": "MT62F2DD4ZX-DC Y5BN",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2dd4zx-dc-y5bn",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.65"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 UFBGA"
+  },
+  {
+   "part-key": "mt62f512m64d2ek-020faat-e",
+   "part-number": "MT62F512M64D2EK-020FAAT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2ek-020faat-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f2bad4jz-dc-y52n",
+   "part-number": "MT62F2BAD4JZ-DC Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2bad4jz-dc-y52n",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.20 x 12.40 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 VFBGA"
+  },
+  {
+   "part-key": "mt62f2g32d4ds-020aat-d",
+   "part-number": "MT62F2G32D4DS-020AAT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g32d4ds-020aat-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f2dad8za-dc-y5bn",
+   "part-number": "MT62F2DAD8ZA-DC Y5BN",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2dad8za-dc-y5bn",
+   "attr": [
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.71"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 WFBGA"
+  },
+  {
+   "part-key": "mt62f1g64d4cz-020aat-d",
+   "part-number": "MT62F1G64D4CZ-020AAT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g64d4cz-020aat-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "X64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MT62F1G64D4CZ-020AAT:D  LPDDR5"
+  },
+  {
+   "part-key": "mt62f4g32d8dv-020ait-d",
+   "part-number": "MT62F4G32D8DV-020AIT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f4g32d8dv-020ait-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x32"
+    },
+    {
+     "name": "Module Box Qty",
+     "id": "mod_box_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "LFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X32 LFBGA"
+  },
+  {
+   "part-key": "mt62f512m32d1ds-020-aat-e",
+   "part-number": "MT62F512M32D1DS-020 AAT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m32d1ds-020-aat-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1bzd8dv-dc-y5bp",
+   "part-number": "MT62F1BZD8DV-DC Y5BP",
+   "product-tag": "micron:products/memory/lpddr/lpddr5/mt62f1bzd8dv-dc-y5bp",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f2dadbdm-dc-x-y52n",
+   "part-number": "MT62F2DADBDM-DC X Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2dadbdm-dc-x-y52n",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.61"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "12"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "UFLGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 UFLGA"
+  },
+  {
+   "part-key": "mt62f1dad4as-dc-y62p",
+   "part-number": "MT62F1DAD4AS-DC Y62P",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dad4as-dc-y62p",
+   "attr": [
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.20 x 12.40 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 VFBGA"
+  },
+  {
+   "part-key": "mt62f512m64d2ek-020ait-e",
+   "part-number": "MT62F512M64D2EK-020AIT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2ek-020ait-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f4g32d8dv-020aat-d",
+   "part-number": "MT62F4G32D8DV-020AAT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f4g32d8dv-020aat-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x32"
+    },
+    {
+     "name": "Module Box Qty",
+     "id": "mod_box_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "LFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X32 LFBGA"
+  },
+  {
+   "part-key": "mt62f1dd4cz-dc-y62p",
+   "part-number": "MT62F1DD4CZ-DC Y62P",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dd4cz-dc-y62p",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f512m64d2cz-020-aat-e",
+   "part-number": "MT62F512M64D2CZ-020 AAT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2cz-020-aat-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f512m64d2cz-026-wt-e",
+   "part-number": "MT62F512M64D2CZ-026 WT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2cz-026-wt-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f8bzd8dv-dc-y52p",
+   "part-number": "MT62F8BZD8DV-DC Y52P",
+   "product-tag": "micron:products/memory/lpddr/lpddr5/mt62f8bzd8dv-dc-y52p",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f512m32d1ds-020aut-e",
+   "part-number": "MT62F512M32D1DS-020AUT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m32d1ds-020aut-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f768m32d2ds-026-wt-c",
+   "part-number": "MT62F768M32D2DS-026 WT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f768m32d2ds-026-wt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "24Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 24G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g32d2ds-020aut-d",
+   "part-number": "MT62F1G32D2DS-020AUT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g32d2ds-020aut-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X32 TFBGA"
+  },
+  {
+   "part-key": "sm2g64y42md8fcl-ut",
+   "part-number": "SM2G64Y42MD8FCL-UT",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/sm2g64y42md8fcl-ut",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "102.4Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "NSR"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "NSR"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +70C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = NSR"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "496-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x64"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.69"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1800"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "WFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X64 WFBGA"
+  },
+  {
+   "part-key": "mt62f768m32d2ds-020-wt-d",
+   "part-number": "MT62F768M32D2DS-020 WT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f768m32d2ds-020-wt-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "24Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 24G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1dd4cz-dc-y5bn",
+   "part-number": "MT62F1DD4CZ-DC Y5BN",
+   "product-tag": "micron:products/memory/lpddr/lpddr5/mt62f1dd4cz-dc-y5bn",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f1bad4ds-dc-y6cp",
+   "part-number": "MT62F1BAD4DS-DC Y6CP",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1bad4ds-dc-y6cp",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDRR5"
+  },
+  {
+   "part-key": "mt62f2dadbfh-dc-y52n",
+   "part-number": "MT62F2DADBFH-DC Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2dadbfh-dc-y52n",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.81"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "12"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 VFBGA"
+  },
+  {
+   "part-key": "mt62f1dcd8ek-dc-y5bp",
+   "part-number": "MT62F1DCD8EK-DC Y5BP",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dcd8ek-dc-y5bp",
+   "attr": [
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f2g64d8cz-020aat-d",
+   "part-number": "MT62F2G64D8CZ-020AAT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g64d8cz-020aat-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "X64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MT62F2G64D8CZ-020AAT:D  LPDDR5"
+  },
+  {
+   "part-key": "mt62f4g32d8dv-020-it-d",
+   "part-number": "MT62F4G32D8DV-020 IT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f4g32d8dv-020-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x32"
+    },
+    {
+     "name": "Module Box Qty",
+     "id": "mod_box_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "LFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X32 LFBGA"
+  },
+  {
+   "part-key": "mt62f1bad2ds-dc-y52n",
+   "part-number": "MT62F1BAD2DS-DC Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1bad2ds-dc-y52n",
+   "attr": [
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 TFBGA"
+  },
+  {
+   "part-key": "mt62f1bad4ds-dc-y52n",
+   "part-number": "MT62F1BAD4DS-DC Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1bad4ds-dc-y52n",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 TFBGA"
+  },
+  {
+   "part-key": "mt62f1bad2ds-dc-y6cp",
+   "part-number": "MT62F1BAD2DS-DC Y6CP",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1bad2ds-dc-y6cp",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDRR5"
+  },
+  {
+   "part-key": "mt62f4g32d8dv-020fait-d",
+   "part-number": "MT62F4G32D8DV-020FAIT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f4g32d8dv-020fait-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x32"
+    },
+    {
+     "name": "Module Box Qty",
+     "id": "mod_box_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "LFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X32 LFBGA"
+  },
+  {
+   "part-key": "mt62f2g32d4ds-020-it-d",
+   "part-number": "MT62F2G32D4DS-020 IT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g32d4ds-020-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g64d4cz-026-wt-c",
+   "part-number": "MT62F1G64D4CZ-026 WT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g64d4cz-026-wt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f512m32d1ds-026-wt-e",
+   "part-number": "MT62F512M32D1DS-026 WT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m32d1ds-026-wt-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f768m64d4ek-026rfwt-c",
+   "part-number": "MT62F768M64D4EK-026RFWT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f768m64d4ek-026rfwt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "48Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 48G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f512m64d2ek-020-wt-e",
+   "part-number": "MT62F512M64D2EK-020 WT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2ek-020-wt-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f2g32d4ds-031rfit-c",
+   "part-number": "MT62F2G32D4DS-031RFIT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g32d4ds-031rfit-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "X32"
+    },
+    {
+     "name": "Module Box Qty",
+     "id": "mod_box_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MT62F2G32D4DS-031RFIT:C 64Gb LPDDR5"
+  },
+  {
+   "part-key": "mt62f1dad8cz-dc-y62p",
+   "part-number": "MT62F1DAD8CZ-DC Y62P",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dad8cz-dc-y62p",
+   "attr": [
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5"
+  },
+  {
+   "part-key": "mt62f2dadagk-dc-y5bn",
+   "part-number": "MT62F2DADAGK-DC Y5BN",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2dadagk-dc-y5bn",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.61"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "16"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 UFBGA"
+  },
+  {
+   "part-key": "mt62f2g32d4ds-031rfwt-c",
+   "part-number": "MT62F2G32D4DS-031RFWT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g32d4ds-031rfwt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "X32"
+    },
+    {
+     "name": "Module Box Qty",
+     "id": "mod_box_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MT62F2G32D4DS-031RFWT:C 64Gb LPDDR5"
+  },
+  {
+   "part-key": "mt62f1g64d4cz-020faat-d",
+   "part-number": "MT62F1G64D4CZ-020FAAT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g64d4cz-020faat-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f768m64d4ek-026-wt-c",
+   "part-number": "MT62F768M64D4EK-026 WT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f768m64d4ek-026-wt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "48Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 48G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g32d2ds-020faat-d",
+   "part-number": "MT62F1G32D2DS-020FAAT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g32d2ds-020faat-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f2g64d8k2-018vwt-d",
+   "part-number": "MT62F2G64D8K2-018VWT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g64d8k2-018vwt-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "5.33GHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "10.7GTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "496-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Introduction"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.58"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "UFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X64 UFBGA"
+  },
+  {
+   "part-key": "mt62f768m64d4ek-026-wt-b",
+   "part-number": "MT62F768M64D4EK-026 WT:B",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f768m64d4ek-026-wt-b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "48Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 48G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f2dd4dk-dc-x-y5bn",
+   "part-number": "MT62F2DD4DK-DC X Y5BN",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2dd4dk-dc-x-y5bn",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.45"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 XFLGA"
+  },
+  {
+   "part-key": "mt62f512m32d1ds-020fait-e",
+   "part-number": "MT62F512M32D1DS-020FAIT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m32d1ds-020fait-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g64d4k2-020vwt-d",
+   "part-number": "MT62F1G64D4K2-020VWT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g64d4k2-020vwt-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "496-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Introduction"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.58"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "UFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X64 UFBGA"
+  },
+  {
+   "part-key": "mt62f512m32d1ds-020faat-e",
+   "part-number": "MT62F512M32D1DS-020FAAT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m32d1ds-020faat-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f512m64d2cz-020fait-e",
+   "part-number": "MT62F512M64D2CZ-020FAIT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2cz-020fait-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "X64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "MT62F512M64D2CZ-020FAIT:E 32Gb LPDDR5"
+  },
+  {
+   "part-key": "mt62f512m64d2cz-020-wt-e",
+   "part-number": "MT62F512M64D2CZ-020 WT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2cz-020-wt-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g32d4ds-031-wt-b",
+   "part-number": "MT62F1G32D4DS-031 WT:B",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g32d4ds-031-wt-b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g32d2ds-020fait-d",
+   "part-number": "MT62F1G32D2DS-020FAIT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g32d2ds-020fait-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g64d4k2-018vwt-d",
+   "part-number": "MT62F1G64D4K2-018VWT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g64d4k2-018vwt-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "5.33GHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "10.7GTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "496-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Introduction"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.58"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "UFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X64 UFBGA"
+  },
+  {
+   "part-key": "mt62f2g32d4ds-020aut-d",
+   "part-number": "MT62F2G32D4DS-020AUT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g32d4ds-020aut-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1dd8ek-dc-y5bn",
+   "part-number": "MT62F1DD8EK-DC Y5BN",
+   "product-tag": "micron:products/memory/lpddr/lpddr5/mt62f1dd8ek-dc-y5bn",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f2g64d8k2-020vwt-d",
+   "part-number": "MT62F2G64D8K2-020VWT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g64d8k2-020vwt-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "496-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Introduction"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.58"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "UFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X64 UFBGA"
+  },
+  {
+   "part-key": "mt62f1dad4cz-dc-y52n",
+   "part-number": "MT62F1DAD4CZ-DC Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dad4cz-dc-y52n",
+   "attr": [
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f1dzd8cz-dc-y52n",
+   "part-number": "MT62F1DZD8CZ-DC Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dzd8cz-dc-y52n",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f1czd1ds-dc-y52q",
+   "part-number": "MT62F1CZD1DS-DC Y52Q",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1czd1ds-dc-y52q",
+   "attr": [
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f1536m32d4ds-020-wt-d",
+   "part-number": "MT62F1536M32D4DS-020 WT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1536m32d4ds-020-wt-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "48Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 48G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1dad4ek-dc-y5bn",
+   "part-number": "MT62F1DAD4EK-DC Y5BN",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dad4ek-dc-y5bn",
+   "attr": [
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "OTHER"
+  },
+  {
+   "part-key": "mt62f1536m32d4ds-026-wt-c",
+   "part-number": "MT62F1536M32D4DS-026 WT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1536m32d4ds-026-wt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "48Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 48G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f3bad8dv-ms-y52n",
+   "part-number": "MT62F3BAD8DV-MS Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f3bad8dv-ms-y52n",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "LFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "OTHER"
+  },
+  {
+   "part-key": "mt62f1dad8cz-dc-y52n",
+   "part-number": "MT62F1DAD8CZ-DC Y52N",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dad8cz-dc-y52n",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f1g32d2ds-020faut-d",
+   "part-number": "MT62F1G32D2DS-020FAUT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g32d2ds-020faut-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1dd8cz-dc-y62p",
+   "part-number": "MT62F1DD8CZ-DC Y62P",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dd8cz-dc-y62p",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 (PACKAGE)"
+  },
+  {
+   "part-key": "mt62f512m64d2ek-020-aat-e",
+   "part-number": "MT62F512M64D2EK-020 AAT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2ek-020-aat-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f512m64d2ek-020faut-e",
+   "part-number": "MT62F512M64D2EK-020FAUT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2ek-020faut-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f2g64d8ek-026-wt-c",
+   "part-number": "MT62F2G64D8EK-026 WT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g64d8ek-026-wt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f2g64d8ek-026-wt-b",
+   "part-number": "MT62F2G64D8EK-026 WT:B",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g64d8ek-026-wt-b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g32d2ds-020aat-d",
+   "part-number": "MT62F1G32D2DS-020AAT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g32d2ds-020aat-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f2g32d4ds-026-wt-c",
+   "part-number": "MT62F2G32D4DS-026 WT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g32d4ds-026-wt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f2g32d4ds-020-wt-f",
+   "part-number": "MT62F2G32D4DS-020 WT:F",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g32d4ds-020-wt-f",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1dad8as-dc-y62p",
+   "part-number": "MT62F1DAD8AS-DC Y62P",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dad8as-dc-y62p",
+   "attr": [
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.20 x 12.40 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 0 0 VFBGA"
+  },
+  {
+   "part-key": "mt62f1536m64d8ek-026-wt-c",
+   "part-number": "MT62F1536M64D8EK-026 WT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1536m64d8ek-026-wt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "96Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 96G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f768m64d4zu-026-wt-b",
+   "part-number": "MT62F768M64D4ZU-026 WT:B",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f768m64d4zu-026-wt-b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "48Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "496-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "768Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 12.40 x 0.65"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "UFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 48G X64 UFBGA"
+  },
+  {
+   "part-key": "mt62f1bad8dv-dc-y6cp",
+   "part-number": "MT62F1BAD8DV-DC Y6CP",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1bad8dv-dc-y6cp",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDRR5"
+  },
+  {
+   "part-key": "mt62f1g32d2ds-020-it-d",
+   "part-number": "MT62F1G32D2DS-020 IT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g32d2ds-020-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g64d4ek-026-wt-c",
+   "part-number": "MT62F1G64D4EK-026 WT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g64d4ek-026-wt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "441-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1190"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 14.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f1536m64d8cz-026-wt-c",
+   "part-number": "MT62F1536M64D8CZ-026 WT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1536m64d8cz-026-wt-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "96Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3750MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7500MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 96G X64 TFBGA"
+  },
+  {
+   "part-key": "mt62f2g32d4ds-020fait-d",
+   "part-number": "MT62F2G32D4DS-020FAIT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g32d4ds-020fait-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f512m32d1ds-020ait-e",
+   "part-number": "MT62F512M32D1DS-020AIT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m32d1ds-020ait-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 16G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f2g32d4ds-020faat-d",
+   "part-number": "MT62F2G32D4DS-020FAAT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f2g32d4ds-020faat-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "64Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 64G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g32d2ds-031rfit-c",
+   "part-number": "MT62F1G32D2DS-031RFIT:C",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g32d2ds-031rfit-c",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x32"
+    },
+    {
+     "name": "Module Box Qty",
+     "id": "mod_box_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f1g32d2ds-020ait-d",
+   "part-number": "MT62F1G32D2DS-020AIT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1g32d2ds-020ait-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x32"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X32 TFBGA"
+  },
+  {
+   "part-key": "mt62f4g32d8dv-020aut-d",
+   "part-number": "MT62F4G32D8DV-020AUT:D",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f4g32d8dv-020aut-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "128Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x32"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "315-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Sampling"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x32"
+    },
+    {
+     "name": "Module Box Qty",
+     "id": "mod_box_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1050"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "12.40 x 15.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "8"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "LFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 128G X32 LFBGA"
+  },
+  {
+   "part-key": "mt62f1dad4cz-dc-y62p",
+   "part-number": "MT62F1DAD4CZ-DC Y62P",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f1dad4cz-dc-y62p",
+   "attr": [
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "4"
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": false
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5"
+  },
+  {
+   "part-key": "mt62f512m64d2cz-020aut-e",
+   "part-number": "MT62F512M64D2CZ-020AUT:E",
+   "product-tag": "micron:products/memory/lpddr/lpddr5x/mt62f512m64d2cz-020aut-e",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "4800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "9600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "0.5 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +125C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x64"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = Programmable"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "561-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "512Mb x64"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 12.40 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "LPDDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "TFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "LPDDR5 32G X64 TFBGA"
+  }
+ ]
+}

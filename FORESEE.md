@@ -140,8 +140,19 @@ Prefixos: `F35` (SPI), `FS35` (SPI ND), `FS33` (paralela TSOP), `FSN` (paralela 
 - **LPDDR4X** (`FLXC*`): **código de capacidade DECIFRADO** — o dígito **antes do "G"** (`pn[7]`) = **GB do
   pacote** (`FLXC2004G`=4GB, `FLXC2002G`=2GB, `FLXC4008G`=8GB). O `2`/`4` **após** `FLXC` é config de canal,
   NÃO capacidade. **Confirmado Tier-1** por 2 anchors DigiKey (`FLXC2004G-30`=4GByte, `FLXC2002G-N2`=2GB) +
-  a lista de densidades do catálogo (16/24/32/48/64Gb) que casa 1-a-1. Chaves vistas: 2/3/4/6/8. `NCLDXC1MG256M32`
-  (1GB, nomenclatura legada NCLD) fica **fora** desta família.
+  a lista de densidades do catálogo (16/24/32/48/64Gb) que casa 1-a-1. Chaves vistas: 2/3/4/6/8.
+- **Legado `NCLD*`** (fora da família `FLXC`, fora do yaml — só known_parts avulsos): estrutura **decifrada
+  via datasheet oficial** (`NCLD4CXMAXXXM32` Rev B2 2017, die Micron) — `NC`(Longsys) + `LD`+geração
+  (`4`=LPDDR4 · `X`=LPDDR4X · `3`=LPDDR3) + pacote (`C`=200-ball, LPDDR4/4X · `B`=178-ball, LPDDR3) +
+  CS-count (`1`/`2`) + opcional 2 chars de código de die/fornecedor (`MA`=die Micron; a subfamília `3B`
+  costuma vir SEM esse par) + `{profundidade}M{largura}` = capacidade por `profundidade×largura÷8`.
+  **TRÊS subfamílias, TIPO diferente:** `NCLD4C*` (datasheet SEM opção 0.6V) = **LPDDR4 padrão**;
+  `NCLDXC*` (catálogo oficial lista COM opção 0.6V, seção "LPDDR4x") = **LPDDR4X** — inclui
+  `NCLDXC1MG256M32` (1GB); `NCLD3B*` (datasheet próprio `D-00151`, mirror Scribd, + página oficial
+  `longsys.com/.../lpddr.html` confirma a linha "FORESEE LPDDR3") = **LPDDR3**, pacote 178-ball
+  (fisicamente menor/mais antigo que o 200-ball das outras duas). Confirmado p/ 9 PNs no total (4 do
+  datasheet NCLD4C + 1 do catálogo NCLDXC + 1 do datasheet NCLD3B + 3 por fórmula/existência forte em
+  distribuidor), submissões `foresee_ncld_legacy_2026-07-16.yaml` (2026-07-16, duas rodadas).
 
 ---
 
@@ -180,12 +191,27 @@ mudam com o mercado, não citar aqui. Observado na construção: LPDDR4X 2–8GB
 com known_parts confirmados) + ePOP · NAND raw · nMCP (dead-by-type, só gramática). Golden por família em `_FORESEE_GOLDEN`.
 
 **Gaps deixados p/ o dono decidir:**
-1. **`NCLDXC1MG256M32`** (LPDDR4X 1GB, nomenclatura legada NCLD, fora da família FLXC) — adicionar como known_part
-   avulso se aparecer na bancada (1GB provavelmente abaixo do limiar → NÃO RENTÁVEL de todo jeito).
-2. **Decode de capacidade do NAND raw** — hoje omitido de propósito (dead-by-type + armadilha Gb/MB). Só faria
+1. ~~`NCLDXC1MG256M32` avulso~~ — **RESOLVIDO 2026-07-16**: PN buscado na bancada (`NCDLXC4MJ512M32`,
+   provável erro de transcrição — ver notes do known_part `NCLDXC1MJ512M32`) disparou pesquisa do cluster
+   `NCLD*` inteiro. 11 known_parts submetidos (`foresee_ncld_legacy_2026-07-16.yaml`): 5 `confirmed`
+   (datasheet oficial `NCLD4CXMAXXXM32` + catálogo) + 6 `manual` (fórmula validada + existência em
+   distribuidor). **Pendente confirmação do dono:** qual é o PN físico real na bancada (o match
+   `NCLDXC1MJ512M32` é hipótese bem fundamentada, não 100% certa — recomendo reconferir o laser-marking).
+2. ~~`NCLD3B*`~~ — **RESOLVIDO 2026-07-16 (2ª rodada)**: PN buscado na bancada foi exatamente
+   `NCLD3B2256M32` (string real, sem erro de transcrição desta vez). Achado o datasheet próprio
+   `D-00151 FORESEE - LPDDR3 - NCLD3B1256M32 - 178ball` (mirror Scribd) + a página oficial de produto
+   LPDDR3 da Longsys — resolve a geração como **LPDDR3** (não era ambiguidade 4/4X). 4 known_parts
+   submetidos no mesmo arquivo (`NCLD3B1256M32` confirmed; `2256M32`/`1128M32`/`2512M32` manual,
+   fórmula + existência forte em distribuidor — 50k/309k/22k unidades agregadas respectivamente).
+3. **Decode de capacidade do NAND raw** — hoje omitido de propósito (dead-by-type + armadilha Gb/MB). Só faria
    sentido por rótulo mais rico ("SLC NAND 512MB"), nunca por rentabilidade.
-3. **Sufixos após o "-"** (revisão/velocidade/temperatura) não decodificados em nenhuma linha — não bloqueiam tipo/capacidade.
-4. **Prefixos legados** `FSEIASLD*`/`NCEMASLD*` — avaliar se ganham família própria ou ficam como known_parts avulsos.
+4. **Sufixos após o "-"** (revisão/velocidade/temperatura) não decodificados em nenhuma linha — não bloqueiam tipo/capacidade.
+5. **Prefixos legados** `FSEIASLD*`/`NCEMASLD*` — avaliar se ganham família própria ou ficam como known_parts avulsos.
+6. **Possível família `NCLD` (Trilha A)?** A estrutura já está decifrada (§2) com **3 subfamílias/9 âncoras**
+   Tier-1 (4C=LPDDR4, XC=LPDDR4X, 3B=LPDDR3) — caso mais forte do que quando o gap #1 original foi escrito.
+   Não propus a família sozinho (decisão arquitetural do dono); sinalizo a possibilidade caso mais PNs
+   `NCLD*` apareçam na bancada. Variantes com código de die/vendor de 2 chars (`NCLD3B1M7256M32` etc.) vistas
+   mas não submetidas — mesma capacidade das versões "limpas", lote extra se pedido.
 
 ---
 
@@ -206,6 +232,24 @@ IA sem verificação. Sempre conferir a unidade antes de gravar: `Xbit ÷ 8 = YB
   (`pn[7]`=GB). 9 categorias, 17 famílias, 34 known_parts confirmados. Decisões: eMCP3=LPDDR3 inferido do ePOP
   (aceito pelo dono); ePOP/NAND raw/nMCP dead-by-type sem known_parts; `FEMDRM0128G` (4 dígitos) coberto por
   known_part exato. Suíte 273 verde a cada passo.
+
+- **2026-07-16:** PN buscado na bancada (`NCDLXC4MJ512M32`, não encontrado, 0 fuzzy) puxou pesquisa do
+  cluster legado `NCLD*` (pré-`FLXC`). Achado o datasheet oficial `NCLD4CXMAXXXM32` (Micron die, 2017) que
+  decifra a estrutura completa (§2) e confirma `NCLD4C*`=LPDDR4 padrão (sem opção 0.6V) vs `NCLDXC*`
+  (catálogo)=LPDDR4X. 11 known_parts submetidos (5 confirmed + 6 manual), 3 `NCLD3B*` deixados de fora
+  (tipo não confirmado). HardDiskDirect flagrado rotulando `NCLDXC1MJ512M32` como "(16GB)" — errado, o
+  correto é 2GB (mesma armadilha Gb/GB já catalogada no `SK_HYNIX.md`). Match do PN da bancada é hipótese
+  (transcrição `DL`↔`LD` + `4`↔`1`), não certeza — pendente confirmação do dono.
+
+- **2026-07-16 (2ª rodada, mesmo dia):** Novo PN de bancada, `NCLD3B2256M32` — desta vez string exata,
+  sem erro de transcrição, fechando o gap `NCLD3B*` deixado aberto na rodada anterior. Achado o datasheet
+  próprio (`D-00151`, mirror Scribd) que resolve a geração como **LPDDR3** (pacote 178-ball, diferente do
+  200-ball de `NCLD4C`/`NCLDXC`) — não era a ambiguidade 4-vs-4X que eu tinha suposto antes. Mais 4
+  known_parts no mesmo arquivo de submissão. Duas lições de processo registradas na memória do projeto:
+  (a) antes de descartar um candidato por "evidência fraca", cruzar com fontes Tier-1 já coletadas
+  nesta mesma sessão (aconteceu com `FEMDRM008G-A3A55`, ver submissão eMMC); (b) 3ª captura de alucinação
+  de resumo de busca automático nesta marca (desta vez a página HQonline de `NCLD3B2512M32`) — sempre
+  abrir a página e olhar os campos estruturados de verdade antes de citar como fonte.
 
 > Inventário de famílias/mapas → **`foresee.yaml`** (Trilha A). known_parts confirmados (proveniência Tier-1 na
 > `notes`) → **banco** (Opção 2), via `submit_known_parts`. Cross-marca (comandos/convenção/rentabilidade) → **`CLAUDE.md`**.

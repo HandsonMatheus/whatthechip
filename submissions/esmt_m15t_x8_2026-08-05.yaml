@@ -1,0 +1,53 @@
+brand: "ESMT"
+known_parts:
+  - part_number: "M15T2G8256A"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "2Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1284523/ESMT/M15T2G8256A.html"
+    notes: >
+      ESMT DDR3(L) SDRAM, 32M x8bit x8 bancos = 33.554.432 x 8 x 8 = 2.147.483.648 bit
+      = 2Gb = 256MB. Fonte Tier-1: conteudo do datasheet extraido via Alldatasheet
+      (source_url), citacao direta "32M x 8 Bit x 8 Banks DDR3(L) SDRAM", confirmado
+      2x (paginas /pdf/ e /view/ do Alldatasheet, mesmo texto). Datasheet oficial
+      existe em esmt.com.tw/upload/pdf/ESMT/datasheets/M15T2G8256A(2L).pdf (mesmo
+      padrao de URL dos M15T ja confirmados), mas o conteudo do PDF oficial nao abriu
+      (timeout/bloqueio -- mesmo problema ja visto com outros PDFs oficiais desta
+      marca). Par x8 do M15T2G16128A (2Gb x16, ja confirmado). NAO aparece na tabela
+      de distribuidor Satron (satronel.com) que lista o irmao M15T4G8512A -- por isso
+      confianca 1 degrau abaixo do M15T4G8512A desta mesma rodada: 1 fonte de
+      conteudo direta (Alldatasheet), nao 2-3 convergentes. Recomendo revisão com
+      atenção extra antes de aprovar, dado o histórico de menos corroboração.
+
+  - part_number: "M15T4G8512A"
+    chip_type: "DDR3L"
+    subtype: "DDR3L"
+    density_gbit: "4Gb"
+    interface: "x8"
+    confidence: confirmed
+    source_url: "https://www.alldatasheet.com/datasheet-pdf/pdf/1284520/ESMT/M15T4G8512A.html"
+    notes: >
+      ESMT DDR3(L) SDRAM, 64M x8bit x8 bancos = 67.108.864 x 8 x 8 = 4.294.967.296 bit
+      = 4Gb = 512MB. Fonte Tier-1, 3 fontes convergentes: (1) Alldatasheet
+      (source_url), citacao direta "64M x 8 Bit x 8 Banks DDR3(L) SDRAM", confirmado
+      2x via /pdf/ e /view/; (2) Satron Electronics
+      (satronel.com/products/semiconductors/memoriy_ic/sdram/ddr3-sdram.html), tabela:
+      Density 4Gb, Organization "512Mbx8", Package 78 Ball BGA, Voltage 1.35V/1.5V,
+      Speed 800/933MHz -- 512Mb x8 = 4Gb, bate exato; (3) DigChip (titulo indexado na
+      busca: "M15T4G8512A(2S) datasheet - 4Gb DDR3(L) SDRAM"; a pagina em si nao abriu
+      por bloqueio, mas o titulo confirma "4Gb"). Datasheet oficial existe em
+      esmt.com.tw/upload/pdf/ESMT/datasheets/M15T4G8512A(2G).pdf (mesmo padrao de URL
+      dos demais M15T confirmados; conteudo nao abriu, mesmo bloqueio recorrente).
+      Nota: revisao do datasheet oficial e "(2G)", DigChip mostra "(2S)" -- provavel
+      revisoes diferentes do mesmo PN ao longo do tempo, nao afeta a especificacao.
+      Par x8 do M15T4G16256A (4Gb x16, ja confirmado).
+
+# Ambos sao o par x8 dos irmaos x16 ja confirmados/submetidos na rodada anterior
+# (M15T2G16128A e M15T4G16256A). Diferenca desta rodada pra anterior: da ultima vez
+# nenhum dos dois tinha citacao DIRETA de organizacao (so especulacao por padrao de
+# nomenclatura -- por isso ficaram de fora, regra "excluir, nao adivinhar"); desta vez
+# abri o conteudo via WebFetch e consegui citacao direta da organizacao para os dois,
+# com M15T4G8512A tendo corroboracao adicional independente (Satron + DigChip) que
+# M15T2G8256A nao teve -- por isso a nota de confianca assimetrica acima.

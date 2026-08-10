@@ -1,0 +1,446 @@
+part_number,brand,family,known_chip_type,current_shown_type,confidence,fbga_code,dead_by_generation,source_url
+MT29TZZZ7D7EKKBT-107 W.97V,Micron,MT29TZZZ,uMCP,eMCP,confirmed,JZ013,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29TZZZ8D6DKEZB-107 W.9H6,Micron,MT29TZZZ,uMCP,eMCP,confirmed,JZ089,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29tzzz8d6dkezb-107-w.9h6
+MT29TZZZAD8DKKFB-107 W ES.9N8,Micron,MT29TZZZ,uMCP,eMCP,confirmed,JZ127,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29tzzzad8dkkfb-107-w-es.9n8
+MT29VZZZ5D8JQFSL-053 I ES.95Z,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ140,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzz5d8jqfsl-053-i-es.95z
+MT29VZZZ5D8JQFSL-053 I.95Z,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ141,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzz5d8jqfsl-053-i.95z
+MT29VZZZ7D7DQKWL-053 W.97Y,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ083,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZ7D81SFSL-046 W ES.22B,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ437,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT29VZZZ7D81SFSL/-
+MT29VZZZ7D8DQFSL-046 W.9J8,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ090,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzz7d8dqfsl-046-w.9j8
+MT29VZZZ7D8FQFSL-046 W ES.11K,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ247,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZ7D8FQFSL-046 W.11K,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ246,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzz7d8fqfsl-046-w.11k
+MT29VZZZ7D8GQFSL-046 W.9P8,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ185,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzz7d8gqfsl-046-w.9p8
+MT29VZZZAC8FQKSL-053 W ES.G8F,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ073,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZAC8FQKSL-053 W.G8F,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ074,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZAD8DQKSL-046 W ES.9K8,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ108,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad8dqksl-046-w-es.9k8
+MT29VZZZAD8DQKSL-046 W.9K8,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ109,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad8dqksl-046-w.9k8
+MT29VZZZAD8FQFSL-046 W ES.G8K,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ176,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT29VZZZAD8FQFSL/-
+MT29VZZZAD8FQFSL-046 WJ.G8K,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ276,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT29VZZZAD8FQFSL/-
+MT29VZZZAD8FQKSL-046 W ES.11V,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ252,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZAD8FQKSL-046 W ES.12H,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ256,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZAD8FQKSL-046 W.11V,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ251,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad8fqksl-046-w.11v
+MT29VZZZAD8FQKSL-046 W.12H,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ255,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad8fqksl-046-w.12h
+MT29VZZZAD8HQKWL-053 W.G8C,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ048,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad8hqkwl-053-w.g8c
+MT29VZZZAD92XFSL-046 W.176,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ513,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad92xfsl-046-w.176
+MT29VZZZAD9DQKSM-046 W ES.9K9,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ104,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad9dqksm-046-w-es.9k9
+MT29VZZZAD9DQKSM-046 W.9K9,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ103,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad9dqksm-046-w.9k9
+MT29VZZZAD9FQFSM-046 W ES.G9K,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ153,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad9fqfsm-046-w-es.g9k
+MT29VZZZAD9FQFSM-046 W.G9K,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ150,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad9fqfsm-046-w.g9k
+MT29VZZZAD9FQFSM-046 WJ.G9K,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ271,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad9fqfsm-046-wj.g9k
+MT29VZZZAD9FQKSM-046 W ES.12I,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ260,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZAD9FQKSM-046 W.11U,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ250,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad9fqksm-046-w.11u
+MT29VZZZAD9FQKSM-046 W.12I,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ259,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad9fqksm-046-w.12i
+MT29VZZZAD9GQFSM-046 W.9S9,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ187,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzad9gqfsm-046-w.9s9
+MT29VZZZBC9FQOPR-053 W ES.G9G,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ071,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZBC9FQOPR-053 W.G9G,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ070,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZBD81SLSL-046 W ES.22D,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ438,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT29VZZZBD81SLSL/-
+MT29VZZZBD8FQKSM-046 W ES.G8J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ169,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZBD8FQKSM-046 W.G8J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ168,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd8fqksm-046-w.g8j
+MT29VZZZBD8FQKSM-046 WJ.G8J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ275,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd8fqksm-046-wj.g8j
+MT29VZZZBD8FQPSM-046 W ES.11W,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ253,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZBD8FQPSM-046 W.11W,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ254,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd8fqpsm-046-w.11w
+MT29VZZZBD91SKSM-046 W ES.12N,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ399,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT29VZZZBD91SKSM/-
+MT29VZZZBD92XKSM-046 W.24K,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ568,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd92xksm-046-w.24k
+MT29VZZZBD92XLSL-046 W.18F,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ576,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd92xlsl-046-w.18f
+MT29VZZZBD9DQKPR-046 W ES.9M9,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ113,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9dqkpr-046-w-es.9m9
+MT29VZZZBD9FQKPR-046 W ES.G9J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ154,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9fqkpr-046-w-es.g9j
+MT29VZZZBD9FQKPR-046 W.G9J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ151,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9fqkpr-046-w.g9j
+MT29VZZZBD9FQKPR-046 WJ.G9J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ272,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9fqkpr-046-wj.g9j
+MT29VZZZBD9FQOPR-046 W ES.G9H,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ105,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9fqopr-046-w-es.g9h
+MT29VZZZBD9FQOPR-046 W.G9H,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ100,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9fqopr-046-w.g9h
+MT29VZZZBD9FQOPR-046 WJ.G9H,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ143,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9fqopr-046-wj.g9h
+MT29VZZZBD9FQPPR-046 W ES.12Z,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ258,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZBD9FQPPR-046 W.12Z,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ257,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9fqppr-046-w.12z
+MT29VZZZBD9GQFPR-046 W.9Q9,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ188,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9gqfpr-046-w.9q9
+MT29VZZZBD9ZSKPR-046 W.14E,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ323,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9zskpr-046-w.14e
+MT29VZZZBD9ZSKPR-046 WS.10J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ326,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9zskpr-046-ws.10j
+MT29VZZZBD9ZSKSM-046 W.11P,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ306,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbd9zsksm-046-w.11p
+MT29VZZZBDA1SKPR-046 W ES.12O,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ400,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT29VZZZBDA1SKPR/-
+MT29VZZZBDA1SLPR-046 W ES.17Z,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ397,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT29VZZZBDA1SLPR/-
+MT29VZZZBDAFQKBA-046 W ES.G0J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ195,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbdafqkba-046-w-es.g0j
+MT29VZZZBDAFQKBA-046 W.G0J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ194,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbdafqkba-046-w.g0j
+MT29VZZZBDAFQKWL-046 W ES.G0J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ198,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZBDAFQKWL-046 W.G0J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ199,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbdafqkwl-046-w.g0j
+MT29VZZZBDAFQKWL-046 WJ.G0J,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ277,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbdafqkwl-046-wj.g0j
+MT29VZZZBDAZSKWL-046 W.11N,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ286,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbdazskwl-046-w.11n
+MT29VZZZBDAZSKWL-046 W.14B,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ322,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzbdazskwl-046-w.14b
+MT29VZZZCD92XKSL-046 W.183,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ514,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcd92xksl-046-w.183
+MT29VZZZCD92XKSM-046 W.184,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ515,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcd92xksm-046-w.184
+MT29VZZZCD9FQKPR-046 W ES.G9L,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ155,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcd9fqkpr-046-w-es.g9l
+MT29VZZZCD9FQKPR-046 W.G9L,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ152,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcd9fqkpr-046-w.g9l
+MT29VZZZCD9FQKPR-046 WJ.G9L,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ273,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcd9fqkpr-046-wj.g9l
+MT29VZZZCD9FQKPR-046 WK.G9L,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ278,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZCD9ZSKPR-046 W.10Q,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ327,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcd9zskpr-046-w.10q
+MT29VZZZCD9ZSKPR-046 W.11M,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ302,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcd9zskpr-046-w.11m
+MT29VZZZCDA1SPR-046 W.181,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ388,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcda1spr-046-w.181
+MT29VZZZCDAFQKBA-046 W ES.G0L,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ193,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcdafqkba-046-w-es.g0l
+MT29VZZZCDAFQKBA-046 W.G0L,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ192,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZCDAFQKWL-046 W ES.G0L,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ172,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT29VZZZCDAFQKWL-046 W.G0L,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ171,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcdafqkwl-046-w.g0l
+MT29VZZZCDAFQKWL-046 WJ.G0L,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ274,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcdafqkwl-046-wj.g0l
+MT29VZZZCDAZSKWL-046 W.11O,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ285,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzcdazskwl-046-w.11o
+MT29VZZZDD9ZSPWL-046 W.14D,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ324,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzdd9zspwl-046-w.14d
+MT29VZZZDD9ZSPWL-046 W.14G,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ330,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzdd9zspwl-046-w.14g
+MT29VZZZDD9ZTPWL-031 W.14C,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ304,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzdd9ztpwl-031-w.14c
+MT29VZZZDDA2XOPR-046 W ES.24L,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ570,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT29VZZZDDA2XOPR/-
+MT29VZZZDDAZSPWL-046 W.14A,Micron,MT29VZZZ,uMCP,eMCP,confirmed,JZ325,NAO,https://www.micron.com/products/obsolete/obsolete-umcp-catalog/part-catalog/part-detail/mt29vzzzddazspwl-046-w.14a
+MT41K128M16JT-093 ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9PSP,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-093:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PSN,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-093G:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PTM,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-107 AAT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PSW,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m16jt-107-aat-k
+MT41K128M16JT-107 AIT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PSX,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-107 AUT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D8DZG,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-107 ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9PTB,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-107 IT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9RQN,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m16jt-107-it-k
+MT41K128M16JT-107 M AIT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9QWZ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-107:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PSZ,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m16jt-107-k
+MT41K128M16JT-107G:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PTC,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-125 AAT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PTH,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m16jt-125-aat-k
+MT41K128M16JT-125 AIT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PTJ,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m16jt-125-ait-k
+MT41K128M16JT-125 AUT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9VKD,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m16jt-125-aut-k
+MT41K128M16JT-125 E ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9QPZ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-125 E:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9QQB,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-125 ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9PTL,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-125 IT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PSK,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m16jt-125-it-k
+MT41K128M16JT-125 M AIT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9QXX,NAO,https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k128m16jt-125-m-ait-k
+MT41K128M16JT-125 M ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9QNQ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-125 M:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9QNP,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-125 V:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9SCS,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-125 XIT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9QTF,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m16jt-125-xit-k
+MT41K128M16JT-125:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PTK,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m16jt-125-k
+MT41K128M16JT-15E ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9PXK,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M16JT-15E:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9QMR,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M16JT/-
+MT41K128M8DA-107 AIT:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9SGG,NAO,https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k128m8da-107-ait-j
+MT41K128M8DA-107 ES:J,Micron,MT41K,DDR3,DDR3L,confirmed,Z9RDK,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M8DA/-
+MT41K128M8DA-107 IT:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9SGB,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m8da-107-it-j
+MT41K128M8DA-107:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9RDJ,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k128m8da-107-j
+MT41K128M8DA-125 AIT:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9RDS,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M8DA/-
+MT41K128M8DA-125 ES:J,Micron,MT41K,DDR3,DDR3L,confirmed,Z9RDC,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M8DA/-
+MT41K128M8DA-125 IT:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9RDV,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M8DA/-
+MT41K128M8DA-125:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9RDB,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K128M8DA/-
+MT41K1G8RKB-107 ES:N,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SXS,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K1G8RKB/-
+MT41K1G8RKB-107 ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9WTJ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K1G8RKB/-
+MT41K1G8RKB-107 IT ES:N,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TTW,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K1G8RKB/-
+MT41K1G8RKB-107 IT:N,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDT,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K1G8RKB/-
+MT41K1G8RKB-107:N,Micron,MT41K,DDR3,DDR3L,confirmed,D9SXR,NAO,https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k1g8rkb-107-n
+MT41K1G8RKB-107:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9WQN,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k1g8rkb-107-p
+MT41K1G8RKB-125 ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TPM,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K1G8RKB/-
+MT41K1G8RKB-125 IT ES:N,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TQG,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K1G8RKB/-
+MT41K256M16TW-093 ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SHQ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 ES:R,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TCW,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 IT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9TRK,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 IT:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDB,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 J ES:R,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TFG,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 J:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDC,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 JP ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TRL,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 JP ES:R,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TFH,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 JP KF:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9VJR,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 JP:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9TRM,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 JP:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDN,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093 M ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SHR,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SHP,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m16tw-093-p
+MT41K256M16TW-093:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TCV,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093G ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SHT,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093G ES:R,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TCZ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093G:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SHS,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-093G:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TCX,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 AAT ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SHN,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 AAT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SHM,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m16tw-107-aat-p
+MT41K256M16TW-107 AAT:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TCR,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 AIT ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SHK,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 AIT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SHJ,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m16tw-107-ait-p
+MT41K256M16TW-107 AIT:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TCS,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 AT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9WDZ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 AUT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9TRN,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m16tw-107-aut-p
+MT41K256M16TW-107 AUT:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TCT,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SGN,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 ES:R,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TCP,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 IT ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SHH,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 IT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SHG,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m16tw-107-it-p
+MT41K256M16TW-107 IT:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TCQ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 M AIT ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SHL,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 M AIT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9VDZ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 M ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9WST,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 M:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9XBL,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 V:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9VNH,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107 XIT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9TRP,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m16tw-107-xit-p
+MT41K256M16TW-107 XIT:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDM,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-107:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SHD,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m16tw-107-p
+MT41K256M16TW-107:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TCN,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M16TW-125:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9VCT,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M16TW/-
+MT41K256M8DA-107 AAT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PST,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m8da-107-aat-k
+MT41K256M8DA-107 AIT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PSV,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-107 ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9PSG,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-107 ES:M,Micron,MT41K,DDR3,DDR3L,confirmed,Z9PXG,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-107 IT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9SMX,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-107:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PSF,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m8da-107-k
+MT41K256M8DA-107:M,Micron,MT41K,DDR3,DDR3L,confirmed,D9PXF,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125 AAT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PTN,NAO,https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k256m8da-125-aat-k
+MT41K256M8DA-125 AIT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PTP,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m8da-125-ait-k
+MT41K256M8DA-125 AUT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9VKC,NAO,https://www.micron.com/products/obsolete/obsolete-ddr3-sdram/part-catalog/part-detail/mt41k256m8da-125-aut-k
+MT41K256M8DA-125 E ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9QPX,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125 E:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9QPW,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125 ES:H,Micron,MT41K,DDR3,DDR3L,confirmed,Z9MSF,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125 ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9PSJ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125 ES:M,Micron,MT41K,DDR3,DDR3L,confirmed,Z9PDW,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125 IT:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PSS,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m8da-125-it-k
+MT41K256M8DA-125 M ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9QNN,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125 M:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9QNM,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125 M:M,Micron,MT41K,DDR3,DDR3L,confirmed,D9PWQ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125 S:M,Micron,MT41K,DDR3,DDR3L,confirmed,D9QMC,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125 V:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9SCT,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125:H,Micron,MT41K,DDR3,DDR3L,confirmed,D9MSD,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9PQW,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-125:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9PSH,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k256m8da-125-k
+MT41K256M8DA-125:M,Micron,MT41K,DDR3,DDR3L,confirmed,D9PFJ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-15E ES:H,Micron,MT41K,DDR3,DDR3L,confirmed,Z9MKG,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-15E ES:K,Micron,MT41K,DDR3,DDR3L,confirmed,Z9PXL,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-15E ES:M,Micron,MT41K,DDR3,DDR3L,confirmed,Z9PDZ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-15E M:M,Micron,MT41K,DDR3,DDR3L,confirmed,D9PWP,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-15E:H,Micron,MT41K,DDR3,DDR3L,confirmed,D9MKC,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-15E:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9QMS,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-15E:M,Micron,MT41K,DDR3,DDR3L,confirmed,D9PFW,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-187E ES:H,Micron,MT41K,DDR3,DDR3L,confirmed,Z9MQZ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-187E:H,Micron,MT41K,DDR3,DDR3L,confirmed,D9MQX,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-B:K,Micron,MT41K,DDR3,DDR3L,confirmed,D9RKN,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K256M8DA-B:M,Micron,MT41K,DDR3,DDR3L,confirmed,D9RKM,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K256M8DA/-
+MT41K512M16VRP-107 AAT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9ZWL,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m16vrp-107-aat-p
+MT41K512M16VRP-107 AIT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9ZWM,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m16vrp-107-ait-p
+MT41K512M16VRP-107 IT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9ZWN,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m16vrp-107-it-p
+MT41K512M16VRP-107:P,Micron,MT41K,DDR3,DDR3L,confirmed,D8DND,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M16VRP/-
+MT41K512M8DA-093 ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SHC,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-093 ES:R,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TDH,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-093 IT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9TRR,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-093 IT:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDS,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-093:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SHB,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m8da-093-p
+MT41K512M8DA-093:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDG,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 AAT ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SGZ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 AAT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SGX,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m8da-107-aat-p
+MT41K512M8DA-107 AIT ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SGV,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 AIT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SGT,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m8da-107-ait-p
+MT41K512M8DA-107 AIT:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDQ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 C ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TSC,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 C:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9TSB,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SGM,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 ES:R,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TDF,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 IT ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SGS,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 IT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SGR,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m8da-107-it-p
+MT41K512M8DA-107 IT:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDP,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 M AIT ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SGW,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 V:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9VNJ,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107 XIT:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9TRQ,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m8da-107-xit-p
+MT41K512M8DA-107 XIT:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDR,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-107:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9SGQ,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k512m8da-107-p
+MT41K512M8DA-107:R,Micron,MT41K,DDR3,DDR3L,confirmed,D9TDD,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-125 ES:H,Micron,MT41K,DDR3,DDR3L,confirmed,Z9QXT,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-125 ES:P,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TCM,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-125 ES:R,Micron,MT41K,DDR3,DDR3L,confirmed,Z9TRC,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K512M8DA-125:P,Micron,MT41K,DDR3,DDR3L,confirmed,D9TCL,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K512M8DA/-
+MT41K64M16TW-107 AAT:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9SGH,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-aat-j
+MT41K64M16TW-107 AIT:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9SGJ,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-ait-j
+MT41K64M16TW-107 AUT:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9TCG,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-aut-j
+MT41K64M16TW-107 ES:J,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SFV,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K64M16TW/-
+MT41K64M16TW-107 IT:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9SFZ,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-it-j
+MT41K64M16TW-107 XIT:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9SGK,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-xit-j
+MT41K64M16TW-107:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9SFT,NAO,https://www.micron.com/products/memory/dram-components/ddr3-sdram/part-catalog/part-detail/mt41k64m16tw-107-j
+MT41K64M16TW-125 ES:J,Micron,MT41K,DDR3,DDR3L,confirmed,Z9SFL,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K64M16TW/-
+MT41K64M16TW-125:J,Micron,MT41K,DDR3,DDR3L,confirmed,D9SKC,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MT41K64M16TW/-
+MT53E1BAD4DB-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8FSF,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1BBD2NP-DC Z42M,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8FVG,NAO,https://www.micron.com/products/obsolete/obsolete-lpddr4/part-catalog/part-detail/mt53e1bbd2np-dc-z42m
+MT53E1BBD4NQ-DC Z42N,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8FTL,NAO,https://www.micron.com/products/obsolete/obsolete-lpddr4/part-catalog/part-detail/mt53e1bbd4nq-dc-z42n
+MT53E1BBDDNQ-DC DD18K,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8FVF,NAO,https://www.micron.com/products/obsolete/obsolete-lpddr4/part-catalog/part-detail/mt53e1bbddnq-dc-dd18k
+MT53E1BHD2NP-DC Z42M,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8GJC,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1BHDDNQ-DC DD18K,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8GJB,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1D1AKS-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8FFP,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1D1APC-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DWC,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1D1AZW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DSW,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1D1BFW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CJH,NAO,https://www.micron.com/products/obsolete/obsolete-lpddr4/part-catalog/part-detail/mt53e1d1bfw-dc
+MT53E1D1BPC-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DWD,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1D1BZW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CSJ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1DAFW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BQV,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1DANP-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BTQ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1DAWW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BPP,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1DBDS-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9WXM,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E1DCZW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8FPG,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1ACY-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFF,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1AFW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZHL,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1AHJ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CMJ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1ARR-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BSH,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1BCY-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFC,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1BFW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFH,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1CCY-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFM,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1CFW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8FBK,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1DFW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CJJ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1DKS-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DZX,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1DPC-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8FBC,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1DZW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8FBB,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1ENZ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CZJ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2D1FW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BKM,NAO,https://www.micron.com/products/obsolete/obsolete-lpddr4/part-catalog/part-detail/mt53e2d1fw-dc
+MT53E2DADS-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9WWJ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2DAFW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BML,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2DANW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BVF,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2DBDS-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9XGD,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2DCDS-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9WXL,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2DCFW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DKZ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2DCNP-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9XRS,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2DCZW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DWB,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2DDDS-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9WXJ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E2DDNP-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BVQ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1ABA-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFD,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1ADE-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZHQ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1AEG-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFL,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1AHJ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFK,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1ARQ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZJW,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1ASP-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BNS,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1BDE-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFJ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1BEG-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFQ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1BHJ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFP,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1BSP-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BQT,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1BSQ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFB,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1CDE-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZFN,NAO,https://www.micron.com/products/obsolete/obsolete-lpddr4/part-catalog/part-detail/mt53e4d1cde-dc
+MT53E4D1CEG-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZPS,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1CHJ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZPT,NAO,https://www.micron.com/products/obsolete/obsolete-lpddr4/part-catalog/part-detail/mt53e4d1chj-dc
+MT53E4D1DDE-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CJP,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1DHJ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CMG,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4D1ENZ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CZD,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DADE-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BMM,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DADT-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9WXK,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DAHJ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BMN,NAO,https://www.micron.com/products/obsolete/obsolete-lpddr4/part-catalog/part-detail/mt53e4dahj-dc
+MT53E4DANQ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZBG,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DANW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9XQL,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DANZ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9XFX,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DBDT-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9XKS,NAO,https://www.micron.com/products/obsolete/obsolete-lpddr4/part-catalog/part-detail/mt53e4dbdt-dc
+MT53E4DBNQ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZJK,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DCDE-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DLB,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DCDT-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9XKR,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DCHJ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DNL,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DCNQ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BMB,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E4DDNQ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BQZ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E6D1AEG-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CRM,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E6DACY-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DRN,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8D1AEG-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZSZ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8D1ASQ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZKB,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8D1ASY-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CVH,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8D1ATN-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BMV,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8D1BEG-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BNW,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8D1BTN-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CMH,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8D1CEG-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BQQ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8D1CY-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8CBS,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8D1DGS-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DHV,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8DACY-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZBJ,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8DAHJ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BMP,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8DANW-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9ZHB,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8DCGS-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DHT,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53E8DCHJ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8DNM,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53ED1ADS-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z9XGN,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MT53EDDANQ-DC,Micron,MT53E,LPDDR4,LPDDR4X,confirmed,Z8BZM,NAO,https://www.micron.com/sales-support/design-tools/fbga-parts-decoder
+MTFC128GASAONS-AAT,Micron,MTFC,UFS,eMMC,confirmed,JWD32,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc128gasaons-aat
+MTFC128GASAONS-AAT ES,Micron,MTFC,UFS,eMMC,confirmed,JWD31,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC128GASAONS/-
+MTFC128GASAONS-AIT,Micron,MTFC,UFS,eMMC,confirmed,JWD25,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc128gasaons-ait
+MTFC128GASAONS-AIT ES,Micron,MTFC,UFS,eMMC,confirmed,JWD10,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC128GASAONS/-
+MTFC128GASAONS-IT,Micron,MTFC,UFS,eMMC,confirmed,JWD89,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc128gasaons-it
+MTFC128GAZAOTD-AAT,Micron,MTFC,UFS,eMMC,confirmed,HSA32,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc128gazaotd-aat
+MTFC128GAZAOTD-AAT ES,Micron,MTFC,UFS,eMMC,confirmed,HSA27,NAO,https://www.micron.com/products/obsolete/obsolete-universal-flash-storage/part-catalog/part-detail/mtfc128gazaotd-aat-es
+MTFC128GAZAOTD-AIT,Micron,MTFC,UFS,eMMC,confirmed,HSA38,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC128GAZAOTD/-
+MTFC128GAZAOTD-IT,Micron,MTFC,UFS,eMMC,confirmed,HSA37,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC128GAZAOTD/-
+MTFC128GBCAVTC-AAT,Micron,MTFC,UFS,eMMC,confirmed,SH023,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc128gbcavtc-aat
+MTFC128GBCAVTC-AAT ES,Micron,MTFC,UFS,eMMC,confirmed,HS201,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC128GBCAVTC/-
+MTFC128GBCAVTC-AIT,Micron,MTFC,UFS,eMMC,confirmed,AM022,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc128gbcavtc-ait
+MTFC128GBCAVTC-AIT ES,Micron,MTFC,UFS,eMMC,confirmed,BS023,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC128GBCAVTC/-
+MTFC256GASAONS-AAT,Micron,MTFC,UFS,eMMC,confirmed,JWD34,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc256gasaons-aat
+MTFC256GASAONS-AAT ES,Micron,MTFC,UFS,eMMC,confirmed,JWD33,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC256GASAONS/-
+MTFC256GASAONS-AIT,Micron,MTFC,UFS,eMMC,confirmed,JWD26,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc256gasaons-ait
+MTFC256GASAONS-AIT ES,Micron,MTFC,UFS,eMMC,confirmed,JWD11,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC256GASAONS/-
+MTFC256GASAONS-IT,Micron,MTFC,UFS,eMMC,confirmed,HSA71,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc256gasaons-it
+MTFC256GAVATTC-AAT,Micron,MTFC,UFS,eMMC,confirmed,HSA06,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc256gavattc-aat
+MTFC256GAVATTC-AAT ES,Micron,MTFC,UFS,eMMC,confirmed,HSA05,NAO,https://www.micron.com/products/obsolete/obsolete-universal-flash-storage/part-catalog/part-detail/mtfc256gavattc-aat-es
+MTFC256GAVATTC-AIT,Micron,MTFC,UFS,eMMC,confirmed,HSA16,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc256gavattc-ait
+MTFC256GAVATTC-AIT ES,Micron,MTFC,UFS,eMMC,confirmed,HSA15,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC256GAVATTC/-
+MTFC256GAVATTC-IT,Micron,MTFC,UFS,eMMC,confirmed,HSA04,NAO,https://www.micron.com/products/obsolete/obsolete-universal-flash-storage/part-catalog/part-detail/mtfc256gavattc-it
+MTFC256GAXATEA-WT,Micron,MTFC,UFS,eMMC,confirmed,JZ348,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc256gaxatea-wt
+MTFC256GAXATEA-WT ES,Micron,MTFC,UFS,eMMC,confirmed,JZ349,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC256GAXATEA/-
+MTFC256GAXATEAAA-WT,Micron,MTFC,UFS,eMMC,confirmed,JZ458,NAO,https://www.micron.com/products/obsolete/obsolete-universal-flash-storage/part-catalog/part-detail/mtfc256gaxateaaa-wt
+MTFC256GAXATEAAA-WT ES,Micron,MTFC,UFS,eMMC,confirmed,JZ455,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC256GAXATEA/-
+MTFC256GBCAVTC-AAT,Micron,MTFC,UFS,eMMC,confirmed,SH021,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc256gbcavtc-aat
+MTFC256GBCAVTC-AAT ES,Micron,MTFC,UFS,eMMC,confirmed,HS202,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC256GBCAVTC/-
+MTFC256GBCAVTC-AIT,Micron,MTFC,UFS,eMMC,confirmed,AM021,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc256gbcavtc-ait
+MTFC256GBCAVTC-AIT ES,Micron,MTFC,UFS,eMMC,confirmed,SB023,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC256GBCAVTC/-
+MTFC64GAOAMEA-F1WT,Micron,MTFC,UFS,eMMC,confirmed,JZ196,NAO,https://www.micron.com/products/obsolete/obsolete-universal-flash-storage/part-catalog/part-detail/mtfc64gaoamea-f1wt
+MTFC64GAOAMEA-WT,Micron,MTFC,UFS,eMMC,confirmed,JZ075,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC64GAOAMEA/-
+MTFC64GAOAMEA-WT ES,Micron,MTFC,UFS,eMMC,confirmed,JZ060,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC64GAOAMEA/-
+MTFC64GASAONS-AAT,Micron,MTFC,UFS,eMMC,confirmed,JWD30,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc64gasaons-aat
+MTFC64GASAONS-AAT ES,Micron,MTFC,UFS,eMMC,confirmed,JWD29,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC64GASAONS/-
+MTFC64GASAONS-AIT,Micron,MTFC,UFS,eMMC,confirmed,JWD24,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc64gasaons-ait
+MTFC64GASAONS-AIT ES,Micron,MTFC,UFS,eMMC,confirmed,JWD09,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC64GASAONS/-
+MTFC64GASAONS-IT,Micron,MTFC,UFS,eMMC,confirmed,JWD87,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc64gasaons-it
+MTFC64GBCAVAL-AAT,Micron,MTFC,UFS,eMMC,confirmed,AMJ01,NAO,https://www.micron.com/products/storage/managed-nand/universal-flash-storage/part-catalog/part-detail/mtfc64gbcaval-aat
+MTFC64GBCAVAL-AAT ES,Micron,MTFC,UFS,eMMC,confirmed,HD001,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC64GBCAVAL/-
+MTFC64GBCAVAL-AIT,Micron,MTFC,UFS,eMMC,confirmed,AMJ02,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC64GBCAVAL/-
+MTFC64GBCAVAL-AIT ES,Micron,MTFC,UFS,eMMC,confirmed,JAM01,NAO,https://www.micron.com/content/micron/us/en/sales-support/design-tools/fbga-parts-decoder/_jcr_content.products.json/getpartbyfbgacode/-/-/-/en_US/-/MTFC64GBCAVAL/-
+H9HCNNN8KUMLHR-NME,SK Hynix,H9HCN,LPDDR4,LPDDR4X,confirmed,,NAO,
+H9HCNNNBKUMLHR-NME,SK Hynix,H9HCN,LPDDR4,LPDDR4X,confirmed,,NAO,
+H9HCNNNBPUMLHR-NME,SK Hynix,H9HCN,LPDDR4,LPDDR4X,confirmed,,NAO,
+H9HCNNNCPUMLHR-NME,SK Hynix,H9HCN,LPDDR4,LPDDR4X,confirmed,,NAO,
+K4B1G0446GBY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B1G0446G-BY
+K4B1G0446GBYF8,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B1G0446G-BYF8
+K4B1G0446GBYH9,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B1G0446G-BYH9
+K4B1G0446GBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B1G0446G-BYK0
+K4B1G0846GBY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B1G0846G-BY
+K4B1G0846GBYH9,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B1G0846G-BYH9
+K4B1G0846GBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B1G0846G-BYK0
+K4B1G0846IBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B1G0846IBYMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B1G0846IBYNB,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B1G1646GBY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B1G1646G-BY
+K4B1G1646GBYH9,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B1G1646G-BYH9
+K4B1G1646GBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B1G1646G-BYK0
+K4B2G0446QBY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B2G0446Q-BY
+K4B2G0446QBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B2G0446Q-BYK0
+K4B2G0846CHYH9,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,https://www.jotrin.com/product/parts/K4B2G0846C_HYH9.html
+K4B2G0846F,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B2G0846FBYMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B2G0846QBY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B2G0846Q-BY
+K4B2G0846QBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B2G0846Q-BYK0
+K4B2G0846QBYMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B2G0846Q-BYMA
+K4B2G1646F,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B2G1646FBYMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B2G1646FBYNB,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B2G1646QBY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B2G1646Q-BY
+K4B2G1646QBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B2G1646Q-BYK0
+K4B2G1646QBYMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B2G1646Q-BYMA
+K4B4G0446QHY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G0446Q-HY
+K4B4G0446QHYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G0446Q-HYK0
+K4B4G0846D,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B4G0846DBY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G0846D-BY
+K4B4G0846DBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G0846D-BYK0
+K4B4G0846DBYNB,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B4G0846EBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B4G0846EBYMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B4G0846QHY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G0846Q-HY
+K4B4G0846QHYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G0846Q-HYK0
+K4B4G1646D,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B4G1646DBC,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G1646D-BC
+K4B4G1646DBCMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G1646D-BCMA
+K4B4G1646DBY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G1646D-BY
+K4B4G1646DBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G1646D-BYK0
+K4B4G1646DBYMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G1646D-BYMA
+K4B4G1646DBYNB,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B4G1646EBYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B4G1646EBYMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B4G1646Q,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B4G1646QHY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G1646Q-HY
+K4B4G1646QHYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B4G1646Q-HYK0
+K4B8G0846DMYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B8G1646D,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B8G1646DMMK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B8G1646DMMMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B8G1646DMYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B8G1646DMYMA,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,
+K4B8G1646QMY,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B8G1646Q-MY
+K4B8G1646QMYK0,Samsung,K4B,DDR3L,DDR3,confirmed,,NAO,psg_2h2014:K4B8G1646Q-MYK0
+K524G2GACB,Samsung,K5,MCP,NOR Flash,confirmed,,SIM,
+K524G2GACH,Samsung,K5,MCP,NOR Flash,confirmed,,SIM,
+K524G2GACI,Samsung,K5,MCP,NOR Flash,confirmed,,SIM,
+K524G2GACJ,Samsung,K5,MCP,NOR Flash,confirmed,,SIM,
+K5W1G12ACM,Samsung,K5W,NOR Flash,MCP,confirmed,,SIM,
+KML7X000HM,Samsung,KML,uMCP,eMCP,confirmed,,SIM,

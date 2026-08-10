@@ -1,0 +1,2670 @@
+{
+ "date": "2026-07-16 12:31:57.902",
+ "response-code": "200",
+ "filter": [
+  {
+   "Bus Width": [
+    "x16, x4, x8"
+   ]
+  },
+  {
+   "CAS Latency": [
+    "CL = 40, CL = 42, CL = 46, CL = 52, CL = 58"
+   ]
+  },
+  {
+   "Component Config": [
+    "1.5Gb x16, 1Gb x16, 2Gb x16, 2Gb x8, 3Gb x8, 4Gb x4, 4Gb x8, 8Gb x4"
+   ]
+  },
+  {
+   "Component Density": [
+    "16Gb, 24Gb, 32Gb"
+   ]
+  },
+  {
+   "Family": [
+    "DRAM"
+   ]
+  },
+  {
+   "I/O Voltage": [
+    "1.1 VOLTS"
+   ]
+  },
+  {
+   "MT/s": [
+    "4800MTPS, 5200MTPS, 5600MTPS, 6400MTPS, 7200MTPS"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-40C to +95C, 0C to +95C"
+   ]
+  },
+  {
+   "Package": [
+    "VFBGA"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "Contact Sales, End of Life, Production"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT"
+   ]
+  },
+  {
+   "Pin Count": [
+    "102-ball, 78-ball, 82-ball"
+   ]
+  },
+  {
+   "Speed": [
+    "2400MHz, 2600MHz, 2800MHz, 3200MHz, 3600MHz"
+   ]
+  },
+  {
+   "Technology": [
+    "DDR5"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mt60b1g16hd-64b-it-h",
+   "part-number": "MT60B1G16HD-64B IT:H",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b1g16hd-64b-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "102-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X16 VFBGA"
+  },
+  {
+   "part-key": "mt60b4g4rz-56b-d",
+   "part-number": "MT60B4G4RZ-56B:D",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b4g4rz-56b-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "5600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 46"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X4 VFBGA"
+  },
+  {
+   "part-key": "mt60b1g16hd-64b-it-d",
+   "part-number": "MT60B1G16HD-64B IT:D",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b1g16hd-64b-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "102-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X16 VFBGA"
+  },
+  {
+   "part-key": "mt60b1g16hc-48b-a",
+   "part-number": "MT60B1G16HC-48B:A",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b1g16hc-48b-a",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "4800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 40"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "102-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X16 VFBGA"
+  },
+  {
+   "part-key": "mt60b3g8rw-48b-b",
+   "part-number": "MT60B3G8RW-48B:B",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b3g8rw-48b-b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "24Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2400MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "4800MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 40"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "3Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1080"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2500"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 24G X8 VFBGA"
+  },
+  {
+   "part-key": "mt60b2g8rz-56b-d",
+   "part-number": "MT60B2G8RZ-56B:D",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b2g8rz-56b-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "5600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 46"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X8 VFBGA"
+  },
+  {
+   "part-key": "mt60b1g16hd-56b-d",
+   "part-number": "MT60B1G16HD-56B:D",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b1g16hd-56b-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "5600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 46"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "102-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "2"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X16 VFBGA"
+  },
+  {
+   "part-key": "mt60b2g8rz-64b-it-d",
+   "part-number": "MT60B2G8RZ-64B IT:D",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b2g8rz-64b-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X8 VFBGA"
+  },
+  {
+   "part-key": "mt60b2g16hd-64b-b",
+   "part-number": "MT60B2G16HD-64B:B",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b2g16hd-64b-b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "102-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 32G X16 VFBGA"
+  },
+  {
+   "part-key": "mt60b1g16hd-64b-h",
+   "part-number": "MT60B1G16HD-64B:H",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b1g16hd-64b-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "102-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X16 VFBGA"
+  },
+  {
+   "part-key": "mt60b2g8rz-64b-h",
+   "part-number": "MT60B2G8RZ-64B:H",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b2g8rz-64b-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X8 VFBGA"
+  },
+  {
+   "part-key": "mt60b4g4rz-64b-d",
+   "part-number": "MT60B4G4RZ-64B:D",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b4g4rz-64b-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X4 VFBGA"
+  },
+  {
+   "part-key": "mt60b2g8hb-52b-g",
+   "part-number": "MT60B2G8HB-52B:G",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b2g8hb-52b-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "5200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 42"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "82-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X8 VFBGA"
+  },
+  {
+   "part-key": "mt60b1g16hd-56b-it-d",
+   "part-number": "MT60B1G16HD-56B IT:D",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b1g16hd-56b-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "5600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 46"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "102-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X16 VFBGA"
+  },
+  {
+   "part-key": "mt60b2g8rz-64b-it-h",
+   "part-number": "MT60B2G8RZ-64B IT:H",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b2g8rz-64b-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X8 VFBGA"
+  },
+  {
+   "part-key": "mt60b2g8hb-56b-g",
+   "part-number": "MT60B2G8HB-56B:G",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b2g8hb-56b-g",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "5600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 46"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "82-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "9.00 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X8 VFBGA"
+  },
+  {
+   "part-key": "mt60b2g8rz-64b-d",
+   "part-number": "MT60B2G8RZ-64B:D",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b2g8rz-64b-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X8 VFBGA"
+  },
+  {
+   "part-key": "mt60b1536m16rv-56b-b",
+   "part-number": "MT60B1536M16RV-56B:B",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b1536m16rv-56b-b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "24Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "5600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 46"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "102-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1.5Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1224"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "8.00 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 24G X16 VFBGA"
+  },
+  {
+   "part-key": "mt60b1g16hd-72b-it-h",
+   "part-number": "MT60B1G16HD-72B IT:H",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b1g16hd-72b-it-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3600MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "7200MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 58"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "102-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X16 VFBGA"
+  },
+  {
+   "part-key": "mt60b1g16hd-64b-d",
+   "part-number": "MT60B1G16HD-64B:D",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b1g16hd-64b-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x16"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "102-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "1Gb x16"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1020"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 14.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X16 VFBGA"
+  },
+  {
+   "part-key": "mt60b2g8rz-56b-it-d",
+   "part-number": "MT60B2G8RZ-56B IT:D",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b2g8rz-56b-it-d",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "2800MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "5600MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 46"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "2Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X8 VFBGA"
+  },
+  {
+   "part-key": "mt60b8g4at-64b-b",
+   "part-number": "MT60B8G4AT-64B:B",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b8g4at-64b-b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.50 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 32G X4 VFBGA"
+  },
+  {
+   "part-key": "mt60b4g4rz-64b-h",
+   "part-number": "MT60B4G4RZ-64B:H",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b4g4rz-64b-h",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "16Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x4"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x4"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1260"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 16G X4 VFBGA"
+  },
+  {
+   "part-key": "mt60b4g8at-64b-b",
+   "part-number": "MT60B4G8AT-64B:B",
+   "product-tag": "micron:products/memory/dram-components/ddr5-sdram/mt60b4g8at-64b-b",
+   "attr": [
+    {
+     "name": "Component Density",
+     "id": "usable_density",
+     "value": "32Gb"
+    },
+    {
+     "name": "Speed",
+     "id": "clock_speed",
+     "value": "3200MHz"
+    },
+    {
+     "name": "MT/s",
+     "id": "transfers_per_second",
+     "value": "6400MTPS"
+    },
+    {
+     "name": "I/O Voltage",
+     "id": "io_voltage",
+     "value": "1.1 VOLTS"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "0C to +95C"
+    },
+    {
+     "name": "Bus Width",
+     "id": "data_width",
+     "value": "x8"
+    },
+    {
+     "name": "CAS Latency",
+     "id": "cas_latency",
+     "value": "CL = 52"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "78-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1140"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "7.50 x 11.50 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "3000"
+    },
+    {
+     "name": "Number of Components",
+     "id": "die_in_package",
+     "value": "1"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "DDR5"
+    },
+    {
+     "name": "Package",
+     "id": "package_type",
+     "value": "VFBGA"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "DRAM"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": false
+    }
+   ],
+   "part-name": "DDR5 32G X8 VFBGA"
+  }
+ ]
+}

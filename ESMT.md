@@ -106,7 +106,7 @@ será "nova"** (a marca não tem baseline grandfathered) → **PN-âncora no gol
     realmente é.
 12. **Spec essencial (capacidade, interface/versão, tipo) não confirmável em Tier-1 → EXCLUIR o PN da
     submissão inteiramente.** Nunca campo em branco, genérico ou estimado "pra documentar proveniência" —
-    regra sem exceção, mesmo para tipo catálogo/dead (NOR Flash, SRAM…) onde a capacidade não muda o
+    regra sem exceção, mesmo para tipo catálogo (NOR Flash = `dead`, SRAM = `indeterminado` — ver `chip_types.py`) onde a capacidade não muda o
     veredito de rentabilidade. Documentar a tentativa/beco-sem-saída no rodapé "NÃO submetidos".
 13. **Escopo é só dado (yaml da ESMT + arquivos de submissão).** Não editar `.py`/testes/infra/scripts sem
     pedido explícito do dono, mesmo que pareça um ajuste pequeno.
@@ -137,18 +137,18 @@ Preduo > IA > especulação — importadores **nunca** rebaixam um registro `con
 
 | Tipo | `chip_type` | `subtype` | `interface` | Campo de tamanho |
 |---|---|---|---|---|
-| DDR1–5 / SDRAM | a geração (`DDR2`, `DDR3`…) ou `"SDRAM"` (legado, sempre NÃO RENTÁVEL) | espelha | bus width (`x8`/`x16`/`x4`) | `dram_density` (Gb/die) |
+| DDR1–5 / SDRAM | a geração (`DDR2`, `DDR3`…) ou `"SDRAM"` (legado, sempre NÃO RENTÁVEL) | espelha | bus width (`x8`/`x16`/`x4`) | `density_gbit` (Gb/die) |
 | LPDDR standalone (se houver) | a geração (`LPDDR4X`…) | espelha | `""` | `capacity` (pacote, bytes) |
 | eMMC / UFS (se houver) | `"eMMC"`/`"UFS"` | `""` | versão (`"eMMC 5.1"` etc.) | `capacity` (GB) |
 | eMCP / uMCP (se houver) | `"eMCP"`/`"uMCP"` | geração RAM | `""` | `emcp_nand` (GB) + `emcp_ram` (tipo+GB) |
 | SRAM / NOR Flash / catálogo (prováveis pelo perfil industrial) | `"SRAM"`/`"NOR Flash"`/etc. | descritivo (categoria `catalog` — chip_type MANDA, não normaliza) | — | conforme o tipo |
 
 **Regras absolutas** (idênticas em todo o WTC): `subtype` nunca carrega densidade/bus width/tensão/
-qualificador de mercado. `dram_density` = Gb por die. `capacity` = pacote em bytes, nunca Gbit.
+qualificador de mercado. `density_gbit` = Gb por die (é o campo do `KnownPart` que você preenche; `dram_density` é o derivado pelo engine — não confundir, `CLAUDE.md §6`). `capacity` = pacote em bytes, nunca Gbit.
 `emcp_ram` = `"LPDDR{n} {cap}GB"` (tipo antes). `tip`/`notes` = todo o resto (tensão, velocidade,
 organização, avisos, proveniência).
 
-**Label da caixa** (referência, mesmo padrão de todas as marcas): DDR `{subtype}+{dram_density Gb}G` ·
+**Label da caixa** (referência, mesmo padrão de todas as marcas): DDR `{subtype}+{density_gbit}G` ·
 LPDDR `{chip_type}+{cap GB}G` · eMCP `EMCP{nand}+{ram}` · eMMC `EMMC{cap}GB` · UFS `UFS{cap}GB` · NAND
 `{subtype}{capacity}` (ex. `SLC NAND 512MB`).
 
@@ -253,13 +253,20 @@ M15T <densidade em Gb> <largura x> <total de palavras em M, todos os bancos> A
 | M15T**2G**16**128**A | 2Gb | x16, 8 bancos (16M/banco) | 16.777.216 × 16 × 8 = 2.147.483.648 | 2Gb = 256MB |
 | M15T**4G**16**256**A | 4Gb | x16, 8 bancos (32M/banco) | 33.554.432 × 16 × 8 = 4.294.967.296 | 4Gb = 512MB |
 | M15T**8G**16**512**A | 8Gb | x16, 8 bancos (64M/banco) | 67.108.864 × 16 × 8 = 8.589.934.592 | 8Gb = 1024MB |
+| M15T**2G**8**256**A | 2Gb | x8, 8 bancos (32M/banco) | 33.554.432 × 8 × 8 = 2.147.483.648 | 2Gb = 256MB |
+| M15T**4G**8**512**A | 4Gb | x8, 8 bancos (64M/banco) | 67.108.864 × 8 × 8 = 4.294.967.296 | 4Gb = 512MB |
 
-O número final (64/128/256/512) bate exatamente com "total de palavras em M por todos os 8 bancos" em
-todos os 4 PNs — **isso é dedução minha por cruzamento aritmético entre os 4 PNs, não uma tabela oficial
-que eu tenha lido** (não consegui abrir o PDF oficial pra confirmar letra a letra; ver §6). Também existem
-variantes **x8** na mesma família (`M15T2G8256A`, `M15T4G8512A` — datasheet oficial confirma que existem,
-mas não abri o conteúdo pra confirmar a organização com meus próprios olhos → não submetidas ainda,
-ver `submissions/esmt_m15t_2026-08-05.yaml` rodapé "NÃO submetidos").
+O número final (64/128/256/512) bate exatamente com "total de palavras em M por todos os 8 bancos" nos
+6 PNs confirmados (4× x16 + 2× x8) — inicialmente era dedução por cruzamento aritmético entre os 4 x16;
+a 2ª rodada (2026-08-05) confirmou que o mesmo padrão vale pro par **x8** (`M15T2G8256A`, `M15T4G8512A`)
+com **citação direta de organização** (não só o padrão de nomenclatura, que era tudo que eu tinha na 1ª
+rodada — por isso tinham ficado de fora, ver §8). Fontes: `M15T4G8512A` tem 3 fontes convergentes
+(Alldatasheet + tabela da Satron Electronics `satronel.com` + título indexado do DigChip); `M15T2G8256A`
+tem só 1 fonte de conteúdo direta (Alldatasheet) — confiança um degrau abaixo, sinalizado explicitamente
+na `notes` do known_part. Os dois foram submetidos com `confidence: confirmed`
+(`submissions/esmt_m15t_x8_2026-08-05.yaml`), mas **o dono deve revisar o `M15T2G8256A` com atenção
+extra antes de aprovar no admin**, dado o sourcing mais fino. PDF oficial (`esmt.com.tw`) segue
+bloqueado pra leitura direta nos dois — mesmo padrão de bloqueio já visto nos outros 4 (ver §6/§7).
 
 ⚠ **Sufixo de pedido** (`-DEBG2C`, `-DIBG` etc., depois do "A" final) codifica velocidade+pacote+
 temperatura+RoHS segundo uma doc de terceiros (GitHub, não oficial) — **não confirmado letra a letra**.
@@ -320,8 +327,10 @@ confirmar em `PRECIFICACAO.md` antes de assumir que ainda vale.
 - [ ] **Rodar `load_brands --brand esmt` (dry-run) no ambiente local real** — só validei o rascunho contra
   o `schema.py` (Pydantic) standalone, fora do Django; falta o check de colisão de prefixo entre marcas
   (vive no `load_brands.py`/banco, não no Pydantic isolado).
-- [ ] **Confirmar organização das variantes x8** (`M15T2G8256A`, `M15T4G8512A`) com fonte direta antes de
-  incluir na submissão — hoje ficam de fora (ver §3.2).
+- [x] **Confirmar organização das variantes x8** (`M15T2G8256A`, `M15T4G8512A`) — 2ª rodada, 2026-08-05:
+  ambos confirmados com citação direta de organização (Alldatasheet); `M15T4G8512A` com 3 fontes
+  convergentes, `M15T2G8256A` com 1 só (confiança assimétrica, ver §3.2/§8). Submetidos em
+  `submissions/esmt_m15t_x8_2026-08-05.yaml`.
 - [ ] **Decodificar o sufixo de pedido** (`-DEBG2C` etc.) letra a letra contra o datasheet oficial —
   hoje só tenho a palavra de uma doc de terceiros (não oficial) de que é velocidade+pacote+temp+RoHS.
 - [ ] **Golden test + handshake de rentabilidade** — `_ESMT_GOLDEN` em `chips/tests.py` (rascunho abaixo,
@@ -338,6 +347,8 @@ confirmar em `PRECIFICACAO.md` antes de assumir que ainda vale.
 "M15T2G16128A"  → "DDR3L", "DDR3L", "2Gb",  <A CONFIRMAR>
 "M15T4G16256A"  → "DDR3L", "DDR3L", "4Gb",  <A CONFIRMAR>
 "M15T8G16512A"  → "DDR3L", "DDR3L", "8Gb",  <A CONFIRMAR>
+"M15T2G8256A"   → "DDR3L", "DDR3L", "2Gb",  <A CONFIRMAR>
+"M15T4G8512A"   → "DDR3L", "DDR3L", "4Gb",  <A CONFIRMAR>
 ```
 Não preenchi o veredito de rentabilidade — é dado mutável (`ProfitabilityConfig`, admin) e eu não tenho
 visibilidade dele daqui; rodar `classify()` localmente preenche essa coluna.
@@ -346,10 +357,26 @@ visibilidade dele daqui; rodar `classify()` localmente preenche essa coluna.
 
 ## 7. Fontes de pesquisa
 
-Ver §0.3 (hierarquia completa, ainda sem precedente testado). Ponto de partida: site oficial + datasheets
-ESMT (domínio a confirmar), Octopart, Alldatasheet, LCSC, DigiKey. Evitar como fonte de capacidade:
-qualquer distribuidor sem rastreio e resumo de IA sem verificação — mesmo cuidado que todas as outras
-marcas do WTC.
+Ver §0.3 (hierarquia completa, ainda sem precedente testado). Confirmadas na prática (2026-08-05):
+- **esmt.com.tw** (oficial) — hospeda datasheet em `/upload/pdf/ESMT/datasheets/<PN>(<rev>).pdf`; a URL
+  sempre existe/resolve pros PN reais, mas o CONTEÚDO do PDF não abre via `WebFetch` (timeout/bloqueio a
+  bot, recorrente em todo PN tentado até agora) — só a existência da URL serve de corroboração.
+- **Alldatasheet** (`alldatasheet.com`) — mirror confiável; título já cita organização pros PNs mais
+  indexados, e o CONTEÚDO da página (via `WebFetch`, tanto `/datasheet-pdf/pdf/` quanto
+  `/datasheet-pdf/view/`) também cita organização quando o título não é suficiente.
+- **Satron Electronics** (`satronel.com`) — distribuidor com tabela de specs por família (density,
+  organização, package, voltagem, velocidade); tem alguns PNs mas não o catálogo inteiro (não tinha
+  `M15T2G8256A`, por exemplo). Bom cross-check quando presente.
+- **DigChip** (`digchip.com`) — aggregator; título do resultado de busca às vezes já cita densidade/tipo
+  mesmo quando a página em si não abre (mesmo bloqueio do esmt.com.tw).
+
+Outros a tentar: Octopart, LCSC, DigiKey. Evitar como fonte de capacidade: qualquer distribuidor sem
+rastreio (ex. listagens de marketplace tipo Alibaba — servem só pra confirmar que o PN circula no
+mercado, nunca pra spec) e resumo de IA sem verificação — mesmo cuidado que todas as outras marcas do
+WTC. ⚠ Qualquer resumo de conteúdo extraído por `WebFetch` pode errar a ARITMÉTICA sozinho mesmo citando
+a organização certa (visto ao vivo: o próprio `WebFetch` "somou" densidade errada 2x nesta rodada,
+esquecendo de multiplicar pelos 8 bancos) — sempre refazer a conta na mão a partir da organização citada,
+nunca colar o total que a ferramenta calculou.
 
 ---
 
@@ -370,6 +397,25 @@ marcas do WTC.
   1-2 caracteres + `DecodeMap`), a ESMT escreve densidade+organização por extenso no próprio PN. Modelei
   como famílias "magras" (uma por combinação densidade×organização confirmada), sem `decode_cap_pos` —
   capacidade vem de known_parts, não de decode posicional. Mesmo padrão da Nanya (NT5AD/NT5CC/NT5PA).
+- **2026-08-05 — correção de doc: `density_gbit` (não `dram_density`) + SRAM≠`dead`.** O dono editou o
+  `ESMT.md` direto no disco e corrigiu 2 pontos: (1) o campo de densidade DDR que EU preencho numa
+  submissão é `density_gbit` — `dram_density` é derivado pelo engine, nunca uma instrução de
+  preenchimento (`CLAUDE.md §6`); essa troca já tinha acontecido antes no `ISSI.md`, mesmo dia, por
+  copiar a tabela do `SK_HYNIX.md` (que ainda carrega o campo errado) sem cruzar contra o `CLAUDE.md`
+  primeiro — 2ª ocorrência do mesmo erro. (2) a regra de ouro #12 dizia "catálogo/dead (NOR Flash,
+  SRAM…)", mas só NOR Flash é `profit_family="dead"` — SRAM é `"indeterminado"` (`chip_types.py`).
+  Internalizado antes de seguir pra próxima rodada de pesquisa.
+- **2026-08-05 — 2ª rodada: variantes x8 confirmadas (`M15T2G8256A`, `M15T4G8512A`).** Na 1ª rodada só
+  tinha dedução por padrão de nomenclatura pros x8 (sem citação direta → ficaram de fora, regra "excluir,
+  não adivinhar"). Nesta rodada usei `WebFetch` no CONTEÚDO do datasheet (não só o título) e consegui
+  citação direta de organização pros dois. `M15T4G8512A` ganhou 2 fontes independentes extras — tabela da
+  Satron Electronics (`satronel.com`, Density 4Gb/Organization "512Mbx8") e o título indexado do DigChip
+  ("4Gb DDR3(L) SDRAM") — batendo com a aritmética. `M15T2G8256A` não apareceu em nenhuma fonte de
+  terceiro (nem na mesma tabela da Satron, que lista o irmão) — confiança menor, só Alldatasheet, mas
+  ainda acima da barra usada pros outros 4 PNs desta família (mesma combinação Alldatasheet + PDF-oficial-
+  existente-mas-bloqueado). Sinalizado explicitamente pro dono revisar esse PN com atenção extra antes de
+  aprovar. `submissions/esmt_m15t_x8_2026-08-05.yaml` é um arquivo NOVO (não editei o já entregue/possivel-
+  mente já consumido da 1ª rodada — `submissions/` é formulário de uso único, não re-sincroniza).
 
 > O inventário de chaves/mapas vai viver no **`esmt.yaml`** (gramática, quando existir); os **known_parts**
 > confirmados (com a proveniência Tier-1 nas `notes`) vivem no **banco** (Opção 2), submetidos via

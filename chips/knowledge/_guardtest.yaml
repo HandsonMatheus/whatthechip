@@ -1,0 +1,4 @@
+brand: {name: GuardT, code: GT}
+maps:
+  DRAM_PC: [["11", "2Gb", "256MB"]]
+families: [{prefix: GTX, chip_type: DDR4}]

@@ -1,0 +1,3078 @@
+{
+ "date": "2026-07-16 12:31:45.516",
+ "response-code": "200",
+ "filter": [
+  {
+   "Capacity": [
+    "128Gb, 1Tb, 256GB, 32Gb, 512Gb, 64Gb"
+   ]
+  },
+  {
+   "Component Config": [
+    "128Gb x8, 16Gb x8, 256Gb x8, 32Gb x8, 4Gb x8, 64Gb x8, 8Gb x8"
+   ]
+  },
+  {
+   "Family": [
+    "MCP"
+   ]
+  },
+  {
+   "Operating Temp": [
+    "-25C to +85C, -40C to +105C, -40C to +115C, -40C to +85C, -40C to +95C"
+   ]
+  },
+  {
+   "Part Status Code": [
+    "Contact Sales, End of Life, Production"
+   ]
+  },
+  {
+   "Part Type": [
+    "COMPONENT"
+   ]
+  },
+  {
+   "Pin Count": [
+    "153-ball"
+   ]
+  },
+  {
+   "Protocol": [
+    "MMC4.51, MMC5.1"
+   ]
+  },
+  {
+   "Technology": [
+    "eMMC MLC, eMMC TLC"
+   ]
+  }
+ ],
+ "details": [
+  {
+   "part-key": "mtfc256gbcaqtc-aat",
+   "part-number": "MTFC256GBCAQTC-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc256gbcaqtc-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "256GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +115C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 2T LFBGA"
+  },
+  {
+   "part-key": "mtfc32gbcaqtc-aat",
+   "part-number": "MTFC32GBCAQTC-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc32gbcaqtc-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +115C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 256G LFBGA"
+  },
+  {
+   "part-key": "mtfc8gamalbh-ait",
+   "part-number": "MTFC8GAMALBH-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc8gamalbh-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 64G TFBGA"
+  },
+  {
+   "part-key": "mtfc32gbcaqtc-ait",
+   "part-number": "MTFC32GBCAQTC-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc32gbcaqtc-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 256G LFBGA"
+  },
+  {
+   "part-key": "mtfc16gapalna-ait",
+   "part-number": "MTFC16GAPALNA-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc16gapalna-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "980"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 18.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 128G TBGA"
+  },
+  {
+   "part-key": "mtfc128gaxaqea-wt",
+   "part-number": "MTFC128GAXAQEA-WT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc128gaxaqea-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "1Tb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 1T WFBGA"
+  },
+  {
+   "part-key": "mtfc256gbcaqtc-it",
+   "part-number": "MTFC256GBCAQTC-IT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc256gbcaqtc-it",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "256GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 2T LFBGA"
+  },
+  {
+   "part-key": "mtfc64gaxaqea-wt",
+   "part-number": "MTFC64GAXAQEA-WT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc64gaxaqea-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "512Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.80"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 512G WFBGA"
+  },
+  {
+   "part-key": "mtfc8gamalbh-aat",
+   "part-number": "MTFC8GAMALBH-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc8gamalbh-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "MASSFLASH/CONTROLLER 64G TFBGA"
+  },
+  {
+   "part-key": "mtfc128gazaqjp-aat",
+   "part-number": "MTFC128GAZAQJP-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc128gazaqjp-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 1T VFBGA"
+  },
+  {
+   "part-key": "mtfc16gapalbh-aat",
+   "part-number": "MTFC16GAPALBH-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc16gapalbh-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "MLC EMMC 128G TFBGA"
+  },
+  {
+   "part-key": "mtfc16gapalna-aat",
+   "part-number": "MTFC16GAPALNA-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc16gapalna-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "980"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 18.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 128G TBGA"
+  },
+  {
+   "part-key": "mtfc8gamalna-aat",
+   "part-number": "MTFC8GAMALNA-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc8gamalna-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "980"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 18.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 64G TBGA"
+  },
+  {
+   "part-key": "mtfc64gbcaqdq-aat",
+   "part-number": "MTFC64GBCAQDQ-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc64gbcaqdq-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +115C"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "980"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 18.00 x 1.40"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1500"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 512G LBGA"
+  },
+  {
+   "part-key": "mtfc128gbcaqtc-it",
+   "part-number": "MTFC128GBCAQTC-IT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc128gbcaqtc-it",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 1T LFBGA"
+  },
+  {
+   "part-key": "mtfc128gazaqjp-ait",
+   "part-number": "MTFC128GAZAQJP-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc128gazaqjp-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 1T VFBGA"
+  },
+  {
+   "part-key": "mtfc32gazaqdw-aat",
+   "part-number": "MTFC32GAZAQDW-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc32gazaqdw-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "980"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 18.00 x 1.50"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1500"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 256G LBGA"
+  },
+  {
+   "part-key": "mtfc32gbcaqtc-it",
+   "part-number": "MTFC32GBCAQTC-IT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc32gbcaqtc-it",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 256G LFBGA"
+  },
+  {
+   "part-key": "mtfc8gamalna-ait",
+   "part-number": "MTFC8GAMALNA-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc8gamalna-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "980"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 18.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 64G TBGA"
+  },
+  {
+   "part-key": "mtfc64gbcaqtc-it",
+   "part-number": "MTFC64GBCAQTC-IT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc64gbcaqtc-it",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 512G LFBGA"
+  },
+  {
+   "part-key": "mtfc128gbcaqtc-aat",
+   "part-number": "MTFC128GBCAQTC-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc128gbcaqtc-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +115C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 1T LFBGA"
+  },
+  {
+   "part-key": "mtfc64gapalna-ait",
+   "part-number": "MTFC64GAPALNA-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc64gapalna-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "512Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "980"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 18.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 512G TBGA"
+  },
+  {
+   "part-key": "mtfc32gazaqhd-wt",
+   "part-number": "MTFC32GAZAQHD-WT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc32gazaqhd-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 256G VFBGA"
+  },
+  {
+   "part-key": "mtfc64gazaqhd-ait",
+   "part-number": "MTFC64GAZAQHD-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc64gazaqhd-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 512G VFBGA"
+  },
+  {
+   "part-key": "mtfc128gbcaqtc-wt",
+   "part-number": "MTFC128GBCAQTC-WT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc128gbcaqtc-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "MTFC128GBCAQTC-WT 128GB e.MMC Memory"
+  },
+  {
+   "part-key": "mtfc128gbcaqtc-ait",
+   "part-number": "MTFC128GBCAQTC-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc128gbcaqtc-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "128Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "MTFC128GBCAQTC-AIT 128GB e.MMC Memory"
+  },
+  {
+   "part-key": "mtfc16gapalbh-ait",
+   "part-number": "MTFC16GAPALBH-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc16gapalbh-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "128Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "16Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.10"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "MLC EMMC 128G TFBGA"
+  },
+  {
+   "part-key": "mtfc4glwdm-4m-aat-a",
+   "part-number": "MTFC4GLWDM-4M AAT A",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc4glwdm-4m-aat-a",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC4.51"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "4Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.20"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 32G TFBGA"
+  },
+  {
+   "part-key": "mtfc32gazaqhd-it",
+   "part-number": "MTFC32GAZAQHD-IT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc32gazaqhd-it",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 256G VFBGA"
+  },
+  {
+   "part-key": "mtfc64gazaqhd-it",
+   "part-number": "MTFC64GAZAQHD-IT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc64gazaqhd-it",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 512G VFBGA"
+  },
+  {
+   "part-key": "mtfc32gbcaqdq-aat",
+   "part-number": "MTFC32GBCAQDQ-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc32gbcaqdq-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +115C"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "980"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 18.00 x 1.40"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1500"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 256G LBGA"
+  },
+  {
+   "part-key": "mtfc32gazaqhd-aat",
+   "part-number": "MTFC32GAZAQHD-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc32gazaqhd-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 256G VFBGA"
+  },
+  {
+   "part-key": "mtfc8gamalht-aat",
+   "part-number": "MTFC8GAMALHT-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc8gamalht-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64Gb"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "End of Life"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "8Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "980"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "14.00 x 18.00 x 1.00"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "1500"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC MLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 64G VBGA"
+  },
+  {
+   "part-key": "mtfc32gbcaqtc-wt",
+   "part-number": "MTFC32GBCAQTC-WT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc32gbcaqtc-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 256G LFBGA"
+  },
+  {
+   "part-key": "mtfc32gazaqhd-ait",
+   "part-number": "MTFC32GAZAQHD-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc32gazaqhd-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "32GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "32Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 256G VFBGA"
+  },
+  {
+   "part-key": "mtfc64gbcaqtc-wt",
+   "part-number": "MTFC64GBCAQTC-WT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc64gbcaqtc-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "MTFC64GBCAQTC-WT 64GB e.MMC Memory"
+  },
+  {
+   "part-key": "mtfc64gbcaqtc-aat",
+   "part-number": "MTFC64GBCAQTC-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc64gbcaqtc-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +115C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 512G LFBGA"
+  },
+  {
+   "part-key": "mtfc64gazaqhd-aat",
+   "part-number": "MTFC64GAZAQHD-AAT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc64gazaqhd-aat",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64GB"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +105C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Contact Sales"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 0.90"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 512G VFBGA"
+  },
+  {
+   "part-key": "mtfc64gbcaqtc-ait",
+   "part-number": "MTFC64GBCAQTC-AIT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc64gbcaqtc-ait",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "64GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-40C to +95C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "64Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "EMMC 512G LFBGA"
+  },
+  {
+   "part-key": "mtfc256gbcaqtc-wt",
+   "part-number": "MTFC256GBCAQTC-WT",
+   "product-tag": "micron:products/multichip-packages/emmc-based-mcp/mtfc256gbcaqtc-wt",
+   "attr": [
+    {
+     "name": "Capacity",
+     "id": "capacity",
+     "value": "256GB"
+    },
+    {
+     "name": "Protocol",
+     "id": "protocol_version",
+     "value": "MMC5.1"
+    },
+    {
+     "name": "Operating Temp",
+     "id": "temperature",
+     "value": "-25C to +85C"
+    },
+    {
+     "name": "Pin Count",
+     "id": "pin_count",
+     "value": "153-ball"
+    },
+    {
+     "name": "Part Status Code",
+     "id": "production_status",
+     "value": "Production"
+    },
+    {
+     "name": "Component Config",
+     "id": "configuration",
+     "value": "256Gb x8"
+    },
+    {
+     "name": "Dry Pack Qty",
+     "id": "dp_qty",
+     "value": "1520"
+    },
+    {
+     "name": "Package Dimension (W x L x H) mm",
+     "id": "package_dimension",
+     "value": "11.50 x 13.00 x 1.30"
+    },
+    {
+     "name": "Tape & Reel Qty",
+     "id": "tr_qty",
+     "value": "2000"
+    },
+    {
+     "name": "ROHS",
+     "id": "show-rohs",
+     "value": true
+    },
+    {
+     "name": "Part Type",
+     "id": "part_product_form",
+     "value": "COMPONENT"
+    },
+    {
+     "name": "Technology",
+     "id": "functional_technology",
+     "value": "eMMC TLC"
+    },
+    {
+     "name": "Family",
+     "id": "product_family",
+     "value": "MCP"
+    },
+    {
+     "name": "SSD",
+     "id": "is-ssd",
+     "value": true
+    }
+   ],
+   "part-name": "MTFC256GBCAQTC-WT  e.MMC Memory"
+  }
+ ]
+}
