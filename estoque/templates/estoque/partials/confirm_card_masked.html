@@ -125,18 +125,34 @@
   <div style="max-width:520px;margin-top:14px;background:#fff;border:1px solid #dde1e6;border-radius:14px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);overflow:hidden;">{% include "pricing/price_block.html" %}</div>
   {% endif %}
 
+  {% comment %} TRAVA ANTI-DUPLO-ENVIO (bug Mundo Metal, 2026-08-10) — este é
+     o card que a empresa-CLIENTE usa; mesma proteção do card completo:
+     hx-sync descarta cliques repetidos em voo, hx-disabled-elt desabilita o
+     botão, after-request só limpa o card em SUCESSO (falha de rede mantém o
+     card e o re-clique reusa o MESMO submit_token, que o servidor deduplica),
+     e o CSS .htmx-request dá spinner + soft-lock (feedback em rede lenta). {% endcomment %}
+  <style>
+    .est-confirm-form.htmx-request button{pointer-events:none;opacity:.55}
+    .est-confirm-form .dcard-wait{display:none;width:22px;height:22px;flex:none;border-radius:50%;border:3px solid #c1c7cd;border-top-color:#0f62fe;animation:dcspin .7s linear infinite}
+    .est-confirm-form.htmx-request .dcard-wait{display:inline-block}
+    @keyframes dcspin{to{transform:rotate(360deg)}}
+  </style>
   <form class="est-confirm-form"
         hx-post="{% url 'estoque:add' lot.pk %}"
         hx-target="{% if gateway_dest == 'aprovado' %}#table-body-wrap{% else %}#confirm-area{% endif %}"
         hx-swap="innerHTML"
-        {% if gateway_dest == 'aprovado' %}hx-on::after-request="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('confirm-area').innerHTML='';"{% endif %}>
+        hx-sync="this:drop"
+        hx-disabled-elt="find button[type='submit']"
+        {% if gateway_dest == 'aprovado' %}hx-on::after-request="if(event.detail.successful){this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('confirm-area').innerHTML='';}"{% endif %}>
     {% csrf_token %}
     {% comment %} Só o contrato mínimo do POST (o add re-classifica no SERVIDOR —
        specs em hidden seriam vazamento no HTML). {% endcomment %}
+    <input type="hidden" name="submit_token" value="{{ submit_token }}">
     <input type="hidden" name="pn"      value="{{ pn }}">
     <input type="hidden" name="has_cap" value="{{ has_cap|yesno:'true,false' }}">
 
     <div class="dcard-add">
+      <span class="dcard-wait" aria-hidden="true"></span>
       {% if gateway_dest != 'desconhecido' %}
       <div class="dcard-qty">
         <button type="button" aria-label="{% trans 'Menos' %}" onclick="document.getElementById('confirm-qty').stepDown()">−</button>

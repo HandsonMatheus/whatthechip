@@ -15,13 +15,16 @@ Dois blocos:
 """
 
 import threading
+from datetime import timedelta
 from unittest import skipUnless
 from unittest.mock import patch
+from uuid import uuid4
 
 from django.contrib.auth import get_user_model
 from django.db import connection
 from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from chips.engine import is_dead_by_generation
 from chips.models import UnknownChip
@@ -29,7 +32,8 @@ from tenancy.models import Company, Membership
 from tenancy.scope import (CompanyScopedManager, CompanyScopeMissing,
                            company_scope, set_current_company)
 
-from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
+from .models import (InventoryEntry, Lot, PendingEntry, RejectedEntry,
+                     SubmitToken)
 from .views import _compute_gateway
 
 
@@ -380,6 +384,129 @@ class AddChipHardBlockTests(TestCase):
         self.client.post(self.url, {'pn': 'THGBMBG7D4KBAIW', 'qty': '1', 'has_cap': 'true'})
         e = InventoryEntry.objects.get(lot=self.lot, part_number='THGBMBG7D4KBAIW')
         self.assertEqual(e.classification_source, 'banco de dados')
+
+
+class AddChipIdempotencyTests(TestCase):
+    """Idempotência do add_chip (bug Mundo Metal LOT/002/08/26, 2026-08-10).
+
+    POST duplicado — duplo clique, re-clique em rede lenta (Venezuela), retry
+    após queda de conexão — NÃO pode somar duas vezes. O card embute um
+    ``submit_token`` por render; o 1º POST o reivindica (``SubmitToken``,
+    unique no banco) e escreve; o reenvio do MESMO token re-renderiza o estado
+    atual sem escrever nada (estoque, fila E log de descarte)."""
+
+    RENTAVEL = dict(chip_type='eMMC', capacity='16GB',
+                    classification_source='banco de dados',
+                    confidence='confirmed')
+
+    def setUp(self):
+        User = get_user_model()
+        self.user = User.objects.create_user(username='op_idem', password='x')
+        self.company = _grant(self.user)
+        _scope(self, self.company)
+        self.lot = Lot.objects.create(number=0, origin='phone',
+                                      operator=self.user, company=self.company)
+        self.client.login(username='op_idem', password='x')
+        self.url = reverse('estoque:add', args=[self.lot.pk])
+
+    def _post(self, pn, qty, token):
+        data = {'pn': pn, 'qty': str(qty), 'has_cap': 'true'}
+        if token is not None:
+            data['submit_token'] = token
+        return self.client.post(self.url, data)
+
+    @patch('estoque.views.classify')
+    def test_token_repetido_nao_soma_no_estoque(self, mock_classify):
+        # O caso do operador: lança 15, a resposta demora, clica de novo.
+        mock_classify.return_value = _result(**self.RENTAVEL)
+        tok = uuid4().hex
+        r1 = self._post('TESTDUP01', 15, tok)
+        r2 = self._post('TESTDUP01', 15, tok)
+        self.assertEqual(r1.status_code, 200)
+        self.assertEqual(r2.status_code, 200)
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTDUP01')
+        self.assertEqual(e.quantity, 15)          # e NÃO 30
+        # A duplicata REPLICA a resposta original (tabela + HX-Trigger/toast) —
+        # é a confirmação que o operador perdeu quando a conexão caiu.
+        self.assertIn('HX-Trigger', r2)
+        self.assertEqual(SubmitToken.objects.filter(token=tok).count(), 1)
+
+    @patch('estoque.views.classify')
+    def test_tokens_diferentes_somam(self, mock_classify):
+        # 2 cards distintos = 2 cliques legítimos: tem que somar como sempre.
+        mock_classify.return_value = _result(**self.RENTAVEL)
+        self._post('TESTDUP02', 10, uuid4().hex)
+        self._post('TESTDUP02', 5, uuid4().hex)
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTDUP02')
+        self.assertEqual(e.quantity, 15)
+
+    @patch('estoque.views.classify')
+    def test_sem_token_mantem_comportamento_antigo(self, mock_classify):
+        # Aba aberta ANTES do deploy (form sem o hidden): sem dedupe — cada
+        # POST soma, como sempre. Janela curta e aceita de propósito
+        # (exigir o token quebraria a bancada de quem estava logado na virada).
+        mock_classify.return_value = _result(**self.RENTAVEL)
+        self._post('TESTDUP03', 7, None)
+        self._post('TESTDUP03', 7, None)
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTDUP03')
+        self.assertEqual(e.quantity, 14)
+
+    @patch('estoque.views.classify')
+    def test_token_repetido_fila_nao_soma(self, mock_classify):
+        # A fila de conferência sofria do MESMO bug (F('quantity') + qty).
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='16GB',
+            classification_source='gramática', confidence='estimated')
+        tok = uuid4().hex
+        self._post('TESTDUPFILA', 8, tok)
+        r2 = self._post('TESTDUPFILA', 8, tok)
+        self.assertEqual(r2.status_code, 200)
+        p = PendingEntry.objects.get(lot=self.lot, part_number='TESTDUPFILA')
+        self.assertEqual(p.quantity, 8)           # e NÃO 16
+
+    @patch('estoque.views.classify')
+    def test_token_repetido_descarte_loga_uma_vez(self, mock_classify):
+        # RejectedEntry é append-only (1 linha POR TENTATIVA REAL — sinal de
+        # calibração): reenvio do mesmo clique não pode virar 2 linhas.
+        mock_classify.return_value = _result(
+            chip_type='eMMC', capacity='2GB',     # < 4GB → NÃO RENTÁVEL
+            classification_source='banco de dados', confidence='confirmed')
+        tok = uuid4().hex
+        self._post('TESTDUPREJ', 3, tok)
+        self._post('TESTDUPREJ', 3, tok)
+        self.assertEqual(RejectedEntry.objects.filter(
+            lot=self.lot, part_number='TESTDUPREJ').count(), 1)
+
+    @patch('estoque.views.classify')
+    def test_token_invalido_e_ignorado(self, mock_classify):
+        # Token fora do formato uuid4().hex não deduplica nem explode (e não
+        # deixa lixo na tabela).
+        mock_classify.return_value = _result(**self.RENTAVEL)
+        self._post('TESTDUP04', 2, 'nao-e-token')
+        self._post('TESTDUP04', 2, 'nao-e-token')
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTDUP04')
+        self.assertEqual(e.quantity, 4)
+        self.assertEqual(SubmitToken.objects.count(), 0)
+
+    @patch('estoque.views.classify')
+    def test_poda_tokens_velhos(self, mock_classify):
+        # Poda lazy: um lançamento novo apaga tokens com mais de 48h.
+        mock_classify.return_value = _result(**self.RENTAVEL)
+        velho = SubmitToken.objects.create(token=uuid4().hex)
+        SubmitToken.objects.filter(pk=velho.pk).update(
+            created_at=timezone.now() - timedelta(hours=72))
+        self._post('TESTDUP05', 1, uuid4().hex)
+        self.assertFalse(SubmitToken.objects.filter(pk=velho.pk).exists())
+
+    def test_preview_embute_token_e_travas(self):
+        # O card renderizado (mascarado — usuário comum, v3.1) embute o hidden
+        # submit_token e as travas anti-duplo-clique (classify REAL, sem mock:
+        # qualquer destino renderiza o form com a proteção).
+        url = reverse('estoque:preview', args=[self.lot.pk])
+        resp = self.client.get(url, {'pn': 'ZZZZ9999XX'})
+        self.assertContains(resp, 'name="submit_token"')
+        self.assertContains(resp, 'hx-sync="this:drop"')
+        self.assertContains(resp, 'hx-disabled-elt')
 
 
 class DisplaySourceTests(TestCase):
@@ -1622,6 +1749,11 @@ class TenancyDeclarationTests(TestCase):
         # preço) — mesma tabela para todo cliente (decisão do dono:
         # auditabilidade > embaralhamento por empresa).
         'pricing.CategoryCode',
+        # Idempotência do add_chip (bug Mundo Metal, 2026-08-10): ledger de
+        # tokens uuid4 + timestamp, SEM dado de tenant DE PROPÓSITO (nenhum
+        # pn/lote/empresa) — não há o que isolar, e um uuid4 não colide entre
+        # empresas. Fora do RLS; poda lazy de 48h no próprio add_chip.
+        'estoque.SubmitToken',
     }
     # F11.2: 'vendas' entra — SalesOrder/SalesOrderLine/DocSequence são
     # ESCOPADOS (company + CompanyScopedManager + RLS em vendas/0002).

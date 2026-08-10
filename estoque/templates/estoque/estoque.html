@@ -1464,6 +1464,29 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
     } catch (err) {}
   });
 
+  // ── Falha de REDE/timeout visível (bug Mundo Metal, 2026-08-10) ──
+  // Antes a queda de conexão era MUDA: o operador não sabia se o lançamento
+  // chegou e re-lançava (dobrando a soma). Agora: o card PERMANECE na tela
+  // (o after-request do card só limpa em sucesso) e esta faixa orienta o
+  // re-clique — que reusa o MESMO submit_token, deduplicado no servidor
+  // (_claim_submit_token). Reenviar é SEMPRE seguro.
+  ['htmx:sendError', 'htmx:timeout'].forEach(function (evName) {
+    document.body.addEventListener(evName, function () {
+      try {
+        var box = document.getElementById('confirm-area');
+        if (!box) return;
+        var old = box.querySelector('.est-neterr');
+        if (old) old.remove();
+        var msg = document.createElement('div');
+        msg.className = 'est-neterr';
+        msg.style.cssText = 'margin-top:16px;background:#fff8e1;border:1px solid #b28600;'
+          + 'border-left:4px solid #b28600;padding:14px 16px;color:#8a6a00;font-size:14px;';
+        msg.textContent = '⚠ {% trans "Sem conexão com o servidor — o envio pode não ter chegado. Clique no botão de novo: o mesmo envio nunca soma duas vezes." %}';
+        box.prepend(msg);
+      } catch (err) {}
+    });
+  });
+
   // ── Campo PN: uppercase + botões Carbon ──────────────────────
   var pnInput      = document.getElementById('pn-input');
   var estDecodeBtn = document.getElementById('est-decode-btn');

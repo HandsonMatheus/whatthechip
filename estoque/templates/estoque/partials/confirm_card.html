@@ -188,12 +188,30 @@
     {% endif %}
 
     {# ── Ações (dentro do card) ──────────────────────────────────── #}
+    {% comment %} TRAVA ANTI-DUPLO-ENVIO (bug Mundo Metal, 2026-08-10):
+       • hx-sync="this:drop" — cliques repetidos ENQUANTO um POST voa são
+         descartados no cliente (era a origem da soma em dobro em rede lenta);
+       • hx-disabled-elt — o botão de enviar fica desabilitado durante o voo;
+       • after-request só limpa o card em SUCESSO (event.detail.successful):
+         em falha de rede o card FICA e o re-clique reusa o MESMO submit_token,
+         que o servidor deduplica (_claim_submit_token) — retry seguro;
+       • CSS .htmx-request: spinner + soft-lock dos botões (feedback imediato,
+         essencial em conexão lenta). {% endcomment %}
+    <style>
+      .est-confirm-form.htmx-request button{pointer-events:none;opacity:.55}
+      .est-confirm-form .rc-wait{display:none;width:22px;height:22px;flex:none;border-radius:50%;border:3px solid #c1c7cd;border-top-color:#0f62fe;animation:rcspin .7s linear infinite}
+      .est-confirm-form.htmx-request .rc-wait{display:inline-block}
+      @keyframes rcspin{to{transform:rotate(360deg)}}
+    </style>
     <form class="est-confirm-form"
           hx-post="{% url 'estoque:add' lot.pk %}"
           hx-target="{% if gateway_dest == 'aprovado' %}#table-body-wrap{% else %}#confirm-area{% endif %}"
           hx-swap="innerHTML"
-          {% if gateway_dest == 'aprovado' %}hx-on::after-request="this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('confirm-area').innerHTML='';"{% endif %}>
+          hx-sync="this:drop"
+          hx-disabled-elt="find button[type='submit']"
+          {% if gateway_dest == 'aprovado' %}hx-on::after-request="if(event.detail.successful){this.closest('.est-confirm').remove(); document.getElementById('pn-input').value=''; document.getElementById('confirm-area').innerHTML='';}"{% endif %}>
       {% csrf_token %}
+      <input type="hidden" name="submit_token"          value="{{ submit_token }}">
       <input type="hidden" name="pn"                    value="{{ pn }}">
       <input type="hidden" name="has_cap"               value="{{ has_cap|yesno:'true,false' }}">
       <input type="hidden" name="chip_type"             value="{{ result.chip_type }}">
@@ -206,6 +224,7 @@
       <input type="hidden" name="classification_source" value="{{ result.classification_source }}">
 
       <div class="rc__add">
+        <span class="rc-wait" aria-hidden="true"></span>
         {% if gateway_dest != 'desconhecido' %}
         <div class="rc-qty">
           <button type="button" aria-label="{% trans 'Menos' %}" onclick="document.getElementById('confirm-qty').stepDown()">−</button>

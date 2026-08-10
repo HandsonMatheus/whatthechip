@@ -356,6 +356,31 @@ class PendingEntry(CompanyBoundByLot):
         return f'{self.part_number} × {self.quantity} (pendente · Lote #{self.lot.number:03d})'
 
 
+class SubmitToken(models.Model):
+    """Idempotência do ``add_chip`` (bug Mundo Metal LOT/002/08/26, 2026-08-10):
+    cada render do card de triagem embute um token UUID; o add_chip só APLICA a
+    escrita se conseguir CRIAR a linha aqui (unique). POST duplicado — duplo
+    clique, re-clique em rede lenta, retry após queda de conexão — encontra o
+    token já usado e vira NO-OP que só re-renderiza o estado atual.
+
+    De propósito a tabela NÃO guarda dado de tenant (só token aleatório +
+    timestamp): fica FORA do RLS/T4 sem abrir exceção nova de policy, e um
+    token não colide entre empresas (uuid4). Poda lazy: o próprio add_chip
+    apaga tokens com mais de 48h (``created_at`` indexado). Ver
+    ``estoque/views.py::_claim_submit_token``."""
+    token      = models.CharField(max_length=32, unique=True,
+                                  verbose_name='Token de envio')
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True,
+                                      verbose_name='Criado em')
+
+    class Meta:
+        verbose_name = 'Token de envio (idempotência)'
+        verbose_name_plural = 'Tokens de envio (idempotência)'
+
+    def __str__(self):
+        return self.token
+
+
 class RejectedEntry(CompanyBoundByLot):
     """
     Log de auditoria (append-only): chip CONFIRMADO no banco e com specs completas,

@@ -16,11 +16,13 @@ import io
 import json
 import logging
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from difflib import get_close_matches
+from uuid import uuid4
 
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from django.db import IntegrityError, transaction
 from django.db.models import F, ProtectedError
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -35,7 +37,7 @@ from chips.chip_types import canonical_chip_type, generation_of, label_kind
 from chips.engine import assess_profitability, classify, is_dead_by_generation
 from chips.models import UnknownChip, Brand
 
-from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry
+from .models import InventoryEntry, Lot, PendingEntry, RejectedEntry, SubmitToken
 
 logger = logging.getLogger(__name__)
 
@@ -225,6 +227,44 @@ def _nearest_in_lot(lot, pn: str) -> str:
 
 def _normalise_pn(raw: str) -> str:
     return re.sub(r'[^A-Z0-9\-]', '', (raw or '').strip().upper())
+
+
+#: Token de idempotência do add_chip (bug Mundo Metal, 2026-08-10) — formato
+#: uuid4().hex; TTL da poda lazy em horas (48h cobre folgado qualquer aba velha).
+_TOKEN_RE = re.compile(r'[0-9a-f]{32}')
+_TOKEN_TTL_H = 48
+
+
+def _claim_submit_token(request) -> bool:
+    """Idempotência do ``add_chip`` (bug Mundo Metal LOT/002/08/26, 2026-08-10).
+    True = este POST é REENVIO de um clique JÁ APLICADO — o chamador re-renderiza
+    o estado atual SEM escrever nada (não soma quantidade, não duplica log).
+
+    Como funciona: cada render do card de triagem gera um UUID (hidden
+    ``submit_token``); a 1ª request CRIA a linha (unique no banco) e ganha o
+    direito de escrever; a duplicata leva IntegrityError → True. O atomic()
+    interno é SAVEPOINT: não envenena a transação da request (o
+    TenancyMiddleware abre o atomic externo). Sem token (página aberta antes
+    do deploy) → False, comportamento antigo.
+
+    Por que isso conserta a rede LENTA (Venezuela): (a) duplo clique/Enter+
+    clique geravam 2 POSTs e o servidor somava 2×; (b) quando a RESPOSTA se
+    perdia, o operador relançava sem saber se chegou. Com o token + o card
+    permanecendo em falha (after-request só limpa em sucesso), o re-clique
+    reusa o MESMO token: se o 1º POST chegou, vira no-op; se não chegou,
+    aplica. Nos dois casos a quantidade fica certa."""
+    tok = (request.POST.get('submit_token') or '').strip().lower()
+    if not _TOKEN_RE.fullmatch(tok):
+        return False
+    try:
+        with transaction.atomic():
+            SubmitToken.objects.create(token=tok)
+    except IntegrityError:
+        return True
+    # Poda lazy dos tokens velhos (indexado; normalmente 0 linhas afetadas).
+    SubmitToken.objects.filter(
+        created_at__lt=timezone.now() - timedelta(hours=_TOKEN_TTL_H)).delete()
+    return False
 
 
 _PLACEHOLDER_MARKERS = ("não mapead", "nao mapead", "consultar datasheet")
@@ -1017,6 +1057,10 @@ def preview_chip(request, lot_pk):
         'gateway_steps':   gateway['steps'],
         'profitable':      gateway['profitable'],
         'profitable_key':  gateway['profitable_key'],
+        # Idempotência (2026-08-10): 1 token por CARD — o add_chip só aplica a
+        # escrita para o 1º POST deste token; reenvio (duplo clique, re-clique
+        # em rede lenta, retry pós-queda) vira no-op. Ver _claim_submit_token.
+        'submit_token':    uuid4().hex,
     }
 
     # F8 (PRECIFICACAO §7/§12): preço do comprador na bancada — SÓ admin.
@@ -1066,6 +1110,12 @@ def add_chip(request, lot_pk):
     server_result = classify(pn)
     confirmed = _is_confirmed(server_result)
 
+    # ── Idempotência (bug Mundo Metal, 2026-08-10) ───────────────────────────
+    # Reivindica o token DESTE clique ANTES de qualquer escrita. Duplicata
+    # (is_dup=True) percorre os MESMOS ramos abaixo, mas só re-renderiza o
+    # estado atual — sem somar estoque/fila e sem duplicar linha de auditoria.
+    is_dup = _claim_submit_token(request)
+
     # ── Atalho: morto por GERAÇÃO (não confirmado) → descarte direto ─────────
     # Tecnologia velha (LPDDR2-, DDR2-, MCP legado) é sucata por fato de mercado.
     # Reprovado mesmo SEM confirmação e SEM capacidade mapeada — por isso vem
@@ -1073,14 +1123,15 @@ def add_chip(request, lot_pk):
     # e da fila. Razão distinta ("geração") para a auditoria separar do reprovado
     # confirmado. Confirmados seguem o fluxo normal abaixo.
     if is_dead_by_generation(server_result) and not confirmed:
-        RejectedEntry.objects.create(
-            lot=lot, part_number=pn, quantity=qty,
-            **_snapshot(server_result),
-            # ⚠ CANÔNICO — persistido p/ auditoria. NUNCA traduzir (i18n só na
-            # exibição; dado gravado fica em pt-br — I18N.md §8.2).
-            rejection_reason='NÃO RENTÁVEL (geração)',
-            operator=request.user,
-        )
+        if not is_dup:
+            RejectedEntry.objects.create(
+                lot=lot, part_number=pn, quantity=qty,
+                **_snapshot(server_result),
+                # ⚠ CANÔNICO — persistido p/ auditoria. NUNCA traduzir (i18n só na
+                # exibição; dado gravado fica em pt-br — I18N.md §8.2).
+                rejection_reason='NÃO RENTÁVEL (geração)',
+                operator=request.user,
+            )
         return render(request, 'estoque/partials/rejected_feedback.html', {
             'pn': pn, 'qty': qty,
             'chip_type': server_result.get('chip_type', ''),
@@ -1096,8 +1147,10 @@ def add_chip(request, lot_pk):
 
     if not has_cap:
         # company: anotação §14.1 (fila global; 1ª empresa a reportar).
-        UnknownChip.objects.get_or_create(
-            part_number=pn, defaults={'company': request.company})
+        # (get_or_create já é idempotente; o guard só poupa a query na duplicata.)
+        if not is_dup:
+            UnknownChip.objects.get_or_create(
+                part_number=pn, defaults={'company': request.company})
         return render(request, 'estoque/partials/unknown_feedback.html', {'pn': pn})
 
     # ── Bloqueio "só confirmados" ────────────────────────────────────────────
@@ -1105,20 +1158,26 @@ def add_chip(request, lot_pk):
     # conferência (PendingEntry) para o gestor aprovar/reprovar.
     if not confirmed:
         near = _nearest_in_lot(lot, pn)
-        pend, p_created = PendingEntry.objects.get_or_create(
-            lot=lot, part_number=pn,
-            defaults={
-                'quantity':          qty,
-                **_snapshot(server_result),
-                'nearest_confirmed': near,
-                'operator':          request.user,
-            },
-        )
-        if not p_created:
-            PendingEntry.objects.filter(pk=pend.pk).update(quantity=F('quantity') + qty)
-            pend.refresh_from_db()
+        if is_dup:
+            # Reenvio: fila NÃO soma de novo — mostra a quantidade atual.
+            pend = PendingEntry.objects.filter(lot=lot, part_number=pn).first()
+            pend_qty = pend.quantity if pend else qty
+        else:
+            pend, p_created = PendingEntry.objects.get_or_create(
+                lot=lot, part_number=pn,
+                defaults={
+                    'quantity':          qty,
+                    **_snapshot(server_result),
+                    'nearest_confirmed': near,
+                    'operator':          request.user,
+                },
+            )
+            if not p_created:
+                PendingEntry.objects.filter(pk=pend.pk).update(quantity=F('quantity') + qty)
+                pend.refresh_from_db()
+            pend_qty = pend.quantity
         return render(request, 'estoque/partials/pending_feedback.html', {
-            'pn': pn, 'qty': pend.quantity, 'near': near,
+            'pn': pn, 'qty': pend_qty, 'near': near,
         })
 
     # ── Bloqueio DURO de rentabilidade ───────────────────────────────────────
@@ -1127,13 +1186,14 @@ def add_chip(request, lot_pk):
     # eletrônico. Decisão de negócio: bloqueio real no servidor, não só na UI.
     profitable = assess_profitability(server_result)
     if profitable == 'NÃO RENTÁVEL':
-        RejectedEntry.objects.create(
-            lot=lot, part_number=pn, quantity=qty,
-            **_snapshot(server_result),
-            # ⚠ CANÔNICO — persistido p/ auditoria. NUNCA traduzir (I18N.md §8.2).
-            rejection_reason='NÃO RENTÁVEL',
-            operator=request.user,
-        )
+        if not is_dup:
+            RejectedEntry.objects.create(
+                lot=lot, part_number=pn, quantity=qty,
+                **_snapshot(server_result),
+                # ⚠ CANÔNICO — persistido p/ auditoria. NUNCA traduzir (I18N.md §8.2).
+                rejection_reason='NÃO RENTÁVEL',
+                operator=request.user,
+            )
         return render(request, 'estoque/partials/rejected_feedback.html', {
             'pn': pn, 'qty': qty,
             'chip_type': server_result.get('chip_type', ''),
@@ -1157,23 +1217,29 @@ def add_chip(request, lot_pk):
     # ao que PendingEntry/RejectedEntry já fazem (linhas acima). _snapshot captura a
     # densidade DRAM em `capacity` (antes perdida → 'None') e limpa a geração do
     # `interface`. `confidence` não existe no InventoryEntry (só em Pending/Rejected).
-    snap = _snapshot(server_result)
-    snap.pop('confidence', None)
-    # Passo 2: carimba a edição do catálogo do snapshot de intake (detecção de defasagem).
-    # F11.1: a chave de preço nasce junto (o classify já rodou — custo zero).
-    from chips.models import CatalogVersion
-    defaults = {**snap, **_price_key_fields(server_result), 'quantity': qty,
-                'snapshot_catalog_version': CatalogVersion.current()}
+    if is_dup:
+        # Reenvio do MESMO clique (token já usado): não soma — só re-renderiza
+        # o estado atual. É exatamente a resposta que o operador perdeu quando
+        # a conexão caiu; o total exibido já contém o lançamento original.
+        entry = InventoryEntry.objects.filter(lot=lot, part_number=pn).first()
+    else:
+        snap = _snapshot(server_result)
+        snap.pop('confidence', None)
+        # Passo 2: carimba a edição do catálogo do snapshot de intake (detecção de defasagem).
+        # F11.1: a chave de preço nasce junto (o classify já rodou — custo zero).
+        from chips.models import CatalogVersion
+        defaults = {**snap, **_price_key_fields(server_result), 'quantity': qty,
+                    'snapshot_catalog_version': CatalogVersion.current()}
 
-    entry, created = InventoryEntry.objects.get_or_create(
-        lot=lot, part_number=pn, defaults=defaults,
-    )
-
-    if not created:
-        InventoryEntry.objects.filter(pk=entry.pk).update(
-            quantity=F('quantity') + qty,
-            last_updated=timezone.now(),
+        entry, created = InventoryEntry.objects.get_or_create(
+            lot=lot, part_number=pn, defaults=defaults,
         )
+
+        if not created:
+            InventoryEntry.objects.filter(pk=entry.pk).update(
+                quantity=F('quantity') + qty,
+                last_updated=timezone.now(),
+            )
 
     entries   = _entries_for_display(lot)
     total_qty = sum(e.quantity for e in entries)
@@ -1191,7 +1257,11 @@ def add_chip(request, lot_pk):
         'total_qty':  total_qty,
         'just_added': pn,
     })
-    response['HX-Trigger'] = json.dumps({'est:added': {'pn': pn, 'qty': qty, 'pk': entry.pk}})
+    # Duplicata REPLICA a resposta original (toast incluso — é a confirmação
+    # que o operador perdeu). `entry` só é None numa corrida rara (duplicata
+    # chega antes do commit do original): aí não há pk p/ o undo do toast.
+    if entry is not None:
+        response['HX-Trigger'] = json.dumps({'est:added': {'pn': pn, 'qty': qty, 'pk': entry.pk}})
     return response
 
 
