@@ -1048,6 +1048,12 @@ class PainelTests(TestCase):
         self.assertContains(resp, 'Peça ao gerente')
 
     def test_stats_do_dia(self):
+        """ATUALIZADO ao redesenho do painel (f9da4a9, "limpeza do painel"): a
+        seção "Números de hoje" SAIU do template — as métricas viraram contexto
+        do HERÓI (Unidades = lot.total_qty; Tipos/Categorias = lot.chip_count,
+        rótulo conforme access.is_unmasked). O teste valida o layout novo com
+        DADOS reais do lote (1 entrada de qty 1 → "1" nas duas métricas) — e
+        documenta que o layout antigo não volta por acidente."""
         lot = Lot.objects.create(number=502, origin='phone', operator=self.mgr,
                                  company=self.company)
         InventoryEntry.objects.create(lot=lot, part_number='PNHOJE1')
@@ -1055,8 +1061,12 @@ class PainelTests(TestCase):
                                     operator=self.op)
         self.client.force_login(self.op)
         resp = self.client.get(reverse('painel'))
-        self.assertContains(resp, 'Números de hoje')
         self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Unidades')
+        self.assertContains(resp, 'Categorias')     # rótulo mascarado (operador)
+        # As métricas do hero carregam os dados do LOTE: 1 un., 1 PN.
+        self.assertContains(resp, '<div class="mv">1</div>', count=2)
+        self.assertNotContains(resp, 'Números de hoje')   # layout antigo saiu
 
 
 # ═══════════════════════════════════════════════════════════════════════════
