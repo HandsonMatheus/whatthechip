@@ -1007,6 +1007,56 @@ python manage.py guard_catalog        # DATABASE_URL do Render, como sempre
 
 Aceite = suíte local verde + diff 0 + O5 provado + rename feito + guard OK.
 Depois disso: **E2 (T7 — código do subdomínio, §17.3)**.
+**✅ Runbook cumprido pelo dono em 2026-08-07 ("tudo já tá em produção") —
+E1 FECHADA; commit 63c58cd em prod.** (No meio: incidente da ponte gravando
+página de erro HTML nos 16 arquivos — restaurados e verificados por md5;
+lição registrada na memória `wtc-verificar-commit-checksum`.)
+
+### E2 — T7, o código do subdomínio (2026-08-07; código PRONTO — §17.3)
+
+**Construído (suíte 462 OK = 449 + 13 do HostHandshake; ZERO string nova de
+usuário → sem rodada i18n nesta fase):**
+
+- **Settings B5 env-driven** (`core/settings.py`): `WTC_TENANT_DOMAIN` liga o
+  modo multi-host — `.domínio` no ALLOWED_HOSTS, `https://*.domínio` no
+  CSRF_TRUSTED_ORIGINS, cookies de sessão/CSRF domain-wide (só fora de
+  DEBUG). **Sem a env var o deploy é INERTE.** Smoke local:
+  `WTC_TENANT_DOMAIN=localhost` no `.env` (Chrome resolve `eminer.localhost`
+  → 127.0.0.1 sozinho).
+- **`HostTenantMiddleware`** (tenancy/middleware.py, DEPOIS do Tenancy): o
+  host AFIRMA, o Membership CONCEDE (§10.2). `www` → **301** apex (B6);
+  slug desconhecido/reservado/empresa inativa/rótulo com ponto → **302**
+  canônico INDISTINTO (não revela se a empresa existe); host de tenant
+  válido → `request.urlconf = core.urls_tenant` + `request.tenant_host_company`
+  (afirmação p/ branding — NUNCA escopo); vínculo ≠ host → **403**; anônimo
+  segue (cai no login DO host — bookmark do operador); superuser passa
+  (§17.5.3) com o escopo do PRÓPRIO vínculo intacto.
+- **`core/urls_tenant.py`** (B1/B2): só o APP — chips/estoque/painel/vendas/
+  login/logout/i18n, nomes idênticos ao core/urls (levantei os nomes que os
+  templates do shell resolvem; reverse() usa a URLconf da request). `/` →
+  painel; fallback `.*` → 302 canônico. Site público/CMS, `/partner/`,
+  `/admin/` e `/company/` só no canônico.
+- **`TenantAwareLoginView`** (item 4 do §17.3): login no APEX → redirect pro
+  subdomínio do vínculo. ⚠ o Membership é resolvido DENTRO da view
+  (pós-login) — o TenancyMiddleware rodou com o usuário ainda anônimo. Login
+  no host do tenant fica no host (redirect relativo); `next` mantém a
+  validação padrão do Django.
+- **`HostHandshakeTests`** (13 casos — o teste permanente do §12.6): B no
+  host de A → 403 (painel E estoque); avulso logado → 403; anônimo → login
+  do host; superuser passa SEM trocar escopo (asserção `request.company` =
+  vínculo, `tenant_host_company` = afirmação); host nunca é fonte; www 301
+  preservando caminho+query; desconhecido/reservado/inativo/sub-sub → 302
+  indistinto; raiz de tenant → painel; CMS//partner//admin//company em
+  tenant → 302 canônico; canônico e testserver intactos; middleware INERTE
+  sem env var; login no apex → 302 pro subdomínio E segue LOGADO.
+
+**Auditoria `/fab-*/` (pendência do B1) — resultado no §17.5.2.** Decisões
+§17.5.3 e §17.5.5 aplicadas conforme recomendação (dono pode vetar antes da
+E3 — mudar é 1 linha no middleware/urls_tenant).
+
+**Runbook do dono = a PRÓPRIA E3 (§17.4, já atualizado com o passo da env
+var).** O push desta fase pode ir a qualquer momento: sem `WTC_TENANT_DOMAIN`
+na Render, produção não muda NADA.
 
 ---
 
@@ -1116,6 +1166,10 @@ suíte verde; `characterize --diff` = 0.
 **Aceite:** suíte verde com o handshake de host; **deploy desta fase é
 INERTE** — nada muda pra quem usa o canônico até o DNS da E3 entrar.
 
+> **Status: código PRONTO (2026-08-07, §16-E2) — suíte 462 OK (449 + 13 do
+> HostHandshake). A chave da fase é a env var `WTC_TENANT_DOMAIN`: sem ela,
+> prod não muda NADA. Falta só a E3 (§17.4, atualizado com o passo da env).**
+
 ### 17.4 E3 — Deploy + DNS (operação do DONO, ordem estrita; ~1h)
 
 > As duas armadilhas (memória `wtc-dominio-whatthechip-app`): **settings
@@ -1124,25 +1178,31 @@ INERTE** — nada muda pra quem usa o canônico até o DNS da E3 entrar.
 
 1. **Backup fresco** (Render Export) — §2.1b.
 2. Push em `main` → deploy (migrate no build). **Smoke no canônico:** nada
-   mudou pro usuário atual.
-3. **Slugs dos 2 clientes conferidos/ajustados** (E1) — congelam AQUI.
-4. Render (serviço `whatthechip`): adicionar **`*.whatthechip.app`**.
+   mudou pro usuário atual (a E2 é INERTE sem a env var).
+3. **Ligar o modo multi-host:** Render → Environment → adicionar
+   **`WTC_TENANT_DOMAIN=whatthechip.app`** (o serviço reinicia). Smoke de
+   novo no canônico: tudo igual — só os cookies viram domain-wide (B5;
+   quem estava logado pode precisar relogar). Este é o "settings ANTES do
+   DNS" da T7.
+4. **Slugs congelam AQUI:** `eminer` + `erecyclo` (§17.5.1; rename da E1
+   feito em prod).
+5. Render (serviço `whatthechip`): adicionar **`*.whatthechip.app`**.
    Cota Hobby = 2: pra zero-downtime no `www`, adicionar a wildcard ANTES de
    remover o `www` avulso (3º domínio custa US$ 0,25/mês pro-rata por uns
    minutos) → cert emitido → **remover o domínio `www`**. Alternativa: remover
    o `www` primeiro e aceitar `www` fora do ar por minutos (é só redirect).
-5. Hostinger: **remover o CNAME `www`** (a wildcard cobre) → criar os 3
+6. Hostinger: **remover o CNAME `www`** (a wildcard cobre) → criar os 3
    CNAMEs que a Render indicar (`*`, `_acme-challenge`,
    `_cf-custom-hostname`) → aguardar Verified + Certificate Issued.
    ⚠ zero `AAAA`, como sempre.
-6. **Checklist de verificação manual:** `https://<slug1>.whatthechip.app` e
-   `https://<slug2>.whatthechip.app` abrem no login · logar usuário do
+7. **Checklist de verificação manual:** `https://eminer.whatthechip.app` e
+   `https://erecyclo.whatthechip.app` abrem no login · logar usuário do
    cliente 1 e visitar o host do cliente 2 → **403** · subdomínio inventado →
-   canônico · `www` → 301 apex · apex intacto (site + `/partner/`) · login no
-   apex → cai logado no subdomínio. ⚠ usuários logados no momento do deploy
-   podem precisar relogar (cookie antigo era host-only).
-7. `guard_catalog` (tripwire pós-deploy, como sempre).
-8. `.onrender.com` fica no `ALLOWED_HOSTS` (rota de fuga) por dias; remover é
+   volta pro canônico · `www` → 301 apex · apex intacto (site + `/partner/`)
+   · login no apex → cai LOGADO no subdomínio do vínculo. ⚠ usuários logados
+   no momento da virada podem precisar relogar (cookie antigo era host-only).
+8. `guard_catalog` (tripwire pós-deploy, como sempre).
+9. `.onrender.com` fica no `ALLOWED_HOSTS` (rota de fuga) por dias; remover é
    opcional e adiável.
 
 **Aceite = a META DO PEDIDO:** os 2 clientes atuais de produção acessando
@@ -1154,16 +1214,23 @@ pelos próprios subdomínios, checklist do item 6 todo verde.
    `erecyclo`. ⚠ A 2ª empresa está em prod com o NOME ERRADO ("Mundo Metal")
    — o certo é **eRecyclo**: renomear no admin (nome + slug `erecyclo`;
    pghistory audita). Runbook no §16-E1; congelam de vez na E3.
-2. **`/fab-*/` públicas?** (E2/B1): auditar quanta convenção de decode expõem;
-   ficam públicas no canônico ou viram plataforma-only?
-3. **Plataforma (superuser) em host de cliente** (E2): recomendação = PASSA
-   (espelha o `app.platform` do RLS; senão o dono não consegue conferir o
-   subdomínio do cliente). Alternativa estrita: 403 também pra super.
+2. **`/fab-*/` públicas?** (B1 — DECISÃO AINDA ABERTA). **Auditoria E2
+   (2026-08-07):** `fab-samsung.html` (88KB) expõe decode PESADO — 60 menções
+   a "decode", posições `pn[3]`/`pn[4]`, tabelas de capacidade (=1/2/4GB,
+   =8Gb…); `fab-hynix` moderado; `fab-micron` e demais leves. Recomendação
+   REFORÇADA: plataforma-only (coerente com o fim da busca pública §10.7 — a
+   vitrine morreu, as páginas ensinam a convenção de graça). A duplicação em
+   subdomínio já está resolvida de qualquer forma (urls_tenant). Fica pro
+   dono decidir; dá pra fechar em sessão curta depois da E3.
+3. **Plataforma (superuser) em host de cliente** — ✅ IMPLEMENTADA na E2
+   conforme recomendação: PASSA (espelha o `app.platform` do RLS) e o ESCOPO
+   continua o do vínculo dele (o host não vira fonte nem pra super — o
+   HostHandshake prende com asserção em `request.company`).
 4. **Logo agora ou depois** (E4): recomendação = DEPOIS (fora do caminho
    crítico; exige S3/storage — B4+B7).
-5. **Tenant pedindo conteúdo canônico** (E2/B1/B2): recomendação = redirect
-   302 pro canônico (nunca 404 — quem digitou errado não pode achar que o
-   site caiu).
+5. **Tenant pedindo conteúdo canônico** — ✅ IMPLEMENTADA na E2 conforme
+   recomendação: redirect 302 pro canônico (fallback da urls_tenant — nunca
+   404).
 
 ### 17.6 E4 — OPCIONAL, pós-T7: logo/branding por cliente (B4+B7)
 

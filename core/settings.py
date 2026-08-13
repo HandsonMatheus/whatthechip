@@ -60,6 +60,30 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE    = not DEBUG
 
+# ── T7 (E2 — PLANO_MULTITENANT §17.3): subdomínio por cliente, ENV-DRIVEN ────
+# WTC_TENANT_DOMAIN (ex.: "whatthechip.app") LIGA o modo multi-host:
+#   · ALLOWED_HOSTS ganha ".domínio" (o ponto cobre apex E subdomínios);
+#   · CSRF_TRUSTED_ORIGINS ganha https://*.domínio;
+#   · cookies de sessão/CSRF viram domain-wide (B5) — só fora de DEBUG;
+#   · o HostTenantMiddleware (tenancy) passa a resolver o host (§10.2/B1/B2/B6).
+# SEM a env var, NADA muda — o deploy da E2 é INERTE até a E3 setar
+# WTC_TENANT_DOMAIN na Render ANTES do DNS wildcard (settings-first — a
+# armadilha do 400 DisallowedHost, memória wtc-dominio-whatthechip-app).
+# Smoke local: WTC_TENANT_DOMAIN=localhost no .env (Chrome resolve
+# eminer.localhost → 127.0.0.1 sozinho, sem tocar /etc/hosts).
+WTC_TENANT_DOMAIN = os.environ.get('WTC_TENANT_DOMAIN', '').strip().lower()
+if WTC_TENANT_DOMAIN:
+    ALLOWED_HOSTS.append('.' + WTC_TENANT_DOMAIN)
+    CSRF_TRUSTED_ORIGINS.append('https://*.' + WTC_TENANT_DOMAIN)
+    if not DEBUG:
+        # B5: o "login no apex → segue logado no subdomínio" exige o cookie no
+        # domínio-PAI. É seguro AQUI porque o host só AFIRMA (§10.2): a empresa
+        # continua vindo do Membership; host ≠ vínculo = 403 no middleware.
+        # Em DEBUG fica host-only (cookie de domínio quebraria o login em
+        # http://localhost puro — mesma razão do SESSION_COOKIE_SECURE acima).
+        SESSION_COOKIE_DOMAIN = '.' + WTC_TENANT_DOMAIN
+        CSRF_COOKIE_DOMAIN    = '.' + WTC_TENANT_DOMAIN
+
 # Os outros 4 avisos do `check --deploy` foram avaliados e NO-OP de propósito:
 #   W009 SECRET_KEY / W018 DEBUG — falso positivo do run LOCAL: em prod as env
 #       vars DJANGO_SECRET_KEY e DEBUG=False do Render sobrescrevem o fallback.
@@ -125,6 +149,12 @@ MIDDLEWARE = [
     # escopo (tenancy/scope.py). DEPOIS do AuthenticationMiddleware. Na T4
     # este middleware passa a abrir a transação da request e emitir SET LOCAL.
     'tenancy.middleware.TenancyMiddleware',
+    # T7 (§10.2): resolve o HOST — "o host AFIRMA, o Membership CONCEDE".
+    # DEPOIS do TenancyMiddleware (compara o host com request.company).
+    # INERTE sem WTC_TENANT_DOMAIN. www → 301 apex (B6); slug desconhecido/
+    # reservado/empresa inativa → 302 canônico; host de tenant troca a
+    # URLconf pra core.urls_tenant (B1/B2) e host≠vínculo → 403.
+    'tenancy.middleware.HostTenantMiddleware',
     # i18n: aplica a PREFERÊNCIA DE IDIOMA salva do usuário (tenancy.UserLanguage)
     # por CIMA da detecção do LocaleMiddleware. Cadeia final de resolução:
     # preferência no banco > cookie django_language > Accept-Language (região do

@@ -14,8 +14,10 @@ urlpatterns = [
     path('estoque/', include('estoque.urls', namespace='estoque')),
     # Home pós-login (lançadeira): orienta e leva ao lote aberto em 1 clique.
     path('painel/', estoque_views.painel, name='painel'),
-    # Auth (login/logout — sem cadastro público)
-    path('login/',  auth_views.LoginView.as_view(),  name='login'),
+    # Auth (login/logout — sem cadastro público). T7/E2: o login do CANÔNICO
+    # redireciona pro subdomínio do vínculo pós-login (só conveniência —
+    # NÃO-OBJETIVO §10 preservado; inerte sem WTC_TENANT_DOMAIN).
+    path('login/',  tenancy_views.TenantAwareLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     # Dashboard do COMPRADOR (F6 — PRECIFICACAO §7.1): rota em inglês, conta
     # externa via Buyer.users (a lançadeira /painel/ redireciona parceiro p/ cá).

@@ -403,3 +403,148 @@ class CompanyOnboardingTests(TestCase):
         resp = self.client.post(self.URL, self._payload(admin_password='curta'))
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(User.objects.filter(username='erecyclo_admin').exists())
+
+
+from django.test import override_settings  # noqa: E402 — usado só no bloco T7
+
+
+@override_settings(WTC_TENANT_DOMAIN='whatthechip.app',
+                   ALLOWED_HOSTS=['.whatthechip.app', 'testserver'])
+class HostHandshakeTests(TestCase):
+    """T7/E2 — o handshake de HOST do §12.6 (teste permanente da suíte).
+
+    Prova que o host é AFIRMAÇÃO e não CONCESSÃO (§10.2): sessão da empresa B
+    no host da empresa A = 403 — nunca 200 com dados de A, nunca "troca de
+    empresa". Host desconhecido/reservado/inativo cai no canônico sem revelar
+    qual caso é; www → 301 (B6); tenant serve SÓ o app (B1/B2); login no apex
+    segue LOGADO no subdomínio (B5); e o middleware é INERTE sem a env var.
+    No Django o Client fala com `testserver` — os casos usam HTTP_HOST= +
+    override_settings(ALLOWED_HOSTS), como o §12.6 manda.
+    """
+
+    A_HOST = 'eminer.whatthechip.app'
+    B_HOST = 'erecyclo.whatthechip.app'
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.cia_a = Company.objects.create(name='eMiner H', slug='eminer')
+        cls.cia_b = Company.objects.create(name='eRecyclo H', slug='erecyclo')
+        cls.cia_off = Company.objects.create(name='Desativada H',
+                                             slug='desativada', active=False)
+        cls.user_a = User.objects.create_user('op_a', password='x12345678')
+        Membership.objects.create(user=cls.user_a, company=cls.cia_a,
+                                  role=Membership.ROLE_OPERATOR)
+        cls.user_b = User.objects.create_user('op_b')
+        Membership.objects.create(user=cls.user_b, company=cls.cia_b,
+                                  role=Membership.ROLE_OPERATOR)
+        cls.root = User.objects.create_superuser('root_host', password='x')
+        Membership.objects.create(user=cls.root, company=cls.cia_a,
+                                  role=Membership.ROLE_ADMIN)
+
+    # ── canônico intacto + feature desligada ────────────────────────────────
+    def test_canonico_e_testserver_seguem_como_hoje(self):
+        self.assertEqual(self.client.get('/login/').status_code, 200)
+        self.assertEqual(self.client.get(
+            '/login/', HTTP_HOST='whatthechip.app').status_code, 200)
+
+    @override_settings(WTC_TENANT_DOMAIN='')
+    def test_sem_env_var_o_middleware_e_inerte(self):
+        # sem a env var nem host de tenant é tratado (cai no DisallowedHost do
+        # Django por não estar no ALLOWED_HOSTS — aqui só provamos o no-op
+        # num host permitido)
+        self.assertEqual(self.client.get(
+            '/login/', HTTP_HOST='testserver').status_code, 200)
+
+    # ── www e hosts que caem no canônico (indistintos) ──────────────────────
+    def test_www_301_preservando_caminho(self):
+        resp = self.client.get('/fabricantes/?x=1',
+                               HTTP_HOST='www.whatthechip.app')
+        self.assertEqual(resp.status_code, 301)
+        self.assertEqual(resp['Location'],
+                         'http://whatthechip.app/fabricantes/?x=1')
+
+    def test_desconhecido_reservado_inativo_subsub_vao_pro_canonico(self):
+        for host in ('naoexiste.whatthechip.app', 'api.whatthechip.app',
+                     'desativada.whatthechip.app', 'a.b.whatthechip.app'):
+            resp = self.client.get('/painel/', HTTP_HOST=host)
+            self.assertEqual(resp.status_code, 302, host)
+            self.assertEqual(resp['Location'],
+                             'http://whatthechip.app/painel/', host)
+
+    # ── o handshake em si (§12.6) ───────────────────────────────────────────
+    def test_membro_no_proprio_host_entra(self):
+        self.client.force_login(self.user_a)
+        self.assertEqual(self.client.get(
+            '/painel/', HTTP_HOST=self.A_HOST).status_code, 200)
+
+    def test_sessao_de_b_no_host_de_a_leva_403(self):
+        """O caso central: host AFIRMA A, vínculo CONCEDE só B → 403 nas duas
+        superfícies — e nunca 200 (nem com dados de A, nem 'trocando' pra B)."""
+        self.client.force_login(self.user_b)
+        for path in ('/painel/', '/estoque/'):
+            resp = self.client.get(path, HTTP_HOST=self.A_HOST)
+            self.assertEqual(resp.status_code, 403, path)
+
+    def test_avulso_logado_em_host_de_tenant_leva_403(self):
+        avulso = User.objects.create_user('sem_vinculo_host')
+        self.client.force_login(avulso)
+        self.assertEqual(self.client.get(
+            '/painel/', HTTP_HOST=self.A_HOST).status_code, 403)
+
+    def test_anonimo_em_host_de_tenant_cai_no_login_do_host(self):
+        resp = self.client.get('/painel/', HTTP_HOST=self.A_HOST)
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(resp['Location'].startswith('/login/'))  # relativo: fica no host
+
+    def test_superuser_passa_em_host_de_cliente_sem_trocar_escopo(self):
+        """§17.5.3: plataforma passa (espelha app.platform) — e o ESCOPO segue
+        o do vínculo dele (eMiner), nunca o host: request.company não muda."""
+        self.client.force_login(self.root)
+        resp = self.client.get('/painel/', HTTP_HOST=self.B_HOST)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.wsgi_request.company, self.cia_a)      # vínculo
+        self.assertEqual(resp.wsgi_request.tenant_host_company,
+                         self.cia_b)                                  # afirmação
+
+    def test_host_nunca_e_fonte_de_escopo(self):
+        """A prova §12.6 'nenhuma view lê a empresa do hostname': membro de A
+        no host de A tem escopo vindo do MEMBERSHIP (mesmo objeto), e o
+        middleware nunca gravou request.company a partir do host."""
+        self.client.force_login(self.user_a)
+        resp = self.client.get('/painel/', HTTP_HOST=self.A_HOST)
+        self.assertEqual(resp.wsgi_request.company, self.cia_a)
+        self.assertEqual(resp.wsgi_request.company,
+                         resp.wsgi_request.membership.company)
+
+    # ── B1/B2: tenant serve só o app ────────────────────────────────────────
+    def test_tenant_raiz_vai_pro_painel_e_cms_vai_pro_canonico(self):
+        self.client.force_login(self.user_a)
+        raiz = self.client.get('/', HTTP_HOST=self.A_HOST)
+        self.assertEqual(raiz.status_code, 302)
+        self.assertEqual(raiz['Location'], '/painel/')
+        for path in ('/fabricantes/', '/fab-samsung/', '/partner/', '/admin/',
+                     '/company/new/'):
+            resp = self.client.get(path, HTTP_HOST=self.A_HOST)
+            self.assertEqual(resp.status_code, 302, path)
+            self.assertEqual(resp['Location'],
+                             f'http://whatthechip.app{path}', path)
+
+    # ── B5 + item 4: login no apex → segue LOGADO no subdomínio ────────────
+    def test_login_no_apex_redireciona_pro_subdominio_logado(self):
+        resp = self.client.post(
+            '/login/', {'username': 'op_a', 'password': 'x12345678'},
+            HTTP_HOST='whatthechip.app')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['Location'],
+                         'http://eminer.whatthechip.app/painel/')
+        # o test client carrega o cookie entre hosts; no navegador é o
+        # SESSION_COOKIE_DOMAIN='.whatthechip.app' (B5, settings) que garante
+        seg = self.client.get('/painel/', HTTP_HOST=self.A_HOST)
+        self.assertEqual(seg.status_code, 200)
+
+    def test_login_no_host_do_tenant_fica_no_host(self):
+        resp = self.client.post(
+            '/login/', {'username': 'op_a', 'password': 'x12345678'},
+            HTTP_HOST=self.A_HOST)
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['Location'], '/painel/')   # relativo → mesmo host

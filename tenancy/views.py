@@ -9,12 +9,64 @@ tenancy/views.py — views do app de tenancy
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth import views as auth_views
 from django.db import transaction
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.views.i18n import set_language as _django_set_language
 
 from .access import platform_required
 from .forms import CompanyOnboardingForm
+
+
+# ── T7 (E2 — §17.3): views do modo multi-host ────────────────────────────────
+
+def tenant_root(request):
+    """`/` em host de TENANT (core/urls_tenant): não existe site público lá
+    (B1) — manda pro /painel/ (que, anônimo, cai no login DO PRÓPRIO host:
+    o bookmark do operador é o subdomínio da empresa dele)."""
+    return redirect('painel')
+
+
+def to_canonical(request, *args, **kwargs):
+    """Fallback do core/urls_tenant (B1/B2): qualquer caminho que não é do APP
+    (site público/CMS, /fab-*/, /partner/, /admin/, typo) redireciona 302 pro
+    MESMO caminho no host canônico — nunca 404 (decisão §17.5.5: quem digitou
+    errado não pode achar que o site caiu)."""
+    domain = getattr(settings, 'WTC_TENANT_DOMAIN', '')
+    return HttpResponseRedirect(
+        f'{request.scheme}://{domain}{request.get_full_path()}')
+
+
+class TenantAwareLoginView(auth_views.LoginView):
+    """Login no APEX → redirect pro subdomínio do vínculo (§17.3 item 4).
+
+    Só CONVENIÊNCIA pós-login — navegar logado no apex continua permitido
+    (NÃO-OBJETIVO do §10). O salto de host só mantém a sessão por causa do
+    cookie domain-wide (B5) — sem WTC_TENANT_DOMAIN nada muda aqui.
+
+    ⚠ O Membership é resolvido AQUI (não via request.membership): o
+    TenancyMiddleware rodou quando o usuário ainda era anônimo — o login
+    aconteceu DENTRO desta request. Mesmo critério §14.7 (primeira ativa).
+    `next` explícito continua com a validação padrão do Django (mesmo host).
+    """
+
+    def get_default_redirect_url(self):
+        domain = getattr(settings, 'WTC_TENANT_DOMAIN', '')
+        if domain:
+            host = self.request.get_host().split(':')[0].lower()
+            if host == domain:                       # só a partir do APEX
+                from .models import Membership
+                m = (Membership.objects
+                     .filter(user=self.request.user, active=True,
+                             company__active=True)
+                     .select_related('company')
+                     .order_by('pk')
+                     .first())
+                if m is not None:
+                    return (f'{self.request.scheme}://'
+                            f'{m.company.slug}.{domain}/painel/')
+        return super().get_default_redirect_url()
 
 
 @platform_required

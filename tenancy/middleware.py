@@ -30,7 +30,9 @@ linhas das tabelas de estoque (fail-closed também na Camada B). Quem decide o
 que fazer é o gate de view (403) — o middleware não bloqueia páginas públicas.
 """
 
+from django.core.exceptions import PermissionDenied
 from django.db import connection, transaction
+from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect
 
 from .scope import _set_guc, reset_current_company, set_current_company
 
@@ -96,6 +98,81 @@ class TenancyMiddleware:
             .order_by('pk')          # v1: primeira empresa ativa (§14.7)
             .first()
         )
+
+
+class HostTenantMiddleware:
+    """T7 (E2 — PLANO_MULTITENANT §10.2/§17.3): resolve o HOST da request.
+
+    **Regra inegociável: o host AFIRMA, o Membership CONCEDE.** Este middleware
+    NUNCA escreve escopo (``request.company``/contextvar/GUC vêm SÓ do
+    TenancyMiddleware, que roda antes). O hostname é uma AFIRMAÇÃO a conferir
+    — digitável por qualquer um na barra de endereço:
+
+        host de tenant + vínculo na MESMA empresa  → segue
+        host de tenant + vínculo em OUTRA empresa  → 403 (nunca "troca")
+        host de tenant + anônimo                   → segue (cai no login do host)
+        host de tenant + SUPERUSER                 → segue (decisão §17.5.3:
+              plataforma passa, espelhando o app.platform do RLS — e o ESCOPO
+              continua o do vínculo DELE; host não vira fonte nem pra super)
+        www                                        → 301 pro apex (B6: quando a
+              wildcard absorver o www, o redirect deixa de ser da Render)
+        slug desconhecido / reservado / empresa inativa / rótulo com ponto
+                                                   → 302 pro canônico, SEM
+              distinguir os casos (não revela se a empresa existe — §10.2)
+
+    Em host de tenant a URLconf vira ``core.urls_tenant`` (B1/B2): só o app.
+    Site público/CMS e /partner/ ficam no canônico (no tenant, viram redirect
+    — nunca 404: quem digitou errado não pode achar que o site caiu, §17.5.5).
+
+    INERTE sem ``settings.WTC_TENANT_DOMAIN`` (o deploy da E2 não muda nada em
+    prod até a E3 setar a env var). Hosts fora do domínio — localhost,
+    ``.onrender.com`` (rota de fuga) e o testserver — passam como canônico.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        from django.conf import settings as dj_settings
+        domain = getattr(dj_settings, 'WTC_TENANT_DOMAIN', '')
+        if not domain:
+            return self.get_response(request)          # feature desligada
+
+        host = request.get_host().split(':')[0].lower()
+        suffix = '.' + domain
+        if host == domain or not host.endswith(suffix):
+            # apex, localhost, .onrender.com, testserver → canônico, como hoje
+            return self.get_response(request)
+
+        label = host[: -len(suffix)]
+        canonical = f'{request.scheme}://{domain}{request.get_full_path()}'
+
+        if label == 'www':                             # B6: o 301 agora é NOSSO
+            return HttpResponsePermanentRedirect(canonical)
+
+        from .models import RESERVED_COMPANY_SLUGS, Company
+        company = None
+        if '.' not in label and label not in RESERVED_COMPANY_SLUGS:
+            company = Company.objects.filter(slug=label, active=True).first()
+        if company is None:
+            # desconhecido/reservado/inativo/sub-sub → canônico, indistinto
+            return HttpResponseRedirect(canonical)
+
+        # ── host de TENANT válido ────────────────────────────────────────────
+        # Afirmação disponível pra views/templates (branding futuro). NUNCA
+        # usar como fonte de escopo — o handshake do §12.6 prende isso.
+        request.tenant_host_company = company
+        request.urlconf = 'core.urls_tenant'           # B1/B2
+
+        user = getattr(request, 'user', None)
+        if (user is not None and user.is_authenticated
+                and not user.is_superuser):
+            vinculo = getattr(request, 'company', None)  # do TenancyMiddleware
+            if vinculo is None or vinculo.pk != company.pk:
+                raise PermissionDenied(
+                    'Este endereço pertence a outra empresa. Use o endereço '
+                    'da sua empresa ou o principal.')
+        return self.get_response(request)
 
 
 class UserLanguageMiddleware:
