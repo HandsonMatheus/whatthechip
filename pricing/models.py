@@ -66,6 +66,7 @@ from tenancy.scope import CompanyScopedManager, PlatformSharedManager
 #  Linhas gddr remanescentes do grid são apagadas pelo runbook.)
 KIND_EMMC, KIND_UFS, KIND_EMCP, KIND_UMCP = 'emmc', 'ufs', 'emcp', 'umcp'
 KIND_LPDDR, KIND_DDR, KIND_SSD = 'lpddr', 'ddr', 'ssd'
+KIND_K9 = 'k9'
 
 KIND_CHOICES = [
     (KIND_EMMC,  'eMMC'), (KIND_UFS, 'UFS'),
@@ -74,6 +75,11 @@ KIND_CHOICES = [
     # SSD (BGA/NVMe — dono 2026-07-24): preço LINEAR ¥/GB (Buyer.ssd_rmb_per_gb),
     # SEM linhas de grid — o kind existe p/ chave/caixa; o engine calcula.
     (KIND_SSD, 'SSD'),
+    # K9 (NAND cru TSOP — dono 2026-08-14, HANDOFF_K9): preço FIXO ¥/unidade
+    # (Buyer.k9_rmb_each), SEM linhas de grid — igual ao SSD, o kind existe
+    # p/ chave/caixa (K-01) e o engine calcula. Chave PLANA: gen='' e tier
+    # fixo 1/'' (sem capacidade — deliberado).
+    (KIND_K9, 'K9'),
 ]
 KINDS = frozenset(k for k, _ in KIND_CHOICES)
 
@@ -94,7 +100,12 @@ _GEN_RULE = {                            # forma OBRIGATÓRIA do gen por kind
     KIND_LPDDR: re.compile(r'^LPDDR\d'),
     KIND_DDR:   re.compile(r'^DDR\d'),       # DDR3/DDR3L/DDR4/DDR5…
     KIND_SSD:   re.compile(r'^$'),           # SSD: sem geração na chave
+    KIND_K9:    re.compile(r'^$'),           # K9: tipo plano — sem geração
 }
+# ⚠ KIND_UNIT de propósito NÃO tem k9: a unidade GB/Gb não se aplica (a
+# "faixa" do K9 é 1 unidade, tier_unit='') e o derive_price_key devolve a
+# chave plana ANTES da consulta a KIND_UNIT. Nenhuma linha de Price com
+# kind='k9' deve existir (padrão SSD: o preço mora no Buyer).
 
 # Repactuação 2026-07-27 (ESTRUTURAL): eMCP/uMCP/LPDDR têm preço ÚNICO,
 # brand-agnostic — a linha vive SÓ na lista GENÉRICA (a resolução de qualquer
@@ -221,6 +232,16 @@ class Buyer(models.Model):
         verbose_name='SSD — ¥ por GB',
         help_text='Preço linear do SSD: ¥ por GB (ex.: 0.10 → 512GB = ¥51). '
                   'Arredonda ao ¥ inteiro. Vazio = SSD sem preço.')
+    # K9 (dono 2026-08-14, HANDOFF_K9): NAND cru TSOP a preço FIXO por
+    # UNIDADE — sem marca, sem capacidade ("commodity genérica"). Nasce NULL
+    # de propósito: K9 fica "sem preço" com motivo até o comprador confirmar
+    # o valor (¥1 aguarda o OK do Wu Quan — §7.2 do handoff); aí o dono
+    # digita aqui no admin. Padrão idêntico ao ssd_rmb_per_gb (sem grid).
+    k9_rmb_each = models.DecimalField(
+        max_digits=6, decimal_places=2, null=True, blank=True,
+        verbose_name='K9 — ¥ por unidade',
+        help_text='Preço fixo do K9 (NAND cru TSOP): ¥ por unidade (ex.: '
+                  '1 → 500 un. = ¥500). Vazio = K9 sem preço.')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
 
     # 2026-08-03 (revisa F2): comprador de PLATAFORMA (company NULL) entra na

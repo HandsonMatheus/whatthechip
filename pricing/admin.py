@@ -37,9 +37,10 @@ class PlatformScopedAdmin(admin.ModelAdmin):
 class BuyerAdmin(PlatformScopedAdmin):
     # F10: fx_usd_rate é a taxa CONTRATUAL ¥→US$ — editável AQUI (o dono
     # gere; pghistory audita). Mudar a taxa NÃO toca os ¥ gravados nos
-    # Price — só o US$ derivado na leitura.
+    # Price — só o US$ derivado na leitura. k9_rmb_each (2026-08-14): preço
+    # fixo do K9 por unidade — o ¥1 entra aqui após o OK do Wu Quan.
     list_display  = ('name', 'company', 'fx_usd_rate', 'ssd_rmb_per_gb',
-                     'prices_in_rmb',
+                     'k9_rmb_each', 'prices_in_rmb',
                      'active', 'created_at')
     list_filter   = ('active', 'company')
     search_fields = ('name', 'slug')

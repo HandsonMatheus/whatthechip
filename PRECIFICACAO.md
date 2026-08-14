@@ -1773,3 +1773,69 @@ existia). Implementação (suíte 429 OK):
   sobre vendas de clientes; painel do parceiro segue 1 comprador; apertar a
   policy de escrita por-tabela se um dia houver 2+ compradores com parceiros
   distintos.
+
+### §12.22 — K9: NAND cru TSOP, tipo PLANO a ¥ fixo por unidade (dono 2026-08-14, HANDOFF_K9; suíte 493/493, characterize diff=0)
+
+**O que é:** K9 = NAND cru (não gerenciado) em encapsulamento **TSOP** — o
+ÚNICO chip não-BGA da operação (retangular, perninhas gullwing "de aranha").
+O prefixo Samsung (K9F/K9G/K9K) virou nome genérico da categoria no mercado
+(tipo "band-aid"). Commodity: o valor **não varia** por marca nem capacidade
+→ ler spec seria atrito sem ganho — **deliberadamente omitido**.
+
+**Decisões fechadas (dono, 2026-08-14 — não reabrir sem ele):**
+
+1. **Tipo de primeira classe PLANO** no registro (`chips/chip_types.py`):
+   `"K9"` = `nand_raw` / `label_kind='k9'` / `profit_family='k9'` /
+   `commercial=True`. SEMPRE RENTÁVEL (o tipo é o veredito — sem limiar).
+2. **Caixa K-01** na convenção universal: letra **K** — DESVIO CONSCIENTE da
+   regra "próxima letra livre" (seria I; K é mnemônica do nome de mercado e
+   aqui não há decode a proteger — a triagem é por formato). Número **01**
+   porque "00 é reservado em TODA letra" (o K-00 sugerido no handoff violaria
+   a regra fundadora). Fundadora anexada: `('k9','','1','',1)` — tier = "1
+   unidade", `tier_unit=''` (GB/Gb não se aplicam). I e J seguem livres.
+3. **Preço em `Buyer.k9_rmb_each`** (padrão SSD: SEM linhas de grid; kind
+   `k9` existe p/ chave/caixa). Nasce **NULL** → K9 "sem preço" com motivo
+   ("K9 sem preço ¥/unidade — defina no comprador (admin)"); **o ¥1 só entra
+   no admin após o OK do Wu Quan** (§7.2 do handoff). Engine: `_k9_quote` em
+   `price()` E `price_from_key()` (chave materializada F11.1 resolve igual).
+   Chave PLANA: `derive_price_key` → `('k9','',1,'')`. Valor do lote =
+   `qtd × ¥ × taxa` — câmbio SEM exceção (mesmo feed/travamento de todos).
+4. **"NAND Flash" INTOCADO** (caminhos PARALELOS): PN de NAND cru digitado
+   (K9F…, GD5F…, W29N…) segue `dead` → NÃO RENTÁVEL → refino R-00. K9 é
+   triado por FORMATO, nunca por PN ("zero leitura de spec") — treinar o
+   operador: chip de perninha NÃO se digita, joga na caixa K9 e lança "K9".
+   Prova: characterize diff=0 (596 PNs, 12 marcas).
+5. **Bancada por pseudo-código:** o operador digita **"K9"** no campo de PN
+   (exceção ao mínimo de 4 chars — `_pn_too_short`/`_TYPE_PSEUDO_PNS` no
+   server + `pnTooShort`/`PN_PSEUDO` no JS do estoque.html). O classify
+   curto-circuita ANTES de família/banco/fuzzy (`_classify_impl`, passo 0):
+   resultado sintético `known_exact` + `confidence='manual'` (elegível ao
+   estoque), sem marca/capacidade, `fuzzy_suggestions=[]` (jamais sugerir
+   K9F…). Card completo E mascarado funcionam (mascarado mostra K-01).
+
+**Premissa registrada (§7.3 do handoff):** SEM subdivisão futura por
+capacidade/marca. Se o negócio mudar, K9 vira tipo com capacidade como os
+NAND gerenciados (remodelagem, não gambiarra na chave).
+
+**Fora do escopo (consciente):** busca da HOME/site segue exigindo 4+ chars —
+"K9" digitado lá não decodifica (a bancada é o fluxo do K9; abrir a exceção
+na home = mexer no `_content/index.html`/CMS — decisão futura se fizer falta).
+
+**Arquivos:** `chips/chip_types.py` · `chips/engine.py` (passo 0 do classify
++ família k9 no assess) · `pricing/models.py` (KIND_K9 + campo; migr.
+`pricing/0023_buyer_k9_rate` com espelho pghistory + constraint
+`price_kind_vocab`) · `pricing/engine.py` (`_k9_quote`) ·
+`pricing/convention.py` (letra K + fundadora) · `pricing/admin.py` ·
+`estoque/views.py` (`_pn_too_short` + caixa `('K9','k9')`) ·
+`estoque/templates/estoque/estoque.html` (JS) · testes: `K9PseudoPnTests`,
+`K9FixedPricingTests`, `K9BenchTests` + convenção.
+
+**Runbook (prod):**
+1. `python manage.py migrate pricing` (0023).
+2. `python manage.py seed_category_codes --commit` (cunha SÓ o K-01 novo —
+   idempotente; conferir "a criar: 1").
+3. Admin → Compradores → Wu Quan → **K9 — ¥ por unidade = 1** (SÓ após o OK
+   dele; até lá o card mostra "sem preço" com motivo — comportamento certo).
+4. Caixa física "K9" na bancada; smoke: digitar `K9` → card "K9 · Rentável"
+   → lançar 3 un. → linha própria "K9" no lote (masked: K-01) → valoração
+   `3 × ¥1` com o ¥ definido.

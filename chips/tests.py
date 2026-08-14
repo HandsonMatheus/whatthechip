@@ -2492,3 +2492,43 @@ class ConsultaEhPlataformaTests(TestCase):
             '/chips/search/', {'pn': 'ZZZZTESTE999'}).status_code, 200)
         self.assertEqual(self.client.get(
             '/chips/decode/', {'pn': 'ZZZZTESTE999'}).status_code, 200)
+
+
+class K9PseudoPnTests(TestCase):
+    """K9 (dono 2026-08-14, HANDOFF_K9): "K9" é pseudo-código de TIPO — a
+    categoria de mercado do NAND cru TSOP (único não-BGA), triada por FORMATO.
+    O classify curto-circuita ANTES de família/banco/fuzzy: identidade vem do
+    registro (chips/chip_types.py), sem marca/capacidade/specs, elegível ao
+    estoque (confidence manual) e sempre RENTÁVEL (preço fixo por unidade)."""
+
+    def test_classify_k9_identidade_plana(self):
+        from chips.engine import classify
+        r = classify('K9')
+        self.assertEqual(r['chip_type'], 'K9')
+        self.assertTrue(r['known'])
+        self.assertTrue(r['known_exact'])
+        self.assertEqual(r['confidence'], 'manual')
+        # PLANO de propósito: sem marca, sem capacidade, sem specs.
+        self.assertEqual((r['brand'], r['capacity'], r['subtype']), ('', '', ''))
+        self.assertEqual(r['profitable'], 'RENTÁVEL')
+        # Jamais sugerir K9F…/K9G… (não é typo — é o nome da categoria).
+        self.assertEqual(r['fuzzy_suggestions'], [])
+
+    def test_classify_k9_minusculo_normaliza(self):
+        from chips.engine import classify
+        self.assertEqual(classify('k9')['chip_type'], 'K9')
+
+    def test_k9_sempre_rentavel_sem_specs(self):
+        from chips.engine import assess_profitability
+        self.assertEqual(assess_profitability({'chip_type': 'K9'}), 'RENTÁVEL')
+
+    def test_nand_flash_pn_decodado_segue_morto(self):
+        # Decisão explícita do dono (2026-08-14): caminhos PARALELOS — o raw
+        # NAND decodado por PN continua NÃO RENTÁVEL → refino; só o pseudo-
+        # código "K9" (triagem por formato) vale ¥.
+        from chips.engine import assess_profitability
+        self.assertEqual(
+            assess_profitability({'chip_type': 'NAND Flash',
+                                  'subtype': 'SLC NAND',
+                                  'capacity': '512MB'}),
+            'NÃO RENTÁVEL')

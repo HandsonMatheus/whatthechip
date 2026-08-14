@@ -1493,16 +1493,23 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
   var estClearBtn  = document.getElementById('est-clear-btn');
   var estPinHint   = document.getElementById('est-pin-hint');
   var PN_MIN       = 4;
+  // Pseudo-códigos de TIPO aceitos como "PN" (dono 2026-08-14, HANDOFF_K9):
+  // "K9" tem 2 chars — exceção ao mínimo. Espelha _pn_too_short (views.py).
+  var PN_PSEUDO    = ['K9'];
+
+  function pnTooShort(val) {
+    return val.length < PN_MIN && PN_PSEUDO.indexOf(val.toUpperCase()) === -1;
+  }
 
   function updateEstHint(val) {
     var len = val.length;
-    if (estDecodeBtn) estDecodeBtn.disabled = (len < PN_MIN);
+    if (estDecodeBtn) estDecodeBtn.disabled = pnTooShort(val);
     if (estClearBtn)  estClearBtn.disabled  = (len === 0);
     if (!estPinHint) return;
     if (len === 0) {
       estPinHint.textContent = '{% trans "Digite o Part Number acima" %}';
       estPinHint.className   = 'pin-actions-hint';
-    } else if (len < PN_MIN) {
+    } else if (pnTooShort(val)) {
       estPinHint.textContent = '{% trans "Continue digitando" %} (' + len + '/' + PN_MIN + ' {% trans "mín." %})';
       estPinHint.className   = 'pin-actions-hint pin-actions-hint--warn';
     } else {
@@ -1512,7 +1519,7 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
   }
 
   function estDecode() {
-    if (!pnInput || pnInput.value.length < PN_MIN) return;
+    if (!pnInput || pnTooShort(pnInput.value)) return;
     if (estDecodeBtn) { estDecodeBtn.classList.add('pin-btn--loading'); estDecodeBtn.disabled = true; }
     if (estClearBtn)  estClearBtn.disabled = true;
     if (estPinHint)   estPinHint.textContent = '';
@@ -1527,7 +1534,7 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
         this.value = upper;
         try { this.setSelectionRange(pos, pos); } catch(e) {}
       }
-      if (this.value.length < PN_MIN) {
+      if (pnTooShort(this.value)) {
         document.getElementById('confirm-area').innerHTML = '';
       }
       updateEstHint(this.value);
@@ -1539,9 +1546,9 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
 
     pnInput.addEventListener('htmx:afterRequest', function () {
       var len = pnInput.value.length;
-      if (estDecodeBtn) { estDecodeBtn.classList.remove('pin-btn--loading'); estDecodeBtn.disabled = (len < PN_MIN); }
+      if (estDecodeBtn) { estDecodeBtn.classList.remove('pin-btn--loading'); estDecodeBtn.disabled = pnTooShort(pnInput.value); }
       if (estClearBtn)  estClearBtn.disabled = (len === 0);
-      if (estPinHint && len >= PN_MIN) estPinHint.textContent = '{% trans "Clique Decodificar ou pressione Enter" %}';
+      if (estPinHint && !pnTooShort(pnInput.value) && len > 0) estPinHint.textContent = '{% trans "Clique Decodificar ou pressione Enter" %}';
     });
   }
 

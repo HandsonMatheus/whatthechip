@@ -2117,3 +2117,67 @@ class AutoRefreshTests(TestCase):
         resp = self.client.get(reverse('estoque:index'))
         self.assertContains(resp, 'fmt=card')
         self.assertContains(resp, 'every 60s')
+
+
+class K9BenchTests(TestCase):
+    """K9 na bancada (dono 2026-08-14, HANDOFF_K9): o operador digita o
+    pseudo-código "K9" (exceção ao mínimo de 4 chars — server aqui, client no
+    estoque.html) e lança quantidade SEM marca/capacidade. Sem mock: o
+    classify real curto-circuita no pseudo-código. Card confirmado (manual) +
+    RENTÁVEL; caixa dedicada 'K9' (código K-01); chave (k9, '', 1, '')."""
+
+    def setUp(self):
+        User = get_user_model()
+        self.user = User.objects.create_user(username='op_k9', password='x')
+        self.company = _grant(self.user)
+        _scope(self, self.company)
+        self.lot = Lot.objects.create(number=0, origin='phone',
+                                      operator=self.user, company=self.company)
+        self.client.login(username='op_k9', password='x')
+
+    def test_preview_aceita_k9(self):
+        r = self.client.get(reverse('estoque:preview', args=[self.lot.pk]),
+                            {'pn': 'k9'})
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'K9')
+
+    def test_preview_segue_bloqueando_curtos(self):
+        # A exceção é SÓ para o pseudo-código — 3 chars comuns seguem mudos.
+        r = self.client.get(reverse('estoque:preview', args=[self.lot.pk]),
+                            {'pn': 'K4B'})
+        self.assertEqual(r.content, b'')
+
+    def test_add_chip_k9_entra_com_chave_materializada(self):
+        from decimal import Decimal
+        r = self.client.post(reverse('estoque:add', args=[self.lot.pk]),
+                             {'pn': 'K9', 'qty': '50', 'has_cap': 'true',
+                              'submit_token': uuid4().hex})
+        self.assertEqual(r.status_code, 200)
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='K9')
+        self.assertEqual(e.quantity, 50)
+        self.assertEqual(e.chip_type, 'K9')
+        self.assertEqual((e.brand, e.capacity), ('', ''))   # plano de propósito
+        self.assertEqual(e.price_kind, 'k9')
+        self.assertEqual(e.price_gen, '')
+        self.assertEqual(e.price_tier_value, Decimal('1'))
+        self.assertEqual(e.price_tier_unit, '')
+        self.assertEqual(e.price_key_reason, '')
+
+    def test_add_chip_curto_segue_invalido(self):
+        r = self.client.post(reverse('estoque:add', args=[self.lot.pk]),
+                             {'pn': 'K4B', 'qty': '1',
+                              'submit_token': uuid4().hex})
+        self.assertContains(r, 'PN inválido')
+        self.assertFalse(InventoryEntry.objects.filter(lot=self.lot).exists())
+
+    def test_caixa_k9(self):
+        from estoque.views import _compute_destination
+        self.assertEqual(_compute_destination({'chip_type': 'K9'}),
+                         ('K9', 'k9'))
+
+    def test_categoria_mascarada_k01(self):
+        # Empresa-cliente vê o código da caixa: K-01 (cunhada na aprovação —
+        # mesma chave plana da convenção fundadora; nunca H-00).
+        from estoque.views import _masked_category
+        self.assertEqual(_masked_category({'chip_type': 'K9'}),
+                         ('K-01', False))

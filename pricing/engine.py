@@ -211,6 +211,13 @@ def derive_price_key(result: dict):
         return _no_key(kind, f'tipo {canon or chip_type or "desconhecido"!r} '
                              'fora do mercado de preço (triagem descarta)'), None
 
+    # K9 (dono 2026-08-14, HANDOFF_K9): tipo PLANO — sem marca, sem
+    # capacidade, sem geração. Chave FIXA (k9, '', 1, ''): "1 unidade" é o
+    # tier inteiro da categoria (caixa única K-01); o ¥ mora no Buyer
+    # (k9_rmb_each — padrão SSD, sem grid), então nada além do kind importa.
+    if kind == 'k9':
+        return None, (kind, '', Decimal('1'), '')
+
     # geração da chave — sempre DOBRADA na geração-base da categoria
     # (fold_gen, fonte única em pricing/models.py): DDR3L/DDR3U→DDR3 (dono
     # 2026-07-11), LPDDR4X→LPDDR4 avulso (dono 2026-07-21 — "uma só caixa").
@@ -270,6 +277,27 @@ def _ssd_quote(buyer, tier_value, tier_unit):
                       tier_value=tier_value, tier_unit=tier_unit,
                       price_min=usd, price_max=usd, rmb_min=rmb, rmb_max=rmb,
                       quote_date=None, is_stale=False, via='por GB')
+
+
+def _k9_quote(buyer):
+    """K9 é FIXO por UNIDADE (dono 2026-08-14, HANDOFF_K9): ¥ =
+    Buyer.k9_rmb_each — sem marca, sem capacidade, sem grid ("uma única
+    linha na tabela do comprador"). US$ derivado do ¥ como sempre. Valor
+    ausente → sem preço COM MOTIVO (nunca chute: o ¥1 espera o OK do Wu
+    Quan). Valor é contratual → nunca 'velho' (is_stale=False)."""
+    each = buyer.k9_rmb_each
+    if each is None:
+        return PriceQuote(status=UNQUOTED,
+                          reason='K9 sem preço ¥/unidade — defina no '
+                                 'comprador (admin)',
+                          kind='k9', gen='', tier_value=Decimal('1'),
+                          tier_unit='')
+    usd = (each * (current_fx_rate(buyer)[0] or Decimal('0'))
+           ).quantize(_CENT, ROUND_HALF_UP)
+    return PriceQuote(status=PRICED, kind='k9', gen='',
+                      tier_value=Decimal('1'), tier_unit='',
+                      price_min=usd, price_max=usd, rmb_min=each, rmb_max=each,
+                      quote_date=None, is_stale=False, via='por unidade')
 
 
 def _chain_from_lists(lists, brand_name: str):
@@ -409,6 +437,8 @@ def price(result: dict, buyer, origin='') -> PriceQuote:
     kind, gen, tier_value, tier_unit = key
     if kind == 'ssd':                       # LINEAR ¥/GB — sem grid (2026-07-24)
         return _ssd_quote(buyer, tier_value, tier_unit)
+    if kind == 'k9':                        # FIXO ¥/unidade — sem grid (2026-08-14)
+        return _k9_quote(buyer)
 
     chain = _resolution_chain(buyer, result.get('brand') or '')
     if not chain:
@@ -496,6 +526,8 @@ class BuyerPricingContext:
         gen = fold_gen(kind, gen or '')
         if kind == 'ssd':                   # LINEAR ¥/GB — sem grid (2026-07-24)
             return _ssd_quote(self.buyer, tier_value, tier_unit)
+        if kind == 'k9':                    # FIXO ¥/unidade — sem grid (2026-08-14)
+            return _k9_quote(self.buyer)
         chain = self._chain(brand_name or '')
         if not chain:
             return _quote_no_list(self.buyer, kind, gen, tier_value, tier_unit)

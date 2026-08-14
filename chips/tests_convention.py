@@ -19,9 +19,10 @@ _CATEGORIES = {
     "dram_gpu", "dram_legacy", "dram_unknown", "catalog",
 }
 _LABEL_KINDS = {"emmc", "ufs", "emcp", "umcp", "nand", "ddr", "lpddr", "gddr",
-                "sdram", "rdram", "none", "ssd"}   # ssd: BGA/NVMe (2026-07-24)
+                "sdram", "rdram", "none", "ssd",   # ssd: BGA/NVMe (2026-07-24)
+                "k9"}                              # k9: NAND cru TSOP (2026-08-14)
 _PROFIT_FAMILIES = {"emcp", "emmc", "ufs", "ddr", "lpddr", "gddr", "dead",
-                    "indeterminado", "ssd"}
+                    "indeterminado", "ssd", "k9"}
 
 
 class RegistryWellFormedTests(SimpleTestCase):
@@ -119,6 +120,15 @@ class ProfitFamilyTests(SimpleTestCase):
     def test_soc_indeterminado(self):
         self.assertEqual(profit_family("SoC"), "indeterminado")
 
+    def test_k9_familia_propria(self):
+        # K9 (dono 2026-08-14, HANDOFF_K9): NAND cru TSOP como tipo de
+        # primeira classe PLANO — família própria 'k9' (preço fixo ¥/un.),
+        # NUNCA 'dead'. O "NAND Flash" PN-decodado segue dead — caminhos
+        # PARALELOS por decisão explícita do dono.
+        self.assertEqual(profit_family("K9"), "k9")
+        self.assertFalse(is_dead("K9"))
+        self.assertEqual(profit_family("NAND Flash"), "dead")   # intocado
+
 
 class LabelAndCommercialTests(SimpleTestCase):
 
@@ -131,11 +141,19 @@ class LabelAndCommercialTests(SimpleTestCase):
         self.assertEqual(label_kind("eMCP"), "emcp")
         self.assertEqual(label_kind("uMCP"), "umcp")
         self.assertEqual(label_kind("NAND Flash"), "nand")
+        self.assertEqual(label_kind("K9"), "k9")
+
+    def test_k9_canonico_e_alias(self):
+        # O token minúsculo resolve pro canônico (índice de alias automático);
+        # idempotente como todo canônico.
+        self.assertEqual(canonical_chip_type("K9"), "K9")
+        self.assertEqual(canonical_chip_type("k9"), "K9")
 
     def test_commercial_flags(self):
         self.assertTrue(is_commercial("eMMC"))
         self.assertTrue(is_commercial("DDR3"))
         self.assertTrue(is_commercial("NAND Flash"))
+        self.assertTrue(is_commercial("K9"))       # caixa física dedicada
         self.assertFalse(is_commercial("NOR Flash"))
         self.assertFalse(is_commercial("RDRAM"))
         self.assertFalse(is_commercial("SoC"))

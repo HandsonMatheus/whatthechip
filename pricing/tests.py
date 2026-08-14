@@ -1823,6 +1823,69 @@ class SsdLinearPricingTests(TestCase):
         self.assertEqual((q.status, q.rmb), ('PRICED', Decimal('44')))
 
 
+class K9FixedPricingTests(TestCase):
+    """K9 (dono 2026-08-14, HANDOFF_K9): NAND cru TSOP a preço FIXO por
+    UNIDADE — ¥ = Buyer.k9_rmb_each (¥1 na tabela do Wu Quan), sem marca,
+    sem capacidade, SEM linhas de grid (padrão SSD). Campo NULL → sem preço
+    COM MOTIVO (o ¥1 só entra no admin após o OK do comprador). Aritmética
+    exibida: lote = qtd × ¥1; US$ = ¥ × taxa (bootstrap contratual 0.14)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company = Company.objects.create(name='K9Co', slug='k9-co')
+        cls.buyer = Buyer.all_companies.create(
+            company=cls.company, name='Wu K9', slug='wu-k9',
+            k9_rmb_each=Decimal('1'))
+
+    def _quote(self):
+        from .engine import price
+        return price({'chip_type': 'K9'}, self.buyer)
+
+    def test_um_yuan_por_unidade(self):
+        # ¥1 × taxa 0.14 = US$ 0.14 a unidade; sem staleness (contratual).
+        q = self._quote()
+        self.assertEqual(q.status, 'PRICED')
+        self.assertEqual(q.rmb, Decimal('1'))
+        self.assertEqual(q.price_min, Decimal('0.14'))     # 1 × 0.14
+        self.assertFalse(q.is_stale)
+        self.assertEqual(q.via, 'por unidade')
+        self.assertEqual(q.rmb_display, '1')               # card: "¥ 1"
+
+    def test_sem_valor_e_sem_preco_com_motivo(self):
+        self.buyer.k9_rmb_each = None
+        self.buyer.save()
+        q = self._quote()
+        self.assertEqual(q.status, 'UNQUOTED')
+        self.assertIn('sem preço', q.reason)
+
+    def test_chave_plana_e_contexto(self):
+        # A chave do K9 é FIXA (k9, '', 1, '') — sem capacidade/geração; o
+        # caminho materializado (F11.1) resolve igual ao vivo.
+        from .engine import BuyerPricingContext, derive_price_key
+        err, key = derive_price_key({'chip_type': 'K9'})
+        self.assertIsNone(err)
+        self.assertEqual(key, ('k9', '', Decimal('1'), ''))
+        q = BuyerPricingContext(self.buyer).price_from_key(
+            'k9', '', Decimal('1'), '')
+        self.assertEqual((q.status, q.rmb), ('PRICED', Decimal('1')))
+
+    def test_categoria_k01_fundadora(self):
+        # Convenção universal: caixa única K-01 (letra K do dono, 2026-08-14;
+        # nº 01 porque "00 é reservado em toda letra"). O seed determinístico
+        # carrega a linha fundadora ('k9','','1','',1) sem conflito.
+        from django.core.management import call_command
+        from .models import CategoryCode
+        call_command('seed_category_codes', '--commit', verbosity=0)
+        cc = CategoryCode.objects.get(kind='k9')
+        self.assertEqual((cc.label, cc.gen, cc.tier_unit),
+                         ('K-01', '', ''))
+        self.assertEqual(cc.tier_value, Decimal('1.0'))
+        # label_for_key resolve a MESMA caixa (leitura não cunha segunda).
+        self.assertEqual(
+            CategoryCode.label_for_key('k9', '', Decimal('1'), ''), 'K-01')
+        self.assertEqual(CategoryCode.objects.filter(kind='k9').count(), 1)
+
+
 class ImportPriceSheetV2Tests(TestCase):
     """Repactuação 2026-07-27: o importador da planilha NOVA (aba única) —
     unified em FAIXA nos combos (todas as listas não-not_made + genérica),

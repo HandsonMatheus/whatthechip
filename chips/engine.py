@@ -1206,6 +1206,13 @@ def assess_profitability(result: dict) -> str:
             return "INDETERMINADO"
         return "RENTÁVEL"
 
+    # ── K9 (NAND cru TSOP — pseudo-código de tipo) ───────────────────────────
+    # Dono, 2026-08-14 (HANDOFF_K9): preço FIXO por unidade (¥1 na tabela do
+    # Wu Quan) — não varia por marca nem capacidade, logo NÃO há limiar nem
+    # spec a checar: o tipo em si é o veredito. Sempre RENTÁVEL.
+    if _fam == "k9":
+        return "RENTÁVEL"
+
     # ── LPDDR standalone ─────────────────────────────────────────────────────
     if _fam == "lpddr":
         lpddr_gen = _lpddr_generation(combined)
@@ -1383,6 +1390,43 @@ def _classify_impl(pn_raw: str) -> dict:
 
     if not pn:
         return {"pn": pn_raw, "known": False, "error": "PN inválido"}
+
+    # ── 0. K9 — pseudo-código de TIPO (dono 2026-08-14, HANDOFF_K9) ─────────
+    # "K9" não é um part number: é a CATEGORIA de mercado do NAND cru TSOP
+    # (único não-BGA da operação), triada por FORMATO — o operador digita o
+    # nome na bancada. A identidade vem do REGISTRO (chips/chip_types.py),
+    # não do banco de KnownParts, por isso o curto-circuito roda ANTES de
+    # família/banco/fuzzy (digitar "K9" jamais deve sugerir K9F…). Sem marca,
+    # sem capacidade, sem specs — deliberado ("zero leitura de spec");
+    # confidence='manual' + known_exact tornam o card elegível ao estoque
+    # (gate _is_confirmed do estoque) sem inventar dado algum.
+    if pn == "K9":
+        result = {
+            "pn":           pn,
+            "known":        True,
+            "known_exact":  True,
+            "chip_type":    "K9",
+            "subtype":      "",
+            "brand":        "",
+            "capacity":     "",
+            "emcp_ram":     "",
+            "emcp_nand":    "",
+            "device":       "",
+            "confidence":   "manual",
+            "source_url":   "",
+            "is_emcp":      False,
+            "tip":          "",
+            "reasoning":    [],
+            "from_web":     False,
+            "doc_url":      None,
+            "fuzzy_suggestions": [],
+            "interface":         "",
+            "family_prefix":     "",
+            "family_undocumented": False,
+        }
+        result["profitable"] = assess_profitability(result)
+        _log_search(pn, found=True, source_used="k9_convention")
+        return result
 
     # ── Detecta PN potencialmente truncado ──────────────────────────────────
     # Se a família tem pn_length definido e o PN digitado é mais curto, tratamos

@@ -54,6 +54,12 @@ KIND_LETTER = {
     # SSD BGA/NVMe (dono 2026-07-24 — comprador paga LINEAR ¥/GB). A letra G
     # deixa de ser livre; próximo tipo novo pega I (H/R reservadas).
     'ssd':   'G',
+    # K9 — NAND cru TSOP (dono 2026-08-14, HANDOFF_K9): preço FIXO ¥/unidade.
+    # ⚠ DESVIO CONSCIENTE da regra "próxima letra livre" (seria I): o dono
+    # escolheu K, mnemônica do nome de mercado — aqui não há conhecimento de
+    # decode a proteger (o K9 é triado por FORMATO, sem PN; o próprio termo é
+    # o rótulo da tela). I e J seguem livres para os próximos tipos.
+    'k9':    'K',
 }
 
 RESERVED_LETTERS = frozenset({'H', 'R'})   # baldes especiais — nunca categoria
@@ -146,4 +152,10 @@ FOUNDING_TABLE = (
     #     separa por capacidade como todo o resto).
     ('ssd', '', '440', 'GB', 1),
     ('ssd', '', '220', 'GB', 2),
+    # K — K9 NAND cru TSOP (anexada 2026-08-14, HANDOFF_K9): categoria ÚNICA
+    #     e plana — sem geração, sem capacidade; o tier é "1 unidade"
+    #     (tier_unit vazio de propósito: GB/Gb não se aplicam). K-01 é a
+    #     caixa física inteira do tipo; jamais haverá K-02 por capacidade
+    #     (premissa registrada — se o negócio mudar, o tipo é remodelado).
+    ('k9', '', '1', '', 1),
 )

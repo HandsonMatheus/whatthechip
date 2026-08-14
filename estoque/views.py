@@ -229,6 +229,19 @@ def _normalise_pn(raw: str) -> str:
     return re.sub(r'[^A-Z0-9\-]', '', (raw or '').strip().upper())
 
 
+#: Pseudo-códigos de TIPO aceitos como "PN" na bancada (dono 2026-08-14,
+#: HANDOFF_K9): "K9" tem 2 chars — exceção ao mínimo de 4. O operador digita
+#: o nome da categoria (triagem por FORMATO, sem PN); _normalise_pn já
+#: uppercaseou ("k9" → "K9"). Espelhado no JS da bancada (estoque.html,
+#: pnTooShort).
+_TYPE_PSEUDO_PNS = frozenset({'K9'})
+
+
+def _pn_too_short(pn: str) -> bool:
+    """Curto demais pra bancada? (mínimo 4 chars, exceto pseudo-códigos)."""
+    return len(pn) < 4 and pn not in _TYPE_PSEUDO_PNS
+
+
 #: Token de idempotência do add_chip (bug Mundo Metal, 2026-08-10) — formato
 #: uuid4().hex; TTL da poda lazy em horas (48h cobre folgado qualquer aba velha).
 _TOKEN_RE = re.compile(r'[0-9a-f]{32}')
@@ -449,7 +462,7 @@ def _compute_destination(result: dict) -> tuple:
     """
     Return (label, category) for the physical storage bin.
     category is used as CSS modifier:
-      emcp | umcp | lpddr | ddr | gddr | ufs | emmc | nand | unknown
+      emcp | umcp | ssd | k9 | lpddr | ddr | gddr | ufs | emmc | nand | unknown
     """
     chip_type = (result.get('chip_type') or '').strip()
     ct = chip_type.lower()
@@ -475,6 +488,11 @@ def _compute_destination(result: dict) -> tuple:
         cap   = _format_cap(result.get('capacity', ''))
         label = f"SSD{cap}" if cap else 'SSD'
         return label, 'ssd'
+
+    if kind == 'k9':
+        # K9 (dono 2026-08-14, HANDOFF_K9): caixa ÚNICA do tipo — sem marca,
+        # sem capacidade; o nome de mercado É o rótulo (código: K-01).
+        return 'K9', 'k9'
 
     if kind == 'ufs' or 'ufs' in ct:
         # _format_cap preserva a unidade original: "128GB"→"128GB", "1TB"→"1TB".
@@ -1002,7 +1020,7 @@ def preview_chip(request, lot_pk):
     lot = _get_lot(request, lot_pk)
     pn  = _normalise_pn(request.GET.get('pn', ''))
 
-    if len(pn) < 4:
+    if _pn_too_short(pn):
         return HttpResponse('')
 
     result  = classify(pn)
@@ -1101,7 +1119,7 @@ def add_chip(request, lot_pk):
     pn  = _normalise_pn(request.POST.get('pn', ''))
     qty = max(1, int(request.POST.get('qty') or 1))
 
-    if len(pn) < 4:
+    if _pn_too_short(pn):
         return HttpResponse(
             '<div class="est-msg est-msg--error" style="padding:12px 16px;">' + _('PN inválido.') + '</div>'
         )

@@ -63,6 +63,18 @@ CHIP_TYPES: dict[str, ChipTypeSpec] = {
     "eMCP": ChipTypeSpec("managed_mcp",  "emcp", "emcp", is_emcp=True, aliases=("emcp",)),
     "uMCP": ChipTypeSpec("managed_mcp",  "umcp", "emcp", is_emcp=True, aliases=("umcp",)),
     "NAND Flash": ChipTypeSpec("nand_raw", "nand", "dead", aliases=("nand flash", "nand")),
+    # K9 (dono, 2026-08-14 — HANDOFF_K9): NAND cru em TSOP, o ÚNICO chip
+    # não-BGA da operação. Termo genérico de MERCADO (o prefixo Samsung
+    # K9F/K9G virou nome da categoria, como "band-aid") — tipo de primeira
+    # classe PLANO: sem marca, sem capacidade, sem geração; preço FIXO
+    # ¥/unidade (Buyer.k9_rmb_each). Triado por FORMATO (perninhas gullwing
+    # do TSOP-48), nunca por PN — o operador digita o pseudo-código "K9" na
+    # bancada. ⚠ NÃO substitui o "NAND Flash" acima (raw PN-decodado, ex.
+    # K9F1G08…): aquele segue dead → refino — caminhos PARALELOS por decisão
+    # do dono (2026-08-14; ver PRECIFICACAO §12.22). Premissa registrada:
+    # sem subdivisão por capacidade/marca; se um dia mudar, vira tipo com
+    # capacidade como os NAND gerenciados.
+    "K9": ChipTypeSpec("nand_raw", "k9", "k9"),
 
     # ── DRAM de PC (die em Gb) — geração no chip_type + espelho no subtype ────
     "DDR1":  ChipTypeSpec("dram_pc", "ddr", "ddr", carries_generation=True),
