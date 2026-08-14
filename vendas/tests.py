@@ -422,7 +422,16 @@ class BackfillSalesOrdersTests(TestCase):
 
 
 class VendasGateTests(TestCase):
-    """Menu Vendas é ADMIN-only: gerente/operador/anônimo não veem valor."""
+    """Dois andares (dono, 2026-08-14 — revisa o admin-only da F11.2):
+
+    · COMERCIAL (lista/detalhe/PDF/confirmar/cancelar) = gerente para cima,
+      com ¥/US$/taxa MASCARADOS para quem não é admin;
+    · FINANCEIRO (acerto/fatura/pagamento) = admin;
+    · operador = 403 em tudo; anônimo = login.
+    """
+
+    #: Rotas do andar comercial (gerente entra) e do financeiro (só admin).
+    COMERCIAIS = ('vendas:so_list',)
 
     @classmethod
     def setUpTestData(cls):
@@ -437,23 +446,106 @@ class VendasGateTests(TestCase):
     def setUp(self):
         set_current_company(self.company.pk)
         self.addCleanup(set_current_company, None)
+        self.lot = Lot.open_for_company(self.company, self.users['manager'],
+                                        'g', origin='phone')
+        _entries(self.lot, self.brand, com_emcp=False)
+        self.so = services.create_draft_for_lot(self.lot,
+                                                self.users['manager'])
 
-    def test_admin_ve_e_demais_nao(self):
-        lot = Lot.open_for_company(self.company, self.users['manager'], 'g', origin='phone')
-        _entries(lot, self.brand, com_emcp=False)
-        so = services.create_draft_for_lot(lot, self.users['manager'])
-
+    def test_admin_ve_valor(self):
         self.client.force_login(self.users['admin'])
         resp = self.client.get(reverse('vendas:so_list'))
-        self.assertContains(resp, so.code)
-        detail = self.client.get(reverse('vendas:so_detail', args=[so.pk]))
+        self.assertContains(resp, self.so.code)
+        detail = self.client.get(reverse('vendas:so_detail',
+                                         args=[self.so.pk]))
         # Moeda: SÓ US$ na página da OV (dono, 2026-07-24) — ¥15 @0.14 = 2.10.
         self.assertContains(detail, 'US$ 2.10')
         self.assertNotContains(detail, '¥ 15')
-        for role in ('manager', 'operator'):
-            self.client.force_login(self.users[role])
-            self.assertEqual(
-                self.client.get(reverse('vendas:so_list')).status_code, 403)
+
+    def test_gerente_entra_mas_sem_nenhum_valor(self):
+        """O gerente vê a ordem e a QUANTIDADE; dinheiro nenhum — nem no HTML
+        (a view zera o contexto), nem no PDF."""
+        # ⚠ 'US$'/'¥' soltos NÃO servem de asserção: os cabeçalhos de coluna e
+        #   o badge de câmbio do shell (taxa de mercado, pública por decisão do
+        #   PLANO_FX) trazem os símbolos em toda tela. O que não pode aparecer
+        #   é NÚMERO de dinheiro.
+        self.client.force_login(self.users['manager'])
+        lista = self.client.get(reverse('vendas:so_list'))
+        self.assertContains(lista, self.so.code)
+        self.assertContains(lista, '•••')
+        self.assertFalse(lista.context['ver_valor'])
+
+        detail = self.client.get(reverse('vendas:so_detail',
+                                         args=[self.so.pk]))
+        self.assertEqual(detail.status_code, 200)
+        self.assertContains(detail, self.so.code)
+        self.assertContains(detail, '•••')
+        self.assertNotContains(detail, 'US$ 2.10')      # unitário
+        self.assertNotContains(detail, 'US$ 10.50')     # total (5 × 2.10)
+        self.assertNotContains(detail, '0.14')          # taxa do contrato
+        self.assertContains(detail, '>5<')              # a QUANTIDADE fica
+        # Contexto limpo na origem — não é só CSS/template:
+        self.assertIsNone(detail.context['fx_rate'])
+        self.assertTrue(all(r['unit_usd'] is None and r['total_usd'] is None
+                            for r in detail.context['rows']))
+
+        # PDF: mesma regra da tela (senão o valor vazaria por download). O
+        # reportlab comprime o stream — desligo a compressão SÓ no teste para
+        # poder ler o texto do PDF de verdade.
+        from reportlab import rl_config
+        antes, rl_config.pageCompression = rl_config.pageCompression, 0
+        self.addCleanup(setattr, rl_config, 'pageCompression', antes)
+        pdf = self.client.get(reverse('vendas:so_pdf', args=[self.so.pk]))
+        self.assertEqual(pdf.status_code, 200)
+        self.assertTrue(pdf.content.startswith(b'%PDF'))
+        self.assertIn(b'(***)', pdf.content)             # célula mascarada
+        self.assertNotIn(b'2.10', pdf.content)           # nenhum valor
+        self.assertNotIn(b'0.1400', pdf.content)         # nem a taxa
+
+    def test_gerente_confirma_e_cancela(self):
+        """Ciclo comercial inteiro na mão do gerente — sem ver o que congelou."""
+        self.client.force_login(self.users['manager'])
+        self.client.post(reverse('vendas:so_confirm', args=[self.so.pk]))
+        self.so.refresh_from_db()
+        self.assertEqual(self.so.status, STATUS_CONFIRMED)
+        self.assertIsNotNone(self.so.total_usd)          # congelou no BANCO
+        detail = self.client.get(reverse('vendas:so_detail',
+                                         args=[self.so.pk]))
+        self.assertNotContains(detail, 'US$ 10.50')      # mas não na TELA
+        self.assertIsNone(detail.context['so'].total_usd)
+        self.client.post(reverse('vendas:so_cancel', args=[self.so.pk]))
+        self.so.refresh_from_db()
+        self.assertEqual(self.so.status, STATUS_CANCELLED)
+
+    def test_financeiro_continua_admin(self):
+        """Acerto/fatura/pagamento: 403 para o gerente, e ele não recebe nem
+        o link (CTA de acerto/smart button da fatura)."""
+        services.confirm(self.so, self.users['admin'])
+        self.client.force_login(self.users['manager'])
+        self.assertEqual(
+            self.client.get(reverse('vendas:settlement_new',
+                                    args=[self.so.pk])).status_code, 403)
+        detail = self.client.get(reverse('vendas:so_detail',
+                                         args=[self.so.pk]))
+        self.assertFalse(detail.context['can_settle'])
+        self.assertNotContains(detail, reverse('vendas:settlement_new',
+                                               args=[self.so.pk]))
+
+    def test_operador_403_e_anonimo_login(self):
+        self.client.force_login(self.users['operator'])
+        for rota in self.COMERCIAIS:
+            self.assertEqual(self.client.get(reverse(rota)).status_code, 403)
+        self.assertEqual(
+            self.client.get(reverse('vendas:so_detail',
+                                    args=[self.so.pk])).status_code, 403)
         self.client.logout()
         resp = self.client.get(reverse('vendas:so_list'))
         self.assertIn(resp.status_code, (302, 403))          # anônimo → login
+
+    def test_menu_vendas_aparece_pro_gerente_e_some_pro_operador(self):
+        """O item de menu é UX (a barreira é a view) — mas tem que bater."""
+        alvo = reverse('vendas:so_list')
+        self.client.force_login(self.users['manager'])
+        self.assertContains(self.client.get(reverse('estoque:index')), alvo)
+        self.client.force_login(self.users['operator'])
+        self.assertNotContains(self.client.get(reverse('estoque:index')), alvo)

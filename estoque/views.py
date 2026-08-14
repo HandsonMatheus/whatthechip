@@ -30,7 +30,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
-from tenancy.access import role_required
+from tenancy.access import can_sales, role_required
 
 from chips.conventions import canonical_gen
 from chips.chip_types import canonical_chip_type, generation_of, label_kind
@@ -796,7 +796,10 @@ def lot_detail(request, lot_pk):
         # AUTO-REFRESH: o wrapper vivo renderiza pro admin MESMO com a lista
         # vazia (sem comprador ainda) — o est:added/60s preenche depois.
         ctx['show_live_valuation'] = True
-        # F11.2c: smart button (padrão Odoo) — a venda ativa deste lote.
+    # F11.2c: smart button (padrão Odoo) — a venda ativa deste lote. Segue o
+    # gate do MENU (gerente para cima, dono 2026-08-14): a valoração acima é
+    # que continua admin — o botão só leva à OV, que já se mascara sozinha.
+    if can_sales(request):
         from vendas.models import STATUS_CANCELLED, SalesOrder
         ctx['sales_order'] = (SalesOrder.all_companies.filter(lot=lot)
                               .exclude(status=STATUS_CANCELLED).first())
@@ -933,8 +936,9 @@ def lot_close(request, lot_pk):
     # vivos até o admin confirmar). Nunca trava o fechamento (padrão F8).
     from vendas.services import create_draft_for_lot
     so = create_draft_for_lot(lot, request.user)
-    # F11.2c (dono): ADMIN cai direto na venda recém-criada; gerente segue no
-    # lote (ele não vê /vendas/ — "gerente não vê valor").
+    # F11.2c (dono): ADMIN cai direto na venda recém-criada; o gerente segue
+    # no lote — desde 2026-08-14 ele TEM acesso a /vendas/ (mascarado), mas o
+    # fluxo dele termina no lote; chega na OV pelo smart button ou pelo menu.
     if so is not None and getattr(request, 'company_role', None) == 'admin':
         return redirect('vendas:so_detail', pk=so.pk)
     return redirect('estoque:lot_detail', lot_pk=lot.pk)

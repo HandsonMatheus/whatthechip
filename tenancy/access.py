@@ -39,6 +39,38 @@ def is_unmasked(request) -> bool:
                 and user.is_superuser)
 
 
+def can_see_price(request) -> bool:
+    """Gate do VALOR (¥ / US$ / taxa) — SEPARADO da máscara de specs (v3.1).
+
+    Veem dinheiro: a plataforma (superuser) e o ADMIN da empresa. Gerente e
+    operador **não** — nem nas telas de Vendas que o gerente passou a operar
+    (dono, 2026-08-14: *"tudo que o admin faz, mas com os valores ocultos"*).
+
+    ⚠ FONTE ÚNICA do gate de preço: views, PDF e context processor derivam
+    daqui — não reimplemente "é admin?" por página. E mascarar no template
+    NÃO basta: a view tem que OMITIR o número do contexto (§8).
+    """
+    if is_unmasked(request):
+        return True
+    membership = getattr(request, 'membership', None)
+    return bool(membership and membership.has_role('admin'))
+
+
+def can_sales(request) -> bool:
+    """Gate do menu VENDAS — GERENTE para cima (dono, 2026-08-14).
+
+    Era admin-only (F11.2). O gerente passou a conduzir o ciclo COMERCIAL do
+    lote que ele mesmo fecha — cotação, OV, confirmar, cancelar, PDF — sempre
+    com os valores mascarados (``can_see_price`` acima).
+
+    O FINANCEIRO (acerto, fatura, pagamento) segue exclusivo do admin: ele é
+    o resultado que o comprador devolve, não a operação do cliente — quando a
+    tela do comprador existir, migra para lá (decisão do dono na mesma data).
+    """
+    membership = getattr(request, 'membership', None)
+    return bool(membership and membership.has_role('manager'))
+
+
 def platform_required(view_func):
     """Gate de PLATAFORMA (T6 — PLANO_MULTITENANT §17.2): só ``is_superuser``.
 

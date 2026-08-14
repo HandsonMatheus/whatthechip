@@ -56,6 +56,7 @@
 .uib--primary{background:#0f62fe;color:#fff}.uib--primary:hover{background:#0353e9}
 .uib--success{background:#198038;color:#fff}.uib--success:hover{background:#0e6027;text-decoration:none}
 .uib--danger{background:#fff;color:#da1e28;border:1px solid #da1e28}.uib--danger:hover{background:#fff1f1}
+.vd-mask{color:#a2a9b0;letter-spacing:.12em}   /* valor oculto p/ o papel */
 </style>
 {% endblock %}
 
@@ -77,7 +78,7 @@
   <div class="sohead">
     <div class="sohead__l">
       <div class="sohead__code">{{ so.code }}{% if so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "cotação — valores vivos" %}</span>{% elif so.status == 'confirmed' %}<span class="so-badge so-badge--ok">{% trans "confirmada — valores congelados" %}</span>{% else %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% endif %}</div>
-      <div class="sohead__party">{% trans "Contraparte" %} <b>WhatTheChip</b> · {% trans "origem" %} <span class="mono">{{ so.lot.code }}</span> · {% trans "taxa" %} {% localize off %}1 ¥ = US$ {{ fx_rate }}{% endlocalize %} {% if so.status == 'confirmed' %}({% trans "congelada" %}){% else %}({% trans "contrato vigente" %}){% endif %}</div>
+      <div class="sohead__party">{% trans "Contraparte" %} <b>WhatTheChip</b> · {% trans "origem" %} <span class="mono">{{ so.lot.code }}</span> · {% trans "taxa" %} {% if ver_valor %}{% localize off %}1 ¥ = US$ {{ fx_rate }}{% endlocalize %} {% if so.status == 'confirmed' %}({% trans "congelada" %}){% else %}({% trans "contrato vigente" %}){% endif %}{% else %}<span class="vd-mask">•••</span>{% endif %}</div>
     </div>
     <div class="sohead__actions">
       <div class="smart">
@@ -129,12 +130,17 @@
       </thead>
       <tbody>
         {% localize off %}
+        {% comment %} Dinheiro só com can_see_price (dono 2026-08-14) — a view
+           já apagou unit/total do contexto para o gerente; aqui só o •••.
+           Qtd. e categoria ficam: é a operação dele. {% endcomment %}
         {% if so.status == 'draft' %}
           {% for row in rows %}
           <tr class="{% if not row.priced %}unpriced{% endif %}">
             <td style="font-weight:600">{{ row.line.display_label }}</td>
             <td class="num mono">{{ row.line.quantity }}</td>
-            {% if row.priced %}
+            {% if not ver_valor %}
+            <td class="num mono vd-mask">•••</td><td class="num mono vd-mask">•••</td>
+            {% elif row.priced %}
             <td class="num mono">US$ {{ row.unit_usd }}</td><td class="num mono">US$ {{ row.total_usd }}</td>
             {% else %}
             <td colspan="2" class="num" style="font-size:12px;color:#8a6d00;">{{ row.reason }}</td>
@@ -146,8 +152,12 @@
           <tr>
             <td style="font-weight:600">{{ line.display_label }}</td>
             <td class="num mono">{{ line.quantity }}</td>
+            {% if not ver_valor %}
+            <td class="num mono vd-mask">•••</td><td class="num mono vd-mask">•••</td>
+            {% else %}
             <td class="num mono">{% if line.unit_usd is not None %}US$ {{ line.unit_usd }}{% else %}—{% endif %}</td>
             <td class="num mono">{% if line.total_usd is not None %}US$ {{ line.total_usd }}{% else %}—{% endif %}</td>
+            {% endif %}
           </tr>
           {% endfor %}
         {% endif %}
@@ -156,7 +166,10 @@
     </table>
     <div class="tfoot">
       {% localize off %}
-      {% if so.status == 'draft' %}
+      {% if not ver_valor %}
+        <div class="tfoot__row total"><span>{% trans "Total da ordem" %}</span><span class="mono vd-mask">•••</span></div>
+        {% if pending %}<div class="tfoot__warn">⚠ {% blocktrans trimmed with n=pending|length %}{{ n }} linha(s) sem preço — complete o grid do comprador para poder confirmar{% endblocktrans %}</div>{% endif %}
+      {% elif so.status == 'draft' %}
         <div class="tfoot__row total"><span>{% trans "Total da ordem" %}</span><span class="mono">US$ {{ live_total_usd }}</span></div>
         {% if pending %}<div class="tfoot__warn">⚠ {% blocktrans trimmed with n=pending|length %}{{ n }} linha(s) sem preço — complete o grid do comprador para poder confirmar{% endblocktrans %}</div>{% endif %}
       {% else %}

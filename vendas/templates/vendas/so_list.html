@@ -24,6 +24,7 @@
 .so-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px}
 .so-badge--draft{background:#fff1c2;color:#8a6d00}.so-badge--ok{background:#defbe6;color:#0e6027}.so-badge--cancel{background:#e8e8e8;color:#525252}
 .vd-empty{padding:24px;color:#697077;font-size:14px}
+.vd-mask{color:#a2a9b0;letter-spacing:.12em}   /* valor oculto p/ o papel */
 </style>
 {% endblock %}
 
@@ -49,8 +50,15 @@
           <td><a href="{% url 'estoque:lot_detail' so.lot.pk %}">{{ so.lot.code }}</a></td>
           <td>{% if so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "cotação" %}</span>{% elif so.status == 'confirmed' %}<span class="so-badge so-badge--ok">{% trans "confirmada" %}</span>{% else %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% endif %}</td>
           {% localize off %}
+          {% comment %} Valor só para quem tem can_see_price (dono 2026-08-14):
+             o gerente opera a venda sem ver dinheiro. A view já ZERA os campos
+             — este {% if %} é só o rótulo (•••), não a barreira. {% endcomment %}
+          {% if ver_valor %}
           <td class="num mono">{% if so.total_rmb is not None %}¥ {{ so.total_rmb }}{% else %}—{% endif %}</td>
           <td class="num mono">{% if so.total_usd is not None %}US$ {{ so.total_usd }}{% else %}—{% endif %}</td>
+          {% else %}
+          <td class="num mono vd-mask">•••</td><td class="num mono vd-mask">•••</td>
+          {% endif %}
           {% endlocalize %}
           <td style="font-size:13px;color:#697077;">{{ so.created_at|date:"d/m/y H:i" }}</td>
         </tr>

@@ -1151,7 +1151,9 @@ table.est-table td { padding: var(--s5) var(--s5); }
 
   <div class="lothead__actions">
     {% if sales_order %}
-    {# Smart button (F11.2c) — a venda deste lote (só admin põe sales_order no ctx). #}
+    {% comment %} Smart button (F11.2c) — a venda deste lote (a view só põe
+       sales_order no ctx de quem tem o menu Vendas: gerente para cima,
+       dono 2026-08-14). {% endcomment %}
     <a class="smart" href="{% url 'vendas:so_detail' sales_order.pk %}" title="{% trans 'Ordem de venda' %}">
       <span class="smart__k">{% trans "Ordem de venda" %}</span>
       <span class="smart__v">{{ sales_order.code }}</span>

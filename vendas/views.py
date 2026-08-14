@@ -1,9 +1,20 @@
 """
-vendas/views.py — menu Vendas (F11.2). SÓ ADMIN da empresa: a regra "gerente
-não vê valor" (matriz §8 do PLANO_MULTITENANT) vale em toda superfície; o
-comprador é segredo de plataforma (F11.3 formaliza o codinome — aqui as telas
-já não estampam o nome dele em lugar visível a não-admin porque não há tela
-não-admin).
+vendas/views.py — menu Vendas.
+
+**Dois andares de permissão (dono, 2026-08-14 — revisa o admin-only da F11.2):**
+
+- **COMERCIAL — gerente para cima** (`so_list`, `so_detail`, `so_pdf`,
+  `so_confirm`, `so_cancel`): quem fecha o lote conduz a venda dele. A regra
+  "gerente não vê valor" (matriz §8 do PLANO_MULTITENANT) **continua valendo**
+  — o gerente opera com ¥/US$/taxa MASCARADOS (`can_see_price`), e a máscara é
+  SERVER-SIDE: a view não põe o número no contexto (esconder no template nunca
+  é a barreira).
+- **FINANCEIRO — admin** (`settlement_new`, `invoice_*`): acerto, fatura e
+  pagamento são o RESULTADO que o comprador devolve. Quando existir a tela do
+  comprador, migram para lá; até então é o admin quem lança.
+
+O comprador segue segredo de plataforma (F11.3): a contraparte é o rótulo fixo
+"WhatTheChip" — nenhuma destas telas estampa o nome/slug real dele.
 """
 
 from django.contrib import messages
@@ -12,7 +23,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
-from tenancy.access import is_unmasked, role_required
+from tenancy.access import can_see_price, is_unmasked, role_required
 
 from .models import (INV_OPEN, Invoice, STATUS_CONFIRMED, STATUS_DRAFT,
                      SalesOrder)
@@ -30,22 +41,41 @@ def _fx_viva(buyer, so=None):
 
 
 
-@role_required('admin')
+def _pode_faturar(request) -> bool:
+    """Andar FINANCEIRO (acerto/fatura/pagamento) = admin da empresa. O gerente
+    vê a OV mas não emite nem paga — e por isso também não recebe o link."""
+    membership = getattr(request, 'membership', None)
+    return bool(membership and membership.has_role('admin'))
+
+
+@role_required('manager')
 def so_list(request):
-    orders = (SalesOrder.objects.select_related('lot', 'buyer')
-              .order_by('-created_at')[:200])
-    return render(request, 'vendas/so_list.html', {'orders': orders})
+    # list(): a máscara abaixo escreve nas INSTÂNCIAS (nunca no banco) — o
+    # número simplesmente não chega ao HTML de quem não pode vê-lo.
+    orders = list(SalesOrder.objects.select_related('lot', 'buyer')
+                  .order_by('-created_at')[:200])
+    ver_valor = can_see_price(request)
+    if not ver_valor:
+        for o in orders:
+            o.total_rmb = o.total_usd = None
+    return render(request, 'vendas/so_list.html',
+                  {'orders': orders, 'ver_valor': ver_valor})
 
 
-@role_required('admin')
+@role_required('manager')
 def so_detail(request, pk):
     so = get_object_or_404(
         SalesOrder.objects.select_related('lot', 'buyer'), pk=pk)
     # F11.4: smart button FATURA (ativa) + CTA de acerto quando confirmada.
-    invoice = (Invoice.all_companies.filter(order=so)
-               .exclude(status='cancelled').first())
-    ctx = {'so': so, 'invoice': invoice,
-           'can_settle': so.status == STATUS_CONFIRMED and invoice is None}
+    # Os dois são do andar financeiro → só o admin recebe (link que daria 403
+    # não vai pra tela do gerente).
+    faturar = _pode_faturar(request)
+    invoice = ((Invoice.all_companies.filter(order=so)
+                .exclude(status='cancelled').first()) if faturar else None)
+    ver_valor = can_see_price(request)
+    ctx = {'so': so, 'invoice': invoice, 'ver_valor': ver_valor,
+           'can_settle': (faturar and so.status == STATUS_CONFIRMED
+                          and invoice is None)}
     unmasked = is_unmasked(request)              # F12: rótulo real × C-###
     if so.status == STATUS_DRAFT:
         pairs = services.live_quotes(so)
@@ -70,19 +100,46 @@ def so_detail(request, pk):
         ctx.update({'lines': services.annotate_labels(
                         list(so.lines.all()), unmasked),
                     'fx_rate': so.fx_usd_rate})
+    if not ver_valor:
+        _mascarar_valores(ctx)
     return render(request, 'vendas/so_detail.html', ctx)
 
 
-@role_required('admin')
+def _mascarar_valores(ctx: dict) -> None:
+    """Tira do CONTEXTO todo número de dinheiro (dono, 2026-08-14).
+
+    O gerente vê categoria, quantidade e estado da ordem; ¥, US$ e taxa somem
+    do HTML — não ficam "escondidos por CSS". A quantidade FICA: é a operação
+    dele (o que saiu do lote), não o valor. Mexe só nas instâncias em memória.
+    """
+    ctx['fx_rate'] = None
+    ctx['live_total_rmb'] = ctx['live_total_usd'] = None
+    for row in ctx.get('rows') or []:
+        row['unit_rmb'] = row['unit_usd'] = None
+        row['total_rmb'] = row['total_usd'] = None
+    for line in ctx.get('lines') or []:
+        # total_rmb/total_usd são @property derivadas do unitário — zerar o
+        # unitário zera o total (não há o que atribuir).
+        line.unit_rmb = line.unit_usd = None
+    so = ctx.get('so')
+    if so is not None:
+        so.total_rmb = so.total_usd = so.fx_usd_rate = None
+
+
+@role_required('manager')
 def so_pdf(request, pk):
     """F11.2c — PDF simples da OV (sem timbre; dono, 2026-07-16). Draft sai
-    com os valores VIVOS do momento; confirmada, com os congelados."""
+    com os valores VIVOS do momento; confirmada, com os congelados.
+
+    Para quem não vê preço (gerente/operador) o PDF sai MASCARADO — mesma
+    regra da tela; senão o valor vazaria por download."""
     from django.http import HttpResponse
     from .pdf import render_so_pdf     # reportlab só aqui
 
     so = get_object_or_404(
         SalesOrder.objects.select_related('lot', 'buyer'), pk=pk)
     unmasked = is_unmasked(request)              # F12: rótulo real × C-###
+    ver_valor = can_see_price(request)
     rows = []
     if so.status == STATUS_DRAFT:
         pairs = services.live_quotes(so)
@@ -112,19 +169,22 @@ def so_pdf(request, pk):
                 'total_usd': str(line.total_usd) if priced else None,
             })
 
-    pdf = render_so_pdf(so, rows, total_rmb, total_usd, fx_rate)
+    pdf = render_so_pdf(so, rows, total_rmb, total_usd, fx_rate,
+                        masked=not ver_valor)
     resp = HttpResponse(pdf, content_type='application/pdf')
     fname = so.code.replace('/', '-') + '.pdf'
     resp['Content-Disposition'] = f'attachment; filename="{fname}"'
     return resp
 
 
-@role_required('admin')
+@role_required('manager')
 @require_POST
 def so_confirm(request, pk):
     so = get_object_or_404(SalesOrder.objects, pk=pk)
     try:
-        services.confirm(so, request.user)
+        # unmasked: a mensagem de pendência lista CATEGORIAS — quem não é
+        # plataforma recebe o código C-### (F12), nunca o rótulo real.
+        services.confirm(so, request.user, unmasked=is_unmasked(request))
     except ValidationError as e:
         messages.error(request, ' '.join(e.messages))
     else:
@@ -133,7 +193,7 @@ def so_confirm(request, pk):
     return redirect('vendas:so_detail', pk=so.pk)
 
 
-@role_required('admin')
+@role_required('manager')
 @require_POST
 def so_cancel(request, pk):
     so = get_object_or_404(SalesOrder.objects, pk=pk)

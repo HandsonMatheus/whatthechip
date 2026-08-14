@@ -173,8 +173,10 @@
     {% trans "Estoque" %}
   </a>
   {% if access.can_sales %}
-  {% comment %} Vendas ADMIN-ONLY (matriz do handoff §Regra central). A barreira
-     real é a view (@role_required('admin')), NUNCA só este if. {% endcomment %}
+  {% comment %} Vendas = GERENTE para cima (dono, 2026-08-14 — era admin-only).
+     O gerente opera a venda do lote que ele fecha, mas com os valores
+     MASCARADOS (access.can_see_price); acerto/fatura/pagamento seguem admin.
+     A barreira real é a view (@role_required), NUNCA só este if. {% endcomment %}
   <a href="{% url 'vendas:so_list' %}" class="wtc-header__nav{% block nav_vendas %}{% endblock %}">
     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 3h2l2.4 12.3a2 2 0 0 0 2 1.7h7.7a2 2 0 0 0 2-1.6L22 8H6"/>

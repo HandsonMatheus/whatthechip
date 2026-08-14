@@ -119,16 +119,22 @@ def draft_totals(pairs):
     return total_rmb, total_usd, pending
 
 
-def confirm(so, user):
+def confirm(so, user, unmasked=False):
     """Draft → CONFIRMADA: congela ¥ unitário + taxa + US$ linha a linha.
     Exige TODAS as linhas cotadas (pendência = erro listando o que falta —
-    força o grid do comprador a ser completado antes de vender)."""
+    força o grid do comprador a ser completado antes de vender).
+
+    ``unmasked`` (F12): a mensagem de pendência NOMEIA categorias. Só a
+    plataforma vê o rótulo real; empresa-cliente (inclusive o gerente que
+    passou a confirmar — dono 2026-08-14) recebe o código C-###."""
     if so.status != STATUS_DRAFT:
         raise ValidationError('Só cotação draft pode ser confirmada.')
     pairs = live_quotes(so)
     _t_rmb, _t_usd, pending = draft_totals(pairs)
     if pending:
-        faltam = '; '.join(f'{l.label} ({q.status})' for l, q in pending[:8])
+        annotate_labels([l for l, _q in pending], unmasked)
+        faltam = '; '.join(f'{l.display_label} ({q.status})'
+                           for l, q in pending[:8])
         raise ValidationError(
             f'{len(pending)} linha(s) sem preço no grid do comprador — '
             f'complete a cotação antes de confirmar: {faltam}')

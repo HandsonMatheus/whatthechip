@@ -27,9 +27,20 @@ _ZEBRA = colors.HexColor('#f4f4f4')
 _BLUE = colors.HexColor('#0f62fe')
 
 
-def render_so_pdf(so, rows, total_rmb, total_usd, fx_rate) -> bytes:
+#: Máscara de valor (dono, 2026-08-14). Glifo, não string traduzível — igual
+#: nos 4 idiomas. ⚠ Aqui é '*' e não o '•••' da TELA de propósito: a Helvetica
+#: do reportlab não tem o bullet no vetor WinAnsi e ele sai como 0x7F (célula
+#: em branco / quadradinho no leitor) — conferido no PDF gerado.
+_MASK = '***'
+
+
+def render_so_pdf(so, rows, total_rmb, total_usd, fx_rate, masked=False) -> bytes:
     """``rows`` = [{label, qty, unit_rmb, total_rmb, total_usd}] (strings já
-    formatadas; sem-preço vem com unit_rmb=None e reason no label)."""
+    formatadas; sem-preço vem com unit_rmb=None e reason no label).
+
+    ``masked=True`` (gerente/operador — ``can_see_price`` falso): dinheiro e
+    taxa saem como ``•••``. Categoria e quantidade continuam — o gerente
+    precisa conferir O QUE saiu do lote, não por quanto."""
     t_title = _('Ordem de venda')
     if so.status == 'draft':
         t_status = _('cotação — valores vivos')
@@ -59,8 +70,9 @@ def render_so_pdf(so, rows, total_rmb, total_usd, fx_rate) -> bytes:
                             textColor=_GREY)
 
     issued = date.today().strftime('%d/%m/%Y')
+    _taxa = _MASK if masked else f'1 CNY = {fx_rate} USD'
     sub = (f'{t_title} · {t_status} · {so.lot.code} · '
-           f'{t_rate} 1 CNY = {fx_rate} USD · {t_issued} {issued}')
+           f'{t_rate} {_taxa} · {t_issued} {issued}')
 
     story = [
         Paragraph(_rich(f'{so.code}', cjk), st_h1),
@@ -75,7 +87,10 @@ def render_so_pdf(so, rows, total_rmb, total_usd, fx_rate) -> bytes:
     data = [[Paragraph(_rich(h, cjk), st_th) for h in heads]]
     styles = []
     for i, r in enumerate(rows, start=1):
-        if r['unit_rmb'] is not None:
+        if masked:
+            data.append([r['label'], r['qty'], _MASK, _MASK, _MASK])
+            styles.append(('TEXTCOLOR', (2, i), (4, i), _GREY))
+        elif r['unit_rmb'] is not None:
             data.append([r['label'], r['qty'], f"¥ {r['unit_rmb']}",
                          f"¥ {r['total_rmb']}", f"US$ {r['total_usd']}"])
         else:
@@ -84,7 +99,10 @@ def render_so_pdf(so, rows, total_rmb, total_usd, fx_rate) -> bytes:
         if i % 2 == 0:
             styles.append(('BACKGROUND', (0, i), (-1, i), _ZEBRA))
     # Linha de total:
-    data.append([t_total, '', '', f'¥ {total_rmb}', f'US$ {total_usd}'])
+    if masked:
+        data.append([t_total, '', '', _MASK, _MASK])
+    else:
+        data.append([t_total, '', '', f'¥ {total_rmb}', f'US$ {total_usd}'])
     last = len(data) - 1
     styles += [
         ('FONT', (0, last), (-1, last), bold, 8.5, 10),
