@@ -57,6 +57,10 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f"✅ Page 'index' atualizada — {len(new_content)} chars gravados."
         ))
+        # (§10.7.5 do PLANO_MULTITENANT, corrigido 2026-08-15: a copy antiga
+        # afirmava que a home usa a API /chips/search/ — ela é plataforma-only
+        # desde o fim da busca pública.)
         self.stdout.write(
-            "A busca na página inicial agora usa a API /chips/search/ para PNs completos."
+            "Lembrete: a consulta de PN é PLATAFORMA-ONLY — a home não usa "
+            "mais a API /chips/search/ (fim da busca pública, 2026-08-05)."
         )

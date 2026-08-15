@@ -1096,11 +1096,36 @@ Executada ao vivo com o dono (~10h–11h GMT-3). Passos e achados:
 
 **Pendências menores que ficaram:**
 - `guard_catalog` pós-virada (dono, de praxe).
-- Polimento: anônimo entrando pela RAIZ do tenant pode acabar no login do
-  APEX em alguns caminhos (funciona; perde só a estética do host — investigar
-  com `curl -sI` na raiz quando calhar).
-- Decisão §17.5.2 (`/fab-*/` públicas × plataforma-only) — sessão curta.
+- ~~Polimento raiz-anônima~~ — **RESOLVIDA 2026-08-15: era FALSO POSITIVO do
+  buscador da sessão** (ele absolutiza Location relativa contra o domínio
+  registrável errado). O app emite redirects RELATIVOS (painel =
+  `@role_required` padrão; zero URL absoluta de login no código — verificado
+  por grep no working tree atual) e o fluxo real de navegador fica no host,
+  como o teste do dono com usuária real confirmou.
+- ~~Decisão §17.5.2~~ — FECHADA: fab-* APAGADAS (ver §17.5.2 e §16-E3b).
 - E4 opcional (logo por cliente via S3 — B4+B7).
+
+### E3b — Sessão de correções pós-virada (2026-08-15)
+
+1. **fab-* APAGADAS** (decisão do dono: "são legado"): 11
+   `_content/fab-*.html` fora do repo. `fabricantes.html` (lista de marcas,
+   zero links pra fab-*) mantida por ora. Banco: **runbook do dono** —
+   `python manage.py delete_pages --slugs fab-elpida fab-gigadevice fab-hynix
+   fab-issi fab-kingston fab-micron fab-nanya fab-rayson fab-samsung
+   fab-sandisk fab-toshiba` (dry-run) → `--commit` no LOCAL → com
+   `DATABASE_URL` do Render → `--commit` em PROD → push → conferir
+   `/fab-samsung/` = 404. FK doc_page é SET_NULL (nada quebra); o card só
+   deixa de mostrar o link de doc; `link_doc_pages` vira no-op inofensivo.
+2. **Ruído "JSON inválido em ChipFamily.reasoning" silenciado** — o
+   `reasoning` das famílias yaml-nativas é TEXTO LIVRE por design (fonte
+   Tier-1 pra humanos); o fallback defensivo do engine (BUG-4) logava WARNING
+   a cada classify e inundava o log de prod. Virou `logger.debug` com
+   comentário; comportamento idêntico (`_reasoning=[]` — zero diff no
+   characterize).
+3. **Copy obsoleta do `sync_index_page`** (§10.7.5) corrigida — não afirma
+   mais que a home usa a API `/chips/search/`.
+4. Suíte no working tree ATUAL (com os commits do dono de 08–15/08): **491
+   testes OK** (6 skips Postgres-only).
 
 ---
 
@@ -1263,14 +1288,15 @@ pelos próprios subdomínios, checklist do item 6 todo verde.
    `erecyclo`. ⚠ A 2ª empresa está em prod com o NOME ERRADO ("Mundo Metal")
    — o certo é **eRecyclo**: renomear no admin (nome + slug `erecyclo`;
    pghistory audita). Runbook no §16-E1; congelam de vez na E3.
-2. **`/fab-*/` públicas?** (B1 — DECISÃO AINDA ABERTA). **Auditoria E2
-   (2026-08-07):** `fab-samsung.html` (88KB) expõe decode PESADO — 60 menções
-   a "decode", posições `pn[3]`/`pn[4]`, tabelas de capacidade (=1/2/4GB,
-   =8Gb…); `fab-hynix` moderado; `fab-micron` e demais leves. Recomendação
-   REFORÇADA: plataforma-only (coerente com o fim da busca pública §10.7 — a
-   vitrine morreu, as páginas ensinam a convenção de graça). A duplicação em
-   subdomínio já está resolvida de qualquer forma (urls_tenant). Fica pro
-   dono decidir; dá pra fechar em sessão curta depois da E3.
+2. **`/fab-*/` — ✅ FECHADA (dono, 2026-08-15): APAGAR TODAS ("são legado").**
+   Mais radical que a recomendação (plataforma-only) — melhor: a auditoria E2
+   tinha mostrado `fab-samsung.html` (88KB) com decode PESADO (60 menções,
+   posições `pn[3]`/`pn[4]`, tabelas =GB). Executado na sessão de correções:
+   11 `_content/fab-*.html` removidos do repo; `Page` rows saem via
+   `delete_pages --slugs fab-… --commit` (local + prod — runbook no §16-E3b);
+   FK `ChipFamily.doc_page` é SET_NULL → decode card só esconde o link; a
+   página `fabricantes` (lista de marcas, sem links pra fab-*) FICOU — o dono
+   pode apagar depois se quiser (mesmo comando).
 3. **Plataforma (superuser) em host de cliente** — ✅ IMPLEMENTADA na E2
    conforme recomendação: PASSA (espelha o `app.platform` do RLS) e o ESCOPO
    continua o do vínculo dele (o host não vira fonte nem pra super — o

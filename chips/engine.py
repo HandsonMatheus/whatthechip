@@ -437,10 +437,16 @@ def _clean(s: str) -> str:
 def _result_from_family(pn: str, fam) -> dict:
     """Decodifica o PN usando as regras da família. Retorna resultado parcial."""
     # BUG-4: json.loads defensivo — JSON inválido no admin não crasha o engine.
+    # 2026-08-15: nível DEBUG de propósito. O `load_brands` grava o `reasoning`
+    # do yaml como TEXTO LIVRE (a fonte Tier-1 da regra, p/ humanos) — não é
+    # erro, é o formato normal das famílias yaml-nativas (M15T, SDIN, SDAD…).
+    # Em WARNING isso inundava o log de prod a cada classify dessas famílias
+    # (visto ao vivo na virada da T7). O resultado segue [] como sempre —
+    # comportamento idêntico, só sem o alarme falso.
     try:
         _reasoning = json.loads(fam.reasoning) if fam.reasoning else []
     except (json.JSONDecodeError, TypeError):
-        logger.warning("JSON inválido em ChipFamily.reasoning para prefix=%s", fam.prefix)
+        logger.debug("ChipFamily.reasoning não-JSON (texto livre do yaml) em prefix=%s", fam.prefix)
         _reasoning = []
 
     r = {
