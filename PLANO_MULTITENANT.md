@@ -551,7 +551,7 @@ decode_card, que agora é plataforma-only).
 | **T4** | RLS (§6.2): policies + FORCE + `SET LOCAL` no middleware + policies nas tabelas pghistory + decisão BYPASSRLS p/ comandos | handshake via **SQL cru**: conexão da app sem GUC → 0 linhas; com GUC da empresa A → só linhas de A | ✅ **construída 2026-07-06** (§16) — prova no Postgres do dono |
 | **T5** | ~~UI de gerente no app: fila PendingEntry (aprovar/reprovar) no app — esvazia o Django admin de operação de empresa~~ | — | **DESCARTADA (dono, 2026-08-06):** a fila segue no Django admin e a PLATAFORMA revisa a fila de todos os clientes (abrir/fechar/exportar lote já está no app desde a T1). Reavaliar só se virar gargalo com mais clientes |
 | **T6** | Onboarding: tela/fluxo de plataforma "criar empresa + primeiro admin (+ filiais)"; roteiro documentado. **Absorve o B3** (validador DNS do slug + reservados) | O5: empresa de teste criada em < 5 min sem tocar código | **PRÓXIMA — fase E1 do §17** |
-| **T7** | Subdomínio por cliente (§10): bloqueadores B1–B7 + `HostTenantMiddleware` (**host afirma / Membership concede**) + wildcard `*.whatthechip.app` na Render e no DNS + login no apex com redirect (exige B5) | handshake NOVO na suíte: host da empresa A + sessão de B → 403; host desconhecido → canônico; login no apex segue logado no subdomínio (B5); nenhum lugar lê o host como FONTE de empresa; suíte verde | **depois da T6** — fases E2+E3 do §17 |
+| **T7** | Subdomínio por cliente (§10): bloqueadores B1–B7 + `HostTenantMiddleware` (**host afirma / Membership concede**) + wildcard `*.whatthechip.app` na Render e no DNS + login no apex com redirect (exige B5) | handshake NOVO na suíte: host da empresa A + sessão de B → 403; host desconhecido → canônico; login no apex segue logado no subdomínio (B5); nenhum lugar lê o host como FONTE de empresa; suíte verde | **✅ NO AR desde 2026-08-15** (§16-E3) |
 
 **Relação com a precificação:** T1 (e idealmente T2) prontos → volta ao
 `PRECIFICACAO.md` e executa F0→F7 de lá. T3+ NÃO bloqueia os preços (Buyer já
@@ -1058,6 +1058,50 @@ E3 — mudar é 1 linha no middleware/urls_tenant).
 var).** O push desta fase pode ir a qualquer momento: sem `WTC_TENANT_DOMAIN`
 na Render, produção não muda NADA.
 
+### E3 — Deploy + DNS: a VIRADA (2026-08-15) — ✅ T7 NO AR
+
+Executada ao vivo com o dono (~10h–11h GMT-3). Passos e achados:
+
+1. **Pré-check git:** E1 (63c58cd) e E2 (5f71d37) já eram ancestrais do deploy
+   Live (610b965) — nada a pushar. `WTC_TENANT_DOMAIN=whatthechip.app`
+   adicionada nas **Environment Variables** do serviço (⚠ não é "environment
+   group") → restart → canônico intacto.
+2. **Wildcard:** `*.whatthechip.app` adicionada em Custom Domains; os 3 CNAMEs
+   da Render criados na Hostinger com TTL 300 (`*` → whatthechip.onrender.com ·
+   `_acme-challenge` → whatthechip.verify.renderdns… · `_cf-custom-hostname` →
+   whatthechip.hostname.render…), sem tocar `www`/`A @`, zero AAAA.
+   Verified + Certificate Issued em minutos.
+3. **⚠ Armadilha NOVA (registrar): propagação da borda.** Nos primeiros ~10min
+   pós-certificado, parte dos POPs da borda ainda devolvia 302 subdomínio →
+   primário — assinatura IDÊNTICA ao "slug desconhecido" do middleware, o que
+   induziu falso diagnóstico de dado. O banco de prod sempre esteve certo
+   (`eminer`/`erecyclo` ativos, provado por shell read-only). Passada a
+   propagação, o tenant serve no próprio host. **Lição: na próxima virada,
+   esperar ~15min pós-cert antes de diagnosticar qualquer coisa.**
+4. **Achado Render: o `www` NÃO é removível** — é domínio-companheiro
+   automático do apex ("redirects to whatthechip.app"; menu só oferece View
+   DNS details). **DECISÃO: fica tudo como está** — o 301 da borda da Render já
+   é o comportamento desejado; o CNAME `www` da Hostinger também FICA; o B6 do
+   middleware vira redundância de segurança. Os passos 5–6 do runbook §17.4
+   (remover www) CAÍRAM — desnecessários.
+5. **Checklist final (verificado ao vivo):** `eminer.whatthechip.app` → login
+   no próprio host → **dono logou com usuária real da eMiner e operou normal**
+   ✓ · `erecyclo.whatthechip.app` → login ✓ · subdomínio inventado e
+   reservado → 302 canônico indistinto ✓ · `www` → landing ✓ · apex intacto
+   (landing + contato + envio de chip) ✓ · `/login/`, `/painel/`, `/estoque/`
+   no host do tenant ✓.
+
+**🎯 META DO ROADMAP CUMPRIDA: os 2 clientes de produção com subdomínio no ar
+— `eminer.whatthechip.app` e `erecyclo.whatthechip.app`.**
+
+**Pendências menores que ficaram:**
+- `guard_catalog` pós-virada (dono, de praxe).
+- Polimento: anônimo entrando pela RAIZ do tenant pode acabar no login do
+  APEX em alguns caminhos (funciona; perde só a estética do host — investigar
+  com `curl -sI` na raiz quando calhar).
+- Decisão §17.5.2 (`/fab-*/` públicas × plataforma-only) — sessão curta.
+- E4 opcional (logo por cliente via S3 — B4+B7).
+
 ---
 
 ## 17. Roadmap de execução — da fundação ao subdomínio dos 2 clientes (dossiê 2026-08-06)
@@ -1207,6 +1251,11 @@ INERTE** — nada muda pra quem usa o canônico até o DNS da E3 entrar.
 
 **Aceite = a META DO PEDIDO:** os 2 clientes atuais de produção acessando
 pelos próprios subdomínios, checklist do item 6 todo verde.
+
+> **Status: ✅ E3 EXECUTADA em 2026-08-15 — T7 NO AR. Diário completo (com a
+> armadilha da propagação da borda e o achado do www não-removível): §16-E3.
+> Os passos 5–6 acima (remover www) caíram — o www é domínio-companheiro
+> automático do apex e o redirect da Render já faz o serviço.**
 
 ### 17.5 Decisões em aberto (fechar com o dono ANTES da fase correspondente)
 
