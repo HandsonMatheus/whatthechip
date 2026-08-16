@@ -437,10 +437,10 @@ resolução de host faz QUALQUER subdomínio inventado servir o app inteiro.
 | **B1** | Site público (`/`, `/<slug>/`) não deve responder em host de tenant | **REDUZIDO em 2026-08-05:** a parte de sigilo foi resolvida na ORIGEM (§10.7 — os endpoints de consulta viraram plataforma-only), então B1 deixou de ser bloqueador de segurança. Sobra: conteúdo duplicado no Google e o cliente esbarrar na landing comercial. Fix: URLconf por host. ⚠ **Continua aberto:** as páginas `/fab-*/` (CMS público) — o `doc_url` do decode aponta pra elas e **ninguém auditou** quanta convenção de decode elas expõem. Auditar ANTES de decidir se ficam públicas |
 | **B2** | `/partner/` fica no host canônico | Comprador não tem Membership (o vínculo é `Buyer.users`) e o comprador de PLATAFORMA é cross-empresa por desenho — não existe "subdomínio dele" |
 | **B3** | Slugs reservados + validação | `Company.slug` é `SlugField` unique, mas **não** tem lista de reservados hoje: `www`, `admin`, `app`, `api`, `partner`, `static`, `media`, `mail` |
-| **B4** | `Company.logo` em disco persistente ou S3 | FS da Render é efêmero. Se o subdomínio existe pra branding, o logo sumir no próximo deploy é falha visível pro cliente. **Ver B7: disco persistente sozinho NÃO resolve** |
+| **B4** | `Company.logo` em disco persistente ou S3 | FS da Render é efêmero. Se o subdomínio existe pra branding, o logo sumir no próximo deploy é falha visível pro cliente. **Ver B7: disco persistente sozinho NÃO resolve.** **✅ E4 (2026-08-16): resolvido no BANCO** — blob em `CompanyLogo` + metadados na Company, sem S3 (decisão do dono; §16-E4) |
 | **B5** | Cookies de sessão/CSRF viram domain-wide: `SESSION_COOKIE_DOMAIN` e `CSRF_COOKIE_DOMAIN` = `.whatthechip.app` (+ `ALLOWED_HOSTS` com `.whatthechip.app` e `CSRF_TRUSTED_ORIGINS` com `https://*.whatthechip.app`) | **Achado 2026-08-06:** hoje não existe NENHUM `*_COOKIE_DOMAIN` no settings — o cookie é host-only, então o "login no apex → redirect pro subdomínio" (§10.6) chegaria **DESLOGADO**. Compartilhar a sessão entre os hosts é seguro AQUI porque o host só AFIRMA (§10.2): a empresa continua vindo do Membership, e host≠vínculo = 403. O teste do §12.6 ganha o caso "loga no apex → segue logado no subdomínio" |
 | **B6** | Redirect `www`→apex troca de dono | Hoje quem redireciona é a **Render** (o `www` é domínio avulso na cota). Quando a wildcard absorver o `www` (§10.3), esse redirect **desaparece junto** — vira responsabilidade do `HostTenantMiddleware`: `www` entra nos slugs reservados (B3) com **301 pro apex**. Esquecer = `www.whatthechip.app` servindo o app como se fosse tenant |
-| **B7** | `/media/` NÃO é servido em produção (agrava o B4) | O helper `static(settings.MEDIA_URL…)` do `core/urls.py` devolve lista **VAZIA** com `DEBUG=False` — mesmo com disco persistente o logo não seria entregue por URL nenhuma. Logo em prod = storage backend de verdade (S3/`django-storages` ou equivalente servindo a URL), não só disco |
+| **B7** | `/media/` NÃO é servido em produção (agrava o B4) | O helper `static(settings.MEDIA_URL…)` do `core/urls.py` devolve lista **VAZIA** com `DEBUG=False` — mesmo com disco persistente o logo não seria entregue por URL nenhuma. Logo em prod = storage backend de verdade (S3/`django-storages` ou equivalente servindo a URL), não só disco. **✅ E4: contornado por desenho** — o logo nem usa `/media/`: a view `company_logo` serve do banco com cache (§16-E4) |
 
 ### 10.5 Por que NÃO o path `/t/<company-slug>/`
 
@@ -1127,6 +1127,48 @@ Executada ao vivo com o dono (~10h–11h GMT-3). Passos e achados:
 4. Suíte no working tree ATUAL (com os commits do dono de 08–15/08): **491
    testes OK** (6 skips Postgres-only).
 
+### E4 — Logo/branding por cliente (2026-08-16)
+
+**Decisão do dono (mudou o §17.6):** storage do logo = **BANCO** (Postgres),
+não S3/R2 — pra 1 logo pequeno por empresa, bucket externo era infra e
+segredo à toa. O que entrou:
+
+1. **Modelo:** `Company.logo_mime` + `Company.logo_updated_at` (metadados
+   baratos, `editable=False`) e a tabela nova **`CompanyLogo`** (OneToOne,
+   pk=company, `data=BinaryField`) — blob FORA da Company de propósito: a
+   Company é lida em toda request (middleware/header) e não pode arrastar até
+   1 MB; o blob só sai na view. O `Company.logo` (ImageField do T1 — nunca
+   funcionou em prod, B7) foi **REMOVIDO**. Migração
+   `tenancy/0006_company_logo_db` (pghistory recria os triggers da Company;
+   CompanyLogo SEM pghistory — blob no event store só incharia). Sem RLS
+   (tecido de tenancy, §6) e DECLARADA no tripwire
+   `TenancyDeclarationTests` — que aliás PEGOU o modelo novo sem declaração:
+   funcionou como desenhado.
+2. **Upload:** admin de Empresas (`CompanyAdminForm.logo_upload` +
+   `logo_clear`) — Pillow valida o formato REAL (PNG/JPEG/WebP, ≤1 MB), não
+   a extensão; SVG não passa (sem XSS de SVG inline). `save_model` grava
+   blob+metadados dentro do atomic do admin. Superfície de plataforma →
+   strings sem i18n (padrão do admin.py).
+3. **Serving:** view pública `company_logo` em `/branding/<slug>/logo`,
+   registrada nos DOIS URLconfs (canônico E tenant — o header resolve
+   `{% url %}` igual nos dois mundos, sem pulo de host). `Cache-Control:
+   public, max-age=86400` + `Last-Modified`; a troca de logo fura o cache
+   pelo `?v=` (`logo_updated_at`) da tag. **404 INDISTINTO** (slug
+   desconhecido / inativa / sem logo — anti-enumeração, como o handshake).
+   Anônima DE PROPÓSITO: a tela de login do subdomínio também é marca.
+4. **Shell:** o `base_estoque.html` já tinha o slot (logo ou iniciais);
+   trocado de `wtc_company.logo.url` (morto) pra `logo_mime` +
+   `{% url 'company_logo' %}?v=`.
+5. **Reservados:** `branding` entrou em `RESERVED_COMPANY_SLUGS` (a rota
+   virou superfície do produto).
+6. **Suíte: 498 OK** (+7: view serve/404 indistinto/cache, admin
+   grava/limpa/rejeita, header nos dois mundos) + `check_translations`
+   verde. Sem mexer no engine → characterize dispensado.
+
+**Runbook do dono (E4):** `migrate tenancy` local → suíte → push (o deploy
+roda migrate em prod) → `/admin/tenancy/company/` → subir o logo da eMiner e
+da eRecyclo → conferir o header em `eminer.whatthechip.app`.
+
 ---
 
 ## 17. Roadmap de execução — da fundação ao subdomínio dos 2 clientes (dossiê 2026-08-06)
@@ -1307,11 +1349,41 @@ pelos próprios subdomínios, checklist do item 6 todo verde.
    recomendação: redirect 302 pro canônico (fallback da urls_tenant — nunca
    404).
 
-### 17.6 E4 — OPCIONAL, pós-T7: logo/branding por cliente (B4+B7)
+### 17.6 E4 — logo/branding por cliente (B4+B7) — ✅ FEITA (2026-08-16, §16-E4)
 
-`django-storages` + S3/R2 (ou disco persistente + view de media — pior),
-`Company.logo` exibida no header do host do tenant. Sem prazo; não bloqueia
-nada do caminho crítico.
+O storage mudou na execução (decisão do dono): **BANCO** (`CompanyLogo`
+1-pra-1 + metadados na Company + view `company_logo` com cache), não
+S3/`django-storages` — zero infra nova, zero segredo, entra no backup do
+banco e sobrevive a qualquer deploy. S3/R2 fica pro dia em que houver mídia
+PESADA (fotos de lote etc.).
+
+### 17.7 E5 — PROPOSTA: rollout por cliente (canary) do redesign de frontend
+
+Pergunta do dono (2026-08-16): *"é possível deployar atualizações para
+clientes específicos primeiro? (redesign grande → eMiner primeiro, depois
+eRecyclo)"*. Resposta: deploy de CÓDIGO é global (1 serviço, 1 banco) — mas o
+EFEITO se obtém com **flag por empresa**, que no nosso setup é o jeito certo:
+
+1. `Company.ui_v2 = BooleanField(default=False)` — checkbox no admin, mesmo
+   padrão do `is_platform`.
+2. O redesign entra no deploy como **cópias v2** (`templates/**/v2/…`), SEM
+   sobrescrever os templates atuais — pré-condição do canary: enquanto ele
+   durar, as duas versões coexistem no mesmo deploy.
+3. Helper de 1 linha nas views — `ui(request, 'estoque/painel.html')` devolve
+   `['estoque/v2/painel.html', 'estoque/painel.html']` com o flag ligado — o
+   `render()`/`select_template` do Django aceita LISTA e usa o primeiro que
+   existe → fallback automático tela a tela (redesign pode migrar por
+   partes). Vale igual pros partials HTMX da bancada.
+4. Rollout vira operação de ADMIN, não de deploy: liga eMiner → só ela vê o
+   novo; deu problema → desmarca e volta NA HORA, sem deploy. Com 100%
+   migrado, v2 vira o padrão e os templates antigos morrem (limpeza
+   registrada aqui).
+5. **NÃO** fazer canary por infra (2º serviço Render numa branch apontando
+   pro mesmo banco): migração dupla no mesmo banco, custo dobrado, e o
+   wildcard `*.whatthechip.app` só aponta pra 1 serviço.
+
+Status: **DESENHADA, não construída.** Esqueleto (flag + helper + testes) =
+1 sessão, quando o dono quiser começar a despejar o redesign nos arquivos v2.
 
 ---
 

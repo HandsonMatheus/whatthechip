@@ -203,8 +203,9 @@
   {# Identidade da EMPRESA: logo (ou iniciais) + nome + filial (tenant da sessão) #}
   {% if wtc_company %}
   <div class="wtc-header__org" title="{{ wtc_company.name }}{% if wtc_membership.branch %} · {{ wtc_membership.branch.name }}{% endif %}">
-    {% if wtc_company.logo %}
-      <img class="wtc-header__org-logo" src="{{ wtc_company.logo.url }}" alt="{{ wtc_company.name }}">
+    {% if wtc_company.logo_mime %}
+      {# E4: logo vem do BANCO via view company_logo (cache 1d; ?v= fura na troca) #}
+      <img class="wtc-header__org-logo" src="{% url 'company_logo' slug=wtc_company.slug %}?v={{ wtc_company.logo_updated_at|date:'U' }}" alt="{{ wtc_company.name }}">
     {% else %}
       <div class="wtc-header__org-logo">{{ wtc_company.name|slice:':2' }}</div>
     {% endif %}

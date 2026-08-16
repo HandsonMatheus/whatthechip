@@ -11,8 +11,9 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth import views as auth_views
 from django.db import transaction
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
+from django.utils.http import http_date
 from django.views.i18n import set_language as _django_set_language
 
 from .access import platform_required
@@ -115,6 +116,32 @@ def company_new(request):
         form = CompanyOnboardingForm()
     return render(request, 'tenancy/company_new.html',
                   {'form': form, 'created': created})
+
+
+def company_logo(request, slug):
+    """Logo público da empresa (E4 — B4+B7): serve os bytes do BANCO
+    (CompanyLogo) com cache de 1 dia — a troca de logo fura o cache pelo
+    ``?v=`` (logo_updated_at) que o header põe na tag <img>.
+
+    Existe nos DOIS URLconfs (core/urls e core/urls_tenant) e é ANÔNIMO de
+    propósito: a tela de login do subdomínio também mostra a marca. 404
+    INDISTINTO pra slug desconhecido, empresa inativa ou sem logo — mesma
+    postura anti-enumeração do handshake (§17.3/§17.5.4)."""
+    from .models import Company, CompanyLogo
+    company = (Company.objects.filter(slug=slug, active=True)
+               .exclude(logo_mime='')
+               .only('id', 'logo_mime', 'logo_updated_at')
+               .first())
+    logo = (CompanyLogo.objects.filter(company=company).first()
+            if company else None)
+    if logo is None:
+        raise Http404('Sem logo.')
+    response = HttpResponse(bytes(logo.data), content_type=company.logo_mime)
+    response['Cache-Control'] = 'public, max-age=86400'
+    if company.logo_updated_at:
+        response['Last-Modified'] = http_date(
+            company.logo_updated_at.timestamp())
+    return response
 
 
 def set_language(request):

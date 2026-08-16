@@ -8,9 +8,11 @@ si mesma (usuários/filiais) ganha telas no app na T5/T6 — não aqui.
 
 from django import forms
 from django.contrib import admin
+from django.urls import reverse
+from django.utils import timezone
 from django.utils.html import format_html
 
-from .models import Branch, Company, Membership, UserLanguage
+from .models import Branch, Company, CompanyLogo, Membership, UserLanguage
 
 
 class BranchSelect(forms.Select):
@@ -25,20 +27,79 @@ class BranchSelect(forms.Select):
         return option
 
 
+# ── E4 (B4+B7): upload de logo → bytes no BANCO (CompanyLogo) ────────────────
+_LOGO_MAX_BYTES = 1 * 1024 * 1024   # 1 MB — logo de header, não arte final
+_LOGO_FORMATS   = {'PNG': 'image/png', 'JPEG': 'image/jpeg', 'WEBP': 'image/webp'}
+
+
+class CompanyAdminForm(forms.ModelForm):
+    """O campo real não é editável (blob em CompanyLogo + metadados geridos
+    pelo save_model); este form recebe o ARQUIVO e valida com Pillow o formato
+    REAL (não a extensão) — SVG cai fora sozinho (Pillow não abre → sem risco
+    de XSS por SVG servido inline)."""
+
+    logo_upload = forms.ImageField(
+        required=False, label='Logo (arquivo)',
+        help_text='PNG, JPEG ou WebP, até 1 MB. Substitui o logo atual.')
+    logo_clear = forms.BooleanField(
+        required=False, label='Remover o logo atual')
+
+    class Meta:
+        model = Company
+        fields = '__all__'
+
+    def clean_logo_upload(self):
+        f = self.cleaned_data.get('logo_upload')
+        if not f:
+            return f
+        if f.size > _LOGO_MAX_BYTES:
+            raise forms.ValidationError('Arquivo muito grande — máximo 1 MB.')
+        fmt = f.image.format if getattr(f, 'image', None) else None
+        if fmt not in _LOGO_FORMATS:
+            raise forms.ValidationError(
+                'Formato não suportado — use PNG, JPEG ou WebP.')
+        return f
+
+
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
+    form = CompanyAdminForm
     list_display  = ('name', 'slug', 'active', 'last_lot_number', 'created_at')
     list_filter   = ('active',)
     search_fields = ('name', 'slug')
     readonly_fields = ('created_at', 'logo_preview')
     prepopulated_fields = {'slug': ('name',)}
 
+    def save_model(self, request, obj, form, change):
+        """Grava a Company e sincroniza o logo (E4): blob em CompanyLogo,
+        metadados (mime + updated_at, o cache-buster) na própria Company.
+        Roda dentro do atomic do admin — blob e metadados nunca divergem."""
+        super().save_model(request, obj, form, change)
+        upload = form.cleaned_data.get('logo_upload')
+        clear  = form.cleaned_data.get('logo_clear')
+        if upload:
+            upload.seek(0)
+            CompanyLogo.objects.update_or_create(
+                company=obj, defaults={'data': upload.read()})
+            obj.logo_mime = _LOGO_FORMATS[upload.image.format]
+            obj.logo_updated_at = timezone.now()
+            obj.save(update_fields=['logo_mime', 'logo_updated_at'])
+        elif clear:
+            CompanyLogo.objects.filter(company=obj).delete()
+            if obj.logo_mime:
+                obj.logo_mime = ''
+                obj.logo_updated_at = None
+                obj.save(update_fields=['logo_mime', 'logo_updated_at'])
+
     @admin.display(description='Prévia da logo')
     def logo_preview(self, obj):
-        if obj and obj.logo:
+        if obj and obj.pk and obj.logo_mime:
+            url = reverse('company_logo', kwargs={'slug': obj.slug})
+            v = (int(obj.logo_updated_at.timestamp())
+                 if obj.logo_updated_at else 0)
             return format_html(
-                '<img src="{}" style="max-height:60px;border:1px solid #ddd;'
-                'padding:2px;background:#fff">', obj.logo.url)
+                '<img src="{}?v={}" style="max-height:60px;border:1px solid #ddd;'
+                'padding:2px;background:#fff">', url, v)
         return '—'
 
 

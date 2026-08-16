@@ -548,3 +548,153 @@ class HostHandshakeTests(TestCase):
             HTTP_HOST=self.A_HOST)
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['Location'], '/painel/')   # relativo → mesmo host
+
+
+# ── E4 (B4+B7): logo por empresa no BANCO ────────────────────────────────────
+
+def _instala_logo(company):
+    """Helper E4: instala um PNG 2×2 como logo da empresa — blob em
+    CompanyLogo + metadados (mime/updated_at) na Company. Devolve os bytes."""
+    from io import BytesIO
+
+    from django.utils import timezone
+    from PIL import Image
+
+    from .models import CompanyLogo
+
+    buf = BytesIO()
+    Image.new('RGB', (2, 2), 'red').save(buf, format='PNG')
+    raw = buf.getvalue()
+    CompanyLogo.objects.update_or_create(company=company,
+                                         defaults={'data': raw})
+    company.logo_mime = 'image/png'
+    company.logo_updated_at = timezone.now()
+    company.save(update_fields=['logo_mime', 'logo_updated_at'])
+    return raw
+
+
+class CompanyLogoTests(TestCase):
+    """E4: a view pública serve o blob do banco com cache e 404 INDISTINTO
+    (desconhecida/inativa/sem logo — anti-enumeração, como o handshake);
+    o admin valida com Pillow (formato REAL) e grava blob+metadados juntos."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.cia = Company.objects.create(name='eMiner Logo', slug='eminerlogo')
+        cls.cia_off = Company.objects.create(
+            name='Inativa Logo', slug='inativalogo', active=False)
+
+    # ── a view pública ──────────────────────────────────────────────────────
+    def test_view_serve_bytes_com_cache_anonimo(self):
+        raw = _instala_logo(self.cia)
+        resp = self.client.get(reverse('company_logo',
+                                       kwargs={'slug': 'eminerlogo'}))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Content-Type'], 'image/png')
+        self.assertEqual(resp.content, raw)
+        self.assertIn('max-age=86400', resp['Cache-Control'])
+        self.assertTrue(resp.has_header('Last-Modified'))
+
+    def test_view_404_indistinto(self):
+        _instala_logo(self.cia_off)   # inativa COM logo → 404 igual aos outros
+        for slug in ('naoexiste', 'eminerlogo', 'inativalogo'):
+            resp = self.client.get(f'/branding/{slug}/logo')
+            self.assertEqual(resp.status_code, 404, slug)
+
+    # ── admin: form valida, save_model grava/limpa ──────────────────────────
+    def _form(self, company, files=None, extra=None):
+        from tenancy.admin import CompanyAdminForm
+        data = {'name': company.name, 'slug': company.slug,
+                'last_lot_number': company.last_lot_number,
+                'notes': company.notes}
+        if company.active:
+            data['active'] = 'on'
+        if extra:
+            data.update(extra)
+        return CompanyAdminForm(data=data, files=files or {}, instance=company)
+
+    def _save_model(self, obj, form):
+        from django.contrib import admin as dj_admin
+
+        from tenancy.admin import CompanyAdmin
+        CompanyAdmin(Company, dj_admin.site).save_model(None, obj, form, True)
+
+    def test_admin_upload_grava_blob_e_metadados(self):
+        from io import BytesIO
+
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from PIL import Image
+
+        from .models import CompanyLogo
+        buf = BytesIO()
+        Image.new('RGB', (2, 2), 'blue').save(buf, format='PNG')
+        raw = buf.getvalue()
+        form = self._form(self.cia, files={
+            'logo_upload': SimpleUploadedFile('logo.png', raw, 'image/png')})
+        self.assertTrue(form.is_valid(), form.errors)
+        obj = form.save(commit=False)
+        self._save_model(obj, form)
+        obj.refresh_from_db()
+        self.assertEqual(obj.logo_mime, 'image/png')
+        self.assertIsNotNone(obj.logo_updated_at)
+        self.assertEqual(bytes(CompanyLogo.objects.get(pk=obj.pk).data), raw)
+
+    def test_admin_clear_remove_blob_e_metadados(self):
+        from .models import CompanyLogo
+        _instala_logo(self.cia)
+        form = self._form(self.cia, extra={'logo_clear': 'on'})
+        self.assertTrue(form.is_valid(), form.errors)
+        obj = form.save(commit=False)
+        self._save_model(obj, form)
+        obj.refresh_from_db()
+        self.assertEqual(obj.logo_mime, '')
+        self.assertIsNone(obj.logo_updated_at)
+        self.assertFalse(CompanyLogo.objects.filter(pk=obj.pk).exists())
+
+    def test_admin_form_rejeita_nao_imagem_e_gigante(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        # SVG/qualquer não-imagem: o Pillow do ImageField barra (sem SVG
+        # servido inline = sem vetor de XSS por SVG)
+        falso = SimpleUploadedFile('logo.svg', b'<svg></svg>', 'image/svg+xml')
+        self.assertFalse(self._form(
+            self.cia, files={'logo_upload': falso}).is_valid())
+        # imagem válida porém > 1 MB: barra no clean_logo_upload
+        raw = _instala_logo(self.cia)   # só pra reusar os bytes de PNG
+        gigante = SimpleUploadedFile(
+            'logo.png', raw + b'\0' * (1024 * 1024), 'image/png')
+        self.assertFalse(self._form(
+            self.cia, files={'logo_upload': gigante}).is_valid())
+
+
+@override_settings(WTC_TENANT_DOMAIN='whatthechip.app',
+                   ALLOWED_HOSTS=['.whatthechip.app', 'testserver'])
+class HeaderLogoTests(TestCase):
+    """E4 no shell: com logo → <img> apontando pra company_logo (com ?v= de
+    cache-buster) nos DOIS mundos; sem logo → iniciais (nada de /branding/)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.cia = Company.objects.create(name='eMiner Hdr', slug='eminerhdr')
+        cls.user = User.objects.create_user('op_hdr')
+        Membership.objects.create(user=cls.user, company=cls.cia,
+                                  role=Membership.ROLE_OPERATOR)
+
+    def test_header_sem_logo_mostra_iniciais_e_nao_aponta_pra_view(self):
+        self.client.force_login(self.user)
+        resp = self.client.get('/painel/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, '/branding/eminerhdr/logo')
+
+    def test_header_com_logo_aponta_pra_view_nos_dois_mundos(self):
+        _instala_logo(self.cia)
+        self.client.force_login(self.user)
+        resp = self.client.get('/painel/')                       # canônico
+        self.assertContains(resp, '/branding/eminerhdr/logo?v=')
+        resp = self.client.get('/painel/',                       # host tenant
+                               HTTP_HOST='eminerhdr.whatthechip.app')
+        self.assertContains(resp, '/branding/eminerhdr/logo?v=')
+        img = self.client.get('/branding/eminerhdr/logo',        # serve local
+                              HTTP_HOST='eminerhdr.whatthechip.app')
+        self.assertEqual(img.status_code, 200)
+        self.assertEqual(img['Content-Type'], 'image/png')

@@ -51,7 +51,7 @@ RESERVED_COMPANY_SLUGS = frozenset({
     'admin', 'api', 'app', 'partner', 'platform', 'status', 'docs',
     'help', 'support', 'blog', 'dev', 'staging', 'test', 'demo',
     'login', 'logout', 'painel', 'estoque', 'chips', 'vendas',
-    'pricing', 'company', 'whatthechip',
+    'pricing', 'company', 'whatthechip', 'branding',
 })
 
 _DNS_LABEL_RE = re.compile(r'^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')
@@ -99,13 +99,19 @@ class Company(models.Model):
         help_text='Dona do WhatTheChip: usuários dela veem os rótulos REAIS '
                   'de categoria. Empresas-cliente veem só o código C-### '
                   '(F12 — proteção do conhecimento).')
-    # Branding por empresa (logo nas telas do app / subdomínio futuro — §10).
-    # ⚠ Em produção (Render) o filesystem é EFÊMERO: upload some no próximo
-    # deploy. Antes de usar logo em prod: disco persistente do Render ou S3.
-    logo = models.ImageField(upload_to='company_logos/', null=True, blank=True,
-                             verbose_name='Logo',
-                             help_text='PNG/JPG. Em produção exige disco '
-                                       'persistente (Render) ou S3 — ver nota.')
+    # Branding por empresa (E4 — B4+B7, decisão do dono 2026-08-16): o logo
+    # mora no BANCO (CompanyLogo, 1-pra-1), não em arquivo — o filesystem da
+    # Render é efêmero e /media/ nem é servido com DEBUG=False (B7). Aqui na
+    # Company ficam só METADADOS baratos: o header checa logo_mime em TODA
+    # página sem arrastar o blob (que só sai na view ``company_logo``).
+    logo_mime = models.CharField(
+        max_length=32, blank=True, default='', editable=False,
+        verbose_name='MIME do logo',
+        help_text='Vazio = sem logo. Gerido pelo upload no admin — não editar.')
+    logo_updated_at = models.DateTimeField(
+        null=True, blank=True, editable=False,
+        verbose_name='Logo atualizado em',
+        help_text='Cache-buster (?v=) das tags <img>. Gerido pelo upload.')
     # Contador atômico da numeração de lote POR-EMPRESA (T2, §7): o lot_create
     # trava esta linha com select_for_update e incrementa — elimina a corrida do
     # antigo Max('number')+1. Seed da eMiner = max atual, feito no bootstrap_tenancy.
@@ -130,6 +136,27 @@ class Company(models.Model):
         # HISTÓRICO (sem métodos custom) — backfills antigos não quebram.
         validate_company_slug(self.slug)
         return super().save(*args, **kwargs)
+
+
+class CompanyLogo(models.Model):
+    """Bytes do logo da empresa (E4 — B4+B7). Tabela PRÓPRIA de propósito:
+    a Company é lida em toda request (middleware/header) e não pode arrastar
+    um blob de até 1 MB — aqui o blob só é lido pela view ``company_logo``.
+    Sem RLS, como as demais tabelas de tenancy (§6): branding é público (a
+    tela de login do subdomínio serve anônimo). Sem pghistory: histórico de
+    blob só incharia o event store."""
+
+    company = models.OneToOneField(
+        Company, on_delete=models.CASCADE, primary_key=True,
+        related_name='logo_asset', verbose_name='Empresa')
+    data = models.BinaryField(verbose_name='Bytes do logo')
+
+    class Meta:
+        verbose_name = 'Logo de empresa'
+        verbose_name_plural = 'Logos de empresa'
+
+    def __str__(self):
+        return f'Logo de {self.company}'
 
 
 @pghistory.track()  # auditoria: filiais fazem parte da estrutura da empresa

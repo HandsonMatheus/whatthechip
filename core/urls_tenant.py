@@ -37,6 +37,10 @@ urlpatterns = [
     path('vendas/', include('vendas.urls', namespace='vendas')),
     path('i18n/setlang/', tenancy_views.set_language, name='set_language'),
     path('i18n/js/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    # Logo por empresa (E4): mesmo nome/rota do core/urls — o <img> do header
+    # e o da tela de login do subdomínio servem direto daqui, sem pular de host.
+    path('branding/<slug:slug>/logo', tenancy_views.company_logo,
+         name='company_logo'),
     # `/` de tenant → painel (nome 'home' MANTIDO: {% url 'home' %} do shell e
     # o LOGOUT_REDIRECT_URL='/' resolvem aqui também).
     path('', tenancy_views.tenant_root, name='home'),

@@ -1747,6 +1747,11 @@ class TenancyDeclarationTests(TestCase):
         'pages.Page',
         # O próprio tecido do tenancy.
         'tenancy.Company', 'tenancy.Branch', 'tenancy.Membership',
+        # E4 (B4+B7): blob do logo, 1-pra-1 com a Company (o pk É a company).
+        # Branding é PÚBLICO — a view company_logo serve ANÔNIMO (tela de
+        # login do subdomínio); manager fail-closed ali seria contrassenso.
+        # Sem RLS, como o resto do tecido de tenancy (§6 do PLANO).
+        'tenancy.CompanyLogo',
         # i18n: a preferência de idioma é da PESSOA, não da empresa (um técnico
         # chinês numa empresa paraguaia lê 中文) — GLOBAL. Ver I18N.md §3.
         'tenancy.UserLanguage',

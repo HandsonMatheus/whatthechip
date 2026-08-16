@@ -27,6 +27,11 @@ urlpatterns = [
     # Gestão de empresa (T6 — PLANO_MULTITENANT §17.2): rota em inglês
     # (decisão §14.5); hoje só o onboarding de PLATAFORMA (/company/new/).
     path('company/', include('tenancy.urls', namespace='tenancy')),
+    # Logo público por empresa (E4 — B4+B7): bytes servidos do BANCO com
+    # cache; a rota existe nos DOIS mundos (cf. core/urls_tenant) — o header
+    # resolve {% url 'company_logo' %} igual em qualquer host.
+    path('branding/<slug:slug>/logo', tenancy_views.company_logo,
+         name='company_logo'),
     # i18n: set_language (POST) grava o idioma no cookie E, se logado, na
     # preferência do usuário (tenancy.UserLanguage — cadeia I18N.md §3).
     # Mesma rota/nome do Django puro; alimenta os seletores. ANTES do <slug>.
