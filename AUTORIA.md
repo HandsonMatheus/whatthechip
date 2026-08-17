@@ -135,6 +135,34 @@ confirmed/manual). Na Opção 2, ele vive no **banco**, não no yaml.
 Tier-1 → o `submit` avisa e o revisor exige; PN já aprovado **não é rebaixado** por uma re-submissão
 (não tira do ar); dedup por PN normalizado; `CheckConstraint`s de confidence/review_status/four-eyes.
 
+### 4.1 PN que JÁ está aprovado (o balde COMPLEMENTO) — 2026-08-17
+
+O dry-run agora confronta cada PN com o **banco** (pela chave `part_number_norm`) e classifica:
+
+| Balde | O que é | O que acontece |
+|---|---|---|
+| `NOVO` | não existe | entra `submitted` (fluxo normal) |
+| `RESUBMETE` | existe em draft/submitted/rejected | reescrito como `submitted` |
+| `COMPLEMENTO` | **aprovado com campo VAZIO** que o arquivo preenche | só com `--fill-empty` |
+| `CONFLITO` | aprovado com valor **diferente** | nunca aplicado — vira `<arquivo>.conflitos.yaml` |
+| `IGUAL` | aprovado e já com o dado | nada |
+
+Por que isso existe: até 2026-08-17 a checagem morava **dentro** do bloco do `--commit`, então o
+dry-run dizia "13 válidos" para uma submissão que ia gravar 12, e o aviso só nascia depois de
+gravar. Dezenas de PNs "confirmados" ficaram *identity-only* e os LOTES herdaram snapshot sem spec.
+
+**Regra para o chat:** se o dry-run mostrar `COMPLEMENTO`, a entrega ao dono TEM que incluir o
+`--fill-empty` no comando de `--commit` — senão aqueles PNs são pulados de novo, em silêncio.
+
+`--fill-empty` é **aditivo**: preenche só campo vazio, nunca sobrescreve, nunca mexe no
+`review_status` (o registro não sai do ar), exige `notes`/`source_url` no PN, e grava backup
+reversível (`--revert`). Sobrescrever valor aprovado continua sendo decisão humana no admin.
+
+⚠ Completar o catálogo **não** conserta os lotes: `InventoryEntry` guarda o snapshot do
+lançamento. O fechamento do laço é o `resnapshot_lote --all --commit` (o comando avisa).
+
+Panorama de TODAS as marcas de uma vez (read-only): `python manage.py audit_submissions`.
+
 ---
 
 ## 5. O mapa completo — classe de erro → trava (tudo que criamos)
