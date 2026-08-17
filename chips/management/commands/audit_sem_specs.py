@@ -108,11 +108,23 @@ class Command(BaseCommand):
                 veredito = "⛔ PRECISA PESQUISA"
             resumo[veredito] += 1
             qtd, lotes = estoque.get(kp.part_number_norm, (0, set()))
+            # O código FBGA é o que a API oficial da Micron aceita como chave —
+            # ter ou não ter decide se dá pra resolver por máquina ou só por
+            # pesquisa. Às vezes ele veio COLADO no texto do PN (último token,
+            # ex.: "MT62F1DAD4DH-DC Y62P") em vez de no campo próprio.
+            fbga = (kp.fbga_code or "").strip()
+            solto = ""
+            if not fbga:
+                ult = kp.part_number.strip().split()[-1]
+                if 3 <= len(ult) <= 6 and ult.isalnum() and any(c.isdigit() for c in ult) \
+                        and any(c.isalpha() for c in ult):
+                    solto = ult
             linhas.append({
                 "part_number": kp.part_number, "marca": kp.brand.name if kp.brand else "",
                 "familia": fam.prefix if fam is not None else "—",
                 "tipo_hoje": vive_tipo or "—", "capacidade_hoje": vive_cap or "—",
                 "confidence": kp.confidence, "veredito": veredito,
+                "fbga_code": fbga, "fbga_no_pn": solto,
                 "qtd_estoque": qtd, "lotes": ",".join(str(x) for x in sorted(lotes)),
             })
 
@@ -154,21 +166,25 @@ class Command(BaseCommand):
         por = {}
         for ln in linhas:
             t = ln["tipo_hoje"] or "—"
-            n, q, sem = por.get(t, (0, 0, 0))
+            n, q, fb = por.get(t, (0, 0, 0))
             por[t] = (n + 1, q + ln["qtd_estoque"],
-                      sem + (1 if ln["veredito"] != "✅ GRAMÁTICA RESOLVE" else 0))
+                      fb + (1 if (ln["fbga_code"] or ln["fbga_no_pn"]) else 0))
         w(self.style.WARNING("\n\nPOR TIPO DE CHIP — a fila de prioridade:"))
-        w(f"\n{'TIPO':<16}{'PNs':>6}{'SEM CAP.':>10}{'PEÇAS EM ESTOQUE':>19}")
+        w(f"\n{'TIPO':<16}{'PNs':>6}{'COM FBGA':>10}{'PEÇAS EM ESTOQUE':>19}")
         w("-" * 52)
-        for t, (n, q, sem) in sorted(por.items(), key=lambda kv: -kv[1][1]):
-            w(f"{t[:15]:<16}{n:>6}{sem:>10}{q:>19}")
+        for t, (n, q, fb) in sorted(por.items(), key=lambda kv: -kv[1][1]):
+            w(f"{t[:15]:<16}{n:>6}{fb:>10}{q:>19}")
         w("-" * 52)
         tot_n = sum(v[0] for v in por.values())
         tot_q = sum(v[1] for v in por.values())
         w(f"{'TOTAL':<16}{tot_n:>6}{'':>10}{tot_q:>19}")
-        w("\n  A fila é de cima pra baixo: mais peças paradas sem capacidade = mais\n"
-          "  dinheiro sem chave de preço. Tipo morto (MCP/DDR2/NAND raw) pode ficar\n"
-          "  no fim — o veredito NÃO RENTÁVEL não depende da capacidade exata.")
+        com_fbga = sum(v[2] for v in por.values())
+        w("\n  A fila é de cima pra baixo: mais peças paradas sem capacidade = mais")
+        w("  dinheiro sem chave de preço. Tipo morto (MCP/DDR2/NAND raw) pode ficar")
+        w("  no fim — o veredito NÃO RENTÁVEL não depende da capacidade exata.")
+        w(f"\n  COM FBGA = {com_fbga} de {tot_n}: o código FBGA é a chave que a API")
+        w("  oficial da Micron aceita (fill_capacity_from_micron_api / enrich_micron_fbga).")
+        w("  Sem ele, só pesquisa Tier-1 no chat da marca resolve.")
 
     def _estoque(self):
         """{part_number_norm: (quantidade, {lotes})} — all_companies (plataforma).
