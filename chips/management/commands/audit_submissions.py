@@ -47,6 +47,18 @@ _CAMPOS = ["chip_type", "subtype", "capacity", "density_gbit", "density_gb",
 
 _BALDES = ["AUSENTE", "PENDENTE", "COMPLETA", "CONFLITO", "OK"]
 
+# Classe do campo — é o eixo da DECISÃO num conflito, não o campo em si:
+#   preço      muda a classificação e portanto o valor do lote (o que urge)
+#   identidade diz QUAL peça é (não mexe em preço, mas é o casamento do PN)
+#   texto      proveniência/descrição — quase sempre o mais VERBOSO é o melhor
+_CLASSE = {
+    "chip_type": "preço", "subtype": "preço", "capacity": "preço",
+    "density_gbit": "preço", "density_gb": "preço",
+    "emcp_ram": "preço", "emcp_nand": "preço",
+    "fbga_code": "identidade", "device": "identidade",
+    "interface": "texto", "notes": "texto", "source_url": "texto",
+}
+
 
 def _vazio(v) -> bool:
     return not str(v or "").strip()
@@ -60,7 +72,10 @@ class Command(BaseCommand):
                             help="Pasta das submissões (default: submissions/).")
         parser.add_argument("--brand", default="", help="Filtra por marca (nome do arquivo).")
         parser.add_argument("--detail", action="store_true",
-                            help="Lista PN a PN em vez de amostra.")
+                            help="Lista PN a PN em vez de amostra, com valores INTEIROS.")
+        parser.add_argument("--por-campo", action="store_true",
+                            help="Resume os CONFLITOS por CAMPO (é assim que se decide a "
+                                 "política: quem vence, banco ou submissão, campo a campo).")
 
     def handle(self, *args, **o):
         w = self.stdout.write
@@ -75,6 +90,7 @@ class Command(BaseCommand):
         resumo = defaultdict(Counter)
         detalhe = {b: defaultdict(list) for b in _BALDES}
         conf_dif = defaultdict(list)
+        self._por_campo = defaultdict(list)   # campo → [(marca, pn, banco, arquivo)]
         arquivos = sorted(pasta.glob("*.yaml")) + sorted(pasta.glob("*.yml"))
 
         for caminho in arquivos:
@@ -121,6 +137,8 @@ class Command(BaseCommand):
                     detalhe["PENDENTE"], o["detail"], None)
         self._secao("AUSENTE — submetido um dia, não está no banco",
                     detalhe["AUSENTE"], o["detail"], None)
+        if o["por_campo"]:
+            self._resumo_por_campo(o["detail"])
         if any(conf_dif.values()):
             w(self.style.WARNING("\n⚠ confidence divergente (banco → arquivo):"))
             for marca in sorted(conf_dif):
@@ -128,7 +146,7 @@ class Command(BaseCommand):
                     w(f"    {marca}: {item[0]:<32} {item[1]} → {item[2]}")
 
     # ────────────────────────────────────────────────────────────────────
-    def _classifica(self, pn, d, conf_dif, marca):
+    def _classifica(self, pn, d, conf_dif, marca):   # noqa: C901
         kp = KnownPart.objects.filter(part_number_norm=normalize_pn(pn)).first()
         if kp is None:
             return "AUSENTE", ""
@@ -143,6 +161,8 @@ class Command(BaseCommand):
                 preencher.append(c)
             elif str(atual).strip() != str(novo).strip():
                 muda.append(f"{c}: {str(atual)[:24]!r}→{str(novo)[:24]!r}")
+                self._por_campo[c].append(
+                    (marca, pn, str(atual).strip(), str(novo).strip()))
         conf_arq = str(d.get("confidence") or "confirmed").strip()
         if conf_arq != kp.confidence:
             conf_dif[marca].append((pn, kp.confidence, conf_arq))
@@ -151,6 +171,43 @@ class Command(BaseCommand):
         if preencher:
             return "COMPLETA", ", ".join(preencher)
         return "OK", ""
+
+    def _resumo_por_campo(self, detalhe):
+        """CONFLITO agrupado por CAMPO — a visão que permite decidir por CLASSE
+        em vez de PN a PN. `banco+longo` conta os casos em que o valor do BANCO
+        é mais rico que o do arquivo (ex.: interface 'x16 @ 800MHz (1600MTPS)'
+        contra 'x16'): aplicar a submissão nesses PERDERIA informação."""
+        w = self.stdout.write
+        if not self._por_campo:
+            return
+        w(self.style.WARNING("\n\nCONFLITOS POR CAMPO — decida a política por classe:"))
+        w("  classe 'preço' muda a classificação (e o valor do lote); 'texto' é "
+          "proveniência.\n  banco+longo/arquivo+longo só ajudam nos campos de TEXTO "
+          "(mais verboso ≈ mais rico);\n  em campo de preço o que vale é qual fonte "
+          "tem Tier-1, não o tamanho.")
+        w(f"\n{'CAMPO':<14}{'CLASSE':<11}{'CONFLITOS':>10}{'banco+longo':>13}"
+          f"{'arq+longo':>11}   MARCAS")
+        w("-" * 92)
+        for campo in sorted(self._por_campo,
+                            key=lambda c: (_CLASSE.get(c, "z") != "preço",
+                                           -len(self._por_campo[c]))):
+            itens = self._por_campo[campo]
+            banco_maior = sum(1 for _m, _p, a, n in itens if len(a) > len(n))
+            arq_maior = sum(1 for _m, _p, a, n in itens if len(n) > len(a))
+            marcas = ", ".join(sorted({m for m, _p, _a, _n in itens}))
+            w(f"{campo:<14}{_CLASSE.get(campo, '?'):<11}{len(itens):>10}"
+              f"{banco_maior:>13}{arq_maior:>11}   {marcas[:34]}")
+        w("-" * 92)
+        for campo in sorted(self._por_campo, key=lambda c: -len(self._por_campo[c])):
+            itens = self._por_campo[campo]
+            w(f"\n  {campo} ({len(itens)}):")
+            for marca, pn, atual, novo in (itens if detalhe else itens[:4]):
+                corte = 4000 if detalhe else 70
+                w(f"    {marca}/{pn}")
+                w(f"      banco   : {atual[:corte]!r}")
+                w(f"      arquivo : {novo[:corte]!r}")
+            if not detalhe and len(itens) > 4:
+                w(f"    … +{len(itens) - 4} (use --por-campo --detail)")
 
     def _secao(self, titulo, por_marca, detalhe, estilo):
         if not any(por_marca.values()):

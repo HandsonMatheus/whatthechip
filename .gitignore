@@ -41,3 +41,6 @@ purge_enriched_backup_*.json
 .~*
 /resumo_*.xlsx
 correct_kp_revert_*.json
+
+# Relatórios do submit_known_parts (gerados ao lado da submissão; não são fonte)
+submissions/*.conflitos.yaml
