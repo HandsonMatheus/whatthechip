@@ -58,6 +58,9 @@ class Command(BaseCommand):
         parser.add_argument("--estoque", action="store_true",
                             help="Cruza com o estoque (quantidade e lotes por PN).")
         parser.add_argument("--limit", type=int, default=40, help="Linhas na tela.")
+        parser.add_argument("--por-tipo", action="store_true",
+                            help="Resume por TIPO de chip + peças em estoque — separa o "
+                                 "que vale dinheiro (LPDDR/eMMC) do legado morto (MCP/DDR2).")
         parser.add_argument("--csv", default="", help="Grava a lista completa em CSV.")
 
     def handle(self, *args, **o):
@@ -133,12 +136,39 @@ class Command(BaseCommand):
         if len(linhas) > o["limit"]:
             w(f"… +{len(linhas) - o['limit']} (use --limit ou --csv)")
 
+        if o["por_tipo"]:
+            self._por_tipo(linhas)
+
         if o["csv"]:
             with open(o["csv"], "w", newline="", encoding="utf-8") as fh:
                 esc = csv.DictWriter(fh, fieldnames=list(linhas[0].keys()))
                 esc.writeheader()
                 esc.writerows(linhas)
             w(f"\n📄 lista completa: {o['csv']} ({len(linhas)} linhas)")
+
+    def _por_tipo(self, linhas):
+        """807 linhas viram ~10. O que decide a fila é TIPO × peças em estoque:
+        capacidade de chip morto (MCP/DDR2 legado) não muda veredito nem preço;
+        capacidade de LPDDR4X/LPDDR5 em estoque é dinheiro parado sem chave."""
+        w = self.stdout.write
+        por = {}
+        for ln in linhas:
+            t = ln["tipo_hoje"] or "—"
+            n, q, sem = por.get(t, (0, 0, 0))
+            por[t] = (n + 1, q + ln["qtd_estoque"],
+                      sem + (1 if ln["veredito"] != "✅ GRAMÁTICA RESOLVE" else 0))
+        w(self.style.WARNING("\n\nPOR TIPO DE CHIP — a fila de prioridade:"))
+        w(f"\n{'TIPO':<16}{'PNs':>6}{'SEM CAP.':>10}{'PEÇAS EM ESTOQUE':>19}")
+        w("-" * 52)
+        for t, (n, q, sem) in sorted(por.items(), key=lambda kv: -kv[1][1]):
+            w(f"{t[:15]:<16}{n:>6}{sem:>10}{q:>19}")
+        w("-" * 52)
+        tot_n = sum(v[0] for v in por.values())
+        tot_q = sum(v[1] for v in por.values())
+        w(f"{'TOTAL':<16}{tot_n:>6}{'':>10}{tot_q:>19}")
+        w("\n  A fila é de cima pra baixo: mais peças paradas sem capacidade = mais\n"
+          "  dinheiro sem chave de preço. Tipo morto (MCP/DDR2/NAND raw) pode ficar\n"
+          "  no fim — o veredito NÃO RENTÁVEL não depende da capacidade exata.")
 
     def _estoque(self):
         """{part_number_norm: (quantidade, {lotes})} — all_companies (plataforma).
