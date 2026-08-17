@@ -194,3 +194,98 @@ class AuditSubmissionsTests(TestCase):
         call_command("audit_submissions", dir=str(self.tmp), stdout=out)
         self.assertIn("CONFLITO", out.getvalue())
         self.assertIn("AUD-CONF", out.getvalue())
+
+
+class ResolveConflictsTests(TestCase):
+    """A política POR CLASSE DE CAMPO (dono, 2026-08-17). O que prende aqui é o
+    princípio: aplicar conflito em bloco degrada dado — em vários campos o BANCO
+    (vindo das pipelines de import) é melhor que a submissão."""
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp())
+        self.brand = Brand.objects.create(name="MarcaConf", code="MCF")
+
+    def _par(self, banco: dict, arquivo: dict, pn="CONF-0001"):
+        kp = KnownPart.objects.create(part_number=pn, brand=self.brand,
+                                      confidence="confirmed",
+                                      review_status="approved", **banco)
+        caminho = _submissao(self.tmp, "c.yaml", "MarcaConf",
+                             [dict({"part_number": pn}, **arquivo)])
+        return kp, caminho
+
+    def _roda(self, **kw):
+        out = StringIO()
+        call_command("resolve_conflicts", dir=str(self.tmp), stdout=out, **kw)
+        return out.getvalue()
+
+    def test_preco_a_submissao_vence(self):
+        kp, _ = self._par({"chip_type": "eMCP"}, {"chip_type": "MCP"})
+        self._roda(commit=True)
+        kp.refresh_from_db()
+        self.assertEqual(kp.chip_type, "MCP")
+        self.assertEqual(kp.review_status, "approved")   # não sai do ar
+
+    def test_interface_fica_o_mais_especifico(self):
+        """O caso real: o banco tinha 'x16 @ 800MHz (1600MTPS)' e o arquivo 'x16'
+        — aplicar a submissão PERDERIA a velocidade."""
+        kp, _ = self._par({"chip_type": "DDR3", "interface": "x16 @ 800MHz (1600MTPS)"},
+                          {"chip_type": "DDR3", "interface": "x16"})
+        self._roda(commit=True)
+        kp.refresh_from_db()
+        self.assertEqual(kp.interface, "x16 @ 800MHz (1600MTPS)")   # banco mantido
+
+    def test_interface_aceita_quando_o_arquivo_e_mais_especifico(self):
+        kp, _ = self._par({"chip_type": "eMMC", "interface": "eMMC 4.41"},
+                          {"chip_type": "eMMC",
+                           "interface": "e.MMC 4.41 (JESD84-A441)"})
+        self._roda(commit=True)
+        kp.refresh_from_db()
+        self.assertEqual(kp.interface, "e.MMC 4.41 (JESD84-A441)")
+
+    def test_notes_faz_merge_sem_perder_nenhum_lado(self):
+        kp, _ = self._par({"notes": "Voltage: 1.8 VOLTS | Package: VFBGA"},
+                          {"notes": "Identidade via API FBGA oficial (Tier-1)"})
+        self._roda(commit=True)
+        kp.refresh_from_db()
+        self.assertIn("Voltage: 1.8 VOLTS", kp.notes)          # o do import
+        self.assertIn("Identidade via API FBGA", kp.notes)     # o da submissão
+
+    def test_source_url_do_arquivo_vai_pro_notes_e_a_url_do_banco_fica(self):
+        """O campo é UMA url: concatenar quebraria o link."""
+        kp, _ = self._par({"source_url": "psg_2h2014:K3KL9L90DM-MG", "notes": "do import"},
+                          {"source_url": "https://semiconductor.samsung.com/x"})
+        self._roda(commit=True)
+        kp.refresh_from_db()
+        self.assertEqual(kp.source_url, "psg_2h2014:K3KL9L90DM-MG")
+        self.assertIn("https://semiconductor.samsung.com/x", kp.notes)
+
+    def test_sem_precos_e_exclude(self):
+        kp, _ = self._par({"chip_type": "eMCP", "notes": "do import"},
+                          {"chip_type": "MCP", "notes": "da submissão"})
+        self._roda(commit=True, sem_precos=True)
+        kp.refresh_from_db()
+        self.assertEqual(kp.chip_type, "eMCP")            # preço pulado
+        self.assertIn("da submissão", kp.notes)           # texto aplicado
+        texto = self._roda(commit=True, exclude="CONF-0001")
+        self.assertIn("excluído pelo dono", texto)
+
+    def test_dry_run_nao_grava_e_revert_desfaz(self):
+        kp, _ = self._par({"chip_type": "eMCP"}, {"chip_type": "MCP"})
+        self._roda()                                       # dry-run
+        kp.refresh_from_db()
+        self.assertEqual(kp.chip_type, "eMCP")
+        destino = str(self.tmp / "rev.json")
+        self._roda(commit=True, backup=destino)
+        kp.refresh_from_db()
+        self.assertEqual(kp.chip_type, "MCP")
+        call_command("resolve_conflicts", revert=destino, stdout=StringIO())
+        kp.refresh_from_db()
+        self.assertEqual(kp.chip_type, "eMCP")
+
+    def test_campo_vazio_nao_e_conflito(self):
+        """Vazio é COMPLEMENTO (submit --fill-empty) — este comando não mexe."""
+        kp, _ = self._par({"chip_type": ""}, {"chip_type": "MCP"})
+        texto = self._roda(commit=True)
+        kp.refresh_from_db()
+        self.assertEqual(kp.chip_type, "")
+        self.assertIn("Nenhum conflito", texto)

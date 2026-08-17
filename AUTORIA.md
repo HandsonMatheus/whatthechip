@@ -163,6 +163,26 @@ lançamento. O fechamento do laço é o `resnapshot_lote --all --commit` (o coma
 
 Panorama de TODAS as marcas de uma vez (read-only): `python manage.py audit_submissions`.
 
+### 4.2 CONFLITO — quem vence é decidido por CAMPO, não por PN (2026-08-17)
+
+A 1ª varredura em produção achou **147 conflitos** (contra 2 campos vazios): o registro tinha
+valor das **pipelines de import** (Micron API, Samsung PSG), virou `approved`, e a submissão
+Tier-1 que ia corrigir foi pulada. Aplicar tudo em bloco seria pior — em vários campos o BANCO
+é melhor (`interface: 'x16 @ 800MHz (1600MTPS)'` no banco contra `'x16'` no arquivo).
+
+Política (decisão do dono), aplicada por `python manage.py resolve_conflicts`:
+
+| classe | campos | política |
+|---|---|---|
+| **preço** | `chip_type` `subtype` `capacity` `density_gbit` `density_gb` `emcp_ram` `emcp_nand` | a **submissão** vence — é o que mexe no valor do lote, revise o diff do dry-run |
+| **identidade** | `device` `fbga_code` | a **submissão** vence |
+| **interface** | `interface` | fica o **mais específico** (o mais longo) |
+| **texto** | `notes` | **merge** — o import tem Voltage/Package, a submissão tem o raciocínio Tier-1 |
+| | `source_url` | mantém a do banco e registra a da submissão dentro do `notes` (o campo é UMA url) |
+
+Dry-run por padrão, backup + `--revert`, `--exclude` pra tirar PN de fora, `--sem-precos` pra
+aplicar só a parte segura. PN que o portão do modelo rejeitar é reportado sem derrubar a varredura.
+
 ---
 
 ## 5. O mapa completo — classe de erro → trava (tudo que criamos)
