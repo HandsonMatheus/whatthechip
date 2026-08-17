@@ -1415,7 +1415,9 @@ Status: **ESQUELETO CONSTRUÍDO (2026-08-16, mesma sessão do E4 — §16-E5):**
 `Company.ui_v2` (migração tenancy/0007, checkbox no admin) + `tenancy/ui.py`
 (`ui()`/`v2_name()`) + wiring nos 19 `render()` de estoque/vendas (partials
 HTMX inclusos) + 5 testes. Falta só o CONTEÚDO: despejar o redesign nos
-arquivos `v2/` e marcar a eMiner no admin.
+arquivos `v2/` e marcar a eMiner no admin. **Contrato do agente que vai
+construir o v2: `FRONTEND_V2.md`** (raiz do repo — convenções, wired/não-
+wired, i18n, máscara, HTMX, CSS, como testar).
 
 ---
 
