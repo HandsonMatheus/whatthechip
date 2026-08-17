@@ -289,3 +289,44 @@ class ResolveConflictsTests(TestCase):
         kp.refresh_from_db()
         self.assertEqual(kp.chip_type, "")
         self.assertIn("Nenhum conflito", texto)
+
+
+class AuditSemSpecsTests(TestCase):
+    """Separar 'o registro está vazio' de 'aparece vazio na tela' é o ponto:
+    quando a gramática decodifica, o engine completa na leitura e o conserto é
+    resnapshot, não pesquisa."""
+
+    def setUp(self):
+        self.brand = Brand.objects.create(name="MarcaVazia", code="MVZ")
+
+    def _roda(self, **kw):
+        out = StringIO()
+        call_command("audit_sem_specs", brand="MarcaVazia", stdout=out, **kw)
+        return out.getvalue()
+
+    def test_sem_familia_e_sem_spec_pede_pesquisa(self):
+        KnownPart.objects.create(part_number="VAZIO-SEM-FAM", brand=self.brand,
+                                 confidence="confirmed", review_status="approved")
+        texto = self._roda()
+        self.assertIn("VAZIO-SEM-FAM", texto)
+        self.assertIn("PRECISA PESQUISA", texto)
+
+    def test_com_tipo_mas_sem_capacidade_cai_em_so_tipo(self):
+        KnownPart.objects.create(part_number="VAZIO-SO-TIPO", brand=self.brand,
+                                 confidence="confirmed", review_status="approved",
+                                 chip_type="eMMC")
+        self.assertIn("SÓ TIPO", self._roda())
+
+    def test_registro_com_capacidade_nao_aparece(self):
+        KnownPart.objects.create(part_number="TEM-CAP", brand=self.brand,
+                                 confidence="confirmed", review_status="approved",
+                                 chip_type="eMMC", capacity="32GB")
+        self.assertNotIn("TEM-CAP", self._roda())
+
+    def test_e_read_only(self):
+        kp = KnownPart.objects.create(part_number="RO-0001", brand=self.brand,
+                                      confidence="confirmed", review_status="approved")
+        self._roda()
+        kp.refresh_from_db()
+        self.assertEqual(kp.chip_type, "")
+        self.assertEqual(kp.review_status, "approved")
