@@ -1298,7 +1298,7 @@ def remove_entry(request, lot_pk, pk):
     # Mexer em lote fechado é correção de gestão → gerente+ (comportamento de
     # hoje preservado para o gerente; antes qualquer um removia de lote fechado).
     if not lot.is_open and not request.membership.has_role('manager'):
-        raise PermissionDenied('Lote fechado: remoção é ação de gerente.')
+        raise PermissionDenied(_('Lote fechado: remoção é ação de gerente.'))
     # InventoryEntry.objects EXPLÍCITO: escopo por empresa (o default é cru).
     entry = get_object_or_404(InventoryEntry.objects, pk=pk, lot=lot)
     qty   = max(1, int(request.POST.get('qty') or 1))

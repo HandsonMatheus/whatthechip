@@ -2591,3 +2591,82 @@ msgstr ""
 #: estoque/templates/estoque/base_estoque.html:154
 msgid "Menu"
 msgstr "Menu"
+
+#: templates/403.html:16 templates/403.html:44 templates/403_htmx.html:7
+msgid "Acesso negado"
+msgstr "Access denied"
+
+#: templates/403.html:53 templates/403.html:65
+msgid "Conta"
+msgstr "Account"
+
+#: templates/403.html:68
+msgid "Endereço"
+msgstr "Address"
+
+#: templates/403.html:43
+msgid "Erro"
+msgstr "Error"
+
+#: pricing/views.py:74
+msgid ""
+"Esta área é do comprador. Sua conta não está vinculada a nenhum comprador "
+"ativo."
+msgstr ""
+"This area belongs to the buyer. Your account is not linked to any active "
+"buyer."
+
+#: tenancy/middleware.py:201
+msgid ""
+"Este endereço pertence a outra empresa. Use o endereço da sua empresa ou o "
+"principal."
+msgstr ""
+"This address belongs to another company. Use your company's address or the "
+"main one."
+
+#: templates/403.html:95
+msgid "Ir para o endereço principal"
+msgstr "Go to the main address"
+
+#: estoque/views.py:1301
+msgid "Lote fechado: remoção é ação de gerente."
+msgstr "Closed lot: removal is a manager action."
+
+#: templates/403.html:55
+msgid "Papel"
+msgstr "Role"
+
+#: templates/403.html:70
+msgid "Página"
+msgstr "Page"
+
+#: tenancy/access.py:92
+msgid "Página exclusiva da plataforma."
+msgstr "Platform-only page."
+
+#: tenancy/access.py:134
+msgid "Seu papel não permite esta ação."
+msgstr "Your role does not allow this action."
+
+#: tenancy/access.py:130
+msgid ""
+"Sua conta não está vinculada a nenhuma empresa ativa. Fale com o "
+"administrador."
+msgstr ""
+"Your account is not linked to any active company. Contact the administrator."
+
+#: templates/403.html:85
+msgid "Trocar de conta"
+msgstr "Switch account"
+
+#: templates/403.html:48
+msgid "Você não tem permissão para ver esta página."
+msgstr "You do not have permission to view this page."
+
+#: templates/403.html:66
+msgid "não autenticado"
+msgstr "not signed in"
+
+#: templates/403.html:58
+msgid "sem vínculo com empresa"
+msgstr "no company link"

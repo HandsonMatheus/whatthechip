@@ -33,8 +33,36 @@ que fazer é o gate de view (403) — o middleware não bloqueia páginas públi
 from django.core.exceptions import PermissionDenied
 from django.db import connection, transaction
 from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect
+from django.utils.translation import gettext_lazy as _
 
 from .scope import _set_guc, reset_current_company, set_current_company
+
+
+# ── Rotas de ESCAPE do 403 de host (dono, 2026-08-17) ────────────────────────
+# Com host≠vínculo o 403 abaixo pegava TODO caminho daquele host — inclusive
+# ``/logout/``. Resultado: o usuário logado na empresa errada ficava PRESO (a
+# página de erro tem botão Sair, e o Sair levava outro 403); a única saída era
+# limpar cookie na mão, porque a sessão vale em todos os subdomínios
+# (``SESSION_COOKIE_DOMAIN='.<domínio>'``).
+#
+# CRITÉRIO (não afrouxar sem pensar): só passa rota que age na SESSÃO/CONTA do
+# próprio requisitante e não toca dado de empresa nenhuma —
+#   · ``/logout/``       encerra a sessão (não lê nada);
+#   · ``/i18n/setlang/`` grava a preferência de idioma DELE;
+#   · ``/branding/…``    logo público por slug — já é anônima de propósito
+#                        (tela de login do subdomínio), com 404 indistinto.
+# Estoque, vendas, painel e afins continuam barrados — o handshake §12.6 é
+# quem concede escopo, e ele não mudou.
+#
+# Hardcoded de propósito (o middleware roda ANTES da URLconf ser resolvida);
+# o teste ``RotaDeEscapeTests`` confere contra ``reverse(...)`` nas duas
+# URLconfs, então renomear a rota fica VERMELHO em vez de prender o usuário.
+ESCAPE_EXATAS   = frozenset({'/logout/', '/i18n/setlang/'})
+ESCAPE_PREFIXOS = ('/branding/',)
+
+
+def _e_rota_de_escape(path: str) -> bool:
+    return path in ESCAPE_EXATAS or path.startswith(ESCAPE_PREFIXOS)
 
 
 class TenancyMiddleware:
@@ -120,6 +148,10 @@ class HostTenantMiddleware:
                                                    → 302 pro canônico, SEM
               distinguir os casos (não revela se a empresa existe — §10.2)
 
+    Rota de ESCAPE (dono, 2026-08-17): ``/logout/`` e as outras rotas de
+    SESSÃO (ver ``ESCAPE_EXATAS`` no topo do módulo) passam mesmo com
+    host≠vínculo — senão o usuário barrado não conseguia nem sair da conta.
+
     Em host de tenant a URLconf vira ``core.urls_tenant`` (B1/B2): só o app.
     Site público/CMS e /partner/ ficam no canônico (no tenant, viram redirect
     — nunca 404: quem digitou errado não pode achar que o site caiu, §17.5.5).
@@ -168,10 +200,11 @@ class HostTenantMiddleware:
         if (user is not None and user.is_authenticated
                 and not user.is_superuser):
             vinculo = getattr(request, 'company', None)  # do TenancyMiddleware
-            if vinculo is None or vinculo.pk != company.pk:
-                raise PermissionDenied(
+            if ((vinculo is None or vinculo.pk != company.pk)
+                    and not _e_rota_de_escape(request.path)):
+                raise PermissionDenied(_(
                     'Este endereço pertence a outra empresa. Use o endereço '
-                    'da sua empresa ou o principal.')
+                    'da sua empresa ou o principal.'))
         return self.get_response(request)
 
 

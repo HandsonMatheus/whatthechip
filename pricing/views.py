@@ -71,9 +71,9 @@ def partner_required(view_func):
         buyer = (Buyer.all_companies.filter(users=request.user, active=True)
                  .select_related('company').first())
         if buyer is None:
-            raise PermissionDenied(
+            raise PermissionDenied(_(
                 'Esta área é do comprador. Sua conta não está vinculada a '
-                'nenhum comprador ativo.')
+                'nenhum comprador ativo.'))
         request.buyer = buyer
         if buyer.company_id:
             with company_scope(buyer.company):

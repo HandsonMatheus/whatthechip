@@ -2459,3 +2459,77 @@ msgstr "无法连接服务器 — 本次提交可能未送达。请再点击一�
 #: estoque/templates/estoque/base_estoque.html:154
 msgid "Menu"
 msgstr "菜单"
+
+#: templates/403.html:16 templates/403.html:44 templates/403_htmx.html:7
+msgid "Acesso negado"
+msgstr "访问被拒绝"
+
+#: templates/403.html:53 templates/403.html:65
+msgid "Conta"
+msgstr "账户"
+
+#: templates/403.html:68
+msgid "Endereço"
+msgstr "网址"
+
+#: templates/403.html:43
+msgid "Erro"
+msgstr "错误"
+
+#: pricing/views.py:74
+msgid ""
+"Esta área é do comprador. Sua conta não está vinculada a nenhum comprador "
+"ativo."
+msgstr "此区域属于买家。您的账户未关联任何有效买家。"
+
+#: tenancy/middleware.py:201
+msgid ""
+"Este endereço pertence a outra empresa. Use o endereço da sua empresa ou o "
+"principal."
+msgstr "此网址属于其他公司。请使用贵公司的网址或主网址。"
+
+#: templates/403.html:95
+msgid "Ir para o endereço principal"
+msgstr "前往主网址"
+
+#: estoque/views.py:1301
+msgid "Lote fechado: remoção é ação de gerente."
+msgstr "批次已关闭：删除属于经理权限。"
+
+#: templates/403.html:55
+msgid "Papel"
+msgstr "角色"
+
+#: templates/403.html:70
+msgid "Página"
+msgstr "页面"
+
+#: tenancy/access.py:92
+msgid "Página exclusiva da plataforma."
+msgstr "仅限平台访问的页面。"
+
+#: tenancy/access.py:134
+msgid "Seu papel não permite esta ação."
+msgstr "您的角色无权执行此操作。"
+
+#: tenancy/access.py:130
+msgid ""
+"Sua conta não está vinculada a nenhuma empresa ativa. Fale com o "
+"administrador."
+msgstr "您的账户未关联任何有效公司。请联系管理员。"
+
+#: templates/403.html:85
+msgid "Trocar de conta"
+msgstr "切换账户"
+
+#: templates/403.html:48
+msgid "Você não tem permissão para ver esta página."
+msgstr "您没有权限查看此页面。"
+
+#: templates/403.html:66
+msgid "não autenticado"
+msgstr "未登录"
+
+#: templates/403.html:58
+msgid "sem vínculo com empresa"
+msgstr "未关联公司"

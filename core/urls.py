@@ -43,3 +43,10 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('<slug:slug>/', views.page_detail, name='page'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# ── Páginas de erro ──────────────────────────────────────────────────────────
+# 403 com o MENU do site (quem sou eu / sair) em vez do texto cru do Django —
+# o porquê está em core/views.py. Precisa estar nas DUAS URLconfs: o Django
+# resolve o handler pela URLconf ATIVA da request (a de tenant é trocada em
+# core/urls_tenant.py). Sem isto, o host de tenant cairia no 403 padrão.
+handler403 = 'core.views.permission_denied'

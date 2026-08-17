@@ -19,6 +19,10 @@ from functools import wraps
 
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
+# As mensagens abaixo eram só de log (o 403 cru do Django as descartava). Com a
+# página de erro do handler403 (core/views.py) elas VIRARAM texto de tela —
+# logo, marcadas p/ tradução (I18N.md §7: string marcada exige catálogo nos 4).
+from django.utils.translation import gettext_lazy as _
 
 
 def is_unmasked(request) -> bool:
@@ -85,7 +89,7 @@ def platform_required(view_func):
         if not request.user.is_authenticated:
             return redirect_to_login(request.get_full_path())
         if not request.user.is_superuser:
-            raise PermissionDenied('Página exclusiva da plataforma.')
+            raise PermissionDenied(_('Página exclusiva da plataforma.'))
         return view_func(request, *args, **kwargs)
     return _wrapped
 
@@ -123,12 +127,12 @@ def role_required(min_role: str):
                 if _e_comprador:
                     from django.shortcuts import redirect
                     return redirect('/partner/')
-                raise PermissionDenied(
+                raise PermissionDenied(_(
                     'Sua conta não está vinculada a nenhuma empresa ativa. '
-                    'Fale com o administrador.')
+                    'Fale com o administrador.'))
             if not membership.has_role(min_role):
-                raise PermissionDenied(
-                    'Seu papel não permite esta ação.')
+                raise PermissionDenied(_(
+                    'Seu papel não permite esta ação.'))
             return view_func(request, *args, **kwargs)
         return _wrapped
     return decorator

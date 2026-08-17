@@ -1,0 +1,107 @@
+{% extends wtc_403_base|default:"403_shell_anon.html" %}{% load i18n %}
+{% comment %}
+  Página de ACESSO NEGADO (handler403 — core/views.py).
+
+  Motivação (dono, 2026-08-17): o 403 cru do Django não diz COM QUAL CONTA você
+  está logado nem oferece saída — e a sessão vale em todos os subdomínios
+  (SESSION_COOKIE_DOMAIN='.<domínio>'), então quem testa com várias contas fica
+  preso e limpa cookie na mão. Aqui o shell logado traz menu + empresa +
+  usuário + papel + Sair.
+
+  ⚠ SIGILO: só entra aqui o que o PRÓPRIO requisitante já sabe (a conta dele, a
+  empresa dele, o host que ele digitou). NUNCA renderizar
+  `request.tenant_host_company` — de quem é o subdomínio é informação de
+  enumeração (§10.2). O motivo vem de str(PermissionDenied), escrito pelo gate.
+{% endcomment %}
+{% block title %}{% trans "Acesso negado" %} — WhatTheChip?{% endblock %}
+
+{% block main %}
+<style>
+  .wtc-403 { max-width: 720px; margin: 40px auto; background: #fff;
+             border: 1px solid #e0e0e0; border-left: 4px solid #da1e28;
+             padding: 28px 32px; }
+  .wtc-403__tag { font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+                  color: #a2191f; font-weight: 600; }
+  .wtc-403__h { font-size: 26px; line-height: 1.2; margin: 6px 0 12px; color: #161616; }
+  .wtc-403__motivo { font-size: 16px; color: #393939; margin: 0 0 22px; }
+  .wtc-403__quem { border-top: 1px solid #e0e0e0; padding-top: 18px;
+                   display: grid; grid-template-columns: max-content 1fr;
+                   gap: 8px 18px; font-size: 14px; margin-bottom: 24px; }
+  .wtc-403__k { color: #6f6f6f; }
+  .wtc-403__v { color: #161616; font-weight: 500; word-break: break-all; }
+  .wtc-403__acoes { display: flex; flex-wrap: wrap; gap: 10px; }
+  .wtc-403__btn { display: inline-flex; align-items: center; height: 40px;
+                  padding: 0 16px; font-size: 14px; border: 1px solid #8d8d8d;
+                  background: #fff; color: #161616; cursor: pointer;
+                  text-decoration: none; }
+  .wtc-403__btn:hover { background: #f4f4f4; }
+  /* O shell pinta TODO link da área de trabalho de azul
+     (`.wtc-work a:not(.uib)`, no base_estoque). Para os botões que são <a>
+     valerem, a cadeia abaixo precisa ser mais específica que aquela — daí o
+     `.wtc-403__acoes` no meio (mesma ideia do :link/:visited do shell). */
+  .wtc-403 .wtc-403__acoes a.wtc-403__btn:link,
+  .wtc-403 .wtc-403__acoes a.wtc-403__btn:visited { color: #161616; }
+  .wtc-403__btn--sair { background: #da1e28; border-color: #da1e28; color: #fff; }
+  .wtc-403__btn--sair:hover { background: #ba1b23; }
+  .wtc-403 .wtc-403__acoes a.wtc-403__btn--sair:link,
+  .wtc-403 .wtc-403__acoes a.wtc-403__btn--sair:visited { color: #fff; }
+</style>
+
+<div class="wtc-403">
+  <div class="wtc-403__tag">{% trans "Erro" %} 403</div>
+  <h1 class="wtc-403__h">{% trans "Acesso negado" %}</h1>
+
+  <p class="wtc-403__motivo">
+    {% if wtc_403_motivo %}{{ wtc_403_motivo }}
+    {% else %}{% trans "Você não tem permissão para ver esta página." %}{% endif %}
+  </p>
+
+  <div class="wtc-403__quem">
+    {% if user.is_authenticated %}
+      <span class="wtc-403__k">{% trans "Conta" %}</span>
+      <span class="wtc-403__v">{{ user.get_username }}</span>
+      <span class="wtc-403__k">{% trans "Papel" %}</span>
+      <span class="wtc-403__v">
+        {% if access.role_tag %}{{ access.role_tag }}
+        {% else %}{% trans "sem vínculo com empresa" %}{% endif %}
+      </span>
+      {% if wtc_company %}
+      <span class="wtc-403__k">{% trans "Empresa" %}</span>
+      <span class="wtc-403__v">{{ wtc_company.name }}</span>
+      {% endif %}
+    {% else %}
+      <span class="wtc-403__k">{% trans "Conta" %}</span>
+      <span class="wtc-403__v">{% trans "não autenticado" %}</span>
+    {% endif %}
+    <span class="wtc-403__k">{% trans "Endereço" %}</span>
+    <span class="wtc-403__v">{{ request.get_host }}</span>
+    <span class="wtc-403__k">{% trans "Página" %}</span>
+    <span class="wtc-403__v">{{ request.path }}</span>
+  </div>
+
+  <div class="wtc-403__acoes">
+    {% if user.is_authenticated %}
+      {% comment %} Sair e Trocar de conta: POST (Django 5 tirou o GET do
+         LogoutView). O `next` passa pelo url_has_allowed_host_and_scheme do
+         próprio Django — host estranho vira a própria página. {% endcomment %}
+      <form method="post" action="{% url 'logout' %}" style="margin:0;">
+        {% csrf_token %}
+        <button type="submit" class="wtc-403__btn wtc-403__btn--sair">{% trans "Sair" %}</button>
+      </form>
+      <form method="post" action="{% url 'logout' %}" style="margin:0;">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{% url 'login' %}">
+        <button type="submit" class="wtc-403__btn">{% trans "Trocar de conta" %}</button>
+      </form>
+      <a class="wtc-403__btn" href="{% url 'painel' %}">{% trans "Painel" %}</a>
+    {% else %}
+      <a class="wtc-403__btn wtc-403__btn--sair" href="{% url 'login' %}">{% trans "Entrar" %}</a>
+    {% endif %}
+    {% if wtc_403_canonico %}
+    {% comment %} Saída do subdomínio errado: o canônico aceita qualquer
+       empresa. Só o domínio — nunca o slug de quem é dono do host. {% endcomment %}
+    <a class="wtc-403__btn" href="{{ wtc_403_canonico }}">{% trans "Ir para o endereço principal" %}</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

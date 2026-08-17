@@ -1,0 +1,9 @@
+{% load i18n %}{% comment %}
+  Fragmento do 403 para requests htmx (bancada/estoque). O htmx não faz swap de
+  4xx por padrão — devolver o documento inteiro aqui só encheria o responseText
+  (e, se alguém ligar o swap de erro, aninharia um <html> dentro de uma <div>).
+{% endcomment %}
+<div class="est-403" style="margin-top:16px;background:#fff1f1;border:1px solid #da1e28;border-left:4px solid #da1e28;padding:14px 16px;color:#a2191f;font-size:14px;">
+  <b>{% trans "Acesso negado" %} (403).</b>
+  {% if wtc_403_motivo %}{{ wtc_403_motivo }}{% endif %}
+</div>

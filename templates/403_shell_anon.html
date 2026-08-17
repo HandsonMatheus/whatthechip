@@ -1,0 +1,24 @@
+{% load static i18n %}{% comment %}
+  Casco MÍNIMO do 403 para quem NÃO está logado (core/views.SHELL_ANONIMO).
+  Anônimo não tem menu de painel pra mostrar — e o shell logado renderizaria
+  avatar/empresa vazios. Mesmos blocos do base_estoque (title/main) pra que o
+  403.html estenda um ou outro sem saber a diferença.
+{% endcomment %}<!doctype html>
+<html lang="{{ LANGUAGE_CODE|default:'pt-BR' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}WhatTheChip? · 什么芯片{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/design.css' %}">
+</head>
+<body style="background:#f4f4f4;">
+  <header style="background:#161616;padding:14px 24px;">
+    <a href="/" aria-label="WhatTheChip">
+      <img src="{% static 'img/whatthechip-darkmode.svg' %}" alt="WhatTheChip" style="height:28px;display:block;">
+    </a>
+  </header>
+  <main style="padding:0 24px;">{% block main %}{% endblock %}</main>
+</body>
+</html>

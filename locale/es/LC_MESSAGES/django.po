@@ -2615,3 +2615,83 @@ msgstr ""
 #: estoque/templates/estoque/base_estoque.html:154
 msgid "Menu"
 msgstr "Menú"
+
+#: templates/403.html:16 templates/403.html:44 templates/403_htmx.html:7
+msgid "Acesso negado"
+msgstr "Acceso denegado"
+
+#: templates/403.html:53 templates/403.html:65
+msgid "Conta"
+msgstr "Cuenta"
+
+#: templates/403.html:68
+msgid "Endereço"
+msgstr "Dirección"
+
+#: templates/403.html:43
+msgid "Erro"
+msgstr "Error"
+
+#: pricing/views.py:74
+msgid ""
+"Esta área é do comprador. Sua conta não está vinculada a nenhum comprador "
+"ativo."
+msgstr ""
+"Esta área es del comprador. Su cuenta no está vinculada a ningún comprador "
+"activo."
+
+#: tenancy/middleware.py:201
+msgid ""
+"Este endereço pertence a outra empresa. Use o endereço da sua empresa ou o "
+"principal."
+msgstr ""
+"Esta dirección pertenece a otra empresa. Use la dirección de su empresa o la"
+" principal."
+
+#: templates/403.html:95
+msgid "Ir para o endereço principal"
+msgstr "Ir a la dirección principal"
+
+#: estoque/views.py:1301
+msgid "Lote fechado: remoção é ação de gerente."
+msgstr "Lote cerrado: la eliminación es una acción del gerente."
+
+#: templates/403.html:55
+msgid "Papel"
+msgstr "Rol"
+
+#: templates/403.html:70
+msgid "Página"
+msgstr "Página"
+
+#: tenancy/access.py:92
+msgid "Página exclusiva da plataforma."
+msgstr "Página exclusiva de la plataforma."
+
+#: tenancy/access.py:134
+msgid "Seu papel não permite esta ação."
+msgstr "Su rol no permite esta acción."
+
+#: tenancy/access.py:130
+msgid ""
+"Sua conta não está vinculada a nenhuma empresa ativa. Fale com o "
+"administrador."
+msgstr ""
+"Su cuenta no está vinculada a ninguna empresa activa. Hable con el "
+"administrador."
+
+#: templates/403.html:85
+msgid "Trocar de conta"
+msgstr "Cambiar de cuenta"
+
+#: templates/403.html:48
+msgid "Você não tem permissão para ver esta página."
+msgstr "No tiene permiso para ver esta página."
+
+#: templates/403.html:66
+msgid "não autenticado"
+msgstr "no autenticado"
+
+#: templates/403.html:58
+msgid "sem vínculo com empresa"
+msgstr "sin vínculo con empresa"
