@@ -1,0 +1,364 @@
+# Submissão known_parts — Kingston, linha "Embedded Discrete DRAM" (DDR3L/DDR4/LPDDR4/LPDDR4x)
+# Chat de marca Kingston, 2026-08-17. Pesquisa disparada pelo PN físico D1216MCABXGGBS (dono leu
+# no chip: "N11044-01 / 1648 S2C 6 / D1216MCABXGGBS / 54MJE222000J").
+#
+# ACHADO: a Kingston TEM linha própria de DRAM discreta embarcada (contradiz a regra 9 que eu
+# tinha escrito no KINGSTON.md — "não fabrica die avulsa" — corrigido em paralelo).
+# Fonte primária: kingston.com/us/embedded/dram + os 3 flyers oficiais em media.kingston.com
+# (ver source_url por item). Cross-checado contra DigiKey/Mouser/Octopart/Future Electronics.
+#
+# NÃO usei sufixo de empacotamento (-U tray / -R reel / -TU) no part_number — não é o que vem
+# gravado a laser no chip, é só código de logística de embalagem do distribuidor.
+#
+# Todos chip_type/subtype já existem no vocabulário (DDR3L/DDR4/LPDDR4/LPDDR4X) — sem tipo novo,
+# sem handshake de rentabilidade pendente. Nenhuma família nova no yaml (Trilha A não tocada) —
+# são PNs exatos e enumerados pela própria Kingston, não uma regra posicional inferida por mim.
+#
+# validar: python manage.py submit_known_parts submissions/kingston_dram_embarcada_2026-08-17.yaml
+# ⚠ SCHEMA DA SUBMISSÃO ≠ BrandFile do load_brands: aqui `brand:` é uma STRING ("brand: Kingston"),
+# não o bloco name/code/notes da gramática — corrigido pela infra 2026-08-17 (o bloco antigo fazia o
+# lookup falhar com "marca '{dict}' não existe").
+
+brand: Kingston
+
+known_parts:
+
+  # ── DDR3L — família de código "ECMD" (2Gb/4Gb/8Gb) ────────────────────────────
+  - part_number: D1216ECMDXGJD
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 2Gb
+    confidence: confirmed
+    notes: >
+      2Gb DDR3L, 128Mx16, FBGA 96-ball 7.5x13.5x1.2mm, 1866Mbps, 1.35V (compatível 1.5V),
+      comercial 0~95°C. Fonte Tier-1: flyer oficial Kingston (media.kingston.com).
+    source_url: https://media.kingston.com/pdfs/emmc/MKF_944_dram_flyer_us.pdf
+
+  - part_number: D1216ECMDXGJDI
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 2Gb
+    confidence: confirmed
+    notes: >
+      Igual ao D1216ECMDXGJD, grade industrial -40~95°C. Fonte Tier-1: flyer i-Temp oficial Kingston.
+    source_url: https://media.kingston.com/pdfs/embedded/MKF_942_iTemp-DRAM_us.pdf
+
+  - part_number: D1216ECMDXGME
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 2Gb
+    confidence: confirmed
+    notes: >
+      2Gb DDR3L, 128Mx16, FBGA 96-ball, 2133Mbps (bin ME, mais rápido que JD), 1.35V, comercial.
+      Não aparece no flyer atual MKF_944 (que só lista o bin JD pra 2Gb) — confirmado via datasheet
+      Kingston mirrorado (Future Electronics) + listagens DigiKey/Avnet do PN exato.
+    source_url: https://www1.futureelectronics.com/doc/Kingston/D1216_2568ECMD-2GbDDR3L.pdf
+
+  - part_number: D1216ECMDXGMEY
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 2Gb
+    confidence: confirmed
+    notes: >
+      Igual ao D1216ECMDXGME, grade automotiva (sufixo Y). Confirmado via listagem DigiKey do PN exato
+      + datasheet Kingston mirrorado citando a variante automotiva.
+    source_url: https://www1.futureelectronics.com/doc/Kingston/D1216_2568ECMD-2GbDDR3L.pdf
+
+  - part_number: D2568ECMDPGJD
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x8
+    density_gbit: 2Gb
+    confidence: confirmed
+    notes: >
+      2Gb DDR3L, 256Mx8, FBGA 78-ball 7.5x10.6x1.2mm, 1866Mbps, 1.35V, comercial. ⚠ NÃO está no flyer
+      atual MKF_944 (que só mostra a linha x16 pra 2Gb) — candidato a legado/descontinuado. Fonte:
+      datasheet Kingston mirrorado (Future Electronics), único documento onde ele aparece.
+    source_url: https://www1.futureelectronics.com/doc/Kingston/D1216_2568ECMD-2GbDDR3L.pdf
+
+  - part_number: D2516ECMDXGJD
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: >
+      4Gb DDR3L, 256Mx16, FBGA 96-ball 7.5x13.5x1.2mm, 1866Mbps, 1.35V, comercial 0~95°C.
+    source_url: https://media.kingston.com/pdfs/emmc/MKF_944_dram_flyer_us.pdf
+
+  - part_number: D2516ECMDXGJDI
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: Igual ao D2516ECMDXGJD, grade industrial -40~95°C.
+    source_url: https://media.kingston.com/pdfs/embedded/MKF_942_iTemp-DRAM_us.pdf
+
+  - part_number: D2516ECMDXGME
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: 4Gb DDR3L, 256Mx16, FBGA 96-ball, 2133Mbps (bin ME), 1.35V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/MKF_944_dram_flyer_us.pdf
+
+  - part_number: D5128ECMDPGJD
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x8
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: 4Gb DDR3L, 512Mx8, FBGA 78-ball 7.5x10.6x1.2mm, 1866Mbps, 1.35V, comercial 0~95°C.
+    source_url: https://media.kingston.com/pdfs/emmc/MKF_944_dram_flyer_us.pdf
+
+  - part_number: D5128ECMDPGJDI
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x8
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: Igual ao D5128ECMDPGJD, grade industrial -40~95°C.
+    source_url: https://media.kingston.com/pdfs/embedded/MKF_942_iTemp-DRAM_us.pdf
+
+  - part_number: B5116ECMDXGJD
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 8Gb
+    confidence: confirmed
+    notes: 8Gb DDR3L, 512Mx16, FBGA 96-ball 9x13.5x1.2mm (corpo maior), 1866Mbps, 1.35V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/MKF_944_dram_flyer_us.pdf
+
+  - part_number: B5116ECMDXGJDI
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 8Gb
+    confidence: confirmed
+    notes: Igual ao B5116ECMDXGJD, grade industrial -40~95°C.
+    source_url: https://media.kingston.com/pdfs/embedded/MKF_942_iTemp-DRAM_us.pdf
+
+  # ── O PN que disparou a pesquisa — legado, fora dos flyers atuais ──────────────
+  - part_number: D1216MCABXGGBS
+    chip_type: DDR3L
+    subtype: DDR3L
+    interface: x16
+    density_gbit: 2Gb
+    confidence: manual
+    notes: >
+      ⚠ CADEIA DE EVIDÊNCIA MISTA — ler com atenção antes de aprovar. IDENTIDADE confirmada por
+      leitura física do chip pelo dono (eMiner, 2026-08-17), PN correto reconfirmado pelo dono:
+      4 linhas gravadas no encapsulamento — "N11044-01" / "1648 S2C 6" (provável date code YYWW =
+      semana 48 de 2016) / "D1216MCABXGGBS" / "54MJE222000J". Organização/densidade CORROBORADAS
+      (2026-08-17, tier inferior) por 2 fontes de distribuidor independentes concordando em
+      "128M x 16" + pacote "BGA96"/"96 ball": everychina/cpuprocessorchip ("Dram Memory Chip 128M *
+      16... BGA96") e netCOMPONENTS (agrega 16 fornecedores, 208.723 unidades em estoque global —
+      volume real, não listagem fantasma). 128M×16 = 2.147.483.648 bit = 2Gbit, bate exatamente com
+      "1216" = 2Gb já confirmado em Tier-1 pela família "...ECMD..." (ver PNs acima). alldatasheet.com
+      cataloga o fabricante como "Kingston Technology Far East Co. Ltd." (nome corporativo real da
+      Kingston), reforçando a identidade. ⚠ Um distribuidor cita "PC1600" como velocidade — isso é
+      JEDEC de DDR1 (incompatível com DDR3), quase certamente ruído: a MESMA página cita "tray
+      package, 1600/box" — hipótese provável é confusão automática entre a quantidade por bandeja
+      (1600 un.) e uma "velocidade PC1600"; NÃO usei esse dado. Velocidade real (1866 vs 2133 Mbps,
+      os dois bins que a família "1216" tem) e voltagem exata seguem SEM fonte própria pra este PN —
+      seguem inferidos por analogia à família confirmada, não seguem numa nota estruturada. Decisão da revisão
+      (infra, 2026-08-17): `confidence=manual` — identidade é física (dono leu o chip) e densidade é
+      corroborada, mas velocidade/voltagem seguem por ANALOGIA; sobe a confirmed quando aparecer
+      datasheet dedicado do código "MCAB". (manual continua elegível ao estoque, como confirmed.)
+    source_url: ""
+
+  # ── DDR4 — família de código "AN9E"/"AN9C"/"ANBH" (4Gb/8Gb) ───────────────────
+  - part_number: D2516AN9EXGXN
+    chip_type: DDR4
+    subtype: DDR4
+    interface: x16
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: 4Gb DDR4, 256Mx16, FBGA 96-ball 7.5x13x1.1mm, 3200Mbps, 1.2V, comercial 0~95°C.
+    source_url: https://media.kingston.com/pdfs/emmc/dram_ddr4_flyer_us.pdf
+
+  - part_number: D2516AN9EXGXNI
+    chip_type: DDR4
+    subtype: DDR4
+    interface: x16
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: Igual ao D2516AN9EXGXN, grade industrial -40~95°C.
+    source_url: https://media.kingston.com/pdfs/emmc/dram_ddr4_flyer_us.pdf
+
+  - part_number: D5116AN9CXGXN
+    chip_type: DDR4
+    subtype: DDR4
+    interface: x16
+    density_gbit: 8Gb
+    confidence: confirmed
+    notes: 8Gb DDR4, 512Mx16, FBGA 96-ball, 3200Mbps, 1.2V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram_ddr4_flyer_us.pdf
+
+  - part_number: D5116AN9CXGXNI
+    chip_type: DDR4
+    subtype: DDR4
+    interface: x16
+    density_gbit: 8Gb
+    confidence: confirmed
+    notes: Igual ao D5116AN9CXGXN, grade industrial -40~95°C.
+    source_url: https://media.kingston.com/pdfs/emmc/dram_ddr4_flyer_us.pdf
+
+  - part_number: D5116ANBHXGXN
+    chip_type: DDR4
+    subtype: DDR4
+    interface: x16
+    density_gbit: 8Gb
+    confidence: confirmed
+    notes: >
+      8Gb DDR4, 512Mx16, FBGA 96-ball, 3200Mbps, 1.2V, comercial — revisão de die alternativa ao
+      D5116AN9CXGXN (mesma spec elétrica, código de família diferente "ANBH" vs "AN9C").
+    source_url: https://media.kingston.com/pdfs/emmc/dram_ddr4_flyer_us.pdf
+
+  - part_number: D1028AN9CPGXNI
+    chip_type: DDR4
+    subtype: DDR4
+    interface: x8
+    density_gbit: 8Gb
+    confidence: confirmed
+    notes: 8Gb DDR4, 512Mx8, FBGA 78-ball, 3200Mbps, 1.2V, industrial -40~95°C.
+    source_url: https://media.kingston.com/pdfs/emmc/dram_ddr4_flyer_us.pdf
+
+  # ── LPDDR4 — família de código "PM4C"/"PM3B" (16Gb/32Gb/64Gb) ─────────────────
+  # capacidade = densidade(Gbit) ÷ 8: 16Gb÷8=2GB · 32Gb÷8=4GB · 64Gb÷8=8GB
+  - part_number: D1621PM4CDGUI
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 2GB
+    confidence: confirmed
+    notes: >
+      16Gb÷8=2GB, 512Mx32, FBGA 200-ball (10x14.5x0.8mm), 3733Mbps, 1.1V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: D1621PM4CDGVI
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 2GB
+    confidence: confirmed
+    notes: 16Gb÷8=2GB, 512Mx32, FBGA 200-ball, 4266Mbps (bin V, mais rápido), 1.1V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: D1611PM3BDGUI
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 2GB
+    confidence: confirmed
+    notes: 16Gb÷8=2GB, 1Gx16, FBGA 200-ball, 3733Mbps, 1.1V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: C3222PM4CDGUI
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 4GB
+    confidence: confirmed
+    notes: 32Gb÷8=4GB, 1Gx32, FBGA 200-ball, 3733Mbps, 1.1V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: B3221PM3BDGUI
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 4GB
+    confidence: confirmed
+    notes: 32Gb÷8=4GB, 1Gx32, FBGA 200-ball, 3733Mbps, 1.1V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: Q6422PM3BDGVK
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 8GB
+    confidence: confirmed
+    notes: 64Gb÷8=8GB, 2Gx32, FBGA 200-ball (10x14.5x1.0mm, corpo maior), 4266Mbps, 1.1V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: D1621PM4CDGUIW
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 2GB
+    confidence: confirmed
+    notes: 16Gb÷8=2GB, 512Mx32, FBGA 200-ball, 3733Mbps, 1.1V, industrial (sufixo W).
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: D1621PM4CDGVIW
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 2GB
+    confidence: confirmed
+    notes: 16Gb÷8=2GB, 512Mx32, FBGA 200-ball, 4266Mbps, 1.1V, industrial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: D1611PM3BDGVIW
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 2GB
+    confidence: confirmed
+    notes: 16Gb÷8=2GB, 1Gx16, FBGA 200-ball, 4266Mbps, 1.1V, industrial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: C3222PM4CDGUIW
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 4GB
+    confidence: confirmed
+    notes: 32Gb÷8=4GB, 1Gx32, FBGA 200-ball, 3733Mbps, 1.1V, industrial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: B3221PM3BDGVIW
+    chip_type: LPDDR4
+    subtype: LPDDR4
+    interface: ""
+    capacity: 4GB
+    confidence: confirmed
+    notes: 32Gb÷8=4GB, 1Gx32, FBGA 200-ball, 4266Mbps, 1.1V, industrial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  # ── LPDDR4x — família de código "XM4C"/"XM3B" (16Gb/32Gb/64Gb, 0.6V) ──────────
+  - part_number: D1621XM4CDGVI
+    chip_type: LPDDR4X
+    subtype: LPDDR4X
+    interface: ""
+    capacity: 2GB
+    confidence: confirmed
+    notes: >
+      16Gb÷8=2GB, 512Mx32, FBGA 200-ball, 4266Mbps, 0.6V, comercial. ⚠ O flyer também lista este
+      MESMO PN numa tabela "industrial" com 1.1V — duas voltagens pro mesmo PN não fecha, tratei
+      como provável erro de extração do PDF e excluí a linha industrial (não submeti).
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: B3221XM3BDGVI
+    chip_type: LPDDR4X
+    subtype: LPDDR4X
+    interface: ""
+    capacity: 4GB
+    confidence: confirmed
+    notes: 32Gb÷8=4GB, 1Gx32, FBGA 200-ball, 4266Mbps, 0.6V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
+
+  - part_number: Q6422XM3BDGVK
+    chip_type: LPDDR4X
+    subtype: LPDDR4X
+    interface: ""
+    capacity: 8GB
+    confidence: confirmed
+    notes: 64Gb÷8=8GB, 2Gx32, FBGA 200-ball (corpo maior), 4266Mbps, 0.6V, comercial.
+    source_url: https://media.kingston.com/pdfs/emmc/dram-lpddr4-us.pdf
