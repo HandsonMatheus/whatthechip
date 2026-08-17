@@ -698,3 +698,93 @@ class HeaderLogoTests(TestCase):
                               HTTP_HOST='eminerhdr.whatthechip.app')
         self.assertEqual(img.status_code, 200)
         self.assertEqual(img['Content-Type'], 'image/png')
+
+
+# ── E5 (§17.7): canary de frontend por empresa ───────────────────────────────
+
+class UiV2CanaryTests(TestCase):
+    """E5: o flag por empresa decide v2×atual SEM deploy. Prova o helper
+    (unidade), o fallback (flag ON sem arquivo v2 → tela atual, nunca 500) e
+    a troca real (arquivo v2 presente → v2 servida SÓ pra empresa com flag)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.cia = Company.objects.create(name='Canary SA', slug='canary')
+        cls.user = User.objects.create_user('op_canary')
+        Membership.objects.create(user=cls.user, company=cls.cia,
+                                  role=Membership.ROLE_OPERATOR)
+        cls.cia_v1 = Company.objects.create(name='Segue V1 SA', slug='seguev1')
+        cls.user_v1 = User.objects.create_user('op_seguev1')
+        Membership.objects.create(user=cls.user_v1, company=cls.cia_v1,
+                                  role=Membership.ROLE_OPERATOR)
+
+    # ── unidade: o helper ───────────────────────────────────────────────────
+    def test_helper_flag_off_devolve_o_nome_puro(self):
+        from tenancy.ui import ui
+
+        class R:
+            company = self.cia
+        self.assertEqual(ui(R(), 'estoque/painel.html'),
+                         'estoque/painel.html')
+
+    def test_helper_flag_on_devolve_lista_v2_primeiro(self):
+        from tenancy.ui import ui, v2_name
+        self.cia.ui_v2 = True
+
+        class R:
+            company = self.cia
+        self.assertEqual(ui(R(), 'estoque/painel.html'),
+                         ['estoque/v2/painel.html', 'estoque/painel.html'])
+        self.assertEqual(v2_name('estoque/partials/confirm_card.html'),
+                         'estoque/v2/partials/confirm_card.html')
+        self.assertEqual(v2_name('base.html'), 'v2/base.html')
+
+    def test_helper_anonimo_segue_o_host_e_sem_empresa_e_atual(self):
+        from tenancy.ui import ui
+        self.cia.ui_v2 = True
+
+        class Anon:                       # anônimo em host de tenant flagado
+            company = None
+            tenant_host_company = self.cia
+        self.assertIsInstance(ui(Anon(), 'estoque/painel.html'), list)
+
+        class Nada:                       # anônimo no canônico
+            pass
+        self.assertEqual(ui(Nada(), 'estoque/painel.html'),
+                         'estoque/painel.html')
+
+    # ── integração: fallback e troca real ───────────────────────────────────
+    def test_flag_on_sem_arquivo_v2_cai_na_tela_atual(self):
+        self.cia.ui_v2 = True
+        self.cia.save(update_fields=['ui_v2'])
+        self.client.force_login(self.user)
+        resp = self.client.get('/painel/')
+        self.assertEqual(resp.status_code, 200)   # nunca 500 por template
+
+    def test_arquivo_v2_presente_so_vale_pra_empresa_com_flag(self):
+        import copy
+        import os
+        import shutil
+        import tempfile
+
+        from django.conf import settings as dj_settings
+
+        tmp = tempfile.mkdtemp(prefix='wtc_v2_')
+        self.addCleanup(shutil.rmtree, tmp, True)
+        os.makedirs(os.path.join(tmp, 'estoque', 'v2'))
+        with open(os.path.join(tmp, 'estoque', 'v2', 'painel.html'),
+                  'w', encoding='utf-8') as f:
+            f.write('<main>V2MARKER-painel</main>')
+        templates = copy.deepcopy(dj_settings.TEMPLATES)
+        templates[0]['DIRS'] = ([tmp] +
+                                [str(d) for d in templates[0]['DIRS']])
+        self.cia.ui_v2 = True
+        self.cia.save(update_fields=['ui_v2'])
+        with override_settings(TEMPLATES=templates):
+            self.client.force_login(self.user)          # empresa flagada
+            self.assertContains(self.client.get('/painel/'),
+                                'V2MARKER-painel')
+            self.client.force_login(self.user_v1)       # empresa SEM flag
+            resp = self.client.get('/painel/')
+            self.assertEqual(resp.status_code, 200)
+            self.assertNotContains(resp, 'V2MARKER-painel')

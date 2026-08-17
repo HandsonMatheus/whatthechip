@@ -24,6 +24,7 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from tenancy.access import can_see_price, is_unmasked, role_required
+from tenancy.ui import ui   # E5: canary por empresa (§17.7)
 
 from .models import (INV_OPEN, Invoice, STATUS_CONFIRMED, STATUS_DRAFT,
                      SalesOrder)
@@ -58,7 +59,7 @@ def so_list(request):
     if not ver_valor:
         for o in orders:
             o.total_rmb = o.total_usd = None
-    return render(request, 'vendas/so_list.html',
+    return render(request, ui(request, 'vendas/so_list.html'),
                   {'orders': orders, 'ver_valor': ver_valor})
 
 
@@ -102,7 +103,7 @@ def so_detail(request, pk):
                     'fx_rate': so.fx_usd_rate})
     if not ver_valor:
         _mascarar_valores(ctx)
-    return render(request, 'vendas/so_detail.html', ctx)
+    return render(request, ui(request, 'vendas/so_detail.html'), ctx)
 
 
 def _mascarar_valores(ctx: dict) -> None:
@@ -237,7 +238,7 @@ def settlement_new(request, pk):
                                     'com o valor final.'))
         return redirect('vendas:invoice_detail', pk=inv.pk)
     services.annotate_labels(lines, is_unmasked(request))     # F12
-    return render(request, 'vendas/settlement_form.html',
+    return render(request, ui(request, 'vendas/settlement_form.html'),
                   {'so': so, 'lines': lines})
 
 
@@ -249,7 +250,7 @@ def invoice_detail(request, pk):
            if inv.settlement_id else [])
     services.annotate_labels([a.order_line for a in adj],
                              is_unmasked(request))             # F12
-    return render(request, 'vendas/invoice_detail.html', {
+    return render(request, ui(request, 'vendas/invoice_detail.html'), {
         'inv': inv, 'adjustments': adj,
         'payments': inv.payments.select_related('created_by'),
     })

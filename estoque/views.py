@@ -31,6 +31,7 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from tenancy.access import can_sales, role_required
+from tenancy.ui import ui   # E5: canary por empresa (§17.7)
 
 from chips.conventions import canonical_gen
 from chips.chip_types import canonical_chip_type, generation_of, label_kind
@@ -696,7 +697,7 @@ def painel(request):
             'rejected_today': RejectedEntry.objects.filter(created_at__date=today).count(),
         },
     }
-    return render(request, 'estoque/painel.html', ctx)
+    return render(request, ui(request, 'estoque/painel.html'), ctx)
 
 
 # ─── lot list ───────────────────────────────────────────────────────────────
@@ -725,7 +726,7 @@ def lot_list(request):
                 lot.val_mid = vals[0]['total_mid'] if vals else None
                 lot.val_mid_rmb = vals[0].get('total_mid_rmb') if vals else None
 
-    return render(request, 'estoque/lotes.html',
+    return render(request, ui(request, 'estoque/lotes.html'),
                   {'lots': lots, 'show_valuation': is_admin})
 
 
@@ -786,7 +787,7 @@ def lot_detail(request, lot_pk):
     }
 
     if request.headers.get('HX-Request'):
-        return render(request, 'estoque/partials/table_body.html', ctx)
+        return render(request, ui(request, 'estoque/partials/table_body.html'), ctx)
 
     # F8 (PRECIFICACAO §7): valoração do lote — SÓ admin, só no render completo.
     # Lote FECHADO mostra o CONGELADO (auditoria "vendi com qual tabela");
@@ -804,7 +805,7 @@ def lot_detail(request, lot_pk):
         ctx['sales_order'] = (SalesOrder.all_companies.filter(lot=lot)
                               .exclude(status=STATUS_CANCELLED).first())
 
-    return render(request, 'estoque/estoque.html', ctx)
+    return render(request, ui(request, 'estoque/estoque.html'), ctx)
 
 
 def _lot_valuations(request, lot):
@@ -847,7 +848,7 @@ def fx_badge(request):
     """Parcial do widget da taxa (header) — alvo do polling HTMX de 60s.
     Taxa é dado público de mercado: qualquer papel logado."""
     from pricing.engine import fx_display
-    return render(request, 'estoque/partials/fx_badge.html',
+    return render(request, ui(request, 'estoque/partials/fx_badge.html'),
                   {'wtc_fx': fx_display() or {'rate_disp': None}})
 
 
@@ -863,9 +864,9 @@ def lot_valuation_live(request, lot_pk):
                   if getattr(request, 'company_role', None) == 'admin' else [])
     if request.GET.get('fmt') == 'card':
         v = valuations[0] if valuations else None
-        return render(request, 'estoque/partials/lot_value_card.html',
+        return render(request, ui(request, 'estoque/partials/lot_value_card.html'),
                       {'v': v})
-    return render(request, 'estoque/partials/lot_valuation.html',
+    return render(request, ui(request, 'estoque/partials/lot_valuation.html'),
                   {'valuations': valuations})
 
 
@@ -1101,9 +1102,9 @@ def preview_chip(request, lot_pk):
         ctx.update({'masked_code': masked_code,
                     'masked_general': masked_general})
         return render(request,
-                      'estoque/partials/confirm_card_masked.html', ctx)
+                      ui(request, 'estoque/partials/confirm_card_masked.html'), ctx)
 
-    return render(request, 'estoque/partials/confirm_card.html', ctx)
+    return render(request, ui(request, 'estoque/partials/confirm_card.html'), ctx)
 
 
 # ─── add chip ────────────────────────────────────────────────────────────────
@@ -1154,7 +1155,7 @@ def add_chip(request, lot_pk):
                 rejection_reason='NÃO RENTÁVEL (geração)',
                 operator=request.user,
             )
-        return render(request, 'estoque/partials/rejected_feedback.html', {
+        return render(request, ui(request, 'estoque/partials/rejected_feedback.html'), {
             'pn': pn, 'qty': qty,
             'chip_type': server_result.get('chip_type', ''),
             'capacity':  server_result.get('capacity', ''),
@@ -1173,7 +1174,7 @@ def add_chip(request, lot_pk):
         if not is_dup:
             UnknownChip.objects.get_or_create(
                 part_number=pn, defaults={'company': request.company})
-        return render(request, 'estoque/partials/unknown_feedback.html', {'pn': pn})
+        return render(request, ui(request, 'estoque/partials/unknown_feedback.html'), {'pn': pn})
 
     # ── Bloqueio "só confirmados" ────────────────────────────────────────────
     # Se o PN não é confirmado no banco, NÃO entra no estoque: vai para a fila de
@@ -1198,7 +1199,7 @@ def add_chip(request, lot_pk):
                 PendingEntry.objects.filter(pk=pend.pk).update(quantity=F('quantity') + qty)
                 pend.refresh_from_db()
             pend_qty = pend.quantity
-        return render(request, 'estoque/partials/pending_feedback.html', {
+        return render(request, ui(request, 'estoque/partials/pending_feedback.html'), {
             'pn': pn, 'qty': pend_qty, 'near': near,
         })
 
@@ -1216,7 +1217,7 @@ def add_chip(request, lot_pk):
                 rejection_reason='NÃO RENTÁVEL',
                 operator=request.user,
             )
-        return render(request, 'estoque/partials/rejected_feedback.html', {
+        return render(request, ui(request, 'estoque/partials/rejected_feedback.html'), {
             'pn': pn, 'qty': qty,
             'chip_type': server_result.get('chip_type', ''),
             'capacity':  server_result.get('capacity', ''),
@@ -1271,7 +1272,7 @@ def add_chip(request, lot_pk):
     if masked:
         _masked_entry_labels(entries)
 
-    response = render(request, 'estoque/partials/table_body.html', {
+    response = render(request, ui(request, 'estoque/partials/table_body.html'), {
         'lot':        lot,
         'entries':    entries,
         'page_obj':   page_obj,
@@ -1315,7 +1316,7 @@ def remove_entry(request, lot_pk, pk):
     if masked:
         _masked_entry_labels(entries)
 
-    return render(request, 'estoque/partials/table_body.html', {
+    return render(request, ui(request, 'estoque/partials/table_body.html'), {
         'lot':       lot,
         'entries':   entries,
         'page_obj':  page_obj,

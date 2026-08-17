@@ -99,6 +99,16 @@ class Company(models.Model):
         help_text='Dona do WhatTheChip: usuários dela veem os rótulos REAIS '
                   'de categoria. Empresas-cliente veem só o código C-### '
                   '(F12 — proteção do conhecimento).')
+    # E5 (§17.7 — canary por cliente, 2026-08-16): rollout do redesign de
+    # frontend POR EMPRESA. Ligado → as views servem o template v2 quando o
+    # arquivo existe (tenancy/ui.py; fallback automático pro atual, tela a
+    # tela). Rollout e rollback viram checkbox — nunca deploy.
+    ui_v2 = models.BooleanField(
+        default=False, verbose_name='Frontend v2 (canary)',
+        help_text='Liga o redesign novo pra ESTA empresa (eMiner primeiro, '
+                  'depois as demais). Tela sem arquivo v2 cai na atual — '
+                  'seguro ligar a qualquer momento; desligar = rollback '
+                  'instantâneo, sem deploy.')
     # Branding por empresa (E4 — B4+B7, decisão do dono 2026-08-16): o logo
     # mora no BANCO (CompanyLogo, 1-pra-1), não em arquivo — o filesystem da
     # Render é efêmero e /media/ nem é servido com DEBUG=False (B7). Aqui na

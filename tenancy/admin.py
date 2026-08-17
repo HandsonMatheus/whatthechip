@@ -64,8 +64,9 @@ class CompanyAdminForm(forms.ModelForm):
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     form = CompanyAdminForm
-    list_display  = ('name', 'slug', 'active', 'last_lot_number', 'created_at')
-    list_filter   = ('active',)
+    list_display  = ('name', 'slug', 'active', 'ui_v2', 'last_lot_number',
+                     'created_at')
+    list_filter   = ('active', 'ui_v2')
     search_fields = ('name', 'slug')
     readonly_fields = ('created_at', 'logo_preview')
     prepopulated_fields = {'slug': ('name',)}

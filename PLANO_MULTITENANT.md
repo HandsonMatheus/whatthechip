@@ -1169,6 +1169,35 @@ segredo à toa. O que entrou:
 roda migrate em prod) → `/admin/tenancy/company/` → subir o logo da eMiner e
 da eRecyclo → conferir o header em `eminer.whatthechip.app`.
 
+### E5 — Esqueleto do canary por cliente (2026-08-16, mesma sessão)
+
+Aprovado pelo dono na sequência do E4 (pergunta dele: *"testar só na eMiner
+primeiro e depois nos outros clientes"*). Design completo no §17.7; o que
+entrou de código:
+
+1. `Company.ui_v2` (BooleanField, default False) — checkbox e filtro no
+   admin de Empresas; migração `tenancy/0007_company_ui_v2` (pghistory
+   espelha — flip de flag fica auditado).
+2. **`tenancy/ui.py`** — `ui(request, nome)` devolve o nome puro (flag OFF)
+   ou `[v2, atual]` (flag ON; o `render()`/`select_template` usa o primeiro
+   que existe → fallback automático tela a tela). Semântica: o flag é do
+   VÍNCULO (`request.company`); anônimo em host de tenant segue
+   `tenant_host_company`; anônimo no canônico = atual. Convenção:
+   `estoque/painel.html` → `estoque/v2/painel.html`. Template v2 que
+   estende/inclui aponta EXPLICITAMENTE pros caminhos v2 — só as views
+   resolvem por request.
+3. Wiring nos **19 `render()`** de `estoque/views.py` (15) e
+   `vendas/views.py` (4) — partials HTMX da bancada inclusos.
+4. **5 testes** (`UiV2CanaryTests`): helper OFF/ON/anônimo, flag ON sem
+   arquivo v2 → tela atual (nunca 500), e arquivo v2 presente → v2 SÓ pra
+   empresa flagada (a sem flag segue na atual, provado no mesmo teste).
+5. Comportamento HOJE: byte a byte o mesmo — sem arquivo `v2/` e sem flag,
+   nada muda pra ninguém. **Suíte: 503 OK.**
+
+**Próximo passo (do REDESIGN, não desta trilha):** despejar as telas novas
+em `templates/**/v2/…` e marcar `ui_v2` na eMiner no admin. Rollback =
+desmarcar.
+
 ---
 
 ## 17. Roadmap de execução — da fundação ao subdomínio dos 2 clientes (dossiê 2026-08-06)
@@ -1382,8 +1411,11 @@ EFEITO se obtém com **flag por empresa**, que no nosso setup é o jeito certo:
    pro mesmo banco): migração dupla no mesmo banco, custo dobrado, e o
    wildcard `*.whatthechip.app` só aponta pra 1 serviço.
 
-Status: **DESENHADA, não construída.** Esqueleto (flag + helper + testes) =
-1 sessão, quando o dono quiser começar a despejar o redesign nos arquivos v2.
+Status: **ESQUELETO CONSTRUÍDO (2026-08-16, mesma sessão do E4 — §16-E5):**
+`Company.ui_v2` (migração tenancy/0007, checkbox no admin) + `tenancy/ui.py`
+(`ui()`/`v2_name()`) + wiring nos 19 `render()` de estoque/vendas (partials
+HTMX inclusos) + 5 testes. Falta só o CONTEÚDO: despejar o redesign nos
+arquivos `v2/` e marcar a eMiner no admin.
 
 ---
 
