@@ -115,6 +115,55 @@ def company_scope(company):
                 _set_guc(cur, 'app.company_id', guc_prev or '')
 
 
+@contextmanager
+def platform_scope():
+    """Escopo de PLATAFORMA para ESCRITA em linha de plataforma — Camada B.
+
+    ⚠ Ele ABRE a transação (``transaction.atomic()``) e emite, DENTRO dela,
+    ``SET LOCAL app.platform = '1'`` — o mesmo escape do middleware para
+    superuser e de todo RunPython de dados em tabela com RLS (CLAUDE.md §7,
+    modelo em ``pricing/migrations/0021``). Use no lugar do ``atomic()`` cru::
+
+        with platform_scope():
+            row.save()          # linha de PLATAFORMA (company IS NULL)
+
+    POR QUE existe (bug de prod, comando ``enable_price_row``, 2026-08-17):
+    desde ``pricing/0021`` comprador/lista/preço são de PLATAFORMA
+    (``company_id IS NULL`` — a tabela do comprador precifica TODAS as
+    empresas). As policies viraram um par leitura/escrita:
+
+      · LEITURA  ``tenant_read``: empresa OU plataforma OU ``company IS NULL``
+        → o comando LÊ a linha normalmente (por isso o dry-run passa);
+      · ESCRITA  ``tenant_upd``/``tenant_ins``: empresa dona OU plataforma OU
+        usuário-parceiro → com SÓ o ``app.company_id`` do
+        ``scope_command_to_company``, ``NULL = <id>`` é NULL: o UPDATE casa
+        **ZERO linhas, em silêncio**.
+
+    E aí vem a pegadinha: o Django não vê erro no UPDATE vazio — o
+    ``Model._save_table`` conclui "não existia" e cai no INSERT de fallback,
+    que bate no ``WITH CHECK`` e estoura o enganoso *"new row violates
+    row-level security policy"* (traceback apontando INSERT de linha NOVA
+    numa linha que existe desde o seed).
+
+    ``SET LOCAL`` morre no commit/rollback — PgBouncer-safe, sem restauração
+    manual. Dentro de um ``atomic()`` externo o ``atomic()`` daqui vira
+    savepoint e o GUC vale até o fim da transação EXTERNA (aceitável: o
+    chamador é comando/job de plataforma, dono do próprio ciclo).
+
+    É ESCAPE EXPLÍCITO, auditável por grep — como o manager ``all_companies``:
+    só em código de PLATAFORMA. No SQLite (testes) é no-op, só a transação.
+    """
+    from django.db import connection, transaction
+
+    with transaction.atomic():
+        if connection.vendor == 'postgresql':
+            with connection.cursor() as cur:
+                _set_guc(cur, 'app.platform', '1', local=True)
+            yield True
+        else:
+            yield False
+
+
 def scope_command_to_company(slug=None, stdout=None):
     """Escopo de empresa para MANAGEMENT COMMANDS (§6.1: fora de request o
     escopo é sempre explícito — comando tenant-scoped sem escopo não passa).

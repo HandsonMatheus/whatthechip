@@ -43,12 +43,11 @@ from datetime import date
 from decimal import Decimal
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 
 from pricing.models import (Buyer, KIND_EMCP, KIND_UMCP, Price, PriceList,
                             STATUS_NO_BUY, STATUS_QUOTED, UNIFIED_KINDS,
                             fold_gen)
-from tenancy.scope import scope_command_to_company
+from tenancy.scope import platform_scope, scope_command_to_company
 
 _BACKUP = 'import_price_sheet_v2_backup.json'
 _TYPE_TO_KIND = {'emcp': 'emcp', 'umcp': 'umcp', 'ufs': 'ufs', 'emmc': 'emmc',
@@ -92,7 +91,9 @@ class Command(BaseCommand):
     def _revert(self, path):
         with open(path) as fh:
             log = json.load(fh)
-        with transaction.atomic():
+        # RLS: .update() em linha de plataforma (0 linhas em silêncio
+        # sem o app.platform).
+        with platform_scope():
             for d in log:
                 Price.all_companies.filter(pk=d['pk']).update(
                     status=d['status'],
@@ -290,7 +291,9 @@ class Command(BaseCommand):
         with open(_BACKUP, 'w') as fh:
             json.dump([_dump(p) for p, *_r in mudancas], fh, indent=1)
         hoje = date.today()
-        with transaction.atomic():
+        # RLS (Camada B): linha de PLATAFORMA (company IS NULL desde
+        # pricing/0021) — só o app.company_id NÃO abre a escrita.
+        with platform_scope():
             for p, st, mn, mx, _txt in mudancas:
                 p.status, p.price_min, p.price_max = st, mn, mx
                 p.quote_date = hoje if st == STATUS_QUOTED else None

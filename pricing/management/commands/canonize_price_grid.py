@@ -26,11 +26,10 @@ Dry-run por padrão; --commit grava (backup JSON antes — padrão da casa);
 import json
 
 from django.core.management.base import BaseCommand
-from django.db import transaction
 
 from pricing.models import (Price, STATUS_NO_BUY, STATUS_NOT_MADE,
                             STATUS_QUOTED, STATUS_UNQUOTED, fold_gen)
-from tenancy.scope import scope_command_to_company
+from tenancy.scope import platform_scope, scope_command_to_company
 
 _SCORE = {STATUS_QUOTED: 3, STATUS_NO_BUY: 2, STATUS_NOT_MADE: 1,
           STATUS_UNQUOTED: 0}
@@ -64,7 +63,8 @@ class Command(BaseCommand):
         from decimal import Decimal as _D
         with open(path) as fh:
             log = json.load(fh)
-        with transaction.atomic():
+        # RLS: .update()/bulk_create em linha de plataforma.
+        with platform_scope():
             recriar = []
             for grupo in log['grupos']:
                 m = grupo['mantida']
@@ -150,7 +150,10 @@ class Command(BaseCommand):
         with open(_BACKUP, 'w') as fh:
             json.dump(backup, fh, ensure_ascii=False, indent=1)
 
-        with transaction.atomic():
+        # RLS (Camada B): linha de PLATAFORMA (company IS NULL desde
+        # pricing/0021) — só o app.company_id NÃO abre a escrita.
+        # ⚠ .delete() sob RLS não estoura: apaga ZERO em silêncio.
+        with platform_scope():
             for mantida, resto, vencedora in plano:
                 campos = {f: getattr(vencedora, f) for f in _FIELDS}
                 for r in resto:

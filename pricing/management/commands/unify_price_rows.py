@@ -22,11 +22,10 @@ import json
 from decimal import Decimal
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 
 from pricing.models import (Buyer, Price, PriceList, STATUS_QUOTED,
                             UNIFIED_KINDS)
-from tenancy.scope import scope_command_to_company
+from tenancy.scope import platform_scope, scope_command_to_company
 
 _BACKUP = 'unify_price_rows_backup.json'
 
@@ -56,7 +55,8 @@ class Command(BaseCommand):
         with open(path) as fh:
             log = json.load(fh)
         recriar = []
-        with transaction.atomic():
+        # RLS: .update()/bulk_create em linha de plataforma.
+        with platform_scope():
             for d in log['genericas']:
                 Price.all_companies.filter(pk=d['pk']).update(
                     status=d['status'],
@@ -144,7 +144,10 @@ class Command(BaseCommand):
                   'genericas': [_dump(g) for g, _m in ajustes_genericas]}
         with open(_BACKUP, 'w') as fh:
             json.dump(backup, fh, indent=1)
-        with transaction.atomic():
+        # RLS (Camada B): linha de PLATAFORMA (company IS NULL desde
+        # pricing/0021) — só o app.company_id NÃO abre a escrita.
+        # ⚠ .delete() sob RLS não estoura: apaga ZERO em silêncio.
+        with platform_scope():
             for g, melhor in ajustes_genericas:
                 g.status = STATUS_QUOTED
                 g.price_min, g.price_max = melhor.price_min, melhor.price_max

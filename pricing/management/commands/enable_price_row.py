@@ -25,12 +25,11 @@ Dry-run por padrão (regra de ouro #1).
 from decimal import Decimal, InvalidOperation
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 
 from pricing.models import (Buyer, KIND_UNIT, KINDS, Price, PriceList,
                             STATUS_NOT_MADE, STATUS_QUOTED, STATUS_UNQUOTED,
                             UNIFIED_KINDS, fold_gen)
-from tenancy.scope import scope_command_to_company
+from tenancy.scope import platform_scope, scope_command_to_company
 
 
 class Command(BaseCommand):
@@ -128,12 +127,31 @@ class Command(BaseCommand):
                 'DRY-RUN — nada gravado. Revise e re-rode com --commit.'))
             return
 
-        with transaction.atomic():
+        # Camada B (RLS): a linha de preço é de PLATAFORMA (company IS NULL
+        # desde pricing/0021 — o comprador precifica todas as empresas). Com
+        # APENAS o app.company_id do scope_command_to_company, a policy
+        # tenant_upd casa ZERO linhas e o Django cai no INSERT de fallback do
+        # _save_table → "new row violates row-level security policy" (bug de
+        # prod 2026-08-17). platform_scope() abre a transação E emite o
+        # SET LOCAL app.platform='1' — mesmo escape do RunPython (CLAUDE.md §7).
+        with platform_scope():
             for _nome, row in plan:
                 row.status = STATUS_UNQUOTED
                 row.price_min = row.price_max = None
                 row.quote_date = None
                 row.save()
+
+        # Confirmação em BANCO (o pecado do RLS é o no-op SILENCIOSO — nunca
+        # confiar no "não deu erro"; §7). Relê e exige o status novo.
+        pks = [row.pk for _nome, row in plan]
+        gravadas = Price.all_companies.filter(
+            pk__in=pks, status=STATUS_UNQUOTED).count()
+        if gravadas != len(plan):
+            raise CommandError(
+                f'GRAVAÇÃO INCOMPLETA: {gravadas}/{len(plan)} linha(s) estão '
+                f'"não cotado" no banco. Cheiro de RLS/GUC — confira se o '
+                f'app.platform chegou na conexão antes de rodar de novo.')
         self.stdout.write(self.style.SUCCESS(
-            f'✅ {len(plan)} linha(s) habilitada(s). O comprador vê a célula '
-            'amarela no /partner/ na hora (tabela viva; pghistory audita).'))
+            f'✅ {len(plan)} linha(s) habilitada(s) (confirmado no banco). O '
+            'comprador vê a célula amarela no /partner/ na hora (tabela viva; '
+            'pghistory audita).'))

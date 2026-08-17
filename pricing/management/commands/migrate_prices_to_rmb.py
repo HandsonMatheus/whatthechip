@@ -20,10 +20,9 @@ import json
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 
 from pricing.models import Buyer, Price, PriceChangeRequest
-from tenancy.scope import scope_command_to_company
+from tenancy.scope import platform_scope, scope_command_to_company
 
 _CENT = Decimal('0.01')
 
@@ -51,7 +50,11 @@ class Command(BaseCommand):
             raise CommandError(f"Comprador {opts['buyer']!r} não existe.")
         if opts['mark_migrated']:
             buyer.prices_in_rmb = True
-            buyer.save(update_fields=['prices_in_rmb'])
+            # RLS: Buyer é linha de PLATAFORMA (pricing/0021). Com
+            # update_fields o Django NÃO cai no INSERT de fallback —
+            # estoura 'did not affect any rows'. Idem sem o escopo.
+            with platform_scope():
+                buyer.save(update_fields=['prices_in_rmb'])
             self.stdout.write(self.style.SUCCESS(
                 f'🔒 Trava ligada: {buyer.slug} marcado como JÁ em ¥ '
                 '(nenhum valor foi alterado).'))
@@ -61,7 +64,8 @@ class Command(BaseCommand):
             # Desfez a última rodada → destrava para o operador decidir; se os
             # valores CONTINUAM em ¥ (caso dupla-rodada), re-ligue a trava:
             buyer.prices_in_rmb = False
-            buyer.save(update_fields=['prices_in_rmb'])
+            with platform_scope():                      # RLS (idem)
+                buyer.save(update_fields=['prices_in_rmb'])
             self.stdout.write(self.style.WARNING(
                 '⚠ Trava desligada pelo revert. Confira os valores: se '
                 'continuam em ¥ (você desfez uma rodada EXTRA), re-ligue com '
@@ -122,7 +126,9 @@ class Command(BaseCommand):
                 're-rode com --commit.'))
             return
 
-        with transaction.atomic():
+        # RLS (Camada B): linha de PLATAFORMA (company IS NULL desde
+        # pricing/0021) — só o app.company_id NÃO abre a escrita.
+        with platform_scope():
             self._apply(log, novo=True)
             buyer.prices_in_rmb = True          # 🔒 trava a re-execução
             buyer.save(update_fields=['prices_in_rmb'])
@@ -145,6 +151,6 @@ class Command(BaseCommand):
 
     def _revert(self, path):
         log = json.load(open(path))
-        with transaction.atomic():
+        with platform_scope():                          # RLS (idem)
             self._apply(log, novo=False)
         self.stdout.write(f'↩ revertido de {path} ({len(log)} registros).')

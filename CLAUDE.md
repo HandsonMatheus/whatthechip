@@ -764,6 +764,23 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   `connection.vendor == 'postgresql'`; vale só na transação da migração —
   modelo em `pricing/migrations/0019`, helper `_liberar_rls`), no forward E
   no reverse.
+- **COMANDO que escreve em linha de PLATAFORMA = o mesmo veneno, disfarçado
+  (bug de prod 2026-08-17, `enable_price_row --commit`):** desde a
+  `pricing/0021` comprador/lista/preço são de PLATAFORMA (`company_id IS
+  NULL`) e a `tenant_isolation` virou um par leitura/escrita — a LEITURA é
+  ampla (`... OR company_id IS NULL`), a ESCRITA **não**. O
+  `scope_command_to_company()` só emite `app.company_id`, então `NULL = <id>`
+  é NULL: **o dry-run passa e o `--commit` não escreve**. Com `.save()` o
+  sintoma ENGANA: o UPDATE casa 0 linhas, o `Model._save_table` do Django
+  conclui "não existia" e cai no INSERT de fallback → `new row violates
+  row-level security policy`, com traceback apontando INSERT de linha NOVA
+  numa linha que existe desde o seed. Com `.update()` / `.delete()` /
+  `bulk_update` não estoura nada: 0 linhas em silêncio (o sintoma PÉSSIMO
+  outra vez). **Regra:** comando/job que escreve em tabela de pricing usa
+  `with platform_scope():` (`tenancy/scope.py`) no lugar do
+  `transaction.atomic()` cru — ele abre a transação E emite o `SET LOCAL
+  app.platform = '1'`. E CONFIRA a gravação relendo do banco (modelo no
+  `enable_price_row`): sob RLS, "não deu erro" não é prova de que gravou.
 
 ---
 

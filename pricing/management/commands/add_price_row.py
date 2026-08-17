@@ -21,12 +21,11 @@ Idempotente (linha existente é pulada). Dry-run por padrão (regra de ouro #1).
 from decimal import Decimal, InvalidOperation
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 
 from pricing.models import (Buyer, KIND_UNIT, KINDS, Price, PriceList,
                             STATUS_NOT_MADE, STATUS_UNQUOTED, UNIFIED_KINDS,
                             fold_gen, valid_gen)
-from tenancy.scope import scope_command_to_company
+from tenancy.scope import platform_scope, scope_command_to_company
 
 
 class Command(BaseCommand):
@@ -122,7 +121,9 @@ class Command(BaseCommand):
                 'DRY-RUN — nada gravado. Revise e re-rode com --commit.'))
             return
 
-        with transaction.atomic():
+        # RLS (Camada B): linha de PLATAFORMA (company IS NULL desde
+        # pricing/0021) — só o app.company_id NÃO abre a escrita.
+        with platform_scope():
             for pl, status in plan:
                 Price.all_companies.create(
                     price_list=pl, kind=kind, gen=gen, tier_value=tier,

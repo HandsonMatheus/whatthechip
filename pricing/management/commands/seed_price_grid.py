@@ -20,11 +20,10 @@ padrão (regra de ouro #1: o dono roda o --commit).
 """
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 
 from pricing.models import (Buyer, Price, PriceList, STATUS_NOT_MADE,
                             STATUS_UNQUOTED, UNIFIED_KINDS)
-from tenancy.scope import scope_command_to_company
+from tenancy.scope import platform_scope, scope_command_to_company
 
 
 class Command(BaseCommand):
@@ -84,7 +83,9 @@ class Command(BaseCommand):
             return
 
         criadas = 0
-        with transaction.atomic():
+        # RLS (Camada B): linha de PLATAFORMA (company IS NULL desde
+        # pricing/0021) — só o app.company_id NÃO abre a escrita.
+        with platform_scope():
             for pl, faltam, status in plan:
                 for (k, g, tv, tu, o) in faltam:
                     Price.all_companies.create(
