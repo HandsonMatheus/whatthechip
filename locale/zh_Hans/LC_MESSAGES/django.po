@@ -2664,3 +2664,32 @@ msgstr "发票 US$ %(t)s · 已付 US$ %(p)s"
 #: vendas/ (F11.6)
 msgid "¥ esperado"
 msgstr "¥ 预计"
+
+#: vendas/ (F11.6)
+msgid "%(n)s un. sem preço"
+msgstr "%(n)s 件无报价"
+
+#: vendas/ (F11.6)
+msgid "Valor estimado"
+msgstr "预估金额"
+
+#: vendas/ (F11.6)
+msgid "sem preço"
+msgstr "无报价"
+
+#: vendas/ (F11.6)
+msgid ""
+"Cote essas categorias e o valor da ordem congela — depois disso você "
+"consegue fechar o resultado."
+msgstr "为这些类别报价后订单金额即冻结 — 之后即可结算。"
+
+#: vendas/ (F11.6)
+msgid ""
+"Os valores abaixo são ESTIMADOS pela sua tabela de hoje — esta ordem ainda "
+"não foi congelada. Fale com o WhatTheChip para congelá-la antes de fechar o "
+"resultado."
+msgstr "以下金额按您今日的价目表预估 — 本订单尚未冻结。结算前请联系 WhatTheChip 冻结。"
+
+#: vendas/ (F11.6)
+msgid "%(n)s categoria(s) deste lote sem preço na sua tabela:"
+msgstr "本批次有 %(n)s 个类别在您的价目表中无报价："

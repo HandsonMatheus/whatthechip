@@ -1442,6 +1442,70 @@ class CompradorComprasTests(TestCase):
             self.assertFalse(Invoice.all_companies.filter(order=so).exists())
         self.assertContains(resp, 'CONFIRMADA')
 
+    def test_rascunho_mostra_valor_ao_vivo_e_nomeia_o_que_falta(self):
+        """Correção achada em PROD (lote 042, 2026-08-18): a tela do rascunho
+        saía com uma parede de "—" e um aviso genérico.
+
+        Rascunho não guarda ¥ nenhum — só a OV congelada guarda. Agora ele
+        re-resolve contra o grid do comprador na leitura, e a linha sem preço
+        é NOMEADA: sem isso ele não tem como saber o que cotar.
+        """
+        with company_scope(self.emp_a):
+            self._grid(self.buyer)
+            lot = Lot.open_for_company(self.emp_a, self.parceiro, 'viva',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(       # ESTA tem preço
+                lot=lot, part_number='CMPV1', quantity=10, brand=self.brand,
+                chip_type='eMMC', company=self.emp_a, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')
+            InventoryEntry.all_companies.create(       # esta NÃO
+                lot=lot, part_number='CMPV2', quantity=5, brand=self.brand,
+                chip_type='UFS', company=self.emp_a, price_kind='ufs',
+                price_gen='', price_tier_value=Decimal('256'),
+                price_tier_unit='GB')
+            so = services.create_draft_for_lot(lot, self.parceiro)
+            self.assertEqual(so.status, STATUS_DRAFT)
+            grupos = services.result_rows(so)
+        linhas = {(l['type'], l['capacity']): l
+                  for g in grupos for l in g['lines']}
+        # a cotada mostra valor VIVO, marcado como estimativa…
+        emmc = linhas[('eMMC', '16GB')]
+        self.assertEqual(emmc['unit_rmb'], Decimal('15'))
+        self.assertEqual(emmc['total_rmb'], Decimal('150'))
+        self.assertTrue(emmc['estimado'])
+        self.assertIsNone(emmc['total_usd'])       # US$ só no congelado
+        # …e a não-cotada é nomeada como pendência
+        self.assertTrue(linhas[('UFS', '256GB')]['sem_preco'])
+        self.assertEqual(services.draft_pendencias(grupos), ['UFS 256GB'])
+
+        self.client.force_login(self.parceiro)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'UFS 256GB')          # o que cotar
+        self.assertContains(tela, '150')                # o valor vivo
+        self.assertNotContains(tela, 'name="rej_')      # e ainda não acerta
+
+    def test_rascunho_legado_nao_acusa_falta_de_preco(self):
+        """Ordem que nasceu ANTES do congelamento automático: está em rascunho
+        sem faltar preço nenhum. O aviso não pode dizer que falta cotação —
+        foi exatamente o que confundiu o dono no lote 042."""
+        with company_scope(self.emp_a):
+            self._grid(self.buyer)
+            lot = Lot.open_for_company(self.emp_a, self.parceiro, 'legado',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='CMPLEG', quantity=8, brand=self.brand,
+                chip_type='eMMC', company=self.emp_a, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')
+            so = services.create_draft_for_lot(lot, self.parceiro)   # sem confirmar
+            grupos = services.result_rows(so)
+        self.assertEqual(services.draft_pendencias(grupos), [])      # nada falta
+        self.client.force_login(self.parceiro)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'ESTIMADOS')
+        self.assertNotContains(tela, 'não estão cotadas')
+
     def test_saldo_a_pagar_aparece_depois_da_fatura(self):
         so = self._lote_fechado(self.emp_a, sufixo='S')
         self.client.force_login(self.parceiro)

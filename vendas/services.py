@@ -615,7 +615,7 @@ def order_stage(so) -> str:
 
 
 def result_rows(so):
-    """``[{'brand': str, 'lines': [...], 'subtotal_*': …}]`` — o que a tela do
+    """``[{'brand': str, 'lines': [...], 'qty', 'rmb'}]`` — o que a tela do
     resultado desenha.
 
     **Agrupa por MARCA, e dentro dela por capacidade** (dono, 2026-08-18).
@@ -623,14 +623,31 @@ def result_rows(so):
     AMBÍGUA em lote PCB, onde o preço é POR MARCA: "recusei 10 de eMMC 64GB"
     não diria de qual marca sai o desconto. Assim cada linha da tela é uma
     linha da OV — o abatimento é sempre exato.
+
+    **Rascunho mostra valor AO VIVO** (correção 2026-08-18, achada em prod no
+    lote 042): a OV congelada guarda o ¥ na linha, mas o rascunho não guarda
+    NADA — a tela saía com uma parede de "—" e o comprador não tinha como
+    saber o que faltava. Agora o rascunho re-resolve contra o grid dele na
+    leitura (mesma fonte que a tela do admin usa) e marca linha a linha o que
+    está **sem preço**. Valor de rascunho é ESTIMATIVA: quem manda é o
+    congelado, e a tela precisa dizer isso.
     """
     from pricing.models import CategoryCode
+    vivo = {}
+    if so.status == STATUS_DRAFT:
+        for line, q in live_quotes(so):
+            vivo[line.pk] = q.value_rmb() if q.status == 'PRICED' else None
     grupos = {}
     for line in so.lines.all():
         g = grupos.setdefault(line.brand or '—',
                               {'brand': line.brand or '—', 'lines': [],
-                               'qty': 0, 'rmb': Decimal('0.00')})
-        total = (line.unit_rmb * line.quantity) if line.unit_rmb else None
+                               'qty': 0, 'rmb': Decimal('0.00'),
+                               'sem_preco': 0})
+        if so.status == STATUS_DRAFT:
+            unit, estimado = vivo.get(line.pk), True
+        else:
+            unit, estimado = line.unit_rmb, False
+        total = (unit * line.quantity) if unit is not None else None
         g['lines'].append({
             'pk': line.pk,
             'type': line.type_label,
@@ -640,13 +657,25 @@ def result_rows(so):
                                               line.tier_value, line.tier_unit,
                                               create=False) or '—',
             'qty': line.quantity,
-            'unit_rmb': line.unit_rmb,
+            'unit_rmb': unit,
             'total_rmb': total,
-            'total_usd': line.total_usd,
+            'total_usd': None if estimado else line.total_usd,
+            'estimado': estimado,
+            'sem_preco': unit is None,
         })
         g['qty'] += line.quantity
         if total is not None:
             g['rmb'] += total
+        else:
+            g['sem_preco'] += line.quantity
     for g in grupos.values():
         g['lines'].sort(key=lambda r: (r['type'], r['capacity']))
     return sorted(grupos.values(), key=lambda g: g['brand'])
+
+
+def draft_pendencias(grupos):
+    """As categorias do rascunho que não têm preço no grid do comprador —
+    o que ele precisa cotar para a ordem congelar. Lista curta e nomeada:
+    "faltam N categorias" sem dizer QUAIS não ajuda ninguém."""
+    return [f"{l['type']} {l['capacity']}".strip()
+            for g in grupos for l in g['lines'] if l['sem_preco']]

@@ -25,9 +25,9 @@
       de <b>{{ cliente }}</b>{% endblocktrans %} · {{ so.code }}</p>
   </div>
   <div class="cmp-tot">
-    <div class="cmp-tot__lbl">{% trans "Valor da ordem" %}</div>
-    <div class="cmp-tot__val mono">{% localize off %}{% if so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
-    <div class="cmp-tot__sub mono">{% localize off %}{% if so.total_usd %}US$ {{ so.total_usd }}{% endif %}{% endlocalize %}</div>
+    <div class="cmp-tot__lbl">{% if estimado %}{% trans "Valor estimado" %}{% else %}{% trans "Valor da ordem" %}{% endif %}</div>
+    <div class="cmp-tot__val mono">{% localize off %}{% if estimado %}¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
+    <div class="cmp-tot__sub mono">{% localize off %}{% if not estimado and so.total_usd %}US$ {{ so.total_usd }}{% endif %}{% endlocalize %}</div>
   </div>
   {% if invoice %}
   <div class="cmp-tot">
@@ -39,12 +39,25 @@
   {% endif %}
 </div>
 
-{% if stage == 'sem_preco' %}
+{% if estimado %}
+  {% if pendencias %}
+  <div class="cmp-aviso">
+    <b>{% blocktrans trimmed with n=pendencias|length %}
+      {{ n }} categoria(s) deste lote sem preço na sua tabela:
+    {% endblocktrans %}</b>
+    <span class="cmp-falta">{% for p in pendencias %}{{ p }}{% if not forloop.last %} · {% endif %}{% endfor %}{% if pendencias_extra %} … +{{ pendencias_extra }}{% endif %}</span>
+    <div>{% blocktrans trimmed %}
+      Cote essas categorias e o valor da ordem congela — depois disso você
+      consegue fechar o resultado.
+    {% endblocktrans %}</div>
+  </div>
+  {% else %}
   <div class="cmp-aviso">{% blocktrans trimmed %}
-    Esta ordem ainda não tem valor: alguma categoria deste lote não está
-    cotada na sua tabela de preços. Complete a tabela e o valor congela
-    sozinho — depois disso você consegue fechar o resultado.
+    Os valores abaixo são ESTIMADOS pela sua tabela de hoje — esta ordem
+    ainda não foi congelada. Fale com o WhatTheChip para congelá-la antes de
+    fechar o resultado.
   {% endblocktrans %}</div>
+  {% endif %}
 {% endif %}
 
 {% if so.unkeyed_units %}
@@ -72,7 +85,7 @@
   {% for g in grupos %}
     <tr class="cmp-marca">
       <td colspan="{% if pode_acertar %}7{% else %}6{% endif %}">
-        {{ g.brand }} <span class="cmp-marca__qtd">{{ g.qty }} un. · {% localize off %}¥ {{ g.rmb }}{% endlocalize %}</span>
+        {{ g.brand }} <span class="cmp-marca__qtd">{{ g.qty }} un. · {% localize off %}¥ {{ g.rmb }}{% endlocalize %}{% if g.sem_preco %} · <span class="cmp-falta">{% blocktrans trimmed with n=g.sem_preco %}{{ n }} un. sem preço{% endblocktrans %}</span>{% endif %}</span>
       </td>
     </tr>
     {% for l in g.lines %}
@@ -81,7 +94,7 @@
       <td>{{ l.capacity }}</td>
       <td class="mono cmp-wtc">{{ l.wtc }}</td>
       <td class="num">{{ l.qty }}</td>
-      <td class="num mono">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+      <td class="num mono{% if l.sem_preco %} cmp-falta-td{% endif %}">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
       <td class="num mono">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
       {% if pode_acertar %}
       <td class="num cmp-rej">
@@ -138,6 +151,8 @@
   .cmp-marca td { background:#f4f4f4; font-weight:600; border-bottom:1px solid #c6c6c6; }
   .cmp-marca__qtd { font-weight:400; color:#525252; font-size:12px; margin-left:8px; }
   .cmp-rej { background:#fff1f1; }
+  .cmp-falta { color:#8e6a00; font-weight:600; }
+  .cmp-falta-td { color:#8e6a00; font-size:12px; }
   .cmp-in { width:88px; padding:5px 8px; border:1px solid #a2191f; text-align:right;
             font-family:'IBM Plex Mono',monospace; font-size:14px; background:#fff; }
   .cmp-dica { color:#525252; font-size:13px; margin:12px 0 0; }

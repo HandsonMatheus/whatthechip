@@ -2837,3 +2837,37 @@ msgstr "factura US$ %(t)s · pagado US$ %(p)s"
 #: vendas/ (F11.6)
 msgid "¥ esperado"
 msgstr "¥ esperado"
+
+#: vendas/ (F11.6)
+msgid "%(n)s un. sem preço"
+msgstr "%(n)s un. sin precio"
+
+#: vendas/ (F11.6)
+msgid "Valor estimado"
+msgstr "Valor estimado"
+
+#: vendas/ (F11.6)
+msgid "sem preço"
+msgstr "sin precio"
+
+#: vendas/ (F11.6)
+msgid ""
+"Cote essas categorias e o valor da ordem congela — depois disso você "
+"consegue fechar o resultado."
+msgstr ""
+"Cotice esas categorías y el valor de la orden se congela — después de eso "
+"podrá cerrar el resultado."
+
+#: vendas/ (F11.6)
+msgid ""
+"Os valores abaixo são ESTIMADOS pela sua tabela de hoje — esta ordem ainda "
+"não foi congelada. Fale com o WhatTheChip para congelá-la antes de fechar o "
+"resultado."
+msgstr ""
+"Los valores de abajo son ESTIMADOS por su tabla de hoy — esta orden aún no "
+"fue congelada. Hable con WhatTheChip para congelarla antes de cerrar el "
+"resultado."
+
+#: vendas/ (F11.6)
+msgid "%(n)s categoria(s) deste lote sem preço na sua tabela:"
+msgstr "%(n)s categoría(s) de este lote sin precio en su tabla:"

@@ -2813,3 +2813,37 @@ msgstr "invoice US$ %(t)s · paid US$ %(p)s"
 #: vendas/ (F11.6)
 msgid "¥ esperado"
 msgstr "¥ expected"
+
+#: vendas/ (F11.6)
+msgid "%(n)s un. sem preço"
+msgstr "%(n)s unit(s) with no price"
+
+#: vendas/ (F11.6)
+msgid "Valor estimado"
+msgstr "Estimated value"
+
+#: vendas/ (F11.6)
+msgid "sem preço"
+msgstr "no price"
+
+#: vendas/ (F11.6)
+msgid ""
+"Cote essas categorias e o valor da ordem congela — depois disso você "
+"consegue fechar o resultado."
+msgstr ""
+"Quote these categories and the order value freezes — after that you can "
+"close the result."
+
+#: vendas/ (F11.6)
+msgid ""
+"Os valores abaixo são ESTIMADOS pela sua tabela de hoje — esta ordem ainda "
+"não foi congelada. Fale com o WhatTheChip para congelá-la antes de fechar o "
+"resultado."
+msgstr ""
+"The amounts below are ESTIMATED from your table as of today — this order has"
+" not been frozen yet. Talk to WhatTheChip to freeze it before closing the "
+"result."
+
+#: vendas/ (F11.6)
+msgid "%(n)s categoria(s) deste lote sem preço na sua tabela:"
+msgstr "%(n)s category/categories in this lot with no price on your table:"

@@ -30,6 +30,8 @@ próxima pessoa precisa saber antes de editar:
   não 403 — não confirmamos nem que ela existe.
 """
 
+from decimal import Decimal
+
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
@@ -68,14 +70,24 @@ def compra_detail(request, pk):
 def _detalhe(so):
     """Tudo que a tela da compra desenha. Roda DENTRO do escopo da empresa."""
     inv = next((i for i in so.invoices.all() if i.status != 'cancelled'), None)
+    grupos = services.result_rows(so)
+    pendencias = services.draft_pendencias(grupos)
     return {
         'so': so,
-        'grupos': services.result_rows(so),
+        'grupos': grupos,
         'stage': services.order_stage(so),
         'invoice': inv,
-        # Só OV CONFIRMADA e ainda sem fatura aceita resultado. Rascunho está
-        # esperando o próprio comprador completar o grid (F11.6/F1).
+        # Rascunho: o valor mostrado é ESTIMADO (re-resolvido na leitura), e
+        # `pendencias` nomeia as categorias que faltam cotar. Distinguir os
+        # dois casos importa: rascunho SEM pendência é ordem legada (nasceu
+        # antes do congelamento automático, F11.6/F1) — ali não falta preço
+        # nenhum, falta congelar.
+        'estimado': so.status != STATUS_CONFIRMED,
+        'pendencias': pendencias[:12],
+        'pendencias_extra': max(0, len(pendencias) - 12),
+        # Só OV CONFIRMADA e ainda sem fatura aceita resultado.
         'pode_acertar': so.status == STATUS_CONFIRMED and inv is None,
+        'total_estimado': sum((g['rmb'] for g in grupos), Decimal('0.00')),
     }
 
 
