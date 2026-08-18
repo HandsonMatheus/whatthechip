@@ -2519,3 +2519,29 @@ class AuditCategoryCodesTests(TestCase):
         saida = self._run(indevidos=True)
         self.assertIn('E-16', saida)
         self.assertNotIn('B-06', saida)
+
+    def test_tripwire_de_estoque_zerado(self):
+        """Banco INTEIRO sem lançamento é suspeito, não é prova.
+
+        "Nenhuma caixa tem estoque" é a resposta que AUTORIZA aposentar um
+        código — e é exatamente a resposta que o RLS devolve, em silêncio,
+        quando a leitura roda sem GUC de plataforma (management command roda
+        fora de request). O comando tem que gritar em vez de deixar o zero
+        passar por verdade."""
+        saida = self._run()
+        self.assertIn('0 lançamento(s) de estoque varrido(s)', saida)
+        self.assertIn('ZERO lançamentos no banco INTEIRO', saida)
+
+    def test_sem_tripwire_quando_ha_estoque(self):
+        from decimal import Decimal
+        set_current_company(self.co.pk)
+        self.addCleanup(set_current_company, None)
+        lot = Lot.all_companies.create(number=903, origin='phone',
+                                       operator=self.op, company=self.co)
+        InventoryEntry.all_companies.create(
+            lot=lot, company=self.co, part_number='AUDPN2', quantity=3,
+            price_kind='emmc', price_gen='', price_tier_value=Decimal('16'),
+            price_tier_unit='GB')
+        saida = self._run()
+        self.assertIn('1 lançamento(s) de estoque varrido(s)', saida)
+        self.assertNotIn('ZERO lançamentos', saida)

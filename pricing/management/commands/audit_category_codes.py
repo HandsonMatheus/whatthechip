@@ -85,16 +85,30 @@ def _chaves_da_convencao():
 
 
 def _estoque_por_chave():
-    """{chave: (lançamentos, peças, empresas)} numa consulta só (sem N+1).
+    """{chave: (lançamentos, peças, empresas)} numa consulta só (sem N+1),
+    mais o TOTAL de lançamentos varridos.
+
+    ⚠ ``platform_scope()`` é OBRIGATÓRIO aqui, não é zelo. ``InventoryEntry``
+    tem RLS com FORCE e ``company`` NOT NULL; a policy de leitura é
+    ``company_id = app.company_id OR app.platform = '1'``. Um management
+    command roda FORA de request — sem GUC nenhum. Sem este escape a consulta
+    volta **ZERO LINHAS EM SILÊNCIO** (o mesmo tombo do RunPython em tabela
+    RLS, CLAUDE.md §7) e a auditoria diria "nenhuma caixa tem estoque" — que
+    é exatamente a resposta que autoriza aposentar um código. Pior mentira
+    possível para este comando. Local engana: superuser do Postgres ignora
+    FORCE, então o bug só aparece no Render.
 
     Manager de PLATAFORMA de propósito: auditoria de convenção é global — a
     caixa é a mesma tabela mundial, não é dado de uma empresa."""
-    bruto = (InventoryEntry.all_companies
-             .exclude(price_tier_value=None)
-             .values('price_kind', 'price_gen', 'price_tier_value',
-                     'price_tier_unit', 'company_id')
-             .annotate(n=Count('id'), pecas=Sum('quantity')))
+    from tenancy.scope import platform_scope
     acc = defaultdict(lambda: [0, 0, set()])
+    with platform_scope():
+        total = InventoryEntry.all_companies.count()
+        bruto = list(InventoryEntry.all_companies
+                     .exclude(price_tier_value=None)
+                     .values('price_kind', 'price_gen', 'price_tier_value',
+                             'price_tier_unit', 'company_id')
+                     .annotate(n=Count('id'), pecas=Sum('quantity')))
     for r in bruto:
         chave = (r['price_kind'], fold_gen(r['price_kind'], r['price_gen']),
                  r['price_tier_value'], r['price_tier_unit'])
@@ -102,7 +116,7 @@ def _estoque_por_chave():
         alvo[0] += r['n']
         alvo[1] += r['pecas'] or 0
         alvo[2].add(r['company_id'])
-    return acc
+    return acc, total
 
 
 class Command(BaseCommand):
@@ -120,7 +134,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **opts):
         convencao = _chaves_da_convencao()
-        estoque = _estoque_por_chave()
+        estoque, total_lancamentos = _estoque_por_chave()
 
         linhas = []
         for c in CategoryCode.objects.all().order_by('kind', 'code'):
@@ -178,6 +192,20 @@ class Command(BaseCommand):
         self.stdout.write(f'  {len(linhas)} códigos no banco · '
                           f'{len(FOUNDING_TABLE)} na TABELA FUNDADORA '
                           f'(pricing/convention.py)')
+        self.stdout.write(f'  {total_lancamentos} lançamento(s) de estoque '
+                          f'varrido(s) para contar quem tem caixa cheia')
+        if not total_lancamentos:
+            # Tripwire: "nenhuma caixa tem estoque" é a resposta que AUTORIZA
+            # aposentar código. Se o banco inteiro veio vazio, é muito mais
+            # provável que a leitura tenha sido barrada do que o estoque estar
+            # zerado — e o erro é silencioso por natureza (RLS não reclama).
+            self.stdout.write(self.style.ERROR(
+                '  ⚠ ZERO lançamentos no banco INTEIRO — as colunas LANÇ./'
+                'PEÇAS/EMPRESAS acima NÃO valem como prova.\n'
+                '    Ou o banco é de teste/vazio, ou a leitura foi barrada '
+                '(RLS sem GUC).\n'
+                '    Confira antes de aposentar qualquer código: '
+                'InventoryEntry.all_companies.count() dentro de platform_scope().'))
         self.stdout.write(f'  ⛔ {len(indevidos)} que HOJE a bancada NÃO cunharia '
                           f'(a régua de triagem os reprova)')
         self.stdout.write(f'       {len(com_estoque)} COM lançamento em estoque '
