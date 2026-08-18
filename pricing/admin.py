@@ -225,18 +225,63 @@ class PriceChangeRequestAdmin(PlatformScopedAdmin):
         self.message_user(request, f'{n} mudança(s) rejeitada(s).')
 
 
+class AposentadoFilter(admin.SimpleListFilter):
+    """A lista abre só com o que está EM USO (dono, 2026-08-18).
+
+    Mesmo truque do RevisaoFilter: o admin do Django não tem filtro com valor
+    default, então o parâmetro AUSENTE significa "em uso" e "Todos" vira opção
+    explícita. Código aposentado não some do banco — só sai da vista."""
+
+    title = 'situação'
+    parameter_name = 'situacao'
+    EM_USO, APOSENTADOS, TODOS = 'uso', 'aposentados', 'all'
+
+    def lookups(self, request, model_admin):
+        return [(self.EM_USO, 'Em uso'),
+                (self.APOSENTADOS, 'Aposentados'),
+                (self.TODOS, 'Todos')]
+
+    def queryset(self, request, queryset):
+        valor = self.value()
+        if valor == self.TODOS:
+            return queryset
+        if valor == self.APOSENTADOS:
+            return queryset.exclude(retired_at=None)
+        return queryset.filter(retired_at=None)      # None = padrão = em uso
+
+    def choices(self, changelist):
+        valor = self.value()
+        for chave, rotulo in self.lookup_choices:
+            yield {'selected': valor == str(chave)
+                               or (valor is None and chave == self.EM_USO),
+                   'query_string': changelist.get_query_string(
+                       {self.parameter_name: chave}),
+                   'display': rotulo}
+
+
 @admin.register(CategoryCode)
 class CategoryCodeAdmin(admin.ModelAdmin):
     """F12 — o DICIONÁRIO código↔categoria (só a plataforma enxerga o admin).
     Código nunca muda/reusa (caixa é física) → tudo read-only; nasce no
-    seed_category_codes ou automaticamente na 1ª aparição da categoria."""
+    seed_category_codes ou automaticamente na 1ª aparição da categoria.
+
+    Sem DELETE de propósito (2026-08-18): apagar libera o número para reuso —
+    o próximo sai de MAX(code)+1 — e um cliente pode já ter etiquetado a
+    gaveta. Tirar de circulação é `retire_category_codes`, que só marca."""
 
     list_display = ('label', 'kind', 'gen', 'tier_value', 'tier_unit',
-                    'created_at')
-    list_filter = ('kind',)
+                    'situacao', 'created_at')
+    list_filter = (AposentadoFilter, 'kind')
     search_fields = ('code', 'gen')
     readonly_fields = ('kind', 'gen', 'tier_value', 'tier_unit', 'code',
-                       'created_at')
+                       'created_at', 'retired_at', 'retired_reason')
+
+    @admin.display(description='Situação')
+    def situacao(self, obj):
+        if not obj.is_retired:
+            return 'em uso'
+        return f'aposentado — {obj.retired_reason}' if obj.retired_reason \
+            else 'aposentado'
 
     def has_add_permission(self, request):
         return False

@@ -2604,3 +2604,56 @@ class PriceChangeRequestAdminTests(TestCase):
         colunas = list(PriceChangeRequestAdmin.list_display)
         self.assertLess(colunas.index('review_status'),
                         colunas.index('requested_by'))
+
+
+class CategoryCodeAdminTests(TestCase):
+    """O admin do dicionário de caixas (F12) depois da aposentadoria.
+
+    Sintoma que abriu o assunto: o dono olhou /admin/pricing/categorycode/ e
+    viu códigos de sucata no meio dos bons. Aposentar tira da vista sem tirar
+    do banco — e o DELETE fica proibido, porque apagar libera o número."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from decimal import Decimal
+        from django.utils import timezone
+        from pricing.models import CategoryCode
+        User = get_user_model()
+        cls.dono = User.objects.create_superuser('dono_cx', password='x')
+        cls.uso = CategoryCode.objects.create(kind='emmc', gen='',
+                                              tier_value=Decimal('16'),
+                                              tier_unit='GB', code=6)
+        cls.fora = CategoryCode.objects.create(
+            kind='ddr', gen='DDR2', tier_value=Decimal('1'), tier_unit='Gb',
+            code=16, retired_at=timezone.now(), retired_reason='sucata')
+
+    def _changelist(self, **params):
+        from django.urls import reverse
+        self.client.force_login(self.dono)
+        resp = self.client.get(
+            reverse('admin:pricing_categorycode_changelist'), params)
+        self.assertEqual(resp.status_code, 200)
+        return resp
+
+    def test_abre_so_com_o_que_esta_em_uso(self):
+        pks = [o.pk for o in self._changelist().context['cl'].result_list]
+        self.assertEqual(pks, [self.uso.pk])
+
+    def test_aposentados_e_todos_continuam_a_um_clique(self):
+        so_fora = self._changelist(situacao='aposentados').context['cl']
+        self.assertEqual([o.pk for o in so_fora.result_list], [self.fora.pk])
+        self.assertEqual(
+            len(self._changelist(situacao='all').context['cl'].result_list), 2)
+
+    def test_motivo_da_aposentadoria_aparece_na_lista(self):
+        corpo = self._changelist(situacao='aposentados').content.decode()
+        self.assertIn('aposentado — sucata', corpo)
+
+    def test_delete_continua_proibido(self):
+        """Apagar libera o número para reuso — a proibição é a barreira."""
+        from django.contrib import admin as dj_admin
+        from pricing.admin import CategoryCodeAdmin
+        from pricing.models import CategoryCode
+        adm = CategoryCodeAdmin(CategoryCode, dj_admin.site)
+        self.assertFalse(adm.has_delete_permission(None))
+        self.assertFalse(adm.has_add_permission(None))

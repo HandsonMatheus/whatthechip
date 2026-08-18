@@ -2545,3 +2545,143 @@ class AuditCategoryCodesTests(TestCase):
         saida = self._run()
         self.assertIn('1 lançamento(s) de estoque varrido(s)', saida)
         self.assertNotIn('ZERO lançamentos', saida)
+
+
+class AposentarCategoryCodeTests(TestCase):
+    """Aposentadoria de código de caixa (dono, 2026-08-18).
+
+    A pergunta do dono foi *"como corrigir sem afetar os clientes que já
+    fizeram suas caixas?"*. A resposta é: **não apagando**. O próximo número
+    sai de ``MAX(code)+1``, então apagar E-15 faz o próximo DDR inédito
+    renascer como E-15 — e esse número pode estar escrito numa gaveta. Estes
+    testes prendem as três propriedades que tornam a aposentadoria segura:
+    o número não volta, o código continua resolvendo, e a categoria pode
+    voltar ao serviço COM O MESMO código."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from decimal import Decimal
+        from pricing.models import CategoryCode
+        cls.co = Company.objects.create(name='Cliente Ret', slug='ret-cli')
+        cls.op = get_user_model().objects.create_user('ret_op', password='x')
+        # Legítimo (fica), sucata (sai) e sucata COM estoque (protegido).
+        cls.bom = CategoryCode.objects.create(kind='emmc', gen='',
+                                              tier_value=Decimal('16'),
+                                              tier_unit='GB', code=6)
+        cls.sucata = CategoryCode.objects.create(kind='ddr', gen='DDR2',
+                                                 tier_value=Decimal('1'),
+                                                 tier_unit='Gb', code=16)
+        cls.sucata_cheia = CategoryCode.objects.create(kind='ddr', gen='DDR2',
+                                                       tier_value=Decimal('2'),
+                                                       tier_unit='Gb', code=17)
+
+    def _lanca(self, kind, gen, tier, unit, qtd=1, numero=910):
+        from decimal import Decimal
+        set_current_company(self.co.pk)
+        self.addCleanup(set_current_company, None)
+        lot = Lot.all_companies.create(number=numero, origin='phone',
+                                       operator=self.op, company=self.co)
+        return InventoryEntry.all_companies.create(
+            lot=lot, company=self.co, part_number=f'RETPN{numero}',
+            quantity=qtd, price_kind=kind, price_gen=gen,
+            price_tier_value=Decimal(tier), price_tier_unit=unit)
+
+    def _run(self, **opts):
+        from io import StringIO
+        from django.core.management import call_command
+        out = StringIO()
+        call_command('retire_category_codes', stdout=out, **opts)
+        return out.getvalue()
+
+    # ── as três propriedades ────────────────────────────────────────────────
+    def test_aposentar_nao_libera_o_numero(self):
+        """O ponto INTEIRO da aposentadoria: E-16 aposentado, o próximo DDR
+        inédito é E-17 — nunca E-16 de novo."""
+        from decimal import Decimal
+        from django.utils import timezone
+        from pricing.models import CategoryCode
+        self.sucata_cheia.delete()                  # deixa E-16 como maior
+        self.sucata.retired_at = timezone.now()
+        self.sucata.save(update_fields=['retired_at'])
+        novo = CategoryCode.label_for_key('ddr', 'DDR4', Decimal('4'), 'Gb')
+        self.assertEqual(novo, 'E-17')
+
+    def test_codigo_aposentado_continua_resolvendo(self):
+        """A caixa é física: quem tem E-16 na etiqueta continua vendo E-16."""
+        from decimal import Decimal
+        from django.utils import timezone
+        from pricing.models import CategoryCode
+        self.sucata.retired_at = timezone.now()
+        self.sucata.save(update_fields=['retired_at'])
+        self.assertEqual(
+            CategoryCode.label_for_key('ddr', 'DDR2', Decimal('1'), 'Gb',
+                                       create=False), 'E-16')
+
+    def test_categoria_que_volta_reativa_com_o_mesmo_codigo(self):
+        """Se o dono baixar o limiar e a categoria voltar, ela volta como
+        E-16 — não ganha número novo (senão haveria DUAS caixas do mesmo
+        chip, uma delas já etiquetada)."""
+        from decimal import Decimal
+        from django.utils import timezone
+        from pricing.models import CategoryCode
+        self.sucata.retired_at = timezone.now()
+        self.sucata.retired_reason = 'sucata'
+        self.sucata.save(update_fields=['retired_at', 'retired_reason'])
+        self.assertEqual(
+            CategoryCode.label_for_key('ddr', 'DDR2', Decimal('1'), 'Gb'),
+            'E-16')
+        self.sucata.refresh_from_db()
+        self.assertIsNone(self.sucata.retired_at)
+        self.assertEqual(self.sucata.retired_reason, '')
+
+    # ── o comando ───────────────────────────────────────────────────────────
+    def test_dry_run_nao_grava(self):
+        self._lanca('emmc', '', '16', 'GB')
+        saida = self._run()
+        self.assertIn('DRY-RUN', saida)
+        self.assertIn('E-16', saida)
+        self.sucata.refresh_from_db()
+        self.assertIsNone(self.sucata.retired_at)
+
+    def test_commit_aposenta_so_os_reprovados(self):
+        self._lanca('emmc', '', '16', 'GB')
+        self._run(commit=True, motivo='sucata (bug 2026-08-18)')
+        self.sucata.refresh_from_db()
+        self.bom.refresh_from_db()
+        self.assertIsNotNone(self.sucata.retired_at)
+        self.assertEqual(self.sucata.retired_reason, 'sucata (bug 2026-08-18)')
+        self.assertIsNone(self.bom.retired_at)      # rentável não é tocado
+
+    def test_recusa_aposentar_caixa_com_chip_dentro(self):
+        """Caixa com chip é decisão humana — o comando não decide sozinho."""
+        self._lanca('ddr', 'DDR2', '2', 'Gb', qtd=5, numero=911)
+        saida = self._run(commit=True)
+        self.sucata_cheia.refresh_from_db()
+        self.assertIsNone(self.sucata_cheia.retired_at)   # protegido
+        self.assertIn('COM chip na caixa', saida)
+        self.sucata.refresh_from_db()
+        self.assertIsNotNone(self.sucata.retired_at)      # o vazio foi
+
+    def test_force_ignora_a_trava(self):
+        self._lanca('ddr', 'DDR2', '2', 'Gb', qtd=5, numero=912)
+        self._run(commit=True, force=True)
+        self.sucata_cheia.refresh_from_db()
+        self.assertIsNotNone(self.sucata_cheia.retired_at)
+
+    def test_reativar_desfaz(self):
+        self._lanca('emmc', '', '16', 'GB')
+        self._run(commit=True)
+        self._run(reativar='e-16', commit=True)      # aceita minúsculo
+        self.sucata.refresh_from_db()
+        self.assertIsNone(self.sucata.retired_at)
+
+    def test_trava_quando_o_banco_inteiro_veio_vazio(self):
+        """Espelho do tripwire da auditoria — mas aqui é ESCRITA, então em vez
+        de avisar, ABORTA. Zero lançamento é o que autoriza aposentar, e é
+        exatamente o que o RLS devolve quando barra a leitura."""
+        from django.core.management.base import CommandError
+        with self.assertRaises(CommandError) as ctx:
+            self._run(commit=True)
+        self.assertIn('ZERO lançamentos', str(ctx.exception))
+        self.sucata.refresh_from_db()
+        self.assertIsNone(self.sucata.retired_at)

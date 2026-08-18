@@ -781,6 +781,32 @@ Regra de bolso: **lógica compara CHAVE; usuário vê RÓTULO; banco guarda CAN�
   `transaction.atomic()` cru — ele abre a transação E emite o `SET LOCAL
   app.platform = '1'`. E CONFIRA a gravação relendo do banco (modelo no
   `enable_price_row`): sob RLS, "não deu erro" não é prova de que gravou.
+- **COMANDO que só LÊ tabela RLS cai no mesmo buraco — e a mentira é pior
+  (2026-08-18, `audit_category_codes`):** `Model.all_companies` é manager de
+  plataforma no **Django**, não no **Postgres** — tira o filtro do ORM, não a
+  policy do banco. Comando roda fora de request ⇒ zero GUC ⇒ **zero linhas**.
+  A auditoria de caixas relatou "nenhum código tem estoque" — que é exatamente
+  a resposta que AUTORIZA aposentar um código. **Regra:** leitura de tabela RLS
+  em comando abre com `with platform_scope():`; e quando o ZERO habilita ação
+  destrutiva, imprima o TOTAL varrido e **grite (ou aborte) se o banco inteiro
+  vier vazio** — zero silencioso vira zero barulhento.
+- **APAGAR código de caixa (F12) libera o número para reuso (2026-08-18):** o
+  próximo número sai de `MAX(code)+1`, então apagar `E-15` faz o próximo DDR
+  inédito **renascer como E-15** — e esse número pode estar etiquetado numa
+  gaveta do cliente, do outro lado do mundo. A convenção é eterna: *número
+  nunca reordena nem se reusa* (`pricing/convention.py`). Tirar de circulação é
+  **aposentar** (`CategoryCode.retired_at`, comando `retire_category_codes`):
+  a linha fica, o número fica queimado, a categoria some das telas — e volta
+  com o MESMO código se a régua de rentabilidade mudar (`label_for_key`
+  reativa). O admin não tem DELETE de propósito.
+- **Categoria de caixa só nasce do que ENTRA no estoque (2026-08-18):** o
+  `_masked_category` cunhava no RENDER do card de conferência — bipar um DDR2
+  já gastava um número, mesmo o chip indo pro R-00 refino. Hoje a cunhagem
+  exige `gateway['entra_no_estoque']` (aprovado no funil E rentabilidade
+  AVALIADA), a mesma régua do botão de lançar, lida da `ProfitabilityConfig`
+  viva. **Qualquer chamada nova a `CategoryCode.label_for_key(..., create=True)`
+  precisa provar antes que o chip vai pra prateleira.** Diagnóstico:
+  `audit_category_codes`.
 
 ---
 

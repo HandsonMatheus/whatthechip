@@ -906,6 +906,17 @@ class CategoryCode(models.Model):
     tier_unit = models.CharField(max_length=2, verbose_name='Unidade')
     code = models.PositiveIntegerField(verbose_name='Número (na letra)')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
+    #: APOSENTADORIA (dono, 2026-08-18) — a categoria saiu de circulação, mas o
+    #: NÚMERO continua ocupado para sempre. Existe porque APAGAR é armadilha: o
+    #: próximo número sai de MAX(code)+1, então apagar E-15 faz o próximo DDR
+    #: inédito renascer como E-15 — e esse número pode já estar etiquetado numa
+    #: caixa física do cliente. Aposentar preserva a regra eterna "número nunca
+    #: reordena nem se reusa" e ainda deixa a categoria VOLTAR com o mesmo
+    #: código, se a régua de rentabilidade mudar (ver label_for_key).
+    retired_at = models.DateTimeField(null=True, blank=True,
+                                      verbose_name='Aposentado em')
+    retired_reason = models.CharField(max_length=200, blank=True, default='',
+                                      verbose_name='Motivo da aposentadoria')
 
     class Meta:
         verbose_name = 'Código de categoria (F12)'
@@ -932,6 +943,10 @@ class CategoryCode(models.Model):
         from .convention import KIND_LETTER
         return f'{KIND_LETTER[self.kind]}-{self.code:02d}'
 
+    @property
+    def is_retired(self) -> bool:
+        return self.retired_at is not None
+
     @classmethod
     def label_for_key(cls, kind, gen, tier_value, tier_unit,
                       create: bool = True):
@@ -951,6 +966,16 @@ class CategoryCode(models.Model):
         obj = cls.objects.filter(kind=kind, gen=gen, tier_value=tier_value,
                                  tier_unit=tier_unit).first()
         if obj:
+            # Aposentado NÃO some do mapa chave→número: o número é eterno e a
+            # caixa pode existir fisicamente. E se a categoria VOLTOU ao
+            # serviço (create=True = alguém acabou de aprovar um chip dela —
+            # ex.: o dono baixou o limiar no admin), ela volta com o MESMO
+            # código, nunca com um novo. Reativar aqui evita a alternativa
+            # ruim: a categoria viva ficar marcada como aposentada para sempre.
+            if obj.retired_at is not None and create:
+                obj.retired_at = None
+                obj.retired_reason = ''
+                obj.save(update_fields=['retired_at', 'retired_reason'])
             return obj.label
         if not create:
             return None
