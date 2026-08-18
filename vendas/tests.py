@@ -21,8 +21,8 @@ from tenancy.models import Company, Membership
 from tenancy.scope import company_scope, set_current_company
 
 from . import services
-from .models import (DocSequence, SEQ_SO, STATUS_CANCELLED, STATUS_CONFIRMED,
-                     STATUS_DRAFT, SalesOrder)
+from .models import (DocSequence, Invoice, SEQ_SO, STATUS_CANCELLED,
+                     STATUS_CONFIRMED, STATUS_DRAFT, SalesOrder)
 
 
 def _setup(slug):
@@ -1229,3 +1229,225 @@ class PdfConferenciaGerenteTests(TestCase):
         self.assertNotIn(b'Unit', junto)
         self.assertNotIn(b'10.50', junto)
         self.assertFalse(services.manager_document(self.so)['with_prices'])
+
+
+class CompradorComprasTests(TestCase):
+    """F11.6/F2+F3 — a superfície do COMPRADOR (dono, 2026-08-18).
+
+    O que precisa ser provado aqui, em ordem de importância:
+
+    1. **Isolamento.** O comprador lê OVs de VÁRIAS empresas (o Wu Quan é de
+       PLATAFORMA, `company IS NULL`) — é o único lugar do sistema que
+       atravessa empresas. Ele tem que ver as suas, de todas as empresas, e
+       NENHUMA de outro comprador.
+    2. **Escopo.** Toda leitura passa pelo `company_scope` da dona. Sem ele o
+       RLS devolveria zero linhas EM SILÊNCIO — o bug apareceria como "OV sem
+       linhas", não como erro. Em SQLite o RLS não roda, então o teste vale
+       como contrato de código, não como prova de banco.
+    3. **A conta.** Recusar unidade abate do valor, linha a linha.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.emp_a, cls.buyer, cls.brand = _setup('vd-cmp')
+        # ⚠ O comprador vira de PLATAFORMA (company=None) — é o que o Wu Quan
+        # é em prod, e é justamente o que faz ele atravessar empresas. Sem
+        # isto o `create_draft_for_lot` da 2ª empresa não o enxergaria.
+        cls.buyer.company = None
+        cls.buyer.save(update_fields=['company'])
+        cls.emp_b = Company.objects.create(name='Vd cmp B', slug='vd-cmp-b')
+        # …e um comprador RIVAL noutra empresa: ninguém vê o do outro.
+        cls.emp_c = Company.objects.create(name='Vd cmp C', slug='vd-cmp-c')
+        cls.rival = Buyer.all_companies.create(company=cls.emp_c,
+                                               name='Rival', slug='rival-cmp')
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('vd_cmp_p', password='x')
+        cls.buyer.users.add(cls.parceiro)
+        cls.outro = User.objects.create_user('vd_cmp_o', password='x')
+        cls.rival.users.add(cls.outro)
+
+    def setUp(self):
+        set_current_company(self.emp_a.pk)
+        self.addCleanup(set_current_company, None)
+        call_command('seed_category_codes', '--commit', verbosity=0)
+
+    def _grid(self, buyer):
+        from pricing.models import Price, PriceList, STATUS_QUOTED
+        if PriceList.all_companies.filter(buyer=buyer, brand=None).exists():
+            return
+        pl = PriceList.all_companies.create(buyer=buyer, brand=None)
+        Price.all_companies.create(
+            price_list=pl, kind='emmc', gen='', origin='phone',
+            tier_value=Decimal('16'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('15'), price_max=Decimal('15'))
+
+    def _lote_fechado(self, company, sufixo='', marca=None):
+        """Lote com entradas cotadas → OV congelada (F11.6/F1)."""
+        with company_scope(company):
+            self._grid(self.buyer)
+            lot = Lot.open_for_company(company, self.parceiro, 'c' + sufixo,
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='CMP' + sufixo, quantity=10,
+                brand=marca or self.brand, chip_type='eMMC', company=company,
+                price_kind='emmc', price_gen='',
+                price_tier_value=Decimal('16'), price_tier_unit='GB')
+            so = services.create_draft_for_lot(lot, self.parceiro)
+            services.confirm(so, self.parceiro, unmasked=True)
+            so.refresh_from_db()
+            return so
+
+    def _ov_do_rival(self):
+        """OV do comprador RIVAL, montada à mão de propósito: o que se testa
+        aqui é o ISOLAMENTO da leitura, não o caminho de criação (que, com um
+        comprador de plataforma em cena, recusaria por ambiguidade)."""
+        with company_scope(self.emp_c):
+            lot = Lot.open_for_company(self.emp_c, self.outro, 'rival',
+                                       origin='phone')
+            so = SalesOrder(lot=lot, buyer=self.rival,
+                            number=DocSequence.next_number(self.emp_c, SEQ_SO))
+            so.save()
+            return so
+
+    # ── isolamento ──────────────────────────────────────────────────────────
+
+    def test_ve_as_suas_de_todas_as_empresas_e_nenhuma_do_rival(self):
+        minha_a = self._lote_fechado(self.emp_a, sufixo='A')
+        minha_b = self._lote_fechado(self.emp_b, sufixo='B')
+        do_rival = self._ov_do_rival()
+        vistas = {o.pk for o in services.orders_for_buyer(self.buyer)}
+        self.assertEqual(vistas, {minha_a.pk, minha_b.pk})   # as DUAS empresas
+        self.assertNotIn(do_rival.pk, vistas)
+
+        self.client.force_login(self.parceiro)
+        tela = self.client.get(reverse('compras:list'))
+        self.assertContains(tela, self.emp_a.name)
+        self.assertContains(tela, self.emp_b.name)
+        # ⚠ NÃO asserte pelo código do lote: a numeração é POR EMPRESA, então
+        # LOT/001/08/26 existe em várias — foi o que quebrou este teste na
+        # primeira escrita. Na TELA quem desambigua é a coluna Cliente; aqui
+        # a prova de isolamento é a empresa do rival não aparecer.
+        self.assertNotContains(tela, self.emp_c.name)
+
+    def test_abrir_ov_de_outro_comprador_e_404(self):
+        """404 e não 403: não confirmamos nem que a ordem existe."""
+        do_rival = self._ov_do_rival()
+        self.client.force_login(self.parceiro)
+        self.assertEqual(
+            self.client.get(reverse('compras:detail',
+                                    args=[do_rival.pk])).status_code, 404)
+        self.assertEqual(
+            self.client.post(reverse('compras:resultado',
+                                     args=[do_rival.pk])).status_code, 404)
+
+    def test_quem_nao_e_comprador_nao_entra(self):
+        User = get_user_model()
+        zé = User.objects.create_user('vd_cmp_ze', password='x')
+        self.client.force_login(zé)
+        self.assertEqual(
+            self.client.get(reverse('compras:list')).status_code, 403)
+
+    # ── a tela ──────────────────────────────────────────────────────────────
+
+    def test_tela_traz_rotulo_real_e_o_cliente(self):
+        """Sem máscara (ele compra chip) e COM o nome do cliente — o comprador
+        recebe lote de várias empresas e precisa saber de qual veio."""
+        so = self._lote_fechado(self.emp_a, sufixo='L')
+        self.client.force_login(self.parceiro)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'eMMC')            # rótulo REAL
+        self.assertContains(tela, '16GB')
+        self.assertContains(tela, self.emp_a.name)   # de quem veio
+        self.assertContains(tela, 'B-06')            # e a caixa que ele conhece
+
+    def test_agrupa_por_marca(self):
+        """Marca é o agrupamento; capacidade é a linha (dono, 2026-08-18) —
+        assim a dedução nunca é ambígua em lote PCB."""
+        so = self._lote_fechado(self.emp_a, sufixo='M')
+        outra = Brand.objects.create(name='Outra cmp', code='OCMP')
+        with company_scope(self.emp_a):
+            InventoryEntry.all_companies.create(
+                lot=so.lot, part_number='CMPM2', quantity=4, brand=outra,
+                chip_type='eMMC', company=self.emp_a, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')
+            services.cancel(so, self.parceiro)
+            so2 = services.create_draft_for_lot(so.lot, self.parceiro)
+            services.confirm(so2, self.parceiro, unmasked=True)
+            grupos = services.result_rows(so2)
+        self.assertEqual([g['brand'] for g in grupos],
+                         sorted([self.brand, outra.name]))
+        self.assertTrue(all(len(g['lines']) == 1 for g in grupos))
+
+    # ── o resultado ─────────────────────────────────────────────────────────
+
+    def test_recusa_abate_do_valor_e_emite_fatura(self):
+        so = self._lote_fechado(self.emp_a, sufixo='X')
+        linha = so.lines.get()
+        self.assertEqual((linha.quantity, linha.unit_rmb), (10, Decimal('15')))
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]),
+                         {f'rej_{linha.pk}': '4', 'notes': 'quatro queimados'})
+        with company_scope(self.emp_a):
+            inv = Invoice.all_companies.get(order=so)
+            self.assertEqual(inv.total_rmb, Decimal('90.00'))   # 6 × ¥15
+            self.assertEqual(inv.settlement.notes, 'quatro queimados')
+            self.assertEqual(inv.settlement.created_by, self.parceiro)
+            self.assertEqual(inv.settlement.lines.get().qty_rejected, 4)
+        # A OV fica INTACTA (padrão Odoo: fatura pelo aceito, OV não muda):
+        so.refresh_from_db()
+        self.assertEqual(so.total_rmb, Decimal('150.00'))
+
+    def test_campo_em_branco_vale_zero(self):
+        """Sem nenhuma recusa, a fatura sai pelo valor cheio — e o acerto é
+        registrado do mesmo jeito ("resultado sem diferenças")."""
+        so = self._lote_fechado(self.emp_a, sufixo='Z')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        with company_scope(self.emp_a):
+            inv = Invoice.all_companies.get(order=so)
+            self.assertEqual(inv.total_rmb, so.total_rmb)
+            self.assertEqual(inv.settlement.lines.count(), 0)
+
+    def test_recusar_mais_do_que_veio_nao_passa(self):
+        so = self._lote_fechado(self.emp_a, sufixo='Y')
+        linha = so.lines.get()
+        self.client.force_login(self.parceiro)
+        resp = self.client.post(reverse('compras:resultado', args=[so.pk]),
+                                {f'rej_{linha.pk}': '99'}, follow=True)
+        with company_scope(self.emp_a):
+            self.assertFalse(Invoice.all_companies.filter(order=so).exists())
+        self.assertContains(resp, 'rejeitadas')
+
+    def test_ordem_sem_preco_nao_aceita_resultado(self):
+        """Rascunho = falta preço no grid DELE. A tela explica e não deixa
+        fechar resultado (o `settle_and_invoice` recusa de novo no servidor,
+        então POST forjado também não passa)."""
+        with company_scope(self.emp_a):
+            lot = Lot.open_for_company(self.emp_a, self.parceiro, 'sp',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='CMPSP', quantity=5, brand=self.brand,
+                chip_type='UFS', company=self.emp_a, price_kind='ufs',
+                price_gen='', price_tier_value=Decimal('256'),
+                price_tier_unit='GB')
+            so = services.create_draft_for_lot(lot, self.parceiro)
+        self.assertEqual(so.status, STATUS_DRAFT)
+        self.client.force_login(self.parceiro)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertNotContains(tela, 'name="rej_')          # sem campo
+        resp = self.client.post(reverse('compras:resultado', args=[so.pk]),
+                                {}, follow=True)
+        with company_scope(self.emp_a):
+            self.assertFalse(Invoice.all_companies.filter(order=so).exists())
+        self.assertContains(resp, 'CONFIRMADA')
+
+    def test_saldo_a_pagar_aparece_depois_da_fatura(self):
+        so = self._lote_fechado(self.emp_a, sufixo='S')
+        self.client.force_login(self.parceiro)
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'US$')
+        self.assertNotContains(tela, 'name="rej_')          # virou leitura
+        self.assertEqual(services.order_stage(
+            SalesOrder.all_companies.get(pk=so.pk)), services.STAGE_FATURADO)

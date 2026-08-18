@@ -16,6 +16,7 @@ Fonte única das três operações; as views/hooks só chamam daqui:
 
 import logging
 
+from contextlib import contextmanager
 from decimal import Decimal, ROUND_HALF_UP
 
 from django.core.exceptions import ValidationError
@@ -515,3 +516,137 @@ def cancel_invoice(invoice, user):
     invoice.cancelled_at = timezone.now()
     invoice.save()
     return invoice
+
+
+# ═══ F11.6 — a superfície do COMPRADOR (dono, 2026-08-18) ═══════════════════
+#
+# O comprador vê as OVs de VÁRIAS empresas. Isso é o oposto de tudo o mais no
+# sistema, onde a request tem UMA empresa — e é o caso que o `partner_required`
+# nunca cobriu: ele roda a view sob `company_scope(buyer.company)`, que para
+# comprador de PLATAFORMA (company IS NULL, o caso do Wu Quan) é escopo NENHUM.
+# Com RLS+FORCE ativos, consulta sem escopo devolve ZERO linhas em silêncio.
+#
+# ⚠ A saída escolhida (dono, 2026-08-18) é o LAÇO POR EMPRESA: uma consulta
+# dentro do `company_scope` de cada uma. Mais lento — N consultas — mas **o
+# Postgres continua sendo a barreira**: um `filter(buyer=...)` esquecido não
+# vaza dado de outro cliente, porque a linha nem chega ao Python. A alternativa
+# rápida (`platform_scope` + filtro no Python) desliga o filtro do banco e
+# deixa a proteção inteira na mão de quem escreve a query — recusada de
+# propósito. Quando N de empresas incomodar, o caminho é GUC `app.buyer_id`
+# com política RLS própria, NUNCA o platform_scope.
+#
+# ⚠ MÁSCARA: aqui o rótulo é REAL. O comprador compra chip — o grid de preço
+# dele já é por tipo e capacidade. Não use `annotate_labels(..., False)` nesta
+# superfície (o `is_unmasked` é superuser-only e devolveria C-### pra ele).
+
+
+def _empresas_ativas():
+    from tenancy.models import Company
+    return Company.objects.filter(active=True).order_by('slug')
+
+
+def orders_for_buyer(buyer):
+    """Todas as OVs do comprador, de TODAS as empresas, mais recentes antes.
+
+    Cada item vem com ``stage`` (estágio comercial) já anexado. Canceladas
+    ficam de fora: para o comprador elas não existem.
+    """
+    from tenancy.scope import company_scope
+    out = []
+    for comp in _empresas_ativas():
+        with company_scope(comp):
+            qs = (SalesOrder.objects.filter(buyer=buyer)
+                  .exclude(status=STATUS_CANCELLED)
+                  .select_related('lot', 'company')
+                  .prefetch_related('lines', 'invoices', 'invoices__payments'))
+            for so in qs:
+                so.stage = order_stage(so)
+                # Unidades DA ORDEM (o que ele paga). As sem chave de preço
+                # viajam na caixa mas não entram no comércio — aparecem à
+                # parte na tela da compra, para o total bater com o lote.
+                so.units = sum(l.quantity for l in so.lines.all())
+                out.append(so)
+    out.sort(key=lambda s: s.created_at, reverse=True)
+    return out
+
+
+@contextmanager
+def buyer_order(buyer, pk):
+    """A OV ``pk`` do comprador, JÁ dentro do escopo da empresa dona dela.
+
+    Context manager de propósito: ler as linhas, calcular e acertar têm que
+    acontecer TODOS sob o mesmo `company_scope` — fora dele o RLS devolve
+    zero linhas em silêncio, e o bug apareceria como "OV sem linhas" em vez
+    de erro. Levanta ``Http404`` se a OV não é deste comprador.
+    """
+    from django.http import Http404
+    from tenancy.scope import company_scope
+    for comp in _empresas_ativas():
+        with company_scope(comp):
+            so = (SalesOrder.objects.filter(pk=pk, buyer=buyer)
+                  .select_related('lot', 'company').first())
+            if so is not None:
+                yield so
+                return
+    raise Http404('Ordem de venda não encontrada para este comprador.')
+
+
+#: Estágios comerciais que o comprador vê. Canônicos (a chave nunca traduz);
+#: o rótulo é montado na view/template.
+STAGE_SEM_PRECO, STAGE_A_CONFERIR = 'sem_preco', 'a_conferir'
+STAGE_FATURADO, STAGE_PARCIAL, STAGE_PAGO = 'faturado', 'parcial', 'pago'
+
+
+def order_stage(so) -> str:
+    """Em que pé está a compra, do ponto de vista do COMPRADOR.
+
+    ``sem_preco`` é o rascunho: o lote fechou mas alguma categoria não tem
+    preço no grid DELE, então a ordem não congelou (F11.6/F1). É a única
+    pendência que o comprador resolve sozinho — completando a tabela.
+    """
+    if so.status == STATUS_DRAFT:
+        return STAGE_SEM_PRECO
+    inv = next((i for i in so.invoices.all() if i.status != 'cancelled'), None)
+    if inv is None:
+        return STAGE_A_CONFERIR              # confirmada, resultado pendente
+    if inv.status == 'paid':
+        return STAGE_PAGO
+    return STAGE_PARCIAL if inv.paid_usd else STAGE_FATURADO
+
+
+def result_rows(so):
+    """``[{'brand': str, 'lines': [...], 'subtotal_*': …}]`` — o que a tela do
+    resultado desenha.
+
+    **Agrupa por MARCA, e dentro dela por capacidade** (dono, 2026-08-18).
+    Fundir por capacidade deixaria a tela mais bonita mas cria dedução
+    AMBÍGUA em lote PCB, onde o preço é POR MARCA: "recusei 10 de eMMC 64GB"
+    não diria de qual marca sai o desconto. Assim cada linha da tela é uma
+    linha da OV — o abatimento é sempre exato.
+    """
+    from pricing.models import CategoryCode
+    grupos = {}
+    for line in so.lines.all():
+        g = grupos.setdefault(line.brand or '—',
+                              {'brand': line.brand or '—', 'lines': [],
+                               'qty': 0, 'rmb': Decimal('0.00')})
+        total = (line.unit_rmb * line.quantity) if line.unit_rmb else None
+        g['lines'].append({
+            'pk': line.pk,
+            'type': line.type_label,
+            'capacity': line.capacity_label or '—',
+            # Código de caixa: o vocabulário que ele e a bancada compartilham.
+            'wtc': CategoryCode.label_for_key(line.kind, line.gen,
+                                              line.tier_value, line.tier_unit,
+                                              create=False) or '—',
+            'qty': line.quantity,
+            'unit_rmb': line.unit_rmb,
+            'total_rmb': total,
+            'total_usd': line.total_usd,
+        })
+        g['qty'] += line.quantity
+        if total is not None:
+            g['rmb'] += total
+    for g in grupos.values():
+        g['lines'].sort(key=lambda r: (r['type'], r['capacity']))
+    return sorted(grupos.values(), key=lambda g: g['brand'])

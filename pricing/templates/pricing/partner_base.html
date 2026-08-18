@@ -171,6 +171,12 @@
     {% trans "Início" %}
   </a>
 
+  {# F11.6: as compras (OVs) que o comprador confere e fecha o resultado. #}
+  <a href="{% url 'compras:list' %}"
+     class="wtc-header__nav{% if active_pk == 'compras' %} wtc-header__nav--active{% endif %}">
+    {% trans "Compras" %}
+  </a>
+
   <a href="{% url 'pricing:partner_how' %}"
      class="wtc-header__nav{% if active_pk == 'how' %} wtc-header__nav--active{% endif %}">
     {% trans "Como funciona" %}
@@ -210,6 +216,7 @@
 </header>
 
 <div class="wtc-work">
+  {% block sidebar %}
   <aside class="ptn-side">
     <div class="ptn-side__title">{% trans "Preços por tipo de chip" %}</div>
     <a href="{% url 'pricing:partner_home' %}"
@@ -224,6 +231,7 @@
     </a>
     {% endfor %}
   </aside>
+  {% endblock %}
 
   <main class="ptn-content">
     {% if messages %}

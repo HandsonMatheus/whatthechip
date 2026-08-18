@@ -21,6 +21,11 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     # Dashboard do COMPRADOR (F6 — PRECIFICACAO §7.1): rota em inglês, conta
     # externa via Buyer.users (a lançadeira /painel/ redireciona parceiro p/ cá).
+    # F11.6: as COMPRAS do comprador (OVs de todos os clientes dele).
+    # Views em vendas/ (o domínio é venda), montadas na área do
+    # parceiro (o público é ele) — gate `partner_required`.
+    path('partner/compras/', include('vendas.urls_partner',
+                                     namespace='compras')),
     path('partner/', include('pricing.urls', namespace='pricing')),
     # Vendas (F11.2 — PRECIFICACAO §12.19): Cotação → OV do lote; admin-only.
     path('vendas/', include('vendas.urls', namespace='vendas')),

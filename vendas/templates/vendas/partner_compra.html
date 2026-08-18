@@ -1,0 +1,154 @@
+{% extends "pricing/partner_base.html" %}{% load i18n l10n %}
+{% comment %}
+  F11.6/F3 — a tela do RESULTADO.
+
+  Regra de leitura da tabela (dono, 2026-08-18): agrupa por MARCA, e dentro
+  dela por capacidade. Fundir por capacidade deixaria a tela mais curta, mas
+  criaria dedução AMBÍGUA em lote PCB, onde o preço é POR MARCA — "recusei 10
+  de eMMC 64GB" não diria de qual marca sai o desconto. Cada linha da tela é
+  uma linha da OV, então o abatimento é sempre exato.
+
+  O comprador digita SÓ o que recusou; branco vale zero. Aprovados e ¥ do
+  resultado são calculados no SERVIDOR ao fechar — o número que aparece
+  enquanto ele digita é só conforto, e nunca é a fonte da conta.
+{% endcomment %}
+{% block title %}{{ so.lot.code }}{% endblock %}
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<a class="cmp-voltar" href="{% url 'compras:list' %}">‹ {% trans "Compras" %}</a>
+
+<div class="cmp-head">
+  <div>
+    <h1 class="ptn-h1 mono">{{ so.lot.code }}</h1>
+    <p class="ptn-sub">{% blocktrans trimmed with cliente=so.company.name %}
+      de <b>{{ cliente }}</b>{% endblocktrans %} · {{ so.code }}</p>
+  </div>
+  <div class="cmp-tot">
+    <div class="cmp-tot__lbl">{% trans "Valor da ordem" %}</div>
+    <div class="cmp-tot__val mono">{% localize off %}{% if so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
+    <div class="cmp-tot__sub mono">{% localize off %}{% if so.total_usd %}US$ {{ so.total_usd }}{% endif %}{% endlocalize %}</div>
+  </div>
+  {% if invoice %}
+  <div class="cmp-tot">
+    <div class="cmp-tot__lbl">{% trans "Saldo a pagar" %}</div>
+    <div class="cmp-tot__val mono">{% localize off %}US$ {{ invoice.balance_usd }}{% endlocalize %}</div>
+    <div class="cmp-tot__sub mono">{% localize off %}{% blocktrans trimmed with t=invoice.total_usd p=invoice.paid_usd %}
+      fatura US$ {{ t }} · pago US$ {{ p }}{% endblocktrans %}{% endlocalize %}</div>
+  </div>
+  {% endif %}
+</div>
+
+{% if stage == 'sem_preco' %}
+  <div class="cmp-aviso">{% blocktrans trimmed %}
+    Esta ordem ainda não tem valor: alguma categoria deste lote não está
+    cotada na sua tabela de preços. Complete a tabela e o valor congela
+    sozinho — depois disso você consegue fechar o resultado.
+  {% endblocktrans %}</div>
+{% endif %}
+
+{% if so.unkeyed_units %}
+  <div class="cmp-nota">{% blocktrans trimmed with n=so.unkeyed_units %}
+    A caixa traz ainda {{ n }} unidade(s) sem preço na tabela — elas não
+    entram nesta conta.
+  {% endblocktrans %}</div>
+{% endif %}
+
+<form method="post" action="{% url 'compras:resultado' so.pk %}">
+{% csrf_token %}
+<table class="cmp-tab cmp-res">
+  <thead>
+    <tr>
+      <th>{% trans "Tipo" %}</th>
+      <th>{% trans "Capacidade" %}</th>
+      <th>{% trans "Caixa WTC" %}</th>
+      <th class="num">{% trans "Enviados" %}</th>
+      <th class="num">{% trans "¥ unit." %}</th>
+      <th class="num">{% trans "¥ esperado" %}</th>
+      {% if pode_acertar %}<th class="num cmp-rej">{% trans "Recusados" %}</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+  {% for g in grupos %}
+    <tr class="cmp-marca">
+      <td colspan="{% if pode_acertar %}7{% else %}6{% endif %}">
+        {{ g.brand }} <span class="cmp-marca__qtd">{{ g.qty }} un. · {% localize off %}¥ {{ g.rmb }}{% endlocalize %}</span>
+      </td>
+    </tr>
+    {% for l in g.lines %}
+    <tr>
+      <td>{{ l.type }}</td>
+      <td>{{ l.capacity }}</td>
+      <td class="mono cmp-wtc">{{ l.wtc }}</td>
+      <td class="num">{{ l.qty }}</td>
+      <td class="num mono">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+      <td class="num mono">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+      {% if pode_acertar %}
+      <td class="num cmp-rej">
+        <input type="number" name="rej_{{ l.pk }}" min="0" max="{{ l.qty }}"
+               placeholder="0" class="cmp-in" inputmode="numeric">
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  {% endfor %}
+  </tbody>
+</table>
+
+{% if pode_acertar %}
+  <p class="cmp-dica">{% blocktrans trimmed %}
+    Digite só o que recusou — campo em branco vale zero. O valor final é
+    calculado quando você fecha o resultado.
+  {% endblocktrans %}</p>
+  <label class="cmp-obs">
+    <span>{% trans "Observação (opcional)" %}</span>
+    <textarea name="notes" rows="3" placeholder="{% trans 'Motivo da recusa, número do lacre, o que for útil registrar.' %}"></textarea>
+  </label>
+  <button type="submit" class="cmp-btn"
+          onclick="return confirm('{% trans "Fechar o resultado emite a fatura desta compra e não pode ser desfeito por aqui. Confirmar?" %}');">
+    {% trans "Fechar resultado" %}
+  </button>
+{% endif %}
+</form>
+
+<style>
+  .cmp-voltar { color:#0f62fe; text-decoration:none; font-size:13px; font-weight:600; }
+  .cmp-head { display:flex; gap:40px; align-items:flex-start; margin:10px 0 22px;
+              flex-wrap:wrap; }
+  .cmp-head > div:first-child { flex:1; min-width:240px; }
+  .ptn-h1 { font-size:26px; font-weight:600; margin:0 0 4px; }
+  .ptn-sub { color:#525252; font-size:14px; margin:0; }
+  .cmp-tot__lbl { font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+                  color:#525252; font-weight:600; }
+  .cmp-tot__val { font-size:24px; font-weight:600; margin-top:2px; }
+  .cmp-tot__sub { font-size:12px; color:#8d8d8d; }
+  .cmp-aviso { background:#fcf4d6; border-left:3px solid #f1c21b; padding:12px 14px;
+               font-size:14px; margin-bottom:18px; max-width:70ch; }
+  .cmp-nota { background:#edf5ff; border-left:3px solid #0f62fe; padding:10px 14px;
+              font-size:13px; margin-bottom:18px; max-width:70ch; }
+  .cmp-tab { width:100%; border-collapse:collapse; background:#fff;
+             border:1px solid #e0e0e0; font-size:14px; }
+  .cmp-tab th { text-align:left; font-size:11px; letter-spacing:.06em;
+                text-transform:uppercase; color:#525252; font-weight:600;
+                padding:10px 12px; border-bottom:1px solid #8d8d8d; }
+  .cmp-tab td { padding:9px 12px; border-bottom:1px solid #e0e0e0; }
+  .cmp-tab .num { text-align:right; }
+  .cmp-tab .mono { font-family:'IBM Plex Mono',monospace; }
+  .cmp-wtc { color:#525252; font-size:12px; }
+  .cmp-marca td { background:#f4f4f4; font-weight:600; border-bottom:1px solid #c6c6c6; }
+  .cmp-marca__qtd { font-weight:400; color:#525252; font-size:12px; margin-left:8px; }
+  .cmp-rej { background:#fff1f1; }
+  .cmp-in { width:88px; padding:5px 8px; border:1px solid #a2191f; text-align:right;
+            font-family:'IBM Plex Mono',monospace; font-size:14px; background:#fff; }
+  .cmp-dica { color:#525252; font-size:13px; margin:12px 0 0; }
+  .cmp-obs { display:block; margin:18px 0; max-width:60ch; }
+  .cmp-obs span { display:block; font-size:11px; letter-spacing:.06em;
+                  text-transform:uppercase; color:#525252; font-weight:600;
+                  margin-bottom:5px; }
+  .cmp-obs textarea { width:100%; padding:9px; border:1px solid #8d8d8d;
+                      font-family:inherit; font-size:14px; }
+  .cmp-btn { background:#0f62fe; color:#fff; border:0; padding:13px 26px;
+             font-size:14px; font-weight:600; cursor:pointer; }
+  .cmp-btn:hover { background:#0353e9; }
+</style>
+{% endblock %}

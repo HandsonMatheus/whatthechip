@@ -1502,11 +1502,32 @@ unmasked=False)` nesta superfície.
   criar a OV; `ValidationError` de pendência deixa a OV em rascunho e avisa na
   tela (mesmo portão de silêncio do incidente do K9). Pequena, e torna o preço
   do PDF confiável.
-- **F2 — `/partner/compras/`**: lista das OVs de todos os clientes (laço por
-  empresa), com lote, cliente, chips, ¥, US$ e status derivado.
-- **F3 — tela do resultado**: cabeçalho + tabela marca→capacidade com input de
-  RECUSADOS por linha; aprovados e ¥ resultado calculados; observação;
-  "Fechar resultado" chama `settle_and_invoice()`.
+- **F2 ✅ ENTREGUE — `/partner/compras/`**: lista das OVs de todos os clientes
+  (laço por empresa), com lote, cliente, chips, ¥, US$ e estágio.
+- **F3 ✅ ENTREGUE — tela do resultado**: cabeçalho + tabela marca→capacidade
+  com input de RECUSADOS por linha, observação, e "Fechar resultado" chamando
+  `settle_and_invoice()`. Depois de faturada a tela vira LEITURA e mostra o
+  saldo a pagar (o F5 saiu junto — era só leitura).
+
+**Arquitetura entregue (F2+F3+F5):** `vendas/views_partner.py` +
+`vendas/urls_partner.py` (namespace `compras`, montado em `/partner/compras/`
+ANTES do include do `pricing`), templates em `vendas/templates/vendas/`, e as
+funções de dados em `vendas/services.py` — `orders_for_buyer`, `buyer_order`
+(context manager que abre a OV JÁ dentro do `company_scope` da dona),
+`order_stage` e `result_rows`. O `partner_base.html` ganhou o item **Compras**
+na nav e um `{% block sidebar %}` (a sidebar de preços não faz sentido aqui).
+
+⚠ **`buyer_order` é context manager de propósito:** ler linhas, calcular e
+acertar têm que acontecer todos sob o MESMO `company_scope`. Fora dele o RLS
+devolve zero linhas em silêncio, e o bug apareceria como "OV sem linhas" em
+vez de erro — a mesma classe de armadilha do incidente do K9.
+
+⚠ **Código de lote NÃO é único entre empresas** (a numeração é por empresa):
+a lista do comprador mostra `LOT/001/08/26` de dois clientes diferentes, e
+quem desambigua é a coluna Cliente. Achado ao escrever o teste de isolamento —
+`assertNotContains(lot.code)` passava/falhava por colisão, não por vazamento.
+Se um dia o comprador precisar de referência única, o caminho é prefixar pelo
+cliente (o número da OV também é por empresa, então também repete).
 - **F4 — despacho**: transportadora, datas de envio/recebimento e rastreio
   (dado NOVO — hoje não existe nada disso no lote).
 - **F5 — pagamentos**: saldo a pagar visível ao comprador (leitura; quem

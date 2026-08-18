@@ -1,0 +1,82 @@
+{% extends "pricing/partner_base.html" %}{% load i18n l10n %}
+{% comment %}
+  F11.6/F2 — as COMPRAS do comprador: as OVs de TODOS os clientes dele.
+
+  MVP de propósito: tabela simples, sem filtro nem paginação (o volume hoje é
+  de dezenas). O que NÃO pode faltar aqui é o CLIENTE — o comprador recebe
+  lote de várias empresas e precisa saber de qual veio (foi o que motivou o
+  SHIP FROM no documento de embarque).
+
+  ⚠ Rótulo REAL, sem máscara: quem lê é quem compra o chip.
+{% endcomment %}
+{% block title %}{% trans "Compras" %}{% endblock %}
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<h1 class="ptn-h1">{% trans "Suas compras" %}</h1>
+<p class="ptn-sub">{% blocktrans trimmed %}
+  Cada linha é um lote que o cliente já fechou. Abra para conferir o que
+  chegou e fechar o resultado.
+{% endblocktrans %}</p>
+
+{% if not ordens %}
+  <div class="cmp-vazio">{% trans "Nenhuma compra ainda." %}</div>
+{% else %}
+<table class="cmp-tab">
+  <thead>
+    <tr>
+      <th>{% trans "Lote" %}</th>
+      <th>{% trans "Cliente" %}</th>
+      <th class="num">{% trans "Chips" %}</th>
+      <th class="num">{% trans "Total ¥" %}</th>
+      <th class="num">{% trans "Total US$" %}</th>
+      <th>{% trans "Situação" %}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for o in ordens %}
+    <tr>
+      <td class="mono">{{ o.lot.code }}</td>
+      <td>{{ o.company.name }}</td>
+      <td class="num">{{ o.units }}</td>
+      <td class="num mono">{% localize off %}{% if o.total_rmb %}¥ {{ o.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+      <td class="num mono">{% localize off %}{% if o.total_usd %}US$ {{ o.total_usd }}{% else %}—{% endif %}{% endlocalize %}</td>
+      <td>
+        {% if o.stage == 'sem_preco' %}<span class="cmp-tag cmp-tag--warn">{% trans "Falta preço seu" %}</span>
+        {% elif o.stage == 'a_conferir' %}<span class="cmp-tag cmp-tag--todo">{% trans "A conferir" %}</span>
+        {% elif o.stage == 'faturado' %}<span class="cmp-tag cmp-tag--ok">{% trans "Faturado" %}</span>
+        {% elif o.stage == 'parcial' %}<span class="cmp-tag cmp-tag--todo">{% trans "Pago em parte" %}</span>
+        {% else %}<span class="cmp-tag cmp-tag--ok">{% trans "Pago" %}</span>{% endif %}
+      </td>
+      <td class="num"><a class="cmp-link" href="{% url 'compras:detail' o.pk %}">{% trans "Abrir" %} ›</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<style>
+  .ptn-h1 { font-size:26px; font-weight:300; margin:0 0 4px; }
+  .ptn-h1 b { font-weight:600; }
+  .ptn-sub { color:#525252; font-size:14px; margin:0 0 22px; max-width:60ch; }
+  .cmp-vazio { padding:40px; text-align:center; color:#8d8d8d; background:#fff;
+               border:1px solid #e0e0e0; }
+  .cmp-tab { width:100%; border-collapse:collapse; background:#fff;
+             border:1px solid #e0e0e0; font-size:14px; }
+  .cmp-tab th { text-align:left; font-size:11px; letter-spacing:.06em;
+                text-transform:uppercase; color:#525252; font-weight:600;
+                padding:10px 14px; border-bottom:1px solid #8d8d8d; }
+  .cmp-tab td { padding:11px 14px; border-bottom:1px solid #e0e0e0; }
+  .cmp-tab tr:last-child td { border-bottom:0; }
+  .cmp-tab .num { text-align:right; }
+  .cmp-tab .mono { font-family:'IBM Plex Mono',monospace; }
+  .cmp-tag { display:inline-block; font-size:11px; font-weight:600; padding:3px 9px;
+             letter-spacing:.04em; text-transform:uppercase; }
+  .cmp-tag--warn { background:#fcf4d6; color:#8e6a00; }
+  .cmp-tag--todo { background:#e8daff; color:#6929c4; }
+  .cmp-tag--ok   { background:#defbe6; color:#0e6027; }
+  .cmp-link { color:#0f62fe; text-decoration:none; font-weight:600; white-space:nowrap; }
+  .cmp-link:hover { text-decoration:underline; }
+</style>
+{% endblock %}
