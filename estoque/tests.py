@@ -912,7 +912,8 @@ class RoleMatrixTests(TestCase):
         (antes cada usuário só via os próprios lotes; ver _get_lot)."""
         self._as('operator')
         resp = self.client.get(reverse('estoque:index'))
-        self.assertContains(resp, 'LOT/900/')   # nomenclatura F11.2
+        self.assertIn('/900/', self.lot.code)   # nomenclatura F11.2
+        self.assertContains(resp, self.lot.code)
 
 
 class LotDeleteTests(TestCase):
@@ -1023,7 +1024,11 @@ class PainelTests(TestCase):
                                  description='Compra Jul/26')
         self.client.force_login(self.op)
         resp = self.client.get(reverse('painel'))
-        self.assertContains(resp, 'LOT/500/')   # nomenclatura F11.2
+        # Nomenclatura F11.2 — o número é perpétuo; o código da empresa entrou
+        # no prefixo em 2026-08-18 (LOT/EMI/500/…), por isso a asserção é
+        # sobre o `code` do lote e não sobre um literal.
+        self.assertIn('/500/', lot.code)
+        self.assertContains(resp, lot.code)
         self.assertContains(resp, 'Continuar triagem')
         self.assertContains(resp, reverse('estoque:lot_detail', args=[lot.pk]))
 

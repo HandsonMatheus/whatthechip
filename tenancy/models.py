@@ -73,6 +73,42 @@ def validate_company_code(code):
             '(ex.: "EMI"). Vazio também vale — o documento sai sem prefixo.'))
 
 
+def suggest_company_code(name, taken=None) -> str:
+    """Código SUGERIDO a partir do nome — as 3 primeiras LETRAS (dono,
+    2026-08-18): "eMiner" → ``EMI``, "eRecyclo" → ``ERE``.
+
+    Serve ao cadastro: o dono não quer digitar código a cada empresa nova, e
+    empresa sem código emite documento no formato antigo (sem prefixo) — que é
+    justamente a colisão que o código veio desfazer. Então o padrão é gerado.
+
+    Regras, nesta ordem:
+      · acento cai (``Açaí`` → ``ACA``) e só A-Z sobrevive — dígito e espaço
+        fora, porque o código é lido em papel impresso e digitado no
+        type-to-confirm do fechamento;
+      · 3 letras; ocupado → 4 letras; ocupado → 3 letras + B, C, D…
+      · nome com menos de 2 letras → ``''`` (formato antigo, sem prefixo): é
+        melhor sair sem código do que sair com um código ambíguo.
+
+    ``taken`` são os códigos JÁ EM USO. O chamador passa; assim a função é pura
+    e testável sem banco.
+    """
+    import unicodedata
+    sem_acento = ''.join(c for c in unicodedata.normalize('NFKD', name or '')
+                         if not unicodedata.combining(c)).upper()
+    letras = ''.join(c for c in sem_acento if 'A' <= c <= 'Z')
+    if len(letras) < 2:
+        return ''
+    ocupados = {(t or '').upper() for t in (taken or ())}
+    for tentativa in (letras[:3], letras[:4]):
+        if len(tentativa) >= 2 and tentativa not in ocupados:
+            return tentativa
+    base = letras[:3]
+    for sufixo in 'BCDEFGHIJKLMNOPQRSTUVWXYZ':
+        if base + sufixo not in ocupados:
+            return base + sufixo
+    return ''
+
+
 def validate_company_slug(value):
     """Valida o slug da empresa como FUTURO HOSTNAME (B3).
 
@@ -119,8 +155,9 @@ class Company(models.Model):
     code = models.CharField(
         max_length=4, blank=True, default='', verbose_name='Código',
         help_text='2 a 4 letras MAIÚSCULAS que identificam a empresa nos '
-                  'documentos (ex.: "EMI" → LOT/EMI/041/08/26). Vazio = '
-                  'documentos no formato antigo, sem prefixo.')
+                  'documentos (ex.: "EMI" → LOT/EMI/041/08/26). Em branco '
+                  'numa empresa NOVA, sai automático: as 3 primeiras letras '
+                  'do nome.')
     active = models.BooleanField(default=True, verbose_name='Ativa',
                                  help_text='Desativar ≠ deletar — o histórico fica.')
     # F12 (máscara de categoria, dono 2026-07-17): o conhecimento de chips é o
@@ -195,6 +232,13 @@ class Company(models.Model):
         # HISTÓRICO (sem métodos custom) — backfills antigos não quebram.
         validate_company_slug(self.slug)
         self.code = (self.code or '').strip().upper()
+        # Empresa NOVA sem código ganha um padrão (dono, 2026-08-18): as 3
+        # primeiras letras do nome. Só na CRIAÇÃO — apagar o código de uma
+        # empresa existente é uma decisão, não um descuido a ser desfeito.
+        if self._state.adding and not self.code:
+            self.code = suggest_company_code(
+                self.name,
+                taken=Company.objects.exclude(code='').values_list('code', flat=True))
         validate_company_code(self.code)
         return super().save(*args, **kwargs)
 

@@ -876,7 +876,11 @@ class CodigoDeDocumentoTests(TestCase):
         self.assertTrue(self._lote(self.emi).code.startswith('LOT/EMN/'))
 
     def test_empresa_sem_codigo_sai_no_formato_antigo(self):
+        """Empresa legada — nasceu antes do código existir. Hoje só se chega
+        nesse estado apagando o código (empresa NOVA já sai com o padrão)."""
         sem = Company.objects.create(name='Sem cod', slug='sem-cod')
+        Company.objects.filter(pk=sem.pk).update(code='')
+        sem.refresh_from_db()
         self.assertEqual(sem.code, '')
         self.assertTrue(self._lote(sem).code.startswith('LOT/001/'))
 
@@ -909,3 +913,167 @@ class CodigoDeDocumentoTests(TestCase):
                             number=DocSequence.next_number(self.emi, SEQ_SO))
             so.save()
         self.assertTrue(so.code.startswith('SO/EMI/001/'))
+
+
+class CodigoPadraoDaEmpresaTests(TestCase):
+    """Empresa NOVA já nasce com código (dono, 2026-08-18): as 3 primeiras
+    letras do nome.
+
+    POR QUÊ: empresa sem código emite documento no formato antigo, sem
+    prefixo — exatamente a colisão que o código veio desfazer. Deixar o campo
+    em branco no cadastro não podia ser o caminho fácil."""
+
+    def test_tres_primeiras_letras_do_nome(self):
+        self.assertEqual(Company.objects.create(name='eMiner',
+                                                slug='emi-auto').code, 'EMI')
+
+    def test_acento_e_digito_caem(self):
+        """O código é impresso e DIGITADO (type-to-confirm do fechamento):
+        acento e dígito não entram."""
+        from .models import suggest_company_code
+        self.assertEqual(suggest_company_code('Açaí Reciclagem'), 'ACA')
+        self.assertEqual(suggest_company_code('3R Metais'), 'RME')
+        self.assertEqual(suggest_company_code('Über Chip'), 'UBE')
+
+    def test_colisao_resolve_sozinha(self):
+        """3 letras → 4 letras → 3 letras + B, C, D…"""
+        a = Company.objects.create(name='Brasil Reciclagem', slug='bra-1')
+        b = Company.objects.create(name='Brasil Metais',     slug='bra-2')
+        c = Company.objects.create(name='Brasil Chips',      slug='bra-3')
+        self.assertEqual([a.code, b.code, c.code], ['BRA', 'BRAS', 'BRAB'])
+
+    def test_codigo_informado_ganha_do_padrao(self):
+        self.assertEqual(Company.objects.create(name='eMiner', slug='emi-man',
+                                                code='xyz').code, 'XYZ')
+
+    def test_nome_curto_demais_fica_sem_codigo(self):
+        """Melhor sair sem prefixo (formato antigo, que vale) do que sair com
+        um código ambíguo."""
+        self.assertEqual(Company.objects.create(name='X', slug='x-curto').code, '')
+
+    def test_padrao_so_na_criacao(self):
+        """Apagar o código de uma empresa que já existe é uma DECISÃO — o
+        save() não a desfaz sozinho."""
+        c = Company.objects.create(name='Zeta Metais', slug='zeta')
+        c.code = ''
+        c.save()
+        c.refresh_from_db()
+        self.assertEqual(c.code, '')
+
+
+class BackfillDocCodesTests(TestCase):
+    """`backfill_doc_codes` — o passado ganha o código da empresa.
+
+    ⚠ O dono reverteu aqui a decisão de 2026-08-18 de manhã ("só documento
+    novo"). O preço, aceito: PDF antigo já impresso mostra `LOT/041/08/26`
+    enquanto a tela passa a mostrar `LOT/EMI/041/08/26` — número e data não
+    mudam, então o documento continua rastreável."""
+
+    def setUp(self):
+        import tempfile
+        self.tmp = tempfile.mkdtemp()
+        self.user = User.objects.create_user('bf_op')
+        self.emi = Company.objects.create(name='eMiner', slug='eminer-bf')
+        self.erc = Company.objects.create(name='eRecyclo', slug='erecyclo-bf')
+        # Estado LEGADO: empresa sem código e lote com o identificador antigo.
+        Company.objects.filter(pk__in=[self.emi.pk, self.erc.pk]).update(code='')
+        self.emi.refresh_from_db(); self.erc.refresh_from_db()
+        self.lote_emi = self._lote_legado(self.emi)
+        self.lote_erc = self._lote_legado(self.erc)
+
+    def tearDown(self):
+        import shutil
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def _lote_legado(self, comp):
+        with company_scope(comp):
+            lot = Lot.open_for_company(comp, self.user, 'x', origin='phone')
+        Lot.all_companies.filter(pk=lot.pk).update(code_str='')
+        lot.refresh_from_db()
+        return lot
+
+    def _rodar(self, **kw):
+        from io import StringIO
+        from django.test import override_settings
+        saida = StringIO()
+        with override_settings(BASE_DIR=self.tmp):
+            call_command('backfill_doc_codes', stdout=saida, stderr=StringIO(), **kw)
+        return saida.getvalue()
+
+    def test_dry_run_nao_grava_e_mostra_o_plano(self):
+        saida = self._rodar()
+        self.emi.refresh_from_db(); self.lote_emi.refresh_from_db()
+        self.assertEqual(self.emi.code, '')
+        self.assertEqual(self.lote_emi.code_str, '')
+        # O dono decide olhando ESTE relatório antes de gravar em produção.
+        self.assertIn('eMiner', saida)
+        self.assertIn('LOT/EMI/001/', saida)
+        self.assertIn('DRY-RUN', saida)
+
+    def test_commit_da_codigo_a_empresa_e_reescreve_o_lote(self):
+        self._rodar(commit=True)
+        self.emi.refresh_from_db(); self.erc.refresh_from_db()
+        self.assertEqual(self.emi.code, 'EMI')
+        self.assertEqual(self.erc.code, 'ERE')
+        self.lote_emi.refresh_from_db(); self.lote_erc.refresh_from_db()
+        self.assertTrue(self.lote_emi.code.startswith('LOT/EMI/001/'))
+        self.assertTrue(self.lote_erc.code.startswith('LOT/ERE/001/'))
+        self.assertNotEqual(self.lote_emi.code, self.lote_erc.code)
+
+    def test_mes_e_ano_sao_os_da_EMISSAO_e_nao_os_de_hoje(self):
+        """Lote de julho continua `…/07/26` — renomear não é reemitir."""
+        from datetime import datetime, timezone as tz
+        julho = datetime(2026, 7, 4, 12, 0, tzinfo=tz.utc)
+        Lot.all_companies.filter(pk=self.lote_emi.pk).update(created_at=julho)
+        self._rodar(commit=True)
+        self.lote_emi.refresh_from_db()
+        self.assertEqual(self.lote_emi.code, 'LOT/EMI/001/07/26')
+
+    def test_documento_ja_no_formato_novo_nao_e_tocado(self):
+        """Número de documento não muda duas vezes."""
+        Lot.all_companies.filter(pk=self.lote_emi.pk).update(
+            code_str='LOT/ZZZ/001/01/26')
+        self._rodar(commit=True)
+        self.lote_emi.refresh_from_db()
+        self.assertEqual(self.lote_emi.code_str, 'LOT/ZZZ/001/01/26')
+
+    def test_ov_tambem_ganha_o_prefixo(self):
+        from pricing.models import Buyer
+        from vendas.models import DocSequence, SEQ_SO, SalesOrder
+        with company_scope(self.emi):
+            comprador = Buyer.all_companies.create(company=self.emi, name='B',
+                                                   slug='b-bf')
+            so = SalesOrder(lot=self.lote_emi, buyer=comprador,
+                            number=DocSequence.next_number(self.emi, SEQ_SO))
+            so.save()
+            SalesOrder.all_companies.filter(pk=so.pk).update(code_str='')
+        self._rodar(commit=True)
+        so.refresh_from_db()
+        self.assertTrue(so.code.startswith('SO/EMI/001/'))
+
+    def test_revert_desfaz_tudo(self):
+        self._rodar(commit=True)
+        self._rodar(revert=True)
+        self.emi.refresh_from_db(); self.lote_emi.refresh_from_db()
+        self.assertEqual(self.emi.code, '')
+        self.assertEqual(self.lote_emi.code_str, '')
+
+    def test_uma_empresa_so(self):
+        self._rodar(company='eminer-bf', commit=True)
+        self.emi.refresh_from_db(); self.erc.refresh_from_db()
+        self.assertEqual(self.emi.code, 'EMI')
+        self.assertEqual(self.erc.code, '')
+        self.lote_erc.refresh_from_db()
+        self.assertEqual(self.lote_erc.code_str, '')
+
+    def test_slug_inexistente_explode(self):
+        with self.assertRaises(CommandError):
+            self._rodar(company='nao-existe')
+
+    def test_rodar_duas_vezes_nao_muda_nada(self):
+        self._rodar(commit=True)
+        self.lote_emi.refresh_from_db()
+        antes = self.lote_emi.code_str
+        self._rodar(commit=True)
+        self.lote_emi.refresh_from_db()
+        self.assertEqual(self.lote_emi.code_str, antes)

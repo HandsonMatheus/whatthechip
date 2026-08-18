@@ -1535,16 +1535,42 @@ mesmo país voltariam a colidir — e é exatamente esse o caminho de cresciment
 País é metadado de EMBARQUE e já viaja no endereço do SHIP FROM; não pertence
 ao identificador.
 
-⚠ **Formato novo só em documento NOVO** (decisão do dono): papel já impresso
-não pode divergir da tela. Por isso o código deixou de ser propriedade
-calculada e virou campo CONGELADO na criação (`code_str` em Lot, SalesOrder e
-Invoice; helper único em `tenancy/doc_code.py`). Documento sem `code_str` cai
-no formato antigo. De quebra o identificador virou IMUTÁVEL — renomear o
-código da empresa não reescreve o passado, que é como número de documento deve
-se comportar (há teste cravando).
+O código deixou de ser propriedade calculada e virou campo CONGELADO na
+criação (`code_str` em Lot, SalesOrder e Invoice; helper único em
+`tenancy/doc_code.py`). Documento sem `code_str` cai no formato antigo. De
+quebra o identificador virou IMUTÁVEL — renomear o código da empresa não
+reescreve o passado, que é como número de documento deve se comportar (há
+teste cravando).
 
-Migrações `tenancy/0009`, `estoque/0020` e `vendas/0006` — aditivas, **sem
-backfill de propósito**. Preencher o `code` de cada empresa no admin.
+🔁 **DECISÃO REVERTIDA na mesma tarde (dono, 2026-08-18).** De manhã: formato
+novo **só em documento NOVO**, porque papel já impresso não pode divergir da
+tela. De tarde: renomear **também o passado**. O preço, aceito: um PDF antigo
+já impresso mostra `LOT/041/08/26` enquanto a tela passa a mostrar
+`LOT/EMI/041/08/26` — número (041) e data não mudam, então o documento
+continua rastreável; só o prefixo entra. A arquitetura do `code_str` continua
+valendo: o backfill só PREENCHE o campo, e a partir daí o identificador segue
+imutável.
+
+**Empresa NOVA já nasce com código** (`suggest_company_code`): as 3 primeiras
+LETRAS do nome — "eMiner" → `EMI`. Acento cai, dígito não entra, colisão
+resolve sozinha (3 letras → 4 letras → 3 letras + B, C, D…). Nome com menos de
+2 letras fica sem código, e aí o documento sai no formato antigo — melhor sem
+prefixo do que com um prefixo ambíguo. O padrão vale **só na criação**: apagar
+o código de uma empresa que já existe é uma decisão, não um descuido.
+
+**`python manage.py backfill_doc_codes`** faz as duas coisas no passado: dá
+código a quem não tem e reescreve o `code_str` de Lot/OV/Fatura que ainda não
+carrega o prefixo. Documento que já saiu no formato novo **não é tocado** —
+número de documento não muda duas vezes. Mês/ano vêm do `created_at`
+(`issued_at` na fatura), não de hoje: lote de julho continua `…/07/26`. Laço
+por empresa dentro de `company_scope` (⚠ sem o GUC, com FORCE RLS, SELECT e
+UPDATE casam zero linhas **em silêncio** — o comando diria "nada a fazer" num
+banco cheio). Dry-run por padrão; `--commit` grava
+`backfill_doc_codes_revert.json` na BASE_DIR e `--revert` restaura.
+
+Migrações `tenancy/0009`, `tenancy/0010`, `estoque/0020` e `vendas/0006` —
+aditivas, **sem RunPython** (backfill em tabela com RLS exigiria o GUC de
+plataforma dentro do `migrate` do Render; por isso é comando, rodado à mão).
 
 **RUNBOOK DO DEPLOY F11 EM PROD (o dono roda; comandos UM POR VEZ):**
 
