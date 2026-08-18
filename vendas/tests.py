@@ -1389,6 +1389,42 @@ class CompradorComprasTests(TestCase):
             self.client.post(reverse('compras:resultado',
                                      args=[do_rival.pk])).status_code, 404)
 
+    def test_compra_ANTIGA_confirmada_sem_despacho_nao_some(self):
+        """REGRESSÃO (2026-08-18): a regra "só o que foi despachado" apagou da
+        tela toda compra que existia antes do despacho existir — elas nasceram
+        confirmadas e nunca terão `shipped_at`. Regra nova não reescreve o
+        passado."""
+        antiga = self._lote_fechado(self.emp_a, sufixo='OLD')
+        with company_scope(self.emp_a):
+            SalesOrder.all_companies.filter(pk=antiga.pk).update(
+                shipped_at=None, carrier='', tracking='')
+            antiga.refresh_from_db()
+        self.assertEqual(antiga.status, STATUS_CONFIRMED)
+        self.assertIsNone(antiga.shipped_at)
+        vistas = {o.pk for o in services.orders_for_buyer(self.buyer)}
+        self.assertIn(antiga.pk, vistas)
+        self.client.force_login(self.parceiro)
+        self.assertEqual(self.client.get(
+            reverse('compras:detail', args=[antiga.pk])).status_code, 200)
+
+    def test_ordem_NOVA_sem_despacho_nao_aparece(self):
+        """O outro lado da mesma regra: rascunho não despachado é lote fechado
+        na bancada do cliente — mostrar seria prometer caixa que não saiu."""
+        with company_scope(self.emp_a):
+            lot = Lot.open_for_company(self.emp_a, self.parceiro, 'nova',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='NOVA1', quantity=3, brand=self.brand,
+                chip_type='eMMC', company=self.emp_a, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')
+            nova = services.create_draft_for_lot(lot, self.parceiro)
+        vistas = {o.pk for o in services.orders_for_buyer(self.buyer)}
+        self.assertNotIn(nova.pk, vistas)
+        self.client.force_login(self.parceiro)
+        self.assertEqual(self.client.get(
+            reverse('compras:detail', args=[nova.pk])).status_code, 404)
+
     def test_quem_nao_e_comprador_nao_entra(self):
         User = get_user_model()
         zé = User.objects.create_user('vd_cmp_ze', password='x')

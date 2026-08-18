@@ -21,7 +21,7 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django.utils import timezone
 
 from .models import (DocSequence, SEQ_SO, STATUS_CANCELLED, STATUS_CONFIRMED,
@@ -782,14 +782,20 @@ def orders_for_buyer(buyer):
     out, ctx = [], None
     for comp in _empresas_ativas():
         with company_scope(comp):
-            # ⚠ SÓ O QUE FOI DESPACHADO (dono, 2026-08-18): a compra existe
-            # para o comprador quando a caixa SAI. Antes disso é lote fechado
-            # na bancada do cliente, e mostrar isso a ele seria prometer uma
-            # caixa que ninguém postou.
-            # Rascunho DESPACHADO aparece: é o caso de faltar preço no grid
-            # dele, e é ele quem resolve.
-            qs = (SalesOrder.objects.filter(buyer=buyer,
-                                            shipped_at__isnull=False)
+            # ⚠ O comprador vê o que SAIU — ou o que já estava confirmado
+            # (dono, 2026-08-18). A compra existe para ele quando a caixa é
+            # despachada; antes disso é lote fechado na bancada do cliente, e
+            # mostrar seria prometer caixa que ninguém postou.
+            # ⚠⚠ O `Q(confirmada)` NÃO é enfeite: ordem anterior ao despacho
+            # existir nasceu confirmada e nunca terá `shipped_at`. Sem ele, a
+            # regra nova APAGA da tela toda compra antiga — foi o que
+            # aconteceu em 2026-08-18 e o dono viu na hora ("todas as compras
+            # do comprador sumiram"). Regra nova não pode reescrever o
+            # passado.
+            qs = (SalesOrder.objects
+                  .filter(buyer=buyer)
+                  .filter(Q(shipped_at__isnull=False)
+                          | Q(status=STATUS_CONFIRMED))
                   .exclude(status=STATUS_CANCELLED)
                   .select_related('lot', 'company')
                   .prefetch_related('lines', 'invoices', 'invoices__payments'))
@@ -830,10 +836,13 @@ def buyer_order(buyer, pk):
     from tenancy.scope import company_scope
     for comp in _empresas_ativas():
         with company_scope(comp):
-            # Mesma regra da lista: sem despacho, a compra não existe para ele
-            # — e 404, não 403: não confirmamos nem que a ordem existe.
-            so = (SalesOrder.objects.filter(pk=pk, buyer=buyer,
-                                            shipped_at__isnull=False)
+            # Mesma regra da lista (incluindo o legado confirmado): sem
+            # despacho a compra não existe para ele — e 404, não 403: não
+            # confirmamos nem que a ordem existe.
+            so = (SalesOrder.objects
+                  .filter(pk=pk, buyer=buyer)
+                  .filter(Q(shipped_at__isnull=False)
+                          | Q(status=STATUS_CONFIRMED))
                   .select_related('lot', 'company').first())
             if so is not None:
                 yield so

@@ -1653,11 +1653,15 @@ calcular), o **logo do cliente** no topo — e duas coisas que **saíram**: o
 compra é sigilo de negócio) e o **número da FATURA** (papel interno; não diz
 nada a quem recebe). O documento se identifica por LOTE + OV.
 
-🔁 **O DESPACHO é que CONGELA a venda — reversão do F11.6/F1** (dono,
-2026-08-18, fim do dia). A OV **nasce RASCUNHO, com despacho pendente**;
-enquanto a caixa não sai, o preço segue vivo, o crachá diz "despacho pendente"
-e **o comprador não enxerga a ordem**. Registrar o despacho congela o ¥ e
-libera a compra para ele.
+🔁 **O DESPACHO é que CONFIRMA a venda — reversão do F11.6/F1** (dono,
+2026-08-18, fim do dia). A OV **nasce RASCUNHO, com despacho pendente**, e
+**o comprador não enxerga a ordem** até a caixa sair. Registrar o despacho
+confirma a OV e libera a compra para ele.
+
+⚠ Não dizer que "o preço segue vivo" nesse intervalo (o dono corrigiu a frase
+que eu tinha posto na tela): **o valor do lote é definido no FECHAMENTO** — é o
+snapshot do F8 que o gerente vê. O que o despacho faz é CONFIRMAR a ordem e
+publicá-la para o comprador.
 
 Por que muda: fechar o lote é ato de BANCADA — a venda só existe de verdade
 quando a caixa sai. Mostrar ao comprador um lote fechado que ninguém postou é
@@ -1670,10 +1674,19 @@ valor já parado. Há teste dos dois lados.
 
 ⚠ Consequências, todas com teste: `freeze_pending_orders` (aprovar preço) só
 mexe em ordem **já despachada** — aprovar preço não pode atropelar o despacho;
-`orders_for_buyer`/`buyer_order` filtram por `shipped_at`, e ordem não
-despachada é **404** para ele; e a caixa sai mesmo com categoria sem preço (o
-fato é físico) — aí ela vira **rascunho DESPACHADO**, aparece para o comprador
-e congela quando ele completar a tabela.
+e a caixa sai mesmo com categoria sem preço (o fato é físico) — aí ela vira
+**rascunho DESPACHADO**, aparece para o comprador e congela quando ele
+completar a tabela.
+
+🔴 **REGRESSÃO na primeira versão desta regra (2026-08-18, corrigida no mesmo
+dia).** O filtro saiu como `shipped_at__isnull=False` puro — e **apagou da tela
+do comprador TODAS as compras que já existiam**: elas nasceram confirmadas,
+antes de o despacho existir, e nunca terão `shipped_at`. O dono viu na hora
+("todas as compras do comprador sumiram"). A regra virou
+`shipped_at IS NOT NULL **OU** status=CONFIRMED`: para tudo que nasce daqui em
+diante as duas condições coincidem (só se confirma despachando), e o legado
+continua visível. **Regra nova não reescreve o passado** — o mesmo princípio do
+`code_str`.
 
 🚚 **F4 — DESPACHO (dono, 2026-08-18).** Quem embala e leva a caixa é o
 CLIENTE, então o registro é dele: bloco *Despacho* na tela da OV com
