@@ -59,6 +59,37 @@ jeito. Não gaste rodada com MCP/DDR2.
 
 ## 3. Anatomia: por que esses PNs são cegos
 
+**⚠ ATUALIZAÇÃO 2026-08-18 — o conjunto é MISTO. Confira a forma antes de
+pesquisar:**
+
+| forma | fichas | exemplo | caminho |
+|---|---:|---|---|
+| curta `-DC` | 510 | `MT53B1DADS-DC`, `MT62F1BAD2DS-DC Y52N` | difícil (ver abaixo) |
+| PN COMPLETO | 296 | `MT63G1P3G48D4KQ-017 IT:A` | provavelmente resolve pela API |
+
+O prefixo **MT63G (59 fichas) NÃO é forma curta** — o PN é completo, com bloco de
+densidade. O mesmo vale para MT29PZZZ, MT47H, MT29TZZZ, MT29C. Esses 296 são
+outro problema, mais fácil, e não foram testados contra a API. **Comece por eles.**
+
+**E o `fbga_code` está preenchido no CAMPO em 807 de 807** (nenhum depende de
+código colado no texto do PN) — ou seja, o reverse-lookup de sempre está
+disponível para todos. O que a seção 2b mostra é que ele volta VAZIO para a
+forma curta; para o PN completo isso nunca foi testado.
+
+**Códigos para testar quando o bloqueio da Micron cair (1 pedido cada):**
+
+```
+MT63G  D8KFG  (MT63G1P3G48D4KQ-017 IT:A)   ← PN completo, maior chance
+MT62F  Z8FXK  (MT62F1BAD1DS-DC)            ← maior grupo: 223 fichas
+MT53E  Z8FSF  (MT53E1BAD4DB-DC)
+MT53D  Z9XGM  (MT53D1DADS-DC)
+```
+
+Só o MT53B foi testado até agora (Z9WBD/Z8GHC/Z9VLP, 3/3 vazios). Concluir a
+classe inteira a partir de um prefixo foi apressado — confirme cada um.
+
+---
+
 **510 das 806 fichas estão na forma curta `-DC`** — não é part number completo.
 
 ```
