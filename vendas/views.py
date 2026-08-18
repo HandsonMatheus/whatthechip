@@ -129,49 +129,35 @@ def _mascarar_valores(ctx: dict) -> None:
 
 @role_required('manager')
 def so_pdf(request, pk):
-    """F11.2c — PDF simples da OV (sem timbre; dono, 2026-07-16). Draft sai
-    com os valores VIVOS do momento; confirmada, com os congelados.
+    """PDF do LOTE — **um documento só, em duas versões** (dono, 2026-08-18).
 
-    Para quem não vê preço (gerente/operador) o PDF sai MASCARADO — mesma
-    regra da tela; senão o valor vazaria por download."""
-    from django.http import HttpResponse
-    from .pdf import render_so_pdf     # reportlab só aqui
+    - **Não vê preço (gerente/operador):** conferência do lote + embarque —
+      quantidade por caixa WTC e por tipo/capacidade, quem fechou, quando, o
+      câmbio travado e os blocos SHIP FROM / SHIP TO. **Nenhuma coluna de
+      dinheiro existe nele**: a barreira é estrutural, não uma máscara.
+    - **Vê preço (admin da empresa / plataforma):** o MESMO documento com
+      ¥ unitário e totais em ¥/US$ na tabela de categorias — *"a única
+      diferença é que tem preços"*.
+
+    O gate é o ``can_see_price`` (fonte única) — nunca "é admin?" aqui. O PDF
+    comercial antigo (``render_so_pdf``) saiu do caminho da tela em
+    2026-08-18; a função continua no módulo enquanto o dono valida o novo.
+    """
+    from .pdf import render_so_manager_pdf     # reportlab só aqui
 
     so = get_object_or_404(
-        SalesOrder.objects.select_related('lot', 'buyer'), pk=pk)
-    unmasked = is_unmasked(request)              # F12: rótulo real × C-###
-    ver_valor = can_see_price(request)
-    rows = []
-    if so.status == STATUS_DRAFT:
-        pairs = services.live_quotes(so)
-        services.annotate_labels([l for l, _q in pairs], unmasked)
-        total_rmb, total_usd, _pending = services.draft_totals(pairs)
-        fx_rate = _fx_viva(so.buyer, so)
-        for line, q in pairs:
-            priced = q.status == 'PRICED'
-            rows.append({
-                'label': line.display_label if priced
-                         else f'{line.display_label} — {q.reason}',
-                'qty': str(line.quantity),
-                'unit_rmb': q.rmb_display if priced else None,
-                'total_rmb': str(q.rmb * line.quantity) if priced else None,
-                'total_usd': str(q.price_min * line.quantity) if priced else None,
-            })
-    else:
-        total_rmb, total_usd = so.total_rmb or 0, so.total_usd or 0
-        fx_rate = so.fx_usd_rate or so.buyer.fx_usd_rate
-        for line in services.annotate_labels(list(so.lines.all()),
-                                             unmasked):
-            priced = line.unit_rmb is not None
-            rows.append({
-                'label': line.display_label, 'qty': str(line.quantity),
-                'unit_rmb': str(line.unit_rmb) if priced else None,
-                'total_rmb': str(line.total_rmb) if priced else None,
-                'total_usd': str(line.total_usd) if priced else None,
-            })
+        SalesOrder.objects.select_related('lot', 'lot__closed_by', 'buyer',
+                                          'company'), pk=pk)
+    doc = services.manager_document(
+        so,
+        unmasked=is_unmasked(request),         # F12: rótulo real × C-###
+        with_prices=can_see_price(request))
+    return _pdf_response(render_so_manager_pdf(doc), so)
 
-    pdf = render_so_pdf(so, rows, total_rmb, total_usd, fx_rate,
-                        masked=not ver_valor)
+
+def _pdf_response(pdf: bytes, so):
+    """Download com o nome canônico da ordem (a '/' do código vira '-')."""
+    from django.http import HttpResponse
     resp = HttpResponse(pdf, content_type='application/pdf')
     fname = so.code.replace('/', '-') + '.pdf'
     resp['Content-Disposition'] = f'attachment; filename="{fname}"'

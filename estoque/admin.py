@@ -63,7 +63,7 @@ class PlatformScopedAdmin(admin.ModelAdmin):
 @admin.register(Lot)
 class LotAdmin(PlatformScopedAdmin):
     list_display  = ("number", "company", "branch", "operator", "description",
-                     "status", "created_at", "closed_at")
+                     "status", "created_at", "closed_at", "closed_by")
     list_filter   = ("status", "company", "operator")
     search_fields = ("number", "description")
     readonly_fields = ("created_at",)

@@ -182,13 +182,13 @@
 
   {# ── Ações ───────────────────────────────────────────────────── #}
   <div class="actions">
-    {% if so.status == 'draft' %}
-    <form method="post" action="{% url 'vendas:so_confirm' so.pk %}" style="margin:0;"
-          onsubmit="return confirm('{% trans "Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não muda mais; ajustes do resultado entram como acerto. Confirmar?" %}');">
-      {% csrf_token %}
-      <button type="submit" class="uib uib--primary">{% trans "Confirmar ordem" %}</button>
-    </form>
-    {% endif %}
+    {% comment %}
+      Confirmar a ordem saiu da tela da EMPRESA em 2026-08-18 (dono): quem
+      confirma é o COMPRADOR, na tela dele — que ainda não existe. A rota
+      `vendas:so_confirm` e o `services.confirm()` seguem VIVOS de propósito:
+      são o que a tela do comprador vai chamar. Enquanto ela não existe,
+      confirmar é operação de plataforma.
+    {% endcomment %}
     {% if can_settle %}
     <a href="{% url 'vendas:settlement_new' so.pk %}" class="uib uib--success">{% trans "Registrar resultado e faturar" %}</a>
     {% endif %}

@@ -1760,9 +1760,6 @@ msgstr ""
 "Confirming freezes this order's ¥, contract rate and US$ — it no longer "
 "changes (result adjustments come in as a settlement). Confirm?"
 
-msgid "Confirmar ordem"
-msgstr "Confirm order"
-
 msgid "Cancelar esta ordem? (auditado; o lote poderá ser reaberto)"
 msgstr "Cancel this order? (audited; the lot can then be reopened)"
 
@@ -2160,13 +2157,6 @@ msgstr "amounts in US$"
 msgid "US$ unit."
 msgstr "Unit US$"
 
-#: vendas/templates/vendas/so_detail.html
-msgid ""
-"Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não"
-" muda mais; ajustes do resultado entram como acerto. Confirmar?"
-msgstr ""
-"Confirming freezes this order's values (price and contract rate) — it no "
-"longer changes; result adjustments come in as a settlement. Confirm?"
 
 #: pricing/templates/pricing/partner_list.html
 msgid "mínimo da faixa"

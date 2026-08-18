@@ -230,11 +230,16 @@ _CJK_TTF = Path(__file__).resolve().parent / 'fonts' / 'DroidSansFallbackFull.tt
 _CJK_RE = re.compile(r'([⺀-鿿豈-﫿　-〿＀-￯]+)')
 
 
-def _cjk_font():
+def _cjk_font(force=False):
     """Nome da fonte CJK registrada, ou None fora de zh. TTF embutida;
-    fallback defensivo na CID STSong-Light se o arquivo sumir."""
+    fallback defensivo na CID STSong-Light se o arquivo sumir.
+
+    ``force=True`` registra a fonte INDEPENDENTE do idioma — para documento
+    que tem ideograma no próprio conteúdo, não na tradução (ex.: o bloco
+    "SHIP TO 收貨人" e um endereço chinês no PDF de embarque: sem isto o
+    reportlab desenha quadradinhos mesmo com a interface em inglês)."""
     lang = translation.get_language() or ''
-    if not lang.startswith('zh'):
+    if not force and not lang.startswith('zh'):
         return None
     if _CJK_TTF.exists():
         if 'WTC-CJK' not in pdfmetrics.getRegisteredFontNames():

@@ -118,6 +118,17 @@ class Company(models.Model):
         max_length=32, blank=True, default='', editable=False,
         verbose_name='MIME do logo',
         help_text='Vazio = sem logo. Gerido pelo upload no admin — não editar.')
+    # ── SHIP FROM — endereço de quem embarca (dono, 2026-08-18) ──────────
+    # O documento do lote viaja com o pacote, e o comprador precisa saber de
+    # QUAL cliente veio (eMiner × eRecyclo × …). O nome já é o da empresa;
+    # aqui entra só o endereço. TEXTO LIVRE pelo mesmo motivo do SHIP TO do
+    # comprador: cada país tem uma estrutura e a transportadora quer o bloco
+    # exatamente como o remetente o escreve. Vazio = o PDF mostra só o nome.
+    address = models.TextField(
+        blank=True, default='', verbose_name='Endereço (SHIP FROM)',
+        help_text='Endereço de embarque desta empresa, uma linha por linha. '
+                  'Aparece no documento que acompanha o lote. Vazio = só o '
+                  'nome da empresa aparece.')
     logo_updated_at = models.DateTimeField(
         null=True, blank=True, editable=False,
         verbose_name='Logo atualizado em',

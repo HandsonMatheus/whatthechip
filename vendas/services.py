@@ -203,6 +203,224 @@ def annotate_labels(lines, unmasked: bool):
     return lines
 
 
+# ═══ Documento do GERENTE (dono, 2026-08-18) ════════════════════════════════
+#
+# O PDF que o gerente baixa deixou de ser "o PDF do admin com os números
+# tampados de ***" e virou um documento PRÓPRIO: conferência física do que
+# saiu do lote, ZERO dinheiro. Os dois resumos abaixo e o cabeçalho são a
+# fonte única dele — a view só transporta, o pdf.py só desenha.
+#
+# ⚠ DECISÃO EXPLÍCITA DO DONO (2026-08-18) que AFROUXA a F12 neste documento:
+# o resumo por tipo/capacidade mostra o rótulo REAL (eMMC 64GB) LADO A LADO
+# com o código de caixa (B-07) — ou seja, entrega ao gerente o de-para das
+# categorias DAQUELE lote. Foi perguntado e aprovado; não é descuido. Se um
+# dia voltar atrás, o ponto de reversão é UM: ``spec_summary`` sai do
+# ``manager_document`` (nada mais depende dele). O resto da máscara segue
+# valendo em toda parte — bancada, tabela, export, tela da OV.
+
+
+def _display_name(user) -> str:
+    """Nome de quem assina — completo quando existe, senão o login."""
+    if user is None:
+        return ''
+    return (user.get_full_name() or user.get_username()) if hasattr(
+        user, 'get_username') else str(user)
+
+
+def wtc_summary(lines, money=None):
+    """[{label, qty, …}] por CATEGORIA WTC, marcas FUNDIDAS.
+
+    As linhas da OV são por (marca, chave) porque o comprador cota por marca —
+    então o MESMO código de caixa aparece repetido (Samsung e SanDisk eMMC
+    64GB são duas linhas, ambas "B-07"). Para quem confere CAIXA isso é ruído.
+    Aqui as repetições somam numa linha só. Exige ``display_label`` já anotado
+    (annotate_labels).
+
+    ``money`` = ``{line.pk: (unit_rmb, unit_usd)}`` (só na versão COM preço,
+    do admin da empresa). Cada linha ganha ``unit_rmb``/``total_rmb``/
+    ``total_usd``. ⚠ O **unitário só sai quando é o MESMO** em todas as
+    marcas fundidas naquele código — o comprador cota por marca, então
+    "B-07" pode ter dois preços; mostrar um deles seria mentira. Nesse caso o
+    unitário vira ``None`` (o PDF desenha '—') e só o TOTAL, que continua
+    exato, aparece. Linha sem preço também zera o unitário e conta em
+    ``unpriced``.
+    """
+    merged = {}
+    for line in lines:
+        key = getattr(line, 'display_label', None) or line.label
+        row = merged.setdefault(key, {'label': key, 'qty': 0, 'unit_rmb': None,
+                                      'total_rmb': None, 'total_usd': None,
+                                      'unpriced': 0, '_units': set()})
+        row['qty'] += line.quantity
+        if money is None:
+            continue
+        unit_rmb, unit_usd = money.get(line.pk, (None, None))
+        if unit_rmb is None or unit_usd is None:
+            row['unpriced'] += line.quantity
+            continue
+        row['_units'].add(unit_rmb)
+        row['total_rmb'] = (row['total_rmb'] or Decimal('0')) + unit_rmb * line.quantity
+        row['total_usd'] = (row['total_usd'] or Decimal('0')) + unit_usd * line.quantity
+    for row in merged.values():
+        unidades = row.pop('_units')
+        if money is not None and len(unidades) == 1 and not row['unpriced']:
+            row['unit_rmb'] = unidades.pop()
+        for campo in ('total_rmb', 'total_usd'):
+            if row[campo] is not None:
+                row[campo] = row[campo].quantize(_CENT, ROUND_HALF_UP)
+    # '—' (categoria sem código: kind extinto/legado) desce para o fim.
+    return [v for _k, v in
+            sorted(merged.items(), key=lambda kv: (kv[0] == '—', kv[0]))]
+
+
+def line_money(so):
+    """``{line.pk: (unit_rmb, unit_usd)}`` — VIVO no rascunho, CONGELADO na OV
+    confirmada. É a mesma fonte que a tela e o PDF comercial usam; não
+    reimplemente preço aqui."""
+    if so.status != STATUS_DRAFT:
+        return {l.pk: (l.unit_rmb, l.unit_usd) for l in so.lines.all()}
+    out = {}
+    for line, q in live_quotes(so):
+        priced = q.status == 'PRICED'
+        # Faixa (eMCP/uMCP) usa o PONTO MÉDIO, igual ao draft_totals.
+        out[line.pk] = (q.value_rmb(), q.value()) if priced else (None, None)
+    return out
+
+
+def spec_summary(lines):
+    """[{type, capacity, qty}] por TIPO × CAPACIDADE reais, marcas FUNDIDAS.
+
+    "eMMC 64GB · 320 un." — a pergunta que o gerente faz ao conferir o lote.
+    Ordem: a de ``KIND_CHOICES`` (canônica) e, dentro do tipo, capacidade
+    crescente. Ver o aviso de F12 no topo desta seção.
+    """
+    from pricing.models import KIND_CHOICES
+    ordem = {k: i for i, (k, _lbl) in enumerate(KIND_CHOICES)}
+    merged = {}
+    for line in lines:
+        key = (line.kind, line.gen, line.tier_value, line.tier_unit)
+        if key not in merged:
+            merged[key] = {'type': line.type_label,
+                           'capacity': line.capacity_label, 'qty': 0}
+        merged[key]['qty'] += line.quantity
+    return [v for _k, v in sorted(
+        merged.items(),
+        key=lambda kv: (ordem.get(kv[0][0], 99), kv[0][1], kv[0][2]))]
+
+
+def ship_from(company) -> dict:
+    """Remetente do embarque (SHIP FROM / 寄件人) — a empresa-cliente.
+
+    O comprador recebe lote de VÁRIAS empresas (eMiner, eRecyclo…) e precisa
+    saber de qual veio (dono, 2026-08-18) — por isso o nome sai SEMPRE, mesmo
+    sem endereço cadastrado. O endereço vem do ``Company.address``, texto
+    livre pelo mesmo motivo do SHIP TO.
+    """
+    if company is None:
+        return {}
+    return {
+        'name': company.name,
+        'lines': [l.strip() for l in (company.address or '').splitlines()
+                  if l.strip()],
+    }
+
+
+def ship_to(buyer) -> dict:
+    """Destinatário do embarque (SHIP TO / 收貨人) — vazio quando o comprador
+    não tem endereço cadastrado.
+
+    O PDF do lote virou também o documento que acompanha o pacote na DHL
+    (dono, 2026-08-18). ``lines`` já vem quebrado por linha; o bloco NUNCA é
+    inventado — comprador sem endereço simplesmente não desenha a caixa (é
+    melhor a transportadora reclamar do que despachar para o lugar errado).
+
+    ⚠ Aqui a contraparte tem NOME. Em toda superfície de empresa-cliente o
+    comprador é segredo de plataforma (F11.3: o rótulo é "WhatTheChip") — a
+    exceção é este bloco, e só ele: quem embarca precisa saber para onde. O
+    nome do COMPRADOR continua fora; o que aparece é o DESTINATÁRIO.
+    """
+    if buyer is None or not (buyer.ship_to_name or buyer.ship_to_address):
+        return {}
+    return {
+        'name': buyer.ship_to_name,
+        'lines': [l.strip() for l in (buyer.ship_to_address or '').splitlines()
+                  if l.strip()],
+        'email': buyer.ship_to_email,
+        'phone': buyer.ship_to_phone,
+    }
+
+
+def company_logo_bytes(company):
+    """Bytes do logo da empresa-cliente (E4: blob em ``CompanyLogo``), ou
+    None — para carimbar o documento de embarque com a marca de quem embarca.
+
+    Query PRÓPRIA de propósito: a Company é lida em TODA request (middleware,
+    header) e não pode arrastar um blob de até 1 MB junto. Nunca levanta —
+    logo é enfeite, não pode derrubar o documento.
+    """
+    if company is None or not getattr(company, 'logo_mime', ''):
+        return None
+    try:
+        from tenancy.models import CompanyLogo
+        row = CompanyLogo.objects.filter(company=company).first()
+        return bytes(row.data) if row and row.data else None
+    except Exception:
+        logger.exception('vendas: logo da empresa %s ilegível', company.pk)
+        return None
+
+
+def manager_document(so, unmasked=False, with_prices=False):
+    """Tudo que o PDF do gerente desenha, pronto — sem uma linha de dinheiro.
+
+    ``unkeyed`` (chips do lote fora do grid de preço) entra nos DOIS resumos
+    como linha própria: sem ele os totais não fecham com o lote físico, que é
+    justamente o que este documento serve para conferir.
+    """
+    lines = annotate_labels(list(so.lines.all()), unmasked)
+    money = line_money(so) if with_prices else None
+    wtc, spec = wtc_summary(lines, money), spec_summary(lines)
+    unkeyed = so.unkeyed_units or 0
+    total = sum(r['qty'] for r in wtc) + unkeyed
+    lot = so.lot
+    return {
+        'ship_from': ship_from(so.company if so.company_id else None),
+        'ship_to': ship_to(so.buyer),
+        'company_logo': company_logo_bytes(so.company if so.company_id else None),
+        'so_code': so.code,
+        'lot_code': lot.code,
+        'status': so.status,
+        'company': so.company.name if so.company_id else '',
+        # "Emitida em" = a data da ORDEM (congelada no documento), não a do
+        # download: dois PDFs do mesmo lote têm que bater (dono, 2026-08-18).
+        'issued_at': so.confirmed_at or so.created_at,
+        'closed_at': lot.closed_at,
+        'closed_by': _display_name(lot.closed_by_user),
+        # Câmbio DO FECHAMENTO (a trava do lote — PLANO_FX Fase C). Lote
+        # legado sem trava cai na taxa congelada da OV. Não é o preço de
+        # nada: é taxa de mercado, pública por decisão do PLANO_FX — por isso
+        # sobrevive ao gate de valor.
+        'fx_rate': lot.fx_rate if lot.fx_rate is not None else so.fx_usd_rate,
+        'fx_from_lot': lot.fx_rate is not None,
+        'wtc': wtc,
+        'spec': spec,
+        'unkeyed': unkeyed,
+        'total_units': total,
+        # Dinheiro só existe na versão do ADMIN da empresa (dono 2026-08-18:
+        # "a única diferença é que tem preços"). Sem with_prices as chaves
+        # ficam None e o PDF nem desenha as colunas — a barreira continua
+        # ESTRUTURAL para quem não vê valor.
+        'with_prices': with_prices,
+        'total_rmb': (sum((r['total_rmb'] for r in wtc
+                           if r['total_rmb'] is not None), Decimal('0'))
+                      if with_prices else None),
+        'total_usd': (sum((r['total_usd'] for r in wtc
+                           if r['total_usd'] is not None), Decimal('0'))
+                      if with_prices else None),
+        'unpriced_units': (sum(r['unpriced'] for r in wtc)
+                           if with_prices else 0),
+    }
+
+
 # ═══ F11.4 — Acerto → Fatura → Pagamentos ═══════════════════════════════════
 
 def settle_and_invoice(so, adjustments, user, notes=''):

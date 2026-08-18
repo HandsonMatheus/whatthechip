@@ -1298,6 +1298,158 @@ sem a chave `prices` no JSON. Teste:
 que removeu o price_block server-side do card HTMX da busca — o preço da
 busca é client-side via JSON do search_api; fonte server-side = bancada.
 
+**F11.5 — PDF DE CONFERÊNCIA DO LOTE (documento do GERENTE; dono,
+2026-08-18; local, suíte 555/555 + i18n verde):** o gerente deixou de baixar
+"o PDF do admin com os números tampados de `***`" e passou a baixar **outro
+documento**. `vendas/pdf.py::render_so_manager_pdf` + `services.
+manager_document()`; a view `so_pdf` ramifica no `can_see_price` (fonte
+única) e o **PDF comercial do admin fica INTOCADO** (decisão do dono: *"por
+enquanto só gerente, dps fazemos deles"*).
+
+O que o documento traz, item por item do pedido:
+
+1. **Zero coluna de preço** — não existe célula de dinheiro para mascarar. A
+   barreira virou ESTRUTURAL: nenhum caminho de código põe ¥/US$ no PDF do
+   gerente, então não há bug de template capaz de vazar valor. (O parâmetro
+   `masked=` do `render_so_pdf` continua funcionando, mas a app não usa mais.)
+2. **Quantidade por categoria WTC** — com as **MARCAS FUNDIDAS**. A linha da
+   OV é por (marca, chave) porque o comprador cota por marca, então o mesmo
+   código de caixa aparecia REPETIDO no PDF mascarado (Samsung e SanDisk eMMC
+   16GB = duas linhas "B-06"). Para quem confere caixa isso era ruído — e a
+   marca nem chega ao gerente. `wtc_summary()` soma as repetições.
+3. **Quantidade por TIPO × CAPACIDADE reais** (eMMC 64GB · 640) —
+   `spec_summary()`. **⚠ AFROUXAMENTO CONSCIENTE DA F12**, perguntado e
+   aprovado pelo dono nesta data: as duas tabelas lado a lado entregam ao
+   gerente o de-para `B-06 = eMMC 16GB` das categorias DAQUELE lote. A
+   máscara segue valendo em todo o resto (bancada, tabela, export, tela da
+   OV, PDF comercial). **Ponto único de reversão:** tirar `spec_summary` do
+   `manager_document` — nada mais depende dele; o teste que cai primeiro é
+   `PdfConferenciaGerenteTests.test_resumo_por_tipo_e_capacidade`.
+4. **SO e LOTE com o MESMO peso** — cabeçalho de duas colunas, mesmo
+   `fontSize` nos dois códigos (*"nenhum é mais importante que o outro"*).
+   Coberto por `test_so_e_lote_tem_o_mesmo_tamanho`, que lê o operador `Tf`
+   vigente no momento em que cada código é desenhado — asserção estrutural,
+   não visual.
+5. **Cabeçalho de auditoria** — empresa, **emitida em** (data da ORDEM:
+   `confirmed_at` na confirmada, `created_at` na cotação — congela no
+   documento; a data do download fica só no rodapé), **lote fechado em**,
+   **fechado por** e o **câmbio travado no fechamento** (`Lot.fx_rate`). A
+   taxa sobrevive ao gate de valor porque é **mid-market público** por
+   decisão do PLANO_FX — o que a máscara esconde é a taxa de CONTRATO e o
+   dinheiro, não a cotação do dia (mesma regra do badge de câmbio do shell).
+
+**Migração `estoque/0019_lot_closed_by` (aditiva, sem RunPython):** o `Lot`
+não tinha "quem fechou" — só `closed_at`. Campo novo `Lot.closed_by`
+(SET_NULL) gravado no `lot_close` e limpo no `lot_reopen`. **Sem backfill de
+propósito**: RunPython em tabela com RLS exige o GUC de plataforma no migrate
+do Render (armadilha que quebrou o 1º push de 2026-08-01) — em vez disso, o
+`Lot.closed_by_user` cai no **`LotPricing.closed_by`** para lote fechado
+ANTES desta data (o snapshot de valoração nasce no mesmo ato do fechamento).
+Sem nenhum dos dois (congelar valor nunca trava o fechamento — padrão F8) o
+documento sai com travessão, não com exceção.
+
+**2ª rodada (dono, 2026-08-18, mesma sessão) — o documento virou também o
+PAPEL QUE VIAJA COM O PACOTE (DHL).** Suíte 561/561 + i18n verde.
+
+1. **SEMPRE EM INGLÊS**, qualquer que seja o idioma da sessão —
+   `translation.override('en')` no `render_so_manager_pdf`. Idioma de
+   documento de embarque é do TRANSPORTE, não de quem clicou (precedente da
+   casa: o Django admin é fixo em pt-br pela razão simétrica). As strings
+   continuam MARCADAS e traduzidas nos 4 catálogos: tirar o override devolve
+   o documento ao idioma da sessão, e é o único ponto a mexer.
+2. **Subtítulo perdeu "documento sem valores" e "valores congelados"** (pedido
+   literal). Ficou `Lot check · confirmed`. Isso trocou o msgid: entrou
+   `Conferência de lote` e a entrada antiga saiu dos 3 catálogos. Os status
+   curtos (`cotação`/`confirmada`/`cancelada`) já existiam — o PDF COMERCIAL
+   segue com os longos, intocado.
+3. **Dois logos:** WhatTheChip (asset commitado em `vendas/assets/wtc-logo.png`)
+   à esquerda e o da empresa-cliente (blob de `CompanyLogo`, E4) à direita.
+   O logo do WTC só existia em SVG e o reportlab não desenha SVG — em vez de
+   pôr `svglib` em produção por causa de um logo, o PNG é gerado uma vez do
+   `static/img/wtc-logo-light.svg` e commitado (mesma escolha da fonte CJK em
+   `pricing/fonts/`); a receita está no `vendas/assets/README.md`. Achatado em
+   RGB de propósito: PNG com alfa vira DOIS objetos no PDF (imagem + /SMask).
+   Logo ilegível nunca derruba o documento (`_img` devolve None e segue).
+4. **Bloco `SHIP TO 收貨人`** — rótulo bilíngue CANÔNICO (nunca traduz: é a
+   convenção da transportadora). Os dados vêm de campos NOVOS do comprador
+   (`pricing/0024_buyer_ship_to`, aditiva): `ship_to_name`, `ship_to_address`,
+   `ship_to_email`, `ship_to_phone`. **Endereço é TEXTO LIVRE de propósito** —
+   cada país tem uma estrutura (Macau não tem estado) e a transportadora quer
+   o bloco exatamente como o destinatário o escreve; campo estruturado só
+   criaria tradução errada. Preenchimento pelo ADMIN (nada de backfill: RLS).
+   Comprador sem endereço = bloco simplesmente ausente — **nunca inventa
+   destino** (melhor a DHL reclamar do que despachar errado).
+   ⚠ **Exceção pontual à F11.3:** aqui a contraparte tem NOME. O sigilo do
+   comprador continua em toda superfície de empresa-cliente; o que aparece
+   neste bloco é o DESTINATÁRIO do frete, não o nome do comprador — e quem
+   embarca precisa saber para onde.
+5. **Fonte CJK forçada:** `_cjk_font(force=True)` (parâmetro novo em
+   `pricing/pdf.py`). O "收貨人" e um endereço chinês são CONTEÚDO, não
+   tradução — sem a TTF embutida o reportlab desenha quadradinhos mesmo com o
+   documento em inglês.
+
+**3ª rodada (dono, 2026-08-18) — UM documento só, bilíngue, com SHIP FROM.**
+Suíte 568/568 + i18n verde.
+
+1. **Rótulo bilíngue EN + 繁體中文** em cada título, legenda e cabeçalho de
+   coluna: `Category (類別)`, `Qty. (數量)`, `Issued on (簽發日期)`… Fonte única
+   é o dicionário `_L` em `vendas/pdf.py` (`_t('chave')` monta o par). **Saiu
+   do gettext:** o documento é de idioma FIXO, então os rótulos são
+   CANÔNICOS, como `LETRA-##` e `SO/NUM/MM/YY` — um `{% trans %}` aqui faria
+   o papel mudar de língua conforme quem apertou o botão. Os 8 msgids que a
+   2ª rodada tinha criado saíram dos 3 catálogos (598 entradas agora).
+   ⚠ **繁體 (Macau/HK/Taiwan), não o zh-hans da interface** — não reuse um
+   catálogo pelo outro; o teste crava `類別`/`數量`/`晶片類型彙總`.
+2. **Um documento só, duas versões** (`with_prices`): sem preço para
+   gerente/operador, com `Unit ¥ / Total ¥ / Total US$` para o admin da
+   empresa — *"a única diferença é que tem preços"*. O `so_pdf` deixou de
+   ramificar entre DOIS documentos; o `render_so_pdf` comercial saiu do
+   caminho da tela (segue no módulo até o dono validar o novo).
+   ⚠ **Unitário só sai quando é o MESMO em todas as marcas fundidas** naquele
+   código de caixa — o comprador cota POR MARCA, então "B-06" pode ter dois
+   preços e mostrar um deles seria mentira. Ambíguo → `—`, e só o TOTAL (que
+   continua exato) aparece. Idem para linha sem preço, que ainda soma em
+   `unpriced_units`.
+3. **SHIP FROM (寄件人) ao lado do SHIP TO**, na mesma caixa dividida ao meio
+   (é o par que a transportadora procura junto). O comprador recebe lote de
+   VÁRIAS empresas e precisa saber de qual veio — por isso o **nome da
+   empresa sai sempre**, com ou sem endereço. Endereço novo em
+   `Company.address` (`tenancy/0008_company_address`, aditiva), texto livre,
+   preenchido no admin.
+4. **Layout reorganizado:** logos → identificação (SO/LOTE) → endereços →
+   faixa de auditoria → tabelas. A grade pesada das tabelas virou linha fina
+   com filete só no cabeçalho e no total; a empresa saiu da faixa de meta
+   (virou o nome do SHIP FROM) e a faixa caiu de 5 para 4 colunas, que é o
+   que o rótulo bilíngue precisa para não quebrar.
+
+**⚠ BUG REAL que o teste de glifos pegou:** célula de tabela com ideograma
+**tem que ser `Paragraph`**. String crua é desenhada na fonte BASE da tabela
+(Helvetica, WinAnsi) e o CJK sai como lixo — `無類別` estava imprimindo `nnn`
+no papel. O teste `test_todo_rotulo_tem_o_chines_tradicional_ao_lado` varre
+cada ideograma dos rótulos e exige que ele apareça no CMap da TTF embutida;
+é ele que pega glifo faltando (que sairia como quadradinho sem ninguém notar)
+e a regressão do Paragraph. Terceira armadilha de leitura do PDF na mesma
+sessão: o CMap da fonte também entra nos streams sem `/Filter`, e um `(`
+solto nele casava com o `) Tj` do stream seguinte — por isso `_streams_do_pdf`
+exige `Tj` DENTRO do stream e o regex de texto roda por stream, nunca no
+conjunto concatenado.
+
+**Duas armadilhas de teste que os logos revelaram** (estão comentadas em
+`vendas/tests.py`): (a) asserção `assertNotIn(b'US$')` sobre o PDF CRU passou
+a falhar por coincidência de bytes dentro do blob ASCII85 do logo — as
+asserções agora leem só os streams de CONTEÚDO (`_conteudo_do_pdf` pula quem
+tem `/Filter`); (b) o regex de stream com `\n` obrigatório antes de
+`endstream` ENGOLIA o PDF inteiro num casamento só, porque o stream de imagem
+termina em `~>endstream` — o conteúdo voltava vazio e as asserções passavam
+vacuamente.
+
+**Testes:** `PdfConferenciaGerenteTests` (17 casos) + o
+`VendasGateTests.test_gerente_entra_mas_sem_nenhum_valor` **RE-ESPECIFICADO**
+— a asserção `assertIn(b'(***)')` morreu junto com as células mascaradas; no
+lugar entrou "nenhum texto desenhado tem cara de dinheiro" (regex de 2 casas
+decimais sobre os operadores `(…) Tj`, que não confunde valor com coordenada
+do stream). i18n: 8 msgids novos nos 3 catálogos + `.mo` recompilado.
+
 **RUNBOOK DO DEPLOY F11 EM PROD (o dono roda; comandos UM POR VEZ):**
 
 0. **Pré (bloqueantes):** (a) senha do Postgres ROTACIONADA confirmada; (b)

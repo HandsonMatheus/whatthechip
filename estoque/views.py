@@ -943,6 +943,7 @@ def lot_close(request, lot_pk):
     _rate, _fx = current_fx_rate()
     lot.status    = Lot.STATUS_CLOSED
     lot.closed_at = timezone.now()
+    lot.closed_by = request.user      # assina o documento comercial (2026-08-18)
     if _rate is not None:
         lot.fx_rate      = _rate
         lot.fx_source    = (_fx.source if _fx else 'bootstrap contratual')
@@ -952,8 +953,8 @@ def lot_close(request, lot_pk):
         messages.warning(request, _(
             'Lote fechado SEM taxa de câmbio no sistema — rode o '
             'fetch_fx_rate e trave manualmente com o suporte.'))
-    lot.save(update_fields=['status', 'closed_at', 'fx_rate', 'fx_source',
-                            'fx_locked_at', 'fx_is_fallback'])
+    lot.save(update_fields=['status', 'closed_at', 'closed_by', 'fx_rate',
+                            'fx_source', 'fx_locked_at', 'fx_is_fallback'])
     # O snapshot é criado no servidor mesmo quando quem fecha é o GERENTE —
     # ele não VÊ valores (§7); o registro é para o admin/auditoria.
     _freeze_lot_pricing(request, lot)
@@ -998,12 +999,13 @@ def lot_reopen(request, lot_pk):
     # taxa NOVA. As duas travas ficam no histórico (pghistory/LotEvent).
     lot.status    = Lot.STATUS_OPEN
     lot.closed_at = None
+    lot.closed_by = None          # re-fechar assina de novo (pghistory guarda)
     lot.fx_rate = None
     lot.fx_source = ''
     lot.fx_locked_at = None
     lot.fx_is_fallback = False
-    lot.save(update_fields=['status', 'closed_at', 'fx_rate', 'fx_source',
-                            'fx_locked_at', 'fx_is_fallback'])
+    lot.save(update_fields=['status', 'closed_at', 'closed_by', 'fx_rate',
+                            'fx_source', 'fx_locked_at', 'fx_is_fallback'])
     return redirect('estoque:lot_detail', lot_pk=lot.pk)
 
 

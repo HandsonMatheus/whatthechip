@@ -245,6 +245,27 @@ class SalesOrderLine(models.Model):
         core = ' '.join(parts)
         return f'{self.brand} · {core}' if self.brand else core
 
+    # ── Resumo por TIPO × CAPACIDADE (PDF do gerente, dono 2026-08-18) ──────
+    # Duas colunas separadas em vez do ``label`` de cima: o resumo agrega as
+    # marcas e precisa de "eMMC" numa coluna e "64GB" na outra. Canônico —
+    # NUNCA traduz (mesma regra do ``label``).
+
+    @property
+    def type_label(self) -> str:
+        """Tipo do chip como o mercado o chama: ``eMMC``/``eMCP``/``uMCP``/
+        ``UFS``/``SSD``/``K9`` e, na DRAM discreta, a GERAÇÃO (``DDR4``,
+        ``LPDDR4``) — nela o kind sozinho ("DDR") não identifica nada."""
+        from pricing.models import KIND_CHOICES
+        return self.gen or dict(KIND_CHOICES).get(self.kind, self.kind)
+
+    @property
+    def capacity_label(self) -> str:
+        """``64GB`` (pacote) / ``8Gb`` (die) — vazio quando a chave é PLANA
+        (K9: tier fixo 1/'' de propósito, o tipo não tem capacidade)."""
+        if not self.tier_unit:
+            return ''
+        return f'{self.tier_value.normalize():f}{self.tier_unit}'
+
     @property
     def total_rmb(self):
         if self.unit_rmb is None:

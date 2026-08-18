@@ -1777,9 +1777,6 @@ msgstr ""
 "Confirmar congela el ¥, la tasa del contrato y el US$ de esta orden — ya no "
 "cambia más (los ajustes del resultado entran como liquidación). ¿Confirmar?"
 
-msgid "Confirmar ordem"
-msgstr "Confirmar orden"
-
 msgid "Cancelar esta ordem? (auditado; o lote poderá ser reaberto)"
 msgstr "¿Cancelar esta orden? (auditado; el lote podrá reabrirse)"
 
@@ -2177,13 +2174,6 @@ msgstr "valores en US$"
 msgid "US$ unit."
 msgstr "US$ unit."
 
-#: vendas/templates/vendas/so_detail.html
-msgid ""
-"Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não"
-" muda mais; ajustes do resultado entram como acerto. Confirmar?"
-msgstr ""
-"Confirmar congela los valores de esta orden (precio y tasa del contrato) — ya"
-" no cambia; los ajustes del resultado entran como liquidación. ¿Confirmar?"
 
 #: pricing/templates/pricing/partner_list.html
 msgid "mínimo da faixa"

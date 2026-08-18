@@ -88,6 +88,17 @@ class Lot(models.Model):
         return (f'LOT/{self.number:03d}/{d:%m}/{d:%y}' if d
                 else f'LOT/{self.number:03d}')
     closed_at   = models.DateTimeField(null=True, blank=True, verbose_name='Fechado em')
+    # QUEM fechou (2026-08-18): o documento comercial do lote (PDF da OV do
+    # gerente) precisa assinar o fechamento com um nome. Aditivo e NULLABLE de
+    # propósito — lote fechado ANTES deste campo cai no fallback do
+    # ``closed_by_user`` abaixo; migração sem RunPython (backfill em tabela com
+    # RLS exigiria o GUC de plataforma no migrate do Render — armadilha
+    # conhecida). SET_NULL: demitir usuário não apaga o lote.
+    closed_by   = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='+', verbose_name='Fechado por',
+        help_text='Quem fechou o lote (registro do documento comercial). '
+                  'Vazio em lotes fechados antes de 2026-08-18.')
 
     # T3: o caminho PADRÃO já vem filtrado pela empresa corrente (fail-closed —
     # sem escopo EXPLODE); all_companies é o escape EXPLÍCITO de plataforma
@@ -126,6 +137,25 @@ class Lot(models.Model):
 
     def __str__(self):
         return f'Lote #{self.number:03d}'
+
+    @property
+    def closed_by_user(self):
+        """Quem fechou o lote — ``None`` se não dá para saber.
+
+        O campo ``closed_by`` só existe desde 2026-08-18. Para lote fechado
+        ANTES disso o registro equivalente é o ``LotPricing.closed_by``: o
+        snapshot de valoração é gravado no MESMO ato do fechamento
+        (``_freeze_lot_pricing``). ⚠ Ele pode faltar (congelar valor nunca
+        trava o fechamento — padrão F8) e por isso o retorno é opcional; quem
+        exibe decide o texto do vazio.
+        """
+        if self.closed_by_id:
+            return self.closed_by
+        from pricing.models import LotPricing        # lazy: estoque ⊥ pricing
+        lp = (LotPricing.all_companies
+              .filter(lot_id=self.pk, closed_by__isnull=False)
+              .select_related('closed_by').order_by('-created_at').first())
+        return lp.closed_by if lp else None
 
     def save(self, *args, **kwargs):
         # Portão no MODELO: filial tem que ser da mesma empresa do lote.

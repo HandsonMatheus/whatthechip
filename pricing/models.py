@@ -242,6 +242,31 @@ class Buyer(models.Model):
         verbose_name='K9 — ¥ por unidade',
         help_text='Preço fixo do K9 (NAND cru TSOP): ¥ por unidade (ex.: '
                   '1 → 500 un. = ¥500). Vazio = K9 sem preço.')
+    # ── SHIP TO / 收貨人 — destino físico do embarque (dono, 2026-08-18) ──
+    # O PDF de conferência do lote virou TAMBÉM o documento que acompanha o
+    # pacote na DHL, e transportadora precisa de destinatário. Mora no
+    # COMPRADOR porque é para ele que o lote vai; editável no admin (endereço
+    # de agente muda sem deploy). Endereço é TEXTO LIVRE de propósito: cada
+    # país tem uma estrutura (Macau não tem estado, China inverte a ordem) e
+    # a transportadora quer o bloco EXATAMENTE como o destinatário o escreve —
+    # campo estruturado aqui só criaria tradução errada. Vazio = o PDF
+    # simplesmente não desenha o bloco (nunca inventa endereço).
+    ship_to_name = models.CharField(
+        max_length=120, blank=True, default='',
+        verbose_name='SHIP TO — destinatário',
+        help_text='Nome de quem recebe (não é o nome do comprador).')
+    ship_to_address = models.TextField(
+        blank=True, default='', verbose_name='SHIP TO — endereço',
+        help_text='Bloco de endereço como a transportadora deve lê-lo, uma '
+                  'linha por linha (rua, complemento, cidade – código postal). '
+                  'Sem o nome, o e-mail e o telefone: eles têm campo próprio.')
+    ship_to_email = models.EmailField(
+        blank=True, default='', verbose_name='SHIP TO — e-mail')
+    ship_to_phone = models.CharField(
+        max_length=40, blank=True, default='',
+        verbose_name='SHIP TO — telefone',
+        help_text='Com código do país, ex.: (+853) 63525754.')
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criado em')
 
     # 2026-08-03 (revisa F2): comprador de PLATAFORMA (company NULL) entra na

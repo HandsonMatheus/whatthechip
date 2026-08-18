@@ -1683,9 +1683,6 @@ msgid ""
 "mais (ajustes do resultado entram como acerto). Confirmar?"
 msgstr "确认后将冻结这张订单的 ¥、合同汇率和 US$——不再变动（结果的调整以结算单形式录入）。确认吗？"
 
-msgid "Confirmar ordem"
-msgstr "确认订单"
-
 msgid "Cancelar esta ordem? (auditado; o lote poderá ser reaberto)"
 msgstr "取消这张订单？（有审计记录；之后批次可以重新打开）"
 
@@ -2073,11 +2070,6 @@ msgstr "金额以 US$ 计"
 msgid "US$ unit."
 msgstr "单价 US$"
 
-#: vendas/templates/vendas/so_detail.html
-msgid ""
-"Confirmar congela os valores desta ordem (preço e taxa do contrato) — ela não"
-" muda mais; ajustes do resultado entram como acerto. Confirmar?"
-msgstr "确认后将冻结本订单的数值（价格与合同汇率）——订单不再变动；买家结果的调整将以结算方式录入。确认吗？"
 
 #: pricing/templates/pricing/partner_list.html
 msgid "mínimo da faixa"
