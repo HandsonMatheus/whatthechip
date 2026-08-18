@@ -1522,16 +1522,29 @@ acertar têm que acontecer todos sob o MESMO `company_scope`. Fora dele o RLS
 devolve zero linhas em silêncio, e o bug apareceria como "OV sem linhas" em
 vez de erro — a mesma classe de armadilha do incidente do K9.
 
-⚠ **Código de lote NÃO é único entre empresas** (a numeração é por empresa):
-a lista do comprador mostra `LOT/001/08/26` de dois clientes diferentes, e
-quem desambigua é a coluna Cliente. Achado ao escrever o teste de isolamento —
-`assertNotContains(lot.code)` passava/falhava por colisão, não por vazamento.
-Se um dia o comprador precisar de referência única, o caminho é prefixar pelo
-cliente (o número da OV também é por empresa, então também repete).
-- **F4 — despacho**: transportadora, datas de envio/recebimento e rastreio
-  (dado NOVO — hoje não existe nada disso no lote).
-- **F5 — pagamentos**: saldo a pagar visível ao comprador (leitura; quem
-  registra pagamento segue sendo a plataforma).
+✅ **RESOLVIDO em 2026-08-18 — `Company.code` no identificador.** O código
+colidia entre clientes porque a numeração é POR EMPRESA (o comprador via dois
+`LOT/001/08/26` na lista dele). Agora: `LOT/EMI/041/08/26` · `SO/EMI/012/08/26`
+· `INV/EMI/003/08/26`, com `Company.code` de 2-4 letras MAIÚSCULAS (só letras:
+o código é DIGITADO no type-to-confirm do fechamento e impresso — dígito
+convida a confundir 0/O e 1/I). Único entre os preenchidos; vazio se repete,
+porque é o legado.
+
+⚠ **Código de PAÍS (PY/VE) foi avaliado e RECUSADO:** duas recicladoras do
+mesmo país voltariam a colidir — e é exatamente esse o caminho de crescimento.
+País é metadado de EMBARQUE e já viaja no endereço do SHIP FROM; não pertence
+ao identificador.
+
+⚠ **Formato novo só em documento NOVO** (decisão do dono): papel já impresso
+não pode divergir da tela. Por isso o código deixou de ser propriedade
+calculada e virou campo CONGELADO na criação (`code_str` em Lot, SalesOrder e
+Invoice; helper único em `tenancy/doc_code.py`). Documento sem `code_str` cai
+no formato antigo. De quebra o identificador virou IMUTÁVEL — renomear o
+código da empresa não reescreve o passado, que é como número de documento deve
+se comportar (há teste cravando).
+
+Migrações `tenancy/0009`, `estoque/0020` e `vendas/0006` — aditivas, **sem
+backfill de propósito**. Preencher o `code` de cada empresa no admin.
 
 **RUNBOOK DO DEPLOY F11 EM PROD (o dono roda; comandos UM POR VEZ):**
 

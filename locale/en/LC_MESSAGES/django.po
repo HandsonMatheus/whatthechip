@@ -2847,3 +2847,11 @@ msgstr ""
 #: vendas/ (F11.6)
 msgid "%(n)s categoria(s) deste lote sem preço na sua tabela:"
 msgstr "%(n)s category/categories in this lot with no price on your table:"
+
+#: tenancy/models.py
+msgid ""
+"Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS (ex.: \"EMI\"). "
+"Vazio também vale — o documento sai sem prefixo."
+msgstr ""
+"Invalid company code: use 2 to 4 UPPERCASE letters (e.g. \"EMI\"). Empty is "
+"fine too — the document comes out with no prefix."

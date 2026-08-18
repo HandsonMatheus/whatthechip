@@ -57,6 +57,22 @@ RESERVED_COMPANY_SLUGS = frozenset({
 _DNS_LABEL_RE = re.compile(r'^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')
 
 
+def validate_company_code(code):
+    """2 a 4 letras MAIÚSCULAS (ou vazio = legado, sem prefixo no documento).
+
+    Restrito de propósito: o código entra em `LOT/EMI/041/08/26`, que é
+    CANÔNICO — nunca traduz, e é digitado pelo gerente no type-to-confirm do
+    fechamento. Dígito, hífen e acento fora; ambiguidade de leitura em papel
+    impresso é o que estamos evitando.
+    """
+    if not code:
+        return
+    if not re.fullmatch(r'[A-Z]{2,4}', code):
+        raise ValidationError(_lazy(
+            'Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS '
+            '(ex.: "EMI"). Vazio também vale — o documento sai sem prefixo.'))
+
+
 def validate_company_slug(value):
     """Valida o slug da empresa como FUTURO HOSTNAME (B3).
 
@@ -88,6 +104,23 @@ class Company(models.Model):
                                         'futuro do cliente (ex.: "eminer" → '
                                         'eminer.whatthechip.app). Quase-permanente: '
                                         'minúsculas, dígitos e hífen (B3).')
+    # ── Código curto da empresa (dono, 2026-08-18) ────────────────────────
+    # A numeração de lote/OV/fatura é POR EMPRESA (decisão de julho: "o lote
+    # 41 continua sendo o 41"), então o CÓDIGO colide entre clientes — o
+    # comprador via dois `LOT/001/08/26` na lista dele, de empresas
+    # diferentes. Este código entra no documento e desfaz a colisão:
+    # `LOT/EMI/041/08/26`.
+    # ⚠ Recusado de propósito o código de PAÍS (PY/VE): duas recicladoras do
+    # mesmo país voltariam a colidir, e país é metadado de EMBARQUE — já
+    # viaja no endereço do SHIP FROM, não pertence ao identificador.
+    # Quase-permanente como o slug: ele fica gravado nos documentos emitidos
+    # (`code_str`), então mudá-lo NÃO reescreve o passado — mas o futuro
+    # passa a divergir do que a empresa usou até aqui.
+    code = models.CharField(
+        max_length=4, blank=True, default='', verbose_name='Código',
+        help_text='2 a 4 letras MAIÚSCULAS que identificam a empresa nos '
+                  'documentos (ex.: "EMI" → LOT/EMI/041/08/26). Vazio = '
+                  'documentos no formato antigo, sem prefixo.')
     active = models.BooleanField(default=True, verbose_name='Ativa',
                                  help_text='Desativar ≠ deletar — o histórico fica.')
     # F12 (máscara de categoria, dono 2026-07-17): o conhecimento de chips é o
@@ -146,6 +179,11 @@ class Company(models.Model):
         verbose_name = 'Empresa'
         verbose_name_plural = 'Empresas'
         ordering = ['name']
+        constraints = [
+            # Único só entre os PREENCHIDOS: vazio é o legado e se repete.
+            models.UniqueConstraint(fields=['code'], condition=~models.Q(code=''),
+                                    name='unique_company_code'),
+        ]
 
     def __str__(self):
         return self.name
@@ -156,6 +194,8 @@ class Company(models.Model):
         # escrita (shell/ORM/comando). Migrações de dados usam modelo
         # HISTÓRICO (sem métodos custom) — backfills antigos não quebram.
         validate_company_slug(self.slug)
+        self.code = (self.code or '').strip().upper()
+        validate_company_code(self.code)
         return super().save(*args, **kwargs)
 
 

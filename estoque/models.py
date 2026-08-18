@@ -79,14 +79,31 @@ class Lot(models.Model):
 
     @property
     def code(self) -> str:
-        """``LOT/NUM/MM/YY`` — nomenclatura UNIVERSAL canônica (dono,
+        """``LOT/EMI/NUM/MM/YY`` — nomenclatura UNIVERSAL canônica (dono,
         2026-07-16; PRECIFICACAO §12.19): inglês, NUNCA traduz; NUM = a mesma
         sequência perpétua por empresa de sempre ("lote 41" continua sendo o
         41); MM/YY do mês de ABERTURA, informativo. É também o texto que o
-        gerente digita para confirmar o fechamento (type-to-confirm)."""
+        gerente digita para confirmar o fechamento (type-to-confirm).
+
+        O ``EMI`` (código da empresa) entrou em 2026-08-18 porque a numeração
+        é POR EMPRESA e o código colidia entre clientes — o comprador via dois
+        `LOT/001/08/26` na lista dele. Documento ANTIGO (sem `code_str`) fica
+        no formato de então: é o que está no papel que já circulou."""
+        if self.code_str:
+            return self.code_str
         d = self.created_at
         return (f'LOT/{self.number:03d}/{d:%m}/{d:%y}' if d
                 else f'LOT/{self.number:03d}')
+    # ── Código do documento, CONGELADO na criação (dono, 2026-08-18) ───────
+    # Era propriedade calculada. Virou campo porque o formato mudou (ganhou o
+    # prefixo da empresa, `LOT/EMI/041/08/26`) e o dono escolheu aplicar SÓ A
+    # DOCUMENTO NOVO: papel já impresso não pode divergir da tela. Vazio =
+    # documento anterior à mudança → a propriedade `code` cai no formato
+    # antigo. De quebra, o identificador virou IMUTÁVEL — renomear o código da
+    # empresa não reescreve o passado, que é como número de documento deve se
+    # comportar.
+    code_str = models.CharField(max_length=32, blank=True, default='',
+                                editable=False, verbose_name='Código')
     closed_at   = models.DateTimeField(null=True, blank=True, verbose_name='Fechado em')
     # QUEM fechou (2026-08-18): o documento comercial do lote (PDF da OV do
     # gerente) precisa assinar o fechamento com um nome. Aditivo e NULLABLE de
@@ -163,6 +180,15 @@ class Lot(models.Model):
                 self.branch.company_id != self.company_id:
             raise ValidationError(
                 {'branch': 'A filial deve pertencer à empresa do lote.'})
+        # Congela o código na CRIAÇÃO (ver tenancy/doc_code.py). Usa
+        # timezone.now() em vez do created_at porque o auto_now_add só existe
+        # DEPOIS do insert — e um segundo save() aqui dobraria o evento de
+        # histórico do pghistory à toa.
+        if self._state.adding and not self.code_str:
+            from django.utils import timezone
+            from tenancy.doc_code import doc_code
+            self.code_str = doc_code('LOT', self.company.code, self.number,
+                                     timezone.now())
         return super().save(*args, **kwargs)
 
     @classmethod

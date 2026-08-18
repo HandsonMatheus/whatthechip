@@ -118,6 +118,16 @@ class SalesOrder(models.Model):
     unkeyed_units = models.PositiveIntegerField(default=0,
                                                 verbose_name='Unid. sem chave')
 
+    # ── Código do documento, CONGELADO na criação (dono, 2026-08-18) ───────
+    # Era propriedade calculada. Virou campo porque o formato mudou (ganhou o
+    # prefixo da empresa, `LOT/EMI/041/08/26`) e o dono escolheu aplicar SÓ A
+    # DOCUMENTO NOVO: papel já impresso não pode divergir da tela. Vazio =
+    # documento anterior à mudança → a propriedade `code` cai no formato
+    # antigo. De quebra, o identificador virou IMUTÁVEL — renomear o código da
+    # empresa não reescreve o passado, que é como número de documento deve se
+    # comportar.
+    code_str = models.CharField(max_length=32, blank=True, default='',
+                                editable=False, verbose_name='Código')
     notes = models.TextField(blank=True, default='', verbose_name='Notas')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Criada em')
     confirmed_at = models.DateTimeField(null=True, blank=True, verbose_name='Confirmada em')
@@ -163,8 +173,12 @@ class SalesOrder(models.Model):
 
     @property
     def code(self) -> str:
-        """``SO/NUM/MM/YY`` — canônico universal (dono, 2026-07-16): inglês,
-        NUNCA traduz; NUM perpétuo; MM/YY do mês de criação (informativo)."""
+        """``SO/EMI/NUM/MM/YY`` — canônico universal (dono, 2026-07-16):
+        inglês, NUNCA traduz; NUM perpétuo; MM/YY do mês de criação. O código
+        da empresa entrou em 2026-08-18 (a numeração é por empresa e colidia
+        entre clientes); documento antigo fica no formato de então."""
+        if self.code_str:
+            return self.code_str
         d = self.created_at
         return f'SO/{self.number:03d}/{d:%m}/{d:%y}' if d else f'SO/{self.number:03d}'
 
@@ -178,6 +192,15 @@ class SalesOrder(models.Model):
             from estoque.models import Lot
             self.company_id = Lot.all_companies.values_list(
                 'company_id', flat=True).get(pk=self.lot_id)
+        # Congela o código na CRIAÇÃO (ver tenancy/doc_code.py). Usa
+        # timezone.now() em vez do created_at porque o auto_now_add só existe
+        # DEPOIS do insert — e um segundo save() aqui dobraria o evento de
+        # histórico do pghistory à toa.
+        if self._state.adding and not self.code_str:
+            from django.utils import timezone
+            from tenancy.doc_code import doc_code
+            self.code_str = doc_code('SO', self.company.code, self.number,
+                                     timezone.now())
         # Portão no MODELO (padrão pricing): sem validate_unique/constraints —
         # consultam o _default_manager; a unicidade fica com o BANCO.
         self.full_clean(validate_unique=False, validate_constraints=False)
@@ -410,6 +433,16 @@ class Invoice(models.Model):
                                     verbose_name='Total ¥')
     total_usd = models.DecimalField(max_digits=12, decimal_places=2,
                                     verbose_name='Total US$')
+    # ── Código do documento, CONGELADO na criação (dono, 2026-08-18) ───────
+    # Era propriedade calculada. Virou campo porque o formato mudou (ganhou o
+    # prefixo da empresa, `LOT/EMI/041/08/26`) e o dono escolheu aplicar SÓ A
+    # DOCUMENTO NOVO: papel já impresso não pode divergir da tela. Vazio =
+    # documento anterior à mudança → a propriedade `code` cai no formato
+    # antigo. De quebra, o identificador virou IMUTÁVEL — renomear o código da
+    # empresa não reescreve o passado, que é como número de documento deve se
+    # comportar.
+    code_str = models.CharField(max_length=32, blank=True, default='',
+                                editable=False, verbose_name='Código')
     issued_at = models.DateTimeField(auto_now_add=True, verbose_name='Emitida em')
     issued_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   on_delete=models.SET_NULL, null=True,
@@ -444,8 +477,11 @@ class Invoice(models.Model):
 
     @property
     def code(self) -> str:
-        """``INV/NUM/MM/YY`` — canônico universal (INV confirmado pelo dono;
-        BILL no Odoo é conta de FORNECEDOR). NUM perpétuo por empresa."""
+        """``INV/EMI/NUM/MM/YY`` — canônico universal (INV confirmado pelo
+        dono; BILL no Odoo é conta de FORNECEDOR). NUM perpétuo por empresa; o
+        código da empresa entrou em 2026-08-18 (ver `Lot.code`)."""
+        if self.code_str:
+            return self.code_str
         d = self.issued_at
         return (f'INV/{self.number:03d}/{d:%m}/{d:%y}' if d
                 else f'INV/{self.number:03d}')
@@ -463,6 +499,15 @@ class Invoice(models.Model):
         if self.order_id and not self.company_id:
             self.company_id = SalesOrder.all_companies.values_list(
                 'company_id', flat=True).get(pk=self.order_id)
+        # Congela o código na CRIAÇÃO (ver tenancy/doc_code.py). Usa
+        # timezone.now() em vez do issued_at porque o auto_now_add só existe
+        # DEPOIS do insert — e um segundo save() aqui dobraria o evento de
+        # histórico do pghistory à toa.
+        if self._state.adding and not self.code_str:
+            from django.utils import timezone
+            from tenancy.doc_code import doc_code
+            self.code_str = doc_code('INV', self.company.code, self.number,
+                                     timezone.now())
         self.full_clean(validate_unique=False, validate_constraints=False)
         return super().save(*args, **kwargs)
 

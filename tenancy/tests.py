@@ -818,3 +818,94 @@ class UiV2CanaryTests(TestCase):
             resp = self.client.get('/painel/')
             self.assertEqual(resp.status_code, 200)
             self.assertNotContains(resp, 'V2MARKER-painel')
+
+
+class CodigoDeDocumentoTests(TestCase):
+    """`Company.code` no identificador (dono, 2026-08-18).
+
+    A numeração é POR EMPRESA — "o lote 41 continua sendo o 41" — então o
+    código COLIDIA entre clientes: o comprador, que lê ordens de várias
+    empresas, via dois `LOT/001/08/26` na lista dele.
+
+    ⚠ Código de PAÍS foi recusado de propósito: duas recicladoras do mesmo
+    país voltariam a colidir, e esse é o caminho de crescimento. País é
+    metadado de embarque — já viaja no endereço do SHIP FROM.
+
+    E o formato novo vale só para documento NOVO: papel já impresso não pode
+    divergir da tela.
+    """
+
+    def setUp(self):
+        self.emi = Company.objects.create(name='eMiner cod', slug='eminer-cod',
+                                          code='EMI')
+        self.erc = Company.objects.create(name='eRecyclo cod',
+                                          slug='erecyclo-cod', code='ERC')
+        self.user = User.objects.create_user('cod_op')
+
+    def _lote(self, comp):
+        from estoque.models import Lot
+        with company_scope(comp):
+            return Lot.open_for_company(comp, self.user, 'x', origin='phone')
+
+    def test_mesmo_numero_em_empresas_diferentes_nao_colide_mais(self):
+        a, b = self._lote(self.emi), self._lote(self.erc)
+        self.assertEqual(a.number, b.number)          # a numeração é por empresa
+        self.assertTrue(a.code.startswith('LOT/EMI/001/'))
+        self.assertTrue(b.code.startswith('LOT/ERC/001/'))
+        self.assertNotEqual(a.code, b.code)           # o que motivou a mudança
+
+    def test_documento_antigo_fica_no_formato_antigo(self):
+        """`code_str` vazio = documento anterior à mudança. O papel que já
+        circulou continua batendo com a tela."""
+        from estoque.models import Lot
+        lot = self._lote(self.emi)
+        Lot.all_companies.filter(pk=lot.pk).update(code_str='')   # simula legado
+        lot.refresh_from_db()
+        self.assertTrue(lot.code.startswith('LOT/001/'))
+        self.assertNotIn('EMI', lot.code)
+
+    def test_renomear_o_codigo_da_empresa_nao_reescreve_o_passado(self):
+        """O identificador é IMUTÁVEL depois de emitido — é assim que número
+        de documento tem que se comportar."""
+        lot = self._lote(self.emi)
+        antes = lot.code
+        self.emi.code = 'EMN'
+        self.emi.save()
+        lot.refresh_from_db()
+        self.assertEqual(lot.code, antes)
+        self.assertTrue(self._lote(self.emi).code.startswith('LOT/EMN/'))
+
+    def test_empresa_sem_codigo_sai_no_formato_antigo(self):
+        sem = Company.objects.create(name='Sem cod', slug='sem-cod')
+        self.assertEqual(sem.code, '')
+        self.assertTrue(self._lote(sem).code.startswith('LOT/001/'))
+
+    def test_codigo_e_normalizado_e_validado(self):
+        from django.core.exceptions import ValidationError
+        c = Company.objects.create(name='Min cod', slug='min-cod', code=' zzz ')
+        self.assertEqual(c.code, 'ZZZ')               # trim + maiúscula
+        # Só LETRAS de propósito: o código é DIGITADO (type-to-confirm do
+        # fechamento) e impresso — dígito convida a confundir 0/O e 1/I.
+        for ruim in ('E', 'ABCDE', 'E-M', 'EM1', 'EMÍ'):
+            with self.assertRaises(ValidationError, msg=ruim):
+                Company.objects.create(name=f'R {ruim}', slug=f'r-{ruim.lower()}',
+                                       code=ruim)
+
+    def test_codigo_e_unico_entre_empresas(self):
+        """…mas vazio se repete: é o legado, e há N empresas sem código."""
+        from django.db import IntegrityError
+        with self.assertRaises(IntegrityError):
+            Company.objects.create(name='Clone', slug='clone-cod', code='EMI')
+
+    def test_ov_e_fatura_carregam_o_mesmo_prefixo(self):
+        """Colidiam pelo mesmo motivo do lote — a numeração é por empresa."""
+        from vendas.models import DocSequence, SEQ_SO, SalesOrder
+        lot = self._lote(self.emi)
+        from pricing.models import Buyer
+        with company_scope(self.emi):
+            comprador = Buyer.all_companies.create(company=self.emi, name='B',
+                                                   slug='b-cod')
+            so = SalesOrder(lot=lot, buyer=comprador,
+                            number=DocSequence.next_number(self.emi, SEQ_SO))
+            so.save()
+        self.assertTrue(so.code.startswith('SO/EMI/001/'))

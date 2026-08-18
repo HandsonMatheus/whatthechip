@@ -2693,3 +2693,9 @@ msgstr "以下金额按您今日的价目表预估 — 本订单尚未冻结。�
 #: vendas/ (F11.6)
 msgid "%(n)s categoria(s) deste lote sem preço na sua tabela:"
 msgstr "本批次有 %(n)s 个类别在您的价目表中无报价："
+
+#: tenancy/models.py
+msgid ""
+"Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS (ex.: \"EMI\"). "
+"Vazio também vale — o documento sai sem prefixo."
+msgstr "公司代码无效：请使用 2 至 4 个大写字母（例如 \"EMI\"）。留空也可以 — 单据将不带前缀。"
