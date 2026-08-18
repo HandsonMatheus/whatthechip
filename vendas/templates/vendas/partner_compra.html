@@ -74,9 +74,10 @@
 <ol class="cmp-steps">
   {% for p in steps %}
   <li class="cmp-step cmp-step--{{ p.state }}">
-    <span class="cmp-step__mk">{% if p.state == 'done' %}✓{% elif p.state == 'current' %}●{% else %}○{% endif %}</span>
+    <span class="cmp-step__mk">{% if p.state == 'done' %}✓{% elif p.state == 'current' %}●{% elif p.state == 'pulado' %}–{% else %}○{% endif %}</span>
     <span class="cmp-step__lbl">
       {% if p.key == 'fechado' %}{% trans "Fechado" %}
+      {% elif p.key == 'enviado' %}{% trans "Enviado" %}
       {% elif p.key == 'recebido' %}{% trans "Recebido" %}
       {% elif p.key == 'resultado' %}{% trans "Resultado" %}
       {% else %}{% trans "Pagamento" %}{% endif %}
@@ -85,6 +86,20 @@
   </li>
   {% endfor %}
 </ol>
+
+{% if so.shipped_at %}
+{% comment %} O rastreio vem do CLIENTE (F4). Sem ele o comprador não tinha
+   como saber se a caixa saiu — só via o lote fechado e esperava. {% endcomment %}
+<div class="cmp-receb">
+  <span class="cmp-receb__dica">{% blocktrans trimmed with c=so.carrier d=so.shipped_at|date:"d/m/Y" %}
+    Enviado por {{ c }} em {{ d }}.
+  {% endblocktrans %}</span>
+  {% if so.tracking %}
+    {% if tracking_url %}<a class="cmp-link" href="{{ tracking_url }}" target="_blank" rel="noopener">{{ so.tracking }}</a>
+    {% else %}<span class="mono cmp-receb__dica">{{ so.tracking }}</span>{% endif %}
+  {% endif %}
+</div>
+{% endif %}
 
 {% if not so.received_at %}
 <form method="post" action="{% url 'compras:recebido' so.pk %}" class="cmp-receb">
@@ -471,6 +486,7 @@
   .cmp-step:last-child { border-right:0; }
   .cmp-step--done { color:#0e6027; }
   .cmp-step--current { color:#161616; font-weight:600; background:#edf5ff; }
+  .cmp-step--pulado .cmp-step__mk { color:#c6c6c6; }
   .cmp-step--current .cmp-step__mk { color:#0f62fe; }
   .cmp-step__dt { font-size:11px; color:#8d8d8d; }
   .cmp-receb, .cmp-acoes { display:flex; align-items:center; gap:12px;

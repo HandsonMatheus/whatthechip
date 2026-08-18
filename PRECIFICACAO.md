@@ -1653,6 +1653,28 @@ calcular), o **logo do cliente** no topo — e duas coisas que **saíram**: o
 compra é sigilo de negócio) e o **número da FATURA** (papel interno; não diz
 nada a quem recebe). O documento se identifica por LOTE + OV.
 
+🚚 **F4 — DESPACHO (dono, 2026-08-18).** Quem embala e leva a caixa é o
+CLIENTE, então o registro é dele: bloco *Despacho* na tela da OV com
+transportadora, rastreio e data (`SalesOrder.carrier/tracking/shipped_at/
+shipped_by`, `vendas/0010`). Decisões: **uma caixa por lote** (campos na OV, e
+não modelo de volume — se um dia sair em dois pacotes, aí sim vira modelo),
+**gerente e admin** preenchem (quem fecha o lote é quem embala), e **frete não
+entra** — despacho é logística, não dinheiro.
+
+⚠ **EDITÁVEL**, ao contrário do `received_at`: rastreio digitado errado tem que
+ser corrigível, e o número às vezes só sai horas depois do envio. Cada correção
+fica no pghistory — trocar rastreio é evento de negócio. A data é obrigatória
+(é ela que a etapa mostra); o rastreio pode entrar depois.
+
+O comprador **só lê**: a etapa **Enviado** no card e o rastreio clicável
+(`services.tracking_url` monta a URL de DHL/FedEx/UPS; transportadora
+desconhecida fica em texto puro — melhor sem link do que com link quebrado).
+
+⚠ Nada BLOQUEIA: se o cliente esquecer de registrar o envio, a caixa chega do
+mesmo jeito e o comprador marca o recebimento. Por isso o card ganhou o estado
+**`pulado`** — etapa sem data que já foi ultrapassada por outra COM data. Sem
+ele a tela diria "aguardando envio" com o resultado já fechado.
+
 🔜 **PRÓXIMO PASSO ACORDADO (dono, 2026-08-18): espelhar a superfície do lado do
 CLIENTE.** Hoje o comprador declara o pagamento e a fatura vira PAGA na hora —
 ninguém confirma que o dinheiro entrou. O cliente precisa de um **"confirmar

@@ -138,6 +138,29 @@ class SalesOrder(models.Model):
     cancelled_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                      null=True, blank=True, related_name='+',
                                      verbose_name='Cancelada por')
+    # ── O DESPACHO (F4, dono 2026-08-18) ─────────────────────────────────────
+    # Quem embarca é o CLIENTE — é ele que tem a transportadora, o rastreio e
+    # a data. UMA caixa por lote (decisão do dono): campos aqui, sem modelo de
+    # volume. Se um dia um lote sair em dois pacotes, vira um modelo próprio.
+    # ⚠ EDITÁVEL, ao contrário do `received_at`: rastreio digitado errado tem
+    # que ser corrigível, e o número às vezes só aparece horas depois de
+    # despachar. Nada aqui bloqueia o comprador de marcar o recebimento — se
+    # o cliente esquecer de registrar o envio, a caixa chega do mesmo jeito.
+    carrier = models.CharField(
+        max_length=40, blank=True, default='', verbose_name='Transportadora',
+        help_text='DHL, FedEx, UPS… como aparece na etiqueta.')
+    tracking = models.CharField(
+        max_length=60, blank=True, default='', verbose_name='Rastreio',
+        help_text='O número que o comprador acompanha. Pode ser preenchido '
+                  'depois do envio.')
+    shipped_at = models.DateField(
+        null=True, blank=True, verbose_name='Despachada em',
+        help_text='O dia em que a caixa saiu.')
+    shipped_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.SET_NULL, null=True,
+                                   blank=True, related_name='+',
+                                   verbose_name='Despachada por')
+
     # ── A CAIXA CHEGOU (dono, 2026-08-18) ────────────────────────────────────
     # Primeiro pedaço do despacho (F4) a existir, porque é o que o card de
     # etapas precisa para dizer em que pé está a compra. Quem marca é o

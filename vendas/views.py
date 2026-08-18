@@ -20,10 +20,12 @@ O comprador segue segredo de plataforma (F11.3): a contraparte é o rótulo fixo
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
-from tenancy.access import can_see_price, is_unmasked, role_required
+from tenancy.access import (can_sales, can_see_price, is_unmasked,
+                            role_required)
 from tenancy.ui import ui   # E5: canary por empresa (§17.7)
 
 from .models import (INV_OPEN, Invoice, STATUS_CONFIRMED, STATUS_DRAFT,
@@ -77,7 +79,13 @@ def so_detail(request, pk):
     # Sem `can_settle`: o botão de "registrar resultado e faturar" saiu da tela
     # da empresa (dono, 2026-08-18) — quem confere o que chegou é o COMPRADOR,
     # que recebeu a caixa. A rota `settlement_new` segue viva para o admin.
-    ctx = {'so': so, 'invoice': invoice, 'ver_valor': ver_valor}
+    # F4 — despacho: quem embarca é o CLIENTE. Única AÇÃO que sobrou nesta
+    # tela (dono, 2026-08-18), e por bom motivo: é ato dele sobre a venda
+    # dele. Gerente e admin — quem fecha o lote é quem embala e leva.
+    ctx = {'so': so, 'invoice': invoice, 'ver_valor': ver_valor,
+           'pode_despachar': can_sales(request) and so.status != 'cancelled',
+           'tracking_url': services.tracking_url(so.carrier, so.tracking),
+           'hoje': timezone.localdate()}
     unmasked = is_unmasked(request)              # F12: rótulo real × C-###
     if so.status == STATUS_DRAFT:
         pairs = services.live_quotes(so)
@@ -302,3 +310,31 @@ def invoice_cancel(request, pk):
         messages.success(request, _('Fatura cancelada — registre um novo '
                                     'acerto para reemitir.'))
     return redirect('vendas:so_detail', pk=inv.order_id)
+
+
+@role_required('manager')
+@require_POST
+def so_ship(request, pk):
+    """Registra (ou CORRIGE) o despacho — F4, dono 2026-08-18.
+
+    Editável de propósito: rastreio digitado errado tem que ser corrigível, e
+    o número às vezes só aparece horas depois de despachar. O pghistory guarda
+    cada correção — trocar rastreio é evento de negócio.
+    """
+    from datetime import date as _date
+    so = get_object_or_404(SalesOrder.objects.select_related('lot'), pk=pk)
+    bruto = (request.POST.get('shipped_at') or '').strip()
+    try:
+        quando = _date.fromisoformat(bruto) if bruto else timezone.localdate()
+    except ValueError:
+        messages.error(request, _('Data do despacho inválida.'))
+        return redirect('vendas:so_detail', pk=so.pk)
+    try:
+        services.mark_shipped(so, request.POST.get('carrier'),
+                              request.POST.get('tracking'), quando,
+                              request.user)
+    except ValidationError as erro:
+        messages.error(request, ' '.join(erro.messages))
+        return redirect('vendas:so_detail', pk=so.pk)
+    messages.success(request, _('Despacho registrado.'))
+    return redirect('vendas:so_detail', pk=so.pk)

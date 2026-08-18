@@ -180,8 +180,60 @@
     </div>
   </div>
 
+  {% comment %} ── DESPACHO (F4) — a única ação que sobrou nesta tela, e por
+     bom motivo: quem embala e leva a caixa na transportadora é o CLIENTE.
+     EDITÁVEL: rastreio errado tem que ser corrigível, e o número às vezes só
+     sai horas depois. O comprador vê isto na etapa "Enviado" da tela dele. {% endcomment %}
+  <div class="panel">
+    <div class="panel__head">{% trans "Despacho" %}</div>
+    <div style="padding:16px 18px;">
+      {% if so.shipped_at %}
+      <p style="margin:0 0 12px;font-size:14px;">
+        <b>{{ so.carrier }}</b> · {{ so.shipped_at|date:"d/m/Y" }}
+        {% if so.tracking %} ·
+          {% if tracking_url %}<a href="{{ tracking_url }}" target="_blank" rel="noopener">{{ so.tracking }}</a>
+          {% else %}<span class="mono">{{ so.tracking }}</span>{% endif %}
+        {% endif %}
+      </p>
+      {% else %}
+      <p style="margin:0 0 12px;font-size:14px;color:#697077;">
+        {% trans "Ainda não despachado." %}</p>
+      {% endif %}
+
+      {% if pode_despachar %}
+      <form method="post" action="{% url 'vendas:so_ship' so.pk %}"
+            style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+        {% csrf_token %}
+        <label style="display:flex;flex-direction:column;gap:4px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">
+          <span>{% trans "Transportadora" %}</span>
+          <input type="text" name="carrier" required maxlength="40" list="wtc-carriers"
+                 value="{{ so.carrier }}" placeholder="DHL"
+                 style="padding:7px 9px;border:1px solid #a2a9b0;font-size:13px;">
+        </label>
+        <datalist id="wtc-carriers">
+          <option value="DHL"><option value="FedEx"><option value="UPS">
+        </datalist>
+        <label style="display:flex;flex-direction:column;gap:4px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;flex:1;min-width:180px;">
+          <span>{% trans "Rastreio" %}</span>
+          <input type="text" name="tracking" maxlength="60" value="{{ so.tracking }}"
+                 placeholder="{% trans 'pode entrar depois' %}"
+                 style="padding:7px 9px;border:1px solid #a2a9b0;font-size:13px;width:100%;">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:4px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">
+          <span>{% trans "Data" %}</span>
+          <input type="date" name="shipped_at" required
+                 value="{{ so.shipped_at|default:hoje|date:'Y-m-d' }}"
+                 style="padding:7px 9px;border:1px solid #a2a9b0;font-size:13px;">
+        </label>
+        <button type="submit" class="uib">{% if so.shipped_at %}{% trans "Atualizar despacho" %}{% else %}{% trans "Registrar despacho" %}{% endif %}</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+
   {% comment %}
-    ── A tela da EMPRESA não tem AÇÃO nenhuma sobre a ordem (dono, 2026-08-18).
+    ── Fora o DESPACHO acima, a tela da EMPRESA não tem AÇÃO sobre a ordem
+    (dono, 2026-08-18).
     Saíram, nesta ordem:
 
     · CONFIRMAR — quem confirma é o comprador (e hoje a OV já congela sozinha

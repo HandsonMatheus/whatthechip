@@ -3160,3 +3160,47 @@ msgstr "Resultado final"
 #. vendas/ (F11.6 — esperado × final)
 msgid "depois da conferência"
 msgstr "tras la revisión"
+
+#. vendas/ (F4 — despacho)
+msgid "Ainda não despachado."
+msgstr "Aún no despachado."
+
+#. vendas/ (F4 — despacho)
+msgid "Atualizar despacho"
+msgstr "Actualizar despacho"
+
+#. vendas/ (F4 — despacho)
+msgid "Data do despacho inválida."
+msgstr "Fecha de despacho inválida."
+
+#. vendas/ (F4 — despacho)
+msgid "Despacho registrado."
+msgstr "Despacho registrado."
+
+#. vendas/ (F4 — despacho)
+msgid "Despacho"
+msgstr "Despacho"
+
+#. vendas/ (F4 — despacho)
+msgid "Enviado por %(c)s em %(d)s."
+msgstr "Enviado por %(c)s el %(d)s."
+
+#. vendas/ (F4 — despacho)
+msgid "Enviado"
+msgstr "Enviado"
+
+#. vendas/ (F4 — despacho)
+msgid "Rastreio"
+msgstr "Seguimiento"
+
+#. vendas/ (F4 — despacho)
+msgid "Registrar despacho"
+msgstr "Registrar despacho"
+
+#. vendas/ (F4 — despacho)
+msgid "Transportadora"
+msgstr "Transportista"
+
+#. vendas/ (F4 — despacho)
+msgid "pode entrar depois"
+msgstr "puede completarse después"

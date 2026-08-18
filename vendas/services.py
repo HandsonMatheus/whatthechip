@@ -981,42 +981,97 @@ def lot_chips(so):
 
 #: Etapas da compra, na ordem em que acontecem. Chaves CANÔNICAS (nunca
 #: traduzem); o rótulo é montado no template.
-STEP_FECHADO, STEP_RECEBIDO = 'fechado', 'recebido'
+STEP_FECHADO, STEP_ENVIADO, STEP_RECEBIDO = 'fechado', 'enviado', 'recebido'
 STEP_RESULTADO, STEP_PAGAMENTO = 'resultado', 'pagamento'
 
 
 def order_steps(so):
     """O card de etapas: por onde a compra passou, onde está, para onde vai.
 
-    Quatro etapas com data REAL (dono, 2026-08-18). "Enviado" ficou de fora
-    porque exige o despacho inteiro (F4: transportadora, rastreio, e a decisão
-    de quem preenche) — melhor uma etapa a menos do que uma caixa morta na
-    tela.
+    Cinco etapas, cada uma com data REAL. "Enviado" entrou com a F4 (o cliente
+    registra transportadora, rastreio e data).
 
-    Cada item: ``{key, date, state}`` com state em ``done``/``current``/
-    ``todo``. A etapa CORRENTE é a primeira sem data — é ela que diz o que
-    falta fazer.
+    Cada item: ``{key, date, state}``:
+
+      · ``done``    — tem data;
+      · ``current`` — a primeira SEM data que ainda não foi ultrapassada: é o
+        que falta fazer AGORA;
+      · ``pulado``  — sem data, mas uma etapa POSTERIOR já aconteceu. É o
+        cliente que esqueceu de registrar o envio e a caixa chegou assim
+        mesmo — nada bloqueia isso, e a tela não pode mentir dizendo que a
+        compra está "aguardando envio" com o resultado já fechado;
+      · ``todo``    — ainda vem pela frente.
     """
     inv = next((i for i in so.invoices.all() if i.status != 'cancelled'), None)
     pago = inv.balance_usd <= 0 if inv is not None else False
     passos = [
         {'key': STEP_FECHADO,   'date': so.lot.closed_at if so.lot_id else None},
+        {'key': STEP_ENVIADO,   'date': so.shipped_at},
         {'key': STEP_RECEBIDO,  'date': so.received_at},
         {'key': STEP_RESULTADO, 'date': inv.settlement.created_at if inv else None},
         {'key': STEP_PAGAMENTO, 'date': (inv.payments.order_by('-paid_at')
                                          .values_list('paid_at', flat=True)
                                          .first() if pago else None)},
     ]
+    ultimo_com_data = max((i for i, p in enumerate(passos)
+                           if p['date'] is not None), default=-1)
     corrente = True
-    for p in passos:
+    for i, p in enumerate(passos):
         if p['date'] is not None:
             p['state'] = 'done'
+        elif i < ultimo_com_data:
+            p['state'] = 'pulado'
         elif corrente:
             p['state'] = 'current'
             corrente = False
         else:
             p['state'] = 'todo'
     return passos
+
+
+#: Rastreio clicável por transportadora. Chave = o que o cliente digita,
+#: normalizado (minúsculas, sem espaço). Transportadora desconhecida cai no
+#: texto puro — melhor sem link do que com link quebrado.
+TRACKING_URL = {
+    'dhl': 'https://www.dhl.com/global-en/home/tracking.html?tracking-id={}',
+    'fedex': 'https://www.fedex.com/fedextrack/?trknbr={}',
+    'ups': 'https://www.ups.com/track?tracknum={}',
+}
+
+
+def tracking_url(carrier, tracking):
+    """URL de rastreio, ou None. Nunca levanta — link é conveniência."""
+    if not carrier or not tracking:
+        return None
+    chave = ''.join(c for c in carrier.lower() if c.isalnum())
+    modelo = TRACKING_URL.get(chave)
+    return modelo.format(tracking.strip()) if modelo else None
+
+
+def mark_shipped(so, carrier, tracking, quando, user):
+    """Registra (ou CORRIGE) o despacho do lote — F4, dono 2026-08-18.
+
+    Quem embarca é o CLIENTE: transportadora, rastreio e data saem da mão de
+    quem leva a caixa. Uma caixa por lote (decisão do dono) — daí os campos
+    morarem na própria OV.
+
+    ⚠ **Editável de propósito**, ao contrário do `received_at`: número de
+    rastreio digitado errado tem que ser corrigível, e às vezes ele só aparece
+    horas depois do despacho. O pghistory guarda cada correção.
+
+    Data é obrigatória (é ela que a etapa mostra); rastreio pode entrar depois.
+    """
+    quando = quando or timezone.localdate()
+    if not (carrier or '').strip():
+        raise ValidationError('Informe a transportadora.')
+    if quando > timezone.localdate():
+        raise ValidationError('A data do despacho não pode ser no futuro.')
+    so.carrier = (carrier or '').strip()[:40]
+    so.tracking = (tracking or '').strip()[:60]
+    so.shipped_at = quando
+    so.shipped_by = user
+    so.save(update_fields=['carrier', 'tracking', 'shipped_at', 'shipped_by'])
+    return so
 
 
 def mark_received(so, quando=None):

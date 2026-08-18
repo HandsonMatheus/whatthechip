@@ -112,6 +112,9 @@ def _detalhe(so):
         # herda essa taxa, e é ela que converte o ¥ dele em US$.
         'fx_rate': so.fx_usd_rate or (so.lot.fx_rate if so.lot_id else None),
         'fx_locked_at': so.lot.fx_locked_at if so.lot_id else None,
+        # F4: o rastreio que o CLIENTE registrou, clicável quando a
+        # transportadora é conhecida.
+        'tracking_url': services.tracking_url(so.carrier, so.tracking),
         # ── Duas colunas no topo (dono, 2026-08-18) ──────────────────────
         # ESPERADO é o preço fechado com o cliente: imutável, é o número que
         # ele tinha na mão quando a caixa saiu. FINAL é o que a conferência

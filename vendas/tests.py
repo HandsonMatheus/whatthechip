@@ -1836,15 +1836,35 @@ class CompradorEtapasEResultadoTests(TestCase):
         with company_scope(self.emp):
             passos = {p['key']: p for p in services.order_steps(so)}
         self.assertEqual(passos['fechado']['state'], 'done')      # lote fechado
-        self.assertEqual(passos['recebido']['state'], 'current')  # é o que falta
-        self.assertEqual(passos['resultado']['state'], 'todo')
+        self.assertEqual(passos['enviado']['state'], 'current')   # falta o cliente
+        self.assertEqual(passos['recebido']['state'], 'todo')
         self.assertEqual(passos['pagamento']['state'], 'todo')
+
+        from datetime import date as _date
+        with company_scope(self.emp):
+            services.mark_shipped(so, 'DHL', 'JD01', _date.today(),
+                                  self.parceiro)
+            passos = {p['key']: p for p in services.order_steps(so)}
+        self.assertEqual(passos['enviado']['state'], 'done')
+        self.assertEqual(passos['recebido']['state'], 'current')
 
         self.client.post(reverse('compras:recebido', args=[so.pk]))
         so.refresh_from_db()
         self.assertIsNotNone(so.received_at)
         with company_scope(self.emp):
             passos = {p['key']: p for p in services.order_steps(so)}
+        self.assertEqual(passos['recebido']['state'], 'done')
+        self.assertEqual(passos['resultado']['state'], 'current')
+
+    def test_etapa_sem_data_DEPOIS_de_uma_com_data_nao_e_a_corrente(self):
+        """O cliente esqueceu de registrar o envio e a caixa chegou assim
+        mesmo — nada bloqueia isso. A tela não pode dizer "aguardando envio"
+        com o recebimento já carimbado."""
+        so = self._ov('S14')
+        services.mark_received(so)
+        with company_scope(self.emp):
+            passos = {p['key']: p for p in services.order_steps(so)}
+        self.assertEqual(passos['enviado']['state'], 'pulado')
         self.assertEqual(passos['recebido']['state'], 'done')
         self.assertEqual(passos['resultado']['state'], 'current')
 
@@ -2279,3 +2299,126 @@ class DeclaracaoAduaneiraTests(TestCase):
         self.assertIn(b'PCB CHIPS FOR DISPOSAL', texto)
         self.assertIn(f"USD {doc['shipment_value']}".encode(), texto)
         self.assertIn(b'Declared value', texto)
+
+
+class DespachoTests(TestCase):
+    """F4 — o DESPACHO, registrado pelo CLIENTE (dono, 2026-08-18).
+
+    Quem embala e leva a caixa na transportadora é a empresa-cliente; o
+    comprador só LÊ (é a etapa "Enviado" e o rastreio na tela dele). Uma caixa
+    por lote — decisão do dono —, por isso os campos moram na própria OV.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.brand = _setup('vd-desp')
+        User = get_user_model()
+        cls.users = {}
+        for papel in ('admin', 'manager', 'operator'):
+            u = User.objects.create_user(f'vd_desp_{papel}', password='x')
+            Membership.objects.create(user=u, company=cls.company, role=papel)
+            cls.users[papel] = u
+
+    def setUp(self):
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        with company_scope(self.company):
+            lot = Lot.open_for_company(self.company, self.users['manager'],
+                                       'd', origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='DESP1', quantity=6, brand=self.brand,
+                chip_type='eMMC', company=self.company, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')
+            self.so = services.create_draft_for_lot(lot, self.users['manager'])
+
+    def _post(self, papel='manager', **dados):
+        self.client.force_login(self.users[papel])
+        corpo = {'carrier': 'DHL', 'tracking': 'JD014600', 
+                 'shipped_at': '2026-08-18'}
+        corpo.update(dados)
+        return self.client.post(reverse('vendas:so_ship', args=[self.so.pk]),
+                                corpo, follow=True)
+
+    def test_gerente_registra_o_despacho(self):
+        self._post()
+        self.so.refresh_from_db()
+        self.assertEqual(self.so.carrier, 'DHL')
+        self.assertEqual(self.so.tracking, 'JD014600')
+        self.assertEqual(str(self.so.shipped_at), '2026-08-18')
+        self.assertEqual(self.so.shipped_by, self.users['manager'])
+
+    def test_despacho_e_CORRIGIVEL(self):
+        """Rastreio digitado errado tem que dar para arrumar, e o número às
+        vezes só aparece horas depois do envio."""
+        self._post(tracking='')
+        self.so.refresh_from_db()
+        self.assertEqual(self.so.tracking, '')
+        self._post(tracking='JD999')
+        self.so.refresh_from_db()
+        self.assertEqual(self.so.tracking, 'JD999')
+
+    def test_sem_transportadora_nao_passa(self):
+        resp = self._post(carrier='')
+        self.so.refresh_from_db()
+        self.assertIsNone(self.so.shipped_at)
+        self.assertContains(resp, 'transportadora')
+
+    def test_data_no_futuro_nao_passa(self):
+        from datetime import date, timedelta
+        futuro = (date.today() + timedelta(days=3)).isoformat()
+        resp = self._post(shipped_at=futuro)
+        self.so.refresh_from_db()
+        self.assertIsNone(self.so.shipped_at)
+        self.assertContains(resp, 'futuro')
+
+    def test_operador_nao_despacha(self):
+        self.client.force_login(self.users['operator'])
+        self.assertEqual(self.client.post(
+            reverse('vendas:so_ship', args=[self.so.pk])).status_code, 403)
+
+    def test_tela_do_cliente_mostra_o_bloco_e_o_rastreio_clicavel(self):
+        self.client.force_login(self.users['manager'])
+        tela = self.client.get(reverse('vendas:so_detail', args=[self.so.pk]))
+        self.assertContains(tela, 'Despacho')
+        self.assertContains(tela, 'Ainda não despachado')
+        self._post()
+        tela = self.client.get(reverse('vendas:so_detail', args=[self.so.pk]))
+        self.assertContains(tela, 'dhl.com')            # link montado
+        self.assertContains(tela, 'JD014600')
+
+    def test_transportadora_desconhecida_fica_em_texto_puro(self):
+        """Melhor sem link do que com link quebrado."""
+        self.assertIsNone(services.tracking_url('Correios PY', 'ABC123'))
+        self.assertIn('JD01', services.tracking_url('DHL', 'JD01'))
+        self.assertIn('JD01', services.tracking_url('  dhl ', 'JD01'))
+        self.assertIsNone(services.tracking_url('DHL', ''))
+
+    def test_comprador_LE_o_despacho_e_nao_escreve(self):
+        from pricing.models import Price, PriceList, STATUS_QUOTED
+        from django.utils import timezone
+        User = get_user_model()
+        parceiro = User.objects.create_user('vd_desp_p', password='x')
+        self.buyer.users.add(parceiro)
+        with company_scope(self.company):
+            if not PriceList.all_companies.filter(buyer=self.buyer,
+                                                  brand=None).exists():
+                pl = PriceList.all_companies.create(buyer=self.buyer, brand=None)
+                Price.all_companies.create(
+                    price_list=pl, kind='emmc', gen='', origin='phone',
+                    tier_value=Decimal('16'), tier_unit='GB',
+                    status=STATUS_QUOTED, price_min=Decimal('15'),
+                    price_max=Decimal('15'))
+            Lot.all_companies.filter(pk=self.so.lot_id).update(
+                closed_at=timezone.now())
+            self.so.lot.refresh_from_db()
+            services.confirm(self.so, self.users['admin'], unmasked=True)
+        self._post()
+        self.client.force_login(parceiro)
+        tela = self.client.get(reverse('compras:detail', args=[self.so.pk]))
+        self.assertContains(tela, 'Enviado')            # a etapa
+        self.assertContains(tela, 'JD014600')           # o rastreio
+        self.assertContains(tela, 'dhl.com')
+        # ⚠ Ele não tem por onde MEXER: a rota é do lado do cliente.
+        self.assertNotContains(tela, reverse('vendas:so_ship',
+                                             args=[self.so.pk]))
