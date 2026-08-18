@@ -44,3 +44,10 @@ correct_kp_revert_*.json
 
 # Relatórios do submit_known_parts (gerados ao lado da submissão; não são fonte)
 submissions/*.conflitos.yaml
+
+# Lixo da ponte (device tools não deletam em pasta montada — ver CLAUDE.md):
+# tarballs de transporte, locks órfãos do git, scripts descartáveis.
+_to_delete/
+# Relatórios gerados por auditoria read-only (regeneráveis pelo comando)
+/micron_sem_specs.csv
+/identity_only.xlsx
