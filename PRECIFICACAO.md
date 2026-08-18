@@ -1597,6 +1597,39 @@ comprovante é a evidência, e o admin da empresa o vê na fatura dele
 não bastar, o passo seguinte é um "confirmar recebimento" do lado do cliente;
 NÃO foi feito agora de propósito (MVP).
 
+🧹 **A tela da OV do CLIENTE ficou só de leitura** (dono, 2026-08-18). Saíram,
+nesta ordem: *confirmar* (quem confirma é o comprador — e hoje a OV congela
+sozinha no fechamento), *registrar resultado e faturar* ("ele não registra
+resultado nenhum, isso é tarefa do comprador": quem confere é quem recebeu a
+caixa) e *cancelar* (operação de PLATAFORMA, não do cliente). As rotas e os
+serviços seguem VIVOS — o que saiu foi o botão.
+
+📦 **Declaração aduaneira no documento de embarque** (dono, 2026-08-18): caixa
+com `PCB CHIPS FOR DISPOSAL` e um valor em US$ entre 200 e 290. A
+transportadora EXIGE os dois; campo em branco trava o pacote ou faz alguém que
+não conhece a carga reavaliá-la. O valor é **fictício e assumido como tal** —
+é sucata para descarte, e o valor comercial é justamente o que não pode viajar
+impresso na caixa. O gerente vê sem problema.
+
+⚠ "Aleatório" mas **estável por documento**: sai de um hash md5 do código da OV
+(`services.declared_value_usd`), NUNCA de `random`. Reimprimir tem que dar o
+mesmo número — divergência de valor declarado entre duas vias é exatamente o
+que trava pacote na alfândega. Há teste cravando as duas coisas (faixa e
+estabilidade).
+
+🧪 **`scripts/seed_demo.py --mais --commit`** acrescenta 4 lotes à demo, um por
+estágio da compra: A congelada não recebida · B recebida a conferir · C
+faturada a pagar · D paga em parte (com comprovante). O `semear` original monta
+a demo do zero e se recusa a rodar duas vezes; este ACRESCENTA, para haver o
+que clicar em cada ponto do fluxo sem refazer tudo.
+
+🔜 **PRÓXIMO PASSO ACORDADO (dono, 2026-08-18): espelhar a superfície do lado do
+CLIENTE.** Hoje o comprador declara o pagamento e a fatura vira PAGA na hora —
+ninguém confirma que o dinheiro entrou. O cliente precisa de um **"confirmar
+recebimento"** (do pagamento) e, no geral, da contraparte de cada tela que o
+comprador ganhou: etapas, resultado, comprovante. O comprovante já aparece na
+fatura dele (`vendas:payment_receipt`); o resto é a próxima leva.
+
 **PDF do RESULTADO** (`services.result_document` + `pdf.render_result_pdf`):
 o comprador baixa e manda pro cliente. Mostra **enviado × recusado × aceito**
 por categoria, não só o líquido — "recebi 3529 e paguei por 3400" sem dizer o

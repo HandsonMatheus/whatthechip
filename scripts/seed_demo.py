@@ -9,6 +9,7 @@ apaga exatamente isso e nada mais.
 
     python scripts/seed_demo.py                 # DRY-RUN: só diz o que faria
     python scripts/seed_demo.py --commit        # cria de verdade
+    python scripts/seed_demo.py --mais --commit   # + 4 lotes, um por estágio
     python scripts/seed_demo.py --purge --commit  # apaga a demo inteira
 
 O que nasce (idempotente — rodar de novo não duplica):
@@ -375,6 +376,101 @@ def semear(escrever):
         print(f'    {PREFIXO}{sufixo:9s} / {senha:9s}  ({papel})')
 
 
+def mais(escrever):
+    """Mais lotes na demo, um POR ESTÁGIO da compra (dono, 2026-08-18).
+
+    O ``semear`` monta a demo do zero e se recusa a rodar de novo. Este aqui
+    ACRESCENTA, para o dono ter o que clicar em cada ponto do fluxo do
+    comprador sem precisar refazer a demo inteira:
+
+        A · congelada, NÃO recebida      → botão "marcar como recebido"
+        B · congelada, JÁ recebida       → resultado + totais ao vivo
+        C · resultado fechado            → pagamento + comprovante
+        D · pagamento PARCIAL            → saldo e histórico
+
+    Idempotente no que importa: rodar de novo cria OUTRO conjunto (os lotes
+    são numerados em sequência), nunca duplica nem reescreve os anteriores.
+    """
+    company = Company.objects.filter(slug=COMPANY_SLUG).first()
+    if company is None:
+        sys.exit('ABORTADO: a demo não existe ainda — rode sem --mais '
+                 'primeiro (com --commit).')
+    with company_scope(company):
+        contas = _usuarios(company, escrever)
+        buyer, novo = _comprador(company, escrever)
+        if buyer is None:
+            sys.exit('ABORTADO: sem comprador não há cotação.')
+        itens = _candidatos(buyer, exigir_cotado=not novo)
+        if len(itens) < MINIMO_PNS:
+            sys.exit(f'ABORTADO: só {len(itens)} PNs cotáveis.')
+
+        # 4 fatias, girando quando há poucos PNs — cada lote precisa de ≥1.
+        fatias = [itens[i::4] or itens[:1] for i in range(4)]
+        if not escrever:
+            print(f'\n(dry-run) criaria 4 lotes na {company.name} com '
+                  f'{len(itens)} PNs cotáveis, um por estágio (A não recebida, '
+                  f'B recebida, C faturada, D paga em parte). Rode --commit.')
+            return
+
+        gerente, admin = contas['gerente'], contas['admin']
+        print(f'\nLotes novos em {company.name}:')
+        with transaction.atomic():
+            # A — congelada e NÃO recebida
+            _la, so_a = _lote(company, gerente, 'Teste A — a receber',
+                              fatias[0], buyer, fechar=True)
+            services.confirm(so_a, admin)
+            print(f'    → {so_a.code}: congelada, aguardando recebimento')
+
+            # B — congelada e JÁ recebida
+            _lb, so_b = _lote(company, gerente, 'Teste B — recebida, a conferir',
+                              fatias[1], buyer, fechar=True)
+            services.confirm(so_b, admin)
+            services.mark_received(so_b)
+            print(f'    → {so_b.code}: recebida, aguardando resultado')
+
+            # C — resultado fechado, fatura EM ABERTO
+            _lc, so_c = _lote(company, gerente, 'Teste C — a pagar',
+                              fatias[2], buyer, fechar=True)
+            services.confirm(so_c, admin)
+            linha = so_c.lines.first()
+            _st, inv_c = services.settle_and_invoice(
+                so_c, {linha.pk: (max(1, linha.quantity // 8), None)}, admin,
+                notes='Algumas peças vieram sem contato (demonstração).')
+            print(f'    → {so_c.code}: {inv_c.code} em aberto '
+                  f'(US$ {inv_c.balance_usd})')
+
+            # D — pagamento PARCIAL, com comprovante
+            _ld, so_d = _lote(company, gerente, 'Teste D — paga em parte',
+                              fatias[3], buyer, fechar=True)
+            services.confirm(so_d, admin)
+            linha = so_d.lines.first()
+            _st, inv_d = services.settle_and_invoice(so_d, {}, admin)
+            pago = (inv_d.total_usd / 3).quantize(Decimal('0.01'))
+            pag = services.register_payment(
+                inv_d, pago, date.today() - timedelta(days=1), admin,
+                reference='TT-DEMO-PARCIAL')
+            services.attach_receipt(pag, _comprovante_falso())
+            print(f'    → {so_d.code}: {inv_d.code} com US$ {pago} pagos '
+                  f'(saldo US$ {inv_d.balance_usd})')
+
+    print('\n✔ Pronto. Entre como comprador em /partner/ para percorrer os '
+          'quatro estágios.')
+
+
+def _comprovante_falso():
+    """Um PNG mínimo, só para o comprovante da demo existir de verdade."""
+    from io import BytesIO
+    from django.core.files.uploadedfile import SimpleUploadedFile
+    from PIL import Image, ImageDraw
+    buf = BytesIO()
+    img = Image.new('RGB', (420, 200), '#ffffff')
+    ImageDraw.Draw(img).text((16, 90), 'COMPROVANTE DE DEMONSTRACAO',
+                             fill='#0f62fe')
+    img.save(buf, format='PNG')
+    return SimpleUploadedFile('comprovante-demo.png', buf.getvalue(),
+                              content_type='image/png')
+
+
 def purgar(escrever):
     company = Company.objects.filter(slug=COMPANY_SLUG).first()
     if company is None:
@@ -423,6 +519,14 @@ if __name__ == '__main__':
                    help='Grava de verdade (sem isto: dry-run).')
     p.add_argument('--purge', action='store_true',
                    help='Apaga a empresa demo e tudo que é dela.')
+    p.add_argument('--mais', action='store_true',
+                   help='ACRESCENTA 4 lotes, um por estágio da compra '
+                        '(a receber / a conferir / a pagar / paga em parte).')
     args = p.parse_args()
     _exige_banco_local()
-    (purgar if args.purge else semear)(args.commit)
+    if args.purge:
+        purgar(args.commit)
+    elif args.mais:
+        mais(args.commit)
+    else:
+        semear(args.commit)

@@ -74,9 +74,10 @@ def so_detail(request, pk):
     invoice = ((Invoice.all_companies.filter(order=so)
                 .exclude(status='cancelled').first()) if faturar else None)
     ver_valor = can_see_price(request)
-    ctx = {'so': so, 'invoice': invoice, 'ver_valor': ver_valor,
-           'can_settle': (faturar and so.status == STATUS_CONFIRMED
-                          and invoice is None)}
+    # Sem `can_settle`: o botão de "registrar resultado e faturar" saiu da tela
+    # da empresa (dono, 2026-08-18) — quem confere o que chegou é o COMPRADOR,
+    # que recebeu a caixa. A rota `settlement_new` segue viva para o admin.
+    ctx = {'so': so, 'invoice': invoice, 'ver_valor': ver_valor}
     unmasked = is_unmasked(request)              # F12: rótulo real × C-###
     if so.status == STATUS_DRAFT:
         pairs = services.live_quotes(so)

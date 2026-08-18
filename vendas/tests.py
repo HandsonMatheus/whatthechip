@@ -411,9 +411,10 @@ class SettlementInvoicePaymentTests(TestCase):
     def test_telas_do_fluxo(self):
         from vendas.models import Invoice
         self.client.force_login(self.adm)
-        # CTA na OV confirmada sem fatura:
+        # ⚠ O CTA saiu da tela da empresa em 2026-08-18 (quem registra o
+        # resultado é o COMPRADOR); a ROTA segue viva para o admin.
         resp = self.client.get(reverse('vendas:so_detail', args=[self.so.pk]))
-        self.assertContains(resp, 'Registrar resultado e faturar')
+        self.assertNotContains(resp, 'Registrar resultado e faturar')
         # Form do acerto → POST cria fatura e redireciona pra ela:
         emcp = self.so.lines.get(kind='emcp')
         resp = self.client.post(
@@ -753,8 +754,14 @@ class VendasGateTests(TestCase):
             self.assertNotContains(tela, reverse('vendas:so_confirm',
                                                  args=[self.so.pk]),
                                    msg_prefix=papel)
-            self.assertContains(tela, reverse('vendas:so_cancel',
-                                              args=[self.so.pk]))
+            # Cancelar também saiu (dono, 2026-08-18): cancelar venda é
+            # operação de PLATAFORMA, não do cliente. A rota fica.
+            self.assertNotContains(tela, reverse('vendas:so_cancel',
+                                                 args=[self.so.pk]),
+                                   msg_prefix=papel)
+            self.assertNotContains(tela, reverse('vendas:settlement_new',
+                                                 args=[self.so.pk]),
+                                   msg_prefix=papel)
 
     def test_gerente_confirma_e_cancela(self):
         """Ciclo comercial inteiro pela ROTA (o botão saiu da tela em
@@ -783,7 +790,6 @@ class VendasGateTests(TestCase):
                                     args=[self.so.pk])).status_code, 403)
         detail = self.client.get(reverse('vendas:so_detail',
                                          args=[self.so.pk]))
-        self.assertFalse(detail.context['can_settle'])
         self.assertNotContains(detail, reverse('vendas:settlement_new',
                                                args=[self.so.pk]))
 
@@ -2097,3 +2103,70 @@ class CompradorPagamentoTests(TestCase):
         self.assertContains(tela, 'US$ 21.00')
         self.assertContains(tela, 'name="receipt"')
         self.assertContains(tela, reverse('compras:pagar', args=[self.so.pk]))
+
+
+class DeclaracaoAduaneiraTests(TestCase):
+    """O valor declarado no documento de embarque (dono, 2026-08-18).
+
+    A transportadora EXIGE descrição e valor; campo em branco trava o pacote
+    ou faz alguém que não conhece a carga reavaliá-la. O valor é FICTÍCIO e
+    assumido como tal — é sucata para descarte, e o valor comercial é
+    justamente o que não pode viajar impresso na caixa.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.brand = _setup('vd-adu')
+        User = get_user_model()
+        cls.user = User.objects.create_user('vd_adu')
+
+    def setUp(self):
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+
+    def _so(self, sufixo='A'):
+        with company_scope(self.company):
+            lot = Lot.open_for_company(self.company, self.user, 'a' + sufixo,
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='AD' + sufixo, quantity=4,
+                brand=self.brand, chip_type='eMMC', company=self.company,
+                price_kind='emmc', price_gen='',
+                price_tier_value=Decimal('16'), price_tier_unit='GB')
+            return services.create_draft_for_lot(lot, self.user)
+
+    def test_valor_fica_na_faixa_pedida(self):
+        for i in range(12):
+            valor = services.declared_value_usd(self._so(f'F{i}'))
+            self.assertGreaterEqual(valor, 200)
+            self.assertLessEqual(valor, 290)
+
+    def test_MESMO_documento_MESMO_valor_sempre(self):
+        """⚠ O ponto todo: imprimir duas vezes não pode dar valor diferente —
+        divergência de valor declarado é o que trava pacote na alfândega."""
+        so = self._so('E')
+        valores = {services.declared_value_usd(so) for _ in range(20)}
+        self.assertEqual(len(valores), 1)
+
+    def test_documentos_diferentes_valores_diferentes(self):
+        """Não é constante: cada OV tem o seu (é o "aleatório" do pedido)."""
+        valores = {services.declared_value_usd(self._so(f'D{i}'))
+                   for i in range(15)}
+        self.assertGreater(len(valores), 3)
+
+    def test_o_documento_carrega_descricao_e_valor(self):
+        with company_scope(self.company):
+            doc = services.manager_document(self._so('M'))
+        self.assertEqual(doc['shipment_desc'], 'PCB CHIPS FOR DISPOSAL')
+        self.assertIn(doc['shipment_value'], range(200, 291))
+
+    def test_o_PDF_imprime_os_dois(self):
+        _sem_compressao(self)
+        with company_scope(self.company):
+            doc = services.manager_document(self._so('P'))
+            from vendas.pdf import render_so_manager_pdf
+            pdf = render_so_manager_pdf(doc)
+        texto = b' '.join(_textos_do_pdf(pdf))
+        self.assertIn(b'PCB CHIPS FOR DISPOSAL', texto)
+        self.assertIn(f"USD {doc['shipment_value']}".encode(), texto)
+        self.assertIn(b'Declared value', texto)

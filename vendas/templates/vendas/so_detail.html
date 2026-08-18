@@ -180,25 +180,19 @@
     </div>
   </div>
 
-  {# ── Ações ───────────────────────────────────────────────────── #}
-  <div class="actions">
-    {% comment %}
-      Confirmar a ordem saiu da tela da EMPRESA em 2026-08-18 (dono): quem
-      confirma é o COMPRADOR, na tela dele — que ainda não existe. A rota
-      `vendas:so_confirm` e o `services.confirm()` seguem VIVOS de propósito:
-      são o que a tela do comprador vai chamar. Enquanto ela não existe,
-      confirmar é operação de plataforma.
-    {% endcomment %}
-    {% if can_settle %}
-    <a href="{% url 'vendas:settlement_new' so.pk %}" class="uib uib--success">{% trans "Registrar resultado e faturar" %}</a>
-    {% endif %}
-    {% if so.status != 'cancelled' %}
-    <form method="post" action="{% url 'vendas:so_cancel' so.pk %}" style="margin:0;"
-          onsubmit="return confirm('{% trans "Cancelar esta ordem? (auditado; o lote poderá ser reaberto)" %}');">
-      {% csrf_token %}
-      <button type="submit" class="uib uib--danger">{% trans "Cancelar" %}</button>
-    </form>
-    {% endif %}
-  </div>
+  {% comment %}
+    ── A tela da EMPRESA não tem AÇÃO nenhuma sobre a ordem (dono, 2026-08-18).
+    Saíram, nesta ordem:
+
+    · CONFIRMAR — quem confirma é o comprador (e hoje a OV já congela sozinha
+      no fechamento do lote);
+    · REGISTRAR RESULTADO E FATURAR — "ele não registra resultado nenhum, isso
+      é tarefa do comprador": quem confere o que chegou é quem recebeu a caixa;
+    · CANCELAR — cancelar venda é operação de plataforma, não do cliente.
+
+    As rotas (`so_confirm`, `settlement_new`, `so_cancel`) e os serviços seguem
+    VIVOS de propósito: são o que a tela do comprador e o admin chamam. O que
+    saiu foi o BOTÃO daqui — esta tela é de LEITURA e do PDF.
+  {% endcomment %}
 </div>
 {% endblock %}

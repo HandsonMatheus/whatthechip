@@ -416,6 +416,32 @@ def company_logo_bytes(company):
         return None
 
 
+#: Declaração aduaneira do embarque (dono, 2026-08-18). A transportadora EXIGE
+#: descrição e valor; sem eles o pacote trava ou é reavaliado por quem não
+#: conhece a carga. Texto FIXO e canônico — nunca traduz, é o que a DHL lê.
+SHIPMENT_DESCRIPTION = 'PCB CHIPS FOR DISPOSAL'
+SHIPMENT_VALUE_MIN, SHIPMENT_VALUE_MAX = 200, 290
+
+
+def declared_value_usd(so) -> int:
+    """Valor declarado do embarque, em US$ inteiros entre 200 e 290.
+
+    ⚠ **Fictício e assumido como tal** (dono): é sucata para descarte, o valor
+    aduaneiro não é o valor comercial da carga — e o comercial é justamente o
+    que não pode viajar impresso na caixa.
+
+    "Aleatório", mas **estável por documento**: sai de um hash do código da OV,
+    não de `random`. Se o gerente imprimir duas vezes e sair valor diferente,
+    o papel que já foi para a transportadora deixa de bater com o segundo — e
+    divergência de valor declarado é exatamente o que trava um pacote na
+    alfândega. Mesmo documento, mesmo número, sempre.
+    """
+    import hashlib
+    semente = hashlib.md5((so.code or str(so.pk)).encode()).hexdigest()
+    faixa = SHIPMENT_VALUE_MAX - SHIPMENT_VALUE_MIN + 1
+    return SHIPMENT_VALUE_MIN + int(semente[:8], 16) % faixa
+
+
 def manager_document(so, unmasked=False, with_prices=False):
     """Tudo que o PDF do gerente desenha, pronto — sem uma linha de dinheiro.
 
@@ -433,6 +459,10 @@ def manager_document(so, unmasked=False, with_prices=False):
         'ship_from': ship_from(so.company if so.company_id else None),
         'ship_to': ship_to(so.buyer),
         'company_logo': company_logo_bytes(so.company if so.company_id else None),
+        # Declaração aduaneira — exigência da transportadora. Fictícia e
+        # SEMPRE preenchida: campo em branco é o que faz o pacote parar.
+        'shipment_desc': SHIPMENT_DESCRIPTION,
+        'shipment_value': declared_value_usd(so),
         'so_code': so.code,
         'lot_code': lot.code,
         'status': so.status,
