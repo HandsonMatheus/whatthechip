@@ -2529,3 +2529,7 @@ msgstr "未关联公司"
 #: estoque/views.py
 msgid "Lote fechado, mas a ORDEM DE VENDA não foi criada. O fechamento e o estoque estão salvos — avise o suporte antes de embarcar."
 msgstr "批次已关闭，但未创建销售订单。关闭和库存已保存 — 发货前请通知支持人员。"
+
+#: estoque/views.py
+msgid "Ordem de Venda criada, mas o preço NÃO foi congelado: %(por)s"
+msgstr "销售订单已创建，但价格未冻结：%(por)s"

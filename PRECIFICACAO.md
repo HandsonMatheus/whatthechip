@@ -1450,6 +1450,68 @@ lugar entrou "nenhum texto desenhado tem cara de dinheiro" (regex de 2 casas
 decimais sobre os operadores `(…) Tj`, que não confunde valor com coordenada
 do stream). i18n: 8 msgids novos nos 3 catálogos + `.mo` recompilado.
 
+### F11.6 — O RESULTADO NA MÃO DO COMPRADOR (plano fechado 2026-08-18)
+
+O acerto do F11.4 existe inteiro (`Settlement`/`SettlementLine`/`Invoice` +
+`settle_and_invoice`) — o que muda é **a mão que opera**: sai do admin e vai
+para o COMPRADOR, numa superfície nova em `/partner/`. Não é modelo novo, é
+tela nova sobre modelo existente.
+
+**Decisões do dono (2026-08-18, todas perguntadas):**
+
+1. **O ¥ congela no FECHAMENTO do lote**, automático — a OV nasce confirmada.
+   Motivo que fechou a decisão: o PDF que viaja com a caixa imprime preço, e
+   com a OV em rascunho esse preço é VIVO — o papel podia não bater com a
+   fatura. ⚠ `confirm()` é tudo-ou-nada (exige TODAS as linhas cotadas), então
+   **lote com categoria sem preço no grid fecha do mesmo jeito e a OV fica em
+   RASCUNHO**, com aviso na tela dizendo quantas faltam. Quem resolve é o
+   COMPRADOR, na tela de compras dele: o grid incompleto é problema dele, e o
+   laço fecha na mão certa. **Nunca** bloquear o fechamento do lote por preço:
+   o gerente não controla a tabela do comprador.
+2. **Linha do resultado = linha da OV**: agrupa por MARCA, e dentro dela por
+   capacidade (Samsung → eMMC 32GB, 64GB…; depois SanDisk → …). Fundir por
+   capacidade seria mais bonito mas cria dedução AMBÍGUA em lote PCB, onde o
+   preço é por marca ("recusei 10 de eMMC 64GB" não diz de qual marca sai o
+   desconto). Separação sempre visualmente clara quando não são fundidas.
+3. **Isolamento: laço por empresa.** O Wu Quan é comprador de PLATAFORMA
+   (`company IS NULL`) e lê OVs de VÁRIAS empresas — caso que o
+   `partner_required` nunca cobriu (ele roda sob `company_scope(buyer.company)`,
+   que para plataforma é escopo NENHUM → RLS devolve zero linhas em silêncio).
+   A tela roda **uma consulta por empresa dentro do `company_scope` dela** e
+   junta. Mais lento, mas **o Postgres continua sendo a barreira**: um
+   `filter(buyer=...)` esquecido não vaza nada. Trocar por GUC `app.buyer_id`
+   quando N de empresas crescer — nunca por `platform_scope`, que desliga o
+   filtro do banco e deixa a proteção só no Python.
+4. **Reabrir lote é afordância de TESTE, não produto** (dono: "NÃO DEVE SER
+   POSSÍVEL REABRIR UM LOTE, só é possível agora porque estamos em fase de
+   testes"). Logo: a regra atual (OV confirmada BLOQUEIA a reabertura) fica
+   como está — não vale investir em suavizar o que vai sumir.
+5. **Escopo do MVP:** lista + resultado + **despacho** (transportadora, datas,
+   rastreio) + **pagamentos visíveis** ao comprador + **observação/motivo da
+   recusa**.
+
+⚠ **Máscara:** `is_unmasked` é `user.is_superuser`, e o comprador NÃO é
+superuser — qualquer helper mascarado reusado aqui entrega `C-014` no lugar de
+`eMMC 32GB`. A superfície do comprador usa rótulo REAL (ele compra chip; o grid
+de preço dele já é por tipo e capacidade). Não reusar `annotate_labels(...,
+unmasked=False)` nesta superfície.
+
+**Fases (1–3 = o MVP ponta a ponta; 4–5 = os extras pedidos):**
+
+- **F1 — congelamento no fechamento.** `lot_close` tenta `confirm()` logo após
+  criar a OV; `ValidationError` de pendência deixa a OV em rascunho e avisa na
+  tela (mesmo portão de silêncio do incidente do K9). Pequena, e torna o preço
+  do PDF confiável.
+- **F2 — `/partner/compras/`**: lista das OVs de todos os clientes (laço por
+  empresa), com lote, cliente, chips, ¥, US$ e status derivado.
+- **F3 — tela do resultado**: cabeçalho + tabela marca→capacidade com input de
+  RECUSADOS por linha; aprovados e ¥ resultado calculados; observação;
+  "Fechar resultado" chama `settle_and_invoice()`.
+- **F4 — despacho**: transportadora, datas de envio/recebimento e rastreio
+  (dado NOVO — hoje não existe nada disso no lote).
+- **F5 — pagamentos**: saldo a pagar visível ao comprador (leitura; quem
+  registra pagamento segue sendo a plataforma).
+
 **RUNBOOK DO DEPLOY F11 EM PROD (o dono roda; comandos UM POR VEZ):**
 
 0. **Pré (bloqueantes):** (a) senha do Postgres ROTACIONADA confirmada; (b)

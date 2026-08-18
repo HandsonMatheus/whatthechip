@@ -244,8 +244,26 @@ class LotCloseReopenTests(TestCase):
         self.lot = Lot.open_for_company(self.company, self.mgr, 'VD hook', origin='phone')
         _entries(self.lot, self.brand, com_emcp=False)
 
-    def test_fechar_cria_draft_e_reabrir_cancela(self):
+    def test_fechar_cria_ov_congelada(self):
+        """RE-ESPECIFICADO (F11.6/F1, 2026-08-18): fechar não cria mais
+        RASCUNHO — a OV nasce CONFIRMADA, com ¥ e taxa congelados. O caminho
+        do rascunho sobrevive só quando falta preço no grid (teste abaixo)."""
         self.client.force_login(self.mgr)
+        self.client.post(reverse('estoque:lot_close', args=[self.lot.pk]),
+                         {'confirm_code': self.lot.code})
+        so = SalesOrder.all_companies.get(lot=self.lot)
+        self.assertEqual(so.status, STATUS_CONFIRMED)
+        self.assertIsNotNone(so.total_rmb)
+
+    def test_lote_sem_preco_nasce_rascunho_e_reabrir_cancela(self):
+        """O único caminho que ainda nasce VIVO: categoria fora do grid do
+        comprador. Aí o rascunho é cancelado ao reabrir, como sempre foi."""
+        self.client.force_login(self.mgr)
+        InventoryEntry.all_companies.create(       # sem linha no grid
+            lot=self.lot, part_number='HOOKSEMPRECO', quantity=3,
+            brand=self.brand, chip_type='UFS', company=self.company,
+            price_kind='ufs', price_gen='',
+            price_tier_value=Decimal('512'), price_tier_unit='GB')
         self.client.post(reverse('estoque:lot_close', args=[self.lot.pk]),
                          {'confirm_code': self.lot.code})
         so = SalesOrder.all_companies.get(lot=self.lot)
@@ -301,8 +319,11 @@ class LotCloseReopenTests(TestCase):
         self.client.post(reverse('estoque:lot_close', args=[self.lot.pk]),
                          {'confirm_code': self.lot.code})
         so = SalesOrder.all_companies.get(lot=self.lot)
-        with company_scope(self.company):
-            services.confirm(so, self.adm)
+        # RE-ESPECIFICADO (F11.6/F1): o `confirm()` manual saiu — fechar já
+        # congela. A regra provada aqui é a MESMA e ficou mais forte: agora
+        # TODA reabertura de lote cotado esbarra na OV confirmada (o dono:
+        # "não deve ser possível reabrir um lote", 2026-08-18).
+        self.assertEqual(so.status, STATUS_CONFIRMED)
         resp = self.client.post(
             reverse('estoque:lot_reopen', args=[self.lot.pk]), follow=True)
         self.assertContains(resp, 'CONFIRMADA')             # aviso ao gerente
@@ -466,6 +487,87 @@ class BackfillSalesOrdersTests(TestCase):
         call_command('backfill_sales_orders', company='vd-back',
                      commit=True, stdout=out)
         self.assertEqual(SalesOrder.all_companies.filter(lot=lot).count(), 1)
+
+
+class CongelaNoFechamentoTests(TestCase):
+    """F11.6/F1 (dono, 2026-08-18): o ¥ para de andar no FECHAMENTO do lote.
+
+    A OV nasce CONFIRMADA — motivo que fechou a decisão: o PDF que viaja com a
+    caixa imprime preço, e com a OV em rascunho esse preço é VIVO; o papel
+    podia não bater com a fatura.
+
+    ⚠ `confirm()` é tudo-ou-nada. Categoria sem preço no grid do comprador
+    **não pode travar o fechamento** (o gerente não controla a tabela dele):
+    o lote fecha, a OV fica em RASCUNHO e a tela avisa o que falta. Quem
+    completa é o COMPRADOR, na tela dele (F11.6/F2).
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.brand = _setup('vd-frz')
+        User = get_user_model()
+        cls.gerente = User.objects.create_user('vd_frz_mgr', password='x')
+        Membership.objects.create(user=cls.gerente, company=cls.company,
+                                  role='manager')
+
+    def setUp(self):
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        from pricing.models import FxRate
+        from datetime import date
+        FxRate.objects.get_or_create(date=date.today(),
+                                     defaults={'rate': Decimal('0.1400'),
+                                               'source': 'teste'})
+        self.client.force_login(self.gerente)
+
+    def _fechar(self, lot):
+        return self.client.post(reverse('estoque:lot_close', args=[lot.pk]),
+                                {'confirm_code': lot.code}, follow=True)
+
+    def test_lote_cotado_nasce_com_a_ov_congelada(self):
+        lot = Lot.open_for_company(self.company, self.gerente, 'ok',
+                                   origin='phone')
+        _entries(lot, self.brand)                 # eMMC 16GB + eMCP 64GB, ambos no grid
+        self._fechar(lot)
+        so = SalesOrder.all_companies.get(lot=lot)
+        self.assertEqual(so.status, STATUS_CONFIRMED)
+        self.assertEqual(so.fx_usd_rate, Decimal('0.1400'))   # taxa DO LOTE
+        self.assertIsNotNone(so.total_rmb)
+        self.assertTrue(all(l.unit_rmb is not None for l in so.lines.all()))
+
+    def test_categoria_sem_preco_nao_trava_o_fechamento(self):
+        """O caso real: K9 sem `k9_rmb_each`, SSD sem taxa, categoria nova."""
+        lot = Lot.open_for_company(self.company, self.gerente, 'sem-preco',
+                                   origin='phone')
+        _entries(lot, self.brand, com_emcp=False)
+        InventoryEntry.all_companies.create(       # sem linha no grid
+            lot=lot, part_number='SEMPRECO1', quantity=9, brand=self.brand,
+            chip_type='UFS', company=self.company,
+            price_kind='ufs', price_gen='',
+            price_tier_value=Decimal('256'), price_tier_unit='GB')
+        resp = self._fechar(lot)
+        lot.refresh_from_db()
+        self.assertEqual(lot.status, Lot.STATUS_CLOSED)     # fechou mesmo assim
+        so = SalesOrder.all_companies.get(lot=lot)
+        self.assertEqual(so.status, STATUS_DRAFT)           # e ficou VIVA
+        self.assertIsNone(so.total_rmb)
+        avisos = ' '.join(m.message for m in resp.context['messages'])
+        self.assertIn('congelado', avisos)                  # a tela diz por quê
+
+    def test_pdf_do_admin_sai_com_valor_congelado(self):
+        """A razão da decisão, travada em teste: o documento que viaja com a
+        caixa não pode imprimir preço que ainda anda."""
+        lot = Lot.open_for_company(self.company, self.gerente, 'pdf',
+                                   origin='phone')
+        _entries(lot, self.brand)
+        self._fechar(lot)
+        so = SalesOrder.all_companies.get(lot=lot)
+        doc = services.manager_document(so, with_prices=True)
+        self.assertEqual(doc['status'], 'confirmed')
+        congelado = {l.pk: l.unit_rmb for l in so.lines.all()}
+        self.assertEqual(doc['total_rmb'],
+                         sum(u * l.quantity for l in so.lines.all()
+                             for u in [congelado[l.pk]]))
 
 
 class K9NoFechamentoTests(TestCase):

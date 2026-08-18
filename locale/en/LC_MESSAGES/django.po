@@ -2664,3 +2664,7 @@ msgstr "no company link"
 #: estoque/views.py
 msgid "Lote fechado, mas a ORDEM DE VENDA não foi criada. O fechamento e o estoque estão salvos — avise o suporte antes de embarcar."
 msgstr "Lot closed, but the SALES ORDER was not created. The closing and the inventory are saved — tell support before shipping."
+
+#: estoque/views.py
+msgid "Ordem de Venda criada, mas o preço NÃO foi congelado: %(por)s"
+msgstr "Sales Order created, but the price was NOT frozen: %(por)s"

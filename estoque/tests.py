@@ -1984,7 +1984,6 @@ class FxLockOnCloseTests(TestCase):
     def test_ov_herda_a_taxa_travada_do_lote(self):
         from datetime import date
         from pricing.models import Buyer, FxRate, Price, PriceList
-        from vendas.services import confirm
         from vendas.models import SalesOrder
         _scope(self, self.company)
         try:
@@ -2009,10 +2008,12 @@ class FxLockOnCloseTests(TestCase):
                               rate=Decimal('0.1600'), source='t2')
         _scope(self, self.company)
         try:
+            # RE-ESPECIFICADO (F11.6/F1, 2026-08-18): o `confirm()` manual saiu
+            # — a OV já NASCE congelada no fechamento. O que este teste prova
+            # continua o mesmo: a taxa que congela é a TRAVADA no lote.
             so = SalesOrder.all_companies.get(lot=self.lot)
-            confirm(so, self.mgr)
-            so.refresh_from_db()
-            # …mas a OV usa a TRAVADA do lote (não a vigente 0.16):
+            self.assertEqual(so.status, 'confirmed')
+            # …e a OV usa a TRAVADA do lote (não a vigente 0.16):
             self.assertEqual(so.fx_usd_rate, Decimal('0.1478'))
             # ¥10 × 2 un = ¥20 → US$ 2.96 pela taxa travada
             self.assertEqual(so.total_usd, Decimal('2.96'))
