@@ -934,9 +934,9 @@ class PdfConferenciaGerenteTests(TestCase):
         # (outro PDF) — glifo só entra na fonte se for usado.
         fora = {'unit_rmb', 'total_rmb', 'total_usd',
                 'confirmed', 'cancelled',
-                'result', 'invoice', 'buyer', 'received', 'settled', 'sent',
-                'rejected', 'accepted', 'brand', 'order_val', 'final_val',
-                'notes'}
+                'result', 'invoice', 'received', 'settled', 'sent',
+                'rejected', 'accepted', 'brand', 'notes',
+                'expected', 'final', 'difference'}
         for ch in set(''.join(zh for k, (_en, zh) in _L.items()
                               if k not in fora)):
             if ch.isspace() or ch.isascii():
@@ -1677,18 +1677,42 @@ class CompradorValorFechadoTests(TestCase):
 
     # ── a tela do resultado ─────────────────────────────────────────────────
 
+    def test_conferencia_so_abre_DEPOIS_do_recebimento(self):
+        """Dono, 2026-08-18: "ele deve acusar como recebido primeiro para ir
+        pra parte de resultado". Não se confere caixa que não chegou."""
+        so = self._rascunho('R1')
+        self._fecha_lote(so)
+        with company_scope(self.emp):
+            services.confirm(so, self.parceiro, unmasked=True)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertNotContains(tela, 'name="rej_')            # sem campos
+        self.assertNotContains(tela, 'id="cmp-modal"')      # sem botão/modal
+        self.assertContains(tela, reverse('compras:recebido', args=[so.pk]))
+        self.assertContains(tela, 'Marque o recebimento')     # e diz por quê
+
+        self.client.post(reverse('compras:recebido', args=[so.pk]))
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'name="rej_')               # agora sim
+        self.assertContains(tela, 'id="cmp-modal"')
+
     def test_tabela_tem_linha_de_totais_e_os_dados_do_calculo_ao_vivo(self):
         """Totais (dono, 2026-08-18) e o contrato de que o JS depende: cada
-        campo de recusa carrega a quantidade e o ¥ unitário da linha."""
+        campo de recusa carrega a quantidade e o ¥ unitário da linha, e o
+        formulário carrega a taxa e o valor esperado (o topo e o modal saem
+        daí)."""
         so = self._rascunho('T1')
         self._fecha_lote(so)
         with company_scope(self.emp):
             services.confirm(so, self.parceiro, unmasked=True)
+            services.mark_received(so)
         tela = self.client.get(reverse('compras:detail', args=[so.pk]))
         self.assertContains(tela, 'cmp-t-pagar')          # ¥ a pagar ao vivo
         self.assertContains(tela, 'cmp-t-aceitos')        # chips aceitos
         self.assertContains(tela, 'data-qty="10"')        # o que o JS lê
         self.assertContains(tela, 'data-unit="15.00"')
+        self.assertContains(tela, 'data-esperado="150.00"')   # topo + modal
+        self.assertContains(tela, 'cmp-h-rmb')                # o valor do topo
+        self.assertContains(tela, 'cmp-modal')                # a confirmação
 
     def test_aba_de_chips_lista_PN_spec_caixa_e_preco(self):
         """"Seria aí onde o comprador olha detalhe por detalhe" (dono)."""
@@ -1888,6 +1912,54 @@ class CompradorEtapasEResultadoTests(TestCase):
         for pedaco in (b'Sent', b'Rejected', b'Accepted'):
             self.assertIn(pedaco, texto)
         self.assertIn(b'quatro queimados', texto)       # o motivo da recusa
+        # ESPERADO × FINAL × DIFERENÇA, a divisão que o dono pediu:
+        for pedaco in (b'Expected', b'Final', b'Difference'):
+            self.assertIn(pedaco, texto)
+        self.assertIn(b'150.00', texto)                 # esperado (10 × \xa515)
+        self.assertIn(b'90.00', texto)                  # final (6 × \xa515)
+
+    def test_pdf_do_resultado_nao_diz_QUEM_e_o_comprador(self):
+        """Sigilo de negócio (dono, 2026-08-18): o documento vai pro CLIENTE,
+        e de quem o WhatTheChip compra não é da conta dele."""
+        _sem_compressao(self)
+        so = self._ov('S9')
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        texto = b' '.join(_textos_do_pdf(self.client.get(
+            reverse('compras:resultado_pdf', args=[so.pk])).content))
+        self.assertNotIn(self.buyer.name.encode(), texto)
+        self.assertNotIn(b'Buyer', texto)
+        self.assertIn(self.emp.name.encode(), texto)    # o CLIENTE, esse fica
+
+    def test_pdf_do_resultado_carimba_o_logo_do_CLIENTE(self):
+        """Dono, 2026-08-18: o relatório sai com a marca de quem embarcou."""
+        from io import BytesIO
+        from PIL import Image
+        from tenancy.models import CompanyLogo
+        buf = BytesIO()
+        Image.new('RGB', (60, 20), '#0f62fe').save(buf, format='PNG')
+        CompanyLogo.objects.update_or_create(company=self.emp,
+                                             defaults={'data': buf.getvalue()})
+        self.emp.logo_mime = 'image/png'
+        self.emp.save(update_fields=['logo_mime'])
+        so = self._ov('S11')
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        with company_scope(self.emp):
+            doc = services.result_document(
+                so, Invoice.all_companies.get(order=so))
+        self.assertIsNotNone(doc['company_logo'])
+        pdf = self.client.get(reverse('compras:resultado_pdf',
+                                      args=[so.pk])).content
+        # Dois XObjects de imagem: o do WhatTheChip e o do cliente.
+        self.assertGreaterEqual(pdf.count(b'/Subtype /Image'), 2)
+
+    def test_fechar_o_resultado_manda_pro_PDF(self):
+        """É o documento que ele manda pro cliente, e a hora é agora."""
+        so = self._ov('S10')
+        resp = self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(resp['Location'].endswith('?pdf=1'))
+        tela = self.client.get(resp['Location'])
+        self.assertContains(tela, 'cmp-pdf-link')
 
     def test_pdf_do_resultado_so_existe_depois_de_fechado(self):
         so = self._ov('S7')

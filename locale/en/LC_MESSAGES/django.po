@@ -3066,3 +3066,55 @@ msgstr "View"
 #. vendas/ (F11.6 — glossário)
 msgid "(aposentada)"
 msgstr "(retired)"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "Aprovados"
+msgstr "Approved"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid ""
+"Confira o que foi lançado antes de gravar. Este é o número final da compra —"
+" o pagamento passa a correr sobre ele."
+msgstr ""
+"Check what you entered before saving. This is the final number for this "
+"purchase — payment runs on it from here."
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "Depois de fechar, os números não podem mais ser alterados."
+msgstr "Once closed, these numbers can no longer be changed."
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "Esperado"
+msgstr "Expected"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid ""
+"Marque o recebimento acima para começar a conferência — não se confere caixa"
+" que ainda não chegou."
+msgstr ""
+"Mark the delivery above to start checking — you cannot check a box that has "
+"not arrived."
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid ""
+"Nenhuma recusa lançada — o lote inteiro será aprovado pelo valor declarado. "
+"Depois de fechar, os números não podem mais ser alterados."
+msgstr ""
+"No rejections entered — the whole lot will be approved at the stated value. "
+"Once closed, these numbers can no longer be changed."
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "Revisar lançamentos"
+msgstr "Review entries"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "esperado"
+msgstr "expected"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "nenhum"
+msgstr "none"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "sem acerto"
+msgstr "no adjustment"

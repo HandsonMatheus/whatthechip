@@ -196,15 +196,15 @@ _L = {
     # ── Documento do RESULTADO (dono, 2026-08-18) ──────────────────────────
     'result':     ('Purchase result',      '採購結果'),
     'invoice':    ('Invoice',              '發票'),
-    'buyer':      ('Buyer',                '買方'),
+    'expected':   ('Expected',             '預期'),
+    'final':      ('Final',                '最終'),
+    'difference': ('Difference',           '差額'),
     'received':   ('Box received on',      '收貨日期'),
     'settled':    ('Result closed on',     '結果確認日期'),
     'sent':       ('Sent',                 '寄出'),
     'rejected':   ('Rejected',             '拒收'),
     'accepted':   ('Accepted',             '接收'),
     'brand':      ('Brand',                '品牌'),
-    'order_val':  ('Order value',          '訂單金額'),
-    'final_val':  ('Final value',          '最終金額'),
     'notes':      ('Notes',                '備註'),
 }
 
@@ -598,26 +598,26 @@ def render_result_pdf(doc: dict) -> bytes:
     story += [Spacer(0, 4), P(_t('result'), st_sub)]
 
     # ── Quem e quando ──────────────────────────────────────────────────────
+    # ⚠ SEM o nome do comprador: este documento vai para o cliente, e de quem
+    # o WhatTheChip compra é sigilo de negócio (dono, 2026-08-18).
     meta = [
         (_t('ship_from'), doc.get('company') or '—'),
-        (_t('buyer'), doc.get('buyer') or '—'),
         (_t('closed'), _fmt_dt(doc.get('closed_at'))),
         (_t('received'), _fmt_dt(doc.get('received_at'))),
         (_t('settled'), _fmt_dt(doc.get('settled_at'))),
         (_t('fx'), (f"1 ¥ = US$ {doc['fx_rate']}"
                     if doc.get('fx_rate') is not None else '—')),
     ]
-    story += [Spacer(0, 11)]
-    story += [_limpa(Table(
-        [[P(r, st_cap) for r, _v in meta[:3]],
-         [P(v, st_tdb) for _r, v in meta[:3]],
-         [P('', st_cap)] * 3,
-         [P(r, st_cap) for r, _v in meta[3:]],
-         [P(v, st_tdb) for _r, v in meta[3:]]],
-        colWidths=[0.34 * avail, 0.33 * avail, 0.33 * avail]),
-        [('BOTTOMPADDING', (0, 0), (-1, 0), 1),
-         ('BOTTOMPADDING', (0, 1), (-1, 1), 6),
-         ('BOTTOMPADDING', (0, 3), (-1, 3), 1)])]
+    def _meta_linha(itens):
+        largura = avail / max(1, len(itens))
+        return _limpa(Table(
+            [[P(r, st_cap) for r, _v in itens],
+             [P(v, st_tdb) for _r, v in itens]],
+            colWidths=[largura] * len(itens)),
+            [('BOTTOMPADDING', (0, 0), (-1, 0), 1),
+             ('BOTTOMPADDING', (0, 1), (-1, 1), 6)])
+
+    story += [Spacer(0, 11), _meta_linha(meta[:3]), _meta_linha(meta[3:])]
 
     # ── A tabela do resultado ──────────────────────────────────────────────
     def _grid(cabecalho, corpo, widths, alinhar_a_partir_de=1):
@@ -658,19 +658,40 @@ def render_result_pdf(doc: dict) -> bytes:
          0.11 * avail, 0.11 * avail, 0.12 * avail],
         alinhar_a_partir_de=3))
 
-    # ── O valor final, ¥ e US$ com o MESMO peso ────────────────────────────
-    story += [Spacer(0, 13)]
-    story += [_limpa(Table(
-        [[P(_t('order_val'), st_cap), P(_t('final_val'), st_cap)],
-         [P(_money(doc.get('order_rmb'), '¥'), st_tdb),
-          P(_money(doc.get('total_rmb'), '¥'), st_val)],
+    # ── ESPERADO × FINAL, com a diferença explícita ────────────────────────
+    # A divisão é o ponto do documento (dono, 2026-08-18): o cliente fechou o
+    # lote esperando um número e recebeu outro — a DIFERENÇA é o que ele vai
+    # querer explicado, e ela não pode ficar para o leitor calcular.
+    def _delta(valor, prefixo):
+        if valor is None:
+            return '—'
+        sinal = '−' if valor < 0 else ('+' if valor > 0 else '')
+        return f'{sinal}{prefixo} {abs(valor)}'
+
+    story += [Spacer(0, 14)]
+    valores = Table(
+        [[P(_t('expected'), st_cap), P(_t('final'), st_cap),
+          P(_t('difference'), st_cap)],
+         [P(_money(doc.get('order_rmb'), '¥'), st_val),
+          P(_money(doc.get('total_rmb'), '¥'), st_val),
+          P(_delta(doc.get('delta_rmb'), '¥'), st_val)],
          [P(_money(doc.get('order_usd'), 'US$'), st_tdb),
-          P(_money(doc.get('total_usd'), 'US$'), st_val)]],
-        colWidths=[0.5 * avail, 0.5 * avail]),
-        [('BOTTOMPADDING', (0, 0), (-1, 0), 2),
-         ('BOTTOMPADDING', (0, 1), (-1, 1), 2),
-         ('LINEABOVE', (0, 0), (-1, 0), 0.8, _INK),
-         ('TOPPADDING', (0, 0), (-1, 0), 5)])]
+          P(_money(doc.get('total_usd'), 'US$'), st_tdb),
+          P(_delta(doc.get('delta_usd'), 'US$'), st_tdb)]],
+        colWidths=[0.34 * avail, 0.33 * avail, 0.33 * avail])
+    valores.setStyle(TableStyle([
+        ('BOX', (0, 0), (-1, -1), 0.8, _INK),
+        ('LINEAFTER', (0, 0), (-2, -1), 0.4, _LINE),
+        ('BACKGROUND', (1, 0), (1, -1), _ZEBRA),
+        ('LEFTPADDING', (0, 0), (-1, -1), 9),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 9),
+        ('TOPPADDING', (0, 0), (-1, 0), 7),
+        ('TOPPADDING', (0, 1), (-1, -1), 1),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 1),
+        ('BOTTOMPADDING', (0, -1), (-1, -1), 8),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+    ]))
+    story.append(valores)
 
     if doc.get('notes'):
         story += [Spacer(0, 11), P(_t('notes'), st_sec),

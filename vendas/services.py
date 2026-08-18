@@ -544,7 +544,8 @@ def result_document(so, invoice):
         'so_code': so.code,
         'inv_code': invoice.code,
         'company': so.company.name if so.company_id else '',
-        'buyer': so.buyer.name if so.buyer_id else '',
+        # ⚠ O NOME DO COMPRADOR não entra (dono, 2026-08-18): este PDF vai
+        # para o cliente, e de quem o WhatTheChip compra é sigilo de negócio.
         'closed_at': lot.closed_at,
         'received_at': so.received_at,
         'settled_at': acerto.created_at,
@@ -557,6 +558,12 @@ def result_document(so, invoice):
         'sent': env, 'rejected': rej, 'accepted': ace,
         'order_rmb': so.total_rmb, 'order_usd': so.total_usd,
         'total_rmb': invoice.total_rmb, 'total_usd': invoice.total_usd,
+        # ESPERADO × FINAL, já subtraído (dono, 2026-08-18): a diferença é a
+        # informação do documento — é ela que o cliente vai querer explicada.
+        'delta_rmb': (invoice.total_rmb - so.total_rmb
+                      if so.total_rmb is not None else None),
+        'delta_usd': (invoice.total_usd - so.total_usd
+                      if so.total_usd is not None else None),
     }
 
 

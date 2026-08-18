@@ -2897,3 +2897,49 @@ msgstr "查看"
 #. vendas/ (F11.6 — glossário)
 msgid "(aposentada)"
 msgstr "（已停用）"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "Aprovados"
+msgstr "已接收"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid ""
+"Confira o que foi lançado antes de gravar. Este é o número final da compra —"
+" o pagamento passa a correr sobre ele."
+msgstr "保存前请核对已录入的内容。这是本次采购的最终金额——后续付款以此为准。"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "Depois de fechar, os números não podem mais ser alterados."
+msgstr "一经确认，这些数字将无法再更改。"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "Esperado"
+msgstr "预期"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid ""
+"Marque o recebimento acima para começar a conferência — não se confere caixa"
+" que ainda não chegou."
+msgstr "请先在上方标记收货后再开始验收——尚未到货的箱子无法验收。"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid ""
+"Nenhuma recusa lançada — o lote inteiro será aprovado pelo valor declarado. "
+"Depois de fechar, os números não podem mais ser alterados."
+msgstr "未录入任何拒收——整批将按申报金额全部接收。一经确认，这些数字将无法再更改。"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "Revisar lançamentos"
+msgstr "返回修改"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "esperado"
+msgstr "预期"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "nenhum"
+msgstr "无"
+
+#. vendas/ (F11.6 — confirmação do resultado)
+msgid "sem acerto"
+msgstr "无调整"

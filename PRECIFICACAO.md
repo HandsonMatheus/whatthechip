@@ -1623,6 +1623,31 @@ faturada a pagar · D paga em parte (com comprovante). O `semear` original monta
 a demo do zero e se recusa a rodar duas vezes; este ACRESCENTA, para haver o
 que clicar em cada ponto do fluxo sem refazer tudo.
 
+🔒 **A conferência só abre depois do RECEBIMENTO** (dono, 2026-08-18: "ele deve
+acusar como recebido primeiro"). Sem `received_at` não há coluna de recusa nem
+botão de fechar — não se confere caixa que não chegou. A tela diz por quê.
+
+📉 **O topo acompanha o que ele digita:** ¥ e US$ do cabeçalho passam a mostrar
+quanto a compra vale AGORA, e o valor de origem reaparece embaixo como
+"esperado ¥ X (−¥ Y)". Conforto de tela — quem soma é o servidor.
+
+✅ **Confirmação antes de gravar:** o "Fechar resultado" abre um modal com lote,
+enviados, recusados, aprovados, resultado e a diferença contra o esperado. A
+última tela antes de um número virar definitivo tem que MOSTRAR o número. Sem
+recusa nenhuma, o aviso é explícito ("o lote inteiro será aprovado pelo valor
+declarado").
+
+🖨 **Fechou → o PDF abre sozinho** (`?pdf=1` na volta do POST): é o documento que
+o comprador manda pro cliente, e a hora de mandar é aquela. Se o navegador
+bloquear a janela, o botão continua ali — a abertura automática é conveniência,
+não o caminho único.
+
+No PDF do resultado: **ESPERADO × FINAL × DIFERENÇA** em caixa própria (a
+diferença é o que o cliente vai querer explicado, e não pode ficar para ele
+calcular), o **logo do cliente** no topo — e ⚠ **o nome do COMPRADOR saiu**:
+o documento vai para o cliente, e de quem o WhatTheChip compra é sigilo de
+negócio.
+
 🔜 **PRÓXIMO PASSO ACORDADO (dono, 2026-08-18): espelhar a superfície do lado do
 CLIENTE.** Hoje o comprador declara o pagamento e a fatura vira PAGA na hora —
 ninguém confirma que o dinheiro entrou. O cliente precisa de um **"confirmar

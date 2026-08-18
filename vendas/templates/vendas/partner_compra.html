@@ -28,8 +28,13 @@
     <div class="cmp-tot__lbl">{% if estimado %}{% trans "Valor estimado" %}{% else %}{% trans "Valor da ordem" %}{% endif %}</div>
     {% comment %} ¥ e US$ com o MESMO tamanho (dono, 2026-08-18): ele fecha em
        ¥ e paga em US$ — nenhum dos dois é nota de rodapé do outro. {% endcomment %}
-    <div class="cmp-tot__val mono">{% localize off %}{% if estimado %}¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
-    <div class="cmp-tot__val mono">{% localize off %}{% if not estimado and so.total_usd %}US$ {{ so.total_usd }}{% else %}—{% endif %}{% endlocalize %}</div>
+    {% comment %} Os dois números MUDAM enquanto ele digita as recusas (dono,
+       2026-08-18) — o topo tem que dizer quanto esta compra vale AGORA, não
+       quanto valia quando a caixa saiu. O valor de origem reaparece logo
+       abaixo como "esperado", que é a conta que o cliente tinha na cabeça. {% endcomment %}
+    <div class="cmp-tot__val mono" id="cmp-h-rmb">{% localize off %}{% if estimado %}¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
+    <div class="cmp-tot__val mono" id="cmp-h-usd">{% localize off %}{% if not estimado and so.total_usd %}US$ {{ so.total_usd }}{% else %}—{% endif %}{% endlocalize %}</div>
+    <div class="cmp-tot__exp mono" id="cmp-h-exp" hidden></div>
     {% if fx_rate %}
     {% comment %} A taxa é a TRAVADA no fechamento do lote (PLANO_FX fase C):
        o mesmo câmbio honra as duas pontas do negócio. {% endcomment %}
@@ -80,7 +85,8 @@
 
 {% if invoice %}
 <div class="cmp-acoes">
-  <a class="cmp-btn cmp-btn--ghost" href="{% url 'compras:resultado_pdf' so.pk %}" target="_blank">
+  <a class="cmp-btn cmp-btn--ghost" id="cmp-pdf-link"
+     href="{% url 'compras:resultado_pdf' so.pk %}" target="_blank">
     {% trans "Imprimir resultado (PDF)" %}
   </a>
   <span class="cmp-receb__dica">{% trans "Baixe e envie ao cliente." %}</span>
@@ -198,7 +204,17 @@
 </div>
 
 <div id="cmp-pane-resumo">
-<form method="post" action="{% url 'compras:resultado' so.pk %}">
+{% if not pode_acertar and not invoice and so.status == 'confirmed' and not so.received_at %}
+<div class="cmp-nota">{% blocktrans trimmed %}
+  Marque o recebimento acima para começar a conferência — não se confere caixa
+  que ainda não chegou.
+{% endblocktrans %}</div>
+{% endif %}
+<form method="post" action="{% url 'compras:resultado' so.pk %}"
+      id="cmp-form-resultado"
+      data-lote="{{ so.lot.code }}"
+      data-fx="{% localize off %}{{ fx_rate|default:0|unlocalize }}{% endlocalize %}"
+      data-esperado="{% localize off %}{{ so.total_rmb|default:0|unlocalize }}{% endlocalize %}">
 {% csrf_token %}
 <table class="cmp-tab cmp-res" id="cmp-tab-resumo">
   <thead>
@@ -272,10 +288,7 @@
     <span>{% trans "Observação (opcional)" %}</span>
     <textarea name="notes" rows="3" placeholder="{% trans 'Motivo da recusa, número do lacre, o que for útil registrar.' %}"></textarea>
   </label>
-  <button type="submit" class="cmp-btn"
-          onclick="return confirm('{% trans "Fechar o resultado emite a fatura desta compra e não pode ser desfeito por aqui. Confirmar?" %}');">
-    {% trans "Fechar resultado" %}
-  </button>
+  <button type="submit" class="cmp-btn">{% trans "Fechar resultado" %}</button>
 {% endif %}
 </form>
 </div>
@@ -354,6 +367,41 @@
   </tbody>
 </table>
 </div>
+
+{% if pode_acertar %}
+{% comment %} Confirmação do fechamento (dono, 2026-08-18): a última tela antes
+   de um número virar definitivo tem que MOSTRAR o número. Os valores saem do
+   mesmo cálculo ao vivo da tabela — e o servidor recalcula tudo de novo no
+   POST, então isto é conferência, nunca a fonte da conta. {% endcomment %}
+<div class="cmp-modal" id="cmp-modal" hidden>
+  <div class="cmp-modal__cx" role="dialog" aria-modal="true"
+       aria-labelledby="cmp-modal-t">
+    <div class="cmp-modal__top">
+      <h2 id="cmp-modal-t">{% trans "Fechar resultado" %}</h2>
+      <p>{% blocktrans trimmed %}
+        Confira o que foi lançado antes de gravar. Este é o número final da
+        compra — o pagamento passa a correr sobre ele.
+      {% endblocktrans %}</p>
+    </div>
+    <table class="cmp-modal__tab">
+      <tr><td>{% trans "Lote" %}</td><td class="mono" id="cmp-m-lote"></td></tr>
+      <tr><td>{% trans "Enviados" %}</td><td class="mono" id="cmp-m-env"></td></tr>
+      <tr><td>{% trans "Recusados" %}</td><td class="mono" id="cmp-m-rej"></td></tr>
+      <tr><td>{% trans "Aprovados" %}</td><td class="mono" id="cmp-m-ace"></td></tr>
+      <tr><td>{% trans "Resultado" %}</td><td class="mono cmp-m-val" id="cmp-m-res"></td></tr>
+      <tr class="cmp-modal__exp">
+        <td id="cmp-m-esp"></td>
+        <td class="mono" id="cmp-m-delta"></td>
+      </tr>
+    </table>
+    <div class="cmp-modal__av" id="cmp-m-aviso"></div>
+    <div class="cmp-modal__bt">
+      <button type="button" class="cmp-mbtn" id="cmp-m-voltar">{% trans "Revisar lançamentos" %}</button>
+      <button type="button" class="cmp-mbtn cmp-mbtn--ok" id="cmp-m-ok">{% trans "Fechar resultado" %} ✓</button>
+    </div>
+  </div>
+</div>
+{% endif %}
 
 <style>
   .cmp-voltar { color:#0f62fe; text-decoration:none; font-size:13px; font-weight:600; }
@@ -442,10 +490,44 @@
   .cmp-in--w { width:100%; min-width:130px; border-color:#8d8d8d;
                text-align:left; font-size:13px; padding:6px 8px; }
   .cmp-pag__hist { margin-top:18px; }
+  .cmp-tot__exp { font-size:12px; color:#8d8d8d; margin-top:4px; }
+  .cmp-modal { position:fixed; inset:0; background:rgba(22,22,22,.7);
+               display:flex; align-items:center; justify-content:center;
+               padding:20px; z-index:60; }
+  .cmp-modal[hidden] { display:none; }
+  .cmp-modal__cx { background:#fff; max-width:520px; width:100%;
+                   box-shadow:0 12px 40px rgba(0,0,0,.3); }
+  .cmp-modal__top { padding:22px 24px 16px; border-bottom:1px solid #e0e0e0; }
+  .cmp-modal__top h2 { margin:0 0 8px; font-size:22px; font-weight:400; }
+  .cmp-modal__top p { margin:0; font-size:13px; color:#525252; max-width:44ch; }
+  .cmp-modal__tab { width:calc(100% - 48px); margin:20px 24px 0;
+                    border-collapse:collapse; border:1px solid #e0e0e0;
+                    font-size:14px; }
+  .cmp-modal__tab td { padding:11px 14px; border-bottom:1px solid #e0e0e0; }
+  .cmp-modal__tab td:last-child { text-align:right; font-weight:600; }
+  .cmp-modal__tab tr:last-child td { border-bottom:0; }
+  .cmp-m-val { font-size:18px; color:#8e6a00; }
+  .cmp-modal__exp td { font-size:12px; color:#525252; }
+  .cmp-modal__av { margin:16px 24px 0; padding:12px 14px; font-size:13px;
+                   background:#fcf4d6; border-left:3px solid #f1c21b; }
+  .cmp-modal__bt { display:flex; margin-top:20px; }
+  .cmp-mbtn { flex:1; border:0; padding:16px; font-size:14px; cursor:pointer;
+              font-family:inherit; background:#e0e0e0; color:#161616; }
+  .cmp-mbtn--ok { background:#0f62fe; color:#fff; font-weight:600; }
+  .cmp-mbtn--ok:hover { background:#0353e9; }
 </style>
 
 <script>
 (function () {
+  // ── Fechou o resultado? o PDF abre sozinho (dono, 2026-08-18) ───────────
+  // É o documento que ele manda pro cliente, e a hora de mandar é agora. Se o
+  // navegador bloquear a janela, o botão está logo ali — por isso ele não
+  // some nem depende disto.
+  if (window.location.search.indexOf('pdf=1') !== -1) {
+    var lnk = document.getElementById('cmp-pdf-link');
+    if (lnk) { window.open(lnk.href, '_blank'); }
+  }
+
   // ── Abas ────────────────────────────────────────────────────────────────
   var panes = {resumo: document.getElementById('cmp-pane-resumo'),
                chips:  document.getElementById('cmp-pane-chips'),
@@ -470,8 +552,16 @@
   var elPagar = document.getElementById('cmp-t-pagar');
   if (!campos.length || !elPagar) return;
 
+  var form = document.getElementById('cmp-form-resultado');
+  var fx = parseFloat(form && form.dataset.fx) || 0;
+  var esperado = parseFloat(form && form.dataset.esperado) || 0;
+  var hRmb = document.getElementById('cmp-h-rmb');
+  var hUsd = document.getElementById('cmp-h-usd');
+  var hExp = document.getElementById('cmp-h-exp');
+  var estado = {rej: 0, aceitos: 0, enviados: 0, pagar: 0};
+
   function recalcular() {
-    var rej = 0, aceitos = 0, pagar = 0;
+    var rej = 0, aceitos = 0, enviados = 0, pagar = 0;
     campos.forEach(function (i) {
       var qtd = parseInt(i.dataset.qty, 10) || 0;
       var unit = parseFloat(i.dataset.unit) || 0;
@@ -479,15 +569,62 @@
       if (isNaN(r) || r < 0) r = 0;
       if (r > qtd) r = qtd;
       rej += r;
+      enviados += qtd;
       aceitos += (qtd - r);
       pagar += (qtd - r) * unit;
     });
+    estado = {rej: rej, aceitos: aceitos, enviados: enviados, pagar: pagar};
     elRej.textContent = rej;
     elAceitos.textContent = aceitos;
     elPagar.textContent = '¥ ' + pagar.toFixed(2);
+    // O TOPO acompanha: quanto esta compra vale agora (dono, 2026-08-18).
+    if (hRmb) hRmb.textContent = '¥ ' + pagar.toFixed(2);
+    if (hUsd && fx) hUsd.textContent = 'US$ ' + (pagar * fx).toFixed(2);
+    if (hExp) {
+      var difere = esperado && Math.abs(pagar - esperado) >= 0.005;
+      hExp.hidden = !difere;
+      if (difere) {
+        hExp.textContent = '{% trans "esperado" %} ¥ ' + esperado.toFixed(2)
+          + '  (' + (pagar < esperado ? '−' : '+') + '¥ '
+          + Math.abs(pagar - esperado).toFixed(2) + ')';
+      }
+    }
   }
   campos.forEach(function (i) { i.addEventListener('input', recalcular); });
   recalcular();
+
+  // ── Confirmação antes de gravar ─────────────────────────────────────────
+  var modal = document.getElementById('cmp-modal');
+  if (!modal || !form) return;
+  function abrir(e) {
+    e.preventDefault();
+    recalcular();
+    document.getElementById('cmp-m-lote').textContent = form.dataset.lote || '—';
+    document.getElementById('cmp-m-env').textContent = estado.enviados + ' un.';
+    document.getElementById('cmp-m-rej').textContent =
+      estado.rej ? estado.rej + ' un.' : '{% trans "nenhum" %}';
+    document.getElementById('cmp-m-ace').textContent = estado.aceitos + ' un.';
+    document.getElementById('cmp-m-res').textContent = '¥ ' + estado.pagar.toFixed(2);
+    var dif = estado.pagar - esperado;
+    document.getElementById('cmp-m-esp').textContent =
+      '{% trans "Esperado" %} ¥ ' + esperado.toFixed(2);
+    document.getElementById('cmp-m-delta').textContent = Math.abs(dif) < 0.005
+      ? '{% trans "sem acerto" %}'
+      : (dif < 0 ? '−' : '+') + '¥ ' + Math.abs(dif).toFixed(2);
+    document.getElementById('cmp-m-aviso').textContent = estado.rej
+      ? '{% trans "Depois de fechar, os números não podem mais ser alterados." %}'
+      : '{% trans "Nenhuma recusa lançada — o lote inteiro será aprovado pelo valor declarado. Depois de fechar, os números não podem mais ser alterados." %}';
+    modal.hidden = false;
+  }
+  form.addEventListener('submit', abrir);
+  document.getElementById('cmp-m-voltar').addEventListener('click', function () {
+    modal.hidden = true;
+  });
+  document.getElementById('cmp-m-ok').addEventListener('click', function () {
+    modal.hidden = true;
+    form.removeEventListener('submit', abrir);   // agora vai de verdade
+    form.submit();
+  });
 })();
 </script>
 {% endblock %}

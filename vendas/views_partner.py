@@ -36,6 +36,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
@@ -87,8 +88,12 @@ def _detalhe(so):
         'estimado': so.status != STATUS_CONFIRMED,
         'pendencias': pendencias[:12],
         'pendencias_extra': max(0, len(pendencias) - 12),
-        # Só OV CONFIRMADA e ainda sem fatura aceita resultado.
-        'pode_acertar': so.status == STATUS_CONFIRMED and inv is None,
+        # Só OV CONFIRMADA, RECEBIDA e ainda sem fatura aceita resultado
+        # (dono, 2026-08-18: "ele deve acusar como recebido primeiro para ir
+        # pra parte de resultado"). Sem o recebimento a tabela é leitura: não
+        # se confere caixa que ainda não chegou.
+        'pode_acertar': (so.status == STATUS_CONFIRMED and inv is None
+                         and so.received_at is not None),
         # Todo chip do lote, PN a PN — a 2ª aba, onde ele confere detalhe
         # por detalhe (dono, 2026-08-18).
         'chips': services.lot_chips(so),
@@ -179,7 +184,10 @@ def compra_resultado(request, pk):
             messages.error(request, ' '.join(erro.messages))
             return redirect('compras:detail', pk=so.pk)
         messages.success(request, _('Resultado fechado — fatura emitida.'))
-        return redirect('compras:detail', pk=so.pk)
+        # ?pdf=1: a tela abre o PDF do resultado sozinha (dono, 2026-08-18).
+        # É o documento que ele manda pro cliente, e o momento de mandar é
+        # agora — não depois de lembrar que existe um botão.
+        return redirect(f"{reverse('compras:detail', args=[so.pk])}?pdf=1")
 
 
 @partner_required
