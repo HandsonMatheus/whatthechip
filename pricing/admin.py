@@ -9,6 +9,7 @@ mostra auditoria.
 """
 
 from django.contrib import admin
+from django.db.models import Case, IntegerField, Value, When
 
 from .models import (Buyer, CategoryCode, LotPricing, Price,
                      PriceChangeRequest, PriceList, PricingConfig)
@@ -110,15 +111,56 @@ class LotPricingAdmin(PlatformScopedAdmin):
         return False        # nasce só no fechamento do lote
 
 
+class RevisaoFilter(admin.SimpleListFilter):
+    """A fila abre em PENDENTE — o que FALTA fazer —, não em "Todos".
+
+    O admin do Django não tem "valor default" de filtro: o truque é o parâmetro
+    AUSENTE significar pendente e "Todos" virar uma opção explícita. Sem isso a
+    fila mostrava pendente + aprovado + rejeitado misturados, e como o item
+    aprovado continuava à vista dava a impressão de que aprovar não fazia nada
+    (dono, 2026-08-18)."""
+
+    title = 'revisão'
+    parameter_name = 'revisao'
+    TODOS = 'all'
+
+    def lookups(self, request, model_admin):
+        return [(self.TODOS, 'Todos')] + list(PriceChangeRequest.REVIEW_CHOICES)
+
+    def queryset(self, request, queryset):
+        valor = self.value()
+        if valor is None:                       # sem parâmetro = a FILA
+            return queryset.filter(
+                review_status=PriceChangeRequest.REVIEW_PENDING)
+        if valor == self.TODOS:
+            return queryset
+        return queryset.filter(review_status=valor)
+
+    def choices(self, changelist):
+        # Sem o "Todos" automático do Django: aqui o default é PENDENTE, e ele
+        # precisa aparecer MARCADO quando a URL não traz parâmetro nenhum.
+        for valor, rotulo in self.lookup_choices:
+            yield {
+                'selected': (self.value() == valor
+                             or (self.value() is None
+                                 and valor == PriceChangeRequest.REVIEW_PENDING)),
+                'query_string': changelist.get_query_string(
+                    {self.parameter_name: valor}),
+                'display': rotulo,
+            }
+
+
 @admin.register(PriceChangeRequest)
 class PriceChangeRequestAdmin(PlatformScopedAdmin):
     """F6.1 — a FILA DE REVISÃO das mudanças do comprador. Nada vale até o
     admin aprovar aqui (actions em massa). O pedido em si é read-only."""
 
-    list_display  = ('price', 'delta', 'requested_by', 'created_at',
-                     'review_status', 'reviewed_by', 'reviewed_at')
-    list_filter   = ('review_status', 'price__price_list__buyer')
-    ordering      = ('review_status', '-created_at')   # pendentes primeiro
+    # `review_status` logo depois do delta: antes ficava no fim e sumia na
+    # rolagem horizontal — o dono não conseguia ver se a aprovação pegou.
+    list_display  = ('price', 'delta', 'review_status', 'requested_by',
+                     'created_at', 'reviewed_by', 'reviewed_at')
+    list_filter   = (RevisaoFilter, 'price__price_list__buyer')
+    ordering      = ()          # a ordem real vem de get_ordering() — ver lá
     actions       = ('aprovar', 'rejeitar')
     readonly_fields = ('price', 'company', 'new_status', 'new_price',
                        'old_status', 'old_price', 'review_status',
@@ -133,6 +175,30 @@ class PriceChangeRequestAdmin(PlatformScopedAdmin):
         para = (f'¥ {obj.new_price}' if obj.new_status == 'quoted'
                 else obj.get_new_status_display())
         return f'{de} → {para}'
+
+    def get_ordering(self, request):
+        """`_fila` é ANOTAÇÃO, não campo — e por isso NÃO pode ficar no atributo
+        `ordering`: o check `admin.E033` valida aquele atributo contra os campos
+        do modelo e derruba o projeto inteiro. Pelo método passa, e o ChangeList
+        usa esta ordem sobre o queryset já anotado."""
+        return ('_fila', '-created_at')
+
+    def get_queryset(self, request):
+        """Ordem da FILA: pendente primeiro.
+
+        Não dá para fazer por `ordering = ('review_status', …)`: os valores são
+        'approved' / 'pending' / 'rejected' e o alfabeto crescente põe o
+        APROVADO na frente — era por isso que o item recém-aprovado pulava para
+        o topo em vez de sair da vista. Daí o Case/When.
+
+        Repete o manager de plataforma do PlatformScopedAdmin de propósito: a
+        anotação precisa existir ANTES do order_by por '_fila'."""
+        return (self.model.all_companies.get_queryset()
+                .annotate(_fila=Case(
+                    When(review_status=PriceChangeRequest.REVIEW_PENDING,
+                         then=Value(0)),
+                    default=Value(1), output_field=IntegerField()))
+                .order_by(*self.get_ordering(request)))
 
     def has_add_permission(self, request):
         return False        # pedido nasce só no /partner/

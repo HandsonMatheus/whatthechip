@@ -2524,3 +2524,81 @@ class FxRateTests(TestCase):
         hoje = FxRate.objects.get(date=date.today())
         self.assertTrue(hoje.is_fallback)
         self.assertEqual(hoje.rate, Decimal('0.1380'))
+
+
+class PriceChangeRequestAdminTests(TestCase):
+    """A FILA de revisão (F6.1) tem que se comportar como fila.
+
+    Bug de UX relatado pelo dono (2026-08-18): *"aprovo e não sai da lista"*.
+    Eram duas coisas somadas — a lista abria em "Todos" (aprovado seguia à
+    vista) e a ordenação por `review_status` põe 'approved' ANTES de 'pending'
+    no alfabeto, então o item recém-aprovado ainda pulava para o TOPO."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company = Company.objects.create(name='FilaCo', slug='filaco')
+        cls.buyer = Buyer.all_companies.create(company=cls.company,
+                                               name='Fila Buyer', slug='fila-buyer')
+        cls.lista = PriceList.all_companies.create(buyer=cls.buyer, brand=None)
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('parceiro_fila')
+        cls.dono = User.objects.create_superuser('dono_fila', password='x')
+
+        from pricing.models import PriceChangeRequest
+        cls.pedidos = {}
+        for i, estado in enumerate(('pending', 'approved', 'rejected')):
+            linha = Price.all_companies.create(
+                price_list=cls.lista, kind='ddr', gen='DDR4',
+                tier_value=Decimal(str(8 + i)), tier_unit='Gb',
+                status=STATUS_UNQUOTED)
+            cls.pedidos[estado] = PriceChangeRequest.all_companies.create(
+                price=linha, company=cls.company, new_status=STATUS_QUOTED,
+                new_price=Decimal('13.00'), old_status=STATUS_UNQUOTED,
+                requested_by=cls.parceiro, review_status=estado)
+
+    def _changelist(self, **params):
+        from django.urls import reverse
+        self.client.force_login(self.dono)
+        url = reverse('admin:pricing_pricechangerequest_changelist')
+        resp = self.client.get(url, params)
+        self.assertEqual(resp.status_code, 200)
+        return resp
+
+    def test_abre_filtrada_em_pendente(self):
+        """Sem parâmetro na URL, a fila mostra SÓ o que falta revisar."""
+        resp = self._changelist()
+        pks = [o.pk for o in resp.context['cl'].result_list]
+        self.assertEqual(pks, [self.pedidos['pending'].pk])
+
+    def test_todos_continua_acessivel(self):
+        resp = self._changelist(revisao='all')
+        self.assertEqual(len(resp.context['cl'].result_list), 3)
+
+    def test_filtra_por_estado_especifico(self):
+        resp = self._changelist(revisao='approved')
+        pks = [o.pk for o in resp.context['cl'].result_list]
+        self.assertEqual(pks, [self.pedidos['approved'].pk])
+
+    def test_pendente_vem_primeiro_em_todos(self):
+        """O alfabeto punha 'approved' na frente; o Case/When corrige."""
+        resp = self._changelist(revisao='all')
+        primeiro = resp.context['cl'].result_list[0]
+        self.assertEqual(primeiro.pk, self.pedidos['pending'].pk)
+
+    def test_aprovar_tira_da_fila(self):
+        """O ciclo completo: aprovar pela ACTION some da visão padrão."""
+        from pricing.models import PriceChangeRequest
+        pedido = self.pedidos['pending']
+        pedido.approve(self.dono)
+        pedido.refresh_from_db()
+        self.assertEqual(pedido.review_status, PriceChangeRequest.REVIEW_APPROVED)
+        pks = [o.pk for o in self._changelist().context['cl'].result_list]
+        self.assertNotIn(pedido.pk, pks)
+        self.assertEqual(pks, [])
+
+    def test_status_aparece_cedo_na_lista(self):
+        """A coluna sumia na rolagem horizontal — tem que vir logo após o delta."""
+        from pricing.admin import PriceChangeRequestAdmin
+        colunas = list(PriceChangeRequestAdmin.list_display)
+        self.assertLess(colunas.index('review_status'),
+                        colunas.index('requested_by'))
