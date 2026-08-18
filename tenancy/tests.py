@@ -542,6 +542,36 @@ class HostHandshakeTests(TestCase):
         seg = self.client.get('/painel/', HTTP_HOST=self.A_HOST)
         self.assertEqual(seg.status_code, 200)
 
+    def test_superuser_no_apex_vai_pro_admin(self):
+        """Dono, 2026-08-18: superuser entrando pelo botão do site vai pro
+        /admin/, não pro subdomínio da empresa em que ele tem vínculo.
+
+        `cls.root` é exatamente o caso dele: superuser E admin da eMiner. O
+        salto do apex o levava pra bancada da eMiner mesmo quando ele só
+        queria administrar."""
+        resp = self.client.post('/login/',
+                                {'username': 'root_host', 'password': 'x'},
+                                HTTP_HOST='whatthechip.app')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['Location'], '/admin/')     # e NÃO o subdomínio
+
+    def test_superuser_com_next_explicito_respeita_o_next(self):
+        """O atalho é só o DEFAULT: quem chega numa página protegida e é
+        mandado ao login volta pra ela, superuser ou não."""
+        resp = self.client.post('/login/?next=/painel/',
+                                {'username': 'root_host', 'password': 'x'},
+                                HTTP_HOST='whatthechip.app')
+        self.assertEqual(resp['Location'], '/painel/')
+
+    def test_nao_superuser_continua_indo_pro_subdominio(self):
+        """O salto do apex (B5/item 4) segue valendo para quem trabalha numa
+        empresa — só a PLATAFORMA foi desviada."""
+        resp = self.client.post('/login/',
+                                {'username': 'op_a', 'password': 'x12345678'},
+                                HTTP_HOST='whatthechip.app')
+        self.assertEqual(resp['Location'],
+                         'http://eminer.whatthechip.app/painel/')
+
     def test_login_no_host_do_tenant_fica_no_host(self):
         resp = self.client.post(
             '/login/', {'username': 'op_a', 'password': 'x12345678'},

@@ -13,6 +13,7 @@ from django.contrib.auth import views as auth_views
 from django.db import transaction
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils.http import http_date
 from django.views.i18n import set_language as _django_set_language
 
@@ -53,6 +54,19 @@ class TenantAwareLoginView(auth_views.LoginView):
     """
 
     def get_default_redirect_url(self):
+        # SUPERUSER é PLATAFORMA: o lugar dele é o /admin/, não a bancada de
+        # uma empresa (dono, 2026-08-18). Ele quase sempre TEM Membership — o
+        # dono é admin da eMiner — e o salto abaixo o jogava no subdomínio
+        # dela mesmo quando ele entrou pelo botão do site só para administrar.
+        # Mesmo critério de plataforma do resto do sistema (`is_unmasked`,
+        # máscara v3.1) e de quem o /admin/ deixa entrar: o Django admin é
+        # superuser-only desde o bootstrap_tenancy.
+        # ⚠ `next` explícito continua vencendo — o Django só chama este método
+        # quando não há `next` válido. E no host do TENANT quem serve o login
+        # é a LoginView crua (core/urls_tenant): entrar por lá segue no host,
+        # de propósito.
+        if self.request.user.is_superuser:
+            return reverse('admin:index')
         domain = getattr(settings, 'WTC_TENANT_DOMAIN', '')
         if domain:
             host = self.request.get_host().split(':')[0].lower()
