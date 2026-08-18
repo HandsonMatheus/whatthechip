@@ -176,21 +176,35 @@ def _price_key_fields(result: dict) -> dict:
             'price_key_reason': ''}
 
 
-def _masked_category(result: dict):
+def _masked_category(result: dict, cunhar: bool = False):
     """F12 v3: (código da caixa, é_hold?) do resultado — o rótulo que a
     empresa-CLIENTE vê no lugar de tipo/specs. A categoria deriva do CHIP
     (convenção universal LETRA-##, pricing/convention.py) e existe COM ou
     SEM preço — "preço até pode ficar sem, categoria não" (dono 2026-07-23).
-    Categoria inédita é cunhada AQUI (caminho da aprovação — próximo número
-    livre da letra). Sem categoria derivável (dado incompleto, raro) →
-    **H-00 HOLD**: não está pronto pra prateleira, separar p/ análise (o
-    conceito 'Geral/C-000' foi DESFEITO — dono 2026-07-23)."""
+    Sem categoria derivável (dado incompleto, raro) → **H-00 HOLD**: não está
+    pronto pra prateleira, separar p/ análise (o conceito 'Geral/C-000' foi
+    DESFEITO — dono 2026-07-23).
+
+    ⚠ PORTÃO DA CUNHAGEM (bug do dono, 2026-08-18). ``cunhar`` só é True
+    quando o funil de triagem diz que o chip VAI VIRAR LINHA DE ESTOQUE
+    (gateway['entra_no_estoque'] = aprovado + RENTÁVEL). Antes esta função
+    cunhava SEMPRE, no simples RENDER do card de conferência — bastava o
+    operador bipar um DDR2 para nascer um E-15 no banco, mesmo o chip indo
+    direto pro R-00 refino e o card jamais mostrando o código. Resultado em
+    prod: 15 categorias de sucata (DDR1/DDR2/LPDDR1/LPDDR2 e eMCP/eMMC abaixo
+    do limiar) ocupando número da convenção. A régua é a MESMA que autoriza
+    o lançamento, e vem da ProfitabilityConfig viva — mexer no limiar do
+    admin muda o portão junto, sem deploy.
+
+    Chip que não passa no portão faz LEITURA PURA: categoria que já existe
+    segue sendo exibida (caixa é física, nunca renomeia); categoria inédita
+    devolve H-00."""
     from pricing.convention import HOLD_LABEL
     from pricing.engine import derive_price_key
     from pricing.models import CategoryCode
     err, key = derive_price_key(result or {})
     if err is None:
-        label = CategoryCode.label_for_key(*key)
+        label = CategoryCode.label_for_key(*key, create=cunhar)
         if label is not None:
             return label, False
     return HOLD_LABEL, True
@@ -642,6 +656,12 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
     ]
 
     def _out(destination, profitable='', by_generation=False):
+        # O predicado "este chip VAI VIRAR LINHA DE ESTOQUE": aprovado no funil
+        # E com rentabilidade AVALIADA (dono 2026-07-31). Nomeado aqui porque
+        # tem DOIS leitores: o botão de adicionar e — desde 2026-08-18 — a
+        # CUNHAGEM do código de caixa (F12). Categoria só nasce do que vai pra
+        # prateleira; ver _masked_category.
+        entra = destination == 'aprovado' and profitable == 'RENTÁVEL'
         return {
             'destination':          destination,
             'steps':                steps,
@@ -649,10 +669,11 @@ def _compute_gateway(result: dict, has_cap: bool) -> dict:
             'profitable':           profitable,
             'profitable_key':       _PROFIT_KEY.get(profitable, 'indeterminado'),
             'reject_by_generation': by_generation,
+            'entra_no_estoque':     entra,
             # Dono 2026-07-31: lançar exige rentabilidade AVALIADA — aprovado
             # com INDETERMINADO fica com o botão de adicionar DESABILITADO
             # (os outros destinos têm botões próprios: fila/descarte/desconhecido).
-            'can_add': destination != 'aprovado' or profitable == 'RENTÁVEL',
+            'can_add': entra or destination != 'aprovado',
         }
 
     # ── Atalho: morto por GERAÇÃO → reprovado direto ─────────────────────────
@@ -1152,7 +1173,8 @@ def preview_chip(request, lot_pk):
     # Plataforma (is_unmasked) segue no card completo.
     from tenancy.access import is_unmasked
     if not is_unmasked(request):
-        masked_code, masked_general = _masked_category(result)
+        masked_code, masked_general = _masked_category(
+            result, cunhar=gateway['entra_no_estoque'])
         ctx.update({'masked_code': masked_code,
                     'masked_general': masked_general})
         return render(request,

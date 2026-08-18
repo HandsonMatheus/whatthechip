@@ -2189,8 +2189,16 @@ class K9BenchTests(TestCase):
     def test_categoria_mascarada_k01(self):
         # Empresa-cliente vê o código da caixa: K-01 (cunhada na aprovação —
         # mesma chave plana da convenção fundadora; nunca H-00).
+        # ⚠ 2026-08-18: a cunhagem virou EXPLÍCITA (portão de rentabilidade).
+        # O K9 é sempre RENTÁVEL, então na bancada real o portão abre; aqui a
+        # chamada é direta, então o `cunhar` vem na mão — e o par de asserções
+        # deixa a regra visível: fechado NÃO cunha, aberto cunha.
         from estoque.views import _masked_category
-        self.assertEqual(_masked_category({'chip_type': 'K9'}),
+        from pricing.models import CategoryCode
+        self.assertEqual(_masked_category({'chip_type': 'K9'}, cunhar=False),
+                         ('H-00', True))
+        self.assertFalse(CategoryCode.objects.filter(kind='k9').exists())
+        self.assertEqual(_masked_category({'chip_type': 'K9'}, cunhar=True),
                          ('K-01', False))
 
 
@@ -2328,3 +2336,186 @@ class TemplateCsrfTokenTests(TestCase):
             maus, [],
             'form method="post" SEM {% csrf_token %} (dá 403 no clique): '
             + ', '.join(maus))
+
+
+class PortaoCunhagemCategoriaTests(TestCase):
+    """F12 — o PORTÃO DA CUNHAGEM (bug do dono, 2026-08-18).
+
+    O dono viu no admin de prod códigos de caixa criados para geração LEGADA
+    (DDR1/DDR2/LPDDR1/LPDDR2) e para capacidade abaixo do limiar. Causa: o
+    ``_masked_category`` cunhava categoria no simples RENDER do card de
+    conferência — bastava BIPAR o chip. O card nem mostrava o código (chip
+    reprovado exibe R-00), mas o número da convenção já tinha sido gasto.
+
+    A régua agora é a MESMA que autoriza o lançamento
+    (``gateway['entra_no_estoque']`` = aprovado + RENTÁVEL), lida da
+    ProfitabilityConfig viva. Categoria que JÁ existe segue sendo exibida —
+    caixa é física, nunca renomeia."""
+
+    @classmethod
+    def setUpTestData(cls):
+        User = get_user_model()
+        cls.cli = Company.objects.create(name='Cliente Caixa', slug='cx-cli')
+        cls.u = User.objects.create_user('cx_op', password='x')
+        Membership.objects.create(user=cls.u, company=cls.cli,
+                                  role=Membership.ROLE_MANAGER)
+        from chips.models import Brand as ChipBrand, KnownPart
+        b = ChipBrand.objects.create(name='Marca CX', code='CX')
+        comum = dict(brand=b, confidence='confirmed', review_status='approved')
+        # Sucata por GERAÇÃO — a bancada manda pro R-00 refino.
+        KnownPart.objects.create(part_number='CXDDR2PN', chip_type='DDR2',
+                                 density_gbit='1Gb', **comum)
+        # Rentável, categoria INÉDITA (nenhum CategoryCode no banco deste teste).
+        KnownPart.objects.create(part_number='CXEMMC16', chip_type='eMMC',
+                                 capacity='16GB', **comum)
+        # Rentável no TIPO, mas capacidade ABAIXO do limiar (emmc mín. 4GB).
+        KnownPart.objects.create(part_number='CXEMMC02', chip_type='eMMC',
+                                 capacity='2GB', **comum)
+
+    def _preview(self, pn):
+        set_current_company(self.cli.pk)
+        self.addCleanup(set_current_company, None)
+        lot = Lot.all_companies.create(number=901, origin='phone',
+                                       operator=self.u, company=self.cli)
+        self.client.login(username='cx_op', password='x')
+        resp = self.client.get(reverse('estoque:preview', args=[lot.pk]),
+                               {'pn': pn})
+        self.assertEqual(resp.status_code, 200)
+        return resp.content.decode()
+
+    def test_geracao_morta_nao_cunha_codigo(self):
+        """DDR2 é sucata por geração: vai pro refino e NÃO gasta número."""
+        from pricing.models import CategoryCode
+        body = self._preview('CXDDR2PN')
+        self.assertFalse(CategoryCode.objects.filter(kind='ddr').exists())
+        self.assertIn('R-00', body)          # destino é o refino
+        self.assertNotIn('E-01', body)       # nenhuma caixa comercial oferecida
+
+    def test_abaixo_do_limiar_nao_cunha_codigo(self):
+        """eMMC 2GB (limiar 4GB) é NÃO RENTÁVEL — mesma régua, mesmo bloqueio."""
+        from pricing.models import CategoryCode
+        self._preview('CXEMMC02')
+        self.assertFalse(CategoryCode.objects.filter(kind='emmc').exists())
+
+    def test_rentavel_inedito_cunha_e_aparece(self):
+        """O caminho legítimo continua igual: categoria nova nasce e é exibida."""
+        from pricing.models import CategoryCode
+        body = self._preview('CXEMMC16')
+        c = CategoryCode.objects.get(kind='emmc')
+        self.assertEqual(c.label, 'B-01')    # 1º número livre da letra B
+        self.assertIn('B-01', body)
+
+    def test_categoria_ja_existente_de_sucata_continua_resolvendo(self):
+        """Caixa é FÍSICA: código já atribuído nunca some nem renomeia — o
+        portão só impede a criação de número NOVO."""
+        from decimal import Decimal
+        from pricing.models import CategoryCode
+        velho = CategoryCode.objects.create(kind='ddr', gen='DDR2',
+                                            tier_value=Decimal('1'),
+                                            tier_unit='Gb', code=42)
+        self._preview('CXDDR2PN')
+        velho.refresh_from_db()              # não apagou
+        self.assertEqual(CategoryCode.objects.filter(kind='ddr').count(), 1)
+        self.assertEqual(velho.code, 42)     # não renumerou
+
+    def test_gateway_expoe_o_predicado_unico(self):
+        """`entra_no_estoque` é a fonte única: mesma régua do botão de lançar
+        e da cunhagem. INDETERMINADO aprova no funil mas NÃO entra."""
+        from estoque.views import _compute_gateway
+        for result, esperado in (
+                ({'chip_type': 'DDR2', 'density_gbit': '1Gb'}, False),
+                ({'chip_type': 'GDDR5', 'density_gbit': '8Gb'}, False)):
+            g = _compute_gateway(result, has_cap=True)
+            self.assertIs(g['entra_no_estoque'], esperado)
+            # can_add segue com a semântica antiga (botão por destino)
+            self.assertIs(g['can_add'], g['destination'] != 'aprovado'
+                          or g['profitable'] == 'RENTÁVEL')
+
+
+class AuditCategoryCodesTests(TestCase):
+    """`audit_category_codes` — READ-ONLY: a foto que o dono roda em prod pra
+    decidir o que fazer com os códigos que o portão não teria deixado nascer.
+
+    O veredito NÃO é reimplementado: o comando monta um `result` sintético a
+    partir da CHAVE e chama o `assess_profitability` de verdade. Se um dia o
+    dono baixar `ddr_min_gen` para 2 no admin, esta auditoria muda junto —
+    é o que o último teste prova."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from decimal import Decimal
+        from pricing.models import CategoryCode
+        cls.co = Company.objects.create(name='Cliente Aud', slug='aud-cli')
+        cls.op = get_user_model().objects.create_user('aud_op', password='x')
+        # Legítimo E na convenção (tabela fundadora: emmc 16GB = B-06).
+        cls.bom = CategoryCode.objects.create(kind='emmc', gen='',
+                                              tier_value=Decimal('16'),
+                                              tier_unit='GB', code=6)
+        # Sucata por geração, fora da convenção — o alvo da auditoria.
+        cls.ruim = CategoryCode.objects.create(kind='ddr', gen='DDR2',
+                                               tier_value=Decimal('1'),
+                                               tier_unit='Gb', code=16)
+        # Legítimo mas AUSENTE da tabela fundadora (precisa ser anexado lá).
+        cls.novo = CategoryCode.objects.create(kind='emmc', gen='',
+                                               tier_value=Decimal('1024'),
+                                               tier_unit='GB', code=8)
+
+    def _run(self, **opts):
+        from io import StringIO
+        from django.core.management import call_command
+        out = StringIO()
+        call_command('audit_category_codes', stdout=out, **opts)
+        return out.getvalue()
+
+    def test_marca_indevidos_e_nao_escreve_nada(self):
+        from pricing.models import CategoryCode
+        antes = CategoryCode.objects.count()
+        saida = self._run()
+        self.assertIn('E-16', saida)
+        self.assertIn('⛔', saida)
+        self.assertIn('1 que HOJE a bancada NÃO cunharia', saida)
+        self.assertIn('0 COM lançamento em estoque', saida)
+        self.assertEqual(CategoryCode.objects.count(), antes)   # read-only
+
+    def test_aponta_legitimo_fora_da_convencao(self):
+        saida = self._run()
+        self.assertIn('legítimo(s) FORA da convenção', saida)
+        self.assertIn('B-08', saida)          # emmc 1024GB não está na fundadora
+        self.assertNotIn('B-06,', saida)      # esse está — não entra na lista
+
+    def test_conta_lancamentos_atras_do_codigo(self):
+        """O número que decide se dá pra aposentar: tem estoque nessa caixa?"""
+        from decimal import Decimal
+        set_current_company(self.co.pk)
+        self.addCleanup(set_current_company, None)
+        lot = Lot.all_companies.create(number=902, origin='phone',
+                                       operator=self.op, company=self.co)
+        InventoryEntry.all_companies.create(
+            lot=lot, company=self.co, part_number='AUDPN1', quantity=7,
+            price_kind='ddr', price_gen='DDR2', price_tier_value=Decimal('1'),
+            price_tier_unit='Gb')
+        saida = self._run()
+        self.assertIn('1 COM lançamento em estoque', saida)
+        # A linha do E-16 mostra 1 lançamento / 7 peças / 1 empresa.
+        linha = next(l for l in saida.splitlines() if 'E-16' in l)
+        self.assertRegex(linha, r'\b1\b.*\b7\b.*\b1\b')
+
+    def test_veredito_segue_a_config_viva(self):
+        """Baixar os limiares no admin RE-LEGITIMA a categoria, SEM deploy —
+        prova de que o comando não tem régua própria (chama o
+        assess_profitability real, que lê a ProfitabilityConfig)."""
+        from chips.models import ProfitabilityConfig
+        self.assertIn('1 que HOJE a bancada NÃO cunharia', self._run())
+        cfg = ProfitabilityConfig.get_config()
+        cfg.ddr_min_gen = 2          # DDR2 passa a valer…
+        cfg.ddr3_min_gbit = 1.0      # …e 1 Gb passa a bastar
+        cfg.save()
+        saida = self._run()
+        self.assertIn('0 que HOJE a bancada NÃO cunharia', saida)
+        linha = next(l for l in saida.splitlines() if 'E-16' in l)
+        self.assertNotIn('⛔', linha)        # a linha perdeu a marca
+
+    def test_filtro_indevidos(self):
+        saida = self._run(indevidos=True)
+        self.assertIn('E-16', saida)
+        self.assertNotIn('B-06', saida)
