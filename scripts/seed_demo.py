@@ -10,6 +10,8 @@ apaga exatamente isso e nada mais.
     python scripts/seed_demo.py                 # DRY-RUN: só diz o que faria
     python scripts/seed_demo.py --commit        # cria de verdade
     python scripts/seed_demo.py --mais --commit   # + 4 lotes, um por estágio
+    python scripts/seed_demo.py --abertos --commit    # + 5 lotes ABERTOS
+    python scripts/seed_demo.py --abertos 8 --commit  # + 8 lotes ABERTOS
     python scripts/seed_demo.py --purge --commit  # apaga a demo inteira
 
 O que nasce (idempotente — rodar de novo não duplica):
@@ -457,6 +459,52 @@ def mais(escrever):
           'quatro estágios.')
 
 
+def abertos(escrever, quantos=5):
+    """Lotes ABERTOS na demo, para o dono rodar o processo do zero
+    (dono, 2026-08-18).
+
+    Os dois primeiros nascem VAZIOS — é o "do zero" de verdade: abrir a
+    bancada e bipar o primeiro chip. Os demais já vêm com alguns PNs reais
+    triados, para haver o que fechar sem digitar nada antes.
+
+    ACRESCENTA sempre: rodar de novo cria outros lotes, com a numeração
+    seguindo. Nada é reescrito.
+    """
+    company = Company.objects.filter(slug=COMPANY_SLUG).first()
+    if company is None:
+        sys.exit('ABORTADO: a demo não existe ainda — rode sem --abertos '
+                 'primeiro (com --commit).')
+    with company_scope(company):
+        contas = _usuarios(company, escrever)
+        buyer, novo_comprador = _comprador(company, escrever)
+        if buyer is None:
+            sys.exit('ABORTADO: sem comprador não há cotação.')
+        itens = _candidatos(buyer, exigir_cotado=not novo_comprador)
+        vazios = min(2, quantos)
+        if not escrever:
+            print(f'\n(dry-run) criaria {quantos} lotes ABERTOS na '
+                  f'{company.name}: {vazios} vazios (bancada limpa) e '
+                  f'{quantos - vazios} com PNs reais já triados. Rode '
+                  f'--commit.')
+            return
+        gerente = contas['gerente']
+        print(f'\nLotes abertos em {company.name}:')
+        with transaction.atomic():
+            for i in range(quantos):
+                if i < vazios:
+                    _lote(company, gerente, f'Do zero {i + 1} — bancada limpa',
+                          [], buyer)
+                else:
+                    # Fatia girada: cada lote pega PNs diferentes, e com
+                    # poucos candidatos os lotes repetem em vez de nascer
+                    # vazios sem querer.
+                    fatia = itens[i % max(1, len(itens))::max(1, quantos)]
+                    _lote(company, gerente, f'Triagem {i + 1 - vazios}',
+                          fatia or itens[:1], buyer)
+    print('\n✔ Pronto. Entre como gerente da demo e trabalhe os lotes na '
+          'bancada; fechar cada um gera a Ordem de Venda.')
+
+
 def _comprovante_falso():
     """Um PNG mínimo, só para o comprovante da demo existir de verdade."""
     from io import BytesIO
@@ -522,11 +570,17 @@ if __name__ == '__main__':
     p.add_argument('--mais', action='store_true',
                    help='ACRESCENTA 4 lotes, um por estágio da compra '
                         '(a receber / a conferir / a pagar / paga em parte).')
+    p.add_argument('--abertos', nargs='?', type=int, const=5, default=None,
+                   metavar='N',
+                   help='ACRESCENTA N lotes ABERTOS (padrão 5) para rodar o '
+                        'processo do zero: os 2 primeiros nascem vazios.')
     args = p.parse_args()
     _exige_banco_local()
     if args.purge:
         purgar(args.commit)
     elif args.mais:
         mais(args.commit)
+    elif args.abertos is not None:
+        abertos(args.commit, args.abertos)
     else:
         semear(args.commit)
