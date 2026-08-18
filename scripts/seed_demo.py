@@ -19,8 +19,8 @@ O que nasce (idempotente — rodar de novo não duplica):
     Empresa   Demo Recicladora (slug demo-recicladora)
     Filial    Matriz
     Usuários  demo_admin / admin · demo_gerente / gerente · demo_operador / operador
-    Lotes     #1 fechado → OV confirmada → acerto → fatura → pagamento parcial
-              #2 fechado → cotação viva (draft)
+    Lotes     #1 fechado → despachado → acerto → fatura → pagamento parcial
+              #2 fechado, DESPACHO PENDENTE (a venda só congela ao despachar)
               #3 aberto  → em triagem (bancada)
 
 **PNs de verdade.** As entradas saem do CATÁLOGO GLOBAL (KnownParts aprovados)
@@ -351,7 +351,10 @@ def semear(escrever):
             if so1 is None:                  # create_draft_for_lot nunca levanta
                 sys.exit('ABORTADO: o fechamento não gerou cotação (veja o log '
                          'do vendas). Rode --purge --commit e investigue.')
-            services.confirm(so1, contas['admin'])
+            # ⚠ Quem CONGELA é o despacho (dono, 2026-08-18) — e é ele que faz
+            # a ordem existir para o comprador.
+            services.mark_shipped(so1, 'DHL', 'JD000000001',
+                                  date.today() - timedelta(days=6), gerente)
             linha = so1.lines.first()
             ajuste = {linha.pk: (max(1, linha.quantity // 10), None)}
             _st, inv = services.settle_and_invoice(
@@ -417,23 +420,26 @@ def mais(escrever):
         gerente, admin = contas['gerente'], contas['admin']
         print(f'\nLotes novos em {company.name}:')
         with transaction.atomic():
-            # A — congelada e NÃO recebida
+            # A — despachada e NÃO recebida
             _la, so_a = _lote(company, gerente, 'Teste A — a receber',
                               fatias[0], buyer, fechar=True)
-            services.confirm(so_a, admin)
-            print(f'    → {so_a.code}: congelada, aguardando recebimento')
+            services.mark_shipped(so_a, 'DHL', 'JD000000A',
+                                  date.today() - timedelta(days=2), gerente)
+            print(f'    → {so_a.code}: despachada, aguardando recebimento')
 
-            # B — congelada e JÁ recebida
+            # B — despachada e JÁ recebida
             _lb, so_b = _lote(company, gerente, 'Teste B — recebida, a conferir',
                               fatias[1], buyer, fechar=True)
-            services.confirm(so_b, admin)
+            services.mark_shipped(so_b, 'DHL', 'JD000000B',
+                                  date.today() - timedelta(days=5), gerente)
             services.mark_received(so_b)
             print(f'    → {so_b.code}: recebida, aguardando resultado')
 
             # C — resultado fechado, fatura EM ABERTO
             _lc, so_c = _lote(company, gerente, 'Teste C — a pagar',
                               fatias[2], buyer, fechar=True)
-            services.confirm(so_c, admin)
+            services.mark_shipped(so_c, 'FedEx', '7700000C',
+                                  date.today() - timedelta(days=9), gerente)
             linha = so_c.lines.first()
             _st, inv_c = services.settle_and_invoice(
                 so_c, {linha.pk: (max(1, linha.quantity // 8), None)}, admin,
@@ -444,7 +450,8 @@ def mais(escrever):
             # D — pagamento PARCIAL, com comprovante
             _ld, so_d = _lote(company, gerente, 'Teste D — paga em parte',
                               fatias[3], buyer, fechar=True)
-            services.confirm(so_d, admin)
+            services.mark_shipped(so_d, 'UPS', '1Z00000D',
+                                  date.today() - timedelta(days=12), gerente)
             linha = so_d.lines.first()
             _st, inv_d = services.settle_and_invoice(so_d, {}, admin)
             pago = (inv_d.total_usd / 3).quantize(Decimal('0.01'))

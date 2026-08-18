@@ -77,7 +77,10 @@
   {# ── Cabeçalho da OV + smart buttons ─────────────────────────── #}
   <div class="sohead">
     <div class="sohead__l">
-      <div class="sohead__code">{{ so.code }}{% if so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "cotação — valores vivos" %}</span>{% elif so.status == 'confirmed' %}<span class="so-badge so-badge--ok">{% trans "confirmada — valores congelados" %}</span>{% else %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% endif %}</div>
+      {% comment %} O DESPACHO manda no estado (dono, 2026-08-18): enquanto a
+         caixa não sai, a venda é rascunho, o preço segue vivo e o comprador
+         nem vê a ordem. É o crachá que o gerente procura primeiro. {% endcomment %}
+      <div class="sohead__code">{{ so.code }}{% if so.status == 'cancelled' %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% elif not so.shipped_at %}<span class="so-badge so-badge--draft">{% trans "despacho pendente — valores vivos" %}</span>{% elif so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "despachada — falta preço do comprador" %}</span>{% else %}<span class="so-badge so-badge--ok">{% trans "despachada — valores congelados" %}</span>{% endif %}</div>
       <div class="sohead__party">{% trans "Contraparte" %} <b>WhatTheChip</b> · {% trans "origem" %} <span class="mono">{{ so.lot.code }}</span> · {% trans "taxa" %} {% if ver_valor %}{% localize off %}1 ¥ = US$ {{ fx_rate }}{% endlocalize %} {% if so.status == 'confirmed' %}({% trans "congelada" %}){% else %}({% trans "contrato vigente" %}){% endif %}{% else %}<span class="vd-mask">•••</span>{% endif %}</div>
     </div>
     <div class="sohead__actions">
@@ -187,6 +190,14 @@
   <div class="panel">
     <div class="panel__head">{% trans "Despacho" %}</div>
     <div style="padding:16px 18px;">
+      {% if not so.shipped_at %}
+      <p style="margin:0 0 12px;font-size:13px;color:#8a6d00;background:#fff1c2;padding:9px 11px;">
+        {% blocktrans trimmed %}
+          Enquanto a caixa não sai, esta venda fica em rascunho: o preço segue
+          vivo e o comprador não a enxerga. Registrar o despacho congela o
+          valor e libera a ordem para ele.
+        {% endblocktrans %}</p>
+      {% endif %}
       {% if so.shipped_at %}
       <p style="margin:0 0 12px;font-size:14px;">
         <b>{{ so.carrier }}</b> · {{ so.shipped_at|date:"d/m/Y" }}

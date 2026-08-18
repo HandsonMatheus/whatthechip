@@ -981,23 +981,17 @@ def lot_close(request, lot_pk):
     # F11.2 (§12.19): fechamento gera a COTAÇÃO draft no menu Vendas (valores
     # vivos até o admin confirmar). Nunca trava o fechamento (padrão F8).
     from vendas.models import STATUS_CANCELLED as SO_CANCELADA, SalesOrder
-    from vendas.services import confirm as confirmar_so, create_draft_for_lot
+    from vendas.services import create_draft_for_lot
     so = create_draft_for_lot(lot, request.user)
-    # ── F11.6/F1: a OV CONGELA no fechamento (dono, 2026-08-18) ─────────────
-    # O ¥ e a taxa param aqui. Motivo que fechou a decisão: o PDF que viaja
-    # com a caixa imprime preço — com a OV em rascunho esse preço é VIVO e o
-    # papel podia não bater com a fatura.
-    # ⚠ `confirm()` é TUDO-OU-NADA: exige todas as linhas cotadas. Categoria
-    # sem preço no grid do comprador **não pode travar o fechamento** (o
-    # gerente não controla a tabela dele) — a OV fica em RASCUNHO e o aviso
-    # diz o que falta; quem completa é o COMPRADOR, na tela dele.
-    if so is not None:
-        try:
-            confirmar_so(so, request.user, unmasked=is_unmasked(request))
-        except ValidationError as erro:
-            messages.warning(request, _(
-                'Ordem de Venda criada, mas o preço NÃO foi congelado: %(por)s'
-            ) % {'por': ' '.join(erro.messages)})
+    # ── A OV NASCE RASCUNHO, com DESPACHO PENDENTE (dono, 2026-08-18) ───────
+    # Reversão consciente do F11.6/F1, que congelava aqui: fechar o lote é ato
+    # de BANCADA — a venda só existe de verdade quando a caixa SAI. Enquanto o
+    # despacho não é registrado, a ordem fica em rascunho, não aparece para o
+    # comprador e o preço segue vivo. Quem congela agora é o `mark_shipped`.
+    # ⚠ O que motivava congelar aqui — "o papel imprime preço" — continua
+    # valendo só para a via do ADMIN (a do gerente, que viaja com a caixa, não
+    # tem coluna de dinheiro). E ela é impressa depois do despacho, quando o
+    # valor já congelou.
     # ── PORTÃO DE SILÊNCIO (incidente de prod, 2026-08-18) ──────────────────
     # `create_draft_for_lot` NUNCA levanta — o fechamento físico não pode
     # travar por causa da venda (padrão F8). Só que, até aqui, ele também não

@@ -3178,3 +3178,37 @@ msgstr "Carrier"
 #. vendas/ (F4 — despacho)
 msgid "pode entrar depois"
 msgstr "can be filled in later"
+
+#. vendas/ (F4 — despacho congela)
+msgid ""
+"Enquanto a caixa não sai, esta venda fica em rascunho: o preço segue vivo e "
+"o comprador não a enxerga. Registrar o despacho congela o valor e libera a "
+"ordem para ele."
+msgstr ""
+"Until the box ships, this sale stays a draft: the price is still live and "
+"the buyer cannot see it. Recording the shipment freezes the value and "
+"releases the order to him."
+
+#. vendas/ (F4 — despacho congela)
+msgid "despachada — falta preço do comprador"
+msgstr "shipped — buyer price missing"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despachada — valores congelados"
+msgstr "shipped — values frozen"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despachada"
+msgstr "shipped"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despacho pendente — valores vivos"
+msgstr "shipment pending — values still live"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despacho pendente"
+msgstr "shipment pending"
+
+#. vendas/ (F4 — despacho congela)
+msgid "falta preço"
+msgstr "price missing"

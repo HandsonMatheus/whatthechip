@@ -2013,10 +2013,13 @@ class FxLockOnCloseTests(TestCase):
                               rate=Decimal('0.1600'), source='t2')
         _scope(self, self.company)
         try:
-            # RE-ESPECIFICADO (F11.6/F1, 2026-08-18): o `confirm()` manual saiu
-            # — a OV já NASCE congelada no fechamento. O que este teste prova
-            # continua o mesmo: a taxa que congela é a TRAVADA no lote.
+            # RE-ESPECIFICADO 2× (dono, 2026-08-18): quem congela é o
+            # DESPACHO. O que este teste prova continua o mesmo: a taxa que
+            # congela é a TRAVADA no lote, e não a vigente no dia do embarque.
+            from vendas import services as vendas_services
             so = SalesOrder.all_companies.get(lot=self.lot)
+            vendas_services.mark_shipped(so, 'DHL', '', None, None)
+            so.refresh_from_db()
             self.assertEqual(so.status, 'confirmed')
             # …e a OV usa a TRAVADA do lote (não a vigente 0.16):
             self.assertEqual(so.fx_usd_rate, Decimal('0.1478'))

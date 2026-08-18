@@ -205,8 +205,12 @@ def freeze_pending_orders(buyer, user=None):
     for comp in _empresas_ativas():
         try:
             with company_scope(comp):
+                # Só o que JÁ FOI DESPACHADO: aprovar preço não pode
+                # atropelar o despacho e dar a venda por fechada antes de a
+                # caixa sair (dono, 2026-08-18).
                 pendentes = list(SalesOrder.objects.filter(
                     buyer=buyer, status=STATUS_DRAFT,
+                    shipped_at__isnull=False,
                     lot__closed_at__isnull=False).select_related('lot'))
                 for so in pendentes:
                     try:
@@ -778,7 +782,14 @@ def orders_for_buyer(buyer):
     out, ctx = [], None
     for comp in _empresas_ativas():
         with company_scope(comp):
-            qs = (SalesOrder.objects.filter(buyer=buyer)
+            # ⚠ SÓ O QUE FOI DESPACHADO (dono, 2026-08-18): a compra existe
+            # para o comprador quando a caixa SAI. Antes disso é lote fechado
+            # na bancada do cliente, e mostrar isso a ele seria prometer uma
+            # caixa que ninguém postou.
+            # Rascunho DESPACHADO aparece: é o caso de faltar preço no grid
+            # dele, e é ele quem resolve.
+            qs = (SalesOrder.objects.filter(buyer=buyer,
+                                            shipped_at__isnull=False)
                   .exclude(status=STATUS_CANCELLED)
                   .select_related('lot', 'company')
                   .prefetch_related('lines', 'invoices', 'invoices__payments'))
@@ -819,7 +830,10 @@ def buyer_order(buyer, pk):
     from tenancy.scope import company_scope
     for comp in _empresas_ativas():
         with company_scope(comp):
-            so = (SalesOrder.objects.filter(pk=pk, buyer=buyer)
+            # Mesma regra da lista: sem despacho, a compra não existe para ele
+            # — e 404, não 403: não confirmamos nem que a ordem existe.
+            so = (SalesOrder.objects.filter(pk=pk, buyer=buyer,
+                                            shipped_at__isnull=False)
                   .select_related('lot', 'company').first())
             if so is not None:
                 yield so
@@ -1066,11 +1080,28 @@ def mark_shipped(so, carrier, tracking, quando, user):
         raise ValidationError('Informe a transportadora.')
     if quando > timezone.localdate():
         raise ValidationError('A data do despacho não pode ser no futuro.')
+    novo_despacho = so.shipped_at is None
     so.carrier = (carrier or '').strip()[:40]
     so.tracking = (tracking or '').strip()[:60]
     so.shipped_at = quando
     so.shipped_by = user
     so.save(update_fields=['carrier', 'tracking', 'shipped_at', 'shipped_by'])
+    # ── O DESPACHO é que CONGELA a venda (dono, 2026-08-18) ────────────────
+    # Fechar o lote é ato de bancada; a venda só existe de verdade quando a
+    # caixa SAI. Daqui em diante o ¥ para de andar e a ordem aparece para o
+    # comprador.
+    # ⚠ Padrão F8: NUNCA levanta. Categoria sem preço no grid do comprador não
+    # pode impedir de registrar que a caixa saiu — o fato físico aconteceu. A
+    # ordem fica em rascunho DESPACHADO, aparece para o comprador assim mesmo
+    # (é ele quem completa a tabela) e congela quando o preço entrar.
+    if novo_despacho and so.status == STATUS_DRAFT:
+        try:
+            confirm(so, user)
+        except ValidationError:
+            logger.info('mark_shipped: OV %s despachada sem congelar (falta '
+                        'preço no grid do comprador)', so.pk)
+        except Exception:                        # noqa: BLE001
+            logger.exception('mark_shipped: falha ao congelar a OV %s', so.pk)
     return so
 
 

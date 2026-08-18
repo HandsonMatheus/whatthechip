@@ -3003,3 +3003,34 @@ msgstr "承运商"
 #. vendas/ (F4 — despacho)
 msgid "pode entrar depois"
 msgstr "可稍后填写"
+
+#. vendas/ (F4 — despacho congela)
+msgid ""
+"Enquanto a caixa não sai, esta venda fica em rascunho: o preço segue vivo e "
+"o comprador não a enxerga. Registrar o despacho congela o valor e libera a "
+"ordem para ele."
+msgstr "在货箱发出之前，本次销售保持草稿状态：价格仍会变动，买方也看不到它。登记发货即锁定金额，并将订单开放给买方。"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despachada — falta preço do comprador"
+msgstr "已发货——缺买方价格"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despachada — valores congelados"
+msgstr "已发货——金额已锁定"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despachada"
+msgstr "已发货"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despacho pendente — valores vivos"
+msgstr "待发货——金额未锁定"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despacho pendente"
+msgstr "待发货"
+
+#. vendas/ (F4 — despacho congela)
+msgid "falta preço"
+msgstr "缺价格"

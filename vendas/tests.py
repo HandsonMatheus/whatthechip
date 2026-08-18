@@ -12,6 +12,7 @@ from django.core.management import call_command
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from chips.models import Brand
 from estoque.models import InventoryEntry, Lot
@@ -245,16 +246,17 @@ class LotCloseReopenTests(TestCase):
         self.lot = Lot.open_for_company(self.company, self.mgr, 'VD hook', origin='phone')
         _entries(self.lot, self.brand, com_emcp=False)
 
-    def test_fechar_cria_ov_congelada(self):
-        """RE-ESPECIFICADO (F11.6/F1, 2026-08-18): fechar não cria mais
-        RASCUNHO — a OV nasce CONFIRMADA, com ¥ e taxa congelados. O caminho
-        do rascunho sobrevive só quando falta preço no grid (teste abaixo)."""
+    def test_fechar_cria_ov_em_RASCUNHO(self):
+        """RE-ESPECIFICADO de novo (dono, 2026-08-18, tarde): quem congela é o
+        DESPACHO. Fechar o lote é ato de bancada — a venda só existe quando a
+        caixa sai, e até lá o preço segue vivo."""
         self.client.force_login(self.mgr)
         self.client.post(reverse('estoque:lot_close', args=[self.lot.pk]),
                          {'confirm_code': self.lot.code})
         so = SalesOrder.all_companies.get(lot=self.lot)
-        self.assertEqual(so.status, STATUS_CONFIRMED)
-        self.assertIsNotNone(so.total_rmb)
+        self.assertEqual(so.status, STATUS_DRAFT)
+        self.assertIsNone(so.shipped_at)
+        self.assertIsNone(so.total_rmb)
 
     def test_lote_sem_preco_nasce_rascunho_e_reabrir_cancela(self):
         """O único caminho que ainda nasce VIVO: categoria fora do grid do
@@ -320,10 +322,13 @@ class LotCloseReopenTests(TestCase):
         self.client.post(reverse('estoque:lot_close', args=[self.lot.pk]),
                          {'confirm_code': self.lot.code})
         so = SalesOrder.all_companies.get(lot=self.lot)
-        # RE-ESPECIFICADO (F11.6/F1): o `confirm()` manual saiu — fechar já
-        # congela. A regra provada aqui é a MESMA e ficou mais forte: agora
-        # TODA reabertura de lote cotado esbarra na OV confirmada (o dono:
-        # "não deve ser possível reabrir um lote", 2026-08-18).
+        # RE-ESPECIFICADO 2× (dono, 2026-08-18): quem congela é o DESPACHO.
+        # A regra provada aqui é a mesma — OV confirmada barra a reabertura —,
+        # só que agora o gatilho é registrar que a caixa saiu. Faz até mais
+        # sentido: depois do embarque não há o que reabrir.
+        with company_scope(self.company):
+            services.mark_shipped(so, 'DHL', 'JD1', None, self.mgr)
+        so.refresh_from_db()
         self.assertEqual(so.status, STATUS_CONFIRMED)
         resp = self.client.post(
             reverse('estoque:lot_reopen', args=[self.lot.pk]), follow=True)
@@ -491,17 +496,21 @@ class BackfillSalesOrdersTests(TestCase):
         self.assertEqual(SalesOrder.all_companies.filter(lot=lot).count(), 1)
 
 
-class CongelaNoFechamentoTests(TestCase):
-    """F11.6/F1 (dono, 2026-08-18): o ¥ para de andar no FECHAMENTO do lote.
+class CongelaNoDespachoTests(TestCase):
+    """O ¥ para de andar no DESPACHO, não no fechamento (dono, 2026-08-18).
 
-    A OV nasce CONFIRMADA — motivo que fechou a decisão: o PDF que viaja com a
-    caixa imprime preço, e com a OV em rascunho esse preço é VIVO; o papel
-    podia não bater com a fatura.
+    ⚠ REVERSÃO do F11.6/F1, que congelava no fechamento do lote. Fechar o lote
+    é ato de BANCADA — a venda só existe de verdade quando a caixa SAI. Até
+    lá a ordem é rascunho, o preço segue vivo e o comprador nem a enxerga.
 
-    ⚠ `confirm()` é tudo-ou-nada. Categoria sem preço no grid do comprador
-    **não pode travar o fechamento** (o gerente não controla a tabela dele):
-    o lote fecha, a OV fica em RASCUNHO e a tela avisa o que falta. Quem
-    completa é o COMPRADOR, na tela dele (F11.6/F2).
+    O que motivava congelar no fechamento — "o papel imprime preço" — vale só
+    para a via do ADMIN; a do gerente, que viaja com a caixa, não tem coluna
+    de dinheiro. E ela é impressa DEPOIS do despacho, com o valor já parado.
+
+    ⚠ `confirm()` é tudo-ou-nada, e categoria sem preço no grid do comprador
+    **não pode travar o despacho**: a caixa saiu, o fato é físico. A ordem
+    fica em rascunho DESPACHADO, aparece para o comprador assim mesmo (é ele
+    quem completa a tabela) e congela quando o preço entrar.
     """
 
     @classmethod
@@ -526,19 +535,36 @@ class CongelaNoFechamentoTests(TestCase):
         return self.client.post(reverse('estoque:lot_close', args=[lot.pk]),
                                 {'confirm_code': lot.code}, follow=True)
 
-    def test_lote_cotado_nasce_com_a_ov_congelada(self):
+    def test_fechar_o_lote_deixa_a_ov_em_RASCUNHO(self):
+        """Despacho pendente: o preço segue vivo até a caixa sair."""
         lot = Lot.open_for_company(self.company, self.gerente, 'ok',
                                    origin='phone')
-        _entries(lot, self.brand)                 # eMMC 16GB + eMCP 64GB, ambos no grid
+        _entries(lot, self.brand)                 # tudo cotado no grid
         self._fechar(lot)
         so = SalesOrder.all_companies.get(lot=lot)
+        self.assertEqual(so.status, STATUS_DRAFT)
+        self.assertIsNone(so.shipped_at)
+        self.assertIsNone(so.total_rmb)
+        self.assertTrue(all(l.unit_rmb is None for l in so.lines.all()))
+
+    def test_o_DESPACHO_congela_a_ov(self):
+        lot = Lot.open_for_company(self.company, self.gerente, 'desp',
+                                   origin='phone')
+        _entries(lot, self.brand)
+        self._fechar(lot)
+        so = SalesOrder.all_companies.get(lot=lot)
+        self.client.post(reverse('vendas:so_ship', args=[so.pk]),
+                         {'carrier': 'DHL', 'tracking': 'JD1',
+                          'shipped_at': str(timezone.localdate())})
+        so.refresh_from_db()
         self.assertEqual(so.status, STATUS_CONFIRMED)
         self.assertEqual(so.fx_usd_rate, Decimal('0.1400'))   # taxa DO LOTE
         self.assertIsNotNone(so.total_rmb)
         self.assertTrue(all(l.unit_rmb is not None for l in so.lines.all()))
 
-    def test_categoria_sem_preco_nao_trava_o_fechamento(self):
-        """O caso real: K9 sem `k9_rmb_each`, SSD sem taxa, categoria nova."""
+    def test_categoria_sem_preco_nao_trava_nem_o_fechamento_nem_o_despacho(self):
+        """O caso real: K9 sem `k9_rmb_each`, SSD sem taxa, categoria nova.
+        A caixa sai do mesmo jeito — o fato é físico."""
         lot = Lot.open_for_company(self.company, self.gerente, 'sem-preco',
                                    origin='phone')
         _entries(lot, self.brand, com_emcp=False)
@@ -547,23 +573,28 @@ class CongelaNoFechamentoTests(TestCase):
             chip_type='UFS', company=self.company,
             price_kind='ufs', price_gen='',
             price_tier_value=Decimal('256'), price_tier_unit='GB')
-        resp = self._fechar(lot)
+        self._fechar(lot)
         lot.refresh_from_db()
         self.assertEqual(lot.status, Lot.STATUS_CLOSED)     # fechou mesmo assim
         so = SalesOrder.all_companies.get(lot=lot)
-        self.assertEqual(so.status, STATUS_DRAFT)           # e ficou VIVA
+        self.client.post(reverse('vendas:so_ship', args=[so.pk]),
+                         {'carrier': 'DHL', 'shipped_at': str(timezone.localdate())})
+        so.refresh_from_db()
+        self.assertIsNotNone(so.shipped_at)                 # despachou
+        self.assertEqual(so.status, STATUS_DRAFT)           # sem congelar
         self.assertIsNone(so.total_rmb)
-        avisos = ' '.join(m.message for m in resp.context['messages'])
-        self.assertIn('congelado', avisos)                  # a tela diz por quê
 
-    def test_pdf_do_admin_sai_com_valor_congelado(self):
-        """A razão da decisão, travada em teste: o documento que viaja com a
-        caixa não pode imprimir preço que ainda anda."""
+    def test_pdf_do_admin_sai_com_valor_congelado_depois_do_despacho(self):
+        """A razão da decisão antiga, preservada: o documento com preço é
+        impresso DEPOIS do despacho, quando o valor já parou."""
         lot = Lot.open_for_company(self.company, self.gerente, 'pdf',
                                    origin='phone')
         _entries(lot, self.brand)
         self._fechar(lot)
         so = SalesOrder.all_companies.get(lot=lot)
+        self.client.post(reverse('vendas:so_ship', args=[so.pk]),
+                         {'carrier': 'DHL', 'shipped_at': str(timezone.localdate())})
+        so.refresh_from_db()
         doc = services.manager_document(so, with_prices=True)
         self.assertEqual(doc['status'], 'confirmed')
         congelado = {l.pk: l.unit_rmb for l in so.lines.all()}
@@ -1304,7 +1335,9 @@ class CompradorComprasTests(TestCase):
                 price_kind='emmc', price_gen='',
                 price_tier_value=Decimal('16'), price_tier_unit='GB')
             so = services.create_draft_for_lot(lot, self.parceiro)
-            services.confirm(so, self.parceiro, unmasked=True)
+            # ⚠ Desde 2026-08-18 quem CONGELA é o despacho, e o comprador só
+            # enxerga o que já saiu — fixture sem despacho é OV invisível.
+            services.mark_shipped(so, 'DHL', 'JD' + sufixo, None, self.parceiro)
             so.refresh_from_db()
             return so
 
@@ -1318,6 +1351,11 @@ class CompradorComprasTests(TestCase):
             so = SalesOrder(lot=lot, buyer=self.rival,
                             number=DocSequence.next_number(self.emp_c, SEQ_SO))
             so.save()
+            # Despachada de propósito: assim o 404 abaixo prova POSSE, e não
+            # apenas que a ordem ainda não saiu.
+            SalesOrder.all_companies.filter(pk=so.pk).update(
+                shipped_at=timezone.localdate())
+            so.refresh_from_db()
             return so
 
     # ── isolamento ──────────────────────────────────────────────────────────
@@ -1443,7 +1481,8 @@ class CompradorComprasTests(TestCase):
                 price_gen='', price_tier_value=Decimal('256'),
                 price_tier_unit='GB')
             so = services.create_draft_for_lot(lot, self.parceiro)
-        self.assertEqual(so.status, STATUS_DRAFT)
+            services.mark_shipped(so, 'DHL', 'JDSP', None, self.parceiro)
+        self.assertEqual(so.status, STATUS_DRAFT)           # falta preço
         self.client.force_login(self.parceiro)
         tela = self.client.get(reverse('compras:detail', args=[so.pk]))
         self.assertNotContains(tela, 'name="rej_')          # sem campo
@@ -1476,6 +1515,7 @@ class CompradorComprasTests(TestCase):
                 price_gen='', price_tier_value=Decimal('256'),
                 price_tier_unit='GB')
             so = services.create_draft_for_lot(lot, self.parceiro)
+            services.mark_shipped(so, 'DHL', 'JDV', None, self.parceiro)
             self.assertEqual(so.status, STATUS_DRAFT)
             grupos = services.result_rows(so)
         linhas = {(l['type'], l['capacity']): l
@@ -1509,7 +1549,10 @@ class CompradorComprasTests(TestCase):
                 chip_type='eMMC', company=self.emp_a, price_kind='emmc',
                 price_gen='', price_tier_value=Decimal('16'),
                 price_tier_unit='GB')
-            so = services.create_draft_for_lot(lot, self.parceiro)   # sem confirmar
+            so = services.create_draft_for_lot(lot, self.parceiro)
+            SalesOrder.all_companies.filter(pk=so.pk).update(
+                shipped_at=timezone.localdate())     # despachada, não congelada
+            so.refresh_from_db()
             grupos = services.result_rows(so)
         self.assertEqual(services.draft_pendencias(grupos), [])      # nada falta
         self.client.force_login(self.parceiro)
@@ -1601,6 +1644,7 @@ class CompradorValorFechadoTests(TestCase):
         """Coluna da data (dono, 2026-08-18) e o ¥ VIVO do rascunho — antes a
         lista mostrava "—" e ele não sabia o tamanho da compra."""
         so = self._rascunho('L1')
+        self._fecha_lote(so)          # despachado: é assim que ele o enxerga
         tela = self.client.get(reverse('compras:list'))
         self.assertContains(tela, so.code)                       # SO/EMPRESA/NNN
         self.assertContains(tela, so.created_at.strftime('%d/%m/%Y'))
@@ -1609,10 +1653,15 @@ class CompradorValorFechadoTests(TestCase):
 
     # ── congelar ────────────────────────────────────────────────────────────
 
-    def _fecha_lote(self, so):
-        """O lote fecha (é isso que dispara o congelamento no fluxo normal)."""
-        from django.utils import timezone
+    def _fecha_lote(self, so, despachar=True):
+        """Fecha o lote e (por padrão) DESPACHA — desde 2026-08-18 é o
+        despacho que congela, e só o que saiu chega ao comprador."""
         Lot.all_companies.filter(pk=so.lot_id).update(closed_at=timezone.now())
+        so.lot.refresh_from_db()
+        if despachar:
+            SalesOrder.all_companies.filter(pk=so.pk).update(
+                shipped_at=timezone.localdate(), carrier='DHL')
+            so.refresh_from_db()
 
     def test_aprovar_o_preco_que_faltava_congela_a_ordem_sozinha(self):
         """O laço que faltava: aprovar preço destrava as compras presas."""
@@ -1646,9 +1695,18 @@ class CompradorValorFechadoTests(TestCase):
         self.assertEqual(so.status, STATUS_DRAFT)
 
     def test_lote_ainda_ABERTO_nao_congela(self):
-        """Cotação de lote aberto é rascunho de propósito — o valor fecha no
-        FECHAMENTO do lote, não antes."""
+        """Cotação de lote aberto é rascunho de propósito."""
         so = self._rascunho('A3')                     # sem fechar o lote
+        with company_scope(self.emp):
+            self.assertEqual(services.freeze_pending_orders(self.buyer), [])
+        so.refresh_from_db()
+        self.assertEqual(so.status, STATUS_DRAFT)
+
+    def test_ordem_NAO_DESPACHADA_nao_congela_ao_aprovar_preco(self):
+        """Aprovar preço não pode atropelar o despacho e dar a venda por
+        fechada antes de a caixa sair (dono, 2026-08-18)."""
+        so = self._rascunho('A5')
+        self._fecha_lote(so, despachar=False)
         with company_scope(self.emp):
             self.assertEqual(services.freeze_pending_orders(self.buyer), [])
         so.refresh_from_db()
@@ -1717,6 +1775,7 @@ class CompradorValorFechadoTests(TestCase):
     def test_aba_de_chips_lista_PN_spec_caixa_e_preco(self):
         """"Seria aí onde o comprador olha detalhe por detalhe" (dono)."""
         so = self._rascunho('T2')
+        self._fecha_lote(so)          # despachado: é assim que ele o enxerga
         with company_scope(self.emp):
             chips = services.lot_chips(so)
         self.assertEqual(chips['qty'], 10)
@@ -1825,7 +1884,9 @@ class CompradorEtapasEResultadoTests(TestCase):
             so = services.create_draft_for_lot(lot, self.parceiro)
             Lot.all_companies.filter(pk=lot.pk).update(closed_at=timezone.now())
             so.lot.refresh_from_db()
-            services.confirm(so, self.parceiro, unmasked=True)
+            # ⚠ O DESPACHO é que congela e é o que faz a ordem existir para
+            # o comprador (dono, 2026-08-18).
+            services.mark_shipped(so, 'DHL', 'JD' + sufixo, None, self.parceiro)
             so.refresh_from_db()
             return so
 
@@ -1835,18 +1896,12 @@ class CompradorEtapasEResultadoTests(TestCase):
         so = self._ov('S1')
         with company_scope(self.emp):
             passos = {p['key']: p for p in services.order_steps(so)}
-        self.assertEqual(passos['fechado']['state'], 'done')      # lote fechado
-        self.assertEqual(passos['enviado']['state'], 'current')   # falta o cliente
-        self.assertEqual(passos['recebido']['state'], 'todo')
-        self.assertEqual(passos['pagamento']['state'], 'todo')
-
-        from datetime import date as _date
-        with company_scope(self.emp):
-            services.mark_shipped(so, 'DHL', 'JD01', _date.today(),
-                                  self.parceiro)
-            passos = {p['key']: p for p in services.order_steps(so)}
+        # Fechado e Enviado já vêm ✓: o comprador só vê o que SAIU.
+        self.assertEqual(passos['fechado']['state'], 'done')
         self.assertEqual(passos['enviado']['state'], 'done')
-        self.assertEqual(passos['recebido']['state'], 'current')
+        self.assertEqual(passos['recebido']['state'], 'current')  # é o que falta
+        self.assertEqual(passos['resultado']['state'], 'todo')
+        self.assertEqual(passos['pagamento']['state'], 'todo')
 
         self.client.post(reverse('compras:recebido', args=[so.pk]))
         so.refresh_from_db()
@@ -1861,6 +1916,8 @@ class CompradorEtapasEResultadoTests(TestCase):
         mesmo — nada bloqueia isso. A tela não pode dizer "aguardando envio"
         com o recebimento já carimbado."""
         so = self._ov('S14')
+        SalesOrder.all_companies.filter(pk=so.pk).update(shipped_at=None)
+        so.refresh_from_db()
         services.mark_received(so)
         with company_scope(self.emp):
             passos = {p['key']: p for p in services.order_steps(so)}
@@ -2088,7 +2145,9 @@ class CompradorPagamentoTests(TestCase):
             so = services.create_draft_for_lot(lot, self.parceiro)
             Lot.all_companies.filter(pk=lot.pk).update(closed_at=timezone.now())
             so.lot.refresh_from_db()
-            services.confirm(so, self.parceiro, unmasked=True)
+            services.mark_shipped(so, 'DHL', 'JD' + sufixo, None, self.parceiro)
+            so.refresh_from_db()
+            services.mark_received(so)
         self.client.post(reverse('compras:resultado', args=[so.pk]), {})
         so.refresh_from_db()
         return so

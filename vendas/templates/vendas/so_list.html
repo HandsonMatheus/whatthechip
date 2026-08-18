@@ -48,7 +48,7 @@
         <tr class="{% if so.status == 'cancelled' %}is-cancelled{% endif %}">
           <td class="mono"><a href="{% url 'vendas:so_detail' so.pk %}">{{ so.code }}</a></td>
           <td><a href="{% url 'estoque:lot_detail' so.lot.pk %}">{{ so.lot.code }}</a></td>
-          <td>{% if so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "cotação" %}</span>{% elif so.status == 'confirmed' %}<span class="so-badge so-badge--ok">{% trans "confirmada" %}</span>{% else %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% endif %}</td>
+          <td>{% if so.status == 'cancelled' %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% elif not so.shipped_at %}<span class="so-badge so-badge--draft">{% trans "despacho pendente" %}</span>{% elif so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "falta preço" %}</span>{% else %}<span class="so-badge so-badge--ok">{% trans "despachada" %}</span>{% endif %}</td>
           {% localize off %}
           {% comment %} Valor só para quem tem can_see_price (dono 2026-08-14):
              o gerente opera a venda sem ver dinheiro. A view já ZERA os campos

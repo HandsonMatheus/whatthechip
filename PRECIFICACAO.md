@@ -1653,6 +1653,28 @@ calcular), o **logo do cliente** no topo — e duas coisas que **saíram**: o
 compra é sigilo de negócio) e o **número da FATURA** (papel interno; não diz
 nada a quem recebe). O documento se identifica por LOTE + OV.
 
+🔁 **O DESPACHO é que CONGELA a venda — reversão do F11.6/F1** (dono,
+2026-08-18, fim do dia). A OV **nasce RASCUNHO, com despacho pendente**;
+enquanto a caixa não sai, o preço segue vivo, o crachá diz "despacho pendente"
+e **o comprador não enxerga a ordem**. Registrar o despacho congela o ¥ e
+libera a compra para ele.
+
+Por que muda: fechar o lote é ato de BANCADA — a venda só existe de verdade
+quando a caixa sai. Mostrar ao comprador um lote fechado que ninguém postou é
+prometer caixa que não saiu.
+
+⚠ O que motivava congelar no fechamento — "o papel imprime preço" — continua
+respeitado: a via que VIAJA com a caixa é a do gerente, **sem coluna de
+dinheiro**; a via com preço é a do admin, impressa depois do despacho, com o
+valor já parado. Há teste dos dois lados.
+
+⚠ Consequências, todas com teste: `freeze_pending_orders` (aprovar preço) só
+mexe em ordem **já despachada** — aprovar preço não pode atropelar o despacho;
+`orders_for_buyer`/`buyer_order` filtram por `shipped_at`, e ordem não
+despachada é **404** para ele; e a caixa sai mesmo com categoria sem preço (o
+fato é físico) — aí ela vira **rascunho DESPACHADO**, aparece para o comprador
+e congela quando ele completar a tabela.
+
 🚚 **F4 — DESPACHO (dono, 2026-08-18).** Quem embala e leva a caixa é o
 CLIENTE, então o registro é dele: bloco *Despacho* na tela da OV com
 transportadora, rastreio e data (`SalesOrder.carrier/tracking/shipped_at/

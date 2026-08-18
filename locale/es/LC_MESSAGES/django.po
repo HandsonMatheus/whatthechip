@@ -3204,3 +3204,37 @@ msgstr "Transportista"
 #. vendas/ (F4 — despacho)
 msgid "pode entrar depois"
 msgstr "puede completarse después"
+
+#. vendas/ (F4 — despacho congela)
+msgid ""
+"Enquanto a caixa não sai, esta venda fica em rascunho: o preço segue vivo e "
+"o comprador não a enxerga. Registrar o despacho congela o valor e libera a "
+"ordem para ele."
+msgstr ""
+"Mientras la caja no sale, esta venta queda en borrador: el precio sigue vivo"
+" y el comprador no la ve. Registrar el despacho congela el valor y libera la"
+" orden para él."
+
+#. vendas/ (F4 — despacho congela)
+msgid "despachada — falta preço do comprador"
+msgstr "despachada — falta precio del comprador"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despachada — valores congelados"
+msgstr "despachada — valores congelados"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despachada"
+msgstr "despachada"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despacho pendente — valores vivos"
+msgstr "despacho pendiente — valores vivos"
+
+#. vendas/ (F4 — despacho congela)
+msgid "despacho pendente"
+msgstr "despacho pendiente"
+
+#. vendas/ (F4 — despacho congela)
+msgid "falta preço"
+msgstr "falta precio"
