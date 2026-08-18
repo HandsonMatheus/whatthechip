@@ -869,6 +869,13 @@ class PriceChangeRequest(models.Model):
         self.review_status = self.REVIEW_APPROVED
         self.reviewed_by, self.reviewed_at = reviewer, _tz.now()
         self.save()
+        # F11.6 (dono, 2026-08-18): a OV congela no FECHAMENTO do lote, mas o
+        # lote que fechou com esta categoria SEM preço deixou a ordem em
+        # rascunho esperando. Aprovar o preço fecha o laço — sem isso a compra
+        # fica presa e o comprador não tem o que fazer (foi o LOT/EMI/041).
+        # Nunca levanta: aprovar preço não pode falhar por efeito colateral.
+        from vendas.services import freeze_pending_orders
+        freeze_pending_orders(self.price.price_list.buyer, reviewer)
 
     def reject(self, reviewer):
         """Rejeita: o Price fica exatamente como estava."""

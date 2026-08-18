@@ -180,6 +180,47 @@ def confirm(so, user, unmasked=False):
     return so
 
 
+def freeze_pending_orders(buyer, user=None):
+    """Congela as OVs que ficaram em RASCUNHO por falta de preço, agora que a
+    tabela do comprador mudou. Devolve as que congelaram.
+
+    POR QUE existe (dono, 2026-08-18): a OV congela no FECHAMENTO do lote
+    (F11.6/F1) — o dono é categórico: "o valor já é congelado pelo próprio
+    cliente no momento do fechamento". A exceção é o lote que fecha com uma
+    categoria sem preço no grid do comprador: `confirm` é tudo-ou-nada, então
+    a OV fica em rascunho esperando. Faltava fechar o laço — aprovar o preço
+    não destravava nada, e a compra ficava presa (foi o `LOT/EMI/041`, que
+    esperava LPDDR3 1.5GB).
+
+    Chamado de onde um preço é DECIDIDO: `PriceChangeRequest.approve()` e o
+    admin do `Price`. Não do `Price.save()` — importação e seed gravam
+    centenas de linhas e varreriam as ordens a cada uma.
+
+    ⚠ **Nunca levanta.** Mesmo princípio do F8: o efeito colateral não pode
+    derrubar o ato principal. Aprovar preço tem que funcionar mesmo que uma
+    ordem se recuse a congelar.
+    """
+    from tenancy.scope import company_scope
+    congeladas = []
+    for comp in _empresas_ativas():
+        try:
+            with company_scope(comp):
+                pendentes = list(SalesOrder.objects.filter(
+                    buyer=buyer, status=STATUS_DRAFT,
+                    lot__closed_at__isnull=False).select_related('lot'))
+                for so in pendentes:
+                    try:
+                        confirm(so, user)
+                        congeladas.append(so)
+                    except ValidationError:
+                        continue            # ainda falta preço: segue rascunho
+                    except Exception:       # noqa: BLE001
+                        logger.exception('freeze_pending_orders: OV %s', so.pk)
+        except Exception:                   # noqa: BLE001
+            logger.exception('freeze_pending_orders: empresa %s', getattr(comp, 'pk', comp))
+    return congeladas
+
+
 def cancel(so, user):
     """Cancela (draft OU confirmada — auditado; é o pré-requisito para
     reabrir um lote com OV confirmada). Nunca delete."""
@@ -700,6 +741,65 @@ def result_rows(so):
     for g in grupos.values():
         g['lines'].sort(key=lambda r: (r['type'], r['capacity']))
     return sorted(grupos.values(), key=lambda g: g['brand'])
+
+
+def _entry_spec(e) -> str:
+    """A spec que o comprador confere no PN: capacidade, ou NAND+RAM no
+    combo (é assim que eMCP/uMCP são anunciados e conferidos)."""
+    if e.is_emcp and (e.emcp_nand or e.emcp_ram):
+        return ' + '.join(p for p in (e.emcp_nand, e.emcp_ram) if p)
+    return e.capacity or '—'
+
+
+def lot_chips(so):
+    """TODO chip do lote, PN a PN — a aba de detalhe do comprador (dono,
+    2026-08-18: "seria aí onde o comprador olha detalhe por detalhe").
+
+    Cada linha traz PN, marca, tipo, spec, quantidade, a CAIXA WTC em que ele
+    foi despachado e o preço da categoria. O preço vem da OV (congelado) ou do
+    grid vivo (rascunho) — a MESMA fonte da tabela de cima, casando pela chave
+    de preço (marca × kind/gen/faixa). PN sem chave de preço aparece com "—":
+    ele viaja na caixa mas não entra no comércio, e o comprador precisa ver
+    isso em vez de achar que sumiu.
+
+    ⚠ Roda DENTRO do `company_scope` da dona (o `buyer_order` abre) — o lote é
+    da empresa-cliente e o RLS devolveria zero linhas fora dele.
+    """
+    from estoque.models import InventoryEntry
+    from pricing.models import CategoryCode
+    vivo = {}
+    if so.status == STATUS_DRAFT:
+        for line, q in live_quotes(so):
+            vivo[line.pk] = q.value_rmb() if q.status == 'PRICED' else None
+    precos = {}
+    for line in so.lines.all():
+        unit = vivo.get(line.pk) if so.status == STATUS_DRAFT else line.unit_rmb
+        precos[(line.brand or '', line.kind, line.gen,
+                line.tier_value, line.tier_unit)] = unit
+
+    linhas, total_qty, total_rmb = [], 0, Decimal('0.00')
+    for e in (InventoryEntry.objects.filter(lot=so.lot)
+              .order_by('brand', 'part_number')):
+        chave = (e.brand or '', e.price_kind, e.price_gen,
+                 e.price_tier_value, e.price_tier_unit)
+        unit = precos.get(chave)
+        total = (unit * e.quantity) if unit is not None else None
+        linhas.append({
+            'pn': e.part_number,
+            'brand': e.brand or '—',
+            'type': e.chip_type or '—',
+            'spec': _entry_spec(e),
+            'qty': e.quantity,
+            'wtc': (CategoryCode.label_for_key(
+                e.price_kind, e.price_gen, e.price_tier_value,
+                e.price_tier_unit, create=False) or '—') if e.price_kind else '—',
+            'unit_rmb': unit,
+            'total_rmb': total,
+        })
+        total_qty += e.quantity
+        if total is not None:
+            total_rmb += total
+    return {'linhas': linhas, 'qty': total_qty, 'rmb': total_rmb}
 
 
 def draft_pendencias(grupos):

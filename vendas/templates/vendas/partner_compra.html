@@ -47,31 +47,19 @@
     {% endblocktrans %}</b>
     <span class="cmp-falta">{% for p in pendencias %}{{ p }}{% if not forloop.last %} · {% endif %}{% endfor %}{% if pendencias_extra %} … +{{ pendencias_extra }}{% endif %}</span>
     <div>{% blocktrans trimmed %}
-      Cote essas categorias, depois volte aqui e congele a ordem — aí o
+      Cote essas categorias e o valor desta compra fecha sozinho — aí o
       resultado abre.
     {% endblocktrans %}</div>
   </div>
   {% else %}
-  {% comment %} Rascunho SEM pendência: falta só congelar, e quem congela é
-     ELE (dono, 2026-08-18). Até aqui a tela mandava "falar com o
-     WhatTheChip" e não oferecia caminho nenhum — aprovar o preço que faltava
-     não destravava nada. {% endcomment %}
-  <div class="cmp-aviso cmp-aviso--go">
-    <div>{% blocktrans trimmed %}
-      Todas as categorias deste lote já têm preço na sua tabela. Os valores
-      abaixo são ESTIMADOS pela tabela de hoje: congele a ordem para virarem
-      definitivos e liberar a conferência.
-    {% endblocktrans %}</div>
-    {% if pode_congelar %}
-    <form method="post" action="{% url 'compras:congelar' so.pk %}" class="cmp-congelar">
-      {% csrf_token %}
-      <button type="submit" class="cmp-btn cmp-btn--go"
-              onclick="return confirm('{% trans "Congelar trava o preço desta ordem na tabela de hoje. Confirmar?" %}');">
-        {% blocktrans trimmed with v=total_estimado %}Congelar ¥ {{ v }}{% endblocktrans %}
-      </button>
-    </form>
-    {% endif %}
-  </div>
+  {% comment %} Rascunho SEM pendência: ordem antiga, que nasceu antes do
+     congelamento no fechamento do lote. Nada a fazer pelo comprador — o
+     valor da compra é fechado pelo CLIENTE quando ele fecha o lote. {% endcomment %}
+  <div class="cmp-aviso">{% blocktrans trimmed %}
+    Os valores abaixo são ESTIMADOS pela sua tabela de hoje — esta compra é
+    anterior ao fechamento automático de valor. Fale com o WhatTheChip para
+    fechá-la antes de conferir.
+  {% endblocktrans %}</div>
   {% endif %}
 {% endif %}
 
@@ -82,9 +70,17 @@
   {% endblocktrans %}</div>
 {% endif %}
 
+{% comment %} Duas abas (dono, 2026-08-18): o RESUMO é onde ele dá o
+   resultado; CHIPS é onde ele confere detalhe por detalhe, PN a PN. {% endcomment %}
+<div class="cmp-abas">
+  <button type="button" class="cmp-aba cmp-aba--on" data-aba="resumo">{% trans "Resumo" %}</button>
+  <button type="button" class="cmp-aba" data-aba="chips">{% blocktrans trimmed with n=chips.qty %}Chips ({{ n }}){% endblocktrans %}</button>
+</div>
+
+<div id="cmp-pane-resumo">
 <form method="post" action="{% url 'compras:resultado' so.pk %}">
 {% csrf_token %}
-<table class="cmp-tab cmp-res">
+<table class="cmp-tab cmp-res" id="cmp-tab-resumo">
   <thead>
     <tr>
       <th>{% trans "Tipo" %}</th>
@@ -110,17 +106,41 @@
       <td class="mono cmp-wtc">{{ l.wtc }}</td>
       <td class="num">{{ l.qty }}</td>
       <td class="num mono{% if l.sem_preco %} cmp-falta-td{% endif %}">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
-      <td class="num mono">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+      <td class="num mono cmp-lin-tot">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
       {% if pode_acertar %}
       <td class="num cmp-rej">
         <input type="number" name="rej_{{ l.pk }}" min="0" max="{{ l.qty }}"
-               placeholder="0" class="cmp-in" inputmode="numeric">
+               placeholder="0" class="cmp-in" inputmode="numeric"
+               data-qty="{{ l.qty|unlocalize }}"
+               data-unit="{% if l.unit_rmb %}{{ l.unit_rmb|unlocalize }}{% else %}0{% endif %}">
       </td>
       {% endif %}
     </tr>
     {% endfor %}
   {% endfor %}
   </tbody>
+  {% comment %} Linha de TOTAIS (dono, 2026-08-18). Com o resultado aberto ela
+     recalcula ao vivo enquanto ele digita os recusados — conforto, nunca a
+     fonte da conta: quem soma de verdade é o servidor no "Fechar
+     resultado". {% endcomment %}
+  <tfoot>
+    <tr class="cmp-tot-lin">
+      <td colspan="3">{% trans "Total" %}</td>
+      <td class="num" id="cmp-t-qtd">{{ total_qty }}</td>
+      <td></td>
+      <td class="num mono" id="cmp-t-rmb">{% localize off %}{% if estimado %}≈ ¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+      {% if pode_acertar %}<td class="num cmp-rej" id="cmp-t-rej">0</td>{% endif %}
+    </tr>
+    {% if pode_acertar %}
+    <tr class="cmp-tot-lin cmp-tot-lin--pagar">
+      <td colspan="3">{% trans "A pagar (aceitos)" %}</td>
+      <td class="num" id="cmp-t-aceitos">{{ total_qty }}</td>
+      <td></td>
+      <td class="num mono" id="cmp-t-pagar">{% localize off %}¥ {{ so.total_rmb }}{% endlocalize %}</td>
+      <td></td>
+    </tr>
+    {% endif %}
+  </tfoot>
 </table>
 
 {% if pode_acertar %}
@@ -138,6 +158,51 @@
   </button>
 {% endif %}
 </form>
+</div>
+
+{% comment %} Aba CHIPS — todo PN do lote com spec, caixa e preço. É aqui que
+   ele confere detalhe por detalhe. Leitura pura: o resultado se dá pela
+   categoria (aba Resumo), porque é a categoria que tem preço. {% endcomment %}
+<div id="cmp-pane-chips" hidden>
+<table class="cmp-tab">
+  <thead>
+    <tr>
+      <th>{% trans "Part Number" %}</th>
+      <th>{% trans "Marca" %}</th>
+      <th>{% trans "Tipo" %}</th>
+      <th>{% trans "Spec" %}</th>
+      <th>{% trans "Caixa WTC" %}</th>
+      <th class="num">{% trans "Qtd." %}</th>
+      <th class="num">{% trans "¥ unit." %}</th>
+      <th class="num">{% trans "¥ total" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for c in chips.linhas %}
+    <tr>
+      <td class="mono">{{ c.pn }}</td>
+      <td>{{ c.brand }}</td>
+      <td>{{ c.type }}</td>
+      <td>{{ c.spec }}</td>
+      <td class="mono cmp-wtc">{{ c.wtc }}</td>
+      <td class="num">{{ c.qty }}</td>
+      <td class="num mono{% if not c.unit_rmb %} cmp-falta-td{% endif %}">{% localize off %}{% if c.unit_rmb %}¥ {{ c.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
+      <td class="num mono">{% localize off %}{% if c.total_rmb %}¥ {{ c.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="8" class="cmp-vazio-td">{% trans "Nenhum chip registrado neste lote." %}</td></tr>
+  {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr class="cmp-tot-lin">
+      <td colspan="5">{% trans "Total" %}</td>
+      <td class="num">{{ chips.qty }}</td>
+      <td></td>
+      <td class="num mono">{% localize off %}¥ {{ chips.rmb }}{% endlocalize %}</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
 
 <style>
   .cmp-voltar { color:#0f62fe; text-decoration:none; font-size:13px; font-weight:600; }
@@ -152,10 +217,6 @@
   .cmp-tot__sub { font-size:12px; color:#8d8d8d; }
   .cmp-aviso { background:#fcf4d6; border-left:3px solid #f1c21b; padding:12px 14px;
                font-size:14px; margin-bottom:18px; max-width:70ch; }
-  .cmp-aviso--go { background:#edf5ff; border-left-color:#0f62fe; }
-  .cmp-congelar { margin-top:12px; }
-  .cmp-btn--go { background:#0f62fe; }
-  .cmp-btn--go:hover { background:#0353e9; }
   .cmp-nota { background:#edf5ff; border-left:3px solid #0f62fe; padding:10px 14px;
               font-size:13px; margin-bottom:18px; max-width:70ch; }
   .cmp-tab { width:100%; border-collapse:collapse; background:#fff;
@@ -184,5 +245,60 @@
   .cmp-btn { background:#0f62fe; color:#fff; border:0; padding:13px 26px;
              font-size:14px; font-weight:600; cursor:pointer; }
   .cmp-btn:hover { background:#0353e9; }
+  .cmp-abas { display:flex; gap:2px; margin-bottom:-1px; }
+  .cmp-aba { background:#f4f4f4; border:1px solid #e0e0e0; border-bottom:0;
+             padding:9px 18px; font-size:13px; font-weight:600; color:#525252;
+             cursor:pointer; font-family:inherit; }
+  .cmp-aba--on { background:#fff; color:#161616; box-shadow:inset 0 2px 0 #0f62fe; }
+  .cmp-tot-lin td { border-top:1px solid #8d8d8d; font-weight:600;
+                    background:#f4f4f4; }
+  .cmp-tot-lin--pagar td { background:#edf5ff; border-top:0; color:#0043ce; }
+  .cmp-vazio-td { text-align:center; color:#8d8d8d; padding:30px; }
 </style>
+
+<script>
+(function () {
+  // ── Abas ────────────────────────────────────────────────────────────────
+  var panes = {resumo: document.getElementById('cmp-pane-resumo'),
+               chips:  document.getElementById('cmp-pane-chips')};
+  document.querySelectorAll('.cmp-aba').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.cmp-aba').forEach(function (o) {
+        o.classList.toggle('cmp-aba--on', o === b);
+      });
+      Object.keys(panes).forEach(function (k) {
+        if (panes[k]) panes[k].hidden = (k !== b.dataset.aba);
+      });
+    });
+  });
+
+  // ── Totais ao vivo enquanto ele digita os recusados ─────────────────────
+  // CONFORTO, nunca a fonte da conta: quem soma de verdade é o servidor no
+  // "Fechar resultado" (o settle_and_invoice revalida tudo).
+  var campos = document.querySelectorAll('.cmp-rej input[data-qty]');
+  var elRej = document.getElementById('cmp-t-rej');
+  var elAceitos = document.getElementById('cmp-t-aceitos');
+  var elPagar = document.getElementById('cmp-t-pagar');
+  if (!campos.length || !elPagar) return;
+
+  function recalcular() {
+    var rej = 0, aceitos = 0, pagar = 0;
+    campos.forEach(function (i) {
+      var qtd = parseInt(i.dataset.qty, 10) || 0;
+      var unit = parseFloat(i.dataset.unit) || 0;
+      var r = parseInt(i.value, 10);
+      if (isNaN(r) || r < 0) r = 0;
+      if (r > qtd) r = qtd;
+      rej += r;
+      aceitos += (qtd - r);
+      pagar += (qtd - r) * unit;
+    });
+    elRej.textContent = rej;
+    elAceitos.textContent = aceitos;
+    elPagar.textContent = '¥ ' + pagar.toFixed(2);
+  }
+  campos.forEach(function (i) { i.addEventListener('input', recalcular); });
+  recalcular();
+})();
+</script>
 {% endblock %}

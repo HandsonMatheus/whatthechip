@@ -2734,3 +2734,40 @@ msgstr "本批次的所有类别在您的价格表中均已有价格。下方金
 #. vendas/ (F11.6 — comprador congela)
 msgid "Todos os preços"
 msgstr "全部价格"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "A pagar (aceitos)"
+msgstr "应付（已接收）"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "Chips (%(n)s)"
+msgstr "芯片 (%(n)s)"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid ""
+"Cote essas categorias e o valor desta compra fecha sozinho — aí o resultado "
+"abre."
+msgstr "为这些类别报价后，本次采购的金额会自动确定——验收随即开启。"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "Nenhum chip registrado neste lote."
+msgstr "本批次没有登记任何芯片。"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid ""
+"Os valores abaixo são ESTIMADOS pela sua tabela de hoje — esta compra é "
+"anterior ao fechamento automático de valor. Fale com o WhatTheChip para "
+"fechá-la antes de conferir."
+msgstr "下方金额按您今天的价格表为预估值——本次采购早于金额自动锁定功能。请联系 WhatTheChip 先锁定，再进行验收。"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "Resumo"
+msgstr "汇总"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "Spec"
+msgstr "规格"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "¥ total"
+msgstr "¥ 合计"

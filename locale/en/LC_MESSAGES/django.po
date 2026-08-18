@@ -2895,3 +2895,45 @@ msgstr ""
 #. vendas/ (F11.6 — comprador congela)
 msgid "Todos os preços"
 msgstr "All prices"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "A pagar (aceitos)"
+msgstr "To pay (accepted)"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "Chips (%(n)s)"
+msgstr "Chips (%(n)s)"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid ""
+"Cote essas categorias e o valor desta compra fecha sozinho — aí o resultado "
+"abre."
+msgstr ""
+"Quote those categories and this purchase closes its value on its own — that "
+"opens the result."
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "Nenhum chip registrado neste lote."
+msgstr "No chips recorded in this lot."
+
+#. vendas/ (F11.6 — abas + totais)
+msgid ""
+"Os valores abaixo são ESTIMADOS pela sua tabela de hoje — esta compra é "
+"anterior ao fechamento automático de valor. Fale com o WhatTheChip para "
+"fechá-la antes de conferir."
+msgstr ""
+"The amounts below are ESTIMATED from your table as of today — this purchase "
+"predates the automatic value close. Talk to WhatTheChip to close it before "
+"checking it in."
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "Resumo"
+msgstr "Summary"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "Spec"
+msgstr "Spec"
+
+#. vendas/ (F11.6 — abas + totais)
+msgid "¥ total"
+msgstr "¥ total"

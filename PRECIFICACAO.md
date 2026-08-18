@@ -1522,28 +1522,38 @@ acertar têm que acontecer todos sob o MESMO `company_scope`. Fora dele o RLS
 devolve zero linhas em silêncio, e o bug apareceria como "OV sem linhas" em
 vez de erro — a mesma classe de armadilha do incidente do K9.
 
-✅ **RESOLVIDO em 2026-08-18 (tarde) — o comprador CONGELA a própria ordem.**
+✅ **RESOLVIDO em 2026-08-18 (tarde) — aprovar o preço fecha o valor sozinho.**
 Bug achado em prod no `LOT/EMI/041`: faltava preço de LPDDR3 1.5GB, o dono
 aprovou o preço, **e a tela continuou travada dizendo "falta preço seu"**.
 Eram duas coisas erradas ao mesmo tempo:
 
 · **O estágio mentia.** `order_stage` devolvia `sem_preco` para QUALQUER
   rascunho. Agora são dois: `sem_preco` (falta cotação no grid dele — só ele
-  resolve) e **`a_congelar`** (tudo cotado, falta o ato de congelar). A lista
-  também passou a mostrar o ¥ **vivo** do rascunho com `≈` em vez de `—`: sem
-  isso ele não sabia o tamanho da compra. As cotações vivas de toda a lista
+  resolve) e **`a_congelar`** (tudo cotado, falta o ato). A lista também
+  passou a mostrar o ¥ **vivo** do rascunho com `≈` em vez de `—`: sem isso
+  ele não sabia o tamanho da compra. As cotações vivas de toda a lista
   compartilham UM `BuyerPricingContext` (3 queries), senão seriam 3 por
   rascunho na tela.
-· **Não havia caminho.** A tela mandava "falar com o WhatTheChip" — enquanto o
-  dono já tinha decidido que **quem confirma a ordem é o COMPRADOR** (foi o
-  motivo de tirar o botão de confirmar da tela do cliente). Agora o rascunho
-  sem pendência mostra **"Congelar ¥ X"**, que chama o mesmo
-  `services.confirm` do fechamento do lote, com `unmasked=True` (aqui o rótulo
-  é real: quem lê é quem compra o chip).
+· **Ninguém retentava o congelamento.** `services.freeze_pending_orders(buyer)`
+  fecha o laço: é chamado de `PriceChangeRequest.approve()` e do admin do
+  `Price` — os dois pontos onde um preço é DECIDIDO. **Não** do `Price.save()`:
+  importação e seed gravam centenas de linhas e varreriam as ordens a cada
+  uma. Nunca levanta (mesmo princípio do F8: efeito colateral não derruba o
+  ato principal), e só toca OV de lote **já fechado**.
 
-Congelamento **explícito**, e não automático na leitura, por decisão do dono:
-o preço que trava é o que ele vai pagar, então ele vê o valor antes de travar
-— e uma leitura de tela não pode gravar no banco.
+⚠ **Sem botão de congelar na tela do comprador** (dono, 2026-08-18, corrigindo
+uma tentativa minha): *"o valor já é congelado pelo próprio cliente no momento
+do fechamento"*. O rascunho é ANOMALIA — o lote fechou com uma categoria sem
+preço no grid dele — e a cura certa é o preço aprovado destravar sozinho, não
+um botão que faz o comprador achar que congelar é passo normal da compra.
+
+**A tela da compra ganhou (dono, 2026-08-18):** linha de **totais** nas duas
+tabelas; recálculo **ao vivo** de chips aceitos e ¥ a pagar enquanto ele digita
+os recusados (conforto puro — quem soma é o `settle_and_invoice` no servidor,
+e os `data-qty`/`data-unit` de que o JS depende têm teste); e a aba **Chips**
+(`services.lot_chips`), com todo PN do lote: marca, tipo, spec, caixa WTC,
+quantidade e preço. PN **sem chave de preço** aparece com "—" em vez de sumir:
+ele viaja na caixa e não entra no comércio, e o comprador precisa ver isso.
 
 🔀 **A raiz `/partner/` virou a lista de COMPRAS** (dono, 2026-08-18): é a tela
 que o comprador abre todo dia; a tabela de preços virou a segunda, em

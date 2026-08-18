@@ -1518,8 +1518,9 @@ class CompradorComprasTests(TestCase):
             SalesOrder.all_companies.get(pk=so.pk)), services.STAGE_FATURADO)
 
 
-class CompradorCongelaTests(TestCase):
-    """O comprador CONGELA a própria ordem (dono, 2026-08-18).
+class CompradorValorFechadoTests(TestCase):
+    """O valor fecha SOZINHO quando o preço que faltava é aprovado
+    (dono, 2026-08-18).
 
     Bug que motivou: no LOT/EMI/041 faltava preço de LPDDR3 1.5GB, ele
     aprovou o preço — e a tela continuou dizendo "falta preço seu", travada.
@@ -1527,9 +1528,12 @@ class CompradorCongelaTests(TestCase):
 
     1. o estágio da lista dizia `sem_preco` para QUALQUER rascunho, mesmo já
        cotado por inteiro (agora há `a_congelar`);
-    2. não existia caminho para congelar do lado dele — a tela mandava "falar
-       com o WhatTheChip", e o dono já tinha decidido que quem confirma a
-       ordem é o COMPRADOR.
+    2. aprovar o preço não destravava nada — ninguém retentava o
+       congelamento, e a compra ficava presa para sempre.
+
+    ⚠ O valor da compra é fechado pelo CLIENTE, no fechamento do lote (o dono
+    é categórico). Este caminho é só o conserto do lote que fechou com uma
+    categoria sem preço na tabela do comprador — `confirm` é tudo-ou-nada.
     """
 
     @classmethod
@@ -1595,47 +1599,117 @@ class CompradorCongelaTests(TestCase):
 
     # ── congelar ────────────────────────────────────────────────────────────
 
-    def test_rascunho_completo_oferece_o_botao_e_congela(self):
-        so = self._rascunho('C1')
-        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
-        self.assertContains(tela, reverse('compras:congelar', args=[so.pk]))
-        self.assertNotContains(tela, 'name="rej_')       # ainda não confere
+    def _fecha_lote(self, so):
+        """O lote fecha (é isso que dispara o congelamento no fluxo normal)."""
+        from django.utils import timezone
+        Lot.all_companies.filter(pk=so.lot_id).update(closed_at=timezone.now())
 
-        self.client.post(reverse('compras:congelar', args=[so.pk]))
+    def test_aprovar_o_preco_que_faltava_congela_a_ordem_sozinha(self):
+        """O laço que faltava: aprovar preço destrava as compras presas."""
+        from pricing.models import Price, PriceList, STATUS_QUOTED
+        so = self._rascunho('A1', com_pendencia=True)
+        self._fecha_lote(so)
+        self.assertEqual(so.status, STATUS_DRAFT)
+
+        with company_scope(self.emp):
+            pl = PriceList.all_companies.get(buyer=self.buyer, brand=None)
+            Price.all_companies.create(
+                price_list=pl, kind='ufs', gen='', origin='',
+                tier_value=Decimal('256'), tier_unit='GB',
+                status=STATUS_QUOTED, price_min=Decimal('40'),
+                price_max=Decimal('40'))
+            congeladas = services.freeze_pending_orders(self.buyer,
+                                                        self.parceiro)
+        self.assertEqual([o.pk for o in congeladas], [so.pk])
         so.refresh_from_db()
         self.assertEqual(so.status, STATUS_CONFIRMED)
-        self.assertEqual(so.total_rmb, Decimal('150.00'))
-        self.assertEqual(so.confirmed_by, self.parceiro)
-        self.assertEqual(so.lines.get().unit_rmb, Decimal('15'))
+        # 10 × ¥15 (eMMC) + 5 × ¥40 (UFS, o preço recém-aprovado)
+        self.assertEqual(so.total_rmb, Decimal('350.00'))
 
-        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
-        self.assertContains(tela, 'name="rej_')          # agora confere
-        self.assertNotContains(tela, reverse('compras:congelar', args=[so.pk]))
-
-    def test_rascunho_com_pendencia_nao_oferece_nem_aceita_congelar(self):
-        """POST forjado também não passa: quem recusa é o `services.confirm`."""
-        so = self._rascunho('C2', com_pendencia=True)
-        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
-        self.assertNotContains(tela, reverse('compras:congelar', args=[so.pk]))
-        resp = self.client.post(reverse('compras:congelar', args=[so.pk]),
-                                follow=True)
+    def test_ordem_que_ainda_tem_pendencia_continua_em_rascunho(self):
+        """Congelar é tudo-ou-nada: falta UMA categoria, nada congela."""
+        so = self._rascunho('A2', com_pendencia=True)
+        self._fecha_lote(so)
+        with company_scope(self.emp):
+            self.assertEqual(services.freeze_pending_orders(self.buyer), [])
         so.refresh_from_db()
         self.assertEqual(so.status, STATUS_DRAFT)
-        self.assertContains(resp, 'sem preço')
-        self.assertContains(resp, 'UFS')                 # NOMEIA o que falta
 
-    def test_congelar_ordem_de_outro_comprador_e_404(self):
-        emp_r = Company.objects.create(name='Vd cong R', slug='vd-cong-r')
-        rival = Buyer.all_companies.create(company=emp_r, name='R',
-                                           slug='r-cong')
-        with company_scope(emp_r):
-            lot = Lot.open_for_company(emp_r, self.parceiro, 'r', origin='phone')
-            so = SalesOrder(lot=lot, buyer=rival,
-                            number=DocSequence.next_number(emp_r, SEQ_SO))
-            so.save()
-        self.assertEqual(
-            self.client.post(reverse('compras:congelar',
-                                     args=[so.pk])).status_code, 404)
+    def test_lote_ainda_ABERTO_nao_congela(self):
+        """Cotação de lote aberto é rascunho de propósito — o valor fecha no
+        FECHAMENTO do lote, não antes."""
+        so = self._rascunho('A3')                     # sem fechar o lote
+        with company_scope(self.emp):
+            self.assertEqual(services.freeze_pending_orders(self.buyer), [])
+        so.refresh_from_db()
+        self.assertEqual(so.status, STATUS_DRAFT)
+
+    def test_aprovar_pedido_de_preco_no_admin_dispara_o_congelamento(self):
+        """O gancho de verdade: `PriceChangeRequest.approve()`."""
+        from pricing.models import (Price, PriceChangeRequest, PriceList,
+                                    STATUS_QUOTED, STATUS_UNQUOTED)
+        so = self._rascunho('A4', com_pendencia=True)
+        self._fecha_lote(so)
+        with company_scope(self.emp):
+            pl = PriceList.all_companies.get(buyer=self.buyer, brand=None)
+            preco = Price.all_companies.create(
+                price_list=pl, kind='ufs', gen='', origin='',
+                tier_value=Decimal('256'), tier_unit='GB',
+                status=STATUS_UNQUOTED)
+            pedido = PriceChangeRequest.all_companies.create(
+                price=preco, new_status=STATUS_QUOTED,
+                new_price=Decimal('40'), old_status=STATUS_UNQUOTED,
+                requested_by=self.parceiro)
+            pedido.approve(self.parceiro)
+        so.refresh_from_db()
+        self.assertEqual(so.status, STATUS_CONFIRMED)
+        self.assertEqual(so.total_rmb, Decimal('350.00'))
+
+    # ── a tela do resultado ─────────────────────────────────────────────────
+
+    def test_tabela_tem_linha_de_totais_e_os_dados_do_calculo_ao_vivo(self):
+        """Totais (dono, 2026-08-18) e o contrato de que o JS depende: cada
+        campo de recusa carrega a quantidade e o ¥ unitário da linha."""
+        so = self._rascunho('T1')
+        self._fecha_lote(so)
+        with company_scope(self.emp):
+            services.confirm(so, self.parceiro, unmasked=True)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'cmp-t-pagar')          # ¥ a pagar ao vivo
+        self.assertContains(tela, 'cmp-t-aceitos')        # chips aceitos
+        self.assertContains(tela, 'data-qty="10"')        # o que o JS lê
+        self.assertContains(tela, 'data-unit="15.00"')
+
+    def test_aba_de_chips_lista_PN_spec_caixa_e_preco(self):
+        """"Seria aí onde o comprador olha detalhe por detalhe" (dono)."""
+        so = self._rascunho('T2')
+        with company_scope(self.emp):
+            chips = services.lot_chips(so)
+        self.assertEqual(chips['qty'], 10)
+        self.assertEqual(chips['rmb'], Decimal('150.00'))
+        linha = chips['linhas'][0]
+        self.assertEqual(linha['pn'], 'CGT2')
+        self.assertEqual(linha['type'], 'eMMC')
+        self.assertEqual(linha['wtc'], 'B-06')            # a caixa que ele recebe
+        self.assertEqual(linha['unit_rmb'], Decimal('15'))
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'CGT2')                 # o PN na tela
+        self.assertContains(tela, 'cmp-pane-chips')
+
+    def test_chip_sem_chave_de_preco_aparece_na_aba_sem_sumir(self):
+        """Ele viaja na caixa e não entra no comércio — o comprador precisa
+        VER isso, em vez de achar que o PN sumiu."""
+        so = self._rascunho('T3')
+        with company_scope(self.emp):
+            InventoryEntry.all_companies.create(
+                lot=so.lot, part_number='SEMCHAVE', quantity=3,
+                brand=self.brand, chip_type='DDR', company=self.emp)
+            chips = services.lot_chips(so)
+        pns = {l['pn']: l for l in chips['linhas']}
+        self.assertIn('SEMCHAVE', pns)
+        self.assertIsNone(pns['SEMCHAVE']['unit_rmb'])
+        self.assertEqual(chips['qty'], 13)                # entra na contagem
+        self.assertEqual(chips['rmb'], Decimal('150.00'))  # mas não no ¥
 
 
 class PartnerRaizTests(TestCase):

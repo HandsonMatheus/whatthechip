@@ -93,6 +93,11 @@ class PriceAdmin(PlatformScopedAdmin):
     def save_model(self, request, obj, form, change):
         obj.updated_by = request.user      # Feature 3: registra QUEM mudou
         super().save_model(request, obj, form, change)
+        # Mesmo laço do PriceChangeRequest.approve (F11.6): preencher aqui o
+        # preço que faltava destrava as OVs que ficaram em rascunho no
+        # fechamento do lote. Nunca levanta — ver freeze_pending_orders.
+        from vendas.services import freeze_pending_orders
+        freeze_pending_orders(obj.price_list.buyer, request.user)
 
 
 @admin.register(LotPricing)
