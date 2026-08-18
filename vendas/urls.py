@@ -14,6 +14,8 @@ urlpatterns = [
     path('<int:pk>/acerto/', views.settlement_new, name='settlement_new'),
     path('fatura/<int:pk>/', views.invoice_detail, name='invoice_detail'),
     path('fatura/<int:pk>/pagar/', views.invoice_pay, name='invoice_pay'),
+    path('pagamento/<int:pk>/comprovante', views.payment_receipt,
+         name='payment_receipt'),
     path('fatura/<int:pk>/cancelar/', views.invoice_cancel,
          name='invoice_cancel'),
 ]

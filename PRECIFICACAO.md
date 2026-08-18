@@ -1572,6 +1572,31 @@ tela. Para a etapa "recebido" existir hoje, `SalesOrder.received_at`
 recebe, e fechar o resultado marca sozinho se ele esqueceu — senão o card
 mostraria "resultado" pronto com "recebido" em aberto.
 
+**PAGAMENTO na mão do comprador** (dono, 2026-08-18): saldo em **US$** (a
+moeda do contrato), formulário com valor + data + referência + **comprovante
+obrigatório**, e o histórico dos pagamentos ao lado — parcial é normal, e a
+conta que importa é o SALDO, não o total da fatura. Reusa o
+`services.register_payment` do F11.4 (ele já barra valor acima do saldo e
+marca a fatura PAGA no saldo zero).
+
+⚠ **O comprovante mora no BANCO** (`PaymentReceipt`, tabela própria 1-pra-1 com
+o Payment, com RLS — `vendas/0008` + `0009`). Mesma razão do logo (E4/B7): o
+filesystem da Render é EFÊMERO e `/media/` nem é servido com `DEBUG=False` —
+comprovante de pagamento é a última coisa que pode evaporar num deploy. O
+formato vem dos BYTES (magic do PDF, Pillow nas imagens), nunca da extensão, e
+o SVG cai fora sozinho (Pillow não abre — SVG inline é vetor de XSS).
+
+⚠ **Pagamento e comprovante na MESMA transação:** comprovante recusado desfaz o
+pagamento junto. Pagamento gravado com comprovante corrompido é pior do que
+pagamento nenhum — alguém descobriria na conciliação, meses depois.
+
+⚠ **O comprador declara; ninguém confirma o recebimento do dinheiro.** O saldo
+zerado marca a fatura como PAGA na hora, e é o que a tela do cliente mostra. O
+comprovante é a evidência, e o admin da empresa o vê na fatura dele
+(`vendas:payment_receipt`) — é com ele que fecha a conciliação. Se um dia isso
+não bastar, o passo seguinte é um "confirmar recebimento" do lado do cliente;
+NÃO foi feito agora de propósito (MVP).
+
 **PDF do RESULTADO** (`services.result_document` + `pdf.render_result_pdf`):
 o comprador baixa e manda pro cliente. Mostra **enviado × recusado × aceito**
 por categoria, não só o líquido — "recebi 3529 e paguei por 3400" sem dizer o

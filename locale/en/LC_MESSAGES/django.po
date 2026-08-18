@@ -2994,3 +2994,75 @@ msgstr "locked when the lot was closed"
 #. vendas/ (F11.6 — etapas + resultado)
 msgid "travado no fechamento em %(d)s"
 msgstr "locked at close on %(d)s"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Anexe o comprovante — sem ele o pagamento não é registrado."
+msgstr "Attach the receipt — without it the payment is not recorded."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Comprovante (PDF ou imagem)"
+msgstr "Receipt (PDF or image)"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Comprovante"
+msgstr "Receipt"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Data do pagamento inválida."
+msgstr "Invalid payment date."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Data"
+msgstr "Date"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Esta compra ainda não tem fatura."
+msgstr "This purchase has no invoice yet."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Fatura quitada"
+msgstr "Invoice settled"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Nº do wire, banco, observação curta"
+msgstr "Wire no., bank, short note"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Pagamento registrado — fatura quitada."
+msgstr "Payment recorded — invoice settled."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Pagamento registrado. Saldo: US$ %(s)s."
+msgstr "Payment recorded. Balance: US$ %(s)s."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Referência"
+msgstr "Reference"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Registrado por"
+msgstr "Recorded by"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Total a pagar"
+msgstr "Total to pay"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "US$"
+msgstr "US$"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Valor do pagamento inválido."
+msgstr "Invalid payment amount."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Valor pago (US$)"
+msgstr "Amount paid (US$)"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Ver"
+msgstr "View"
+
+#. vendas/ (F11.6 — glossário)
+msgid "(aposentada)"
+msgstr "(retired)"

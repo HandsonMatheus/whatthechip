@@ -1902,3 +1902,198 @@ class CompradorEtapasEResultadoTests(TestCase):
         self.assertEqual(doc['order_rmb'], Decimal('150.00'))   # o que foi enviado
         self.assertEqual(doc['total_rmb'], Decimal('90.00'))    # 6 × ¥15
         self.assertEqual(doc['lines'][0]['wtc'], 'B-06')
+
+
+class CompradorPagamentoTests(TestCase):
+    """A etapa de PAGAMENTO na mão do comprador (dono, 2026-08-18).
+
+    Ele paga em US$ — é a moeda do contrato — anexa o comprovante e a compra
+    vai para a última etapa. Parcial é normal, por isso o histórico fica na
+    mesma tela: a conta que importa é o SALDO, não o total da fatura.
+
+    ⚠ O comprovante mora no BANCO (PaymentReceipt). O filesystem da Render é
+    efêmero: em disco, um deploy apagaria a prova do pagamento.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.emp, cls.buyer, cls.brand = _setup('vd-pag')
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('vd_pag_p', password='x')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        set_current_company(self.emp.pk)
+        self.addCleanup(set_current_company, None)
+        call_command('seed_category_codes', '--commit', verbosity=0)
+        self.client.force_login(self.parceiro)
+        self.so = self._faturada('P')
+
+    def _faturada(self, sufixo):
+        """OV congelada + resultado fechado → fatura de US$ 21.00
+        (10 × ¥15 = ¥150 × 0.14)."""
+        from pricing.models import Price, PriceList, STATUS_QUOTED
+        from django.utils import timezone
+        with company_scope(self.emp):
+            if not PriceList.all_companies.filter(buyer=self.buyer,
+                                                  brand=None).exists():
+                pl = PriceList.all_companies.create(buyer=self.buyer, brand=None)
+                Price.all_companies.create(
+                    price_list=pl, kind='emmc', gen='', origin='phone',
+                    tier_value=Decimal('16'), tier_unit='GB',
+                    status=STATUS_QUOTED, price_min=Decimal('15'),
+                    price_max=Decimal('15'))
+            lot = Lot.open_for_company(self.emp, self.parceiro, 'p' + sufixo,
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='PG' + sufixo, quantity=10,
+                brand=self.brand, chip_type='eMMC', company=self.emp,
+                price_kind='emmc', price_gen='',
+                price_tier_value=Decimal('16'), price_tier_unit='GB')
+            so = services.create_draft_for_lot(lot, self.parceiro)
+            Lot.all_companies.filter(pk=lot.pk).update(closed_at=timezone.now())
+            so.lot.refresh_from_db()
+            services.confirm(so, self.parceiro, unmasked=True)
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        so.refresh_from_db()
+        return so
+
+    def _invoice(self):
+        with company_scope(self.emp):
+            return Invoice.all_companies.get(order=self.so)
+
+    def _png(self, nome='wire.png'):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from io import BytesIO
+        from PIL import Image
+        buf = BytesIO()
+        Image.new('RGB', (12, 12), '#0f62fe').save(buf, format='PNG')
+        return SimpleUploadedFile(nome, buf.getvalue(), content_type='image/png')
+
+    def _pagar(self, valor, arquivo=None, **extra):
+        dados = {'amount_usd': str(valor), 'paid_at': '2026-08-18'}
+        dados.update(extra)
+        if arquivo is not False:
+            dados['receipt'] = arquivo or self._png()
+        return self.client.post(reverse('compras:pagar', args=[self.so.pk]),
+                                dados, follow=True)
+
+    # ── o pagamento ─────────────────────────────────────────────────────────
+
+    def test_paga_em_usd_com_comprovante_e_quita_a_fatura(self):
+        inv = self._invoice()
+        self.assertEqual(inv.total_usd, Decimal('21.00'))       # ¥150 × 0.14
+        self._pagar('21.00', reference='WIRE-9931')
+        inv = self._invoice()
+        self.assertEqual(inv.balance_usd, Decimal('0.00'))
+        self.assertEqual(inv.status, 'paid')
+        with company_scope(self.emp):
+            pag = inv.payments.get()
+            self.assertEqual(pag.amount_usd, Decimal('21.00'))
+            self.assertEqual(pag.reference, 'WIRE-9931')
+            self.assertEqual(pag.created_by, self.parceiro)
+            self.assertEqual(pag.receipt.mime, 'image/png')     # no BANCO
+            self.assertGreater(pag.receipt.size, 0)
+
+    def test_parcial_deixa_saldo_e_o_historico_soma(self):
+        self._pagar('9.00')
+        self._pagar('12.00')
+        inv = self._invoice()
+        self.assertEqual(inv.balance_usd, Decimal('0.00'))
+        with company_scope(self.emp):
+            self.assertEqual(services.payment_history(inv).__len__(), 2)
+        tela = self.client.get(reverse('compras:detail', args=[self.so.pk]))
+        self.assertContains(tela, 'US$ 9.00')
+        self.assertContains(tela, 'US$ 12.00')
+
+    def test_acima_do_saldo_nao_passa(self):
+        resp = self._pagar('99.00')
+        self.assertContains(resp, 'maior que o saldo')
+        with company_scope(self.emp):
+            self.assertFalse(self._invoice().payments.exists())
+
+    def test_sem_comprovante_nao_registra(self):
+        """Sem prova não há pagamento — é o documento da conciliação."""
+        resp = self._pagar('21.00', arquivo=False)
+        self.assertContains(resp, 'Anexe o comprovante')
+        with company_scope(self.emp):
+            self.assertFalse(self._invoice().payments.exists())
+
+    def test_comprovante_invalido_desfaz_o_pagamento_junto(self):
+        """MESMA transação: pagamento gravado com comprovante corrompido é
+        pior que pagamento nenhum — alguém descobriria na conciliação."""
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        ruim = SimpleUploadedFile('nota.pdf', b'nem PDF nem imagem',
+                                  content_type='application/pdf')
+        resp = self._pagar('21.00', arquivo=ruim)
+        self.assertContains(resp, 'Formato não suportado')
+        with company_scope(self.emp):
+            self.assertFalse(self._invoice().payments.exists())
+
+    def test_formato_vem_dos_BYTES_e_nao_da_extensao(self):
+        """Extensão é palpite do cliente. Um PNG chamado .pdf é PNG."""
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        png = self._png('mentira.pdf')
+        self._pagar('21.00', arquivo=SimpleUploadedFile(
+            'mentira.pdf', png.read(), content_type='application/pdf'))
+        with company_scope(self.emp):
+            self.assertEqual(self._invoice().payments.get().receipt.mime,
+                             'image/png')
+
+    # ── o comprovante ───────────────────────────────────────────────────────
+
+    def test_comprovante_e_servido_do_banco_e_nao_entra_em_cache(self):
+        self._pagar('21.00')
+        with company_scope(self.emp):
+            pag = self._invoice().payments.get()
+        resp = self.client.get(reverse('compras:comprovante',
+                                       args=[self.so.pk, pag.pk]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Content-Type'], 'image/png')
+        self.assertIn('no-store', resp['Cache-Control'])   # documento privado
+        self.assertTrue(resp.content.startswith(b'\x89PNG'))
+
+    def test_comprovante_de_outra_compra_e_404(self):
+        """Trocar o número na URL não lê o comprovante do vizinho."""
+        self._pagar('21.00')
+        with company_scope(self.emp):
+            pag = self._invoice().payments.get()
+        outra = self._faturada('Q')
+        self.assertEqual(
+            self.client.get(reverse('compras:comprovante',
+                                    args=[outra.pk, pag.pk])).status_code, 404)
+
+    def test_etapa_de_pagamento_fecha_o_card(self):
+        with company_scope(self.emp):
+            passos = {p['key']: p for p in services.order_steps(self.so)}
+        self.assertEqual(passos['pagamento']['state'], 'current')
+        self._pagar('21.00')
+        self.so.refresh_from_db()
+        with company_scope(self.emp):
+            passos = {p['key']: p for p in services.order_steps(self.so)}
+        self.assertEqual(passos['pagamento']['state'], 'done')
+
+    def test_cliente_ve_o_comprovante_na_fatura_dele(self):
+        """É o admin da empresa que fecha a conciliação deste lado — sem ver
+        o comprovante ele não tem como."""
+        self._pagar('21.00')
+        with company_scope(self.emp):
+            pag = self._invoice().payments.get()
+        User = get_user_model()
+        adm = User.objects.create_user('vd_pag_adm', password='x')
+        Membership.objects.create(user=adm, company=self.emp,
+                                  role=Membership.ROLE_ADMIN)
+        self.client.force_login(adm)
+        tela = self.client.get(reverse('vendas:invoice_detail',
+                                       args=[self._invoice().pk]))
+        self.assertContains(tela, reverse('vendas:payment_receipt',
+                                          args=[pag.pk]))
+        resp = self.client.get(reverse('vendas:payment_receipt', args=[pag.pk]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(resp.content.startswith(b'\x89PNG'))
+
+    def test_tela_mostra_saldo_em_usd_e_o_formulario(self):
+        tela = self.client.get(reverse('compras:detail', args=[self.so.pk]))
+        self.assertContains(tela, 'US$ 21.00')
+        self.assertContains(tela, 'name="receipt"')
+        self.assertContains(tela, reverse('compras:pagar', args=[self.so.pk]))

@@ -567,3 +567,54 @@ class Payment(models.Model):
                 'company_id', flat=True).get(pk=self.invoice_id)
         self.full_clean(validate_unique=False, validate_constraints=False)
         return super().save(*args, **kwargs)
+
+
+class PaymentReceipt(models.Model):
+    """O COMPROVANTE do pagamento — bytes no BANCO (dono, 2026-08-18).
+
+    ⚠ **No banco, não em disco.** Mesma razão do logo da empresa (E4/B7): o
+    filesystem da Render é EFÊMERO — um deploy apaga o arquivo — e ``/media/``
+    nem é servido com ``DEBUG=False``. Comprovante de pagamento é a última
+    coisa do sistema que pode evaporar num deploy.
+
+    Tabela PRÓPRIA, 1-pra-1 com o Payment, pelo mesmo motivo do CompanyLogo: a
+    lista de pagamentos é lida em toda visita à compra e não pode arrastar
+    blobs de MBs; aqui eles só saem pela view do comprovante.
+
+    Com ``company`` e RLS como o resto de vendas (dinheiro é por-empresa —
+    ver ``0008_paymentreceipt_rls``). Sem pghistory: histórico de blob só
+    incharia o event store, e o comprovante é imutável por construção (trocar
+    exige apagar o pagamento).
+    """
+
+    payment = models.OneToOneField(Payment, on_delete=models.CASCADE,
+                                   primary_key=True, related_name='receipt',
+                                   verbose_name='Pagamento')
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    data = models.BinaryField(verbose_name='Bytes do comprovante')
+    mime = models.CharField(max_length=32, verbose_name='MIME')
+    filename = models.CharField(max_length=160, blank=True, default='',
+                                verbose_name='Nome do arquivo')
+    size = models.PositiveIntegerField(default=0, verbose_name='Tamanho (bytes)')
+    uploaded_at = models.DateTimeField(auto_now_add=True,
+                                       verbose_name='Anexado em')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Comprovante'
+        verbose_name_plural = 'Comprovantes'
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
+
+    def __str__(self):
+        return f'Comprovante de {self.payment_id}'
+
+    def save(self, *args, **kwargs):
+        if self.payment_id and not self.company_id:
+            self.company_id = Payment.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.payment_id)
+        return super().save(*args, **kwargs)

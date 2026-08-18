@@ -620,6 +620,77 @@ def register_payment(invoice, amount_usd, paid_at, user, reference=''):
     return p
 
 
+#: Formatos aceitos no comprovante. Foto do app do banco, print da tela ou o
+#: PDF do wire — é isso que existe no mundo real.
+RECEIPT_MIME = {'PDF': 'application/pdf', 'PNG': 'image/png',
+                'JPEG': 'image/jpeg', 'WEBP': 'image/webp'}
+RECEIPT_MAX_BYTES = 5 * 1024 * 1024        # foto de celular passa de 1 MB fácil
+
+
+def _sniff_receipt(blob: bytes):
+    """O formato REAL dos bytes, não a extensão do arquivo. Devolve o MIME ou
+    levanta ValidationError.
+
+    Extensão é palpite do cliente: um ``.pdf`` pode ser qualquer coisa. PDF sai
+    pelo magic; imagem, pelo Pillow — que de quebra recusa SVG (não abre), e
+    SVG servido inline é vetor de XSS."""
+    if blob[:5] == b'%PDF-':
+        return RECEIPT_MIME['PDF']
+    try:
+        from io import BytesIO
+        from PIL import Image
+        with Image.open(BytesIO(blob)) as img:
+            fmt = img.format
+    except Exception:                       # noqa: BLE001
+        fmt = None
+    if fmt in RECEIPT_MIME:
+        return RECEIPT_MIME[fmt]
+    raise ValidationError(
+        'Formato não suportado no comprovante — use PDF, PNG, JPEG ou WebP.')
+
+
+def attach_receipt(payment, upload):
+    """Guarda o comprovante DENTRO do banco (ver PaymentReceipt).
+
+    Levanta ValidationError em arquivo grande demais ou formato errado — quem
+    chama está dentro da transação do pagamento, então recusar aqui desfaz o
+    pagamento junto. É o que se quer: pagamento registrado com comprovante
+    corrompido é pior do que pagamento nenhum.
+    """
+    from .models import PaymentReceipt
+    blob = upload.read()
+    if len(blob) > RECEIPT_MAX_BYTES:
+        raise ValidationError(
+            f'Comprovante muito grande — máximo '
+            f'{RECEIPT_MAX_BYTES // (1024 * 1024)} MB.')
+    if not blob:
+        raise ValidationError('Comprovante vazio.')
+    mime = _sniff_receipt(blob)
+    return PaymentReceipt.all_companies.create(
+        payment=payment, data=blob, mime=mime, size=len(blob),
+        filename=(getattr(upload, 'name', '') or '')[:160])
+
+
+def payment_history(invoice):
+    """O histórico de pagamentos da fatura, mais recente primeiro (dono,
+    2026-08-18). Sempre em US$ — é a moeda em que ele paga."""
+    if invoice is None:
+        return []
+    linhas = []
+    for p in invoice.payments.all().order_by('-paid_at', '-created_at'):
+        recibo = getattr(p, 'receipt', None)
+        linhas.append({
+            'pk': p.pk,
+            'paid_at': p.paid_at,
+            'amount_usd': p.amount_usd,
+            'reference': p.reference,
+            'by': _display_name(p.created_by),
+            'has_receipt': recibo is not None,
+            'receipt_name': getattr(recibo, 'filename', '') or '',
+        })
+    return linhas
+
+
 def cancel_invoice(invoice, user):
     """Cancela fatura SEM pagamentos (pré-requisito do re-acerto)."""
     from .models import INV_CANCELLED
@@ -944,13 +1015,21 @@ def category_glossary(so=None):
                 no_lote.add(rotulo)
     linhas = []
     for c in CategoryCode.objects.all():
+        nesta = c.label in no_lote
+        # Categoria APOSENTADA sai da lista — ela não faz mais parte da
+        # convenção viva. Exceção: se veio NESTA compra, entra; a caixa com o
+        # rótulo antigo está fisicamente na mão dele, e ele precisa saber o
+        # que aquele código significa.
+        if getattr(c, 'retired_at', None) is not None and not nesta:
+            continue
         linhas.append({
             'code': c.label,
             'letter': KIND_LETTER.get(c.kind, '?'),
             'type': c.gen or dict(_KIND_LABEL()).get(c.kind, c.kind),
             'capacity': (f'{c.tier_value.normalize():f}{c.tier_unit}'
                          if c.tier_unit else '—'),
-            'no_lote': c.label in no_lote,
+            'no_lote': nesta,
+            'retired': getattr(c, 'retired_at', None) is not None,
         })
     return sorted(linhas, key=lambda l: (l['letter'], l['code']))
 

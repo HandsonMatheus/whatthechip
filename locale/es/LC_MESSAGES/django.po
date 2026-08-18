@@ -3020,3 +3020,75 @@ msgstr "fijado al cerrar el lote"
 #. vendas/ (F11.6 — etapas + resultado)
 msgid "travado no fechamento em %(d)s"
 msgstr "fijado al cierre el %(d)s"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Anexe o comprovante — sem ele o pagamento não é registrado."
+msgstr "Adjunte el comprobante — sin él el pago no se registra."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Comprovante (PDF ou imagem)"
+msgstr "Comprobante (PDF o imagen)"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Comprovante"
+msgstr "Comprobante"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Data do pagamento inválida."
+msgstr "Fecha de pago inválida."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Data"
+msgstr "Fecha"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Esta compra ainda não tem fatura."
+msgstr "Esta compra todavía no tiene factura."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Fatura quitada"
+msgstr "Factura saldada"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Nº do wire, banco, observação curta"
+msgstr "Nº de transferencia, banco, nota breve"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Pagamento registrado — fatura quitada."
+msgstr "Pago registrado — factura saldada."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Pagamento registrado. Saldo: US$ %(s)s."
+msgstr "Pago registrado. Saldo: US$ %(s)s."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Referência"
+msgstr "Referencia"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Registrado por"
+msgstr "Registrado por"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Total a pagar"
+msgstr "Total a pagar"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "US$"
+msgstr "US$"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Valor do pagamento inválido."
+msgstr "Importe de pago inválido."
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Valor pago (US$)"
+msgstr "Importe pagado (US$)"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Ver"
+msgstr "Ver"
+
+#. vendas/ (F11.6 — glossário)
+msgid "(aposentada)"
+msgstr "(retirada)"

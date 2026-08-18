@@ -238,8 +238,30 @@ def invoice_detail(request, pk):
                              is_unmasked(request))             # F12
     return render(request, ui(request, 'vendas/invoice_detail.html'), {
         'inv': inv, 'adjustments': adj,
-        'payments': inv.payments.select_related('created_by'),
+        # `receipt` vem junto: o cliente confere o comprovante que o COMPRADOR
+        # anexou — é ele que fecha a conciliação do lado de cá.
+        'payments': inv.payments.select_related('created_by', 'receipt'),
     })
+
+
+@role_required('admin')
+def payment_receipt(request, pk):
+    """O comprovante que o comprador anexou, servido do BANCO para o cliente.
+
+    Mesma view do lado do parceiro, outro portão: aqui quem lê é o ADMIN da
+    empresa dona da fatura, e o `CompanyScopedManager` já limita a busca à
+    empresa corrente — comprovante de outra empresa nem existe nesta query.
+    """
+    from django.http import Http404, HttpResponse
+    from .models import PaymentReceipt
+    recibo = PaymentReceipt.objects.filter(payment_id=pk).first()
+    if recibo is None:
+        raise Http404('Comprovante não encontrado.')
+    resp = HttpResponse(bytes(recibo.data), content_type=recibo.mime)
+    nome = recibo.filename or f'comprovante-{pk}'
+    resp['Content-Disposition'] = f'inline; filename="{nome}"'
+    resp['Cache-Control'] = 'private, no-store'    # documento privado
+    return resp
 
 
 @role_required('admin')

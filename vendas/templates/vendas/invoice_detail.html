@@ -95,6 +95,10 @@
           <td class="mono">{{ p.paid_at|date:"d/m/Y" }}</td>
           <td class="num mono" style="font-weight:600">US$ {{ p.amount_usd }}</td>
           <td style="color:#697077">{{ p.reference }}</td>
+          {% comment %} O comprovante que o COMPRADOR anexou — é com ele que o
+             cliente fecha a conciliação deste lado. {% endcomment %}
+          <td class="num">{% if p.receipt %}<a href="{% url 'vendas:payment_receipt' p.pk %}"
+                target="_blank" style="font-weight:600">{% trans "Comprovante" %}</a>{% endif %}</td>
         </tr>
         {% empty %}
         <tr><td style="color:#697077;padding:14px 18px">{% trans "Nenhum pagamento ainda." %}</td></tr>

@@ -2825,3 +2825,75 @@ msgstr "批次关闭时锁定"
 #. vendas/ (F11.6 — etapas + resultado)
 msgid "travado no fechamento em %(d)s"
 msgstr "于 %(d)s 关闭时锁定"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Anexe o comprovante — sem ele o pagamento não é registrado."
+msgstr "请附上付款凭证——没有凭证不予登记。"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Comprovante (PDF ou imagem)"
+msgstr "付款凭证（PDF 或图片）"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Comprovante"
+msgstr "付款凭证"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Data do pagamento inválida."
+msgstr "付款日期无效。"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Data"
+msgstr "日期"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Esta compra ainda não tem fatura."
+msgstr "本次采购尚未开具发票。"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Fatura quitada"
+msgstr "发票已结清"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Nº do wire, banco, observação curta"
+msgstr "电汇号、银行、简短备注"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Pagamento registrado — fatura quitada."
+msgstr "付款已登记——发票已结清。"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Pagamento registrado. Saldo: US$ %(s)s."
+msgstr "付款已登记。余额：US$ %(s)s。"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Referência"
+msgstr "参考号"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Registrado por"
+msgstr "登记人"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Total a pagar"
+msgstr "应付总额"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "US$"
+msgstr "US$"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Valor do pagamento inválido."
+msgstr "付款金额无效。"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Valor pago (US$)"
+msgstr "付款金额（US$）"
+
+#. vendas/ (F11.6 — pagamento)
+msgid "Ver"
+msgstr "查看"
+
+#. vendas/ (F11.6 — glossário)
+msgid "(aposentada)"
+msgstr "（已停用）"

@@ -30,11 +30,13 @@ próxima pessoa precisa saber antes de editar:
   não 403 — não confirmamos nem que ela existe.
 """
 
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.shortcuts import redirect, render
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
@@ -95,6 +97,10 @@ def _detalhe(so):
         'categorias': services.category_glossary(so),
         # Card de etapas: por onde passou, onde está, para onde vai.
         'steps': services.order_steps(so),
+        # Pagamento (dono, 2026-08-18): sempre em US$ — é a moeda em que ele
+        # paga. O histórico fica na mesma tela: pagamento parcial é comum.
+        'pagamentos': services.payment_history(inv),
+        'hoje': timezone.localdate(),
         # Linha de TOTAIS da tabela de cima (dono, 2026-08-18).
         'total_qty': sum(g['qty'] for g in grupos),
         # Câmbio: TRAVADO no fechamento do lote (PLANO_FX fase C) — a OV
@@ -174,3 +180,87 @@ def compra_resultado(request, pk):
             return redirect('compras:detail', pk=so.pk)
         messages.success(request, _('Resultado fechado — fatura emitida.'))
         return redirect('compras:detail', pk=so.pk)
+
+
+@partner_required
+@require_POST
+def compra_pagar(request, pk):
+    """Registra um pagamento da compra, em US$, com o comprovante anexado
+    (dono, 2026-08-18).
+
+    Quem registra é o COMPRADOR — é ele quem paga e quem tem o comprovante na
+    mão. Parcial é permitido (o `register_payment` barra acima do saldo), e o
+    saldo zerado marca a fatura como PAGA.
+
+    ⚠ Pagamento e comprovante entram na MESMA transação: comprovante recusado
+    (formato/tamanho) desfaz o pagamento junto. Pagamento registrado com
+    comprovante corrompido é pior do que pagamento nenhum — alguém teria que
+    descobrir isso na conciliação, meses depois.
+    """
+    with services.buyer_order(request.buyer, pk) as so:
+        inv = next((i for i in so.invoices.all()
+                    if i.status != 'cancelled'), None)
+        if inv is None:
+            messages.error(request, _('Esta compra ainda não tem fatura.'))
+            return redirect('compras:detail', pk=so.pk)
+        try:
+            valor = Decimal((request.POST.get('amount_usd') or '').strip()
+                            .replace(',', '.'))
+        except (InvalidOperation, TypeError):
+            messages.error(request, _('Valor do pagamento inválido.'))
+            return redirect('compras:detail', pk=so.pk)
+        data = (request.POST.get('paid_at') or '').strip()
+        try:
+            from datetime import date as _date
+            quando = _date.fromisoformat(data) if data else timezone.localdate()
+        except ValueError:
+            messages.error(request, _('Data do pagamento inválida.'))
+            return redirect('compras:detail', pk=so.pk)
+        arquivo = request.FILES.get('receipt')
+        if arquivo is None:
+            messages.error(request, _(
+                'Anexe o comprovante — sem ele o pagamento não é registrado.'))
+            return redirect('compras:detail', pk=so.pk)
+        try:
+            with transaction.atomic():
+                pagamento = services.register_payment(
+                    inv, valor, quando, request.user,
+                    reference=(request.POST.get('reference') or '').strip())
+                services.attach_receipt(pagamento, arquivo)
+        except ValidationError as erro:
+            messages.error(request, ' '.join(erro.messages))
+            return redirect('compras:detail', pk=so.pk)
+        inv.refresh_from_db()
+        if inv.balance_usd <= 0:
+            messages.success(request, _('Pagamento registrado — fatura quitada.'))
+        else:
+            messages.success(request, _(
+                'Pagamento registrado. Saldo: US$ %(s)s.')
+                % {'s': inv.balance_usd})
+        return redirect('compras:detail', pk=so.pk)
+
+
+@partner_required
+def compra_comprovante(request, pk, pagamento_pk):
+    """Serve o comprovante DO BANCO (ver PaymentReceipt).
+
+    Posse dupla: a OV tem que ser deste comprador (o `buyer_order` já é 404 se
+    não for) E o pagamento tem que ser da fatura DESTA OV — senão bastaria
+    trocar o número na URL para ler o comprovante de outra compra.
+    """
+    from django.http import Http404, HttpResponse
+    from .models import PaymentReceipt
+    with services.buyer_order(request.buyer, pk) as so:
+        faturas = [i.pk for i in so.invoices.all()]
+        recibo = (PaymentReceipt.all_companies
+                  .filter(payment_id=pagamento_pk,
+                          payment__invoice_id__in=faturas)
+                  .first())
+        if recibo is None:
+            raise Http404('Comprovante não encontrado.')
+        resp = HttpResponse(bytes(recibo.data), content_type=recibo.mime)
+        nome = recibo.filename or f'comprovante-{pagamento_pk}'
+        resp['Content-Disposition'] = f'inline; filename="{nome}"'
+        # Comprovante é DOCUMENTO PRIVADO: nunca em cache compartilhado.
+        resp['Cache-Control'] = 'private, no-store'
+        return resp

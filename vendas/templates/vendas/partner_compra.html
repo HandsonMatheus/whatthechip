@@ -85,6 +85,77 @@
   </a>
   <span class="cmp-receb__dica">{% trans "Baixe e envie ao cliente." %}</span>
 </div>
+
+{% comment %} PAGAMENTO (dono, 2026-08-18). Sempre em US$ — é a moeda em que
+   ele paga. Parcial é permitido, por isso o histórico mora ao lado do
+   formulário: o saldo é a conta que importa, não o total da fatura. {% endcomment %}
+<section class="cmp-pag">
+  <div class="cmp-pag__topo">
+    <div>
+      <div class="cmp-tot__lbl">{% if invoice.balance_usd > 0 %}{% trans "Total a pagar" %}{% else %}{% trans "Fatura quitada" %}{% endif %}</div>
+      <div class="cmp-pag__val mono">{% localize off %}US$ {{ invoice.balance_usd }}{% endlocalize %}</div>
+      <div class="cmp-tot__sub mono">{% localize off %}{% blocktrans trimmed with t=invoice.total_usd p=invoice.paid_usd %}
+        fatura US$ {{ t }} · pago US$ {{ p }}
+      {% endblocktrans %}{% endlocalize %}</div>
+    </div>
+  </div>
+
+  {% if invoice.balance_usd > 0 %}
+  <form method="post" action="{% url 'compras:pagar' so.pk %}"
+        enctype="multipart/form-data" class="cmp-pag__form">
+    {% csrf_token %}
+    <label>
+      <span>{% trans "Valor pago (US$)" %}</span>
+      <input type="number" name="amount_usd" step="0.01" min="0.01"
+             max="{{ invoice.balance_usd|unlocalize }}" required
+             value="{{ invoice.balance_usd|unlocalize }}" class="cmp-in cmp-in--w">
+    </label>
+    <label>
+      <span>{% trans "Data" %}</span>
+      <input type="date" name="paid_at" value="{{ hoje|date:'Y-m-d' }}" required
+             class="cmp-in cmp-in--w">
+    </label>
+    <label class="cmp-pag__ref">
+      <span>{% trans "Referência" %}</span>
+      <input type="text" name="reference" maxlength="120" class="cmp-in cmp-in--w"
+             placeholder="{% trans 'Nº do wire, banco, observação curta' %}">
+    </label>
+    <label class="cmp-pag__file">
+      <span>{% trans "Comprovante (PDF ou imagem)" %}</span>
+      <input type="file" name="receipt" required
+             accept=".pdf,image/png,image/jpeg,image/webp">
+    </label>
+    <button type="submit" class="cmp-btn">{% trans "Registrar pagamento" %}</button>
+  </form>
+  {% endif %}
+
+  {% if pagamentos %}
+  <table class="cmp-tab cmp-pag__hist">
+    <thead>
+      <tr>
+        <th>{% trans "Data" %}</th>
+        <th class="num">{% trans "US$" %}</th>
+        <th>{% trans "Referência" %}</th>
+        <th>{% trans "Registrado por" %}</th>
+        <th>{% trans "Comprovante" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for p in pagamentos %}
+      <tr>
+        <td class="mono">{{ p.paid_at|date:"d/m/Y" }}</td>
+        <td class="num mono">{% localize off %}US$ {{ p.amount_usd }}{% endlocalize %}</td>
+        <td>{{ p.reference|default:"—" }}</td>
+        <td>{{ p.by|default:"—" }}</td>
+        <td>{% if p.has_receipt %}<a class="cmp-link"
+              href="{% url 'compras:comprovante' so.pk p.pk %}"
+              target="_blank">{% trans "Ver" %}</a>{% else %}—{% endif %}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</section>
 {% endif %}
 
 {% if estimado %}
@@ -276,7 +347,7 @@
     <tr{% if c.no_lote %} class="cmp-cat-on"{% endif %}>
       <td class="mono"><b>{{ c.code }}</b></td>
       <td>{{ c.type }}</td>
-      <td>{{ c.capacity }}</td>
+      <td>{{ c.capacity }}{% if c.retired %} <span class="cmp-wtc">{% trans "(aposentada)" %}</span>{% endif %}</td>
       <td>{% if c.no_lote %}✓{% endif %}</td>
     </tr>
   {% endfor %}
@@ -355,6 +426,22 @@
   .cmp-glos { font-size:13px; color:#525252; max-width:70ch; margin:14px 0; }
   .cmp-cat-on { background:#edf5ff; }
   .cmp-cat-on td { font-weight:600; }
+  .cmp-pag { border:1px solid #e0e0e0; background:#fff; padding:16px 18px;
+             margin-bottom:18px; }
+  .cmp-pag__val { font-size:26px; font-weight:600; margin-top:2px; }
+  .cmp-pag__form { display:flex; gap:14px; align-items:flex-end; margin-top:14px;
+                   flex-wrap:wrap; }
+  .cmp-pag__form label { display:flex; flex-direction:column; gap:4px;
+                         font-size:11px; letter-spacing:.05em;
+                         text-transform:uppercase; color:#525252;
+                         font-weight:600; }
+  .cmp-pag__ref { flex:1; min-width:180px; }
+  .cmp-pag__file input { font-size:12px; }
+  /* O .cmp-in nasceu pro campo de RECUSA (borda vermelha, alinhado à
+     direita); no formulário de pagamento ele volta a ser campo comum. */
+  .cmp-in--w { width:100%; min-width:130px; border-color:#8d8d8d;
+               text-align:left; font-size:13px; padding:6px 8px; }
+  .cmp-pag__hist { margin-top:18px; }
 </style>
 
 <script>

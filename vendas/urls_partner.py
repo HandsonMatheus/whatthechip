@@ -27,4 +27,7 @@ urlpatterns = [
     path('compras/<int:pk>/resultado/', views.compra_resultado, name='resultado'),
     path('compras/<int:pk>/resultado.pdf', views.compra_resultado_pdf,
          name='resultado_pdf'),
+    path('compras/<int:pk>/pagar/', views.compra_pagar, name='pagar'),
+    path('compras/<int:pk>/pagamento/<int:pagamento_pk>/comprovante',
+         views.compra_comprovante, name='comprovante'),
 ]
