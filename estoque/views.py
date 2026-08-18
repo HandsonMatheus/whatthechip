@@ -960,8 +960,22 @@ def lot_close(request, lot_pk):
     _freeze_lot_pricing(request, lot)
     # F11.2 (§12.19): fechamento gera a COTAÇÃO draft no menu Vendas (valores
     # vivos até o admin confirmar). Nunca trava o fechamento (padrão F8).
+    from vendas.models import STATUS_CANCELLED as SO_CANCELADA, SalesOrder
     from vendas.services import create_draft_for_lot
     so = create_draft_for_lot(lot, request.user)
+    # ── PORTÃO DE SILÊNCIO (incidente de prod, 2026-08-18) ──────────────────
+    # `create_draft_for_lot` NUNCA levanta — o fechamento físico não pode
+    # travar por causa da venda (padrão F8). Só que, até aqui, ele também não
+    # AVISAVA: um lote com K9 fechava sem OV e o gerente só descobria se fosse
+    # olhar o menu Vendas. A garantia continua (o lote está fechado e o
+    # estoque salvo); o que muda é que o buraco passa a aparecer na tela.
+    # ⚠ Não use `so is None` como critério: ele também é None no re-fechamento
+    # legítimo, quando a OV já existe. A pergunta certa é ao BANCO.
+    if not SalesOrder.all_companies.filter(lot=lot).exclude(
+            status=SO_CANCELADA).exists():
+        messages.warning(request, _(
+            'Lote fechado, mas a ORDEM DE VENDA não foi criada. O fechamento '
+            'e o estoque estão salvos — avise o suporte antes de embarcar.'))
     # F11.2c (dono): ADMIN cai direto na venda recém-criada; o gerente segue
     # no lote — desde 2026-08-14 ele TEM acesso a /vendas/ (mascarado), mas o
     # fluxo dele termina no lote; chega na OV pelo smart button ou pelo menu.

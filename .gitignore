@@ -51,3 +51,10 @@ _to_delete/
 # Relatórios gerados por auditoria read-only (regeneráveis pelo comando)
 /micron_sem_specs.csv
 /identity_only.xlsx
+
+# Fixture temporária do GlobalMapGuardTests: o teste ESCREVE e apaga este
+# arquivo a cada rodada. Rastreá-lo deixa o git status sujo pra sempre e faz o
+# deploy_catalog (que dá glob em chips/knowledge/*.yaml) listar uma marca falsa.
+chips/knowledge/_guardtest.yaml
+# Reverts gerados pelos comandos durante a suíte — artefato, não fonte.
+/var/reverts/

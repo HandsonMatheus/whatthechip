@@ -468,6 +468,85 @@ class BackfillSalesOrdersTests(TestCase):
         self.assertEqual(SalesOrder.all_companies.filter(lot=lot).count(), 1)
 
 
+class K9NoFechamentoTests(TestCase):
+    """REGRESSÃO de prod (2026-08-18): lote com K9 fechava SEM criar a OV.
+
+    O K9 tem chave PLANA de propósito (`pricing/convention.py`: NAND cru TSOP,
+    preço fixo por unidade — sem capacidade, `tier_value=1` e `tier_unit=''`).
+    A `SalesOrderLine.tier_unit` nascia SEM `blank=True`, então o `full_clean()`
+    do portão do modelo recusava a linha com "Este campo não pode estar vazio",
+    a exceção era engolida pelo `except` do `create_draft_for_lot` (que NUNCA
+    pode travar o fechamento) e o lote fechava em silêncio, sem OV.
+
+    Live desde o push do K9 (2026-08-16) até o dono fechar um lote com K9 em
+    produção. `brand` e `gen` já tinham `blank=True`; só o `tier_unit` ficou
+    para trás.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.brand = _setup('vd-k9')
+        User = get_user_model()
+        cls.user = User.objects.create_user('vd_k9')
+
+    def setUp(self):
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+
+    def test_fechar_sem_ov_avisa_na_tela(self):
+        """O portão de silêncio (2026-08-18): se a OV não nascer, o gerente
+        VÊ. A garantia do F8 continua — o lote fecha e o estoque fica salvo.
+
+        Aqui a falha é forçada pelo caminho mais simples de reproduzir (zero
+        comprador ativo), mas o aviso é do RESULTADO, não da causa: qualquer
+        caminho que deixe o lote sem OV cai nele."""
+        from django.contrib.auth import get_user_model
+        from tenancy.models import Membership
+        User = get_user_model()
+        gerente = User.objects.create_user('vd_k9_mgr', password='x')
+        Membership.objects.create(user=gerente, company=self.company,
+                                  role='manager')
+        self.buyer.active = False                      # nenhum comprador ativo
+        self.buyer.save(update_fields=['active'])
+        lot = Lot.open_for_company(self.company, gerente, 'sem-ov',
+                                   origin='phone')
+        _entries(lot, self.brand, com_emcp=False)
+        self.client.force_login(gerente)
+        resp = self.client.post(reverse('estoque:lot_close', args=[lot.pk]),
+                                {'confirm_code': lot.code}, follow=True)
+        lot.refresh_from_db()
+        self.assertEqual(lot.status, Lot.STATUS_CLOSED)   # fechou mesmo assim
+        self.assertContains(resp, 'ORDEM DE VENDA')
+        avisos = [m.message for m in resp.context['messages']]
+        self.assertTrue(any('suporte' in m for m in avisos), avisos)
+
+    def test_refechar_com_ov_existente_nao_avisa(self):
+        """O aviso pergunta ao BANCO, não ao retorno da função: re-fechar um
+        lote que JÁ tem OV devolve None e não é erro nenhum."""
+        lot = Lot.open_for_company(self.company, self.user, 'refecha',
+                                   origin='phone')
+        _entries(lot, self.brand, com_emcp=False)
+        self.assertIsNotNone(services.create_draft_for_lot(lot, self.user))
+        self.assertIsNone(services.create_draft_for_lot(lot, self.user))
+        self.assertEqual(SalesOrder.all_companies.filter(lot=lot).count(), 1)
+
+    def test_lote_com_k9_gera_ov(self):
+        lot = Lot.open_for_company(self.company, self.user, 'k9', origin='phone')
+        _entries(lot, self.brand, com_emcp=False)
+        InventoryEntry.all_companies.create(
+            lot=lot, part_number='K9', quantity=500, brand=self.brand,
+            chip_type='NAND Flash', company=self.company,
+            price_kind='k9', price_gen='',
+            price_tier_value=Decimal('1'), price_tier_unit='')   # chave PLANA
+        so = services.create_draft_for_lot(lot, self.user)
+        self.assertIsNotNone(so, 'lote com K9 fechou sem OV — o bug voltou')
+        k9 = so.lines.get(kind='k9')
+        self.assertEqual((k9.quantity, k9.tier_unit, k9.gen), (500, '', ''))
+        # E o documento do lote desenha o K9 sem inventar capacidade:
+        self.assertEqual(k9.capacity_label, '')
+        self.assertEqual(k9.type_label, 'K9')
+
+
 class VendasGateTests(TestCase):
     """Dois andares (dono, 2026-08-14 — revisa o admin-only da F11.2):
 

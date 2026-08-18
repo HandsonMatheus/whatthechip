@@ -204,7 +204,14 @@ class SalesOrderLine(models.Model):
                            verbose_name='Geração')
     tier_value = models.DecimalField(max_digits=6, decimal_places=1,
                                      verbose_name='Faixa')
-    tier_unit = models.CharField(max_length=2, verbose_name='Unidade')
+    # blank=True (correção de prod, 2026-08-18): há tipo com chave PLANA —
+    # o K9 (NAND cru TSOP) é preço fixo por UNIDADE, sem capacidade, e grava
+    # tier_value=1 / tier_unit='' de propósito (pricing/convention.py). Sem o
+    # blank, o full_clean() do save() recusava a linha, o except do
+    # create_draft_for_lot engolia e o lote fechava SEM OV, em silêncio.
+    # `brand` e `gen` já nasceram assim; só este ficou para trás.
+    tier_unit = models.CharField(max_length=2, blank=True, default='',
+                                 verbose_name='Unidade')
     quantity = models.PositiveIntegerField(verbose_name='Quantidade')
 
     unit_rmb = models.DecimalField(max_digits=8, decimal_places=2,
