@@ -243,6 +243,30 @@ def _pn_too_short(pn: str) -> bool:
     return len(pn) < 4 and pn not in _TYPE_PSEUDO_PNS
 
 
+#: Teto de quantidade por LANÇAMENTO (dono 2026-08-17): o antigo 9999 do input
+#: barrava lote grande de verdade (caso: 22 mil chips de um PN só). 1 milhão dá
+#: folga e ainda pega dedo escorregado (220000000). Espelhado no ``max`` dos dois
+#: cards de confirmação (confirm_card.html e confirm_card_masked.html) — se mudar
+#: aqui, muda lá. NÃO é limite de estoque: InventoryEntry.quantity é
+#: PositiveIntegerField e vários lançamentos somam livremente na mesma entrada.
+MAX_QTY_POR_LANCAMENTO = 1_000_000
+
+
+def _qty_from_post(raw) -> int:
+    """Quantidade do POST, presa em [1, MAX_QTY_POR_LANCAMENTO].
+
+    Trava de servidor espelhando o ``max`` do input — cliente que ignore o HTML
+    (curl, aba antiga em cache com o teto velho, extensão) não fura o teto. Lixo
+    não-numérico vira 1 em vez de derrubar a request em 500, que era o
+    comportamento do ``int()`` cru.
+    """
+    try:
+        qty = int(str(raw).strip() or 1)
+    except (TypeError, ValueError):
+        return 1
+    return max(1, min(MAX_QTY_POR_LANCAMENTO, qty))
+
+
 #: Token de idempotência do add_chip (bug Mundo Metal, 2026-08-10) — formato
 #: uuid4().hex; TTL da poda lazy em horas (48h cobre folgado qualquer aba velha).
 _TOKEN_RE = re.compile(r'[0-9a-f]{32}')
@@ -1122,7 +1146,7 @@ def add_chip(request, lot_pk):
         )
 
     pn  = _normalise_pn(request.POST.get('pn', ''))
-    qty = max(1, int(request.POST.get('qty') or 1))
+    qty = _qty_from_post(request.POST.get('qty'))
 
     if _pn_too_short(pn):
         return HttpResponse(
@@ -1301,7 +1325,7 @@ def remove_entry(request, lot_pk, pk):
         raise PermissionDenied(_('Lote fechado: remoção é ação de gerente.'))
     # InventoryEntry.objects EXPLÍCITO: escopo por empresa (o default é cru).
     entry = get_object_or_404(InventoryEntry.objects, pk=pk, lot=lot)
-    qty   = max(1, int(request.POST.get('qty') or 1))
+    qty   = _qty_from_post(request.POST.get('qty'))
 
     if qty >= entry.quantity:
         entry.delete()

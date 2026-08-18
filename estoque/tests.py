@@ -2186,3 +2186,96 @@ class K9BenchTests(TestCase):
         from estoque.views import _masked_category
         self.assertEqual(_masked_category({'chip_type': 'K9'}),
                          ('K-01', False))
+
+
+class QtyCeilingTests(TestCase):
+    """Teto de quantidade por lançamento (dono 2026-08-17).
+
+    O input do card nascia com ``max="9999"`` e o navegador barrava lote grande
+    de verdade — o caso concreto foi 22.000 chips de um PN só ("Value must be
+    less than or equal to 9999"). O teto agora é ``MAX_QTY_POR_LANCAMENTO``
+    (1 milhão), publicado no HTML **e** aplicado no servidor: quem ignora o
+    formulário (curl, aba antiga em cache, extensão) não fura o limite, e qty
+    não-numérico vira 1 em vez de derrubar a request em 500."""
+
+    RENTAVEL = dict(chip_type='eMMC', capacity='16GB',
+                    classification_source='banco de dados',
+                    confidence='confirmed')
+
+    def setUp(self):
+        # superuser p/ o card COMPLETO no preview (mesma razão de
+        # PreviewFuzzyPopupTests); o vínculo de operador é o que libera o add.
+        self.user = get_user_model().objects.create_user(
+            username='op_qty', password='x', is_superuser=True)
+        self.company = _grant(self.user)
+        _scope(self, self.company)
+        self.client.force_login(self.user)
+        self.lot = Lot.objects.create(number=0, origin='phone',
+                                      operator=self.user, company=self.company)
+        self.url = reverse('estoque:add', args=[self.lot.pk])
+
+    def _post(self, pn, qty):
+        return self.client.post(self.url, {'pn': pn, 'qty': str(qty),
+                                           'has_cap': 'true',
+                                           'submit_token': uuid4().hex})
+
+    @patch('estoque.views.classify')
+    def test_bancada_lanca_22_mil_de_uma_vez(self, mock_classify):
+        # O caso que motivou o fix: o lançamento tem que entrar INTEIRO.
+        mock_classify.return_value = _result(**self.RENTAVEL)
+        r = self._post('TESTQTY22K', 22000)
+        self.assertEqual(r.status_code, 200)
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTQTY22K')
+        self.assertEqual(e.quantity, 22000)
+
+    @patch('estoque.views.classify')
+    def test_servidor_prende_acima_do_teto(self, mock_classify):
+        from .views import MAX_QTY_POR_LANCAMENTO
+        mock_classify.return_value = _result(**self.RENTAVEL)
+        self._post('TESTQTYMAX', MAX_QTY_POR_LANCAMENTO * 9)
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTQTYMAX')
+        self.assertEqual(e.quantity, MAX_QTY_POR_LANCAMENTO)
+
+    @patch('estoque.views.classify')
+    def test_qty_lixo_nao_derruba_a_bancada(self, mock_classify):
+        # Antes: int('vinte mil') → ValueError → 500 na cara da operadora.
+        mock_classify.return_value = _result(**self.RENTAVEL)
+        r = self._post('TESTQTYLIXO', 'vinte mil')
+        self.assertEqual(r.status_code, 200)
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTQTYLIXO')
+        self.assertEqual(e.quantity, 1)
+
+    @patch('estoque.views.classify')
+    def test_card_publica_o_teto_no_html(self, mock_classify):
+        from .views import MAX_QTY_POR_LANCAMENTO
+        mock_classify.return_value = _result(**self.RENTAVEL)
+        body = self.client.get(reverse('estoque:preview', args=[self.lot.pk]),
+                               {'pn': 'TESTQTYCARD'}).content.decode()
+        self.assertIn('id="confirm-qty"', body)
+        self.assertIn(f'max="{MAX_QTY_POR_LANCAMENTO}"', body)
+
+    def test_os_dois_cards_seguem_a_constante(self):
+        """PORTÃO: HTML e servidor não podem divergir. Mexeu no teto de um
+        lado, mexa no outro — inclusive no card MASCARADO (cliente), que não
+        aparece no teste de render acima."""
+        import pathlib
+        from django.conf import settings
+        from .views import MAX_QTY_POR_LANCAMENTO
+        base = pathlib.Path(settings.BASE_DIR) / 'estoque' / 'templates' / 'estoque' / 'partials'
+        for nome in ('confirm_card.html', 'confirm_card_masked.html'):
+            t = (base / nome).read_text(encoding='utf-8')
+            self.assertIn('id="confirm-qty"', t, nome)
+            self.assertIn(f'max="{MAX_QTY_POR_LANCAMENTO}"', t,
+                          f'{nome}: teto do input divergiu de MAX_QTY_POR_LANCAMENTO')
+
+    @patch('estoque.views.classify')
+    def test_remocao_com_qty_lixo_nao_quebra(self, mock_classify):
+        # Mesmo parser na baixa: lixo = 1 unidade, não 500.
+        mock_classify.return_value = _result(**self.RENTAVEL)
+        self._post('TESTQTYDEL', 5)
+        e = InventoryEntry.objects.get(lot=self.lot, part_number='TESTQTYDEL')
+        r = self.client.post(reverse('estoque:remove', args=[self.lot.pk, e.pk]),
+                             {'qty': ''})
+        self.assertEqual(r.status_code, 200)
+        e.refresh_from_db()
+        self.assertEqual(e.quantity, 4)

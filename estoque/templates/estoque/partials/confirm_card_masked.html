@@ -39,7 +39,7 @@
   .dcard-qty{display:inline-flex;align-items:center;border:1px solid #c1c7cd;border-radius:12px;overflow:hidden;background:#fff;flex:none}
   .dcard-qty button{width:40px;height:48px;border:0;background:#fff;color:#4d5358;font-size:20px;cursor:pointer;line-height:1}
   .dcard-qty button:hover{background:#f2f4f8;color:#161616}
-  .dcard-qty input{width:58px;height:48px;border:0;border-left:1px solid #dde1e6;border-right:1px solid #dde1e6;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;color:#161616;outline:0;-moz-appearance:textfield}
+  .dcard-qty input{width:96px;height:48px;border:0;border-left:1px solid #dde1e6;border-right:1px solid #dde1e6;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;color:#161616;outline:0;-moz-appearance:textfield}
   .dcard-qty input::-webkit-outer-spin-button,.dcard-qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
   .dcard-btn{flex:1;min-width:190px;height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;font-size:15px;font-weight:600;color:#fff;cursor:pointer;transition:filter .12s;font-family:inherit}
   .dcard-btn:hover{filter:brightness(.96)}
@@ -156,7 +156,7 @@
       {% if gateway_dest != 'desconhecido' %}
       <div class="dcard-qty">
         <button type="button" aria-label="{% trans 'Menos' %}" onclick="document.getElementById('confirm-qty').stepDown()">−</button>
-        <input id="confirm-qty" name="qty" type="number" value="1" min="1" max="9999" inputmode="numeric" />
+        <input id="confirm-qty" name="qty" type="number" value="1" min="1" max="1000000" step="1" inputmode="numeric" />
         <button type="button" aria-label="{% trans 'Mais' %}" onclick="document.getElementById('confirm-qty').stepUp()">+</button>
       </div>
       {% endif %}
