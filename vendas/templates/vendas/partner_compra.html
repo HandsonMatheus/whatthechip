@@ -47,16 +47,31 @@
     {% endblocktrans %}</b>
     <span class="cmp-falta">{% for p in pendencias %}{{ p }}{% if not forloop.last %} · {% endif %}{% endfor %}{% if pendencias_extra %} … +{{ pendencias_extra }}{% endif %}</span>
     <div>{% blocktrans trimmed %}
-      Cote essas categorias e o valor da ordem congela — depois disso você
-      consegue fechar o resultado.
+      Cote essas categorias, depois volte aqui e congele a ordem — aí o
+      resultado abre.
     {% endblocktrans %}</div>
   </div>
   {% else %}
-  <div class="cmp-aviso">{% blocktrans trimmed %}
-    Os valores abaixo são ESTIMADOS pela sua tabela de hoje — esta ordem
-    ainda não foi congelada. Fale com o WhatTheChip para congelá-la antes de
-    fechar o resultado.
-  {% endblocktrans %}</div>
+  {% comment %} Rascunho SEM pendência: falta só congelar, e quem congela é
+     ELE (dono, 2026-08-18). Até aqui a tela mandava "falar com o
+     WhatTheChip" e não oferecia caminho nenhum — aprovar o preço que faltava
+     não destravava nada. {% endcomment %}
+  <div class="cmp-aviso cmp-aviso--go">
+    <div>{% blocktrans trimmed %}
+      Todas as categorias deste lote já têm preço na sua tabela. Os valores
+      abaixo são ESTIMADOS pela tabela de hoje: congele a ordem para virarem
+      definitivos e liberar a conferência.
+    {% endblocktrans %}</div>
+    {% if pode_congelar %}
+    <form method="post" action="{% url 'compras:congelar' so.pk %}" class="cmp-congelar">
+      {% csrf_token %}
+      <button type="submit" class="cmp-btn cmp-btn--go"
+              onclick="return confirm('{% trans "Congelar trava o preço desta ordem na tabela de hoje. Confirmar?" %}');">
+        {% blocktrans trimmed with v=total_estimado %}Congelar ¥ {{ v }}{% endblocktrans %}
+      </button>
+    </form>
+    {% endif %}
+  </div>
   {% endif %}
 {% endif %}
 
@@ -137,6 +152,10 @@
   .cmp-tot__sub { font-size:12px; color:#8d8d8d; }
   .cmp-aviso { background:#fcf4d6; border-left:3px solid #f1c21b; padding:12px 14px;
                font-size:14px; margin-bottom:18px; max-width:70ch; }
+  .cmp-aviso--go { background:#edf5ff; border-left-color:#0f62fe; }
+  .cmp-congelar { margin-top:12px; }
+  .cmp-btn--go { background:#0f62fe; }
+  .cmp-btn--go:hover { background:#0353e9; }
   .cmp-nota { background:#edf5ff; border-left:3px solid #0f62fe; padding:10px 14px;
               font-size:13px; margin-bottom:18px; max-width:70ch; }
   .cmp-tab { width:100%; border-collapse:collapse; background:#fff;

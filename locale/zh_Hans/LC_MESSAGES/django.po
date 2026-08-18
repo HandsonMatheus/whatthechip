@@ -2699,3 +2699,38 @@ msgid ""
 "Código da empresa inválido: use de 2 a 4 letras MAIÚSCULAS (ex.: \"EMI\"). "
 "Vazio também vale — o documento sai sem prefixo."
 msgstr "公司代码无效：请使用 2 至 4 个大写字母（例如 \"EMI\"）。留空也可以 — 单据将不带前缀。"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Congelar"
+msgstr "锁定价格"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Congelar trava o preço desta ordem na tabela de hoje. Confirmar?"
+msgstr "锁定后，本订单将按您今天的价格表定价。确认吗？"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Congelar ¥ %(v)s"
+msgstr "锁定 ¥ %(v)s"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid ""
+"Cote essas categorias, depois volte aqui e congele a ordem — aí o resultado "
+"abre."
+msgstr "请先为这些类别报价，然后回到本页锁定订单——验收即可开启。"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid ""
+"Ordem congelada — os valores agora são os definitivos. Pode conferir o que "
+"chegou."
+msgstr "订单已锁定——金额为最终值。可以开始验收到货了。"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid ""
+"Todas as categorias deste lote já têm preço na sua tabela. Os valores abaixo"
+" são ESTIMADOS pela tabela de hoje: congele a ordem para virarem definitivos"
+" e liberar a conferência."
+msgstr "本批次的所有类别在您的价格表中均已有价格。下方金额按今天的价格表为预估值：锁定订单后即为最终值，并开启验收。"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Todos os preços"
+msgstr "全部价格"

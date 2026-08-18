@@ -1067,7 +1067,9 @@ class PartnerDashboardTests(TestCase):
         self.assertEqual(self.client.get('/partner/').status_code, 403)
         self.client.logout()
         self.client.force_login(self.partner)
-        resp = self.client.get('/partner/')
+        # A tabela de preços virou a SEGUNDA tela (dono, 2026-08-18): a raiz
+        # /partner/ agora é a lista de compras.
+        resp = self.client.get('/partner/precos/')
         self.assertContains(resp, 'Wuquan P6')
         self.assertContains(resp, 'Chips sem cotação')
         self.assertContains(resp, 'Bem-vindo')
@@ -1166,7 +1168,7 @@ class PartnerDashboardTests(TestCase):
         self.assertIn('wuquan-p6-prices-rmb-', resp_rmb['Content-Disposition'])
         resp_zh = self.client.get('/partner/catalog.pdf?lang=zh-hans&currency=rmb')
         self.assertTrue(resp_zh.content.startswith(b'%PDF'))     # fonte CJK + ¥
-        self.assertContains(self.client.get('/partner/'), 'catalog.pdf')
+        self.assertContains(self.client.get('/partner/precos/'), 'catalog.pdf')
         self.client.logout()
         self.client.force_login(self.operator)
         self.assertEqual(self.client.get('/partner/catalog.pdf').status_code, 403)
@@ -2116,7 +2118,7 @@ class PartnerKindNavTests(TestCase):
 
     def test_sidebar_e_home_por_tipo(self):
         self.client.force_login(self.partner)
-        resp = self.client.get('/partner/')
+        resp = self.client.get('/partner/precos/')
         # sidebar: um link por TIPO (não mais por marca)
         for kind in ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr'):
             self.assertContains(resp, f'/partner/tipo/{kind}/')

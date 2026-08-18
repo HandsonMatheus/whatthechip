@@ -7,7 +7,9 @@ from . import views
 app_name = 'pricing'
 
 urlpatterns = [
-    path('',                      views.partner_home, name='partner_home'),
+    # A raiz /partner/ é a lista de COMPRAS (vendas/urls_partner) desde
+    # 2026-08-18; a tabela de preços é a segunda tela do menu.
+    path('precos/',               views.partner_home, name='partner_home'),
     path('lists/<int:list_pk>/',  views.partner_list, name='partner_list'),
     path('tipo/<str:kind>/',      views.partner_kind, name='partner_kind'),
     path('tipo/<str:kind>/enviar/', views.partner_kind_save, name='partner_kind_save'),

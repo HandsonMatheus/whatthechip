@@ -24,8 +24,12 @@ urlpatterns = [
     # F11.6: as COMPRAS do comprador (OVs de todos os clientes dele).
     # Views em vendas/ (o domínio é venda), montadas na área do
     # parceiro (o público é ele) — gate `partner_required`.
-    path('partner/compras/', include('vendas.urls_partner',
-                                     namespace='compras')),
+    # ⚠ Os DOIS includes moram no mesmo prefixo /partner/, nesta ordem: a
+    # RAIZ do parceiro é a lista de compras (dono, 2026-08-18 — é o que ele
+    # abre todo dia; a tabela de preços virou /partner/precos/). Quando
+    # nenhum padrão do primeiro casa, o resolvedor segue para o segundo em
+    # vez de dar 404 — há teste cravando /partner/how/.
+    path('partner/', include('vendas.urls_partner', namespace='compras')),
     path('partner/', include('pricing.urls', namespace='pricing')),
     # Vendas (F11.2 — PRECIFICACAO §12.19): Cotação → OV do lote; admin-only.
     path('vendas/', include('vendas.urls', namespace='vendas')),

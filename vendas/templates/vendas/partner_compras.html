@@ -27,6 +27,9 @@
     <tr>
       <th>{% trans "Lote" %}</th>
       <th>{% trans "Cliente" %}</th>
+      {% comment %} Data em que a ORDEM foi gerada (dono, 2026-08-18) — não a
+         do lote: é ela que marca quando a compra entrou na fila dele. {% endcomment %}
+      <th>{% trans "Ordem" %}</th>
       <th class="num">{% trans "Chips" %}</th>
       <th class="num">{% trans "Total ¥" %}</th>
       <th class="num">{% trans "Total US$" %}</th>
@@ -39,11 +42,16 @@
     <tr>
       <td class="mono">{{ o.lot.code }}</td>
       <td>{{ o.company.name }}</td>
+      <td class="cmp-data"><span class="mono">{{ o.code }}</span><br>{{ o.created_at|date:"d/m/Y" }}</td>
       <td class="num">{{ o.units }}</td>
-      <td class="num mono">{% localize off %}{% if o.total_rmb %}¥ {{ o.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
-      <td class="num mono">{% localize off %}{% if o.total_usd %}US$ {{ o.total_usd }}{% else %}—{% endif %}{% endlocalize %}</td>
+      {% comment %} Rascunho mostra o valor VIVO com "≈": é estimativa pela
+         tabela de hoje, não o congelado. Antes vinha "—" e a lista não dizia
+         nada sobre o tamanho da compra. {% endcomment %}
+      <td class="num mono">{% localize off %}{% if o.total_rmb %}¥ {{ o.total_rmb }}{% elif o.est_rmb %}<span class="cmp-est">≈ ¥ {{ o.est_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
+      <td class="num mono">{% localize off %}{% if o.total_usd %}US$ {{ o.total_usd }}{% elif o.est_usd %}<span class="cmp-est">≈ US$ {{ o.est_usd }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
       <td>
         {% if o.stage == 'sem_preco' %}<span class="cmp-tag cmp-tag--warn">{% trans "Falta preço seu" %}</span>
+        {% elif o.stage == 'a_congelar' %}<span class="cmp-tag cmp-tag--go">{% trans "Congelar" %}</span>
         {% elif o.stage == 'a_conferir' %}<span class="cmp-tag cmp-tag--todo">{% trans "A conferir" %}</span>
         {% elif o.stage == 'faturado' %}<span class="cmp-tag cmp-tag--ok">{% trans "Faturado" %}</span>
         {% elif o.stage == 'parcial' %}<span class="cmp-tag cmp-tag--todo">{% trans "Pago em parte" %}</span>
@@ -74,6 +82,9 @@
   .cmp-tag { display:inline-block; font-size:11px; font-weight:600; padding:3px 9px;
              letter-spacing:.04em; text-transform:uppercase; }
   .cmp-tag--warn { background:#fcf4d6; color:#8e6a00; }
+  .cmp-tag--go   { background:#d0e2ff; color:#0043ce; }
+  .cmp-data { font-size:12px; color:#525252; line-height:1.5; }
+  .cmp-est { color:#8d8d8d; }
   .cmp-tag--todo { background:#e8daff; color:#6929c4; }
   .cmp-tag--ok   { background:#defbe6; color:#0e6027; }
   .cmp-link { color:#0f62fe; text-decoration:none; font-weight:600; white-space:nowrap; }

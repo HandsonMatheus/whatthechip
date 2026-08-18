@@ -85,12 +85,17 @@ def create_draft_for_lot(lot, user=None):
         return None
 
 
-def live_quotes(so):
+def live_quotes(so, ctx=None):
     """[(linha, PriceQuote)] com valores VIVOS (draft) — resolve a chave da
     linha contra a tabela Price atual. Para OV confirmada, use os campos
-    congelados da própria linha (unit_rmb/unit_usd)."""
+    congelados da própria linha (unit_rmb/unit_usd).
+
+    ``ctx`` reaproveita um ``BuyerPricingContext`` já montado. Ele custa 3
+    queries e a tabela de preço é do COMPRADOR (linha de plataforma, a mesma
+    para todas as empresas), então a lista de compras monta um só e passa
+    para todas as ordens — senão seriam 3 queries por rascunho na tela."""
     from pricing.engine import BuyerPricingContext
-    ctx = BuyerPricingContext(so.buyer)
+    ctx = ctx or BuyerPricingContext(so.buyer)
     # Origem do LOTE da ordem (2026-08-01): decide a tabela do eMMC.
     _origin = so.lot.origin if so.lot_id else ''
     out = []
@@ -552,7 +557,7 @@ def orders_for_buyer(buyer):
     ficam de fora: para o comprador elas não existem.
     """
     from tenancy.scope import company_scope
-    out = []
+    out, ctx = [], None
     for comp in _empresas_ativas():
         with company_scope(comp):
             qs = (SalesOrder.objects.filter(buyer=buyer)
@@ -560,7 +565,20 @@ def orders_for_buyer(buyer):
                   .select_related('lot', 'company')
                   .prefetch_related('lines', 'invoices', 'invoices__payments'))
             for so in qs:
-                so.stage = order_stage(so)
+                # Rascunho não guarda valor nenhum: a lista mostrava "—" em
+                # toda linha não congelada e o comprador não fazia ideia do
+                # tamanho da compra (correção 2026-08-18, mesma do detalhe).
+                # Aqui ele é re-resolvido AO VIVO contra o grid dele.
+                if so.status == STATUS_DRAFT:
+                    if ctx is None:
+                        from pricing.engine import BuyerPricingContext
+                        ctx = BuyerPricingContext(buyer)
+                    rmb, usd, pendentes = draft_totals(live_quotes(so, ctx))
+                    so.est_rmb, so.est_usd = rmb, usd
+                    so.stage = order_stage(so, pendentes=len(pendentes))
+                else:
+                    so.est_rmb = so.est_usd = None
+                    so.stage = order_stage(so)
                 # Unidades DA ORDEM (o que ele paga). As sem chave de preço
                 # viajam na caixa mas não entram no comércio — aparecem à
                 # parte na tela da compra, para o total bater com o lote.
@@ -593,19 +611,30 @@ def buyer_order(buyer, pk):
 
 #: Estágios comerciais que o comprador vê. Canônicos (a chave nunca traduz);
 #: o rótulo é montado na view/template.
-STAGE_SEM_PRECO, STAGE_A_CONFERIR = 'sem_preco', 'a_conferir'
+STAGE_SEM_PRECO, STAGE_A_CONGELAR = 'sem_preco', 'a_congelar'
+STAGE_A_CONFERIR = 'a_conferir'
 STAGE_FATURADO, STAGE_PARCIAL, STAGE_PAGO = 'faturado', 'parcial', 'pago'
 
 
-def order_stage(so) -> str:
+def order_stage(so, pendentes=None) -> str:
     """Em que pé está a compra, do ponto de vista do COMPRADOR.
 
-    ``sem_preco`` é o rascunho: o lote fechou mas alguma categoria não tem
-    preço no grid DELE, então a ordem não congelou (F11.6/F1). É a única
-    pendência que o comprador resolve sozinho — completando a tabela.
+    Os dois estágios de RASCUNHO são coisas diferentes, e confundi-los foi um
+    bug real (dono, 2026-08-18): ele aprovou o preço que faltava e a lista
+    continuou dizendo "falta preço seu", travada.
+
+    · ``sem_preco``  — alguma categoria não tem preço no grid DELE. É a única
+      pendência que o comprador resolve sozinho: completando a tabela.
+    · ``a_congelar`` — todas cotadas, falta só CONGELAR (quem congela é ele,
+      decisão do dono 2026-08-18; até então a tela mandava "falar com o
+      WhatTheChip" e não havia caminho nenhum).
+
+    ``pendentes`` evita recalcular as cotações vivas quem já as tem em mão.
     """
     if so.status == STATUS_DRAFT:
-        return STAGE_SEM_PRECO
+        if pendentes is None:
+            pendentes = len(draft_totals(live_quotes(so))[2])
+        return STAGE_SEM_PRECO if pendentes else STAGE_A_CONGELAR
     inv = next((i for i in so.invoices.all() if i.status != 'cancelled'), None)
     if inv is None:
         return STAGE_A_CONFERIR              # confirmada, resultado pendente

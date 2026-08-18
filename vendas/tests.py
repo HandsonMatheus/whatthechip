@@ -1516,3 +1516,158 @@ class CompradorComprasTests(TestCase):
         self.assertNotContains(tela, 'name="rej_')          # virou leitura
         self.assertEqual(services.order_stage(
             SalesOrder.all_companies.get(pk=so.pk)), services.STAGE_FATURADO)
+
+
+class CompradorCongelaTests(TestCase):
+    """O comprador CONGELA a própria ordem (dono, 2026-08-18).
+
+    Bug que motivou: no LOT/EMI/041 faltava preço de LPDDR3 1.5GB, ele
+    aprovou o preço — e a tela continuou dizendo "falta preço seu", travada.
+    Eram DUAS coisas erradas ao mesmo tempo:
+
+    1. o estágio da lista dizia `sem_preco` para QUALQUER rascunho, mesmo já
+       cotado por inteiro (agora há `a_congelar`);
+    2. não existia caminho para congelar do lado dele — a tela mandava "falar
+       com o WhatTheChip", e o dono já tinha decidido que quem confirma a
+       ordem é o COMPRADOR.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.emp, cls.buyer, cls.brand = _setup('vd-cong')
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('vd_cong_p', password='x')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        set_current_company(self.emp.pk)
+        self.addCleanup(set_current_company, None)
+        call_command('seed_category_codes', '--commit', verbosity=0)
+        self.client.force_login(self.parceiro)
+
+    def _grid(self):
+        from pricing.models import Price, PriceList, STATUS_QUOTED
+        if PriceList.all_companies.filter(buyer=self.buyer, brand=None).exists():
+            return
+        pl = PriceList.all_companies.create(buyer=self.buyer, brand=None)
+        Price.all_companies.create(
+            price_list=pl, kind='emmc', gen='', origin='phone',
+            tier_value=Decimal('16'), tier_unit='GB', status=STATUS_QUOTED,
+            price_min=Decimal('15'), price_max=Decimal('15'))
+
+    def _rascunho(self, sufixo, *, com_pendencia=False):
+        with company_scope(self.emp):
+            self._grid()
+            lot = Lot.open_for_company(self.emp, self.parceiro, 'g' + sufixo,
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='CG' + sufixo, quantity=10,
+                brand=self.brand, chip_type='eMMC', company=self.emp,
+                price_kind='emmc', price_gen='',
+                price_tier_value=Decimal('16'), price_tier_unit='GB')
+            if com_pendencia:
+                InventoryEntry.all_companies.create(
+                    lot=lot, part_number='CG' + sufixo + 'X', quantity=5,
+                    brand=self.brand, chip_type='UFS', company=self.emp,
+                    price_kind='ufs', price_gen='',
+                    price_tier_value=Decimal('256'), price_tier_unit='GB')
+            return services.create_draft_for_lot(lot, self.parceiro)
+
+    # ── o estágio ───────────────────────────────────────────────────────────
+
+    def test_estagio_separa_falta_preco_de_falta_congelar(self):
+        """O bug em uma linha: os dois rascunhos diziam a MESMA coisa."""
+        completo = self._rascunho('E1')
+        faltando = self._rascunho('E2', com_pendencia=True)
+        with company_scope(self.emp):
+            self.assertEqual(services.order_stage(completo), 'a_congelar')
+            self.assertEqual(services.order_stage(faltando), 'sem_preco')
+
+    def test_lista_traz_data_da_ordem_e_valor_estimado(self):
+        """Coluna da data (dono, 2026-08-18) e o ¥ VIVO do rascunho — antes a
+        lista mostrava "—" e ele não sabia o tamanho da compra."""
+        so = self._rascunho('L1')
+        tela = self.client.get(reverse('compras:list'))
+        self.assertContains(tela, so.code)                       # SO/EMPRESA/NNN
+        self.assertContains(tela, so.created_at.strftime('%d/%m/%Y'))
+        self.assertContains(tela, '≈')                           # é estimativa
+        self.assertContains(tela, '150.00')                      # 10 × ¥15
+
+    # ── congelar ────────────────────────────────────────────────────────────
+
+    def test_rascunho_completo_oferece_o_botao_e_congela(self):
+        so = self._rascunho('C1')
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, reverse('compras:congelar', args=[so.pk]))
+        self.assertNotContains(tela, 'name="rej_')       # ainda não confere
+
+        self.client.post(reverse('compras:congelar', args=[so.pk]))
+        so.refresh_from_db()
+        self.assertEqual(so.status, STATUS_CONFIRMED)
+        self.assertEqual(so.total_rmb, Decimal('150.00'))
+        self.assertEqual(so.confirmed_by, self.parceiro)
+        self.assertEqual(so.lines.get().unit_rmb, Decimal('15'))
+
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'name="rej_')          # agora confere
+        self.assertNotContains(tela, reverse('compras:congelar', args=[so.pk]))
+
+    def test_rascunho_com_pendencia_nao_oferece_nem_aceita_congelar(self):
+        """POST forjado também não passa: quem recusa é o `services.confirm`."""
+        so = self._rascunho('C2', com_pendencia=True)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertNotContains(tela, reverse('compras:congelar', args=[so.pk]))
+        resp = self.client.post(reverse('compras:congelar', args=[so.pk]),
+                                follow=True)
+        so.refresh_from_db()
+        self.assertEqual(so.status, STATUS_DRAFT)
+        self.assertContains(resp, 'sem preço')
+        self.assertContains(resp, 'UFS')                 # NOMEIA o que falta
+
+    def test_congelar_ordem_de_outro_comprador_e_404(self):
+        emp_r = Company.objects.create(name='Vd cong R', slug='vd-cong-r')
+        rival = Buyer.all_companies.create(company=emp_r, name='R',
+                                           slug='r-cong')
+        with company_scope(emp_r):
+            lot = Lot.open_for_company(emp_r, self.parceiro, 'r', origin='phone')
+            so = SalesOrder(lot=lot, buyer=rival,
+                            number=DocSequence.next_number(emp_r, SEQ_SO))
+            so.save()
+        self.assertEqual(
+            self.client.post(reverse('compras:congelar',
+                                     args=[so.pk])).status_code, 404)
+
+
+class PartnerRaizTests(TestCase):
+    """A raiz /partner/ é a lista de COMPRAS (dono, 2026-08-18): é o que ele
+    abre todo dia. A tabela de preços virou a segunda tela, /partner/precos/.
+
+    ⚠ Os dois includes moram no MESMO prefixo. O teste do /partner/how/ existe
+    para cravar o fall-through do resolvedor: se o Django parasse no primeiro
+    include, metade da área do parceiro viraria 404."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.emp, cls.buyer, _brand = _setup('vd-raiz')
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('vd_raiz_p', password='x')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        set_current_company(self.emp.pk)
+        self.addCleanup(set_current_company, None)
+        self.client.force_login(self.parceiro)
+
+    def test_raiz_e_a_lista_de_compras(self):
+        self.assertEqual(reverse('compras:list'), '/partner/')
+        self.assertContains(self.client.get('/partner/'), 'Suas compras')
+
+    def test_link_antigo_da_lista_redireciona(self):
+        resp = self.client.get('/partner/compras/')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['Location'], '/partner/')
+
+    def test_precos_continua_servido_no_segundo_include(self):
+        self.assertEqual(reverse('pricing:partner_home'), '/partner/precos/')
+        self.assertEqual(self.client.get('/partner/precos/').status_code, 200)
+        self.assertEqual(self.client.get('/partner/how/').status_code, 200)

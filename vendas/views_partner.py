@@ -41,7 +41,7 @@ from django.views.decorators.http import require_POST
 from pricing.views import _fx_info, partner_required
 
 from . import services
-from .models import STATUS_CONFIRMED
+from .models import STATUS_CONFIRMED, STATUS_DRAFT
 
 
 def _shell(request, extra=None):
@@ -87,8 +87,40 @@ def _detalhe(so):
         'pendencias_extra': max(0, len(pendencias) - 12),
         # Só OV CONFIRMADA e ainda sem fatura aceita resultado.
         'pode_acertar': so.status == STATUS_CONFIRMED and inv is None,
+        # Rascunho COM todas as categorias cotadas: falta só congelar, e quem
+        # congela é ELE (dono, 2026-08-18 — "quem vai fazer a confirmação da
+        # ordem é o comprador"). Antes disso a tela mandava falar com o
+        # WhatTheChip e não oferecia caminho nenhum: aprovar o preço que
+        # faltava não destravava nada.
+        'pode_congelar': so.status == STATUS_DRAFT and not pendencias,
         'total_estimado': sum((g['rmb'] for g in grupos), Decimal('0.00')),
     }
+
+
+@partner_required
+@require_POST
+def compra_congelar(request, pk):
+    """Congela a ordem com o preço de HOJE — o ato que destrava o resultado.
+
+    É o mesmo ``services.confirm`` do fechamento do lote (F11.6/F1); aqui ele
+    é o plano B para a ordem que nasceu rascunho porque faltava preço. Depois
+    de cotar a categoria que faltava, é ISTO que o comprador clica.
+
+    ``unmasked=True`` de propósito: se ainda faltar cotação, a mensagem de
+    erro NOMEIA as categorias, e nesta superfície o rótulo é real (quem lê é
+    quem compra o chip — ver o cabeçalho deste módulo). A máscara F12 protege
+    o conhecimento de categoria da empresa-CLIENTE, não dele.
+    """
+    with services.buyer_order(request.buyer, pk) as so:
+        try:
+            services.confirm(so, request.user, unmasked=True)
+        except ValidationError as erro:
+            messages.error(request, ' '.join(erro.messages))
+            return redirect('compras:detail', pk=so.pk)
+        messages.success(request, _(
+            'Ordem congelada — os valores agora são os definitivos. '
+            'Pode conferir o que chegou.'))
+        return redirect('compras:detail', pk=so.pk)
 
 
 @partner_required

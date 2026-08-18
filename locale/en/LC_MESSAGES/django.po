@@ -2855,3 +2855,43 @@ msgid ""
 msgstr ""
 "Invalid company code: use 2 to 4 UPPERCASE letters (e.g. \"EMI\"). Empty is "
 "fine too — the document comes out with no prefix."
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Congelar"
+msgstr "Freeze"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Congelar trava o preço desta ordem na tabela de hoje. Confirmar?"
+msgstr "Freezing locks this order at your table as of today. Confirm?"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Congelar ¥ %(v)s"
+msgstr "Freeze ¥ %(v)s"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid ""
+"Cote essas categorias, depois volte aqui e congele a ordem — aí o resultado "
+"abre."
+msgstr ""
+"Quote those categories, then come back here and freeze the order — that "
+"opens the result."
+
+#. vendas/ (F11.6 — comprador congela)
+msgid ""
+"Ordem congelada — os valores agora são os definitivos. Pode conferir o que "
+"chegou."
+msgstr "Order frozen — the amounts are now final. You can check what arrived."
+
+#. vendas/ (F11.6 — comprador congela)
+msgid ""
+"Todas as categorias deste lote já têm preço na sua tabela. Os valores abaixo"
+" são ESTIMADOS pela tabela de hoje: congele a ordem para virarem definitivos"
+" e liberar a conferência."
+msgstr ""
+"Every category in this lot already has a price on your table. The amounts "
+"below are ESTIMATED from today’s table: freeze the order to make them final "
+"and open the check-in."
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Todos os preços"
+msgstr "All prices"

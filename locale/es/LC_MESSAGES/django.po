@@ -2879,3 +2879,46 @@ msgid ""
 msgstr ""
 "Código de empresa inválido: use de 2 a 4 letras MAYÚSCULAS (ej.: \"EMI\"). "
 "Vacío también vale — el documento sale sin prefijo."
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Congelar"
+msgstr "Congelar"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Congelar trava o preço desta ordem na tabela de hoje. Confirmar?"
+msgstr ""
+"Congelar fija el precio de esta orden con su tabla de hoy. ¿Confirmar?"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Congelar ¥ %(v)s"
+msgstr "Congelar ¥ %(v)s"
+
+#. vendas/ (F11.6 — comprador congela)
+msgid ""
+"Cote essas categorias, depois volte aqui e congele a ordem — aí o resultado "
+"abre."
+msgstr ""
+"Cotice esas categorías, luego vuelva aquí y congele la orden — así se abre "
+"el resultado."
+
+#. vendas/ (F11.6 — comprador congela)
+msgid ""
+"Ordem congelada — os valores agora são os definitivos. Pode conferir o que "
+"chegou."
+msgstr ""
+"Orden congelada — los valores ahora son definitivos. Puede revisar lo que "
+"llegó."
+
+#. vendas/ (F11.6 — comprador congela)
+msgid ""
+"Todas as categorias deste lote já têm preço na sua tabela. Os valores abaixo"
+" são ESTIMADOS pela tabela de hoje: congele a ordem para virarem definitivos"
+" e liberar a conferência."
+msgstr ""
+"Todas las categorías de este lote ya tienen precio en su tabla. Los valores "
+"de abajo son ESTIMADOS por la tabla de hoy: congele la orden para que sean "
+"definitivos y se libere la revisión."
+
+#. vendas/ (F11.6 — comprador congela)
+msgid "Todos os preços"
+msgstr "Todos los precios"

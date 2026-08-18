@@ -162,19 +162,21 @@
 <body>
 
 <header class="wtc-header">
-  <a href="{% url 'pricing:partner_home' %}" class="wtc-header__brand">
+  <a href="{% url 'compras:list' %}" class="wtc-header__brand">
     <img src="{% static 'img/wtc-logo-dark.svg' %}" alt="WhatTheChip 什么芯片">
   </a>
 
-  <a href="{% url 'pricing:partner_home' %}"
-     class="wtc-header__nav{% if not active_pk %} wtc-header__nav--active{% endif %}">
-    {% trans "Início" %}
-  </a>
-
-  {# F11.6: as compras (OVs) que o comprador confere e fecha o resultado. #}
+  {% comment %} Ordem do menu (dono, 2026-08-18): COMPRAS primeiro — é a tela
+     que ele abre todo dia e a que tem trabalho pendente. A tabela de preços
+     virou a segunda: mexe-se nela de vez em quando. {% endcomment %}
   <a href="{% url 'compras:list' %}"
      class="wtc-header__nav{% if active_pk == 'compras' %} wtc-header__nav--active{% endif %}">
     {% trans "Compras" %}
+  </a>
+
+  <a href="{% url 'pricing:partner_home' %}"
+     class="wtc-header__nav{% if active_pk != 'compras' and not active_pk %} wtc-header__nav--active{% endif %}">
+    {% trans "Preços" %}
   </a>
 
   <a href="{% url 'pricing:partner_how' %}"
@@ -220,7 +222,7 @@
   <aside class="ptn-side">
     <div class="ptn-side__title">{% trans "Preços por tipo de chip" %}</div>
     <a href="{% url 'pricing:partner_home' %}"
-       class="ptn-side__link{% if not active_pk %} ptn-side__link--active{% endif %}">{% trans "Início" %}</a>
+       class="ptn-side__link{% if not active_pk %} ptn-side__link--active{% endif %}">{% trans "Todos os preços" %}</a>
     {% comment %} Navegação POR TIPO (dono 2026-07-27). Nomes de tipo são
        canônicos — nunca traduzem. {% endcomment %}
     {% for k, lbl, pend in kind_nav %}

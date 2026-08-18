@@ -1510,7 +1510,7 @@ unmasked=False)` nesta superfície.
   saldo a pagar (o F5 saiu junto — era só leitura).
 
 **Arquitetura entregue (F2+F3+F5):** `vendas/views_partner.py` +
-`vendas/urls_partner.py` (namespace `compras`, montado em `/partner/compras/`
+`vendas/urls_partner.py` (namespace `compras`, montado em `/partner/`
 ANTES do include do `pricing`), templates em `vendas/templates/vendas/`, e as
 funções de dados em `vendas/services.py` — `orders_for_buyer`, `buyer_order`
 (context manager que abre a OV JÁ dentro do `company_scope` da dona),
@@ -1521,6 +1521,37 @@ na nav e um `{% block sidebar %}` (a sidebar de preços não faz sentido aqui).
 acertar têm que acontecer todos sob o MESMO `company_scope`. Fora dele o RLS
 devolve zero linhas em silêncio, e o bug apareceria como "OV sem linhas" em
 vez de erro — a mesma classe de armadilha do incidente do K9.
+
+✅ **RESOLVIDO em 2026-08-18 (tarde) — o comprador CONGELA a própria ordem.**
+Bug achado em prod no `LOT/EMI/041`: faltava preço de LPDDR3 1.5GB, o dono
+aprovou o preço, **e a tela continuou travada dizendo "falta preço seu"**.
+Eram duas coisas erradas ao mesmo tempo:
+
+· **O estágio mentia.** `order_stage` devolvia `sem_preco` para QUALQUER
+  rascunho. Agora são dois: `sem_preco` (falta cotação no grid dele — só ele
+  resolve) e **`a_congelar`** (tudo cotado, falta o ato de congelar). A lista
+  também passou a mostrar o ¥ **vivo** do rascunho com `≈` em vez de `—`: sem
+  isso ele não sabia o tamanho da compra. As cotações vivas de toda a lista
+  compartilham UM `BuyerPricingContext` (3 queries), senão seriam 3 por
+  rascunho na tela.
+· **Não havia caminho.** A tela mandava "falar com o WhatTheChip" — enquanto o
+  dono já tinha decidido que **quem confirma a ordem é o COMPRADOR** (foi o
+  motivo de tirar o botão de confirmar da tela do cliente). Agora o rascunho
+  sem pendência mostra **"Congelar ¥ X"**, que chama o mesmo
+  `services.confirm` do fechamento do lote, com `unmasked=True` (aqui o rótulo
+  é real: quem lê é quem compra o chip).
+
+Congelamento **explícito**, e não automático na leitura, por decisão do dono:
+o preço que trava é o que ele vai pagar, então ele vê o valor antes de travar
+— e uma leitura de tela não pode gravar no banco.
+
+🔀 **A raiz `/partner/` virou a lista de COMPRAS** (dono, 2026-08-18): é a tela
+que o comprador abre todo dia; a tabela de preços virou a segunda, em
+`/partner/precos/`. Os **dois includes moram no mesmo prefixo** — o resolvedor
+tenta o de `vendas` e, quando nenhum padrão casa, segue para o de `pricing` em
+vez de dar 404 (há teste cravando `/partner/how/`). `/partner/compras/`, a raiz
+antiga, redireciona: o comprador pode ter guardado o link. A lista ganhou a
+coluna **Ordem** (código + data de emissão da OV).
 
 ✅ **RESOLVIDO em 2026-08-18 — `Company.code` no identificador.** O código
 colidia entre clientes porque a numeração é POR EMPRESA (o comprador via dois
