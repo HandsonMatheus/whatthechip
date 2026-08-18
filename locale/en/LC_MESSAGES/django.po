@@ -3118,3 +3118,19 @@ msgstr "none"
 #. vendas/ (F11.6 — confirmação do resultado)
 msgid "sem acerto"
 msgstr "no adjustment"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "Resultado esperado"
+msgstr "Expected result"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "Resultado esperado (estimado)"
+msgstr "Expected result (estimate)"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "Resultado final"
+msgstr "Final result"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "depois da conferência"
+msgstr "after the check"

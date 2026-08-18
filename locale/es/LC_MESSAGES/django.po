@@ -3144,3 +3144,19 @@ msgstr "ninguno"
 #. vendas/ (F11.6 — confirmação do resultado)
 msgid "sem acerto"
 msgstr "sin ajuste"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "Resultado esperado"
+msgstr "Resultado esperado"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "Resultado esperado (estimado)"
+msgstr "Resultado esperado (estimado)"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "Resultado final"
+msgstr "Resultado final"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "depois da conferência"
+msgstr "tras la revisión"

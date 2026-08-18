@@ -24,17 +24,17 @@
     <p class="ptn-sub">{% blocktrans trimmed with cliente=so.company.name %}
       de <b>{{ cliente }}</b>{% endblocktrans %} · {{ so.code }}</p>
   </div>
+  {% comment %} DUAS COLUNAS (dono, 2026-08-18). ESPERADO é o preço fechado com
+     o cliente: IMUTÁVEL, é o número que ele tinha na mão quando a caixa saiu.
+     FINAL é o que a conferência produziu — muda enquanto o comprador digita e
+     congela na fatura. Um número só, mudando, apagaria a referência: a
+     diferença entre os dois é a informação da tela. {% endcomment %}
   <div class="cmp-tot">
-    <div class="cmp-tot__lbl">{% if estimado %}{% trans "Valor estimado" %}{% else %}{% trans "Valor da ordem" %}{% endif %}</div>
-    {% comment %} ¥ e US$ com o MESMO tamanho (dono, 2026-08-18): ele fecha em
-       ¥ e paga em US$ — nenhum dos dois é nota de rodapé do outro. {% endcomment %}
-    {% comment %} Os dois números MUDAM enquanto ele digita as recusas (dono,
-       2026-08-18) — o topo tem que dizer quanto esta compra vale AGORA, não
-       quanto valia quando a caixa saiu. O valor de origem reaparece logo
-       abaixo como "esperado", que é a conta que o cliente tinha na cabeça. {% endcomment %}
-    <div class="cmp-tot__val mono" id="cmp-h-rmb">{% localize off %}{% if estimado %}¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
-    <div class="cmp-tot__val mono" id="cmp-h-usd">{% localize off %}{% if not estimado and so.total_usd %}US$ {{ so.total_usd }}{% else %}—{% endif %}{% endlocalize %}</div>
-    <div class="cmp-tot__exp mono" id="cmp-h-exp" hidden></div>
+    <div class="cmp-tot__lbl">{% if estimado %}{% trans "Resultado esperado (estimado)" %}{% else %}{% trans "Resultado esperado" %}{% endif %}</div>
+    {% comment %} ¥ e US$ com o MESMO tamanho: ele fecha em ¥ e paga em US$ —
+       nenhum dos dois é nota de rodapé do outro. {% endcomment %}
+    <div class="cmp-tot__val mono">{% localize off %}{% if esperado_rmb %}¥ {{ esperado_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
+    <div class="cmp-tot__val mono">{% localize off %}{% if esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}{% endlocalize %}</div>
     {% if fx_rate %}
     {% comment %} A taxa é a TRAVADA no fechamento do lote (PLANO_FX fase C):
        o mesmo câmbio honra as duas pontas do negócio. {% endcomment %}
@@ -47,6 +47,17 @@
     </div>
     {% endif %}
   </div>
+  {% if not estimado %}
+  <div class="cmp-tot cmp-tot--final">
+    <div class="cmp-tot__lbl">{% trans "Resultado final" %}</div>
+    <div class="cmp-tot__val mono" id="cmp-h-rmb">{% localize off %}{% if final_rmb %}¥ {{ final_rmb }}{% elif pode_acertar %}¥ {{ esperado_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
+    <div class="cmp-tot__val mono" id="cmp-h-usd">{% localize off %}{% if final_usd %}US$ {{ final_usd }}{% elif pode_acertar and esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}{% endlocalize %}</div>
+    <div class="cmp-tot__exp mono" id="cmp-h-exp"{% if not final_rmb %} hidden{% endif %}>{% localize off %}{% if final_rmb and esperado_rmb %}{% if final_rmb < esperado_rmb %}−¥ {{ delta_abs }}{% elif final_rmb > esperado_rmb %}+¥ {{ delta_abs }}{% else %}{% trans "sem acerto" %}{% endif %}{% endif %}{% endlocalize %}</div>
+    {% if not invoice %}
+    <div class="cmp-tot__sub">{% trans "depois da conferência" %}</div>
+    {% endif %}
+  </div>
+  {% endif %}
   {% if invoice %}
   <div class="cmp-tot">
     <div class="cmp-tot__lbl">{% trans "Saldo a pagar" %}</div>
@@ -490,7 +501,8 @@
   .cmp-in--w { width:100%; min-width:130px; border-color:#8d8d8d;
                text-align:left; font-size:13px; padding:6px 8px; }
   .cmp-pag__hist { margin-top:18px; }
-  .cmp-tot__exp { font-size:12px; color:#8d8d8d; margin-top:4px; }
+  .cmp-tot__exp { font-size:13px; font-weight:600; color:#8e6a00; margin-top:4px; }
+  .cmp-tot--final .cmp-tot__val { color:#0f62fe; }
   .cmp-modal { position:fixed; inset:0; background:rgba(22,22,22,.7);
                display:flex; align-items:center; justify-content:center;
                padding:20px; z-index:60; }
@@ -577,16 +589,17 @@
     elRej.textContent = rej;
     elAceitos.textContent = aceitos;
     elPagar.textContent = '¥ ' + pagar.toFixed(2);
-    // O TOPO acompanha: quanto esta compra vale agora (dono, 2026-08-18).
+    // Só a coluna FINAL se move — a ESPERADA é o preço fechado com o
+    // cliente e fica parada, senão a referência se perde (dono, 2026-08-18).
     if (hRmb) hRmb.textContent = '¥ ' + pagar.toFixed(2);
     if (hUsd && fx) hUsd.textContent = 'US$ ' + (pagar * fx).toFixed(2);
     if (hExp) {
-      var difere = esperado && Math.abs(pagar - esperado) >= 0.005;
+      var dif = pagar - esperado;
+      var difere = esperado && Math.abs(dif) >= 0.005;
       hExp.hidden = !difere;
       if (difere) {
-        hExp.textContent = '{% trans "esperado" %} ¥ ' + esperado.toFixed(2)
-          + '  (' + (pagar < esperado ? '−' : '+') + '¥ '
-          + Math.abs(pagar - esperado).toFixed(2) + ')';
+        hExp.textContent = (dif < 0 ? '−' : '+') + '¥ '
+          + Math.abs(dif).toFixed(2);
       }
     }
   }

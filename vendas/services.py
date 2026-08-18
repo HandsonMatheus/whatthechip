@@ -542,7 +542,8 @@ def result_document(so, invoice):
         'company_logo': company_logo_bytes(so.company if so.company_id else None),
         'lot_code': lot.code,
         'so_code': so.code,
-        'inv_code': invoice.code,
+        # ⚠ Sem o código da FATURA: é papel interno do WhatTheChip e não diz
+        # nada a quem recebe este documento (dono, 2026-08-18).
         'company': so.company.name if so.company_id else '',
         # ⚠ O NOME DO COMPRADOR não entra (dono, 2026-08-18): este PDF vai
         # para o cliente, e de quem o WhatTheChip compra é sigilo de negócio.

@@ -934,7 +934,7 @@ class PdfConferenciaGerenteTests(TestCase):
         # (outro PDF) — glifo só entra na fonte se for usado.
         fora = {'unit_rmb', 'total_rmb', 'total_usd',
                 'confirmed', 'cancelled',
-                'result', 'invoice', 'received', 'settled', 'sent',
+                'result', 'received', 'settled', 'sent',
                 'rejected', 'accepted', 'brand', 'notes',
                 'expected', 'final', 'difference'}
         for ch in set(''.join(zh for k, (_en, zh) in _L.items()
@@ -1877,6 +1877,29 @@ class CompradorEtapasEResultadoTests(TestCase):
         self.assertContains(tela, '1 ¥ = US$')          # câmbio no cabeçalho
         self.assertContains(tela, 'US$ 150.00'[:4])     # US$ tem o mesmo peso
 
+    def test_topo_tem_DUAS_colunas_esperado_e_final(self):
+        """Dono, 2026-08-18: o esperado é IMUTÁVEL (o preço fechado com o
+        cliente) e o final é o que a conferência produziu. Um número só,
+        mudando, apagaria a referência."""
+        so = self._ov('S13')
+        services.mark_received(so)
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'Resultado esperado')
+        self.assertContains(tela, 'Resultado final')
+        self.assertContains(tela, 'cmp-h-rmb')          # a coluna que se move
+        self.assertContains(tela, '¥ 150.00')
+
+        # Depois do resultado, as DUAS continuam — com a diferença ao lado.
+        linha = so.lines.get()
+        self.client.post(reverse('compras:resultado', args=[so.pk]),
+                         {f'rej_{linha.pk}': '4'})
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'Resultado esperado')
+        self.assertContains(tela, '¥ 150.00')           # esperado, parado
+        self.assertContains(tela, 'Resultado final')
+        self.assertContains(tela, '¥ 90.00')            # final, 6 × ¥15
+        self.assertContains(tela, '−¥ 60.00')           # a diferença
+
     # ── glossário ───────────────────────────────────────────────────────────
 
     def test_aba_categorias_traz_a_convencao_e_marca_a_desta_compra(self):
@@ -1917,6 +1940,20 @@ class CompradorEtapasEResultadoTests(TestCase):
             self.assertIn(pedaco, texto)
         self.assertIn(b'150.00', texto)                 # esperado (10 × \xa515)
         self.assertIn(b'90.00', texto)                  # final (6 × \xa515)
+
+    def test_pdf_do_resultado_nao_fala_em_FATURA(self):
+        """Papel interno do WhatTheChip; não diz nada a quem recebe (dono)."""
+        _sem_compressao(self)
+        so = self._ov('S12')
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        with company_scope(self.emp):
+            inv = Invoice.all_companies.get(order=so)
+        texto = b' '.join(_textos_do_pdf(self.client.get(
+            reverse('compras:resultado_pdf', args=[so.pk])).content))
+        self.assertNotIn(b'Invoice', texto)
+        self.assertNotIn(inv.code.encode(), texto)
+        self.assertIn(so.lot.code.encode(), texto)      # lote e OV, esses ficam
+        self.assertIn(so.code.encode(), texto)
 
     def test_pdf_do_resultado_nao_diz_QUEM_e_o_comprador(self):
         """Sigilo de negócio (dono, 2026-08-18): o documento vai pro CLIENTE,

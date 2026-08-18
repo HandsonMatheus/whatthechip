@@ -2943,3 +2943,19 @@ msgstr "无"
 #. vendas/ (F11.6 — confirmação do resultado)
 msgid "sem acerto"
 msgstr "无调整"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "Resultado esperado"
+msgstr "预期结果"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "Resultado esperado (estimado)"
+msgstr "预期结果（预估）"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "Resultado final"
+msgstr "最终结果"
+
+#. vendas/ (F11.6 — esperado × final)
+msgid "depois da conferência"
+msgstr "验收之后"

@@ -112,6 +112,19 @@ def _detalhe(so):
         # herda essa taxa, e é ela que converte o ¥ dele em US$.
         'fx_rate': so.fx_usd_rate or (so.lot.fx_rate if so.lot_id else None),
         'fx_locked_at': so.lot.fx_locked_at if so.lot_id else None,
+        # ── Duas colunas no topo (dono, 2026-08-18) ──────────────────────
+        # ESPERADO é o preço fechado com o cliente: imutável, é o número que
+        # ele tinha na mão quando a caixa saiu. FINAL é o que a conferência
+        # produziu — muda enquanto o comprador digita e congela na fatura.
+        # Separar os dois é o que deixa a diferença legível; um número só,
+        # mudando, apagaria a referência.
+        'esperado_rmb': (so.total_rmb if so.total_rmb is not None
+                         else sum((g['rmb'] for g in grupos), Decimal('0.00'))),
+        'esperado_usd': so.total_usd,
+        'final_rmb': inv.total_rmb if inv else None,
+        'final_usd': inv.total_usd if inv else None,
+        'delta_abs': (abs(inv.total_rmb - so.total_rmb)
+                      if inv and so.total_rmb is not None else None),
         'total_estimado': sum((g['rmb'] for g in grupos), Decimal('0.00')),
     }
 

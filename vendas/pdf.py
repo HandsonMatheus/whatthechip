@@ -195,7 +195,6 @@ _L = {
     'declared':   ('Declared value',       '申報價值'),
     # ── Documento do RESULTADO (dono, 2026-08-18) ──────────────────────────
     'result':     ('Purchase result',      '採購結果'),
-    'invoice':    ('Invoice',              '發票'),
     'expected':   ('Expected',             '預期'),
     'final':      ('Final',                '最終'),
     'difference': ('Difference',           '差額'),
@@ -585,13 +584,14 @@ def render_result_pdf(doc: dict) -> bytes:
                           ('VALIGN', (0, 0), (-1, -1), 'MIDDLE')]),
                   Spacer(0, 9)]
 
-    # ⚠ LOTE, OV e FATURA com o MESMO fontSize — o cliente procura pelo lote,
-    # o comprador pela OV, a contabilidade pela fatura. Nenhum manda no outro.
+    # ⚠ LOTE e OV com o MESMO fontSize — o cliente procura pelo lote, o
+    # comprador pela OV; nenhum manda no outro. O número da FATURA não entra:
+    # é papel interno do WhatTheChip e não diz nada a quem recebe (dono,
+    # 2026-08-18).
     story += [_limpa(Table(
-        [[P(_t('lot'), st_cap), P(_t('so'), st_cap), P(_t('invoice'), st_cap)],
-         [P(doc['lot_code'], st_code), P(doc['so_code'], st_code),
-          P(doc['inv_code'], st_code)]],
-        colWidths=[0.34 * avail, 0.33 * avail, 0.33 * avail]),
+        [[P(_t('lot'), st_cap), P(_t('so'), st_cap)],
+         [P(doc['lot_code'], st_code), P(doc['so_code'], st_code)]],
+        colWidths=[0.5 * avail, 0.5 * avail]),
         [('BOTTOMPADDING', (0, 0), (-1, 0), 1),
          ('BOTTOMPADDING', (0, 1), (-1, 1), 4),
          ('LINEBELOW', (0, 1), (-1, 1), 1.2, _BLUE)])]
@@ -697,7 +697,7 @@ def render_result_pdf(doc: dict) -> bytes:
         story += [Spacer(0, 11), P(_t('notes'), st_sec),
                   P(doc['notes'], st_td)]
 
-    footer_txt = (f"{doc['lot_code']} · {doc['inv_code']} · "
+    footer_txt = (f"{doc['lot_code']} · {doc['so_code']} · "
                   f"{_t('generated')} · {_fmt_dt(date.today())}")
 
     def _footer(canvas, _doc):

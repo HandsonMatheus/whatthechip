@@ -1627,9 +1627,13 @@ que clicar em cada ponto do fluxo sem refazer tudo.
 acusar como recebido primeiro"). Sem `received_at` não há coluna de recusa nem
 botão de fechar — não se confere caixa que não chegou. A tela diz por quê.
 
-📉 **O topo acompanha o que ele digita:** ¥ e US$ do cabeçalho passam a mostrar
-quanto a compra vale AGORA, e o valor de origem reaparece embaixo como
-"esperado ¥ X (−¥ Y)". Conforto de tela — quem soma é o servidor.
+📊 **Duas colunas no topo: RESULTADO ESPERADO × RESULTADO FINAL** (dono,
+2026-08-18). O esperado é o preço fechado com o cliente — **imutável**, é o
+número que ele tinha na mão quando a caixa saiu. O final é o que a conferência
+produziu: muda enquanto o comprador digita e congela na fatura, com a
+diferença (`−¥ 60,00`) logo abaixo. ⚠ Um número só, mudando, apagaria a
+referência — a informação da tela É a distância entre os dois. As duas colunas
+continuam depois de fechado.
 
 ✅ **Confirmação antes de gravar:** o "Fechar resultado" abre um modal com lote,
 enviados, recusados, aprovados, resultado e a diferença contra o esperado. A
@@ -1644,9 +1648,10 @@ não o caminho único.
 
 No PDF do resultado: **ESPERADO × FINAL × DIFERENÇA** em caixa própria (a
 diferença é o que o cliente vai querer explicado, e não pode ficar para ele
-calcular), o **logo do cliente** no topo — e ⚠ **o nome do COMPRADOR saiu**:
-o documento vai para o cliente, e de quem o WhatTheChip compra é sigilo de
-negócio.
+calcular), o **logo do cliente** no topo — e duas coisas que **saíram**: o
+**nome do COMPRADOR** (o documento vai para o cliente, e de quem o WhatTheChip
+compra é sigilo de negócio) e o **número da FATURA** (papel interno; não diz
+nada a quem recebe). O documento se identifica por LOTE + OV.
 
 🔜 **PRÓXIMO PASSO ACORDADO (dono, 2026-08-18): espelhar a superfície do lado do
 CLIENTE.** Hoje o comprador declara o pagamento e a fatura vira PAGA na hora —
