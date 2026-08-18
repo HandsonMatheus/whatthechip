@@ -2937,3 +2937,60 @@ msgstr "Spec"
 #. vendas/ (F11.6 — abas + totais)
 msgid "¥ total"
 msgstr "¥ total"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "1 ¥ = US$ %(r)s"
+msgstr "1 ¥ = US$ %(r)s"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Baixe e envie ao cliente."
+msgstr "Download it and send it to the client."
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid ""
+"Cada caixa que chega tem um código destes. A letra é o tipo de chip e o "
+"número é a categoria — o código nunca muda e nunca é reaproveitado."
+msgstr ""
+"Every box that arrives carries one of these codes. The letter is the chip "
+"type and the number is the category — the code never changes and is never "
+"reused."
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Código"
+msgstr "Code"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Imprimir resultado (PDF)"
+msgstr "Print result (PDF)"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Marcar como recebido"
+msgstr "Mark as received"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Nesta compra"
+msgstr "In this purchase"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Pagamento"
+msgstr "Payment"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Recebimento registrado."
+msgstr "Delivery recorded."
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Registra o dia em que a caixa chegou."
+msgstr "Records the day the box arrived."
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Resultado"
+msgstr "Result"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "travado no fechamento do lote"
+msgstr "locked when the lot was closed"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "travado no fechamento em %(d)s"
+msgstr "locked at close on %(d)s"

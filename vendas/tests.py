@@ -923,10 +923,14 @@ class PdfConferenciaGerenteTests(TestCase):
         self._endereco()                  # p/ o bloco SHIP TO entrar também
         pdf = self._pdf(self.manager)
         self.assertIn(b'/BaseFont', pdf)               # a TTF foi embutida
-        # Fora da conta: rótulo de preço (só na versão do admin) e os status
-        # que ESTE documento não está — glifo só entra na fonte se for usado.
+        # Fora da conta: rótulo de preço (só na versão do admin), os status
+        # que ESTE documento não está, e os rótulos do documento de RESULTADO
+        # (outro PDF) — glifo só entra na fonte se for usado.
         fora = {'unit_rmb', 'total_rmb', 'total_usd',
-                'confirmed', 'cancelled'}
+                'confirmed', 'cancelled',
+                'result', 'invoice', 'buyer', 'received', 'settled', 'sent',
+                'rejected', 'accepted', 'brand', 'order_val', 'final_val',
+                'notes'}
         for ch in set(''.join(zh for k, (_en, zh) in _L.items()
                               if k not in fora)):
             if ch.isspace() or ch.isascii():
@@ -1745,3 +1749,156 @@ class PartnerRaizTests(TestCase):
         self.assertEqual(reverse('pricing:partner_home'), '/partner/precos/')
         self.assertEqual(self.client.get('/partner/precos/').status_code, 200)
         self.assertEqual(self.client.get('/partner/how/').status_code, 200)
+
+
+class CompradorEtapasEResultadoTests(TestCase):
+    """Card de etapas, glossário da convenção e o PDF do resultado
+    (dono, 2026-08-18).
+
+    O card responde "em que fase está, de que fase passou, para onde vai" —
+    e por isso cada etapa tem que ter DATA de verdade. "Enviado" ficou de
+    fora: é a F4 (transportadora + rastreio), e caixa sem data é caixa morta.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.emp, cls.buyer, cls.brand = _setup('vd-etp')
+        User = get_user_model()
+        cls.parceiro = User.objects.create_user('vd_etp_p', password='x')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        set_current_company(self.emp.pk)
+        self.addCleanup(set_current_company, None)
+        call_command('seed_category_codes', '--commit', verbosity=0)
+        self.client.force_login(self.parceiro)
+
+    def _ov(self, sufixo):
+        from pricing.models import Price, PriceList, STATUS_QUOTED
+        from django.utils import timezone
+        with company_scope(self.emp):
+            if not PriceList.all_companies.filter(buyer=self.buyer,
+                                                  brand=None).exists():
+                pl = PriceList.all_companies.create(buyer=self.buyer, brand=None)
+                Price.all_companies.create(
+                    price_list=pl, kind='emmc', gen='', origin='phone',
+                    tier_value=Decimal('16'), tier_unit='GB',
+                    status=STATUS_QUOTED, price_min=Decimal('15'),
+                    price_max=Decimal('15'))
+            lot = Lot.open_for_company(self.emp, self.parceiro, 'e' + sufixo,
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='ET' + sufixo, quantity=10,
+                brand=self.brand, chip_type='eMMC', company=self.emp,
+                price_kind='emmc', price_gen='',
+                price_tier_value=Decimal('16'), price_tier_unit='GB')
+            so = services.create_draft_for_lot(lot, self.parceiro)
+            Lot.all_companies.filter(pk=lot.pk).update(closed_at=timezone.now())
+            so.lot.refresh_from_db()
+            services.confirm(so, self.parceiro, unmasked=True)
+            so.refresh_from_db()
+            return so
+
+    # ── etapas ──────────────────────────────────────────────────────────────
+
+    def test_etapas_andam_conforme_a_compra_anda(self):
+        so = self._ov('S1')
+        with company_scope(self.emp):
+            passos = {p['key']: p for p in services.order_steps(so)}
+        self.assertEqual(passos['fechado']['state'], 'done')      # lote fechado
+        self.assertEqual(passos['recebido']['state'], 'current')  # é o que falta
+        self.assertEqual(passos['resultado']['state'], 'todo')
+        self.assertEqual(passos['pagamento']['state'], 'todo')
+
+        self.client.post(reverse('compras:recebido', args=[so.pk]))
+        so.refresh_from_db()
+        self.assertIsNotNone(so.received_at)
+        with company_scope(self.emp):
+            passos = {p['key']: p for p in services.order_steps(so)}
+        self.assertEqual(passos['recebido']['state'], 'done')
+        self.assertEqual(passos['resultado']['state'], 'current')
+
+    def test_marcar_recebido_e_idempotente(self):
+        """A primeira data vale: remarcar reescreveria um fato do passado."""
+        so = self._ov('S2')
+        self.client.post(reverse('compras:recebido', args=[so.pk]))
+        so.refresh_from_db()
+        primeira = so.received_at
+        self.client.post(reverse('compras:recebido', args=[so.pk]))
+        so.refresh_from_db()
+        self.assertEqual(so.received_at, primeira)
+
+    def test_fechar_resultado_marca_o_recebimento_que_faltou(self):
+        """Senão o card mostraria "Resultado" pronto com "Recebido" em aberto."""
+        so = self._ov('S3')
+        self.assertIsNone(so.received_at)
+        self.client.post(reverse('compras:resultado', args=[so.pk]), {})
+        so.refresh_from_db()
+        self.assertIsNotNone(so.received_at)
+        with company_scope(self.emp):
+            passos = {p['key']: p for p in services.order_steps(so)}
+        self.assertEqual(passos['resultado']['state'], 'done')
+        self.assertEqual(passos['pagamento']['state'], 'current')
+
+    def test_card_e_o_cambio_travado_aparecem_na_tela(self):
+        so = self._ov('S4')
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'cmp-steps')
+        self.assertContains(tela, '1 ¥ = US$')          # câmbio no cabeçalho
+        self.assertContains(tela, 'US$ 150.00'[:4])     # US$ tem o mesmo peso
+
+    # ── glossário ───────────────────────────────────────────────────────────
+
+    def test_aba_categorias_traz_a_convencao_e_marca_a_desta_compra(self):
+        """"Assim o comprador vai se adaptando a esta convenção" (dono)."""
+        so = self._ov('S5')
+        with company_scope(self.emp):
+            glos = services.category_glossary(so)
+        codigos = {g['code'] for g in glos}
+        self.assertIn('B-06', codigos)                  # eMMC 16GB, a da compra
+        self.assertGreater(len(glos), 30)               # a convenção INTEIRA
+        marcadas = [g['code'] for g in glos if g['no_lote']]
+        self.assertEqual(marcadas, ['B-06'])
+        # ordenado por LETRA, como a caixa física — nunca por preço/capacidade
+        self.assertEqual([g['letter'] for g in glos],
+                         sorted(g['letter'] for g in glos))
+        tela = self.client.get(reverse('compras:detail', args=[so.pk]))
+        self.assertContains(tela, 'cmp-pane-categorias')
+
+    # ── PDF do resultado ────────────────────────────────────────────────────
+
+    def test_pdf_do_resultado_presta_contas_da_recusa(self):
+        _sem_compressao(self)          # senão o stream vira binário
+        so = self._ov('S6')
+        linha = so.lines.get()
+        self.client.post(reverse('compras:resultado', args=[so.pk]),
+                         {f'rej_{linha.pk}': '4', 'notes': 'quatro queimados'})
+        resp = self.client.get(reverse('compras:resultado_pdf', args=[so.pk]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Content-Type'], 'application/pdf')
+        self.assertTrue(resp.content.startswith(b'%PDF'))
+        texto = b' '.join(_textos_do_pdf(resp.content))
+        # Enviado × recusado × aceito: sem os TRÊS não presta contas de nada.
+        for pedaco in (b'Sent', b'Rejected', b'Accepted'):
+            self.assertIn(pedaco, texto)
+        self.assertIn(b'quatro queimados', texto)       # o motivo da recusa
+
+    def test_pdf_do_resultado_so_existe_depois_de_fechado(self):
+        so = self._ov('S7')
+        self.assertEqual(
+            self.client.get(reverse('compras:resultado_pdf',
+                                    args=[so.pk])).status_code, 404)
+
+    def test_documento_do_resultado_bate_a_conta(self):
+        so = self._ov('S8')
+        linha = so.lines.get()
+        self.client.post(reverse('compras:resultado', args=[so.pk]),
+                         {f'rej_{linha.pk}': '4'})
+        with company_scope(self.emp):
+            inv = Invoice.all_companies.get(order=so)
+            doc = services.result_document(so, inv)
+        self.assertEqual((doc['sent'], doc['rejected'], doc['accepted']),
+                         (10, 4, 6))
+        self.assertEqual(doc['order_rmb'], Decimal('150.00'))   # o que foi enviado
+        self.assertEqual(doc['total_rmb'], Decimal('90.00'))    # 6 × ¥15
+        self.assertEqual(doc['lines'][0]['wtc'], 'B-06')

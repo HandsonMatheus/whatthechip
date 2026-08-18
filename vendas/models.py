@@ -138,6 +138,16 @@ class SalesOrder(models.Model):
     cancelled_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                      null=True, blank=True, related_name='+',
                                      verbose_name='Cancelada por')
+    # ── A CAIXA CHEGOU (dono, 2026-08-18) ────────────────────────────────────
+    # Primeiro pedaço do despacho (F4) a existir, porque é o que o card de
+    # etapas precisa para dizer em que pé está a compra. Quem marca é o
+    # COMPRADOR, que é quem recebe. Transportadora, rastreio e data de ENVIO
+    # ficam para a F4 inteira — dependem de decisão de quem preenche.
+    # Nullable e sem backfill: compra anterior a isto simplesmente não tem a
+    # data, e o card mostra a etapa sem carimbo.
+    received_at = models.DateTimeField(
+        null=True, blank=True, verbose_name='Recebida em',
+        help_text='Quando o comprador confirmou que a caixa chegou.')
 
     objects       = CompanyScopedManager()
     all_companies = models.Manager()

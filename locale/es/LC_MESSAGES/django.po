@@ -2964,3 +2964,59 @@ msgstr "Spec"
 #. vendas/ (F11.6 — abas + totais)
 msgid "¥ total"
 msgstr "¥ total"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "1 ¥ = US$ %(r)s"
+msgstr "1 ¥ = US$ %(r)s"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Baixe e envie ao cliente."
+msgstr "Descárguelo y envíelo al cliente."
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid ""
+"Cada caixa que chega tem um código destes. A letra é o tipo de chip e o "
+"número é a categoria — o código nunca muda e nunca é reaproveitado."
+msgstr ""
+"Cada caja que llega lleva uno de estos códigos. La letra es el tipo de chip "
+"y el número es la categoría — el código nunca cambia ni se reutiliza."
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Código"
+msgstr "Código"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Imprimir resultado (PDF)"
+msgstr "Imprimir resultado (PDF)"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Marcar como recebido"
+msgstr "Marcar como recibido"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Nesta compra"
+msgstr "En esta compra"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Pagamento"
+msgstr "Pago"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Recebimento registrado."
+msgstr "Recepción registrada."
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Registra o dia em que a caixa chegou."
+msgstr "Registra el día en que llegó la caja."
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Resultado"
+msgstr "Resultado"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "travado no fechamento do lote"
+msgstr "fijado al cerrar el lote"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "travado no fechamento em %(d)s"
+msgstr "fijado al cierre el %(d)s"

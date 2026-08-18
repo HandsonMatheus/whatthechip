@@ -468,6 +468,68 @@ def manager_document(so, unmasked=False, with_prices=False):
     }
 
 
+def result_document(so, invoice):
+    """Tudo que o PDF do RESULTADO desenha, pronto.
+
+    O comprador baixa e manda pro cliente (dono, 2026-08-18) — então este
+    documento é a PRESTAÇÃO DE CONTAS da compra: o que foi enviado, o que foi
+    recusado, o que foi aceito e quanto disso virou dinheiro, categoria por
+    categoria. É o único papel em que o cliente vê a recusa detalhada.
+
+    Rótulo REAL, sem máscara: quem gera é o comprador, e é ele quem manda o
+    documento — a máscara F12 protege o conhecimento de categoria nas telas da
+    empresa-cliente, não no que o comprador escolhe compartilhar.
+    """
+    from pricing.models import CategoryCode
+    acerto = invoice.settlement
+    recusas = {sl.order_line_id: sl for sl in acerto.lines.all()}
+    linhas, env, rej, ace = [], 0, 0, 0
+    for line in so.lines.all().order_by('brand'):
+        sl = recusas.get(line.pk)
+        n_rej = sl.qty_rejected if sl else 0
+        n_ace = line.quantity - n_rej
+        unit = (sl.new_unit_rmb if sl and sl.new_unit_rmb is not None
+                else line.unit_rmb)
+        linhas.append({
+            'brand': line.brand or '—',
+            'type': line.type_label,
+            'capacity': line.capacity_label or '—',
+            'wtc': CategoryCode.label_for_key(line.kind, line.gen,
+                                              line.tier_value, line.tier_unit,
+                                              create=False) or '—',
+            'sent': line.quantity,
+            'rejected': n_rej,
+            'accepted': n_ace,
+            'unit_rmb': unit,
+            'total_rmb': (unit * n_ace) if unit is not None else None,
+        })
+        env += line.quantity
+        rej += n_rej
+        ace += n_ace
+    lot = so.lot
+    return {
+        'ship_from': ship_from(so.company if so.company_id else None),
+        'company_logo': company_logo_bytes(so.company if so.company_id else None),
+        'lot_code': lot.code,
+        'so_code': so.code,
+        'inv_code': invoice.code,
+        'company': so.company.name if so.company_id else '',
+        'buyer': so.buyer.name if so.buyer_id else '',
+        'closed_at': lot.closed_at,
+        'received_at': so.received_at,
+        'settled_at': acerto.created_at,
+        'notes': acerto.notes,
+        # Câmbio do FECHAMENTO (PLANO_FX fase C) — a fatura usa a taxa da OV,
+        # que herdou a trava do lote.
+        'fx_rate': invoice.fx_usd_rate,
+        'fx_locked_at': lot.fx_locked_at,
+        'lines': linhas,
+        'sent': env, 'rejected': rej, 'accepted': ace,
+        'order_rmb': so.total_rmb, 'order_usd': so.total_usd,
+        'total_rmb': invoice.total_rmb, 'total_usd': invoice.total_usd,
+    }
+
+
 # ═══ F11.4 — Acerto → Fatura → Pagamentos ═══════════════════════════════════
 
 def settle_and_invoice(so, adjustments, user, notes=''):
@@ -503,6 +565,12 @@ def settle_and_invoice(so, adjustments, user, notes=''):
                 f'({line.quantity}).')
 
     with transaction.atomic():
+        # Fechar o resultado IMPLICA que a caixa chegou: se ele não marcou o
+        # recebimento antes, marca agora — senão o card de etapas mostraria
+        # "Resultado" pronto com "Recebido" em aberto, que é incoerente.
+        if so.received_at is None:
+            so.received_at = timezone.now()
+            so.save(update_fields=['received_at'])
         st = Settlement(order=so, created_by=user, notes=notes)
         st.save()
         total_rmb = Decimal('0.00')
@@ -800,6 +868,96 @@ def lot_chips(so):
         if total is not None:
             total_rmb += total
     return {'linhas': linhas, 'qty': total_qty, 'rmb': total_rmb}
+
+
+#: Etapas da compra, na ordem em que acontecem. Chaves CANÔNICAS (nunca
+#: traduzem); o rótulo é montado no template.
+STEP_FECHADO, STEP_RECEBIDO = 'fechado', 'recebido'
+STEP_RESULTADO, STEP_PAGAMENTO = 'resultado', 'pagamento'
+
+
+def order_steps(so):
+    """O card de etapas: por onde a compra passou, onde está, para onde vai.
+
+    Quatro etapas com data REAL (dono, 2026-08-18). "Enviado" ficou de fora
+    porque exige o despacho inteiro (F4: transportadora, rastreio, e a decisão
+    de quem preenche) — melhor uma etapa a menos do que uma caixa morta na
+    tela.
+
+    Cada item: ``{key, date, state}`` com state em ``done``/``current``/
+    ``todo``. A etapa CORRENTE é a primeira sem data — é ela que diz o que
+    falta fazer.
+    """
+    inv = next((i for i in so.invoices.all() if i.status != 'cancelled'), None)
+    pago = inv.balance_usd <= 0 if inv is not None else False
+    passos = [
+        {'key': STEP_FECHADO,   'date': so.lot.closed_at if so.lot_id else None},
+        {'key': STEP_RECEBIDO,  'date': so.received_at},
+        {'key': STEP_RESULTADO, 'date': inv.settlement.created_at if inv else None},
+        {'key': STEP_PAGAMENTO, 'date': (inv.payments.order_by('-paid_at')
+                                         .values_list('paid_at', flat=True)
+                                         .first() if pago else None)},
+    ]
+    corrente = True
+    for p in passos:
+        if p['date'] is not None:
+            p['state'] = 'done'
+        elif corrente:
+            p['state'] = 'current'
+            corrente = False
+        else:
+            p['state'] = 'todo'
+    return passos
+
+
+def mark_received(so, quando=None):
+    """Marca a chegada da caixa. Idempotente: a primeira data vale — remarcar
+    reescreveria um fato do passado."""
+    if so.received_at is not None:
+        return so
+    so.received_at = quando or timezone.now()
+    so.save(update_fields=['received_at'])
+    return so
+
+
+def category_glossary(so=None):
+    """O dicionário da convenção WTC: ``A-01`` = o quê, exatamente.
+
+    Existe porque o comprador recebe as caixas rotuladas com o código e
+    precisa ir se adaptando à convenção (dono, 2026-08-18). Mostra a tabela
+    INTEIRA — é uma convenção universal, não uma lista deste lote — e marca as
+    categorias que vieram NESTA compra, que são por onde ele começa a ler.
+
+    ⚠ Ordem por LETRA e número, a mesma da caixa física. Nunca por preço nem
+    por capacidade: a escadinha de capacidade é justamente o que a máscara F12
+    esconde (`pricing/convention.py`).
+    """
+    from pricing.models import CategoryCode
+    from pricing.convention import KIND_LETTER
+    no_lote = set()
+    if so is not None:
+        for line in so.lines.all():
+            rotulo = CategoryCode.label_for_key(line.kind, line.gen,
+                                                line.tier_value, line.tier_unit,
+                                                create=False)
+            if rotulo:
+                no_lote.add(rotulo)
+    linhas = []
+    for c in CategoryCode.objects.all():
+        linhas.append({
+            'code': c.label,
+            'letter': KIND_LETTER.get(c.kind, '?'),
+            'type': c.gen or dict(_KIND_LABEL()).get(c.kind, c.kind),
+            'capacity': (f'{c.tier_value.normalize():f}{c.tier_unit}'
+                         if c.tier_unit else '—'),
+            'no_lote': c.label in no_lote,
+        })
+    return sorted(linhas, key=lambda l: (l['letter'], l['code']))
+
+
+def _KIND_LABEL():
+    from pricing.models import KIND_CHOICES
+    return KIND_CHOICES
 
 
 def draft_pendencias(grupos):

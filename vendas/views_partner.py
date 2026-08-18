@@ -90,10 +90,54 @@ def _detalhe(so):
         # Todo chip do lote, PN a PN — a 2ª aba, onde ele confere detalhe
         # por detalhe (dono, 2026-08-18).
         'chips': services.lot_chips(so),
+        # 3ª aba: o dicionário da convenção WTC. O comprador recebe as caixas
+        # rotuladas com o código e vai se adaptando lendo isto.
+        'categorias': services.category_glossary(so),
+        # Card de etapas: por onde passou, onde está, para onde vai.
+        'steps': services.order_steps(so),
         # Linha de TOTAIS da tabela de cima (dono, 2026-08-18).
         'total_qty': sum(g['qty'] for g in grupos),
+        # Câmbio: TRAVADO no fechamento do lote (PLANO_FX fase C) — a OV
+        # herda essa taxa, e é ela que converte o ¥ dele em US$.
+        'fx_rate': so.fx_usd_rate or (so.lot.fx_rate if so.lot_id else None),
+        'fx_locked_at': so.lot.fx_locked_at if so.lot_id else None,
         'total_estimado': sum((g['rmb'] for g in grupos), Decimal('0.00')),
     }
+
+
+@partner_required
+@require_POST
+def compra_recebido(request, pk):
+    """"Recebi a caixa" — a etapa que o card precisa (dono, 2026-08-18).
+
+    Idempotente no serviço: a primeira data vale. Quem marca é o COMPRADOR,
+    que é quem recebe; o despacho completo (transportadora, rastreio, data de
+    envio) é a F4.
+    """
+    with services.buyer_order(request.buyer, pk) as so:
+        services.mark_received(so)
+        messages.success(request, _('Recebimento registrado.'))
+        return redirect('compras:detail', pk=so.pk)
+
+
+@partner_required
+def compra_resultado_pdf(request, pk):
+    """O resultado em PDF — o comprador baixa e manda pro cliente (dono,
+    2026-08-18). Só depois de fechado: antes disso não há resultado."""
+    from django.http import Http404, HttpResponse
+    with services.buyer_order(request.buyer, pk) as so:
+        inv = next((i for i in so.invoices.all()
+                    if i.status != 'cancelled'), None)
+        if inv is None:
+            raise Http404('Esta compra ainda não tem resultado fechado.')
+        from .pdf import render_result_pdf
+        pdf = render_result_pdf(services.result_document(so, inv))
+        resp = HttpResponse(pdf, content_type='application/pdf')
+        # inline: ele confere na tela antes de mandar. O nome do arquivo é o
+        # código do LOTE — é assim que cliente e comprador se referem à caixa.
+        resp['Content-Disposition'] = (
+            f'inline; filename="{so.lot.code.replace("/", "-")}-resultado.pdf"')
+        return resp
 
 
 @partner_required

@@ -1550,10 +1550,34 @@ um botão que faz o comprador achar que congelar é passo normal da compra.
 **A tela da compra ganhou (dono, 2026-08-18):** linha de **totais** nas duas
 tabelas; recálculo **ao vivo** de chips aceitos e ¥ a pagar enquanto ele digita
 os recusados (conforto puro — quem soma é o `settle_and_invoice` no servidor,
-e os `data-qty`/`data-unit` de que o JS depende têm teste); e a aba **Chips**
-(`services.lot_chips`), com todo PN do lote: marca, tipo, spec, caixa WTC,
-quantidade e preço. PN **sem chave de preço** aparece com "—" em vez de sumir:
-ele viaja na caixa e não entra no comércio, e o comprador precisa ver isso.
+e os `data-qty`/`data-unit` de que o JS depende têm teste); e três abas —
+**Resumo** (onde ele dá o resultado), **Chips** (`services.lot_chips`: todo PN
+do lote com marca, tipo, spec, caixa WTC, quantidade e preço) e **Categorias**
+(`services.category_glossary`: a convenção WTC inteira, ordenada por letra como
+a caixa física, marcando as que vieram nesta compra — "assim o comprador vai se
+adaptando a esta convenção"). PN **sem chave de preço** aparece com "—" em vez
+de sumir: ele viaja na caixa e não entra no comércio, e o comprador precisa ver
+isso.
+
+No cabeçalho, **¥ e US$ com o MESMO tamanho** (ele fecha em ¥ e paga em US$ —
+nenhum é rodapé do outro) e a **taxa travada no fechamento do lote** ao lado
+(PLANO_FX fase C: o mesmo câmbio honra as duas pontas).
+
+**Card de ETAPAS** (`services.order_steps`) — fechado → recebido → resultado →
+pagamento, cada uma com data real, a primeira sem data marcada como a corrente.
+⚠ **"Enviado" ficou de fora**: exige o despacho inteiro (transportadora,
+rastreio, e a decisão de quem preenche — a F4). Caixa sem data é caixa morta na
+tela. Para a etapa "recebido" existir hoje, `SalesOrder.received_at`
+(`vendas/0007`, aditiva e nullable): quem marca é o COMPRADOR, que é quem
+recebe, e fechar o resultado marca sozinho se ele esqueceu — senão o card
+mostraria "resultado" pronto com "recebido" em aberto.
+
+**PDF do RESULTADO** (`services.result_document` + `pdf.render_result_pdf`):
+o comprador baixa e manda pro cliente. Mostra **enviado × recusado × aceito**
+por categoria, não só o líquido — "recebi 3529 e paguei por 3400" sem dizer o
+que caiu não presta contas de nada. É o único papel em que o cliente vê a
+recusa detalhada, e sai bilíngue inglês (繁體) como os outros dois. Só existe
+depois do resultado fechado (404 antes).
 
 🔀 **A raiz `/partner/` virou a lista de COMPRAS** (dono, 2026-08-18): é a tela
 que o comprador abre todo dia; a tabela de preços virou a segunda, em

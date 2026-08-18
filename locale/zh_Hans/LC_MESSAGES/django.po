@@ -2771,3 +2771,57 @@ msgstr "规格"
 #. vendas/ (F11.6 — abas + totais)
 msgid "¥ total"
 msgstr "¥ 合计"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "1 ¥ = US$ %(r)s"
+msgstr "1 ¥ = US$ %(r)s"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Baixe e envie ao cliente."
+msgstr "下载后发送给客户。"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid ""
+"Cada caixa que chega tem um código destes. A letra é o tipo de chip e o "
+"número é a categoria — o código nunca muda e nunca é reaproveitado."
+msgstr "每个到货箱都带有这样的代码。字母代表芯片类型，数字代表类别——代码永不更改，也不会重复使用。"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Código"
+msgstr "代码"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Imprimir resultado (PDF)"
+msgstr "打印结果（PDF）"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Marcar como recebido"
+msgstr "标记为已收货"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Nesta compra"
+msgstr "本次采购"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Pagamento"
+msgstr "付款"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Recebimento registrado."
+msgstr "收货已登记。"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Registra o dia em que a caixa chegou."
+msgstr "登记货箱到达的日期。"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "Resultado"
+msgstr "结果"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "travado no fechamento do lote"
+msgstr "批次关闭时锁定"
+
+#. vendas/ (F11.6 — etapas + resultado)
+msgid "travado no fechamento em %(d)s"
+msgstr "于 %(d)s 关闭时锁定"

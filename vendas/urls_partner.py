@@ -23,5 +23,8 @@ urlpatterns = [
     path('compras/', RedirectView.as_view(pattern_name='compras:list'),
          name='list_legacy'),
     path('compras/<int:pk>/', views.compra_detail, name='detail'),
+    path('compras/<int:pk>/recebido/', views.compra_recebido, name='recebido'),
     path('compras/<int:pk>/resultado/', views.compra_resultado, name='resultado'),
+    path('compras/<int:pk>/resultado.pdf', views.compra_resultado_pdf,
+         name='resultado_pdf'),
 ]

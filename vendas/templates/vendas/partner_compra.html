@@ -26,8 +26,21 @@
   </div>
   <div class="cmp-tot">
     <div class="cmp-tot__lbl">{% if estimado %}{% trans "Valor estimado" %}{% else %}{% trans "Valor da ordem" %}{% endif %}</div>
+    {% comment %} ¥ e US$ com o MESMO tamanho (dono, 2026-08-18): ele fecha em
+       ¥ e paga em US$ — nenhum dos dois é nota de rodapé do outro. {% endcomment %}
     <div class="cmp-tot__val mono">{% localize off %}{% if estimado %}¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
-    <div class="cmp-tot__sub mono">{% localize off %}{% if not estimado and so.total_usd %}US$ {{ so.total_usd }}{% endif %}{% endlocalize %}</div>
+    <div class="cmp-tot__val mono">{% localize off %}{% if not estimado and so.total_usd %}US$ {{ so.total_usd }}{% else %}—{% endif %}{% endlocalize %}</div>
+    {% if fx_rate %}
+    {% comment %} A taxa é a TRAVADA no fechamento do lote (PLANO_FX fase C):
+       o mesmo câmbio honra as duas pontas do negócio. {% endcomment %}
+    <div class="cmp-tot__fx mono">{% localize off %}{% blocktrans trimmed with r=fx_rate %}
+      1 ¥ = US$ {{ r }}
+    {% endblocktrans %}{% endlocalize %}
+      <span class="cmp-tot__fxq">{% if fx_locked_at %}{% blocktrans trimmed with d=fx_locked_at|date:"d/m/Y" %}
+        travado no fechamento em {{ d }}
+      {% endblocktrans %}{% else %}{% trans "travado no fechamento do lote" %}{% endif %}</span>
+    </div>
+    {% endif %}
   </div>
   {% if invoice %}
   <div class="cmp-tot">
@@ -38,6 +51,41 @@
   </div>
   {% endif %}
 </div>
+
+{% comment %} Card de ETAPAS (dono, 2026-08-18): por onde a compra passou, onde
+   está e para onde vai. "Enviado" ainda não existe — é a F4 (transportadora e
+   rastreio); melhor uma etapa a menos do que uma caixa morta. {% endcomment %}
+<ol class="cmp-steps">
+  {% for p in steps %}
+  <li class="cmp-step cmp-step--{{ p.state }}">
+    <span class="cmp-step__mk">{% if p.state == 'done' %}✓{% elif p.state == 'current' %}●{% else %}○{% endif %}</span>
+    <span class="cmp-step__lbl">
+      {% if p.key == 'fechado' %}{% trans "Fechado" %}
+      {% elif p.key == 'recebido' %}{% trans "Recebido" %}
+      {% elif p.key == 'resultado' %}{% trans "Resultado" %}
+      {% else %}{% trans "Pagamento" %}{% endif %}
+    </span>
+    {% if p.date %}<span class="cmp-step__dt mono">{{ p.date|date:"d/m" }}</span>{% endif %}
+  </li>
+  {% endfor %}
+</ol>
+
+{% if not so.received_at %}
+<form method="post" action="{% url 'compras:recebido' so.pk %}" class="cmp-receb">
+  {% csrf_token %}
+  <button type="submit" class="cmp-btn cmp-btn--ghost">{% trans "Marcar como recebido" %}</button>
+  <span class="cmp-receb__dica">{% trans "Registra o dia em que a caixa chegou." %}</span>
+</form>
+{% endif %}
+
+{% if invoice %}
+<div class="cmp-acoes">
+  <a class="cmp-btn cmp-btn--ghost" href="{% url 'compras:resultado_pdf' so.pk %}" target="_blank">
+    {% trans "Imprimir resultado (PDF)" %}
+  </a>
+  <span class="cmp-receb__dica">{% trans "Baixe e envie ao cliente." %}</span>
+</div>
+{% endif %}
 
 {% if estimado %}
   {% if pendencias %}
@@ -75,6 +123,7 @@
 <div class="cmp-abas">
   <button type="button" class="cmp-aba cmp-aba--on" data-aba="resumo">{% trans "Resumo" %}</button>
   <button type="button" class="cmp-aba" data-aba="chips">{% blocktrans trimmed with n=chips.qty %}Chips ({{ n }}){% endblocktrans %}</button>
+  <button type="button" class="cmp-aba" data-aba="categorias">{% trans "Categorias" %}</button>
 </div>
 
 <div id="cmp-pane-resumo">
@@ -204,6 +253,37 @@
 </table>
 </div>
 
+{% comment %} Aba CATEGORIAS — o dicionário da convenção WTC (dono,
+   2026-08-18: "assim o comprador vai se adaptando a esta convenção"). A
+   tabela INTEIRA, ordenada por letra e número como a caixa física; as que
+   vieram nesta compra ficam marcadas, que é por onde ele começa a ler. {% endcomment %}
+<div id="cmp-pane-categorias" hidden>
+<p class="cmp-glos">{% blocktrans trimmed %}
+  Cada caixa que chega tem um código destes. A letra é o tipo de chip e o
+  número é a categoria — o código nunca muda e nunca é reaproveitado.
+{% endblocktrans %}</p>
+<table class="cmp-tab">
+  <thead>
+    <tr>
+      <th>{% trans "Código" %}</th>
+      <th>{% trans "Tipo" %}</th>
+      <th>{% trans "Capacidade" %}</th>
+      <th>{% trans "Nesta compra" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for c in categorias %}
+    <tr{% if c.no_lote %} class="cmp-cat-on"{% endif %}>
+      <td class="mono"><b>{{ c.code }}</b></td>
+      <td>{{ c.type }}</td>
+      <td>{{ c.capacity }}</td>
+      <td>{% if c.no_lote %}✓{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
 <style>
   .cmp-voltar { color:#0f62fe; text-decoration:none; font-size:13px; font-weight:600; }
   .cmp-head { display:flex; gap:40px; align-items:flex-start; margin:10px 0 22px;
@@ -254,13 +334,35 @@
                     background:#f4f4f4; }
   .cmp-tot-lin--pagar td { background:#edf5ff; border-top:0; color:#0043ce; }
   .cmp-vazio-td { text-align:center; color:#8d8d8d; padding:30px; }
+  .cmp-steps { display:flex; list-style:none; margin:0 0 18px; padding:0;
+               border:1px solid #e0e0e0; background:#fff; flex-wrap:wrap; }
+  .cmp-step { display:flex; align-items:center; gap:8px; padding:11px 18px;
+              font-size:13px; color:#8d8d8d; border-right:1px solid #e0e0e0; }
+  .cmp-step:last-child { border-right:0; }
+  .cmp-step--done { color:#0e6027; }
+  .cmp-step--current { color:#161616; font-weight:600; background:#edf5ff; }
+  .cmp-step--current .cmp-step__mk { color:#0f62fe; }
+  .cmp-step__dt { font-size:11px; color:#8d8d8d; }
+  .cmp-receb, .cmp-acoes { display:flex; align-items:center; gap:12px;
+                           margin:0 0 18px; flex-wrap:wrap; }
+  .cmp-receb__dica { font-size:12px; color:#8d8d8d; }
+  .cmp-btn--ghost { background:#fff; color:#0f62fe; border:1px solid #0f62fe;
+                    padding:8px 16px; font-size:13px; text-decoration:none;
+                    display:inline-block; }
+  .cmp-btn--ghost:hover { background:#edf5ff; }
+  .cmp-tot__fx { font-size:12px; color:#525252; margin-top:6px; }
+  .cmp-tot__fxq { color:#8d8d8d; }
+  .cmp-glos { font-size:13px; color:#525252; max-width:70ch; margin:14px 0; }
+  .cmp-cat-on { background:#edf5ff; }
+  .cmp-cat-on td { font-weight:600; }
 </style>
 
 <script>
 (function () {
   // ── Abas ────────────────────────────────────────────────────────────────
   var panes = {resumo: document.getElementById('cmp-pane-resumo'),
-               chips:  document.getElementById('cmp-pane-chips')};
+               chips:  document.getElementById('cmp-pane-chips'),
+               categorias: document.getElementById('cmp-pane-categorias')};
   document.querySelectorAll('.cmp-aba').forEach(function (b) {
     b.addEventListener('click', function () {
       document.querySelectorAll('.cmp-aba').forEach(function (o) {
