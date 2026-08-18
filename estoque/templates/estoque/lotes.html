@@ -208,9 +208,13 @@
             <a class="uib uib--ghost uib--sm" href="{% url 'estoque:lot_detail' lot.pk %}">{% trans "Abrir" %}</a>
             {% if wtc_is_manager %}
               {% if lot.status == 'open' %}
-              <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="margin:0"><button type="submit" class="uib uib--danger uib--sm">{% trans "Fechar" %}</button></form>
-              {% else %}
-              <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="margin:0"><button type="submit" class="uib uib--success uib--sm">{% trans "Reabrir" %}</button></form>
+              <form method="post" action="{% url 'estoque:lot_close' lot.pk %}" style="margin:0">{% csrf_token %}<button type="submit" class="uib uib--danger uib--sm">{% trans "Fechar" %}</button></form>
+              {% elif request.user.is_superuser %}
+              {% comment %} FECHOU, TÁ FECHADO (dono 2026-07-31): reabrir é exclusivo
+                 da PLATAFORMA. O servidor já valida (lot_reopen), mas o botão também
+                 some aqui — igual à tela do lote. Antes ele aparecia para gerente+ e
+                 quem clicasse levava negativa. Gerente/admin corrigem por ACERTO. {% endcomment %}
+              <form method="post" action="{% url 'estoque:lot_reopen' lot.pk %}" style="margin:0">{% csrf_token %}<button type="submit" class="uib uib--success uib--sm">{% trans "Reabrir" %}</button></form>
               {% endif %}
             {% endif %}
           </div>

@@ -2279,3 +2279,46 @@ class QtyCeilingTests(TestCase):
         self.assertEqual(r.status_code, 200)
         e.refresh_from_db()
         self.assertEqual(e.quantity, 4)
+
+
+class TemplateCsrfTokenTests(TestCase):
+    """PORTÃO (2026-08-18): todo `<form method="post">` de template NOSSO tem
+    que carregar `{% csrf_token %}`. Sem ele o clique morre em 403 "CSRF token
+    missing" — e o sintoma é indistinguível de problema de cookie/sessão, o que
+    manda o depurador para o lado errado (foi o que aconteceu: os botões Fechar
+    e Reabrir da LISTA de lotes nunca funcionaram, e a caçada foi parar em
+    DEBUG/SESSION_COOKIE_DOMAIN).
+
+    O portão é barato: 22 formulários no projeto inteiro. Se um dia existir um
+    POST legítimo para fora (outro domínio), a exceção entra aqui explicitada."""
+
+    def test_todo_form_post_tem_csrf_token(self):
+        import pathlib
+        import re
+        from django.conf import settings
+        base = pathlib.Path(settings.BASE_DIR)
+        raizes = [base / app for app in
+                  ('chips', 'estoque', 'pages', 'tenancy', 'pricing',
+                   'vendas')] + [base / 'templates']
+        maus = []
+        for raiz in raizes:
+            arquivos = list(raiz.glob('**/templates/**/*.html'))
+            if raiz.name == 'templates':
+                arquivos += list(raiz.glob('**/*.html'))
+            for path in arquivos:
+                if 'venv' in path.parts or '_to_delete' in path.parts:
+                    continue
+                t = path.read_text(encoding='utf-8')
+                for m in re.finditer(r'<form\b[^>]*>', t, re.I):
+                    if not re.search(r'method\s*=\s*["\']post["\']',
+                                     m.group(0), re.I):
+                        continue
+                    fim = t.find('</form>', m.end())
+                    corpo = t[m.end(): fim if fim != -1 else len(t)]
+                    if '{% csrf_token %}' not in corpo:
+                        maus.append(f'{path.relative_to(base)}:'
+                                    f'{t[:m.start()].count(chr(10)) + 1}')
+        self.assertEqual(
+            maus, [],
+            'form method="post" SEM {% csrf_token %} (dá 403 no clique): '
+            + ', '.join(maus))
