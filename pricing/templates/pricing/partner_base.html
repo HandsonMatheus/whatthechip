@@ -50,8 +50,13 @@
     body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);
          -webkit-font-smoothing:antialiased}
     a{color:var(--accent)}
-    /* Uma só coluna: tela sem trilho de tipos (Compras) não deve abrir um vão
-       de 236px do lado esquerdo. */
+    /* Uma só coluna quando NÃO há trilho de tipos — e quem responde isso é o
+       próprio HTML, não a tela lembrando de um modificador. Foi assim que a
+       tela da compra quebrou em 2026-08-19: sem `.pside` e sem a classe, o
+       miolo caiu dentro da coluna de 236px do trilho e virou um filete.
+       `.papp--solo` fica de reserva para navegador sem `:has()`. */
+    .papp{grid-template-columns:minmax(0,1fr)}
+    .papp:has(>.pside){grid-template-columns:236px minmax(0,1fr)}
     .papp--solo{grid-template-columns:minmax(0,1fr)}
     .pshell__brand{gap:11px}
 

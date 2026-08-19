@@ -2983,6 +2983,23 @@ class DesignSystemNaTelaDoCompradorTests(TestCase):
         self.assertNotContains(tela, 'cmp-tab')
         self.assertNotContains(tela, 'cmp-tag')
 
+    def test_tela_SEM_trilho_nao_fica_espremida_na_coluna_dele(self):
+        """REGRESSÃO (2026-08-19): a tela da COMPRA não tem trilho de tipos, e
+        o `.papp` do pacote é uma grade de 236px + resto. Sem `.pside`, o miolo
+        caiu DENTRO da coluna de 236px e a página virou um filete.
+
+        A correção não é a tela lembrar de um modificador — é o layout
+        perguntar ao próprio HTML se há trilho (`:has(>.pside)`). O teste
+        segura as duas pontas: a tela não desenha trilho, e a folha da base
+        traz a regra que faz a página virar uma coluna só.
+        """
+        for rota in (reverse('compras:list'),
+                     reverse('compras:detail', args=[self.so.pk])):
+            html = self.client.get(rota).content.decode()
+            self.assertNotIn('class="pside"', html, rota)
+            self.assertIn('.papp{grid-template-columns:minmax(0,1fr)}', html, rota)
+            self.assertIn('.papp:has(>.pside)', html, rota)
+
     def test_o_rodape_conta_a_fila_e_o_que_espera_o_comprador(self):
         tela = self._tela()
         self.assertContains(tela, 'tfoot--sum')
