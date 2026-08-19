@@ -3147,6 +3147,27 @@ class LoteFechouSemOVTests(TestCase):
         self.assertIn(self.lot.code, saida)
         self.assertIn('1 SEM OV', saida)
 
+    def test_varredura_sobrevive_a_banco_sem_code_str(self):
+        """Banco mais VELHO que o código (o cenário do dono rodando local
+        contra prod): sem a coluna do rótulo bonito, o lote ainda aparece —
+        identificado pelo NÚMERO, que existe desde sempre."""
+        from unittest.mock import patch
+        from django.core.exceptions import FieldError
+        self._comprador_de_plataforma()
+        self._fecha()
+        real = type(Lot.all_companies.all()).values
+
+        def values_sem_code_str(self, *campos, **kw):
+            if 'code_str' in campos:
+                raise FieldError('column estoque_lot.code_str does not exist')
+            return real(self, *campos, **kw)
+
+        with patch('django.db.models.query.QuerySet.values',
+                   values_sem_code_str):
+            saida = self._cmd('diag_ordem_venda')
+        self.assertIn(f'LOT/{self.lot.number:03d}', saida)
+        self.assertIn('1 SEM OV', saida)
+
     # ── o conserto ──────────────────────────────────────────────────────────
     def test_conserto_dry_run_nao_grava(self):
         b = self._comprador_de_plataforma()
@@ -3186,3 +3207,77 @@ class LoteFechouSemOVTests(TestCase):
         self.assertIn('A causa NÃO é transitória', saida)
         self.assertIn('diag_ordem_venda', saida)
         self.assertFalse(SalesOrder.all_companies.filter(lot=self.lot).exists())
+
+
+class DiagOrdemVendaAmbienteTests(TestCase):
+    """O diagnóstico tem que sobreviver ao AMBIENTE em que é usado.
+
+    O fluxo do dono é rodar o comando LOCAL apontando `DATABASE_URL` para
+    PROD (não há shell no Render — CLAUDE.md §5). Quando o código local está
+    à frente do banco, uma query comum estoura `column ... does not exist` no
+    meio do diagnóstico — foi o que aconteceu na 1ª rodada do
+    LOT/001/08/26 (`vendas_salesorder.carrier`). O erro parecia do lote e não
+    era: era do ambiente."""
+
+    def _cmd(self, **opts):
+        from io import StringIO
+        from django.core.management import call_command
+        out = StringIO()
+        call_command('diag_ordem_venda', stdout=out, **opts)
+        return out.getvalue()
+
+    def test_relata_o_banco_alvo_e_o_estado_das_migracoes(self):
+        """Sempre primeiro: sem isto, todo o resto pode ser mentira."""
+        saida = self._cmd()
+        self.assertIn('BANCO-ALVO', saida)
+        self.assertIn('migrações: código e banco em dia', saida)
+
+    def test_acusa_deriva_quando_falta_migracao_no_banco(self):
+        from unittest.mock import patch
+        alvo = 'vendas.management.commands.diag_ordem_venda._deriva_de_migracao'
+        with patch(alvo, return_value=([('vendas', '0007_carrier')], [])):
+            saida = self._cmd()
+        self.assertIn('está À FRENTE do banco-alvo', saida)
+        self.assertIn('vendas/0007_carrier', saida)
+        self.assertIn('git ls-remote origin main', saida)
+
+    def test_acusa_banco_a_frente_do_codigo(self):
+        from unittest.mock import patch
+        alvo = 'vendas.management.commands.diag_ordem_venda._deriva_de_migracao'
+        with patch(alvo, return_value=([], [('vendas', '0099_futuro')])):
+            saida = self._cmd()
+        self.assertIn('o banco está à frente', saida)
+        self.assertIn('vendas/0099_futuro', saida)
+
+    def test_erro_de_schema_vira_mensagem_nao_traceback(self):
+        """Coluna faltando não pode derrubar o comando com traceback: quem
+        está diagnosticando um incidente precisa LER o motivo."""
+        from unittest.mock import patch
+        from django.db import ProgrammingError
+        d = 'vendas.management.commands.diag_ordem_venda'
+        with patch(f'{d}._deriva_de_migracao',
+                   return_value=([('vendas', '0007_carrier')], [])), \
+             patch(f'{d}.Command._rebanho',
+                   side_effect=ProgrammingError(
+                       'column vendas_salesorder.carrier does not exist')):
+            saida = self._cmd()
+        self.assertIn('O BANCO RECUSOU A CONSULTA', saida)
+        self.assertIn('carrier does not exist', saida)
+        self.assertIn('NÃO é o bug do', saida)
+
+    def test_consulta_de_ov_nao_faz_select_estrela(self):
+        """A defesa contra a deriva: o diagnóstico só pode pedir colunas que
+        existem desde a vendas/0001. Um SELECT * traria a coluna nova e o
+        banco mais velho recusaria — foi assim que a 1ª rodada morreu."""
+        from vendas.management.commands.diag_ordem_venda import (COLUNAS_OV,
+                                                                 ovs_do_lote)
+        from vendas.models import SalesOrder
+        sql = str(SalesOrder.all_companies.filter(lot_id=1)
+                  .values(*COLUNAS_OV).query)
+        colunas = sql.split(' FROM ')[0]
+        for c in ('id', 'number', 'status'):
+            self.assertIn(c, colunas)
+        for nova in ('carrier', 'code_str', 'shipped_at', 'total_rmb'):
+            self.assertNotIn(nova, colunas)
+        self.assertEqual(ovs_do_lote.__module__,
+                         'vendas.management.commands.diag_ordem_venda')

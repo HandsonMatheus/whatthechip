@@ -21,6 +21,8 @@ NÃO ESCREVE NADA. Rode com o DATABASE_URL do banco que quer inspecionar:
 ⚠ Consertar o que ele achar é o `criar_ov_faltante`.
 """
 from django.core.management.base import BaseCommand
+from django.core.exceptions import FieldError
+from django.db import DatabaseError, connection
 from django.db.models import Sum
 
 from estoque.models import InventoryEntry, Lot
@@ -40,8 +42,69 @@ def compradores_visiveis(company):
         return list(Buyer.objects.filter(active=True).order_by('pk'))
 
 
+#: As ÚNICAS colunas de SalesOrder que este diagnóstico lê. Explícitas de
+#: propósito — ver ovs_do_lote.
+COLUNAS_OV = ('pk', 'number', 'status')
+
+
+def ovs_do_lote(lot_pk):
+    """As OVs do lote, como DICTS de 3 colunas — nunca instâncias.
+
+    Um `SELECT *` aqui quebra contra banco mais VELHO que este código: o ORM
+    pede toda coluna do modelo e o Postgres recusa a que ainda não foi
+    migrada. É exatamente o cenário do dono (comando local apontando pra
+    prod) e foi assim que a 1ª rodada deste diagnóstico morreu, em
+    `vendas_salesorder.carrier`. Estas três colunas existem desde a
+    `vendas/0001` — o diagnóstico sobrevive a qualquer deriva futura."""
+    return list(SalesOrder.all_companies.filter(lot_id=lot_pk)
+                .values(*COLUNAS_OV))
+
+
+#: Colunas de Lot que existem desde a estoque/0001. `code_str` fica DE FORA
+#: de propósito: é da estoque/0020 (2026-08-18) e não existe num banco mais
+#: velho — o rótulo aqui é montado do número, que nunca muda.
+COLUNAS_LOTE = ('pk', 'number', 'status', 'closed_at', 'company_id')
+
+
+def lotes_seguros(qs):
+    """Lotes como DICTS de colunas antigas + `rotulo`. Mesmo motivo do
+    ovs_do_lote: este comando roda contra banco que pode estar ATRÁS do
+    código, e um SELECT * mataria o diagnóstico no meio.
+
+    Tenta o `code_str` (rótulo bonito, `LOT/ERE/001/08/26`) e CAI FORA para o
+    número puro se a coluna ainda não existe no banco-alvo. O rótulo é
+    cosmético; o diagnóstico não pode morrer por causa dele."""
+    try:
+        linhas = list(qs.values(*COLUNAS_LOTE, 'code_str'))
+    except (DatabaseError, FieldError):
+        linhas = list(qs.values(*COLUNAS_LOTE))
+    saida = []
+    for d in linhas:
+        d['rotulo'] = d.get('code_str') or f'LOT/{d["number"]:03d}'
+        saida.append(d)
+    return saida
+
+
 def _rotulo_empresa(b):
     return '(PLATAFORMA)' if b.company_id is None else b.company.name
+
+
+def _deriva_de_migracao():
+    """(faltando_no_banco, sobrando_no_banco) comparando os arquivos de
+    migração DESTE código com a tabela django_migrations do banco-alvo.
+
+    Existe porque o fluxo do dono é rodar comando LOCAL apontando
+    `DATABASE_URL` para PROD (não há shell no Render — CLAUDE.md §5). Quando
+    o código local está à frente, uma query comum estoura
+    `column ... does not exist` no meio do diagnóstico e o erro parece do
+    lote, não do ambiente. Pior: a deriva pode ser A CAUSA que se está
+    investigando — código que espera coluna que o banco não tem quebra
+    dentro do `except Exception` do create_draft_for_lot, em silêncio."""
+    from django.db.migrations.loader import MigrationLoader
+    loader = MigrationLoader(connection)
+    no_disco = set(loader.disk_migrations)
+    aplicadas = set(loader.applied_migrations)
+    return sorted(no_disco - aplicadas), sorted(aplicadas - no_disco)
 
 
 class Command(BaseCommand):
@@ -60,11 +123,12 @@ class Command(BaseCommand):
         with platform_scope():
             com_ov = set(SalesOrder.all_companies
                          .exclude(status=STATUS_CANCELLED)
-                         .values_list('lot_id', flat=True))
-            fechados = list(Lot.all_companies.filter(status=Lot.STATUS_CLOSED)
-                            .select_related('company').order_by('company__name',
-                                                                'number'))
-        orfaos = [l for l in fechados if l.pk not in com_ov]
+                         .values_list('lot_id', flat=True))   # só a FK
+            fechados = lotes_seguros(
+                Lot.all_companies.filter(status=Lot.STATUS_CLOSED)
+                .order_by('company_id', 'number'))
+            nomes = dict(Company.objects.values_list('pk', 'name'))
+        orfaos = [l for l in fechados if l['pk'] not in com_ov]
         self.stdout.write(f'  {len(fechados)} lote(s) fechado(s) · '
                           f'{len(fechados) - len(orfaos)} com OV · '
                           f'{len(orfaos)} SEM OV')
@@ -75,9 +139,10 @@ class Command(BaseCommand):
                           'ENTRADAS')
         for l in orfaos:
             with platform_scope():
-                n = InventoryEntry.all_companies.filter(lot=l).count()
-            quando = f'{l.closed_at:%d/%m/%Y}' if l.closed_at else '—'
-            self.stdout.write(f'  {l.company.name[:16]:<16} {l.code:<20} '
+                n = InventoryEntry.all_companies.filter(lot_id=l['pk']).count()
+            quando = (f'{l["closed_at"]:%d/%m/%Y}' if l['closed_at'] else '—')
+            empresa = nomes.get(l['company_id'], '?')
+            self.stdout.write(f'  {empresa[:16]:<16} {l["rotulo"]:<20} '
                               f'{quando:<12} {n:>8}')
         self.stdout.write(
             '\n  Conserto: python manage.py criar_ov_faltante '
@@ -86,16 +151,22 @@ class Command(BaseCommand):
     # ── autópsia de um lote ─────────────────────────────────────────────────
     def _autopsia(self, company, alvo):
         with company_scope(company):
-            lotes = [l for l in Lot.objects.all()
-                     if str(l.number) == alvo or l.code == alvo]
+            todos = lotes_seguros(Lot.objects.all())
+        so_numero = alvo.rstrip('/').split('/')[-3:]   # LOT/001/08/26 → '001'
+        pedido = so_numero[0] if len(so_numero) == 3 else alvo
+        lotes = [l for l in todos
+                 if str(l['number']) == alvo or str(l['number']) == pedido
+                 or l['rotulo'] == alvo]
         if not lotes:
             self.stdout.write(self.style.ERROR(
                 f'  Lote {alvo!r} não existe em {company.name}.'))
             return
-        lot = lotes[0]
-        self.stdout.write(f'\n=== AUTÓPSIA: {lot.code} ({company.name}) ===')
-        self.stdout.write(f'  status={lot.get_status_display()} · '
-                          f'fechado_em={lot.closed_at or "—"}')
+        lot_d = lotes[0]
+        lot_pk = lot_d['pk']
+        self.stdout.write(f'\n=== AUTÓPSIA: {lot_d["rotulo"]} '
+                          f'({company.name}) ===')
+        self.stdout.write(f'  status={lot_d["status"]} · '
+                          f'fechado_em={lot_d["closed_at"] or "—"}')
 
         # PORTÃO 1 — comprador ativo ÚNICO
         compradores = compradores_visiveis(company)
@@ -124,12 +195,12 @@ class Command(BaseCommand):
 
         # PORTÃO 2 — OV já existente (re-fechamento legítimo)
         with platform_scope():
-            todas = list(SalesOrder.all_companies.filter(lot=lot))
-        vivas = [s for s in todas if s.status != STATUS_CANCELLED]
+            todas = ovs_do_lote(lot_pk)
+        vivas = [s for s in todas if s['status'] != STATUS_CANCELLED]
         self.stdout.write('\n── PORTÃO 2: OV já existente ──')
         if vivas:
             for s in vivas:
-                self.stdout.write(f'  · {s.number} status={s.status}')
+                self.stdout.write(f'  · {s["number"]} status={s["status"]}')
             self.stdout.write(self.style.SUCCESS(
                 '  ✓ a OV EXISTE — este lote não é o caso (o None do '
                 're-fechamento é legítimo).'))
@@ -141,8 +212,9 @@ class Command(BaseCommand):
 
         # PORTÃO 3 — matéria-prima das linhas
         with company_scope(company):
-            com_chave = lot.entries.filter(price_tier_value__isnull=False)
-            sem_chave = (lot.entries.filter(price_tier_value__isnull=True)
+            base = InventoryEntry.objects.filter(lot_id=lot_pk)
+            com_chave = base.filter(price_tier_value__isnull=False)
+            sem_chave = (base.filter(price_tier_value__isnull=True)
                          .aggregate(t=Sum('quantity'))['t'] or 0)
             n_com = com_chave.count()
             pecas = com_chave.aggregate(t=Sum('quantity'))['t'] or 0
@@ -164,10 +236,40 @@ class Command(BaseCommand):
             '\n── SE NENHUM PORTÃO ACIMA EXPLICA ──\n'
             '  Sobrou exceção: o `except Exception` do create_draft_for_lot '
             'engoliu.\n  Procure no log do Render por:\n'
-            f'    vendas: falha ao criar cotação do lote {lot.pk}\n'
-            f'    vendas: lote {lot.pk} fechado com N comprador(es) ativo(s)\n')
+            f'    vendas: falha ao criar cotação do lote {lot_pk}\n'
+            f'    vendas: lote {lot_pk} fechado com N comprador(es) ativo(s)\n')
+
+    def _migracoes(self):
+        """SEMPRE primeiro: sem isto, todo o resto pode ser mentira."""
+        faltando, sobrando = _deriva_de_migracao()
+        db = connection.settings_dict
+        self.stdout.write(f'\n=== BANCO-ALVO: {db.get("NAME")} @ '
+                          f'{db.get("HOST") or "localhost"} ===')
+        if not faltando and not sobrando:
+            self.stdout.write(self.style.SUCCESS(
+                '  migrações: código e banco em dia ✓'))
+            return True
+        if faltando:
+            self.stdout.write(self.style.ERROR(
+                f'  ⚠ {len(faltando)} migração(ões) NO CÓDIGO e NÃO no banco '
+                f'— este código está À FRENTE do banco-alvo:'))
+            for app, nome in faltando:
+                self.stdout.write(f'      {app}/{nome}')
+            self.stdout.write(
+                '    Consequência: query de modelo com campo novo estoura\n'
+                '    "column ... does not exist" — e o erro PARECE do lote.\n'
+                '    ⚠ Se este banco é o de PRODUÇÃO, o código no ar é o do\n'
+                '    último deploy, NÃO este. Confira com: git ls-remote origin main')
+        if sobrando:
+            self.stdout.write(self.style.WARNING(
+                f'  ⚠ {len(sobrando)} migração(ões) aplicadas no banco que NÃO '
+                f'existem neste código — o banco está à frente:'))
+            for app, nome in sobrando:
+                self.stdout.write(f'      {app}/{nome}')
+        return False
 
     def handle(self, *args, **opts):
+        em_dia = self._migracoes()
         alvo = (opts['lot'] or '').strip()
         slug = (opts['company'] or '').strip()
         if alvo and not slug:
@@ -181,8 +283,27 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.ERROR(
                     f'Empresa {slug!r} não existe.'))
                 return
-            self._autopsia(company, alvo) if alvo else self._empresa(company)
-        self._rebanho()
+            try:
+                self._autopsia(company, alvo) if alvo else self._empresa(company)
+            except DatabaseError as e:
+                self._erro_de_schema(e, em_dia)
+                return
+        try:
+            self._rebanho()
+        except DatabaseError as e:
+            self._erro_de_schema(e, em_dia)
+
+    def _erro_de_schema(self, erro, em_dia):
+        self.stdout.write(self.style.ERROR(f'\n⛔ O BANCO RECUSOU A CONSULTA: {erro}'))
+        if not em_dia:
+            self.stdout.write(
+                '   É a deriva de migração apontada lá em cima — NÃO é o bug do\n'
+                '   lote. Rode este comando com o código do DEPLOY que fez o\n'
+                '   fechamento (git stash / checkout da tag), ou migre o banco.')
+        else:
+            self.stdout.write(
+                '   As migrações estão em dia, então isto é outra coisa — '
+                'guarde o erro acima.')
 
     def _empresa(self, company):
         """Sem --lot: só o retrato dos compradores que ela enxerga."""
