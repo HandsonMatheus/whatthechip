@@ -64,7 +64,7 @@ class CompanyAdminForm(forms.ModelForm):
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     form = CompanyAdminForm
-    list_display  = ('name', 'code', 'slug', 'active', 'ui_v2',
+    list_display  = ('name', 'code', 'slug', 'service_fee_pct', 'active', 'ui_v2',
                      'last_lot_number', 'created_at')
     list_filter   = ('active', 'ui_v2')
     search_fields = ('name', 'slug', 'code')

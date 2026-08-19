@@ -629,12 +629,23 @@ def settle_and_invoice(so, adjustments, user, notes=''):
             unit_usd = (unit * rate).quantize(_CENT, ROUND_HALF_UP)
             total_rmb += unit * qty
             total_usd += unit_usd * qty          # soma por linha (F10, fatura)
+        total_rmb = total_rmb.quantize(_CENT, ROUND_HALF_UP)
+        total_usd = total_usd.quantize(_CENT, ROUND_HALF_UP)
+        # TAXA DE SERVIÇO congelada aqui (dono, 2026-08-19), como o câmbio: é
+        # a do CADASTRO no momento em que a fatura nasce. Mudar
+        # `Company.service_fee_pct` depois não reescreve esta venda.
+        # ⚠ O total continua CHEIO — é o que o comprador deve. A taxa só
+        # muda o que o cliente recebe.
+        pct = (so.company.service_fee_pct or Decimal('0.00'))
+        fee_rmb = (total_rmb * pct / Decimal('100')).quantize(_CENT, ROUND_HALF_UP)
+        fee_usd = (total_usd * pct / Decimal('100')).quantize(_CENT, ROUND_HALF_UP)
         inv = Invoice(
             order=so, settlement=st,
             number=DocSequence.next_number(so.company, SEQ_INVOICE),
             fx_usd_rate=rate,
-            total_rmb=total_rmb.quantize(_CENT, ROUND_HALF_UP),
-            total_usd=total_usd.quantize(_CENT, ROUND_HALF_UP),
+            total_rmb=total_rmb,
+            total_usd=total_usd,
+            fee_pct=pct, fee_rmb=fee_rmb, fee_usd=fee_usd,
             issued_by=user)
         inv.save()
     return st, inv
@@ -660,6 +671,50 @@ def register_payment(invoice, amount_usd, paid_at, user, reference=''):
             invoice.status = INV_PAID
             invoice.save()
     return p
+
+
+def register_payout(invoice, amount_usd, paid_at, user, reference=''):
+    """REPASSE ao cliente (dono, 2026-08-19) — a perna WhatTheChip → CLIENTE.
+
+    Espelho do ``register_payment``, do outro lado do balcão: lá é o comprador
+    quitando o WTC, aqui é o WTC quitando o cliente pelo LÍQUIDO (bruto menos
+    a taxa de serviço congelada na fatura).
+
+    Trava no saldo LÍQUIDO, não no total: repassar o valor cheio seria pagar
+    do próprio bolso a taxa que a plataforma acabou de cobrar.
+
+    ⚠ Não mexe no `status` da fatura: "paga" ali quer dizer que o COMPRADOR
+    quitou. As duas pernas correm em ritmos diferentes de propósito — o WTC
+    pode repassar antes de receber, ou depois.
+    """
+    from .models import Payout
+    if invoice.status == 'cancelled':
+        raise ValidationError('Fatura cancelada não recebe repasse.')
+    if amount_usd <= 0:
+        raise ValidationError('Valor do repasse deve ser positivo.')
+    if amount_usd > invoice.payout_balance_usd:
+        raise ValidationError(
+            f'Repasse (US$ {amount_usd}) maior que o líquido a repassar '
+            f'(US$ {invoice.payout_balance_usd}).')
+    return Payout.all_companies.create(
+        invoice=invoice, amount_usd=amount_usd, paid_at=paid_at,
+        reference=reference, created_by=user)
+
+
+def payout_history(invoice):
+    """Os repasses desta fatura, do mais novo ao mais velho.
+
+    É o que a tela do CLIENTE mostra como "recebido" — dinheiro que já saiu da
+    conta do WhatTheChip. O pagamento do COMPRADOR (``payment_history``) não
+    entra aqui e não entra naquela tela: valor, data, referência e comprovante
+    daquela perna são a conta do WTC com a contraparte, e quem é a contraparte
+    é segredo de mercado (F11.3).
+    """
+    if invoice is None:
+        return []
+    return [{'pk': p.pk, 'paid_at': p.paid_at, 'amount_usd': p.amount_usd,
+             'reference': p.reference}
+            for p in invoice.payouts.all()]
 
 
 #: Formatos aceitos no comprovante. Foto do app do banco, print da tela ou o

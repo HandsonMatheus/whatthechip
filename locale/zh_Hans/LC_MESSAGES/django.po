@@ -3143,3 +3143,35 @@ msgstr "只填写您<b>拒收</b>的数量——留空即为零。"
 #. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
 msgid "Marque o recebimento para começar a conferência — não se confere caixa que ainda não chegou."
 msgstr "先确认收货再开始验收——货未到不验收。"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Resultado (bruto)"
+msgstr "结果（税前）"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Líquido a receber"
+msgstr "应收净额"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Registrar repasse"
+msgstr "登记转账"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Repassar (US$)"
+msgstr "转账金额（US$）"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Repasse registrado."
+msgstr "转账已登记。"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Esta venda ainda não tem fatura."
+msgstr "此笔销售尚无发票。"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Taxa de serviço (%(p)s%%)"
+msgstr "服务费（%(p)s%%）"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Nenhum repasse ainda — o WhatTheChip transfere assim que o acerto fecha."
+msgstr "尚未转账——结果一确认，WhatTheChip 即刻转出。"

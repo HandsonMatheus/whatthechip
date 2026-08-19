@@ -1742,6 +1742,40 @@ está documentado em `services.ship_to`.
 **comprovante que o COMPRADOR anexou**. Quem paga é o comprador; o cliente
 precisa acompanhar. Some inteiro para quem não vê valor.
 
+💰 **TAXA DE SERVIÇO DA PLATAFORMA — 10% (dono, 2026-08-19).** O modelo de
+receita, que faltava no sistema. O dinheiro NÃO vai do comprador para o
+cliente:
+
+    comprador ──paga o TOTAL CHEIO──▶ WhatTheChip ──paga o LÍQUIDO──▶ cliente
+                                          (retém a taxa de serviço)
+
+São DUAS pernas, com dois extratos, e confundi-las mente para alguém:
+
+· `Payment` — comprador → WTC. Tem comprovante. **O CLIENTE NÃO VÊ NADA
+  DISSO**: nem valor, nem data, nem referência, nem arquivo. É a conta do WTC
+  com a contraparte dele, e quem é a contraparte é segredo de mercado (F11.3).
+· `Payout` (novo) — WTC → cliente. É o que a tela do cliente mostra como
+  "recebido": dinheiro que **saiu** da conta do WhatTheChip. Assim o extrato
+  dele nunca promete transferência que ainda não aconteceu. Quem registra é a
+  PLATAFORMA (`platform_required` — o admin do cliente é o credor, não o
+  pagador).
+
+**Onde mora a taxa:** `Company.service_fee_pct` (padrão 10%, editável no
+admin) — contrato é por cliente, e quando um negociar 7% muda-se o cadastro,
+sem deploy. **Congelada na fatura** (`Invoice.fee_pct/fee_rmb/fee_usd`) na
+emissão, mesma disciplina do câmbio: mudar o cadastro NUNCA reescreve venda já
+acertada.
+
+⚠ A taxa **não encolhe o `total_*`** — o comprador continua devendo o cheio. O
+líquido do cliente é `net_*` (propriedade). Subtrair a taxa do total faria a
+cobrança do comprador encolher junto, e quem perderia é o WhatTheChip.
+
+⚠ A tela do COMPRADOR não fala em taxa: a margem da plataforma é informação de
+mercado. Teste segurando isso.
+
+A tela do cliente virou a conta DELE: **bruto − taxa = líquido**, e
+**líquido − recebido = falta**, com o histórico dos repasses.
+
 🧾 **A COMPRA ABERTA VIRA UMA FICHA** (dono, 2026-08-19: *"redesenhe esta
 página, estrutura simples, sólida e escalável — vamos replicar para a OV do
 cliente"*). A tela estava quebrada porque CADA ETAPA acrescentava um bloco novo

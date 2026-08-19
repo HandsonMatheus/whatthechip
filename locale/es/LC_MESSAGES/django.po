@@ -3347,3 +3347,35 @@ msgstr "Escriba solo lo que <b>rechazó</b> — el campo en blanco vale cero."
 #. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
 msgid "Marque o recebimento para começar a conferência — não se confere caixa que ainda não chegou."
 msgstr "Marque la recepción para empezar la revisión — no se revisa una caja que aún no llegó."
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Resultado (bruto)"
+msgstr "Resultado (bruto)"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Líquido a receber"
+msgstr "Neto a cobrar"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Registrar repasse"
+msgstr "Registrar transferencia"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Repassar (US$)"
+msgstr "Transferir (US$)"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Repasse registrado."
+msgstr "Transferencia registrada."
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Esta venda ainda não tem fatura."
+msgstr "Esta venta todavía no tiene factura."
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Taxa de serviço (%(p)s%%)"
+msgstr "Tasa de servicio (%(p)s%%)"
+
+#. vendas/ (taxa de serviço da plataforma e repasse ao cliente)
+msgid "Nenhum repasse ainda — o WhatTheChip transfere assim que o acerto fecha."
+msgstr "Ninguna transferencia aún — WhatTheChip la envía en cuanto se cierra el resultado."

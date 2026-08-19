@@ -466,6 +466,24 @@ class Invoice(models.Model):
                                     verbose_name='Total ¥')
     total_usd = models.DecimalField(max_digits=12, decimal_places=2,
                                     verbose_name='Total US$')
+    # ── TAXA DE SERVIÇO, CONGELADA NA EMISSÃO (dono, 2026-08-19) ──────────
+    # O comprador paga o WhatTheChip o total CHEIO; o WhatTheChip repassa ao
+    # cliente o LÍQUIDO. A taxa vem de `Company.service_fee_pct` no momento em
+    # que a fatura nasce e fica gravada aqui — mesma disciplina do câmbio:
+    # mudar o cadastro nunca reescreve venda já acertada.
+    #
+    # ⚠ O `total_*` continua sendo o que o COMPRADOR deve. O líquido do
+    # cliente é `net_*` (propriedade) — nunca subtraia a taxa do total, senão
+    # a cobrança do comprador encolhe junto.
+    fee_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=Decimal('0.00'),
+        verbose_name='Taxa de serviço (%)')
+    fee_rmb = models.DecimalField(max_digits=12, decimal_places=2,
+                                  default=Decimal('0.00'),
+                                  verbose_name='Taxa ¥')
+    fee_usd = models.DecimalField(max_digits=12, decimal_places=2,
+                                  default=Decimal('0.00'),
+                                  verbose_name='Taxa US$')
     # ── Código do documento, CONGELADO na criação (dono, 2026-08-18) ───────
     # Era propriedade calculada. Virou campo porque o formato mudou (ganhou o
     # prefixo da empresa, `LOT/EMI/041/08/26`) e o dono escolheu aplicar SÓ A
@@ -527,6 +545,29 @@ class Invoice(models.Model):
     @property
     def balance_usd(self) -> Decimal:
         return self.total_usd - self.paid_usd
+
+    # ── O lado do CLIENTE: bruto − taxa = líquido ─────────────────────────
+    # Duas contas que não se misturam: `total/paid/balance` é a perna
+    # COMPRADOR → WhatTheChip; `net/paid_out/payout_balance` é a perna
+    # WhatTheChip → CLIENTE. O cliente nunca vê a primeira (o comprador paga o
+    # WTC, não a ele), e é por isso que "pago" numa tela não é "pago" na
+    # outra.
+    @property
+    def net_rmb(self) -> Decimal:
+        return self.total_rmb - self.fee_rmb
+
+    @property
+    def net_usd(self) -> Decimal:
+        return self.total_usd - self.fee_usd
+
+    @property
+    def paid_out_usd(self) -> Decimal:
+        return (self.payouts.aggregate(t=models.Sum('amount_usd'))['t']
+                or Decimal('0.00'))
+
+    @property
+    def payout_balance_usd(self) -> Decimal:
+        return self.net_usd - self.paid_out_usd
 
     def save(self, *args, **kwargs):
         if self.order_id and not self.company_id:
@@ -590,6 +631,66 @@ class Payment(models.Model):
                 'company_id', flat=True).get(pk=self.invoice_id)
         self.full_clean(validate_unique=False, validate_constraints=False)
         return super().save(*args, **kwargs)
+
+
+class Payout(models.Model):
+    """REPASSE ao cliente — a perna WhatTheChip → CLIENTE (dono, 2026-08-19).
+
+    O comprador paga o WhatTheChip; o WhatTheChip paga o cliente, já deduzida
+    a taxa de serviço. São DUAS pernas, e confundi-las seria mentir no extrato
+    de alguém:
+
+    · ``Payment``  — comprador → WhatTheChip. Tem comprovante. O CLIENTE NÃO
+      VÊ: nem valor, nem data, nem referência (é a conta do WTC com a
+      contraparte dele, e quem é a contraparte é segredo de mercado).
+    · ``Payout``   — WhatTheChip → cliente. É isto que a tela do cliente
+      mostra como "recebido": dinheiro que SAIU da conta do WTC. Assim o
+      extrato dele nunca promete o que ainda não foi transferido.
+
+    Quem registra é a PLATAFORMA (só superusuário) — é o WTC declarando o que
+    pagou. Parcial é permitido, como no outro lado.
+    """
+
+    invoice = models.ForeignKey(Invoice, on_delete=models.PROTECT,
+                                related_name='payouts', verbose_name='Fatura')
+    company = models.ForeignKey('tenancy.Company', on_delete=models.PROTECT,
+                                null=True, blank=True, related_name='+',
+                                verbose_name='Empresa', editable=False)
+    amount_usd = models.DecimalField(max_digits=12, decimal_places=2,
+                                     verbose_name='Valor US$')
+    paid_at = models.DateField(verbose_name='Data do repasse')
+    reference = models.CharField(max_length=120, blank=True, default='',
+                                 verbose_name='Referência',
+                                 help_text='Wire/recibo/observação curta.')
+    created_at = models.DateTimeField(auto_now_add=True,
+                                      verbose_name='Registrado em')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.SET_NULL, null=True,
+                                   blank=True, related_name='+',
+                                   verbose_name='Registrado por')
+
+    objects       = CompanyScopedManager()
+    all_companies = models.Manager()
+
+    class Meta:
+        verbose_name = 'Repasse ao cliente'
+        verbose_name_plural = 'Repasses ao cliente'
+        ordering = ['-paid_at', '-created_at']
+        base_manager_name = 'all_companies'
+        default_manager_name = 'all_companies'
+        constraints = [
+            models.CheckConstraint(name='payout_positive',
+                                   condition=Q(amount_usd__gt=0)),
+        ]
+
+    def __str__(self):
+        return f'{self.invoice_id} · US$ {self.amount_usd} · {self.paid_at}'
+
+    def save(self, *args, **kwargs):
+        if self.invoice_id and not self.company_id:
+            self.company_id = Invoice.all_companies.values_list(
+                'company_id', flat=True).get(pk=self.invoice_id)
+        super().save(*args, **kwargs)
 
 
 class PaymentReceipt(models.Model):

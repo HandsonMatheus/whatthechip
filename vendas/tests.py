@@ -2634,9 +2634,14 @@ class TelaDaOVEspelhaACompraTests(TestCase):
         self.assertEqual(grupos[0]['rejected'], 4)
 
     def test_etapa_de_pagamento_no_lado_do_CLIENTE(self):
-        """Previsto × acertado × pago × falta, e o histórico com o
-        comprovante que o COMPRADOR anexou (dono, 2026-08-19). Sem isso a
-        etapa de pagamento existia só na tela de quem paga."""
+        """A conta do CLIENTE, e só ela (dono, 2026-08-19):
+
+            BRUTO − TAXA DE SERVIÇO = LÍQUIDO ;  LÍQUIDO − RECEBIDO = FALTA
+
+        O comprador NÃO paga o cliente: paga o WhatTheChip, que repassa já
+        deduzida a taxa. Então o pagamento DELE não entra nesta tela — nem o
+        valor, nem a data, nem a referência.
+        """
         from datetime import date
         with company_scope(self.company):
             services.mark_shipped(self.so, 'DHL', 'JD1', None, self.adm)
@@ -2647,12 +2652,23 @@ class TelaDaOVEspelhaACompraTests(TestCase):
             services.register_payment(inv, (inv.total_usd / 2).quantize(
                 Decimal('0.01')), date.today(), self.adm, reference='WIRE-7')
         tela = self._tela()
-        self.assertContains(tela, 'Previsto')
-        self.assertContains(tela, 'Acertado')
+        self.assertContains(tela, 'Resultado (bruto)')
+        self.assertContains(tela, 'Taxa de serviço')
+        self.assertContains(tela, 'Líquido a receber')
         self.assertContains(tela, 'Falta')
-        self.assertContains(tela, 'WIRE-7')             # o histórico
         inv.refresh_from_db()
-        self.assertContains(tela, f'US$ {inv.balance_usd}')
+        self.assertContains(tela, f'US$ {inv.net_usd}')     # o que ele recebe
+        # ⚠ a perna do comprador não aparece:
+        self.assertNotContains(tela, 'WIRE-7')
+        self.assertNotIn('pagamentos', tela.context)
+
+        # …e o repasse do WhatTheChip, esse sim, aparece.
+        with company_scope(self.company):
+            services.register_payout(inv, Decimal('1.00'), date.today(),
+                                     self.adm, reference='REPASSE-1')
+        tela = self._tela()
+        self.assertContains(tela, 'REPASSE-1')
+        self.assertContains(tela, 'US$ 1.00')
 
     def test_o_nome_do_COMPRADOR_nao_aparece_em_lugar_nenhum(self):
         """REGRESSÃO (2026-08-19): o painel de pagamento do cliente reusou o
@@ -2681,10 +2697,13 @@ class TelaDaOVEspelhaACompraTests(TestCase):
         self.assertNotIn('wu_quan_x', html)
         self.assertNotIn(self.buyer.name, html)
         self.assertNotIn('Registrado por', html)
-        self.assertIn('WIRE-1', html)                  # o resto do histórico fica
-        # E o contexto NÃO carrega o autor — não é só o template calando:
-        for p in self._tela().context['pagamentos']:
-            self.assertNotIn('by', p)
+        # ⚠ 2026-08-19, mais forte: some a PERNA INTEIRA. O comprador paga o
+        # WhatTheChip, não o cliente — valor, data, referência e comprovante
+        # daquele pagamento são a conta do WTC com a contraparte dele.
+        self.assertNotIn('WIRE-1', html)
+        self.assertNotIn('comprovante', html.lower())
+        # E não é o template calando: o contexto nem carrega a chave.
+        self.assertNotIn('pagamentos', self._tela().context)
 
     def test_gerente_nao_ve_o_bloco_de_pagamento(self):
         """É dinheiro: some inteiro, não vira bolinha."""
@@ -2725,7 +2744,7 @@ class TelaDaOVEspelhaACompraTests(TestCase):
                                         self.adm)
         html = self._tela().content.decode()
         despacho = html.index('Despacho')
-        pagamento = html.index('Previsto')
+        pagamento = html.index('Resultado (bruto)')
         tabela = html.index('Caixa WTC')
         self.assertLess(despacho, tabela)
         self.assertLess(pagamento, tabela)
@@ -3044,264 +3063,147 @@ class DesignSystemNaTelaDoCompradorTests(TestCase):
         self.assertEqual(self._tela().context['a_conferir'], 0)
 
 
-class LoteFechouSemOVTests(TestCase):
-    """SEGUNDO incidente de prod do mesmo tipo (eRecyclo, LOT/001/08/26,
-    2026-08-18) — o primeiro foi o K9 em 8305e0a.
+class TaxaDeServicoERepasseTests(TestCase):
+    """A TAXA DE SERVIÇO da plataforma e o REPASSE (dono, 2026-08-19).
 
-    `create_draft_for_lot` NUNCA levanta (padrão F8: o fechamento FÍSICO do
-    lote não pode travar por causa da venda), então o motivo desaparece. Estes
-    testes prendem os DOIS instrumentos que fazem o motivo reaparecer:
-    `diag_ordem_venda` (por que não nasceu) e `criar_ov_faltante` (nasce
-    agora, pelo mesmo caminho do fechamento).
+    O desenho que estes testes seguram — e que é o modelo de receita do
+    produto:
 
-    O cenário que reproduzem é o do portão do COMPRADOR ÚNICO: `Buyer.objects`
-    é PlatformSharedManager, então a empresa enxerga o comprador DELA **mais**
-    os de PLATAFORMA (company IS NULL). Basta a empresa ter um comprador
-    próprio ativo E existir um de plataforma ativo para virarem 2 — e 2 ≠ 1
-    faz o código desistir em silêncio."""
+        comprador ──paga o TOTAL CHEIO──▶ WhatTheChip ──paga o LÍQUIDO──▶ cliente
+                                              (retém a taxa de serviço)
+
+    Duas pernas, duas contas, dois extratos. Confundi-las mentiria para
+    alguém: se a taxa saísse do `total`, a cobrança do comprador encolheria
+    junto; se o "pago" do comprador virasse "recebido" do cliente, o cliente
+    veria dinheiro que ainda não saiu da conta do WhatTheChip.
+    """
 
     @classmethod
     def setUpTestData(cls):
-        cls.company, cls.buyer, cls.brand = _setup('vd-semov')
+        cls.company, cls.buyer, cls.brand = _setup('vd-fee')
         User = get_user_model()
-        cls.mgr = User.objects.create_superuser('semov_mgr', password='x')
-        Membership.objects.create(user=cls.mgr, company=cls.company,
-                                  role=Membership.ROLE_MANAGER)
+        cls.adm = User.objects.create_user('vd_fee_adm', password='x')
+        Membership.objects.create(user=cls.adm, company=cls.company,
+                                  role='admin')
+        cls.plat = User.objects.create_user('vd_fee_plat', password='x',
+                                            is_staff=True, is_superuser=True)
 
     def setUp(self):
         set_current_company(self.company.pk)
         self.addCleanup(set_current_company, None)
-        self.lot = Lot.open_for_company(self.company, self.mgr, 'Sem OV',
-                                        origin='phone')
-        _entries(self.lot, self.brand, com_emcp=False)
+        call_command('seed_category_codes', '--commit', verbosity=0)
+        with company_scope(self.company):
+            lot = Lot.open_for_company(self.company, self.adm, 'f',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='FEE1', quantity=10, brand=self.brand,
+                chip_type='eMMC', company=self.company, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')                    # 10 × ¥15 = ¥150
+            Lot.all_companies.filter(pk=lot.pk).update(closed_at=timezone.now())
+            self.so = services.create_draft_for_lot(lot, self.adm)
+            services.mark_shipped(self.so, 'DHL', 'JD1', None, self.adm)
+            self.so.refresh_from_db()
 
-    def _fecha(self):
-        self.client.force_login(self.mgr)
-        return self.client.post(
-            reverse('estoque:lot_close', args=[self.lot.pk]),
-            {'confirm_code': self.lot.code}, follow=True)
+    def _faturar(self, recusados=0):
+        with company_scope(self.company):
+            linha = self.so.lines.get()
+            _st, inv = services.settle_and_invoice(
+                self.so, {linha.pk: (recusados, None)}, self.adm)
+            return inv
 
-    def _cmd(self, nome, **opts):
-        from io import StringIO
-        from django.core.management import call_command
-        out = StringIO()
-        call_command(nome, stdout=out, **opts)
-        return out.getvalue()
+    # ── a taxa ──────────────────────────────────────────────────────────────
 
-    def _comprador_de_plataforma(self):
-        """O segundo comprador — o de PLATAFORMA, que TODA empresa enxerga."""
-        return Buyer.all_companies.create(company=None, name='Wu Plataforma',
-                                          slug='wu-plataforma')
+    def test_dez_por_cento_por_padrao_e_a_conta_bate(self):
+        self.assertEqual(self.company.service_fee_pct, Decimal('10.00'))
+        inv = self._faturar()
+        self.assertEqual(inv.total_rmb, Decimal('150.00'))   # o comprador deve
+        self.assertEqual(inv.fee_pct, Decimal('10.00'))
+        self.assertEqual(inv.fee_rmb, Decimal('15.00'))
+        self.assertEqual(inv.net_rmb, Decimal('135.00'))     # o cliente recebe
+        self.assertEqual(inv.fee_usd, (inv.total_usd * Decimal('0.10')
+                                       ).quantize(Decimal('0.01')))
+        self.assertEqual(inv.net_usd, inv.total_usd - inv.fee_usd)
 
-    # ── o incidente ─────────────────────────────────────────────────────────
-    def test_dois_compradores_visiveis_matam_a_ov_em_silencio(self):
-        """A reprodução do bug: comprador da empresa + o de plataforma = 2."""
-        self._comprador_de_plataforma()
-        self._fecha()
-        self.lot.refresh_from_db()
-        self.assertEqual(self.lot.status, Lot.STATUS_CLOSED)   # o lote FECHOU
-        self.assertFalse(SalesOrder.all_companies.filter(lot=self.lot).exists())
+    def test_a_taxa_NAO_encolhe_o_que_o_comprador_deve(self):
+        """A taxa é entre a plataforma e o CLIENTE. Se ela saísse do total, o
+        comprador pagaria menos — e quem perderia é o WhatTheChip."""
+        inv = self._faturar(recusados=4)                 # 6 × ¥15 = ¥90
+        self.assertEqual(inv.total_rmb, Decimal('90.00'))
+        self.assertEqual(inv.balance_usd, inv.total_usd)  # ele deve o CHEIO
+        self.assertEqual(inv.net_rmb, Decimal('81.00'))   # 90 − 10%
 
-    def test_fechar_sem_ov_avisa_na_tela(self):
-        """O portão de visibilidade (8305e0a) tem que valer para ESTA causa
-        também — não só para a exceção do K9."""
-        self._comprador_de_plataforma()
-        corpo = self._fecha().content.decode()
-        self.assertIn('ORDEM DE VENDA não foi criada', corpo)
+    def test_a_taxa_CONGELA_na_fatura(self):
+        """Mesma disciplina do câmbio: mudar o cadastro não reescreve venda
+        acertada — senão o valor de um papel já enviado mudaria sozinho."""
+        inv = self._faturar()
+        self.company.service_fee_pct = Decimal('7.00')
+        self.company.save(update_fields=['service_fee_pct'])
+        inv.refresh_from_db()
+        self.assertEqual(inv.fee_pct, Decimal('10.00'))
+        self.assertEqual(inv.net_rmb, Decimal('135.00'))
 
-    # ── o diagnóstico ───────────────────────────────────────────────────────
-    def test_diagnostico_aponta_o_portao_do_comprador(self):
-        self._comprador_de_plataforma()
-        self._fecha()
-        saida = self._cmd('diag_ordem_venda', company=self.company.slug,
-                          lot=str(self.lot.number))
-        self.assertIn('PORTÃO 1', saida)
-        self.assertIn('É AQUI: 2 ≠ 1', saida)
-        self.assertIn('Wu Plataforma', saida)
-        self.assertIn('(PLATAFORMA)', saida)
+    def test_taxa_do_cadastro_vale_para_a_venda_NOVA(self):
+        self.company.service_fee_pct = Decimal('7.50')
+        self.company.save(update_fields=['service_fee_pct'])
+        inv = self._faturar()
+        self.assertEqual(inv.fee_pct, Decimal('7.50'))
+        self.assertEqual(inv.fee_rmb, Decimal('11.25'))   # 150 × 7,5%
 
-    def test_diagnostico_aponta_comprador_zero(self):
-        """A outra ponta do mesmo portão: nenhum comprador ativo visível."""
-        Buyer.all_companies.filter(pk=self.buyer.pk).update(active=False)
-        self._fecha()
-        saida = self._cmd('diag_ordem_venda', company=self.company.slug,
-                          lot=str(self.lot.number))
-        self.assertIn('É AQUI: 0 ≠ 1', saida)
-        self.assertIn('Nenhum comprador ativo visível', saida)
+    # ── o repasse ───────────────────────────────────────────────────────────
 
-    def test_diagnostico_inocenta_lote_que_tem_ov(self):
-        """Sem falso positivo: com 1 comprador a OV nasce e o diagnóstico diz
-        que este lote não é o caso."""
-        self._fecha()
-        saida = self._cmd('diag_ordem_venda', company=self.company.slug,
-                          lot=str(self.lot.number))
-        self.assertIn('a OV EXISTE', saida)
-        self.assertNotIn('É AQUI', saida)
+    def test_repasse_trava_no_LIQUIDO_nao_no_total(self):
+        """Repassar o valor cheio seria pagar do próprio bolso a taxa que a
+        plataforma acabou de cobrar."""
+        inv = self._faturar()
+        with company_scope(self.company):
+            with self.assertRaises(ValidationError):
+                services.register_payout(inv, inv.total_usd,
+                                         timezone.localdate(), self.plat)
+            services.register_payout(inv, inv.net_usd, timezone.localdate(),
+                                     self.plat, reference='TT-9')
+            inv.refresh_from_db()
+        self.assertEqual(inv.paid_out_usd, inv.net_usd)
+        self.assertEqual(inv.payout_balance_usd, Decimal('0.00'))
 
-    def test_varredura_lista_o_lote_orfao(self):
-        """O 'quantos mais estão assim?' que todo incidente levanta depois."""
-        self._comprador_de_plataforma()
-        self._fecha()
-        saida = self._cmd('diag_ordem_venda')
-        self.assertIn('LOTES FECHADOS SEM ORDEM DE VENDA', saida)
-        self.assertIn(self.lot.code, saida)
-        self.assertIn('1 SEM OV', saida)
+    def test_as_duas_pernas_correm_separadas(self):
+        """O WhatTheChip pode repassar antes de receber (ou depois): "paga" na
+        fatura é o COMPRADOR ter quitado, e não tem relação com o repasse."""
+        inv = self._faturar()
+        with company_scope(self.company):
+            services.register_payout(inv, Decimal('1.00'),
+                                     timezone.localdate(), self.plat)
+            inv.refresh_from_db()
+        self.assertEqual(inv.paid_usd, Decimal('0.00'))   # ninguém pagou o WTC
+        self.assertEqual(inv.paid_out_usd, Decimal('1.00'))
+        self.assertEqual(inv.status, 'open')
 
-    def test_varredura_sobrevive_a_banco_sem_code_str(self):
-        """Banco mais VELHO que o código (o cenário do dono rodando local
-        contra prod): sem a coluna do rótulo bonito, o lote ainda aparece —
-        identificado pelo NÚMERO, que existe desde sempre."""
-        from unittest.mock import patch
-        from django.core.exceptions import FieldError
-        self._comprador_de_plataforma()
-        self._fecha()
-        real = type(Lot.all_companies.all()).values
+    def test_so_a_PLATAFORMA_registra_repasse(self):
+        """O admin do cliente é o CREDOR, não o pagador: ele não declara que
+        recebeu."""
+        inv = self._faturar()
+        rota = reverse('vendas:so_payout', args=[self.so.pk])
+        dados = {'amount_usd': '1.00',
+                 'paid_at': timezone.localdate().isoformat()}
+        self.client.force_login(self.adm)
+        self.assertEqual(self.client.post(rota, dados).status_code, 403)
+        self.client.force_login(self.plat)
+        self.assertEqual(self.client.post(rota, dados).status_code, 302)
+        with company_scope(self.company):
+            inv.refresh_from_db()
+            self.assertEqual(inv.paid_out_usd, Decimal('1.00'))
 
-        def values_sem_code_str(self, *campos, **kw):
-            if 'code_str' in campos:
-                raise FieldError('column estoque_lot.code_str does not exist')
-            return real(self, *campos, **kw)
-
-        with patch('django.db.models.query.QuerySet.values',
-                   values_sem_code_str):
-            saida = self._cmd('diag_ordem_venda')
-        self.assertIn(f'LOT/{self.lot.number:03d}', saida)
-        self.assertIn('1 SEM OV', saida)
-
-    # ── o conserto ──────────────────────────────────────────────────────────
-    def test_conserto_dry_run_nao_grava(self):
-        b = self._comprador_de_plataforma()
-        self._fecha()
-        Buyer.all_companies.filter(pk=b.pk).update(active=False)  # destrava
-        saida = self._cmd('criar_ov_faltante', company=self.company.slug)
-        self.assertIn('DRY-RUN', saida)
-        self.assertIn(self.lot.code, saida)
-        self.assertFalse(SalesOrder.all_companies.filter(lot=self.lot).exists())
-
-    def test_conserto_cria_a_ov_pelo_mesmo_caminho(self):
-        b = self._comprador_de_plataforma()
-        self._fecha()
-        self.assertFalse(SalesOrder.all_companies.filter(lot=self.lot).exists())
-        Buyer.all_companies.filter(pk=b.pk).update(active=False)  # causa removida
-        self._cmd('criar_ov_faltante', company=self.company.slug, commit=True)
-        so = SalesOrder.all_companies.get(lot=self.lot)
-        self.assertEqual(so.status, STATUS_DRAFT)      # rascunho, preço vivo
-        self.assertTrue(so.lines.exists())             # com as linhas do lote
-
-    def test_conserto_e_idempotente(self):
-        self._fecha()                                  # já nasce com OV
-        saida = self._cmd('criar_ov_faltante', company=self.company.slug,
-                          commit=True)
-        self.assertIn('Nada a fazer', saida)
-        self.assertEqual(
-            SalesOrder.all_companies.filter(lot=self.lot).count(), 1)
-
-    def test_conserto_nao_mente_quando_a_causa_continua(self):
-        """Se a causa é ESTRUTURAL, o comando tem que dizer que falhou e
-        mandar para o diagnóstico — nunca reportar sucesso vazio."""
-        self._comprador_de_plataforma()
-        self._fecha()
-        saida = self._cmd('criar_ov_faltante', company=self.company.slug,
-                          commit=True)
-        self.assertIn('continua sem OV', saida)
-        self.assertIn('A causa NÃO é transitória', saida)
-        self.assertIn('diag_ordem_venda', saida)
-        self.assertFalse(SalesOrder.all_companies.filter(lot=self.lot).exists())
-
-
-class DiagOrdemVendaAmbienteTests(TestCase):
-    """O diagnóstico tem que sobreviver ao AMBIENTE em que é usado.
-
-    O fluxo do dono é rodar o comando LOCAL apontando `DATABASE_URL` para
-    PROD (não há shell no Render — CLAUDE.md §5). Quando o código local está
-    à frente do banco, uma query comum estoura `column ... does not exist` no
-    meio do diagnóstico — foi o que aconteceu na 1ª rodada do
-    LOT/001/08/26 (`vendas_salesorder.carrier`). O erro parecia do lote e não
-    era: era do ambiente."""
-
-    def _cmd(self, **opts):
-        from io import StringIO
-        from django.core.management import call_command
-        out = StringIO()
-        call_command('diag_ordem_venda', stdout=out, **opts)
-        return out.getvalue()
-
-    def test_relata_o_banco_alvo_e_o_estado_das_migracoes(self):
-        """Sempre primeiro: sem isto, todo o resto pode ser mentira."""
-        saida = self._cmd()
-        self.assertIn('BANCO-ALVO', saida)
-        self.assertIn('migrações: código e banco em dia', saida)
-
-    def test_acusa_deriva_quando_falta_migracao_no_banco(self):
-        from unittest.mock import patch
-        alvo = 'vendas.management.commands.diag_ordem_venda._deriva_de_migracao'
-        with patch(alvo, return_value=([('vendas', '0007_carrier')], [])):
-            saida = self._cmd()
-        self.assertIn('está À FRENTE do banco-alvo', saida)
-        self.assertIn('vendas/0007_carrier', saida)
-        self.assertIn('git ls-remote origin main', saida)
-
-    def test_acusa_banco_a_frente_do_codigo(self):
-        from unittest.mock import patch
-        alvo = 'vendas.management.commands.diag_ordem_venda._deriva_de_migracao'
-        with patch(alvo, return_value=([], [('vendas', '0099_futuro')])):
-            saida = self._cmd()
-        self.assertIn('o banco está à frente', saida)
-        self.assertIn('vendas/0099_futuro', saida)
-
-    def test_erro_de_schema_vira_mensagem_nao_traceback(self):
-        """Coluna faltando não pode derrubar o comando com traceback: quem
-        está diagnosticando um incidente precisa LER o motivo."""
-        from unittest.mock import patch
-        from django.db import ProgrammingError
-        d = 'vendas.management.commands.diag_ordem_venda'
-        with patch(f'{d}._deriva_de_migracao',
-                   return_value=([('vendas', '0007_carrier')], [])), \
-             patch(f'{d}.Command._rebanho',
-                   side_effect=ProgrammingError(
-                       'column vendas_salesorder.carrier does not exist')):
-            saida = self._cmd()
-        self.assertIn('O BANCO RECUSOU A CONSULTA', saida)
-        self.assertIn('carrier does not exist', saida)
-        self.assertIn('NÃO é o bug do', saida)
-
-    def test_consulta_de_ov_nao_faz_select_estrela(self):
-        """A defesa contra a deriva: o diagnóstico só pode pedir colunas que
-        existem desde a vendas/0001. Um SELECT * traria a coluna nova e o
-        banco mais velho recusaria — foi assim que a 1ª rodada morreu."""
-        from vendas.management.commands.diag_ordem_venda import (COLUNAS_OV,
-                                                                 ovs_do_lote)
-        from vendas.models import SalesOrder
-        sql = str(SalesOrder.all_companies.filter(lot_id=1)
-                  .values(*COLUNAS_OV).query)
-        colunas = sql.split(' FROM ')[0]
-        for c in ('id', 'number', 'status'):
-            self.assertIn(c, colunas)
-        for nova in ('carrier', 'code_str', 'shipped_at', 'total_rmb'):
-            self.assertNotIn(nova, colunas)
-        self.assertEqual(ovs_do_lote.__module__,
-                         'vendas.management.commands.diag_ordem_venda')
-
-    def test_lista_colunas_que_matam_insert_quando_ha_deriva(self):
-        """A ponte entre 'há deriva' e 'por isso o INSERT morreu' — o achado
-        do LOT/001 (eRecyclo, 2026-08-18): o banco de prod tinha `code_str`
-        NOT NULL vindo de migração de commit NÃO empurrado; o código no ar não
-        conhecia a coluna, então todo INSERT dele era recusado."""
-        from unittest.mock import patch
-        d = 'vendas.management.commands.diag_ordem_venda'
-        with patch(f'{d}._deriva_de_migracao',
-                   return_value=([('vendas', '0007_carrier')], [])), \
-             patch(f'{d}.connection') as conn, \
-             patch(f'{d}.colunas_que_matam_insert',
-                   return_value={'vendas_salesorder': ['code_str']}):
-            conn.vendor = 'postgresql'
-            conn.settings_dict = {'NAME': 'whatthechip_db', 'HOST': 'render'}
-            saida = self._cmd()
-        self.assertIn('NOT NULL SEM default', saida)
-        self.assertIn('vendas_salesorder: code_str', saida)
-        self.assertIn('o conserto é DEPLOY', saida)
-
-    def test_nao_fala_de_colunas_quando_esta_tudo_em_dia(self):
-        saida = self._cmd()
-        self.assertIn('código e banco em dia', saida)
-        self.assertNotIn('NOT NULL SEM default', saida)
+    def test_a_tela_do_comprador_NAO_fala_em_taxa(self):
+        """A taxa é entre a plataforma e o cliente. O comprador não tem nada
+        com isso — e saber a margem do WhatTheChip é informação de mercado."""
+        User = get_user_model()
+        parceiro = User.objects.create_user('vd_fee_p', password='x')
+        self.buyer.company = None
+        self.buyer.save(update_fields=['company'])
+        self.buyer.users.add(parceiro)
+        inv = self._faturar()
+        self.client.force_login(parceiro)
+        tela = self.client.get(reverse('compras:detail', args=[self.so.pk]))
+        self.assertNotContains(tela, 'Taxa de serviço')
+        self.assertNotContains(tela, f'US$ {inv.net_usd}')
+        self.assertContains(tela, f'US$ {inv.total_usd}')   # ele deve o cheio

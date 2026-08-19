@@ -177,9 +177,17 @@
     </div>
   </div>
 
-  {% comment %} ── PAGAMENTO (dono, 2026-08-19) — o outro lado da etapa. Quem
-     paga é o comprador; o cliente precisa ACOMPANHAR: quanto era previsto,
-     quanto ficou acertado depois da recusa, quanto já entrou e quanto falta.
+  {% comment %} ── RECEBIMENTO (dono, 2026-08-19) — a conta DELE ──────────
+     O comprador NÃO paga o cliente: ele paga o WhatTheChip, e o WhatTheChip
+     repassa ao cliente já deduzida a TAXA DE SERVIÇO da plataforma. Então
+     esta faixa é a conta do cliente, e só ela:
+
+       BRUTO (o resultado da conferência)  −  TAXA (%)  =  LÍQUIDO
+       LÍQUIDO  −  RECEBIDO  =  A RECEBER
+
+     ⚠ Nada da outra perna aparece aqui: nem valor, nem data, nem referência,
+     nem comprovante do pagamento do comprador. Aquilo é a conta do WTC com a
+     contraparte dele — e quem é a contraparte é segredo de mercado (F11.3).
      ⚠ É dinheiro: some inteiro para quem não vê valor (nada de bolinhas). {% endcomment %}
   {% if invoice and ver_valor %}
   <div class="panel">
@@ -188,45 +196,43 @@
       {% localize off %}
       <div style="display:flex;gap:32px;flex-wrap:wrap;margin-bottom:16px;">
         <div>
-          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Previsto" %}</div>
-          <div class="mono" style="font-size:18px;font-weight:600;">{% if so.total_usd is not None %}US$ {{ so.total_usd }}{% else %}—{% endif %}</div>
-        </div>
-        <div>
-          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Acertado" %}</div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Resultado (bruto)" %}</div>
           <div class="mono" style="font-size:18px;font-weight:600;">US$ {{ invoice.total_usd }}</div>
         </div>
         <div>
-          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Pago" %}</div>
-          <div class="mono" style="font-size:18px;font-weight:600;color:#0e6027;">US$ {{ invoice.paid_usd }}</div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% blocktrans trimmed with p=invoice.fee_pct %}Taxa de serviço ({{ p }}%){% endblocktrans %}</div>
+          <div class="mono" style="font-size:18px;font-weight:600;color:#8a6d00;">− US$ {{ invoice.fee_usd }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Líquido a receber" %}</div>
+          <div class="mono" style="font-size:18px;font-weight:600;">US$ {{ invoice.net_usd }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Recebido" %}</div>
+          <div class="mono" style="font-size:18px;font-weight:600;color:#0e6027;">US$ {{ invoice.paid_out_usd }}</div>
         </div>
         <div>
           <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Falta" %}</div>
-          <div class="mono" style="font-size:18px;font-weight:600;{% if invoice.balance_usd > 0 %}color:#a2191f;{% endif %}">US$ {{ invoice.balance_usd }}</div>
+          <div class="mono" style="font-size:18px;font-weight:600;{% if invoice.payout_balance_usd > 0 %}color:#a2191f;{% endif %}">US$ {{ invoice.payout_balance_usd }}</div>
         </div>
       </div>
       {% endlocalize %}
 
-      {% if pagamentos %}
+      {% if repasses %}
       <table class="vd-table">
         <thead>
           <tr>
             <th>{% trans "Data" %}</th><th class="num">{% trans "US$" %}</th>
-            {% comment %} ⚠ SEM "Registrado por": quem registra o pagamento é o
-               COMPRADOR, e o nome dele é SEGREDO DE MERCADO — nesta tela a
-               contraparte se chama "WhatTheChip" e nada mais (F11.3). Vazou
-               aqui em 2026-08-19. {% endcomment %}
             <th>{% trans "Referência" %}</th>
-            <th>{% trans "Comprovante" %}</th>
           </tr>
         </thead>
         <tbody>
           {% localize off %}
-          {% for p in pagamentos %}
+          {% for p in repasses %}
           <tr>
             <td class="mono">{{ p.paid_at|date:"d/m/Y" }}</td>
             <td class="num mono" style="font-weight:600">US$ {{ p.amount_usd }}</td>
             <td style="color:#697077">{{ p.reference|default:"—" }}</td>
-            <td>{% if p.has_receipt %}<a href="{% url 'vendas:payment_receipt' p.pk %}" target="_blank" rel="noopener" style="font-weight:600">{% trans "Ver" %}</a>{% else %}—{% endif %}</td>
           </tr>
           {% endfor %}
           {% endlocalize %}
@@ -234,7 +240,35 @@
       </table>
       {% else %}
       <p style="margin:0;font-size:14px;color:#697077;">
-        {% trans "Nenhum pagamento ainda — o comprador registra os pagamentos na tela dele." %}</p>
+        {% trans "Nenhum repasse ainda — o WhatTheChip transfere assim que o acerto fecha." %}</p>
+      {% endif %}
+
+      {% comment %} Registrar repasse é ato do WHATTHECHIP, não do cliente: o
+         formulário só existe para a plataforma (superusuário). {% endcomment %}
+      {% if pode_repassar %}
+      <form method="post" action="{% url 'vendas:so_payout' so.pk %}"
+            style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid #dde1e6;">
+        {% csrf_token %}
+        <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">
+          {% trans "Repassar (US$)" %}<br>
+          <input type="number" name="amount_usd" step="0.01" min="0.01"
+                 max="{{ invoice.payout_balance_usd|unlocalize }}" required
+                 value="{{ invoice.payout_balance_usd|unlocalize }}"
+                 style="margin-top:5px;width:130px;height:36px;padding:0 10px;border:1px solid #a2a9b0;font-family:'IBM Plex Mono',monospace;font-size:14px;">
+        </label>
+        <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">
+          {% trans "Data" %}<br>
+          <input type="date" name="paid_at" value="{{ hoje|date:'Y-m-d' }}" required
+                 style="margin-top:5px;height:36px;padding:0 10px;border:1px solid #a2a9b0;font-family:'IBM Plex Mono',monospace;font-size:14px;">
+        </label>
+        <label style="display:block;flex:1;min-width:180px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">
+          {% trans "Referência" %}<br>
+          <input type="text" name="reference" maxlength="120"
+                 placeholder="{% trans 'Nº do wire, banco, observação curta' %}"
+                 style="margin-top:5px;width:100%;height:36px;padding:0 10px;border:1px solid #a2a9b0;font-size:14px;">
+        </label>
+        <button type="submit" class="uib uib--primary" style="height:36px;">{% trans "Registrar repasse" %}</button>
+      </form>
       {% endif %}
     </div>
   </div>

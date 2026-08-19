@@ -636,6 +636,7 @@ class CompanyLogoTests(TestCase):
         from tenancy.admin import CompanyAdminForm
         data = {'name': company.name, 'slug': company.slug,
                 'last_lot_number': company.last_lot_number,
+                'service_fee_pct': company.service_fee_pct,
                 'notes': company.notes}
         if company.active:
             data['active'] = 'on'

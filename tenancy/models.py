@@ -21,11 +21,13 @@ Regras estruturais (invioláveis):
 """
 
 import re
+from decimal import Decimal
 
 import pghistory
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q
 # i18n (I18N.md §5/CLAUDE.md §6): rótulo de choices EXIBIDO a usuário final
@@ -199,6 +201,26 @@ class Company(models.Model):
         help_text='Endereço de embarque desta empresa, uma linha por linha. '
                   'Aparece no documento que acompanha o lote. Vazio = só o '
                   'nome da empresa aparece.')
+    # ── TAXA DE SERVIÇO DA PLATAFORMA (dono, 2026-08-19) ─────────────────
+    # O comprador paga o WhatTheChip pelo lote INTEIRO; o WhatTheChip repassa
+    # ao cliente já deduzindo esta porcentagem. É o modelo de receita da
+    # plataforma, e o cliente vê a dedução na tela dele (bruto → taxa →
+    # líquido).
+    #
+    # Por que campo, e não constante: contrato é por cliente. Quando um deles
+    # negociar 7%, muda-se o cadastro — sem deploy, sem migração no meio de um
+    # acerto em andamento.
+    #
+    # ⚠ O valor efetivamente cobrado fica CONGELADO na fatura (`Invoice.
+    # fee_pct`), como o câmbio: mudar aqui NUNCA reescreve venda já acertada.
+    service_fee_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=Decimal('10.00'),
+        validators=[MinValueValidator(Decimal('0')),
+                    MaxValueValidator(Decimal('100'))],
+        verbose_name='Taxa de serviço (%)',
+        help_text='Percentual que o WhatTheChip retém do resultado de cada '
+                  'venda desta empresa. Vale para venda NOVA — o que já foi '
+                  'faturado guarda a taxa da época.')
     logo_updated_at = models.DateTimeField(
         null=True, blank=True, editable=False,
         verbose_name='Logo atualizado em',

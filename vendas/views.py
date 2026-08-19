@@ -25,7 +25,7 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from tenancy.access import (can_sales, can_see_price, is_unmasked,
-                            role_required)
+                            platform_required, role_required)
 from tenancy.ui import ui   # E5: canary por empresa (§17.7)
 
 from .models import (INV_OPEN, Invoice, STATUS_CONFIRMED, STATUS_DRAFT,
@@ -115,7 +115,16 @@ def so_detail(request, pk):
            # o previsto × o acertado, o pago e o que falta — e o histórico com
            # os comprovantes que o COMPRADOR anexou. Sem isso a etapa de
            # pagamento existia só na tela de quem paga.
-           'pagamentos': services.payment_history(invoice) if invoice else []}
+           # ⚠ REPASSE, não pagamento (dono, 2026-08-19). O comprador paga o
+           # WhatTheChip; o WhatTheChip paga o CLIENTE, já deduzida a taxa de
+           # serviço. Esta tela é do cliente: ela mostra a perna WTC → cliente
+           # e NADA da outra — nem valor, nem data, nem comprovante do
+           # comprador. Aquilo é a conta do WTC com a contraparte dele, e quem
+           # é a contraparte é segredo de mercado (F11.3).
+           'repasses': services.payout_history(fatura_real) if ver_valor else [],
+           # Só a PLATAFORMA registra repasse: é o WTC declarando o que pagou.
+           'pode_repassar': (request.user.is_superuser and fatura_real
+                             is not None and fatura_real.payout_balance_usd > 0)}
     unmasked = is_unmasked(request)              # F12: rótulo real × C-###
     if so.status == STATUS_DRAFT:
         pairs = services.live_quotes(so)
@@ -201,6 +210,41 @@ def _pdf_response(pdf: bytes, so):
     fname = so.code.replace('/', '-') + '.pdf'
     resp['Content-Disposition'] = f'attachment; filename="{fname}"'
     return resp
+
+
+@platform_required
+@require_POST
+def so_payout(request, pk):
+    """REPASSE ao cliente — só a PLATAFORMA (dono, 2026-08-19).
+
+    Quem paga o cliente é o WhatTheChip, com o líquido (bruto menos a taxa de
+    serviço). O gate é `platform_required` e não `role_required('admin')` de
+    propósito: o admin do CLIENTE não pode declarar que recebeu — ele é o
+    credor, não o pagador.
+    """
+    from decimal import Decimal, InvalidOperation
+    from django.utils.dateparse import parse_date
+    from tenancy.scope import company_scope
+
+    so = get_object_or_404(
+        SalesOrder.all_companies.select_related('company'), pk=pk)
+    with company_scope(so.company):
+        inv = (Invoice.all_companies.filter(order=so)
+               .exclude(status='cancelled').first())
+        if inv is None:
+            messages.error(request, _('Esta venda ainda não tem fatura.'))
+            return redirect('vendas:so_detail', pk=pk)
+        try:
+            valor = Decimal(request.POST.get('amount_usd') or '0')
+            quando = (parse_date(request.POST.get('paid_at') or '')
+                      or timezone.localdate())
+            services.register_payout(inv, valor, quando, request.user,
+                                     request.POST.get('reference', '')[:120])
+        except (ValidationError, InvalidOperation) as e:
+            messages.error(request, getattr(e, 'message', None) or str(e))
+        else:
+            messages.success(request, _('Repasse registrado.'))
+    return redirect('vendas:so_detail', pk=pk)
 
 
 @role_required('manager')
