@@ -3281,3 +3281,27 @@ class DiagOrdemVendaAmbienteTests(TestCase):
             self.assertNotIn(nova, colunas)
         self.assertEqual(ovs_do_lote.__module__,
                          'vendas.management.commands.diag_ordem_venda')
+
+    def test_lista_colunas_que_matam_insert_quando_ha_deriva(self):
+        """A ponte entre 'há deriva' e 'por isso o INSERT morreu' — o achado
+        do LOT/001 (eRecyclo, 2026-08-18): o banco de prod tinha `code_str`
+        NOT NULL vindo de migração de commit NÃO empurrado; o código no ar não
+        conhecia a coluna, então todo INSERT dele era recusado."""
+        from unittest.mock import patch
+        d = 'vendas.management.commands.diag_ordem_venda'
+        with patch(f'{d}._deriva_de_migracao',
+                   return_value=([('vendas', '0007_carrier')], [])), \
+             patch(f'{d}.connection') as conn, \
+             patch(f'{d}.colunas_que_matam_insert',
+                   return_value={'vendas_salesorder': ['code_str']}):
+            conn.vendor = 'postgresql'
+            conn.settings_dict = {'NAME': 'whatthechip_db', 'HOST': 'render'}
+            saida = self._cmd()
+        self.assertIn('NOT NULL SEM default', saida)
+        self.assertIn('vendas_salesorder: code_str', saida)
+        self.assertIn('o conserto é DEPLOY', saida)
+
+    def test_nao_fala_de_colunas_quando_esta_tudo_em_dia(self):
+        saida = self._cmd()
+        self.assertIn('código e banco em dia', saida)
+        self.assertNotIn('NOT NULL SEM default', saida)

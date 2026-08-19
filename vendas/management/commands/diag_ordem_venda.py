@@ -107,6 +107,42 @@ def _deriva_de_migracao():
     return sorted(no_disco - aplicadas), sorted(aplicadas - no_disco)
 
 
+#: Tabelas cujo INSERT nasce no fechamento do lote. Se uma delas ganhou coluna
+#: NOT NULL que o código NO AR não conhece, o INSERT dele morre — e no
+#: fechamento isso some dentro do `except` do create_draft_for_lot.
+TABELAS_DO_FECHAMENTO = ('estoque_lot', 'vendas_salesorder',
+                         'vendas_docsequence', 'vendas_salesorderline',
+                         'vendas_invoice')
+
+
+def colunas_que_matam_insert(tabelas=TABELAS_DO_FECHAMENTO):
+    """Colunas NOT NULL SEM default no banco — as que fazem um INSERT de
+    código DESATUALIZADO falhar.
+
+    Por que isto é um portão de verdade (incidente eRecyclo, 2026-08-18): o
+    `AddField` do Django adiciona a coluna com default e **em seguida remove o
+    default do banco** (o Django não guarda default no Postgres). Então, se o
+    banco recebeu a migração mas o código NO AR ainda não conhece o campo, o
+    INSERT dele omite a coluna, o Postgres tenta NULL e a linha é recusada.
+    Migrar prod com código à frente do deploy é o jeito de cair nisso.
+
+    Devolve {tabela: [coluna, …]} só com as suspeitas."""
+    achados = {}
+    with connection.cursor() as cur:
+        cur.execute("""
+            SELECT table_name, column_name
+              FROM information_schema.columns
+             WHERE table_schema = 'public'
+               AND table_name = ANY(%s)
+               AND is_nullable = 'NO'
+               AND column_default IS NULL
+             ORDER BY table_name, ordinal_position
+        """, [list(tabelas)])
+        for tabela, coluna in cur.fetchall():
+            achados.setdefault(tabela, []).append(coluna)
+    return achados
+
+
 class Command(BaseCommand):
     help = ('READ-ONLY: reconstitui, portão por portão, por que um lote fechado '
             'não gerou Ordem de Venda — e varre os lotes fechados sem OV.')
@@ -266,7 +302,31 @@ class Command(BaseCommand):
                 f'existem neste código — o banco está à frente:'))
             for app, nome in sobrando:
                 self.stdout.write(f'      {app}/{nome}')
+        self._colunas_perigosas()
         return False
+
+    def _colunas_perigosas(self):
+        """A ponte entre 'há deriva' e 'por isso o INSERT morreu'."""
+        if connection.vendor != 'postgresql':
+            return
+        try:
+            achados = colunas_que_matam_insert()
+        except DatabaseError:
+            return
+        if not achados:
+            return
+        self.stdout.write(
+            '\n  Colunas NOT NULL SEM default nas tabelas do fechamento — se o\n'
+            '  código NO AR não conhecer alguma delas, TODO INSERT dele nessa\n'
+            '  tabela falha (o AddField do Django tira o default depois de criar\n'
+            '  a coluna). No fechamento do lote isso some dentro do except do\n'
+            '  create_draft_for_lot e derruba a transação inteira — inclusive o\n'
+            '  DocSequence, que por isso aparece como "ainda não existe".')
+        for tabela, colunas in achados.items():
+            self.stdout.write(f'      {tabela}: {", ".join(colunas)}')
+        self.stdout.write(self.style.ERROR(
+            '  ⇒ Se alguma dessas colunas é RECENTE, o conserto é DEPLOY '
+            '(subir o código\n     que combina com o banco), não mexer no dado.'))
 
     def handle(self, *args, **opts):
         em_dia = self._migracoes()
