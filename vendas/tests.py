@@ -733,15 +733,20 @@ class VendasGateTests(TestCase):
         self.client.force_login(self.users['manager'])
         lista = self.client.get(reverse('vendas:so_list'))
         self.assertContains(lista, self.so.code)
-        self.assertContains(lista, '•••')
         self.assertFalse(lista.context['ver_valor'])
+        # ⚠ 2026-08-19: a COLUNA some, não vira bolinha. Bolinha é um espaço
+        # vazio dizendo "aqui tem dinheiro que você não pode ver"; sem a
+        # coluna a barreira é ESTRUTURAL — não há string de valor no HTML.
+        self.assertNotContains(lista, '•••')
+        self.assertNotContains(lista, 'Total US$')
 
         _sem_compressao(self)
         detail = self.client.get(reverse('vendas:so_detail',
                                          args=[self.so.pk]))
         self.assertEqual(detail.status_code, 200)
         self.assertContains(detail, self.so.code)
-        self.assertContains(detail, '•••')
+        self.assertNotContains(detail, '•••')
+        self.assertNotContains(detail, 'US$ unit.')     # nem o cabeçalho
         self.assertNotContains(detail, 'US$ 2.10')      # unitário
         self.assertNotContains(detail, 'US$ 10.50')     # total (5 × 2.10)
         self.assertNotContains(detail, '0.14')          # taxa do contrato
@@ -2593,6 +2598,54 @@ class TelaDaOVEspelhaACompraTests(TestCase):
         self.assertEqual((linha['qty'], linha['rejected'], linha['accepted']),
                          (10, 4, 6))
         self.assertEqual(grupos[0]['rejected'], 4)
+
+    def test_etapa_de_pagamento_no_lado_do_CLIENTE(self):
+        """Previsto × acertado × pago × falta, e o histórico com o
+        comprovante que o COMPRADOR anexou (dono, 2026-08-19). Sem isso a
+        etapa de pagamento existia só na tela de quem paga."""
+        from datetime import date
+        with company_scope(self.company):
+            services.mark_shipped(self.so, 'DHL', 'JD1', None, self.adm)
+            self.so.refresh_from_db()
+            linha = self.so.lines.get()
+            _st, inv = services.settle_and_invoice(
+                self.so, {linha.pk: (4, None)}, self.adm)
+            services.register_payment(inv, (inv.total_usd / 2).quantize(
+                Decimal('0.01')), date.today(), self.adm, reference='WIRE-7')
+        tela = self._tela()
+        self.assertContains(tela, 'Previsto')
+        self.assertContains(tela, 'Acertado')
+        self.assertContains(tela, 'Falta')
+        self.assertContains(tela, 'WIRE-7')             # o histórico
+        inv.refresh_from_db()
+        self.assertContains(tela, f'US$ {inv.balance_usd}')
+
+    def test_gerente_nao_ve_o_bloco_de_pagamento(self):
+        """É dinheiro: some inteiro, não vira bolinha."""
+        User = get_user_model()
+        ger = User.objects.create_user('vd_esp_ger', password='x')
+        Membership.objects.create(user=ger, company=self.company,
+                                  role='manager')
+        with company_scope(self.company):
+            services.mark_shipped(self.so, 'DHL', 'JD1', None, self.adm)
+            self.so.refresh_from_db()
+            linha = self.so.lines.get()
+            services.settle_and_invoice(self.so, {linha.pk: (1, None)},
+                                        self.adm)
+        self.client.force_login(ger)
+        tela = self._tela()
+        self.assertNotContains(tela, 'Previsto')
+        self.assertNotContains(tela, '•••')
+        self.assertContains(tela, 'Recusados')          # a operação, essa fica
+
+    def test_status_vira_RECEBIDA_quando_o_comprador_acusa(self):
+        with company_scope(self.company):
+            services.mark_shipped(self.so, 'DHL', 'JD1', None, self.adm)
+            self.so.refresh_from_db()
+        self.assertContains(self._tela(), 'despachada')
+        with company_scope(self.company):
+            services.mark_received(self.so)
+        self.assertContains(self._tela(), 'recebida pelo comprador')
 
     def test_rascunho_ainda_mostra_US_ao_vivo(self):
         """A tela do cliente é em US$; sem o vivo o admin via '—' na ordem

@@ -1706,6 +1706,25 @@ rascunho (a tela do cliente é em dólar; sem ele o admin via "—" na ordem ain
 não despachada). Dinheiro segue o gate de sempre: o gerente vê ••• e a
 operação.
 
+💵 **Pagamento no lado do CLIENTE** (dono, 2026-08-19): painel na OV com
+**Previsto × Acertado × Pago × Falta** e o histórico completo, incluindo o
+**comprovante que o COMPRADOR anexou**. Quem paga é o comprador; o cliente
+precisa acompanhar. Some inteiro para quem não vê valor.
+
+🚫 **Sem bolinhas: a COLUNA some** (dono, 2026-08-19). O gerente via `•••` no
+lugar do dinheiro — e bolinha é um espaço vazio dizendo "aqui tem dinheiro que
+você não pode ver". Agora a coluna inteira não é renderizada, na OV e na lista:
+a barreira é **estrutural**, não há string de valor no HTML. Mesmo princípio do
+PDF do gerente.
+
+⚠ Isso expôs uma confusão que já existia: `invoice` no contexto servia a DUAS
+perguntas — "houve resultado?" (operação, o gerente precisa) e "andar
+financeiro" (só admin). Como ele era None para o gerente, as colunas de
+**recusa** sumiam junto com o dinheiro. Separadas: `tem_resultado` × `invoice`.
+
+O crachá do cliente vira **"recebida pelo comprador"** quando o comprador acusa
+o recebimento, e a última etapa passou a se chamar **Pagamento** (era "Paga").
+
 🚚 **F4 — DESPACHO (dono, 2026-08-18).** Quem embala e leva a caixa é o
 CLIENTE, então o registro é dele: bloco *Despacho* na tela da OV com
 transportadora, rastreio e data (`SalesOrder.carrier/tracking/shipped_at/

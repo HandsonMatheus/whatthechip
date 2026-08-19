@@ -81,8 +81,8 @@
       {% comment %} O DESPACHO manda no estado (dono, 2026-08-18): enquanto a
          caixa não sai, a venda é rascunho, o preço segue vivo e o comprador
          nem vê a ordem. É o crachá que o gerente procura primeiro. {% endcomment %}
-      <div class="sohead__code">{{ so.code }}{% if so.status == 'cancelled' %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% elif not so.shipped_at %}<span class="so-badge so-badge--draft">{% trans "despacho pendente" %}</span>{% elif so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "despachada — falta preço do comprador" %}</span>{% else %}<span class="so-badge so-badge--ok">{% trans "despachada — valores congelados" %}</span>{% endif %}</div>
-      <div class="sohead__party">{% trans "Contraparte" %} <b>WhatTheChip</b> · {% trans "origem" %} <span class="mono">{{ so.lot.code }}</span> · {% trans "taxa" %} {% if ver_valor %}{% localize off %}1 ¥ = US$ {{ fx_rate }}{% endlocalize %} {% if so.status == 'confirmed' %}({% trans "congelada" %}){% else %}({% trans "contrato vigente" %}){% endif %}{% else %}<span class="vd-mask">•••</span>{% endif %}</div>
+      <div class="sohead__code">{{ so.code }}{% if so.status == 'cancelled' %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% elif not so.shipped_at %}<span class="so-badge so-badge--draft">{% trans "despacho pendente" %}</span>{% elif so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "despachada — falta preço do comprador" %}</span>{% elif so.received_at %}<span class="so-badge so-badge--ok">{% trans "recebida pelo comprador" %}</span>{% else %}<span class="so-badge so-badge--ok">{% trans "despachada" %}</span>{% endif %}</div>
+      <div class="sohead__party">{% trans "Contraparte" %} <b>WhatTheChip</b> · {% trans "origem" %} <span class="mono">{{ so.lot.code }}</span> · {% trans "taxa" %} {% if ver_valor %}{% localize off %}1 ¥ = US$ {{ fx_rate }}{% endlocalize %} {% if so.status == 'confirmed' %}({% trans "congelada" %}){% else %}({% trans "contrato vigente" %}){% endif %}{% endif %}</div>
     </div>
     <div class="sohead__actions">
       <div class="smart">
@@ -112,7 +112,7 @@
         {% elif p.key == 'enviado' %}{% trans "Enviada" %}
         {% elif p.key == 'recebido' %}{% trans "Recebida" %}
         {% elif p.key == 'resultado' %}{% trans "Resultado" %}
-        {% else %}{% trans "Paga" %}{% endif %}
+        {% else %}{% trans "Pagamento" %}{% endif %}
         {% if p.date %}<span class="step__dt">{{ p.date|date:"d/m" }}</span>{% endif %}
       </div>{% if not forloop.last %}<span class="step__sep"></span>{% endif %}
       {% endfor %}
@@ -131,23 +131,28 @@
        aparecem depois do resultado; antes disso não existe recusa nenhuma.
        Dinheiro segue o gate de sempre (can_see_price): o gerente vê ••• e a
        operação (categoria e quantidade), que é o trabalho dele. {% endcomment %}
-    <div class="panel__head"><span class="panel__title">{% trans "Linhas da ordem" %}</span><span class="panel__hint">{% trans "valores em US$" %}</span></div>
+    {% comment %} ⚠ Quem não vê valor não vê a COLUNA (dono, 2026-08-19): antes
+       saíam bolinhas, e bolinha é um espaço vazio dizendo "aqui tem dinheiro
+       que você não pode ver". A barreira agora é ESTRUTURAL — sem coluna, não
+       há string de valor a vazar por bug de template. Mesmo princípio do PDF
+       do gerente. {% endcomment %}
+    {% if ver_valor %}<div class="panel__head"><span class="panel__hint">{% trans "valores em US$" %}</span></div>{% endif %}
     <table class="vd-table">
       <thead>
         <tr>
           <th>{% trans "Tipo" %}</th><th>{% trans "Capacidade" %}</th>
           <th>{% trans "Caixa WTC" %}</th>
           <th class="num">{% trans "Enviados" %}</th>
-          {% if invoice %}<th class="num">{% trans "Recusados" %}</th><th class="num">{% trans "Aprovados" %}</th>{% endif %}
-          <th class="num">{% trans "US$ unit." %}</th><th class="num">{% trans "Total US$" %}</th>
+          {% if tem_resultado %}<th class="num">{% trans "Recusados" %}</th><th class="num">{% trans "Aprovados" %}</th>{% endif %}
+          {% if ver_valor %}<th class="num">{% trans "US$ unit." %}</th><th class="num">{% trans "Total US$" %}</th>{% endif %}
         </tr>
       </thead>
       <tbody>
         {% localize off %}
         {% for g in grupos %}
         <tr class="vd-marca">
-          <td colspan="{% if invoice %}8{% else %}6{% endif %}" style="background:#f2f4f8;font-weight:700">
-            {{ g.brand }} <span style="font-weight:400;color:#697077">{{ g.qty }} un.{% if invoice and g.rejected %} · {% blocktrans trimmed with n=g.rejected %}{{ n }} recusadas{% endblocktrans %}{% endif %}</span>
+          <td colspan="{% if tem_resultado %}{% if ver_valor %}8{% else %}6{% endif %}{% else %}{% if ver_valor %}6{% else %}4{% endif %}{% endif %}" style="background:#f2f4f8;font-weight:700">
+            {{ g.brand }} <span style="font-weight:400;color:#697077">{{ g.qty }} un.{% if tem_resultado and g.rejected %} · {% blocktrans trimmed with n=g.rejected %}{{ n }} recusadas{% endblocktrans %}{% endif %}</span>
           </td>
         </tr>
           {% for l in g.lines %}
@@ -156,17 +161,16 @@
             <td>{{ l.capacity }}</td>
             <td class="mono" style="color:#697077;font-size:12px">{{ l.wtc }}</td>
             <td class="num mono">{{ l.qty }}</td>
-            {% if invoice %}
+            {% if tem_resultado %}
             <td class="num mono" style="{% if l.rejected %}color:#a2191f;font-weight:600{% endif %}">{{ l.rejected }}</td>
             <td class="num mono">{{ l.accepted }}</td>
             {% endif %}
             {% if not ver_valor %}
-            <td class="num mono vd-mask">•••</td><td class="num mono vd-mask">•••</td>
             {% elif l.sem_preco %}
             <td colspan="2" class="num" style="font-size:12px;color:#8a6d00;">{% trans "sem preço no grid do comprador" %}</td>
             {% else %}
             <td class="num mono">{% if l.unit_usd is not None %}US$ {{ l.unit_usd }}{% else %}—{% endif %}</td>
-            <td class="num mono">{% if invoice %}{% if l.pago_usd is not None %}US$ {{ l.pago_usd }}{% else %}—{% endif %}{% else %}{% if l.total_usd is not None %}US$ {{ l.total_usd }}{% else %}—{% endif %}{% endif %}</td>
+            <td class="num mono">{% if tem_resultado %}{% if l.pago_usd is not None %}US$ {{ l.pago_usd }}{% else %}—{% endif %}{% else %}{% if l.total_usd is not None %}US$ {{ l.total_usd }}{% else %}—{% endif %}{% endif %}</td>
             {% endif %}
           </tr>
           {% endfor %}
@@ -177,7 +181,6 @@
     <div class="tfoot">
       {% localize off %}
       {% if not ver_valor %}
-        <div class="tfoot__row total"><span>{% trans "Total da ordem" %}</span><span class="mono vd-mask">•••</span></div>
         {% if pending %}<div class="tfoot__warn">⚠ {% blocktrans trimmed with n=pending|length %}{{ n }} linha(s) sem preço — complete o grid do comprador para poder confirmar{% endblocktrans %}</div>{% endif %}
       {% elif so.status == 'draft' %}
         <div class="tfoot__row total"><span>{% trans "Total da ordem" %}</span><span class="mono">US$ {{ live_total_usd }}</span></div>
@@ -189,6 +192,66 @@
       {% if so.unkeyed_units %}<div class="tfoot__warn">⚠ {% blocktrans trimmed with n=so.unkeyed_units %}{{ n }} un. sem chave de preço (fora do mercado — ver inventário){% endblocktrans %}</div>{% endif %}
     </div>
   </div>
+
+  {% comment %} ── PAGAMENTO (dono, 2026-08-19) — o outro lado da etapa. Quem
+     paga é o comprador; o cliente precisa ACOMPANHAR: quanto era previsto,
+     quanto ficou acertado depois da recusa, quanto já entrou e quanto falta.
+     ⚠ É dinheiro: some inteiro para quem não vê valor (nada de bolinhas). {% endcomment %}
+  {% if invoice and ver_valor %}
+  <div class="panel">
+    <div class="panel__head"><span class="panel__title">{% trans "Pagamento" %}</span><span class="panel__hint">{% trans "valores em US$" %}</span></div>
+    <div style="padding:16px 18px;">
+      {% localize off %}
+      <div style="display:flex;gap:32px;flex-wrap:wrap;margin-bottom:16px;">
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Previsto" %}</div>
+          <div class="mono" style="font-size:18px;font-weight:600;">{% if so.total_usd is not None %}US$ {{ so.total_usd }}{% else %}—{% endif %}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Acertado" %}</div>
+          <div class="mono" style="font-size:18px;font-weight:600;">US$ {{ invoice.total_usd }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Pago" %}</div>
+          <div class="mono" style="font-size:18px;font-weight:600;color:#0e6027;">US$ {{ invoice.paid_usd }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697077;font-weight:600;">{% trans "Falta" %}</div>
+          <div class="mono" style="font-size:18px;font-weight:600;{% if invoice.balance_usd > 0 %}color:#a2191f;{% endif %}">US$ {{ invoice.balance_usd }}</div>
+        </div>
+      </div>
+      {% endlocalize %}
+
+      {% if pagamentos %}
+      <table class="vd-table">
+        <thead>
+          <tr>
+            <th>{% trans "Data" %}</th><th class="num">{% trans "US$" %}</th>
+            <th>{% trans "Referência" %}</th><th>{% trans "Registrado por" %}</th>
+            <th>{% trans "Comprovante" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% localize off %}
+          {% for p in pagamentos %}
+          <tr>
+            <td class="mono">{{ p.paid_at|date:"d/m/Y" }}</td>
+            <td class="num mono" style="font-weight:600">US$ {{ p.amount_usd }}</td>
+            <td style="color:#697077">{{ p.reference|default:"—" }}</td>
+            <td style="color:#697077">{{ p.by|default:"—" }}</td>
+            <td>{% if p.has_receipt %}<a href="{% url 'vendas:payment_receipt' p.pk %}" target="_blank" rel="noopener" style="font-weight:600">{% trans "Ver" %}</a>{% else %}—{% endif %}</td>
+          </tr>
+          {% endfor %}
+          {% endlocalize %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="margin:0;font-size:14px;color:#697077;">
+        {% trans "Nenhum pagamento ainda — o comprador registra os pagamentos na tela dele." %}</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
 
   {% comment %} ── DESPACHO (F4) — a única ação que sobrou nesta tela, e por
      bom motivo: quem embala e leva a caixa na transportadora é o CLIENTE.

@@ -3058,3 +3058,28 @@ msgstr "收货"
 #. vendas/ (etapas do cliente + tabela)
 msgid "sem preço no grid do comprador"
 msgstr "买方价格表中无此价格"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "Acertado"
+msgstr "结算金额"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "Falta"
+msgstr "未付"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid ""
+"Nenhum pagamento ainda — o comprador registra os pagamentos na tela dele."
+msgstr "尚无付款——买方在自己的页面登记付款。"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "Previsto"
+msgstr "预期金额"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "recebida pelo comprador"
+msgstr "买方已收货"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "recebida"
+msgstr "已收货"

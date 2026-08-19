@@ -73,8 +73,14 @@ def so_detail(request, pk):
     # Os dois são do andar financeiro → só o admin recebe (link que daria 403
     # não vai pra tela do gerente).
     faturar = _pode_faturar(request)
-    invoice = ((Invoice.all_companies.filter(order=so)
-                .exclude(status='cancelled').first()) if faturar else None)
+    # ⚠ Duas perguntas diferentes: `tem_resultado` é OPERAÇÃO (a conferência
+    # aconteceu — o gerente precisa saber o que foi recusado), `invoice` é o
+    # andar FINANCEIRO (só o admin). Usar `invoice` para as duas escondia do
+    # gerente as colunas de recusa, que não são dinheiro.
+    fatura_real = (Invoice.all_companies.filter(order=so)
+                   .exclude(status='cancelled').first())
+    tem_resultado = fatura_real is not None
+    invoice = fatura_real if faturar else None
     ver_valor = can_see_price(request)
     # Sem `can_settle`: o botão de "registrar resultado e faturar" saiu da tela
     # da empresa (dono, 2026-08-18) — quem confere o que chegou é o COMPRADOR,
@@ -91,7 +97,13 @@ def so_detail(request, pk):
            # mais importante do vendedor saber" — sem isto ele recebe um total
            # menor e não sabe QUAL categoria caiu.
            'grupos': services.result_rows(so),
-           'steps': services.order_steps(so)}
+           'tem_resultado': tem_resultado,
+           'steps': services.order_steps(so),
+           # Pagamento no lado do CLIENTE (dono, 2026-08-19): ele precisa ver
+           # o previsto × o acertado, o pago e o que falta — e o histórico com
+           # os comprovantes que o COMPRADOR anexou. Sem isso a etapa de
+           # pagamento existia só na tela de quem paga.
+           'pagamentos': services.payment_history(invoice) if invoice else []}
     unmasked = is_unmasked(request)              # F12: rótulo real × C-###
     if so.status == STATUS_DRAFT:
         pairs = services.live_quotes(so)

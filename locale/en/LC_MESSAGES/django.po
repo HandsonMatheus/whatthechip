@@ -3236,3 +3236,28 @@ msgstr "Delivery"
 #. vendas/ (etapas do cliente + tabela)
 msgid "sem preço no grid do comprador"
 msgstr "no price on the buyer's grid"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "Acertado"
+msgstr "Settled"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "Falta"
+msgstr "Outstanding"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid ""
+"Nenhum pagamento ainda — o comprador registra os pagamentos na tela dele."
+msgstr "No payments yet — the buyer records payments on his own screen."
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "Previsto"
+msgstr "Expected"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "recebida pelo comprador"
+msgstr "received by the buyer"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "recebida"
+msgstr "received"

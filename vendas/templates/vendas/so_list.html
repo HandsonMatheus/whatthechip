@@ -40,7 +40,9 @@
       <thead>
         <tr>
           <th>{% trans "Ordem" %}</th><th>{% trans "Lote" %}</th><th>{% trans "Status" %}</th>
-          <th class="num">{% trans "Total ¥" %}</th><th class="num">{% trans "Total US$" %}</th><th>{% trans "Criada em" %}</th>
+          {% comment %} Sem coluna de dinheiro para quem não vê valor (dono,
+             2026-08-19): antes saíam bolinhas. A barreira é estrutural. {% endcomment %}
+          {% if ver_valor %}<th class="num">{% trans "Total ¥" %}</th><th class="num">{% trans "Total US$" %}</th>{% endif %}<th>{% trans "Criada em" %}</th>
         </tr>
       </thead>
       <tbody>
@@ -48,7 +50,7 @@
         <tr class="{% if so.status == 'cancelled' %}is-cancelled{% endif %}">
           <td class="mono"><a href="{% url 'vendas:so_detail' so.pk %}">{{ so.code }}</a></td>
           <td><a href="{% url 'estoque:lot_detail' so.lot.pk %}">{{ so.lot.code }}</a></td>
-          <td>{% if so.status == 'cancelled' %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% elif not so.shipped_at %}<span class="so-badge so-badge--draft">{% trans "despacho pendente" %}</span>{% elif so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "falta preço" %}</span>{% else %}<span class="so-badge so-badge--ok">{% trans "despachada" %}</span>{% endif %}</td>
+          <td>{% if so.status == 'cancelled' %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% elif not so.shipped_at %}<span class="so-badge so-badge--draft">{% trans "despacho pendente" %}</span>{% elif so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "falta preço" %}</span>{% elif so.received_at %}<span class="so-badge so-badge--ok">{% trans "recebida" %}</span>{% else %}<span class="so-badge so-badge--ok">{% trans "despachada" %}</span>{% endif %}</td>
           {% localize off %}
           {% comment %} Valor só para quem tem can_see_price (dono 2026-08-14):
              o gerente opera a venda sem ver dinheiro. A view já ZERA os campos
@@ -56,14 +58,12 @@
           {% if ver_valor %}
           <td class="num mono">{% if so.total_rmb is not None %}¥ {{ so.total_rmb }}{% else %}—{% endif %}</td>
           <td class="num mono">{% if so.total_usd is not None %}US$ {{ so.total_usd }}{% else %}—{% endif %}</td>
-          {% else %}
-          <td class="num mono vd-mask">•••</td><td class="num mono vd-mask">•••</td>
           {% endif %}
           {% endlocalize %}
           <td style="font-size:13px;color:#697077;">{{ so.created_at|date:"d/m/y H:i" }}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="6" class="vd-empty">{% trans "Nenhuma ordem ainda — feche um lote para gerar a primeira cotação." %}</td></tr>
+        <tr><td colspan="{% if ver_valor %}6{% else %}4{% endif %}" class="vd-empty">{% trans "Nenhuma ordem ainda — feche um lote para gerar a primeira cotação." %}</td></tr>
         {% endfor %}
       </tbody>
     </table>

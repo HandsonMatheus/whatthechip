@@ -3262,3 +3262,28 @@ msgstr "Recepción"
 #. vendas/ (etapas do cliente + tabela)
 msgid "sem preço no grid do comprador"
 msgstr "sin precio en la tabla del comprador"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "Acertado"
+msgstr "Acordado"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "Falta"
+msgstr "Falta"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid ""
+"Nenhum pagamento ainda — o comprador registra os pagamentos na tela dele."
+msgstr "Ningún pago todavía — el comprador registra los pagos en su pantalla."
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "Previsto"
+msgstr "Previsto"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "recebida pelo comprador"
+msgstr "recibida por el comprador"
+
+#. vendas/ (pagamento no lado do cliente)
+msgid "recebida"
+msgstr "recibida"
