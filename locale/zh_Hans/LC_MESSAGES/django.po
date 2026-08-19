@@ -3115,3 +3115,31 @@ msgstr "合同汇率"
 #. parceiro/ (design system v2: barra e fila de compras)
 msgid "Assim que um cliente despachar um lote, ele aparece aqui."
 msgstr "客户发货后，该批次就会出现在这里。"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Câmbio"
+msgstr "汇率"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Envio"
+msgstr "发货"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Enviado em"
+msgstr "发货日期"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Limpar recusas"
+msgstr "清除拒收"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Nenhum pagamento registrado ainda."
+msgstr "尚无付款记录。"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Digite só o que <b>recusou</b> — campo em branco vale zero."
+msgstr "只填写您<b>拒收</b>的数量——留空即为零。"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Marque o recebimento para começar a conferência — não se confere caixa que ainda não chegou."
+msgstr "先确认收货再开始验收——货未到不验收。"

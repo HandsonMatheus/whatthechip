@@ -1789,14 +1789,14 @@ class CompradorValorFechadoTests(TestCase):
             services.confirm(so, self.parceiro, unmasked=True)
         tela = self.client.get(reverse('compras:detail', args=[so.pk]))
         self.assertNotContains(tela, 'name="rej_')            # sem campos
-        self.assertNotContains(tela, 'id="cmp-modal"')      # sem botão/modal
+        self.assertNotContains(tela, 'id="m-fechar"')       # sem botão/diálogo
         self.assertContains(tela, reverse('compras:recebido', args=[so.pk]))
         self.assertContains(tela, 'Marque o recebimento')     # e diz por quê
 
         self.client.post(reverse('compras:recebido', args=[so.pk]))
         tela = self.client.get(reverse('compras:detail', args=[so.pk]))
         self.assertContains(tela, 'name="rej_')               # agora sim
-        self.assertContains(tela, 'id="cmp-modal"')
+        self.assertContains(tela, 'id="m-fechar"')
 
     def test_tabela_tem_linha_de_totais_e_os_dados_do_calculo_ao_vivo(self):
         """Totais (dono, 2026-08-18) e o contrato de que o JS depende: cada
@@ -1809,17 +1809,24 @@ class CompradorValorFechadoTests(TestCase):
             services.confirm(so, self.parceiro, unmasked=True)
             services.mark_received(so)
         tela = self.client.get(reverse('compras:detail', args=[so.pk]))
-        self.assertContains(tela, 'cmp-t-pagar')          # ¥ a pagar ao vivo
-        self.assertContains(tela, 'cmp-t-aceitos')        # chips aceitos
+        self.assertContains(tela, 'id="t-pagar"')         # ¥ a pagar ao vivo
+        self.assertContains(tela, 'id="t-ace"')           # chips aceitos
         self.assertContains(tela, 'data-qty="10"')        # o que o JS lê
         self.assertContains(tela, 'data-unit="15.00"')
         self.assertContains(tela, 'data-esperado="150.00"')   # topo + modal
-        self.assertContains(tela, 'cmp-h-rmb')                # o valor do topo
-        self.assertContains(tela, 'cmp-modal')                # a confirmação
+        self.assertContains(tela, 'id="k-rmb"')               # o valor do topo
+        self.assertContains(tela, 'id="m-fechar"')            # a confirmação
 
     def test_nada_fica_ABAIXO_da_tabela_na_tela_do_comprador(self):
-        """O MESMO esqueleto da tela do cliente (dono, 2026-08-19): ação da
-        etapa e pagamento acima; abaixo da tabela, nada."""
+        """O MESMO esqueleto da tela do cliente (dono, 2026-08-19): a ação da
+        etapa acima; abaixo da tabela, nada.
+
+        Com a ficha (2026-08-19) a garantia ficou mais forte: a ação da vez
+        mora na BARRA DE AÇÃO, no topo da página, e o que era formulário solto
+        virou diálogo. Diálogo não conta como "abaixo": ele é sobreposição,
+        aberta por um botão que está lá em cima. O que não pode existir é
+        controle no fim de uma planilha de centenas de linhas.
+        """
         so = self._rascunho('AB')
         self._fecha_lote(so, despachar=False)
         with company_scope(self.emp):
@@ -1829,19 +1836,20 @@ class CompradorValorFechadoTests(TestCase):
         self.assertEqual(so.status, STATUS_CONFIRMED)     # dá para conferir
         html = self.client.get(
             reverse('compras:detail', args=[so.pk])).content.decode()
-        acao = html.index('cmp-fechar')
-        abas = html.index('cmp-abas')
-        tabela = html.index('cmp-tab-resumo')
+        acao = html.index('fbar__act')
+        abas = html.index('class="nb"')
+        tabela = html.index('id="tab-resumo"')
         self.assertLess(acao, abas)
         self.assertLess(abas, tabela)
-        # O form envolve as abas e fecha DEPOIS da última — nada de ação solta
-        # embaixo da tabela.
-        self.assertLess(html.index('</form>', tabela),
-                        html.index('id="cmp-modal"'))
+        # Depois da planilha só começam os diálogos: fatie até o primeiro
+        # `mscrim` e prove que naquele pedaço não sobrou controle nenhum.
+        fim = html.index('</form>', tabela)      # a planilha termina aqui
+        depois = html[fim:html.index('class="mscrim"')]
         # ⚠ Procure MARCAÇÃO, não classe: o CSS no fim da página cita todos os
         # nomes de classe e faria a asserção falhar sozinha.
-        self.assertNotIn('name="notes"', html[tabela:])
-        self.assertNotIn('type="submit"', html[tabela:])
+        self.assertNotIn('name="notes"', depois)
+        self.assertNotIn('type="submit"', depois)
+        self.assertNotIn('<input', depois)
 
     def test_aba_de_chips_lista_PN_spec_caixa_e_preco(self):
         """"Seria aí onde o comprador olha detalhe por detalhe" (dono)."""
@@ -1858,7 +1866,7 @@ class CompradorValorFechadoTests(TestCase):
         self.assertEqual(linha['unit_rmb'], Decimal('15'))
         tela = self.client.get(reverse('compras:detail', args=[so.pk]))
         self.assertContains(tela, 'CGT2')                 # o PN na tela
-        self.assertContains(tela, 'cmp-pane-chips')
+        self.assertContains(tela, 'pane-chips')
 
     def test_chip_sem_chave_de_preco_aparece_na_aba_sem_sumir(self):
         """Ele viaja na caixa e não entra no comércio — o comprador precisa
@@ -2021,7 +2029,7 @@ class CompradorEtapasEResultadoTests(TestCase):
     def test_card_e_o_cambio_travado_aparecem_na_tela(self):
         so = self._ov('S4')
         tela = self.client.get(reverse('compras:detail', args=[so.pk]))
-        self.assertContains(tela, 'cmp-steps')
+        self.assertContains(tela, 'class="stat"')       # o trilho de etapas
         self.assertContains(tela, '1 ¥ = US$')          # câmbio no cabeçalho
         self.assertContains(tela, 'US$ 150.00'[:4])     # US$ tem o mesmo peso
 
@@ -2034,7 +2042,7 @@ class CompradorEtapasEResultadoTests(TestCase):
         tela = self.client.get(reverse('compras:detail', args=[so.pk]))
         self.assertContains(tela, 'Resultado esperado')
         self.assertContains(tela, 'Resultado final')
-        self.assertContains(tela, 'cmp-h-rmb')          # a coluna que se move
+        self.assertContains(tela, 'id="k-rmb"')         # a coluna que se move
         self.assertContains(tela, '¥ 150.00')
 
         # Depois do resultado, as DUAS continuam — com a diferença ao lado.
@@ -2064,7 +2072,7 @@ class CompradorEtapasEResultadoTests(TestCase):
         self.assertEqual([g['letter'] for g in glos],
                          sorted(g['letter'] for g in glos))
         tela = self.client.get(reverse('compras:detail', args=[so.pk]))
-        self.assertContains(tela, 'cmp-pane-categorias')
+        self.assertContains(tela, 'pane-categorias')
 
     # ── PDF do resultado ────────────────────────────────────────────────────
 
@@ -2144,7 +2152,7 @@ class CompradorEtapasEResultadoTests(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertTrue(resp['Location'].endswith('?pdf=1'))
         tela = self.client.get(resp['Location'])
-        self.assertContains(tela, 'cmp-pdf-link')
+        self.assertContains(tela, 'pdf-link')
 
     def test_pdf_do_resultado_so_existe_depois_de_fechado(self):
         so = self._ov('S7')
@@ -2963,6 +2971,32 @@ class DesignSystemNaTelaDoCompradorTests(TestCase):
         # Ordem obrigatória: o padrão consome o que o pacote declara.
         self.assertLess(html.index('wtc/wtc.css'),
                         html.index('wtc/patterns/parceiro.css'))
+
+    def test_a_ficha_da_compra_carrega_o_padrao_e_monta_as_quatro_pecas(self):
+        """A compra aberta é uma FICHA (dono, 2026-08-19) — o padrão do sistema
+        para registro que percorre etapas. O que este teste segura:
+
+        · `ficha.css` está LINKADO. Sem ele a página sai crua e cada <svg> sem
+          regra de tamanho vira uma mancha do tamanho da tela — foi assim que
+          ela apareceu na primeira tentativa;
+        · as quatro peças existem e estão NA ORDEM: barra de ação · folha ·
+          grupos de campos · abas;
+        · a ação da vez mora na BARRA, não no meio da página.
+        """
+        with company_scope(self.company):
+            services.mark_received(self.so)
+        html = self.client.get(
+            reverse('compras:detail', args=[self.so.pk])).content.decode()
+        self.assertIn('wtc/patterns/ficha.css', html)
+        for peca in ('class="fbar"', 'class="sheet"', 'class="fgrid"',
+                     'class="nb"', 'class="sst"'):
+            self.assertIn(peca, html, peca)
+        self.assertLess(html.index('class="fbar"'), html.index('class="sheet"'))
+        self.assertLess(html.index('class="sheet"'), html.index('class="fgrid"'))
+        self.assertLess(html.index('class="fgrid"'), html.index('class="nb"'))
+        # a ação da vez é do cabeçalho: o botão está DENTRO da barra
+        barra = html[html.index('class="fbar"'):html.index('class="sheet"')]
+        self.assertIn('form="f-resultado"', barra)
 
     def test_a_tabela_e_a_do_SISTEMA(self):
         tela = self._tela()

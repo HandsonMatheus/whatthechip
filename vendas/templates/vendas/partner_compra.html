@@ -1,560 +1,577 @@
 {% extends "pricing/partner_base.html" %}{% load i18n l10n %}
 {% comment %}
-  F11.6/F3 — a tela do RESULTADO.
+  F11.6/F3 — a COMPRA aberta: identidade, etapas, resultado e pagamento.
 
-  Regra de leitura da tabela (dono, 2026-08-18): agrupa por MARCA, e dentro
+  ═══ FICHA: a convenção de página de REGISTRO (dono, 2026-08-19) ═══
+  Esta tela foi refeita sobre `patterns/ficha.css`, que é o padrão do sistema
+  para "qualquer registro que percorre etapas". A regra que ele impõe — e que
+  é a razão de a tela antiga parecer bagunçada — é uma só:
+
+      NADA MUDA DE LUGAR ENTRE UMA ETAPA E OUTRA.
+      Os campos e as abas só ACENDEM quando a etapa que os produz acontece.
+
+  Antes, cada etapa acrescentava um bloco novo no meio da página (banner de
+  despacho, caixa de pagamento, aviso, botão), e a mesma informação nascia num
+  lugar diferente conforme o estágio. Agora o esqueleto é FIXO, em quatro
+  peças, sempre nesta ordem:
+
+    1. `.fbar`      — voltar · trilho de etapas · A AÇÃO DA VEZ (uma só)
+    2. `.sheet__hd` — identidade + os três números (`.kpis`)
+    3. `.fgrid`     — quatro grupos de campos, um por etapa do negócio
+    4. `.nb` + `.sst` — abas e a planilha do lote
+
+  Nada abaixo da planilha: lote grande tem centenas de linhas, e botão no fim
+  dela é botão que ninguém alcança. O que era formulário solto no meio da
+  página virou DIÁLOGO (`.mbox`): fechar resultado e registrar pagamento.
+
+  ⚠ ESTA É A TELA-MODELO. A OV do CLIENTE (`vendas/so_detail.html`) recebe o
+  MESMO esqueleto, nos MESMOS lugares — o que muda é quem age em cada etapa
+  (lá quem despacha é o cliente; aqui quem confere e paga é o comprador). Ao
+  mexer aqui, mexa lá. Decisão do dono, repetida: "é exatamente o mesmo
+  design, a mesma página pros 2, tudo no mesmo lugar, funções diferentes".
+
+  Regra de leitura da planilha (dono, 2026-08-18): agrupa por MARCA, e dentro
   dela por capacidade. Fundir por capacidade deixaria a tela mais curta, mas
-  criaria dedução AMBÍGUA em lote PCB, onde o preço é POR MARCA — "recusei 10
-  de eMMC 64GB" não diria de qual marca sai o desconto. Cada linha da tela é
-  uma linha da OV, então o abatimento é sempre exato.
+  criaria dedução AMBÍGUA em lote PCB, onde o preço é POR MARCA. Cada linha da
+  tela é uma linha da OV, então o abatimento é sempre exato.
 
   O comprador digita SÓ o que recusou; branco vale zero. Aprovados e ¥ do
-  resultado são calculados no SERVIDOR ao fechar — o número que aparece
-  enquanto ele digita é só conforto, e nunca é a fonte da conta.
+  resultado são calculados no SERVIDOR ao fechar — o número que se move
+  enquanto ele digita é conforto, nunca a fonte da conta.
 {% endcomment %}
 {% block title %}{{ so.lot.code }}{% endblock %}
 {% block sidebar %}{% endblock %}
 
 {% block content %}
-<a class="cmp-voltar" href="{% url 'compras:list' %}">‹ {% trans "Compras" %}</a>
-
-<div class="cmp-head">
-  <div>
-    <h1 class="ptn-h1 mono">{{ so.lot.code }}</h1>
-    <p class="ptn-sub">{% blocktrans trimmed with cliente=so.company.name %}
-      de <b>{{ cliente }}</b>{% endblocktrans %} · {{ so.code }}</p>
-  </div>
-  {% comment %} DUAS COLUNAS (dono, 2026-08-18). ESPERADO é o preço fechado com
-     o cliente: IMUTÁVEL, é o número que ele tinha na mão quando a caixa saiu.
-     FINAL é o que a conferência produziu — muda enquanto o comprador digita e
-     congela na fatura. Um número só, mudando, apagaria a referência: a
-     diferença entre os dois é a informação da tela. {% endcomment %}
-  <div class="cmp-tot">
-    <div class="cmp-tot__lbl">{% if estimado %}{% trans "Resultado esperado (estimado)" %}{% else %}{% trans "Resultado esperado" %}{% endif %}</div>
-    {% comment %} ¥ e US$ com o MESMO tamanho: ele fecha em ¥ e paga em US$ —
-       nenhum dos dois é nota de rodapé do outro. {% endcomment %}
-    <div class="cmp-tot__val mono">{% localize off %}{% if esperado_rmb %}¥ {{ esperado_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
-    <div class="cmp-tot__val mono">{% localize off %}{% if esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}{% endlocalize %}</div>
-    {% if fx_rate %}
-    {% comment %} A taxa é a TRAVADA no fechamento do lote (PLANO_FX fase C):
-       o mesmo câmbio honra as duas pontas do negócio. {% endcomment %}
-    <div class="cmp-tot__fx mono">{% localize off %}{% blocktrans trimmed with r=fx_rate %}
-      1 ¥ = US$ {{ r }}
-    {% endblocktrans %}{% endlocalize %}
-      <span class="cmp-tot__fxq">{% if fx_locked_at %}{% blocktrans trimmed with d=fx_locked_at|date:"d/m/Y" %}
-        travado no fechamento em {{ d }}
-      {% endblocktrans %}{% else %}{% trans "travado no fechamento do lote" %}{% endif %}</span>
-    </div>
-    {% endif %}
-  </div>
-  {% if not estimado %}
-  <div class="cmp-tot cmp-tot--final">
-    <div class="cmp-tot__lbl">{% trans "Resultado final" %}</div>
-    <div class="cmp-tot__val mono" id="cmp-h-rmb">{% localize off %}{% if final_rmb %}¥ {{ final_rmb }}{% elif pode_acertar %}¥ {{ esperado_rmb }}{% else %}—{% endif %}{% endlocalize %}</div>
-    <div class="cmp-tot__val mono" id="cmp-h-usd">{% localize off %}{% if final_usd %}US$ {{ final_usd }}{% elif pode_acertar and esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}{% endlocalize %}</div>
-    <div class="cmp-tot__exp mono" id="cmp-h-exp"{% if not final_rmb %} hidden{% endif %}>{% localize off %}{% if final_rmb and esperado_rmb %}{% if final_rmb < esperado_rmb %}−¥ {{ delta_abs }}{% elif final_rmb > esperado_rmb %}+¥ {{ delta_abs }}{% else %}{% trans "sem acerto" %}{% endif %}{% endif %}{% endlocalize %}</div>
-    {% if not invoice %}
-    <div class="cmp-tot__sub">{% trans "depois da conferência" %}</div>
-    {% endif %}
-  </div>
-  {% endif %}
-  {% if invoice %}
-  <div class="cmp-tot">
-    <div class="cmp-tot__lbl">{% trans "Saldo a pagar" %}</div>
-    <div class="cmp-tot__val mono">{% localize off %}US$ {{ invoice.balance_usd }}{% endlocalize %}</div>
-    <div class="cmp-tot__sub mono">{% localize off %}{% blocktrans trimmed with t=invoice.total_usd p=invoice.paid_usd %}
-      fatura US$ {{ t }} · pago US$ {{ p }}{% endblocktrans %}{% endlocalize %}</div>
-  </div>
-  {% endif %}
-</div>
-
-{% comment %} Card de ETAPAS (dono, 2026-08-18): por onde a compra passou, onde
-   está e para onde vai. "Enviado" ainda não existe — é a F4 (transportadora e
-   rastreio); melhor uma etapa a menos do que uma caixa morta. {% endcomment %}
-<ol class="cmp-steps">
-  {% for p in steps %}
-  <li class="cmp-step cmp-step--{{ p.state }}">
-    <span class="cmp-step__mk">{% if p.state == 'done' %}✓{% elif p.state == 'current' %}●{% elif p.state == 'pulado' %}–{% else %}○{% endif %}</span>
-    <span class="cmp-step__lbl">
-      {% if p.key == 'fechado' %}{% trans "Fechado" %}
-      {% elif p.key == 'enviado' %}{% trans "Enviado" %}
-      {% elif p.key == 'recebido' %}{% trans "Recebimento" %}
-      {% elif p.key == 'resultado' %}{% trans "Resultado" %}
-      {% else %}{% trans "Pagamento" %}{% endif %}
-    </span>
-    {% if p.date %}<span class="cmp-step__dt mono">{{ p.date|date:"d/m" }}</span>{% endif %}
-  </li>
-  {% endfor %}
-</ol>
-
-{% if so.shipped_at %}
-{% comment %} O rastreio vem do CLIENTE (F4). Sem ele o comprador não tinha
-   como saber se a caixa saiu — só via o lote fechado e esperava. {% endcomment %}
-<div class="cmp-receb">
-  <span class="cmp-receb__dica">{% blocktrans trimmed with c=so.carrier d=so.shipped_at|date:"d/m/Y" %}
-    Enviado por {{ c }} em {{ d }}.
-  {% endblocktrans %}</span>
-  {% if so.tracking %}
-    {% if tracking_url %}<a class="cmp-link" href="{{ tracking_url }}" target="_blank" rel="noopener">{{ so.tracking }}</a>
-    {% else %}<span class="mono cmp-receb__dica">{{ so.tracking }}</span>{% endif %}
-  {% endif %}
-</div>
-{% endif %}
-
-{% if not so.received_at %}
-<form method="post" action="{% url 'compras:recebido' so.pk %}" class="cmp-receb">
-  {% csrf_token %}
-  <button type="submit" class="cmp-btn cmp-btn--ghost">{% trans "Marcar como recebido" %}</button>
-  <span class="cmp-receb__dica">{% trans "Registra o dia em que a caixa chegou." %}</span>
-</form>
-{% endif %}
-
-{% if invoice %}
-<div class="cmp-acoes">
-  <a class="cmp-btn cmp-btn--ghost" id="cmp-pdf-link"
-     href="{% url 'compras:resultado_pdf' so.pk %}" target="_blank">
-    {% trans "Imprimir resultado (PDF)" %}
+{% comment %} ── 1. BARRA DE AÇÃO ───────────────────────────────────────────
+   Voltar · onde o registro está · o que dá para fazer AGORA. A ação da vez é
+   uma só e mora sempre aqui — não desce para o meio da página conforme a
+   etapa. Os botões usam `form=` para acionar formulários que vivem no fim do
+   documento: formulário dentro de formulário é inválido, e a alternativa
+   (espalhar os botões junto de cada form) é exatamente o que desmontava a
+   página. {% endcomment %}
+<div class="fbar">
+  <a class="fbar__back" href="{% url 'compras:list' %}">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>{% trans "Compras" %}
   </a>
-  <span class="cmp-receb__dica">{% trans "Baixe e envie ao cliente." %}</span>
-</div>
+  <span class="fbar__sp"></span>
 
-{% comment %} PAGAMENTO (dono, 2026-08-18). Sempre em US$ — é a moeda em que
-   ele paga. Parcial é permitido, por isso o histórico mora ao lado do
-   formulário: o saldo é a conta que importa, não o total da fatura. {% endcomment %}
-<section class="cmp-pag">
-  <div class="cmp-pag__topo">
-    <div>
-      <div class="cmp-tot__lbl">{% if invoice.balance_usd > 0 %}{% trans "Total a pagar" %}{% else %}{% trans "Fatura quitada" %}{% endif %}</div>
-      <div class="cmp-pag__val mono">{% localize off %}US$ {{ invoice.balance_usd }}{% endlocalize %}</div>
-      <div class="cmp-tot__sub mono">{% localize off %}{% blocktrans trimmed with t=invoice.total_usd p=invoice.paid_usd %}
-        fatura US$ {{ t }} · pago US$ {{ p }}
-      {% endblocktrans %}{% endlocalize %}</div>
+  <div id="stat">
+    <div class="stat">
+      {% for p in steps %}
+      <span class="stat__s{% if p.state == 'done' %} is-done{% elif p.state == 'current' %} is-now{% else %} is-next{% endif %}">
+        {% if p.state == 'done' %}<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>{% else %}<i></i>{% endif %}
+        {% if p.key == 'fechado' %}{% trans "Fechado" %}
+        {% elif p.key == 'enviado' %}{% trans "Enviado" %}
+        {% elif p.key == 'recebido' %}{% trans "Recebimento" %}
+        {% elif p.key == 'resultado' %}{% trans "Resultado" %}
+        {% else %}{% trans "Pagamento" %}{% endif %}
+        {% if p.date and p.state == 'current' %}<small>{{ p.date|date:"d/m" }}</small>{% endif %}
+      </span>
+      {% endfor %}
     </div>
   </div>
 
-  {% if invoice.balance_usd > 0 %}
-  <form method="post" action="{% url 'compras:pagar' so.pk %}"
-        enctype="multipart/form-data" class="cmp-pag__form">
-    {% csrf_token %}
-    <label>
-      <span>{% trans "Valor pago (US$)" %}</span>
-      <input type="number" name="amount_usd" step="0.01" min="0.01"
-             max="{{ invoice.balance_usd|unlocalize }}" required
-             value="{{ invoice.balance_usd|unlocalize }}" class="cmp-in cmp-in--w">
-    </label>
-    <label>
-      <span>{% trans "Data" %}</span>
-      <input type="date" name="paid_at" value="{{ hoje|date:'Y-m-d' }}" required
-             class="cmp-in cmp-in--w">
-    </label>
-    <label class="cmp-pag__ref">
-      <span>{% trans "Referência" %}</span>
-      <input type="text" name="reference" maxlength="120" class="cmp-in cmp-in--w"
-             placeholder="{% trans 'Nº do wire, banco, observação curta' %}">
-    </label>
-    <label class="cmp-pag__file">
-      <span>{% trans "Comprovante (PDF ou imagem)" %}</span>
-      <input type="file" name="receipt" required
-             accept=".pdf,image/png,image/jpeg,image/webp">
-    </label>
-    <button type="submit" class="cmp-btn">{% trans "Registrar pagamento" %}</button>
-  </form>
-  {% endif %}
+  <span class="fbar__sp"></span>
+  <div class="fbar__act">
+    {% if invoice %}
+    <a class="btn btn--ghost" id="pdf-link" href="{% url 'compras:resultado_pdf' so.pk %}"
+       target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 22h8v-8H8z"/></svg>
+      {% trans "Imprimir resultado (PDF)" %}
+    </a>
+    {% endif %}
+    {% if so.shipped_at and not so.received_at %}
+    <button type="submit" form="f-recebi" class="btn btn--pri">
+      {% trans "Marcar como recebido" %}
+    </button>
+    {% elif pode_acertar %}
+    <button type="submit" form="f-resultado" class="btn btn--pri">
+      {% trans "Fechar resultado" %}
+    </button>
+    {% elif invoice and invoice.balance_usd > 0 %}
+    <button type="button" class="btn btn--pri" data-abre="m-pagar">
+      {% trans "Registrar pagamento" %}
+    </button>
+    {% endif %}
+  </div>
+</div>
 
-  {% if pagamentos %}
-  <table class="cmp-tab cmp-pag__hist">
-    <thead>
-      <tr>
-        <th>{% trans "Data" %}</th>
-        <th class="num">{% trans "US$" %}</th>
-        <th>{% trans "Referência" %}</th>
-        <th>{% trans "Registrado por" %}</th>
-        <th>{% trans "Comprovante" %}</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for p in pagamentos %}
-      <tr>
-        <td class="mono">{{ p.paid_at|date:"d/m/Y" }}</td>
-        <td class="num mono">{% localize off %}US$ {{ p.amount_usd }}{% endlocalize %}</td>
-        <td>{{ p.reference|default:"—" }}</td>
-        <td>{{ p.by|default:"—" }}</td>
-        <td>{% if p.has_receipt %}<a class="cmp-link"
-              href="{% url 'compras:comprovante' so.pk p.pk %}"
-              target="_blank">{% trans "Ver" %}</a>{% else %}—{% endif %}</td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
-  {% endif %}
-</section>
-{% endif %}
+<div class="sheet">
+  {% comment %} ── 2. IDENTIDADE + OS TRÊS NÚMEROS ─────────────────────────
+     ESPERADO é o preço fechado com o cliente: IMUTÁVEL, é o número que ele
+     tinha na mão quando a caixa saiu. RESULTADO é o que a conferência
+     produziu — move-se enquanto o comprador digita e congela na fatura.
+     SALDO é o que falta pagar. Um número só, mudando, apagaria a
+     referência: a DIFERENÇA entre eles é a informação da tela.
+     ¥ e US$ do mesmo tamanho: ele fecha em ¥ e paga em US$ — nenhum dos dois
+     é nota de rodapé do outro (dono, 2026-08-18). {% endcomment %}
+  <div class="sheet__hd">
+    <div class="sheet__id">
+      <div class="sheet__t">
+        <h1>{{ so.lot.code }}</h1>
+        {% if estimado %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Falta preço seu" %}</span>
+        {% elif pode_acertar %}<span class="tag tag--info"><i class="dot"></i>{% trans "A conferir" %}</span>
+        {% elif invoice and invoice.balance_usd > 0 %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Pago em parte" %}</span>
+        {% elif invoice %}<span class="tag tag--yes"><i class="dot"></i>{% trans "Pago" %}</span>
+        {% else %}<span class="tag tag--mute"><i class="dot"></i>{% trans "Recebimento" %}</span>{% endif %}
+      </div>
+      <p class="sheet__s">{% blocktrans trimmed with cliente=so.company.name %}
+        de <b>{{ cliente }}</b>{% endblocktrans %} · <span class="mono">{{ so.code }}</span></p>
+    </div>
 
-{% if estimado %}
-  {% if pendencias %}
-  <div class="cmp-aviso">
-    <b>{% blocktrans trimmed with n=pendencias|length %}
+    {% localize off %}
+    <div class="kpis">
+      <div class="kpi kpi--base">
+        <div class="kpi__l">{% if estimado %}{% trans "Resultado esperado (estimado)" %}{% else %}{% trans "Resultado esperado" %}{% endif %}</div>
+        <div class="kpi__v">{% if esperado_rmb %}¥ {{ esperado_rmb }}{% else %}—{% endif %}</div>
+        <div class="kpi__v">{% if esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}</div>
+      </div>
+      <div class="kpi {% if final_rmb or pode_acertar %}kpi--res{% else %}kpi--off{% endif %}">
+        <div class="kpi__l">{% trans "Resultado final" %}</div>
+        <div class="kpi__v" id="k-rmb">{% if final_rmb %}¥ {{ final_rmb }}{% elif pode_acertar %}¥ {{ esperado_rmb }}{% else %}—{% endif %}</div>
+        <div class="kpi__v" id="k-usd">{% if final_usd %}US$ {{ final_usd }}{% elif pode_acertar and esperado_usd %}US$ {{ esperado_usd }}{% else %}—{% endif %}</div>
+        <div class="kpi__d" id="k-exp"{% if not final_rmb %} hidden{% endif %}>{% if final_rmb and esperado_rmb %}{% if final_rmb < esperado_rmb %}−¥ {{ delta_abs }}{% elif final_rmb > esperado_rmb %}+¥ {{ delta_abs }}{% else %}{% trans "sem acerto" %}{% endif %}{% endif %}</div>
+      </div>
+      <div class="kpi {% if not invoice %}kpi--off{% elif invoice.balance_usd > 0 %}kpi--due{% else %}kpi--ok{% endif %}">
+        <div class="kpi__l">{% if invoice and invoice.balance_usd <= 0 %}{% trans "Fatura quitada" %}{% else %}{% trans "Saldo a pagar" %}{% endif %}</div>
+        <div class="kpi__v">{% if invoice %}US$ {{ invoice.balance_usd }}{% else %}—{% endif %}</div>
+      </div>
+    </div>
+    {% endlocalize %}
+  </div>
+
+  {% comment %} ── 3. CAMPOS EM GRUPOS, UM POR ETAPA ───────────────────────
+     O gabarito é SEMPRE o mesmo; a etapa que ainda não aconteceu fica em
+     `.is-off` — a caixa promete sem mentir. É isto que faz a tela parar de
+     se remontar a cada estágio. {% endcomment %}
+  <div class="fgrid">
+    <div class="fgrp">
+      <div class="fgrp__l"><i></i>{% trans "Lote" %}</div>
+      <div class="fld2"><span>{% trans "Cliente" %}</span><b>{{ so.company.name }}</b></div>
+      <div class="fld2"><span>{% trans "Chips" %}</span><b class="m">{{ total_qty }}</b></div>
+      {% localize off %}
+      <div class="fld2"><span>{% trans "Câmbio" %}</span>
+        <b class="m">{% if fx_rate %}1 ¥ = US$ {{ fx_rate }}{% else %}—{% endif %}</b></div>
+      {% endlocalize %}
+      {% if fx_locked_at %}
+      <div class="fgrp__n"><span class="why">{% blocktrans trimmed with d=fx_locked_at|date:"d/m/Y" %}
+        travado no fechamento em {{ d }}{% endblocktrans %}</span></div>
+      {% endif %}
+    </div>
+
+    <div class="fgrp{% if not so.shipped_at %} is-off{% endif %}">
+      <div class="fgrp__l"><i></i>{% trans "Envio" %}</div>
+      <div class="fld2"><span>{% trans "Transportadora" %}</span>
+        <b>{% if so.carrier %}{{ so.carrier }}{% else %}—{% endif %}</b></div>
+      <div class="fld2"><span>{% trans "Enviado em" %}</span>
+        <b class="m{% if not so.shipped_at %} off{% endif %}">{% if so.shipped_at %}{{ so.shipped_at|date:"d/m/Y" }}{% else %}—{% endif %}</b></div>
+      <div class="fld2"><span>{% trans "Recebimento" %}</span>
+        <b class="m{% if not so.received_at %} off{% endif %}">{% if so.received_at %}{{ so.received_at|date:"d/m/Y" }}{% else %}—{% endif %}</b></div>
+      {% if so.tracking %}
+      <div class="fgrp__n">
+        {% if tracking_url %}
+        <a class="fmini" href="{{ tracking_url }}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M10 14L21 3M21 3h-6M21 3v6M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+          {{ so.tracking }}</a>
+        {% else %}<span class="fmini">{{ so.tracking }}</span>{% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="fgrp{% if not invoice and not pode_acertar %} is-off{% endif %}">
+      <div class="fgrp__l"><i></i>{% trans "Resultado" %}</div>
+      <div class="fld2"><span>{% trans "Enviados" %}</span><b class="m">{{ total_qty }}</b></div>
+      <div class="fld2"><span>{% trans "Recusados" %}</span>
+        <b class="m{% if not invoice and not pode_acertar %} off{% endif %}" id="f-rej">{% if invoice or pode_acertar %}0{% else %}—{% endif %}</b></div>
+      <div class="fld2"><span>{% trans "Aprovados" %}</span>
+        <b class="m{% if not invoice and not pode_acertar %} off{% endif %}" id="f-ace">{% if invoice or pode_acertar %}{{ total_qty }}{% else %}—{% endif %}</b></div>
+      {% if so.unkeyed_units %}
+      <div class="fgrp__n"><span class="why">{% blocktrans trimmed with n=so.unkeyed_units %}
+        A caixa traz ainda {{ n }} unidade(s) sem preço na tabela — elas não
+        entram nesta conta.{% endblocktrans %}</span></div>
+      {% endif %}
+    </div>
+
+    {% localize off %}
+    <div class="fgrp{% if not invoice %} is-off{% endif %}">
+      <div class="fgrp__l"><i></i>{% trans "Pagamento" %}</div>
+      <div class="fld2"><span>{% trans "Fatura" %}</span>
+        <b class="m{% if not invoice %} off{% endif %}">{% if invoice %}US$ {{ invoice.total_usd }}{% else %}—{% endif %}</b></div>
+      <div class="fld2"><span>{% trans "Pago" %}</span>
+        <b class="m{% if not invoice %} off{% elif invoice.paid_usd %} good{% endif %}">{% if invoice %}US$ {{ invoice.paid_usd }}{% else %}—{% endif %}</b></div>
+      <div class="fld2"><span>{% trans "Falta" %}</span>
+        <b class="m{% if not invoice %} off{% elif invoice.balance_usd > 0 %} due{% else %} good{% endif %}">{% if invoice %}US$ {{ invoice.balance_usd }}{% else %}—{% endif %}</b></div>
+    </div>
+    {% endlocalize %}
+  </div>
+
+  {% comment %} Avisos: só os que EXIGEM leitura, e sempre no mesmo lugar —
+     entre os campos e as abas. {% endcomment %}
+  {% if estimado %}
+  <div class="gnote">
+    <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+    <span>{% if pendencias %}<b>{% blocktrans trimmed with n=pendencias|length %}
       {{ n }} categoria(s) deste lote sem preço na sua tabela:
     {% endblocktrans %}</b>
-    <span class="cmp-falta">{% for p in pendencias %}{{ p }}{% if not forloop.last %} · {% endif %}{% endfor %}{% if pendencias_extra %} … +{{ pendencias_extra }}{% endif %}</span>
-    <div>{% blocktrans trimmed %}
+      {% for p in pendencias %}{{ p }}{% if not forloop.last %} · {% endif %}{% endfor %}{% if pendencias_extra %} … +{{ pendencias_extra }}{% endif %}
+      {% blocktrans trimmed %}
       Cote essas categorias e o valor desta compra fecha sozinho — aí o
-      resultado abre.
-    {% endblocktrans %}</div>
+      resultado abre.{% endblocktrans %}
+    {% else %}{% blocktrans trimmed %}
+      Os valores abaixo são ESTIMADOS pela sua tabela de hoje — esta compra é
+      anterior ao fechamento automático de valor. Fale com o WhatTheChip para
+      fechá-la antes de conferir.{% endblocktrans %}{% endif %}</span>
   </div>
-  {% else %}
-  {% comment %} Rascunho SEM pendência: ordem antiga, que nasceu antes do
-     congelamento no fechamento do lote. Nada a fazer pelo comprador — o
-     valor da compra é fechado pelo CLIENTE quando ele fecha o lote. {% endcomment %}
-  <div class="cmp-aviso">{% blocktrans trimmed %}
-    Os valores abaixo são ESTIMADOS pela sua tabela de hoje — esta compra é
-    anterior ao fechamento automático de valor. Fale com o WhatTheChip para
-    fechá-la antes de conferir.
-  {% endblocktrans %}</div>
+  {% elif not invoice and not so.received_at %}
+  <div class="gnote">
+    <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+    <span>{% blocktrans trimmed %}
+      Marque o recebimento para começar a conferência — não se confere caixa
+      que ainda não chegou.{% endblocktrans %}</span>
+  </div>
   {% endif %}
-{% endif %}
 
-{% if so.unkeyed_units %}
-  <div class="cmp-nota">{% blocktrans trimmed with n=so.unkeyed_units %}
-    A caixa traz ainda {{ n }} unidade(s) sem preço na tabela — elas não
-    entram nesta conta.
-  {% endblocktrans %}</div>
-{% endif %}
-
-{% comment %} Duas abas (dono, 2026-08-18): o RESUMO é onde ele dá o
-   resultado; CHIPS é onde ele confere detalhe por detalhe, PN a PN. {% endcomment %}
-{% if not pode_acertar and not invoice and so.status == 'confirmed' and not so.received_at %}
-<div class="cmp-nota">{% blocktrans trimmed %}
-  Marque o recebimento acima para começar a conferência — não se confere caixa
-  que ainda não chegou.
-{% endblocktrans %}</div>
-{% endif %}
-
-{% comment %} ⚠ TUDO acima da tabela (dono, 2026-08-19): lote grande faz a
-   tabela ter centenas de linhas, e botão no fim dela é botão que ninguém
-   alcança. Abaixo da tabela não fica NADA — nem aqui nem na tela do cliente,
-   que tem o MESMO esqueleto (mesma ordem de blocos, funções diferentes). {% endcomment %}
-<form method="post" action="{% url 'compras:resultado' so.pk %}"
-      id="cmp-form-resultado"
-      data-lote="{{ so.lot.code }}"
-      data-fx="{% localize off %}{{ fx_rate|default:0|unlocalize }}{% endlocalize %}"
-      data-esperado="{% localize off %}{{ so.total_rmb|default:0|unlocalize }}{% endlocalize %}">
-{% csrf_token %}
-{% if pode_acertar %}
-<div class="cmp-fechar">
-  <label class="cmp-obs">
-    <span>{% trans "Observação (opcional)" %}</span>
-    <textarea name="notes" rows="2" placeholder="{% trans 'Motivo da recusa, número do lacre, o que for útil registrar.' %}"></textarea>
-  </label>
-  <div>
-    <button type="submit" class="cmp-btn">{% trans "Fechar resultado" %}</button>
-    <p class="cmp-dica">{% blocktrans trimmed %}
-      Digite só o que recusou — campo em branco vale zero.
-    {% endblocktrans %}</p>
+  {% comment %} ── 4. ABAS + PLANILHA ──────────────────────────────────────
+     RESUMO é onde ele dá o resultado (a categoria é que tem preço); CHIPS é a
+     conferência PN a PN; CATEGORIAS é o dicionário da convenção WTC;
+     PAGAMENTOS é o histórico com os comprovantes. As quatro existem sempre —
+     o contador diz quando alguma está vazia. {% endcomment %}
+  <div class="nb">
+    <button type="button" class="on" data-aba="resumo">{% trans "Resumo" %}</button>
+    <button type="button" data-aba="chips">{% trans "Chips" %} <em>{{ chips.qty }}</em></button>
+    <button type="button" data-aba="categorias">{% trans "Categorias" %}</button>
+    <button type="button" data-aba="pagamentos">{% trans "Pagamentos" %} <em>{{ pagamentos|length }}</em></button>
+    <span class="nb__sp"></span>
   </div>
-</div>
-{% endif %}
 
-<div class="cmp-abas">
-  <button type="button" class="cmp-aba cmp-aba--on" data-aba="resumo">{% trans "Resumo" %}</button>
-  <button type="button" class="cmp-aba" data-aba="chips">{% blocktrans trimmed with n=chips.qty %}Chips ({{ n }}){% endblocktrans %}</button>
-  <button type="button" class="cmp-aba" data-aba="categorias">{% trans "Categorias" %}</button>
-</div>
+  {% if pode_acertar %}
+  <div class="rhint">
+    <svg viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/></svg>
+    <span>{% blocktrans trimmed %}
+      Digite só o que <b>recusou</b> — campo em branco vale zero.
+    {% endblocktrans %}</span>
+    <button type="button" class="rhint__z" id="zerar">{% trans "Limpar recusas" %}</button>
+  </div>
+  {% endif %}
 
-<div id="cmp-pane-resumo">
-<table class="cmp-tab cmp-res" id="cmp-tab-resumo">
-  <thead>
-    <tr>
-      <th>{% trans "Tipo" %}</th>
-      <th>{% trans "Capacidade" %}</th>
-      <th>{% trans "Caixa WTC" %}</th>
-      <th class="num">{% trans "Enviados" %}</th>
-      <th class="num">{% trans "¥ unit." %}</th>
-      <th class="num">{% trans "¥ esperado" %}</th>
-      {% if pode_acertar %}<th class="num cmp-rej">{% trans "Recusados" %}</th>{% endif %}
-    </tr>
-  </thead>
-  <tbody>
-  {% for g in grupos %}
-    <tr class="cmp-marca">
-      <td colspan="{% if pode_acertar %}7{% else %}6{% endif %}">
-        {{ g.brand }} <span class="cmp-marca__qtd">{{ g.qty }} un. · {% localize off %}¥ {{ g.rmb }}{% endlocalize %}{% if g.sem_preco %} · <span class="cmp-falta">{% blocktrans trimmed with n=g.sem_preco %}{{ n }} un. sem preço{% endblocktrans %}</span>{% endif %}</span>
-      </td>
-    </tr>
-    {% for l in g.lines %}
-    <tr>
-      <td>{{ l.type }}</td>
-      <td>{{ l.capacity }}</td>
-      <td class="mono cmp-wtc">{{ l.wtc }}</td>
-      <td class="num">{{ l.qty }}</td>
-      <td class="num mono{% if l.sem_preco %} cmp-falta-td{% endif %}">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
-      <td class="num mono cmp-lin-tot">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
-      {% if pode_acertar %}
-      <td class="num cmp-rej">
-        <input type="number" name="rej_{{ l.pk }}" min="0" max="{{ l.qty }}"
-               placeholder="0" class="cmp-in" inputmode="numeric"
-               data-qty="{{ l.qty|unlocalize }}"
-               data-unit="{% if l.unit_rmb %}{{ l.unit_rmb|unlocalize }}{% else %}0{% endif %}">
-      </td>
-      {% endif %}
-    </tr>
-    {% endfor %}
-  {% endfor %}
-  </tbody>
-  {% comment %} Linha de TOTAIS (dono, 2026-08-18). Com o resultado aberto ela
-     recalcula ao vivo enquanto ele digita os recusados — conforto, nunca a
-     fonte da conta: quem soma de verdade é o servidor no "Fechar
-     resultado". {% endcomment %}
-  <tfoot>
-    <tr class="cmp-tot-lin">
-      <td colspan="3">{% trans "Total" %}</td>
-      <td class="num" id="cmp-t-qtd">{{ total_qty }}</td>
-      <td></td>
-      <td class="num mono" id="cmp-t-rmb">{% localize off %}{% if estimado %}≈ ¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
-      {% if pode_acertar %}<td class="num cmp-rej" id="cmp-t-rej">0</td>{% endif %}
-    </tr>
-    {% if pode_acertar %}
-    <tr class="cmp-tot-lin cmp-tot-lin--pagar">
-      <td colspan="3">{% trans "A pagar (aceitos)" %}</td>
-      <td class="num" id="cmp-t-aceitos">{{ total_qty }}</td>
-      <td></td>
-      <td class="num mono" id="cmp-t-pagar">{% localize off %}¥ {{ so.total_rmb }}{% endlocalize %}</td>
-      <td></td>
-    </tr>
+  {% comment %} O formulário do resultado embrulha SÓ a planilha; quem o envia
+     é o botão da barra de ação, via `form=`. {% endcomment %}
+  <form method="post" action="{% url 'compras:resultado' so.pk %}" id="f-resultado"
+        data-lote="{{ so.lot.code }}"
+        data-fx="{% localize off %}{{ fx_rate|default:0|unlocalize }}{% endlocalize %}"
+        data-esperado="{% localize off %}{{ so.total_rmb|default:0|unlocalize }}{% endlocalize %}">
+    {% csrf_token %}
+    <div class="sst__w" id="pane-resumo">
+      <div class="sst__sc">
+        <table class="sst" id="tab-resumo">
+          <thead>
+            <tr>
+              <th>{% trans "Tipo" %}</th>
+              <th>{% trans "Capacidade" %}</th>
+              <th>{% trans "Caixa WTC" %}</th>
+              <th class="n">{% trans "Enviados" %}</th>
+              <th class="n">{% trans "¥ unit." %}</th>
+              <th class="n">{% trans "¥ esperado" %}</th>
+              {% if pode_acertar %}<th class="n hr">{% trans "Recusados" %}<i class="pen"></i></th>{% endif %}
+            </tr>
+          </thead>
+          <tbody>
+          {% for g in grupos %}
+            <tr class="g">
+              <td colspan="3"><span class="g__n">{{ g.brand }}
+                {% if g.sem_preco %}<em>{% blocktrans trimmed with n=g.sem_preco %}{{ n }} un. sem preço{% endblocktrans %}</em>{% endif %}</span></td>
+              <td class="n">{{ g.qty }}</td>
+              <td></td>
+              <td class="n">{% localize off %}¥ {{ g.rmb }}{% endlocalize %}</td>
+              {% if pode_acertar %}<td class="hr"></td>{% endif %}
+            </tr>
+            {% for l in g.lines %}
+            <tr>
+              <td>{{ l.type }}</td>
+              <td class="cap">{{ l.capacity }}</td>
+              <td><span class="wtc">{{ l.wtc }}</span></td>
+              <td class="n">{{ l.qty }}</td>
+              <td class="n{% if l.sem_preco %} dim{% endif %}">{% localize off %}{% if l.unit_rmb %}¥ {{ l.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
+              <td class="n">{% localize off %}{% if l.total_rmb %}¥ {{ l.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              {% if pode_acertar %}
+              <td class="n hr">
+                <input type="number" name="rej_{{ l.pk }}" min="0" max="{{ l.qty }}"
+                       placeholder="0" class="rjin" inputmode="numeric"
+                       data-qty="{{ l.qty|unlocalize }}"
+                       data-unit="{% if l.unit_rmb %}{{ l.unit_rmb|unlocalize }}{% else %}0{% endif %}">
+              </td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="lbl" colspan="3">{% trans "Total" %}</td>
+              <td>{{ total_qty }}</td>
+              <td></td>
+              <td>{% localize off %}{% if estimado %}≈ ¥ {{ total_estimado }}{% elif so.total_rmb %}¥ {{ so.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+              {% if pode_acertar %}<td class="hr" id="t-rej">0</td>{% endif %}
+            </tr>
+            {% if pode_acertar %}
+            <tr>
+              <td class="lbl hb" colspan="3">{% trans "A pagar (aceitos)" %}</td>
+              <td class="hb" id="t-ace">{{ total_qty }}</td>
+              <td class="hb"></td>
+              <td class="hb" id="t-pagar">{% localize off %}¥ {{ so.total_rmb }}{% endlocalize %}</td>
+              <td class="hb"></td>
+            </tr>
+            {% endif %}
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </form>
+
+  {% comment %} Aba CHIPS — todo PN do lote com spec, caixa e preço. Leitura
+     pura: o resultado se dá pela CATEGORIA (aba Resumo), porque é ela que tem
+     preço. {% endcomment %}
+  <div class="sst__w" id="pane-chips" hidden>
+    <div class="sst__sc">
+      <table class="sst sst--pn">
+        <thead>
+          <tr>
+            <th>{% trans "Part Number" %}</th>
+            <th>{% trans "Marca" %}</th>
+            <th>{% trans "Tipo" %}</th>
+            <th>{% trans "Spec" %}</th>
+            <th>{% trans "Caixa WTC" %}</th>
+            <th class="n">{% trans "Qtd." %}</th>
+            <th class="n">{% trans "¥ unit." %}</th>
+            <th class="n">{% trans "¥ total" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for c in chips.linhas %}
+          <tr>
+            <td class="pn">{{ c.pn }}</td>
+            <td class="mk">{{ c.brand }}</td>
+            <td>{{ c.type }}</td>
+            <td class="spec">{{ c.spec }}</td>
+            <td><span class="wtc">{{ c.wtc }}</span></td>
+            <td class="n">{{ c.qty }}</td>
+            <td class="n{% if not c.unit_rmb %} dim{% endif %}">{% localize off %}{% if c.unit_rmb %}¥ {{ c.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
+            <td class="n">{% localize off %}{% if c.total_rmb %}¥ {{ c.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8" class="nbb__empty">{% trans "Nenhum chip registrado neste lote." %}</td></tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="lbl" colspan="5">{% trans "Total" %}</td>
+            <td>{{ chips.qty }}</td>
+            <td></td>
+            <td>{% localize off %}¥ {{ chips.rmb }}{% endlocalize %}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  {% comment %} Aba CATEGORIAS — o dicionário da convenção WTC (dono,
+     2026-08-18: "assim o comprador vai se adaptando a esta convenção"). A
+     tabela INTEIRA, ordenada como a caixa física; as que vieram nesta compra
+     ficam marcadas, que é por onde ele começa a ler. {% endcomment %}
+  <div class="sst__w" id="pane-categorias" hidden>
+    <div class="rhint">
+      <svg viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/></svg>
+      <span>{% blocktrans trimmed %}
+        Cada caixa que chega tem um código destes. A letra é o tipo de chip e o
+        número é a categoria — o código nunca muda e nunca é reaproveitado.
+      {% endblocktrans %}</span>
+    </div>
+    <div class="sst__sc">
+      <table class="sst">
+        <thead>
+          <tr>
+            <th>{% trans "Código" %}</th>
+            <th>{% trans "Tipo" %}</th>
+            <th>{% trans "Capacidade" %}</th>
+            <th>{% trans "Nesta compra" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for c in categorias %}
+          <tr{% if c.no_lote %} class="on"{% endif %}>
+            <td><span class="wtc">{{ c.code }}</span></td>
+            <td>{{ c.type }}</td>
+            <td>{{ c.capacity }}{% if c.retired %} <span class="dim">{% trans "(aposentada)" %}</span>{% endif %}</td>
+            <td>{% if c.no_lote %}✓{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% comment %} Aba PAGAMENTOS — o histórico com os comprovantes. Parcial é
+     comum, então o que importa é a sequência, não só o total. {% endcomment %}
+  <div class="sst__w" id="pane-pagamentos" hidden>
+    {% if pagamentos %}
+    <div class="sst__sc">
+      <table class="sst">
+        <thead>
+          <tr>
+            <th>{% trans "Data" %}</th>
+            <th class="n">{% trans "US$" %}</th>
+            <th>{% trans "Referência" %}</th>
+            <th>{% trans "Registrado por" %}</th>
+            <th>{% trans "Comprovante" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for p in pagamentos %}
+          <tr>
+            <td class="pn">{{ p.paid_at|date:"d/m/Y" }}</td>
+            <td class="n">{% localize off %}US$ {{ p.amount_usd }}{% endlocalize %}</td>
+            <td>{{ p.reference|default:"—" }}</td>
+            <td>{{ p.by|default:"—" }}</td>
+            <td>{% if p.has_receipt %}<a href="{% url 'compras:comprovante' so.pk p.pk %}"
+                  target="_blank" rel="noopener">{% trans "Ver" %}</a>{% else %}—{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="nbb__empty">{% trans "Nenhum pagamento registrado ainda." %}</div>
     {% endif %}
-  </tfoot>
-</table>
-
+  </div>
 </div>
 
-{% comment %} Aba CHIPS — todo PN do lote com spec, caixa e preço. É aqui que
-   ele confere detalhe por detalhe. Leitura pura: o resultado se dá pela
-   categoria (aba Resumo), porque é a categoria que tem preço. {% endcomment %}
-<div id="cmp-pane-chips" hidden>
-<table class="cmp-tab">
-  <thead>
-    <tr>
-      <th>{% trans "Part Number" %}</th>
-      <th>{% trans "Marca" %}</th>
-      <th>{% trans "Tipo" %}</th>
-      <th>{% trans "Spec" %}</th>
-      <th>{% trans "Caixa WTC" %}</th>
-      <th class="num">{% trans "Qtd." %}</th>
-      <th class="num">{% trans "¥ unit." %}</th>
-      <th class="num">{% trans "¥ total" %}</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for c in chips.linhas %}
-    <tr>
-      <td class="mono">{{ c.pn }}</td>
-      <td>{{ c.brand }}</td>
-      <td>{{ c.type }}</td>
-      <td>{{ c.spec }}</td>
-      <td class="mono cmp-wtc">{{ c.wtc }}</td>
-      <td class="num">{{ c.qty }}</td>
-      <td class="num mono{% if not c.unit_rmb %} cmp-falta-td{% endif %}">{% localize off %}{% if c.unit_rmb %}¥ {{ c.unit_rmb }}{% else %}{% trans "sem preço" %}{% endif %}{% endlocalize %}</td>
-      <td class="num mono">{% localize off %}{% if c.total_rmb %}¥ {{ c.total_rmb }}{% else %}—{% endif %}{% endlocalize %}</td>
-    </tr>
-  {% empty %}
-    <tr><td colspan="8" class="cmp-vazio-td">{% trans "Nenhum chip registrado neste lote." %}</td></tr>
-  {% endfor %}
-  </tbody>
-  <tfoot>
-    <tr class="cmp-tot-lin">
-      <td colspan="5">{% trans "Total" %}</td>
-      <td class="num">{{ chips.qty }}</td>
-      <td></td>
-      <td class="num mono">{% localize off %}¥ {{ chips.rmb }}{% endlocalize %}</td>
-    </tr>
-  </tfoot>
-</table>
-</div>
-
-{% comment %} Aba CATEGORIAS — o dicionário da convenção WTC (dono,
-   2026-08-18: "assim o comprador vai se adaptando a esta convenção"). A
-   tabela INTEIRA, ordenada por letra e número como a caixa física; as que
-   vieram nesta compra ficam marcadas, que é por onde ele começa a ler. {% endcomment %}
-<div id="cmp-pane-categorias" hidden>
-<p class="cmp-glos">{% blocktrans trimmed %}
-  Cada caixa que chega tem um código destes. A letra é o tipo de chip e o
-  número é a categoria — o código nunca muda e nunca é reaproveitado.
-{% endblocktrans %}</p>
-<table class="cmp-tab">
-  <thead>
-    <tr>
-      <th>{% trans "Código" %}</th>
-      <th>{% trans "Tipo" %}</th>
-      <th>{% trans "Capacidade" %}</th>
-      <th>{% trans "Nesta compra" %}</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for c in categorias %}
-    <tr{% if c.no_lote %} class="cmp-cat-on"{% endif %}>
-      <td class="mono"><b>{{ c.code }}</b></td>
-      <td>{{ c.type }}</td>
-      <td>{{ c.capacity }}{% if c.retired %} <span class="cmp-wtc">{% trans "(aposentada)" %}</span>{% endif %}</td>
-      <td>{% if c.no_lote %}✓{% endif %}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-</div>
+{% comment %} ── FORMULÁRIOS E DIÁLOGOS ────────────────────────────────────
+   Vivem no FIM do documento, fora da folha: são ações, não conteúdo. O botão
+   que os aciona mora na barra de ação, lá em cima. {% endcomment %}
+{% if so.shipped_at and not so.received_at %}
+<form method="post" action="{% url 'compras:recebido' so.pk %}" id="f-recebi" hidden>
+  {% csrf_token %}
 </form>
+{% endif %}
 
 {% if pode_acertar %}
-{% comment %} Confirmação do fechamento (dono, 2026-08-18): a última tela antes
-   de um número virar definitivo tem que MOSTRAR o número. Os valores saem do
-   mesmo cálculo ao vivo da tabela — e o servidor recalcula tudo de novo no
-   POST, então isto é conferência, nunca a fonte da conta. {% endcomment %}
-<div class="cmp-modal" id="cmp-modal" hidden>
-  <div class="cmp-modal__cx" role="dialog" aria-modal="true"
-       aria-labelledby="cmp-modal-t">
-    <div class="cmp-modal__top">
-      <h2 id="cmp-modal-t">{% trans "Fechar resultado" %}</h2>
-      <p>{% blocktrans trimmed %}
-        Confira o que foi lançado antes de gravar. Este é o número final da
-        compra — o pagamento passa a correr sobre ele.
-      {% endblocktrans %}</p>
+{% comment %} Confirmação do fechamento (dono, 2026-08-18): a última tela
+   antes de um número virar definitivo tem que MOSTRAR o número. Os valores
+   saem do mesmo cálculo ao vivo da planilha — e o servidor recalcula tudo de
+   novo no POST, então isto é conferência, nunca a fonte da conta. A
+   observação do resultado entra AQUI: ela pertence ao ato de fechar, e como
+   bloco solto na página era mais uma caixa no meio do caminho. {% endcomment %}
+<div class="mscrim" id="m-fechar">
+  <div class="mbox" role="dialog" aria-modal="true" aria-labelledby="m-fechar-t">
+    <div class="mbox__h">
+      <div>
+        <h2 id="m-fechar-t">{% trans "Fechar resultado" %}</h2>
+        <p>{% blocktrans trimmed %}
+          Confira o que foi lançado antes de gravar. Este é o número final da
+          compra — o pagamento passa a correr sobre ele.
+        {% endblocktrans %}</p>
+      </div>
+      <button type="button" class="mbox__x" data-fecha="m-fechar" aria-label="{% trans 'Fechar' %}">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
     </div>
-    <table class="cmp-modal__tab">
-      <tr><td>{% trans "Lote" %}</td><td class="mono" id="cmp-m-lote"></td></tr>
-      <tr><td>{% trans "Enviados" %}</td><td class="mono" id="cmp-m-env"></td></tr>
-      <tr><td>{% trans "Recusados" %}</td><td class="mono" id="cmp-m-rej"></td></tr>
-      <tr><td>{% trans "Aprovados" %}</td><td class="mono" id="cmp-m-ace"></td></tr>
-      <tr><td>{% trans "Resultado" %}</td><td class="mono cmp-m-val" id="cmp-m-res"></td></tr>
-      <tr class="cmp-modal__exp">
-        <td id="cmp-m-esp"></td>
-        <td class="mono" id="cmp-m-delta"></td>
-      </tr>
-    </table>
-    <div class="cmp-modal__av" id="cmp-m-aviso"></div>
-    <div class="cmp-modal__bt">
-      <button type="button" class="cmp-mbtn" id="cmp-m-voltar">{% trans "Revisar lançamentos" %}</button>
-      <button type="button" class="cmp-mbtn cmp-mbtn--ok" id="cmp-m-ok">{% trans "Fechar resultado" %} ✓</button>
+    <div class="mbox__b">
+      <div class="blist">
+        <div class="blist__l">{{ so.lot.code }}</div>
+        <div class="blist__r"><span>{% trans "Enviados" %}</span><b id="m-env"></b></div>
+        <div class="blist__r"><span>{% trans "Recusados" %}</span><b id="m-rej"></b></div>
+        <div class="blist__r"><span>{% trans "Aprovados" %}</span><b id="m-ace"></b></div>
+        <div class="blist__r"><span>{% trans "Resultado" %}</span><b id="m-res"></b></div>
+      </div>
+      <div class="dlt"><span id="m-esp"></span><b id="m-delta"></b></div>
+      <div>
+        <div class="nts__l">{% trans "Observação (opcional)" %}</div>
+        <textarea class="nts__ta" name="notes" rows="3" form="f-resultado"
+                  placeholder="{% trans 'Motivo da recusa, número do lacre, o que for útil registrar.' %}"></textarea>
+      </div>
+      <div class="gnote">
+        <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <span id="m-aviso"></span>
+      </div>
+    </div>
+    <div class="mbox__f">
+      <button type="button" class="btn btn--sec" data-fecha="m-fechar">{% trans "Revisar lançamentos" %}</button>
+      <button type="button" class="btn btn--pri" id="m-ok">{% trans "Fechar resultado" %}</button>
     </div>
   </div>
+</div>
+{% endif %}
+
+{% if invoice and invoice.balance_usd > 0 %}
+{% comment %} PAGAMENTO (dono, 2026-08-18). Sempre em US$ — é a moeda em que
+   ele paga. Parcial é permitido: o campo já vem com o SALDO, que é a conta
+   que importa, e não com o total da fatura. {% endcomment %}
+<div class="mscrim" id="m-pagar">
+  <form class="mbox" method="post" action="{% url 'compras:pagar' so.pk %}"
+        enctype="multipart/form-data" role="dialog" aria-modal="true"
+        aria-labelledby="m-pagar-t">
+    {% csrf_token %}
+    <div class="mbox__h">
+      <div>
+        <h2 id="m-pagar-t">{% trans "Registrar pagamento" %}</h2>
+        <p>{% localize off %}{% blocktrans trimmed with t=invoice.total_usd p=invoice.paid_usd %}
+          fatura US$ {{ t }} · pago US$ {{ p }}{% endblocktrans %}{% endlocalize %}</p>
+      </div>
+      <button type="button" class="mbox__x" data-fecha="m-pagar" aria-label="{% trans 'Fechar' %}">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="mbox__b">
+      <label class="fpay">
+        <span class="nts__l">{% trans "Valor pago (US$)" %}</span>
+        <input type="number" name="amount_usd" step="0.01" min="0.01"
+               max="{{ invoice.balance_usd|unlocalize }}" required
+               value="{{ invoice.balance_usd|unlocalize }}">
+      </label>
+      <label class="fpay">
+        <span class="nts__l">{% trans "Data" %}</span>
+        <input type="date" name="paid_at" value="{{ hoje|date:'Y-m-d' }}" required>
+      </label>
+      <label class="fpay">
+        <span class="nts__l">{% trans "Referência" %}</span>
+        <input type="text" name="reference" maxlength="120"
+               placeholder="{% trans 'Nº do wire, banco, observação curta' %}">
+      </label>
+      <label class="fpay">
+        <span class="nts__l">{% trans "Comprovante (PDF ou imagem)" %}</span>
+        <input type="file" name="receipt" required
+               accept=".pdf,image/png,image/jpeg,image/webp">
+      </label>
+    </div>
+    <div class="mbox__f">
+      <button type="button" class="btn btn--sec" data-fecha="m-pagar">{% trans "Cancelar" %}</button>
+      <button type="submit" class="btn btn--pri">{% trans "Registrar pagamento" %}</button>
+    </div>
+  </form>
 </div>
 {% endif %}
 
 <style>
-  .cmp-voltar { color:#0f62fe; text-decoration:none; font-size:13px; font-weight:600; }
-  .cmp-head { display:flex; gap:40px; align-items:flex-start; margin:10px 0 22px;
-              flex-wrap:wrap; }
-  .cmp-head > div:first-child { flex:1; min-width:240px; }
-  .ptn-h1 { font-size:26px; font-weight:600; margin:0 0 4px; }
-  .ptn-sub { color:#525252; font-size:14px; margin:0; }
-  .cmp-tot__lbl { font-size:11px; letter-spacing:.06em; text-transform:uppercase;
-                  color:#525252; font-weight:600; }
-  .cmp-tot__val { font-size:24px; font-weight:600; margin-top:2px; }
-  .cmp-tot__sub { font-size:12px; color:#8d8d8d; }
-  .cmp-aviso { background:#fcf4d6; border-left:3px solid #f1c21b; padding:12px 14px;
-               font-size:14px; margin-bottom:18px; max-width:70ch; }
-  .cmp-nota { background:#edf5ff; border-left:3px solid #0f62fe; padding:10px 14px;
-              font-size:13px; margin-bottom:18px; max-width:70ch; }
-  .cmp-tab { width:100%; border-collapse:collapse; background:#fff;
-             border:1px solid #e0e0e0; font-size:14px; }
-  .cmp-tab th { text-align:left; font-size:11px; letter-spacing:.06em;
-                text-transform:uppercase; color:#525252; font-weight:600;
-                padding:10px 12px; border-bottom:1px solid #8d8d8d; }
-  .cmp-tab td { padding:9px 12px; border-bottom:1px solid #e0e0e0; }
-  .cmp-tab .num { text-align:right; }
-  .cmp-tab .mono { font-family:'IBM Plex Mono',monospace; }
-  .cmp-wtc { color:#525252; font-size:12px; }
-  .cmp-marca td { background:#f4f4f4; font-weight:600; border-bottom:1px solid #c6c6c6; }
-  .cmp-marca__qtd { font-weight:400; color:#525252; font-size:12px; margin-left:8px; }
-  .cmp-rej { background:#fff1f1; }
-  .cmp-falta { color:#8e6a00; font-weight:600; }
-  .cmp-falta-td { color:#8e6a00; font-size:12px; }
-  .cmp-in { width:88px; padding:5px 8px; border:1px solid #a2191f; text-align:right;
-            font-family:'IBM Plex Mono',monospace; font-size:14px; background:#fff; }
-  .cmp-dica { color:#525252; font-size:12px; margin:8px 0 0; max-width:34ch; }
-  .cmp-fechar { display:flex; gap:20px; align-items:flex-start; margin:0 0 18px;
-                flex-wrap:wrap; }
-  .cmp-fechar > div { padding-top:16px; }
-  .cmp-obs { display:block; margin:0; flex:1; min-width:260px; max-width:60ch; }
-  .cmp-obs span { display:block; font-size:11px; letter-spacing:.06em;
-                  text-transform:uppercase; color:#525252; font-weight:600;
-                  margin-bottom:5px; }
-  .cmp-obs textarea { width:100%; padding:9px; border:1px solid #8d8d8d;
-                      font-family:inherit; font-size:14px; }
-  .cmp-btn { background:#0f62fe; color:#fff; border:0; padding:13px 26px;
-             font-size:14px; font-weight:600; cursor:pointer; }
-  .cmp-btn:hover { background:#0353e9; }
-  .cmp-abas { display:flex; gap:2px; margin-bottom:-1px; }
-  .cmp-aba { background:#f4f4f4; border:1px solid #e0e0e0; border-bottom:0;
-             padding:9px 18px; font-size:13px; font-weight:600; color:#525252;
-             cursor:pointer; font-family:inherit; }
-  .cmp-aba--on { background:#fff; color:#161616; box-shadow:inset 0 2px 0 #0f62fe; }
-  .cmp-tot-lin td { border-top:1px solid #8d8d8d; font-weight:600;
-                    background:#f4f4f4; }
-  .cmp-tot-lin--pagar td { background:#edf5ff; border-top:0; color:#0043ce; }
-  .cmp-vazio-td { text-align:center; color:#8d8d8d; padding:30px; }
-  .cmp-steps { display:flex; list-style:none; margin:0 0 18px; padding:0;
-               border:1px solid #e0e0e0; background:#fff; flex-wrap:wrap; }
-  .cmp-step { display:flex; align-items:center; gap:8px; padding:11px 18px;
-              font-size:13px; color:#8d8d8d; border-right:1px solid #e0e0e0; }
-  .cmp-step:last-child { border-right:0; }
-  .cmp-step--done { color:#0e6027; }
-  .cmp-step--current { color:#161616; font-weight:600; background:#edf5ff; }
-  .cmp-step--pulado .cmp-step__mk { color:#c6c6c6; }
-  .cmp-step--current .cmp-step__mk { color:#0f62fe; }
-  .cmp-step__dt { font-size:11px; color:#8d8d8d; }
-  .cmp-receb, .cmp-acoes { display:flex; align-items:center; gap:12px;
-                           margin:0 0 18px; flex-wrap:wrap; }
-  .cmp-receb__dica { font-size:12px; color:#8d8d8d; }
-  .cmp-btn--ghost { background:#fff; color:#0f62fe; border:1px solid #0f62fe;
-                    padding:8px 16px; font-size:13px; text-decoration:none;
-                    display:inline-block; }
-  .cmp-btn--ghost:hover { background:#edf5ff; }
-  .cmp-tot__fx { font-size:12px; color:#525252; margin-top:6px; }
-  .cmp-tot__fxq { color:#8d8d8d; }
-  .cmp-glos { font-size:13px; color:#525252; max-width:70ch; margin:14px 0; }
-  .cmp-cat-on { background:#edf5ff; }
-  .cmp-cat-on td { font-weight:600; }
-  .cmp-pag { border:1px solid #e0e0e0; background:#fff; padding:16px 18px;
-             margin-bottom:18px; }
-  .cmp-pag__val { font-size:26px; font-weight:600; margin-top:2px; }
-  .cmp-pag__form { display:flex; gap:14px; align-items:flex-end; margin-top:14px;
-                   flex-wrap:wrap; }
-  .cmp-pag__form label { display:flex; flex-direction:column; gap:4px;
-                         font-size:11px; letter-spacing:.05em;
-                         text-transform:uppercase; color:#525252;
-                         font-weight:600; }
-  .cmp-pag__ref { flex:1; min-width:180px; }
-  .cmp-pag__file input { font-size:12px; }
-  /* O .cmp-in nasceu pro campo de RECUSA (borda vermelha, alinhado à
-     direita); no formulário de pagamento ele volta a ser campo comum. */
-  .cmp-in--w { width:100%; min-width:130px; border-color:#8d8d8d;
-               text-align:left; font-size:13px; padding:6px 8px; }
-  .cmp-pag__hist { margin-top:18px; }
-  .cmp-tot__exp { font-size:13px; font-weight:600; color:#8e6a00; margin-top:4px; }
-  .cmp-tot--final .cmp-tot__val { color:#0f62fe; }
-  .cmp-modal { position:fixed; inset:0; background:rgba(22,22,22,.7);
-               display:flex; align-items:center; justify-content:center;
-               padding:20px; z-index:60; }
-  .cmp-modal[hidden] { display:none; }
-  .cmp-modal__cx { background:#fff; max-width:520px; width:100%;
-                   box-shadow:0 12px 40px rgba(0,0,0,.3); }
-  .cmp-modal__top { padding:22px 24px 16px; border-bottom:1px solid #e0e0e0; }
-  .cmp-modal__top h2 { margin:0 0 8px; font-size:22px; font-weight:400; }
-  .cmp-modal__top p { margin:0; font-size:13px; color:#525252; max-width:44ch; }
-  .cmp-modal__tab { width:calc(100% - 48px); margin:20px 24px 0;
-                    border-collapse:collapse; border:1px solid #e0e0e0;
-                    font-size:14px; }
-  .cmp-modal__tab td { padding:11px 14px; border-bottom:1px solid #e0e0e0; }
-  .cmp-modal__tab td:last-child { text-align:right; font-weight:600; }
-  .cmp-modal__tab tr:last-child td { border-bottom:0; }
-  .cmp-m-val { font-size:18px; color:#8e6a00; }
-  .cmp-modal__exp td { font-size:12px; color:#525252; }
-  .cmp-modal__av { margin:16px 24px 0; padding:12px 14px; font-size:13px;
-                   background:#fcf4d6; border-left:3px solid #f1c21b; }
-  .cmp-modal__bt { display:flex; margin-top:20px; }
-  .cmp-mbtn { flex:1; border:0; padding:16px; font-size:14px; cursor:pointer;
-              font-family:inherit; background:#e0e0e0; color:#161616; }
-  .cmp-mbtn--ok { background:#0f62fe; color:#fff; font-weight:600; }
-  .cmp-mbtn--ok:hover { background:#0353e9; }
+  /* O que é DESTA tela e não existe no pacote: os campos do diálogo de
+     pagamento. Todo o resto vem de `patterns/ficha.css`. */
+  /* a DIFERENÇA entre o esperado e o final, na própria caixa do resultado:
+     é ela que o cliente vai querer explicada, e não pode ficar para o leitor
+     calcular (dono, 2026-08-18). */
+  .kpi__d { font-family:var(--mono); font-size:11.5px; font-weight:600;
+            color:var(--amber-70); margin-top:5px; letter-spacing:-.02em; }
+  .fpay { display:block; }
+  .fpay input { width:100%; height:var(--ctl-sm); padding:0 12px;
+                border:1px solid var(--line-2); border-bottom-width:2px;
+                background:var(--surface); font-family:var(--mono);
+                font-size:14px; color:var(--text); }
+  .fpay input[type=file] { font-family:var(--sans); font-size:12.5px;
+                           padding:9px 12px; height:auto; }
+  .fpay input:focus { outline:0; border-color:var(--blue-60);
+                      box-shadow:0 0 0 2px rgba(15,98,254,.16); }
+  /* `.sst__w` é position:relative e vence o [hidden] nativo em alguns
+     navegadores — a aba escondida reaparecia empilhada sob a visível. */
+  [hidden] { display:none !important; }
 </style>
 
 <script>
@@ -564,40 +581,56 @@
   // navegador bloquear a janela, o botão está logo ali — por isso ele não
   // some nem depende disto.
   if (window.location.search.indexOf('pdf=1') !== -1) {
-    var lnk = document.getElementById('cmp-pdf-link');
+    var lnk = document.getElementById('pdf-link');
     if (lnk) { window.open(lnk.href, '_blank'); }
   }
 
   // ── Abas ────────────────────────────────────────────────────────────────
-  var panes = {resumo: document.getElementById('cmp-pane-resumo'),
-               chips:  document.getElementById('cmp-pane-chips'),
-               categorias: document.getElementById('cmp-pane-categorias')};
-  document.querySelectorAll('.cmp-aba').forEach(function (b) {
+  var abas = document.querySelectorAll('.nb button[data-aba]');
+  abas.forEach(function (b) {
     b.addEventListener('click', function () {
-      document.querySelectorAll('.cmp-aba').forEach(function (o) {
-        o.classList.toggle('cmp-aba--on', o === b);
-      });
-      Object.keys(panes).forEach(function (k) {
-        if (panes[k]) panes[k].hidden = (k !== b.dataset.aba);
+      abas.forEach(function (o) { o.classList.toggle('on', o === b); });
+      ['resumo', 'chips', 'categorias', 'pagamentos'].forEach(function (k) {
+        var p = document.getElementById('pane-' + k);
+        if (p) p.hidden = (k !== b.dataset.aba);
       });
     });
+  });
+
+  // ── Diálogos ────────────────────────────────────────────────────────────
+  function abrir(id) { var m = document.getElementById(id); if (m) m.classList.add('on'); }
+  function fechar(id) { var m = document.getElementById(id); if (m) m.classList.remove('on'); }
+  document.querySelectorAll('[data-abre]').forEach(function (b) {
+    b.addEventListener('click', function () { abrir(b.dataset.abre); });
+  });
+  document.querySelectorAll('[data-fecha]').forEach(function (b) {
+    b.addEventListener('click', function () { fechar(b.dataset.fecha); });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.mscrim.on').forEach(function (m) {
+        m.classList.remove('on');
+      });
+    }
   });
 
   // ── Totais ao vivo enquanto ele digita os recusados ─────────────────────
   // CONFORTO, nunca a fonte da conta: quem soma de verdade é o servidor no
   // "Fechar resultado" (o settle_and_invoice revalida tudo).
-  var campos = document.querySelectorAll('.cmp-rej input[data-qty]');
-  var elRej = document.getElementById('cmp-t-rej');
-  var elAceitos = document.getElementById('cmp-t-aceitos');
-  var elPagar = document.getElementById('cmp-t-pagar');
-  if (!campos.length || !elPagar) return;
+  var campos = document.querySelectorAll('.rjin[data-qty]');
+  var form = document.getElementById('f-resultado');
+  var elPagar = document.getElementById('t-pagar');
+  if (!campos.length || !elPagar || !form) return;
 
-  var form = document.getElementById('cmp-form-resultado');
-  var fx = parseFloat(form && form.dataset.fx) || 0;
-  var esperado = parseFloat(form && form.dataset.esperado) || 0;
-  var hRmb = document.getElementById('cmp-h-rmb');
-  var hUsd = document.getElementById('cmp-h-usd');
-  var hExp = document.getElementById('cmp-h-exp');
+  var fx = parseFloat(form.dataset.fx) || 0;
+  var esperado = parseFloat(form.dataset.esperado) || 0;
+  var elRej = document.getElementById('t-rej');
+  var elAce = document.getElementById('t-ace');
+  var kRmb = document.getElementById('k-rmb');
+  var kUsd = document.getElementById('k-usd');
+  var kExp = document.getElementById('k-exp');
+  var fRej = document.getElementById('f-rej');
+  var fAce = document.getElementById('f-ace');
   var estado = {rej: 0, aceitos: 0, enviados: 0, pagar: 0};
 
   function recalcular() {
@@ -608,62 +641,65 @@
       var r = parseInt(i.value, 10);
       if (isNaN(r) || r < 0) r = 0;
       if (r > qtd) r = qtd;
-      rej += r;
-      enviados += qtd;
-      aceitos += (qtd - r);
-      pagar += (qtd - r) * unit;
+      var tr = i.closest('tr');
+      if (tr) tr.classList.toggle('on', r > 0);
+      rej += r; enviados += qtd; aceitos += (qtd - r); pagar += (qtd - r) * unit;
     });
     estado = {rej: rej, aceitos: aceitos, enviados: enviados, pagar: pagar};
-    elRej.textContent = rej;
-    elAceitos.textContent = aceitos;
+    if (elRej) elRej.textContent = rej;
+    if (elAce) elAce.textContent = aceitos;
     elPagar.textContent = '¥ ' + pagar.toFixed(2);
-    // Só a coluna FINAL se move — a ESPERADA é o preço fechado com o
-    // cliente e fica parada, senão a referência se perde (dono, 2026-08-18).
-    if (hRmb) hRmb.textContent = '¥ ' + pagar.toFixed(2);
-    if (hUsd && fx) hUsd.textContent = 'US$ ' + (pagar * fx).toFixed(2);
-    if (hExp) {
-      var dif = pagar - esperado;
-      var difere = esperado && Math.abs(dif) >= 0.005;
-      hExp.hidden = !difere;
-      if (difere) {
-        hExp.textContent = (dif < 0 ? '−' : '+') + '¥ '
-          + Math.abs(dif).toFixed(2);
-      }
+    // Só o RESULTADO se move — o ESPERADO é o preço fechado com o cliente e
+    // fica parado, senão a referência se perde (dono, 2026-08-18).
+    if (kRmb) kRmb.textContent = '¥ ' + pagar.toFixed(2);
+    if (kUsd && fx) kUsd.textContent = 'US$ ' + (pagar * fx).toFixed(2);
+    if (kExp) {
+      var d = pagar - esperado;
+      var difere = esperado && Math.abs(d) >= 0.005;
+      kExp.hidden = !difere;
+      if (difere) kExp.textContent = (d < 0 ? '−' : '+') + '¥ ' + Math.abs(d).toFixed(2);
     }
+    if (fRej) { fRej.textContent = rej; fRej.classList.toggle('bad', rej > 0); }
+    if (fAce) fAce.textContent = aceitos;
   }
   campos.forEach(function (i) { i.addEventListener('input', recalcular); });
+  var zerar = document.getElementById('zerar');
+  if (zerar) {
+    zerar.addEventListener('click', function () {
+      campos.forEach(function (i) { i.value = ''; });
+      recalcular();
+    });
+  }
   recalcular();
 
   // ── Confirmação antes de gravar ─────────────────────────────────────────
-  var modal = document.getElementById('cmp-modal');
-  if (!modal || !form) return;
-  function abrir(e) {
+  var modal = document.getElementById('m-fechar');
+  if (!modal) return;
+  function conferir(e) {
     e.preventDefault();
     recalcular();
-    document.getElementById('cmp-m-lote').textContent = form.dataset.lote || '—';
-    document.getElementById('cmp-m-env').textContent = estado.enviados + ' un.';
-    document.getElementById('cmp-m-rej').textContent =
+    document.getElementById('m-env').textContent = estado.enviados + ' un.';
+    document.getElementById('m-rej').textContent =
       estado.rej ? estado.rej + ' un.' : '{% trans "nenhum" %}';
-    document.getElementById('cmp-m-ace').textContent = estado.aceitos + ' un.';
-    document.getElementById('cmp-m-res').textContent = '¥ ' + estado.pagar.toFixed(2);
+    document.getElementById('m-ace').textContent = estado.aceitos + ' un.';
+    document.getElementById('m-res').textContent = '¥ ' + estado.pagar.toFixed(2);
     var dif = estado.pagar - esperado;
-    document.getElementById('cmp-m-esp').textContent =
+    document.getElementById('m-esp').textContent =
       '{% trans "Esperado" %} ¥ ' + esperado.toFixed(2);
-    document.getElementById('cmp-m-delta').textContent = Math.abs(dif) < 0.005
+    var elD = document.getElementById('m-delta');
+    elD.textContent = Math.abs(dif) < 0.005
       ? '{% trans "sem acerto" %}'
       : (dif < 0 ? '−' : '+') + '¥ ' + Math.abs(dif).toFixed(2);
-    document.getElementById('cmp-m-aviso').textContent = estado.rej
+    elD.classList.toggle('neg', dif < -0.004);
+    document.getElementById('m-aviso').textContent = estado.rej
       ? '{% trans "Depois de fechar, os números não podem mais ser alterados." %}'
       : '{% trans "Nenhuma recusa lançada — o lote inteiro será aprovado pelo valor declarado. Depois de fechar, os números não podem mais ser alterados." %}';
-    modal.hidden = false;
+    abrir('m-fechar');
   }
-  form.addEventListener('submit', abrir);
-  document.getElementById('cmp-m-voltar').addEventListener('click', function () {
-    modal.hidden = true;
-  });
-  document.getElementById('cmp-m-ok').addEventListener('click', function () {
-    modal.hidden = true;
-    form.removeEventListener('submit', abrir);   // agora vai de verdade
+  form.addEventListener('submit', conferir);
+  document.getElementById('m-ok').addEventListener('click', function () {
+    fechar('m-fechar');
+    form.removeEventListener('submit', conferir);   // agora vai de verdade
     form.submit();
   });
 })();

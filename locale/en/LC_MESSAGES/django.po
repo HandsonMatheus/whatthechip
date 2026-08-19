@@ -3293,3 +3293,31 @@ msgstr "contract rate"
 #. parceiro/ (design system v2: barra e fila de compras)
 msgid "Assim que um cliente despachar um lote, ele aparece aqui."
 msgstr "As soon as a client ships a lot, it shows up here."
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Câmbio"
+msgstr "FX rate"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Envio"
+msgstr "Shipping"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Enviado em"
+msgstr "Shipped on"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Limpar recusas"
+msgstr "Clear rejections"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Nenhum pagamento registrado ainda."
+msgstr "No payment recorded yet."
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Digite só o que <b>recusou</b> — campo em branco vale zero."
+msgstr "Enter only what you <b>rejected</b> — a blank field counts as zero."
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Marque o recebimento para começar a conferência — não se confere caixa que ainda não chegou."
+msgstr "Mark the delivery to start checking — you do not check a box that has not arrived."

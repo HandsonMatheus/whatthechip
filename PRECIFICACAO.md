@@ -1742,6 +1742,28 @@ está documentado em `services.ship_to`.
 **comprovante que o COMPRADOR anexou**. Quem paga é o comprador; o cliente
 precisa acompanhar. Some inteiro para quem não vê valor.
 
+🧾 **A COMPRA ABERTA VIRA UMA FICHA** (dono, 2026-08-19: *"redesenhe esta
+página, estrutura simples, sólida e escalável — vamos replicar para a OV do
+cliente"*). A tela estava quebrada porque CADA ETAPA acrescentava um bloco novo
+no meio dela: banner de despacho, caixa de pagamento, aviso, botão. A mesma
+informação nascia num lugar diferente conforme o estágio.
+
+Agora ela é uma **ficha** (`patterns/ficha.css`), e a regra do padrão resolve o
+problema pela raiz: **nada muda de lugar entre uma etapa e outra — os campos e
+as abas só ACENDEM quando a etapa que os produz acontece.** Quatro peças fixas:
+barra de ação (voltar · etapas · A AÇÃO DA VEZ) · identidade + os três números ·
+quatro grupos de campos (Lote · Envio · Resultado · Pagamento) · abas +
+planilha. Etapa que ainda não aconteceu fica apagada, no mesmo lugar.
+
+O que era formulário solto no meio da página virou DIÁLOGO: fechar resultado
+(com a observação dentro dele, que é onde ela pertence) e registrar pagamento.
+O histórico de pagamentos virou uma ABA, ao lado de Resumo · Chips ·
+Categorias. Abaixo da planilha não ficou nada.
+
+⚠ **Esta é a tela-modelo**: a OV do CLIENTE recebe o MESMO esqueleto, nos
+mesmos lugares, com as funções dele (lá quem despacha é o cliente; aqui quem
+confere e paga é o comprador). Mexeu aqui, mexa lá.
+
 🎨 **A TELA DE COMPRAS VESTE O DESIGN SYSTEM v2** (dono, 2026-08-19). O pacote
 entrou em `static/wtc/` e a primeira superfície migrada é a do COMPRADOR:
 `/partner/` inteira ganhou a barra CLARA do v2 (`.pshell` — o shell escuro

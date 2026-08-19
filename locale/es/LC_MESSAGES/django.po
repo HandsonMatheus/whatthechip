@@ -3319,3 +3319,31 @@ msgstr "tasa del contrato"
 #. parceiro/ (design system v2: barra e fila de compras)
 msgid "Assim que um cliente despachar um lote, ele aparece aqui."
 msgstr "En cuanto un cliente despache un lote, aparece aquí."
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Câmbio"
+msgstr "Tipo de cambio"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Envio"
+msgstr "Envío"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Enviado em"
+msgstr "Enviado el"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Limpar recusas"
+msgstr "Limpiar rechazos"
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Nenhum pagamento registrado ainda."
+msgstr "Ningún pago registrado todavía."
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Digite só o que <b>recusou</b> — campo em branco vale zero."
+msgstr "Escriba solo lo que <b>rechazó</b> — el campo en blanco vale cero."
+
+#. parceiro/ (ficha da compra: barra de ação, grupos e planilha)
+msgid "Marque o recebimento para começar a conferência — não se confere caixa que ainda não chegou."
+msgstr "Marque la recepción para empezar la revisión — no se revisa una caja que aún no llegó."

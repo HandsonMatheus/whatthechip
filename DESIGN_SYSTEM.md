@@ -46,8 +46,40 @@ estão no pacote. Sem elas tudo cai em system-ui e a densidade muda.
 | `/partner/` — compras do comprador | ✅ `.pshell` + `.dtab` + `.tag`/`.act` + `.tfoot` |
 | Barra e trilho de tipos do parceiro (todas as telas dele) | ✅ `.pshell` · `.papp`/`.pside`/`.pmain` |
 | `/partner/precos/`, `/partner/tipo/…`, `how`, notificações | ⏳ conteúdo ainda `.ptn-*` (legado no `<style>` da base) |
-| `/partner/compras/<pk>/` — a compra aberta | ⏳ próxima da fila (usar `patterns/ficha.css` + `.rhead`) |
+| `/partner/compras/<pk>/` — a compra aberta | ✅ `patterns/ficha.css`: `.fbar` · `.sheet` · `.fgrid` · `.nb` · `.sst` · `.mbox` |
 | Telas internas da empresa (estoque, vendas) | ⏳ canary `Company.ui_v2` — ver FRONTEND_V2.md |
+
+## 3.1 A FICHA — o esqueleto de toda página de registro
+
+`patterns/ficha.css` é a convenção do sistema para "qualquer registro que
+percorre etapas" (lote, venda, compra). A regra que ele impõe é a que endireita
+a página:
+
+> **NADA MUDA DE LUGAR ENTRE UMA ETAPA E OUTRA.** Os campos e as abas só
+> ACENDEM quando a etapa que os produz acontece.
+
+Quatro peças, sempre nesta ordem:
+
+1. **`.fbar`** — voltar · trilho de etapas (`#stat` / `.stat__s`) · **a ação da
+   vez**, uma só. Botão de ação nunca desce para o meio da página: ele mora
+   aqui, e aciona formulários que vivem no fim do documento via `form=`.
+2. **`.sheet__hd`** — identidade (`.sheet__t` + `.tag`) e os três números
+   (`.kpis` → `.kpi--base` esperado · `.kpi--res` resultado · `.kpi--due`/`--ok`
+   saldo). Etapa que ainda não produziu número usa `.kpi--off`.
+3. **`.fgrid`** — um `.fgrp` por etapa do negócio, com linhas `.fld2`. A etapa
+   que ainda não aconteceu leva `.is-off`: o gabarito fica visível, os valores
+   não — a caixa promete sem mentir.
+4. **`.nb`** (abas, com contador em `<em>`) + **`.sst`** (a planilha: faixa de
+   grupo `.g`, campo de recusa `.rjin`, colunas tingidas `.hr`/`.hb`, rodapé de
+   coluna escuro).
+
+Formulário que não é conteúdo vira **`.mbox`** (diálogo): fechar resultado e
+registrar pagamento. Abaixo da planilha não fica NADA — lote grande tem
+centenas de linhas, e botão no fim dela é botão que ninguém alcança.
+
+⚠ `ficha.css` precisa estar LINKADO. Sem ele a página sai crua e cada `<svg>`
+sem regra de tamanho vira uma mancha do tamanho da tela — foi assim que a
+compra apareceu na primeira tentativa.
 
 ## 4. Duas regras deste projeto que o pacote não sabe
 
