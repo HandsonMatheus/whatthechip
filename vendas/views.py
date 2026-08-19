@@ -55,12 +55,24 @@ def _pode_faturar(request) -> bool:
 def so_list(request):
     # list(): a máscara abaixo escreve nas INSTÂNCIAS (nunca no banco) — o
     # número simplesmente não chega ao HTML de quem não pode vê-lo.
+    # ⚠ prefetch de linhas/faturas/pagamentos: `annotate_sales` conta chips e
+    # lê o saldo de cada ordem — sem isto a lista vira uma enxurrada de
+    # queries.
     orders = list(SalesOrder.objects.select_related('lot', 'buyer')
+                  .prefetch_related('lines', 'invoices', 'invoices__payments')
                   .order_by('-created_at')[:200])
+    # Chips, esperado e a receber por linha (dono, 2026-08-19).
+    services.annotate_sales(orders)
     ver_valor = can_see_price(request)
     if not ver_valor:
+        # Dinheiro some do CONTEXTO, não só da tela: a coluna nem existe no
+        # HTML de quem não vê valor, e a instância também não carrega o
+        # número (template esconde, contexto vaza). A QUANTIDADE fica — ela é
+        # a operação dele, não o valor.
         for o in orders:
             o.total_rmb = o.total_usd = None
+            o.est_rmb = o.est_usd = o.receber_usd = None
+            o.fatura = None
     return render(request, ui(request, 'vendas/so_list.html'),
                   {'orders': orders, 'ver_valor': ver_valor})
 

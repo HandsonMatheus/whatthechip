@@ -33,6 +33,11 @@
       <th class="num">{% trans "Chips" %}</th>
       <th class="num">{% trans "Total ¥" %}</th>
       <th class="num">{% trans "Total US$" %}</th>
+      {% comment %} RESULTADO (dono, 2026-08-19): o total acima é o ESPERADO —
+         o que o lote valia quando saiu. O que ele paga de fato é o que sobra
+         depois da conferência, e isso só existe com fatura. A mesma coluna
+         está na lista do cliente, do outro lado do balcão. {% endcomment %}
+      <th class="num">{% trans "Resultado" %}</th>
       <th>{% trans "Situação" %}</th>
       <th></th>
     </tr>
@@ -49,6 +54,7 @@
          nada sobre o tamanho da compra. {% endcomment %}
       <td class="num mono">{% localize off %}{% if o.total_rmb %}¥ {{ o.total_rmb }}{% elif o.est_rmb %}<span class="cmp-est">≈ ¥ {{ o.est_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
       <td class="num mono">{% localize off %}{% if o.total_usd %}US$ {{ o.total_usd }}{% elif o.est_usd %}<span class="cmp-est">≈ US$ {{ o.est_usd }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
+      <td class="num mono">{% localize off %}{% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if o.fatura.balance_usd %}<span class="cmp-falta">{% trans "falta" %} US$ {{ o.fatura.balance_usd }}</span>{% endif %}{% else %}—{% endif %}{% endlocalize %}</td>
       <td>
         {% if o.stage == 'sem_preco' %}<span class="cmp-tag cmp-tag--warn">{% trans "Falta preço seu" %}</span>
         {% elif o.stage == 'a_congelar' %}<span class="cmp-tag cmp-tag--go">{% trans "Congelar" %}</span>
@@ -85,6 +91,7 @@
   .cmp-tag--go   { background:#d0e2ff; color:#0043ce; }
   .cmp-data { font-size:12px; color:#525252; line-height:1.5; }
   .cmp-est { color:#8d8d8d; }
+  .cmp-falta { display:block; font-size:11.5px; color:#a2191f; font-weight:600; }
   .cmp-tag--todo { background:#e8daff; color:#6929c4; }
   .cmp-tag--ok   { background:#defbe6; color:#0e6027; }
   .cmp-link { color:#0f62fe; text-decoration:none; font-weight:600; white-space:nowrap; }

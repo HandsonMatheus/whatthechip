@@ -830,6 +830,12 @@ def orders_for_buyer(buyer):
                 # viajam na caixa mas não entram no comércio — aparecem à
                 # parte na tela da compra, para o total bater com o lote.
                 so.units = sum(l.quantity for l in so.lines.all())
+                # A fatura ATIVA (cancelada não conta): é o RESULTADO da
+                # conferência — o que ele vai pagar de verdade depois de
+                # recusar o que não prestava, e o saldo que falta (dono,
+                # 2026-08-19). Mesma coluna existe na lista do cliente.
+                so.fatura = next((i for i in so.invoices.all()
+                                  if i.status != 'cancelled'), None)
                 out.append(so)
     out.sort(key=lambda s: s.created_at, reverse=True)
     return out
@@ -860,6 +866,54 @@ def buyer_order(buyer, pk):
                 yield so
                 return
     raise Http404('Ordem de venda não encontrada para este comprador.')
+
+
+def annotate_sales(orders):
+    """Anexa a cada OV da LISTA o que a tela de vendas mostra por linha.
+
+    Uma volta só para as três perguntas que o dono quer responder de relance
+    (2026-08-19): *quantos chips saíram*, *quanto se esperava* e *quanto ainda
+    tem a receber* — antes a lista só tinha código, status e data, e ele
+    precisava abrir ordem por ordem para saber o tamanho de cada uma.
+
+    Campos anexados (nas INSTÂNCIAS, nunca no banco):
+
+    · ``units``       — chips DA ORDEM (o que vira dinheiro; as sem chave de
+      preço viajam na caixa e aparecem à parte no detalhe);
+    · ``est_rmb``/``est_usd`` — rascunho não guarda valor: o esperado é
+      re-resolvido AO VIVO contra o grid do comprador (mesma conta da lista
+      dele). Confirmada já tem ``total_rmb``/``total_usd`` congelados;
+    · ``fatura``      — a fatura ATIVA (cancelada não conta), ou ``None``;
+    · ``receber_usd`` + ``receber_est`` — o que falta entrar. Com fatura é o
+      SALDO (final − pago); sem fatura ainda é o esperado, e aí ``receber_est``
+      marca que aquilo é estimativa, não promessa.
+
+    ⚠ Cotação viva é cara: o ``BuyerPricingContext`` é reaproveitado por
+    comprador (a lista costuma ter um só).
+    """
+    ctxs = {}
+    for so in orders:
+        so.units = sum(l.quantity for l in so.lines.all())
+        so.est_rmb = so.est_usd = None
+        if so.status == STATUS_DRAFT:
+            ctx = ctxs.get(so.buyer_id)
+            if ctx is None:
+                from pricing.engine import BuyerPricingContext
+                ctx = ctxs[so.buyer_id] = BuyerPricingContext(so.buyer)
+            so.est_rmb, so.est_usd, _pend = draft_totals(live_quotes(so, ctx))
+        so.fatura = next((i for i in so.invoices.all()
+                          if i.status != 'cancelled'), None)
+        if so.status == STATUS_CANCELLED:
+            # Ordem cancelada não tem o que receber — e "US$ 0,00" numa linha
+            # apagada se lê como dívida quitada, que é outra coisa.
+            so.receber_usd, so.receber_est = None, False
+        elif so.fatura is not None:
+            so.receber_usd, so.receber_est = so.fatura.balance_usd, False
+        else:
+            so.receber_usd = (so.total_usd if so.total_usd is not None
+                              else so.est_usd)
+            so.receber_est = so.receber_usd is not None
+    return orders
 
 
 #: Estágios comerciais que o comprador vê. Canônicos (a chave nunca traduz);

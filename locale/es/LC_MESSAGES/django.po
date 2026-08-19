@@ -3291,3 +3291,15 @@ msgstr "recibida"
 #. vendas/ (esqueleto comum)
 msgid "Digite só o que recusou — campo em branco vale zero."
 msgstr "Escriba solo lo que rechazó — el campo en blanco vale cero."
+
+#. vendas/ (lista de vendas e de compras: chips, estimado, resultado)
+msgid "Estimado"
+msgstr "Estimado"
+
+#. vendas/ (lista de vendas e de compras: chips, estimado, resultado)
+msgid "A receber"
+msgstr "A cobrar"
+
+#. vendas/ (lista de vendas e de compras: chips, estimado, resultado)
+msgid "falta"
+msgstr "falta"

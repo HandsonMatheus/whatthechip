@@ -1742,6 +1742,29 @@ está documentado em `services.ship_to`.
 **comprovante que o COMPRADOR anexou**. Quem paga é o comprador; o cliente
 precisa acompanhar. Some inteiro para quem não vê valor.
 
+📋 **AS LISTAS PASSAM A DIZER O TAMANHO DO NEGÓCIO** (dono, 2026-08-19). As
+duas tabelas de topo mostravam código, status e data — para saber quantos chips
+saíram e quanto ia entrar era preciso abrir ordem por ordem.
+
+· **Cliente (`/vendas`)** ganha **Chips · Estimado · Resultado · A receber**,
+  com o **Status por ÚLTIMO** (pedido explícito). A data desceu para dentro da
+  célula da ordem, como na tela do comprador — mesma informação, uma coluna a
+  menos de largura.
+· **Comprador (`/partner/`)** ganha **Resultado** (o que ele paga depois da
+  conferência) com o *falta* embaixo quando ainda há saldo.
+
+Convenção das duas: **"≈" marca estimativa** — rascunho tem o valor
+re-resolvido AO VIVO contra o grid do comprador; confirmado mostra o congelado
+sem til (a taxa congela junto, a conversão é exata). *A receber* é o SALDO
+quando já há fatura e a expectativa (com ≈) enquanto não há. Ordem cancelada
+não mostra nada: "US$ 0,00" numa linha apagada se lê como dívida quitada.
+`services.annotate_sales()` faz a volta única que alimenta tudo isso.
+
+🎨 **PDF do resultado, as duas caixas pintadas** (dono, 2026-08-19): **Final em
+azul, Difference em amarelo, "tudo bem de leve"** (Carbon 10 — `#edf5ff` e
+`#fcf4d6`). O *Expected* fica no branco: ele é a referência, o olho tem que
+cair nas outras duas. Claros o bastante para sobreviver à impressão P&B.
+
 🚫 **Sem bolinhas: a COLUNA some** (dono, 2026-08-19). O gerente via `•••` no
 lugar do dinheiro — e bolinha é um espaço vazio dizendo "aqui tem dinheiro que
 você não pode ver". Agora a coluna inteira não é renderizada, na OV e na lista:

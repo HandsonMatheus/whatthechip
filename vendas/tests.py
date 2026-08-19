@@ -2732,3 +2732,172 @@ class TelaDaOVEspelhaACompraTests(TestCase):
         self.assertTrue(linha['estimado'])
         self.assertIsNotNone(linha['unit_usd'])
         self.assertIsNotNone(linha['total_usd'])
+
+
+class ListasMostramOTamanhoDaVendaTests(TestCase):
+    """As duas LISTAS param de esconder o tamanho do negócio (dono, 2026-08-19).
+
+    Antes, a lista de vendas do cliente tinha código, status e data — para
+    saber quantos chips saíram e quanto ia entrar era preciso abrir ordem por
+    ordem. E a lista de compras mostrava o ESPERADO sem dizer o que a
+    conferência devolveu.
+
+    O que se prova aqui:
+
+    · cliente: CHIPS, ESTIMADO (¥ com o ≈US$ embaixo) e A RECEBER, com o
+      STATUS por ÚLTIMO — a ordem das colunas é pedido explícito;
+    · comprador: a coluna RESULTADO, e o que ainda falta pagar;
+    · dinheiro continua saindo INTEIRO (coluna e contexto) para quem não tem
+      ``can_see_price`` — bolinha nunca (2026-08-19).
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.brand = _setup('vd-lst')
+        cls.buyer.company = None                    # comprador de plataforma
+        cls.buyer.save(update_fields=['company'])
+        User = get_user_model()
+        cls.adm = User.objects.create_user('vd_lst_adm', password='x')
+        Membership.objects.create(user=cls.adm, company=cls.company,
+                                  role='admin')
+        cls.ger = User.objects.create_user('vd_lst_ger', password='x')
+        Membership.objects.create(user=cls.ger, company=cls.company,
+                                  role='manager')
+        cls.parceiro = User.objects.create_user('vd_lst_p', password='x')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        call_command('seed_category_codes', '--commit', verbosity=0)
+        with company_scope(self.company):
+            lot = Lot.open_for_company(self.company, self.adm, 'l',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='LST1', quantity=10, brand=self.brand,
+                chip_type='eMMC', company=self.company, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')                    # 10 × ¥15 = ¥150
+            Lot.all_companies.filter(pk=lot.pk).update(closed_at=timezone.now())
+            self.so = services.create_draft_for_lot(lot, self.adm)
+
+    def _despachar(self):
+        with company_scope(self.company):
+            services.mark_shipped(self.so, 'DHL', 'JD9', None, self.adm)
+            self.so.refresh_from_db()
+
+    def _fechar_resultado(self, recusados=0):
+        self._despachar()
+        with company_scope(self.company):
+            linha = self.so.lines.get()
+            services.settle_and_invoice(self.so, {linha.pk: (recusados, None)},
+                                        self.adm)
+            return Invoice.all_companies.get(order=self.so)
+
+    def _vendas(self):
+        self.client.force_login(self.adm)
+        return self.client.get(reverse('vendas:so_list'))
+
+    # ── lista do CLIENTE ────────────────────────────────────────────────────
+
+    def test_lista_do_cliente_diz_quantos_chips_e_quanto_se_espera(self):
+        tela = self._vendas()
+        self.assertContains(tela, 'Chips')
+        self.assertContains(tela, '>10<')               # a quantidade da ordem
+        # Rascunho não guarda valor: o esperado é a cotação VIVA, com "≈".
+        self.assertContains(tela, '≈ ¥ 150.00')
+        self.assertContains(tela, 'A receber')
+
+    def test_depois_do_despacho_o_estimado_e_o_congelado_sem_til(self):
+        self._despachar()
+        tela = self._vendas()
+        self.assertNotContains(tela, '≈ ¥ 150.00')      # não é mais estimativa
+        # A taxa congela junto, então o US$ da célula é EXATO — sem "≈".
+        # (A célula inteira, e não o valor solto: "≈ US$ 21.00" segue certo na
+        # coluna A RECEBER, que ainda é expectativa enquanto não há fatura.)
+        self.assertContains(
+            tela, '¥ 150.00<span class="vd-sub">US$ 21.00</span>', html=False)
+
+    def test_a_receber_vira_o_SALDO_depois_do_resultado(self):
+        inv = self._fechar_resultado(recusados=4)       # 6 × ¥15 = ¥90
+        tela = self._vendas()
+        self.assertContains(tela, f'US$ {inv.total_usd}')      # RESULTADO
+        self.assertEqual(inv.balance_usd, inv.total_usd)       # nada pago
+        with company_scope(self.company):
+            services.register_payment(inv, Decimal('1.00'),
+                                      timezone.localdate(), self.adm)
+            inv.refresh_from_db()
+        tela = self._vendas()
+        self.assertContains(tela, f'US$ {inv.balance_usd}')     # o que falta
+
+    def test_status_e_a_ULTIMA_coluna(self):
+        """Pedido explícito do dono — e ordem de coluna só se prova na ordem
+        do HTML, não pela presença dos rótulos."""
+        html = self._vendas().content.decode()
+        cabecalho = html.index('<thead')
+        for antes in ('Chips', 'Estimado', 'Resultado', 'A receber'):
+            self.assertLess(html.index(antes, cabecalho),
+                            html.index('Status', cabecalho),
+                            f'{antes} deveria vir antes de Status')
+
+    def test_gerente_nao_ganha_NENHUMA_coluna_de_dinheiro(self):
+        """A barreira é ESTRUTURAL: a coluna não existe, e o número também não
+        chega ao contexto (template esconde, contexto vaza)."""
+        self.client.force_login(self.ger)
+        tela = self.client.get(reverse('vendas:so_list'))
+        self.assertFalse(tela.context['ver_valor'])
+        self.assertNotContains(tela, '•••')
+        for rotulo in ('Estimado', 'A receber', 'Total ¥'):
+            self.assertNotContains(tela, rotulo)
+        self.assertContains(tela, 'Chips')              # quantidade FICA
+        self.assertContains(tela, '>10<')
+        for o in tela.context['orders']:
+            self.assertIsNone(o.est_rmb)
+            self.assertIsNone(o.receber_usd)
+            self.assertIsNone(o.fatura)
+
+    # ── lista do COMPRADOR ──────────────────────────────────────────────────
+
+    def _compras(self):
+        self.client.force_login(self.parceiro)
+        return self.client.get(reverse('compras:list'))
+
+    def test_lista_de_compras_ganha_a_coluna_de_resultado(self):
+        self._despachar()
+        tela = self._compras()
+        self.assertContains(tela, 'Resultado')
+        self.assertContains(tela, '¥ 150.00')           # o esperado, congelado
+
+    def test_resultado_da_compra_aparece_e_o_que_falta_pagar_tambem(self):
+        inv = self._fechar_resultado(recusados=4)
+        tela = self._compras()
+        self.assertContains(tela, f'US$ {inv.total_usd}')
+        # ⚠ Asserção pelo MARKUP, não pela palavra: 'falta' também aparece no
+        # bloco <style> (a regra da classe) e o assertNotContains casaria com
+        # o CSS, não com a linha da tabela.
+        self.assertContains(tela, 'class="cmp-falta"')
+        with company_scope(self.company):
+            services.register_payment(inv, inv.total_usd,
+                                      timezone.localdate(), self.parceiro)
+        tela = self._compras()
+        self.assertNotContains(tela, 'class="cmp-falta"')   # quitada, sem saldo
+
+    # ── PDF do resultado ────────────────────────────────────────────────────
+
+    def test_caixas_do_pdf_saem_pintadas_de_leve(self):
+        """Dono, 2026-08-19: FINAL em azul, DIFERENÇA em amarelo. A prova é o
+        operador de cor no stream — asserção de estilo em objeto de tabela
+        provaria só que o código foi escrito, não que o PDF saiu pintado."""
+        from reportlab.lib.rl_accel import fp_str
+        from .pdf import _SAND, _SKY, render_result_pdf
+        _sem_compressao(self)
+        inv = self._fechar_resultado(recusados=4)
+        with company_scope(self.company):
+            pdf = render_result_pdf(services.result_document(self.so, inv))
+        fluxo = _conteudo_do_pdf(pdf)
+
+        def _rg(cor):
+            return (fp_str(cor.red, cor.green, cor.blue) + ' rg').encode()
+
+        self.assertIn(_rg(_SKY), fluxo)
+        self.assertIn(_rg(_SAND), fluxo)

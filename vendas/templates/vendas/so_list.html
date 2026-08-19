@@ -12,7 +12,7 @@
 .panel{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);overflow:hidden}
 .vd-table{width:100%;border-collapse:collapse}
 /* Mobile: a tabela rola na horizontal em vez de espremer/sobrepor os valores. */
-@media(max-width:760px){.panel{overflow-x:auto;-webkit-overflow-scrolling:touch}.vd-table{min-width:600px}.pagehead{flex-direction:column;align-items:flex-start;gap:10px}}
+@media(max-width:760px){.panel{overflow-x:auto;-webkit-overflow-scrolling:touch}.vd-table{min-width:820px}.pagehead{flex-direction:column;align-items:flex-start;gap:10px}}
 .vd-table thead th{background:#f2f4f8;text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#878d96;padding:11px 18px;border-bottom:1px solid #dde1e6;white-space:nowrap}
 .vd-table th.num,.vd-table td.num{text-align:right}
 .vd-table tbody td{padding:13px 18px;font-size:13.5px;border-bottom:1px solid #f2f4f8;vertical-align:middle}
@@ -25,6 +25,8 @@
 .so-badge--draft{background:#fff1c2;color:#8a6d00}.so-badge--ok{background:#defbe6;color:#0e6027}.so-badge--cancel{background:#e8e8e8;color:#525252}
 .vd-empty{padding:24px;color:#697077;font-size:14px}
 .vd-mask{color:#a2a9b0;letter-spacing:.12em}   /* valor oculto p/ o papel */
+.vd-sub{display:block;font-size:11.5px;color:#8d8d8d;font-weight:400;margin-top:2px}
+.vd-est{color:#8d8d8d}     /* "≈": estimativa viva, não valor congelado */
 </style>
 {% endblock %}
 
@@ -38,32 +40,57 @@
   <div class="panel">
     <table class="vd-table">
       <thead>
+        {% comment %} Ordem das colunas (dono, 2026-08-19): a lista tem que
+           dizer o TAMANHO da venda — chips, quanto se esperava e quanto ainda
+           tem a receber — e o STATUS vai por ÚLTIMO. A data saiu de coluna
+           própria e desceu para dentro da célula da ordem, igual à tela do
+           comprador: mesma informação, uma coluna a menos de largura. {% endcomment %}
         <tr>
-          <th>{% trans "Ordem" %}</th><th>{% trans "Lote" %}</th><th>{% trans "Status" %}</th>
+          <th>{% trans "Ordem" %}</th><th>{% trans "Lote" %}</th>
+          <th class="num">{% trans "Chips" %}</th>
           {% comment %} Sem coluna de dinheiro para quem não vê valor (dono,
              2026-08-19): antes saíam bolinhas. A barreira é estrutural. {% endcomment %}
-          {% if ver_valor %}<th class="num">{% trans "Total ¥" %}</th><th class="num">{% trans "Total US$" %}</th>{% endif %}<th>{% trans "Criada em" %}</th>
+          {% if ver_valor %}
+          <th class="num">{% trans "Estimado" %}</th>
+          <th class="num">{% trans "Resultado" %}</th>
+          <th class="num">{% trans "A receber" %}</th>
+          {% endif %}
+          <th>{% trans "Status" %}</th>
         </tr>
       </thead>
       <tbody>
         {% for so in orders %}
         <tr class="{% if so.status == 'cancelled' %}is-cancelled{% endif %}">
-          <td class="mono"><a href="{% url 'vendas:so_detail' so.pk %}">{{ so.code }}</a></td>
+          <td class="mono"><a href="{% url 'vendas:so_detail' so.pk %}">{{ so.code }}</a><span class="vd-sub">{{ so.created_at|date:"d/m/y H:i" }}</span></td>
           <td><a href="{% url 'estoque:lot_detail' so.lot.pk %}">{{ so.lot.code }}</a></td>
-          <td>{% if so.status == 'cancelled' %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% elif not so.shipped_at %}<span class="so-badge so-badge--draft">{% trans "despacho pendente" %}</span>{% elif so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "falta preço" %}</span>{% elif so.received_at %}<span class="so-badge so-badge--ok">{% trans "recebida" %}</span>{% else %}<span class="so-badge so-badge--ok">{% trans "despachada" %}</span>{% endif %}</td>
+          <td class="num mono">{{ so.units }}</td>
           {% localize off %}
           {% comment %} Valor só para quem tem can_see_price (dono 2026-08-14):
              o gerente opera a venda sem ver dinheiro. A view já ZERA os campos
-             — este {% if %} é só o rótulo (•••), não a barreira. {% endcomment %}
+             — este {% if %} tira a COLUNA, que é a barreira que o dono pediu.
+
+             ESTIMADO é o que se esperava: congelado quando a ordem confirma,
+             vivo (com "≈") enquanto é rascunho. RESULTADO é o que o comprador
+             fechou depois de conferir a caixa — só existe com fatura. A
+             RECEBER é o saldo; sem fatura ainda, é o esperado, e aí vai com
+             "≈" para não passar por promessa. {% endcomment %}
           {% if ver_valor %}
-          <td class="num mono">{% if so.total_rmb is not None %}¥ {{ so.total_rmb }}{% else %}—{% endif %}</td>
-          <td class="num mono">{% if so.total_usd is not None %}US$ {{ so.total_usd }}{% else %}—{% endif %}</td>
+          <td class="num mono">
+            {% if so.total_rmb is not None %}¥ {{ so.total_rmb }}<span class="vd-sub">US$ {{ so.total_usd }}</span>
+            {% elif so.est_rmb %}<span class="vd-est">≈ ¥ {{ so.est_rmb }}<span class="vd-sub">≈ US$ {{ so.est_usd }}</span></span>
+            {% else %}—{% endif %}
+          </td>
+          <td class="num mono">{% if so.fatura %}US$ {{ so.fatura.total_usd }}{% else %}—{% endif %}</td>
+          <td class="num mono">
+            {% if so.receber_usd is not None %}{% if so.receber_est %}<span class="vd-est">≈ US$ {{ so.receber_usd }}</span>{% else %}US$ {{ so.receber_usd }}{% endif %}
+            {% else %}—{% endif %}
+          </td>
           {% endif %}
           {% endlocalize %}
-          <td style="font-size:13px;color:#697077;">{{ so.created_at|date:"d/m/y H:i" }}</td>
+          <td>{% if so.status == 'cancelled' %}<span class="so-badge so-badge--cancel">{% trans "cancelada" %}</span>{% elif not so.shipped_at %}<span class="so-badge so-badge--draft">{% trans "despacho pendente" %}</span>{% elif so.status == 'draft' %}<span class="so-badge so-badge--draft">{% trans "falta preço" %}</span>{% elif so.received_at %}<span class="so-badge so-badge--ok">{% trans "recebida" %}</span>{% else %}<span class="so-badge so-badge--ok">{% trans "despachada" %}</span>{% endif %}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="{% if ver_valor %}6{% else %}4{% endif %}" class="vd-empty">{% trans "Nenhuma ordem ainda — feche um lote para gerar a primeira cotação." %}</td></tr>
+        <tr><td colspan="{% if ver_valor %}7{% else %}4{% endif %}" class="vd-empty">{% trans "Nenhuma ordem ainda — feche um lote para gerar a primeira cotação." %}</td></tr>
         {% endfor %}
       </tbody>
     </table>

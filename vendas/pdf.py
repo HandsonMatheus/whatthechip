@@ -26,6 +26,12 @@ _GREY = colors.HexColor('#8d8d8d')
 _LINE = colors.HexColor('#d0d0d0')
 _ZEBRA = colors.HexColor('#f4f4f4')
 _BLUE = colors.HexColor('#0f62fe')
+# Fundos de leve para as duas caixas que o cliente procura primeiro no
+# resultado (dono, 2026-08-19): o FINAL em azul, a DIFERENÇA em amarelo.
+# Tons 10 do Carbon — claros o bastante para o texto preto continuar legível
+# e para não virar borrão quando o PDF sai impresso em preto e branco.
+_SKY  = colors.HexColor('#edf5ff')      # azul 10  → resultado final
+_SAND = colors.HexColor('#fcf4d6')      # amarelo 10 → diferença
 
 
 #: Máscara de valor (dono, 2026-08-14). Glifo, não string traduzível — igual
@@ -682,7 +688,10 @@ def render_result_pdf(doc: dict) -> bytes:
     valores.setStyle(TableStyle([
         ('BOX', (0, 0), (-1, -1), 0.8, _INK),
         ('LINEAFTER', (0, 0), (-2, -1), 0.4, _LINE),
-        ('BACKGROUND', (1, 0), (1, -1), _ZEBRA),
+        # Esperado fica no papel branco (é a referência); o FINAL puxa o azul
+        # e a DIFERENÇA o amarelo — as duas caixas que ele vai procurar.
+        ('BACKGROUND', (1, 0), (1, -1), _SKY),
+        ('BACKGROUND', (2, 0), (2, -1), _SAND),
         ('LEFTPADDING', (0, 0), (-1, -1), 9),
         ('RIGHTPADDING', (0, 0), (-1, -1), 9),
         ('TOPPADDING', (0, 0), (-1, 0), 7),
