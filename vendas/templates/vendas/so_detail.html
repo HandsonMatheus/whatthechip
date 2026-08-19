@@ -211,7 +211,11 @@
         <thead>
           <tr>
             <th>{% trans "Data" %}</th><th class="num">{% trans "US$" %}</th>
-            <th>{% trans "Referência" %}</th><th>{% trans "Registrado por" %}</th>
+            {% comment %} ⚠ SEM "Registrado por": quem registra o pagamento é o
+               COMPRADOR, e o nome dele é SEGREDO DE MERCADO — nesta tela a
+               contraparte se chama "WhatTheChip" e nada mais (F11.3). Vazou
+               aqui em 2026-08-19. {% endcomment %}
+            <th>{% trans "Referência" %}</th>
             <th>{% trans "Comprovante" %}</th>
           </tr>
         </thead>
@@ -222,7 +226,6 @@
             <td class="mono">{{ p.paid_at|date:"d/m/Y" }}</td>
             <td class="num mono" style="font-weight:600">US$ {{ p.amount_usd }}</td>
             <td style="color:#697077">{{ p.reference|default:"—" }}</td>
-            <td style="color:#697077">{{ p.by|default:"—" }}</td>
             <td>{% if p.has_receipt %}<a href="{% url 'vendas:payment_receipt' p.pk %}" target="_blank" rel="noopener" style="font-weight:600">{% trans "Ver" %}</a>{% else %}—{% endif %}</td>
           </tr>
           {% endfor %}

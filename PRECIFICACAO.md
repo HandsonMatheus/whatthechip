@@ -1722,6 +1722,21 @@ isso obrigou o `<form>` do resultado a **envolver as abas**: a observação e o
 form só fecha depois da última aba. Há teste de ORDEM nas duas telas — é o tipo
 de coisa que volta ao lugar errado em silêncio na próxima edição.
 
+🔴 **VAZAMENTO DE SIGILO (2026-08-19, corrigido na hora).** O painel de
+pagamento do cliente reusou `payment_history` com a coluna **"Registrado por"**
+— e imprimiu o nome do COMPRADOR na tela do cliente. Quem registra o pagamento
+é ele; o nome dele é **segredo de mercado** (F11.3: nessa superfície a
+contraparte se chama "WhatTheChip" e nada mais).
+
+Corrigido na ORIGEM: `payment_history(invoice, com_autor=False)` — o padrão é o
+seguro, e só a tela DO COMPRADOR pede `com_autor=True`. ⚠ **Template esconde,
+contexto vaza**: não bastava tirar a coluna do HTML. O teste crava as duas
+coisas — o nome fora do HTML *e* a chave `by` fora do contexto.
+
+⚠ A única exceção sancionada continua sendo o bloco **SHIP TO** do documento de
+embarque, e ele mostra o DESTINATÁRIO (quem recebe a caixa), não o comprador —
+está documentado em `services.ship_to`.
+
 💵 **Pagamento no lado do CLIENTE** (dono, 2026-08-19): painel na OV com
 **Previsto × Acertado × Pago × Falta** e o histórico completo, incluindo o
 **comprovante que o COMPRADOR anexou**. Quem paga é o comprador; o cliente

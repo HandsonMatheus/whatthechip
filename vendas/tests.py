@@ -2646,6 +2646,38 @@ class TelaDaOVEspelhaACompraTests(TestCase):
         inv.refresh_from_db()
         self.assertContains(tela, f'US$ {inv.balance_usd}')
 
+    def test_o_nome_do_COMPRADOR_nao_aparece_em_lugar_nenhum(self):
+        """REGRESSÃO (2026-08-19): o painel de pagamento do cliente reusou o
+        histórico do comprador com a coluna "Registrado por" e imprimiu o nome
+        dele na tela do cliente.
+
+        ⚠ Segredo de mercado (F11.3): nesta superfície a contraparte se chama
+        "WhatTheChip" e nada mais — nem o nome do comprador, nem o do usuário
+        que registrou o pagamento. O campo é omitido na ORIGEM (`com_autor`),
+        não escondido no template: template esconde, contexto vaza.
+        """
+        from datetime import date
+        User = get_user_model()
+        wu = User.objects.create_user('wu_quan_x', first_name='Wu',
+                                      last_name='Quan', password='x')
+        with company_scope(self.company):
+            services.mark_shipped(self.so, 'DHL', 'JD1', None, self.adm)
+            self.so.refresh_from_db()
+            linha = self.so.lines.get()
+            _st, inv = services.settle_and_invoice(self.so,
+                                                   {linha.pk: (1, None)}, wu)
+            services.register_payment(inv, Decimal('1.00'), date.today(), wu,
+                                      reference='WIRE-1')
+        html = self._tela().content.decode()
+        self.assertNotIn('Wu Quan', html)
+        self.assertNotIn('wu_quan_x', html)
+        self.assertNotIn(self.buyer.name, html)
+        self.assertNotIn('Registrado por', html)
+        self.assertIn('WIRE-1', html)                  # o resto do histórico fica
+        # E o contexto NÃO carrega o autor — não é só o template calando:
+        for p in self._tela().context['pagamentos']:
+            self.assertNotIn('by', p)
+
     def test_gerente_nao_ve_o_bloco_de_pagamento(self):
         """É dinheiro: some inteiro, não vira bolinha."""
         User = get_user_model()

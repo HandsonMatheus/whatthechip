@@ -104,7 +104,9 @@ def _detalhe(so):
         'steps': services.order_steps(so),
         # Pagamento (dono, 2026-08-18): sempre em US$ — é a moeda em que ele
         # paga. O histórico fica na mesma tela: pagamento parcial é comum.
-        'pagamentos': services.payment_history(inv),
+        # com_autor: aqui o autor é o usuário DELE mesmo. Na tela do cliente
+        # esse campo NÃO existe — o nome do comprador é segredo de mercado.
+        'pagamentos': services.payment_history(inv, com_autor=True),
         'hoje': timezone.localdate(),
         # Linha de TOTAIS da tabela de cima (dono, 2026-08-18).
         'total_qty': sum(g['qty'] for g in grupos),

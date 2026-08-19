@@ -713,23 +713,35 @@ def attach_receipt(payment, upload):
         filename=(getattr(upload, 'name', '') or '')[:160])
 
 
-def payment_history(invoice):
+def payment_history(invoice, com_autor=False):
     """O histórico de pagamentos da fatura, mais recente primeiro (dono,
-    2026-08-18). Sempre em US$ — é a moeda em que ele paga."""
+    2026-08-18). Sempre em US$ — é a moeda em que ele paga.
+
+    ⚠ ``com_autor`` é **False por padrão**, e o padrão é o seguro: quem
+    registra o pagamento é o COMPRADOR, e o nome dele é **segredo de mercado**
+    — não pode aparecer em superfície de empresa-cliente (F11.3; a contraparte
+    do cliente se chama "WhatTheChip"). Vazou uma vez, em 2026-08-19, quando o
+    painel de pagamento do cliente reusou este histórico com a coluna
+    "Registrado por". O campo agora só existe quando quem pede é a tela DO
+    COMPRADOR — omitir na origem, não esconder no template: template esconde,
+    contexto vaza.
+    """
     if invoice is None:
         return []
     linhas = []
     for p in invoice.payments.all().order_by('-paid_at', '-created_at'):
         recibo = getattr(p, 'receipt', None)
-        linhas.append({
+        linha = {
             'pk': p.pk,
             'paid_at': p.paid_at,
             'amount_usd': p.amount_usd,
             'reference': p.reference,
-            'by': _display_name(p.created_by),
             'has_receipt': recibo is not None,
             'receipt_name': getattr(recibo, 'filename', '') or '',
-        })
+        }
+        if com_autor:
+            linha['by'] = _display_name(p.created_by)
+        linhas.append(linha)
     return linhas
 
 
