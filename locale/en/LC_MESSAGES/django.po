@@ -3261,3 +3261,7 @@ msgstr "received by the buyer"
 #. vendas/ (pagamento no lado do cliente)
 msgid "recebida"
 msgstr "received"
+
+#. vendas/ (esqueleto comum)
+msgid "Digite só o que recusou — campo em branco vale zero."
+msgstr "Enter only what you rejected — a blank field counts as zero."

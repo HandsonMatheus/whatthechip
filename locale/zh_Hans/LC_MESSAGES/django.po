@@ -3083,3 +3083,7 @@ msgstr "买方已收货"
 #. vendas/ (pagamento no lado do cliente)
 msgid "recebida"
 msgstr "已收货"
+
+#. vendas/ (esqueleto comum)
+msgid "Digite só o que recusou — campo em branco vale zero."
+msgstr "只需填写拒收的数量——留空即为零。"

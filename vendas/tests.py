@@ -1817,6 +1817,32 @@ class CompradorValorFechadoTests(TestCase):
         self.assertContains(tela, 'cmp-h-rmb')                # o valor do topo
         self.assertContains(tela, 'cmp-modal')                # a confirmação
 
+    def test_nada_fica_ABAIXO_da_tabela_na_tela_do_comprador(self):
+        """O MESMO esqueleto da tela do cliente (dono, 2026-08-19): ação da
+        etapa e pagamento acima; abaixo da tabela, nada."""
+        so = self._rascunho('AB')
+        self._fecha_lote(so, despachar=False)
+        with company_scope(self.emp):
+            services.mark_shipped(so, 'DHL', 'JDAB', None, self.parceiro)
+            so.refresh_from_db()
+            services.mark_received(so)
+        self.assertEqual(so.status, STATUS_CONFIRMED)     # dá para conferir
+        html = self.client.get(
+            reverse('compras:detail', args=[so.pk])).content.decode()
+        acao = html.index('cmp-fechar')
+        abas = html.index('cmp-abas')
+        tabela = html.index('cmp-tab-resumo')
+        self.assertLess(acao, abas)
+        self.assertLess(abas, tabela)
+        # O form envolve as abas e fecha DEPOIS da última — nada de ação solta
+        # embaixo da tabela.
+        self.assertLess(html.index('</form>', tabela),
+                        html.index('id="cmp-modal"'))
+        # ⚠ Procure MARCAÇÃO, não classe: o CSS no fim da página cita todos os
+        # nomes de classe e faria a asserção falhar sozinha.
+        self.assertNotIn('name="notes"', html[tabela:])
+        self.assertNotIn('type="submit"', html[tabela:])
+
     def test_aba_de_chips_lista_PN_spec_caixa_e_preco(self):
         """"Seria aí onde o comprador olha detalhe por detalhe" (dono)."""
         so = self._rascunho('T2')
@@ -2646,6 +2672,25 @@ class TelaDaOVEspelhaACompraTests(TestCase):
         with company_scope(self.company):
             services.mark_received(self.so)
         self.assertContains(self._tela(), 'recebida pelo comprador')
+
+    def test_nada_fica_ABAIXO_da_tabela(self):
+        """Dono, 2026-08-19: lote grande faz a tabela ter centenas de linhas,
+        e botão no fim dela é botão que ninguém alcança. Despacho e pagamento
+        ficam ACIMA — a mesma ordem da tela do comprador."""
+        with company_scope(self.company):
+            services.mark_shipped(self.so, 'DHL', 'JD1', None, self.adm)
+            self.so.refresh_from_db()
+            linha = self.so.lines.get()
+            services.settle_and_invoice(self.so, {linha.pk: (1, None)},
+                                        self.adm)
+        html = self._tela().content.decode()
+        despacho = html.index('Despacho')
+        pagamento = html.index('Previsto')
+        tabela = html.index('Caixa WTC')
+        self.assertLess(despacho, tabela)
+        self.assertLess(pagamento, tabela)
+        # Depois da tabela não sobra ação nenhuma:
+        self.assertNotIn('<form', html[tabela:])
 
     def test_rascunho_ainda_mostra_US_ao_vivo(self):
         """A tela do cliente é em US$; sem o vivo o admin via '—' na ordem

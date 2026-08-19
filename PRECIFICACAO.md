@@ -1706,6 +1706,22 @@ rascunho (a tela do cliente é em dólar; sem ele o admin via "—" na ordem ain
 não despachada). Dinheiro segue o gate de sempre: o gerente vê ••• e a
 operação.
 
+🧱 **AS DUAS TELAS SÃO O MESMO ESQUELETO** (dono, 2026-08-19). Ordem de blocos
+idêntica na OV do cliente e na compra do comprador:
+
+> cabeçalho · etapas · **AÇÃO DA ETAPA** · **PAGAMENTO** · tabela
+
+O que muda é a FUNÇÃO de cada bloco: o cliente despacha, o comprador confere e
+paga. ⚠ Quem mexer na ordem de um lado mexe no outro — é requisito, não
+estética (o design system das duas ainda difere; o dono vai unificar).
+
+⚠ **Abaixo da tabela não fica NADA.** Lote grande faz a tabela ter centenas de
+linhas, e botão no fim dela é botão que ninguém alcança. Na tela do comprador
+isso obrigou o `<form>` do resultado a **envolver as abas**: a observação e o
+"Fechar resultado" ficam ACIMA, os campos de recusa vivem dentro da tabela, e o
+form só fecha depois da última aba. Há teste de ORDEM nas duas telas — é o tipo
+de coisa que volta ao lugar errado em silêncio na próxima edição.
+
 💵 **Pagamento no lado do CLIENTE** (dono, 2026-08-19): painel na OV com
 **Previsto × Acertado × Pago × Falta** e o histórico completo, incluindo o
 **comprovante que o COMPRADOR anexou**. Quem paga é o comprador; o cliente
