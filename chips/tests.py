@@ -1346,6 +1346,66 @@ class SubmitKnownPartsTests(TestCase):
         self.assertEqual(kp.review_status, "approved", "não pode rebaixar um PN live")
         self.assertEqual(kp.capacity, "64GB", "não pode sobrescrever o dado live")
 
+    def test_brand_como_bloco_diz_a_verdade(self):
+        """O erro que mordeu DUAS vezes (Kingston, 2026-08-17 e 2026-08-19).
+
+        O chat de marca escreve `brand:` no formato do yaml de GRAMÁTICA
+        (bloco name/code/notes). O valor vira dict, o `filter(name=<dict>)`
+        não casa nada, e a mensagem genérica mandava "crie a gramática antes"
+        — conselho ERRADO: a gramática está lá, quem está errado é o arquivo.
+        A mensagem tem que nomear a causa e mostrar a linha certa."""
+        import os
+        from django.core.management import call_command
+        from django.core.management.base import CommandError
+        from chips.models import Brand
+        Brand.objects.get_or_create(name="Kingston", code="KSTT")
+        path = self._write('brand:\n'
+                           '  name: Kingston\n'
+                           '  code: KST\n'
+                           "  notes: ''\n"
+                           'known_parts:\n'
+                           '  - part_number: "D2516EC4BXGGB"\n'
+                           '    chip_type: "DDR3L"\n'
+                           '    density_gbit: "4Gb"\n'
+                           '    confidence: confirmed\n'
+                           '    notes: "datasheet"\n')
+        try:
+            with self.assertRaises(CommandError) as ctx:
+                call_command("submit_known_parts", path, commit=True)
+        finally:
+            os.unlink(path)
+        msg = str(ctx.exception)
+        self.assertIn("veio como BLOCO", msg)
+        self.assertIn("brand: Kingston", msg)          # a linha certa, pronta
+        self.assertIn("A gramática NÃO está faltando", msg)
+        self.assertNotIn("crie a gramática antes", msg)  # o conselho errado sumiu
+
+    def test_marca_ausente_de_verdade_sugere_as_parecidas(self):
+        """Quando a marca REALMENTE não existe, o conselho da gramática vale —
+        mas erro de grafia é mais comum que marca nova, então mostra as
+        parecidas em vez de deixar o dono adivinhar."""
+        import os
+        from django.core.management import call_command
+        from django.core.management.base import CommandError
+        from chips.models import Brand
+        Brand.objects.get_or_create(name="Kingston", code="KSTT")
+        path = self._write('brand: "Kingstom"\n'          # typo
+                           'known_parts:\n'
+                           '  - part_number: "KTYPO1"\n'
+                           '    chip_type: "eMMC"\n'
+                           '    capacity: "64GB"\n'
+                           '    confidence: confirmed\n'
+                           '    notes: "datasheet"\n')
+        try:
+            with self.assertRaises(CommandError) as ctx:
+                call_command("submit_known_parts", path, commit=True)
+        finally:
+            os.unlink(path)
+        msg = str(ctx.exception)
+        self.assertIn("crie a gramática", msg)      # aqui o conselho é o certo
+        self.assertIn("parecida(s) no banco", msg)
+        self.assertIn("Kingston", msg)
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PASSO 1A — normalize_pn + busca por part_number_norm (acaba o PN não-encontrado)

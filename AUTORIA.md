@@ -117,6 +117,34 @@ avisa quem está sem.
 Um `known_part` é um PN confirmado com specs que **vencem** a gramática (só `confidence`
 confirmed/manual). Na Opção 2, ele vive no **banco**, não no yaml.
 
+**Forma do arquivo de submissão** — duas chaves no topo, e a primeira é uma **pegadinha**:
+
+```yaml
+brand: Kingston          # ⚠ TEXTO PURO. Nunca o bloco name/code/notes.
+known_parts:
+  - part_number: D2516EC4BXGGB
+    chip_type: DDR3L
+    density_gbit: 4Gb
+    confidence: confirmed
+    notes: "fonte Tier-1 aqui"
+```
+
+⚠ **`brand` na SUBMISSÃO é o NOME da marca, em texto.** O bloco
+
+```yaml
+brand:                   # ❌ isto é o yaml de GRAMÁTICA, não o de submissão
+  name: Kingston
+  code: KST
+  notes: ''
+```
+
+pertence a `chips/knowledge/<marca>.yaml`. Na submissão ele faz o valor virar um dict, a busca da
+marca não casa nada, e **até 2026-08-19 o comando respondia "crie a gramática antes"** — conselho
+errado, que manda o dono procurar um problema que não existe. Mordeu duas vezes (Kingston,
+2026-08-17 e 2026-08-19); hoje o `submit_known_parts` detecta o bloco e mostra a linha certa, mas
+o arquivo continua sendo responsabilidade do chat de marca. A submissão só NOMEIA a marca —
+`name`/`code`/`notes` são da gramática, que já existe quando você submete.
+
 **Fluxo:**
 1. Pesquisa Tier-1 → escreve um arquivo de submissão (mesma forma: `part_number` + specs +
    `confidence` + **`notes` com a fonte Tier-1**).

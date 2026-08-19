@@ -134,6 +134,22 @@ class Command(SafeWriteCommand):
         brand_name = raw.get("brand")
         if not brand_name:
             raise CommandError("arquivo precisa de 'brand: <nome>'.")
+        # ⚠ O erro que já mordeu DUAS vezes (Kingston, 2026-08-17 e 2026-08-19):
+        # o chat de marca escreve `brand:` como BLOCO (name/code/notes), que é o
+        # formato do yaml de GRAMÁTICA. Aí `brand_name` vira dict, o filter não
+        # casa nada e a mensagem genérica lá embaixo manda "crie a gramática
+        # antes" — conselho errado, que joga o dono na trilha errada por horas.
+        # A submissão só NOMEIA a marca; nome/code/notes vivem na gramática.
+        if isinstance(brand_name, dict):
+            nome = brand_name.get("name") or "<nome da marca>"
+            raise CommandError(
+                "'brand' veio como BLOCO, não como texto — esse é o formato do "
+                "yaml de GRAMÁTICA\n(chips/knowledge/<marca>.yaml), não o da "
+                "submissão. A gramática NÃO está faltando.\n\n"
+                f"  troque o bloco inteiro por uma linha só:\n\n"
+                f"      brand: {nome}\n\n"
+                "  (a submissão apenas nomeia a marca; name/code/notes são da "
+                "gramática)")
         kps_raw = raw.get("known_parts") or []
         if not kps_raw:
             raise CommandError("nenhum known_part no arquivo.")
@@ -160,7 +176,18 @@ class Command(SafeWriteCommand):
 
         brand = Brand.objects.filter(name=brand_name).first()
         if brand is None:
-            raise CommandError(f"marca '{brand_name}' não existe no banco (crie a gramática antes).")
+            # Marca de verdade ausente: aí sim a gramática é o caminho. Mas
+            # mostra as parecidas — erro de grafia é bem mais comum do que
+            # marca nova (o portão só chega aqui depois de validar os PNs).
+            from difflib import get_close_matches
+            todas = sorted(Brand.objects.values_list("name", flat=True))
+            perto = get_close_matches(str(brand_name), todas, n=3, cutoff=0.6)
+            dica = (f"\n  parecida(s) no banco: {', '.join(perto)}" if perto
+                    else f"\n  no banco hoje: {', '.join(todas[:12])}"
+                         + ("…" if len(todas) > 12 else ""))
+            raise CommandError(
+                f"marca '{brand_name}' não existe no banco — crie a gramática "
+                f"antes (chips/knowledge/, load_brands).{dica}")
 
         uname = opts["user"] or raw.get("submitted_by") or ""
         submitter = None
