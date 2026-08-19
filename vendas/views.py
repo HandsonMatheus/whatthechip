@@ -85,7 +85,13 @@ def so_detail(request, pk):
     ctx = {'so': so, 'invoice': invoice, 'ver_valor': ver_valor,
            'pode_despachar': can_sales(request) and so.status != 'cancelled',
            'tracking_url': services.tracking_url(so.carrier, so.tracking),
-           'hoje': timezone.localdate()}
+           'hoje': timezone.localdate(),
+           # ⚠ A MESMA tabela da tela do comprador (dono, 2026-08-18): marca →
+           # capacidade, com enviados/recusados/aprovados por categoria. "É o
+           # mais importante do vendedor saber" — sem isto ele recebe um total
+           # menor e não sabe QUAL categoria caiu.
+           'grupos': services.result_rows(so),
+           'steps': services.order_steps(so)}
     unmasked = is_unmasked(request)              # F12: rótulo real × C-###
     if so.status == STATUS_DRAFT:
         pairs = services.live_quotes(so)

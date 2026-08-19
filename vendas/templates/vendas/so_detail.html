@@ -33,6 +33,7 @@
 .step.is-current{color:#0043ce;background:#edf5ff;border-radius:8px}.step.is-current .n{background:#0f62fe;color:#fff}
 .step.is-future{color:#a2a9b0}
 .step__sep{width:16px;height:1px;background:#c1c7cd;flex:none}
+.step__dt{font-size:11px;font-weight:400;color:#878d96;font-family:'IBM Plex Mono',monospace}
 .panel{background:#fff;border:1px solid #dde1e6;border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.05);overflow:hidden;margin-bottom:16px}
 .panel__head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #e0e0e0}
 .panel__title{font-size:13px;font-weight:700;letter-spacing:.02em}
@@ -93,28 +94,28 @@
     </div>
   </div>
 
-  {# ── Stepper: Rascunho → Confirmada → Faturada → Paga ─────────── #}
+  {% comment %} ── Stepper: AS MESMAS ETAPAS do comprador (dono, 2026-08-18:
+     "eles seguem as mesmas etapas"), montadas pelo mesmo `order_steps`, com
+     as mesmas datas. Só os RÓTULOS mudam de lado: quem vende diz "Enviada",
+     quem compra diz "Recebimento".
+     ⚠ "Confirmada" saiu: virou o mesmo instante que "Enviada" quando o
+     despacho passou a confirmar a ordem — duas caixas para um evento só. {% endcomment %}
   <div class="sod-steps">
-    {% if so.status == 'draft' %}
-      <div class="step is-current"><span class="n">1</span>{% trans "Rascunho" %}</div><span class="step__sep"></span>
-      <div class="step is-future"><span class="n">2</span>{% trans "Confirmada" %}</div><span class="step__sep"></span>
-      <div class="step is-future"><span class="n">3</span>{% trans "Faturada" %}</div><span class="step__sep"></span>
-      <div class="step is-future"><span class="n">4</span>{% trans "Paga" %}</div>
-    {% elif so.status == 'confirmed' %}
+    {% if so.status == 'cancelled' %}
       <div class="step is-done"><span class="n">✓</span>{% trans "Rascunho" %}</div><span class="step__sep"></span>
-      <div class="step is-done"><span class="n">✓</span>{% trans "Confirmada" %}</div><span class="step__sep"></span>
-      {% if invoice %}
-        <div class="step is-done"><span class="n">✓</span>{% trans "Faturada" %}</div><span class="step__sep"></span>
-        <div class="step is-current"><span class="n">4</span>{% trans "Paga" %}</div>
-      {% else %}
-        <div class="step is-current"><span class="n">3</span>{% trans "Faturada" %}</div><span class="step__sep"></span>
-        <div class="step is-future"><span class="n">4</span>{% trans "Paga" %}</div>
-      {% endif %}
+      <div class="step is-future"><span class="n">✕</span>{% trans "Cancelada" %}</div>
     {% else %}
-      <div class="step is-done"><span class="n">✓</span>{% trans "Rascunho" %}</div><span class="step__sep"></span>
-      <div class="step is-future"><span class="n">✕</span>{% trans "Confirmada" %}</div><span class="step__sep"></span>
-      <div class="step is-future"><span class="n">3</span>{% trans "Faturada" %}</div><span class="step__sep"></span>
-      <div class="step is-future"><span class="n">4</span>{% trans "Paga" %}</div>
+      {% for p in steps %}
+      <div class="step {% if p.state == 'done' %}is-done{% elif p.state == 'current' %}is-current{% else %}is-future{% endif %}">
+        <span class="n">{% if p.state == 'done' %}✓{% elif p.state == 'pulado' %}–{% else %}{{ forloop.counter }}{% endif %}</span>
+        {% if p.key == 'fechado' %}{% trans "Rascunho" %}
+        {% elif p.key == 'enviado' %}{% trans "Enviada" %}
+        {% elif p.key == 'recebido' %}{% trans "Recebida" %}
+        {% elif p.key == 'resultado' %}{% trans "Resultado" %}
+        {% else %}{% trans "Paga" %}{% endif %}
+        {% if p.date %}<span class="step__dt">{{ p.date|date:"d/m" }}</span>{% endif %}
+      </div>{% if not forloop.last %}<span class="step__sep"></span>{% endif %}
+      {% endfor %}
     {% endif %}
   </div>
 
@@ -123,47 +124,53 @@
     {% comment %} Moeda: SÓ US$ na página da OV (dono, 2026-07-24 — antes era
        dual ¥+US$). O ¥ e a taxa continuam CONGELADOS no banco (auditoria);
        aqui só muda a exibição. {% endcomment %}
+    {% comment %} ⚠ A MESMA TABELA da tela do comprador (dono, 2026-08-18):
+       marca → capacidade, com ENVIADOS / RECUSADOS / APROVADOS por categoria.
+       "É o mais importante do vendedor saber" — sem isto ele recebe um total
+       menor e não descobre QUAL categoria caiu. As colunas de recusa só
+       aparecem depois do resultado; antes disso não existe recusa nenhuma.
+       Dinheiro segue o gate de sempre (can_see_price): o gerente vê ••• e a
+       operação (categoria e quantidade), que é o trabalho dele. {% endcomment %}
     <div class="panel__head"><span class="panel__title">{% trans "Linhas da ordem" %}</span><span class="panel__hint">{% trans "valores em US$" %}</span></div>
     <table class="vd-table">
       <thead>
         <tr>
-          <th>{% trans "Categoria" %}</th><th class="num">{% trans "Qtd." %}</th>
+          <th>{% trans "Tipo" %}</th><th>{% trans "Capacidade" %}</th>
+          <th>{% trans "Caixa WTC" %}</th>
+          <th class="num">{% trans "Enviados" %}</th>
+          {% if invoice %}<th class="num">{% trans "Recusados" %}</th><th class="num">{% trans "Aprovados" %}</th>{% endif %}
           <th class="num">{% trans "US$ unit." %}</th><th class="num">{% trans "Total US$" %}</th>
         </tr>
       </thead>
       <tbody>
         {% localize off %}
-        {% comment %} Dinheiro só com can_see_price (dono 2026-08-14) — a view
-           já apagou unit/total do contexto para o gerente; aqui só o •••.
-           Qtd. e categoria ficam: é a operação dele. {% endcomment %}
-        {% if so.status == 'draft' %}
-          {% for row in rows %}
-          <tr class="{% if not row.priced %}unpriced{% endif %}">
-            <td style="font-weight:600">{{ row.line.display_label }}</td>
-            <td class="num mono">{{ row.line.quantity }}</td>
+        {% for g in grupos %}
+        <tr class="vd-marca">
+          <td colspan="{% if invoice %}8{% else %}6{% endif %}" style="background:#f2f4f8;font-weight:700">
+            {{ g.brand }} <span style="font-weight:400;color:#697077">{{ g.qty }} un.{% if invoice and g.rejected %} · {% blocktrans trimmed with n=g.rejected %}{{ n }} recusadas{% endblocktrans %}{% endif %}</span>
+          </td>
+        </tr>
+          {% for l in g.lines %}
+          <tr class="{% if l.sem_preco %}unpriced{% endif %}">
+            <td style="font-weight:600">{{ l.type }}</td>
+            <td>{{ l.capacity }}</td>
+            <td class="mono" style="color:#697077;font-size:12px">{{ l.wtc }}</td>
+            <td class="num mono">{{ l.qty }}</td>
+            {% if invoice %}
+            <td class="num mono" style="{% if l.rejected %}color:#a2191f;font-weight:600{% endif %}">{{ l.rejected }}</td>
+            <td class="num mono">{{ l.accepted }}</td>
+            {% endif %}
             {% if not ver_valor %}
             <td class="num mono vd-mask">•••</td><td class="num mono vd-mask">•••</td>
-            {% elif row.priced %}
-            <td class="num mono">US$ {{ row.unit_usd }}</td><td class="num mono">US$ {{ row.total_usd }}</td>
+            {% elif l.sem_preco %}
+            <td colspan="2" class="num" style="font-size:12px;color:#8a6d00;">{% trans "sem preço no grid do comprador" %}</td>
             {% else %}
-            <td colspan="2" class="num" style="font-size:12px;color:#8a6d00;">{{ row.reason }}</td>
+            <td class="num mono">{% if l.unit_usd is not None %}US$ {{ l.unit_usd }}{% else %}—{% endif %}</td>
+            <td class="num mono">{% if invoice %}{% if l.pago_usd is not None %}US$ {{ l.pago_usd }}{% else %}—{% endif %}{% else %}{% if l.total_usd is not None %}US$ {{ l.total_usd }}{% else %}—{% endif %}{% endif %}</td>
             {% endif %}
           </tr>
           {% endfor %}
-        {% else %}
-          {% for line in lines %}
-          <tr>
-            <td style="font-weight:600">{{ line.display_label }}</td>
-            <td class="num mono">{{ line.quantity }}</td>
-            {% if not ver_valor %}
-            <td class="num mono vd-mask">•••</td><td class="num mono vd-mask">•••</td>
-            {% else %}
-            <td class="num mono">{% if line.unit_usd is not None %}US$ {{ line.unit_usd }}{% else %}—{% endif %}</td>
-            <td class="num mono">{% if line.total_usd is not None %}US$ {{ line.total_usd }}{% else %}—{% endif %}</td>
-            {% endif %}
-          </tr>
-          {% endfor %}
-        {% endif %}
+        {% endfor %}
         {% endlocalize %}
       </tbody>
     </table>

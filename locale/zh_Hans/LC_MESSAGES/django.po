@@ -3034,3 +3034,27 @@ msgstr "待发货"
 #. vendas/ (F4 — despacho congela)
 msgid "falta preço"
 msgstr "缺价格"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "%(n)s recusadas"
+msgstr "拒收 %(n)s"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "Cancelada"
+msgstr "已取消"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "Enviada"
+msgstr "已发出"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "Recebida"
+msgstr "已收货"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "Recebimento"
+msgstr "收货"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "sem preço no grid do comprador"
+msgstr "买方价格表中无此价格"

@@ -1688,6 +1688,24 @@ diante as duas condições coincidem (só se confirma despachando), e o legado
 continua visível. **Regra nova não reescreve o passado** — o mesmo princípio do
 `code_str`.
 
+🪞 **As duas telas espelham o MESMO ciclo** (dono, 2026-08-18). O stepper da OV
+do cliente passou a sair do mesmo `services.order_steps`, com as mesmas datas —
+só os rótulos mudam de lado: quem vende lê *Rascunho · Enviada · Recebida ·
+Resultado · Paga*; quem compra lê *Fechado · Enviado · **Recebimento** ·
+Resultado · Pagamento*. ⚠ "Confirmada" **saiu** do lado do cliente: virou o
+mesmo instante que "Enviada" quando o despacho passou a confirmar a ordem —
+duas caixas para um evento só.
+
+E a **tabela da OV virou a mesma da compra**: marca → capacidade, com
+**enviados / recusados / aprovados por categoria** (as colunas de recusa só
+aparecem depois do resultado). Era o buraco que o dono apontou: sem isso o
+vendedor recebe um total menor e **não descobre QUAL categoria caiu** — "é o
+mais importante do vendedor saber". O `result_rows` ganhou `rejected`,
+`accepted`, `unit_usd`, `pago_usd` e passou a resolver o **US$ vivo** no
+rascunho (a tela do cliente é em dólar; sem ele o admin via "—" na ordem ainda
+não despachada). Dinheiro segue o gate de sempre: o gerente vê ••• e a
+operação.
+
 🚚 **F4 — DESPACHO (dono, 2026-08-18).** Quem embala e leva a caixa é o
 CLIENTE, então o registro é dele: bloco *Despacho* na tela da OV com
 transportadora, rastreio e data (`SalesOrder.carrier/tracking/shipped_at/

@@ -1561,7 +1561,10 @@ class CompradorComprasTests(TestCase):
         self.assertEqual(emmc['unit_rmb'], Decimal('15'))
         self.assertEqual(emmc['total_rmb'], Decimal('150'))
         self.assertTrue(emmc['estimado'])
-        self.assertIsNone(emmc['total_usd'])       # US$ só no congelado
+        # US$ vivo também (2026-08-18): a tela do CLIENTE é em dólar e sem ele
+        # o admin via "—" na ordem ainda não despachada. `estimado` continua
+        # dizendo que o número é estimativa.
+        self.assertEqual(emmc['total_usd'], Decimal('21.00'))   # ¥150 × 0.14
         # …e a não-cotada é nomeada como pendência
         self.assertTrue(linhas[('UFS', '256GB')]['sem_preco'])
         self.assertEqual(services.draft_pendencias(grupos), ['UFS 256GB'])
@@ -1683,7 +1686,8 @@ class CompradorValorFechadoTests(TestCase):
         self._fecha_lote(so)          # despachado: é assim que ele o enxerga
         tela = self.client.get(reverse('compras:list'))
         self.assertContains(tela, so.code)                       # SO/EMPRESA/NNN
-        self.assertContains(tela, so.created_at.strftime('%d/%m/%Y'))
+        self.assertContains(
+            tela, timezone.localtime(so.created_at).strftime('%d/%m/%Y'))
         self.assertContains(tela, '≈')                           # é estimativa
         self.assertContains(tela, '150.00')                      # 10 × ¥15
 
@@ -2517,3 +2521,84 @@ class DespachoTests(TestCase):
         # ⚠ Ele não tem por onde MEXER: a rota é do lado do cliente.
         self.assertNotContains(tela, reverse('vendas:so_ship',
                                              args=[self.so.pk]))
+
+
+class TelaDaOVEspelhaACompraTests(TestCase):
+    """A tabela da OV do CLIENTE é a MESMA da tela do comprador
+    (dono, 2026-08-18): marca → capacidade, com enviados/recusados/aprovados.
+
+    "É o mais importante do vendedor saber" — sem o resultado POR CATEGORIA
+    ele recebe um total menor e não descobre qual categoria caiu.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.brand = _setup('vd-esp')
+        User = get_user_model()
+        cls.adm = User.objects.create_user('vd_esp_adm', password='x')
+        Membership.objects.create(user=cls.adm, company=cls.company,
+                                  role='admin')
+
+    def setUp(self):
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        call_command('seed_category_codes', '--commit', verbosity=0)
+        self.client.force_login(self.adm)
+        with company_scope(self.company):
+            lot = Lot.open_for_company(self.company, self.adm, 'e',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='ESP1', quantity=10, brand=self.brand,
+                chip_type='eMMC', company=self.company, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')
+            Lot.all_companies.filter(pk=lot.pk).update(
+                closed_at=timezone.now())
+            self.so = services.create_draft_for_lot(lot, self.adm)
+            self.so.lot.refresh_from_db()
+
+    def _tela(self):
+        return self.client.get(reverse('vendas:so_detail',
+                                       args=[self.so.pk]))
+
+    def test_etapas_do_cliente_seguem_as_do_comprador(self):
+        tela = self._tela()
+        self.assertContains(tela, 'Rascunho')
+        self.assertContains(tela, 'Enviada')        # passo novo
+        self.assertContains(tela, 'Resultado')      # era "Faturada"
+        self.assertNotContains(tela, 'Faturada')
+        self.assertNotContains(tela, 'Confirmada')  # virou o mesmo que Enviada
+
+    def test_tabela_traz_marca_capacidade_e_caixa(self):
+        tela = self._tela()
+        self.assertContains(tela, self.brand)       # agrupada por MARCA
+        self.assertContains(tela, 'eMMC')
+        self.assertContains(tela, '16GB')
+        self.assertContains(tela, 'B-06')           # a caixa WTC
+        # Sem resultado ainda, não há coluna de recusa:
+        self.assertNotContains(tela, 'Recusados')
+
+    def test_depois_do_resultado_a_recusa_aparece_POR_CATEGORIA(self):
+        with company_scope(self.company):
+            services.mark_shipped(self.so, 'DHL', 'JD1', None, self.adm)
+            self.so.refresh_from_db()
+            linha = self.so.lines.get()
+            services.settle_and_invoice(self.so, {linha.pk: (4, None)},
+                                        self.adm)
+        tela = self._tela()
+        self.assertContains(tela, 'Recusados')
+        self.assertContains(tela, 'Aprovados')
+        grupos = tela.context['grupos']
+        linha = grupos[0]['lines'][0]
+        self.assertEqual((linha['qty'], linha['rejected'], linha['accepted']),
+                         (10, 4, 6))
+        self.assertEqual(grupos[0]['rejected'], 4)
+
+    def test_rascunho_ainda_mostra_US_ao_vivo(self):
+        """A tela do cliente é em US$; sem o vivo o admin via '—' na ordem
+        ainda não despachada."""
+        tela = self._tela()
+        linha = tela.context['grupos'][0]['lines'][0]
+        self.assertTrue(linha['estimado'])
+        self.assertIsNotNone(linha['unit_usd'])
+        self.assertIsNotNone(linha['total_usd'])

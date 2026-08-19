@@ -3238,3 +3238,27 @@ msgstr "despacho pendiente"
 #. vendas/ (F4 — despacho congela)
 msgid "falta preço"
 msgstr "falta precio"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "%(n)s recusadas"
+msgstr "%(n)s rechazadas"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "Cancelada"
+msgstr "Cancelada"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "Enviada"
+msgstr "Enviada"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "Recebida"
+msgstr "Recibida"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "Recebimento"
+msgstr "Recepción"
+
+#. vendas/ (etapas do cliente + tabela)
+msgid "sem preço no grid do comprador"
+msgstr "sin precio en la tabla del comprador"

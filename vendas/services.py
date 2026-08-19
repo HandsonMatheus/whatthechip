@@ -903,21 +903,36 @@ def result_rows(so):
     congelado, e a tela precisa dizer isso.
     """
     from pricing.models import CategoryCode
-    vivo = {}
+    # Rascunho: ¥ E US$ vivos. O US$ importa porque a tela do CLIENTE é em
+    # dólar — sem ele o admin via "—" na ordem ainda não despachada.
+    vivo, vivo_usd = {}, {}
     if so.status == STATUS_DRAFT:
         for line, q in live_quotes(so):
-            vivo[line.pk] = q.value_rmb() if q.status == 'PRICED' else None
+            priced = q.status == 'PRICED'
+            vivo[line.pk] = q.value_rmb() if priced else None
+            vivo_usd[line.pk] = q.value() if priced else None
+    # RESULTADO por linha, quando já houve acerto (dono, 2026-08-18: a tela do
+    # CLIENTE tem que ser a mesma tabela — "é o mais importante do vendedor
+    # saber"). Sem acerto, recusados = 0 e aprovados = enviados.
+    recusas = {}
+    inv = next((i for i in so.invoices.all() if i.status != 'cancelled'), None)
+    if inv is not None and inv.settlement_id:
+        recusas = {sl.order_line_id: sl for sl in inv.settlement.lines.all()}
     grupos = {}
     for line in so.lines.all():
         g = grupos.setdefault(line.brand or '—',
                               {'brand': line.brand or '—', 'lines': [],
                                'qty': 0, 'rmb': Decimal('0.00'),
-                               'sem_preco': 0})
+                               'sem_preco': 0, 'rejected': 0, 'accepted': 0})
         if so.status == STATUS_DRAFT:
-            unit, estimado = vivo.get(line.pk), True
+            unit, unit_usd, estimado = (vivo.get(line.pk),
+                                        vivo_usd.get(line.pk), True)
         else:
-            unit, estimado = line.unit_rmb, False
+            unit, unit_usd, estimado = line.unit_rmb, line.unit_usd, False
         total = (unit * line.quantity) if unit is not None else None
+        sl = recusas.get(line.pk)
+        rej = sl.qty_rejected if sl else 0
+        ace = line.quantity - rej
         g['lines'].append({
             'pk': line.pk,
             'type': line.type_label,
@@ -927,13 +942,23 @@ def result_rows(so):
                                               line.tier_value, line.tier_unit,
                                               create=False) or '—',
             'qty': line.quantity,
+            'rejected': rej,
+            'accepted': ace,
             'unit_rmb': unit,
+            'unit_usd': unit_usd,
             'total_rmb': total,
-            'total_usd': None if estimado else line.total_usd,
+            'total_usd': ((unit_usd * line.quantity)
+                          if unit_usd is not None else None),
+            # ¥/US$ do que foi ACEITO — é o que virou dinheiro de verdade.
+            'pago_rmb': (unit * ace) if unit is not None else None,
+            'pago_usd': (unit_usd * ace) if unit_usd is not None else None,
             'estimado': estimado,
             'sem_preco': unit is None,
+            'tem_resultado': inv is not None,
         })
         g['qty'] += line.quantity
+        g['rejected'] += rej
+        g['accepted'] += ace
         if total is not None:
             g['rmb'] += total
         else:
