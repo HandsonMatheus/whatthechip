@@ -52,7 +52,7 @@ import re
 import time
 import logging
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.db.models import Q
 
@@ -69,15 +69,38 @@ MICRON_FBGA_SOURCE_URL = (
     "https://www.micron.com/sales-support/design-tools/fbga-parts-decoder"
 )
 
+# ⚠ SEM User-Agent aqui de propósito (2026-08-19). O curl_cffi já emite o UA
+# que combina com o TLS/HTTP2 do perfil que ele imita; cravar um UA à mão
+# criava a incoerência clássica que WAF adora — o handshake dizia Chrome 110 e
+# o cabeçalho dizia Chrome 124. Só o fallback (requests puro) precisa de um UA
+# escrito, e aí ele vai em _UA_FALLBACK.
 _HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-    ),
     "Accept": "application/json, text/plain, */*",
     "Accept-Language": "en-US,en;q=0.9",
     "Referer": "https://www.micron.com/sales-support/design-tools/fbga-parts-decoder",
 }
+
+_UA_FALLBACK = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+)
+
+#: Perfis do curl_cffi, do mais novo pro mais velho — o primeiro que a versão
+#: instalada aceitar. Perfil ANTIGO é pior que nenhum: um fingerprint de
+#: Chrome 110 em 2026 não existe mais no mundo real e denuncia o robô.
+_PERFIS_TLS = ("chrome131", "chrome124", "chrome120", "chrome116", "chrome110")
+
+#: Assinaturas da página de bloqueio (F5 BIG-IP ASM). Chega com HTTP 200 e
+#: corpo HTML — sem isto, o `r.json()` estoura, a função devolve None e o
+#: chamador lê como "FBGA sem resultado". Bloqueio virando "vazio" é a pior
+#: leitura possível: foi assim que a investigação da Micron quase concluiu
+#: "a fonte está vazia" quando o que havia era porta fechada.
+_MARCAS_DE_BLOQUEIO = ("request rejected", "requested url was rejected",
+                       "support id is", "access denied")
+
+
+class MicronBloqueado(Exception):
+    """O WAF da Micron recusou a requisição (≠ FBGA sem resultado)."""
 
 # Famílias MCP com decode map para NAND+RAM individuais
 MCP_FAMILIES = ("MT29VZZZ", "MT29TZZZ", "MT30AZZZ")
@@ -120,20 +143,48 @@ _MTFC_CAP_RE = re.compile(r'^MTFC(\d+)([GT])', re.I)
 # ── HTTP session ──────────────────────────────────────────────────────────────
 
 def _make_session():
-    """Prefere curl_cffi (TLS Chrome) para evitar bloqueios Cloudflare."""
+    """Prefere curl_cffi (TLS de Chrome real) para não ser barrado no WAF.
+
+    Usa o perfil MAIS NOVO que a versão instalada aceitar (_PERFIS_TLS). Um
+    perfil velho é pior que nenhum: em 2026 um fingerprint de Chrome 110 não
+    corresponde a navegador nenhum vivo, e é justamente isso que o WAF procura.
+    """
     try:
         from curl_cffi import requests as cffi_requests
-        s = cffi_requests.Session(impersonate="chrome110")
-        s._is_cffi = True
-        return s
     except ImportError:
         import requests as std_requests
         s = std_requests.Session()
+        s.headers["User-Agent"] = _UA_FALLBACK
         s._is_cffi = False
+        s._perfil = ""
         return s
+    for perfil in _PERFIS_TLS:
+        try:
+            s = cffi_requests.Session(impersonate=perfil)
+        except Exception:
+            continue            # versão instalada não conhece este perfil
+        s._is_cffi = True
+        s._perfil = perfil
+        return s
+    s = cffi_requests.Session()
+    s._is_cffi = True
+    s._perfil = "(padrão)"
+    return s
 
 
 # ── Reverse FBGA lookup ───────────────────────────────────────────────────────
+
+def _e_bloqueio(status: int, corpo: str) -> bool:
+    """O corpo é a página de bloqueio do WAF? (F5 BIG-IP ASM e parentes.)
+
+    Ela chega com HTTP 200 e HTML — indistinguível de "sem resultado" para
+    quem só tenta `r.json()`. Também trata 403 com corpo HTML.
+    """
+    baixo = (corpo or "").lower()
+    if any(m in baixo for m in _MARCAS_DE_BLOQUEIO):
+        return True
+    return status == 403 and "<html" in baixo
+
 
 def _query_by_fbga(fbga: str, session, retries: int = 3, verbose: bool = False) -> dict | None:
     """
@@ -154,12 +205,22 @@ def _query_by_fbga(fbga: str, session, retries: int = 3, verbose: bool = False) 
                 print(f"  [DEBUG] Status: {r.status_code}")
                 print(f"  [DEBUG] Body (300 chars): {r.text[:300]!r}")
 
+            corpo = r.text or ""
+            if _e_bloqueio(r.status_code, corpo):
+                raise MicronBloqueado(
+                    f"HTTP {r.status_code} — o WAF da Micron recusou a "
+                    f"requisição (FBGA {fbga}).")
+
             if r.status_code == 200:
                 try:
                     data = r.json()
                 except Exception:
-                    logger.warning("Resposta não-JSON para FBGA %s", fbga)
-                    return None
+                    # Não é bloqueio conhecido nem JSON: some com o motivo se
+                    # devolver None aqui. Melhor levantar do que virar "vazio".
+                    raise MicronBloqueado(
+                        f"resposta HTTP 200 NÃO-JSON para FBGA {fbga} — "
+                        f"provável página de bloqueio/interstitial. "
+                        f"Início do corpo: {corpo[:120]!r}")
 
                 # Normaliza lista
                 if isinstance(data, dict):
@@ -217,6 +278,8 @@ def _query_by_fbga(fbga: str, session, retries: int = 3, verbose: bool = False) 
                 logger.warning("HTTP %s para FBGA %s (tentativa %d/%d)",
                                r.status_code, fbga, attempt + 1, retries)
 
+        except MicronBloqueado:
+            raise                      # bloqueio NUNCA vira "sem resultado"
         except Exception as e:
             logger.warning("Erro na tentativa %d/%d para FBGA %s: %s",
                            attempt + 1, retries, fbga, e)
@@ -463,8 +526,22 @@ class Command(BaseCommand):
                 Q(capacity="") | Q(capacity__isnull=True)
             )
 
-        if fbga_filter:
-            qs = qs.filter(fbga_code=fbga_filter.upper())
+        # ⚠ `--fbga ""` (variável de shell não expandida) já disparou uma
+        # varredura de 1.462 requisições sem querer (2026-08-18) — que é a
+        # explicação mais provável do bloqueio de IP que veio depois. Passar a
+        # flag e ela chegar VAZIA nunca significa "faz tudo": significa que o
+        # comando de quem chamou está errado.
+        if fbga_filter is not None:
+            alvo = (fbga_filter or "").strip().upper()
+            if not alvo:
+                raise CommandError(
+                    "--fbga veio VAZIO. Isso quase sempre é variável de shell "
+                    "não expandida\n(ex.: `--fbga $C` com $C vazio) — e sem esta "
+                    "trava viraria uma\nVARREDURA de todos os FBGA da Micron, "
+                    "que é como se queima o IP no WAF.\n"
+                    "Informe o código (ex.: --fbga D8KFG) ou omita a flag para "
+                    "processar todos.")
+            qs = qs.filter(fbga_code=alvo)
 
         total = qs.count()
 
@@ -514,7 +591,25 @@ class Command(BaseCommand):
             self.stdout.flush()
 
             # ── Consulta API (reverse lookup) ─────────────────────────────────
-            api_result = _query_by_fbga(fbga, session, verbose=verbose)
+            try:
+                api_result = _query_by_fbga(fbga, session, verbose=verbose)
+            except MicronBloqueado as e:
+                # Para TUDO. Continuar a fila só empilha requisição recusada no
+                # mesmo IP — em WAF de bloqueio por reputação, insistir RENOVA
+                # a punição em vez de esperá-la vencer.
+                raise CommandError(
+                    f"BLOQUEADO pelo WAF da Micron — {e}\n\n"
+                    f"  Isto NÃO é 'FBGA sem resultado': a resposta nem chegou "
+                    f"a ser JSON.\n"
+                    f"  Perfil TLS usado: {getattr(session, '_perfil', '?') or 'requests puro'}\n\n"
+                    f"  O que costuma resolver, nesta ordem:\n"
+                    f"    1. PARAR de tentar por algumas horas — cada tentativa "
+                    f"recusada renova o bloqueio;\n"
+                    f"    2. rodar de OUTRA REDE/IP (o bloqueio é por origem);\n"
+                    f"    3. conferir se curl_cffi está instalado (sem ele o TLS "
+                    f"denuncia o robô).\n"
+                    f"  E NUNCA rodar a varredura completa: foi o que queimou o "
+                    f"IP em 2026-08-18.")
 
             if api_result:
                 part_name = api_result.get("part_name", "")

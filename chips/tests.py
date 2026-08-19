@@ -2592,3 +2592,100 @@ class K9PseudoPnTests(TestCase):
                                   'subtype': 'SLC NAND',
                                   'capacity': '512MB'}),
             'NÃO RENTÁVEL')
+
+
+class MicronApiBloqueioTests(SimpleTestCase):
+    """O WAF da Micron não pode virar "FBGA sem resultado".
+
+    Incidente 2026-08-18/19: uma varredura acidental (`--fbga $C` com a
+    variável vazia → 1.462 requisições) queimou o IP no WAF da Micron. Depois
+    disso o chat de marca passou a receber "Request Rejected" e ficou tentando
+    de tempos em tempos — o que RENOVA o bloqueio em vez de esperá-lo vencer.
+
+    Pior: a página de bloqueio chega com HTTP 200 e corpo HTML. O código
+    tentava `r.json()`, falhava, devolvia `None` — e o chamador lia isso como
+    "esse FBGA não tem produto". Ou seja: porta fechada virando evidência de
+    fonte vazia, justamente na investigação que decidia se a API resolve os
+    807 Micron sem capacidade."""
+
+    def test_pagina_de_bloqueio_e_reconhecida(self):
+        from chips.management.commands.fill_capacity_from_micron_api import _e_bloqueio
+        f5 = ('<html><head><title>Request Rejected</title></head><body>'
+              'The requested URL was rejected. Please consult with your '
+              'administrator.<br>Your support ID is: 1234567890</body></html>')
+        self.assertTrue(_e_bloqueio(200, f5))
+        self.assertTrue(_e_bloqueio(403, '<html>Access Denied</html>'))
+
+    def test_json_legitimo_nao_e_bloqueio(self):
+        """O caso REAL da Micron: HTTP 200 com registro VAZIO. Isso é resposta
+        de verdade ("o FBGA mapeia, o produto não existe") e não pode ser
+        confundida com bloqueio — foi assim que os becos sem saída do
+        BRIEFING_MICRON foram estabelecidos."""
+        from chips.management.commands.fill_capacity_from_micron_api import _e_bloqueio
+        vazio = '{"details":[{"part-name":"","part-key":"","pageurl":""}]}'
+        self.assertFalse(_e_bloqueio(200, vazio))
+        self.assertFalse(_e_bloqueio(200, '{"details":[]}'))
+        self.assertFalse(_e_bloqueio(404, ''))
+
+    def test_bloqueio_levanta_em_vez_de_devolver_none(self):
+        from chips.management.commands import fill_capacity_from_micron_api as m
+
+        class _R:
+            status_code = 200
+            text = '<html><title>Request Rejected</title>support ID is: 9</html>'
+
+        class _S:
+            _perfil = 'chrome131'
+            def get(self, *a, **k):
+                return _R()
+
+        with self.assertRaises(m.MicronBloqueado):
+            m._query_by_fbga('D8KFG', _S())
+
+    def test_html_inesperado_tambem_levanta(self):
+        """Qualquer HTTP 200 não-JSON é suspeito: devolver None ali é o mesmo
+        erro com outra roupa."""
+        from chips.management.commands import fill_capacity_from_micron_api as m
+
+        class _R:
+            status_code = 200
+            text = '<!DOCTYPE html><html>algum interstitial novo</html>'
+
+        class _S:
+            _perfil = 'chrome131'
+            def get(self, *a, **k):
+                return _R()
+
+        with self.assertRaises(m.MicronBloqueado):
+            m._query_by_fbga('D8KFG', _S())
+
+    def test_bloqueio_403_com_html_tambem_levanta(self):
+        """Este é o caso que SÓ o `_e_bloqueio` pega: 403 não entra no ramo do
+        `r.json()`, então sem a checagem explícita ele cairia no retry e
+        acabaria devolvendo None — bloqueio virando "sem resultado" de novo."""
+        from chips.management.commands import fill_capacity_from_micron_api as m
+
+        class _R:
+            status_code = 403
+            text = '<html><body>Access Denied</body></html>'
+
+        class _S:
+            _perfil = 'chrome131'
+            def get(self, *a, **k):
+                return _R()
+
+        with self.assertRaises(m.MicronBloqueado):
+            m._query_by_fbga('D8KFG', _S(), retries=1)
+
+    def test_ua_nao_e_cravado_a_mao(self):
+        """UA escrito à mão + TLS de outro Chrome = incoerência que o WAF
+        procura. Quem manda o UA é o perfil do curl_cffi."""
+        from chips.management.commands.fill_capacity_from_micron_api import _HEADERS
+        self.assertNotIn('User-Agent', _HEADERS)
+
+    def test_perfil_tls_mais_novo_primeiro(self):
+        """Perfil velho é pior que nenhum: Chrome 110 em 2026 não existe."""
+        from chips.management.commands.fill_capacity_from_micron_api import _PERFIS_TLS
+        numeros = [int(p.replace('chrome', '')) for p in _PERFIS_TLS]
+        self.assertEqual(numeros, sorted(numeros, reverse=True))
+        self.assertGreaterEqual(numeros[0], 130)
