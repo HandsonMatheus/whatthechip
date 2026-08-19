@@ -3042,3 +3042,147 @@ class DesignSystemNaTelaDoCompradorTests(TestCase):
             services.settle_and_invoice(self.so, {self.so.lines.get().pk: (0, None)},
                                         self.dono)
         self.assertEqual(self._tela().context['a_conferir'], 0)
+
+
+class LoteFechouSemOVTests(TestCase):
+    """SEGUNDO incidente de prod do mesmo tipo (eRecyclo, LOT/001/08/26,
+    2026-08-18) — o primeiro foi o K9 em 8305e0a.
+
+    `create_draft_for_lot` NUNCA levanta (padrão F8: o fechamento FÍSICO do
+    lote não pode travar por causa da venda), então o motivo desaparece. Estes
+    testes prendem os DOIS instrumentos que fazem o motivo reaparecer:
+    `diag_ordem_venda` (por que não nasceu) e `criar_ov_faltante` (nasce
+    agora, pelo mesmo caminho do fechamento).
+
+    O cenário que reproduzem é o do portão do COMPRADOR ÚNICO: `Buyer.objects`
+    é PlatformSharedManager, então a empresa enxerga o comprador DELA **mais**
+    os de PLATAFORMA (company IS NULL). Basta a empresa ter um comprador
+    próprio ativo E existir um de plataforma ativo para virarem 2 — e 2 ≠ 1
+    faz o código desistir em silêncio."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.brand = _setup('vd-semov')
+        User = get_user_model()
+        cls.mgr = User.objects.create_superuser('semov_mgr', password='x')
+        Membership.objects.create(user=cls.mgr, company=cls.company,
+                                  role=Membership.ROLE_MANAGER)
+
+    def setUp(self):
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        self.lot = Lot.open_for_company(self.company, self.mgr, 'Sem OV',
+                                        origin='phone')
+        _entries(self.lot, self.brand, com_emcp=False)
+
+    def _fecha(self):
+        self.client.force_login(self.mgr)
+        return self.client.post(
+            reverse('estoque:lot_close', args=[self.lot.pk]),
+            {'confirm_code': self.lot.code}, follow=True)
+
+    def _cmd(self, nome, **opts):
+        from io import StringIO
+        from django.core.management import call_command
+        out = StringIO()
+        call_command(nome, stdout=out, **opts)
+        return out.getvalue()
+
+    def _comprador_de_plataforma(self):
+        """O segundo comprador — o de PLATAFORMA, que TODA empresa enxerga."""
+        return Buyer.all_companies.create(company=None, name='Wu Plataforma',
+                                          slug='wu-plataforma')
+
+    # ── o incidente ─────────────────────────────────────────────────────────
+    def test_dois_compradores_visiveis_matam_a_ov_em_silencio(self):
+        """A reprodução do bug: comprador da empresa + o de plataforma = 2."""
+        self._comprador_de_plataforma()
+        self._fecha()
+        self.lot.refresh_from_db()
+        self.assertEqual(self.lot.status, Lot.STATUS_CLOSED)   # o lote FECHOU
+        self.assertFalse(SalesOrder.all_companies.filter(lot=self.lot).exists())
+
+    def test_fechar_sem_ov_avisa_na_tela(self):
+        """O portão de visibilidade (8305e0a) tem que valer para ESTA causa
+        também — não só para a exceção do K9."""
+        self._comprador_de_plataforma()
+        corpo = self._fecha().content.decode()
+        self.assertIn('ORDEM DE VENDA não foi criada', corpo)
+
+    # ── o diagnóstico ───────────────────────────────────────────────────────
+    def test_diagnostico_aponta_o_portao_do_comprador(self):
+        self._comprador_de_plataforma()
+        self._fecha()
+        saida = self._cmd('diag_ordem_venda', company=self.company.slug,
+                          lot=str(self.lot.number))
+        self.assertIn('PORTÃO 1', saida)
+        self.assertIn('É AQUI: 2 ≠ 1', saida)
+        self.assertIn('Wu Plataforma', saida)
+        self.assertIn('(PLATAFORMA)', saida)
+
+    def test_diagnostico_aponta_comprador_zero(self):
+        """A outra ponta do mesmo portão: nenhum comprador ativo visível."""
+        Buyer.all_companies.filter(pk=self.buyer.pk).update(active=False)
+        self._fecha()
+        saida = self._cmd('diag_ordem_venda', company=self.company.slug,
+                          lot=str(self.lot.number))
+        self.assertIn('É AQUI: 0 ≠ 1', saida)
+        self.assertIn('Nenhum comprador ativo visível', saida)
+
+    def test_diagnostico_inocenta_lote_que_tem_ov(self):
+        """Sem falso positivo: com 1 comprador a OV nasce e o diagnóstico diz
+        que este lote não é o caso."""
+        self._fecha()
+        saida = self._cmd('diag_ordem_venda', company=self.company.slug,
+                          lot=str(self.lot.number))
+        self.assertIn('a OV EXISTE', saida)
+        self.assertNotIn('É AQUI', saida)
+
+    def test_varredura_lista_o_lote_orfao(self):
+        """O 'quantos mais estão assim?' que todo incidente levanta depois."""
+        self._comprador_de_plataforma()
+        self._fecha()
+        saida = self._cmd('diag_ordem_venda')
+        self.assertIn('LOTES FECHADOS SEM ORDEM DE VENDA', saida)
+        self.assertIn(self.lot.code, saida)
+        self.assertIn('1 SEM OV', saida)
+
+    # ── o conserto ──────────────────────────────────────────────────────────
+    def test_conserto_dry_run_nao_grava(self):
+        b = self._comprador_de_plataforma()
+        self._fecha()
+        Buyer.all_companies.filter(pk=b.pk).update(active=False)  # destrava
+        saida = self._cmd('criar_ov_faltante', company=self.company.slug)
+        self.assertIn('DRY-RUN', saida)
+        self.assertIn(self.lot.code, saida)
+        self.assertFalse(SalesOrder.all_companies.filter(lot=self.lot).exists())
+
+    def test_conserto_cria_a_ov_pelo_mesmo_caminho(self):
+        b = self._comprador_de_plataforma()
+        self._fecha()
+        self.assertFalse(SalesOrder.all_companies.filter(lot=self.lot).exists())
+        Buyer.all_companies.filter(pk=b.pk).update(active=False)  # causa removida
+        self._cmd('criar_ov_faltante', company=self.company.slug, commit=True)
+        so = SalesOrder.all_companies.get(lot=self.lot)
+        self.assertEqual(so.status, STATUS_DRAFT)      # rascunho, preço vivo
+        self.assertTrue(so.lines.exists())             # com as linhas do lote
+
+    def test_conserto_e_idempotente(self):
+        self._fecha()                                  # já nasce com OV
+        saida = self._cmd('criar_ov_faltante', company=self.company.slug,
+                          commit=True)
+        self.assertIn('Nada a fazer', saida)
+        self.assertEqual(
+            SalesOrder.all_companies.filter(lot=self.lot).count(), 1)
+
+    def test_conserto_nao_mente_quando_a_causa_continua(self):
+        """Se a causa é ESTRUTURAL, o comando tem que dizer que falhou e
+        mandar para o diagnóstico — nunca reportar sucesso vazio."""
+        self._comprador_de_plataforma()
+        self._fecha()
+        saida = self._cmd('criar_ov_faltante', company=self.company.slug,
+                          commit=True)
+        self.assertIn('continua sem OV', saida)
+        self.assertIn('A causa NÃO é transitória', saida)
+        self.assertIn('diag_ordem_venda', saida)
+        self.assertFalse(SalesOrder.all_companies.filter(lot=self.lot).exists())
