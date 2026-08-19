@@ -1,0 +1,70 @@
+# Submissão de known_parts — Samsung, família KMD (eMCP LPDDR4X + eMMC 5.1).
+# PN alvo da busca (2026-08-19): KMDL6001DA — pn_not_in_db=true, chave pn[3:5]="L6"
+# NÃO existe em NENHUM dos dois mapas da família (SAM_EMCP_NAND nem
+# SAM_EMCP_RAM_KMD) → "⚠ cap. não mapeada" nos dois lados, profitable=INDETERMINADO.
+#
+# ⚠ RESULTADO: KMDL6001DA fica DE FORA desta submissão — NENHUM known_part
+# registrado para ele. Pesquisa extensa (fdnext/GitHub — decoder estruturado
+# que cita página oficial Samsung por PN exato para praticamente toda a família
+# KMD —, página oficial semiconductor.samsung.com [URL do modelo redireciona pra
+# categoria genérica, sem specs], win-source, DigiPart, Octopart, Alibaba,
+# distribuidores diversos) NÃO achou capacidade (NAND nem RAM) para a chave "L6".
+# A ÚNICA menção real do PN completo "KMDL6001DA-B425" (+ top-mark "DL6DAB") foi
+# um vídeo de reparo (YouTube, "FLASH64 KMDL6001DA-B425 (DL6DAB) DEAD eMMC...")
+# que PROVA a existência do chip mas NÃO afirma capacidade — "FLASH64" no título
+# é ambíguo (pode ser numeração de série do canal, não a capacidade do chip) e eu
+# não vou adivinhar a partir disso. Regra do dono (2026-07-15, sem exceção):
+# "NAO podemos subir PNs sem capacidade no banco de dados, NUNCA!" — como não há
+# fonte Tier-1 (nem Tier-2 sólida) pra capacidade, sigo "excluir, não adivinhar":
+# NÃO registro KMDL6001DA. Sem mudança de gramática também (mapas são "EXATA,
+# jamais aproximada" — não dá pra acrescentar "L6" a nenhum dos dois mapas sem
+# fonte). Fica como lacuna documentada, igual ao padrão já usado pra outras
+# chaves não confirmadas da própria família (ver comentário no yaml: C6 e V6
+# também já estão faltando no mapa de RAM, achado incidental abaixo).
+#
+# CLUSTER pesquisado (pedido permanente: nunca só 1 PN por rodada):
+# - KMDH6001DA (10 chars, SEM sufixo) — chave "H6", JÁ confirmada nos dois mapas
+#   (NAND H6→64GB, RAM H6→LPDDR4X 4GB). O próprio comentário do yaml already cita
+#   "KMDH6001DA" como uma das fontes originais da chave H6 ("KMDH6001DA/KMDP60018M
+#   golden pré-existente") — mas o PN em si (sem sufixo "M") NUNCA foi registrado
+#   como known_part (só existe KMDH6001DM no seed, sufixo diferente). Reforçado
+#   agora por fonte NOVA e independente: fdnext (decoder estruturado, GitHub,
+#   iTXTech/fdnext) cita a página oficial Samsung exata — "KMDH6001DA-B425: 64GB
+#   eMMC 5.1 + 32Gb LPDDR4X, 254 FBGA, 4266 Mbps" — 32Gb÷8=4GB, bate exatamente
+#   com o mapa já confirmado. Duas fontes independentes convergindo na mesma
+#   chave já confirmada → seguro registrar. Ver known_part abaixo.
+# - KMDP6001DA — JÁ está no banco (seed_known_parts.json), nada a fazer.
+# - KMDV6001DA (fuzzy-suggestion) — chave "V6": NAND confirmado (128GB,
+#   SAM_EMCP_NAND), mas RAM **NÃO** está em SAM_EMCP_RAM_KMD (só tem D6/H6/P6/X6).
+#   Achado incidental: o known_part JÁ EXISTENTE no seed pra essa chave
+#   (KMDV6001DB) também está sem confirmação de RAM — é uma lacuna real da
+#   família, não um caso isolado. NÃO registrado aqui (sem fonte Tier-1 pra RAM
+#   de V6 pesquisada nesta rodada — ficaria pra uma rodada dedicada).
+# - KM5L9001DA (fuzzy-suggestion, família DIFERENTE — KM5, uMCP) — chave "L9001"
+#   JÁ confirmada no SAM_EMCP_CAP_KM5 (128GB+4GB). Grammar já resolve completo;
+#   não pesquisei se "KM5L9001DA" (com esse sufixo exato) é PN real — fora do
+#   escopo desta rodada (família diferente da buscada).
+# - KMBV6001DA (fuzzy-suggestion, prefixo "KMB") — família KMB NÃO existe na
+#   gramática Samsung (grep confirma). Fora do escopo desta rodada (precisaria
+#   de investigação de família nova, não é extensão do cluster KMD).
+brand: "Samsung"
+known_parts:
+  - part_number: "KMDH6001DA"
+    chip_type: "eMCP"
+    subtype: "LPDDR4X"
+    interface: "eMMC 5.1"
+    emcp_nand: "eMMC 5.1 64GB"
+    emcp_ram: "LPDDR4X 4GB"
+    confidence: confirmed
+    source_url: "https://semiconductor.samsung.com/us/mcp/model/lpddr5-umcp/kmdh6001da-b425/"
+    notes: >
+      Chave "H6" (pn[3:5]) — mesma chave JÁ confirmada nos dois mapas da família
+      (SAM_EMCP_NAND H6→64GB, SAM_EMCP_RAM_KMD H6→LPDDR4X 4GB desde 2026-07-04).
+      Este PN específico (base 10 chars, sem sufixo de grade) nunca tinha sido
+      registrado como known_part — só a forma "KMDH6001DM" (sufixo M) está no
+      seed. Fonte NOVA independente (fdnext, decoder estruturado no GitHub
+      iTXTech/fdnext, cita a página oficial Samsung por PN exato): "KMDH6001DA-B425:
+      64GB eMMC 5.1 + 32Gb LPDDR4X, 254 FBGA, 4266 Mbps" — 32Gb÷8=4GB, bate
+      exatamente com o mapa já confirmado (nenhuma divergência). Reforça (não
+      substitui) a citação já existente no yaml, que já usava "KMDH6001DA" como
+      uma das fontes originais da própria chave H6.
