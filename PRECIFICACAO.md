@@ -1742,6 +1742,20 @@ está documentado em `services.ship_to`.
 **comprovante que o COMPRADOR anexou**. Quem paga é o comprador; o cliente
 precisa acompanhar. Some inteiro para quem não vê valor.
 
+🎨 **A TELA DE COMPRAS VESTE O DESIGN SYSTEM v2** (dono, 2026-08-19). O pacote
+entrou em `static/wtc/` e a primeira superfície migrada é a do COMPRADOR:
+`/partner/` inteira ganhou a barra CLARA do v2 (`.pshell` — o shell escuro
+copiado à mão morreu), e a lista virou a `.dtab`, que é a tabela de todas as
+listas do sistema. De graça vieram o cabeçalho grudado, a linha de 48px, o
+`tabular-nums` e — no celular — a linha VIRANDO CARTÃO de duas alturas, com o
+resultado (a célula `.key`) em cima ao lado do código. Detalhes e o que falta
+vestir: `DESIGN_SYSTEM.md`.
+
+⚠ A regra do FRONTEND_V2 ("nunca edite o template atual, faça cópia em `v2/`")
+**não alcança o comprador**: aquele canary é por EMPRESA (`Company.ui_v2`) e
+ele é de PLATAFORMA. Decisão: trocar direto na superfície dele — é um usuário
+só, e o rollback é reverter o commit.
+
 📋 **AS LISTAS PASSAM A DIZER O TAMANHO DO NEGÓCIO** (dono, 2026-08-19). As
 duas tabelas de topo mostravam código, status e data — para saber quantos chips
 saíram e quanto ia entrar era preciso abrir ordem por ordem.

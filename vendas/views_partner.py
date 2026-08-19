@@ -59,8 +59,13 @@ def _shell(request, extra=None):
 def compras_list(request):
     """As compras do comprador — todas as empresas, mais recente primeiro."""
     ordens = services.orders_for_buyer(request.buyer)
+    # Quantas esperam ELE (design system v2, 2026-08-19): o rodapé de soma da
+    # lista diz o tamanho da fila e quanto dela é trabalho dele. Conta aqui —
+    # template não calcula.
+    a_conferir = sum(1 for o in ordens if o.stage == services.STAGE_A_CONFERIR)
     return render(request, 'vendas/partner_compras.html',
-                  _shell(request, {'ordens': ordens}))
+                  _shell(request, {'ordens': ordens,
+                                   'a_conferir': a_conferir}))
 
 
 @partner_required

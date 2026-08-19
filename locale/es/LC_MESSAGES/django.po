@@ -3303,3 +3303,19 @@ msgstr "A cobrar"
 #. vendas/ (lista de vendas e de compras: chips, estimado, resultado)
 msgid "falta"
 msgstr "falta"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "na fila"
+msgstr "en la fila"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "esperando a sua conferência"
+msgstr "esperando su revisión"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "taxa do contrato"
+msgstr "tasa del contrato"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "Assim que um cliente despachar um lote, ele aparece aqui."
+msgstr "En cuanto un cliente despache un lote, aparece aquí."

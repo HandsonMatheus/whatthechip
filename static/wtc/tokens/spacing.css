@@ -1,0 +1,28 @@
+/* WhatTheChip — spacing. IBM Carbon's scale, with Carbon's own numbering.
+
+   Grade de 8px com mini-unit de 2px. Os degraus são
+       2 · 4 · 8 · 12 · 16 · 24 · 32 · 40 · 48 · 64 · 80 · 96 · 160
+   e --spacing-NN é o número do token do Carbon, então traduz 1:1 para `$spacing-NN` no SCSS dele.
+
+   O que mudou em relação à versão anterior: entrou o mini-unit de 2px (spacing-01, que faltava —
+   é a folga de fio e de marcador, e sem ela não há como escrever um espaçamento menor que 4px sem
+   sair da escala), entraram 80/96/160 (as folgas de LAYOUT, que faltavam por completo) e saiu o
+   20px, que o Carbon não tem: era o único degrau inventado, e ficava exatamente entre 16 e 24. */
+:root{
+  --spacing-01:2px;   --spacing-02:4px;   --spacing-03:8px;   --spacing-04:12px;
+  --spacing-05:16px;  --spacing-06:24px;  --spacing-07:32px;  --spacing-08:40px;
+  --spacing-09:48px;  --spacing-10:64px;  --spacing-11:80px;  --spacing-12:96px;
+  --spacing-13:160px;
+
+  /* aliases curtos para autoria — mesmos valores, nomes mais rápidos de escrever */
+  --s-1:var(--spacing-02);  /* 4  */
+  --s-2:var(--spacing-03);  /* 8  */
+  --s-3:var(--spacing-04);  /* 12 */
+  --s-4:var(--spacing-05);  /* 16 */
+  --s-5:var(--spacing-06);  /* 24 — era 20px, degrau que o Carbon não tem */
+  --s-6:var(--spacing-06);  /* 24 */
+  --s-7:var(--spacing-07);  /* 32 */
+  --s-8:var(--spacing-08);  /* 40 */
+  --s-9:var(--spacing-09);  /* 48 */
+  --s-10:var(--spacing-10); /* 64 */
+}

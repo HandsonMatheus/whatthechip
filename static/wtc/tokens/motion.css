@@ -1,0 +1,26 @@
+/* WhatTheChip — motion. IBM Carbon's productive easing and duration steps.
+
+   A curva anterior era cubic-bezier(.2,0,.2,1) — parecida com a do Carbon, mas não era ela. O
+   Carbon usa TRÊS curvas, e a escolha entre elas é semântica, não estética: o que entra desacelera,
+   o que sai acelera, e o que muda de estado no lugar faz as duas coisas.
+   Duração: os seis degraus do Carbon. A bancada usa a metade produtiva (fast/moderate); slow-* fica
+   documentado porque existe no Carbon, não porque a bancada precise. */
+:root{
+  /* easing — produtivo (o modo da bancada; expressive é para marketing) */
+  --ease:cubic-bezier(0.2,0,0.38,0.9); /* @kind other */
+  --ease-in:cubic-bezier(0,0,0.38,0.9); /* @kind other */
+  --ease-out:cubic-bezier(0.2,0,1,0.9); /* @kind other */
+  --ease-expressive:cubic-bezier(0.4,0.14,0.3,1); /* @kind other */
+
+  /* duração — os degraus do Carbon */
+  --dur-fast-01:70ms; /* @kind other */
+  --dur-fast-02:110ms; /* @kind other */
+  --dur-mod-01:150ms; /* @kind other */
+  --dur-mod-02:240ms; /* @kind other */
+  --dur-slow-01:400ms; /* @kind other */
+  --dur-slow-02:700ms; /* @kind other */
+
+  /* aliases em uso no produto */
+  --dur-1:var(--dur-fast-02); /* @kind other */
+  --dur-2:var(--dur-mod-02); /* @kind other */
+}

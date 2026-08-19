@@ -1,16 +1,27 @@
 {% comment %}
-  Base do dashboard do COMPRADOR (F6 — PRECIFICACAO §7.1).
+  Base do painel do COMPRADOR (F6 — PRECIFICACAO §7.1).
 
-  Design: MESMO padrão do painel interno da empresa (base_estoque.html —
-  Carbon UI shell escuro: header 56px #161616, marca à esquerda, nav com
-  sublinha azul, zonas separadas por borda #393939, conteúdo claro). As
-  classes .wtc-header__* são cópia fiel dos tokens de lá.
+  ═══ DESIGN SYSTEM v2 (dono, 2026-08-19) ═══
+  Esta base deixou de ter estilo próprio de shell: ela agora VESTE o pacote
+  `static/wtc/` (tokens + componentes + o padrão `patterns/parceiro.css`, que
+  é a folha do painel do parceiro). O que era `.wtc-header__*` — cópia à mão
+  do shell escuro do painel interno — saiu inteiro. No v2 a barra do parceiro
+  é CLARA (`.pshell`), e é essa a diferença que salta aos olhos.
 
-  Extras do parceiro:
-    · TAXA CONTRATUAL ¥→US$ no topo (F10 §12.18: server-side, é o
-      Buyer.fx_usd_rate que o dono gere — substituiu a cotação viva de API;
-      é a taxa que o sistema USA para derivar o USD dos ¥).
-    · Sidebar com todas as marcas (nav_lists vem das views) + pendências.
+  ⚠ Por que aqui a regra do FRONTEND_V2 ("nunca edite o template atual, faça
+  cópia em v2/") NÃO se aplica: aquele canary é POR EMPRESA
+  (`Company.ui_v2`), e o comprador é de PLATAFORMA — não tem empresa, então o
+  flag nunca o alcançaria. Decisão do dono: trocar direto na superfície do
+  comprador (é um usuário só, e o rollback é reverter o commit).
+
+  As telas de PREÇO ainda não foram migradas: as classes `.ptn-*` que elas
+  usam continuam neste <style> até chegar a vez delas. Não acrescente nada
+  ali — componente novo vem do pacote.
+
+  Extras do parceiro que a barra carrega:
+    · TAXA CONTRATUAL ¥→US$ (F10 §12.18: server-side, é o Buyer.fx_usd_rate
+      que o dono gere — substituiu a cotação viva de API).
+    · Sidebar com os tipos de chip (nav_lists vem das views) + pendências.
 
   ⚠ NUNCA exibir updated_by/last_updated aqui — auditoria é só do admin (§7).
 {% endcomment %}{% load static i18n l10n %}<!DOCTYPE html>
@@ -20,222 +31,204 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
   <title>{% block title %}{% trans "Preços" %}{% endblock %} · WhatTheChip</title>
+  {% comment %} As duas famílias do sistema (Manrope + IBM Plex Mono) vêm do
+     Google Fonts e NÃO estão no pacote: sem elas tudo cai em system-ui e a
+     densidade muda. O <link> antecipa o que o @import de tokens/fonts.css
+     pediria em série. {% endcomment %}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}" />
+  {% comment %} Ordem obrigatória do pacote: tokens → componentes (wtc.css faz
+     as duas) → padrão. Invertida, toda regra cai em var() vazio e a página sai
+     sem cor. O padrão vai em <link> próprio em vez de descomentar o @import
+     dentro de wtc.css: assim o pacote fica intocado e a próxima versão dele
+     entra por cópia, sem merge. {% endcomment %}
+  <link rel="stylesheet" href="{% static 'wtc/wtc.css' %}" />
+  <link rel="stylesheet" href="{% static 'wtc/patterns/parceiro.css' %}" />
   <style>
-    /* ═══ Shell idêntico ao painel interno (base_estoque.html) ═══ */
-    * , *::before, *::after { box-sizing: border-box; }
-    body { margin:0; background:#f4f4f4; color:#161616; min-height:100vh;
-           display:flex; flex-direction:column;
-           font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
-           -webkit-font-smoothing:antialiased; }
+    body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);
+         -webkit-font-smoothing:antialiased}
+    a{color:var(--accent)}
+    /* Uma só coluna: tela sem trilho de tipos (Compras) não deve abrir um vão
+       de 236px do lado esquerdo. */
+    .papp--solo{grid-template-columns:minmax(0,1fr)}
+    .pshell__brand{gap:11px}
 
-    .wtc-header { height:56px; background:#161616; display:flex; align-items:center;
-                  position:sticky; top:0; z-index:40; }
-    .wtc-header__brand { display:flex; align-items:center; height:100%; padding:0 20px;
-                         border-right:1px solid #393939; text-decoration:none; flex:none; }
-    .wtc-header__brand img { height:26px; width:auto; display:block; }
-    .wtc-header__nav { display:flex; align-items:center; gap:8px; height:100%;
-                       padding:0 16px; color:#c6c6c6; font-size:14px; font-weight:500;
-                       text-decoration:none; border-bottom:3px solid transparent;
-                       border-top:3px solid transparent; }
-    .wtc-header__nav:hover { background:#262626; color:#f4f4f4; }
-    .wtc-header__nav--active { color:#fff; font-weight:600; border-bottom-color:#0f62fe; }
-    .wtc-header__spacer { flex:1; }
-    .wtc-header__org { display:flex; align-items:center; gap:10px; height:100%;
-                       padding:0 16px; border-left:1px solid #393939; }
-    .wtc-header__org-txt { display:flex; flex-direction:column; line-height:1.2; }
-    .wtc-header__org-name { color:#f4f4f4; font-size:13px; font-weight:600; white-space:nowrap; }
-    .wtc-header__org-branch { color:#8d8d8d; font-size:11px; white-space:nowrap; }
-    .wtc-header__who { display:flex; align-items:center; gap:8px; height:100%;
-                       padding:0 16px; border-left:1px solid #393939; }
-    .wtc-header__role { font-size:10px; font-weight:700; letter-spacing:0.08em;
-                        text-transform:uppercase; color:#78a9ff; border:1px solid #33539b;
-                        padding:2px 7px; white-space:nowrap; }
-    .wtc-header__actions { display:flex; align-items:center; gap:6px; height:100%;
-                           padding:0 12px 0 16px; border-left:1px solid #393939; }
-    .wtc-header__btn { display:flex; align-items:center; gap:6px; height:36px;
-                       padding:0 14px; color:#f4f4f4; font-size:14px;
-                       border:1px solid #525252; background:transparent; cursor:pointer;
-                       white-space:nowrap; flex:none; text-decoration:none; font-family:inherit; }
-    .wtc-header__btn:hover { background:#262626; }
-    .wtc-header__btn--logout { color:#ff8389; }
+    /* A folha do pacote recolhe `.pshell__nav`, `.pshell__fx` e `.me` quando a
+       barra vira gaveta. O `.me` é o widget de perfil que o `shell.js` do
+       sistema MONTA — e o shell.js não vem no pacote. Aqui o perfil são três
+       células soltas (idioma · identidade · sair), então elas viajam juntas
+       dentro de `.pshell__me` e recebem o MESMO comportamento de gaveta. Sem
+       isto elas ficavam acima da marca no celular, fora de qualquer ordem. */
+    .pshell__me{display:flex;align-items:stretch;flex:none}
+    .pshell__me>form{margin:0;display:flex}
+    .pshell[data-shell] .pshell__me{display:none}
+    .pshell[data-shell].is-open .pshell__me{display:flex;order:6;flex:0 0 100%;
+      flex-direction:column;border-top:1px solid var(--line)}
+    .pshell[data-shell].is-open .pshell__me>*{border-left:0;
+      border-bottom:1px solid var(--line)}
+    .pshell[data-shell].is-open .pshell__me .shell__ico,
+    .pshell[data-shell].is-open .pshell__who{width:100%;height:var(--ctl-lg);
+      display:flex;align-items:center;justify-content:flex-start;padding:0 16px}
+    /* na barra o ícone fala sozinho (tem title e aria-label); na gaveta, onde
+       cada linha é uma frase, ele ganha a palavra. */
+    .pshell__lbl{display:none}
+    .pshell[data-shell].is-open .pshell__lbl{display:inline;margin-left:12px;
+      font-size:15px;font-weight:600}
 
-    /* Taxa contratual ¥→US$ (zona própria, estilo "org") */
-    .wtc-header__fx { display:flex; align-items:center; gap:8px; height:100%;
-                      padding:0 16px; border-left:1px solid #393939; }
-    .wtc-header__fx-val { font-family:'IBM Plex Mono',monospace; color:#f4f4f4;
-                          font-size:13px; font-weight:600; white-space:nowrap; }
-    .wtc-header__fx-note { color:#8d8d8d; font-size:10px; line-height:1.2; }
-
-    /* Layout com SIDEBAR de marcas */
-    .wtc-work { max-width:1340px; width:100%; margin:0 auto; padding:24px; flex:1;
-                display:flex; gap:22px; align-items:flex-start; }
-    .wtc-work a, .wtc-work a:visited { color:#0f62fe; }
-    .ptn-side { flex:none; width:230px; background:#fff; border:1px solid #e0e0e0;
-                position:sticky; top:80px; }
-    .ptn-side__title { font-size:11px; font-weight:700; letter-spacing:.08em;
-                       text-transform:uppercase; color:#6f6f6f;
-                       padding:14px 16px 8px; }
-    .ptn-side__link { display:flex; align-items:center; gap:8px; padding:9px 16px;
-                      font-size:14px; color:#161616 !important; text-decoration:none;
-                      border-left:3px solid transparent; }
-    .ptn-side__link:hover { background:#f4f4f4; }
-    .ptn-side__link--active { border-left-color:#0f62fe; background:#edf5ff;
-                              font-weight:600; }
-    .ptn-side__badge { margin-left:auto; font-size:11px; font-weight:700;
-                       background:#fff1c2; color:#8a6d00; border-radius:10px;
-                       padding:1px 8px; }
-    .ptn-content { flex:1; min-width:0; }
-
-    /* Componentes das páginas */
+    /* ══ LEGADO — telas de PREÇO ainda não migradas para o pacote ══
+       Some conforme cada uma for vestida. Nada novo entra aqui. */
     .ptn-msg { padding:12px 16px; margin-bottom:14px; border-left:4px solid;
-               background:#fff; font-size:14px; }
-    .ptn-msg--success { border-color:#198038; }
-    .ptn-msg--error   { border-color:#da1e28; }
-    .ptn-card { background:#fff; border:1px solid #e0e0e0; padding:20px 22px;
+               background:var(--surface); font-size:14px; }
+    .ptn-msg--success { border-color:var(--green-60); }
+    .ptn-msg--error   { border-color:var(--red-60); }
+    .ptn-card { background:var(--surface); border:1px solid var(--line); padding:20px 22px;
                 margin-bottom:18px; }
-    table.ptn-table { width:100%; border-collapse:collapse; background:#fff; }
+    table.ptn-table { width:100%; border-collapse:collapse; background:var(--surface); }
     .ptn-table th { text-align:left; font-size:11px; letter-spacing:.08em;
-                    text-transform:uppercase; color:#6f6f6f; padding:10px 10px;
-                    border-bottom:2px solid #e0e0e0; }
-    .ptn-table td { padding:8px 10px; border-bottom:1px solid #eee;
+                    text-transform:uppercase; color:var(--muted); padding:10px 10px;
+                    border-bottom:2px solid var(--line); }
+    .ptn-table td { padding:8px 10px; border-bottom:1px solid var(--ink-10);
                     font-size:14px; vertical-align:middle; }
-    .ptn-row--inherited td { background:#fafafa; color:#8d8d8d; }
-    /* Cores por ESTADO da linha (pedido do dono, 2026-07-07): */
-    .ptn-row--unquoted td { background:#fffbea; }   /* não cotado: amarelo clarinho */
-    .ptn-row--nobuy td    { background:#fff1f1; }   /* não compro: vermelho claro  */
-    .ptn-tag--review { background:#d0e2ff; color:#0043ce; }   /* em revisão */
+    .ptn-row--inherited td { background:#fafafa; color:var(--faint); }
+    .ptn-row--unquoted td { background:#fffbea; }   /* não cotado */
+    .ptn-row--nobuy td    { background:var(--red-10); }   /* não compro */
     .ptn-tag { display:inline-block; font-size:11px; font-weight:700;
-               padding:2px 8px; border-radius:10px; }
-    .ptn-tag--pending  { background:#fff1c2; color:#8a6d00; }
-    .ptn-tag--nobuy    { background:#ffd7d9; color:#a2191f; }
-    .ptn-tag--quoted   { background:#defbe6; color:#0e6027; }
-    .ptn-tag--inherited{ background:#e8e8e8; color:#525252; }
-    .ptn-input { width:88px; padding:6px 8px; border:1px solid #8d8d8d;
-                 font-family:'IBM Plex Mono',monospace; font-size:14px; }
-    .ptn-btn { padding:7px 14px; border:none; background:#0f62fe; color:#fff;
+               padding:2px 8px; }
+    .ptn-tag--review   { background:var(--blue-20); color:var(--blue-70); }
+    .ptn-tag--pending  { background:#fff1c2; color:var(--amber-70); }
+    .ptn-tag--nobuy    { background:#ffd7d9; color:var(--red-70); }
+    .ptn-tag--quoted   { background:#defbe6; color:var(--green-70); }
+    .ptn-tag--inherited{ background:var(--ink-20); color:var(--ink-70); }
+    .ptn-input { width:88px; padding:6px 8px; border:1px solid var(--ink-50);
+                 font-family:var(--mono); font-size:14px; }
+    .ptn-btn { padding:7px 14px; border:none; background:var(--blue-60); color:#fff;
                font-weight:600; font-size:13px; cursor:pointer; }
-    .ptn-btn--ghost { background:#fff; color:#161616; border:1px solid #8d8d8d; }
+    .ptn-btn--ghost { background:var(--surface); color:var(--text); border:1px solid var(--ink-50); }
     .ptn-kpi { display:inline-flex; flex-direction:column; gap:4px; padding:16px 22px;
-               background:#fff; border:1px solid #e0e0e0; min-width:170px; }
-    .ptn-kpi b { font-size:30px; font-family:'IBM Plex Mono',monospace; }
-
-    /* ── MATRIZ POR MARCA (v2, dono 2026-07-27: compacta + celular) ──
-       1ª coluna GRUDA na esquerda; as marcas rolam horizontalmente.
-       Célula = UM campo (número = ¥ · x = não compro · vazio = sem cotação);
-       o OK só aparece quando o valor muda. */
+               background:var(--surface); border:1px solid var(--line); min-width:170px; }
+    .ptn-kpi b { font-size:30px; font-family:var(--mono); }
+    .ptn-h1 { font-size:26px; font-weight:300; margin:0 0 4px; letter-spacing:-.02em; }
+    .ptn-h1 b { font-weight:700; }
+    .ptn-sub { color:var(--muted); font-size:14px; margin:0 0 22px; max-width:60ch; }
     .ptn-matrix { width:auto; min-width:100%; }
     .ptn-matrix th { text-align:center; padding:8px 6px; white-space:nowrap; }
     .ptn-matrix td { padding:5px 6px; text-align:center; white-space:nowrap; }
     .ptn-matrix th:first-child, .ptn-matrix td:first-child {
-      position:sticky; left:0; background:#fff; text-align:left; z-index:2;
-      box-shadow:2px 0 0 #e0e0e0; font-family:'IBM Plex Mono',monospace; }
-    .ptn-matrix__gen td { background:#f4f4f4; font-weight:700; font-size:12px;
-      letter-spacing:.06em; color:#525252; position:static; box-shadow:none; }
-    .ptn-matrix__gen td:first-child { position:sticky; left:0; background:#f4f4f4; }
+      position:sticky; left:0; background:var(--surface); text-align:left; z-index:2;
+      box-shadow:2px 0 0 var(--line); font-family:var(--mono); }
+    .ptn-matrix__gen td { background:var(--ink-10); font-weight:700; font-size:12px;
+      letter-spacing:.06em; color:var(--ink-70); position:static; box-shadow:none; }
+    .ptn-matrix__gen td:first-child { position:sticky; left:0; background:var(--ink-10); }
     .ptn-cell { display:inline-flex; flex-direction:column; gap:3px;
                 align-items:center; margin:0; }
     .ptn-cell__in { width:58px; padding:5px 4px; text-align:center;
-      border:1px solid #c6c6c6; font-family:'IBM Plex Mono',monospace;
-      font-size:14px; }
-    .ptn-cell__in:focus { border-color:#0f62fe; outline:2px solid #0f62fe;
+      border:1px solid var(--line-2); font-family:var(--mono); font-size:14px; }
+    .ptn-cell__in:focus { border-color:var(--blue-60); outline:2px solid var(--blue-60);
                           outline-offset:-2px; }
-    .ptn-cell--nobuy .ptn-cell__in { background:#fff1f1; }
+    .ptn-cell--nobuy .ptn-cell__in { background:var(--red-10); }
     .ptn-cell--unquoted .ptn-cell__in { background:#fffbea; }
-    .ptn-cell__ok { padding:3px 10px; border:none; background:#0f62fe;
+    .ptn-cell__ok { padding:3px 10px; border:none; background:var(--blue-60);
       color:#fff; font-weight:700; font-size:12px; cursor:pointer; }
-
-    @media (max-width: 860px) {
-      .wtc-work { flex-direction:column; }
-      .ptn-side { width:100%; position:static; }
-      .wtc-header__fx { display:none !important; }
-      .wtc-header__who { display:none; }
+    @media (max-width: 880px) {
       .ptn-card { padding:12px; }
       .ptn-matrix th, .ptn-matrix td { padding:4px 4px; font-size:12px; }
       .ptn-cell__in { width:52px; font-size:16px; }  /* 16px: iOS não dá zoom */
     }
   </style>
+  {% block extra_head %}{% endblock %}
 </head>
 <body>
 
-<header class="wtc-header">
-  <a href="{% url 'compras:list' %}" class="wtc-header__brand">
-    <img src="{% static 'img/wtc-logo-dark.svg' %}" alt="WhatTheChip 什么芯片">
+<header class="pshell" id="pshell">
+  <a href="{% url 'compras:list' %}" class="pshell__brand">
+    <img class="lg-l" src="{% static 'img/wtc-logo-light.svg' %}" alt="WhatTheChip 什么芯片">
+    <img class="lg-d" src="{% static 'img/wtc-logo-dark.svg' %}" alt="WhatTheChip 什么芯片">
+    <span class="pshell__tag">{% trans "Comprador" %}</span>
   </a>
+
+  <span class="pshell__spacer"></span>
 
   {% comment %} Ordem do menu (dono, 2026-08-18): COMPRAS primeiro — é a tela
      que ele abre todo dia e a que tem trabalho pendente. A tabela de preços
      virou a segunda: mexe-se nela de vez em quando. {% endcomment %}
-  <a href="{% url 'compras:list' %}"
-     class="wtc-header__nav{% if active_pk == 'compras' %} wtc-header__nav--active{% endif %}">
-    {% trans "Compras" %}
-  </a>
-
-  <a href="{% url 'pricing:partner_home' %}"
-     class="wtc-header__nav{% if active_pk != 'compras' and not active_pk %} wtc-header__nav--active{% endif %}">
-    {% trans "Preços" %}
-  </a>
-
-  <a href="{% url 'pricing:partner_how' %}"
-     class="wtc-header__nav{% if active_pk == 'how' %} wtc-header__nav--active{% endif %}">
-    {% trans "Como funciona" %}
-  </a>
-
-  <span class="wtc-header__spacer"></span>
+  <nav class="pshell__nav">
+    <a href="{% url 'compras:list' %}" class="pnav{% if active_pk == 'compras' %} on{% endif %}">
+      <svg viewBox="0 0 24 24"><path d="M3 3h2l2.4 12.3a2 2 0 0 0 2 1.7h7.7a2 2 0 0 0 2-1.6L22 8H6"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
+      {% trans "Compras" %}
+    </a>
+    <a href="{% url 'pricing:partner_home' %}" class="pnav{% if active_pk != 'compras' and not active_pk %} on{% endif %}">
+      <svg viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4.8a2 2 0 0 1 2-2H12a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8z"/><circle cx="7.6" cy="7.6" r="1.3"/></svg>
+      {% trans "Preços" %}
+    </a>
+    <a href="{% url 'pricing:partner_how' %}" class="pnav{% if active_pk == 'how' %} on{% endif %}">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.2 2.4c-.7.2-1.2.9-1.2 1.6v.5"/><path d="M12 17.5h.01"/></svg>
+      {% trans "Como funciona" %}
+    </a>
+  </nav>
 
   {% comment %} Taxa CONTRATUAL ¥→US$ (F10: server-side, Buyer.fx_usd_rate — é a taxa
      que o sistema usa para derivar o USD; a cotação viva de API morreu). {% endcomment %}
-  <div class="wtc-header__fx" title="{% trans 'Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥ em US$. Muda só quando o contrato mudar.' %}">
-    <span class="wtc-header__fx-val">1 ¥ ≈ US$ {{ fx_info.rate_disp }}{% if fx_info.is_market %} <small style="font-weight:400;opacity:.75;">mid-market {{ fx_info.date|date:"d/m" }}{% if fx_info.is_fallback %} ⚠{% endif %}</small>{% endif %}</span>
-    <span class="wtc-header__fx-note">{% blocktrans trimmed %}taxa do<br>contrato{% endblocktrans %}</span>
+  <div class="pshell__fx" title="{% trans 'Taxa do contrato com o WhatTheChip — é a taxa usada para converter os seus ¥ em US$. Muda só quando o contrato mudar.' %}">
+    <b>1 ¥ ≈ US$ {{ fx_info.rate_disp }}</b>
+    <span class="pshell__sub{% if not fx_info.is_market %} off{% endif %}">
+      {% if fx_info.is_market %}<i class="live live--g"></i><em>mid-market {{ fx_info.date|date:"d/m" }}{% if fx_info.is_fallback %} ⚠{% endif %}</em>
+      {% else %}{% trans "taxa do contrato" %}{% endif %}
+    </span>
   </div>
 
-  <div class="wtc-header__who">
-    <div class="wtc-header__org-txt">
-      <span class="wtc-header__org-name">{{ buyer.name }}</span>
-    </div>
-    <span class="wtc-header__role">{% trans "Comprador" %}</span>
-  </div>
+  {# 🔔 Notificações: decisões do WhatTheChip sobre os pedidos do comprador. #}
+  <a href="{% url 'pricing:partner_notifications' %}" class="shell__ico"
+     title="{% trans 'Notificações' %}" aria-label="{% trans 'Notificações' %}">
+    <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+    {% if request.partner_unseen %}<span class="dot"></span>{% endif %}
+  </a>
 
-  <div class="wtc-header__actions">
+  <div class="pshell__me">
     {# Idioma — comprador escolhe (中文 p/ parceiro chinês); logado, persiste (I18N.md §3) #}
-    {% include "partials/lang_select.html" with variant='shell' %}
-    {# 🔔 Notificações: decisões do WhatTheChip sobre os pedidos do comprador. #}
-    <a href="{% url 'pricing:partner_notifications' %}" class="wtc-header__btn" style="position:relative;">
-      🔔 <span>{% trans "Notificações" %}</span>
-      {% if request.partner_unseen %}
-      <span style="position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;padding:0 5px;background:#da1e28;color:#fff;border-radius:9px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">{{ request.partner_unseen }}</span>
-      {% endif %}
-    </a>
-    <form method="post" action="{% url 'logout' %}" style="margin:0;">
+    {% include "partials/lang_select.html" with variant='ds' %}
+
+    <div class="pshell__who">
+      <span class="pshell__av">{{ buyer.name|slice:":2"|upper }}</span>
+      <span class="pshell__u">
+        <b>{{ buyer.name }}</b>
+        <span>{% trans "Comprador" %}</span>
+      </span>
+    </div>
+
+    <form method="post" action="{% url 'logout' %}">
       {% csrf_token %}
-      <button type="submit" class="wtc-header__btn wtc-header__btn--logout">{% trans "Sair" %}</button>
+      <button type="submit" class="shell__ico shell__ico--out"
+              title="{% trans 'Sair' %}" aria-label="{% trans 'Sair' %}">
+        <svg viewBox="0 0 24 24"><path d="M16 17l5-5-5-5M21 12H9M12 19H5V5h7"/></svg>
+        <span class="pshell__lbl">{% trans "Sair" %}</span>
+      </button>
     </form>
   </div>
 </header>
 
-<div class="wtc-work">
+<div class="papp {% block layout_class %}{% endblock %}">
   {% block sidebar %}
-  <aside class="ptn-side">
-    <div class="ptn-side__title">{% trans "Preços por tipo de chip" %}</div>
-    <a href="{% url 'pricing:partner_home' %}"
-       class="ptn-side__link{% if not active_pk %} ptn-side__link--active{% endif %}">{% trans "Todos os preços" %}</a>
-    {% comment %} Navegação POR TIPO (dono 2026-07-27). Nomes de tipo são
-       canônicos — nunca traduzem. {% endcomment %}
-    {% for k, lbl, pend in kind_nav %}
-    <a href="{% url 'pricing:partner_kind' k %}"
-       class="ptn-side__link{% if active_kind == k %} ptn-side__link--active{% endif %}">
-      {{ lbl }}
-      {% if pend %}<span class="ptn-side__badge">{{ pend }}</span>{% endif %}
-    </a>
-    {% endfor %}
+  <aside class="pside">
+    <div class="pside__l">{% trans "Preços por tipo de chip" %}</div>
+    <div id="types">
+      <a href="{% url 'pricing:partner_home' %}" class="ptype{% if not active_pk %} on{% endif %}">
+        <span class="ptype__t">{% trans "Todos os preços" %}</span>
+      </a>
+      {% comment %} Navegação POR TIPO (dono 2026-07-27). Nomes de tipo são
+         canônicos — nunca traduzem. {% endcomment %}
+      {% for k, lbl, pend in kind_nav %}
+      <a href="{% url 'pricing:partner_kind' k %}" class="ptype{% if active_kind == k %} on{% endif %}">
+        <span class="ptype__t">{{ lbl }}</span>
+        {% if pend %}<span class="ptype__b">{{ pend }}</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
   </aside>
   {% endblock %}
 
-  <main class="ptn-content">
+  <main class="pmain">
     {% if messages %}
       {% for m in messages %}
         <div class="ptn-msg ptn-msg--{{ m.tags }}">{{ m }}</div>
@@ -245,10 +238,34 @@
   </main>
 </div>
 
-{% comment %}
-  F10 (§12.18): o script de cotação viva (er-api/frankfurter) foi REMOVIDO —
-  a zona __fx agora exibe a taxa CONTRATUAL (Buyer.fx_usd_rate), server-side.
-  Cotação de mercado no header confundiria: a taxa que VALE é a do contrato.
-{% endcomment %}
+<script>
+// Gaveta do cabeçalho (o `shell.js` do sistema não vem no pacote — isto é o
+// mínimo que a folha do parceiro espera): a barra marca [data-shell] por
+// largura e `.is-open` abre a lista. Sem JS a barra continua funcionando no
+// desktop; no celular ela só não recolhe.
+(function () {
+  var sh = document.getElementById('pshell');
+  if (!sh) return;
+  var burger = document.createElement('button');
+  burger.className = 'shell__ico shell__burger';
+  burger.type = 'button';
+  burger.setAttribute('aria-label', 'Menu');
+  burger.innerHTML = '<i></i><i></i><i></i>';
+  burger.setAttribute('aria-expanded', 'false');
+  burger.addEventListener('click', function () {
+    sh.classList.toggle('is-open');
+    burger.setAttribute('aria-expanded', sh.classList.contains('is-open'));
+  });
+  sh.appendChild(burger);
+  function medir() {
+    var w = window.innerWidth;
+    if (w <= 600) sh.dataset.shell = 'phone';
+    else if (w <= 1080) sh.dataset.shell = 'tablet';
+    else { delete sh.dataset.shell; sh.classList.remove('is-open'); }
+  }
+  medir();
+  window.addEventListener('resize', medir);
+})();
+</script>
 </body>
 </html>

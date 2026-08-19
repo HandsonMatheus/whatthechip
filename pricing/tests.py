@@ -2126,8 +2126,10 @@ class PartnerKindNavTests(TestCase):
         self.assertContains(resp, 'Tipo de chip')
         self.assertContains(resp, 'unificado')
         self.assertContains(resp, 'por marca')
-        # badge de pendências do DDR (1 sem cotação na genérica)
-        self.assertContains(resp, 'ptn-side__badge')
+        # badge de pendências do DDR (1 sem cotação na genérica). A classe é a
+        # do design system v2 (`.ptype__b`) desde 2026-08-19 — o trilho de tipos
+        # do parceiro deixou de ter CSS de mão.
+        self.assertContains(resp, 'ptype__b')
 
     def test_pagina_unificada_emcp_coluna_unica_e_faixa(self):
         self.client.force_login(self.partner)

@@ -2,99 +2,128 @@
 {% comment %}
   F11.6/F2 — as COMPRAS do comprador: as OVs de TODOS os clientes dele.
 
-  MVP de propósito: tabela simples, sem filtro nem paginação (o volume hoje é
-  de dezenas). O que NÃO pode faltar aqui é o CLIENTE — o comprador recebe
-  lote de várias empresas e precisa saber de qual veio (foi o que motivou o
-  SHIP FROM no documento de embarque).
+  ═══ DESIGN SYSTEM v2 (dono, 2026-08-19) — primeira tela do comprador ═══
+  A tabela de mão (`.cmp-tab`) saiu inteira: agora é a `.dtab` do pacote, que é
+  a MESMA tabela do Estoque e do Vendas. O que isso traz de graça e não dá para
+  reproduzir à mão sem divergir: cabeçalho grafite grudado abaixo da barra,
+  linha de 48px, tudo alinhado à esquerda com `tabular-nums`, hover azul com
+  fio de posição, e — no celular — a linha VIRA CARTÃO de duas alturas
+  (identificador + o número que decide em cima, o resto embaixo). Rolagem
+  horizontal foi descartada de propósito pelo sistema: ela esconde justamente a
+  última coluna, que aqui é sempre dinheiro.
+
+  Convenções do pacote que esta tela usa e que valem para as próximas:
+    · `.c` identificador mono · `.n` número · `.v` valor (com sub-linha)
+    · `.key` a célula que carrega o número que decide (vai para a direita da
+      1ª linha do cartão no celular)
+    · `.mval` par ¥/US$ · `.tag` selo de estado · `.act` ação pendente
+    · `.hb/.hg/.hr` grupo de colunas tingido — aqui o RESULTADO, que é o que a
+      conferência devolveu, ganha o azul do grupo.
+
+  MVP de propósito: sem filtro nem paginação (o volume hoje é de dezenas). O
+  que NÃO pode faltar aqui é o CLIENTE — o comprador recebe lote de várias
+  empresas e precisa saber de qual veio (foi o que motivou o SHIP FROM no
+  documento de embarque).
 
   ⚠ Rótulo REAL, sem máscara: quem lê é quem compra o chip.
 {% endcomment %}
 {% block title %}{% trans "Compras" %}{% endblock %}
 {% block sidebar %}{% endblock %}
+{% block layout_class %}papp--solo{% endblock %}
 
 {% block content %}
-<h1 class="ptn-h1">{% trans "Suas compras" %}</h1>
-<p class="ptn-sub">{% blocktrans trimmed %}
-  Cada linha é um lote que o cliente já fechou. Abra para conferir o que
-  chegou e fechar o resultado.
-{% endblocktrans %}</p>
+<div class="phd">
+  <div>
+    <h1>{% trans "Suas compras" %}</h1>
+    <p>{% blocktrans trimmed %}
+      Cada linha é um lote que o cliente já fechou. Abra para conferir o que
+      chegou e fechar o resultado.
+    {% endblocktrans %}</p>
+  </div>
+</div>
 
-{% if not ordens %}
-  <div class="cmp-vazio">{% trans "Nenhuma compra ainda." %}</div>
-{% else %}
-<table class="cmp-tab">
-  <thead>
-    <tr>
-      <th>{% trans "Lote" %}</th>
-      <th>{% trans "Cliente" %}</th>
-      {% comment %} Data em que a ORDEM foi gerada (dono, 2026-08-18) — não a
-         do lote: é ela que marca quando a compra entrou na fila dele. {% endcomment %}
-      <th>{% trans "Ordem" %}</th>
-      <th class="num">{% trans "Chips" %}</th>
-      <th class="num">{% trans "Total ¥" %}</th>
-      <th class="num">{% trans "Total US$" %}</th>
-      {% comment %} RESULTADO (dono, 2026-08-19): o total acima é o ESPERADO —
-         o que o lote valia quando saiu. O que ele paga de fato é o que sobra
-         depois da conferência, e isso só existe com fatura. A mesma coluna
-         está na lista do cliente, do outro lado do balcão. {% endcomment %}
-      <th class="num">{% trans "Resultado" %}</th>
-      <th>{% trans "Situação" %}</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for o in ordens %}
-    <tr>
-      <td class="mono">{{ o.lot.code }}</td>
-      <td>{{ o.company.name }}</td>
-      <td class="cmp-data"><span class="mono">{{ o.code }}</span><br>{{ o.created_at|date:"d/m/Y" }}</td>
-      <td class="num">{{ o.units }}</td>
-      {% comment %} Rascunho mostra o valor VIVO com "≈": é estimativa pela
-         tabela de hoje, não o congelado. Antes vinha "—" e a lista não dizia
-         nada sobre o tamanho da compra. {% endcomment %}
-      <td class="num mono">{% localize off %}{% if o.total_rmb %}¥ {{ o.total_rmb }}{% elif o.est_rmb %}<span class="cmp-est">≈ ¥ {{ o.est_rmb }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
-      <td class="num mono">{% localize off %}{% if o.total_usd %}US$ {{ o.total_usd }}{% elif o.est_usd %}<span class="cmp-est">≈ US$ {{ o.est_usd }}</span>{% else %}—{% endif %}{% endlocalize %}</td>
-      <td class="num mono">{% localize off %}{% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if o.fatura.balance_usd %}<span class="cmp-falta">{% trans "falta" %} US$ {{ o.fatura.balance_usd }}</span>{% endif %}{% else %}—{% endif %}{% endlocalize %}</td>
-      <td>
-        {% if o.stage == 'sem_preco' %}<span class="cmp-tag cmp-tag--warn">{% trans "Falta preço seu" %}</span>
-        {% elif o.stage == 'a_congelar' %}<span class="cmp-tag cmp-tag--go">{% trans "Congelar" %}</span>
-        {% elif o.stage == 'a_conferir' %}<span class="cmp-tag cmp-tag--todo">{% trans "A conferir" %}</span>
-        {% elif o.stage == 'faturado' %}<span class="cmp-tag cmp-tag--ok">{% trans "Faturado" %}</span>
-        {% elif o.stage == 'parcial' %}<span class="cmp-tag cmp-tag--todo">{% trans "Pago em parte" %}</span>
-        {% else %}<span class="cmp-tag cmp-tag--ok">{% trans "Pago" %}</span>{% endif %}
-      </td>
-      <td class="num"><a class="cmp-link" href="{% url 'compras:detail' o.pk %}">{% trans "Abrir" %} ›</a></td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-{% endif %}
+<div class="panel">
+  <div class="dtab__wrap">
+    <table class="dtab">
+      <thead>
+        <tr>
+          <th>{% trans "Lote" %}</th>
+          <th>{% trans "Cliente" %}</th>
+          {% comment %} Data em que a ORDEM foi gerada (dono, 2026-08-18) — não a
+             do lote: é ela que marca quando a compra entrou na fila dele. {% endcomment %}
+          <th>{% trans "Ordem" %}</th>
+          <th>{% trans "Chips" %}</th>
+          <th>{% trans "Total ¥" %}</th>
+          <th>{% trans "Total US$" %}</th>
+          {% comment %} RESULTADO (dono, 2026-08-19): o total ao lado é o ESPERADO —
+             o que o lote valia quando saiu. O que ele paga de fato é o que sobra
+             depois da conferência, e isso só existe com fatura. A mesma coluna
+             está na lista do cliente, do outro lado do balcão. {% endcomment %}
+          <th class="hb">{% trans "Resultado" %}</th>
+          <th>{% trans "Situação" %}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for o in ordens %}
+        <tr data-href="{% url 'compras:detail' o.pk %}">
+          <td class="c">{{ o.lot.code }}</td>
+          <td>{{ o.company.name }}</td>
+          <td class="d">{{ o.code }} · {{ o.created_at|date:"d/m/Y" }}</td>
+          <td class="n" data-suffix="{% trans 'Chips' %}">{{ o.units }}</td>
+          {% localize off %}
+          {% comment %} Rascunho mostra o valor VIVO com "≈": é estimativa pela
+             tabela de hoje, não o congelado. Antes vinha "—" e a lista não dizia
+             nada sobre o tamanho da compra. {% endcomment %}
+          <td class="v">{% if o.total_rmb %}¥ {{ o.total_rmb }}{% elif o.est_rmb %}≈ ¥ {{ o.est_rmb }}{% else %}<span class="none">—</span>{% endif %}</td>
+          <td class="v">{% if o.total_usd %}US$ {{ o.total_usd }}{% elif o.est_usd %}≈ US$ {{ o.est_usd }}{% else %}<span class="none">—</span>{% endif %}</td>
+          <td class="v key hb">
+            {% if o.fatura %}US$ {{ o.fatura.total_usd }}{% if o.fatura.balance_usd %}<span class="due">{% trans "falta" %} US$ {{ o.fatura.balance_usd }}</span>{% endif %}
+            {% else %}<span class="none">—</span>{% endif %}
+          </td>
+          {% endlocalize %}
+          <td>
+            {% if o.stage == 'sem_preco' %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Falta preço seu" %}</span>
+            {% elif o.stage == 'a_congelar' %}<span class="tag tag--info"><i class="dot"></i>{% trans "Congelar" %}</span>
+            {% elif o.stage == 'a_conferir' %}<span class="act act--accept"><i></i>{% trans "A conferir" %}</span>
+            {% elif o.stage == 'faturado' %}<span class="tag tag--info"><i class="dot"></i>{% trans "Faturado" %}</span>
+            {% elif o.stage == 'parcial' %}<span class="tag tag--maybe"><i class="dot"></i>{% trans "Pago em parte" %}</span>
+            {% else %}<span class="tag tag--yes"><i class="dot"></i>{% trans "Pago" %}</span>{% endif %}
+          </td>
+          <td class="go" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="9" class="dtab__empty">
+          <b>{% trans "Nenhuma compra ainda." %}</b>
+          {% trans "Assim que um cliente despachar um lote, ele aparece aqui." %}
+        </td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-<style>
-  .ptn-h1 { font-size:26px; font-weight:300; margin:0 0 4px; }
-  .ptn-h1 b { font-weight:600; }
-  .ptn-sub { color:#525252; font-size:14px; margin:0 0 22px; max-width:60ch; }
-  .cmp-vazio { padding:40px; text-align:center; color:#8d8d8d; background:#fff;
-               border:1px solid #e0e0e0; }
-  .cmp-tab { width:100%; border-collapse:collapse; background:#fff;
-             border:1px solid #e0e0e0; font-size:14px; }
-  .cmp-tab th { text-align:left; font-size:11px; letter-spacing:.06em;
-                text-transform:uppercase; color:#525252; font-weight:600;
-                padding:10px 14px; border-bottom:1px solid #8d8d8d; }
-  .cmp-tab td { padding:11px 14px; border-bottom:1px solid #e0e0e0; }
-  .cmp-tab tr:last-child td { border-bottom:0; }
-  .cmp-tab .num { text-align:right; }
-  .cmp-tab .mono { font-family:'IBM Plex Mono',monospace; }
-  .cmp-tag { display:inline-block; font-size:11px; font-weight:600; padding:3px 9px;
-             letter-spacing:.04em; text-transform:uppercase; }
-  .cmp-tag--warn { background:#fcf4d6; color:#8e6a00; }
-  .cmp-tag--go   { background:#d0e2ff; color:#0043ce; }
-  .cmp-data { font-size:12px; color:#525252; line-height:1.5; }
-  .cmp-est { color:#8d8d8d; }
-  .cmp-falta { display:block; font-size:11.5px; color:#a2191f; font-weight:600; }
-  .cmp-tag--todo { background:#e8daff; color:#6929c4; }
-  .cmp-tag--ok   { background:#defbe6; color:#0e6027; }
-  .cmp-link { color:#0f62fe; text-decoration:none; font-weight:600; white-space:nowrap; }
-  .cmp-link:hover { text-decoration:underline; }
-</style>
+  {% comment %} Rodapé de SOMA, não de paginação: quantas compras estão na fila
+     e quanto delas ainda espera decisão. {% endcomment %}
+  {% if ordens %}
+  <div class="tfoot tfoot--sum">
+    <span><b>{{ ordens|length }}</b> {% trans "na fila" %}</span>
+    {% if a_conferir %}<span class="due"><b>{{ a_conferir }}</b> {% trans "esperando a sua conferência" %}</span>{% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+// Linha inteira clicável — é o que a .dtab do pacote promete com o cursor de
+// mão, o hover azul e o fio de posição. O destino vem do data-href (nada de
+// URL dentro de atributo de evento), e um clique em <a>/<button> dentro da
+// linha continua sendo dele.
+document.querySelectorAll('.dtab tbody tr[data-href]').forEach(function (tr) {
+  tr.addEventListener('click', function (ev) {
+    if (ev.target.closest('a,button,input,select')) return;
+    location.href = tr.dataset.href;
+  });
+});
+</script>
 {% endblock %}

@@ -6,6 +6,10 @@
   logado, a preferência da conta (segue o usuário em qualquer dispositivo).
 
   Variantes (passe via {% include ... with variant='shell' %}):
+    'ds'     → barra CLARA do design system v2 (painel do comprador): o
+               controle é uma célula quadrada da barra, como o sino e o sair —
+               sem caixa própria, sem cor explícita (aqui o fundo é claro e o
+               select nativo se resolve sozinho).
     'shell'  → header ESCURO Carbon (painel/estoque, dashboard do parceiro):
                visual de botão do shell (borda #525252, texto claro) — cores
                EXPLÍCITAS, nada de currentColor (select nativo em fundo escuro
@@ -19,7 +23,21 @@
   {% get_current_language as WTC_LANG %}
   {% get_available_languages as WTC_LANGS %}
   {% get_language_info_list for WTC_LANGS as wtc_langs %}
-  {% if variant == 'shell' %}
+  {% if variant == 'ds' %}
+  <label class="shell__ico shell__ico--lang" style="width:auto;padding:0 12px;gap:7px;display:flex;align-items:center;">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+         stroke-width="1.9" aria-hidden="true" style="flex:none;">
+      <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"/>
+    </svg>
+    <select name="language" onchange="this.form.submit()"
+            aria-label="{% trans 'Mudar idioma' %}" title="{% trans 'Mudar idioma' %}"
+            style="background:none;border:none;font:inherit;font-size:12px;font-weight:600;color:inherit;cursor:pointer;outline:none;">
+      {% for lang in wtc_langs %}
+      <option value="{{ lang.code }}" {% if lang.code == WTC_LANG %}selected{% endif %}>{{ lang.name_local|capfirst }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  {% elif variant == 'shell' %}
   <label style="display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 10px;border:1px solid #525252;background:#161616;color:#f4f4f4;cursor:pointer;">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c6c6c6"
          stroke-width="2" aria-hidden="true" style="flex:none;">

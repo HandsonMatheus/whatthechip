@@ -3099,3 +3099,19 @@ msgstr "应收金额"
 #. vendas/ (lista de vendas e de compras: chips, estimado, resultado)
 msgid "falta"
 msgstr "未付"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "na fila"
+msgstr "在队列中"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "esperando a sua conferência"
+msgstr "等待您验收"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "taxa do contrato"
+msgstr "合同汇率"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "Assim que um cliente despachar um lote, ele aparece aqui."
+msgstr "客户发货后，该批次就会出现在这里。"

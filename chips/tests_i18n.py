@@ -369,7 +369,10 @@ class SeletorDeIdiomaPresenteTests(TestCase):
         self.client.force_login(u)
         html = self.client.get('/partner/').content.decode()
         self.assertIn(self.SETLANG, html)
-        self.assertIn('border:1px solid #525252', html)
+        # Variante 'ds' desde 2026-08-19: a superfície do comprador veste o
+        # design system v2 e a barra é CLARA — o seletor virou uma célula da
+        # barra (`.shell__ico--lang`), não mais o botão do shell escuro.
+        self.assertIn('shell__ico--lang', html)
 
 
 class AdminPlataformaPtBrTests(TestCase):

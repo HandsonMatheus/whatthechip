@@ -3277,3 +3277,19 @@ msgstr "To receive"
 #. vendas/ (lista de vendas e de compras: chips, estimado, resultado)
 msgid "falta"
 msgstr "due"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "na fila"
+msgstr "in the queue"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "esperando a sua conferência"
+msgstr "waiting for your check"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "taxa do contrato"
+msgstr "contract rate"
+
+#. parceiro/ (design system v2: barra e fila de compras)
+msgid "Assim que um cliente despachar um lote, ele aparece aqui."
+msgstr "As soon as a client ships a lot, it shows up here."

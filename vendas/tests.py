@@ -2872,15 +2872,15 @@ class ListasMostramOTamanhoDaVendaTests(TestCase):
         inv = self._fechar_resultado(recusados=4)
         tela = self._compras()
         self.assertContains(tela, f'US$ {inv.total_usd}')
-        # ⚠ Asserção pelo MARKUP, não pela palavra: 'falta' também aparece no
-        # bloco <style> (a regra da classe) e o assertNotContains casaria com
-        # o CSS, não com a linha da tabela.
-        self.assertContains(tela, 'class="cmp-falta"')
+        # ⚠ Asserção pelo MARKUP, não pela palavra: 'falta' aparece em mais de
+        # um lugar do HTML e o assertNotContains casaria com o vizinho errado.
+        # `.due` é a sub-linha de saldo em aberto do design system.
+        self.assertContains(tela, 'class="due"')
         with company_scope(self.company):
             services.register_payment(inv, inv.total_usd,
                                       timezone.localdate(), self.parceiro)
         tela = self._compras()
-        self.assertNotContains(tela, 'class="cmp-falta"')   # quitada, sem saldo
+        self.assertNotContains(tela, 'class="due"')         # quitada, sem saldo
 
     # ── PDF do resultado ────────────────────────────────────────────────────
 
@@ -2901,3 +2901,93 @@ class ListasMostramOTamanhoDaVendaTests(TestCase):
 
         self.assertIn(_rg(_SKY), fluxo)
         self.assertIn(_rg(_SAND), fluxo)
+
+
+class DesignSystemNaTelaDoCompradorTests(TestCase):
+    """A tela de compras passou a VESTIR o pacote `static/wtc/` (dono,
+    2026-08-19) — primeira superfície do comprador no design system v2.
+
+    O que estes testes seguram não é aparência (isso é olho), é o CONTRATO:
+
+    · a página carrega o pacote na ORDEM certa (tokens+componentes antes do
+      padrão do parceiro) — invertida, toda regra cai em `var()` vazio e a
+      tela sai sem cor, sem erro nenhum no log;
+    · a tabela é a `.dtab` do sistema, não uma cópia de mão. Foi o que o
+      sistema pediu ("Estoque, Vendas e Compras usam ESTA tabela") e é o que
+      dá, de graça, o cartão de duas linhas no celular;
+    · a barra do parceiro é a `.pshell` — CLARA. O shell escuro copiado à
+      mão (`.wtc-header__*`) não pode voltar por descuido em nenhuma tela do
+      comprador;
+    · o número que DECIDE a linha (o resultado) é o `.key`: é ele que sobe
+      para a primeira linha do cartão no celular. Sem a classe, o cartão
+      mostra o código e um vazio.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.company, cls.buyer, cls.brand = _setup('vd-ds')
+        cls.buyer.company = None
+        cls.buyer.save(update_fields=['company'])
+        User = get_user_model()
+        cls.dono = User.objects.create_user('vd_ds_dono', password='x')
+        Membership.objects.create(user=cls.dono, company=cls.company,
+                                  role='admin')
+        cls.parceiro = User.objects.create_user('vd_ds_p', password='x')
+        cls.buyer.users.add(cls.parceiro)
+
+    def setUp(self):
+        set_current_company(self.company.pk)
+        self.addCleanup(set_current_company, None)
+        call_command('seed_category_codes', '--commit', verbosity=0)
+        with company_scope(self.company):
+            lot = Lot.open_for_company(self.company, self.dono, 'ds',
+                                       origin='phone')
+            InventoryEntry.all_companies.create(
+                lot=lot, part_number='DS1', quantity=10, brand=self.brand,
+                chip_type='eMMC', company=self.company, price_kind='emmc',
+                price_gen='', price_tier_value=Decimal('16'),
+                price_tier_unit='GB')
+            Lot.all_companies.filter(pk=lot.pk).update(closed_at=timezone.now())
+            self.so = services.create_draft_for_lot(lot, self.dono)
+            services.mark_shipped(self.so, 'DHL', 'JD1', None, self.dono)
+            self.so.refresh_from_db()
+        self.client.force_login(self.parceiro)
+
+    def _tela(self):
+        return self.client.get(reverse('compras:list'))
+
+    def test_a_pagina_carrega_o_PACOTE_e_na_ordem(self):
+        html = self._tela().content.decode()
+        self.assertIn('wtc/wtc.css', html)
+        self.assertIn('wtc/patterns/parceiro.css', html)
+        # Ordem obrigatória: o padrão consome o que o pacote declara.
+        self.assertLess(html.index('wtc/wtc.css'),
+                        html.index('wtc/patterns/parceiro.css'))
+
+    def test_a_tabela_e_a_do_SISTEMA(self):
+        tela = self._tela()
+        self.assertContains(tela, 'class="dtab"')
+        self.assertContains(tela, 'dtab__wrap')
+        # …e o número que decide a linha é o `.key` (1ª linha do cartão no
+        # celular). A classe é o contrato com a folha responsiva.
+        self.assertContains(tela, 'v key hb')
+
+    def test_a_barra_e_a_CLARA_do_v2_e_o_shell_escuro_nao_volta(self):
+        tela = self._tela()
+        self.assertContains(tela, 'class="pshell"')
+        self.assertNotContains(tela, 'wtc-header')      # o shell escuro de antes
+
+    def test_a_tabela_de_mao_nao_existe_mais(self):
+        """`.cmp-tab` era a cópia local — some junto com o CSS que a sustentava."""
+        tela = self._tela()
+        self.assertNotContains(tela, 'cmp-tab')
+        self.assertNotContains(tela, 'cmp-tag')
+
+    def test_o_rodape_conta_a_fila_e_o_que_espera_o_comprador(self):
+        tela = self._tela()
+        self.assertContains(tela, 'tfoot--sum')
+        self.assertEqual(tela.context['a_conferir'], 1)   # a nossa, a conferir
+        with company_scope(self.company):
+            services.settle_and_invoice(self.so, {self.so.lines.get().pk: (0, None)},
+                                        self.dono)
+        self.assertEqual(self._tela().context['a_conferir'], 0)

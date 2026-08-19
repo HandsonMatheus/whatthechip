@@ -1,0 +1,9 @@
+As artes da marca NÃO moram aqui — elas já existiam no projeto, byte a byte
+iguais às do pacote, em static/img/:
+
+    wtc-logo-light.svg   = whatthechip-lightmode.svg  (tinta escura → fundo CLARO)
+    wtc-logo-dark.svg    = whatthechip-darkmode.svg   (tinta clara  → fundo ESCURO)
+
+Duas cópias da mesma marca é duas fontes de verdade: quando a marca mudar, uma
+delas fica para trás. O favicon do pacote também ficou de fora — o do projeto
+(static/img/favicon.svg) é outro desenho e é o que está publicado.
