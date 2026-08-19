@@ -1773,6 +1773,19 @@ cobrança do comprador encolher junto, e quem perderia é o WhatTheChip.
 ⚠ A tela do COMPRADOR não fala em taxa: a margem da plataforma é informação de
 mercado. Teste segurando isso.
 
+⚠ **Só na ORDEM DE VENDA.** A taxa não aparece na tela do LOTE (lá é operação,
+não comércio) e não aparece para o GERENTE — ele opera a venda sem ver
+dinheiro, e taxa é dinheiro: some o painel inteiro, nunca vira bolinha. Teste
+segurando as duas.
+
+📌 **TODA fatura do sistema carrega a taxa** (dono, 2026-08-19): *"para todos
+os clientes, todas as SO já geradas, independente do seu estado"*. Feito na
+`vendas/0013` — MIGRAÇÃO, não comando, porque isto é um INVARIANTE ("nenhuma
+fatura sem taxa") e migração não se esquece de rodar num ambiente. Aplica a
+taxa vigente de CADA empresa, inclui aberta/paga/cancelada (invariante com
+exceção é começo de bug de relatório), é idempotente e reversível. Depois
+dela, a fatura carrega a sua e congela.
+
 A tela do cliente virou a conta DELE: **bruto − taxa = líquido**, e
 **líquido − recebido = falta**, com o histórico dos repasses.
 

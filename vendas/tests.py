@@ -3193,6 +3193,74 @@ class TaxaDeServicoERepasseTests(TestCase):
             inv.refresh_from_db()
             self.assertEqual(inv.paid_out_usd, Decimal('1.00'))
 
+    def test_backfill_poe_a_taxa_em_TODA_fatura_ja_existente(self):
+        """Dono, 2026-08-19: *"precisamos que TODAS as faturas do sistema
+        contenham esses 10%, todas as SO já geradas, independente do seu
+        estado"*. A `vendas/0013` é o invariante: nenhuma fatura sem taxa.
+
+        O teste roda a função DA MIGRAÇÃO contra faturas zeradas — o estado
+        exato do legado, que nasceu antes de a taxa existir — e prova que ela
+        preenche, respeita a taxa de CADA empresa e é idempotente.
+        """
+        import importlib
+        from django.apps import apps as django_apps
+        from django.db import connection
+        mig = importlib.import_module(
+            'vendas.migrations.0013_backfill_invoice_fee')
+
+        inv = self._faturar()
+        # volta ao estado do legado: fatura sem taxa nenhuma
+        Invoice.all_companies.filter(pk=inv.pk).update(
+            fee_pct=Decimal('0.00'), fee_rmb=Decimal('0.00'),
+            fee_usd=Decimal('0.00'))
+
+        class _Shim:                       # o mínimo que a migração usa
+            def __init__(self, conn):
+                self.connection = conn
+
+            def execute(self, sql):
+                with self.connection.cursor() as c:
+                    c.execute(sql)
+
+        with company_scope(self.company):
+            mig.aplicar(django_apps, _Shim(connection))
+            inv.refresh_from_db()
+        self.assertEqual(inv.fee_pct, Decimal('10.00'))
+        self.assertEqual(inv.fee_rmb, Decimal('15.00'))
+        self.assertEqual(inv.net_rmb, Decimal('135.00'))
+
+        # idempotente: rodar de novo não muda nada
+        with company_scope(self.company):
+            mig.aplicar(django_apps, _Shim(connection))
+            inv.refresh_from_db()
+        self.assertEqual(inv.fee_rmb, Decimal('15.00'))
+
+    def test_a_taxa_NAO_aparece_para_o_GERENTE_nem_no_lote(self):
+        """Dono, 2026-08-19: *"essa informação somente na SO, invisível do
+        gerente, nada de aparecer isso no lote"*.
+
+        O gerente opera a venda sem ver dinheiro (`can_see_price`), e a taxa é
+        dinheiro — some com o painel inteiro, não vira bolinha. E a tela do
+        LOTE não fala de taxa em lugar nenhum: lá é operação, não comércio.
+        """
+        User = get_user_model()
+        ger = User.objects.create_user('vd_fee_ger', password='x')
+        Membership.objects.create(user=ger, company=self.company,
+                                  role='manager')
+        self._faturar()
+        self.client.force_login(ger)
+        tela = self.client.get(reverse('vendas:so_detail', args=[self.so.pk]))
+        self.assertNotContains(tela, 'Taxa de serviço')
+        self.assertNotContains(tela, 'Líquido a receber')
+        self.assertFalse(tela.context['repasses'])
+        # …e o lote, para QUALQUER papel, não menciona taxa:
+        for quem in (ger, self.adm):
+            self.client.force_login(quem)
+            lote = self.client.get(
+                reverse('estoque:lot_detail', args=[self.so.lot_id]))
+            self.assertNotContains(lote, 'Taxa de serviço')
+            self.assertNotContains(lote, 'Líquido')
+
     def test_a_tela_do_comprador_NAO_fala_em_taxa(self):
         """A taxa é entre a plataforma e o cliente. O comprador não tem nada
         com isso — e saber a margem do WhatTheChip é informação de mercado."""
