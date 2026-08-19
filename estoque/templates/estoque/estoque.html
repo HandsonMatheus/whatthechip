@@ -1732,27 +1732,33 @@ function closeDeleteLotModal(){document.getElementById('delete-lot-modal-overlay
     return lines.join('\n');
   }
 
-  // Event delegation — funciona mesmo após HTMX substituir o card
+  // Event delegation — funciona mesmo após HTMX substituir o card.
+  // ⚠ A variável do BOTÃO chama-se `btn` e a guarda logo abaixo TEM que ser
+  // sobre ela. Um replace global de `btn`→`uib` (rename da classe CSS do
+  // redesenho) renomeou a variável mas deixou a guarda em `btn`, e como não
+  // existe `btn` no escopo o listener morria com ReferenceError em TODO
+  // clique da página — o botão continuava lá e não copiava nada (dono,
+  // 2026-08-19). O portão DebugBtnHandlerTests prende isso.
   document.addEventListener('click', function(e) {
-    var uib = e.target.closest('.est-debug-btn');
+    var btn = e.target.closest('.est-debug-btn');
     if (!btn) return;
-    var card = uib.closest('[data-debug]');
+    var card = btn.closest('[data-debug]');
     if (!card) return;
     var rawJson = card.getAttribute('data-debug');
     var d;
     try { d = JSON.parse(rawJson); } catch(err) { return; }
     // Sincroniza PN com o valor atual do input
     if (pnInput) d.pn = pnInput.value || d.pn;
-    uib.disabled    = true;
-    uib.textContent = '…';
+    btn.disabled    = true;
+    btn.textContent = '…';
     _copyText(buildDebugText(d))
       .then(function() {
-        uib.textContent = '✓ Copiado!';
-        setTimeout(function() { uib.textContent = '📋 Debug'; uib.disabled = false; }, 2000);
+        btn.textContent = '✓ Copiado!';
+        setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
       })
       .catch(function() {
-        uib.textContent = 'Erro';
-        setTimeout(function() { uib.textContent = '📋 Debug'; uib.disabled = false; }, 2000);
+        btn.textContent = 'Erro';
+        setTimeout(function() { btn.textContent = '📋 Debug'; btn.disabled = false; }, 2000);
       });
   });
 

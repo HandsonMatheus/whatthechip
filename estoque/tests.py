@@ -2688,3 +2688,76 @@ class AposentarCategoryCodeTests(TestCase):
         self.assertIn('ZERO lançamentos', str(ctx.exception))
         self.sucata.refresh_from_db()
         self.assertIsNone(self.sucata.retired_at)
+
+
+class DelegatedHandlerGuardTests(TestCase):
+    """PORTÃO (2026-08-19): num handler delegado, a guarda tem que ser sobre a
+    MESMA variável que o `closest()` acabou de declarar.
+
+    Incidente: o botão 📋 Debug da bancada parou de copiar. Ele continuava na
+    tela, o clique não fazia nada e nenhum erro aparecia para o operador. O
+    código estava assim:
+
+        var uib = e.target.closest('.est-debug-btn');
+        if (!btn) return;                 // ← `btn` não existe no escopo
+
+    Um replace global de `btn`→`uib` (rename da classe CSS do redesenho v2)
+    renomeou a VARIÁVEL do JS junto e deixou a guarda para trás. Como `btn`
+    não existe, o listener morria com `ReferenceError` em **todo clique da
+    página** — não só no botão. Custo do bug: dias com o Debug morto (já
+    estava anotado como "btn/uib" e ninguém tinha ligado os pontos), e o dono
+    sem a ferramenta justamente quando precisava dela para diagnosticar PN
+    não identificado.
+
+    O portão é barato e pega a CLASSE do erro: qualquer handler delegado que
+    declare com `closest()` e guarde outro nome. Não depende de rodar
+    navegador nenhum."""
+
+    #: `var X = <algo>.closest(...)` seguido da guarda `if (!Y) ...`
+    PADRAO = r'(?:var|let|const)\s+(\w+)\s*=\s*[\w.]+\.closest\([^)]*\);\s*\n\s*if\s*\(\s*!\s*(\w+)\s*\)'
+
+    def _templates(self):
+        import pathlib
+        from django.conf import settings
+        base = pathlib.Path(settings.BASE_DIR)
+        raizes = [base / app for app in
+                  ('chips', 'estoque', 'pages', 'tenancy', 'pricing',
+                   'vendas')] + [base / 'templates']
+        for raiz in raizes:
+            for arq in raiz.glob('**/*.html'):
+                yield arq
+
+    def test_guarda_confere_com_a_variavel_declarada(self):
+        import re
+        maus = []
+        vistos = 0
+        for arq in self._templates():
+            for declarada, guardada in re.findall(
+                    self.PADRAO, arq.read_text(encoding='utf-8')):
+                vistos += 1
+                if declarada != guardada:
+                    maus.append(f'{arq.name}: declarou {declarada!r}, '
+                                f'guardou {guardada!r}')
+        self.assertFalse(maus, 'Handler delegado guardando variável que não '
+                                'existe (ReferenceError em todo clique):\n  '
+                                + '\n  '.join(maus))
+        self.assertGreater(vistos, 0, 'o scanner não achou handler nenhum — '
+                                      'o padrão provavelmente enferrujou')
+
+    def test_handler_do_debug_esta_coerente(self):
+        """O caso concreto, nomeado: o botão que o dono usa todo dia."""
+        import pathlib
+        import re
+        from django.conf import settings
+        arq = (pathlib.Path(settings.BASE_DIR) / 'estoque' / 'templates' /
+               'estoque' / 'estoque.html')
+        texto = arq.read_text(encoding='utf-8')
+        bloco = re.search(
+            r"\.closest\('\.est-debug-btn'\);(.*?)\n  \}\);", texto, re.S)
+        self.assertIsNotNone(bloco, 'handler do 📋 Debug sumiu do template')
+        corpo = bloco.group(1)
+        self.assertIn('if (!btn) return;', corpo)
+        self.assertIn("btn.closest('[data-debug]')", corpo)
+        # `uib` é classe CSS do redesenho — nunca variável de JS aqui.
+        self.assertNotIn('uib', corpo,
+                         'o rename btn→uib voltou a vazar para o JavaScript')
