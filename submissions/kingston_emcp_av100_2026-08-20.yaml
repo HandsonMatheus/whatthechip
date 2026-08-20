@@ -1,0 +1,165 @@
+# Submissão known_parts — Kingston, família eMCP "08EMCP" (8GB eMMC 5.0), geração de sufixo "AV100"
+# Chat de marca Kingston, 2026-08-20. Disparado pelo PN físico do debug de estoque `08EMCP04NL2AV1`
+# (known:false, classification_source:"gramática", subtype retornado errado como LPDDR3).
+#
+# DIAGNÓSTICO: família `08EMCP` já tem gramática completa (grammar_complete:true) — decodifica
+# pn[0:2]="08"→8GB NAND e pn[6:8]="04"→512MB RAM certo. O problema é só o sufixo: o token "NL2"
+# (posições 8-10 do PN físico) diz LPDDR2 pela convenção JÁ DOCUMENTADA da própria família
+# (KINGSTON.md §0.2 regra 5 e §2: "NL2"=LPDDR2/162-ball × "NL3"/"EL3"=LPDDR3/221-ball) — mas a
+# gramática (decode map) SEMPRE devolve LPDDR3 por default, e só um known_part explícito corrige
+# pra LPDDR2. Isso NÃO é bug novo que eu descobri — já está escrito como regra permanente antes
+# desta entrega ("Um PN com sufixo NL2 que não vira known_part confirmado... aparece errado pro
+# operador"). O mecanismo de correção é exatamente known_parts (Trilha B) — não precisa (nem dá,
+# é fora de escopo) mexer no .py do engine nem na gramática/yaml.
+#
+# ⚠ PN do debug ("08EMCP04NL2AV1") é quase certamente uma leitura TRUNCADA — não achei essa string
+# exata em nenhum distribuidor, mas achei a família completa "08EMCP04-NL2AV100-C06/-C30/-C50"
+# (Octopart, cross-referenciado). "AV1" bate com os 3 primeiros chars de "AV100" — a leitura da
+# bancada/scanner provavelmente cortou os 2 dígitos finais + todo o sufixo de revisão "-C##". Isso
+# NÃO muda a classificação: NAND/RAM/geração são decididos pelo prefixo "08EMCP04" + token "NL2",
+# que são idênticos nas 3 variantes C06/C30/C50 — só o código de revisão (não decodificado por
+# design, vira `tip`/`notes`, nunca campo próprio) diverge entre elas. Registrei a string truncada
+# como known_part própria (resolve a fila de revisão direto) MAIS as 3 formas completas encontradas
+# (mais a família irmã EL3/LPDDR3 e o RAM=1GB de 08EMCP08) — não assumi qual dos 3 C-códigos é o
+# físico real, registrei os 3 (mesmo padrão do caso FH32B08UCT1-0C: registrar em vez de supor).
+#
+# CLUSTER encontrado (busca Octopart + Worldway Electronics, cross-referenciados, 2026-08-20):
+#   NL2 (LPDDR2), 08EMCP04 (8GB NAND + 512MB RAM): AV100-C06, AV100-C30, AV100-C50
+#   EL3 (LPDDR3), 08EMCP04 (8GB NAND + 512MB RAM): AV100-C06, AV100-C30U, AV100-C50
+#   EL3 (LPDDR3), 08EMCP08 (8GB NAND + 1GB RAM):   AV100-C50 (Octopart + Worldway, 2 fontes)
+# Tentei "08EMCP08-NL2AV100" (par LPDDR2 do RAM=1GB, completaria a matriz 2x2) — NÃO achei em
+# nenhuma fonte. Não incluí — excluir, não adivinhar.
+#
+# NÃO PERSEGUIDO (fora do escopo desta rodada, achado incidentalmente enquanto buscava "AV100"):
+# a família 08EMCP tem MUITAS outras gerações de sufixo além de DT227/DM327/AS100/DM627 (já na
+# gramática) e AV100 (esta entrega) — vi também CV100, BT227, DT527, EL2BV100 aparecerem em
+# resultados de busca, sem perseguir. Sinaliza um padrão parecido com o eMMC standalone
+# (TB28/TB29/TA29/TX29) — múltiplas gerações paralelas de sufixo pra mesma família — mas catalogar
+# TODAS as gerações do eMCP é rodada própria, não cabe numa correção pontual de fila de revisão.
+# Gap sinalizado no KINGSTON.md §5 pra próxima rodada dedicada, não urgente.
+#
+# Convenção de campos (KINGSTON.md §1, já estabelecida — não inventei nada aqui): chip_type="eMCP",
+# subtype=geração da RAM ("LPDDR2"/"LPDDR3", nunca as duas), interface=versão eMMC ("eMMC 5.0" pra
+# toda a família 08EMCP), emcp_nand=GB direto, emcp_ram="LPDDR{n} {cap}" com cap=Gbit÷8 (abaixo de
+# 1GB em MB) — 04(RAM)÷8=0.5GB=512MB; 08(RAM)÷8=1GB. device vazio (eMCP não usa esse campo, só
+# NAND cru usa pra pacote — ver submissão kingston_nand_raw).
+#
+# validar: python manage.py submit_known_parts submissions/kingston_emcp_av100_2026-08-20.yaml
+
+brand: Kingston
+
+known_parts:
+
+  # ── PN físico do debug de estoque (known:false, LPDDR2 mostrando errado como LPDDR3) ──
+  - part_number: 08EMCP04NL2AV1
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR2 512MB
+    confidence: confirmed
+    notes: >
+      PN físico do debug de estoque do dono, 20/08/2026, known:false — gramática da família 08EMCP
+      decodifica NAND(8GB)/RAM(512MB) certo mas devolve subtype=LPDDR3 por default (regra permanente
+      KINGSTON.md §0.2#5: token "NL2" nas posições 8-10 sempre precisa de known_part explícito pra
+      corrigir pra LPDDR2, a gramática nunca resolve sozinha). String "AV1" não bate em nenhum
+      distribuidor — é quase certa leitura truncada de "AV100" (achado abaixo, 3 variantes de
+      revisão -C06/-C30/-C50, specs idênticas nas 3). Registrado com as specs comuns às 3 variantes
+      (NAND/RAM/geração não mudam por revisão) pra resolver a fila de revisão direto, independente
+      de qual revisão exata é essa unidade física.
+    source_url: https://octopart.com/08emcp04-nl2av100-c06-kingston
+
+  # ── forma completa achada por busca (Octopart), mesma capacidade/geração do PN acima ──
+  - part_number: 08EMCP04-NL2AV100-C06
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR2 512MB
+    confidence: confirmed
+    notes: >
+      Forma completa (não truncada) da geração de sufixo "AV100", variante de revisão "-C06".
+      Achada buscando o PN físico do debug (08EMCP04NL2AV1, acima) — mesmo prefixo 08EMCP04 +
+      token NL2 já documentados na gramática da família (8GB NAND + 512MB RAM, LPDDR2/162-ball).
+      Fonte: Octopart (distribuidor estruturado).
+    source_url: https://octopart.com/08emcp04-nl2av100-c06-kingston
+
+  - part_number: 08EMCP04-NL2AV100-C30
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR2 512MB
+    confidence: confirmed
+    notes: >
+      Irmã de revisão da 08EMCP04-NL2AV100-C06 acima (mesma geração "AV100", revisão "-C30" em vez
+      de "-C06") — mesmas specs, achada no mesmo cluster de busca Octopart.
+    source_url: https://octopart.com/search?q=EMCP+AV100+kingston
+
+  - part_number: 08EMCP04-NL2AV100-C50
+    chip_type: eMCP
+    subtype: LPDDR2
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR2 512MB
+    confidence: confirmed
+    notes: >
+      Irmã de revisão da 08EMCP04-NL2AV100-C06 acima (revisão "-C50") — mesmas specs, achada no
+      mesmo cluster de busca Octopart.
+    source_url: https://octopart.com/search?q=EMCP+AV100+kingston
+
+  # ── irmãs LPDDR3 (token EL3), mesma geração "AV100", mesma capacidade 08EMCP04 ──
+  - part_number: 08EMCP04-EL3AV100-C06
+    chip_type: eMCP
+    subtype: LPDDR3
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR3 512MB
+    confidence: confirmed
+    notes: >
+      Irmã LPDDR3 (token "EL3" = LPDDR3/221-ball, mesma regra da família) da NL2AV100-C06 acima —
+      mesmo prefixo 08EMCP04 (8GB NAND + 512MB RAM), geração de sufixo "AV100", revisão "-C06".
+      Fonte: Octopart.
+    source_url: https://octopart.com/search?q=EMCP+AV100+kingston
+
+  - part_number: 08EMCP04-EL3AV100-C30U
+    chip_type: eMCP
+    subtype: LPDDR3
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR3 512MB
+    confidence: confirmed
+    notes: >
+      Irmã de revisão da EL3AV100-C06 acima — sufixo "-C30U" (com "U" final, achado assim na fonte,
+      não removi). Mesmas specs (8GB NAND + 512MB RAM, LPDDR3). Fonte: Octopart.
+    source_url: https://octopart.com/search?q=EMCP+AV100+kingston
+
+  - part_number: 08EMCP04-EL3AV100-C50
+    chip_type: eMCP
+    subtype: LPDDR3
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR3 512MB
+    confidence: confirmed
+    notes: >
+      Irmã de revisão da EL3AV100-C06 acima — sufixo "-C50". Mesmas specs (8GB NAND + 512MB RAM,
+      LPDDR3). Também aparece grafada sem hífens ("08EMCP04EL3AV100C50") numa das fontes — mesmo PN,
+      variação de formatação da listagem, não PN diferente. Fonte: Octopart.
+    source_url: https://octopart.com/search?q=EMCP+AV100+kingston
+
+  # ── irmã de capacidade de RAM (08EMCP08 = 8GB NAND + 1GB RAM), mesma geração "AV100" ──
+  - part_number: 08EMCP08-EL3AV100-C50
+    chip_type: eMCP
+    subtype: LPDDR3
+    interface: eMMC 5.0
+    emcp_nand: 8GB
+    emcp_ram: LPDDR3 1GB
+    confidence: confirmed
+    notes: >
+      Irmã de capacidade de RAM — mesmo prefixo de NAND "08EMCP" mas RAM code "08" em vez de "04"
+      (pn[6:8]="08" → 8Gbit÷8=1GB, contra 4Gbit÷8=512MB das entradas acima). Geração de sufixo
+      "AV100", revisão "-C50", token EL3=LPDDR3. Confirmado em 2 fontes independentes (Octopart +
+      Worldway Electronics) — mais forte que as demais desta entrega (só Octopart). Tentei o par
+      NL2/LPDDR2 dessa mesma capacidade (08EMCP08-NL2AV100) e não achei em nenhuma fonte — não
+      incluído, excluir/não adivinhar.
+    source_url: https://www.worldwayelec.com/pro/kingston-technology-company/08emcp08-el3av100/2749504
