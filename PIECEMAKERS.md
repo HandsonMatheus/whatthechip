@@ -226,22 +226,28 @@ número):
   visto na bancada até 2026-07. Se aparecer, é família nova (golden obrigatório — `AUTORIA.md
   §3.3`).
 - **Known_parts:** rodada de 2026-07-13 pesquisou o cluster inteiro PMF5/PMF4 + expandiu ao pedido
-  do dono ("colete mais, não só 1, precisamos do máximo possível de variações") — ver
-  `submissions/piecemakers_pmf5_pmf4_2026-07-13.yaml` entregue ao dono: **70 known_parts** no
-  arquivo após 3 adendos (`confidence=manual`, fontes: glochip.com estruturado + catálogo oficial
-  + distribuidores + navegação individual de páginas do glochip). Cobre PMF5/PMF4 quase completo
-  (1Gb/2Gb/4Gb × x8/x16 × revisões B–H), `PMA`/`PMG6` (DDR4), e DDR2(`PME`)/DDR1(`PMD`)/SDR(`PMS`)
-  inteiros (sempre NÃO RENTÁVEL, mas incluídos por completude de identidade a pedido do dono).
-- **Revisão de silício vai além de B–G — confirmado `H` em 2Gb/4Gb x16 (PMF5 e PMF4).** O glochip
-  só lista `E`/`F` na tabela-resumo; a bancada trouxe `D` e `C` (2Gb x16, confirmados via
-  distribuidor com estoque real — Ariat-Tech/Censtry pro `D`, Sierra IC/NetComponents pro `C`), e
-  a navegação individual de páginas do glochip (não a tabela-resumo — cada PN pode ter página
-  própria "anterior/próximo") revelou `H` em 2Gb E 4Gb x16, nas duas famílias. `G` foi TESTADO
-  direto (URL do glochip) e não tem página própria — 404, confirmado excluído. **Também achei um
-  gap na 1ª rodada:** revisão `E` em **1Gb** (x8 e x16, PMF5 e PMF4) estava na Tier-1 oficial
-  desde o início mas eu não tinha cruzado direito — corrigido nesta expansão. Padrão a manter: se
-  aparecer PN fora do que já documentei aqui, confirmar por página PRÓPRIA de distribuidor/glochip
-  (não só "related parts"/tag solta) antes de adicionar.
+  do dono ("colete mais, não só 1, precisamos do máximo possível de variações"); rodada de
+  2026-08-20 (gatilho: bancada buscou `PMF511816ABR`) achou a revisão `A` (mais antiga que `B`)
+  espalhada pela matriz inteira via OMO Electronic — ver `submissions/piecemakers_pmf5_pmf4_2026-07-13.yaml`
+  entregue ao dono: **91 known_parts** no arquivo após 4 adendos (`confidence=manual`, fontes:
+  glochip.com estruturado + catálogo oficial + distribuidores + navegação individual de páginas do
+  glochip/OMO). Cobre PMF5/PMF4 quase completo (1Gb/2Gb/4Gb × x8/x16 × revisões A–H), `PMA`/`PMG6`
+  (DDR4), e DDR2(`PME`)/DDR1(`PMD`)/SDR(`PMS`) inteiros (sempre NÃO RENTÁVEL, mas incluídos por
+  completude de identidade a pedido do dono).
+- **Revisão de silício vai além de B–G — confirmado `A` (mais antiga) e `H` (mais nova) em várias
+  densidades/orgs de PMF5 (2Gb x16 também em PMF4).** O glochip só lista de `B` a `H` na
+  tabela-resumo (e nem sempre — a resumo às vezes pula uma revisão que ainda existe em campo); a
+  bancada trouxe `D`/`C`/`A` em 2Gb x16 sucessivamente (confirmados via distribuidor com página
+  PRÓPRIA — Ariat-Tech/Censtry pro `D`, Sierra IC/NetComponents pro `C`, OMO Electronic pro `A`), e
+  a navegação individual de páginas do glochip revelou `H` em 2Gb E 4Gb x16 nas duas famílias. Na
+  rodada de `A` (2026-08-20), varrer as páginas `/tags/<PN>.html` da OMO por densidade/organização
+  (não só a busca solta do PN) revelou de brinde revisão `B` em 2Gb x8 e 4Gb x8/x16, que também não
+  estava na tabela-resumo do glochip nessas células. `G` foi TESTADO direto (URL do glochip) e não
+  tem página própria — 404, confirmado excluído. Lição confirmada de novo: **tag solta/"related
+  parts" NUNCA basta** (foi por isso que `A` ficou de fora em 2026-07-13); só conta com página
+  PRÓPRIA dedicada (glochip ou distribuidor) — e vale a pena varrer a página de tags por
+  densidade/organização inteira, não só buscar o PN exato, porque o agregador às vezes só linka o
+  PN buscado mas tem os irmãos indexados do lado.
 
 ---
 

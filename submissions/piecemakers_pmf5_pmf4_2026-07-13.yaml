@@ -780,3 +780,271 @@ known_parts:
     confidence: manual
     source_url: "https://www.glochip.com/ddr3/piecemakers.html"
     notes: "SDR 128Mb(÷8=16MB) x16 3.3V, 54TSOPII, revisão B, MP. Sempre NÃO RENTÁVEL."
+
+  # ══════════════════════════════════════════════════════════════════════════════════════════
+  # ADENDO #4 · 2026-08-20 · REVISÃO "A" — GATILHO: bancada buscou PMF511816ABR
+  # Mesma disciplina das rodadas anteriores: 1 PN na bancada → pesquisei o CLUSTER inteiro.
+  #   1. glochip (Tier-2): tabela-resumo re-fetchada nesta rodada — CONFIRMADO que "A" não
+  #      aparece em NENHUMA densidade/org da matriz PMF5 (nem PMF4) — a revisão mais antiga
+  #      listada lá é sempre B (status EOL). "A" é mais antiga ainda, fora da tabela-resumo.
+  #   2. OMO Electronic (Tier-3): ao contrário da rodada anterior (que só achou ABR-I9DN como
+  #      TAG solta, sem página própria, e por isso excluiu — ver ADENDO #2 acima), desta vez fui
+  #      direto às páginas /tags/<PN-prefixo>.html de CADA densidade/organização PMF5 (510808/
+  #      510816/511808/511816/512808/512816) e achei que a OMO tem página PRÓPRIA dedicada
+  #      (chip/<hash>/…html, igual ao padrão já usado pra C/D) pra "A" em QUASE TODA a matriz —
+  #      e de brinde, revisão B em 2Gb x8 e 4Gb x8/x16 que também não tinha sido capturada antes
+  #      (só estava nas rodadas anteriores via glochip, que às vezes omite B se já EOL na
+  #      densidade). NENHUM distribuidor lista specs reais (Manufacturer da OMO aparece como
+  #      "Ericsson" ou "N/A" — claramente dado sujo do agregador, tratado só como confirmação de
+  #      EXISTÊNCIA, nunca de spec, mesma disciplina Tier-3 já usada nesta submissão). Specs de
+  #      TODAS as entradas abaixo herdadas do known_part irmão já aprovado/submetido da MESMA
+  #      densidade/organização (revisão nunca altera densidade/org/tensão — regra confirmada de
+  #      novo: nenhuma linha do glochip muda specs entre revisões da mesma densidade).
+  #   3. PMF4 (DDR3L) equivalente checado (OMO /tags/PMF411816.html) — SEM evidência de revisão A
+  #      lá (só DBR-KADN + partes de módulo DC-DC não relacionadas que colidem no prefixo) — NÃO
+  #      assumi simetria PMF5→PMF4 sem confirmação própria.
+  #   4. Bônus zero-custo (achado na mesma tabela OMO já aberta pra ABR): PMF511816CBR-I9DN —
+  #      revisão C (já confirmada nesta submissão) com um 2º sufixo de distribuidor não capturado
+  #      antes.
+  #   5. NÃO incluído: "PMF510816CBR-KADC PM" (sufixo "-KADC PM", cauda "PM" ambígua — pode ser
+  #      dado sujo do agregador, não um sufixo de grade real; evidência insuficiente pra decidir
+  #      sozinho, fica como lead fraco). "PMF512808ABR"/"PMF512808DBR" (4Gb x8) revisão A/D NÃO
+  #      achadas — só B confirmada nessa combinação nesta rodada.
+  # Total do arquivo após este adendo: 91 known_parts (era 70 antes deste adendo).
+  # ══════════════════════════════════════════════════════════════════════════════════════════
+
+  # ── Revisão A em 1Gb x8 (nova) — OMO página própria (I9DN) ────────────────────────────────────
+  - part_number: "PMF510808ABR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/43a/pmf510808abr-i9dn-1190.html"
+    notes: >
+      DDR3 1Gb x8 1.5V, revisão A — mais antiga que B (já EOL no glochip nesta densidade/org).
+      Ausente da tabela-resumo do glochip (que só lista B/D/E aqui), mas com página própria
+      dedicada na OMO Electronic (Tier-3, só confirma existência/identidade — "Manufacturer"
+      da OMO não é confiável, tratado só como confirmação de PN). Specs herdadas do known_part
+      já submetido PMF510808DBR (mesma família/densidade/organização/tensão) pela regra de
+      revisão-não-altera-specs.
+
+  - part_number: "PMF510808ABRI9DN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/43a/pmf510808abr-i9dn-1190.html"
+    notes: "Forma EXATA com sufixo -I9DN, como aparece na página dedicada da OMO Electronic. Mesmo chip do PMF510808ABR acima."
+
+  # ── Revisão A em 1Gb x16 (nova) — OMO página própria (I9DN) ───────────────────────────────────
+  - part_number: "PMF510816ABR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/3ba/pmf510816abr-i9dn-1190.html"
+    notes: >
+      DDR3 1Gb x16 1.5V, revisão A — mesmo padrão do par x8 acima. Ausente da tabela-resumo do
+      glochip, página própria na OMO Electronic. Specs herdadas do known_part já submetido
+      PMF510816DBR (mesma família/densidade/organização/tensão).
+
+  - part_number: "PMF510816ABRI9DN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "128MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/3ba/pmf510816abr-i9dn-1190.html"
+    notes: "Forma EXATA com sufixo -I9DN, como aparece na página dedicada da OMO Electronic. Mesmo chip do PMF510816ABR acima."
+
+  # ── 2Gb x8 (511808): revisões A, B, D novas — só E estava confirmada antes ────────────────────
+  - part_number: "PMF511808ABR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/c3b/pmf511808abr-kadn-1190.html"
+    notes: >
+      DDR3 2Gb x8 1.5V, revisão A. Ausente da tabela-resumo do glochip (que só lista E nesta
+      densidade/org), página própria na OMO Electronic. Specs herdadas do known_part já
+      submetido PMF511808EBR (mesma família/densidade/organização/tensão).
+
+  - part_number: "PMF511808ABRKADN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/c3b/pmf511808abr-kadn-1190.html"
+    notes: "Forma EXATA com sufixo -KADN, como aparece na página dedicada da OMO Electronic. Mesmo chip do PMF511808ABR acima."
+
+  - part_number: "PMF511808BBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/fed/pmf511808bbr-kadn-1190.html"
+    notes: >
+      DDR3 2Gb x8 1.5V, revisão B — também ausente da tabela-resumo do glochip nesta
+      densidade/org (só lista E). Duas páginas próprias na OMO (sufixos -19DC e -KADN, ver
+      entradas abaixo). Specs herdadas do known_part já submetido PMF511808EBR.
+
+  - part_number: "PMF511808BBR19DC"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/7f0/pmf511808bbr-19dc-1190.html"
+    notes: "Forma EXATA com sufixo -19DC, como aparece na página dedicada da OMO Electronic. Mesmo chip do PMF511808BBR acima."
+
+  - part_number: "PMF511808BBRKADN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/fed/pmf511808bbr-kadn-1190.html"
+    notes: "Forma EXATA com sufixo -KADN, como aparece na página dedicada da OMO Electronic. Mesmo chip do PMF511808BBR acima."
+
+  - part_number: "PMF511808DBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/3d9/pmf511808dbr-kadn-1190.html"
+    notes: >
+      DDR3 2Gb x8 1.5V, revisão D — ausente da tabela-resumo do glochip nesta densidade/org (só
+      lista E). Duas páginas próprias na OMO (sufixos -KADN e -MBDN, ver entradas abaixo). Specs
+      herdadas do known_part já submetido PMF511808EBR.
+
+  - part_number: "PMF511808DBRKADN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/3d9/pmf511808dbr-kadn-1190.html"
+    notes: "Forma EXATA com sufixo -KADN, como aparece na página dedicada da OMO Electronic. Mesmo chip do PMF511808DBR acima."
+
+  - part_number: "PMF511808DBRMBDN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/507/pmf511808dbr-mbdn-1190.html"
+    notes: "Forma EXATA com sufixo -MBDN, como aparece na página dedicada da OMO Electronic. Mesmo chip do PMF511808DBR acima."
+
+  # ── 2Gb x16 (511816): revisão A — o PN da bancada (gatilho desta rodada) ───────────────────────
+  - part_number: "PMF511816ABR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/f85/pmf511816abr-i9dn-1190.html"
+    notes: >
+      PN do gatilho desta rodada — achado na bancada (SearchLog 2026-08-20), classify() já
+      decodifica certo via gramática (DDR3 2Gb x16 256MB, RENTÁVEL) mas sem known_part. Revisão
+      A NÃO aparece na tabela do glochip (só lista E/F em 2Gb x16 — a mais antiga documentada lá
+      é sempre B em outras densidades). Rodada anterior (2026-07-13) tinha achado só uma TAG
+      solta pra esse PN (OMO, sem página própria) e por isso excluiu. Desta vez, indo direto às
+      páginas /chip/ da OMO, achei DUAS páginas dedicadas próprias (sufixos -I9DN e -KADN, ver
+      entradas abaixo) — evidência agora suficiente pelo mesmo padrão já usado pra C/D. Specs
+      herdadas do known_part já APROVADO PMF511816EBR (mesma família/densidade/organização/
+      tensão) pela regra de revisão-não-altera-specs.
+
+  - part_number: "PMF511816ABRI9DN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/f85/pmf511816abr-i9dn-1190.html"
+    notes: "Forma EXATA com sufixo -I9DN, como aparece na página dedicada da OMO Electronic. Mesmo chip do PMF511816ABR acima."
+
+  - part_number: "PMF511816ABRKADN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/821/pmf511816abr-kadn-1190.html"
+    notes: "Forma EXATA com sufixo -KADN, como aparece na página dedicada da OMO Electronic (2ª página própria independente para a revisão A). Mesmo chip do PMF511816ABR acima."
+
+  # ── Bônus zero-custo: sufixo -I9DN da revisão C, já confirmada nesta submissão ──────────────────
+  - part_number: "PMF511816CBRI9DN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "256MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/bd8/pmf511816cbr-i9dn-1190.html"
+    notes: "Forma EXATA com sufixo -I9DN do PMF511816CBR (já incluído acima com sufixo -KADN) — mesmo chip, achado na mesma tabela OMO consultada pra revisão A."
+
+  # ── 4Gb x8 (512808): revisão B nova ─────────────────────────────────────────────────────────────
+  - part_number: "PMF512808BBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/899/pmf512808bbr-kadn-1190.html"
+    notes: >
+      DDR3 4Gb x8 1.5V, revisão B — ausente da tabela-resumo do glochip nesta densidade/org (só
+      lista C/D/E/F). Página própria na OMO só com sufixo -KADN (ver entrada abaixo); base sem
+      sufixo não tem página independente, mas sufixo nunca altera a identidade do PN base (mesmo
+      critério já usado nas famílias anteriores). Specs herdadas do known_part já submetido
+      PMF512808CBR (mesma família/densidade/organização/tensão).
+
+  - part_number: "PMF512808BBRKADN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x8"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/899/pmf512808bbr-kadn-1190.html"
+    notes: "Forma EXATA com sufixo -KADN, como aparece na página dedicada da OMO Electronic. Mesmo chip do PMF512808BBR acima."
+
+  # ── 4Gb x16 (512816): revisões A, B novas ───────────────────────────────────────────────────────
+  - part_number: "PMF512816ABR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/c81/pmf512816abr-1190.html"
+    notes: >
+      DDR3 4Gb x16 1.5V, revisão A — ausente da tabela-resumo do glochip nesta densidade/org (só
+      lista C/D/E/F/H). Página própria dedicada na OMO SEM sufixo (forma base tem página
+      independente, diferente das outras entradas desta rodada) + 2ª página com sufixo -I9DN
+      (ver entrada abaixo). Specs herdadas do known_part já submetido PMF512816CBR (mesma
+      família/densidade/organização/tensão).
+
+  - part_number: "PMF512816ABRI9DN"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/293/pmf512816abr-i9dn-1190.html"
+    notes: "Forma EXATA com sufixo -I9DN, como aparece na página dedicada da OMO Electronic. Mesmo chip do PMF512816ABR acima."
+
+  - part_number: "PMF512816BBR"
+    chip_type: "DDR3"
+    subtype: "DDR3"
+    capacity: "512MB"
+    interface: "x16"
+    confidence: manual
+    source_url: "https://www.omo-ic.com/chip/b43/pmf512816bbr-1190.html"
+    notes: >
+      DDR3 4Gb x16 1.5V, revisão B — ausente da tabela-resumo do glochip nesta densidade/org (só
+      lista C/D/E/F/H). Página própria dedicada na OMO sem sufixo. Specs herdadas do known_part
+      já submetido PMF512816CBR.
