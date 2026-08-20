@@ -417,6 +417,24 @@ families:
   suffix_rules: ''
   tip: '🚨 ATENÇÃO: Este chip é GDDR3 — memória gráfica (H5RS). NÃO É DDR3 de PC. Estrutura elétrica completamente diferente. Origem: placas de vídeo (GPUs) ou consoles antigos. ⚠ NÃO misturar com lote DDR3 (H5TQ/H5TC) — incompatíveis e com mercados distintos. Destino: separar para lote de memória gráfica GDDR3.'
   reasoning: ''
+- prefix: HY5RS
+  chip_type: GDDR3
+  subtype: GDDR3
+  interface: ''
+  is_emcp: false
+  active: true
+  priority: 50
+  pn_length: null
+  decode_cap_pos: null
+  decode_cap_len: 1
+  decode_cap_map: ''
+  decode_gen_pos: null
+  decode_gen_map: ''
+  decode_gen_len: 1
+  decode_density_type: ''
+  suffix_rules: ''
+  tip: '🚨 ATENÇÃO: Este chip é GDDR3 — memória gráfica (HY5RS, era Hyundai/Hynix mais antiga que H5RS — miolo só numérico, ex. "123235", sem letra de geração). NÃO É DDR3 de PC. Origem: placas de vídeo (GPUs) antigas — ex. Radeon HD 3850 — ou consoles. Família MAGRA (mesmo padrão de Nanya/PieceMakers): decodifica só o TIPO pelo prefixo — o miolo numérico empacota 14 campos (família/modo/tensão/densidade+refresh/organização/bancos/geração/temp/velocidade/pacote — fonte: guia de numeração gráfica Hynix), denso demais pra decodificar posição-a-posição sem o guia oficial completo em mãos. Capacidade só via known_part confirmado por PN exato. GDDR é sempre NÃO RENTÁVEL por tipo (decisão do dono, 2026-07-23) — a falta de decode de capacidade não afeta a triagem. ⚠ NÃO misturar com lote DDR3 (H5TQ/H5TC) nem com H5RS (miolo com letra) — famílias/eras distintas. Destino: separar para lote de memória gráfica GDDR3.'
+  reasoning: '["PN da bancada HY5RS123235B (2026-08-19/20) veio known=false — prefixo HY5RS (5 chars, com Y) nao bate com o H5RS (4 chars, sem Y) ja existente na gramatica, que e uma familia/era DIFERENTE (miolo com letra de geracao, ex. H5RS5223CFR-11C). Confirmado que os dois prefixos sao REAIS e distintos, nao erro de digitacao: HY5RS123235B = 512Mbit (16Mx32) GDDR3 BGA SDRAM (ndc.co.uk, pagina de produto com specs estruturadas) + usado fisicamente na GeCube Radeon HD 3850 (TechPowerUp, review/teardown real) + Kynix/ASAP Semi/Jotrin/Worldway/eBay convergindo em GDDR3/Hynix. HY5RS573225A = 256Mbit (8Mx32) GDDR3 BGA (ndc.co.uk, mesma estrutura). Tentei decodificar o miolo numerico (123235 vs 573225 pros dois pontos de densidade) mas nao ha padrao posicional obvio de digito unico — a fonte encontrada (guia de numeracao grafica Hynix, resumo de busca) descreve 14 campos empacotados (familia/modo/tensao/densidade+refresh/organizacao/bancos/geracao/temp/velocidade/pacote), denso demais pra inferir com seguranca de so 2 exemplos. Optei por familia MAGRA (tipo pelo prefixo, sem decode de capacidade) em vez de adivinhar — mesmo padrao ja usado em Nanya/PieceMakers pra familias com miolo denso. known_parts cobrem os 2 PNs achados."]'
 - prefix: H5GQ
   chip_type: GDDR5
   subtype: GDDR5

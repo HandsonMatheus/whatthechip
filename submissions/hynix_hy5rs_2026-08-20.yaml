@@ -1,0 +1,70 @@
+# Submissão de known_parts — SK Hynix, família HY5RS (GDDR3, FAMÍLIA NOVA — magra).
+# Gerado a partir da investigação do PN HY5RS123235B (busca na bancada, 2026-08-20).
+#
+# ⚠ FAMÍLIA NOVA (Trilha A, chips/knowledge/hynix.yaml): a bancada leu "HY5RS123235B" e o
+# engine devolveu known=false — nenhuma família casava. Já existia "H5RS" (4 chars, sem Y) na
+# gramática, mas é uma família/era DIFERENTE (miolo com letra de geração, ex.
+# H5RS5223CFR-11C) — não é o mesmo prefixo, não é typo. Confirmado que "HY5RS" (5 chars, com
+# Y) é um prefixo GDDR3 real e distinto, da era Hyundai/Hynix mais antiga (miolo só numérico,
+# sem letra). Adicionei a família nova ao hynix.yaml como MAGRA (tipo pelo prefixo só, sem
+# decode de capacidade) — mesmo padrão já usado em Nanya/PieceMakers — porque o miolo numérico
+# empacota 14 campos (fonte: guia de numeração gráfica Hynix, achado na pesquisa) e não há
+# padrão posicional confiável extraível de só 2 exemplos. GDDR já é SEMPRE NÃO RENTÁVEL por
+# tipo (decisão do dono, 2026-07-23) — a falta de decode de capacidade não afeta a triagem.
+# Golden anchor adicionado em chips/tests.py (_HYX_GOLDEN["HY5RS123235B"]).
+#
+# COBERTURA DE CLUSTER (pedido permanente do dono — nunca 1 só PN): a mesma busca que
+# confirmou o alvo também achou o irmão HY5RS573225A (densidade menor, mesma família/era) —
+# incluído abaixo, mesmo arquivo.
+#
+# FONTES (distribuidor com specs estruturadas, não datasheet oficial lido na íntegra —
+# confidence=manual):
+#   HY5RS123235B: ndc.co.uk (página de produto própria) — "Hynix HY5RS123235B 512Mbit
+#     (16MX32) GDDR3 BGA SDRAM". Corroborado por ASAP Semi, Kynix ("HY5RS123235B-FP-14"),
+#     Jotrin, Worldway ("HY5RS123235B FP-14(16X3"), eBay (estoque físico real, chip "FP-14"),
+#     Datasheet Archive, Datasheet4U. Uso real confirmado: TechPowerUp (review/teardown da
+#     placa de vídeo GeCube Radeon HD 3850 X-Turbo III, cita os chips Hynix HY5RS a 1.1ns).
+#     512Mbit÷8=64MB.
+#   HY5RS573225A: ndc.co.uk (mesma estrutura de página) — "Hynix HY5RS573225A 256Mbit
+#     (8MX32) GDDR3 BGA Graphics SDRAM". 256Mbit÷8=32MB.
+# Manufacturer HYNIX/Hynix (era Hyundai Electronics) consistente em todas as fontes.
+#
+# Uso:
+#   python manage.py submit_known_parts submissions/hynix_hy5rs_2026-08-20.yaml            # dry-run = portão
+#   python manage.py submit_known_parts submissions/hynix_hy5rs_2026-08-20.yaml --commit
+#
+brand: "SK Hynix"
+known_parts:
+  - part_number: "HY5RS123235B"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    density_gbit: "512Mb"
+    density_gb: "64MB"
+    interface: "x32"
+    confidence: manual
+    source_url: "https://www.ndc.co.uk/hynix-hy5rs123235b-512mbit-16mx32-gddr3-bga-sdram.html"
+    notes: >
+      PN ALVO buscado na bancada (2026-08-20), family_prefix novo (HY5RS). ndc.co.uk:
+      "Hynix HY5RS123235B 512Mbit (16MX32) GDDR3 BGA SDRAM" — página de produto própria
+      com specs estruturadas. Corroborado por ASAP Semi, Kynix (package "FP-14"),
+      Jotrin, Worldway, eBay (estoque físico real, mesmo package "FP-14"), Datasheet
+      Archive, Datasheet4U — todos HYNIX/GDDR3 consistente. Uso real confirmado via
+      TechPowerUp (review/teardown da placa GeCube Radeon HD 3850 X-Turbo III, cita os
+      chips Hynix HY5RS operando a 1.1ns). 512Mbit÷8=64MB. GDDR3 é sempre NÃO RENTÁVEL
+      por tipo (regra de negócio já estabelecida, independe desta capacidade).
+      confidence=manual (specs de distribuidor estruturadas, não datasheet oficial
+      lido na íntegra — família nova sem PDF Tier-1 encontrado com corpo acessível).
+
+  - part_number: "HY5RS573225A"
+    chip_type: "GDDR3"
+    subtype: "GDDR3"
+    density_gbit: "256Mb"
+    density_gb: "32MB"
+    interface: "x32"
+    confidence: manual
+    source_url: "https://www.ndc.co.uk/hynix-hy5rs573225a-256mbit-8mx32-gddr3-bga-graphics-sdram.html"
+    notes: >
+      Irmão achado na mesma busca do alvo (mesma família/era HY5RS, densidade menor).
+      ndc.co.uk: "Hynix HY5RS573225A 256Mbit (8MX32) GDDR3 BGA Graphics SDRAM" — mesma
+      estrutura de página do PN alvo. 256Mbit÷8=32MB. confidence=manual (mesma ressalva
+      do PN acima).
