@@ -284,18 +284,34 @@ Houve revisões de hardware / SKUs regionais.
 
 > **Regra de bancada: nunca presuma o PN pelo modelo do aparelho. Leia a serigrafia do chip.**
 
-### 4.6 Todos os dados de encapsulamento em circulação são lixo de catálogo
+### 4.6 Dados de encapsulamento: os de distribuidor são lixo — os de BOM da FCC são ouro
 
-Não existe **nenhuma** dimensão em mm, pitch de esfera ou desenho mecânico público para nenhum destes
-PNs. O que circula:
-- `"869 pins"` — aparece **copiado** em SC7731G, SC9832A, SC98301, SC9863A. É campo autogerado, não
-  código de package.
+Não existe datasheet público desta marca, e por meses o único dado de package em circulação era
+lixo de catálogo:
+- `"869 pins"` — aparece **copiado** em SC7731G, SC9832A, SC98301, SC9863A. Campo autogerado.
 - `"454 pins"` — DeviceBeast, para SC7731C e SC7731G (mesmo valor), linhagem de fonte única.
 - `"BGAQFN"` — fisicamente impossível.
-- Fabricante declarado `"SC"`, `"SPREADT"`, `"S"`, **`"Motorola Semiconductor Products"`** — na mesma
-  página.
+- Fabricante declarado `"SC"`, `"SPREADT"`, `"S"`, **`"Motorola Semiconductor Products"`**.
 
-**Não usar nenhum desses valores.** Se precisar de dado de package, meça a peça física.
+**Fonte substituta descoberta em 2026-08-17 — a lista de materiais anexada aos pedidos de
+homologação da FCC.** Fabricantes de celular anexam o BOM completo, com package, dimensão e
+pitch de cada componente. É documento regulatório, não catálogo — trate como **Tier-1**:
+
+| Designador | PN | Função | Package (literal do BOM) |
+|---|---|---|---|
+| U2100 | SC9863A / SC9863A1 | SoC | **FCCSP-774ball, 13,0 × 12,6 × 0,83 mm, pitch 0,4** |
+| U0200 | SC2721G | PMIC | **FC BGA-166, 6,2 × 5,8 × 0,85 mm, pitch 0,4** |
+| U0600 | SR3595D | RF transceiver | **BGA-123ball, 4,5 × 4,5 × 0,85 mm, pitch 0,35** |
+| U0601 | RPM6743-31 | PA LTE multibanda | 4,0 × 6,8 × 0,8 mm |
+| U0705 | RTM7916-51 | FEM GSM/GPRS/EDGE | 5,3 × 5,5 × 0,842 mm |
+| U502 | eMMC 5.1 32GB | memória (3ª marca) | LFBGA-153, 11,5 × 13,0 × 0,9 mm |
+
+Fontes: FCC-ID **YHLBLUG52L** (doc 6330141) e FCC-ID **2ACCJB118** (doc 4699823) — dois
+aparelhos diferentes, linhas idênticas. Corrobora o `SR3595D Device Specification V1.2`.
+
+> **Método reutilizável:** para qualquer SoC desta família sem dado de package, procure um
+> aparelho que o use e busque o BOM no `fcc.report` pelo FCC-ID. É a única rota Tier-1 de dado
+> mecânico que esta marca tem. ⚠ Ainda **não há** BOM localizado para SC7715/7727/7731/9830.
 
 ### 4.7 "SPREADTRUM" na marcação ≠ datador confiável
 
@@ -311,6 +327,84 @@ confiável que o logotipo.**
 silício em SKU automotivo/IoT, `SC` = designação legada. E o número **gravado no chip** é o PN interno
 (`UMS9230`), **não** o nome comercial (`T616`) que aparece na ficha do aparelho. Qualquer mapa de
 reconhecimento futuro precisa das duas colunas.
+
+---
+
+## 4.9 🔴 O 套片 (tàopiàn) — o SoC nunca anda sozinho
+
+**Esta é a informação comercial mais importante deste documento.** Descoberta em 2026-08-17,
+a partir da observação do comprador de que os SoCs "têm que ir acompanhados de um chip menor".
+
+### O conceito, na definição do próprio meio chinês
+
+Do fórum de engenharia 一牛网 (16rd), respondendo "o que quer dizer 套片?":
+
+> **"手机芯片一般都是按套片出的，厂商一般会出CPU/基带，射频收发，电源管理，无线连接芯片一组相匹配的，
+> 单买一颗也没意义。"**
+> *"Chips de celular normalmente saem em 套片. O fabricante lança CPU/baseband, transceiver de RF,
+> gerenciamento de energia e chip de conectividade como um grupo casado; **comprar uma peça
+> sozinha não faz sentido**."*
+
+A própria Spreadtrum usa o termo em inglês nos press releases: *"Spreadtrum's **bundle chipset**"*.
+Cada anúncio de plataforma nomeia o conjunto — não o chip.
+
+### A tabela de pareamento (o que confirmamos)
+
+| SoC | PMIC (SC27xx) | RF (SR3xxx) | Conectividade | Confiança |
+|---|---|---|---|---|
+| **SC9830I** | **SC2723M** | **SR3593S** | SC2331S | 🟢 **PR oficial** (Galaxy J2 2016 / SM-J210F) |
+| **SC7727SE** | *nenhum — PMU INTEGRADA* | **SR3532S** | SC2331S | 🟢 **PR oficial** (Galaxy J1 2016 / SM-J120H) |
+| SC9863A | SC2721G | SR3595D / D1 | SC2342B | 🟢 **BOM FCC ×2 + device tree** |
+| SC9832E | SC2721G | SR3595D | SC2342B | 🟡 estêncil Amaoe/MaAnt SU3 |
+| SC7727S | SC2723S / SC2723E | SR3532S (provável) | — | 🟡 listas de loja de reparo |
+| SC7731C | ? *(possivelmente integrada)* | **SR3533G** | — | 🟡 esquemático NTPCB |
+| SC7731E | SC2720A | ? | — | 🟠 baixa |
+| SC7715 / SC7715A / SC7715T | ? | ? | — | 🔴 **não confirmado** |
+| SC9830 / SC9830A / SC9832A | ? | ? | — | 🔴 **não confirmado** |
+
+⚠️ **Pegadinha do SC7727SE:** ele **não tem PMIC discreto** — foi o primeiro Spreadtrum com a
+PMU integrada ao baseband (declaração oficial). Isso o torna o **teste discriminante** para
+descobrir de qual chip o comprador está falando (§4.9 abaixo).
+
+### Por que precisam andar juntos — o técnico
+
+Um SoC Spreadtrum **não funciona com PMIC genérico nem de outra plataforma**. Quatro razões,
+todas de fonte primária:
+
+1. **Barramento proprietário.** O PMIC não fica em I²C — pendura no **ADI bus** (Analog-Digital
+   Interface), serial dedicado do SoC. No device tree do próprio fabricante:
+   `&adi_bus { pmic@0 { compatible = "sprd,sc2721"; spi-max-frequency = <26000000>; …`.
+   **Os offsets de registrador mudam por modelo de PMIC.**
+2. **O PMIC não é "só fonte".** O binding oficial do kernel lista os subnós reais:
+   `sc27xx-regulator`, `sc27xx-fgu` (fuel gauge), `sc27xx-rtc`, `sc27xx-eic` (GPIOs),
+   `sc2721-audio-codec`, `sc27xx-typec`, `sc27xx-poweroff`, `sc27xx-7sreset`, `sc27xx-vibrator`.
+   **Trocar só a CPU e manter um PMIC estranho quebra:** rails e sequência de boot, o próprio
+   botão de ligar, o áudio, o carregador, o RTC, e os GPIOs que dão enable no LCD e na câmera.
+3. **O RF transceiver é o RELÓGIO do sistema.** Do `SR3595D Device Specification V1.2`:
+   *"Three sets of 26MHz reference clock outputs"* + clock de 32 kHz. O clock de referência do
+   baseband **vem do chip de RF**, não de um cristal ligado ao SoC. Sem o SR3xxx correto, o SoC
+   não tem clock.
+4. **PMIC e RF são acoplados entre si.** O SC2721G traz *"Temperature sensor ADC for 26M
+   oscillator tuning"* — é o PMIC que faz a compensação térmica do oscilador da cadeia de RF.
+
+### 🔴 Consequência operacional — a mais urgente deste documento
+
+> **Se a colheita pegou só o chip grande e descartou os pequenos, o valor do lote foi destruído
+> na bancada.** O comprador não quer 400 SoCs soltos: ele quer 套片 — conjuntos casados.
+>
+> **Ação imediata, antes de qualquer negociação:**
+> 1. Verificar se os `SC27xx` (PMIC, ~6 × 6 mm) e `SR3xxx` (RF, ~4,5 × 4,5 mm) foram recolhidos.
+> 2. Se ainda houver placas na operação, **começar a colher os pequenos junto do grande**, com
+>    a origem registrada (qual SoC saiu da mesma placa).
+> 3. Contar por PN. Um conjunto casado vale mais que a soma das peças soltas; peças soltas de
+>    um lado sem o par do outro podem não valer nada.
+
+### ⚠️ O que ainda NÃO sabemos — e a pergunta que resolve
+
+A evidência prova o **conceito** (套片), mas **não decide** se o comprador quer o PMIC, o RF, ou
+o conjunto inteiro. Ambos são "menores" que o SoC: RF ≈ 12% da área, PMIC ≈ 22%.
+**Não presumir — perguntar.** As duas perguntas que desambiguam estão no dossiê do comprador
+(`DOSSIE_SPREADTRUM_BUYER_EN.md §7.1`), incluindo o teste do SC7727SE.
 
 ---
 

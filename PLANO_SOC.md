@@ -22,7 +22,8 @@ seguro.
 |---|---|---|
 | 1 | 🟢 **Blast radius é ZERO.** Nos 7.843 PNs do `baseline_pre_t6.json` **não existe um único registro com `chip_type="SoC"`.** (Só NOR Flash 4, MCP 32, OneNAND 1.) | Virar a chave **não muda o veredito de nenhum chip do catálogo atual**. É aditivo puro. Risco de regressão ≈ 0. |
 | 2 | 🔴 **A categoria `"catalog"` NÃO pode sair.** Se `SoC` mudar de categoria, o `subtype` **sequestra o `chip_type`** — provado empiricamente abaixo. | `commercial=True` **mantendo** `category="catalog"`. É o mesmo padrão do K9 (`nand_raw` + `commercial=True`). |
-| 3 | 🟡 **`SSD` e `K9` NÃO aparecem na área do comprador.** `_NAV_KINDS` (`pricing/views.py:121`) só tem emcp/umcp/lpddr/emmc/ufs/ddr. | Se SoC copiar o K9, o Wu Quan **não** consegue cotar sozinho — o preço entra pelo admin. Isso contraria seu pedido literal e vira **decisão explícita** (§7). |
+| 3 | 🟡 **`SSD` e `K9` NÃO aparecem na área do comprador.** `_NAV_KINDS` (`pricing/views.py:121`) só tem emcp/umcp/lpddr/emmc/ufs/ddr. | ✅ **DECIDIDO 2026-08-17:** SSD e K9 **entram** no painel (trabalho A, independente e prioritário); SoC fica **admin-first** e entra depois. Ver §7. |
+| 4 | 🔴 **O comprador exige 套片 (conjuntos casados).** SoC + PMIC + RF são uma plataforma, não peças soltas — `SPREADTRUM.md §4.9`. | Pode transformar o escopo de **1 tipo comercial** em **3**. Bloqueado até ele responder a pergunta desambiguadora (§8.5.3). |
 
 **Decisões que travam a implementação** (§10): modelo de preço · o SoC aparece na área do
 comprador ou só no admin · uma caixa só ou uma por geração (3G/4G).
@@ -161,42 +162,54 @@ falham **ANTES** do deploy, na suíte.
 
 ---
 
-## 7. 🟡 A área do comprador — o achado que contraria o pedido
+## 7. ✅ A área do comprador — DECIDIDO pelo dono (2026-08-17)
 
-Você pediu "também na área do comprador para ser cotado". O código diz o seguinte:
+O levantamento mostrou que `pricing/views.py:121` traz
 
 ```python
-# pricing/views.py:121
 _NAV_KINDS = ('emcp', 'umcp', 'lpddr', 'emmc', 'ufs', 'ddr')
 ```
 
-**`ssd` e `k9` não estão lá.** Não é esquecimento — é a arquitetura: os dois têm preço
-**fórmula**, não **grid**. O ¥ mora no registro `Buyer` (`ssd_rmb_per_gb`, `k9_rmb_each`) e é
-editado no **admin do Django**, pelo dono. O comprador não tem tela para eles.
+— ou seja, **`ssd` e `k9` nunca apareceram no painel do comprador**. Não foi decisão de produto;
+foi consequência de os dois terem preço-*fórmula* no registro `Buyer` em vez de linhas de grid.
 
-Isso cria uma bifurcação real:
+### Decisão do dono
 
-### Opção I — SoC segue o padrão K9/SSD (preço no `Buyer`, admin)
-- ✅ Copia um caminho já provado em produção; **~1 dia** de trabalho
-- ✅ Migração trivial (`AddField`), zero risco de RLS
-- ❌ **O Wu Quan não cota sozinho** — você vira o intermediário: ele manda o ¥, você digita
-- ❌ Contraria a leitura literal do seu pedido
+> **1. `SSD` e `K9` DEVEM entrar no painel do comprador.** É correção de uma lacuna existente,
+> **independente do SoC** — vale ser um commit próprio, que pode ir ao ar antes de qualquer coisa
+> de SoC.
+>
+> **2. `SoC` NÃO entra no painel agora** — fica **admin-first**. Entra depois, quando houver
+> preço estabelecido com o Wu Quan.
 
-### Opção II — SoC como kind de GRID (aparece na área do comprador)
-- ✅ O comprador edita o preço sozinho, como faz com eMMC/DDR
-- ✅ Cria naturalmente o caminho para diferenciar 3G × 4G (uma linha cada)
-- ❌ Mais trabalho: `_NAV_KINDS` + `partner_kind` + `partner_kind_save`
-- ❌ 🔴 **`pricing/views.py:514` valida `tier_unit in ('GB','Gb')`** — um tipo sem unidade
-  **não passa** no save do parceiro. Precisa ser relaxado, e isso mexe num caminho que
-  serve **todos** os kinds. É o único ponto do plano que toca código compartilhado
-- ❌ Precisa de tradução das novas telas (4 idiomas)
+### O que isso implica tecnicamente (trabalho A — SSD/K9 no painel)
 
-> **Minha recomendação: I agora, II depois — e só se o comprador pedir.**
-> Motivo: enquanto **não existe preço de referência público** para SoC recuperado
-> (`SPREADTRUM.md §6`), o primeiro ¥ vai sair de uma conversa com o Wu Quan, não de uma
-> tela. Construir a tela antes de existir o número é construir para uma demanda hipotética.
-> A Opção II fica documentada e barata de fazer depois — nada da Opção I precisa ser
-> desfeito.
+Este é **um plano separado**, não uma fase do SoC. Os pontos de toque:
+
+| Ponto | Arquivo:linha | Problema |
+|---|---|---|
+| Navegação | `pricing/views.py:121` | anexar `'ssd'`, `'k9'` a `_NAV_KINDS` |
+| 🔴 **Validação do save** | `pricing/views.py:514` | `tier_unit not in ('GB','Gb')` → **rejeita**. O K9 tem `tier_unit=''` e o SSD é ¥/GB linear, sem faixa. **Este é o nó do problema** |
+| Grid vs fórmula | `pricing/engine.py:440,529` | os dois **desviam** para `_ssd_quote`/`_k9_quote` antes de consultar o grid — a tela precisa editar o campo do `Buyer`, **não** criar linhas de `Price` |
+| `KIND_UNIT` | `pricing/models.py:88-92` | `k9` está ausente **de propósito**; a tela não pode assumir que todo kind tem unidade |
+| Template | `partner_kind.html` | hoje renderiza uma **matriz de faixas**. Para SSD/K9 a tela certa é **um campo só** (¥/GB e ¥/unidade) |
+| i18n | `check_translations` | rótulos novos nos 4 idiomas |
+
+> ⚠️ **A forma da tela é diferente, não é "mais uma linha na lista".** eMCP/DDR/eMMC são **grids de
+> faixa de capacidade**; SSD e K9 são **um número só**. Enfiar os dois na mesma tela é o caminho
+> curto que gera bug — o desenho honesto é o `partner_kind` detectar o kind e renderizar
+> **"tabela de faixas"** ou **"taxa única"**.
+>
+> Isso quer dizer que o trabalho A **precisa do seu OK sobre a UI** antes de eu escrever código.
+> Sugiro: um bloco "Taxas" no topo do painel, com SSD (¥/GB) e K9 (¥/unidade) como dois campos —
+> separado da navegação por tipo, que continua sendo de grid. Assim o SoC entra nesse mesmo bloco
+> depois, sem redesenho.
+
+### O que isso implica para o SoC (trabalho B)
+
+Nada muda nas fases §9 — o SoC nasce com `Buyer.soc_rmb_each` editável **só no admin**. Quando o
+preço estiver estabelecido, entrar no painel é **anexar uma linha** ao bloco de taxas que o
+trabalho A já terá criado. Custo marginal ≈ zero. É a ordem certa.
 
 ---
 
@@ -241,6 +254,100 @@ Chave `('soc','3G',1,'')` e `('soc','4G',1,'')`. Duas caixas: **I-01** e **I-02*
 
 ---
 
+## 8.5 Catalogar SoC no banco — quais specs coletar (e quais NÃO)
+
+Pergunta do dono: *"podemos identificar esses chips e catalogá-los com suas especificações? o que
+esses chips têm de specs que devemos coletar?"*
+
+**Resposta curta: sim, e sem nenhuma migração.** O `KnownPart` já comporta um SoC — desde que
+você aceite que a maioria dos campos dele é de memória e simplesmente **não se aplica**.
+
+### 8.5.1 O mapa campo a campo do `KnownPart`
+
+| Campo | SoC usa? | O quê |
+|---|---|---|
+| `part_number` | ✅ **é tudo** | `SC9832E`. É a única coisa que o comprador compra. Sem gramática, o PN **é** a identidade |
+| `brand` | ✅ | `Spreadtrum` (⚠ decidir: uma marca ou duas com alias `UNISOC` — ver §8.5.4) |
+| `chip_type` | ✅ | `SoC` |
+| `subtype` | ✅ **livre** | 🔑 `category="catalog"` libera **subtype DESCRITIVO** (`schema.py:159`) — o portão **não** normaliza. Aqui cabe a linha legível: `Quad Cortex-A53 1.4GHz · Mali-T820 MP1 · LTE Cat4 · 28nm` |
+| `device` | ✅ **alto valor** | Aparelhos de origem: `Nokia C2 / Meizu C9 / ZTE Blade A3 2019`. É **como o comprador procura** e como a bancada confere |
+| `notes` | ✅ **obrigatório** | Fonte Tier-1 + o **套片** (§8.5.3). Regra da casa: `confidence` sem fonte na `notes` o revisor barra |
+| `source_url` | ✅ | link do press release / unisoc.com |
+| `confidence` | ✅ | `confirmed` para os 5 PNs com fonte oficial |
+| `capacity` | ❌ | SoC não tem capacidade |
+| `density_gbit` / `density_gb` | ❌ | idem |
+| `emcp_ram` / `emcp_nand` | ❌ | é composto NAND+RAM — SoC não é |
+| `interface` | ❌ | é largura de barramento (`x8`/`x16`) de DRAM |
+| `fbga_code` | ❌ | código FBGA é da Samsung/Micron |
+| `family` | ❌ | não haverá `ChipFamily` (§2 do `SPREADTRUM.md`) |
+
+> ⚠️ **Regra da casa, sem exceção** (`wtc-excluir-nao-adivinhar-known-part`): campo que não se
+> aplica fica **vazio**. Nunca `"N/A"`, nunca `"—"`, nunca estimado "pra documentar".
+
+### 8.5.2 O que realmente vale coletar — ordenado por valor comercial
+
+Vale separar **spec técnica** de **spec comercial**. Elas não coincidem.
+
+| # | Dado | Vale? | Por quê |
+|---|---|---|---|
+| 1 | **Part number** | 🟢 essencial | O comprador compra por PN. É o único eixo de match com uma necessidade de reparo |
+| 2 | **Era do modem (3G/4G)** | 🟢 essencial | É o **eixo de valor** (demanda de reuso concentra-se pós-2018) e o candidato natural a dimensão de preço na opção B (§8) |
+| 3 | **套片 — PMIC e RF casados** | 🟢 **essencial** | O comprador **exige** (ver `SPREADTRUM.md §4.9`). Sem isso, o lote pode não ter mercado |
+| 4 | **Aparelhos de origem** (`device`) | 🟡 alto | É como o comprador enxerga demanda ("preciso de chip de J2 2016") |
+| 5 | **Ano de lançamento** | 🟡 médio | Proxy da linha "pós-2018"; cabe no `subtype` ou `notes` |
+| 6 | Núcleos / clock / GPU / nó | 🟠 baixo | Interessante tecnicamente, **quase irrelevante comercialmente**. Ninguém compra SoC recuperado por GFLOPS. Vai no `subtype` porque é barato, não porque decide preço |
+| 7 | Package / ball count / pitch | 🟡 médio | Não decide preço, mas decide **reballing** (o estêncil é por padrão de esferas). Agora temos dado Tier-1 via BOM da FCC (`SPREADTRUM.md §4.6`) |
+| 8 | Bandas LTE | 🔴 **não coletar** | Não existe por SoC — dependem do RF e da homologação do aparelho |
+
+**Conclusão honesta:** o instinto é catalogar núcleos, GPU e nanômetros porque é o que as fichas
+técnicas mostram. Mas o que move preço aqui é **PN + era + 套片 + condição**. Colete o resto
+porque é barato, não porque vale.
+
+### 8.5.3 🔴 Onde mora o 套片 — e por que ele NÃO é um problema de catálogo
+
+O comprador quer conjuntos casados (`SPREADTRUM.md §4.9`). Isso cria uma tentação: criar um campo
+de "chip companheiro" no `KnownPart`. **Não faça.** A distinção que resolve:
+
+| Pergunta | Camada | Onde vive |
+|---|---|---|
+| *"Com que PMIC o SC9832E casa?"* | **CATÁLOGO** — fato universal e estável da plataforma | `notes` do `KnownPart` (custo zero, sem migração) |
+| *"Eu TENHO o PMIC casado, e quantos?"* | **ESTOQUE** — fato local, muda todo dia | ainda **não existe** no sistema |
+
+A exigência do comprador é a **segunda** pergunta. E a segunda pergunta não é resolvida com um
+campo de texto — ela precisa que **PMIC e RF sejam eles próprios tipos com caixa e contagem**, o
+que hoje não são (`PMIC` está em `chip_types.py` como catálogo/não-comercial, exatamente como o
+SoC estava).
+
+> **Consequência de plano:** se o Wu Quan de fato comprar **conjuntos**, o escopo não é
+> "SoC comercial" — é **"SoC + PMIC + RF comerciais"**, três tipos, três letras (`I`, `J`, e a
+> próxima), três caixas. É uma decisão bem maior que a deste documento, e ela depende inteiramente
+> da resposta dele à pergunta desambiguadora (`DOSSIE_SPREADTRUM_BUYER_EN.md §7.1`).
+>
+> **Recomendação: não construa nada de 套片 antes dessa resposta.** Registre o pareamento na
+> `notes` (grátis) e espere.
+
+### 8.5.4 Duas decisões menores, mas que travam a submissão
+
+1. **`Brand` = "Spreadtrum" ou "UNISOC"?** É a mesma empresa (rebrand em 13/06/2018), e a marcação
+   física varia por lote. *Recomendo* **uma marca só, `Spreadtrum`**, com `UNISOC` mencionado na
+   `notes` — o `Brand` do WTC é chave de agrupamento, não fato histórico. Duas marcas partiriam o
+   catálogo em dois pela data de fabricação, o que não ajuda ninguém.
+2. **O `subtype` descritivo entra em qual idioma?** Ele **não** é traduzido pelo i18n (é dado, não
+   string de UI), então fica congelado no que for escrito. *Recomendo inglês técnico*
+   (`Quad Cortex-A53 1.4GHz · Mali-T820 MP1 · LTE Cat4 · 28nm`) — é o idioma da fonte e o que o
+   comprador lê.
+
+### 8.5.5 Os 5 PNs prontos para submissão (quando as fases liberarem)
+
+`SC7727S` · `SC7727SE` · `SC7731C` · `SC9830I` · `SC9832E` — todos com fonte Tier-1 registrada no
+`SPREADTRUM.md §10`.
+**Excluídos de propósito:** `SC98301` (não existe) e `SC7715T` (existência não confirmada).
+
+⚠️ **Ordem:** a submissão é a **F6** — depois de existir caixa e preço. Submeter antes faz o chip
+cair como INDETERMINADO âmbar no gateway, sem destino para o operador (§9).
+
+---
+
 ## 9. Fases — cada uma com seu portão
 
 Ordem escolhida para que **nada chegue ao operador antes de ter destino comercial**.
@@ -270,8 +377,9 @@ handshake existe justamente para impedir isso — respeite a ordem.
 
 1. **Modelo de preço: A (¥ fixo/unidade) ou B (3G/4G)?** §8.
    *Recomendo A.* Trocar depois só é barato **antes** de existir caixa física.
-2. **Área do comprador: Opção I (admin) ou II (grid)?** §7.
-   *Recomendo I.* Nota: hoje nem SSD nem K9 estão no self-service do comprador.
+2. ~~**Área do comprador: Opção I (admin) ou II (grid)?**~~ ✅ **RESPONDIDO 2026-08-17:**
+   SSD e K9 entram no painel (trabalho separado); SoC fica **admin-first**. Ver §7.
+   ⏳ **Resta decidir a UI** do trabalho A: bloco "Taxas" separado do grid de faixas? (§7)
 3. **Uma caixa `I-01` ou uma por geração?** Decorre de 1, mas é decisão física da bancada —
    quantas caixas a mesa comporta.
 4. **O `SoC` fica RENTÁVEL sempre, ou tem critério?** O branch da F2 precisa de uma regra.
@@ -280,8 +388,11 @@ handshake existe justamente para impedir isso — respeite a ordem.
    marca não tem gramática, o registro confirmado é a única garantia de identidade.
 5. **Alias `"cpu"` entra?** *Recomendo sim* — é o termo que o operador e o comprador usam.
    `"ap"` eu deixaria de fora (2 letras, casa lixo).
-6. **PMIC e Sensor seguem catálogo?** Este plano é **só** `SoC`. Se o lote trouxer `SC27xx`
-   (PMIC) e `SR3xxx` (RF), eles continuam sem caixa — decisão separada, mesmo molde.
+6. 🔴 **PMIC e RF seguem catálogo?** Este plano é **só** `SoC` — mas o comprador exige **套片**
+   (conjuntos casados, `SPREADTRUM.md §4.9`). Se ele confirmar que compra conjuntos, o escopo
+   real vira **três tipos comerciais** (SoC + PMIC + RF), três letras, três caixas. **Não decidir
+   antes da resposta dele** à pergunta desambiguadora (§8.5.3).
+7. **`Brand` = "Spreadtrum" ou "UNISOC"?** §8.5.4 — *recomendo uma só: Spreadtrum*.
 
 ---
 

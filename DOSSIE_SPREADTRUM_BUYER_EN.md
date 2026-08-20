@@ -18,6 +18,10 @@ that runs Android *and* talks to the cellular network. In the Chinese repair tra
 parts a counter would call **CPU** or **基带 (baseband)**; for this brand the two words point at the
 same package, because the application processor and the baseband modem are integrated on one die.
 
+**They do not travel alone.** Each Spreadtrum SoC belongs to a matched chipset (套片) with a
+specific PMIC and RF transceiver — see §7.1, where we set out the pairing table and ask you one
+question about it.
+
 **They contain no memory.** Every part here exposes an external **LPDDR + eMMC** interface. The RAM
 and storage sat in a separate eMCP package next to the SoC on the board, and that eMCP carries a
 *different* manufacturer's brand (Samsung, SK Hynix, Micron). If you are looking for memory, it is
@@ -201,6 +205,76 @@ fast one.
 
 ---
 
+## 7.1 Companion chips (套片) — we understand the requirement
+
+You told us these SoCs need to be accompanied by a smaller chip. We researched this rather than
+guess, and we want to confirm we understand it correctly — and ask you one question so we get
+your order right the first time.
+
+### What we understand
+
+A Spreadtrum platform is a **matched chipset**, not a single part. Spreadtrum's own press releases
+name the whole set, e.g. for the Samsung Galaxy J2 (2016) / SM-J210F:
+
+> *"This highly integrated SoC platform consists of 28nm quad-core 1.5GHz ARM Cortex-A7 5-mode
+> baseband chip **SC9830i**, power management chip **SC2723M**, RF chip **SR3593S**, and
+> Spreadtrum's 3in1 connectivity chip **SC2331S**."*
+
+The parts are **not interchangeable across platforms**, for concrete engineering reasons:
+
+- The PMIC does not sit on a generic I²C bus — it sits on Spreadtrum's dedicated **ADI bus**, and
+  register offsets differ per PMIC model (visible in Spreadtrum's own Linux device trees:
+  `&adi_bus { pmic@0 { compatible = "sprd,sc2721" … }`).
+- The PMIC is not only power. It carries the **audio codec, fuel gauge, charger, RTC, Type-C,
+  power-on/reset logic and GPIOs** that enable the LCD and camera.
+- The **RF transceiver supplies the system clock**: the SR3595D datasheet specifies *"three sets
+  of 26MHz reference clock outputs"*. Without the matched RF part, the SoC has no reference clock.
+- The PMIC even thermally tunes the RF oscillator — the SC2721G includes a *"temperature sensor
+  ADC for 26M oscillator tuning"*.
+
+### The pairing table (what we have confirmed)
+
+| SoC | PMIC | RF transceiver | Connectivity | Evidence |
+|---|---|---|---|---|
+| **SC9830I** | **SC2723M** | **SR3593S** | SC2331S | Spreadtrum press release (SM-J210F) |
+| **SC7727SE** | ⚠️ **none — PMU is integrated** | **SR3532S** | SC2331S | Spreadtrum press release (SM-J120H) |
+| SC9832E | SC2721G | SR3595D | SC2342B | platform reballing stencils |
+| SC7727S | SC2723S / SC2723E | SR3532S (likely) | — | repair-trade compatibility lists |
+| SC7731C | not confirmed | SR3533G | — | board schematic |
+
+Package sizes, from the bill of materials of an FCC filing (same board, so directly comparable):
+
+| Part | Function | Package | Size |
+|---|---|---|---|
+| SC9863A | SoC | FCCSP-774ball, 0.4 pitch | 13.0 × 12.6 mm |
+| **SC2721G** | **PMIC** | **FC BGA-166, 0.4 pitch** | **6.2 × 5.8 mm** |
+| **SR3595D** | **RF transceiver** | **BGA-123, 0.35 pitch** | **4.5 × 4.5 mm** |
+
+### ❓ Our question to you
+
+Both the PMIC and the RF transceiver are "smaller chips" next to the SoC, and we do not want to
+assume. Please tell us which you need:
+
+> **您说的“小芯片”是指电源管理芯片（SC27xx），还是射频芯片（SR3xxx）？还是整套套片？**
+> *(Is the "smaller chip" you mean the power management IC (SC27xx), the RF transceiver (SR3xxx),
+> or the complete matched set?)*
+>
+> **如果是整套，那 SC7727SE 怎么处理？它的电源管理是集成在基带里的，没有独立的 SC27xx。**
+> *(If you mean the complete set — how should we handle the SC7727SE? Its power management is
+> integrated into the baseband; there is no discrete SC27xx for it.)*
+
+That second question is deliberate: the SC7727SE has **no discrete PMIC**, so your answer tells us
+unambiguously whether you are asking for the PMIC, the RF part, or both.
+
+### What we are doing about it on our side
+
+We are auditing our recovery process now to confirm whether the SC27xx and SR3xxx parts were
+harvested alongside the SoCs. **We will tell you honestly what we have** — including if the answer
+for some part numbers is zero. We would rather send you an accurate inventory than promise matched
+sets we cannot deliver.
+
+---
+
 ## 8. Import classification — flagging it early
 
 We are raising this ourselves so it does not surprise either side. This is factual background, **not
@@ -233,7 +307,8 @@ will work to it.
 | **Corrections we made** | `SC98301` → `SC9830I` (not a real PN) · `SC7715T` withheld pending re-verification |
 | **Strongest single item** | **SC9832E** — 64-bit Cortex-A53, Mali-T820, LTE Cat 4, 2018, still a current UNISOC product |
 | **Condition** | Pulled (拆机), sorted by part number. Reballing status, grading and testing to be agreed |
-| **Open** | Per-PN counts (in progress) · grading definition · test requirement · customs classification |
+| **Companion chips (套片)** | Understood and researched — pairing table in §7.1. **We need your answer**: PMIC (SC27xx), RF (SR3xxx), or the full set? |
+| **Open** | Per-PN counts (in progress) · companion-chip availability on our side · grading definition · test requirement · customs classification |
 
 ---
 
