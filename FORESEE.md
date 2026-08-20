@@ -65,6 +65,17 @@ yamls/known_parts de outras marcas, mapas globais (`DRAM_PC`/`DRAM_MOBILE`, dono
 7. **Esquemas de nomenclatura ANTIGOS existem** — `FSEIASLD-xxG` é eMMC industrial pré-`FEMD*` (a Longsys
    cross-referencia `FSEIASLD-32G/64G/128G` = `FEMDRM032G/064G/0128G`). `NCLDXC1MG256M32` é LPDDR4X 1GB de
    nomenclatura legada `NCLD` (fora da família `FLXC`). Chip de bancada velho pode vir com prefixo antigo.
+   ⚠ **Teoria unificadora da raiz legada `NC`** (2026-08-19): a raiz `NC` sempre é seguida por um código de
+   TIPO de 2 chars — `LD`=LPDDR (`NCLD*`) · `EM`=eMMC (`NCEM*`, ex. `NCEMASLD-32G/64G/128G`,
+   `NCEMBSF9-16G/32G`) — espelhando o mesmo par `pn[1:3]` (`EM`/`EU`/`EP`/`UP`/`AP`) já usado no prefixo
+   moderno `FE_`. Útil pra prever prefixo desconhecido na bancada: `NCUF...` seria hipoteticamente UFS,
+   por analogia (não confirmado, é só teoria).
+   `NCEMASLD` pode ser um estágio ainda mais antigo do MESMO produto físico que `FSEIASLD` (mesmo sufixo
+   `ASLD`, mesmas 3 capacidades, mesmo pacote) — nota histórica, não muda a classificação.
+   ⚠ **Dois códigos de vendor dentro de `NCEM*` NÃO são a mesma geração eMMC** — `NCEMASLD*` é eMMC 5.1
+   (JEDEC v5.1, confirmado no test report), `NCEMBSF9*` é eMMC 5.0 (JEDEC eMMC 5.0, confirmado no
+   datasheet oficial próprio, Rev A0 2015) — datasheets DIFERENTES, não presumir a interface de um
+   código de vendor a partir de outro dentro da mesma raiz `NC`/`EM`.
 
 ### 0.3 Hierarquia de fontes (imutável)
 
@@ -138,9 +149,32 @@ Prefixos: `F35` (SPI), `FS35` (SPI ND), `FS33` (paralela TSOP), `FSN` (paralela 
   sufixo temp/tensão (`R`=0~95C, `W`=-40~95C wide). Bus `x16`, FBGA96, 1.35/1.5V. Convenção DDR: o mapa guarda
   **MB/die** e o engine deriva "XGb = YMB por die". Âncoras: `F60C1A0002-M6AR`, `F60C1A0004-M79R`.
 - **LPDDR4X** (`FLXC*`): **código de capacidade DECIFRADO** — o dígito **antes do "G"** (`pn[7]`) = **GB do
-  pacote** (`FLXC2004G`=4GB, `FLXC2002G`=2GB, `FLXC4008G`=8GB). O `2`/`4` **após** `FLXC` é config de canal,
-  NÃO capacidade. **Confirmado Tier-1** por 2 anchors DigiKey (`FLXC2004G-30`=4GByte, `FLXC2002G-N2`=2GB) +
-  a lista de densidades do catálogo (16/24/32/48/64Gb) que casa 1-a-1. Chaves vistas: 2/3/4/6/8.
+  pacote** (`FLXC2004G`=4GB, `FLXC2002G`=2GB, `FLXC4008G`=8GB). O `2`/`4` **após** `FLXC` é config/reserved
+  (rótulo exato no Ordering Information oficial, datasheet `D-00246`), NÃO capacidade. **Confirmado Tier-1**
+  por 2 anchors DigiKey (`FLXC2004G-30`=4GByte, `FLXC2002G-N2`=2GB) + a lista de densidades do catálogo
+  (16/24/32/48/64Gb) que casa 1-a-1 + a seção "4 Ordering Information" do datasheet oficial `D-00246`
+  (`FLXC2002G-N2`, aberto na íntegra 2026-08-19) que documenta capacidade/pacote/geração campo a campo.
+  Chaves vistas: 2/3/4/6/8.
+- **LPDDR4 padrão** (`FL4C*`, irmã de `FLXC*`): mesmíssimo esqueleto posicional, só troca o dígito de
+  geração — `X`→`4` (`FLXC2002G`↔`FL4C2001GD9`). Achado 2026-08-19 via PN de bancada `FL4C2001GD9`
+  (1GB); confirmado por analogia estrutural ao Ordering Information oficial da `FLXC2002G-N2` (a mesma
+  plataforma lista opção de voltagem COM e SEM o modo 0.6V — exatamente o par LPDDR4/LPDDR4X já visto em
+  `NCLD4C`/`NCLDXC`) + existência em 2 distribuidores reais (DigiPart). **Terceira ocorrência** do padrão
+  "dígito=padrão vs `X`=baixa-voltagem" nesta marca (depois de `NCLD4C`/`NCLDXC` e do próprio `FLXC`) —
+  já é uma convenção consolidada da Foresee/Longsys, não coincidência. Só a capacidade 1GB confirmada até
+  agora; outras capacidades da linha `FL4C` não localizadas (gap, ver §5).
+- **LPDDR5 standalone (`FL5P*`) — CATEGORIA NOVA, achada 2026-08-19.** Mesmo esqueleto posicional
+  (`FL`+geração+pacote+config+capacidade+`G`+sufixo), geração=`5` (LPDDR5), mas pacote=`P` (não `C`) —
+  **pacote físico diferente**: TFBGA315 (vs VFBGA200 do FLXC/FL4C, mais pinos, geração mais nova).
+  Capacidade pela MESMA regra posicional (`pn[7]`). Achada via portfólio estruturado da distribuidora
+  RESTAR FRAMOS (campo "Density" próprio por PN — a mesma tabela cross-valida 100% dos PNs FLXC/F60C/
+  NCLDXC já confirmados, o que dá confiança na fonte). 5 known_parts confirmados: `FL5P4008G-60`=8GB
+  (Density 64Gbit, página própria + DigiPart), `FL5P2004G-60`=4GB (**DigiKey, 5 fontes independentes** —
+  a capacidade mais bem confirmada da marca), `FL5P4006G-62`/`FL5P4006G-51`=6GB, `FL5P4004G-N5`=4GB
+  (manual, só a tabela). Rótulo "Lexar Enterprise" na DigiKey de novo (mesma pastilha Foresee, regra
+  já documentada em §3). `chip_type="LPDDR5"` já existe em `chips/chip_types.py`, nenhuma declaração
+  nova necessária. Golden novo necessário se a família ganhar `ChipFamily` própria (hoje é só known_part
+  avulso, como FL4C/FLXC).
 - **Legado `NCLD*`** (fora da família `FLXC`, fora do yaml — só known_parts avulsos): estrutura **decifrada
   via datasheet oficial** (`NCLD4CXMAXXXM32` Rev B2 2017, die Micron) — `NC`(Longsys) + `LD`+geração
   (`4`=LPDDR4 · `X`=LPDDR4X · `3`=LPDDR3) + pacote (`C`=200-ball, LPDDR4/4X · `B`=178-ball, LPDDR3) +
@@ -206,12 +240,42 @@ com known_parts confirmados) + ePOP · NAND raw · nMCP (dead-by-type, só gram�
 3. **Decode de capacidade do NAND raw** — hoje omitido de propósito (dead-by-type + armadilha Gb/MB). Só faria
    sentido por rótulo mais rico ("SLC NAND 512MB"), nunca por rentabilidade.
 4. **Sufixos após o "-"** (revisão/velocidade/temperatura) não decodificados em nenhuma linha — não bloqueiam tipo/capacidade.
-5. **Prefixos legados** `FSEIASLD*`/`NCEMASLD*` — avaliar se ganham família própria ou ficam como known_parts avulsos.
+5. ~~**Prefixos legados** `FSEIASLD*`/`NCEMASLD*`~~ — **`NCEMASLD*` parcialmente resolvido 2026-08-19**: PN
+   de bancada `NCEMASLD32G` puxou os 3 known_parts da linha (`-32G` confirmed via test report oficial
+   Longsys/Radxa; `-64G`/`-128G` confirmed via datasheet LCSC próprio + convenção literal + aritmética de
+   die consistente). **`NCEMBSF9*` resolvido 2026-08-19 (2ª rodada)**: PN de bancada `NCEMBSF916G` —
+   código de vendor NOVO dentro da mesma raiz `NCEM*` (não estava na lista de irmãos não-perseguidos
+   abaixo). Datasheet oficial próprio (Pine64, Rev A0 2015, eMMC 5.0 — geração DIFERENTE do `NCEMASLD`
+   que é 5.1) documenta a família completa em 2 SKUs: `-16G`/`-32G`, ambos confirmed. `-64G` visto só em
+   revenda genérica (sem datasheet/distribuidor estruturado) — não submetido, gap residual. Cluster MAIOR
+   ainda não perseguido: `NCEMAD9D*`/`NCEMAHBD*`/`NCEMASKG*`/`NCEMAD6B*`/`NCEMAD7B*`/`NCEMAM59*`/
+   `NCEMAH59*`/`NCEFEH58*`/`NCEMASD9*` (vistos no agregador DigiPart, capacidades 8/16/32GB, códigos de
+   vendor/produto diferentes de "ASLD"/"BSF9") — avaliar se ganham família própria ou ficam como
+   known_parts avulsos, lote grande se pedido. `FSEIASLD*` (o "elo intermediário" pré-`FEMD*`) segue não
+   pesquisado diretamente — só known_parts de irmãos (`FEMDRM*`) citam a correspondência no catálogo.
 6. **Possível família `NCLD` (Trilha A)?** A estrutura já está decifrada (§2) com **3 subfamílias/9 âncoras**
    Tier-1 (4C=LPDDR4, XC=LPDDR4X, 3B=LPDDR3) — caso mais forte do que quando o gap #1 original foi escrito.
    Não propus a família sozinho (decisão arquitetural do dono); sinalizo a possibilidade caso mais PNs
    `NCLD*` apareçam na bancada. Variantes com código de die/vendor de 2 chars (`NCLD3B1M7256M32` etc.) vistas
    mas não submetidas — mesma capacidade das versões "limpas", lote extra se pedido.
+7. **`FL4C*` — só 1GB confirmado.** Achada 2026-08-19 (PN de bancada `FL4C2001GD9`), irmã LPDDR4-padrão da
+   `FLXC*` (LPDDR4X). Tentei `FL4C2002G`/`FL4C2004G` (sem sufixo) no DigiPart, sem resultado — o agregador
+   parece exigir o sufixo completo (`-D9` etc.), que não dá pra adivinhar sem PN-âncora real. A tabela
+   RESTAR FRAMOS que resolveu o `FL5P` (item 8) NÃO lista nenhum `FL4C*` — parece genuinely mais raro/menos
+   distribuído que os irmãos `FLXC`/`FL5P`. Se mais PNs `FL4C*` aparecerem na bancada, mesma pesquisa.
+8. ~~`FL5P*` (LPDDR5)~~ — **RESOLVIDO 2026-08-19**: categoria nova inteira, 5 known_parts confirmados
+   (8/6/4GB) via portfólio estruturado RESTAR FRAMOS + DigiKey. Ver §2. Capacidades ainda não vistas:
+   2GB (`FL5P2002G`, tentei sem sufixo no DigiPart, sem resultado) e 3GB — mesma limitação do item 7
+   (agregador exige sufixo completo). Gap residual pequeno, próxima rodada se aparecer PN novo.
+9. **`FL3B1001G` — existência confirmada pelo dono, specs SEM fonte externa.** PN de bancada
+   2026-08-19; buscas em DigiPart/netComponents/RESTAR FRAMOS/web geral não acharam nenhuma fonte
+   confiável (só páginas suspeitas de alucinação de busca, descartadas). O dono confirmou por
+   observação física direta que o PN existe. Decode estrutural via gramática já validada do root
+   `FL` (pn[2]='3'→LPDDR3 por analogia a `4`/`X`/`5`; pn[3]='B'→pacote, mesma combinação "3B" já
+   provada LPDDR3 no root legado `NCLD3B*`; pn[7]='1'→1GB) dá LPDDR3 1GB — mas SEM datasheet/
+   distribuidor independente. Submetido como `estimated` (não `manual`) em
+   `submissions/foresee_fl3b_lpddr3_2026-08-19.yaml`, oculto até revisão manual. Se aparecer PN
+   irmão (`FL3B*` outra capacidade) ou fonte documental, promover.
 
 ---
 
@@ -250,6 +314,57 @@ IA sem verificação. Sempre conferir a unidade antes de gravar: `Xbit ÷ 8 = YB
   nesta mesma sessão (aconteceu com `FEMDRM008G-A3A55`, ver submissão eMMC); (b) 3ª captura de alucinação
   de resumo de busca automático nesta marca (desta vez a página HQonline de `NCLD3B2512M32`) — sempre
   abrir a página e olhar os campos estruturados de verdade antes de citar como fonte.
+
+- **2026-08-19:** PN de bancada `NCEMASLD32G` (eMMC industrial legado, fora do `FEMD*`) resolvido. Achado
+  um Test Report OFICIAL da Longsys (papel timbrado, hospedado pela Radxa como qualificação do Rock Pi) —
+  a fonte mais forte já vista nesta marca, com capacidade/dimensões/interface lidas diretamente do
+  documento. 3 known_parts submetidos (`-32G`/`-64G`/`-128G`, todos confirmed). Insight estrutural novo:
+  a raiz legada `NC` sempre é seguida por um código de tipo de 2 chars (`LD`=LPDDR, `EM`=eMMC), espelhando
+  o par `pn[1:3]` do prefixo moderno `FE_` — une os dois clusters legados (`NCLD`/`NCEM`) numa só teoria.
+  Achado um cluster maior de irmãos `NCEM*` (códigos de vendor diferentes de "ASLD") não perseguido agora.
+
+- **2026-08-19 (7ª busca, mesmo dia) — `NCEMBSF9`, 2º código de vendor confirmado dentro de `NCEM*`.**
+  PN de bancada `NCEMBSF916G`. Achado datasheet oficial próprio da Shenzhen Longsys Electronics
+  ("NCEMBSF9-xxG Specification" Rev A0, 2015, JEDEC eMMC 5.0) hospedado pela Pine64 — mesmo padrão de
+  mirror confiável (fabricante de SBC hospedando doc. de qualificação) já usado no test report
+  `NCEMASLD` via Radxa. A Seção 2 "Product List" documenta a família completa numa tabela só: 2 SKUs,
+  `-16G` (bate exato com o PN de bancada) e `-32G`. Achado importante: `NCEMBSF9*` é eMMC **5.0**, não
+  5.1 como o `NCEMASLD*` — apesar de ambos começarem com a mesma raiz `NCEM`, são datasheets/gerações
+  diferentes; corrigi a suposição implícita de que todo `NCEM*` seria 5.1. 2 known_parts confirmed
+  submetidos. Um `-64G` aparece em revenda genérica (grandado/Alibaba) mas sem datasheet ou distribuidor
+  estruturado por trás — sinalizado no gap, não submetido (evidência fraca demais mesmo pra `estimated`
+  com specs decididas).
+
+- **2026-08-19 (2ª busca, mesmo dia):** PN de bancada `FL4C2001GD9` — irmã LPDDR4-**padrão** (não-X) da
+  `FLXC*` já confirmada, achada por analogia estrutural direta ao par `NCLD4C`/`NCLDXC` (mesma marca, 2
+  gerações de nomenclatura, mesmo padrão "dígito=padrão vs `X`=baixa-voltagem"). Abri o datasheet oficial
+  da irmã `FLXC2002G-N2` (`D-00246`) e a seção "Ordering Information" confirma a mesma plataforma tem
+  opção de voltagem com/sem o modo 0.6V — é a 3ª vez que esse padrão aparece nesta marca, já uma
+  convenção consolidada, não coincidência. Existência do PN exato confirmada em 2 distribuidores
+  (DigiPart). 1 known_part `manual` submetido; só a capacidade 1GB confirmada, outras da linha `FL4C`
+  não localizadas (gap).
+
+- **2026-08-19 (3ª busca, mesmo dia) — categoria `FL5P`/LPDDR5 inteira, a pedido do dono ("achar o
+  máximo de chips possível").** Achado o portfólio DDR estruturado da distribuidora RESTAR FRAMOS
+  Technologies (campo "Density" por PN, taxonomy) — a mesma tabela cross-validou 100% dos PNs FLXC/
+  F60C/NCLDXC já confirmados nesta marca, dando confiança pra usá-la como fonte pros novos. Achada uma
+  categoria **inteiramente nova**: `FL5P*` = LPDDR5 standalone, pacote TFBGA315 (físico diferente do
+  VFBGA200 do FLXC/FL4C). 5 known_parts confirmados (8/6/4GB), incluindo `FL5P2004G-60` com **5 fontes
+  independentes** (DigiKey + Enrgtech + SemiKart + 2x Alibaba) — a capacidade mais bem confirmada da
+  marca até hoje. De quebra, achei e submeti 3 PNs novos de sufixo pra `FLXC` já confirmada (mesmas
+  capacidades, SKUs distintos). `chip_type="LPDDR5"` já existia em `chips/chip_types.py`, zero atrito
+  no portão.
+
+- **2026-08-19 (4ª busca, mesmo dia) — `FL3B1001G`, existência sem fonte documental.** Busca
+  exaustiva (DigiPart, netComponents, tabela RESTAR FRAMOS, web geral) não achou NENHUMA fonte
+  confiável — cheguei a concluir que o PN podia não existir. O dono corrigiu por observação física
+  direta na bancada ("estou vendo ele na minha frente"). Aceito a existência como fato; as specs
+  (LPDDR3 1GB) vêm só de decode estrutural (mesma gramática do root `FL` já usada em FL4C/FLXC/FL5P,
+  reforçada pela combinação "3B" já provada = LPDDR3+pacote-B no root legado `NCLD3B*`). Sem fonte
+  externa, o known_part foi submetido como `estimated` (não `manual`) — primeira vez nesta marca que
+  uma submissão se apoia SÓ em confirmação física + inferência estrutural, sem nenhum documento ou
+  distribuidor por trás. Lição: confirmação física direta do dono resolve a dúvida de EXISTÊNCIA, mas
+  não substitui fonte Tier-1/2 pra SPECS — as duas perguntas são independentes.
 
 > Inventário de famílias/mapas → **`foresee.yaml`** (Trilha A). known_parts confirmados (proveniência Tier-1 na
 > `notes`) → **banco** (Opção 2), via `submit_known_parts`. Cross-marca (comandos/convenção/rentabilidade) → **`CLAUDE.md`**.
